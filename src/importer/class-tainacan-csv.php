@@ -172,59 +172,135 @@ class CSV extends Importer {
     
     public function options_form() {
 
-         $form = '<div class="field">';
-         $form .= '<label class="label">' . __('Delimiter', 'tainacan') . '</label>';
-         $form .= '<div class="control">';
-         $form .= '<input type="text" class="input" name="delimiter" value="' . $this->get_option('delimiter') . '" />';
-         $form .= '</div>';
-         $form .= '</div>';
-
-         $form .= '<div class="field">';
-         $form .= '<label class="label">' . __('Multivalued metadata delimiter', 'tainacan') . '</label>';
-         $form .= '<div class="control">';
-         $form .= '<input type="text" class="input" name="multivalued_delimiter" value="' . $this->get_option('multivalued_delimiter') . '" />';
-         $form .= '</div>';
-         $form .= '</div>';
-
-         $form .= '<div class="field">';   
-         $form .= '<label class="label">' . __('Encoding', 'tainacan') . '</label>';
-  
-         $utf8 = ( !$this->get_option('encode') || $this->get_option('encode') === 'utf8' ) ? 'checked' : '';
-         $iso = ( !$this->get_option('encode') && $this->get_option('encode') === 'iso88591' ) ? 'checked' : '';
-
-         $form .= '<div class="field">';
-         $form .= '<label class="b-radio radio is-small">';
-         $form .= '<input type="radio"  name="encode" value="utf8" '. $utf8 . ' />';
-         $form .= '<span class="check"></span>';
-         $form .= '<span class="control-label">';
-         $form .=  __('UTF8', 'tainacan') . '</span></label>';
-         $form .= '</div>';
-        
-         $form .= '<div class="field">';
-         $form .= '<label class="b-radio radio is-small">';
-         $form .= '<input type="radio"  name="encode" value="iso88591" '. $iso . ' />';
-         $form .= '<span class="check"></span>';
-         $form .= '<span class="control-label">';
-         $form .=  __('ISO 8859-1', 'tainacan') . '</span></label>';
-         $form .= '</div>';
-
-         $form .= '</div>';
-
-         $form .= '<div class="field">';
-         $form .= '<label class="label">' . __('Enclosure character', 'tainacan') . '</label>';
-         $form .= '<div class="control">';
-         $form .= '<input type="text" class="input" size="1" name="enclosure" value="' . $this->get_option('enclosure') . '" />';
-         $form .= '</div>';
-         $form .= '</div>';
-
-         $form .= '<div class="field">';
-         $form .= '<label class="label">' . __('Server path', 'tainacan') . '</label>';
-         $form .= '<div class="control">';
-         $form .= '<input type="text" class="input" size="1" name="server_path" value="' . $this->get_option('server_path') . '" />';
-         $form .= '</div>';
-         $form .= '</div>';
-
-         return $form;
+		ob_start();
+	   ?>
+	   
+		<div class="field">
+			<label class="label"><?php _e('CSV Delimiter', 'tainacan'); ?></label>
+			<span class="help-wrapper">
+					<a class="help-button has-text-secondary">
+						<span class="icon is-small">
+							 <i class="mdi mdi-help-circle-outline" ></i>
+						 </span>
+					</a>
+					<div class="help-tooltip">
+						<div class="help-tooltip-header">
+							<h5><?php _e('CSV Delimiter', 'tainacan'); ?></h5>
+						</div>
+						<div class="help-tooltip-body">
+							<p><?php _e('The character used to separate each column in your CSV (e.g. , or ;)', 'tainacan'); ?></p>
+						</div>
+					</div> 
+			</span>
+			<div class="control is-clearfix">
+				<input class="input" type="text" name="delimiter" value="<?php echo $this->get_option('delimiter'); ?>">
+			</div>
+		</div>
+		
+		<div class="field">
+			<label class="label"><?php _e('Multivalued metadata delimiter', 'tainacan'); ?></label>
+			<span class="help-wrapper">
+					<a class="help-button has-text-secondary">
+						<span class="icon is-small">
+							 <i class="mdi mdi-help-circle-outline" ></i>
+						 </span>
+					</a>
+					<div class="help-tooltip">
+						<div class="help-tooltip-header">
+							<h5><?php _e('Multivalued metadata delimiter', 'tainacan'); ?></h5>
+						</div>
+						<div class="help-tooltip-body">
+							<p><?php _e('The character used to separate each value inside a cell with multiple values (e.g. ||). Note that the target metadatum must accept multiple values.', 'tainacan'); ?></p>
+						</div>
+					</div> 
+			</span>
+			<div class="control is-clearfix">
+				<input class="input" type="text" name="multivalued_delimiter" value="<?php echo $this->get_option('multivalued_delimiter'); ?>">
+			</div>
+		</div>
+		
+		<div class="field">
+			<label class="label"><?php _e('Enclosure', 'tainacan'); ?></label>
+			<span class="help-wrapper">
+					<a class="help-button has-text-secondary">
+						<span class="icon is-small">
+							 <i class="mdi mdi-help-circle-outline" ></i>
+						 </span>
+					</a>
+					<div class="help-tooltip">
+						<div class="help-tooltip-header">
+							<h5><?php _e('Enclosure', 'tainacan'); ?></h5>
+						</div>
+						<div class="help-tooltip-body">
+							<p><?php _e('The character that wraps the content of each cell in your CSV. (e.g. ")', 'tainacan'); ?></p>
+						</div>
+					</div> 
+			</span>
+			<div class="control is-clearfix">
+				<input class="input" type="text" name="enclosure" value="<?php echo $this->get_option('enclosure'); ?>">
+			</div>
+		</div>
+		
+		<div class="field">
+			<label class="label"><?php _e('File Encoding', 'tainacan'); ?></label>
+			<span class="help-wrapper">
+					<a class="help-button has-text-secondary">
+						<span class="icon is-small">
+							 <i class="mdi mdi-help-circle-outline" ></i>
+						 </span>
+					</a>
+					<div class="help-tooltip">
+						<div class="help-tooltip-header">
+							<h5><?php _e('File Encoding', 'tainacan'); ?></h5>
+						</div>
+						<div class="help-tooltip-body">
+							<p><?php _e('The encoding of the CSV file.', 'tainacan'); ?></p>
+						</div>
+					</div> 
+			</span>
+			<div class="control is-clearfix">
+				<select name="encode">
+					<option value="utf8" <?php selected($this->get_option('encode'), 'utf8'); ?> >UTF-8</option>
+					<option value="iso88591" <?php selected($this->get_option('encode'), 'iso88591'); ?> >ISO-88591</option>
+				</select>
+			</div>
+		</div>
+		
+		<div class="field">
+			<label class="label"><?php _e('Importing attachments', 'tainacan'); ?></label>
+			<p>
+			<?php echo nl2br(__("If you also have files you want to import, that are related to the items in your CSV, you can use some special columns in your csv to do so.\n
+			There are two special columns you can use: <b>special_document</b>, which will set the Document of your item, and <b>special_attachments</b> to add one or many attachments.\n
+			The values for the special_document must be prepended with 'url:'', 'file:'' or 'text:'. This will indicate the Document Type.\n
+			The values for the special_attachments is just a list of files. If you want to add many attachments, use the separator you set in the Multivalued Delimiter option.\n
+			In either case, you can point to a file using a full URL, or just a file name. In this last case, you should set the option below to tell Tainacan where to find the files in your server. You can then upload them directly (via FTP for example) and Taincan will add them to your items.\n
+			", 'taincan')); ?>
+			</p>
+			<label class="label"><?php _e('Server path', 'tainacan'); ?></label>
+			<span class="help-wrapper">
+					<a class="help-button has-text-secondary">
+						<span class="icon is-small">
+							 <i class="mdi mdi-help-circle-outline" ></i>
+						 </span>
+					</a>
+					<div class="help-tooltip">
+						<div class="help-tooltip-header">
+							<h5><?php _e('Server path', 'tainacan'); ?></h5>
+						</div>
+						<div class="help-tooltip-body">
+							<p><?php _e("When using CSV special field to add documents or attachments that you've uploaded to the server, inform the full path to the folder here (e.g. /home/user/files/)", 'tainacan'); ?></p>
+						</div>
+					</div> 
+			</span>
+			<div class="control is-clearfix">
+				<input class="input" type="text" name="server_path" value="<?php echo $this->get_option('server_path'); ?>">
+			</div>
+		</div>
+	   
+	   <?php 
+	   
+	   
+	   return ob_get_clean();
 
     }
 
