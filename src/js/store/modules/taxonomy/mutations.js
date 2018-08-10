@@ -37,6 +37,11 @@ export const setTerms = (state, terms) => {
     state.terms = terms;
 };
 
+export const clearTerms = (state) => {
+    state.terms = [];
+};
+
+
 export const setChildTerms = (state, { terms, parent }) => {
     
     if (parent > 0 ) {
@@ -47,7 +52,7 @@ export const setChildTerms = (state, { terms, parent }) => {
                     Vue.set(parentTerm, 'children', []);
 
                 for (let term of terms){
-                    parentTerm['children'].push(term);
+                    parentTerm['children'].unshift(term);
                 }     
             }
         }
@@ -55,10 +60,54 @@ export const setChildTerms = (state, { terms, parent }) => {
         if (state.terms != undefined) {
             
             for (let term of terms)
-                state.terms.push(term);
+                state.terms.unshift(term);
 
         } else {    
             state.terms = terms;
+        }
+    }
+};
+
+export const updateChildTerm = (state, { term, parent }) => {
+    
+    if (parent > 0 ) {
+        for (let aTerm of state.terms) {
+            let childTerm = t.find(aTerm, [], (node, par) => { return node.id == term; });
+            if (childTerm != undefined) {
+                childTerm = term;   
+            }
+        }
+    } else {
+        if (state.terms != undefined) {
+            for (let i = 0; i < state.terms.length; i++) {
+                if (state.terms[i].id == term.id)
+                    Vue.set(state.terms, i, term);
+            }
+        } else {    
+            state.terms = []
+            state.terms.unshift(term);
+        }
+    }
+};
+
+export const deleteChildTerm = ( state, {termId, parent} ) => {
+    
+    if (parent > 0 ) {
+        for (let aTerm of state.terms) {
+            let parentTerm = t.bfs(aTerm, [], (node, par) => { return node.id == parent; });
+            if (parentTerm != undefined) {
+                let index = parentTerm.children.findIndex(deletedTerm => deletedTerm.id == termId);
+                if (index >= 0) {
+                    parentTerm.children.splice(index, 1);
+                }
+            }
+        }
+    } else {
+        if (state.terms != undefined) {
+            for (let i = 0; i < state.terms.length; i++) {
+                if (state.terms[i].id == termId)
+                    state.terms.splice(i, 1);
+            }
         }
     }
 };

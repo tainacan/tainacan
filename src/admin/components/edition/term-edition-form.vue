@@ -35,7 +35,7 @@
                             class="button is-rounded is-secondary"
                             id="button-delete-header"
                             :aria-label="$i18n.get('label_button_delete_thumb')"
-                            @click="deleteThumbnail()">
+                            @click="deleteHeaderImage()">
                         <b-icon 
                             size="is-small"
                             icon="delete" />
@@ -131,7 +131,7 @@
         methods: {
             ...mapActions('taxonomy', [
                 'sendTerm',
-                'updateTerm',
+                'updateChildTerm',
             ]),
             ...mapGetters('taxonomy', [
                 'getTerms'
@@ -149,7 +149,7 @@
                         .then(() => {
                             this.editForm = {};
                             this.formErrors = {};
-                            this.$termsListBus.onTermEditionSaved(this.editForm);
+                            this.$emit('onEditionFinished');
                         })
                         .catch((errors) => {
                             for (let error of errors.errors) {
@@ -161,7 +161,7 @@
                         });
 
                 } else {
-                    this.updateTerm({
+                    this.updateChildTerm({
                         taxonomyId: this.taxonomyId,
                         termId: this.editForm.id,
                         name: this.editForm.name,
@@ -172,7 +172,7 @@
                         .then(() => {
                             this.editForm.saved = true;
                             this.formErrors = {};
-                            this.$termsListBus.onTermEditionSaved(this.editForm);
+                            this.$emit('onEditionFinished', this.editForm);
                         })
                         .catch((errors) => {
                             for (let error of errors.errors) {
@@ -185,7 +185,7 @@
                 }
             },
             cancelEdition() {
-                this.$termsListBus.onTermEditionCanceled(this.editForm);
+                this.$emit('onEditionCanceled', this.editForm);
             },
             deleteHeaderImage() {
                 this.editForm = Object.assign({},
@@ -197,7 +197,6 @@
                 );
             },
             initializeMediaFrames() {
-
                 this.headerImageMediaFrame = new wpMediaFrames.headerImageControl(
                     'my-header-image-media-frame', {
                         button_labels: {
@@ -226,7 +225,7 @@
                 }
             },
         },
-        created() {
+        mounted() {
             this.initializeMediaFrames();
         }
     }

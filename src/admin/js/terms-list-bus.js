@@ -15,6 +15,9 @@ export default {
                 },
                 onTermEditionCanceled(term) {
                     this.$emit('termEditionCanceled', term);
+                },
+                onAddNewChildTerm(parentId) {
+                    this.$emit('addNewChildTerm', parentId);
                 }
             }
         });

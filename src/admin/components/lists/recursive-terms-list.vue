@@ -1,5 +1,5 @@
 <template>
-<div>
+<div style="width: 100%;">
     <div
             class="term-item"
             :class="{
@@ -13,7 +13,7 @@
         <span 
                 class="term-name" 
                 :class="{'is-danger': formWithErrors == term.id }">
-            {{ term.saved && !term.opened ? term.name : getUnsavedTermName(term) }}
+            {{ term.name }}
         </span>
         <span   
                 v-if="term.id != undefined"
@@ -26,36 +26,35 @@
         </span>
         <span 
                 class="children-dropdown"
+                :class="{'is-disabled': isEditingTerm}"
                 v-if="!isEditingTerm && term.total_children > 0"
                 @click.prevent="loadChildTerms(term.id, index)">
            <span class="icon">
                 <i 
                         :class="{ 
-                            'mdi-menu-right': !term.hasLoadedChildren || (term.hasCollapsedChildren && term.hasLoadedChildren),  
-                            'mdi-menu-down': (!term.hasCollapsedChildren && term.hasLoadedChildren) || (term.hasCollapsedChildren != undefined && term.hasCollapsedChildren) }"
+                            'mdi-menu-right': !showChildren,  
+                            'mdi-menu-down': showChildren }"
                         class="mdi mdi-24px"/>
             </span>
             <span>{{ term.total_children + ' ' + $i18n.get('label_children_terms') }}</span>
         </span>
-        <span class="controls" >
-            <a 
-                    @click="addNewChildTerm(term, index)"
-                    :disabled="isEditingTerm">
+        <span 
+                class="controls" 
+                :class="{'is-disabled': isEditingTerm}">
+            <a @click="addNewChildTerm(term, index)">
                 <b-icon 
                         size="is-small"
                         icon="plus-circle"/>
             </a>
-            <a 
-                    v-if="!isEditingTerm"
+            <a
                     @click.prevent="editTerm()">
                 <b-icon 
-                        type="is-secondary" 
+                        size="is-small" 
                         icon="pencil"/>
             </a>
-            <a 
-                @click.prevent="tryToRemoveTerm(term)">
+            <a @click.prevent="tryToRemoveTerm()">
                 <b-icon 
-                        type="is-secondary" 
+                        size="is-small"
                         icon="delete"/>
             </a>
         </span>
@@ -80,6 +79,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import RecursiveTermsList from './recursive-terms-list.vue';
+import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
     name: 'RecursiveTermsList',
@@ -102,36 +102,13 @@ export default {
     },
     methods: {
         ...mapActions('taxonomy', [
-            'updateTerm',
-            'deleteTerm',
+            'updateChildTerm',
+            'deleteChildTerm',
             'fetchChildTerms',
             'fetchTerms'
         ]),
-        addNewChildTerm(parent, parentIndex) {
-            if (this.isEditingTerm) {
-                let editingTermIndex = this.orderedTermsList.findIndex(anEditingTerm => anEditingTerm.opened == true);
-                if (editingTermIndex >= 0)
-                    this.onTermEditionCanceled(this.orderedTermsList[editingTermIndex]);
-            }
-
-            let newTerm = {
-                taxonomyId: this.taxonomyId,
-                name:  this.$i18n.get('label_term_without_name'),
-                description: '',
-                parent: parent.id,
-                id: 'new',
-                saved: false,
-                depth: parent.depth + 1
-            }
-            this.orderedTermsList.splice(parentIndex + 1, 0, newTerm);
-            this.editTerm(newTerm, parentIndex + 1);
-        },
-        getUnsavedTermName(term) {
-            // let originalIndex = this.termsList.findIndex(anOriginalTerm => anOriginalTerm.id == term.id);
-            // if (originalIndex >= 0)
-            //     return this.termsList[originalIndex].name;
-            // else 
-                return term.name;
+        addNewChildTerm() {
+            this.$termsListBus.onAddNewChildTerm(this.term.id);
         },        
         loadChildTerms(parentId, parentIndex) {
 
@@ -167,6 +144,69 @@ export default {
             // this.orderedTermsList.splice(index, 1, term);
         
         },
+        tryToRemoveTerm() {
+
+            // Checks if user is deleting a term with unsaved info.
+            if (this.term.id == 'new' || !this.term.saved) {
+                this.$modal.open({
+                    parent: this,
+                    component: CustomDialog,
+                    props: {
+                        icon: 'alert',
+                        title: this.$i18n.get('label_warning'),
+                        message: this.$i18n.get('info_warning_terms_not_saved'),
+                        onConfirm: () => { this.removeTerm(); },
+                    }
+                });  
+            } else {
+                this.removeTerm();
+            }
+
+        },
+        removeTerm() {
+
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_selected_term_delete'),
+                    onConfirm: () => { 
+                        // If all checks passed, term can be deleted
+                        if (this.term.id == 'new') {
+                            let index = this.orderedTermsList.findIndex(deletedTerm => deletedTerm.id == 'new');
+                            if (index >= 0) {
+                                this.orderedTermsList.splice(index, 1);
+                            }
+                        } else {
+                            
+                            this.deleteChildTerm({taxonomyId: this.taxonomyId, termId: this.term.id, parent: this.term.parent })
+                                .then(() => {})
+                                .catch((error) => {
+                                    this.$console.log(error);
+                                });
+
+                            // // Updates parent IDs for orphans
+                            // for (let orphanTerm of this.termsList) {
+                            //     if (orphanTerm.parent == this.term.id) {
+                            //         this.updateTerm({
+                            //             taxonomyId: this.taxonomyId, 
+                            //             termId: orphanTerm.id, 
+                            //             name: orphanTerm.name,
+                            //             description: orphanTerm.description,
+                            //             parent: this.term.parent
+                            //         })
+                            //         .catch((error) => {
+                            //             this.$console.log(error);
+                            //         });
+                            //     }
+                            // }
+                        }   
+                    },
+                }
+            });  
+        }
     },
     created() {
         this.$termsListBus.$on('editTerm', (term) => {
@@ -199,8 +239,9 @@ export default {
         visibility: visible;
         opacity: 1;
         transition: display 0.3s, visibility 0.3s, opacity 0.3s;
+        width: 100%;
 
-        &:hover {
+        &:first-child:hover {
             background-color: $gray1 !important;
             .controls {
                 visibility: visible;
@@ -253,23 +294,29 @@ export default {
         .controls { 
             visibility: hidden;
             opacity: 0.0;
+            display: flex;
+            justify-content: space-between;
             background-color: $gray2;
-            padding: 0.4375rem 0.875rem;
+            padding: 0.76rem 0.875rem;
 
             a {
+                display: flex;
+                align-items: center;
                 margin: 0 0.375rem;
                 .icon {
                     bottom: 1px;   
                     position: relative;
                     i, i:before { font-size: 20px; }
-                    a {
-                        margin-right: 8px;
-                    }
                 }
             }            
         }
+        .controls.is-disabled a, .children-dropdown.is-disabled {
+            color: $gray4 !important;
+            cursor: not-allowed !important;
+            user-select: none;
+        }
 
-        &.opened-term {
+        &.opened-term:first-child {
             cursor: default;
             background-color: $blue1;
 

@@ -158,6 +158,16 @@ export default {
     components: {
         CollectionsList
     },
+    computed: {
+        metadatum_mappers: {
+            get() {
+                return this.getMetadatumMappers();
+            }
+        },
+        collections() {
+            return this.getCollections(); 
+        }
+    },
     methods: {
          ...mapActions('collection', [
             'fetchCollections',
@@ -212,16 +222,6 @@ export default {
                 component: AvailableImportersModal,
                 hasModalCard: true
             });
-        }
-    },
-    computed: {
-        metadatum_mappers: {
-            get() {
-                return this.getMetadatumMappers();
-            }
-        },
-        collections() {
-            return this.getCollections(); 
         }
     },
     created() {

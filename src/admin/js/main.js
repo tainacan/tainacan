@@ -8,7 +8,6 @@ import Buefy from 'buefy';
 import VTooltip from 'v-tooltip';
 import { VueHammer } from 'vue2-hammer';
 import VueMasonry from 'vue-masonry-css';
-import t from 't';
 
 // Custom elements
 import Text from '../../classes/metadata-types/text/Text.vue';
@@ -51,7 +50,6 @@ import VueTheMask from 'vue-the-mask';
 // Configure and Register Plugins
 Vue.use(Buefy);
 Vue.use(VTooltip);
-Vue.use(t);
 Vue.use(VueHammer);
 Vue.use(VueMasonry);
 Vue.use(I18NPlugin);

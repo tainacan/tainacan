@@ -6,7 +6,7 @@
         <button
                 class="button is-secondary"
                 type="button"
-                @click="addNewTerm()"
+                @click="addNewTerm(0)"
                 :disabled="isEditingTerm">
             {{ $i18n.get('label_new_term') }}
         </button>
@@ -68,11 +68,11 @@
         </div>
         <div 
                 class="column is-4 edit-forms-list"
-                v-show="isEditingTerm">
+                v-if="isEditingTerm">
             <term-edition-form 
                     :style="{ 'top': termEditionFormTop + 'px'}"
                     :taxonomy-id="taxonomyId"
-                    @onEditionFinished="onTermEditionFinished()"
+                    @onEditionFinished="onTermEditionFinished(editTerm)"
                     @onEditionCanceled="onTermEditionCanceled(editTerm)"
                     @onErrorFound="formWithErrors = editTerm.id"
                     :edit-form="editTerm"/>
@@ -91,7 +91,7 @@
                 <button
                         id="button-create-term"
                         class="button is-secondary"
-                        @click="addNewTerm()">
+                        @click="addNewTerm(0)">
                     {{ $i18n.get('label_new_term') }}
                 </button>
             </div>
@@ -103,8 +103,8 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import TermEditionForm from '../edition/term-edition-form.vue';
-import CustomDialog from '../other/custom-dialog.vue';
 import RecursiveTermsList from './recursive-terms-list.vue'
+import t from 't';
 
 export default {
     name: 'TermsList',
@@ -126,12 +126,21 @@ export default {
     },
     computed: {
         termsList() {
+            console.log("Computei")
             return this.getTerms();
         }
     },
     watch: {
-        termsList() {
-            this.localTerms = JSON.parse(JSON.stringify(this.termsList));
+        termsList: {
+            handler() { 
+                console.log("Senti")
+                this.localTerms = JSON.parse(JSON.stringify(this.termsList));
+                t.dfs(this.localTerms, [], term => { 
+                    term.opened = false; 
+                    term.saved = true 
+                });
+            },
+            deep: true
         },
         taxonomyId() {
             this.loadTerms(0);
@@ -143,10 +152,10 @@ export default {
     },
     methods: {
         ...mapActions('taxonomy', [
-            'updateTerm',
             'deleteTerm',
             'fetchChildTerms',
-            'fetchTerms'
+            'fetchTerms',
+            'clearTerms'
         ]),
         ...mapGetters('taxonomy',[
             'getTerms'
@@ -155,84 +164,36 @@ export default {
             this.order = newOrder;
             this.loadTerms(0);
         },
-        addNewTerm() {
+        addNewTerm(parent) {
 
             let newTerm = {
                 taxonomyId: this.taxonomyId,
                 name: this.$i18n.get('label_term_without_name'),
                 description: '',
-                parent: 0,
+                parent: parent,
                 id: 'new',
                 saved: false,
-                depth: 0
+                opened: true
             }
-            this.localTerms.push(newTerm);
-            this.editTerm(newTerm, this.orderedTermsList.length - 1);
-        },
-        tryToRemoveTerm(term) {
-
-            // Checks if user is deleting a term with unsaved info.
-            if (term.id == 'new' || !term.saved || term.opened) {
-                this.$modal.open({
-                    parent: this,
-                    component: CustomDialog,
-                    props: {
-                        icon: 'alert',
-                        title: this.$i18n.get('label_warning'),
-                        message: this.$i18n.get('info_warning_terms_not_saved'),
-                        onConfirm: () => { this.removeTerm(term); },
+            if (parent == 0) {
+                this.localTerms.unshift(newTerm);
+            } else {
+                console.log(parent)
+                for (let term of this.localTerms) {
+                    let parentTerm = t.find(term, [], (node, par) => { return node.id == parent; });
+                    if (parentTerm != undefined) {
+                        if (parentTerm['children'] == undefined)
+                            this.$set(parentTerm, 'children', []);
+                        parentTerm['children'].unshift(newTerm);
+                        
                     }
-                });  
-            } else{
-                this.removeTerm(term);
-            }
-
-        },
-        removeTerm(term) {
-
-            this.$modal.open({
-                parent: this,
-                component: CustomDialog,
-                props: {
-                    icon: 'alert',
-                    title: this.$i18n.get('label_warning'),
-                    message: this.$i18n.get('info_warning_selected_term_delete'),
-                    onConfirm: () => { 
-                        // If all checks passed, term can be deleted
-                        if (term.id == 'new') {
-                            let index = this.orderedTermsList.findIndex(deletedTerm => deletedTerm.id == 'new');
-                            if (index >= 0) {
-                                this.orderedTermsList.splice(index, 1);
-                            }
-                        } else {
-                            
-                            this.deleteTerm({taxonomyId: this.taxonomyId, termId: term.id})
-                            .then(() => {
-
-                            })
-                            .catch((error) => {
-                                this.$console.log(error);
-                            });
-
-                            // Updates parent IDs for orphans
-                            for (let orphanTerm of this.termsList) {
-                                if (orphanTerm.parent == term.id) {
-                                    this.updateTerm({
-                                        taxonomyId: this.taxonomyId, 
-                                        termId: orphanTerm.id, 
-                                        name: orphanTerm.name,
-                                        description: orphanTerm.description,
-                                        parent: term.parent
-                                    })
-                                    .catch((error) => {
-                                        this.$console.log(error);
-                                    });
-                                }
-                            }
-                        }   
-                    },
+                    console.log(parentTerm)
                 }
-            });  
+            }
+            this.$termsListBus.onEditTerm(newTerm);
+        },
+        onTermEditionFinished(term) {
+            this.$termsListBus.onTermEditionSaved(term);
         },
         onTermEditionCanceled(term) {
 
@@ -245,9 +206,11 @@ export default {
                 if (term.id == 'new')
                     this.removeTerm(term);
             }
-            this.isEditingTerm = false;
+            this.$termsListBus.onTermEditionCanceled(term);
         },
         loadTerms(parentId, parentIndex) {
+
+            this.clearTerms();
 
             this.isLoadingTerms = true;
             let search = (this.searchQuery != undefined && this.searchQuery != '') ? { searchterm: this.searchQuery } : '';
@@ -276,7 +239,9 @@ export default {
         this.$termsListBus.$on('termEditionCanceled', (term) => {
             this.isEditingTerm = false;
             this.editTerm = null;
-            this.onTermEditionCanceled();
+        });
+        this.$termsListBus.$on('addNewChildTerm', (parentId) => {
+            this.addNewTerm(parentId);
         });
     }
     
