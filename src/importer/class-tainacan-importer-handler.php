@@ -24,6 +24,7 @@ class Importer_Handler {
 			'manual_collection' => true,
 			'manual_mapping' => true,
 		]);
+		/*
 		$this->register_importer([
 			'name' => 'Test',
 			'description' => __('Create 2 test colletions with random items', 'tainacan'),
@@ -32,7 +33,7 @@ class Importer_Handler {
 			'manual_collection' => false,
 			'manual_mapping' => false,
 		]);
-
+		*/
 		$this->register_importer([
 			'name' => 'Tainacan Legacy',
 			'description' => __('Import structure from legacy version of Tainacan', 'tainacan'),
