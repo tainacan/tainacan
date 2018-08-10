@@ -15,7 +15,9 @@
                         <div v-html="importer.options_form"/>
                     </form>
                 </div>
-                <div class="column">
+                <div 
+                        v-if="importer.manual_collection || importer.accepts.file || importer.accepts.url"
+                        class="column">
                     <!-- Target collection selection -------------------------------- --> 
                     <b-field
                             v-if="importer.manual_collection"
