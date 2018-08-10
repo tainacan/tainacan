@@ -144,9 +144,9 @@
                                     id="a-import-collection"
                                     tag="div"
                                     @click="onOpenImportersModal">
-                                {{ $i18n.get('label_import_collection') }}
+                                {{ $i18n.get('label_import_items') }}
                                 <br>
-                                <small class="is-small">{{ $i18n.get('info_import_a_collection') }}</small>
+                                <small class="is-small">{{ $i18n.get('info_import_items') }}</small>
                             </div>
                         </b-dropdown-item>
                     </b-dropdown>
