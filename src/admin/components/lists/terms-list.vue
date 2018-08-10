@@ -57,7 +57,7 @@
             <br>
 
             <div    
-                    v-for="(term, index) in termsList"
+                    v-for="(term, index) in localTerms"
                     :key="term.id">
                 
                 <recursive-terms-list 
@@ -67,17 +67,15 @@
             </div>
         </div>
         <div 
-                class="column is-4 edit-forms-list" 
-                :key="index"
-                v-for="(term, index) in orderedTermsList"
-                v-show="term.opened">
+                class="column is-4 edit-forms-list"
+                v-show="isEditingTerm">
             <term-edition-form 
                     :style="{ 'top': termEditionFormTop + 'px'}"
                     :taxonomy-id="taxonomyId"
                     @onEditionFinished="onTermEditionFinished()"
-                    @onEditionCanceled="onTermEditionCanceled(term)"
-                    @onErrorFound="formWithErrors = term.id"
-                    :edit-form="term"/>
+                    @onEditionCanceled="onTermEditionCanceled(editTerm)"
+                    @onErrorFound="formWithErrors = editTerm.id"
+                    :edit-form="editTerm"/>
         </div>
     </div>
     <!-- Empty state image -->
@@ -119,7 +117,8 @@ export default {
             order: 'asc',
             termEditionFormTop: 0,
             searchQuery: '',
-            termsColapses: []
+            localTerms: [],
+            editTerm: null
         }
     },
     props: {
@@ -132,7 +131,7 @@ export default {
     },
     watch: {
         termsList() {
-            this.generateOrderedTerms();
+            this.localTerms = JSON.parse(JSON.stringify(this.termsList));
         },
         taxonomyId() {
             this.loadTerms(0);
@@ -157,11 +156,6 @@ export default {
             this.loadTerms(0);
         },
         addNewTerm() {
-            if (this.isEditingTerm) {
-                let editingTermIndex = this.orderedTermsList.findIndex(anEditingTerm => anEditingTerm.opened == true);
-                if (editingTermIndex >= 0)
-                    this.onTermEditionCanceled(this.orderedTermsList[editingTermIndex]);
-            }
 
             let newTerm = {
                 taxonomyId: this.taxonomyId,
@@ -172,15 +166,8 @@ export default {
                 saved: false,
                 depth: 0
             }
-            this.orderedTermsList.push(newTerm);
+            this.localTerms.push(newTerm);
             this.editTerm(newTerm, this.orderedTermsList.length - 1);
-        },
-        getOriginalTerm(termId){
-            let index = this.orderedTermsList.findIndex(originalTerm => originalTerm.id == termId);
-            if (index >= 0) {
-                return this.termsList[index];
-            }
-            return null
         },
         tryToRemoveTerm(term) {
 
@@ -247,9 +234,6 @@ export default {
                 }
             });  
         },
-        onTermEditionFinished() {   
-            this.isEditingTerm = false;
-        },
         onTermEditionCanceled(term) {
 
             let originalIndex = this.termsList.findIndex(anOriginalTerm => anOriginalTerm.id == term.id);
@@ -263,76 +247,12 @@ export default {
             }
             this.isEditingTerm = false;
         },
-        buildOrderedTermsList(parentId, termDepth) {
-
-            for (let i = 0; i < this.termsList.length; i++) {
-                let term = this.termsList[i];
-
-                if (term.parent != parentId ) {    
-                    continue;
-                } 
-                
-                term.depth = termDepth;
-                if (this.orderedTermsList[term.id] === undefined ) {
-                    term.opened = false;
-                    term.saved = true ;
-                } else {
-                    term.opened = (this.orderedTermsList[term.id].opened === undefined ? false : this.orderedTermsList[term.id].opened);
-                    term.saved = (this.orderedTermsList[term.id].saved === undefined ? true : this.orderedTermsList[term.id].saved);
-                }
-                if (term.taxonomy != null) {
-                    let termCollapseIndex = this.termsColapses.findIndex(aTerm => aTerm.id == term.id);
-                    if (termCollapseIndex >= 0) {
-                        term.collapsed = this.termsColapses[termCollapseIndex].collapsed;
-                        term.hasLoadedChildren = this.termsColapses[termCollapseIndex].hasLoadedChildren;
-                        term.hasCollapsedChildren = this.termsColapses[termCollapseIndex].hasCollapsedChildren;
-                        term.opened = this.termsColapses[termCollapseIndex].opened;
-                        term.saved = this.termsColapses[termCollapseIndex].saved;
-                    }
-                    this.orderedTermsList.push(JSON.parse(JSON.stringify(term)));
-                }
-
-                this.buildOrderedTermsList(term.id, termDepth + 1);
-            }
-        },
-        generateOrderedTerms() {
-            this.termsColapses = JSON.parse(JSON.stringify(this.orderedTermsList));
-            this.orderedTermsList = new Array();
-            this.buildOrderedTermsList(0, 0);
-        },
-
-        collapseTermChildren(parentId, parentIndex) {
-            if (this.orderedTermsList[parentIndex].hasCollapsedChildren != undefined && !this.orderedTermsList[parentIndex].hasCollapsedChildren) {
-                for (let i = 0; i < this.orderedTermsList.length; i++) {
-                    if (this.orderedTermsList[i].parent == parentId) {
-                        this.$set(this.orderedTermsList[i], 'collapsed', true);
-                        this.$set(this.orderedTermsList[i], 'hasCollapsedChildren', false);
-                        this.collapseTermChildren(this.orderedTermsList[i].id, i);
-                    }
-                }
-                this.$set(this.orderedTermsList[parentIndex], 'hasCollapsedChildren', true);
-            } else {
-                for (let i = 0; i < this.orderedTermsList.length; i++) {
-                    if (this.orderedTermsList[i].parent == parentId) {
-                        this.$set(this.orderedTermsList[i], 'collapsed', false);
-                        this.collapseTermChildren(this.orderedTermsList[i].id, i);
-                    }
-                }
-                this.$set(this.orderedTermsList[parentIndex], 'hasCollapsedChildren', false);
-            }
-        },
         loadTerms(parentId, parentIndex) {
 
             this.isLoadingTerms = true;
             let search = (this.searchQuery != undefined && this.searchQuery != '') ? { searchterm: this.searchQuery } : '';
             this.fetchChildTerms({ parentId: parentId, taxonomyId: this.taxonomyId, fetchOnly: '', search: search, all: '', order: this.order})
                 .then(() => {
-                                 
-                    if (parentId != undefined && parentId > 0) {
-                        this.orderedTermsList[parentIndex].hasLoadedChildren = true;
-                        this.orderedTermsList[parentIndex].hasCollapsedChildren = false;
-                    }
-                    this.generateOrderedTerms();
                     this.isLoadingTerms = false;   
                 })
                 .catch((error) => {
@@ -345,6 +265,19 @@ export default {
         if (this.taxonomyId !== String) {
             this.loadTerms(0);
         }
+        this.$termsListBus.$on('editTerm', (term) => {
+            this.editTerm = term;
+            this.isEditingTerm = true;
+        });
+        this.$termsListBus.$on('termEditionSaved', (term) => {
+            this.isEditingTerm = false;
+            this.editTerm = null;
+        });
+        this.$termsListBus.$on('termEditionCanceled', (term) => {
+            this.isEditingTerm = false;
+            this.editTerm = null;
+            this.onTermEditionCanceled();
+        });
     }
     
 }

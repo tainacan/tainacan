@@ -46,8 +46,8 @@
                         icon="plus-circle"/>
             </a>
             <a 
-                    :disabled="isEditingTerm"
-                    @click.prevent="editTerm(term, index)">
+                    v-if="!isEditingTerm"
+                    @click.prevent="editTerm()">
                 <b-icon 
                         type="is-secondary" 
                         icon="pencil"/>
@@ -63,7 +63,7 @@
     <div    
             class="term-item"
             :class="{
-                'opened-term': term.opened,
+                'opened-term': childTerm.opened,
             }" 
             v-for="(childTerm, childIndex) in term.children"
             :key="childTerm.id"
@@ -86,6 +86,7 @@ export default {
     data(){
         return {
             isLoadingTerms: false,
+            isEditingTerm: false,
             searchQuery: '',
             order: 'asc',
             showChildren: false 
@@ -151,7 +152,7 @@ export default {
                 this.showChildren = !this.showChildren;
             }
         },
-        editTerm(term, index) {
+        editTerm() {
             
             // Position edit form in a visible area
             let container = document.getElementById('repository-container');
@@ -159,63 +160,26 @@ export default {
                 this.termEditionFormTop = container.scrollTop - 80;
             else
                 this.termEditionFormTop = 0;
+        
+            this.term.opened = !this.term.opened;
             
-            this.isEditingTerm = true;
-
-            if (!term.opened) {
-
-                // for (let i = 0; i < this.orderedTermsList.length; i++) {
-                //     // Checks if other terms are opened
-                //     if (term.id != this.orderedTermsList[i].id && this.orderedTermsList[i].opened) {
-                //         let otherTerm = this.orderedTermsList[i];
-                    
-                //         // Checks there's an original version of term (wasn't saved)
-                //         let originalIndex = this.termsList.findIndex(anOriginalTerm => anOriginalTerm.id === otherTerm.id);
-                //         if (originalIndex >= 0) {
-                //             let originalTerm = JSON.parse(JSON.stringify(this.termsList[originalIndex]));
-                //             originalTerm.saved = otherTerm.saved;
-                //             originalTerm.opened = otherTerm.opened;
-                //             if (JSON.stringify(otherTerm) != JSON.stringify(originalTerm)) {
-                //                 otherTerm.saved = false;
-                //             } else {
-                //                 otherTerm.saved = true;
-                //             }
-                //         // A new term is being closed
-                //         } else {
-                //             otherTerm.saved = false;
-                //         }
-                                      
-                //         otherTerm.opened = false;
-                //         this.orderedTermsList.splice(i, 1, otherTerm);
-                //     }
-                // }
-            } else {
-                let originalIndex = this.termsList.findIndex(anOriginalTerm => anOriginalTerm.id === term.id);
-                if (originalIndex >= 0) {
-
-                    let originalTerm = JSON.parse(JSON.stringify(this.termsList[originalIndex]));
-                    originalTerm.saved = term.saved;
-                    originalTerm.opened = term.opened;
-
-                    if (JSON.stringify(term) != JSON.stringify(originalTerm))
-                        term.saved = false;
-                    else 
-                        term.saved = true;
-                    
-                } else {
-                    term.saved = false;
-                }
-                this.isEditingTerm = false;
-            }
-            
-            term.opened = !term.opened;
-            this.$emit('')
+            this.$termsListBus.onEditTerm(this.term);
             // this.orderedTermsList.splice(index, 1, term);
         
         },
     },
     created() {
-        //this.loadChildTerms(this.term.id, this.index);    
+        this.$termsListBus.$on('editTerm', (term) => {
+            this.isEditingTerm = true;
+        });
+        this.$termsListBus.$on('termEditionSaved', (term) => {
+            this.isEditingTerm = false;
+            this.term.opened = false;
+        });
+        this.$termsListBus.$on('termEditionCanceled', (term) => {
+            this.isEditingTerm = false;
+            this.term.opened = false;
+        });
     }
 }
 </script>

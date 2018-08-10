@@ -149,7 +149,7 @@
                         .then(() => {
                             this.editForm = {};
                             this.formErrors = {};
-                            this.$emit('onEditionFinished');
+                            this.$termsListBus.onTermEditionSaved(this.editForm);
                         })
                         .catch((errors) => {
                             for (let error of errors.errors) {
@@ -172,7 +172,7 @@
                         .then(() => {
                             this.editForm.saved = true;
                             this.formErrors = {};
-                            this.$emit('onEditionFinished');
+                            this.$termsListBus.onTermEditionSaved(this.editForm);
                         })
                         .catch((errors) => {
                             for (let error of errors.errors) {
@@ -185,7 +185,7 @@
                 }
             },
             cancelEdition() {
-                this.$emit('onEditionCanceled', this.editForm);
+                this.$termsListBus.onTermEditionCanceled(this.editForm);
             },
             deleteHeaderImage() {
                 this.editForm = Object.assign({},
