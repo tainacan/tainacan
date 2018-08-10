@@ -731,7 +731,7 @@
     }
 
     .tainacan-li-checkbox-last-active {
-        background-color: $turquoise2;
+        background-color: $turquoise1;
     }
 
     .tainacan-li-checkbox-parent-active {
