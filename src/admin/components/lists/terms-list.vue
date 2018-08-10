@@ -61,11 +61,10 @@
                     :key="term.id">
                 
                 <recursive-terms-list 
-                    :term="term"
-                    :index="index"
-                    :taxonomy-id="taxonomyId"/>
+                        :term="term"
+                        :index="index"
+                        :taxonomy-id="taxonomyId"/>
             </div>
-        
         </div>
         <div 
                 class="column is-4 edit-forms-list" 
@@ -175,67 +174,6 @@ export default {
             }
             this.orderedTermsList.push(newTerm);
             this.editTerm(newTerm, this.orderedTermsList.length - 1);
-        },
-        
-        editTerm(term, index) {
-            
-            let container = document.getElementById('repository-container');
-            if (container && container.scrollTop && container.scrollTop > 80)
-                this.termEditionFormTop = container.scrollTop - 80;
-            else
-                this.termEditionFormTop = 0;
-            
-            this.isEditingTerm = true;
-
-            if (!term.opened) {
-
-                for (let i = 0; i < this.orderedTermsList.length; i++) {
-                    // Checks if other terms are opened
-                    if (term.id != this.orderedTermsList[i].id && this.orderedTermsList[i].opened) {
-                        let otherTerm = this.orderedTermsList[i];
-                    
-                        // Checks there's an original version of term (wasn't saved)
-                        let originalIndex = this.termsList.findIndex(anOriginalTerm => anOriginalTerm.id === otherTerm.id);
-                        if (originalIndex >= 0) {
-                            let originalTerm = JSON.parse(JSON.stringify(this.termsList[originalIndex]));
-                            originalTerm.saved = otherTerm.saved;
-                            originalTerm.opened = otherTerm.opened;
-                            if (JSON.stringify(otherTerm) != JSON.stringify(originalTerm)) {
-                                otherTerm.saved = false;
-                            } else {
-                                otherTerm.saved = true;
-                            }
-                        // A new term is being closed
-                        } else {
-                            otherTerm.saved = false;
-                        }
-                                      
-                        otherTerm.opened = false;
-                        this.orderedTermsList.splice(i, 1, otherTerm);
-                    }
-                }
-            } else {
-                let originalIndex = this.termsList.findIndex(anOriginalTerm => anOriginalTerm.id === term.id);
-                if (originalIndex >= 0) {
-
-                    let originalTerm = JSON.parse(JSON.stringify(this.termsList[originalIndex]));
-                    originalTerm.saved = term.saved;
-                    originalTerm.opened = term.opened;
-
-                    if (JSON.stringify(term) != JSON.stringify(originalTerm))
-                        term.saved = false;
-                    else 
-                        term.saved = true;
-                    
-                } else {
-                    term.saved = false;
-                }
-                this.isEditingTerm = false;
-            }
-            
-            term.opened = !term.opened;
-            this.orderedTermsList.splice(index, 1, term);
-        
         },
         getOriginalTerm(termId){
             let index = this.orderedTermsList.findIndex(originalTerm => originalTerm.id == termId);

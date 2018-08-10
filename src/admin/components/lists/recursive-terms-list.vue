@@ -45,7 +45,9 @@
                         size="is-small"
                         icon="plus-circle"/>
             </a>
-            <a @click.prevent="editTerm(term, index)">
+            <a 
+                    :disabled="isEditingTerm"
+                    @click.prevent="editTerm(term, index)">
                 <b-icon 
                         type="is-secondary" 
                         icon="pencil"/>
@@ -151,6 +153,7 @@ export default {
         },
         editTerm(term, index) {
             
+            // Position edit form in a visible area
             let container = document.getElementById('repository-container');
             if (container && container.scrollTop && container.scrollTop > 80)
                 this.termEditionFormTop = container.scrollTop - 80;
@@ -161,31 +164,31 @@ export default {
 
             if (!term.opened) {
 
-                for (let i = 0; i < this.orderedTermsList.length; i++) {
-                    // Checks if other terms are opened
-                    if (term.id != this.orderedTermsList[i].id && this.orderedTermsList[i].opened) {
-                        let otherTerm = this.orderedTermsList[i];
+                // for (let i = 0; i < this.orderedTermsList.length; i++) {
+                //     // Checks if other terms are opened
+                //     if (term.id != this.orderedTermsList[i].id && this.orderedTermsList[i].opened) {
+                //         let otherTerm = this.orderedTermsList[i];
                     
-                        // Checks there's an original version of term (wasn't saved)
-                        let originalIndex = this.termsList.findIndex(anOriginalTerm => anOriginalTerm.id === otherTerm.id);
-                        if (originalIndex >= 0) {
-                            let originalTerm = JSON.parse(JSON.stringify(this.termsList[originalIndex]));
-                            originalTerm.saved = otherTerm.saved;
-                            originalTerm.opened = otherTerm.opened;
-                            if (JSON.stringify(otherTerm) != JSON.stringify(originalTerm)) {
-                                otherTerm.saved = false;
-                            } else {
-                                otherTerm.saved = true;
-                            }
-                        // A new term is being closed
-                        } else {
-                            otherTerm.saved = false;
-                        }
+                //         // Checks there's an original version of term (wasn't saved)
+                //         let originalIndex = this.termsList.findIndex(anOriginalTerm => anOriginalTerm.id === otherTerm.id);
+                //         if (originalIndex >= 0) {
+                //             let originalTerm = JSON.parse(JSON.stringify(this.termsList[originalIndex]));
+                //             originalTerm.saved = otherTerm.saved;
+                //             originalTerm.opened = otherTerm.opened;
+                //             if (JSON.stringify(otherTerm) != JSON.stringify(originalTerm)) {
+                //                 otherTerm.saved = false;
+                //             } else {
+                //                 otherTerm.saved = true;
+                //             }
+                //         // A new term is being closed
+                //         } else {
+                //             otherTerm.saved = false;
+                //         }
                                       
-                        otherTerm.opened = false;
-                        this.orderedTermsList.splice(i, 1, otherTerm);
-                    }
-                }
+                //         otherTerm.opened = false;
+                //         this.orderedTermsList.splice(i, 1, otherTerm);
+                //     }
+                // }
             } else {
                 let originalIndex = this.termsList.findIndex(anOriginalTerm => anOriginalTerm.id === term.id);
                 if (originalIndex >= 0) {
@@ -206,7 +209,8 @@ export default {
             }
             
             term.opened = !term.opened;
-            this.orderedTermsList.splice(index, 1, term);
+            this.$emit('')
+            // this.orderedTermsList.splice(index, 1, term);
         
         },
     },
