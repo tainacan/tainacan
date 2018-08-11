@@ -100,101 +100,205 @@ class Test_Importer extends Importer {
 	}
 	
 	public function options_form() {
+		ob_start();
+	   ?>
 
-		$form = '<div class="field">';
-        $form .= '<label class="label">' . __('Number of items in collection 1', 'tainacan') . '</label>';
-		$form .= '<div class="control">';
-		$form .= '<input type="text" class="input" name="items_col_1" value="' . $this->get_option('items_col_1') . '" />';
-		$form .= '</div>';
-		$form .= '</div>';
+		<div class="field">
+			<label class="label"><?php _e('Number of items in collection 1', 'tainacan'); ?></label>
+			<span class="help-wrapper">
+					<a class="help-button has-text-secondary">
+						<span class="icon is-small">
+							 <i class="mdi mdi-help-circle-outline" ></i>
+						 </span>
+					</a>
+					<div class="help-tooltip">
+						<div class="help-tooltip-header">
+							<h5><?php _e('Number of items in collection 1', 'tainacan'); ?></h5>
+						</div>
+						<div class="help-tooltip-body">
+							<p><?php _e('The total of items to created in first collection (e.g. 20)', 'tainacan'); ?></p>
+						</div>
+					</div> 
+			</span>
+			<div class="control is-clearfix">
+				<input class="input" type="number" name="items_col_1" value="<?php echo $this->get_option('items_col_1'); ?>">
+			</div>
+		</div>
 
-		$form .= '<div class="field">';
-		$form .= '<label class="label">' . __('Number of additonal metadata to create in first collection', 'tainacan') . '</label>';
-		$form .= '<div class="control">';
-		$form .= '<input type="text" class="input" name="additonal_metadata" value="' . $this->get_option('additonal_metadata') . '" />';
-		$form .= '</div>';
-		$form .= '</div>';
+		<div class="field">
+			<label class="label"><?php _e('Number of extra metadata to create in first collection', 'tainacan'); ?></label>
+			<span class="help-wrapper">
+					<a class="help-button has-text-secondary">
+						<span class="icon is-small">
+							 <i class="mdi mdi-help-circle-outline" ></i>
+						 </span>
+					</a>
+					<div class="help-tooltip">
+						<div class="help-tooltip-header">
+							<h5><?php _e('Number of extra metadata', 'tainacan'); ?></h5>
+						</div>
+						<div class="help-tooltip-body">
+							<p><?php _e('Create additional text metadata with random values  in first collection', 'tainacan'); ?></p>
+						</div>
+					</div> 
+			</span>
+			<div class="control is-clearfix">
+				<input class="input" type="number" name="additonal_metadata" value="<?php echo $this->get_option('additonal_metadata'); ?>">
+			</div>
+		</div>
 
-		$form .= '<div class="field">';   
-        $form .= '<label class="label">' . __('Create second collection with a relationship with the first collection', 'tainacan') . '</label>';
-  
-        $not_create = ( !$this->get_option('second_collection') || $this->get_option('second_collection') === 'no' ) ? 'checked' : '';
-        $create = ( !$this->get_option('second_collection') && $this->get_option('second_collection') === 'yes' ) ? 'checked' : '';
+		<div class="field">
+			<label class="label"><?php _e('Create second collection with a relationship', 'tainacan'); ?></label>
+			<span class="help-wrapper">
+					<a class="help-button has-text-secondary">
+						<span class="icon is-small">
+							 <i class="mdi mdi-help-circle-outline" ></i>
+						 </span>
+					</a>
+					<div class="help-tooltip">
+						<div class="help-tooltip-header">
+							<h5><?php _e('Create second collection', 'tainacan'); ?></h5>
+						</div>
+						<div class="help-tooltip-body">
+							<p><?php _e('Create second collection with a relationship with the first collection created', 'tainacan'); ?></p>
+						</div>
+					</div> 
+			</span>
+			<div class="control is-clearfix">
+				<label class="checkbox">
+					<input
+						type="checkbox" 
+						name="second_collection" 
+						<?php echo ( $this->get_option('second_collection') && $this->get_option('second_collection') === 'yes' ) ? 'checked' : ''  ?>
+						value="yes">
+					<?php _e('Yes', 'tainacan'); ?>
+				 </label>
+			</div>
+		</div>
 
-        $form .= '<div class="field">';
-        $form .= '<label class="b-radio radio is-small">';
-        $form .= '<input type="radio"  name="second_collection" value="yes" '. $create . ' />';
-        $form .= '<span class="check"></span>';
-        $form .= '<span class="control-label">';
-        $form .=  __('Yes', 'tainacan') . '</span></label>';
-		$form .= '</div>';
-        
-        $form .= '<div class="field">';
-        $form .= '<label class="b-radio radio is-small">';
-        $form .= '<input type="radio"  name="second_collection" value="no" '. $not_create . ' />';
-        $form .= '<span class="check"></span>';
-        $form .= '<span class="control-label">';
-        $form .=  __('No', 'tainacan') . '</span></label>';
-        $form .= '</div>';
+		<div class="field">
+			<label class="label"><?php _e('Number of items in collection 2', 'tainacan'); ?></label>
+			<span class="help-wrapper">
+					<a class="help-button has-text-secondary">
+						<span class="icon is-small">
+							 <i class="mdi mdi-help-circle-outline" ></i>
+						 </span>
+					</a>
+					<div class="help-tooltip">
+						<div class="help-tooltip-header">
+							<h5><?php _e('Number of items in collection 2', 'tainacan'); ?></h5>
+						</div>
+						<div class="help-tooltip-body">
+							<p><?php _e('The total of items to created in second collection (e.g. 20)', 'tainacan'); ?></p>
+						</div>
+					</div> 
+			</span>
+			<div class="control is-clearfix">
+				<input class="input" type="number" name="items_col_2" value="<?php echo $this->get_option('items_col_2'); ?>">
+			</div>
+		</div>
 
-        $form .= '</div>';
+		<hr>
+		<h2><?php _e('Images', 'tainacan') ?></h2><br>
 
-		$form .= '<div class="field">';
-		$form .= '<label class="label">' . __('Number of items in collection 2', 'tainacan') . '</label>';
-		$form .= '<div class="control">';
-		$form .= '<input type="text" class="input" name="items_col_2" value="' . $this->get_option('items_col_2') . '" />';
-		$form .= '</div>';
-		$form .= '</div>';
+		<div class="field">
+			<label class="label"><?php _e('Add random images from flickr', 'tainacan'); ?></label>
+			<span class="help-wrapper">
+					<a class="help-button has-text-secondary">
+						<span class="icon is-small">
+							 <i class="mdi mdi-help-circle-outline" ></i>
+						 </span>
+					</a>
+					<div class="help-tooltip">
+						<div class="help-tooltip-header">
+							<h5><?php _e('Add random images from flickr', 'tainacan'); ?></h5>
+						</div>
+						<div class="help-tooltip-body">
+							<p><?php _e('Add random images from flickr using [https://loremflickr.com/] in first collection', 'tainacan'); ?></p>
+						</div>
+					</div> 
+			</span>
+			<div class="control is-clearfix">
+				<label class="checkbox">
+					<input
+						type="checkbox" 
+						name="add_random_images" 
+						<?php echo ( $this->get_option('add_random_images') && $this->get_option('add_random_images') === 'yes' ) ? 'checked' : ''  ?>
+						value="yes">
+					<?php _e('Yes', 'tainacan'); ?>
+				 </label>
+			</div>
+		</div>
 
-		$form .= '<hr>';
-		$form .= '<h2>'. __('Images', 'tainacan') . '</h2><br>';
-		
-		$form .= '<div class="field">';   
-        $form .= '<label class="label">' . __('Add random images from flickr using [https://loremflickr.com/] in first collection', 'tainacan') . '</label>';
-  
-        $not_add = ( !$this->get_option('add_random_images') || $this->get_option('add_random_images') === 'no' ) ? 'checked' : '';
-        $add = ( !$this->get_option('add_random_images') && $this->get_option('add_random_images') === 'yes' ) ? 'checked' : '';
+		<div class="field">
+			<label class="label"><?php _e('Horizontal image size', 'tainacan'); ?></label>
+			<span class="help-wrapper">
+					<a class="help-button has-text-secondary">
+						<span class="icon is-small">
+							 <i class="mdi mdi-help-circle-outline" ></i>
+						 </span>
+					</a>
+					<div class="help-tooltip">
+						<div class="help-tooltip-header">
+							<h5><?php _e('Horizontal image size', 'tainacan'); ?></h5>
+						</div>
+						<div class="help-tooltip-body">
+							<p><?php _e('Horizontal image size ( 0 for random size )', 'tainacan'); ?></p>
+						</div>
+					</div> 
+			</span>
+			<div class="control is-clearfix">
+				<input class="input" type="number" name="horizontal_image_size" value="<?php echo $this->get_option('horizontal_image_size'); ?>">
+			</div>
+		</div>
 
-        $form .= '<div class="field">';
-        $form .= '<label class="b-radio radio is-small">';
-        $form .= '<input type="radio"  name="add_random_images" value="yes" '. $add . ' />';
-        $form .= '<span class="check"></span>';
-        $form .= '<span class="control-label">';
-        $form .=  __('Yes', 'tainacan') . '</span></label>';
-		$form .= '</div>';
-        
-        $form .= '<div class="field">';
-        $form .= '<label class="b-radio radio is-small">';
-        $form .= '<input type="radio"  name="add_random_images" value="no" '. $not_add . ' />';
-        $form .= '<span class="check"></span>';
-        $form .= '<span class="control-label">';
-        $form .=  __('No', 'tainacan') . '</span></label>';
-        $form .= '</div>';
+		<div class="field">
+			<label class="label"><?php _e('Vertical image size', 'tainacan'); ?></label>
+			<span class="help-wrapper">
+					<a class="help-button has-text-secondary">
+						<span class="icon is-small">
+							 <i class="mdi mdi-help-circle-outline" ></i>
+						 </span>
+					</a>
+					<div class="help-tooltip">
+						<div class="help-tooltip-header">
+							<h5><?php _e('Vertical image size', 'tainacan'); ?></h5>
+						</div>
+						<div class="help-tooltip-body">
+							<p><?php _e('Vertical image size ( 0 for random size )', 'tainacan'); ?></p>
+						</div>
+					</div> 
+			</span>
+			<div class="control is-clearfix">
+				<input class="input" type="number" name="vertical_image_size" value="<?php echo $this->get_option('vertical_image_size'); ?>">
+			</div>
+		</div>
 
-		$form .= '</div>';
-		
-		$form .= '<div class="field">';
-		$form .= '<label class="label">' . __('Horizontal image size ( 0 for random size )', 'tainacan') . '</label>';
-		$form .= '<div class="control">';
-		$form .= '<input type="text" class="input" name="horizontal_image_size" value="' . $this->get_option('horizontal_image_size') . '" />';
-		$form .= '</div>';
-		$form .= '</div>';
+		<div class="field">
+			<label class="label"><?php _e('Keyword Search', 'tainacan'); ?></label>
+			<span class="help-wrapper">
+					<a class="help-button has-text-secondary">
+						<span class="icon is-small">
+							 <i class="mdi mdi-help-circle-outline" ></i>
+						 </span>
+					</a>
+					<div class="help-tooltip">
+						<div class="help-tooltip-header">
+							<h5><?php _e('Keyword Search', 'tainacan'); ?></h5>
+						</div>
+						<div class="help-tooltip-body">
+							<p><?php _e('Type one keyword which it will be used to find images in flickr (e.g. dogs, cat)', 'tainacan'); ?></p>
+						</div>
+					</div> 
+			</span>
+			<div class="control is-clearfix">
+				<input class="input" type="text" name="keyword_images" value="<?php echo $this->get_option('keyword_images'); ?>">
+			</div>
+		</div>
 
-		$form .= '<div class="field">';
-		$form .= '<label class="label">' . __('Vertical image size ( 0 for random size )', 'tainacan') . '</label>';
-		$form .= '<div class="control">';
-		$form .= '<input type="text" class="input" name="vertical_image_size" value="' . $this->get_option('vertical_image_size') . '" />';
-		$form .= '</div>';
-		$form .= '</div>';
+	   <?php
 
-		$form .= '<div class="field">';
-		$form .= '<label class="label">' . __('Type one keyword which it will be used to find images in flickr', 'tainacan') . '</label>';
-		$form .= '<div class="control">';
-		$form .= '<input type="text" class="input" name="keyword_images" value="' . $this->get_option('keyword_images') . '" />';
-		$form .= '</div>';
-		$form .= '</div>';
-		
-        return $form;
+		return ob_get_clean();
 
     }
 	
@@ -498,9 +602,13 @@ class Test_Importer extends Importer {
 		// Lets just pretend we are doing something really important
 		$important_stuff = 5;
 		$current = $this->get_in_step_count();
+		$this->add_log('current step ' . $current);
+
 		if ($current <= $important_stuff) {
 			// This is very important
-			sleep(3);
+
+			$this->add_log('going to sleep');
+			sleep(4);
 			$current ++;
 			return $current;
 		} else {
