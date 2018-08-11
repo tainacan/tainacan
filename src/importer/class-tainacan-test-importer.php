@@ -299,7 +299,6 @@ class Test_Importer extends Importer {
 	   <?php
 
 		return ob_get_clean();
-
     }
 	
 	public function create_taxonomies() {
@@ -608,7 +607,7 @@ class Test_Importer extends Importer {
 			// This is very important
 
 			$this->add_log('going to sleep');
-			sleep(4);
+			sleep(5);
 			$current ++;
 			return $current;
 		} else {
