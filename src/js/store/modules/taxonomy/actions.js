@@ -201,7 +201,7 @@ export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search, all, orde
 };
 
 // Hierarchy usage of terms list -----------------
-export const fetchChildTerms = ({ commit }, { parentId, taxonomyId, fetchOnly, search, all, order }) => {
+export const fetchChildTerms = ({ commit }, { parentId, taxonomyId, fetchOnly, search, all, order, offset, number }) => {
 
     let query = '';
     if (order == undefined) {
@@ -217,14 +217,18 @@ export const fetchChildTerms = ({ commit }, { parentId, taxonomyId, fetchOnly, s
     } else {
         query =`?hideempty=0&order=${order}`;
     }
+
     query += '&parent=' + parentId;
 
+    if (offset != undefined && number != undefined) {
+        query += '&offset=' + offset + '&number=' + number;
+    }
     return new Promise((resolve, reject) => {
         axios.tainacan.get(`/taxonomy/${taxonomyId}/terms${query}`)
             .then(res => {
                 let terms = res.data;
                 commit('setChildTerms', { terms: terms, parent: parentId });
-                resolve(terms);
+                resolve({ terms: terms, total: res.headers['x-wp-total'] });
             })
             .catch(error => {
                 reject(error);

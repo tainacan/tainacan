@@ -45,23 +45,21 @@ export const clearTerms = (state) => {
 export const setChildTerms = (state, { terms, parent }) => {
     
     if (parent > 0 ) {
-        for (let term of state.terms) {
-            let parentTerm = t.find(term, [], (node, par) => { return node.id == parent; });
+        for (let i = 0; i < state.terms.length; i++) {
+            let parentTerm = t.find(state.terms[i], [], (node, par) => { return node.id == parent; });
             if (parentTerm != undefined) {
                 if (parentTerm['children'] == undefined)
                     Vue.set(parentTerm, 'children', []);
 
                 for (let term of terms){
-                    parentTerm['children'].unshift(term);
-                }     
+                    parentTerm['children'].push(term);
+                }    
             }
         }
     } else {
-        if (state.terms != undefined) {
-            
+        if (state.terms != undefined) {   
             for (let term of terms)
-                state.terms.unshift(term);
-
+                state.terms.push(term);
         } else {    
             state.terms = terms;
         }
@@ -112,7 +110,7 @@ export const updateChildTerm = (state, { term, parent, oldParent }) => {
                 }
             } else {    
                 state.terms = []
-                state.terms.unshift(term);
+                state.terms.push(term);
             }
         }
     } else {

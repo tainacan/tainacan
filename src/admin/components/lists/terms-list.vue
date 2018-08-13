@@ -65,6 +65,12 @@
                         :index="index"
                         :taxonomy-id="taxonomyId"/>
             </div>
+            <a 
+                    class="view-more-terms-level-0"
+                    @click="offset = offset + maxTerms; loadTerms(0)"
+                    v-if="totalTerms > localTerms.length">
+                {{ $i18n.get('label_view_more') + ' (' + Number(totalTerms - localTerms.length) + ' ' + $i18n.get('terms') + ')' }}
+            </a>
         </div>
         <div 
                 class="column is-4 edit-forms-list"
@@ -117,7 +123,10 @@ export default {
             termEditionFormTop: 0,
             searchQuery: '',
             localTerms: [],
-            editTerm: null
+            editTerm: null,
+            maxTerms: 4,
+            offset: 0,
+            totalTerms: 0
         }
     },
     props: {
@@ -152,7 +161,6 @@ export default {
         ...mapActions('taxonomy', [
             'deleteTerm',
             'fetchChildTerms',
-            'fetchTerms',
             'clearTerms'
         ]),
         ...mapGetters('taxonomy',[
@@ -160,6 +168,7 @@ export default {
         ]),
         onChangeOrder(newOrder) {
             this.order = newOrder;
+            this.clearTerms();
             this.loadTerms(0);
         },
         addNewTerm(parent) {
@@ -246,15 +255,25 @@ export default {
             }
             this.$termsListBus.onTermEditionCanceled(term);
         },
-        loadTerms(parentId, parentIndex) {
+        loadTerms(parentId) {
 
-            this.clearTerms();
+            if (this.offset == 0)
+                this.clearTerms();
 
             this.isLoadingTerms = true;
             let search = (this.searchQuery != undefined && this.searchQuery != '') ? { searchterm: this.searchQuery } : '';
-            this.fetchChildTerms({ parentId: parentId, taxonomyId: this.taxonomyId, fetchOnly: '', search: search, all: '', order: this.order})
-                .then(() => {
+            this.fetchChildTerms({ 
+                    parentId: parentId, 
+                    taxonomyId: this.taxonomyId, 
+                    fetchOnly: '', 
+                    search: search, 
+                    all: '', 
+                    order: this.order,
+                    offset: this.offset,
+                    number: this.maxTerms })
+                .then((resp) => {
                     this.isLoadingTerms = false;   
+                    this.totalTerms = resp.total;
                 })
                 .catch((error) => {
                     this.isLoadingTerms = false;   
@@ -335,6 +354,14 @@ export default {
                 white-space: nowrap; 
             }
         }
+    }
+
+    .view-more-terms-level-0 {
+        font-size: 0.875rem;
+        margin: 0;
+        padding: 0.5rem 0 0.5rem 1.75rem;
+        display: flex;
+        border-top: 1px solid #f2f2f2;
     }
 
     .edit-forms-list {

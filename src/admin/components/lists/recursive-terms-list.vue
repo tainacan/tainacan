@@ -1,12 +1,16 @@
 <template>
-<div style="width: 100%;">
+<div 
+        style="width: 100%;">
     <div
             class="term-item"
+            :style="{
+                'border-left-color': term.parent > 0 ? '#f2f2f2' : 'transparent'
+            }"
             :class="{
-                'opened-term': term.opened,
+                'opened-term': term.opened
             }">
         <span 
-                v-if="term.depth > 0"
+                v-if="term.parent != 0 && index == 0"
                 class="icon children-icon">
             <i class="mdi mdi-24px mdi-subdirectory-arrow-right"/>
         </span> 
@@ -28,7 +32,7 @@
                 class="children-dropdown"
                 :class="{'is-disabled': isEditingTerm}"
                 v-if="term.total_children > 0"
-                @click.prevent="loadChildTerms(term.id, index)">
+                @click.prevent="toggleShowChildren()">
            <span class="icon">
                 <i 
                         :class="{ 
@@ -61,6 +65,9 @@
     </div>
     <div    
             class="term-item"
+            :style="{
+                'border-left-color': term.parent > 0 && childTerm.parent > 0 ? '#f2f2f2' : 'transparent'
+            }"
             :class="{
                 'opened-term': childTerm.opened,
             }" 
@@ -72,7 +79,14 @@
                 :term="childTerm"
                 :index="childIndex"
                 :taxonomy-id="taxonomyId"/>
+        
     </div>
+    <a 
+            class="view-more-terms"
+            @click="offset = offset + maxTerms; loadChildTerms(term.id)"
+            v-if="showChildren && term.children != undefined && (totalTerms > term.children.length)">
+        {{ $i18n.get('label_view_more') + ' (' + Number(totalTerms - term.children.length) + ' ' + $i18n.get('terms') + ')' }}
+    </a>
 </div>
 </template>
 
@@ -89,7 +103,10 @@ export default {
             isEditingTerm: false,
             searchQuery: '',
             order: 'asc',
-            showChildren: false
+            showChildren: false,
+            maxTerms: 1,
+            offset: 0,
+            totalTerms: 0
         }
     },
     props: {
@@ -109,24 +126,39 @@ export default {
         addNewChildTerm() {
             this.showChildren = true;
             this.$termsListBus.onAddNewChildTerm(this.term.id);
-        },        
-        loadChildTerms(parentId, parentIndex) {
-
+        },       
+        toggleShowChildren() {
             if (this.term.children == undefined || this.term.children.length <= 0) {
-                this.isLoadingTerms = true;
-                let search = (this.searchQuery != undefined && this.searchQuery != '') ? { searchterm: this.searchQuery } : '';
-                this.fetchChildTerms({ parentId: parentId, taxonomyId: this.taxonomyId, fetchOnly: '', search: search, all: '', order: this.order})
-                    .then(() => {
-                        this.isLoadingTerms = false;
-                        this.showChildren = true;   
-                    })
-                    .catch((error) => {
-                        this.isLoadingTerms = false;   
-                        this.$console.log(error);
-                    });
+                this.loadChildTerms(this.term.id);
             } else {
                 this.showChildren = !this.showChildren;
-            }
+            } 
+        }, 
+        loadChildTerms(parentId) {
+
+            this.isLoadingTerms = true;
+            
+            let search = (this.searchQuery != undefined && this.searchQuery != '') ? { searchterm: this.searchQuery } : '';
+            this.fetchChildTerms({ 
+                    parentId: parentId, 
+                    taxonomyId: this.taxonomyId, 
+                    fetchOnly: '', 
+                    search: search, 
+                    all: '', 
+                    order: this.order,
+                    offset: this.offset,
+                    number: this.maxTerms
+                })
+                .then((resp) => {
+                    this.isLoadingTerms = false;
+                    this.showChildren = true;   
+                    this.totalTerms = resp.total;
+                })
+                .catch((error) => {
+                    this.isLoadingTerms = false;   
+                    this.$console.log(error);
+                });
+           
         },
         editTerm() {
             
@@ -227,6 +259,7 @@ export default {
 <style lang="scss">
     @import "../../scss/_variables.scss";
 
+    // Term Item
     .term-item {
         font-size: 14px;
         padding: 0 0 0 1.75rem;
@@ -251,11 +284,11 @@ export default {
                 border-color: transparent transparent transparent $gray2 !important;
             }
         }
-        
+
         .children-icon {
             color: $blue2;
             position: absolute;
-            left: -25px;
+            left: -21px;
         }
 
         .term-name {
@@ -346,6 +379,12 @@ export default {
             opacity: 0;
             transition: display 0.3s, visibility 0.3s, opacity 0.3s;
         }
-  
+    }
+    .view-more-terms {
+        font-size: 0.875rem;
+        margin: 0 0 0 1.75rem !important;
+        padding: 0.5rem 0 0.5rem 1.75rem;
+        display: flex;
+        border-top: 1px solid #f2f2f2;
     }
 </style>

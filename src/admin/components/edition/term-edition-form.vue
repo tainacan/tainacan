@@ -146,10 +146,12 @@
                         parent: this.editForm.parent,
                         headerImageId: this.editForm.header_image_id,
                     })
-                        .then(() => {
+                        .then((term) => {
+
+                            this.editForm = term
+                            this.$emit('onEditionFinished', this.editForm);
                             this.editForm = {};
                             this.formErrors = {};
-                            this.$emit('onEditionFinished');
                         })
                         .catch((errors) => {
                             for (let error of errors.errors) {
