@@ -12,7 +12,7 @@
         </button>
         <b-field class="order-area">
             <button
-                    :disabled="orderedTermsList.length <= 0 || isLoadingTerms || isEditingTerm || order == 'asc'"
+                    :disabled="localTerms.length <= 0 || isLoadingTerms || isEditingTerm || order == 'asc'"
                     class="button is-white is-small"
                     @click="onChangeOrder('asc')">
                 <b-icon 
@@ -20,7 +20,7 @@
                         icon="sort-ascending"/>
             </button>
             <button
-                    :disabled="orderedTermsList.length <= 0 || isLoadingTerms || isEditingTerm || order == 'desc'"
+                    :disabled="localTerms.length <= 0 || isLoadingTerms || isEditingTerm || order == 'desc'"
                     class="button is-white is-small"
                     @click="onChangeOrder('desc')">
                 <b-icon 
@@ -113,7 +113,6 @@ export default {
             isLoadingTerms: false,
             isEditingTerm: false,
             formWithErrors: '',
-            orderedTermsList: [],
             order: 'asc',
             termEditionFormTop: 0,
             searchQuery: '',
@@ -126,19 +125,18 @@ export default {
     },
     computed: {
         termsList() {
-            console.log("Computei")
             return this.getTerms();
         }
     },
     watch: {
         termsList: {
             handler() { 
-                console.log("Senti")
                 this.localTerms = JSON.parse(JSON.stringify(this.termsList));
-                t.dfs(this.localTerms, [], term => { 
-                    term.opened = false; 
-                    term.saved = true 
-                });
+                for (let aTerm of this.localTerms) {
+                    t.dfs(aTerm, [], (node) => { 
+                        node.opened = false; 
+                    });
+                }
             },
             deep: true
         },
@@ -178,16 +176,15 @@ export default {
             if (parent == 0) {
                 this.localTerms.unshift(newTerm);
             } else {
-                console.log(parent)
                 for (let term of this.localTerms) {
                     let parentTerm = t.find(term, [], (node, par) => { return node.id == parent; });
                     if (parentTerm != undefined) {
-                        if (parentTerm['children'] == undefined)
+                        if (parentTerm['children'] == undefined) {
                             this.$set(parentTerm, 'children', []);
-                        parentTerm['children'].unshift(newTerm);
-                        
+                            parentTerm.total_children = 1;
+                        }
+                        parentTerm['children'].unshift(newTerm); 
                     }
-                    console.log(parentTerm)
                 }
             }
             this.$termsListBus.onEditTerm(newTerm);
@@ -197,14 +194,55 @@ export default {
         },
         onTermEditionCanceled(term) {
 
-            let originalIndex = this.termsList.findIndex(anOriginalTerm => anOriginalTerm.id == term.id);
-            let canceledIndex = this.orderedTermsList.findIndex(canceledTerm => canceledTerm.id == term.id);
-            if (originalIndex >= 0 && canceledIndex >= 0) {
-                let originalTerm = JSON.parse(JSON.stringify(this.termsList[originalIndex]));
-                this.orderedTermsList.splice(canceledIndex, 1, originalTerm);
+            let originalTerm;
+            for (let aTerm of this.termsList) {
+                if (aTerm.id == term.id)
+                    originalTerm = aTerm;
+                else {
+                    let childOriginalTerm = t.find(aTerm, [], (node, par) => { return node.id == term.id} );
+                    if (childOriginalTerm != undefined)
+                        originalTerm = childOriginalTerm;
+                }
+            }
+
+            if (originalTerm != undefined) {
+                for (let i = 0; i < this.localTerms.length; i++) {
+                    if (this.localTerms[i].id == term.id) {
+                        this.$set(this.localTerms, i, JSON.parse(JSON.stringify(originalTerm)));
+                        break;
+                    } else { 
+                        let canceledParent = t.find(this.localTerms[i], [], (node, par) => { return node.id == originalTerm.parent }); 
+                        if (canceledParent != undefined) {
+                            for (let j = 0; j < canceledParent['children'].length; j++){
+                                if (canceledParent['children'][j].id == originalTerm.id) {
+                                    this.$set(canceledParent['children'], j, JSON.parse(JSON.stringify(originalTerm)));
+                                    break;
+                                }
+                            }
+                            break;              
+                        }          
+                    }
+                }
             } else {
-                if (term.id == 'new')
-                    this.removeTerm(term);
+                if (term.id == 'new') { 
+                    for (let i = 0; i < this.localTerms.length; i++) {
+                        if (this.localTerms[i].id == term.id) {
+                            this.localTerms.splice(i, 1);
+                            break;
+                        } else { 
+                            let canceledParent = t.find(this.localTerms[i], [], (node, par) => { return node.id == term.parent }); 
+                            if (canceledParent != undefined) {
+                                for (let j = 0; j < canceledParent['children'].length; j++){
+                                    if (canceledParent['children'][j].id == term.id) {
+                                        canceledParent['children'].splice(j, i);
+                                        break;
+                                    }
+                                }
+                                break;              
+                            }          
+                        }
+                    }
+                }
             }
             this.$termsListBus.onTermEditionCanceled(term);
         },

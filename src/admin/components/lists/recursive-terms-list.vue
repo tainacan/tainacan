@@ -20,14 +20,14 @@
                 class="label-details">
             <span 
                     class="not-saved" 
-                    v-if="!term.saved"> 
+                    v-if="term.id == 'new'"> 
                 {{ $i18n.get('info_not_saved') }}
             </span>
         </span>
         <span 
                 class="children-dropdown"
                 :class="{'is-disabled': isEditingTerm}"
-                v-if="!isEditingTerm && term.total_children > 0"
+                v-if="term.total_children > 0"
                 @click.prevent="loadChildTerms(term.id, index)">
            <span class="icon">
                 <i 
@@ -89,7 +89,7 @@ export default {
             isEditingTerm: false,
             searchQuery: '',
             order: 'asc',
-            showChildren: false 
+            showChildren: false
         }
     },
     props: {
@@ -104,16 +104,15 @@ export default {
         ...mapActions('taxonomy', [
             'updateChildTerm',
             'deleteChildTerm',
-            'fetchChildTerms',
-            'fetchTerms'
+            'fetchChildTerms'
         ]),
         addNewChildTerm() {
+            this.showChildren = true;
             this.$termsListBus.onAddNewChildTerm(this.term.id);
         },        
         loadChildTerms(parentId, parentIndex) {
 
             if (this.term.children == undefined || this.term.children.length <= 0) {
-
                 this.isLoadingTerms = true;
                 let search = (this.searchQuery != undefined && this.searchQuery != '') ? { searchterm: this.searchQuery } : '';
                 this.fetchChildTerms({ parentId: parentId, taxonomyId: this.taxonomyId, fetchOnly: '', search: search, all: '', order: this.order})
@@ -147,7 +146,7 @@ export default {
         tryToRemoveTerm() {
 
             // Checks if user is deleting a term with unsaved info.
-            if (this.term.id == 'new' || !this.term.saved) {
+            if (this.term.id == 'new') {
                 this.$modal.open({
                     parent: this,
                     component: CustomDialog,
@@ -187,21 +186,22 @@ export default {
                                     this.$console.log(error);
                                 });
 
-                            // // Updates parent IDs for orphans
-                            // for (let orphanTerm of this.termsList) {
-                            //     if (orphanTerm.parent == this.term.id) {
-                            //         this.updateTerm({
-                            //             taxonomyId: this.taxonomyId, 
-                            //             termId: orphanTerm.id, 
-                            //             name: orphanTerm.name,
-                            //             description: orphanTerm.description,
-                            //             parent: this.term.parent
-                            //         })
-                            //         .catch((error) => {
-                            //             this.$console.log(error);
-                            //         });
-                            //     }
-                            // }
+                            // Updates parent IDs for orphans
+                            if (this.term.children != undefined && this.term.children.length > 0) {
+                                for (let orphanTerm of this.term.children) {  
+                                    this.updateChildTerm({
+                                        taxonomyId: this.taxonomyId, 
+                                        termId: orphanTerm.id, 
+                                        name: orphanTerm.name,
+                                        description: orphanTerm.description,
+                                        parent: this.term.parent,
+                                        oldParent: this.term.id
+                                    })
+                                    .catch((error) => {
+                                        this.$console.log(error);
+                                    });                       
+                                }
+                            }
                         }   
                     },
                 }

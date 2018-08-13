@@ -130,7 +130,7 @@
         },
         methods: {
             ...mapActions('taxonomy', [
-                'sendTerm',
+                'sendChildTerm',
                 'updateChildTerm',
             ]),
             ...mapGetters('taxonomy', [
@@ -139,7 +139,7 @@
             saveEdition(term) {
 
                 if (term.id === 'new') {
-                    this.sendTerm({
+                    this.sendChildTerm({
                         taxonomyId: this.taxonomyId,
                         name: this.editForm.name,
                         description: this.editForm.description,
@@ -170,7 +170,6 @@
                         headerImageId: this.editForm.header_image_id,
                     })
                         .then(() => {
-                            this.editForm.saved = true;
                             this.formErrors = {};
                             this.$emit('onEditionFinished', this.editForm);
                         })

@@ -41,7 +41,7 @@ export const clearTerms = (state) => {
     state.terms = [];
 };
 
-
+// Hierarchy usage of terms list -----------------
 export const setChildTerms = (state, { terms, parent }) => {
     
     if (parent > 0 ) {
@@ -68,13 +68,17 @@ export const setChildTerms = (state, { terms, parent }) => {
     }
 };
 
-export const updateChildTerm = (state, { term, parent }) => {
+export const addChildTerm = (state, { term, parent }) => {
     
     if (parent > 0 ) {
         for (let aTerm of state.terms) {
-            let childTerm = t.find(aTerm, [], (node, par) => { return node.id == term; });
-            if (childTerm != undefined) {
-                childTerm = term;   
+            let parentTerm = t.find(aTerm, [], (node, par) => { return node.id == parent; });
+            if (parentTerm != undefined) {
+                if (parentTerm['children'] == undefined) {
+                    Vue.set(parentTerm, 'children', []);
+                }
+                parentTerm['children'].unshift(term);  
+                parentTerm.total_children = parentTerm.children.length;
             }
         }
     } else {
@@ -90,15 +94,45 @@ export const updateChildTerm = (state, { term, parent }) => {
     }
 };
 
+export const updateChildTerm = (state, { term, parent, oldParent }) => {
+
+    if (oldParent == undefined) {
+        if (parent > 0 ) {
+            for (let aTerm of state.terms) {
+                let childTerm = t.find(aTerm, [], (node, par) => { return node.id == term.id; });
+                if (childTerm != undefined) {
+                    childTerm = term;   
+                }
+            }
+        } else {
+            if (state.terms != undefined) {
+                for (let i = 0; i < state.terms.length; i++) {
+                    if (state.terms[i].id == term.id)
+                        Vue.set(state.terms, i, term);
+                }
+            } else {    
+                state.terms = []
+                state.terms.unshift(term);
+            }
+        }
+    } else {
+        // Removes from old parent
+        this.deleteChildTerm(term.id, oldParent)
+        // Adds it to new one
+        this.addChildTerm(term, parent);
+    }
+};
+
 export const deleteChildTerm = ( state, {termId, parent} ) => {
     
     if (parent > 0 ) {
-        for (let aTerm of state.terms) {
-            let parentTerm = t.bfs(aTerm, [], (node, par) => { return node.id == parent; });
+        for (let i = 0; i < state.terms.length; i++) {
+            let parentTerm = t.find(state.terms[i], [], (node, par) => { return node.id == parent; });
             if (parentTerm != undefined) {
                 let index = parentTerm.children.findIndex(deletedTerm => deletedTerm.id == termId);
                 if (index >= 0) {
                     parentTerm.children.splice(index, 1);
+                    parentTerm.total_children = parentTerm.children.length;
                 }
             }
         }
