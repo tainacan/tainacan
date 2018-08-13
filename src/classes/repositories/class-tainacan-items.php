@@ -11,101 +11,101 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Items extends Repository {
 	public $entities_type = '\Tainacan\Entities\Item';
 
-    private static $instance = null;
+	private static $instance = null;
 
-    public static function get_instance() {
-        if(!isset(self::$instance)) {
-            self::$instance = new self();
-        }
+	public static function get_instance() {
+		if ( ! isset( self::$instance ) ) {
+			self::$instance = new self();
+		}
 
-        return self::$instance;
-    }
+		return self::$instance;
+	}
 
-    protected function __construct() {
-        parent::__construct();
-        add_filter( 'posts_where', array(&$this, 'title_in_posts_where'), 10, 2 );
-        add_filter( 'posts_where', array(&$this, 'content_in_posts_where'), 10, 2 );
-		add_action( 'tainacan-api-item-updated', array(&$this, 'hook_api_updated_item'), 10, 2 );
-    }
+	protected function __construct() {
+		parent::__construct();
+		add_filter( 'posts_where', array( &$this, 'title_in_posts_where' ), 10, 2 );
+		add_filter( 'posts_where', array( &$this, 'content_in_posts_where' ), 10, 2 );
+		add_action( 'tainacan-api-item-updated', array( &$this, 'hook_api_updated_item' ), 10, 2 );
+	}
 
-    public function get_map() {
-	    return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
-		    'title'             => [
-			    'map'         => 'post_title',
-			    'title'       => __( 'Title', 'tainacan' ),
-			    'type'        => 'string',
-			    'description' => __( 'Title of the item', 'tainacan' ),
-			    'on_error'    => __( 'The title should be a text value and not empty', 'tainacan' ),
-			    //'validation'  => v::stringType()->notEmpty(),
-		    ],
-		    'status'            => [
-			    'map'         => 'post_status',
-			    'title'       => __( 'Status', 'tainacan' ),
-			    'type'        => 'string',
-			    'default'     => 'draft',
-			    'description' => __( 'The posts status', 'tainacan' )
-		    ],
-		    'description'       => [
-			    'map'         => 'post_content',
-			    'title'       => __( 'Description', 'tainacan' ),
-			    'type'        => 'string',
-			    'description' => __( 'The item description', 'tainacan' ),
-			    'default'     => '',
-			    'validation'  => ''
-		    ],
-		    'collection_id'     => [
-			    'map'         => 'meta',
-			    'title'       => __( 'Collection', 'tainacan' ),
-			    'type'        => 'integer',
-			    'description' => __( 'The collection ID', 'tainacan' ),
-			    'validation'  => ''
-		    ],
-		    'author_id'         => [
-			    'map'         => 'post_author',
-			    'title'       => __( 'Author', 'tainacan' ),
-			    'type'        => 'string',
-			    'description' => __( 'The item author\'s user ID (numeric string)', 'tainacan' )
-		    ],
-		    'creation_date'     => [
-			    'map'         => 'post_date',
-			    'title'       => __( 'Creation Date', 'tainacan' ),
-			    'type'        => 'string',
-			    'description' => __( 'The item creation date', 'tainacan' )
-		    ],
-		    'modification_date' => [
-			    'map'         => 'post_modified',
-			    'title'       => __( 'Modification Date', 'tainacan' ),
-			    'type'        => 'string',
-			    'description' => __( 'The item modification date', 'tainacan' )
-		    ],
-		    'terms'             => [
-			    'map'         => 'terms',
-			    'title'       => __( 'Term IDs', 'tainacan' ),
-			    'type'        => 'array',
-			    'description' => __( 'The item term IDs', 'tainacan' ),
-		    ],
-		    'document_type'     => [
-			    'map'         => 'meta',
-			    'title'       => __( 'Document Type', 'tainacan' ),
-			    'type'        => 'string',
-			    'description' => __( 'The document type, can be a local attachment, an external URL or a text', 'tainacan' ),
-			    'on_error'    => __( 'Invalid document type', 'tainacan' ),
-			    'validation'  => v::stringType()->in( [ 'attachment', 'url', 'text', 'empty'] ),
-			    'default'     => 'empty'
-		    ],
-		    'document'          => [
-			    'map'         => 'meta',
-			    'title'       => __( 'Document', 'tainacan' ),
-			    'type'        => 'string',
-			    'description' => __( 'The document itself. An ID in case of attachment, an URL in case of link or a text in the case of text.', 'tainacan' ),
-			    'on_error'    => __( 'Invalid document', 'tainacan' ),
-			    'default'     => ''
-		    ],
-		    '_thumbnail_id'   => [
-			    'map'         => 'meta',
-			    'title'       => __( 'Thumbnail', 'tainacan' ),
-			    'description' => __( 'Squared reduced-size version of a picture that helps recognizing and organizing files', 'tainacan' )
-		    ]
+	public function get_map() {
+		return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
+			'title'             => [
+				'map'         => 'post_title',
+				'title'       => __( 'Title', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'Title of the item', 'tainacan' ),
+				'on_error'    => __( 'The title should be a text value and not empty', 'tainacan' ),
+				//'validation'  => v::stringType()->notEmpty(),
+			],
+			'status'            => [
+				'map'         => 'post_status',
+				'title'       => __( 'Status', 'tainacan' ),
+				'type'        => 'string',
+				'default'     => 'draft',
+				'description' => __( 'The posts status', 'tainacan' )
+			],
+			'description'       => [
+				'map'         => 'post_content',
+				'title'       => __( 'Description', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'The item description', 'tainacan' ),
+				'default'     => '',
+				'validation'  => ''
+			],
+			'collection_id'     => [
+				'map'         => 'meta',
+				'title'       => __( 'Collection', 'tainacan' ),
+				'type'        => 'integer',
+				'description' => __( 'The collection ID', 'tainacan' ),
+				'validation'  => ''
+			],
+			'author_id'         => [
+				'map'         => 'post_author',
+				'title'       => __( 'Author', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'The item author\'s user ID (numeric string)', 'tainacan' )
+			],
+			'creation_date'     => [
+				'map'         => 'post_date',
+				'title'       => __( 'Creation Date', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'The item creation date', 'tainacan' )
+			],
+			'modification_date' => [
+				'map'         => 'post_modified',
+				'title'       => __( 'Modification Date', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'The item modification date', 'tainacan' )
+			],
+			'terms'             => [
+				'map'         => 'terms',
+				'title'       => __( 'Term IDs', 'tainacan' ),
+				'type'        => 'array',
+				'description' => __( 'The item term IDs', 'tainacan' ),
+			],
+			'document_type'     => [
+				'map'         => 'meta',
+				'title'       => __( 'Document Type', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'The document type, can be a local attachment, an external URL or a text', 'tainacan' ),
+				'on_error'    => __( 'Invalid document type', 'tainacan' ),
+				'validation'  => v::stringType()->in( [ 'attachment', 'url', 'text', 'empty' ] ),
+				'default'     => 'empty'
+			],
+			'document'          => [
+				'map'         => 'meta',
+				'title'       => __( 'Document', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'The document itself. An ID in case of attachment, an URL in case of link or a text in the case of text.', 'tainacan' ),
+				'on_error'    => __( 'Invalid document', 'tainacan' ),
+				'default'     => ''
+			],
+			'_thumbnail_id'     => [
+				'map'         => 'meta',
+				'title'       => __( 'Thumbnail', 'tainacan' ),
+				'description' => __( 'Squared reduced-size version of a picture that helps recognizing and organizing files', 'tainacan' )
+			]
 		] );
 	}
 
@@ -140,11 +140,18 @@ class Items extends Repository {
 	 */
 	public function register_post_type() {
 
-        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
-        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+		$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
 
 		$collections = $Tainacan_Collections->fetch( [], 'OBJECT' );
-		$taxonomies  = $Tainacan_Taxonomies->fetch( ['status' => ['auto-draft', 'draft', 'publish', 'private']], 'OBJECT' );
+		$taxonomies  = $Tainacan_Taxonomies->fetch( [
+			'status' => [
+				'auto-draft',
+				'draft',
+				'publish',
+				'private'
+			]
+		], 'OBJECT' );
 
 		if ( ! is_array( $collections ) ) {
 			return;
@@ -164,7 +171,7 @@ class Items extends Repository {
 	}
 
 	public function insert( $item ) {
-		return parent::insert($item);
+		return parent::insert( $item );
 	}
 
 	/**
@@ -252,13 +259,13 @@ class Items extends Repository {
 
 		$args['post_type'] = $cpt;
 
-		$args = apply_filters('tainacan_fetch_args', $args, 'items');
+		$args = apply_filters( 'tainacan_fetch_args', $args, 'items' );
 
 		$wp_query = new \WP_Query( $args );
 
 		return $this->fetch_output( $wp_query, $output );
 	}
-	
+
 	/**
 	 * fetch items IDs based on WP_Query args
 	 *
@@ -275,9 +282,9 @@ class Items extends Repository {
 	 * @return Array array of IDs;
 	 */
 	public function fetch_ids( $args = [], $collections = [] ) {
-		
+
 		$args['fields'] = 'ids';
-		
+
 		return $this->fetch( $args, $collections )->get_posts();
 	}
 
@@ -294,7 +301,9 @@ class Items extends Repository {
 		$deleted = new Entities\Item( wp_delete_post( $item_id, true ) );
 
 		if ( $deleted ) {
-			do_action( 'tainacan-deleted', $deleted, false, true );
+			$this->logs_repository->insert_log( $deleted, [], false, true );
+
+			do_action( 'tainacan-deleted', $deleted );
 		}
 
 		return $deleted;
@@ -305,147 +314,157 @@ class Items extends Repository {
 	 *
 	 * @return mixed|Item
 	 */
-	public function trash($item_id){
+	public function trash( $item_id ) {
 		$trashed = new Entities\Item( wp_trash_post( $item_id ) );
 
-		if($trashed) {
-			do_action( 'tainacan-trashed',  $trashed, [], false, false, true );
+		if ( $trashed ) {
+			$this->logs_repository->insert_log( $trashed, [], false, false, true );
+
+			do_action( 'tainacan-trashed', $trashed );
 		}
 
 		return $trashed;
 	}
 
-    /**
-     * allow wp query filter post by array of titles
-     *
-     * @param $where
-     * @param $wp_query
-     * @return string
-     */
-    public function title_in_posts_where( $where, $wp_query ) {
-        global $wpdb;
-        if ( $post_title_in = $wp_query->get( 'post_title_in' ) ) {
-            if(is_array( $post_title_in ) && isset( $post_title_in['value']) ){
-                $quotes = [];
-                foreach ($post_title_in['value'] as $title) {
-                    $quotes[] = " $wpdb->posts.post_title  LIKE  '%" .   esc_sql( $wpdb->esc_like( $title ) ). "%'";
-                }
-            }
+	/**
+	 * allow wp query filter post by array of titles
+	 *
+	 * @param $where
+	 * @param $wp_query
+	 *
+	 * @return string
+	 */
+	public function title_in_posts_where( $where, $wp_query ) {
+		global $wpdb;
+		if ( $post_title_in = $wp_query->get( 'post_title_in' ) ) {
+			if ( is_array( $post_title_in ) && isset( $post_title_in['value'] ) ) {
+				$quotes = [];
+				foreach ( $post_title_in['value'] as $title ) {
+					$quotes[] = " $wpdb->posts.post_title  LIKE  '%" . esc_sql( $wpdb->esc_like( $title ) ) . "%'";
+				}
+			}
 
-            // retrieve only posts for the specified collection and status
-            $type = " $wpdb->posts.post_type = '" . $wp_query->get( 'post_type' )[0]."' ";
-            $status = " ( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'private') ";
-            $where .= ' '.$post_title_in['relation'] . '( ( ' .implode(' OR ', $quotes ) . ' ) AND ' .
-                $status . ' AND  ' . $type . ' )';
-        }
-        return $where;
-    }
+			// retrieve only posts for the specified collection and status
+			$type   = " $wpdb->posts.post_type = '" . $wp_query->get( 'post_type' )[0] . "' ";
+			$status = " ( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'private') ";
+			$where  .= ' ' . $post_title_in['relation'] . '( ( ' . implode( ' OR ', $quotes ) . ' ) AND ' .
+			           $status . ' AND  ' . $type . ' )';
+		}
 
-    /**
-     * allow wp query filter post by array of content
-     *
-     * @param $where
-     * @param $wp_query
-     * @return string
-     */
-    public function content_in_posts_where( $where, $wp_query ) {
-        global $wpdb;
-        if ( $post_content_in = $wp_query->get( 'post_content_in' ) ) {
-            if(is_array( $post_content_in ) && isset( $post_content_in['value']) ){
-                $quotes = [];
-                foreach ($post_content_in['value'] as $title) {
-                    $quotes[] = " $wpdb->posts.post_content  LIKE  '%" .esc_sql( $wpdb->esc_like( $title ) ). "%'";
-                }
-            }
+		return $where;
+	}
 
-            // retrieve only posts for the specified collection and status
-            $type = " $wpdb->posts.post_type = '" . $wp_query->get( 'post_type' )[0]."' ";
-            $status = " ( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'private') ";
-            $where .= ' '.$post_content_in['relation'] . '( ( ' .implode(' OR ', $quotes ) . ' ) AND ' .
-                $status . ' AND  ' . $type . ' )';
-        }
-        return $where;
-    }
-	
+	/**
+	 * allow wp query filter post by array of content
+	 *
+	 * @param $where
+	 * @param $wp_query
+	 *
+	 * @return string
+	 */
+	public function content_in_posts_where( $where, $wp_query ) {
+		global $wpdb;
+		if ( $post_content_in = $wp_query->get( 'post_content_in' ) ) {
+			if ( is_array( $post_content_in ) && isset( $post_content_in['value'] ) ) {
+				$quotes = [];
+				foreach ( $post_content_in['value'] as $title ) {
+					$quotes[] = " $wpdb->posts.post_content  LIKE  '%" . esc_sql( $wpdb->esc_like( $title ) ) . "%'";
+				}
+			}
+
+			// retrieve only posts for the specified collection and status
+			$type   = " $wpdb->posts.post_type = '" . $wp_query->get( 'post_type' )[0] . "' ";
+			$status = " ( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'private') ";
+			$where  .= ' ' . $post_content_in['relation'] . '( ( ' . implode( ' OR ', $quotes ) . ' ) AND ' .
+			           $status . ' AND  ' . $type . ' )';
+		}
+
+		return $where;
+	}
+
 	/**
 	 * Get a default thumbnail ID from the item document.
-	 * 
+	 *
 	 * @param  EntitiesItem $item The item
+	 *
 	 * @return int|null           The thumbnail ID or null if it was not possible to find a thumbnail
 	 */
-	public function get_thumbnail_id_from_document(Entities\Item $item) {
+	public function get_thumbnail_id_from_document( Entities\Item $item ) {
 		/**
 		 * Hook to get thumbnail from document
 		 */
-		$thumb_id = apply_filters('tainacan-get-thumbnail-id-from-document', null, $item);
-		
-		if (!is_null($thumb_id)) {
+		$thumb_id = apply_filters( 'tainacan-get-thumbnail-id-from-document', null, $item );
+
+		if ( ! is_null( $thumb_id ) ) {
 			return $thumb_id;
 		}
-		
-		if ( empty($item->get_document()) ) {
+
+		if ( empty( $item->get_document() ) ) {
 			return null;
 		}
-		
+
 		if ( $item->get_document_type() == 'attachment' ) {
 			if ( wp_attachment_is_image( $item->get_document() ) ) {
 				return $item->get_document();
 			} else {
-				
-				$filepath = get_attached_file($item->get_document());
+
+				$filepath      = get_attached_file( $item->get_document() );
 				$TainacanMedia = \Tainacan\Media::get_instance();
-				$thumb_blob = $TainacanMedia->get_pdf_cover($filepath);
+				$thumb_blob    = $TainacanMedia->get_pdf_cover( $filepath );
 				if ( $thumb_blob ) {
-					$thumb_id = $TainacanMedia->insert_attachment_from_blob($thumb_blob, basename($filepath) . '-cover.jpg', $item->get_id());
+					$thumb_id = $TainacanMedia->insert_attachment_from_blob( $thumb_blob, basename( $filepath ) . '-cover.jpg', $item->get_id() );
+
 					return $thumb_id;
 				}
-				
+
 			}
 		} elseif ( $item->get_document_type() == 'url' ) {
-			
+
 			$TainacanEmbed = \Tainacan\Embed::get_instance();
 			if ( $thumb_url = $TainacanEmbed->oembed_get_thumbnail( $item->get_document() ) ) {
 				$meta_key = '_' . $thumb_url . '__thumb';
-				
-				$existing_thumb = get_post_meta($item->get_id(), $meta_key, true);
-				
+
+				$existing_thumb = get_post_meta( $item->get_id(), $meta_key, true );
+
 				if ( is_numeric( $existing_thumb ) ) {
 					return $existing_thumb;
 				} else {
 					$TainacanMedia = \Tainacan\Media::get_instance();
-					$thumb_id = $TainacanMedia->insert_attachment_from_url($thumb_url, $item->get_id());
-					update_post_meta($item->get_id(), $meta_key, $thumb_id);
+					$thumb_id      = $TainacanMedia->insert_attachment_from_url( $thumb_url, $item->get_id() );
+					update_post_meta( $item->get_id(), $meta_key, $thumb_id );
+
 					return $thumb_id;
 				}
 			}
-			
+
 		}
-		
+
 		return $thumb_id;
 	}
-	
+
 	/**
 	 * When updating an item document, set a default thumbnail to the item if it does not have one yet
-	 * 
-	 * @param  Entities\Item $updated_item 
-	 * @param  array $attributes   The paramaters sent to the API 
+	 *
+	 * @param  Entities\Item $updated_item
+	 * @param  array $attributes The paramaters sent to the API
+	 *
 	 * @return void
 	 */
-	public function hook_api_updated_item(Entities\Item $updated_item, $attributes) {
-		if ( array_key_exists('document', $attributes)
-			&& empty($updated_item->get__thumbnail_id())
-			&& !empty($updated_item->get_document()) 
-		 ) {
-			
-			$thumb_id = $this->get_thumbnail_id_from_document($updated_item);
-			
-			if (!is_null($thumb_id)) {
+	public function hook_api_updated_item( Entities\Item $updated_item, $attributes ) {
+		if ( array_key_exists( 'document', $attributes )
+		     && empty( $updated_item->get__thumbnail_id() )
+		     && ! empty( $updated_item->get_document() )
+		) {
+
+			$thumb_id = $this->get_thumbnail_id_from_document( $updated_item );
+
+			if ( ! is_null( $thumb_id ) ) {
 				set_post_thumbnail( $updated_item->get_id(), (int) $thumb_id );
 			}
-			
+
 		}
-		
+
 	}
-	
-	
+
+
 }

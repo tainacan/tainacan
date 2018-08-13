@@ -15,11 +15,19 @@ abstract class Repository {
 
 	/**
 	 * If set to false, no logs will be generated upon insertion or update
-	 * 
+	 *
 	 * use enable_logs() and disable_logs() to set the values
+	 *
 	 * @var bool
 	 */
 	private $use_logs = true;
+
+	/**
+	 * Instance of Repository Logs
+	 *
+	 * @var Repositories\Logs
+	 */
+	protected $logs_repository;
 
 	/**
 	 * Disable creation of logs while inerting and updating entities
@@ -29,7 +37,7 @@ abstract class Repository {
 	}
 
 	/**
-	 * Enable creation of logs while inerting and updating entities
+	 * Enable creation of logs while inserting and updating entities
 	 * if it was disabled
 	 */
 	public function enable_logs() {
@@ -41,7 +49,13 @@ abstract class Repository {
 	 */
 	protected function __construct() {
 		add_action( 'init', array( &$this, 'register_post_type' ) );
+		add_action( 'init', array( &$this, 'init_objects' ) );
+
 		add_filter( 'tainacan-get-map-' . $this->get_name(), array( $this, 'get_default_properties' ) );
+	}
+
+	public function init_objects() {
+		$this->logs_repository = Repositories\Logs::get_instance();
 	}
 
 	/**
@@ -100,26 +114,26 @@ abstract class Repository {
 			// TODO: Throw Warning saying you must validate object before insert()
 		}
 
-		$is_update         = false;
-		$old               = '';
+		$is_update = false;
+		$old       = '';
 
 		$diffs = [];
-		
-		if ($this->use_logs) {
+
+		if ( $this->use_logs ) {
 			if ( $obj->get_id() ) {
-	
+
 				$old = $obj->get_repository()->fetch( $obj->get_id() );
-	
+
 				if ( method_exists( $old, 'get_status' ) && $old->get_status() === 'auto-draft' ) {
 					$is_update = false;
 				} else {
 					$is_update = true;
 				}
-	
+
 				$diffs = $this->diff( $old, $obj );
 			}
 		}
-		
+
 		$map = $this->get_map();
 
 		// First iterate through the native post properties
@@ -163,10 +177,13 @@ abstract class Repository {
 		}
 
 		// TODO: Logs for header image insert and update
-		if ($this->use_logs) {
-			do_action( 'tainacan-insert', $obj, $diffs, $is_update );
-			do_action( 'tainacan-insert-' . $obj->get_post_type(), $obj );
+		if ( $this->use_logs ) {
+			$this->logs_repository->insert_log( $obj, $diffs, $is_update );
 		}
+
+		do_action( 'tainacan-insert', $obj, $diffs, $is_update );
+		do_action( 'tainacan-insert-' . $obj->get_post_type(), $obj );
+
 		// return a brand new object
 		return new $this->entities_type( $obj->WP_Post );
 	}
@@ -190,8 +207,8 @@ abstract class Repository {
 
 		if ( $map[ $prop ]['map'] == 'meta' ) {
 
-			if($prop === '_thumbnail_id'){
-				$diffs = $this->insert_thumbnail($obj, $diffs);
+			if ( $prop === '_thumbnail_id' ) {
+				$diffs = $this->insert_thumbnail( $obj, $diffs );
 
 				return $diffs;
 			} else {
@@ -199,28 +216,28 @@ abstract class Repository {
 			}
 
 		} elseif ( $map[ $prop ]['map'] == 'meta_multi' ) {
-			$values = $obj->get_mapped_property( $prop );
+			$values         = $obj->get_mapped_property( $prop );
 			$current_values = get_post_meta( $obj->get_id(), $prop );
-			
-			if (empty($values) || !is_array($values)) {
+
+			if ( empty( $values ) || ! is_array( $values ) ) {
 				$values = [];
 			}
 
-			if (empty($current_values) || !is_array($current_values)) {
+			if ( empty( $current_values ) || ! is_array( $current_values ) ) {
 				$current_values = [];
 			}
-			
+
 			$deleted = array_diff( $current_values, $values );
 			$added   = array_diff( $values, $current_values );
-			
-			foreach ($deleted as $del) {
+
+			foreach ( $deleted as $del ) {
 				delete_post_meta( $obj->get_id(), $prop, $del );
 			}
-			
-			foreach ($added as $add) {
+
+			foreach ( $added as $add ) {
 				add_post_meta( $obj->get_id(), $prop, $this->maybe_add_slashes( $add ) );
 			}
-			
+
 		}
 
 		return $diffs;
@@ -333,14 +350,14 @@ abstract class Repository {
 		}
 
 		$args['meta_query'] = $meta_query;
-		
+
 		// Map orderby parameter
-		if ( isset($args['orderby']) ) {
-			if ( array_key_exists($args['orderby'], $map) ) {
+		if ( isset( $args['orderby'] ) ) {
+			if ( array_key_exists( $args['orderby'], $map ) ) {
 				$args['orderby'] = $map[ $args['orderby'] ]['map'];
 			}
 		}
-		
+
 
 		return $args;
 
@@ -463,9 +480,9 @@ abstract class Repository {
 	 * @return \Tainacan\Entities\Entity|boolean the entity for post_type, with data if $post is given or false
 	 */
 	public static function get_entity_by_post_type( $post_type, $post = 0 ) {
-		$prefix = substr( $post_type, 0, strlen( Entities\Collection::$db_identifier_prefix ) );
-		$item_metadata = Repositories\Item_Metadata::get_instance();
-		$item_metadata_entity = new $item_metadata->entities_type(null, null);
+		$prefix                  = substr( $post_type, 0, strlen( Entities\Collection::$db_identifier_prefix ) );
+		$item_metadata           = Repositories\Item_Metadata::get_instance();
+		$item_metadata_entity    = new $item_metadata->entities_type( null, null );
 		$item_metadata_post_type = $item_metadata_entity::get_post_type();
 
 		// Is it a collection Item?
@@ -482,7 +499,7 @@ abstract class Repository {
 			$Tainacan_Collections = Repositories\Collections::get_instance();
 			$Tainacan_Filters     = Repositories\Filters::get_instance();
 			$Tainacan_Logs        = Repositories\Logs::get_instance();
-			$Tainacan_Metadata      = Repositories\Metadata::get_instance();
+			$Tainacan_Metadata    = Repositories\Metadata::get_instance();
 			$Tainacan_Taxonomies  = Repositories\Taxonomies::get_instance();
 			$Tainacan_Terms       = Repositories\Terms::get_instance();
 
@@ -495,7 +512,7 @@ abstract class Repository {
 				$Tainacan_Logs
 			];
 			foreach ( $tnc_globals as $tnc_repository ) {
-				$tnc_entity = new $tnc_repository->entities_type();
+				$tnc_entity       = new $tnc_repository->entities_type();
 				$entity_post_type = $tnc_entity::get_post_type();
 
 				if ( $entity_post_type == $post_type ) {
@@ -525,7 +542,7 @@ abstract class Repository {
 			return $Tainacan_Items;
 		} else {
 			$Tainacan_Collections   = \Tainacan\Repositories\Collections::get_instance();
-			$Tainacan_Metadata        = \Tainacan\Repositories\Metadata::get_instance();
+			$Tainacan_Metadata      = \Tainacan\Repositories\Metadata::get_instance();
 			$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 			$Tainacan_Filters       = \Tainacan\Repositories\Filters::get_instance();
 			$Tainacan_Taxonomies    = \Tainacan\Repositories\Taxonomies::get_instance();
@@ -542,7 +559,7 @@ abstract class Repository {
 				$Tainacan_Logs
 			];
 			foreach ( $tnc_globals as $tnc_repository ) {
-				$tnc_entity = new $tnc_repository->entities_type();
+				$tnc_entity       = new $tnc_repository->entities_type();
 				$entity_post_type = $tnc_entity::get_post_type();
 
 				if ( $entity_post_type == $post_type ) {
@@ -556,23 +573,23 @@ abstract class Repository {
 
 	/**
 	 * Fetch one Entity based on query args.
-	 * 
+	 *
 	 * Note: Does not work with Item_Metadata Repository
-	 * 
+	 *
 	 * @param array $args Query Args as expected by fetch
-	 * 
+	 *
 	 * @return false|\Tainacan\Entities The entity or false if none was found
 	 */
-	public function fetch_one($args) {
-		if ($this->get_name() == 'Item_Metadata') {
+	public function fetch_one( $args ) {
+		if ( $this->get_name() == 'Item_Metadata' ) {
 			return false;
 		}
 
 		$args['posts_per_page'] = 1;
 
-		$results = $this->fetch($args, 'OBJECT');
-		
-		if (is_array($results) && sizeof($results) > 0 && $results[0] instanceof \Tainacan\Entities\Entity) {
+		$results = $this->fetch( $args, 'OBJECT' );
+
+		if ( is_array( $results ) && sizeof( $results ) > 0 && $results[0] instanceof \Tainacan\Entities\Entity ) {
 			return $results[0];
 		}
 
@@ -730,17 +747,17 @@ abstract class Repository {
 	 *
 	 * @return array
 	 */
-	function unique_multidimensional_array($array, $key) {
+	function unique_multidimensional_array( $array, $key ) {
 		$temp_array = array();
-		$i = 0;
-		$key_array = array();
+		$i          = 0;
+		$key_array  = array();
 
-		foreach($array as $val) {
-			if (!in_array($val[$key], $key_array)) {
-				$key_array[$i] = $val[$key];
-				$temp_array[$i] = $val;
+		foreach ( $array as $val ) {
+			if ( ! in_array( $val[ $key ], $key_array ) ) {
+				$key_array[ $i ]  = $val[ $key ];
+				$temp_array[ $i ] = $val;
 			}
-			$i++;
+			$i ++;
 		}
 
 		return $temp_array;
@@ -758,7 +775,7 @@ abstract class Repository {
 	public function diff( $old = 0, $new ) {
 		$old_entity = null;
 
-		if ( $old === 0 || is_array($old) && count($old) == 0 ) { // self diff or other entity?
+		if ( $old === 0 || is_array( $old ) && count( $old ) == 0 ) { // self diff or other entity?
 			$id = $new->get_id();
 
 			if ( ! empty( $id ) ) { // there is a repository entity?
@@ -768,7 +785,7 @@ abstract class Repository {
 				$old_entity  = new $entity_type; // there is no saved entity, let compare with a new empty one
 			}
 		} else {
-			if($old->get_status() === 'auto-draft'){
+			if ( $old->get_status() === 'auto-draft' ) {
 				$entity_type = get_class( $new );
 				$old_entity  = new $entity_type;
 			} else {
@@ -822,7 +839,7 @@ abstract class Repository {
 			}
 		}
 
-		unset($diff['id'], $diff['collection_id'], $diff['author_id'], $diff['creation_date'], $diff['_thumbnail_id']);
+		unset( $diff['id'], $diff['collection_id'], $diff['author_id'], $diff['creation_date'], $diff['_thumbnail_id'] );
 		$diff = apply_filters( 'tainacan-entity-diff', $diff, $new, $old );
 
 		return $diff;

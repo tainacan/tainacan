@@ -36,53 +36,53 @@ class Collections extends Repository {
 	 */
 	public function get_map() {
 		return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
-			'name'                     => [
+			'name'                       => [
 				'map'         => 'post_title',
 				'title'       => __( 'Name', 'tainacan' ),
 				'type'        => 'string',
 				'description' => __( 'The title of the collection', 'tainacan' ),
 				'validation'  => v::stringType()->notEmpty(),
 			],
-			'status'                   => [
+			'status'                     => [
 				'map'         => 'post_status',
 				'title'       => __( 'Status', 'tainacan' ),
 				'type'        => 'string',
 				'default'     => '',
 				'description' => __( 'The current situation of the post', 'tainacan' )
 			],
-			'author_id'                => [
+			'author_id'                  => [
 				'map'         => 'post_author',
 				'title'       => __( 'Author ID', 'tainacan' ),
 				'type'        => 'string',
 				'description' => __( 'The collection author\'s user ID (numeric string)', 'tainacan' )
 			],
-			'creation_date'            => [
+			'creation_date'              => [
 				'map'         => 'post_date',
 				'title'       => __( 'Creation Date', 'tainacan' ),
 				'type'        => 'string',
 				'description' => __( 'The collection creation date', 'tainacan' )
 			],
-			'modification_date'        => [
+			'modification_date'          => [
 				'map'         => 'post_modified',
 				'title'       => __( 'Modification Date', 'tainacan' ),
 				'type'        => 'string',
 				'description' => __( 'The collection modification date', 'tainacan' )
 			],
-			'order'                    => [
+			'order'                      => [
 				'map'         => 'menu_order',
 				'title'       => __( 'Order', 'tainacan' ),
 				'type'        => 'string',
 				'description' => __( 'Collection order. This metadata is used if collections are manually ordered.', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
-			'parent'                   => [
+			'parent'                     => [
 				'map'         => 'post_parent',
 				'title'       => __( 'Parent Collection', 'tainacan' ),
 				'type'        => 'integer',
 				'description' => __( 'Original collection from which features are inherited', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
-			'description'              => [
+			'description'                => [
 				'map'         => 'post_content',
 				'title'       => __( 'Description', 'tainacan' ),
 				'type'        => 'string',
@@ -90,14 +90,14 @@ class Collections extends Repository {
 				'default'     => '',
 				//'validation' => v::stringType(),
 			],
-			'slug'                     => [
+			'slug'                       => [
 				'map'         => 'post_name',
 				'title'       => __( 'Slug', 'tainacan' ),
 				'type'        => 'string',
 				'description' => __( 'An unique and sanitized string representation of the collection, used to build the collection URL. It must not contain any special characters or spaces.', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
-			'default_orderby'          => [
+			'default_orderby'            => [
 				'map'         => 'meta',
 				'title'       => __( 'Default Order metadata', 'tainacan' ),
 				'type'        => 'string',
@@ -105,7 +105,7 @@ class Collections extends Repository {
 				'default'     => 'name',
 				//'validation' => v::stringType(),
 			],
-			'default_order'            => [
+			'default_order'              => [
 				'map'         => 'meta',
 				'title'       => __( 'Default order', 'tainacan' ),
 				'description' => __( 'Default order for items in this collection. ASC or DESC', 'tainacan' ),
@@ -122,7 +122,7 @@ class Collections extends Repository {
 				'description' => __( 'List of collection properties that will be displayed in the table view', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
-			'default_view_mode'        => [
+			'default_view_mode'          => [
 				'map'         => 'meta',
 				'title'       => __( 'Default view mode', 'tainacan' ),
 				'type'        => 'string',
@@ -130,13 +130,13 @@ class Collections extends Repository {
 				'default'     => 'table',
 				//'validation' => v::stringType(),
 			],
-			'enabled_view_modes'        => [
+			'enabled_view_modes'         => [
 				'map'         => 'meta',
 				'title'       => __( 'Enabled view modes', 'tainacan' ),
 				'type'        => 'array',
 				'description' => __( 'Which visualization modes will be available for the public to choose from', 'tainacan' ),
-				'default'     => ['table', 'cards'],
-			    'items'       => [ 'type' => 'string' ],
+				'default'     => [ 'table', 'cards' ],
+				'items'       => [ 'type' => 'string' ],
 				//'validation' => v::stringType(),
 			],
 			'metadata_order'             => [
@@ -147,7 +147,7 @@ class Collections extends Repository {
 				'description' => __( 'Collection metadata ordination', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
-			'filters_order'            => [
+			'filters_order'              => [
 				'map'         => 'meta',
 				'title'       => __( 'Ordination filters', 'tainacan' ),
 				'type'        => 'array/object/string',
@@ -155,7 +155,7 @@ class Collections extends Repository {
 				'description' => __( 'Collection filters ordination', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
-			'enable_cover_page'        => [
+			'enable_cover_page'          => [
 				'map'         => 'meta',
 				'title'       => __( 'Enable Cover Page', 'tainacan' ),
 				'type'        => 'string',
@@ -164,7 +164,7 @@ class Collections extends Repository {
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 				'default'     => 'no'
 			],
-			'cover_page_id'            => [
+			'cover_page_id'              => [
 				'map'         => 'meta',
 				'title'       => __( 'Cover Page ID', 'tainacan' ),
 				'type'        => 'string',
@@ -173,7 +173,7 @@ class Collections extends Repository {
 				//'validation' => v::numeric(),
 				'default'     => ''
 			],
-			'header_image_id'          => [
+			'header_image_id'            => [
 				'map'         => 'meta',
 				'title'       => __( 'Header Image', 'tainacan' ),
 				'type'        => 'string',
@@ -182,7 +182,7 @@ class Collections extends Repository {
 				//'validation' => v::numeric(),
 				'default'     => ''
 			],
-			'moderators_ids'           => [
+			'moderators_ids'             => [
 				'map'         => 'meta_multi',
 				'title'       => __( 'Moderators', 'tainacan' ),
 				'type'        => 'array/object/string',
@@ -190,7 +190,7 @@ class Collections extends Repository {
 				'description' => __( 'To assign users as Moderators of this collection', 'tainacan' ),
 				'validation'  => ''
 			],
-			'_thumbnail_id'          => [
+			'_thumbnail_id'              => [
 				'map'         => 'meta',
 				'title'       => __( 'Thumbnail', 'tainacan' ),
 				'description' => __( 'Squared reduced-size version of a picture that helps recognizing and organizing files', 'tainacan' )
@@ -262,13 +262,13 @@ class Collections extends Repository {
 	public function insert( $collection ) {
 
 		$this->pre_process( $collection );
-		
+
 		$new_collection = parent::insert( $collection );
 
 		$this->handle_core_metadata( $new_collection );
 
 		$collection->register_collection_item_post_type();
-		flush_rewrite_rules(false); // needed to activate items post type archive url
+		flush_rewrite_rules( false ); // needed to activate items post type archive url
 		$this->update_moderators( $new_collection );
 
 		return $new_collection;
@@ -287,7 +287,9 @@ class Collections extends Repository {
 		$deleted = new Entities\Collection( wp_delete_post( $collection_id, true ) );
 
 		if ( $deleted ) {
-			do_action( 'tainacan-deleted', $deleted, [], false, true );
+			$this->logs_repository->insert_log( $deleted, [], false, true );
+
+			do_action( 'tainacan-deleted', $deleted );
 		}
 
 		return $deleted;
@@ -301,8 +303,10 @@ class Collections extends Repository {
 	public function trash( $collection_id ) {
 		$trashed = new Entities\Collection( wp_trash_post( $collection_id ) );
 
-		if($trashed) {
-			do_action( 'tainacan-trashed', $trashed, [], false, false, true );
+		if ( $trashed ) {
+			$this->logs_repository->insert_log( $trashed, [], false, false, true );
+
+			do_action( 'tainacan-trashed', $trashed );
 		}
 
 		return $trashed;
@@ -332,7 +336,7 @@ class Collections extends Repository {
 
 		} elseif ( is_array( $args ) ) {
 			$args = array_merge( [
-				'posts_per_page' => -1,
+				'posts_per_page' => - 1,
 			], $args );
 
 			$args = $this->parse_fetch_args( $args );
@@ -341,7 +345,7 @@ class Collections extends Repository {
 
 			// TODO: Pegar coleções registradas via código
 
-			$args = apply_filters('tainacan_fetch_args', $args, 'collections');
+			$args = apply_filters( 'tainacan_fetch_args', $args, 'collections' );
 
 			$wp_query = new \WP_Query( $args );
 
@@ -350,19 +354,20 @@ class Collections extends Repository {
 	}
 
 	public function fetch_by_db_identifier( $db_identifier ) {
-		if ( $id = $this->get_id_by_db_identifier($db_identifier) ) {
-			return $this->fetch($id);
+		if ( $id = $this->get_id_by_db_identifier( $db_identifier ) ) {
+			return $this->fetch( $id );
 		}
 	}
-	
-	public function get_id_by_db_identifier($db_identifier) {
+
+	public function get_id_by_db_identifier( $db_identifier ) {
 		$prefix = \Tainacan\Entities\Collection::$db_identifier_prefix;
-		$sufix = \Tainacan\Entities\Collection::$db_identifier_sufix;
-		$id = str_replace($prefix, '', $db_identifier);
-		$id = str_replace($sufix, '', $id);
-		if (is_numeric($id)) {
+		$sufix  = \Tainacan\Entities\Collection::$db_identifier_sufix;
+		$id     = str_replace( $prefix, '', $db_identifier );
+		$id     = str_replace( $sufix, '', $id );
+		if ( is_numeric( $id ) ) {
 			return (int) $id;
 		}
+
 		return false;
 	}
 
@@ -371,8 +376,8 @@ class Collections extends Repository {
 		$current_moderators       = $this->get_mapped_property( $collection, 'moderators_ids' );
 		$this->current_moderators = is_array( $current_moderators ) ? $current_moderators : [];
 
-		$this->old_collection = $this->fetch( $collection->get_id() );
-		$this->old_core_title = $collection->get_core_title_metadatum();
+		$this->old_collection       = $this->fetch( $collection->get_id() );
+		$this->old_core_title       = $collection->get_core_title_metadatum();
 		$this->old_core_description = $collection->get_core_description_metadatum();
 
 
@@ -388,13 +393,13 @@ class Collections extends Repository {
 		do_action( 'tainacan-remove-collection-moderators', $collection, $deleted );
 	}
 
-	function handle_core_metadata ( $collection ) {
+	function handle_core_metadata( $collection ) {
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 
 		$Tainacan_Metadata->register_core_metadata( $collection );
-		
+
 		if ( $this->old_collection instanceof Entities\Collection && $this->old_collection->get_parent() != $collection->get_parent() ) {
-			$Tainacan_Metadata->maybe_update_core_metadata_meta_keys( $collection, $this->old_collection, $this->old_core_title, $this->old_core_description  );
+			$Tainacan_Metadata->maybe_update_core_metadata_meta_keys( $collection, $this->old_collection, $this->old_core_title, $this->old_core_description );
 		}
 	}
 

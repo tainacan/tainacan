@@ -28,9 +28,6 @@ class Logs extends Repository {
 
 	protected function __construct() {
 		parent::__construct();
-		add_action( 'tainacan-insert', array( $this, 'insert_log' ), 10, 5 );
-		add_action( 'tainacan-deleted', array( $this, 'insert_log'), 10, 5 );
-		add_action( 'tainacan-trashed', array( $this, 'insert_log'), 10, 5 );
 
 		add_action( 'add_attachment', array( $this, 'prepare_attachment_log_before_insert' ), 10 );
 	}
@@ -193,14 +190,14 @@ class Logs extends Repository {
 
 		} elseif ( is_array( $args ) ) {
 			$args = array_merge( [
-				'posts_per_page' => -1,
+				'posts_per_page' => - 1,
 			], $args );
 
 			$args = $this->parse_fetch_args( $args );
 
 			$args['post_type'] = Entities\Log::get_post_type();
 
-			$args = apply_filters('tainacan_fetch_args', $args, 'logs');
+			$args = apply_filters( 'tainacan_fetch_args', $args, 'logs' );
 
 			$wp_query = new \WP_Query( $args );
 
@@ -208,11 +205,14 @@ class Logs extends Repository {
 		}
 	}
 
-	public function delete( $object ){}
-	public function trash( $object ){}
+	public function delete( $object ) {
+	}
+
+	public function trash( $object ) {
+	}
 
 	public function update( $object, $new_values = null ) {
-		return $this->insert($object);
+		return $this->insert( $object );
 	}
 
 	public function fetch_last() {
@@ -238,14 +238,14 @@ class Logs extends Repository {
 
 			$tainacan_post = Repository::get_entity_by_post( $post );
 
-			if($tainacan_post) {
+			if ( $tainacan_post ) {
 				// was added a normal attachment
 
 				// get all attachments except the new
 				$old_attachments = $tainacan_post->get_attachments( $post_ID );
 
 				foreach ( $old_attachments as $index => $a ) {
-					unset( $old_attachments[$index]['id'] );
+					unset( $old_attachments[ $index ]['id'] );
 				}
 
 				$new_attachments[] = [
@@ -312,19 +312,19 @@ class Logs extends Repository {
 			}
 
 			if ( $is_update ) {
-				$msn = $this->prepare_event_message($new_value, $name, $class_name, 'updated');
+				$msn         = $this->prepare_event_message( $new_value, $name, $class_name, 'updated' );
 				$description = $msn;
-			} elseif( $is_delete ){
+			} elseif ( $is_delete ) {
 				// was deleted
-				$msn = $this->prepare_event_message($new_value, $name, $class_name, 'deleted');
+				$msn         = $this->prepare_event_message( $new_value, $name, $class_name, 'deleted' );
 				$description = $msn;
-			} elseif( !empty($diffs) ) {
+			} elseif ( ! empty( $diffs ) ) {
 				// was created
-				$msn = $this->prepare_event_message($new_value, $name, $class_name, 'created');
+				$msn         = $this->prepare_event_message( $new_value, $name, $class_name, 'created' );
 				$description = $msn;
-			} elseif( $is_trash ) {
+			} elseif ( $is_trash ) {
 				// was trashed
-				$msn = $this->prepare_event_message($new_value, $name, $class_name, 'trashed');
+				$msn         = $this->prepare_event_message( $new_value, $name, $class_name, 'trashed' );
 				$description = $msn;
 			}
 
@@ -363,12 +363,12 @@ class Logs extends Repository {
 	 *
 	 * @return string
 	 */
-	private function prepare_event_message($object, $name, $class_name, $action_message){
-		if ( $object instanceof Entities\Metadatum || $object instanceof Entities\Item || $object instanceof Entities\Filter) {
+	private function prepare_event_message( $object, $name, $class_name, $action_message ) {
+		if ( $object instanceof Entities\Metadatum || $object instanceof Entities\Item || $object instanceof Entities\Filter ) {
 			$collection = $object->get_collection();
 
 			if ( $collection ) {
-				$parent = '(parent '. $collection->get_name() .')';
+				$parent = '(parent: ' . $collection->get_name() . ')';
 			} else {
 				$parent = '(on repository level)';
 			}
@@ -394,11 +394,11 @@ class Logs extends Repository {
 			/** @var Entity $value * */
 			$value = $log->get_value();
 
-			$value->set_status('publish'); // TODO check if publish the entity on approve
+			$value->set_status( 'publish' ); // TODO check if publish the entity on approve
 
 			$repository = self::get_repository( $value );
 
-			if($value->validate()) {
+			if ( $value->validate() ) {
 				return $repository->insert( $value );
 			}
 		}
