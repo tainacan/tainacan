@@ -123,7 +123,9 @@ export default {
         ...mapActions('taxonomy', [
             'updateChildTerm',
             'deleteChildTerm',
-            'fetchChildTerms'
+            'fetchChildTerms',
+            'clearTerms',
+            'updateChildTermLocal'
         ]),
         addNewChildTerm() {
             this.showChildren = true;
@@ -205,8 +207,12 @@ export default {
                     title: this.$i18n.get('label_warning'),
                     message: this.$i18n.get('info_warning_selected_term_delete'),
                     onConfirm: () => { 
+                        
                         // If all checks passed, term can be deleted   
-                        this.deleteChildTerm({taxonomyId: this.taxonomyId, termId: this.term.id, parent: this.term.parent })
+                        this.deleteChildTerm({
+                                taxonomyId: this.taxonomyId, 
+                                termId: this.term.id, 
+                                parent: this.term.parent })
                             .then(() => {
                                 this.totalTerms = this.totalTerms - 1;
                             })
@@ -216,21 +222,14 @@ export default {
 
                         // Updates parent IDs for orphans
                         if (this.term.children != undefined && this.term.children.length > 0) {
-                            for (let orphanTerm of this.term.children) {  
-                                this.updateChildTerm({
-                                    taxonomyId: this.taxonomyId, 
-                                    termId: orphanTerm.id, 
-                                    name: orphanTerm.name,
-                                    description: orphanTerm.description,
-                                    parent: this.term.parent,
+                            for (let orphanTerm of this.term.children) { 
+                                this.updateChildTermLocal({ 
+                                    term: orphanTerm, 
+                                    parent: this.term.parent, 
                                     oldParent: this.term.id
-                                })
-                                .catch((error) => {
-                                    this.$console.log(error);
-                                });                       
-                            }
-                        }
-                         
+                                });                     
+                            } 
+                        }    
                     },
                 }
             });  

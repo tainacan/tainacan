@@ -344,27 +344,11 @@ export default {
         deleteBasicTerm(term) {
             this.deleteTerm({taxonomyId: this.taxonomyId, termId: term.id })
                 .then(() => {
-                    this.totalTerms = this.totalTerms - 1;
+                    this.searchTerms(this.offset);
                 })
                 .catch((error) => {
                     this.$console.log(error);
                 });
-
-            // Updates parent IDs for orphans
-            for (let orphanTerm of this.termsList) {
-                if (orphanTerm.parent == term.id) {
-                    this.updateTerm({
-                        taxonomyId: this.taxonomyId, 
-                        termId: orphanTerm.id, 
-                        name: orphanTerm.name,
-                        description: orphanTerm.description,
-                        parent: term.parent
-                    })
-                    .catch((error) => {
-                        this.$console.log(error);
-                    });
-                }
-            }
         }
     },
     created() {

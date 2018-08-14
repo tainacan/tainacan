@@ -123,10 +123,11 @@ export const updateChildTerm = (state, { term, parent, oldParent }) => {
             }
         }
     } else {
+        
         // Removes from old parent
-        this.deleteChildTerm(term.id, oldParent)
+        deleteChildTerm(term.id, oldParent)
         // Adds it to new one
-        this.addChildTerm(term, parent);
+        addChildTerm(term, parent);
     }
 };
 

@@ -277,6 +277,11 @@ export const updateChildTerm = ({ commit }, { taxonomyId, termId, name, descript
     });
 };
 
+// Used to update parent changes after deletion only locally
+export const updateChildTermLocal = ({ commit }, { term, parent, oldParent }) => {  
+    commit('updateChildTerm', { term: term, parent: parent, oldParent: oldParent });
+};
+
 export const deleteChildTerm = ({ commit }, { taxonomyId, termId, parent }) => {
     return new Promise(( resolve, reject ) => {
         axios.tainacan.delete(`/taxonomy/${taxonomyId}/terms/${termId}?permanently=1`)
@@ -295,3 +300,4 @@ export const deleteChildTerm = ({ commit }, { taxonomyId, termId, parent }) => {
 export const clearTerms = ({ commit }) => {
     commit('clearTerms');
 };
+
