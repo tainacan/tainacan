@@ -147,9 +147,7 @@
                         headerImageId: this.editForm.header_image_id,
                     })
                         .then((term) => {
-
-                            this.editForm = term
-                            this.$emit('onEditionFinished', this.editForm);
+                            this.$emit('onEditionFinished', term);
                             this.editForm = {};
                             this.formErrors = {};
                         })

@@ -75,14 +75,16 @@
             :key="childTerm.id"
             v-if="showChildren">
         
-        <recursive-terms-list 
+        <recursive-term-item
                 :term="childTerm"
                 :index="childIndex"
-                :taxonomy-id="taxonomyId"/>
+                :taxonomy-id="taxonomyId"
+                :order="order"/>
         
     </div>
     <a 
             class="view-more-terms"
+            :class="{'is-disabled': isEditingTerm}"
             @click="offset = offset + maxTerms; loadChildTerms(term.id)"
             v-if="showChildren && term.children != undefined && (totalTerms > term.children.length)">
         {{ $i18n.get('label_view_more') + ' (' + Number(totalTerms - term.children.length) + ' ' + $i18n.get('terms') + ')' }}
@@ -92,17 +94,16 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import RecursiveTermsList from './recursive-terms-list.vue';
+import RecursiveTermItem from './recursive-term-item.vue';
 import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
-    name: 'RecursiveTermsList',
+    name: 'RecursiveTermItem',
     data(){
         return {
             isLoadingTerms: false,
             isEditingTerm: false,
             searchQuery: '',
-            order: 'asc',
             showChildren: false,
             maxTerms: 1,
             offset: 0,
@@ -112,10 +113,11 @@ export default {
     props: {
         term: Object,
         index: Number,
-        taxonomyId: Number
+        taxonomyId: Number,
+        order: String,
     },
     components: {
-        RecursiveTermsList,
+        RecursiveTermItem,
     },
     methods: {
         ...mapActions('taxonomy', [
@@ -172,7 +174,6 @@ export default {
             this.term.opened = !this.term.opened;
             
             this.$termsListBus.onEditTerm(this.term);
-            // this.orderedTermsList.splice(index, 1, term);
         
         },
         tryToRemoveTerm() {
@@ -204,37 +205,32 @@ export default {
                     title: this.$i18n.get('label_warning'),
                     message: this.$i18n.get('info_warning_selected_term_delete'),
                     onConfirm: () => { 
-                        // If all checks passed, term can be deleted
-                        if (this.term.id == 'new') {
-                            let index = this.orderedTermsList.findIndex(deletedTerm => deletedTerm.id == 'new');
-                            if (index >= 0) {
-                                this.orderedTermsList.splice(index, 1);
-                            }
-                        } else {
-                            
-                            this.deleteChildTerm({taxonomyId: this.taxonomyId, termId: this.term.id, parent: this.term.parent })
-                                .then(() => {})
+                        // If all checks passed, term can be deleted   
+                        this.deleteChildTerm({taxonomyId: this.taxonomyId, termId: this.term.id, parent: this.term.parent })
+                            .then(() => {
+                                this.totalTerms = this.totalTerms - 1;
+                            })
+                            .catch((error) => {
+                                this.$console.log(error);
+                            });
+
+                        // Updates parent IDs for orphans
+                        if (this.term.children != undefined && this.term.children.length > 0) {
+                            for (let orphanTerm of this.term.children) {  
+                                this.updateChildTerm({
+                                    taxonomyId: this.taxonomyId, 
+                                    termId: orphanTerm.id, 
+                                    name: orphanTerm.name,
+                                    description: orphanTerm.description,
+                                    parent: this.term.parent,
+                                    oldParent: this.term.id
+                                })
                                 .catch((error) => {
                                     this.$console.log(error);
-                                });
-
-                            // Updates parent IDs for orphans
-                            if (this.term.children != undefined && this.term.children.length > 0) {
-                                for (let orphanTerm of this.term.children) {  
-                                    this.updateChildTerm({
-                                        taxonomyId: this.taxonomyId, 
-                                        termId: orphanTerm.id, 
-                                        name: orphanTerm.name,
-                                        description: orphanTerm.description,
-                                        parent: this.term.parent,
-                                        oldParent: this.term.id
-                                    })
-                                    .catch((error) => {
-                                        this.$console.log(error);
-                                    });                       
-                                }
+                                });                       
                             }
-                        }   
+                        }
+                         
                     },
                 }
             });  
@@ -251,7 +247,7 @@ export default {
         this.$termsListBus.$on('termEditionCanceled', (term) => {
             this.isEditingTerm = false;
             this.term.opened = false;
-        });
+        });        
     }
 }
 </script>

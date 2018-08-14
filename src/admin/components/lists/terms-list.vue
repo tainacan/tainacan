@@ -35,11 +35,11 @@
                         :placeholder="$i18n.get('instruction_search')"
                         type="search"
                         autocomplete="on"
-                        v-model="searchQuery"
-                        @keyup.enter="loadTerms(0)"
+                        :value="searchQuery"
+                        @keyup.enter="searchQuery = $event.target.value;searchTerms(0)"
                         :disabled="isEditingTerm">
                     <span
-                            @click="loadTerms(0)"
+                            @click="searchTerms(0)"
                             class="icon is-right">
                         <i class="mdi mdi-magnify" />
                     </span>
@@ -56,19 +56,42 @@
                 class="column">
             <br>
 
-            <div    
+            <!-- Basic list, without hierarchy, used during search -->
+            <div 
+                    v-if="searchQuery != undefined && searchQuery != ''"
                     v-for="(term, index) in localTerms"
                     :key="term.id">
-                
-                <recursive-terms-list 
+                <basic-term-item 
                         :term="term"
                         :index="index"
-                        :taxonomy-id="taxonomyId"/>
+                        :taxonomy-id="taxonomyId"
+                        :order="order"/>
             </div>
             <a 
                     class="view-more-terms-level-0"
+                    :class="{'is-disabled': isEditingTerm}"
+                    @click="offset = offset + maxTerms; searchTerms(offset)"
+                    v-if="(searchQuery != undefined && searchQuery != '') && totalTerms > localTerms.length">
+                {{ $i18n.get('label_view_more') + ' (' + Number(totalTerms - localTerms.length) + ' ' + $i18n.get('terms') + ')' }}
+            </a>
+
+            <!-- Recursive list for hierarchy -->
+            <div    
+                    v-if="searchQuery == undefined || searchQuery == ''"
+                    v-for="(term, index) in localTerms"
+                    :key="term.id">
+                
+                <recursive-term-item 
+                        :term="term"
+                        :index="index"
+                        :taxonomy-id="taxonomyId"
+                        :order="order"/>
+            </div>
+            <a 
+                    class="view-more-terms-level-0"
+                    :class="{'is-disabled': isEditingTerm}"
                     @click="offset = offset + maxTerms; loadTerms(0)"
-                    v-if="totalTerms > localTerms.length">
+                    v-if="(searchQuery == undefined || searchQuery == '') && totalTerms > localTerms.length">
                 {{ $i18n.get('label_view_more') + ' (' + Number(totalTerms - localTerms.length) + ' ' + $i18n.get('terms') + ')' }}
             </a>
         </div>
@@ -78,8 +101,8 @@
             <term-edition-form 
                     :style="{ 'top': termEditionFormTop + 'px'}"
                     :taxonomy-id="taxonomyId"
-                    @onEditionFinished="onTermEditionFinished(editTerm)"
-                    @onEditionCanceled="onTermEditionCanceled(editTerm)"
+                    @onEditionFinished="onTermEditionFinished($event)"
+                    @onEditionCanceled="onTermEditionCanceled($event)"
                     @onErrorFound="formWithErrors = editTerm.id"
                     :edit-form="editTerm"/>
         </div>
@@ -109,7 +132,8 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import TermEditionForm from '../edition/term-edition-form.vue';
-import RecursiveTermsList from './recursive-terms-list.vue'
+import RecursiveTermItem from './recursive-term-item.vue'
+import BasicTermItem from './basic-term-item.vue'
 import t from 't';
 
 export default {
@@ -124,7 +148,7 @@ export default {
             searchQuery: '',
             localTerms: [],
             editTerm: null,
-            maxTerms: 4,
+            maxTerms: 2,
             offset: 0,
             totalTerms: 0
         }
@@ -154,22 +178,26 @@ export default {
         }
     },
     components: {
-        RecursiveTermsList,
+        RecursiveTermItem,
+        BasicTermItem,
         TermEditionForm
     },
     methods: {
         ...mapActions('taxonomy', [
             'deleteTerm',
             'fetchChildTerms',
-            'clearTerms'
+            'clearTerms',
+            'fetchTerms',
+            'updateTerm'
         ]),
         ...mapGetters('taxonomy',[
             'getTerms'
         ]),
         onChangeOrder(newOrder) {
+            this.offset = 0;
             this.order = newOrder;
             this.clearTerms();
-            this.loadTerms(0);
+            this.searchTerms(0);
         },
         addNewTerm(parent) {
 
@@ -198,11 +226,13 @@ export default {
             }
             this.$termsListBus.onEditTerm(newTerm);
         },
-        onTermEditionFinished(term) {
-            this.$termsListBus.onTermEditionSaved(term);
-        },
-        onTermEditionCanceled(term) {
+        onTermEditionFinished($event) {
 
+            this.$termsListBus.onTermEditionSaved($event);
+        },
+        onTermEditionCanceled($event) {
+
+            let term = $event;
             let originalTerm;
             for (let aTerm of this.termsList) {
                 if (aTerm.id == term.id)
@@ -279,6 +309,62 @@ export default {
                     this.isLoadingTerms = false;   
                     this.$console.log(error);
                 });
+        },
+        searchTerms(offset) {
+            
+            if (this.searchQuery == undefined || this.searchQuery == '') {
+                this.offset = 0;
+                this.loadTerms(0);
+            } else {
+                this.offset = offset;
+                if (this.offset == 0)
+                    this.clearTerms();
+
+                this.isLoadingTerms = true;
+                let search = { searchterm: this.searchQuery };
+                this.fetchTerms({ 
+                        taxonomyId: this.taxonomyId, 
+                        fetchOnly: '', 
+                        search: search, 
+                        all: '', 
+                        order: this.order,
+                        offset: this.offset,
+                        number: this.maxTerms })
+                    .then((resp) => {
+                        this.isLoadingTerms = false;   
+                        this.totalTerms = resp.total;
+                    })
+                    .catch((error) => {
+                        this.isLoadingTerms = false;   
+                        this.$console.log(error);
+                    });
+            }
+        },
+        // When searching, term deletion is perfomed by list as it has control of it's children
+        deleteBasicTerm(term) {
+            this.deleteTerm({taxonomyId: this.taxonomyId, termId: term.id })
+                .then(() => {
+                    this.totalTerms = this.totalTerms - 1;
+                })
+                .catch((error) => {
+                    this.$console.log(error);
+                });
+
+            // Updates parent IDs for orphans
+            for (let orphanTerm of this.termsList) {
+                if (orphanTerm.parent == term.id) {
+                    this.updateTerm({
+                        taxonomyId: this.taxonomyId, 
+                        termId: orphanTerm.id, 
+                        name: orphanTerm.name,
+                        description: orphanTerm.description,
+                        parent: term.parent
+                    })
+                    .catch((error) => {
+                        this.$console.log(error);
+                    });
+                }
+            }
         }
     },
     created() {
@@ -299,6 +385,9 @@ export default {
         });
         this.$termsListBus.$on('addNewChildTerm', (parentId) => {
             this.addNewTerm(parentId);
+        });
+        this.$termsListBus.$on('deleteBasicTermItem', (term) => {
+            this.deleteBasicTerm(term);
         });
     }
     

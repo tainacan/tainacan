@@ -18,6 +18,9 @@ export default {
                 },
                 onAddNewChildTerm(parentId) {
                     this.$emit('addNewChildTerm', parentId);
+                },
+                onDeleteBasicTermItem(term) {
+                    this.$emit('deleteBasicTermItem', term);
                 }
             }
         });

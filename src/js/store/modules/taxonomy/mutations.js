@@ -34,7 +34,15 @@ export const setSingleTerm = (state, term) => {
 };
 
 export const setTerms = (state, terms) => {
-    state.terms = terms;
+
+    for (let term of terms) {
+        let existingTermIndex = state.terms.findIndex(aTerm => aTerm.id == term.id);
+        if (existingTermIndex >= 0)
+            Vue.set(state.terms, existingTermIndex, term);
+        else
+            state.terms.push(term);
+    }
+
 };
 
 export const clearTerms = (state) => {
@@ -81,10 +89,11 @@ export const addChildTerm = (state, { term, parent }) => {
         }
     } else {
         if (state.terms != undefined) {
-            for (let i = 0; i < state.terms.length; i++) {
-                if (state.terms[i].id == term.id)
-                    Vue.set(state.terms, i, term);
-            }
+            let existingTermIndex = state.terms.findIndex(aTerm => aTerm.id == term.id);
+            if (existingTermIndex >= 0)
+                Vue.set(state.terms, existingTermIndex, term);
+            else
+                state.terms.unshift(term);
         } else {    
             state.terms = []
             state.terms.unshift(term);

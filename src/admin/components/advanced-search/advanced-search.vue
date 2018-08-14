@@ -350,7 +350,7 @@
                     },
                     all: false
                 }).then((res) => {
-                    this.termList = res;
+                    this.termList = res.terms;
 
                     for(let term in this.termList){
                         this.terms.push(this.termList[term].name);
