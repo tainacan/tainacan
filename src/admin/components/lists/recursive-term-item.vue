@@ -105,7 +105,7 @@ export default {
             isEditingTerm: false,
             searchQuery: '',
             showChildren: false,
-            maxTerms: 1,
+            maxTerms: 100,
             offset: 0,
             totalTerms: 0
         }

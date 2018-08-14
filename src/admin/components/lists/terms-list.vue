@@ -148,7 +148,7 @@ export default {
             searchQuery: '',
             localTerms: [],
             editTerm: null,
-            maxTerms: 2,
+            maxTerms: 100,
             offset: 0,
             totalTerms: 0
         }
