@@ -14,7 +14,7 @@ Tainacan is a powerful and flexible repository platform for WordPress. Manage an
 
 Tainacan is a powerful and flexible repository platform for WordPress. Manage and publish you digital collections as easily as publishing a post to your blog, while having all the tools of a professional repository platform.
 
-Please note: This is an (super) early release of this plugin, and we are working hard to release 1.0 soon, please refer to the [project's website](http://tainacan.org/new) for more information and road map.
+Please note: This is an early release of this plugin, and we are working hard to release 1.0 soon, please refer to the [project's website](http://tainacan.org/new) for more information and road map.
 
 = Features =
 
@@ -35,11 +35,11 @@ To get an overview of the main concepts of Tainacan, please visit [this page](ht
 
 = Create a collection = 
 
-Click "New Collection" to create a collection and choose a name for it.
+Click "New Collection" to create a new collection, use a mapping standard or import using one of our importers.
 
 = Configure your collection = 
 
-Navigate the top menu to set your collection up. Create the metadata item in this collection will have, and choose, from these metadata, which ones are going to be used as a filter.
+Navigate the top menu to set your collection up. Create the metadata that items in this collection will have, and choose, from these metadata, which ones are going to be used as a filter.
 
 = Add items = 
 
@@ -47,9 +47,13 @@ Back to the "Items" screen, click "Add new" to create a new item.
 
 = Manage and browse your collection =
 
-Through this admin interface you can manage your collection and browse its item using the faceted search interface.
+Through this admin interface you can manage your collection and browse its item using the faceted search interface or advanced search interface.
 
 If you want to visit your collections in the public side of your site, using your current theme, visit http://your-site/tainacan-collection and you will get the list of your collections.
+
+= Set up Taxonomies =
+
+You can also have metada as taxonomies, which you can configure with a set of hierarchical terms of your own vocabulary.
 
 = Add links to your menu =
 
@@ -75,6 +79,11 @@ If you have Imagick installed in your server, Tainacan will be able to automatic
  
 1. Manage collections
 2. Set up your collection
-3. Choose the metadata your collection will use
-4. Add items to your collections
-5. Browse your collections with a faceted search interface
+3. Choose the metadata and filters for your collection
+4. Add items described by your metadata
+5. Set up your item as a file, link or text and attach many type of documents
+6. Browse your collections with a faceted search interface
+7. Navigate through rich filtering interface
+8. Explore more with Advanced Search
+9. Set up Taxonomies to be used across your repository
+10. Expose your collection using Tainacan default theme
