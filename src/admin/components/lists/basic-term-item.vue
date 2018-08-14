@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
 import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
@@ -113,14 +113,14 @@ export default {
         }
     },
     created() {
-        this.$termsListBus.$on('editTerm', (term) => {
+        this.$termsListBus.$on('editTerm', () => {
             this.isEditingTerm = true;
         });
-        this.$termsListBus.$on('termEditionSaved', (term) => {
+        this.$termsListBus.$on('termEditionSaved', () => {
             this.isEditingTerm = false;
             this.term.opened = false;
         });
-        this.$termsListBus.$on('termEditionCanceled', (term) => {
+        this.$termsListBus.$on('termEditionCanceled', () => {
             this.isEditingTerm = false;
             this.term.opened = false;
         });        

@@ -214,7 +214,7 @@ export default {
                 this.localTerms.unshift(newTerm);
             } else {
                 for (let term of this.localTerms) {
-                    let parentTerm = t.find(term, [], (node, par) => { return node.id == parent; });
+                    let parentTerm = t.find(term, [], (node) => { return node.id == parent; });
                     if (parentTerm != undefined) {
                         if (parentTerm['children'] == undefined) {
                             this.$set(parentTerm, 'children', []);
@@ -238,7 +238,7 @@ export default {
                 if (aTerm.id == term.id)
                     originalTerm = aTerm;
                 else {
-                    let childOriginalTerm = t.find(aTerm, [], (node, par) => { return node.id == term.id} );
+                    let childOriginalTerm = t.find(aTerm, [], (node) => { return node.id == term.id} );
                     if (childOriginalTerm != undefined)
                         originalTerm = childOriginalTerm;
                 }
@@ -250,7 +250,7 @@ export default {
                         this.$set(this.localTerms, i, JSON.parse(JSON.stringify(originalTerm)));
                         break;
                     } else { 
-                        let canceledParent = t.find(this.localTerms[i], [], (node, par) => { return node.id == originalTerm.parent }); 
+                        let canceledParent = t.find(this.localTerms[i], [], (node) => { return node.id == originalTerm.parent }); 
                         if (canceledParent != undefined) {
                             for (let j = 0; j < canceledParent['children'].length; j++){
                                 if (canceledParent['children'][j].id == originalTerm.id) {
@@ -269,7 +269,7 @@ export default {
                             this.localTerms.splice(i, 1);
                             break;
                         } else { 
-                            let canceledParent = t.find(this.localTerms[i], [], (node, par) => { return node.id == term.parent }); 
+                            let canceledParent = t.find(this.localTerms[i], [], (node) => { return node.id == term.parent }); 
                             if (canceledParent != undefined) {
                                 for (let j = 0; j < canceledParent['children'].length; j++){
                                     if (canceledParent['children'][j].id == term.id) {
@@ -375,11 +375,11 @@ export default {
             this.editTerm = term;
             this.isEditingTerm = true;
         });
-        this.$termsListBus.$on('termEditionSaved', (term) => {
+        this.$termsListBus.$on('termEditionSaved', () => {
             this.isEditingTerm = false;
             this.editTerm = null;
         });
-        this.$termsListBus.$on('termEditionCanceled', (term) => {
+        this.$termsListBus.$on('termEditionCanceled', () => {
             this.isEditingTerm = false;
             this.editTerm = null;
         });
