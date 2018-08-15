@@ -128,7 +128,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
     @import "../../scss/_variables.scss";
 
     // Term Item
@@ -157,12 +157,6 @@ export default {
             }
         }
 
-        .children-icon {
-            color: $blue2;
-            position: absolute;
-            left: -21px;
-        }
-
         .term-name {
             text-overflow: ellipsis;
             overflow-x: hidden;
@@ -186,16 +180,6 @@ export default {
             font-weight: bold;
             color: $danger;
         }
-        .children-dropdown {
-            margin-left: auto;
-            color: $blue4;
-            cursor: pointer;
-            padding-right: 1rem;
-            white-space: nowrap;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-        }
         .controls { 
             visibility: hidden;
             opacity: 0.0;
@@ -215,7 +199,7 @@ export default {
                 }
             }            
         }
-        .controls.is-disabled a, .children-dropdown.is-disabled {
+        .controls.is-disabled a {
             color: $gray4 !important;
             cursor: not-allowed !important;
             user-select: none;

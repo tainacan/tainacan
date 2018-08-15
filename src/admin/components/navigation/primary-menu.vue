@@ -194,7 +194,7 @@ export default {
             }
             .menu-text-import {
                 position: relative;
-                top: -2px;
+                top: -3px;
                 left: -6px;
             }
         }
