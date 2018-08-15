@@ -58,6 +58,13 @@ rm -rf $SVN_PATH/trunk/*
 cp -R $BUILD_PATH/* $SVN_PATH/trunk/
 ```
 
+Update assets
+
+```
+cp $GIT_PATH/wp-repo-assets/* $SVN_PATH/assets/
+```
+
+
 ### Finish and commit
 
 Go to the SVN folder

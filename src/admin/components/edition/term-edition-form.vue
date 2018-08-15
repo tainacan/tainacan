@@ -35,7 +35,7 @@
                             class="button is-rounded is-secondary"
                             id="button-delete-header"
                             :aria-label="$i18n.get('label_button_delete_thumb')"
-                            @click="deleteThumbnail()">
+                            @click="deleteHeaderImage()">
                         <b-icon 
                             size="is-small"
                             icon="delete" />
@@ -130,8 +130,8 @@
         },
         methods: {
             ...mapActions('taxonomy', [
-                'sendTerm',
-                'updateTerm',
+                'sendChildTerm',
+                'updateChildTerm',
             ]),
             ...mapGetters('taxonomy', [
                 'getTerms'
@@ -139,17 +139,17 @@
             saveEdition(term) {
 
                 if (term.id === 'new') {
-                    this.sendTerm({
+                    this.sendChildTerm({
                         taxonomyId: this.taxonomyId,
                         name: this.editForm.name,
                         description: this.editForm.description,
                         parent: this.editForm.parent,
                         headerImageId: this.editForm.header_image_id,
                     })
-                        .then(() => {
+                        .then((term) => {
+                            this.$emit('onEditionFinished', term);
                             this.editForm = {};
                             this.formErrors = {};
-                            this.$emit('onEditionFinished');
                         })
                         .catch((errors) => {
                             for (let error of errors.errors) {
@@ -161,7 +161,7 @@
                         });
 
                 } else {
-                    this.updateTerm({
+                    this.updateChildTerm({
                         taxonomyId: this.taxonomyId,
                         termId: this.editForm.id,
                         name: this.editForm.name,
@@ -170,9 +170,8 @@
                         headerImageId: this.editForm.header_image_id,
                     })
                         .then(() => {
-                            this.editForm.saved = true;
                             this.formErrors = {};
-                            this.$emit('onEditionFinished');
+                            this.$emit('onEditionFinished', this.editForm);
                         })
                         .catch((errors) => {
                             for (let error of errors.errors) {
@@ -197,7 +196,6 @@
                 );
             },
             initializeMediaFrames() {
-
                 this.headerImageMediaFrame = new wpMediaFrames.headerImageControl(
                     'my-header-image-media-frame', {
                         button_labels: {
@@ -226,7 +224,7 @@
                 }
             },
         },
-        created() {
+        mounted() {
             this.initializeMediaFrames();
         }
     }

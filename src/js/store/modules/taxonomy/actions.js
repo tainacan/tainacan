@@ -170,7 +170,7 @@ export const updateTerm = ({ commit }, { taxonomyId, termId, name, description, 
     });
 };
 
-export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search, all, order}) => {
+export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search, all, order, offset, number}) => {
     
     let query = '';
     if (order == undefined) {
@@ -187,12 +187,15 @@ export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search, all, orde
         query =`?hideempty=0&order=${order}`;
     }
 
+    if (offset != undefined && number != undefined) {
+        query += '&offset=' + offset + '&number=' + number;
+    }
     return new Promise((resolve, reject) => {
         axios.tainacan.get(`/taxonomy/${taxonomyId}/terms${query}`)
             .then(res => {
                 let terms = res.data;
                 commit('setTerms', terms);
-                resolve( terms );
+                resolve({ terms: terms, total: res.headers['x-wp-total'] });
             })
             .catch(error => {
                 reject( error );
@@ -200,7 +203,8 @@ export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search, all, orde
     });
 };
 
-export const fetchChildTerms = ({ commit }, { parentId, taxonomyId, fetchOnly, search, all, order }) => {
+// Hierarchy usage of terms list -----------------
+export const fetchChildTerms = ({ commit }, { parentId, taxonomyId, fetchOnly, search, all, order, offset, number }) => {
 
     let query = '';
     if (order == undefined) {
@@ -212,22 +216,88 @@ export const fetchChildTerms = ({ commit }, { parentId, taxonomyId, fetchOnly, s
     } else if(fetchOnly && search && all ){ 
         query = `?hideempty=0&order=${order}&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
     } else if(search && !all && !fetchOnly){ 
-        console.log(search)
         query = `?hideempty=0&order=${order}&${qs.stringify(search)}`;
     } else {
         query =`?hideempty=0&order=${order}`;
     }
+
     query += '&parent=' + parentId;
 
+    if (offset != undefined && number != undefined) {
+        query += '&offset=' + offset + '&number=' + number;
+    }
     return new Promise((resolve, reject) => {
         axios.tainacan.get(`/taxonomy/${taxonomyId}/terms${query}`)
             .then(res => {
                 let terms = res.data;
                 commit('setChildTerms', { terms: terms, parent: parentId });
-                resolve(terms);
+                resolve({ terms: terms, total: res.headers['x-wp-total'] });
             })
             .catch(error => {
                 reject(error);
             });
     });
 };
+
+export const sendChildTerm = ({ commit }, { taxonomyId, name, description, parent, headerImageId }) => {
+    return new Promise(( resolve, reject ) => {
+        axios.tainacan.post(`/taxonomy/${taxonomyId}/terms/`, {
+            name: name,
+            description: description,
+            parent: parent,
+            header_image_id: headerImageId,
+        })
+            .then( res => {
+                let term = res.data;
+                commit('addChildTerm', {term: term, parent: parent });
+                resolve( term );
+            })
+            .catch(error => {
+                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+            });
+    });
+};
+
+export const updateChildTerm = ({ commit }, { taxonomyId, termId, name, description, parent, headerImageId, oldParent }) => {
+    return new Promise(( resolve, reject ) => {
+        axios.tainacan.patch(`/taxonomy/${taxonomyId}/terms/${termId}`, {
+            name: name,
+            description: description,
+            parent: parent,
+            header_image_id: headerImageId,
+        })
+            .then( res => {
+                let term = res.data;
+                commit('updateChildTerm', { term: term, parent: parent, oldParent: oldParent });
+                resolve( term );
+            })
+            .catch(error => {
+                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+            });
+    });
+};
+
+// Used to update parent changes after deletion only locally
+export const updateChildTermLocal = ({ commit }, { term, parent, oldParent }) => {  
+    commit('updateChildTerm', { term: term, parent: parent, oldParent: oldParent });
+};
+
+export const deleteChildTerm = ({ commit }, { taxonomyId, termId, parent }) => {
+    return new Promise(( resolve, reject ) => {
+        axios.tainacan.delete(`/taxonomy/${taxonomyId}/terms/${termId}?permanently=1`)
+            .then(res => {
+                let term = res.data;
+                commit('deleteChildTerm', { termId: termId, parent: parent });
+                resolve( term );
+            })
+            .catch(error => {
+                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+            });
+    });
+};
+
+
+export const clearTerms = ({ commit }) => {
+    commit('clearTerms');
+};
+

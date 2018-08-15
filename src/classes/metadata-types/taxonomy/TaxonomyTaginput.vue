@@ -68,7 +68,7 @@
                     },
                     all: true
                 }).then((res) => {
-                    this.termList = res;
+                    this.termList = res.terms;
                     
                     for(let term of this.termList){
                         this.labels.push({label: term.name, value: term.id});

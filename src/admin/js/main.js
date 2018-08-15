@@ -43,6 +43,7 @@ import draggable from 'vuedraggable'
 import store from '../../js/store/store'
 import router from './router'
 import eventBusSearch from '../../js/event-bus-search';
+import termsListBus from './terms-list-bus.js';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, UserCapabilitiesPlugin } from './utilities';
 import VueTheMask from 'vue-the-mask';
 
@@ -88,6 +89,7 @@ Vue.component('help-button', HelpButton);
 Vue.component('draggable', draggable);
 Vue.component('tainacan-title', TainacanTitle);
 
+Vue.use(termsListBus, {});
 Vue.use(eventBusSearch, { store: store, router: router});
 
 // Changing title of pages
