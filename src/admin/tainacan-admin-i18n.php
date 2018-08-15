@@ -64,6 +64,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'run'                                            => __( 'Run', 'tainacan' ),
 	'edit_search'                                    => __( 'Edit search', 'tainacan' ),
 	'apply'                                          => __( 'Apply', 'tainacan' ),
+	'add_another_edition_criterion'                   => __( 'Add another edition criterion', 'tainacan' ),
+	'add_one_edition_criterion'                       => __( 'Add one edition criterion', 'tainacan' ),
 
 	// Wordpress Status
 	'publish'                                        => __( 'Publish', 'tainacan' ),
@@ -316,6 +318,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_insert_mapper_metadatum_info'       => __( 'Insert the new mapper\'s metadatum info', 'tainacan' ),
 	'instruction_select_max_options_to_show'         => __( 'Select max options to show', 'tainacan' ),
 	'instruction_select_collection_fetch_items'      => __( 'Select a collection to fecth items', 'tainacan' ),
+	'instruction_select_a_action'                    => __( 'Select a action', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_search_results'                            => __( 'Search Results', 'tainacan' ),
@@ -414,6 +417,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_there_are_no_metadata_in_repository_level' => __( 'There are no metadata in repository level', 'tainacan' ),
 	'info_import_collection'						 => __( 'Import from external sources.', 'tainacan' ),
 	'info_import_items'								 => __( 'Import items from external sources.', 'tainacan' ),
+	'info_editing_items_in_bulk'                     => __( 'Editing items in bulk', 'tainacan' ),
+	'info_by_inner'                                  => __( 'by', 'tainacan' ),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),

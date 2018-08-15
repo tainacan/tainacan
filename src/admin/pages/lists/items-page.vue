@@ -481,6 +481,7 @@
 
                         :collection-id="collectionId"
                         :table-metadata="displayedMetadata"
+                        :all-metadatum="metadata"
                         :items="items"
                         :is-loading="isLoadingItems"
                         :is-on-trash="status == 'trash'"
@@ -495,6 +496,7 @@
 
                         :collection-id="collectionId"
                         :table-metadata="displayedMetadata"
+                        :all-metadatum="metadata"
                         :items="items"
                         :is-loading="isLoadingItems"
                         :is-on-trash="status == 'trash'"
@@ -520,6 +522,7 @@
                               advancedSearchResults"
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata"
+                        :all-metadatum="metadata"
                         :items="items"
                         :is-loading="isLoadingItems"
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/> 
@@ -542,6 +545,7 @@
                               !openAdvancedSearch"
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata"
+                        :all-metadatum="metadata"
                         :items="items"
                         :is-loading="isLoadingItems"
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>     

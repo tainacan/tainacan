@@ -28,7 +28,9 @@
                             id="item-delete-selected-items">
                         {{ isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('label_send_to_trash') }}
                     </b-dropdown-item>
-                    <b-dropdown-item disabled>{{ $i18n.get('label_edit_selected_items') + ' (Not ready)' }}
+                    <b-dropdown-item
+                            @click="openBulkEditionModal()">
+                        {{ $i18n.get('label_edit_selected_items') }}
                     </b-dropdown-item>
                 </b-dropdown>
             </div>
@@ -508,6 +510,7 @@
 <script>
 import { mapActions } from 'vuex';
 import CustomDialog from '../other/custom-dialog.vue';
+import BulkEditionModal from '../bulk-edition/bulk-edition-modal.vue';
 
 export default {
     name: 'ItemsList',
@@ -525,7 +528,8 @@ export default {
         items: Array,
         isLoading: false,
         isOnTrash: false,
-        viewMode: 'table'
+        viewMode: 'table',
+        allMetadatum: Array,
     },
     mounted() {
         this.selectedItems = [];
@@ -551,6 +555,18 @@ export default {
         ...mapActions('collection', [
             'deleteItem',
         ]),
+        openBulkEditionModal(){
+            this.$modal.open({
+                parent: this,
+                component: BulkEditionModal,
+                props: {
+                    modalTitle: this.$i18n.get('info_editing_items_in_bulk'),
+                    objects: this.items,
+                    objectType: this.$i18n.get('items'),
+                    metadata: this.allMetadatum,
+                }
+            });
+        },
         selectAllItemsOnPage() {
             for (let i = 0; i < this.selectedItems.length; i++) 
                 this.selectedItems.splice(i, 1, !this.allItemsOnPageSelected);

@@ -30,12 +30,12 @@
         created(){
             let metadata_type_options = this.metadatum.metadatum.metadata_type_options;
             this.component = ( metadata_type_options && metadata_type_options.input_type )
-                ? this.metadatum.metadatum.metadata_type_options.input_type : this.componentAttribute
+                ? this.metadatum.metadatum.metadata_type_options.input_type : this.componentAttribute;
 
             this.collectionId = this.metadatum.metadatum.collection_id;
             this.taxonomy = metadata_type_options.taxonomy_id;
 
-            if( metadata_type_options && metadata_type_options.allow_new_terms ){
+            if( metadata_type_options && metadata_type_options.allow_new_terms && this.metadatum.item ){
                 this.allowNew = metadata_type_options.allow_new_terms === 'yes'
             }
 
