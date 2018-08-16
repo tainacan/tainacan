@@ -92,6 +92,7 @@ Vue.component('view-mode-masonry', ViewModeMasonry);
 
 Vue.use(eventBusSearch, { store: store, router: routerTheme});
 
+// THEME ITEMS LIST (COLLECTIONS)
 import ThemeItemsList from '../theme-items-list.vue';
 
 new Vue({
@@ -108,6 +109,32 @@ new Vue({
 
         if (this.$el.attributes['collection-id'] != undefined)
             this.collectionId = this.$el.attributes['collection-id'].value;
+        if (this.$el.attributes['default-view-mode'] != undefined)
+            this.defaultViewMode = this.$el.attributes['default-view-mode'].value;
+        if (this.$el.attributes['enabled-view-modes'] != undefined)
+            this.enabledViewModes = this.$el.attributes['enabled-view-modes'].value.split(',');
+
+    }
+    
+});
+
+// THEME ITEMS LIST (TERMS)
+import ThemeTermItemsList from '../theme-term-items-list.vue';
+
+new Vue({
+    el: '#tainacan-term-items-page',
+    store,
+    router: routerTheme, 
+    data: {
+        termId: '',
+        defaultViewMode: '',
+        enabledViewModes: {}   
+    },
+    render: h => h(ThemeTermItemsList),
+    beforeMount () {
+
+        if (this.$el.attributes['term-id'] != undefined)
+            this.termId = this.$el.attributes['term-id'].value;
         if (this.$el.attributes['default-view-mode'] != undefined)
             this.defaultViewMode = this.$el.attributes['default-view-mode'].value;
         if (this.$el.attributes['enabled-view-modes'] != undefined)
