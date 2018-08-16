@@ -41,6 +41,7 @@ class Theme_Helper {
 		add_action('pre_get_posts', array($this, 'tax_archive_pre_get_posts'));
 		
 		add_action('archive_template_hierarchy', array($this, 'items_template_hierachy'));
+		add_action('taxonomy_template_hierarchy', array($this, 'tax_template_hierachy'));
 		add_action('single_template_hierarchy', array($this, 'items_template_hierachy'));
 		
 		add_filter('theme_mod_header_image', array($this, 'header_image'));
@@ -241,6 +242,28 @@ class Theme_Helper {
 				} elseif (is_single()) {
 					array_push($templates, 'tainacan/single-items.php');
 				}
+				
+				array_push($templates, $last_template);
+				
+			}
+			
+		}
+		
+		return $templates;
+		
+	}
+	
+	function tax_template_hierachy($templates) {
+		
+		if (is_tax()) {
+			
+			$term = get_queried_object();
+			
+			if ( isset($term->taxonomy) && $this->is_taxonomy_a_tainacan_tax($term->taxonomy)) {
+				
+				$last_template = array_pop($templates);
+				
+				array_push($templates, 'tainacan/archive-taxonomy.php');
 				
 				array_push($templates, $last_template);
 				
