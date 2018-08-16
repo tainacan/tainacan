@@ -113,7 +113,7 @@ class Items extends Repository {
 		        'type'        => 'string',
 		        'description' => __( 'The status of item comment, if is allowed, so is "open" or is "closed".', 'tainacan' ),
 		        'default'     => get_default_comment_status(Entities\Collection::get_post_type()),
-		        'validation' => v::optional(stringType()->in( [ 'open', 'closed' ] )),
+		        'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
 		    ]
 		] );
 	}
