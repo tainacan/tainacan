@@ -227,34 +227,23 @@ export default {
             this.$termsListBus.onEditTerm(newTerm);
         },
         onTermEditionFinished($event) {
-
             this.$termsListBus.onTermEditionSaved($event);
         },
         onTermEditionCanceled($event) {
 
             let term = $event;
-            let originalTerm;
-            for (let aTerm of this.termsList) {
-                if (aTerm.id == term.id)
-                    originalTerm = aTerm;
-                else {
-                    let childOriginalTerm = t.find(aTerm, [], (node) => { return node.id == term.id} );
-                    if (childOriginalTerm != undefined)
-                        originalTerm = childOriginalTerm;
-                }
-            }
 
-            if (originalTerm != undefined) {
+            if (term.id == 'new') { 
                 for (let i = 0; i < this.localTerms.length; i++) {
                     if (this.localTerms[i].id == term.id) {
-                        this.$set(this.localTerms, i, JSON.parse(JSON.stringify(originalTerm)));
+                        this.localTerms.splice(i, 1);
                         break;
                     } else { 
-                        let canceledParent = t.find(this.localTerms[i], [], (node) => { return node.id == originalTerm.parent }); 
+                        let canceledParent = t.find(this.localTerms[i], [], (node) => { return node.id == term.parent }); 
                         if (canceledParent != undefined) {
                             for (let j = 0; j < canceledParent['children'].length; j++){
-                                if (canceledParent['children'][j].id == originalTerm.id) {
-                                    this.$set(canceledParent['children'], j, JSON.parse(JSON.stringify(originalTerm)));
+                                if (canceledParent['children'][j].id == term.id) {
+                                    canceledParent['children'].splice(j, 1);
                                     break;
                                 }
                             }
@@ -263,17 +252,29 @@ export default {
                     }
                 }
             } else {
-                if (term.id == 'new') { 
+
+                let originalTerm;
+                for (let aTerm of this.termsList) {
+                    if (aTerm.id == term.id)
+                        originalTerm = aTerm;
+                    else {
+                        let childOriginalTerm = t.find(aTerm, [], (node) => { return node.id == term.id} );
+                        if (childOriginalTerm != undefined)
+                            originalTerm = childOriginalTerm;
+                    }
+                }
+
+                if (originalTerm != undefined) {
                     for (let i = 0; i < this.localTerms.length; i++) {
                         if (this.localTerms[i].id == term.id) {
-                            this.localTerms.splice(i, 1);
+                            this.$set(this.localTerms, i, JSON.parse(JSON.stringify(originalTerm)));
                             break;
                         } else { 
-                            let canceledParent = t.find(this.localTerms[i], [], (node) => { return node.id == term.parent }); 
+                            let canceledParent = t.find(this.localTerms[i], [], (node) => { return node.id == originalTerm.parent }); 
                             if (canceledParent != undefined) {
                                 for (let j = 0; j < canceledParent['children'].length; j++){
-                                    if (canceledParent['children'][j].id == term.id) {
-                                        canceledParent['children'].splice(j, i);
+                                    if (canceledParent['children'][j].id == originalTerm.id) {
+                                        this.$set(canceledParent['children'], j, JSON.parse(JSON.stringify(originalTerm)));
                                         break;
                                     }
                                 }

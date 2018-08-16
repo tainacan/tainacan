@@ -116,10 +116,11 @@ class Theme_Helper {
 	}
 
 	public function the_content_filter($content) {
-		global $post;
 		
 		if (!is_single())
 			return $content;
+
+		$post = get_queried_object();
 		
 		// Is it a collection Item?
 		if ( !$this->is_post_an_item($post) ) {

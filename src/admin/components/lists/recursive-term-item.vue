@@ -14,52 +14,51 @@
                 class="icon children-icon">
             <i class="mdi mdi-24px mdi-subdirectory-arrow-right"/>
         </span> 
+        <span class="children-dropdown icon">
+            <i 
+                    :class="{ 
+                        'mdi-menu-right': !showChildren,  
+                        'mdi-menu-down': showChildren,
+                        'is-disabled': isEditingTerm }"
+                    class="mdi mdi-36px"
+                    v-if="term.total_children > 0"
+                    @click.prevent="toggleShowChildren()"/>
+        </span>
         <span 
                 class="term-name" 
                 :class="{'is-danger': formWithErrors == term.id }">
             {{ term.name }}
         </span>
-        <span   
-                v-if="term.id != undefined"
+        <span 
+                v-if="term.id == 'new'"
                 class="label-details">
-            <span 
-                    class="not-saved" 
-                    v-if="term.id == 'new'"> 
+            <span class="not-saved" > 
                 {{ $i18n.get('info_not_saved') }}
             </span>
         </span>
         <span 
-                class="children-dropdown"
-                :class="{'is-disabled': isEditingTerm}"
-                v-if="term.total_children > 0"
-                @click.prevent="toggleShowChildren()">
-           <span class="icon">
-                <i 
-                        :class="{ 
-                            'mdi-menu-right': !showChildren,  
-                            'mdi-menu-down': showChildren }"
-                        class="mdi mdi-24px"/>
-            </span>
+                class="children-counter"
+                v-if="term.total_children > 0">
             <span>{{ term.total_children + ' ' + $i18n.get('label_children_terms') }}</span>
         </span>
         <span 
                 class="controls" 
                 :class="{'is-disabled': isEditingTerm}">
             <a @click="addNewChildTerm(term, index)">
-                <b-icon 
-                        size="is-small"
-                        icon="plus-circle"/>
+                <span class="icon">
+                    <i class="mdi mdi-18px mdi-plus-circle"/>
+                </span>
             </a>
             <a
                     @click.prevent="editTerm()">
-                <b-icon 
-                        size="is-small" 
-                        icon="pencil"/>
+                <span class="icon">
+                    <i class="mdi mdi-18px mdi-pencil"/>
+                </span>
             </a>
             <a @click.prevent="tryToRemoveTerm()">
-                <b-icon 
-                        size="is-small"
-                        icon="delete"/>
+                <span class="icon">
+                    <i class="mdi mdi-18px mdi-delete"/>
+                </span>
             </a>
         </span>
     </div>
@@ -251,13 +250,13 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
     @import "../../scss/_variables.scss";
 
     // Term Item
     .term-item {
         font-size: 14px;
-        padding: 0 0 0 1.75rem;
+        padding: 0 0 0 2.75rem;
         min-height: 40px;
         display: flex; 
         position: relative;
@@ -285,7 +284,12 @@ export default {
             position: absolute;
             left: -21px;
         }
-
+        .children-dropdown {
+            color: $blue4;
+            position: absolute;
+            left: 5px;
+            cursor: pointer;
+        }
         .term-name {
             text-overflow: ellipsis;
             overflow-x: hidden;
@@ -302,22 +306,21 @@ export default {
         .label-details {
             font-weight: normal;
             color: $gray3;
+            margin-left: 1rem;
             margin-right: auto;
+        }
+        .children-counter {
+            margin-left: 1rem;
+            margin-right: auto;
+            color: $gray4;
+            padding-right: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
         }
         .not-saved {
             font-style: italic;
             font-weight: bold;
             color: $danger;
-        }
-        .children-dropdown {
-            margin-left: auto;
-            color: $blue4;
-            cursor: pointer;
-            padding-right: 1rem;
-            white-space: nowrap;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
         }
         .controls { 
             visibility: hidden;
@@ -325,7 +328,7 @@ export default {
             display: flex;
             justify-content: space-between;
             background-color: $gray2;
-            padding: 0.76rem 0.875rem;
+            padding: 0.5rem 0.875rem;
 
             a {
                 display: flex;

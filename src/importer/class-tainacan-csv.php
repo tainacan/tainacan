@@ -259,10 +259,12 @@ class CSV extends Importer {
 					</div> 
 			</span>
 			<div class="control is-clearfix">
-				<select name="encode">
-					<option value="utf8" <?php selected($this->get_option('encode'), 'utf8'); ?> >UTF-8</option>
-					<option value="iso88591" <?php selected($this->get_option('encode'), 'iso88591'); ?> >ISO-88591</option>
-				</select>
+                <div class="select">
+                    <select name="encode">
+                        <option value="utf8" <?php selected($this->get_option('encode'), 'utf8'); ?> >UTF-8</option>
+                        <option value="iso88591" <?php selected($this->get_option('encode'), 'iso88591'); ?> >ISO-88591</option>
+                    </select>
+                </div>
 			</div>
 		</div>
 		

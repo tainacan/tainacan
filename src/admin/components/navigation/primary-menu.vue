@@ -68,8 +68,22 @@
                             tag="a"
                             to="/events"
                             :class="activeRoute == 'EventsPage' ? 'is-active':''">
-                        <activities-icon />
-                        <span class="menu-text">{{ $i18n.get('events') }}</span>
+                        <activities-icon /><span class="menu-text">{{ $i18n.get('events') }}</span>
+                    </router-link>
+                </li>
+                <li>
+                    <router-link
+                            tag="a"
+                            to="/importers"
+                            :class="(
+                                activeRoute == 'AvailableImportersPage' ||
+                                activeRoute == 'ImporterEditionForm' ||
+                                activeRoute == 'ImporterCreationForm' ||
+                                activeRoute == 'ImporterMappingForm' ) ? 'is-active':''">
+                        <span class="icon">
+                            <i class="mdi mdi-24px mdi-import"/>
+                        </span>
+                        <span class="menu-text menu-text-import">{{ $i18n.get('importers') }}</span>
                     </router-link>
                 </li>
             </ul>
@@ -151,6 +165,11 @@ export default {
                     fill: white;
                     margin-bottom: -2px;
                 }
+                .mdi-import::before {
+                    font-size: 22px !important;
+                    position: relative;
+                    left: -2px;
+                }
                 .icon {
                     height: auto;
                     width: auto;
@@ -172,6 +191,11 @@ export default {
                 visibility: visible;
                 transition: opacity 0.2s linear, visibility 0.2s linear;
                 -webkit-transition: opacity 0.2s linear, visibility 0.2s linear;
+            }
+            .menu-text-import {
+                position: relative;
+                top: -3px;
+                left: -6px;
             }
         }
 
