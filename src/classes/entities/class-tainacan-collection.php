@@ -33,7 +33,8 @@ class Collection extends Entity {
         $cover_page_id,
         $header_image_id,
 	    $header_image,
-        $moderators_ids;
+        $moderators_ids,
+        $comment_status;
 
     /**
 	 * {@inheritDoc}
@@ -487,6 +488,14 @@ class Collection extends Entity {
 
 		return $repo->get_core_description_metadatum($this);
 	}
+	
+	/**
+	 * Checks if comments are allowed for the current Collection.
+	 * @return string "open"|"closed"
+	 */
+	public function get_comment_status() {
+	    return $this->get_mapped_property('comment_status');
+	}
 
 	/**
 	 * Set the collection name
@@ -678,6 +687,15 @@ class Collection extends Entity {
 		$value = array_unique($value);
 		
 		$this->set_mapped_property( 'moderators_ids', $value );
+	}
+	
+	/**
+	 * Sets if comments are allowed for the current Collection.
+	 * 
+	 * @param $value string "open"|"closed"
+	 */
+	public function set_comment_status( $value ) {
+	    $this->set_mapped_property('comment_status', $value);
 	}
 
 	// Moderators methods

@@ -194,7 +194,15 @@ class Collections extends Repository {
 				'map'         => 'meta',
 				'title'       => __( 'Thumbnail', 'tainacan' ),
 				'description' => __( 'Squared reduced-size version of a picture that helps recognizing and organizing files', 'tainacan' )
-			]
+			],
+		    'comment_status'  => [
+	            'map'         => 'comment_status',
+	            'title'       => __( 'Comment Status', 'tainacan' ),
+	            'type'        => 'string',
+	            'description' => __( 'The status of collection comment, if is allowed, so is "open", or is "closed".', 'tainacan' ),
+		        'default'     => get_default_comment_status(Entities\Collection::get_post_type()),
+		        'validation' => v::optional(stringType()->in( [ 'open', 'closed' ] )),
+		    ]
 
 		] );
 	}
