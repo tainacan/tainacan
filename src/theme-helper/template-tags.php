@@ -213,7 +213,8 @@ function tainacan_the_faceted_search() {
 function tainacan_get_term() {
 	if ( is_tax() ) {
 		$term = get_queried_object();
-		if ( isset($term->taxonomy) && $this->is_taxonomy_a_tainacan_tax($term->taxonomy) ) {
+		$theme_helper = \Tainacan\Theme_Helper::get_instance();
+		if ( isset($term->taxonomy) && $theme_helper->is_taxonomy_a_tainacan_tax($term->taxonomy) ) {
 			return $term;
 		}
 	}
