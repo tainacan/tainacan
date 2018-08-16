@@ -81,11 +81,11 @@ class Theme_Helper {
 	
 	public function enqueue_scripts($force = false) {
 		global $TAINACAN_BASE_URL;
-		// if ( $force || is_post_type_archive( \Tainacan\Repositories\Repository::get_collections_db_identifiers() ) ) {
+		if ( $force || is_post_type_archive( \Tainacan\Repositories\Repository::get_collections_db_identifiers() ) || tainacan_get_term() ) {
 			//\Tainacan\Admin::get_instance()->add_admin_js();
 			wp_enqueue_script('tainacan-search', $TAINACAN_BASE_URL . '/assets/user_search-components.js' , [] , null, true);
 			wp_localize_script('tainacan-search', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params());
-		// }
+		}
 	}
 	
 	public function is_post_an_item(\WP_Post $post) {
