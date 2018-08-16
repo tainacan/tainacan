@@ -198,7 +198,7 @@ function tainacan_the_faceted_search() {
 	if ($term) {
 		$props .= 'term-id="' . $term->term_id . '" ';
 		$props .= 'taxonomy="' . $term->taxonomy . '" ';
-		$id = 'tainacan-term-items-page';
+		$id = 'tainacan-items-page';
 	}
 
 	echo "<div id='$id' $props ></div>";

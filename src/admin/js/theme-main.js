@@ -31,6 +31,7 @@ import FilterTaxonomySelectbox from '../../classes/filter-types/taxonomy/Selectb
 import TaincanFormItem from '../../classes/metadata-types/tainacan-form-item.vue';
 import TaincanFiltersList from '../../classes/filter-types/tainacan-filter-item.vue';
 import ItemsPage from '../pages/lists/items-page.vue';
+import TermItemsPage from '../pages/lists/term-items-page.vue';
 import ViewModeTable from '../../theme-helper/view-mode-table.vue';
 import ViewModeCards from '../../theme-helper/view-mode-cards.vue';
 import ViewModeRecords from '../../theme-helper/view-mode-records.vue';
@@ -83,6 +84,7 @@ Vue.component('tainacan-filter-taxonomy-selectbox', FilterTaxonomySelectbox);
 Vue.component('help-button', HelpButton);
 Vue.component('draggable', draggable);
 Vue.component('items-page', ItemsPage);
+Vue.component('term-items-page', TermItemsPage);
 
 // Oficial view modes
 Vue.component('view-mode-table', ViewModeTable);
@@ -95,11 +97,13 @@ Vue.use(eventBusSearch, { store: store, router: routerTheme});
 // THEME ITEMS LIST (COLLECTIONS)
 import ThemeItemsList from '../theme-items-list.vue';
 
-new Vue({
+export const ThemeItemsListing =  new Vue({
     el: '#tainacan-items-page',
     store,
     router: routerTheme, 
     data: {
+        termId: '',
+        taxonomy: '',
         collectionId: '',
         defaultViewMode: '',
         enabledViewModes: {}   
@@ -114,32 +118,10 @@ new Vue({
         if (this.$el.attributes['enabled-view-modes'] != undefined)
             this.enabledViewModes = this.$el.attributes['enabled-view-modes'].value.split(',');
 
-    }
-    
-});
-
-// THEME ITEMS LIST (TERMS)
-import ThemeTermItemsList from '../theme-term-items-list.vue';
-
-new Vue({
-    el: '#tainacan-term-items-page',
-    store,
-    router: routerTheme, 
-    data: {
-        termId: '',
-        defaultViewMode: '',
-        enabledViewModes: {}   
-    },
-    render: h => h(ThemeTermItemsList),
-    beforeMount () {
-
         if (this.$el.attributes['term-id'] != undefined)
             this.termId = this.$el.attributes['term-id'].value;
-        if (this.$el.attributes['default-view-mode'] != undefined)
-            this.defaultViewMode = this.$el.attributes['default-view-mode'].value;
-        if (this.$el.attributes['enabled-view-modes'] != undefined)
-            this.enabledViewModes = this.$el.attributes['enabled-view-modes'].value.split(',');
-
+        if (this.$el.attributes['taxonomy'] != undefined)
+            this.taxonomy = this.$el.attributes['taxonomy'].value;
     }
     
 });

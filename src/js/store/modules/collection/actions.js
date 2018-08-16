@@ -1,13 +1,13 @@
 import axios from '../../../axios/axios';
 import qs from 'qs';
 
-export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, isOnTheme }) => {
+export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, isOnTheme, termId, taxonomy }) => {
     commit('cleanItems');
 
     return new Promise ((resolve, reject) => {
         
         // Adds queries for filtering
-        let postQueries = rootGetters['search/getPostQuery'];
+        let postQueries = JSON.parse(JSON.stringify(rootGetters['search/getPostQuery']));
 
         // Sets a flag to inform components that an empty sate is or not due to filtering
         let hasFiltered = false;
@@ -24,6 +24,19 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
             if(postQueries.advancedSearch){
                 advancedSearchResults = postQueries.advancedSearch;
             }
+        }
+        
+        // Sets term query in case it's on a term items page
+        if (termId != undefined && taxonomy != undefined) {
+
+            if (postQueries.taxquery == undefined) 
+                postQueries.taxquery = [];
+
+            postQueries.taxquery.push({
+                taxonomy: taxonomy,
+                terms:[ termId ],
+                compare: 'IN'
+            });
         }
         
         let query = qs.stringify(postQueries);
@@ -52,7 +65,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
         } else {
             if (postQueries.admin_view_mode != undefined)
                 postQueries.admin_view_mode = null;
-        }   
+        } 
         
         axios.tainacan.get(endpoint+query)
         .then(res => {

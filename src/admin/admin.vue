@@ -73,7 +73,7 @@
     }  
 
     .is-main-content {
-        padding: 0px;
+        padding: 0px !important;
         margin: 0 auto;
         position: relative;
         overflow-y: auto;
@@ -89,8 +89,8 @@
     }
 
     .is-secondary-content {
-        padding: 0px;
-        margin: 94px auto 0 auto;
+        padding: 0px !important;
+        margin: 106px auto 0 auto;
         position: relative;
         overflow-y: hidden;
         height: calc(100% - 94px);

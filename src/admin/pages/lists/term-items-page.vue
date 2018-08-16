@@ -680,8 +680,9 @@
             }
         },
         props: {
-            collectionId: Number,
+            // collectionId: Number,
             termId: Number,
+            taxonomy: String,
             defaultViewMode: String, // Used only on theme
             enabledViewModes: Object // Used only on theme
         },
@@ -1031,12 +1032,13 @@
             }
         },
         created() {
-            
+
             this.isOnTheme = (this.$route.name === null);
 
             this.isRepositoryLevel = (this.collectionId === undefined);
 
-            this.$eventBusSearch.setCollectionId(this.collectionId);
+            // this.$eventBusSearch.setCollectionId(this.collectionId);
+            this.$eventBusSearch.setTerm(this.termId, this.taxonomy);
             this.$eventBusSearch.updateStoreFromURL();
 
             this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
