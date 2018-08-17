@@ -142,6 +142,7 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 			'collection',
 			array(
 				'name'   => 'test',
+				'status'	 => 'publish',
 			),
 			true
 		);
@@ -150,6 +151,7 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 			'taxonomy',
 			array(
 				'name'   => 'tax_test',
+				'status'	 => 'publish',
 			),
 			true
 		);
@@ -158,10 +160,22 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 			'taxonomy',
 			array(
 				'name'   => 'tax_test2',
+				'status'	 => 'publish',
+			),
+			true
+		);
+		
+		$tax3 = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_test3',
+				'status'	 => 'publish',
 			),
 			true
 		);
         
+		$this->assertNotContains($tax->get_db_identifier(), get_object_taxonomies($collection->get_db_identifier()), 'Collection must be added to taxonomy when metadatum is created');
+		
         $metadatum = $this->tainacan_entity_factory->create_entity(
         	'metadatum',
 	        array(
@@ -177,9 +191,13 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 	        ),
 	        true
         );
+		
+		$this->assertContains($tax->get_db_identifier(), get_object_taxonomies($collection->get_db_identifier()), 'Collection must be added to taxonomy when metadatum is created');
+		
         
 		$checkTax = $Tainacan_Taxonomies->fetch($tax->get_id());
 		$this->assertContains($collection->get_id(), $checkTax->get_collections_ids(), 'Collection must be added to taxonomy when metadatum is created');
+		
 		
 		$metadatum->set_metadata_type_options([
 			'taxonomy_id' => $tax2->get_id(),
@@ -201,10 +219,192 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 		$this->assertNotContains($collection->get_id(), $checkTax2->get_collections_ids(), 'Collection must be removed from taxonomy when metadatum is deleted');
 		
 		
+		$metadatum_repo = $this->tainacan_entity_factory->create_entity(
+        	'metadatum',
+	        array(
+	        	'name' => 'meta_repo',
+		        'description' => 'description',
+		        'collection_id' => 'default',
+		        'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'	 => 'publish',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax3->get_id(),
+					'allow_new_terms' => false
+				]
+	        ),
+	        true
+        );
+		
+		$this->assertContains($tax3->get_db_identifier(), get_object_taxonomies($collection->get_db_identifier()), 'Taxonommy used by repository level metadatum must be assigned to all collections post types');
+		
 		
 		
 		
     }
+	
+	/**
+	 * @group fetch_by_collection
+	 */
+	function test_fetch_by_collection() {
+		
+		$Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+		
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test',
+				'status'	 => 'publish',
+			),
+			true
+		);
+		
+		$collection2 = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test',
+				'status'	 => 'publish',
+			),
+			true
+		);
+		
+		$collection2_c = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test',
+				'parent' => $collection2->get_id(),
+				'status'	 => 'publish',
+			),
+			true
+		);
+		
+		$collection2_gc = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test',
+				'parent' => $collection2_c->get_id(),
+				'status'	 => 'publish',
+			),
+			true
+		);
+		
+		$tax = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_test',
+				'status'	 => 'publish',
+			),
+			true
+		);
+		
+		$tax2 = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_test2',
+				'status'	 => 'publish',
+			),
+			true
+		);
+		
+		$tax3 = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_test3',
+				'status'	 => 'publish',
+			),
+			true
+		);
+		
+		$tax4 = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_test4',
+				'status'	 => 'publish',
+			),
+			true
+		);
+		
+		
+		// metadata 1 in repo level for every one
+		$metadatum_repo = $this->tainacan_entity_factory->create_entity(
+        	'metadatum',
+	        array(
+	        	'name' => 'meta_repo',
+		        'description' => 'description',
+		        'collection_id' => 'default',
+		        'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'	 => 'publish',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax->get_id(),
+					'allow_new_terms' => false
+				]
+	        ),
+	        true
+        );
+		
+		// meta 2 in collection 1 just for it
+		$metadatum2 = $this->tainacan_entity_factory->create_entity(
+        	'metadatum',
+	        array(
+	        	'name' => 'meta_repo',
+		        'description' => 'description',
+		        'collection' => $collection,
+		        'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'	 => 'publish',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax2->get_id(),
+					'allow_new_terms' => false
+				]
+	        ),
+	        true
+        );
+		// meta 3 in collection 2 for it and chidlren and grand children 
+		$metadatum3 = $this->tainacan_entity_factory->create_entity(
+        	'metadatum',
+	        array(
+	        	'name' => 'meta_repo',
+		        'description' => 'description',
+		        'collection' => $collection2,
+		        'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'	 => 'publish',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax3->get_id(),
+					'allow_new_terms' => false
+				]
+	        ),
+	        true
+        );
+		
+		// meta 4 in collection 2c only for children and grand children
+		$metadatum4 = $this->tainacan_entity_factory->create_entity(
+        	'metadatum',
+	        array(
+	        	'name' => 'meta_repo',
+		        'description' => 'description',
+		        'collection' => $collection2_c,
+		        'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'	 => 'publish',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax4->get_id(),
+					'allow_new_terms' => false
+				]
+	        ),
+	        true
+        );
+		
+		$taxonomies_1 = $Tainacan_Taxonomies->fetch_by_collection($collection, [], 'OBJECT');
+		$this->assertEquals(2, sizeof($taxonomies_1));
+		
+		$taxonomies_2 = $Tainacan_Taxonomies->fetch_by_collection($collection2, [], 'OBJECT');
+		$this->assertEquals(2, sizeof($taxonomies_2));
+		
+		$taxonomies_3 = $Tainacan_Taxonomies->fetch_by_collection($collection2_c, [], 'OBJECT');
+		$this->assertEquals(3, sizeof($taxonomies_3));
+		
+		$taxonomies_4 = $Tainacan_Taxonomies->fetch_by_collection($collection2_gc, [], 'OBJECT');
+		$this->assertEquals(3, sizeof($taxonomies_4));
+		
+		
+	}
 	
 	function test_values_and_html() {
         $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();

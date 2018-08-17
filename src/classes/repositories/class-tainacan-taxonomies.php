@@ -181,6 +181,46 @@ class Taxonomies extends Repository {
 			return $this->fetch_output( $wp_query, $output );
 		}
 	}
+	
+	/**
+	 * fetch taxonomies by collection, considering inheritance
+	 *
+	 * @param Entities\Collection $collection
+	 * @param array $args WP_Query args plus disabled_metadata
+	 * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
+	 *
+	 * @return array Entities\Metadatum
+	 * @throws \Exception
+	 */
+	public function fetch_by_collection( Entities\Collection $collection, $args = [], $output = null ) {
+		$collection_id = $collection->get_id();
+
+		$Tainacan_Metadata = Metadata::get_instance();
+		
+		// get all taxonomy metadata in this collection
+		$taxonomy_metas = $Tainacan_Metadata->fetch_by_collection($collection, ['metadata_type' => 'Tainacan\Metadata_Types\Taxonomy'], 'OBJECT');
+		
+		$tax_ids = [];
+		
+		foreach ( $taxonomy_metas as $taxonomy_meta ) {
+			$options = $taxonomy_meta->get_metadata_type_options();
+			if (isset($options['taxonomy_id'])) {
+				$tax_ids[] = $options['taxonomy_id'];
+			}
+		}
+		
+		if (empty($tax_ids)) {
+			$tax_ids[] = 'please-return-nothing';
+		}
+		
+		$newargs = [
+			'post__in' => $tax_ids
+		];
+		
+		$args = array_merge($args, $newargs);
+		return $this->fetch($args, $output);
+
+	}
 
 	public function update( $object, $new_values = null ) {
 		return $this->insert( $object );
@@ -235,24 +275,66 @@ class Taxonomies extends Repository {
 		return $trashed;
 	}
 
-	public function added_collection( $taxonomy_id, $collection ) {
+	public function added_collection( $taxonomy_id, $collection_id ) {
 		$id = $taxonomy_id;
-		if ( ! empty( $id ) && is_numeric( $id ) ) {
+		if ( ! empty( $id ) && is_numeric( $id ) && is_numeric($collection_id) ) {
 			$tax = $this->fetch( (int) $id );
-			$tax->add_collection_id( $collection->get_id() );
+			$tax->add_collection_id( $collection_id );
 			if ( $tax->validate() ) {
 				$this->insert( $tax );
 			}
 		}
+		$this->update_taxonomy_registry_for_collection($taxonomy_id, $collection_id);
 	}
 
-	public function removed_collection( $taxonomy_id, $collection ) {
+	public function removed_collection( $taxonomy_id, $collection_id ) {
 		$id = $taxonomy_id;
-		if ( ! empty( $id ) && is_numeric( $id ) ) {
+		if ( ! empty( $id ) && is_numeric( $id ) && is_numeric($collection_id) ) {
 			$tax = $this->fetch( (int) $id );
-			$tax->remove_collection_id( $collection->get_id() );
+			$tax->remove_collection_id( $collection_id );
 			if ( $tax->validate() ) {
 				$this->insert( $tax );
+			}
+		}
+		$this->update_taxonomy_registry_for_collection($taxonomy_id, $collection_id);
+	}
+	
+	public function update_taxonomy_registry_for_collection($taxonomy_id, $collection_id) {
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+		// if repository level metadatum, update all collections
+		if ( $collection_id = $Tainacan_Metadata->get_default_metadata_attribute() ) {
+			$this->register_taxonomies_for_all_collections();
+		} else {
+			// get all children, grand children, etc.
+			$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+			$children_ids = $Tainacan_Collections->get_descendants_ids($collection_id);
+			// register taxonomy for collection
+			$tax_slug = Entities\Taxonomy::$db_identifier_prefix . $taxonomy_id;
+			foreach ($children_ids as $child_id) {
+				$collection_slug = Entities\Collection::$db_identifier_prefix . $child_id . Entities\Collection::$db_identifier_sufix;
+				register_taxonomy_for_object_type( $tax_slug, $collection_slug );
+			}
+		}
+		
+		
+		
+	}
+	
+	public function register_taxonomies_for_all_collections() {
+		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+
+		// TODO: This can be a problem in large repositories. 
+		$collections = $Tainacan_Collections->fetch( ['nopaging' => true], 'OBJECT' );
+		
+		if ( ! is_array( $collections ) ) {
+			return;
+		}
+
+		// register taxonomies to other collections considering metadata inheritance
+		foreach ( $collections as $collection ) {
+			$taxonomies = $this->fetch_by_collection($collection, ['nopaging' => true], 'OBJECT');
+			foreach ( $taxonomies as $taxonomy ) {
+				register_taxonomy_for_object_type( $taxonomy->get_db_identifier(), $collection->get_db_identifier() );
 			}
 		}
 	}

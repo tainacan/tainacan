@@ -900,6 +900,45 @@ abstract class Repository {
 
 		return $diffs;
 	}
+	
+	/**
+	 * Get IDs for all children, grand children till the depth parameter is reached
+	 * @param  int|\Tainacan\Entities\Entity $id The Entity ID or object
+	 * @param  bool|int $depth The maximum depth to llok for descendants. default is false = no limit
+	 * @return array     Array of IDs
+	 */
+	public function get_descendants_ids($id, $depth = false) {
+		$object = $id;
+		if (is_integer($id)) {
+			$object = $this->fetch($id);
+		}
+		
+		if ( ! $object instanceof \Tainacan\Entities\Entity) {
+			return [];
+		}
+		
+		global $wpdb;
+		$go_deeper = false === $depth || (is_integer($depth) && $depth > 1);
+		$new_depth = is_integer($depth) ? $depth - 1 : $depth;
+		
+		$children = $wpdb->get_col( $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_parent = %d AND post_type = %s", $object->get_id(), $object->get_post_type() ) );
+		
+		if ($go_deeper && sizeof($children) > 0) {
+			$gchildren = [];
+			foreach ($children as $child) {
+				$_gchildren = $this->get_descendants_ids((int) $child, $new_depth);
+				if (!empty($_gchildren)) {
+					$gchildren = array_merge($gchildren, $_gchildren);
+				}
+			}
+			$children = array_merge($children, $gchildren);
+			
+		}
+		
+		return $children;
+		
+	}
+	
 }
 
 ?>

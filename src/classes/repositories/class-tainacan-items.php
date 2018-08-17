@@ -162,12 +162,16 @@ class Items extends Repository {
 			$collection->register_collection_item_post_type();
 		}
 
-		// register taxonomies
+		// register taxonomies 
 		if ( is_array( $taxonomies ) && sizeof( $taxonomies ) > 0 ) {
 			foreach ( $taxonomies as $taxonomy ) {
 				$taxonomy->tainacan_register_taxonomy();
 			}
 		}
+		
+		// register taxonomies to collections considering metadata inheritance
+		$Tainacan_Taxonomies->register_taxonomies_for_all_collections();
+		
 	}
 
 	public function insert( $item ) {
