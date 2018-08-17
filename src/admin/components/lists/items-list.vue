@@ -300,9 +300,21 @@
                                 }"
                                 v-for="(column, index) in tableMetadata"
                                 :key="index"
-                                v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
+                                v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
                                 @click="goToItemPage(item)"
-                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                             
+                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />  
+                        <p 
+                                v-tooltip="{
+                                    content: item.title != undefined ? item.title : '',
+                                    html: true,
+                                    autoHide: false,
+                                    placement: 'auto-start'
+                                }"
+                                v-for="(column, index) in tableMetadata"
+                                :key="index"
+                                v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
+                                @click="goToItemPage(item)"
+                                v-html="item.title != undefined ? item.title : ''" />                             
                     </div>
                     <!-- Actions -->
                     <div 
@@ -337,6 +349,28 @@
                                 :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
                         
                         <div class="list-metadata media-body">
+                            <span 
+                                    v-for="(column, index) in tableMetadata"
+                                    :key="index"
+                                    v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'description')">
+                                <h3 
+                                        v-tooltip="{
+                                            content: $i18n.get('label_description'),
+                                            html: false,
+                                            autoHide: false,
+                                            placement: 'auto-start'
+                                        }"
+                                        class="metadata-label">{{ $i18n.get('label_description') }}</h3>
+                                <p 
+                                        v-tooltip="{
+                                            content: item.description != undefined ? item.description : '',
+                                            html: true,
+                                            autoHide: false,
+                                            placement: 'auto-start'
+                                        }"
+                                        v-html="item.description != undefined ? item.description : ''"
+                                        class="metadata-value"/>
+                            </span>
                             <span 
                                     v-for="(column, index) in tableMetadata"
                                     :key="index"
@@ -437,11 +471,28 @@
                                 }"
                                 @click="goToItemPage(item)">
 
-                            <!-- <data-and-tooltip
-                                    v-if="column.metadatum !== 'row_thumbnail' &&
-                                            column.metadatum !== 'row_actions' &&
-                                            column.metadatum !== 'row_creation'"
-                                    :data="renderMetadata(item.metadata, column)"/> -->
+                            <p
+                                    v-tooltip="{
+                                        content: item.title,
+                                        html: true,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }"
+                                    v-if="collectionId == undefined &&
+                                          column.metadata_type_object != undefined && 
+                                          column.metadata_type_object.related_mapped_prop == 'title'"
+                                    v-html="item.title != undefined ? item.title : ''"/>
+                            <p
+                                    v-tooltip="{
+                                        content: item.description,
+                                        html: true,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }"
+                                    v-if="collectionId == undefined &&
+                                          column.metadata_type_object != undefined && 
+                                          column.metadata_type_object.related_mapped_prop == 'description'"
+                                    v-html="item.description != undefined ? item.description : ''"/>
                             <p
                                     v-tooltip="{
                                         content: renderMetadata(item.metadata, column),
@@ -525,7 +576,7 @@ export default {
         items: Array,
         isLoading: false,
         isOnTrash: false,
-        viewMode: 'table'
+        viewMode: 'card'
     },
     mounted() {
         this.selectedItems = [];

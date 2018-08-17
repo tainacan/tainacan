@@ -32,10 +32,22 @@
                                 v-for="(column, index) in displayedMetadata"
                                 :key="index"
                                 class="metadata-title"
-                                v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
+                                v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
                                 @click="goToItemPage(item)"
                                 v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                             
-                    
+                        <p 
+                                v-tooltip="{
+                                    content: item.title != undefined ? item.title : '',
+                                    html: true,
+                                    autoHide: false,
+                                    placement: 'auto-start'
+                                }"
+                                v-for="(column, index) in tableMetadata"
+                                :key="index"
+                                v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
+                                @click="goToItemPage(item)"
+                                v-html="item.title != undefined ? item.title : ''" />                             
+
                         <!-- Remaining metadata -->  
                         <div    
                                 class="media"
@@ -47,6 +59,28 @@
                             </a>
 
                             <div class="list-metadata media-body">
+                                <span 
+                                        v-for="(column, index) in tableMetadata"
+                                        :key="index"
+                                        v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'description')">
+                                    <h3 
+                                            v-tooltip="{
+                                                content: $i18n.get('label_description'),
+                                                html: false,
+                                                autoHide: false,
+                                                placement: 'auto-start'
+                                            }"
+                                            class="metadata-label">{{ $i18n.get('label_description') }}</h3>
+                                    <p 
+                                            v-tooltip="{
+                                                content: item.description != undefined ? item.description : '',
+                                                html: true,
+                                                autoHide: false,
+                                                placement: 'auto-start'
+                                            }"
+                                            v-html="item.description != undefined ? item.description : ''"
+                                            class="metadata-value"/>
+                                </span>
                                 <span 
                                         v-for="(column, index) in displayedMetadata"
                                         :key="index"

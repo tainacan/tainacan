@@ -832,13 +832,17 @@
                 let thumbnailMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'thumbnail');
                 let creationDateMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'creation_date');
                 let authorNameMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'author_name');
-
+                
+                let descriptionMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.metadata_type_object != undefined ? metadatum.metadata_type_object.related_mapped_prop == 'description' : false);
+              
                 // Updates Search
                 this.$eventBusSearch.addFetchOnly({
                     '0': thumbnailMetadatum.display ? 'thumbnail' : null,
                     'meta': fetchOnlyMetadatumIds,
                     '1': creationDateMetadatum.display ? 'creation_date' : null,
-                    '2': authorNameMetadatum.display ? 'author_name': null
+                    '2': authorNameMetadatum.display ? 'author_name': null,
+                    '3': (this.isRepositoryLevel ? 'title' : null),
+                    '4': (this.isRepositoryLevel && descriptionMetadatum.display ? 'description' : null),
                 });
 
                 // Closes dropdown
@@ -895,6 +899,28 @@
                                 display: thumbnailMetadatumDisplay
                             });
 
+                            // Repository Level always shows core metadata
+                            if (this.isRepositoryLevel) {
+                                metadata.push({
+                                    name: this.$i18n.get('label_title'),
+                                    metadatum: 'row_title',
+                                    metadata_type_object: {core: true, related_mapped_prop: 'title'},
+                                    metadata_type: undefined,
+                                    slug: 'title',
+                                    id: undefined,
+                                    display: true
+                                }); 
+                                metadata.push({
+                                    name: this.$i18n.get('label_description'),
+                                    metadatum: 'row_description',
+                                    metadata_type_object: {core: true, related_mapped_prop: 'description'},
+                                    metadata_type: undefined,
+                                    slug: 'description',
+                                    id: undefined,
+                                    display: true
+                                }); 
+                            }
+
                             let fetchOnlyMetadatumIds = [];
 
                             for (let metadatum of this.metadata) {
@@ -938,6 +964,7 @@
                             let creationDateMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['1'] != null) : true;
                             let authorNameMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['2'] != null) : true;
 
+                            // Creation date and author name should appear only on admin.
                             if (!this.isOnTheme) {
                              
                                 metadata.push({
@@ -962,9 +989,23 @@
                                 '0': (thumbnailMetadatumDisplay ? 'thumbnail' : null),
                                 'meta': fetchOnlyMetadatumIds,
                                 '1': (creationDateMetadatumDisplay ? 'creation_date' : null),
-                                '2': (authorNameMetadatumDisplay ? 'author_name' : null)
+                                '2': (authorNameMetadatumDisplay ? 'author_name' : null),
+                                '3': (this.isRepositoryLevel ? 'title' : null),
+                                '4': (this.isRepositoryLevel ? 'description' : null),
                             });
 
+                            // Sorting metadata
+                            if (this.isRepositoryLevel) {
+                                this.sortingMetadata.push({
+                                    name: this.$i18n.get('label_title'),
+                                    metadatum: 'row_title',
+                                    metadata_type_object: {core: true, related_mapped_prop: 'title'},
+                                    metadata_type: undefined,
+                                    slug: 'title',
+                                    id: undefined,
+                                    display: true
+                                });
+                            }
                             this.sortingMetadata.push({
                                 name: this.$i18n.get('label_creation_date'),
                                 metadatum: 'row_creation',
