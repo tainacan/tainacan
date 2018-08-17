@@ -47,7 +47,24 @@ The URL of the Ontology or vocabulary. For example `http://schema.org` or  `http
 
 ### Type
 
+	String $type
+
 The Class of the ontology that this mapping refers to. For example `CreativeWork`, which is a class of Schema.org, if applied
+
+### Header
+
+	String $header
+
+The header to be append to API answer, like for Dublin Core, if we need to add RDF to xml header when using Dublin Core as mapper, so:
+```
+public $header = '<?xml version="1.0"?><!DOCTYPE rdf:RDF SYSTEM "http://dublincore.org/2000/12/01-dcmes-xml-dtd.dtd"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" ></rdf:RDF>';
+```
+
+### Prefix
+
+	String $prefix
+	
+The optional prefix for the key labels, like ```dc:``` for Dublin Core in XML exposing. 
 
 ### Registering a new mapper
 For register a new mapper, the action need to be added to `tainacan-register-exposer-mappers` hook, like:

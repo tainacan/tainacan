@@ -9,7 +9,9 @@ export default {
                 componentsTag: [],
                 errors : [],
                 query: {},
-                collectionId: undefined
+                collectionId: undefined,
+                taxonomy: undefined,
+                termId: undefined
             },
             created(){
                 
@@ -305,13 +307,15 @@ export default {
                     } else {
 
                         this.$emit( 'isLoadingItems', true);
-
+                    
                         this.$store.dispatch('collection/fetchItems', {
                             'collectionId': this.collectionId,
-                            'isOnTheme': (this.$route.name == null)
+                            'isOnTheme': (this.$route.name == null),
+                            'termId': this.termId,
+                            'taxonomy': this.taxonomy
                         })
                         .then((res) => {
-  
+
                             this.$emit( 'isLoadingItems', false);
                             this.$emit( 'hasFiltered', res.hasFiltered);
 
@@ -324,9 +328,14 @@ export default {
                             this.$emit( 'isLoadingItems', false);
                         });
                     }
+                    
                 },
                 setCollectionId(collectionId) {
                     this.collectionId = collectionId;
+                },
+                setTerm(termId, taxonomy) {
+                    this.termId = termId;
+                    this.taxonomy = taxonomy;
                 },
                 clearAllFilters() {
                     this.$store.dispatch('search/cleanFilterTags');

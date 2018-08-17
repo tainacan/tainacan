@@ -24,6 +24,7 @@
                     {{ $i18n.get('cancel') }}
                 </button>
                 <button 
+                        type="submit"
                         class="button is-success"
                         @click="onConfirm(); $parent.close();">
                     {{ $i18n.get('continue') }}

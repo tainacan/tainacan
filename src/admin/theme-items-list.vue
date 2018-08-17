@@ -1,9 +1,19 @@
 <template>
+<div>
     <items-page
+            v-if="$root.collectionId != undefined && $root.collectionId != ''"
             class="theme-items-list"
             :enabled-view-modes="$root.enabledViewModes" 
             :default-view-mode="$root.defaultViewMode"
             :collection-id="$root.collectionId" />
+    <term-items-page
+            v-if="$root.termId != undefined && $root.termId != ''"
+            class="theme-items-list"
+            :taxonomy="$root.taxonomy"
+            :enabled-view-modes="$root.enabledViewModes" 
+            :default-view-mode="$root.defaultViewMode"
+            :term-id="$root.termId" />
+</div>
 </template>
 
 <script>

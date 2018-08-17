@@ -181,6 +181,7 @@ function tainacan_the_collection_description() {
 function tainacan_the_faceted_search() {
 
 	$props = ' ';
+	$id = '';
 	
 	// if in a collection page
 	$collection_id = tainacan_get_collection_id();
@@ -189,20 +190,33 @@ function tainacan_the_faceted_search() {
 		$collection = new  \Tainacan\Entities\Collection($collection_id);
 		$props .= 'default-view-mode="' . $collection->get_default_view_mode() . '" ';
 		$props .= 'enabled-view-modes="' . implode(',', $collection->get_enabled_view_modes()) . '" ';
+		$id = 'tainacan-items-page';
+	}
+	
+	// if in a tainacan taxonomy
+	$term = tainacan_get_term();
+	if ($term) {
+		$props .= 'term-id="' . $term->term_id . '" ';
+		$props .= 'taxonomy="' . $term->taxonomy . '" ';
+		$id = 'tainacan-items-page';
 	}
 
-	echo '<div id="tainacan-items-page" ', $props, '></div>';
+	echo "<div id='$id' $props ></div>";
 
 }
 
 /**
- * When visiting a term archive, returns the current term object
+ * When visiting a term archive, returns the current term object if it belongs to a Tainacan taxonomy
  *
  * @return false|\WP_Term 
  */
 function tainacan_get_term() {
 	if ( is_tax() ) {
-		return get_queried_object();
+		$term = get_queried_object();
+		$theme_helper = \Tainacan\Theme_Helper::get_instance();
+		if ( isset($term->taxonomy) && $theme_helper->is_taxonomy_a_tainacan_tax($term->taxonomy) ) {
+			return $term;
+		}
 	}
 	return false;
 }
