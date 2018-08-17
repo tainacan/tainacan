@@ -25,14 +25,14 @@
                 :class="{'is-disabled': isEditingTerm}">
             <a
                     @click.prevent="editTerm()">
-                <b-icon 
-                        size="is-small" 
-                        icon="pencil"/>
+                <span class="icon">
+                    <i class="mdi mdi-18px mdi-pencil"/>
+                </span>
             </a>
             <a @click.prevent="tryToRemoveTerm()">
-                <b-icon 
-                        size="is-small"
-                        icon="delete"/>
+                <span class="icon">
+                    <i class="mdi mdi-18px mdi-delete"/>
+                </span>
             </a>
         </span>
     </div>
@@ -62,19 +62,10 @@ export default {
             'updateTerm',
             'deleteTerm'
         ]),
-        editTerm() {
-            
-            // Position edit form in a visible area
-            let container = document.getElementById('repository-container');
-            if (container && container.scrollTop && container.scrollTop > 80)
-                this.termEditionFormTop = container.scrollTop - 80;
-            else
-                this.termEditionFormTop = 0;
-        
+        editTerm() {        
             this.term.opened = !this.term.opened;
             
             this.$termsListBus.onEditTerm(this.term);
-        
         },
         tryToRemoveTerm() {
 
@@ -186,7 +177,7 @@ export default {
             display: flex;
             justify-content: space-between;
             background-color: $gray2;
-            padding: 0.76rem 0.875rem;
+            padding: 0.5rem 0.875rem;
 
             a {
                 display: flex;
