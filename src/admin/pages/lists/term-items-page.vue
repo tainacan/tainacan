@@ -839,10 +839,10 @@
               
                 // Updates Search
                 this.$eventBusSearch.addFetchOnly({
-                    '0': thumbnailMetadatum.display ? 'thumbnail' : null,
+                    '0': thumbnailMetadatum != undefined && thumbnailMetadatum.display ? 'thumbnail' : null,
                     'meta': fetchOnlyMetadatumIds,
-                    '1': creationDateMetadatum.display ? 'creation_date' : null,
-                    '2': authorNameMetadatum.display ? 'author_name': null,
+                    '1': creationDateMetadatum != undefined && creationDateMetadatum.display ? 'creation_date' : null,
+                    '2': authorNameMetadatum != undefined && authorNameMetadatum.display ? 'author_name': null,
                     '3': (this.isRepositoryLevel ? 'title' : null),
                     '4': (this.isRepositoryLevel && descriptionMetadatum.display ? 'description' : null),
                 });
