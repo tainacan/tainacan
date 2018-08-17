@@ -18,6 +18,7 @@ $rest_background_processes_controller    = new \Tainacan\API\EndPoints\REST_Back
 $rest_bulkedit_controller    = new \Tainacan\API\EndPoints\REST_Bulkedit_Controller();
 new \Tainacan\API\EndPoints\REST_Export_Controller();
 new \Tainacan\API\EndPoints\REST_Metadatum_Mappers_Controller();
+$rest_facets_controller         = new \Tainacan\API\EndPoints\REST_Facets_Controller();
 // Add here other endpoints imports
 
 ?>
