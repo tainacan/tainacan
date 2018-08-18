@@ -28,6 +28,7 @@ class REST_Facets_Controller extends REST_Controller {
 		$this->filter_repository = Repositories\Filters::get_instance();
 		$this->terms_repository = Repositories\Terms::get_instance();
 		$this->taxonomy_repository = Repositories\Taxonomies::get_instance();
+		$this->items_repository = Repositories\Items::get_instance();
         
 	}
 
@@ -36,8 +37,7 @@ class REST_Facets_Controller extends REST_Controller {
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_item'),
-				'permission_callback' => array($this, 'get_items_permissions_check'),
-				'args'                => $this->get_collection_params()
+				'permission_callback' => array($this, 'get_items_permissions_check')
 			)
         ));
         
@@ -45,8 +45,7 @@ class REST_Facets_Controller extends REST_Controller {
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_item'),
-				'permission_callback' => array($this, 'get_item_permissions_check'),
-				'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE)
+				'permission_callback' => array($this, 'get_item_permissions_check')
 			)
 		));
 	}
