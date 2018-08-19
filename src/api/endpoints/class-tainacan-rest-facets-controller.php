@@ -85,15 +85,30 @@ class REST_Facets_Controller extends REST_Controller {
 
 			if( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ){
 
-				$response = $this->items_repository->fetch($args, $options['collection_id'], 'OBJECT');
+				$restItemsClass = new REST_Items_Controller();
+
+				$items = $this->items_repository->fetch($args, $options['collection_id'], 'WP_Query');
+				if ($items->have_posts()) {
+					while ( $items->have_posts() ) {
+						$items->the_post();
+		
+						$item = new Entities\Item($items->post);
+						$prepared_item = $restItemsClass->prepare_item_for_response($item, $request);
+		
+						array_push($response, $prepared_item);
+					}
+		
+					wp_reset_postdata();
+				}
 
 			} else if ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ){
 
 				$taxonomy = $this->taxonomy_repository->fetch($options['taxonomy_id']);
 				$terms = $this->terms_repository->fetch($args, $taxonomy);
+				$restTermClass = new REST_Terms_Controller();
 				
 				foreach ($terms as $term) {
-					array_push($response, $this->prepare_term_for_response( $term, $request ));
+					array_push($response, $restTermClass->prepare_item_for_response( $term, $request ));
 				}
 
 			} else {
@@ -107,7 +122,7 @@ class REST_Facets_Controller extends REST_Controller {
 			}
         }
 
-        return $response;
+        return $this->prepare_response( $response, $metadatum_type );
     }
 
 	/**
@@ -120,34 +135,57 @@ class REST_Facets_Controller extends REST_Controller {
 	}
 
 	/**
-	 * @param mixed $item
-	 * @param \WP_REST_Request $request
-	 *
-	 * @return array|mixed|\WP_Error|\WP_REST_Response
+	 * @param array $response the original response
+	 * @param string $type the metadata type
+	 * 
+	 * @return mixed|string|void|\WP_Error|\WP_REST_Response 
 	 */
-	public function prepare_term_for_response( $item, $request ) {
-		if(!empty($item)){
-			if(!isset($request['fetch_only'])) {
-				$item_arr = $item->_toArray();
+	public function prepare_response( $response, $type ){
+        $result = [];
 
-				$children =  get_terms([
-					'taxonomy' => $item_arr['taxonomy'],
-					'parent' => $item_arr['id'],
-					'fields' => 'ids',
-					'hide_empty' => false,
-				]);
+        if( $response ){
+			foreach ( $response as $key => $item ) {
 
-				$item_arr['total_children'] = count($children);
-			} else {
-				$attributes_to_filter = $request['fetch_only'];
+				if( $type === 'Tainacan\Metadata_Types\Taxonomy' ){
 
-				$item_arr = $this->filter_object_by_attributes($item, $attributes_to_filter);
+					$row = [
+						'label' => $item['name'],
+						'value' => $item['id'],
+						'img' => $item['header_image'],
+						'parent' => $item['parent'],
+						'total_children' => $item['total_children'],
+						'type' => 'Taxonomy'
+					];
+
+				} else if( $type === 'Tainacan\Metadata_Types\Relationship' ){
+
+					$row = [
+						'label' => $item['title'],
+						'value' => $item['id'],
+						'img' => $item['thumbnail']['thumb'],
+						'parent' => false,
+						'total_children' => 0,
+						'type' => 'Relationship'
+					];
+
+				} else {
+
+					$row = [
+						'label' => $item['mvalue'],
+						'value' => $item['mvalue'],
+						'img' => false,
+						'parent' => false,
+						'total_children' => 0,
+						'type' => 'Text'
+					];
+
+				}
+
+				$result[] = $row;
 			}
-
-			return $item_arr;
 		}
-
-		return $item;
+		
+		return $result;
 	}
 }
 
