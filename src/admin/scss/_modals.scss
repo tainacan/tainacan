@@ -8,11 +8,19 @@
 }
 
 .tainacan-modal-title {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+    justify-content: space-between;
+    align-items: flex-end;
+
     h1, h2 {
         font-size: 20px;
         font-weight: 500;
         color: $blue5;
         display: inline-block;
+        width: 90%;
+        margin-right: auto;
     }
     a.back-link{
         font-weight: 500;
@@ -24,8 +32,8 @@
         height: 1px;
         background-color: $secondary;
         border-top: 0;
+        width: 100%;
     }
-    margin-bottom: 40px;
 }
 .tainacan-modal-content {
     background-color: white;
