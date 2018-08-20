@@ -20,7 +20,7 @@
                     :gutter="42"
                     class="tainacan-records-container">
                 <a 
-                        href="www.google.com"
+                        :href="item.url"
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-record">
@@ -37,7 +37,6 @@
                                 :key="index"
                                 class="metadata-title"
                                 v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                @click="goToItemPage(item)"
                                 v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                             
                         <p 
                                 v-tooltip="{
@@ -49,19 +48,15 @@
                                 v-for="(column, index) in tableMetadata"
                                 :key="index"
                                 v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                @click="goToItemPage(item)"
                                 v-html="item.title != undefined ? item.title : ''" />                             
 
                         <!-- Remaining metadata -->  
-                        <div    
-                                class="media"
-                                @click="goToItemPage(item)">
+                        <div class="media">
 
                             <div class="list-metadata media-body">
                                 <div 
                                         class="thumbnail"
-                                        v-if="item.thumbnail != undefined"
-                                        @click="goToItemPage(item)">
+                                        v-if="item.thumbnail != undefined">
                                     <img :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
                                 </div>
                                 <span 
