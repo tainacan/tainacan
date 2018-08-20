@@ -215,7 +215,8 @@ class Terms extends Repository {
 		}
 
 		if ( is_array( $args ) && ! empty( $cpt ) ) { // if an array of arguments is
-			$terms  = get_terms( $cpt, $args );
+			$args['taxonomy'] = $cpt;
+			$terms  = get_terms( $args );
 			$return = [];
 
 			foreach ( $terms as $term ) {
