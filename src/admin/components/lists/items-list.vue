@@ -271,7 +271,9 @@
             </div>
 
             <!-- RECORDS VIEW MODE -->
-            <div
+            <masonry 
+                    :cols="{default: 4, 1919: 3, 1407: 2, 1215: 2, 1023: 1, 767: 1, 343: 1}"
+                    :gutter="42"
                     class="tainacan-records-container"
                     v-if="viewMode == 'records'">
                 <div 
@@ -284,9 +286,15 @@
                     <div 
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="record-checkbox">
-                        <b-checkbox 
-                                size="is-small"
-                                v-model="selectedItems[index]"/> 
+                        <label 
+                                tabindex="0" 
+                                class="b-checkbox checkbox is-small">
+                            <input 
+                                    type="checkbox"
+                                    v-model="selectedItems[index]"> 
+                                <span class="check" /> 
+                                <span class="control-label" />
+                        </label>
                     </div>
                     
                     <!-- Title -->
@@ -343,12 +351,12 @@
                     <div    
                             class="media"
                             @click="goToItemPage(item)">
-                    
-                        <img 
-                                v-if="item.thumbnail != undefined"
-                                :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
-                        
                         <div class="list-metadata media-body">
+                            <div class="thumbnail">
+                                <img 
+                                        v-if="item.thumbnail != undefined"
+                                        :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath"> 
+                            </div>
                             <span 
                                     v-for="(column, index) in tableMetadata"
                                     :key="index"
@@ -397,7 +405,7 @@
                     </div>
                
                 </div>
-            </div>
+            </masonry>
             
             <!-- TABLE VIEW MODE -->
             <table 

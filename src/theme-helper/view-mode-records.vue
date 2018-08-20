@@ -15,8 +15,12 @@
                 </div>
             </section>
             <!-- RECORDS VIEW MODE -->
-            <div class="tainacan-records-container">
-                <div 
+            <masonry 
+                    :cols="{default: 4, 1919: 3, 1407: 2, 1215: 2, 1023: 1, 767: 1, 343: 1}"
+                    :gutter="42"
+                    class="tainacan-records-container">
+                <a 
+                        href="www.google.com"
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-record">
@@ -52,32 +56,20 @@
                         <div    
                                 class="media"
                                 @click="goToItemPage(item)">
-                            <a 
-                                    v-if="item.thumbnail != undefined"
-                                    @click="goToItemPage(item)">
-                                <img :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
-                            </a>
 
                             <div class="list-metadata media-body">
+                                <a 
+                                        class="thumbnail"
+                                        v-if="item.thumbnail != undefined"
+                                        @click="goToItemPage(item)">
+                                    <img :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
+                                </a>
                                 <span 
                                         v-for="(column, index) in tableMetadata"
                                         :key="index"
                                         v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'description')">
-                                    <h3 
-                                            v-tooltip="{
-                                                content: $i18n.get('label_description'),
-                                                html: false,
-                                                autoHide: false,
-                                                placement: 'auto-start'
-                                            }"
-                                            class="metadata-label">{{ $i18n.get('label_description') }}</h3>
+                                    <h3 class="metadata-label">{{ $i18n.get('label_description') }}</h3>
                                     <p 
-                                            v-tooltip="{
-                                                content: item.description != undefined ? item.description : '',
-                                                html: true,
-                                                autoHide: false,
-                                                placement: 'auto-start'
-                                            }"
                                             v-html="item.description != undefined ? item.description : ''"
                                             class="metadata-value"/>
                                 </span>
@@ -85,29 +77,16 @@
                                         v-for="(column, index) in displayedMetadata"
                                         :key="index"
                                         v-if="column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
-                                    <h3 
-                                            v-tooltip="{
-                                                content: column.name,
-                                                html: false,
-                                                autoHide: false,
-                                                placement: 'auto-start'
-                                            }"
-                                            class="metadata-label">{{ column.name }}</h3>
-                                    <p 
-                                            v-tooltip="{
-                                                content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
-                                                html: true,
-                                                autoHide: false,
-                                                placement: 'auto-start'
-                                            }"
+                                    <h3 class="metadata-label">{{ column.name }}</h3>
+                                    <p      
                                             v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"
                                             class="metadata-value"/>
                                 </span>
                             </div>
                         </div>
-                    <!-- </a> -->
-                </div>
-            </div>
+                    </a>
+                <!-- </div> -->
+            </masonry>
         </div> 
     </div>
 </template>
