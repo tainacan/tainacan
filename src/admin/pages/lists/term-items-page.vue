@@ -256,7 +256,7 @@
                 </div>
 
                 <!-- View Modes Dropdown -->
-                <div 
+                <!-- <div 
                         v-if="isOnTheme"
                         class="search-control-item">
                     <b-field>
@@ -357,7 +357,7 @@
                             </b-dropdown-item>
                         </b-dropdown>
                     </b-field>
-                </div>
+                </div> -->
 
                 <!-- Filters mobile modal button -->
                 <div class="search-control-item is-hidden-tablet">

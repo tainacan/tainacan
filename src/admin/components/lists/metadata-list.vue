@@ -50,7 +50,7 @@
                                     <grip-icon/>
                                     <span class="icon icon-level-identifier">
                                         <i 
-                                            :class="{ 'mdi-folder has-text-turquoise5': metadatum.collection_id == collectionId, 'mdi-folder-multiple has-text-blue5': metadatum.collection_id != collectionId }"
+                                            :class="{ 'mdi-folder has-text-turquoise5': (metadatum.collection_id == collectionId && !isRepositoryLevel), 'mdi-folder-multiple has-text-blue5': metadatum.collection_id != collectionId || isRepositoryLevel}"
                                             class="mdi" />
                                     </span>  
                                     <span 
