@@ -24,7 +24,7 @@
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-record">
-                    <!-- <a :href="item.url"> -->
+                    <!-- <div :href="item.url"> -->
                         <!-- Title -->           
                         <p 
                                 v-tooltip="{
@@ -58,12 +58,12 @@
                                 @click="goToItemPage(item)">
 
                             <div class="list-metadata media-body">
-                                <a 
+                                <div 
                                         class="thumbnail"
                                         v-if="item.thumbnail != undefined"
                                         @click="goToItemPage(item)">
                                     <img :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
-                                </a>
+                                </div>
                                 <span 
                                         v-for="(column, index) in tableMetadata"
                                         :key="index"

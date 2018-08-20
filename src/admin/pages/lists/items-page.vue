@@ -1139,8 +1139,8 @@
                     this.$eventBusSearch.setInitialAdminViewMode(this.$userPrefs.get(prefsAdminViewMode));
             }
 
-            this.adjustSearchControlHeight();
             // Watches window resize to adjust filter's top position and compression on mobile 
+            this.adjustSearchControlHeight();
             window.addEventListener('resize', this.adjustSearchControlHeight);
         },
         beforeDestroy() {

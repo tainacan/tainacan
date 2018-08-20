@@ -136,10 +136,13 @@
                     </div>
 
                     <!-- Thumbnail -->  
-                    <img 
+                    <div 
                             @click="goToItemPage(item)"
                             v-if="item.thumbnail != undefined"
-                            :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
+                            class="thumbnail"
+                            :style="{ backgroundImage: 'url(' + (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath) + ')' }">  
+                        <img :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
+                    </div>
                     
                     <!-- Actions -->
                     <div 
