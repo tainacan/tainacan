@@ -171,7 +171,7 @@
                             <b-dropdown
                                     class="two-columns-dropdown"
                                     ref="enabledViewModesDropdown"
-                                    :mobile-modal="false"
+                                    :mobile-modal="true"
                                     :disabled="Object.keys(registeredViewModes).length < 0">
                                 <button
                                         class="button is-white"

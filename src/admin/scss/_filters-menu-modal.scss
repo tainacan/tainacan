@@ -2,11 +2,8 @@
 
     .modal-close {
         right: calc(8.3333333% + 20px);
-        background-color: $gray1;
+        background-color: white;
 
-        &:hover {
-            background-color: $gray2;   
-        }
         &::before, &::after {
             background-color: $secondary;
         }

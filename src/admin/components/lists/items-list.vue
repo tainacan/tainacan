@@ -11,7 +11,7 @@
             </div>
             <div class="field is-pulled-right">
                 <b-dropdown
-                        :mobile-modal="false"
+                        :mobile-modal="true"
                         position="is-bottom-left"
                         v-if="items.length > 0 && items[0].current_user_can_edit"
                         :disabled="!isSelectingItems"

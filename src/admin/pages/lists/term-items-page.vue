@@ -116,7 +116,7 @@
                         class="search-control-item"
                         v-if="!isOnTheme">
                     <b-dropdown 
-                            :mobile-modal="false"
+                            :mobile-modal="true"
                             id="item-creation-options-dropdown">
                         <button
                                 class="button is-secondary"
@@ -158,7 +158,7 @@
                         class="search-control-item">
                     <b-dropdown
                             ref="displayedMetadataDropdown"
-                            :mobile-modal="false"
+                            :mobile-modal="true"
                             :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards'"
                             class="show">
                         <button
@@ -262,7 +262,7 @@
                     <b-field>
                         <b-dropdown
                                 @change="onChangeViewMode($event)"
-                                :mobile-modal="false"
+                                :mobile-modal="true"
                                 position="is-bottom-left"
                                 :aria-label="$i18n.get('label_view_mode')">
                             <button 
@@ -295,7 +295,7 @@
                     <b-field>
                         <b-dropdown
                                 @change="onChangeAdminViewMode($event)"
-                                :mobile-modal="false"
+                                :mobile-modal="true"
                                 position="is-bottom-left"
                                 :aria-label="$i18n.get('label_view_mode')">
                             <button
