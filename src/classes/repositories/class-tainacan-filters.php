@@ -139,6 +139,7 @@ class Filters extends Repository {
 			'can_export'          => true,
 			'rewrite'             => true,
 			'map_meta_cap'        => true,
+			'show_in_nav_menus'   => false,
 			'capability_type'     => Entities\Metadatum::get_capability_type(),
 			'supports'            => [
 				'title',

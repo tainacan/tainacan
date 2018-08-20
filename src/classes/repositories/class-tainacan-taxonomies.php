@@ -89,10 +89,13 @@ class Taxonomies extends Repository {
 			'edit_item'          => __( 'Edit Taxonomy', 'tainacan' ),
 			'new_item'           => __( 'New Taxonomy', 'tainacan' ),
 			'view_item'          => __( 'View Taxonomy', 'tainacan' ),
+			'view_items'         => __( 'View Taxonomies', 'tainacan' ),
 			'search_items'       => __( 'Search Taxonomies', 'tainacan' ),
 			'not_found'          => __( 'No Taxonomies found ', 'tainacan' ),
 			'not_found_in_trash' => __( 'No Taxonomies found in trash', 'tainacan' ),
 			'parent_item_colon'  => __( 'Parent Taxonomy:', 'tainacan' ),
+			'all_items'			 => __( 'All Taxonomies', 'tainacan' ),
+			'archives'			 => __( 'Taxonomies Archive', 'tainacan' ),
 			'menu_name'          => __( 'Taxonomies', 'tainacan' )
 		);
 	}
