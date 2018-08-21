@@ -25,7 +25,7 @@ class Items extends Repository {
 		parent::__construct();
 		add_filter( 'posts_where', array( &$this, 'title_in_posts_where' ), 10, 2 );
 		add_filter( 'posts_where', array( &$this, 'content_in_posts_where' ), 10, 2 );
-		add_filter( 'comments_open', [$this, 'hook_comments_open']);
+		add_filter( 'comments_open', [$this, 'hook_comments_open'], 10, 2);
 		add_action( 'tainacan-api-item-updated', array( &$this, 'hook_api_updated_item' ), 10, 2 );
 	}
 
