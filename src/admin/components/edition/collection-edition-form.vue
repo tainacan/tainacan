@@ -10,48 +10,55 @@
 
             <!-- Header Page -------------------------------- --> 
             <b-field :addons="false">
-                <!-- <label class="label">{{ $i18n.get('label_header_image') }}</label> -->
+                <label class="label">{{ $i18n.get('label_header_image') }}</label>
                 <div class="header-field">
                     <figure class="image">
                         <span 
                                 v-if="collection.header_image == undefined || collection.header_image == false"
                                 class="image-placeholder">{{ $i18n.get('label_empty_header_image') }}</span>
-                            <div 
-                                    class="header-image-img"
-                                    :style="{ backgroundImage: 'url(' + ((collection.header_image == undefined || collection.header_image == false) ? headerPlaceholderPath : collection.header_image + ')') }"/>
-                            <div class="header-buttons-row">
-                            <a 
-                                    class="button is-rounded is-secondary"
-                                    id="button-edit-header-image" 
-                                    :aria-label="$i18n.get('label_button_edit_header_image')"
-                                    @click="headerImageMediaFrame.openFrame($event)">
-                                <b-icon 
-                                        size="is-small"
-                                        icon="pencil" />
-                            </a>
-                            <a 
-                                    class="button is-rounded is-secondary"
-                                    id="button-delete-header-image" 
-                                    :aria-label="$i18n.get('label_button_delete_thumb')" 
-                                    @click="deleteHeaderImage()">
-                                <b-icon 
-                                        size="is-small"
-                                        icon="delete" />
-                            </a>
-                        </div>  
-                        <div class="description-placeholder-area" />
-                        <!-- Thumbnail -------------------------------- --> 
-                        <!-- <label class="label">{{ $i18n.get('label_thumbnail') }}</label> -->
+                        <img  
+                                :alt="$i18n.get('label_thumbnail')" 
+                                :src="(collection.header_image == undefined || collection.header_image == false) ? headerPlaceholderPath : collection.header_image">
+                    </figure>
+                    <div class="header-buttons-row">
+                        <a 
+                                class="button is-rounded is-secondary"
+                                id="button-edit-header-image" 
+                                :aria-label="$i18n.get('label_button_edit_header_image')"
+                                @click="headerImageMediaFrame.openFrame($event)">
+                            <b-icon 
+                                    size="is-small"
+                                    icon="pencil" />
+                        </a>
+                        <a 
+                                class="button is-rounded is-secondary"
+                                id="button-delete-header-image" 
+                                :aria-label="$i18n.get('label_button_delete_thumb')" 
+                                @click="deleteHeaderImage()">
+                            <b-icon 
+                                    size="is-small"
+                                    icon="delete" />
+                        </a>
+                    </div>     
+                </div>
+            </b-field>
+
+            <div class="columns">
+                <div class="column is-4">
+
+                    <!-- Thumbnail -------------------------------- --> 
+                    <b-field :addons="false">
+                        <label class="label">{{ $i18n.get('label_thumbnail') }}</label>
                         <div class="thumbnail-field">
 
                             <figure class="image">
                                 <span 
-                                        v-if="collection.thumbnail == undefined || ((collection.thumbnail.medium == undefined || collection.thumbnail.medium == false) && (collection.thumbnail.tainacan_medium == undefined || collection.thumbnail.tainacan_medium == false))"
+                                        v-if="collection.thumbnail.thumb == undefined || collection.thumbnail.thumb == false"
                                         class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
                                 <img
                                         id="thumbail-image"  
                                         :alt="$i18n.get('label_thumbnail')" 
-                                        :src="((collection.thumbnail.medium == undefined || collection.thumbnail.medium == false) && (collection.thumbnail.tainacan_medium == undefined || collection.thumbnail.tainacan_medium == false)) ? thumbPlaceholderPath : (collection.thumbnail.tainacan_medium ? collection.thumbnail.tainacan_medium : collection.thumbnail.medium)">
+                                        :src="(collection.thumbnail.thumb == undefined || collection.thumbnail.thumb == false) ? thumbPlaceholderPath : collection.thumbnail.thumb">
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a 
@@ -74,12 +81,7 @@
                                 </a>
                             </div>
                         </div>
-                    </figure>   
-                </div>
-            </b-field>
-
-            <div class="columns">
-                <div class="column is-4">
+                    </b-field>
 
                     <!-- Cover Page -------------------------------- --> 
                     <b-field
@@ -218,21 +220,20 @@
                             </option>
                         </b-select>
                     </b-field>
-
                     <!-- Comment Status ------------------------ --> 
-                    <div class="field">
-                        <label class="label">{{ $i18n.get('label_comment_status') }}</label>
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'comment_status')" 
-                                :message="$i18n.getHelperMessage('collections', 'comment_status')"/>
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_comment_status')">
                         <b-switch
                                 id="tainacan-checkbox-comment-status" 
                                 size="is-small"
                                 true-value="open" 
                                 false-value="closed"
                                 v-model="form.comment_status" />
-                        
-                    </div>
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'comment_status')" 
+                                :message="$i18n.getHelperMessage('collections', 'comment_status')"/>
+                    </b-field>
                 </div>
                 <div class="column is-1" />
                 <div class="column">
@@ -820,9 +821,6 @@ export default {
 
     @import "../../scss/_variables.scss";
 
-    .column {
-        padding: 0px;
-    }
 
     .field {
         position: relative;
@@ -855,70 +853,36 @@ export default {
         }
     }
     .header-field {  
-        margin-bottom: 3rem;
-
-        .header-image-img {
-            height: 360px;
-            background-size: cover;
-            background-position: center;
-            opacity: 1.0;
-            transition: opacity 0.3s;
-
-            @media screen and (max-width: 769px) { 
-                height: 200px;
-            }
-
-            &:hover {
-                opacity: 0.8;
-            }
+        img {
+            padding: 20px;
         }
         .image-placeholder {
             position: absolute;
             left: 30%;
             right: 30%;
-            top: 30%;
+            top: 40%;
             font-size: 2.0rem;
             font-weight: bold;
             z-index: 99;
             text-align: center;
             color: $gray4;
             
-            @media screen and (min-width: 769px) and (max-width: 1024px) {
-                font-size: 1.4rem;   
-            }            
             @media screen and (max-width: 769px) {
-                font-size: 1.125rem;
-                top: 15%;
-            } 
+                font-size: 1.2rem;
+            }
+            
         }
         .header-buttons-row {
             text-align: right;
-            bottom: 140px;
-            right: $page-side-padding;
+            top: -35px;
+            right: 20px;
             position: relative;
-
-            @media screen and (min-width: 769px) and (max-width: 1024px) {
-                bottom: 128px;  
-            }    
-        }
-        .description-placeholder-area {
-            background-color: $gray5;
-            height: 118px;
-            width: 100%;
-            position: absolute;
-            bottom: 0%;
-            border-top: 4px solid white;
         }
     }
     .thumbnail-field {  
         max-height: 208px;
-        position: absolute;
-        bottom: 195px;
-        left: $page-side-padding;
-
-        @media screen and (max-width: 769px) { 
-            bottom: 152px;
-        }
+        margin-bottom: 180px;
+        margin-top: -20px;
 
         .content {
             padding: 10px;
@@ -926,56 +890,25 @@ export default {
         }
         img {
             border-radius: 100px;
-            border: 4px solid white;
             position: absolute;
-            min-height: 168px;
-            min-width: 168px;
-            max-height: 168px;
-            max-width: 168px;
-            margin: 20px;
-            padding: 0;
-            opacity: 1.0;
-            transition: opacity 0.3s;
-
-            @media screen and (max-width: 769px) { 
-                min-height: 85px;
-                min-width: 85px;
-                max-height: 85px;
-                max-width: 85px;
-            }
-
-            &:hover {
-                opacity: 0.9;
-            }
+            height: 178px;
+            width: 178px;
+            padding: 20px;
         }
         .image-placeholder {
             position: relative;
-            bottom: -125px;
-            font-size: 1rem;
+            left: 40px;
+            bottom: -100px;
+            font-size: 0.8rem;
             font-weight: bold;
             z-index: 99;
             text-align: center;
             color: $gray4;
-            display: block;
-            width: 90%;
-            margin-left: auto;
-            margin-right: auto;
-
-            @media screen and (max-width: 769px) { 
-                font-size: 0.7rem;
-                bottom: -80px;
-                left: 15px;
-            }
         }
         .thumbnail-buttons-row {
             position: relative;
-            left: 116px;
-            bottom: -165px;
-
-            @media screen and (max-width: 769px) {
-                left: 70px;
-                bottom: -80px;
-            }
+            left: 60px;
+            bottom: -142px;
         }
     }
     .selected-cover-page {
