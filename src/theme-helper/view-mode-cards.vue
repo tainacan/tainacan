@@ -41,7 +41,7 @@
 
                         <img 
                                 v-if="item.thumbnail != undefined"
-                                :src="item['thumbnail'].medium ? item['thumbnail'].medium : thumbPlaceholderPath">  
+                                :src="item['thumbnail'].tainacan_medium ? item['thumbnail'].tainacan_medium : (item['thumbnail'].medium ? item['thumbnail'].medium : thumbPlaceholderPath)">  
 
                         <div class="list-metadata media-body">
                            <!-- Description -->
@@ -53,7 +53,8 @@
                                         placement: 'auto-start'
                                     }"   
                                     class="metadata-description"
-                                    v-html="item.description != undefined ? getLimitedDescription(item.description) : ''" />                                                        <br>
+                                    v-html="item.description != undefined ? getLimitedDescription(item.description) : ''" />                                                        
+                            <br>
                             <!-- Author and Creation Date-->
 <!--                            <p 
                                     v-tooltip="{
