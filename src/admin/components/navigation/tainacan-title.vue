@@ -201,7 +201,7 @@ export default {
             }
 
             top: 206px;
-            margin-bottom: 0px !important;
+            margin-bottom: 12px !important;
         }
     }
 </style>
