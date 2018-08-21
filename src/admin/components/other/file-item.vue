@@ -96,7 +96,7 @@ export default {
         &:hover {
             cursor: pointer;
             .image, .file-placeholder {
-                transform: scale(1.1);
+                transform: scale(1.05);
             }
         }
         .image-wrapper {
