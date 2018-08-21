@@ -214,11 +214,14 @@ class Collection extends Entity {
 	 */
 	function get_thumbnail() {
 		return array(
-			'thumb'        => get_the_post_thumbnail_url( $this->get_id(), 'thumbnail' ),
-			'full'         => get_the_post_thumbnail_url( $this->get_id(), 'full' ),
-			'medium'       => get_the_post_thumbnail_url( $this->get_id(), 'medium' ),
-			'medium_large' => get_the_post_thumbnail_url( $this->get_id(), 'medium_large' ),
-			'large'        => get_the_post_thumbnail_url( $this->get_id(), 'large' ),
+			'thumb'                => get_the_post_thumbnail_url( $this->get_id(), 'thumbnail' ),
+			'full'                 => get_the_post_thumbnail_url( $this->get_id(), 'full' ),
+			'medium'               => get_the_post_thumbnail_url( $this->get_id(), 'medium' ),
+			'medium_large'         => get_the_post_thumbnail_url( $this->get_id(), 'medium_large' ),
+			'large'                => get_the_post_thumbnail_url( $this->get_id(), 'large' ),
+			'tainacan_small'       => get_the_post_thumbnail_url( $this->get_id(), 'tainacan-small' ),
+			'tainacan_medium'      => get_the_post_thumbnail_url( $this->get_id(), 'tainacan-medium' ),
+			'tainacan_medium_full' => get_the_post_thumbnail_url( $this->get_id(), 'tainacan-medium-full' ),
 		);
 	}
 
