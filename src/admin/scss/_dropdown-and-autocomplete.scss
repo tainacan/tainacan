@@ -41,6 +41,16 @@
             }
         } 
     }
+    &.is-mobile-modal {
+        @media screen and (max-width: 1088px) {
+            .dropdown-menu {
+                border-radius: 4px;
+                .dropdown-item {
+                    padding: 0.75rem !important;
+                }
+            }  
+        }
+    }
 }
 
 .taginput-container {

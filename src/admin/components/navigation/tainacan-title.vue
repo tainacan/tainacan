@@ -145,12 +145,19 @@ export default {
     
     .tainacan-page-title {
         margin-bottom: 40px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
 
         h1, h2 {
             font-size: 20px;
             font-weight: 500;
             color: $gray5;
             display: inline-block;
+            width: 80%;
+            flex-shrink: 1;
+            flex-grow: 1;
         }
         a.back-link{
             font-weight: 500;
@@ -161,9 +168,20 @@ export default {
             margin: 3px 0px 4px 0px; 
             height: 1px;
             background-color: $secondary;
+            width: 100%;
         }
         .breadcrumbs {
             font-size: 12px;
+            width: 100%;
+            span {
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow-x: hidden;
+                max-width: 75%;
+                margin: 0 0.1rem;
+                display: inline-block;
+                vertical-align: bottom;
+            }
         }
         .level-left {
             .level-item {

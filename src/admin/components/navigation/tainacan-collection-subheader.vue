@@ -294,6 +294,15 @@ export default {
             font-size: 12px;
             line-height: 12px;
             color: #1d1d1d;
+            span {
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow-x: hidden;
+                max-width: 115px;
+                margin: 0 0.1rem;
+                display: inline-block;
+                vertical-align: bottom;
+            }
         }
 
         .level {

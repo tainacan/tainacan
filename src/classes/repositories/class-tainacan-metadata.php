@@ -241,6 +241,7 @@ class Metadata extends Repository {
 			'can_export'          => true,
 			'rewrite'             => true,
 			'map_meta_cap'        => true,
+			'show_in_nav_menus'   => false,
 			'capability_type'     => Entities\Metadatum::get_capability_type(),
 			'supports'            => [
 				'title',
@@ -1095,7 +1096,7 @@ class Metadata extends Repository {
 		}
 
 		if ( $new_tax != $this->current_taxonomy ) {
-			$collection = $metadatum->get_collection();
+			$collection = $metadatum->get_collection_id();
 
 			if ( ! empty( $this->current_taxonomy ) && $collection ) {
 				do_action( 'tainacan-taxonomy-removed-from-collection', $this->current_taxonomy, $collection );
@@ -1115,7 +1116,7 @@ class Metadata extends Repository {
 		if ( $metadata_type->get_primitive_type() == 'term' ) {
 			$removed_tax = $metadata_type->get_option( 'taxonomy_id' );
 
-			$collection = $metadatum->get_collection();
+			$collection = $metadatum->get_collection_id();
 
 			if ( ! empty( $removed_tax ) && $collection ) {
 				do_action( 'tainacan-taxonomy-removed-from-collection', $removed_tax, $collection );

@@ -357,6 +357,14 @@ export default {
             this.loadTerms(0);
         }
         this.$termsListBus.$on('editTerm', (term) => {
+
+                        // Position edit form in a visible area
+            let container = document.getElementById('repository-container');
+            if (container && container.scrollTop && container.scrollTop > 80)
+                this.termEditionFormTop = container.scrollTop - 80;
+            else
+                this.termEditionFormTop = 0;
+
             this.editTerm = term;
             this.isEditingTerm = true;
         });

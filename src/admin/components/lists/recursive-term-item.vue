@@ -164,14 +164,7 @@ export default {
            
         },
         editTerm() {
-            
-            // Position edit form in a visible area
-            let container = document.getElementById('repository-container');
-            if (container && container.scrollTop && container.scrollTop > 80)
-                this.termEditionFormTop = container.scrollTop - 80;
-            else
-                this.termEditionFormTop = 0;
-        
+                    
             this.term.opened = !this.term.opened;
             
             this.$termsListBus.onEditTerm(this.term);
@@ -256,7 +249,7 @@ export default {
     // Term Item
     .term-item {
         font-size: 14px;
-        padding: 0 0 0 2.75rem;
+        padding: 0 0 0 1.75rem;
         min-height: 40px;
         display: flex; 
         position: relative;

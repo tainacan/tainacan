@@ -9,7 +9,7 @@
                 v-if="!openAdvancedSearch"
                 class="is-hidden-mobile"
                 id="filter-menu-compress-button"
-                :class="{'filter-menu-compress-button-top-repo': isRepositoryLevel}"
+                :class="{'filter-menu-compress-button-top-repo': isRepositoryLevel && !isOnTheme }"
                 :style="{ top: !isOnTheme ? '120px' : '76px' }"
                 @click="isFiltersMenuCompressed = !isFiltersMenuCompressed">
             <b-icon :icon="isFiltersMenuCompressed ? 'menu-right' : 'menu-left'" />
@@ -19,7 +19,7 @@
                 v-if="!openAdvancedSearch"
                 class="is-hidden-tablet"
                 id="filter-menu-compress-button"
-                :class="{'filter-menu-compress-button-top-repo': isRepositoryLevel}"
+                :class="{'filter-menu-compress-button-top-repo': isRepositoryLevel && !isOnTheme }"
                 :style="{ top: !isOnTheme ? (searchControlHeight + 70) + 'px' : (searchControlHeight - 25) + 'px' }"
                 @click="isFilterModalActive = !isFilterModalActive">
             <b-icon :icon="isFiltersMenuCompressed ? 'menu-right' : 'menu-left'" />
@@ -206,7 +206,6 @@
                 <div class="search-control-item">
                     <b-field>
                         <b-dropdown
-                                :mobile-modal="true"
                                 :disabled="totalItems <= 0"
                                 @input="onChangeOrderBy($event)">
                             <button
@@ -269,7 +268,7 @@
                 </div>
 
                 <!-- View Modes Dropdown -->
-                <div 
+                <!-- <div 
                         v-if="isOnTheme"
                         class="search-control-item">
                     <b-field>
@@ -370,7 +369,7 @@
                             </b-dropdown-item>
                         </b-dropdown>
                     </b-field>
-                </div>
+                </div> -->
 
                 <!-- Text simple search (used on mobile, instead of the one from filter list)-->
                 <div class="is-hidden-tablet search-control-item">
@@ -686,7 +685,9 @@
             }
         },
         props: {
-            collectionId: Number,
+            // collectionId: Number,
+            termId: Number,
+            taxonomy: String,
             defaultViewMode: String, // Used only on theme
             enabledViewModes: Object // Used only on theme
         },
@@ -970,7 +971,6 @@
                             let creationDateMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['1'] != null) : true;
                             let authorNameMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['2'] != null) : true;
 
-                            // Creation date and author name should appear only on admin.
                             if (!this.isOnTheme) {
                              
                                 metadata.push({
@@ -998,6 +998,7 @@
                                 '2': (authorNameMetadatumDisplay ? 'author_name' : null),
                                 '3': (this.isRepositoryLevel ? 'title' : null),
                                 '4': (this.isRepositoryLevel ? 'description' : null),
+
                             });
 
                             // Sorting metadata
@@ -1071,18 +1072,19 @@
             },
             adjustSearchControlHeight() {
                 this.$nextTick(() => {
-                    this.searchControlHeight = this.$refs['search-control'] ? this.$refs['search-control'].clientHeight + this.$refs['search-control'].offsetTop : 0;
+                    this.searchControlHeight = this.$refs['search-control'] ? this.$refs['search-control'].clientHeight : 0;
                     this.isFiltersMenuCompressed = jQuery(window).width() <= 768;
                 });
             }
         },
         created() {
-            
+
             this.isOnTheme = (this.$route.name === null);
 
             this.isRepositoryLevel = (this.collectionId === undefined);
 
-            this.$eventBusSearch.setCollectionId(this.collectionId);
+            // this.$eventBusSearch.setCollectionId(this.collectionId);
+            this.$eventBusSearch.setTerm(this.termId, this.taxonomy);
             this.$eventBusSearch.updateStoreFromURL();
 
             this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {

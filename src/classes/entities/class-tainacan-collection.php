@@ -122,6 +122,7 @@ class Collection extends Entity {
 			],
 			'map_meta_cap'        => true,
 			'capabilities'        => (array) $capabilities,
+			'show_in_nav_menus'   => false,
 			'supports'            => [
 				'title',
 				'editor',

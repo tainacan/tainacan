@@ -221,10 +221,13 @@ class Collections extends Repository {
 			'edit_item'          => __( 'Edit Collection', 'tainacan' ),
 			'new_item'           => __( 'New Collection', 'tainacan' ),
 			'view_item'          => __( 'View Collection', 'tainacan' ),
+			'view_items'         => __( 'View Collections', 'tainacan' ),
 			'search_items'       => __( 'Search Collections', 'tainacan' ),
 			'not_found'          => __( 'No Collections found ', 'tainacan' ),
 			'not_found_in_trash' => __( 'No Collections found in trash', 'tainacan' ),
 			'parent_item_colon'  => __( 'Parent Collection:', 'tainacan' ),
+			'all_items'			 => __( 'All Collections', 'tainacan' ),
+			'archives'			 => __( 'Collections Archive', 'tainacan' ),
 			'menu_name'          => __( 'Collections', 'tainacan' )
 		);
 	}
