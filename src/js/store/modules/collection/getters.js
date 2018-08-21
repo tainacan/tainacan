@@ -25,3 +25,7 @@ export const getCollectionURL = state => {
 export const getAttachments =  state => {
     return state.attachments;
 }
+
+export const getCollectionCommentStatus = state => {
+    return state.collectionCommentStatus;
+}

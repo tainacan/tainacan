@@ -70,3 +70,11 @@ export const setAttachments = ( state, attachments ) => {
 export const cleanAttachments = (state) => {
     state.attachments = [];
 }
+
+export const setCollectionCommentStatus = (state, collectionCommentStatus) => {
+    state.collectionCommentStatus = collectionCommentStatus;
+}
+
+export const cleanCollectionCommentStatus = (state) => {
+    state.collectionCommentStatus = '';
+}
