@@ -48,16 +48,16 @@
                     <div class="section-box section-thumbnail">
                         <div class="thumbnail-field">
                             <file-item
-                                    v-if="item.thumbnail != undefined && item.thumbnail.thumb != undefined && item.thumbnail.thumb != false"
+                                    v-if="item.thumbnail != undefined && ((item.thumbnail.tainacan_medium != undefined && item.thumbnail.tainacan_medium != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
                                     :show-name="false"
                                     :size="178"
                                     :file="{ 
                                         media_type: 'image', 
-                                        guid: { rendered: item.thumbnail.thumb },
+                                        guid: { rendered: item.thumbnail.tainacan_medium ? item.thumbnail.tainacan_medium : item.thumbnail.medium },
                                         title: { rendered: $i18n.get('label_thumbnail')},
                                         description: { rendered: `<img alt='Thumbnail' src='` + item.thumbnail.full + `'/>` }}"/>
                             <figure 
-                                    v-if="item.thumbnail == undefined || item.thumbnail.thumb == undefined || item.thumbnail.thumb == false"
+                                    v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail.tainacan_medium == undefined || item.thumbnail.tainacan_medium == false))"
                                     class="image">
                                 <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
                                 <img

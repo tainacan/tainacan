@@ -72,7 +72,7 @@
                     <a
                             v-if="item.thumbnail != undefined"
                             @click="goToItemPage(item)">
-                        <img :src="item['thumbnail'].medium ? item['thumbnail'].medium : thumbPlaceholderPath">
+                        <img :src="item['thumbnail'].tainacan_medium ? item['thumbnail'].tainacan_medium : (item['thumbnail'].medium ? item['thumbnail'].medium : thumbPlaceholderPath)">
                     </a>
 
                     <!-- Actions -->
@@ -140,8 +140,8 @@
                             @click="goToItemPage(item)"
                             v-if="item.thumbnail != undefined"
                             class="thumbnail"
-                            :style="{ backgroundImage: 'url(' + (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath) + ')' }">  
-                        <img :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
+                            :style="{ backgroundImage: 'url(' + (item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)) + ')' }">  
+                        <img :src="item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)">  
                     </div>
                     
                     <!-- Actions -->
@@ -231,7 +231,7 @@
                       
                         <img 
                                 v-if="item.thumbnail != undefined"
-                                :src="item['thumbnail'].medium ? item['thumbnail'].medium : thumbPlaceholderPath">  
+                                :src="item['thumbnail'].tainacan_medium ? item['thumbnail'].tainacan_medium : (item['thumbnail'].medium ? item['thumbnail'].medium : thumbPlaceholderPath)">
                     
                         <div class="list-metadata media-body">
                             <!-- Description -->
@@ -358,7 +358,7 @@
                             <div class="thumbnail">
                                 <img 
                                         v-if="item.thumbnail != undefined"
-                                        :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath"> 
+                                        :src="item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)"> 
                             </div>
                             <span 
                                     v-for="(column, index) in tableMetadata"
@@ -495,7 +495,7 @@
                             <span v-if="column.metadatum == 'row_thumbnail'">
                                 <img 
                                         class="table-thumb" 
-                                        :src="item['thumbnail'].thumb ? item['thumbnail'].thumb : thumbPlaceholderPath">
+                                        :src="item['thumbnail'].tainacan_small ? item['thumbnail'].tainacan_small : (item['thumbnail'].thumb ? item['thumbnail'].thumb : thumbPlaceholderPath)">
                             </span> 
                             <p 
                                     v-tooltip="{

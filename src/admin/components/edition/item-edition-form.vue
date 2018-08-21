@@ -210,16 +210,16 @@
                     <div class="section-box section-thumbnail">
                         <div class="thumbnail-field">
                             <file-item
-                                    v-if="item.thumbnail.thumb != undefined && item.thumbnail.thumb != false"
+                                    v-if="item.thumbnail != undefined && ((item.thumbnail.tainacan_medium != undefined && item.thumbnail.tainacan_medium != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
                                     :show-name="false"
                                     :size="178"
                                     :file="{ 
                                         media_type: 'image', 
-                                        guid: { rendered: item.thumbnail.thumb },
+                                        guid: { rendered: item.thumbnail.tainacan_medium ? item.thumbnail.tainacan_medium : item.thumbnail.medium },
                                         title: { rendered: $i18n.get('label_thumbnail')},
                                         description: { rendered: `<img alt='Thumbnail' src='` + item.thumbnail.full + `'/>` }}"/>
                             <figure 
-                                    v-if="item.thumbnail.thumb == undefined || item.thumbnail.thumb == false"
+                                    v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail.tainacan_medium == undefined || item.thumbnail.tainacan_medium == false))"
                                     class="image">
                                 <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
                                 <img
@@ -249,6 +249,7 @@
                             </div>
                         </div>
                     </div>
+
                     <!-- Comment Status ------------------------ --> 
                     <b-field
                             :addons="false" 
@@ -264,6 +265,7 @@
                                 :title="$i18n.getHelperTitle('items', 'comment_status')" 
                                 :message="$i18n.getHelperMessage('items', 'comment_status')"/>
                     </b-field>
+
                     <!-- Attachments ------------------------------------------ -->
                     <div class="section-label">
                         <label>{{ $i18n.get('label_attachments') }}</label>
@@ -322,40 +324,6 @@
                             </b-radio>
                         </div>
                     </div>
-
-                    <!-- Status -------------------------------- -->
-                    <!--<div class="section-label">
-                        <label>{{ $i18n.get('label_status') }}</label>
-                        <span class="required-metadatum-asterisk">*</span>
-                        <help-button
-                                :title="$i18n.getHelperTitle('items', 'status')"
-                                :message="$i18n.getHelperMessage('items', 'status')"/>
-                    </div>
-                    <div class="section-status">
-                        
-                        <div class="field has-addons">
-                            <b-select
-                                    v-model="form.status"
-                                    :placeholder="$i18n.get('instruction_select_a_status')">
-                                <option
-                                        :id="`status-option-${statusOption.value}`"
-                                        v-for="statusOption in statusOptions"
-                                        :key="statusOption.value"
-                                        :value="statusOption.value"
-                                        :disabled="statusOption.disabled">{{ statusOption.label }}
-                                </option>
-                            </b-select>
-                            <div class="control">
-                                <button
-                                        type="button"
-                                        id="button-submit-item-creation"
-                                        @click.prevent="onSubmit"
-                                        class="button is-success">
-                                    {{ $i18n.get('save') }}
-                                </button>
-                            </div>
-                        </div> 
-                    </div>-->
 
                     <!-- Collection -------------------------------- -->
                     <div class="section-label">

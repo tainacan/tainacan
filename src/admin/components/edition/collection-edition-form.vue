@@ -50,15 +50,22 @@
                     <b-field :addons="false">
                         <label class="label">{{ $i18n.get('label_thumbnail') }}</label>
                         <div class="thumbnail-field">
-
-                            <figure class="image">
-                                <span 
-                                        v-if="collection.thumbnail.thumb == undefined || collection.thumbnail.thumb == false"
-                                        class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
-                                <img
-                                        id="thumbail-image"  
+                            <file-item
+                                    v-if="collection.thumbnail != undefined && ((collection.thumbnail.tainacan_medium != undefined && collection.thumbnail.tainacan_medium != false) || (collection.thumbnail.medium != undefined && collection.thumbnail.medium != false))"
+                                    :show-name="false"
+                                    :size="178"
+                                    :file="{ 
+                                        media_type: 'image', 
+                                        guid: { rendered: collection.thumbnail.tainacan_medium ? collection.thumbnail.tainacan_medium : collection.thumbnail.medium },
+                                        title: { rendered: $i18n.get('label_thumbnail')},
+                                        description: { rendered: `<img alt='Thumbnail' src='` + collection.thumbnail.full + `'/>` }}"/>
+                          <figure 
+                                    v-if="collection.thumbnail == undefined || ((collection.thumbnail.medium == undefined || collection.thumbnail.medium == false) && (collection.thumbnail.tainacan_medium == undefined || collection.thumbnail.tainacan_medium == false))"
+                                    class="image">
+                                <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
+                                <img  
                                         :alt="$i18n.get('label_thumbnail')" 
-                                        :src="(collection.thumbnail.thumb == undefined || collection.thumbnail.thumb == false) ? thumbPlaceholderPath : collection.thumbnail.thumb">
+                                        :src="thumbPlaceholderPath">
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a 
@@ -246,19 +253,20 @@
                         <help-button 
                                 :title="$i18n.getHelperTitle('collections', 'status')" 
                                 :message="$i18n.getHelperMessage('collections', 'status')"/>
-                        <b-select
-                                expanded
-                                id="tainacan-select-status"
-                                v-model="form.status"
-                                @focus="clearErrors('status')"
-                                :placeholder="$i18n.get('instruction_select_a_status')">
-                            <option
+                        <div class="status-radios">
+                            <b-radio
+                                    v-model="form.status"
                                     v-for="statusOption in statusOptions"
                                     :key="statusOption.value"
-                                    :value="statusOption.value"
-                                    :disabled="statusOption.disabled">{{ statusOption.label }}
-                            </option>
-                        </b-select>
+                                    :native-value="statusOption.value">
+                                <span class="icon has-text-gray">
+                                    <i 
+                                        class="mdi mdi-18px"
+                                        :class="'mdi-' + getStatusIcon(statusOption.value)"/>
+                                </span>
+                                {{ statusOption.label }}
+                            </b-radio>
+                        </div>
                     </b-field>
             
                     <!-- Name -------------------------------- --> 
@@ -267,6 +275,7 @@
                             :label="$i18n.get('label_name')"
                             :type="editFormErrors['name'] != undefined ? 'is-danger' : ''" 
                             :message="editFormErrors['name'] != undefined ? editFormErrors['name'] : ''">
+                        <span class="required-metadatum-asterisk">*</span>
                         <help-button 
                                 :title="$i18n.getHelperTitle('collections', 'name')" 
                                 :message="$i18n.getHelperMessage('collections', 'name')"/>
@@ -408,6 +417,7 @@
 <script>
 import { mapActions } from 'vuex';
 import wpMediaFrames from '../../js/wp-media-frames';
+import FileItem from '../other/file-item.vue';
 import { wpAjax } from '../../js/mixins';
 
 export default {
@@ -473,6 +483,9 @@ export default {
             newPagePath: tainacan_plugin.admin_url + 'post-new.php?post_type=page',
             isUpdatingSlug: false,
         }
+    },
+    components: {
+        FileItem
     },
     methods: {
         ...mapActions('collection', [
@@ -733,6 +746,15 @@ export default {
                     }
                 }
             );
+        },
+        getStatusIcon(status) {
+            switch(status) {
+                case 'publish': return 'earth';
+                case 'private': return 'lock';
+                case 'draft': return 'clipboard-text';
+                case 'trash': return 'delete';
+                default: return 'file';
+            }
         }
     },
     created(){
@@ -821,6 +843,9 @@ export default {
 
     @import "../../scss/_variables.scss";
 
+    .column {
+        padding: 0;
+    }
 
     .field {
         position: relative;
@@ -853,9 +878,7 @@ export default {
         }
     }
     .header-field {  
-        img {
-            padding: 20px;
-        }
+
         .image-placeholder {
             position: absolute;
             left: 30%;
@@ -874,41 +897,39 @@ export default {
         }
         .header-buttons-row {
             text-align: right;
-            top: -35px;
-            right: 20px;
+            top: -15px;
             position: relative;
         }
     }
     .thumbnail-field {  
-        max-height: 208px;
-        margin-bottom: 180px;
-        margin-top: -20px;
+        // padding: 26px;
+        // margin-top: 16px;
+        // margin-bottom: 38px;
 
         .content {
             padding: 10px;
             font-size: 0.8em;
         }
         img {
-            border-radius: 100px;
-            position: absolute;
             height: 178px;
             width: 178px;
-            padding: 20px;
         }
         .image-placeholder {
-            position: relative;
-            left: 40px;
-            bottom: -100px;
+            position: absolute;
+            margin-left: 45px;
+            margin-right: 45px;
             font-size: 0.8rem;
             font-weight: bold;
             z-index: 99;
             text-align: center;
             color: $gray4;
+            top: 70px;
+            max-width: 90px;
         }
         .thumbnail-buttons-row {
             position: relative;
-            left: 60px;
-            bottom: -142px;
+            left: 86px;
+            bottom: 20px;
         }
     }
     .selected-cover-page {
@@ -932,10 +953,18 @@ export default {
            .icon { color: $gray2; }
         }
     }
+    .status-radios {
+        display: flex;
+
+        .control-lable {
+            display: flex;
+            align-items: center;
+        }
+    }
     .moderators-empty-list { 
         color: $gray4;
         font-size: 0.85rem;
-     }
+    }
 
 </style>
 
