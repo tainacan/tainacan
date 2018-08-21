@@ -128,7 +128,8 @@ class Collection extends Entity {
 				'thumbnail',
 				'revisions',
 				'page-attributes',
-				'post-formats'
+				'post-formats',
+			    'comments'
 			]
 		);
 
