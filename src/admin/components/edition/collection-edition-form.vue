@@ -220,7 +220,20 @@
                             </option>
                         </b-select>
                     </b-field>
-                    
+                    <!-- Comment Status ------------------------ --> 
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_comment_status')">
+                        <b-switch
+                                id="tainacan-checkbox-comment-status" 
+                                size="is-small"
+                                true-value="open" 
+                                false-value="closed"
+                                v-model="form.comment_status" />
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'comment_status')" 
+                                :message="$i18n.getHelperMessage('collections', 'comment_status')"/>
+                    </b-field>
                 </div>
                 <div class="column is-1" />
                 <div class="column">
@@ -416,7 +429,8 @@ export default {
                 files:[],
                 moderators_ids: [],
                 enabled_view_modes: [],
-                default_view_mode: []
+                default_view_mode: [],
+                comment_status: ''
             },
             thumbnail: {},
             cover: {},
@@ -515,7 +529,8 @@ export default {
                 moderators_ids: this.form.moderators_ids,
                 parent: this.form.parent,
                 enabled_view_modes: this.form.enabled_view_modes,
-                default_view_mode: this.form.default_view_mode
+                default_view_mode: this.form.default_view_mode,
+                comment_status: this.form.comment_status
             };
             this.updateCollection(data).then(updatedCollection => {    
                 
@@ -530,6 +545,7 @@ export default {
                 this.form.enable_cover_page = this.collection.enable_cover_page;
                 this.form.enabled_view_modes = this.collection.enabled_view_modes;
                 this.form.default_view_mode = this.collection.default_view_mode;
+                this.form.comment_status = this.collection.comment_status;
 
                 this.isLoading = false;
                 this.formErrorMessage = '';
@@ -574,6 +590,7 @@ export default {
                 this.form.default_view_mode = this.collection.default_view_mode;
                 this.form.enabled_view_modes = [];
                 this.moderators = [];
+                this.form.comment_status = this.collection.comment_status;
 
                 // Pre-fill status with publish to incentivate it
                 this.form.status = 'publish';
@@ -751,6 +768,7 @@ export default {
                 this.form.default_view_mode = this.collection.default_view_mode;
                 this.form.enabled_view_modes = JSON.parse(JSON.stringify(this.collection.enabled_view_modes));
                 this.moderators = JSON.parse(JSON.stringify(this.collection.moderators));
+                this.form.comment_status = this.collection.comment_status;
                  
                 // Generates CoverPage from current cover_page_id info
                 if (this.form.cover_page_id != undefined && this.form.cover_page_id != '') {

@@ -194,6 +194,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_empty_header_image'                       => __( 'Empty Header Image', 'tainacan' ),
 	'label_enable_cover_page'                        => __( 'Enable Cover Page', 'tainacan' ),
 	'label_cover_page'                               => __( 'Cover Page', 'tainacan' ),
+    'label_comment_status'                           => __( 'Allow Comments', 'tainacan' ),
 	'label_default_displayed_metadata'               => __( 'Default Displayed Metadata', 'tainacan' ),
 	'label_display'                                  => __( 'Display on Listing', 'tainacan' ),
 	'label_display_default'                          => __( 'Display by default', 'tainacan' ),
