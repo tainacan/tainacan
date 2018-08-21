@@ -270,4 +270,51 @@ class Items extends TAINACAN_UnitTestCase {
 		$this->assertEquals(0, sizeof($test_query) );
 		
     }
+    
+    /**
+     * @group comments
+     */
+    public function test_items_comment() {
+        $collection = $this->tainacan_entity_factory->create_entity(
+            'collection',
+            array(
+                'name'   => 'collectionComments',
+                'comment_status' => 'closed'
+            ),
+            true,
+            true
+        );
+        $item = $this->tainacan_entity_factory->create_entity(
+            'item',
+            array(
+                'title'      => 'itemComments1',
+                'collection' => $collection,
+                'comment_status' => 'open'
+            ),
+            true,
+            true
+        );
+        global $wp_query;
+        
+        $wp_query = new \WP_Query();
+        
+        $this->assertTrue(setup_postdata($item->WP_Post));
+        
+        $this->assertFalse(comments_open($item->get_id()));
+        
+        $collections = \Tainacan\Repositories\Collections::get_instance();
+        $collection->set('comment_status', 'open');
+        $collection->validate();
+        $collections->update($collection);
+        
+        $this->assertTrue(comments_open($item->get_id()));
+        
+        $items = \Tainacan\Repositories\Items::get_instance();
+        
+        $item->set('comment_status', 'closed');
+        $item->validate();
+        $items->update($item);
+        
+        $this->assertFalse(comments_open($item->get_id()));
+    }
 }
