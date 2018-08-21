@@ -102,10 +102,18 @@ class REST_Facets_Controller extends REST_Controller {
 				}
 
 			} else if ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ){
+				
+				if( isset($request['term_id']) ){
+					$this->taxonomy = $this->taxonomy_repository->fetch($options['taxonomy_id']);
+					$terms[] = $this->terms_repository->fetch($request['term_id'], $this->taxonomy);
+					$restTermClass = new REST_Terms_Controller();
 
-				$taxonomy = $this->taxonomy_repository->fetch($options['taxonomy_id']);
-				$terms = $this->terms_repository->fetch($args, $taxonomy);
-				$restTermClass = new REST_Terms_Controller();
+				} else {
+					$this->taxonomy = $this->taxonomy_repository->fetch($options['taxonomy_id']);
+					$terms = $this->terms_repository->fetch($args, $this->taxonomy);
+					$restTermClass = new REST_Terms_Controller();
+				}
+				
 				
 				foreach ($terms as $term) {
 					array_push($response, $restTermClass->prepare_item_for_response( $term, $request ));
@@ -154,7 +162,9 @@ class REST_Facets_Controller extends REST_Controller {
 						'img' => $item['header_image'],
 						'parent' => $item['parent'],
 						'total_children' => $item['total_children'],
-						'type' => 'Taxonomy'
+						'type' => 'Taxonomy',
+						'taxonomy_id' => $this->taxonomy->WP_Post->ID,
+						'taxonomy' => $item['taxonomy'],
 					];
 
 				} else if( $type === 'Tainacan\Metadata_Types\Relationship' ){

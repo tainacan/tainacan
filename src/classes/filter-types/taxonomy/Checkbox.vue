@@ -7,8 +7,9 @@
                 class="control">
             <b-checkbox
                     v-model="selected"
-                    :native-value="option.id"
-            >{{ option.name }}</b-checkbox>
+                    :native-value="option.value"
+                    v-if="!option.isChild"
+            >{{ option.label }}</b-checkbox>
             <div
                     class="see-more-container"
                     v-if="option.seeMoreLink && index == options.length-1"
@@ -110,27 +111,23 @@
                     });
             },
             loadOptions(){
-                let promise = null;
                 this.isLoading = true;
 
-                axios.get('/collection/'+ this.collection +'/metadata/' + this.metadatum)
+                axios.get('/collection/'+ this.collection +'/facets/' + this.metadatum + `?hideempty=0&order=asc&parent=0&number=${this.filter.max_options}`)
                     .then( res => {
-                        let metadatum = res.data;
-                        this.taxonomy_id = metadatum.metadata_type_options.taxonomy_id;
 
-                        promise = this.getValuesTaxonomy( metadatum.metadata_type_options.taxonomy_id );
+                        for (let item of res.data) {
+                            this.taxonomy = item.taxonomy;
+                            this.taxonomy_id = item.taxonomy_id;
+                            this.options.push(item);
+                        }
 
-                        promise.then( () => {
-                            this.isLoading = false;
-                            this.selectedValues();
-                        })
-                            .catch( error => {
-                                this.$console.log('error select', error );
-                                this.isLoading = false;
-                            });
+                        this.isLoading = false;
+                        this.selectedValues();
                     })
                     .catch(error => {
                         this.$console.log(error);
+                        this.isLoading = false;
                     });
             },
             getOptions(){
@@ -186,18 +183,23 @@
                 
                 let onlyLabels = [];
                 for(let selected of this.selected) {
-                    let valueIndex = this.options.findIndex(option => option.id == selected );
+                    let valueIndex = this.options.findIndex(option => option.value == selected );
 
                     if (valueIndex >= 0) {
-                        onlyLabels.push(this.options[valueIndex].name)
+                        onlyLabels.push(this.options[valueIndex].label)
                     } else {
-                        axios.get(`/taxonomy/${this.taxonomy_id}/terms/${selected}?fetch_only[0]=name&fetch_only[1]=id`)
+                        axios.get('/collection/'+ this.collection +'/facets/' + this.metadatum +`?term_id=${selected}&fetch_only[0]=name&fetch_only[1]=id`)
                             .then( res => {
-                                onlyLabels.push(res.data.name);
+                                
+                                if(!res || !res.data){
+                                    return false;
+                                }
+
+                                onlyLabels.push(res.data[0].label);
                                 this.options.push({
                                     isChild: true,
-                                    name: res.data.name,
-                                    id: res.data.id
+                                    name: res.data[0].label,
+                                    id: res.data[0].value
                                 })
                             })
                             .catch(error => {
