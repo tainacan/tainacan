@@ -111,7 +111,7 @@ class Items extends Repository {
 		        'map'         => 'comment_status',
 		        'title'       => __( 'Comment Status', 'tainacan' ),
 		        'type'        => 'string',
-		        'description' => __( 'The status of item comment, if is allowed, so is "open" or is "closed".', 'tainacan' ),
+		        'description' => __( 'The status of item comment, if is "open" the comments are allowed to item, or is "closed" for deny comments to item.', 'tainacan' ),
 		        'default'     => get_default_comment_status(Entities\Collection::get_post_type()),
 		        'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
 		    ]
