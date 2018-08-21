@@ -19,17 +19,13 @@
     .tainacan-record {
         padding: 0px;
         flex-basis: 0;
-        margin-bottom: 42px;
+        margin: 0 auto 42px auto;
         width: 100%;
-        min-height: 200px;
+        max-width: 425px;
+        min-height: 100px;
         cursor: pointer;
         text-decoration: none;
         display: block;
-
-        @media screen and (max-width: 768px) {
-            max-width: 100%;
-            min-width: 100%;
-        }
 
         &:hover {
             background-color: #f2f2f2 !important;
