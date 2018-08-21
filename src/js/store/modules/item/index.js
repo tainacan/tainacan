@@ -9,7 +9,8 @@ const state = {
     itemTitle: '',
     attachment: {},
     attachments: [],
-    lastUpdated: ''
+    lastUpdated: '',
+    comment_status: ''
 };
 
 
