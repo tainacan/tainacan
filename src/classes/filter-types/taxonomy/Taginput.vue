@@ -124,53 +124,38 @@
         },
         methods: {
             search( query ){
-                let promise = null;
+                this.isLoading = true;
                 this.options = [];
-                const q = query; 
 
-                const endpoint = this.isRepositoryLevel ? '/metadata/' + this.metadatum : '/collection/'+ this.collection +'/metadata/' + this.metadatum;
+                let endpoint = this.isRepositoryLevel ? '/facets/' + this.metadatum : '/collection/'+ this.collection +'/facets/' + this.metadatum;
 
-                axios.get(endpoint)
-                    .then( res => {
-                        let metadatum = res.data;
-                        promise = this.getValuesTaxonomy( metadatum.metadata_type_options.taxonomy_id, q );
-                        this.isLoading = true;
-                        promise.then( () => {
-                            this.isLoading = false;
-                        })
-                            .catch( error => {
-                                this.$console.log('error select', error );
-                                this.isLoading = false;
-                            });
-                    })
-                    .catch(error => {
-                        this.$console.log(error);
-                    });
-            },
-            getValuesTaxonomy( taxonomy, query ){
+                endpoint += '?hideempty=0&order=asc';
                 let valuesToIgnore = [];
-                for(let val of this.selected)
+                for(let val of this.selected){
                     valuesToIgnore.push( val.value );
-                
-                return axios.get('/taxonomy/' + taxonomy + '/terms?hideempty=0&order=asc' ).then( res => {
+                }
+
+                return axios.get(endpoint).then( res => {
                     for (let term of res.data) {     
                         if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {
-                            let indexToIgnore = valuesToIgnore.findIndex(value => value == term.id);
+                            let indexToIgnore = valuesToIgnore.findIndex(value => value == term.value);
                             if (indexToIgnore < 0) {
-                                if( term.name.toLowerCase().indexOf( query.toLowerCase() ) >= 0 ){
+                                if( term.label.toLowerCase().indexOf( query.toLowerCase() ) >= 0 ){
                                     this.taxonomy = term.taxonomy;
-                                    this.options.push({label: term.name, value: term.id});
+                                    this.options.push({label: term.label, value: term.value});
                                 }
                             }
                         } else {
-                            if( term.name.toLowerCase().indexOf( query.toLowerCase() ) >= 0 ){
+                            if( term.label.toLowerCase().indexOf( query.toLowerCase() ) >= 0 ){
                                 this.taxonomy = term.taxonomy;
-                                this.options.push({label: term.name, value: term.id});
+                                this.options.push({label: term.label, value: term.value});
                             }
                         }                                       
                     }
+                    this.isLoading = false;
                 })
                 .catch(error => {
+                    this.isLoading = false;
                     this.$console.log(error);
                 });
             },
@@ -189,13 +174,14 @@
                 }
             },
             getTerm( taxonomy, id ){
-              return axios.get('/taxonomy/' + taxonomy + '/terms/' + id + '?order=asc&hideempty=0' )
-              .then( res => {
-                  this.selected.push({ label: res.data.name, value: res.data.id })
-              })
-              .catch(error => {
-                  this.$console.log(error);
-              });
+                //getting a specific value from api, does not need be in fecat api
+                return axios.get('/taxonomy/' + taxonomy + '/terms/' + id + '?order=asc&hideempty=0' )
+                .then( res => {
+                    this.selected.push({ label: res.data.name, value: res.data.id })
+                })
+                .catch(error => {
+                    this.$console.log(error);
+                });
             }
         }
     }

@@ -98,18 +98,6 @@
             }
         },
         methods: {
-            getValuesTaxonomy( taxonomy ){
-                return axios.get(`/taxonomy/${taxonomy}/terms?hideempty=0&order=asc&parent=0&number=${this.filter.max_options}`)
-                    .then( res => {
-                        for (let item of res.data) {
-                            this.taxonomy = item.taxonomy;
-                            this.options.push(item);
-                        }
-                    })
-                    .catch(error => {
-                        this.$console.log(error);
-                    });
-            },
             loadOptions(){
                 this.isLoading = true;
 

@@ -120,11 +120,27 @@ class REST_Facets_Controller extends REST_Controller {
 				}
 
 			} else {
+				$metadatum_id = $metadatum->get_id();
+				$offset = '';
+				$number = '';
+				if($request['offset'] >= 0 && $request['number'] >= 1){
+					$offset = $request['offset'];
+					$number = $request['number'];
+				}
 
-				if($request['collection_id']) {
-					$response = $this->metadatum_repository->fetch_all_metadatum_values( $request['collection_id'], $metadatum->get_id() );
+				if($request['search']){
+					if($collection_id) {
+						$response = $this->metadatum_repository->fetch_all_metadatum_values( $collection_id, $metadatum_id, $request['search'], $offset, $number );
+					} else {
+						$response = $this->metadatum_repository->fetch_all_metadatum_values( null, $metadatum_id, $request['search'], $offset, $number);
+					}
+		
 				} else {
-					$response = $this->metadatum_repository->fetch_all_metadatum_values( null, $metadatum->get_id() );
+					if($collection_id) {
+						$response = $this->metadatum_repository->fetch_all_metadatum_values( $collection_id, $metadatum_id, '', $offset, $number);
+					} else {
+						$response = $this->metadatum_repository->fetch_all_metadatum_values( null, $metadatum_id, '', $offset, $number);
+					}
 				}
 
 			}

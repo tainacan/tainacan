@@ -12,8 +12,8 @@
             <option
                     v-for=" (option, index) in options"
                     :key="index"
-                    :label="option.name"
-                    :value="option.id">{{ option.name }}</option>
+                    :label="option.label"
+                    :value="option.value">{{ option.label }}</option>
         </b-select>
     </div>
 </template>
@@ -63,44 +63,25 @@ export default {
         }
   },
   methods: {
-    getValuesTaxonomy(taxonomy) {
-      return axios
-        .get("/taxonomy/" + taxonomy + "/terms?hideempty=0&order=asc")
-        .then(res => {
-          for (let item of res.data) {
-            this.taxonomy = item.taxonomy;
-            this.options.push(item);
-          }
-        })
-        .catch(error => {
-          this.$console.log(error);
-        });
-    },
     loadOptions() {
-      let promise = null;
       this.isLoading = true;
 
-      axios
-        .get("/collection/" + this.collection + "/metadata/" + this.metadatum)
-        .then(res => {
-          let metadatum = res.data;
-          promise = this.getValuesTaxonomy(
-            metadatum.metadata_type_options.taxonomy_id
-          );
+      axios.get('/collection/'+ this.collection +'/facets/' + this.metadatum + `?hideempty=0&order=asc`)
+          .then( res => {
 
-          promise
-            .then(() => {
-              this.isLoading = false;
-              this.selectedValues();
-            })
-            .catch(error => {
-              this.$console.log("error select", error);
-              this.isLoading = false;
-            });
-        })
-        .catch(error => {
-          this.$console.log(error);
-        });
+            for (let item of res.data) {
+                this.taxonomy = item.taxonomy;
+                this.taxonomy_id = item.taxonomy_id;
+                this.options.push(item);
+            }
+
+            this.isLoading = false;
+            this.selectedValues();
+          })
+          .catch(error => {
+            this.$console.log(error);
+            this.isLoading = false;
+          });
     },
     getOptions(parent, level = 0) {
       // retrieve only ids
@@ -111,7 +92,7 @@ export default {
             term["level"] = level;
             result.push(term);
             const levelTerm = level + 1;
-            const children = this.getOptions(term.id, levelTerm);
+            const children = this.getOptions(term.value, levelTerm);
             result = result.concat(children);
           }
         }
@@ -148,12 +129,12 @@ export default {
       });
 
       let valueIndex = this.options.findIndex(
-        option => option.id == this.selected
+        option => option.value == this.selected
       );
       if (valueIndex >= 0) {
         this.$eventBusSearch.$emit("sendValuesToTags", {
           filterId: this.filter.id,
-          value: this.options[valueIndex].name
+          value: this.options[valueIndex].label
         });
       }
     }
