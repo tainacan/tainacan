@@ -79,7 +79,6 @@
                 :index="childIndex"
                 :taxonomy-id="taxonomyId"
                 :order="order"/>
-        
     </div>
     <a 
             class="view-more-terms"
