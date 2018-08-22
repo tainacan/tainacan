@@ -418,6 +418,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_import_collection'						 => __( 'Import from external sources.', 'tainacan' ),
 	'info_import_items'								 => __( 'Import items from external sources.', 'tainacan' ),
 	'info_no_parent_term_found'                      => __( 'No valid parent term was found with this name.', 'tainacan' ),
+	'info_warning_changing_parent_term'              => __( 'Warning! Changing parent term will reload the terms list, thus uncheking any selection.', 'tainacan' ),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),

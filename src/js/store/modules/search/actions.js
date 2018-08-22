@@ -79,16 +79,16 @@ export const setOrderBy = ({ state, commit }, orderBy ) => {
     } else if (orderBy.slug == 'author_name') {
         commit('setPostQueryAttribute', {  attr: 'orderby', value: 'author_name' } );
     } else if (orderBy.metadata_type_object.primitive_type == 'float' || orderBy.metadata_type_object.primitive_type == 'int') {
-        commit('setPostQueryAttribute', {  attr: 'meta_key', value: orderBy.id } );
+        commit('setPostQueryAttribute', {  attr: 'metakey', value: orderBy.id } );
         commit('setPostQueryAttribute', {  attr: 'orderby', value: 'meta_value_num' } );
     } else if (orderBy.metadata_type_object.primitive_type == 'date') {
-        commit('setPostQueryAttribute', {  attr: 'meta_key', value: orderBy.id } );
-        commit('setPostQueryAttribute', {  attr: 'meta_type', value: 'DATETIME' } );
+        commit('setPostQueryAttribute', {  attr: 'metakey', value: orderBy.id } );
+        commit('setPostQueryAttribute', {  attr: 'metatype', value: 'DATETIME' } );
         commit('setPostQueryAttribute', {  attr: 'orderby', value: 'meta_value' } );
     } else if (orderBy.metadata_type_object.core) {
         commit('setPostQueryAttribute', {  attr: 'orderby', value: orderBy.metadata_type_object.related_mapped_prop } );
     } else {
-        commit('setPostQueryAttribute', {  attr: 'meta_key', value: orderBy.id } );
+        commit('setPostQueryAttribute', {  attr: 'metakey', value: orderBy.id } );
         commit('setPostQueryAttribute', {  attr: 'orderby', value: 'meta_value' } );
     }
 

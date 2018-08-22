@@ -86,43 +86,39 @@
                 :addons="false"
                 :type="((formErrors.parent !== '' || formErrors.repeated !== '') && (formErrors.parent !== undefined || formErrors.repeated !== undefined )) ? 'is-danger' : ''"
                 :message="formErrors.parent ? formErrors : formErrors.repeated">
-            <label class="label is-inline">
-                {{ $i18n.get('label_parent_term') }}
-                <span class="required-term-asterisk">*</span>
-                <help-button
-                        :title="$i18n.get('label_parent_term')"
-                        :message="$i18n.get('info_help_term_parent')"/>
-            </label>
-            <b-input
-                    v-model="editForm.parent"
-                    name="parent"
-                    @focus="clearErrors({ name: 'parent', repeated: 'repeated' })"/>
-        </b-field>
-        <b-field
-                :addons="false"
-                :type="((formErrors.parent !== '' || formErrors.repeated !== '') && (formErrors.parent !== undefined || formErrors.repeated !== undefined )) ? 'is-danger' : ''"
-                :message="formErrors.parent ? formErrors : formErrors.repeated">
            <label class="label is-inline">
                 {{ $i18n.get('label_parent_term') }}
-                <span class="required-term-asterisk">*</span>
+                 <b-switch
+                        id="tainacan-checkbox-has-parent" 
+                        size="is-small"
+                        v-model="hasParent" />
                 <help-button
                         :title="$i18n.get('label_parent_term')"
-                        :message="$i18n.get('info_help_term_parent')"/>
+                        :message="$i18n.get('info_help_parent_term')"/>
             </label>
             <b-autocomplete
                     id="tainacan-text-cover-page"
                     :placeholder="$i18n.get('instruction_parent_term')"
                     :data="parentTerms"
+                    field="name"
                     v-model="parentTermName"
                     @select="onSelectParentTerm($event)"
                     :loading="isFetchingParentTerms"
                     @input="fecthParentTerms($event)"
-                    @focus="clearErrors('parent')">
+                    @focus="showCheckboxesWarning = true; clearErrors('parent');"
+                    :disabled="!hasParent">
                 <template slot-scope="props">
                     {{ props.option.name }}
                 </template>
                 <template slot="empty">{{ $i18n.get('info_no_parent_term_found') }}</template>
             </b-autocomplete>
+            <transition name="fade">
+                <p
+                        class="checkboxes-warning"
+                        v-show="showCheckboxesWarning">
+                    {{ $i18n.get('info_warning_changing_parent_term') }}
+                </p>
+            </transition>
         </b-field>
 
         <!-- Submit buttons -------------- -->
@@ -169,7 +165,9 @@
                 headerImageMediaFrame: undefined,
                 isFetchingParentTerms: false,
                 parentTerms: [],
-                parentTermName: ''
+                parentTermName: '',
+                showCheckboxesWarning: false,
+                hasParent: false
             }
         },
         props: {
@@ -193,7 +191,7 @@
                         taxonomyId: this.taxonomyId,
                         name: this.editForm.name,
                         description: this.editForm.description,
-                        parent: this.editForm.parent,
+                        parent: this.hasParent ? this.editForm.parent : 0,
                         headerImageId: this.editForm.header_image_id,
                     })
                         .then((term) => {
@@ -211,12 +209,13 @@
                         });
 
                 } else {
+
                     this.updateChildTerm({
                         taxonomyId: this.taxonomyId,
                         termId: this.editForm.id,
                         name: this.editForm.name,
                         description: this.editForm.description,
-                        parent: this.editForm.parent,
+                        parent: this.hasParent ? this.editForm.parent : 0,
                         headerImageId: this.editForm.header_image_id,
                     })
                         .then(() => {
@@ -293,12 +292,13 @@
                 this.editForm.parent = selectedParentTerm.id;
                 this.selectedParentTerm = selectedParentTerm;
                 this.parentTermName = selectedParentTerm.name;
-
-                    console.log(this.parentTermName);
             }
         },
         mounted() {
+            this.hasParent = this.editForm.parent != undefined && this.editForm.parent > 0;
+
             this.initializeMediaFrames();
+
             this.isFetchingParentTerms = true;
             this.fetchParentName({ taxonomyId: this.taxonomyId, parentId: this.editForm.parent })
                 .then((parentName) => {
@@ -403,6 +403,11 @@
                 top: -15px;
                 position: relative;
             }
+        }
+        .checkboxes-warning {
+            color: $gray5;
+            font-style: italic;
+            padding: 0.2rem 0.75rem;
         }
     }
 
