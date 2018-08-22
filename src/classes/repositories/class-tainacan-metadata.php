@@ -227,13 +227,9 @@ class Metadata extends Repository {
 		$args   = array(
 			'labels'              => $labels,
 			'hierarchical'        => true,
-			//'supports'          => array('title'),
-			//'taxonomies'        => array(self::TAXONOMY),
 			'public'              => true,
 			'show_ui'             => tnc_enable_dev_wp_interface(),
 			'show_in_menu'        => tnc_enable_dev_wp_interface(),
-			//'menu_position'     => 5,
-			//'show_in_nav_menus' => false,
 			'publicly_queryable'  => true,
 			'exclude_from_search' => true,
 			'has_archive'         => true,
