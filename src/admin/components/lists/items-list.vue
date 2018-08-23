@@ -244,7 +244,6 @@
                                     }"   
                                     class="metadata-description"
                                     v-html="item.description != undefined ? getLimitedDescription(item.description) : ''" />                             
-                            <br>
                             <!-- Author-->
                             <p 
                                     v-tooltip="{
@@ -688,7 +687,8 @@ export default {
             }
         },
         getLimitedDescription(description) {
-            return description.length > 120 ? description.substring(0, 117) + '...' : description;
+            let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 100 : 220;
+            return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
         }
     }
 }

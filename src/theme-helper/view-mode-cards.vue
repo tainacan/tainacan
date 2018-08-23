@@ -87,7 +87,8 @@ export default {
         collectionId: Number,
         displayedMetadata: Array,
         items: Array,
-        isLoading: false
+        isLoading: false,
+        shouldUseSmallCard: false
     },
     data () {
         return {
@@ -111,7 +112,8 @@ export default {
             }
         },
         getLimitedDescription(description) {
-            return description.length > 300 ? description.substring(0, 297) + '...' : description;
+            let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 155 : 330;
+            return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
         }
     }
 }
@@ -121,6 +123,7 @@ export default {
     $turquoise1: #e6f6f8;
     $turquoise2: #d1e6e6;
     $tainacan-input-color: #1d1d1d;
+    $gray1: #f2f2f2;
     $gray2: #e5e5e5;
     $gray4: #898d8f;
     $gray3: #dcdcdc;

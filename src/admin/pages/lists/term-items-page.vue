@@ -771,7 +771,7 @@
                 'getAdminViewMode'
             ]),
             onSwipeFiltersMenu($event) {
-                let screenWidth = window.screen.width;
+                let screenWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
 
                 if ($event.offsetDirection == 4 && screenWidth <= 768) {
                     if (!this.isFilterModalActive)
@@ -1289,7 +1289,7 @@
         width: 23px;
         border: none;
         background-color: $turquoise1;
-        color: $blue5;
+        color: $turquoise5;
         padding: 0;
         border-top-right-radius: 2px;
         border-bottom-right-radius: 2px;

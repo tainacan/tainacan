@@ -9,8 +9,7 @@
                 v-if="!openAdvancedSearch"
                 class="is-hidden-mobile"
                 id="filter-menu-compress-button"
-                :class="{'filter-menu-compress-button-top-repo': isRepositoryLevel}"
-                :style="{ top: !isOnTheme ? '120px' : '76px' }"
+                :style="{ top: !isOnTheme ? (isRepositoryLevel ? '172px' : '120px') : '76px' }"
                 @click="isFiltersMenuCompressed = !isFiltersMenuCompressed">
             <b-icon :icon="isFiltersMenuCompressed ? 'menu-right' : 'menu-left'" />
         </button>
@@ -19,8 +18,7 @@
                 v-if="!openAdvancedSearch"
                 class="is-hidden-tablet"
                 id="filter-menu-compress-button"
-                :class="{'filter-menu-compress-button-top-repo': isRepositoryLevel}"
-                :style="{ top: !isOnTheme ? (searchControlHeight + 70) + 'px' : (searchControlHeight - 25) + 'px' }"
+                :style="{ top: !isOnTheme ? (isRepositoryLevel ? (searchControlHeight + 100) : (searchControlHeight + 70) + 'px') : (searchControlHeight - 25) + 'px' }"
                 @click="isFilterModalActive = !isFilterModalActive">
             <b-icon :icon="isFiltersMenuCompressed ? 'menu-right' : 'menu-left'" />
             <span class="text">{{ $i18n.get('filters') }}</span>
@@ -770,7 +768,7 @@
                 'getAdminViewMode'
             ]),
             onSwipeFiltersMenu($event) {
-                let screenWidth = window.screen.width;
+                let screenWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
 
                 if ($event.offsetDirection == 4 && screenWidth <= 768) {
                     if (!this.isFilterModalActive)
@@ -1274,9 +1272,6 @@
         }
 
     }
-    .filter-menu-compress-button-top-repo {
-         top: 123px !important;
-    }
     #filter-menu-compress-button {
         position: absolute;
         z-index: 99;
@@ -1287,7 +1282,7 @@
         width: 23px;
         border: none;
         background-color: $turquoise1;
-        color: $blue5;
+        color: $turquoise5;
         padding: 0;
         border-top-right-radius: 2px;
         border-bottom-right-radius: 2px;
