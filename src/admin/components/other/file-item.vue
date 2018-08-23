@@ -15,6 +15,7 @@
                         class="image"
                         :style="{ 'background-image': 'url(' + file.guid.rendered + ')' }"/>
                  <div
+                        :style="{ 'background-color': '#dbdbdb' }"
                         v-else 
                         class="file-placeholder">
                     <b-icon
@@ -103,7 +104,6 @@ export default {
             overflow: hidden;
             position: relative;
             display: inline-block;
-            background-color: $gray2; 
 
             &.rounded {
                 border-bottom-left-radius: 5px;

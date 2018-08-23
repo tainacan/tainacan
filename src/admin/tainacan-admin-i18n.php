@@ -285,6 +285,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_log_file'                                 => __( 'Log file', 'tainacan' ),
 	'label_error_log_file'	                     	 => __( 'Error Log file', 'tainacan' ),
 	'label_import_items'	                     	 => __( 'Import items', 'tainacan' ),
+	'label_hide_filters'	                     	 => __( 'Hide filters menu', 'tainacan' ),
+	'label_show_filters'	                     	 => __( 'Show filters menu', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

@@ -6,11 +6,15 @@
         <!-- SEARCH AND FILTERS --------------------- -->
         <!-- Filter menu compress button -->
         <button
+                v-tooltip="{
+                    content: isFiltersMenuCompressed ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters'),
+                    autoHide: false,
+                    placement: 'auto-start'
+                }"  
                 v-if="!openAdvancedSearch"
                 class="is-hidden-mobile"
                 id="filter-menu-compress-button"
-                :class="{'filter-menu-compress-button-top-repo': isRepositoryLevel && !isOnTheme }"
-                :style="{ top: !isOnTheme ? '120px' : '76px' }"
+                :style="{ top: !isOnTheme ? (isRepositoryLevel ? '172px' : '120px') : '76px' }"
                 @click="isFiltersMenuCompressed = !isFiltersMenuCompressed">
             <b-icon :icon="isFiltersMenuCompressed ? 'menu-right' : 'menu-left'" />
         </button>
@@ -19,8 +23,7 @@
                 v-if="!openAdvancedSearch"
                 class="is-hidden-tablet"
                 id="filter-menu-compress-button"
-                :class="{'filter-menu-compress-button-top-repo': isRepositoryLevel && !isOnTheme }"
-                :style="{ top: !isOnTheme ? (searchControlHeight + 70) + 'px' : (searchControlHeight - 25) + 'px' }"
+                :style="{ top: !isOnTheme ? (isRepositoryLevel ? (searchControlHeight + 100) : (searchControlHeight + 70) + 'px') : (searchControlHeight - 25) + 'px' }"
                 @click="isFilterModalActive = !isFilterModalActive">
             <b-icon :icon="isFiltersMenuCompressed ? 'menu-right' : 'menu-left'" />
             <span class="text">{{ $i18n.get('filters') }}</span>
@@ -1275,9 +1278,6 @@
             align-items: baseline;
         }
 
-    }
-    .filter-menu-compress-button-top-repo {
-         top: 123px !important;
     }
     #filter-menu-compress-button {
         position: absolute;

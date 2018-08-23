@@ -46,16 +46,22 @@
     
             <ul class="menu-list level-right">
                 <li 
+                        v-tooltip.bottom="{
+                            content: $i18n.get('items'),
+                            autoHide: false,
+                            placement: 'bottom',
+                            offset: 100
+                        }"
                         :class="activeRoute == 'ItemPage' || activeRoute == 'CollectionItemsPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage' ? 'is-active':''" 
                         class="level-item">
-                    <router-link  
+                    <router-link 
                             tag="a" 
                             :to="{ path: $routerHelper.getCollectionItemsPath(id, '') }" 
                             :aria-label="$i18n.get('label_collection_items')">
                         <span class="icon">
                             <i class="mdi mdi-file-multiple"/>
                         </span>
-                        <span class="menu-text">{{ $i18n.get('items') }}</span>
+                        <!-- <span class="menu-text">{{ $i18n.get('items') }}</span> -->
                     </router-link>
                 </li>
                 <li 
@@ -65,36 +71,51 @@
                             tag="a" 
                             :to="{ path: $routerHelper.getCollectionEditPath(id) }" 
                             :aria-label="$i18n.get('label_settings')">
-                        <span class="icon">
+                        <span 
+                                v-tooltip.bottom="{
+                                    content: $i18n.get('label_settings'),
+                                    autoHide: false
+                                }"  
+                                class="icon">
                             <i class="mdi mdi-settings"/>
                         </span>
-                        <span class="menu-text">{{ $i18n.get('label_settings') }}</span>
+                        <!-- <span class="menu-text">{{ $i18n.get('label_settings') }}</span> -->
                     </router-link>
                 </li>
                 <li 
                         :class="activeRoute == 'MetadataList' ? 'is-active':''"
                         class="level-item">
-                    <router-link 
+                    <router-link  
                             tag="a" 
                             :to="{ path: $routerHelper.getCollectionMetadataPath(id) }"
                             :aria-label="$i18n.get('label_collection_metadata')">
-                        <span class="icon">
+                        <span 
+                                v-tooltip.bottom="{
+                                    content: $i18n.getFrom('metadata', 'name'),
+                                    autoHide: false
+                                }" 
+                                class="icon">
                             <i class="mdi mdi-format-list-bulleted-type"/>
                         </span>
-                        <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
+                        <!-- <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span> -->
                     </router-link>
                 </li>
                 <li 
                         :class="activeRoute == 'FiltersList' ? 'is-active':''" 
                         class="level-item">
-                    <router-link
+                    <router-link 
                             tag="a" 
                             :to="{ path: $routerHelper.getCollectionFiltersPath(id) }" 
                             :aria-label="$i18n.get('label_collection_filters')">
-                        <span class="icon">
+                        <span 
+                                v-tooltip.bottom="{
+                                    content: $i18n.getFrom('filters', 'name'),
+                                    autoHide: false
+                                }"  
+                                class="icon">
                             <i class="mdi mdi-filter"/>
                         </span>
-                        <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
+                        <!-- <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span> -->
                     </router-link>
                 </li>
                 <li 
@@ -104,8 +125,12 @@
                             tag="a" 
                             :to="{ path: $routerHelper.getCollectionEventsPath(id) }" 
                             :aria-label="$i18n.get('label_collection_events')">
-                        <activities-icon />
-                        <span class="menu-text">{{ $i18n.get('events') }}</span>
+                        <activities-icon
+                            v-tooltip.bottom="{
+                                content: $i18n.get('events'),
+                                autoHide: false
+                            }" />
+                        <!-- <span class="menu-text">{{ $i18n.get('events') }}</span> -->
                     </router-link>
                 </li>
             
