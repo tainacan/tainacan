@@ -10,8 +10,8 @@ export default {
                 onEditTerm(term) {
                     this.$emit('editTerm', term);
                 },
-                onTermEditionSaved(term) {
-                    this.$emit('termEditionSaved', term);
+                onTermEditionSaved({term, hasChangedParent}) {
+                    this.$emit('termEditionSaved', { term: term, hasChangedParent: hasChangedParent });
                 },
                 onTermEditionCanceled(term) {
                     this.$emit('termEditionCanceled', term);

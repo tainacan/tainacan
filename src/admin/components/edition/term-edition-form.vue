@@ -89,6 +89,7 @@
            <label class="label is-inline">
                 {{ $i18n.get('label_parent_term') }}
                  <b-switch
+                        @input="showCheckboxesWarning = true; clearErrors('parent');"
                         id="tainacan-checkbox-has-parent" 
                         size="is-small"
                         v-model="hasParent" />
@@ -105,7 +106,7 @@
                     @select="onSelectParentTerm($event)"
                     :loading="isFetchingParentTerms"
                     @input="fecthParentTerms($event)"
-                    @focus="showCheckboxesWarning = true; clearErrors('parent');"
+                    @focus="clearErrors('parent');"
                     :disabled="!hasParent">
                 <template slot-scope="props">
                     {{ props.option.name }}
@@ -115,7 +116,7 @@
             <transition name="fade">
                 <p
                         class="checkboxes-warning"
-                        v-show="showCheckboxesWarning">
+                        v-show="showCheckboxesWarning == true">
                     {{ $i18n.get('info_warning_changing_parent_term') }}
                 </p>
             </transition>
@@ -167,7 +168,9 @@
                 parentTerms: [],
                 parentTermName: '',
                 showCheckboxesWarning: false,
-                hasParent: false
+                hasParent: false,
+                hasChangedParent: false,
+                initialParentId: undefined
             }
         },
         props: {
@@ -195,7 +198,7 @@
                         headerImageId: this.editForm.header_image_id,
                     })
                         .then((term) => {
-                            this.$emit('onEditionFinished', term);
+                            this.$emit('onEditionFinished', {term: term, hasChangedParent: this.hasChangedParent });
                             this.editForm = {};
                             this.formErrors = {};
                         })
@@ -218,9 +221,9 @@
                         parent: this.hasParent ? this.editForm.parent : 0,
                         headerImageId: this.editForm.header_image_id,
                     })
-                        .then(() => {
+                        .then((term) => {
                             this.formErrors = {};
-                            this.$emit('onEditionFinished', this.editForm);
+                            this.$emit('onEditionFinished', { term: term, hasChangedParent: this.hasChangedParent });
                         })
                         .catch((errors) => {
                             for (let error of errors.errors) {
@@ -289,26 +292,35 @@
                     });
             },
             onSelectParentTerm(selectedParentTerm) {
+                this.hasChangedParent = this.initialParentId != selectedParentTerm.id;
                 this.editForm.parent = selectedParentTerm.id;
                 this.selectedParentTerm = selectedParentTerm;
                 this.parentTermName = selectedParentTerm.name;
+                this.showCheckboxesWarning = true;
             }
         },
         mounted() {
+            
+            this.showCheckboxesWarning = false;
             this.hasParent = this.editForm.parent != undefined && this.editForm.parent > 0;
-
+            this.initialParentId = this.editForm.parent;
             this.initializeMediaFrames();
 
-            this.isFetchingParentTerms = true;
-            this.fetchParentName({ taxonomyId: this.taxonomyId, parentId: this.editForm.parent })
-                .then((parentName) => {
-                    this.parentTermName = parentName;
-                    this.isFetchingParentTerms = false;
-                })
-                .catch((error) => {
-                    this.$console.error(error);
-                    this.isFetchingParentTerms = false;
-                });
+            if (this.hasParent) {
+                this.isFetchingParentTerms = true;
+                this.showCheckboxesWarning = false;
+                this.fetchParentName({ taxonomyId: this.taxonomyId, parentId: this.editForm.parent })
+                    .then((parentName) => {
+                        this.parentTermName = parentName;
+                        this.isFetchingParentTerms = false;
+                        this.showCheckboxesWarning = false;
+                    })
+                    .catch((error) => {
+                        this.$console.error(error);
+                        this.isFetchingParentTerms = false;
+                        this.showCheckboxesWarning = false;
+                    });
+            }
         }
     }
 </script>
