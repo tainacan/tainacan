@@ -83,6 +83,10 @@ class REST_Facets_Controller extends REST_Controller {
 			$options = $metadatum->get_metadata_type_options();
 			$args = $this->prepare_filters($request);
 
+			if(isset($request['filter_items'])){
+				//TODO: HANDLE FILTERS
+			}
+
 			if( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ){
 
 				$restItemsClass = new REST_Items_Controller();

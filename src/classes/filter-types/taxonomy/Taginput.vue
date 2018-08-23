@@ -17,7 +17,8 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios/axios'
+    import qs from 'qs';
+    import { tainacan as axios } from '../../../js/axios/axios';
 
     export default {
         created(){
@@ -126,10 +127,12 @@
             search( query ){
                 this.isLoading = true;
                 this.options = [];
+                
+                let query_items = { 'filter_items': this.query };
 
                 let endpoint = this.isRepositoryLevel ? '/facets/' + this.metadatum : '/collection/'+ this.collection +'/facets/' + this.metadatum;
 
-                endpoint += '?hideempty=0&order=asc';
+                endpoint += '?hideempty=0&order=asc&' + qs.stringify(query_items);
                 let valuesToIgnore = [];
                 for(let val of this.selected){
                     valuesToIgnore.push( val.value );

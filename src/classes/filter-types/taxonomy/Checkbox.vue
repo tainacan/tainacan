@@ -20,6 +20,7 @@
 </template>
 
 <script>
+    import qs from 'qs';
     import { tainacan as axios } from '../../../js/axios/axios';
     import CheckboxFilterModal from '../../../admin/components/other/checkbox-filter-modal.vue';
 
@@ -100,8 +101,10 @@
         methods: {
             loadOptions(){
                 this.isLoading = true;
+                let query_items = { 'filter_items': this.query };
 
-                axios.get('/collection/'+ this.collection +'/facets/' + this.metadatum + `?hideempty=0&order=asc&parent=0&number=${this.filter.max_options}`)
+                axios.get('/collection/'+ this.collection +'/facets/' + this.metadatum 
+                + `?hideempty=0&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items))
                     .then( res => {
 
                         for (let item of res.data) {
