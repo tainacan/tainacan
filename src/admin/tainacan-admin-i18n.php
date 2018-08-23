@@ -64,8 +64,10 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'run'                                            => __( 'Run', 'tainacan' ),
 	'edit_search'                                    => __( 'Edit search', 'tainacan' ),
 	'apply'                                          => __( 'Apply', 'tainacan' ),
-	'add_another_edition_criterion'                   => __( 'Add another edition criterion', 'tainacan' ),
-	'add_one_edition_criterion'                       => __( 'Add one edition criterion', 'tainacan' ),
+	'add_another_edition_criterion'                  => __( 'Add another edition criterion', 'tainacan' ),
+	'add_one_edition_criterion'                      => __( 'Add one edition criterion', 'tainacan' ),
+	'redefine'                                       => __( 'Redefine', 'tainacan' ),
+	'replace'                                        => __( 'Replace', 'tainacan' ),
 
 	// Wordpress Status
 	'publish'                                        => __( 'Publish', 'tainacan' ),
@@ -286,6 +288,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_log_file'                                 => __( 'Log file', 'tainacan' ),
 	'label_error_log_file'	                     	 => __( 'Error Log file', 'tainacan' ),
 	'label_import_items'	                     	 => __( 'Import items', 'tainacan' ),
+	'label_select_all_items'                         => __( 'Select all items', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -419,6 +422,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_import_items'								 => __( 'Import items from external sources.', 'tainacan' ),
 	'info_editing_items_in_bulk'                     => __( 'Editing items in bulk', 'tainacan' ),
 	'info_by_inner'                                  => __( 'by', 'tainacan' ),
+	'info_items_selected'                            => __( 'items selected', 'tainacan' ),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),

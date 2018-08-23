@@ -3,7 +3,7 @@
         <header class="tainacan-modal-title">
             <h2>{{ modalTitle }}
                 <small class="tainacan-total-objects-info">
-                    {{ `(${objects.length} ${objectType})` }}
+                    {{ `(${totalItems} ${objectType})` }}
                 </small>
             </h2>
             <hr>
@@ -15,6 +15,7 @@
                         :key="criterion"
                         class="tainacan-bulk-edition-inline-fields">
                     <b-select
+                            :disabled="bulkEditionProcedures[criterion].metadatum ? true : false"
                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                             :placeholder="$i18n.get('instruction_select_a_metadatum')"
                             @input="addToBulkEditionProcedures($event, 'metadatum', criterion)">
@@ -28,52 +29,89 @@
                     </b-select>
 
                     <b-select
+                            v-if="bulkEditionProcedures[criterion] &&
+                            bulkEditionProcedures[criterion].metadatum"
+                            :disabled="bulkEditionProcedures[criterion].action ? true : false"
                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                             :placeholder="$i18n.get('instruction_select_a_action')"
                             @input="addToBulkEditionProcedures($event, 'action', criterion)">
-                        <option
-                                v-for="(edtAct, key) in editionActions"
-                                :value="edtAct"
-                                :key="key">
-                            {{ edtAct }}
-                        </option>
+                        <template v-if="getMetadataByID(bulkEditionProcedures[criterion].metadatum).multiple == 'yes'">
+                            <option
+                                    v-for="(edtAct, key) in editionActionsForMultiple"
+                                    :value="edtAct"
+                                    :key="key">
+                                {{ edtAct }}
+                            </option>
+                        </template>
+                        <template v-else>
+                            <option
+                                    v-for="(edtAct, key) in editionActionsForNotMultiple"
+                                    :value="edtAct"
+                                    :key="key">
+                                {{ edtAct }}
+                            </option>
+                        </template>
                     </b-select>
 
-                    <b-input
-                            v-if="bulkEditionProcedures[criterion] &&
-                             bulkEditionProcedures[criterion].metadatum &&
-                             bulkEditionProcedures[criterion].action == editionActions.replace"
-                            class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
-                            type="text"
-                    />
-
-                    <div
-                            v-if="bulkEditionProcedures[criterion] &&
-                             bulkEditionProcedures[criterion].metadatum &&
-                             bulkEditionProcedures[criterion].action == editionActions.replace"
-                            class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last">
-                        <small>
-                        {{ $i18n.get('info_by_inner') }}
-                        </small>
-                    </div>
-
-                    <component
-                            v-if="bulkEditionProcedures[criterion] &&
-                             bulkEditionProcedures[criterion].metadatum &&
-                             bulkEditionProcedures[criterion].action"
-                            :id="getMetadataByID(bulkEditionProcedures[criterion].metadatum).metadata_type_object.component +
-                             '-' + getMetadataByID(bulkEditionProcedures[criterion].metadatum).slug"
-                            :is="getMetadataByID(bulkEditionProcedures[criterion].metadatum).metadata_type_object.component"
-                            :metadatum="{metadatum: getMetadataByID(bulkEditionProcedures[criterion].metadatum)}"
-                            :class="{'tainacan-bulk-edition-field-last': bulkEditionProcedures[criterion].action != editionActions.replace}"
-                            class="tainacan-bulk-edition-field"
-                            @input="addToBulkEditionProcedures($event, 'newValue', criterion)"
-                    />
+                    <!-- DISABLED FIELD -->
                     <b-input
                             v-else
-                            class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
+                            class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                             type="text"
                             disabled/>
+
+                    <!-- Replace or Redefine in case of multiple -->
+                    <template
+                            v-if="bulkEditionProcedures[criterion] &&
+                             bulkEditionProcedures[criterion].metadatum &&
+                             (bulkEditionProcedures[criterion].action == editionActionsForMultiple.replace ||
+                             (bulkEditionProcedures[criterion].action == editionActionsForMultiple.redefine &&
+                              getMetadataByID(bulkEditionProcedures[criterion].metadatum).multiple == 'yes'))">
+
+                        <component
+                                :id="getMetadataByID(bulkEditionProcedures[criterion].metadatum).metadata_type_object.component +
+                             '-' + getMetadataByID(bulkEditionProcedures[criterion].metadatum).slug"
+                                :is="getMetadataByID(bulkEditionProcedures[criterion].metadatum).metadata_type_object.component"
+                                :metadatum="{metadatum: getMetadataByID(bulkEditionProcedures[criterion].metadatum)}"
+                                class="tainacan-bulk-edition-field"
+                                @input="addToBulkEditionProcedures($event, 'oldValue', criterion)"
+                        />
+
+                        <div class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last tainacan-by-text">
+                            <small>
+                                {{ $i18n.get('info_by_inner') }}
+                            </small>
+                        </div>
+
+                        <b-input
+                                class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
+                                type="text"
+                                @input="addToBulkEditionProcedures($event, 'newValue', criterion)"
+                        />
+                    </template>
+
+                    <!-- Not replace -->
+                    <template
+                            v-else-if="bulkEditionProcedures[criterion] &&
+                             bulkEditionProcedures[criterion].metadatum &&
+                             bulkEditionProcedures[criterion].action">
+                        <component
+                                :id="getMetadataByID(bulkEditionProcedures[criterion].metadatum).metadata_type_object.component +
+                             '-' + getMetadataByID(bulkEditionProcedures[criterion].metadatum).slug"
+                                :is="getMetadataByID(bulkEditionProcedures[criterion].metadatum).metadata_type_object.component"
+                                :metadatum="{metadatum: getMetadataByID(bulkEditionProcedures[criterion].metadatum)}"
+                                class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
+                                @input="addToBulkEditionProcedures($event, 'newValue', criterion)"
+                        />
+                    </template>
+
+                    <!-- DISABLED FIELD -->
+                    <template v-else>
+                        <b-input
+                                class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
+                                type="text"
+                                disabled/>
+                    </template>
 
                     <div class="field">
                         <button
@@ -82,6 +120,17 @@
                             <b-icon
                                     type="is-secondary"
                                     icon="close"/>
+                        </button>
+                        <a class="is-pulled-right">
+                            <b-icon
+                                    type="is-success"
+                                    icon="check-circle"/>
+                        </a>
+                        <button
+                                @click="executeBulkEditionProcedure()"
+                                class="button is-white is-pulled-right">
+                            <b-icon
+                                    icon="play-circle-outline"/>
                         </button>
                     </div>
                 </div>
@@ -122,21 +171,34 @@
 </template>
 
 <script>
+    import { mapActions, mapGetters } from 'vuex';
+
     export default {
         name: "BulkEditionModal",
         props: {
             modalTitle: String,
-            objects: Array,
+            totalItems: Array,
             objectType: String,
             metadata: Array,
+            selectedForBulk: Object,
+            collectionID: Number,
+        },
+        created(){
+            this.createEditGroup({
+                object: this.selectedForBulk,
+                collectionID: this.collectionID
+            });
         },
         data() {
             return {
                 editionCriteria: [1],
-                editionActions: {
-                    remove: 'Remove',
-                    redefine: 'Redefine',
-                    replace: 'Replace',
+                editionActionsForMultiple: {
+                    remove: this.$i18n.get('remove'),
+                    redefine: this.$i18n.get('redefine'),
+                    replace: this.$i18n.get('replace'),
+                },
+                editionActionsForNotMultiple: {
+                    redefine: this.$i18n.get('redefine'),
                 },
                 bulkEditionProcedures: {
                     1: {}
@@ -144,6 +206,15 @@
             }
         },
         methods: {
+            ...mapGetters('bulkedition', [
+                'getGroupID'
+            ]),
+            ...mapActions('bulkedition', [
+                'createEditGroup'
+            ]),
+            executeBulkEditionProcedure(){
+                console.log('executed!');
+            },
             addEditionCriterion() {
                 let aleatoryKey = Math.floor(Math.random() * (1000 - 2 + 1)) + 2;
 
@@ -165,6 +236,7 @@
 
                 if(this.editionCriteria[criterionIndex]){
                     this.editionCriteria.splice(criterionIndex, 1);
+                    delete this.bulkEditionProcedures[criterion];
                 }
             },
             getMetadataByID(id){
@@ -194,6 +266,10 @@
         font-weight: normal;
     }
 
+    .tainacan-by-text {
+        max-width: 28px;
+    }
+
     .tainacan-bulk-edition-inline-fields {
         display: inline-flex;
         flex-direction: row;
@@ -201,9 +277,10 @@
         width: 100%;
 
         .control {
-            .select{
+            .select {
                 width: 100% !important;
-                select{
+
+                select {
                     width: 100% !important;
                 }
             }
@@ -214,20 +291,13 @@
             flex-shrink: 1;
             text-align: center;
             padding-bottom: 9px;
+            max-height: 150px;
+            overflow-y: auto;
 
             &:not(:first-child) {
                 padding-left: 13px;
             }
         }
-
-        .tainacan-bulk-edition-field-not-last {
-            flex-basis: auto;
-        }
-
-        .tainacan-bulk-edition-field-last {
-            flex-basis: 52%;
-        }
-
     }
 
     .tainacan-add-edition-criterion-button {

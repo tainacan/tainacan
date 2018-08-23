@@ -481,8 +481,8 @@
 
                         :collection-id="collectionId"
                         :table-metadata="displayedMetadata"
-                        :all-metadatum="metadata"
                         :items="items"
+                        :total-items="totalItems"
                         :is-loading="isLoadingItems"
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"/>
@@ -496,8 +496,8 @@
 
                         :collection-id="collectionId"
                         :table-metadata="displayedMetadata"
-                        :all-metadatum="metadata"
                         :items="items"
+                        :total-items="totalItems"
                         :is-loading="isLoadingItems"
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"/>
@@ -522,8 +522,8 @@
                               advancedSearchResults"
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata"
-                        :all-metadatum="metadata"
                         :items="items"
+                        :total-items="totalItems"
                         :is-loading="isLoadingItems"
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/> 
                 
@@ -545,8 +545,8 @@
                               !openAdvancedSearch"
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata"
-                        :all-metadatum="metadata"
                         :items="items"
+                        :total-items="totalItems"
                         :is-loading="isLoadingItems"
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>     
 
@@ -922,19 +922,21 @@
                                     //         display = false;
                                     // }
 
-                                    metadata.push(
-                                        {
+                                    metadata.push({
                                             name: metadatum.name,
                                             metadatum: metadatum.description,
                                             slug: metadatum.slug,
                                             metadata_type: metadatum.metadata_type,
                                             metadata_type_object: metadatum.metadata_type_object,
+                                            metadata_type_options: metadatum.metadata_type_options,
                                             id: metadatum.id,
-                                            display: display
-                                        }
-                                    );    
-                                    if (display)
-                                        fetchOnlyMetadatumIds.push(metadatum.id);                      
+                                            display: display,
+                                            collection_id: metadatum.collection_id,
+                                            multiple: metadatum.multiple,
+                                    });
+                                    if (display) {
+                                        fetchOnlyMetadatumIds.push(metadatum.id);
+                                    }
                                 }
                                 this.sortingMetadata.push(metadatum);
                             }
@@ -987,7 +989,7 @@
                                     display: authorNameMetadatumDisplay
                                 });
                             }
-                        // Loads only basic attributes necessay to view modes that do not allow custom meta
+                        // Loads only basic attributes necessary to view modes that do not allow custom meta
                         } else {
                        
                             this.$eventBusSearch.addFetchOnly({

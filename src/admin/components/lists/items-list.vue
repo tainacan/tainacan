@@ -8,6 +8,14 @@
                             @click.native="selectAllItemsOnPage()"
                             :value="allItemsOnPageSelected">{{ $i18n.get('label_select_all_items_page') }}</b-checkbox>
                 </span>
+
+                <!-- TODO: Only appear if had more than 1 page -->
+                <span>
+                    <b-checkbox
+                            @click.native="selectAllItems()"
+                            v-model="isAllItemsSelected">{{ $i18n.get('label_select_all_items') }}</b-checkbox>
+                    <small v-if="isAllItemsSelected">{{ `(${ totalItems } ${ $i18n.get('info_items_selected') })` }}</small>
+                </span>
             </div>
             <div class="field is-pulled-right">
                 <b-dropdown
@@ -517,8 +525,11 @@ export default {
     data(){
         return {
             allItemsOnPageSelected: false,
+            isAllItemsSelected: false,
             isSelectingItems: false,
             selectedItems: [],
+            selectedItemsIDs: [],
+            queryAllItemsSelected: {},
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
         }
     },
@@ -529,7 +540,7 @@ export default {
         isLoading: false,
         isOnTrash: false,
         viewMode: 'table',
-        allMetadatum: Array,
+        totalItems: Number,
     },
     mounted() {
         this.selectedItems = [];
@@ -540,16 +551,26 @@ export default {
         selectedItems() {
             let allSelected = true;
             let isSelecting = false;
+
             for (let i = 0; i < this.selectedItems.length; i++) {
                 if (this.selectedItems[i] == false) {
                     allSelected = false;
+
+                    this.selectedItemsIDs.splice(i, 1);
+                    this.queryAllItemsSelected = {};
                 } else {
                     isSelecting = true;
+                    this.selectedItemsIDs.splice(i, 1, this.items[i].id);
                 }
             }
+
+            if(!allSelected) {
+                this.isAllItemsSelected = allSelected;
+            }
+
             this.allItemsOnPageSelected = allSelected;
             this.isSelectingItems = isSelecting;
-        }
+        },
     },
     methods: {
         ...mapActions('collection', [
@@ -561,15 +582,27 @@ export default {
                 component: BulkEditionModal,
                 props: {
                     modalTitle: this.$i18n.get('info_editing_items_in_bulk'),
-                    objects: this.items,
+                    totalItems: this.queryAllItemsSelected ? this.totalItems : this.selectedItemsIDs.length,
+                    selectedForBulk: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItemsIDs,
                     objectType: this.$i18n.get('items'),
-                    metadata: this.allMetadatum,
-                }
+                    metadata: this.tableMetadata,
+                    collectionID: this.$route.params.collectionId,
+                },
+                width: 'calc(100% - 8.333333333%)',
             });
         },
         selectAllItemsOnPage() {
-            for (let i = 0; i < this.selectedItems.length; i++) 
+            for (let i = 0; i < this.selectedItems.length; i++) {
                 this.selectedItems.splice(i, 1, !this.allItemsOnPageSelected);
+            }
+        },
+        selectAllItems(){
+            this.isAllItemsSelected = !this.isAllItemsSelected;
+            this.queryAllItemsSelected = this.$route.query;
+
+            for (let i = 0; i < this.selectedItems.length; i++) {
+                this.selectedItems.splice(i, 1, !this.isAllItemsSelected);
+            }
         },
         deleteOneItem(itemId) {
             this.$modal.open({
