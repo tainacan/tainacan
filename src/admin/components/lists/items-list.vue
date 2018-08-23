@@ -574,7 +574,6 @@ export default {
         items: Array,
         isLoading: false,
         isOnTrash: false,
-        viewMode: 'table',
         totalItems: Number,
         viewMode: 'card'
     },
