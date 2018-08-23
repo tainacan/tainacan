@@ -194,7 +194,15 @@ class Collections extends Repository {
 				'map'         => 'meta',
 				'title'       => __( 'Thumbnail', 'tainacan' ),
 				'description' => __( 'Squared reduced-size version of a picture that helps recognizing and organizing files', 'tainacan' )
-			]
+			],
+		    'comment_status'  => [
+	            'map'         => 'comment_status',
+	            'title'       => __( 'Comment Status', 'tainacan' ),
+	            'type'        => 'string',
+	            'description' => __( 'The status of collection comment, if is "open" the comments are allowed for collection items, or is "closed" for deny comments to items.', 'tainacan' ),
+		        'default'     => get_default_comment_status(Entities\Collection::get_post_type()),
+		        'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
+		    ]
 
 		] );
 	}
@@ -213,10 +221,13 @@ class Collections extends Repository {
 			'edit_item'          => __( 'Edit Collection', 'tainacan' ),
 			'new_item'           => __( 'New Collection', 'tainacan' ),
 			'view_item'          => __( 'View Collection', 'tainacan' ),
+			'view_items'         => __( 'View Collections', 'tainacan' ),
 			'search_items'       => __( 'Search Collections', 'tainacan' ),
 			'not_found'          => __( 'No Collections found ', 'tainacan' ),
 			'not_found_in_trash' => __( 'No Collections found in trash', 'tainacan' ),
 			'parent_item_colon'  => __( 'Parent Collection:', 'tainacan' ),
+			'all_items'			 => __( 'All Collections', 'tainacan' ),
+			'archives'			 => __( 'Collections Archive', 'tainacan' ),
 			'menu_name'          => __( 'Collections', 'tainacan' )
 		);
 	}
@@ -226,13 +237,9 @@ class Collections extends Repository {
 		$args   = array(
 			'labels'              => $labels,
 			'hierarchical'        => true,
-			//'supports'          => array('title'),
-			//'taxonomies'        => array(self::TAXONOMY),
 			'public'              => true,
 			'show_ui'             => tnc_enable_dev_wp_interface(),
 			'show_in_menu'        => tnc_enable_dev_wp_interface(),
-			//'menu_position'     => 5,
-			//'show_in_nav_menus' => false,
 			'publicly_queryable'  => true,
 			'exclude_from_search' => true,
 			'has_archive'         => true,

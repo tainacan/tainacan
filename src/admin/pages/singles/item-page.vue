@@ -48,16 +48,16 @@
                     <div class="section-box section-thumbnail">
                         <div class="thumbnail-field">
                             <file-item
-                                    v-if="item.thumbnail != undefined && item.thumbnail.thumb != undefined && item.thumbnail.thumb != false"
+                                    v-if="item.thumbnail != undefined && ((item.thumbnail.tainacan_medium != undefined && item.thumbnail.tainacan_medium != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
                                     :show-name="false"
                                     :size="178"
                                     :file="{ 
                                         media_type: 'image', 
-                                        guid: { rendered: item.thumbnail.thumb },
+                                        guid: { rendered: item.thumbnail.tainacan_medium ? item.thumbnail.tainacan_medium : item.thumbnail.medium },
                                         title: { rendered: $i18n.get('label_thumbnail')},
                                         description: { rendered: `<img alt='Thumbnail' src='` + item.thumbnail.full + `'/>` }}"/>
                             <figure 
-                                    v-if="item.thumbnail == undefined || item.thumbnail.thumb == undefined || item.thumbnail.thumb == false"
+                                    v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail.tainacan_medium == undefined || item.thumbnail.tainacan_medium == false))"
                                     class="image">
                                 <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
                                 <img
@@ -83,6 +83,19 @@
                             <p v-if="attachmentsList.length <= 0"><br>{{ $i18n.get('info_no_attachments_on_item_yet') }}</p>
                         </div>
                     </div>
+                    <!-- Comment Status ------------------------ --> 
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_comment_status')"
+                            v-if="collectionCommentStatus == 'open'">
+                        <b-switch
+                                id="tainacan-checkbox-comment-status" 
+                                size="is-small"
+                                true-value="open" 
+                                false-value="closed"
+                                v-model="item.comment_status"
+                                disabled />
+                    </b-field>
                     <!-- Exposers --------------------------------------------- -->
                     <div>
                         <b-loading :active.sync="isLoadingMetadatumMappers"/>
@@ -257,7 +270,8 @@
                 open: false,
                 collectionName: '',
                 thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
-                urls_open: false
+                urls_open: false,
+                collectionCommentStatus: ''
             }
         },
         components: {
@@ -270,7 +284,8 @@
                 'fetchMetadata',
             ]),
             ...mapActions('collection', [
-                'fetchCollectionName'
+                'fetchCollectionName',
+                'fetchCollectionCommentStatus'
             ]),
             ...mapGetters('item', [
                 'getItem',
@@ -354,6 +369,10 @@
             // Get attachments
             this.fetchAttachments(this.itemId);
             
+            // Obtains collection Comment Status
+            this.fetchCollectionCommentStatus(this.collectionId).then((collectionCommentStatus) => {
+                this.collectionCommentStatus = collectionCommentStatus;
+            });
         }
 
     }

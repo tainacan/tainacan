@@ -138,7 +138,7 @@
                 <a
                     @click="addSearchCriteria"
                     style="font-size: 12px;"
-                    class="is-secondary">
+                    class="has-text-secondary">
                     <b-icon
                             class="add-i"
                             icon="plus-circle"

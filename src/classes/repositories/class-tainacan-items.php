@@ -25,6 +25,7 @@ class Items extends Repository {
 		parent::__construct();
 		add_filter( 'posts_where', array( &$this, 'title_in_posts_where' ), 10, 2 );
 		add_filter( 'posts_where', array( &$this, 'content_in_posts_where' ), 10, 2 );
+		add_filter( 'comments_open', [$this, 'hook_comments_open'], 10, 2);
 		add_action( 'tainacan-api-item-updated', array( &$this, 'hook_api_updated_item' ), 10, 2 );
 	}
 
@@ -105,7 +106,15 @@ class Items extends Repository {
 				'map'         => 'meta',
 				'title'       => __( 'Thumbnail', 'tainacan' ),
 				'description' => __( 'Squared reduced-size version of a picture that helps recognizing and organizing files', 'tainacan' )
-			]
+			],
+		    'comment_status'  => [
+		        'map'         => 'comment_status',
+		        'title'       => __( 'Comment Status', 'tainacan' ),
+		        'type'        => 'string',
+		        'description' => __( 'The status of item comment, if is "open" the comments are allowed to item, or is "closed" for deny comments to item.', 'tainacan' ),
+		        'default'     => get_default_comment_status(Entities\Collection::get_post_type()),
+		        'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
+		    ]
 		] );
 	}
 
@@ -162,12 +171,16 @@ class Items extends Repository {
 			$collection->register_collection_item_post_type();
 		}
 
-		// register taxonomies
+		// register taxonomies 
 		if ( is_array( $taxonomies ) && sizeof( $taxonomies ) > 0 ) {
 			foreach ( $taxonomies as $taxonomy ) {
 				$taxonomy->tainacan_register_taxonomy();
 			}
 		}
+		
+		// register taxonomies to collections considering metadata inheritance
+		$Tainacan_Taxonomies->register_taxonomies_for_all_collections();
+		
 	}
 
 	public function insert( $item ) {
@@ -466,5 +479,22 @@ class Items extends Repository {
 
 	}
 
+	/**
+	 * Return if comment are open for this item (post_id) and the collection too 
+	 * 
+	 * @param bool $open_comment
+	 * @param integer $post_id Item id
+	 * @return bool
+	 */
+	public function hook_comments_open($open_comment, $post_id) {
+	    $item = self::get_entity_by_post($post_id);
+	    
+	    if($item != false && $item instanceof Entities\Item) {
+    	    $collection = $item->get_collection();
+    	    if($collection->get_comment_status() !== 'open' ) return false;
+	    }
+	    
+	    return $open_comment;
+	}
 
 }

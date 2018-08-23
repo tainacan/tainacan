@@ -78,22 +78,13 @@ class Taxonomy extends Entity {
             ],
         );
         
-        
-		$tax_cpts = [];
-		
-        if (is_array($this->get_collections())){
-            foreach ($this->get_collections() as $tax_col){
-                $tax_cpts[] = $tax_col->get_db_identifier();
-            }
-        }
-        
         if (taxonomy_exists($this->get_db_identifier())){
             unregister_taxonomy($this->get_db_identifier());
         }
         
         register_taxonomy( 
             $this->get_db_identifier(), 
-            $tax_cpts, 
+            null, 
             $args 
         );
         

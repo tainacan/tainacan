@@ -90,7 +90,7 @@
 
     .is-secondary-content {
         padding: 0px !important;
-        margin: 106px auto 0 auto;
+        margin: 94px auto 0 auto;
         position: relative;
         overflow-y: hidden;
         height: calc(100% - 94px);

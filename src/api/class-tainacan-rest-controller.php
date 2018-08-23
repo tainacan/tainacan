@@ -85,7 +85,9 @@ class REST_Controller extends \WP_REST_Controller {
 			'relation'     => 'relation',
 			'nopaging'     => 'nopaging',
 			'meta_key'     => 'meta_key',
-			'meta_type'    => 'meta_type'
+			'meta_type'    => 'meta_type',
+			'hierarchical' => 'hierarchical',
+			'exclude'      => 'exclude'
 		];
 
 		$meta_query = [

@@ -67,11 +67,28 @@
                                 }"
                                 @click="goToItemPage(item)">
 
-                            <!-- <data-and-tooltip
-                                    v-if="column.metadatum !== 'row_thumbnail' &&
-                                            column.metadatum !== 'row_actions' &&
-                                            column.metadatum !== 'row_creation'"
-                                    :data="renderMetadata( item.metadata[column.slug] )"/> -->
+                            <p
+                                    v-tooltip="{
+                                        content: item.title,
+                                        html: true,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }"
+                                    v-if="collectionId == undefined &&
+                                          column.metadata_type_object != undefined && 
+                                          column.metadata_type_object.related_mapped_prop == 'title'"
+                                    v-html="item.title != undefined ? item.title : ''"/>
+                            <p
+                                    v-tooltip="{
+                                        content: item.description,
+                                        html: true,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }"
+                                    v-if="collectionId == undefined &&
+                                          column.metadata_type_object != undefined && 
+                                          column.metadata_type_object.related_mapped_prop == 'description'"
+                                    v-html="item.description != undefined ? item.description : ''"/>
                             <p
                                     v-tooltip="{
                                         content: renderMetadata( item.metadata[column.slug] ),
@@ -89,7 +106,7 @@
                             <span v-if="column.metadatum == 'row_thumbnail'">
                                 <img 
                                         class="table-thumb" 
-                                        :src="item[column.slug].thumb ? item[column.slug].thumb : thumbPlaceholderPath">
+                                        :src="item['thumbnail'].tainacan_small ? item['thumbnail'].tainacan_small : (item['thumbnail'].thumb ? item['thumbnail'].thumb : thumbPlaceholderPath)">
                             </span> 
                         </td>
                     </tr>

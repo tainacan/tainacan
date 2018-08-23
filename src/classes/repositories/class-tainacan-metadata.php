@@ -227,13 +227,9 @@ class Metadata extends Repository {
 		$args   = array(
 			'labels'              => $labels,
 			'hierarchical'        => true,
-			//'supports'          => array('title'),
-			//'taxonomies'        => array(self::TAXONOMY),
 			'public'              => true,
 			'show_ui'             => tnc_enable_dev_wp_interface(),
 			'show_in_menu'        => tnc_enable_dev_wp_interface(),
-			//'menu_position'     => 5,
-			//'show_in_nav_menus' => false,
 			'publicly_queryable'  => true,
 			'exclude_from_search' => true,
 			'has_archive'         => true,
@@ -241,6 +237,7 @@ class Metadata extends Repository {
 			'can_export'          => true,
 			'rewrite'             => true,
 			'map_meta_cap'        => true,
+			'show_in_nav_menus'   => false,
 			'capability_type'     => Entities\Metadatum::get_capability_type(),
 			'supports'            => [
 				'title',
@@ -1095,7 +1092,7 @@ class Metadata extends Repository {
 		}
 
 		if ( $new_tax != $this->current_taxonomy ) {
-			$collection = $metadatum->get_collection();
+			$collection = $metadatum->get_collection_id();
 
 			if ( ! empty( $this->current_taxonomy ) && $collection ) {
 				do_action( 'tainacan-taxonomy-removed-from-collection', $this->current_taxonomy, $collection );
@@ -1115,7 +1112,7 @@ class Metadata extends Repository {
 		if ( $metadata_type->get_primitive_type() == 'term' ) {
 			$removed_tax = $metadata_type->get_option( 'taxonomy_id' );
 
-			$collection = $metadatum->get_collection();
+			$collection = $metadatum->get_collection_id();
 
 			if ( ! empty( $removed_tax ) && $collection ) {
 				do_action( 'tainacan-taxonomy-removed-from-collection', $removed_tax, $collection );

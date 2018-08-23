@@ -20,6 +20,7 @@
         margin-bottom: 30px;
         text-align: center;
         text-decoration: none;
+        transition: background-color 0.3s;
 
         &:hover {
             background-color: $gray2;
@@ -59,14 +60,22 @@
             }
         }
 
-        img {
-            width: 100%;
-            height: auto;
-            border-radius: 2px;
-            margin-bottom: -5px;
+        .thumbnail {
+            background-size: cover;
+            background-color: #f6f6f6;
+            background-blend-mode: multiply;
+            border-radius: 0px;
+            // transition: background-color 0.3s;
 
             &:hover {
                 cursor: pointer;
+                // background-color: white;
+            } 
+        
+            img {
+                width: 100%;
+                height: auto;    
+                visibility: hidden;
             }
         }
 

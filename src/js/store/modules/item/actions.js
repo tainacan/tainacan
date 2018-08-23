@@ -92,10 +92,11 @@ export const fetchItemTitle = ({ commit }, id) => {
     });
 }
 
-export const sendItem = ( { commit }, { collection_id, status }) => {
+export const sendItem = ( { commit }, { collection_id, status, comment_status }) => {
     return new Promise(( resolve, reject ) => {
         axios.tainacan.post('/collection/'+ collection_id + '/items/', {
-            status: status
+            status: status,
+            comment_status: comment_status
         })
             .then( res => {
                 commit('setItem', res.data);
@@ -108,11 +109,12 @@ export const sendItem = ( { commit }, { collection_id, status }) => {
     });
 };
  
-export const updateItem = ({ commit }, { item_id, status }) => {
+export const updateItem = ({ commit }, { item_id, status, comment_status }) => {
 
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/items/' + item_id, {
-            status: status 
+            status: status,
+            comment_status: comment_status
         }).then( res => {
             commit('setItem', res.data);
             commit('setLastUpdated');

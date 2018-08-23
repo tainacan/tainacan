@@ -130,11 +130,14 @@ class Item extends Entity {
 	 */
 	function get_thumbnail() {
 		return array(
-			'thumb'        => get_the_post_thumbnail_url( $this->get_id(), 'thumbnail' ),
-			'full'         => get_the_post_thumbnail_url( $this->get_id(), 'full' ),
-			'medium'       => get_the_post_thumbnail_url( $this->get_id(), 'medium' ),
-			'medium_large' => get_the_post_thumbnail_url( $this->get_id(), 'medium_large' ),
-			'large'        => get_the_post_thumbnail_url( $this->get_id(), 'large' ),
+			'thumb'                => get_the_post_thumbnail_url( $this->get_id(), 'thumbnail' ),
+			'full'                 => get_the_post_thumbnail_url( $this->get_id(), 'full' ),
+			'medium'               => get_the_post_thumbnail_url( $this->get_id(), 'medium' ),
+			'medium_large'         => get_the_post_thumbnail_url( $this->get_id(), 'medium_large' ),
+			'large'                => get_the_post_thumbnail_url( $this->get_id(), 'large' ),
+			'tainacan_small'       => get_the_post_thumbnail_url( $this->get_id(), 'tainacan-small' ),
+			'tainacan_medium'      => get_the_post_thumbnail_url( $this->get_id(), 'tainacan-medium' ),
+			'tainacan_medium_full' => get_the_post_thumbnail_url( $this->get_id(), 'tainacan-medium-full' ),
 		);
 	}
 
@@ -266,6 +269,14 @@ class Item extends Entity {
 	public function get_capabilities() {
 		return $this->get_collection()->get_items_capabilities();
 	}
+	
+	/**
+	 * Checks if comments are allowed for the current Collection.
+	 * @return string "open"|"closed"
+	 */
+	public function get_comment_status() {
+	    return apply_filters('comments_open', $this->get_mapped_property('comment_status'), $this->get_id());
+	}
 
 	/**
 	 * Define the title
@@ -357,6 +368,15 @@ class Item extends Entity {
 		if ( $item_collection ) {
 			$this->cap = $item_collection->get_items_capabilities();
 		}
+	}
+	
+	/**
+	 * Sets if comments are allowed for the current Item.
+	 *
+	 * @param $value string "open"|"closed"
+	 */
+	public function set_comment_status( $value ) {
+	    $this->set_mapped_property('comment_status', $value);
 	}
 
 	/**

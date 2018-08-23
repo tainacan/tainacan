@@ -41,7 +41,7 @@
 
                         <img 
                                 v-if="item.thumbnail != undefined"
-                                :src="item['thumbnail'].medium ? item['thumbnail'].medium : thumbPlaceholderPath">  
+                                :src="item['thumbnail'].tainacan_medium ? item['thumbnail'].tainacan_medium : (item['thumbnail'].medium ? item['thumbnail'].medium : thumbPlaceholderPath)">  
 
                         <div class="list-metadata media-body">
                            <!-- Description -->
@@ -53,7 +53,8 @@
                                         placement: 'auto-start'
                                     }"   
                                     class="metadata-description"
-                                    v-html="item.description != undefined ? getLimitedDescription(item.description) : ''" />                                                        <br>
+                                    v-html="item.description != undefined ? getLimitedDescription(item.description) : ''" />                                                        
+                            <br>
                             <!-- Author and Creation Date-->
 <!--                            <p 
                                     v-tooltip="{
@@ -86,7 +87,8 @@ export default {
         collectionId: Number,
         displayedMetadata: Array,
         items: Array,
-        isLoading: false
+        isLoading: false,
+        shouldUseSmallCard: false
     },
     data () {
         return {
@@ -110,7 +112,8 @@ export default {
             }
         },
         getLimitedDescription(description) {
-            return description.length > 300 ? description.substring(0, 297) + '...' : description;
+            let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 155 : 330;
+            return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
         }
     }
 }
@@ -120,6 +123,7 @@ export default {
     $turquoise1: #e6f6f8;
     $turquoise2: #d1e6e6;
     $tainacan-input-color: #1d1d1d;
+    $gray1: #f2f2f2;
     $gray2: #e5e5e5;
     $gray4: #898d8f;
     $gray3: #dcdcdc;

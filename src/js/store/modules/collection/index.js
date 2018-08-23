@@ -10,7 +10,8 @@ const state = {
     collection: null,
     collectionName: '',
     collectionURL: '',
-    attachments: []
+    attachments: [],
+    collectionCommentStatus: ''
 };
 
 export default {

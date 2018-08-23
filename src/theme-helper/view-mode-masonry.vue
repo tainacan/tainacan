@@ -30,10 +30,13 @@
                         <p>{{ item.title != undefined ? item.title : '' }}</p>                             
                     </div>
 
-                    <!-- Thumbnail -->  
-                    <img 
+                    <!-- Thumbnail -->
+                    <div 
                             v-if="item.thumbnail != undefined"
-                            :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
+                            class="thumbnail"
+                            :style="{ backgroundImage: 'url(' + (item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)) + ')' }">  
+                        <img :src="item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)">  
+                    </div>
                 </a>
             </masonry>
         </div> 

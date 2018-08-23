@@ -33,7 +33,8 @@ class Collection extends Entity {
         $cover_page_id,
         $header_image_id,
 	    $header_image,
-        $moderators_ids;
+        $moderators_ids,
+        $comment_status;
 
     /**
 	 * {@inheritDoc}
@@ -121,13 +122,15 @@ class Collection extends Entity {
 			],
 			'map_meta_cap'        => true,
 			'capabilities'        => (array) $capabilities,
+			'show_in_nav_menus'   => false,
 			'supports'            => [
 				'title',
 				'editor',
 				'thumbnail',
 				'revisions',
 				'page-attributes',
-				'post-formats'
+				'post-formats',
+			    'comments'
 			]
 		);
 
@@ -211,11 +214,14 @@ class Collection extends Entity {
 	 */
 	function get_thumbnail() {
 		return array(
-			'thumb'        => get_the_post_thumbnail_url( $this->get_id(), 'thumbnail' ),
-			'full'         => get_the_post_thumbnail_url( $this->get_id(), 'full' ),
-			'medium'       => get_the_post_thumbnail_url( $this->get_id(), 'medium' ),
-			'medium_large' => get_the_post_thumbnail_url( $this->get_id(), 'medium_large' ),
-			'large'        => get_the_post_thumbnail_url( $this->get_id(), 'large' ),
+			'thumb'                => get_the_post_thumbnail_url( $this->get_id(), 'thumbnail' ),
+			'full'                 => get_the_post_thumbnail_url( $this->get_id(), 'full' ),
+			'medium'               => get_the_post_thumbnail_url( $this->get_id(), 'medium' ),
+			'medium_large'         => get_the_post_thumbnail_url( $this->get_id(), 'medium_large' ),
+			'large'                => get_the_post_thumbnail_url( $this->get_id(), 'large' ),
+			'tainacan_small'       => get_the_post_thumbnail_url( $this->get_id(), 'tainacan-small' ),
+			'tainacan_medium'      => get_the_post_thumbnail_url( $this->get_id(), 'tainacan-medium' ),
+			'tainacan_medium_full' => get_the_post_thumbnail_url( $this->get_id(), 'tainacan-medium-full' ),
 		);
 	}
 
@@ -487,6 +493,14 @@ class Collection extends Entity {
 
 		return $repo->get_core_description_metadatum($this);
 	}
+	
+	/**
+	 * Checks if comments are allowed for the current Collection.
+	 * @return string "open"|"closed"
+	 */
+	public function get_comment_status() {
+	    return $this->get_mapped_property('comment_status');
+	}
 
 	/**
 	 * Set the collection name
@@ -678,6 +692,15 @@ class Collection extends Entity {
 		$value = array_unique($value);
 		
 		$this->set_mapped_property( 'moderators_ids', $value );
+	}
+	
+	/**
+	 * Sets if comments are allowed for the current Collection.
+	 * 
+	 * @param $value string "open"|"closed"
+	 */
+	public function set_comment_status( $value ) {
+	    $this->set_mapped_property('comment_status', $value);
 	}
 
 	// Moderators methods

@@ -210,16 +210,16 @@
                     <div class="section-box section-thumbnail">
                         <div class="thumbnail-field">
                             <file-item
-                                    v-if="item.thumbnail.thumb != undefined && item.thumbnail.thumb != false"
+                                    v-if="item.thumbnail != undefined && ((item.thumbnail.tainacan_medium != undefined && item.thumbnail.tainacan_medium != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
                                     :show-name="false"
                                     :size="178"
                                     :file="{ 
                                         media_type: 'image', 
-                                        guid: { rendered: item.thumbnail.thumb },
+                                        guid: { rendered: item.thumbnail.tainacan_medium ? item.thumbnail.tainacan_medium : item.thumbnail.medium },
                                         title: { rendered: $i18n.get('label_thumbnail')},
                                         description: { rendered: `<img alt='Thumbnail' src='` + item.thumbnail.full + `'/>` }}"/>
                             <figure 
-                                    v-if="item.thumbnail.thumb == undefined || item.thumbnail.thumb == false"
+                                    v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail.tainacan_medium == undefined || item.thumbnail.tainacan_medium == false))"
                                     class="image">
                                 <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
                                 <img
@@ -249,6 +249,22 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Comment Status ------------------------ --> 
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_comment_status')"
+                            v-if="collectionCommentStatus == 'open'">
+                        <b-switch
+                                id="tainacan-checkbox-comment-status" 
+                                size="is-small"
+                                true-value="open" 
+                                false-value="closed"
+                                v-model="form.comment_status" />
+                        <help-button 
+                                :title="$i18n.getHelperTitle('items', 'comment_status')" 
+                                :message="$i18n.getHelperMessage('items', 'comment_status')"/>
+                    </b-field>
 
                     <!-- Attachments ------------------------------------------ -->
                     <div class="section-label">
@@ -308,40 +324,6 @@
                             </b-radio>
                         </div>
                     </div>
-
-                    <!-- Status -------------------------------- -->
-                    <!--<div class="section-label">
-                        <label>{{ $i18n.get('label_status') }}</label>
-                        <span class="required-metadatum-asterisk">*</span>
-                        <help-button
-                                :title="$i18n.getHelperTitle('items', 'status')"
-                                :message="$i18n.getHelperMessage('items', 'status')"/>
-                    </div>
-                    <div class="section-status">
-                        
-                        <div class="field has-addons">
-                            <b-select
-                                    v-model="form.status"
-                                    :placeholder="$i18n.get('instruction_select_a_status')">
-                                <option
-                                        :id="`status-option-${statusOption.value}`"
-                                        v-for="statusOption in statusOptions"
-                                        :key="statusOption.value"
-                                        :value="statusOption.value"
-                                        :disabled="statusOption.disabled">{{ statusOption.label }}
-                                </option>
-                            </b-select>
-                            <div class="control">
-                                <button
-                                        type="button"
-                                        id="button-submit-item-creation"
-                                        @click.prevent="onSubmit"
-                                        class="button is-success">
-                                    {{ $i18n.get('save') }}
-                                </button>
-                            </div>
-                        </div> 
-                    </div>-->
 
                     <!-- Collection -------------------------------- -->
                     <div class="section-label">
@@ -474,7 +456,8 @@ export default {
                 collectionId: Number,
                 status: '',
                 document: '',
-                document_type: ''
+                document_type: '',
+                comment_status: ''
             },
             thumbnail: {},
             // Can be obtained from api later
@@ -501,7 +484,8 @@ export default {
             isTextModalActive: false,
             textLink: '',
             isUpdatingValues: false,
-            collectionName: ''
+            collectionName: '',
+            collectionCommentStatus: ''
         }
     },
     computed: {
@@ -540,6 +524,7 @@ export default {
         ]),
         ...mapActions('collection', [
             'fetchCollectionName',
+            'fetchCollectionCommentStatus',
             'deleteItem',
         ]),
         onSubmit(status) {
@@ -549,7 +534,7 @@ export default {
             let previousStatus = this.form.status;
             this.form.status = status;
 
-            let data = {item_id: this.itemId, status: this.form.status};
+            let data = {item_id: this.itemId, status: this.form.status, comment_status: this.form.comment_status};
 
             this.updateItem(data).then(updatedItem => {
 
@@ -559,6 +544,7 @@ export default {
                 this.form.status = this.item.status;
                 this.form.document = this.item.document;
                 this.form.document_type = this.item.document_type;
+                this.form.comment_status = this.item.comment_status;
 
                 this.isLoading = false;
 
@@ -589,7 +575,7 @@ export default {
             this.isLoading = true;
 
             // Creates draft Item
-            let data = {collection_id: this.form.collectionId, status: 'auto-draft'};
+            let data = {collection_id: this.form.collectionId, status: 'auto-draft', comment_status: this.form.comment_status};
             this.sendItem(data).then(res => {
 
                 this.itemId = res.id;
@@ -603,6 +589,7 @@ export default {
                 this.form.status = 'auto-draft'
                 this.form.document = this.item.document;
                 this.form.document_type = this.item.document_type;
+                this.form.comment_status = this.item.comment_status;
 
                 this.loadMetadata();
                 this.fetchAttachments(this.itemId);
@@ -817,6 +804,8 @@ export default {
                 this.form.status = this.item.status;
                 this.form.document = this.item.document;
                 this.form.document_type = this.item.document_type;
+                this.form.comment_status = this.item.comment_status;
+                
                 if (this.form.document_type != undefined && this.form.document_type == 'url')
                     this.urlLink = this.form.document;
                 if (this.form.document_type != undefined && this.form.document_type == 'text')
@@ -836,6 +825,11 @@ export default {
         // Obtains collection name
         this.fetchCollectionName(this.collectionId).then((collectionName) => {
             this.collectionName = collectionName;
+        });
+        
+        // Obtains collection name
+        this.fetchCollectionCommentStatus(this.collectionId).then((collectionCommentStatus) => {
+            this.collectionCommentStatus = collectionCommentStatus;
         });
 
         // Sets feedback variables

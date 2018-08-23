@@ -17,21 +17,19 @@
     }
 
     .tainacan-record {
+        background-color: #f6f6f6;
         padding: 0px;
         flex-basis: 0;
-        margin: 0.75rem;
-        max-width: 410px;
-        min-width: 410px;
-        min-height: 218px;
+        margin: 0 auto 42px auto;
+        width: 100%;
+        max-width: 425px;
+        min-height: 100px;
         cursor: pointer;
-
-        @media screen and (max-width: 768px) {
-            max-width: 100%;
-            min-width: 100%;
-        }
+        text-decoration: none;
+        display: block;
 
         &:hover {
-            background-color: #f2f2f2 !important;
+            background-color: $gray1 !important;
         }
 
         .record-checkbox {
@@ -64,13 +62,14 @@
             opacity: 0;
             visibility: hidden;
         }
-        img {
-            width: 172px;
-            height: auto;
-            border-radius: 2px;
+        .thumbnail {
+            float: right;
+            margin: 0 0 1.5rem 1.5rem;
         }
-        &:hover img {
-            border-radius: 0;
+        img {
+            width: 120px;
+            height: auto;
+            border-radius: 0px;
         }
         .metadata-title {
             flex-shrink: 0;
@@ -81,11 +80,14 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
+            color: black;
+
             p {
                 font-size: 0.875rem !important; 
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 overflow: hidden;
+                transition: background-color 0.3s;
             }
         }
         &:hover .metadata-title {
@@ -106,18 +108,13 @@
                 .metadata-label {
                     font-size: 0.75rem;
                     margin-bottom: 0.2rem;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    font-weight: 500;
-                    color: $gray4;
+                    font-weight: 700;
+                    color: #454647;
                 }
 
                 .metadata-value {
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                    overflow: hidden;
                     margin-bottom: 1rem;
+                    color: $gray4;
                 }
    
             }

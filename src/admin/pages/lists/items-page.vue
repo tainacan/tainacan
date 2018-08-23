@@ -9,11 +9,21 @@
                 v-if="!openAdvancedSearch"
                 class="is-hidden-mobile"
                 id="filter-menu-compress-button"
-                :class="{'filter-menu-compress-button-top-repo': isRepositoryLevel}"
-                :style="{ top: !isOnTheme ? '120px' : (searchControlHeight - 15) + 'px' }"
+                :style="{ top: !isOnTheme ? (isRepositoryLevel ? '172px' : '120px') : '76px' }"
                 @click="isFiltersMenuCompressed = !isFiltersMenuCompressed">
             <b-icon :icon="isFiltersMenuCompressed ? 'menu-right' : 'menu-left'" />
         </button>
+        <!-- Filters mobile modal button -->
+        <button 
+                v-if="!openAdvancedSearch"
+                class="is-hidden-tablet"
+                id="filter-menu-compress-button"
+                :style="{ top: !isOnTheme ? (isRepositoryLevel ? (searchControlHeight + 100) : (searchControlHeight + 70) + 'px') : (searchControlHeight - 25) + 'px' }"
+                @click="isFilterModalActive = !isFilterModalActive">
+            <b-icon :icon="isFiltersMenuCompressed ? 'menu-right' : 'menu-left'" />
+            <span class="text">{{ $i18n.get('filters') }}</span>
+        </button>
+
         <!-- Side bar with search and filters -->
         <aside
                 :style="{ top: searchControlHeight + 'px' }"
@@ -116,7 +126,7 @@
                         class="search-control-item"
                         v-if="!isOnTheme">
                     <b-dropdown 
-                            :mobile-modal="false"
+                            :mobile-modal="true"
                             id="item-creation-options-dropdown">
                         <button
                                 class="button is-secondary"
@@ -158,7 +168,7 @@
                         class="search-control-item">
                     <b-dropdown
                             ref="displayedMetadataDropdown"
-                            :mobile-modal="false"
+                            :mobile-modal="true"
                             :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards'"
                             class="show">
                         <button
@@ -194,6 +204,7 @@
                 <div class="search-control-item">
                     <b-field>
                         <b-dropdown
+                                :mobile-modal="true"
                                 :disabled="totalItems <= 0"
                                 @input="onChangeOrderBy($event)">
                             <button
@@ -262,7 +273,7 @@
                     <b-field>
                         <b-dropdown
                                 @change="onChangeViewMode($event)"
-                                :mobile-modal="false"
+                                :mobile-modal="true"
                                 position="is-bottom-left"
                                 :aria-label="$i18n.get('label_view_mode')">
                             <button 
@@ -295,7 +306,7 @@
                     <b-field>
                         <b-dropdown
                                 @change="onChangeAdminViewMode($event)"
-                                :mobile-modal="false"
+                                :mobile-modal="true"
                                 position="is-bottom-left"
                                 :aria-label="$i18n.get('label_view_mode')">
                             <button
@@ -357,13 +368,6 @@
                             </b-dropdown-item>
                         </b-dropdown>
                     </b-field>
-                </div>
-
-                <!-- Filters mobile modal button -->
-                <div class="search-control-item is-hidden-tablet">
-                    <button 
-                            @click="isFilterModalActive = !isFilterModalActive"
-                            class="button is-secondary">{{ $i18n.get('filters') }}</button>
                 </div>
 
                 <!-- Text simple search (used on mobile, instead of the one from filter list)-->
@@ -768,7 +772,7 @@
                 'getAdminViewMode'
             ]),
             onSwipeFiltersMenu($event) {
-                let screenWidth = window.screen.width;
+                let screenWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
 
                 if ($event.offsetDirection == 4 && screenWidth <= 768) {
                     if (!this.isFilterModalActive)
@@ -836,13 +840,17 @@
                 let thumbnailMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'thumbnail');
                 let creationDateMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'creation_date');
                 let authorNameMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'author_name');
-
+                
+                let descriptionMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.metadata_type_object != undefined ? metadatum.metadata_type_object.related_mapped_prop == 'description' : false);
+              
                 // Updates Search
                 this.$eventBusSearch.addFetchOnly({
-                    '0': thumbnailMetadatum.display ? 'thumbnail' : null,
+                    '0': thumbnailMetadatum != undefined && thumbnailMetadatum.display ? 'thumbnail' : null,
                     'meta': fetchOnlyMetadatumIds,
-                    '1': creationDateMetadatum.display ? 'creation_date' : null,
-                    '2': authorNameMetadatum.display ? 'author_name': null
+                    '1': creationDateMetadatum != undefined && creationDateMetadatum.display ? 'creation_date' : null,
+                    '2': authorNameMetadatum != undefined && authorNameMetadatum.display ? 'author_name': null,
+                    '3': (this.isRepositoryLevel ? 'title' : null),
+                    '4': (this.isRepositoryLevel && descriptionMetadatum.display ? 'description' : null),
                 });
 
                 // Closes dropdown
@@ -899,6 +907,28 @@
                                 display: thumbnailMetadatumDisplay
                             });
 
+                            // Repository Level always shows core metadata
+                            if (this.isRepositoryLevel) {
+                                metadata.push({
+                                    name: this.$i18n.get('label_title'),
+                                    metadatum: 'row_title',
+                                    metadata_type_object: {core: true, related_mapped_prop: 'title'},
+                                    metadata_type: undefined,
+                                    slug: 'title',
+                                    id: undefined,
+                                    display: true
+                                }); 
+                                metadata.push({
+                                    name: this.$i18n.get('label_description'),
+                                    metadatum: 'row_description',
+                                    metadata_type_object: {core: true, related_mapped_prop: 'description'},
+                                    metadata_type: undefined,
+                                    slug: 'description',
+                                    id: undefined,
+                                    display: true
+                                }); 
+                            }
+
                             let fetchOnlyMetadatumIds = [];
 
                             for (let metadatum of this.metadata) {
@@ -944,6 +974,7 @@
                             let creationDateMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['1'] != null) : true;
                             let authorNameMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['2'] != null) : true;
 
+                            // Creation date and author name should appear only on admin.
                             if (!this.isOnTheme) {
                              
                                 metadata.push({
@@ -968,9 +999,23 @@
                                 '0': (thumbnailMetadatumDisplay ? 'thumbnail' : null),
                                 'meta': fetchOnlyMetadatumIds,
                                 '1': (creationDateMetadatumDisplay ? 'creation_date' : null),
-                                '2': (authorNameMetadatumDisplay ? 'author_name' : null)
+                                '2': (authorNameMetadatumDisplay ? 'author_name' : null),
+                                '3': (this.isRepositoryLevel ? 'title' : null),
+                                '4': (this.isRepositoryLevel ? 'description' : null),
                             });
 
+                            // Sorting metadata
+                            if (this.isRepositoryLevel) {
+                                this.sortingMetadata.push({
+                                    name: this.$i18n.get('label_title'),
+                                    metadatum: 'row_title',
+                                    metadata_type_object: {core: true, related_mapped_prop: 'title'},
+                                    metadata_type: undefined,
+                                    slug: 'title',
+                                    id: undefined,
+                                    display: true
+                                });
+                            }
                             this.sortingMetadata.push({
                                 name: this.$i18n.get('label_creation_date'),
                                 metadatum: 'row_creation',
@@ -1030,7 +1075,7 @@
             },
             adjustSearchControlHeight() {
                 this.$nextTick(() => {
-                    this.searchControlHeight = this.$refs['search-control'] ? this.$refs['search-control'].clientHeight : 0;
+                    this.searchControlHeight = this.$refs['search-control'] ? this.$refs['search-control'].clientHeight + this.$refs['search-control'].offsetTop : 0;
                     this.isFiltersMenuCompressed = jQuery(window).width() <= 768;
                 });
             }
@@ -1049,6 +1094,7 @@
             });
 
             this.$eventBusSearch.$on('hasFiltered', hasFiltered => {
+                this.adjustSearchControlHeight();
                 this.hasFiltered = hasFiltered;
             });
 
@@ -1098,11 +1144,12 @@
             }
 
             // Watches window resize to adjust filter's top position and compression on mobile 
-            window.addEventListener('resize', this.adjustSearchControlHeight());
+            this.adjustSearchControlHeight();
+            window.addEventListener('resize', this.adjustSearchControlHeight);
         },
         beforeDestroy() {
             this.$off();
-            window.removeEventListener('resize', this.adjustSearchControlHeight());
+            window.removeEventListener('resize', this.adjustSearchControlHeight);
         }
     }
 </script>
@@ -1231,9 +1278,6 @@
         }
 
     }
-    .filter-menu-compress-button-top-repo {
-         top: 123px !important;
-    }
     #filter-menu-compress-button {
         position: absolute;
         z-index: 99;
@@ -1244,7 +1288,7 @@
         width: 23px;
         border: none;
         background-color: $turquoise1;
-        color: $blue5;
+        color: $turquoise5;
         padding: 0;
         border-top-right-radius: 2px;
         border-bottom-right-radius: 2px;
@@ -1253,6 +1297,22 @@
 
         .icon {
             margin-top: -1px;
+        }
+
+        @media screen and (max-width: 768px) {
+            max-width: 100%;
+            width: auto;
+            padding: 3px 6px 3px 0px;
+            height: 24px;
+
+            .icon {
+                position: relative;
+                top: -3px;
+            }
+            .text {
+                position: relative;
+                top: -6px;
+            }
         }
     }
 

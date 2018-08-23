@@ -1,7 +1,7 @@
 <template>
     <div class="block">
         <div
-                v-for="(option, index) in getOptions(0)"
+                v-for="(option, index) in getOptions()"
                 :key="index"
                 :value="index"
                 class="control">
@@ -136,30 +136,33 @@
                         this.$console.log(error);
                     });
             },
-            getOptions( parent/*, level = 0*/ ){ // retrieve only ids
-                let result = [];
+            getOptions(){
                 if ( this.options ){
+                    let hasChildren = false;
+
                     for( let term of this.options ){
-                        if( term.parent == parent ){
-                            //term['level'] = level;
-                            result.push( term );
-                            //const levelTerm =  level + 1;
-                            //const children =  this.getOptions( term.id, levelTerm);
-                            //result = result.concat( children );
+                        if(term.total_children > 0){
+                            hasChildren = true;
+                            break;
                         }
                     }
 
-                    if(this.filter.max_options && result.length >= this.filter.max_options){
+                    if(this.filter.max_options && (this.options.length >= this.filter.max_options || hasChildren)){
                         if(this.options.length > this.filter.max_options){
                             this.options.splice(this.filter.max_options);
                         }
 
                         let seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_view_all') } </a>`;
-                        result[this.filter.max_options-1].seeMoreLink = seeMoreLink;
+
+                        if(this.options.length === this.filter.max_options){
+                            this.options[this.filter.max_options-1].seeMoreLink = seeMoreLink;
+                        } else {
+                            this.options[this.options.length-1].seeMoreLink = seeMoreLink;
+                        }
                     }
                 }
 
-                return result;
+                return this.options;
             },
             selectedValues(){
                 
@@ -224,7 +227,8 @@
                         taxonomy: this.taxonomy,
                         collection_id: this.collection,
                         isTaxonomy: true,
-                    }
+                    },
+                    width: 'calc(100% - 8.333333333%)',
                 });
             }
         }
