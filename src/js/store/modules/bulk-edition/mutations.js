@@ -1,5 +1,5 @@
-export const setGroupID = (state, groupID) => {
-    state.groupID = groupID;
+export const setGroup = (state, group) => {
+    state.group = group;
 };
 
 export const setActionResult = (state, actionResult) => {

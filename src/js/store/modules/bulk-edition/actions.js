@@ -18,10 +18,10 @@ export const createEditGroup = ({commit}, parameters) => {
 
     return axios.tainacan.post(`/collection/${collectionID}/bulk-edit`, bulkEditParams)
         .then(response => {
-            commit('setGroupID', response.data);
+            commit('setGroup', response.data);
         })
         .catch(error => {
-            this.$console.error(error);
+            console.error(error);
         })
 };
 
@@ -35,8 +35,8 @@ export const setValueInBulk = ({commit}, parameters) => {
             commit('setActionResult', response.data)
         })
         .catch(error => {
-            this.$console.error(error)
-        })
+            console.error(error)
+        });
 };
 
 export const addValueInBulk = ({commit}, parameters) => {

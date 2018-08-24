@@ -1,5 +1,5 @@
 export const getGroupID = state => {
-    return state.groupID;
+    return state.group.id;
 };
 
 export const getActionResult = state => {
