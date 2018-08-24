@@ -435,8 +435,8 @@
 
                         <!-- Item Displayed Metadata -->
                         <td 
-                                :key="index"    
-                                v-for="(column, index) in tableMetadata"
+                                :key="columnIndex"    
+                                v-for="(column, columnIndex) in tableMetadata"
                                 v-if="column.display"
                                 :label="column.name" 
                                 class="column-default-width"

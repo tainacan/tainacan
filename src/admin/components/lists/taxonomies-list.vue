@@ -75,7 +75,7 @@
                         <!-- Name -->
                         <td 
                                 class="column-default-width column-main-content"
-                                @click="goToTaxonomyEditPage(taxonomy.id)"
+                                @click="onClickTaxonomy($event, taxonomy.id, index)"
                                 :label="$i18n.get('label_name')" 
                                 :aria-label="$i18n.get('label_name') + ': ' + taxonomy.name">
                             <p
@@ -89,7 +89,7 @@
                         <!-- Description -->
                         <td
                                 class="column-large-width" 
-                                @click="goToTaxonomyEditPage(taxonomy.id)"
+                                @click="onClickTaxonomy($event, taxonomy.id, index)"
                                 :label="$i18n.get('label_description')" 
                                 :aria-label="$i18n.get('label_description') + ': ' + taxonomy.description">
                             <p
@@ -102,14 +102,14 @@
                         </td>
                         <!-- Actions -->
                         <td 
-                                @click="goToTaxonomyEditPage(taxonomy.id)"
+                                @click="onClickTaxonomy($event, taxonomy.id, index)"
                                 class="actions-cell column-default-width" 
                                 :label="$i18n.get('label_actions')">
                             <div class="actions-container">
                                 <a 
                                         id="button-edit" 
                                         :aria-label="$i18n.getFrom('taxonomies','edit_item')" 
-                                        @click="goToTaxonomyEditPage(taxonomy.id)">
+                                        @click="onClickTaxonomy($event, taxonomy.id, index)">
                                     <b-icon 
                                             type="is-secondary" 
                                             icon="pencil"/>
@@ -254,12 +254,13 @@
                     }
                 });
             },
-            goToTaxonomyPage(taxonomyId) {
-                this.$router.push(this.$routerHelper.getTaxonomyPath(taxonomyId));
-            },
-            goToTaxonomyEditPage(taxonomyId) {
-                this.$router.push(this.$routerHelper.getTaxonomyEditPath(taxonomyId));
-            }
+            onClickTaxonomy($event, taxonomyId, index) {
+                if ($event.ctrlKey) {
+                    this.$set(this.selected, index, !this.selected[index]); 
+                } else {
+                    this.$router.push(this.$routerHelper.getTaxonomyEditPath(taxonomyId));
+                }
+            }  
         }
     }
 </script>
