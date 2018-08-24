@@ -329,6 +329,7 @@ class CSV extends Importer {
      */
     private function handle_document($column_value, $item_inserted){
         $TainacanMedia = \Tainacan\Media::get_instance();
+		$this->items_repo->disable_logs();
 
         if( strpos($column_value,'url:') === 0 ){
             $correct_value = trim(substr($column_value, 4));
@@ -393,6 +394,8 @@ class CSV extends Importer {
             $this->add_log('Setting item thumbnail: ' . $thumb_id);
             set_post_thumbnail( $item_inserted->get_id(), (int) $thumb_id );
         }
+		
+		$this->items_repo->enable_logs();
 
         return true;
 
@@ -403,6 +406,8 @@ class CSV extends Importer {
      */
     private function handle_attachment( $column_value, $item_inserted){
         $TainacanMedia = \Tainacan\Media::get_instance();
+		
+		$this->items_repo->disable_logs();
 
         $attachments = explode( $this->get_option('multivalued_delimiter'), $column_value);
 
@@ -433,5 +438,8 @@ class CSV extends Importer {
                 $this->add_log('Attachment file in Server imported from ' . $attachment);
             }
        }
+	   
+	   $this->items_repo->enable_logs();
+	   
     }
 }
