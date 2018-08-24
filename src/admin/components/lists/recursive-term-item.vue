@@ -79,7 +79,6 @@
                 :index="childIndex"
                 :taxonomy-id="taxonomyId"
                 :order="order"/>
-        
     </div>
     <a 
             class="view-more-terms"
@@ -334,7 +333,7 @@ export default {
                 }
             }            
         }
-        .controls.is-disabled a, .children-dropdown.is-disabled {
+        .controls.is-disabled a, .children-dropdown i.is-disabled {
             color: $gray4 !important;
             cursor: not-allowed !important;
             user-select: none;
@@ -342,7 +341,7 @@ export default {
 
         &.opened-term:first-child {
             cursor: default;
-            background-color: $blue1;
+            background-color: $gray1;
 
             &:before {
                 content: '';
@@ -353,7 +352,7 @@ export default {
                 width: 0;
                 height: 0;
                 border-style: solid;
-                border-color: transparent transparent transparent $blue1;
+                border-color: transparent transparent transparent $gray1;
                 border-left-width: 24px;
                 border-top-width: 20px;
                 border-bottom-width: 20px;

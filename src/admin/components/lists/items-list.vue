@@ -74,14 +74,14 @@
                                     autoHide: false,
                                     placement: 'auto-start'
                                 }"                               
-                                @click="goToItemPage(item)">
+                                @click="onClickItem($event, item, index)">
                             {{ item.title != undefined ? item.title : '' }}
                         </p>                            
                     </div>
                     <!-- Thumbnail -->
                     <a
                             v-if="item.thumbnail != undefined"
-                            @click="goToItemPage(item)">
+                            @click="onClickItem($event, item, index)">
                         <img :src="item['thumbnail'].tainacan_medium ? item['thumbnail'].tainacan_medium : (item['thumbnail'].medium ? item['thumbnail'].medium : thumbPlaceholderPath)">
                     </a>
 
@@ -140,14 +140,14 @@
 
                     <!-- Title -->
                     <div 
-                            @click="goToItemPage(item)"
+                            @click="onClickItem($event, item, index)"
                             class="metadata-title">
                         <p>{{ item.title != undefined ? item.title : '' }}</p>                             
                     </div>
 
                     <!-- Thumbnail -->  
-                    <div
-                            @click="goToItemPage(item)"
+                    <div 
+                            @click="onClickItem($event, item, index)"
                             v-if="item.thumbnail != undefined"
                             class="thumbnail"
                             :style="{ backgroundImage: 'url(' + (item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)) + ')' }">
@@ -207,7 +207,7 @@
                                     autoHide: false,
                                     placement: 'auto-start'
                                 }"                               
-                                @click="goToItemPage(item)">
+                                @click="onClickItem($event, item, index)">
                             {{ item.title != undefined ? item.title : '' }}
                         </p>                            
                     </div>
@@ -237,7 +237,7 @@
                     <!-- Remaining metadata -->  
                     <div    
                             class="media"
-                            @click="goToItemPage(item)">
+                            @click="onClickItem($event, item, index)">
                       
                         <img 
                                 v-if="item.thumbnail != undefined"
@@ -321,9 +321,9 @@
                                 v-for="(column, index) in tableMetadata"
                                 :key="index"
                                 v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                @click="goToItemPage(item)"
-                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />
-                        <p
+                                @click="onClickItem($event, item, index)"
+                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />  
+                        <p 
                                 v-tooltip="{
                                     content: item.title != undefined ? item.title : '',
                                     html: true,
@@ -333,8 +333,8 @@
                                 v-for="(column, index) in tableMetadata"
                                 :key="index"
                                 v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                @click="goToItemPage(item)"
-                                v-html="item.title != undefined ? item.title : ''" />
+                                @click="onClickItem($event, item, index)"
+                                v-html="item.title != undefined ? item.title : ''" />                             
                     </div>
                     <!-- Actions -->
                     <div 
@@ -362,19 +362,19 @@
                     <!-- Remaining metadata -->  
                     <div    
                             class="media"
-                            @click="goToItemPage(item)">
+                            @click="onClickItem($event, item, index)">
                         <div class="list-metadata media-body">
                             <div class="thumbnail">
-                                <img
+                                <img 
                                         v-if="item.thumbnail != undefined"
-                                        :src="item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)">
+                                        :src="item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)"> 
                             </div>
-                            <span
+                            <span 
                                     v-for="(column, index) in tableMetadata"
                                     :key="index"
                                     v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'description')">
                                 <h3 class="metadata-label">{{ $i18n.get('label_description') }}</h3>
-                                <p
+                                <p 
                                         v-html="item.description != undefined ? item.description : ''"
                                         class="metadata-value"/>
                             </span>
@@ -383,7 +383,7 @@
                                     :key="index"
                                     v-if="column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
                                 <h3 class="metadata-label">{{ column.name }}</h3>
-                                <p
+                                <p 
                                         v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"
                                         class="metadata-value"/>
                             </span>
@@ -445,8 +445,8 @@
 
                         <!-- Item Displayed Metadata -->
                         <td 
-                                :key="index"    
-                                v-for="(column, index) in tableMetadata"
+                                :key="columnIndex"
+                                v-for="(column, columnIndex) in tableMetadata"
                                 v-if="column.display"
                                 :label="column.name" 
                                 class="column-default-width"
@@ -463,7 +463,7 @@
                                                                                                             column.metadata_type_object.primitive_type == 'compound') : false,
                                         'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' || column.metadata_type_object.related_mapped_prop == 'description') : false,
                                 }"
-                                @click="goToItemPage(item)">
+                                @click="onClickItem($event, item, index)">
 
                             <p
                                     v-tooltip="{
@@ -473,7 +473,7 @@
                                         placement: 'auto-start'
                                     }"
                                     v-if="collectionId == undefined &&
-                                          column.metadata_type_object != undefined &&
+                                          column.metadata_type_object != undefined && 
                                           column.metadata_type_object.related_mapped_prop == 'title'"
                                     v-html="item.title != undefined ? item.title : ''"/>
                             <p
@@ -484,7 +484,7 @@
                                         placement: 'auto-start'
                                     }"
                                     v-if="collectionId == undefined &&
-                                          column.metadata_type_object != undefined &&
+                                          column.metadata_type_object != undefined && 
                                           column.metadata_type_object.related_mapped_prop == 'description'"
                                     v-html="item.description != undefined ? item.description : ''"/>
                             <p
@@ -717,8 +717,12 @@ export default {
                 }
             });
         },
-        goToItemPage(item) {
-            this.$router.push(this.$routerHelper.getItemPath(item.collection_id, item.id));
+        onClickItem($event, item, index) {
+            if ($event.ctrlKey) {
+                this.$set(this.selectedItems, index, !this.selectedItems[index]);
+            } else {
+                this.$router.push(this.$routerHelper.getItemPath(item.collection_id, item.id));
+            }
         },
         goToItemEditPage(item) {
             this.$router.push(this.$routerHelper.getItemEditPath(item.collection_id, item.id));

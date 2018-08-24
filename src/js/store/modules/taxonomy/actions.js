@@ -301,3 +301,28 @@ export const clearTerms = ({ commit }) => {
     commit('clearTerms');
 };
 
+// Used only on Term Edition form, for autocomplete searhc for parents
+export const fetchPossibleParentTerms = ({ commit }, { taxonomyId, termId, search } ) => {
+    return new Promise((resolve, reject) => {
+        axios.tainacan.get('/taxonomy/' + taxonomyId + '/terms?searchterm=' + search + '&hierarchical=1&exclude_tree=' + termId + "&hideempty=0&offset=0&number=20")
+        .then(res => {
+            let parentTerms = res.data;
+            resolve( parentTerms );
+        })
+        .catch(error => {
+            reject( error );
+        });
+    });
+};
+export const fetchParentName = ({ commit }, { taxonomyId, parentId } ) => {
+    return new Promise((resolve, reject) => {
+        axios.tainacan.get('/taxonomy/' + taxonomyId + '/terms/' + parentId + '?fetch_only=name')
+        .then(res => {
+            let parentName = res.data.name;
+            resolve( parentName );
+        })
+        .catch(error => {
+            reject( error );
+        });
+    });
+};

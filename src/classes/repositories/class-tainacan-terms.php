@@ -52,7 +52,7 @@ class Terms extends Repository {
 				'type'        => 'integer',
 				'description' => __( 'The parent of the term', 'tainacan' ),
 				'default'     => 0,
-				'validation'  => ''
+				//'validation'  => ''
 			],
 			'description'     => [
 				'map'         => 'description',
@@ -60,7 +60,7 @@ class Terms extends Repository {
 				'type'        => 'string',
 				'description' => __( 'The term description', 'tainacan' ),
 				'default'     => '',
-				'validation'  => ''
+				//'validation'  => ''
 			],
 			'taxonomy'        => [
 				'map'         => 'taxonomy',
@@ -139,10 +139,11 @@ class Terms extends Repository {
 				if ( $mapped['map'] != 'termmeta' ) {
 					$get_ = 'get_' . $prop;
 
-					if ( ! empty( $term->WP_Term->{$mapped['map']} ) ) {
+					if ( $term->WP_Term->{$mapped['map']} ||
+					     ($mapped['map'] == 'parent' && $term->WP_Term->{$mapped['map']} >= 0) ) {
+
 						$args[ $mapped['map'] ] = $term->$get_();
 					}
-
 				}
 			}
 
