@@ -84,20 +84,20 @@ class CSV extends Importer {
             $file->current();
             $file->next();
 
-            $this->add_log(' Delimiter to parse' . $this->get_option('delimiter') );
+            //$this->add_log(' Delimiter to parse: ' . $this->get_option('delimiter') );
             $values = str_getcsv( $file->fgets(), $this->get_option('delimiter'), $this->get_option('enclosure') );
         }else{
-            $this->add_log(' Delimiter to parse' . $this->get_option('delimiter') );
+            //$this->add_log(' Delimiter to parse: ' . $this->get_option('delimiter') );
             $values = str_getcsv( rtrim($file->fgets()), $this->get_option('delimiter'), $this->get_option('enclosure')  );
         }
 
         if( count( $headers ) !== count( $values ) ){
             $string = (is_array($values)) ? implode('::', $values ) : $values;
 
-            $this->add_log(' Mismatch count headers and row columns ');
-            $this->add_log(' Headers count: ' . count( $headers ) );
-            $this->add_log(' Values count: ' . count( $values ) );
-            $this->add_log(' Values string: ' . $string );
+            $this->add_error_log(' Mismatch count headers and row columns ');
+            $this->add_error_log(' Headers count: ' . count( $headers ) );
+            $this->add_error_log(' Values count: ' . count( $values ) );
+            $this->add_error_log(' Values string: ' . $string );
             return false;
         }
         

@@ -778,6 +778,7 @@ abstract class Importer {
 		
 		$Tainacan_Items->disable_logs();
 		$Tainacan_Metadata->disable_logs();
+		$Tainacan_Item_Metadata->disable_logs();
 
         $item = new Entities\Item();
 		$itemMetadataArray = [];
