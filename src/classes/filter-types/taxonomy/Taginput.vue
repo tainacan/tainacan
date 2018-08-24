@@ -128,7 +128,7 @@
                 this.isLoading = true;
                 this.options = [];
                 
-                let query_items = { 'filter_items': this.query };
+                let query_items = { 'current_query': this.query };
 
                 let endpoint = this.isRepositoryLevel ? '/facets/' + this.metadatum : '/collection/'+ this.collection +'/facets/' + this.metadatum;
 

@@ -1,3 +1,4 @@
+import qs from 'qs';
 import { tainacan as axios } from '../../js/axios/axios';
 
 export const filter_type_mixin = {
@@ -18,11 +19,12 @@ export const filter_type_mixin = {
     },
     methods: {
         getValuesPlainText(metadatumId, search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal) {
+            let query_items = { 'current_query': this.query };
 
-            let url = `/collection/${this.collection}/facets/${metadatumId}`;
+            let url = `/collection/${this.collection}/facets/${metadatumId}?`;
 
             if(offset != undefined && number != undefined){
-                url += `?offset=${offset}&number=${number}`;
+                url += `offset=${offset}&number=${number}`;
             }
 
             if(isRepositoryLevel){
@@ -30,9 +32,11 @@ export const filter_type_mixin = {
             }
 
             if(search && offset != undefined && number != undefined){
-                url += `&search=${search}`;
+                url += `&search=${search}&` + qs.stringify(query_items);
             } else if(search){
-                url += `?search=${search}`;
+                url += `search=${search}&` + qs.stringify(query_items);
+            } else {
+                url += qs.stringify(query_items); 
             }
 
             return axios.get(url)
@@ -68,8 +72,6 @@ export const filter_type_mixin = {
                                 });
                             }
                         }
-
-
                     }
 
 
@@ -101,6 +103,7 @@ export const filter_type_mixin = {
                 });
         },
         getValuesRelationship(collectionTarget, search, valuesToIgnore, offset, number, isInCheckboxModal) {
+            let query_items = { 'current_query': this.query };
             let url = '/collection/' + this.filter.collection_id + '/facets/' + this.filter.metadatum.metadatum_id + '?';
 
             if(offset != undefined && number != undefined){
@@ -113,7 +116,7 @@ export const filter_type_mixin = {
                 url += `&search=${search}`;
             }
 
-            return axios.get(url + '&fetch_only[0]=thumbnail&fetch_only[1]=title&fetch_only[2]=id')
+            return axios.get(url + '&fetch_only[0]=thumbnail&fetch_only[1]=title&fetch_only[2]=id&' + qs.stringify(query_items))
                 .then(res => {
                     let sResults = [];
                     let opts = [];

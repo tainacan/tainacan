@@ -83,7 +83,7 @@ class REST_Facets_Controller extends REST_Controller {
 			$options = $metadatum->get_metadata_type_options();
 			$args = $this->prepare_filters($request);
 
-			if(isset($request['filter_items'])){
+			if(isset($request['current_query'])){
 				//TODO: HANDLE FILTERS
 			}
 

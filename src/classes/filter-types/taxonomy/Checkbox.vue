@@ -101,7 +101,7 @@
         methods: {
             loadOptions(){
                 this.isLoading = true;
-                let query_items = { 'filter_items': this.query };
+                let query_items = { 'current_query': this.query };
 
                 axios.get('/collection/'+ this.collection +'/facets/' + this.metadatum 
                 + `?hideempty=0&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items))
