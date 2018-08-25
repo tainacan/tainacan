@@ -452,7 +452,7 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 				exit;
 			}
 
-			$this->handle();
+			$this->dispatch();
 
 			exit;
 		}
