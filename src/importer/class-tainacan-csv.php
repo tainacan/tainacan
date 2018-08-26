@@ -102,7 +102,8 @@ class CSV extends Importer {
             }
         }
 
-        $values =  fgetcsv($file, 0, $this->get_option('delimiter'));
+        $this->add_transient('csv_last_pointer', ftell($file)); // add reference to post_process item in after_inserted_item()
+		$values =  fgetcsv($file, 0, $this->get_option('delimiter'), $this->get_option('enclosure'));
         $this->add_transient('csv_pointer', ftell($file)); // add reference for insert
 
         if( count( $headers ) !== count( $values ) ){
@@ -135,7 +136,6 @@ class CSV extends Importer {
         }
         
         $this->add_log('Success to proccess index: ' . $index  );
-        $this->add_transient('actual_index', $index); // add reference for insert
         return $processedItem;
     }
 
@@ -148,17 +148,17 @@ class CSV extends Importer {
 
         if( !empty($column_document) || !empty( $column_attachment ) ){
             
-            $index = $this->get_transient('actual_index');
-            $file =  new \SplFileObject( $this->tmp_file, 'r' );
-            $file->setFlags(\SplFileObject::SKIP_EMPTY);
-            $file->seek( $index );
-
-            if( $index === 0 ){
-                $file->current();
-                $file->next();
-            }
-
-            $values = str_getcsv( rtrim($file->fgets()), $this->get_option('delimiter'), $this->get_option('enclosure')  );
+			if (($handle = fopen($this->tmp_file, "r")) !== false) {
+	            $file = $handle;
+	        } else {
+	            $this->add_error_log(' Error reading the file ');
+	            return false;
+	        }
+			
+			$csv_pointer= $this->get_transient('csv_last_pointer');
+			fseek($file, $csv_pointer);
+			
+            $values = fgetcsv($file, 0, $this->get_option('delimiter'), $this->get_option('enclosure'));
             
             if( is_array($values) && !empty($column_document) ){
                 $this->handle_document( $values[$column_document], $inserted_item);
