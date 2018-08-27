@@ -203,7 +203,28 @@ class Admin {
         foreach ( $metadata_types as $index => $metadata_type){
 		    $class = new $metadata_type;
             $settings['i18n']['helpers_label'][$class->get_component()] = $class->get_form_labels();
-        }
+		}
+		
+		$settings['form_hooks'] = [
+			'form-collection' => [
+				'begin-left' => '<input type="text" name="collection-background-color" value="blue" />',
+				'end-left' => '<input type="text" name="collection-color" value="red" />',
+				'begin-right' => '<input type="text" name="collection-border-color" value="black" />',
+				'end-right' => '<input type="text" name="collection-highlight-color" value="green" />'
+			],
+			'form-taxonomy' => [
+				'begin' => '<input type="text" name="taxonomy-background-color" value="blue" />',
+				'end' => '<input type="text" name="taxonomy-color" value="red" />'
+			],
+			'form-term' => [
+				'begin' => '<input type="text" name="term-background-color" value="blue" />',
+				'end' => '<input type="text" name="term-color" value="red" />'
+			],
+			'form-metadatum' => [
+				'begin' => '<input type="text" name="metadatum-background-color" value="blue" />',
+				'end' => '<input type="text" name="metadatum-color" value="red" />'
+			]
+		];
 		
 		return $settings;
 		

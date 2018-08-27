@@ -5,6 +5,16 @@
             :class="{ 'inCollapse': !isOnModal }"
             @submit.prevent="saveEdition(editForm)">
 
+        <!-- Hook for extra Form options -->
+        <template 
+                v-if="formHooks != undefined && 
+                    formHooks['form-metadatum'] != undefined &&
+                    formHooks['form-metadatum']['begin'] != undefined">  
+            <form 
+                id="form-metadatum-begin"
+                v-html="formHooks['form-metadatum']['begin']"/>
+        </template>
+
         <b-field
                 :addons="false"
                 :type="formErrors['name'] != undefined ? 'is-danger' : ''"
@@ -206,6 +216,16 @@
                 v-html="editForm.edit_form"
                 v-else/>
 
+        <!-- Hook for extra Form options -->
+        <template 
+                v-if="formHooks != undefined && 
+                    formHooks['form-metadatum'] != undefined &&
+                    formHooks['form-metadatum']['end'] != undefined">  
+            <form 
+                id="form-metadatum-end"
+                v-html="formHooks['form-metadatum']['end']"/>
+        </template>
+
         <div class="field is-grouped form-submit">
             <div class="control">
                 <button
@@ -228,9 +248,11 @@
 
 <script>
     import {mapActions} from 'vuex';
+    import { formHooks } from "../../js/mixins";
 
     export default {
         name: 'MetadatumEditionForm',
+        mixins: [ formHooks ],
         data() {
             return {
                 editForm: {},
@@ -275,6 +297,8 @@
             saveEdition(metadatum) {
 
                 if ((metadatum.metadata_type_object && metadatum.metadata_type_object.form_component) || metadatum.edit_form == '') {
+                    
+                    this.fillExtraFormData(this.editForm, 'metadatum');
 
                     this.updateMetadatum({
                         collectionId: this.collectionId,
@@ -309,6 +333,7 @@
                     for (let [key, value] of formData.entries())
                         formObj[key] = value;
 
+                    this.fillExtraFormData(formObj, 'metadatum');
                     this.updateMetadatum({
                         collectionId: this.collectionId,
                         metadatumId: metadatum.id,

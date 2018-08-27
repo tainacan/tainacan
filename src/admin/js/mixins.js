@@ -47,3 +47,36 @@ export const dateInter = {
         }
     }
 };
+
+// Used for filling extra form data on hooks
+export const formHooks = {
+    data() {
+        return { 
+            formHooks: tainacan_plugin['form_hooks'] 
+        }
+    },
+    methods: {
+        fillExtraFormData(data, entity) {
+            let positions  =  [
+                'begin-left', 
+                'begin-right',
+                'begin',
+                'end-left',
+                'end-right',
+                'end'
+            ];
+            // Gets data from existing extra form hooks
+            for (let position of positions) {
+                if (this.formHooks['form-' + entity][position] && this.formHooks['form-' + entity][position] != undefined) {
+                    let formElement = document.getElementById('form-' + entity + '-' + position);
+                    if (formElement) {
+                        let formData = new FormData(formElement);   
+                        for (let [key, value] of formData.entries()) {
+                            data[key] = value;
+                        }
+                    }
+                }
+            }
+        }
+    }
+};
