@@ -605,6 +605,35 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 
 		$this->assertEquals(20, $items->found_posts);
 	}
+	
+	function test_set_status() {
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+
+		$ids = array_slice($this->items_ids, 4, 11);
+		
+		$bulk = new \Tainacan\Bulk_Edit([
+			'items_ids' => $ids,
+		]);
+		
+		$id = $bulk->get_id();
+
+		$bulk->set_status('draft');
+
+		$items = $Tainacan_Items->fetch([
+			'status' => 'draft',
+			'posts_per_page' => -1
+		]);
+
+		$this->assertEquals(11, $items->found_posts);
+
+		$items = $Tainacan_Items->fetch([
+			'publish' => 'draft',
+			'posts_per_page' => -1
+		]);
+
+		$this->assertEquals(29, $items->found_posts);
+
+	}
 
 	function test_set_regular_multi_meta() {
 
@@ -834,6 +863,42 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 					'value' => 'superduper'
 				]
 			],
+			'posts_per_page' => -1
+		]);
+
+		$this->assertEquals(14, $items->found_posts);
+
+
+	}
+	
+	/**
+	 * @group api
+	 */
+	public function test_api_set_status() {
+
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+
+		$ids = array_slice($this->items_ids, 2, 14);
+		
+		$bulk = new \Tainacan\Bulk_Edit([
+			'items_ids' => $ids,
+		]);
+
+		$body = json_encode([
+			'value' => 'private'
+		]);
+
+		
+		$request = new \WP_REST_Request(
+			'POST', $this->api_baseroute . '/' . $bulk->get_id() . '/set_status'
+		);
+
+		$request->set_body( $body );
+
+		$response = $this->server->dispatch($request);
+
+		$items = $Tainacan_Items->fetch([
+			'status' => 'private',
 			'posts_per_page' => -1
 		]);
 

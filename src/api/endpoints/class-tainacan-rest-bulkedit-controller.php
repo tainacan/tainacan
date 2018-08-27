@@ -83,6 +83,21 @@ class REST_Bulkedit_Controller extends REST_Controller {
 				),
 			)
         );
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/set_status',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array($this, 'set_status'),
+					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
+					'args'                => [
+                        'value' => [
+                            'type'        => 'string',
+                            'description' => __( 'The new status value', 'tainacan' ),
+                        ],
+                    ],
+				),
+			)
+        );
         register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/set',
 			array(
 				array(
@@ -220,6 +235,33 @@ class REST_Bulkedit_Controller extends REST_Controller {
     public function replace_value($request) {
         
         return $this->generic_action('replace_value', $request, ['old_value', 'new_value']);
+
+    }
+	
+	public function set_status($request) {
+        $body = json_decode($request->get_body(), true);
+		
+		if( !isset($body['value']) ){
+			return new \WP_REST_Response([
+				'error_message' => __('Value must be provided', 'tainacan'),
+			], 400);
+		}
+		
+		$group_id = $request['group_id'];
+
+        $args = ['id' => $group_id];
+
+        $bulk = new \Tainacan\Bulk_Edit($args);
+
+        $action = $bulk->set_status($body['value']);
+
+        if ( is_wp_error($action) ) {
+            return new \WP_REST_Response([
+                'error_message' => $action->get_error_message(),
+            ], 400);
+        } else {
+            return new \WP_REST_Response($action, 200);
+        }
 
     }
 

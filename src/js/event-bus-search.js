@@ -159,8 +159,7 @@ export default {
                         }
                         
                         this.loadItems(to);
-                    }  
-                    
+                    }                      
                 }
             },
             methods: {
@@ -192,15 +191,14 @@ export default {
                     this.updateURLQueries();             
                 },
                 addFetchOnly( metadatum ){
-                    let prefsFetchOnly = this.collectionId != undefined ? 'fetch_only_' + this.collectionId : 'fetch_only';
-
-                    if(this.$userPrefs.get(prefsFetchOnly) != metadatum) {
-                        this.$userPrefs.set(prefsFetchOnly, metadatum)
-                            .catch(() => {});
-                    }
-                
                     this.$store.dispatch('search/add_fetchonly', metadatum );
-                    this.updateURLQueries();   
+                    this.updateURLQueries();  
+                    
+                    let prefsFetchOnly = this.collectionId != undefined ? 'fetch_only_' + this.collectionId : 'fetch_only';
+                    if (JSON.stringify(this.$userPrefs.get(prefsFetchOnly)) != JSON.stringify(metadatum)) {
+                        this.$userPrefs.set(prefsFetchOnly, metadatum)
+                            .catch(() => { this.$console.log("Error setting user prefs for fetch_only"); });
+                    }
                 },
                 cleanFetchOnly() {
                     this.$store.dispatch('search/cleanFetchOnly');
@@ -228,14 +226,14 @@ export default {
                     this.updateURLQueries();
                 },
                 setItemsPerPage(itemsPerPage) {
+                    this.$store.dispatch('search/setItemsPerPage', itemsPerPage);
+                    this.updateURLQueries();
+
                     let prefsPerPage = this.collectionId != undefined ? 'items_per_page_' + this.collectionId : 'items_per_page';
                     if(this.$userPrefs.get(prefsPerPage) != itemsPerPage) {
                         this.$userPrefs.set(prefsPerPage, itemsPerPage)
                             .catch(() => {});
                     }
-
-                    this.$store.dispatch('search/setItemsPerPage', itemsPerPage);
-                    this.updateURLQueries();
                 },
                 setOrderBy(orderBy) { 
                     let prefsOrderBy = this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by';
@@ -265,24 +263,24 @@ export default {
                     this.updateURLQueries();
                 },
                 setViewMode(viewMode) {
+                    this.$store.dispatch('search/setViewMode', viewMode);
+                    this.updateURLQueries(); 
+                    
                     let prefsViewMode = this.collectionId != undefined ? 'view_mode_' + this.collectionId : 'view_mode';
                     if(this.$userPrefs.get(prefsViewMode) != viewMode) {
                         this.$userPrefs.set(prefsViewMode, viewMode)
                             .catch(() => {});
                     }
-
-                    this.$store.dispatch('search/setViewMode', viewMode);
-                    this.updateURLQueries();  
                 },
                 setAdminViewMode(adminViewMode) {
+                    this.$store.dispatch('search/setAdminViewMode', adminViewMode);
+                    this.updateURLQueries();  
+
                     let prefsAdminViewMode = this.collectionId != undefined ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
                     if(this.$userPrefs.get(prefsAdminViewMode) != adminViewMode) {
                         this.$userPrefs.set(prefsAdminViewMode, adminViewMode)
-                            .catch(() => { });
+                            .catch(() => {  });
                     }
-
-                    this.$store.dispatch('search/setAdminViewMode', adminViewMode);
-                    this.updateURLQueries();  
                 },
                 setInitialViewMode(viewMode) {
                     this.$store.dispatch('search/setViewMode', viewMode);

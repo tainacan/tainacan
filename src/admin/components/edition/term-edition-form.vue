@@ -89,7 +89,7 @@
            <label class="label is-inline">
                 {{ $i18n.get('label_parent_term') }}
                  <b-switch
-                        @input="showCheckboxesWarning = true; clearErrors('parent');"
+                        @input="onToggleSwitch()"
                         id="tainacan-checkbox-has-parent" 
                         size="is-small"
                         v-model="hasParent" />
@@ -290,6 +290,17 @@
                         this.$console.error(error);
                         this.isFetchingParentTerms = false;
                     });
+            },
+            onToggleSwitch() {
+
+                if (this.editForm.parent == 0) {
+                    this.hasChangedParent = this.hasParent;
+                } else {
+                    this.hasChangedParent = !this.hasParent;
+                }
+                
+                this.showCheckboxesWarning = true; 
+                this.clearErrors('parent');
             },
             onSelectParentTerm(selectedParentTerm) {
                 this.hasChangedParent = this.initialParentId != selectedParentTerm.id;
