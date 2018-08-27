@@ -295,7 +295,7 @@
                         this.setStatusInBulk({
                             collectionID: this.collectionID,
                             groupID: this.groupID,
-                            bodyParams: procedure.newValue
+                            bodyParams: { value: procedure.newValue }
                         }).then(() => {
                             this.finalizeProcedure(criterion)
                         })
