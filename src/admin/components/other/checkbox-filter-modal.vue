@@ -77,8 +77,8 @@
                             :key="index">
                         <b-checkbox
                                 v-model="selected"
-                                :native-value="option.id">
-                            {{ `${option.name}` }}
+                                :native-value="option.value">
+                            {{ `${option.label}` }}
                         </b-checkbox>
                         <a
                                 v-if="option.total_children > 0"
@@ -284,7 +284,7 @@
 
                     let query = `?hideempty=0&order=asc&number=${this.maxNumSearchResultsShow}&searchterm=${this.optionName}`;
 
-                    axios.get(`/taxonomy/${this.taxonomy_id}/terms${query}`)
+                    axios.get(`/collection/${this.collection_id}/facets/${this.metadatum_id}${query}`)
                         .then((res) => {
                             this.searchResults = res.data;
                             this.isSearchingLoading = false;
@@ -362,7 +362,7 @@
 
                 if (children.length > 0) {
                     for (let f in this.finderColumns) {
-                        if (this.finderColumns[f][0].id == children[0].id) {
+                        if (this.finderColumns[f][0].value == children[0].value) {
                             first = f;
                             break;
                         }
@@ -389,14 +389,14 @@
                 let parent = 0;
 
                 if (option) {
-                    parent = option.id;
+                    parent = option.value;
                 }
 
                 let query = `?hideempty=0&order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=0`;
 
                 this.isColumnLoading = true;
 
-                axios.get(`/taxonomy/${this.taxonomy_id}/terms${query}`)
+                axios.get(`/collection/${this.collection_id}/facets/${this.metadatum_id}${query}`)
                     .then(res => {
                         this.removeLevelsAfter(key);
                         this.createColumn(res, key);
@@ -419,7 +419,7 @@
 
                     this.isColumnLoading = true;
 
-                    axios.get(`/taxonomy/${this.taxonomy_id}/terms${query}`)
+                    axios.get(`/collection/${this.collection_id}/facets/${this.metadatum_id}${query}`)
                         .then(res => {
                             this.appendMore(res.data, key);
 
@@ -450,7 +450,7 @@
                     for (let selected of this.selected) {
 
                         for(let i in this.finderColumns){
-                            let valueIndex = this.finderColumns[i].findIndex(option => option.id == selected);
+                            let valueIndex = this.finderColumns[i].findIndex(option => option.value == selected);
 
                             if (valueIndex >= 0) {
                                 onlyLabels.push(this.finderColumns[i][valueIndex].name);
