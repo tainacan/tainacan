@@ -617,7 +617,7 @@ export default {
                 component: BulkEditionModal,
                 props: {
                     modalTitle: this.$i18n.get('info_editing_items_in_bulk'),
-                    totalItems: this.queryAllItemsSelected ? this.totalItems : this.selectedItemsIDs.length,
+                    totalItems: Object.keys(this.queryAllItemsSelected).length ? this.totalItems : this.selectedItemsIDs.length,
                     selectedForBulk: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItemsIDs,
                     objectType: this.$i18n.get('items'),
                     metadata: this.tableMetadata,

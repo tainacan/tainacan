@@ -68,6 +68,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'add_one_edition_criterion'                      => __( 'Add one edition criterion', 'tainacan' ),
 	'redefine'                                       => __( 'Redefine', 'tainacan' ),
 	'replace'                                        => __( 'Replace', 'tainacan' ),
+	'conclude'                                       => __( 'Conclude', 'tainacan' ),
 
 	// Wordpress Status
 	'publish'                                        => __( 'Publish', 'tainacan' ),
@@ -297,6 +298,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_delete_selected_taxonomies'         => __( 'Delete selected taxonomies', 'tainacan' ),
 	'instruction_image_upload_box'                   => __( 'Drop an image here or click to upload.', 'tainacan' ),
 	'instruction_select_a_status'                    => __( 'Select a status:', 'tainacan' ),
+	'instruction_select_a_status2'                   => __( 'Select a status', 'tainacan' ),
 	'instruction_select_a_filter_type'               => __( 'Select a filter type:', 'tainacan' ),
 	'instruction_select_a_parent_term'               => __( 'Select a parent term:', 'tainacan' ),
 	'instruction_select_a_metadatum'                 => __( 'Select a metadatum', 'tainacan' ),
