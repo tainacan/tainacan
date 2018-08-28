@@ -105,7 +105,7 @@
             <masonry 
                     v-if="viewMode == 'masonry'"
                     :cols="{default: 7, 1919: 6, 1407: 5, 1215: 4, 1023: 3, 767: 2, 343: 1}"
-                    :gutter="30"
+                    :gutter="25"
                     class="tainacan-masonry-container">
                 <div
                         :key="index"
@@ -275,7 +275,7 @@
             <!-- RECORDS VIEW MODE -->
             <masonry 
                     :cols="{default: 4, 1919: 3, 1407: 2, 1215: 2, 1023: 1, 767: 1, 343: 1}"
-                    :gutter="30"
+                    :gutter="30" 
                     class="tainacan-records-container"
                     v-if="viewMode == 'records'">
                 <div 
