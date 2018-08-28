@@ -11,7 +11,7 @@
                     formHooks['form-filter']['begin'] != undefined">  
             <form 
                 id="form-filter-begin"
-                v-html="formHooks['form-filter']['begin']"/>
+                v-html="formHooks['form-filter']['begin'].join('')"/>
         </template>
 
         <b-field 
@@ -154,7 +154,7 @@
                     formHooks['form-filter']['end'] != undefined">  
             <form 
                 id="form-filter-end"
-                v-html="formHooks['form-filter']['end']"/>
+                v-html="formHooks['form-filter']['end'].join('')"/>
         </template>
 
         <div class="field is-grouped form-submit">

@@ -20,7 +20,7 @@
                                 formHooks['view-item']['begin-left'] != undefined">  
                         <div 
                             id="view-item-begin-left"
-                            v-html="formHooks['view-item']['begin-left']"/>
+                            v-html="formHooks['view-item']['begin-left'].join('')"/>
                     </template>
 
                     <!-- Document -------------------------------- -->
@@ -174,7 +174,7 @@
                                 formHooks['view-item']['end-left'] != undefined">  
                         <div 
                             id="view-item-end-left"
-                            v-html="formHooks['view-item']['end-left']"/>
+                            v-html="formHooks['view-item']['end-left'].join('')"/>
                     </template>
 
                 </div>
@@ -189,7 +189,7 @@
                                 formHooks['view-item']['begin-right'] != undefined">  
                         <div 
                             id="view-item-begin-right"
-                            v-html="formHooks['view-item']['begin-right']"/>
+                            v-html="formHooks['view-item']['begin-right'].join('')"/>
                     </template>
 
                     <!-- Visibility (status public or private) -------------------------------- -->
@@ -274,7 +274,7 @@
                                 formHooks['view-item']['end-right'] != undefined">  
                         <div 
                             id="view-item-end-right"
-                            v-html="formHooks['view-item']['end-right']"/>
+                            v-html="formHooks['view-item']['end-right'].join('')"/>
                     </template>
                 </div>
             </div>

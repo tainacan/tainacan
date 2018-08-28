@@ -12,7 +12,7 @@
                     formHooks['form-metadatum']['begin'] != undefined">  
             <form 
                 id="form-metadatum-begin"
-                v-html="formHooks['form-metadatum']['begin']"/>
+                v-html="formHooks['form-metadatum']['begin'].join('')"/>
         </template>
 
         <b-field
@@ -223,7 +223,7 @@
                     formHooks['form-metadatum']['end'] != undefined">  
             <form 
                 id="form-metadatum-end"
-                v-html="formHooks['form-metadatum']['end']"/>
+                v-html="formHooks['form-metadatum']['end'].join('')"/>
         </template>
 
         <div class="field is-grouped form-submit">

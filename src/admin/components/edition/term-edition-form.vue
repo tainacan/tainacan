@@ -15,7 +15,7 @@
                     formHooks['form-term']['begin'] != undefined">  
             <form 
                 id="form-term-begin"
-                v-html="formHooks['form-term']['begin']"/>
+                v-html="formHooks['form-term']['begin'].join('')"/>
         </template>
 
         <!-- Header Image -------------------------------- -->
@@ -139,7 +139,7 @@
                     formHooks['form-term']['end'] != undefined">  
             <form 
                 id="form-term-end"
-                v-html="formHooks['form-term']['end']"/>
+                v-html="formHooks['form-term']['end'].join('')"/>
         </template>
 
         <!-- Submit buttons -------------- -->

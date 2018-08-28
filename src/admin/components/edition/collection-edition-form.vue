@@ -34,7 +34,7 @@
                                 formHooks['form-collection']['begin-left'] != undefined">  
                         <form 
                             id="form-collection-begin-left"
-                            v-html="formHooks['form-collection']['begin-left']"/>
+                            v-html="this.formHooks['form-collection']['begin-left'].join('')"/>
                     </template>
 
                     <!-- Thumbnail -------------------------------- --> 
@@ -238,7 +238,7 @@
                                 formHooks['form-collection']['end-left'] != undefined">  
                         <form 
                             id="form-collection-end-left"
-                            v-html="formHooks['form-collection']['end-left'] "/>
+                            v-html="formHooks['form-collection']['end-left'].join('')"/>
                     </template>
 
                 </div>
@@ -252,7 +252,7 @@
                                 formHooks['form-collection']['begin-right'] != undefined">  
                         <form 
                             id="form-collection-begin-right"
-                            v-html="formHooks['form-collection']['begin-right']"/>
+                            v-html="formHooks['form-collection']['begin-right'].join('')"/>
                     </template>
 
                     <!-- Status -------------------------------- --> 
@@ -423,7 +423,7 @@
                                 formHooks['form-collection']['end-right'] != undefined">  
                         <form 
                             id="form-collection-end-right"
-                            v-html="formHooks['form-collection']['end-right']"/>
+                            v-html="formHooks['form-collection']['end-right'].join('')"/>
                     </template>
                 </div>
 
@@ -593,6 +593,9 @@ export default {
                 
                 this.collection = updatedCollection;
 
+                // Fills hook forms with it's real values 
+                this.updateExtraFormData('collection', this.collection);
+                
                 // Fill this.form data with current data.
                 this.form.name = this.collection.name;
                 this.form.slug = this.collection.slug;
@@ -608,10 +611,10 @@ export default {
                 this.formErrorMessage = '';
                 this.editFormErrors = {};
 
-                if (this.fromImporter)
-                    this.$router.go(-1);
-                else
-                    this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
+                // if (this.fromImporter)
+                //     this.$router.go(-1);
+                // else
+                //     this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
             })
             .catch((errors) => {
                 for (let error of errors.errors) {     
@@ -638,7 +641,7 @@ export default {
 
                 // Initializes Media Frames now that collectonId exists
                 this.initializeMediaFrames();
-
+        
                 // Fill this.form data with current data.
                 this.form.name = this.collection.name;
                 this.form.description = this.collection.description;
@@ -825,6 +828,9 @@ export default {
                 // Initializes Media Frames now that collectonId exists
                 this.initializeMediaFrames();
 
+                // Fills hook forms with it's real values 
+                this.updateExtraFormData('collection', this.collection);
+  
                 // Fill this.form data with current data.
                 this.form.name = this.collection.name;
                 this.form.description = this.collection.description;

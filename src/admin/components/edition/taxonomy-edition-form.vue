@@ -16,7 +16,7 @@
                                     formHooks['form-taxonomy']['begin'] != undefined">  
                             <form 
                                 id="form-taxonomy-begin"
-                                v-html="formHooks['form-taxonomy']['begin']"/>
+                                v-html="formHooks['form-taxonomy']['begin'].join('')"/>
                         </template>
 
                         <!-- Name -------------------------------- -->
@@ -116,7 +116,7 @@
                                     formHooks['form-taxonomy']['end'] != undefined">  
                             <form 
                                 id="form-taxonomy-end"
-                                v-html="formHooks['form-taxonomy']['end']"/>
+                                v-html="formHooks['form-taxonomy']['end'].join('')"/>
                         </template>
 
                         <!-- Submit -->

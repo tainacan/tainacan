@@ -52,7 +52,7 @@ export const dateInter = {
 export const formHooks = {
     data() {
         return { 
-            formHooks: tainacan_plugin['form_hooks'] 
+            formHooks: JSON.parse(JSON.stringify(tainacan_plugin['form_hooks'])) 
         }
     },
     methods: {
@@ -73,6 +73,29 @@ export const formHooks = {
                         let formData = new FormData(formElement);   
                         for (let [key, value] of formData.entries()) {
                             data[key] = value;
+                        }
+                    }
+                }
+            }
+        },
+        updateExtraFormData(entity, entityObject) {
+            let positions  =  [
+                'begin-left', 
+                'begin-right',
+                'begin',
+                'end-left',
+                'end-right',
+                'end'
+            ];
+            // Gets data from existing extra form hooks
+            for (let position of positions) {
+                if (this.formHooks['form-' + entity][position] && this.formHooks['form-' + entity][position] != undefined) {
+                    let formElement = document.getElementById('form-' + entity + '-' + position);
+                    if (formElement) {
+                        let formData = new FormData(formElement);   
+                        for (let [key, value] of formData.entries()) {
+                            if (entityObject[key] != undefined && entityObject[key] != null)
+                                value = entityObject[key];
                         }
                     }
                 }
