@@ -317,6 +317,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_insert_mapper_metadatum_info'       => __( 'Insert the new mapper\'s metadatum info', 'tainacan' ),
 	'instruction_select_max_options_to_show'         => __( 'Select max options to show', 'tainacan' ),
 	'instruction_select_collection_fetch_items'      => __( 'Select a collection to fecth items', 'tainacan' ),
+	'instruction_parent_term'                        => __( 'Type to search a Parent Term to choose.', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_search_results'                            => __( 'Search Results', 'tainacan' ),
@@ -384,6 +385,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_possible_external_sources'                 => __( 'Possible external sources: CSV, Instagram, Youtube, etc.', 'tainacan' ),
 	'info_help_term_name'                            => __( 'The term name', 'tainacan' ),
 	'info_help_term_description'                     => __( 'The description of the Term.', 'tainacan' ),
+	'info_help_parent_term'                          => __( 'The parent term', 'tainacan' ),
 	'info_no_attachments_on_item_yet'                => __( 'The are no attachments on this item so far.', 'tainacan' ),
 	'info_repository_metadata_inheritance'           => __( 'Repository Metadata will be inherited by all collections.', 'tainacan' ),
 	'info_repository_filters_inheritance'            => __( 'Repository Filters will be inherited by all collections.', 'tainacan' ),
@@ -415,6 +417,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_there_are_no_metadata_in_repository_level' => __( 'There are no metadata in repository level', 'tainacan' ),
 	'info_import_collection'						 => __( 'Import from external sources.', 'tainacan' ),
 	'info_import_items'								 => __( 'Import items from external sources.', 'tainacan' ),
+	'info_no_parent_term_found'                      => __( 'No valid parent term was found with this name.', 'tainacan' ),
+	'info_warning_changing_parent_term'              => __( 'Warning! Changing parent term will reload the terms list, thus uncheking any selection.', 'tainacan' ),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),

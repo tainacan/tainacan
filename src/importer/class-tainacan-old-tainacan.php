@@ -272,7 +272,8 @@ class Old_Tainacan extends Importer{
      * @return Tainacan\Entities\Item Item inserted
      */
     public function insert( $processed_item, $collection_index ) {
-        $collection_id = $processed_item['collection_definition'];
+        $this->items_repo->disable_logs();
+		$collection_id = $processed_item['collection_definition'];
         $item_Old = $processed_item['item']->item;
 
         $collection = new Entities\Collection($collection_id['id']);
@@ -321,6 +322,7 @@ class Old_Tainacan extends Importer{
     */
     public function add_item_metadata( $item, $metadata_old, $collection_id ){
         $relationships = [];
+		$this->item_metadata_repo->disable_logs();
 
         foreach( $metadata_old as $metadatum ){
 

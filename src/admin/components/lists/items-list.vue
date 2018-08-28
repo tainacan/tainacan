@@ -64,14 +64,14 @@
                                     autoHide: false,
                                     placement: 'auto-start'
                                 }"                               
-                                @click="goToItemPage(item)">
+                                @click="onClickItem($event, item, index)">
                             {{ item.title != undefined ? item.title : '' }}
                         </p>                            
                     </div>
                     <!-- Thumbnail -->
                     <a
                             v-if="item.thumbnail != undefined"
-                            @click="goToItemPage(item)">
+                            @click="onClickItem($event, item, index)">
                         <img :src="item['thumbnail'].tainacan_medium ? item['thumbnail'].tainacan_medium : (item['thumbnail'].medium ? item['thumbnail'].medium : thumbPlaceholderPath)">
                     </a>
 
@@ -130,14 +130,14 @@
 
                     <!-- Title -->
                     <div 
-                            @click="goToItemPage(item)"
+                            @click="onClickItem($event, item, index)"
                             class="metadata-title">
                         <p>{{ item.title != undefined ? item.title : '' }}</p>                             
                     </div>
 
                     <!-- Thumbnail -->  
                     <div 
-                            @click="goToItemPage(item)"
+                            @click="onClickItem($event, item, index)"
                             v-if="item.thumbnail != undefined"
                             class="thumbnail"
                             :style="{ backgroundImage: 'url(' + (item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)) + ')' }">  
@@ -197,7 +197,7 @@
                                     autoHide: false,
                                     placement: 'auto-start'
                                 }"                               
-                                @click="goToItemPage(item)">
+                                @click="onClickItem($event, item, index)">
                             {{ item.title != undefined ? item.title : '' }}
                         </p>                            
                     </div>
@@ -227,7 +227,7 @@
                     <!-- Remaining metadata -->  
                     <div    
                             class="media"
-                            @click="goToItemPage(item)">
+                            @click="onClickItem($event, item, index)">
                       
                         <img 
                                 v-if="item.thumbnail != undefined"
@@ -244,7 +244,6 @@
                                     }"   
                                     class="metadata-description"
                                     v-html="item.description != undefined ? getLimitedDescription(item.description) : ''" />                             
-                            <br>
                             <!-- Author-->
                             <p 
                                     v-tooltip="{
@@ -312,7 +311,7 @@
                                 v-for="(column, index) in tableMetadata"
                                 :key="index"
                                 v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                @click="goToItemPage(item)"
+                                @click="onClickItem($event, item, index)"
                                 v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />  
                         <p 
                                 v-tooltip="{
@@ -324,7 +323,7 @@
                                 v-for="(column, index) in tableMetadata"
                                 :key="index"
                                 v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                @click="goToItemPage(item)"
+                                @click="onClickItem($event, item, index)"
                                 v-html="item.title != undefined ? item.title : ''" />                             
                     </div>
                     <!-- Actions -->
@@ -353,7 +352,7 @@
                     <!-- Remaining metadata -->  
                     <div    
                             class="media"
-                            @click="goToItemPage(item)">
+                            @click="onClickItem($event, item, index)">
                         <div class="list-metadata media-body">
                             <div class="thumbnail">
                                 <img 
@@ -436,8 +435,8 @@
 
                         <!-- Item Displayed Metadata -->
                         <td 
-                                :key="index"    
-                                v-for="(column, index) in tableMetadata"
+                                :key="columnIndex"    
+                                v-for="(column, columnIndex) in tableMetadata"
                                 v-if="column.display"
                                 :label="column.name" 
                                 class="column-default-width"
@@ -454,7 +453,7 @@
                                                                                                             column.metadata_type_object.primitive_type == 'compound') : false,
                                         'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' || column.metadata_type_object.related_mapped_prop == 'description') : false,
                                 }"
-                                @click="goToItemPage(item)">
+                                @click="onClickItem($event, item, index)">
 
                             <p
                                     v-tooltip="{
@@ -669,8 +668,12 @@ export default {
                 }
             });
         },
-        goToItemPage(item) {
-            this.$router.push(this.$routerHelper.getItemPath(item.collection_id, item.id));
+        onClickItem($event, item, index) {
+            if ($event.ctrlKey) {
+                this.$set(this.selectedItems, index, !this.selectedItems[index]); 
+            } else {
+                this.$router.push(this.$routerHelper.getItemPath(item.collection_id, item.id));
+            }
         },
         goToItemEditPage(item) {
             this.$router.push(this.$routerHelper.getItemEditPath(item.collection_id, item.id));
@@ -688,7 +691,8 @@ export default {
             }
         },
         getLimitedDescription(description) {
-            return description.length > 120 ? description.substring(0, 117) + '...' : description;
+            let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 100 : 220;
+            return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
         }
     }
 }

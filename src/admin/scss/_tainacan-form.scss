@@ -30,6 +30,7 @@
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
+        vertical-align: top;
     }
     .required-metadatum-asterisk {
         color: $gray3;
@@ -74,7 +75,7 @@
         padding-left: 0.8em;
         font-size: 12px;
         text-overflow: ellipsis;
-        overflow-x: hidden;
+        overflow: hidden;
         white-space: nowrap;
     }
     .select {

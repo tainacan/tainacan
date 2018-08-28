@@ -125,10 +125,11 @@ export default {
     $turquoise1: #e6f6f8;
     $turquoise2: #d1e6e6;
     $tainacan-input-color: #1d1d1d;
+    $gray1: #f2f2f2; 
     $gray2: #e5e5e5;
-    $gray4: #898d8f;
     $gray3: #dcdcdc;
-    $gray4: #898d8f; 
+    $gray4: #898d8f;
+    $gray5: #454647; 
 
     @import "../../src/admin/scss/_view-mode-records.scss";
 

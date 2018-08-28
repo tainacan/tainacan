@@ -20,24 +20,26 @@
         padding: 0px;
         flex-basis: 0;
         margin: 0.75rem;
-        max-width: 410px;
-        min-width: 410px;
+        max-width: 425px;
+        min-width: 425px;
         min-height: 218px;
         max-height: 218px;
         cursor: pointer;
 
-        @media screen and (max-width: 450px) {
+        @media screen and (max-width: 480px) {
             max-width: 100%;
             min-width: 100%;
+            min-height: 176px;
+            max-height: 176px;
 
             img {
-                width: 33.333333% !important;
-                height: 33.333333% !important;
+                width: 130px !important;
+                height: 130px !important;
             }
         }
 
         &:hover {
-            background-color: #f2f2f2 !important;
+            background-color: $gray1 !important;
         }
 
         .card-checkbox {
@@ -109,7 +111,7 @@
                 p.metadata-description {
                     font-size: 0.6875rem !important;
                     overflow: hidden;
-                    margin-bottom: 1.5rem;
+                    margin-bottom: 1rem;
                     max-height: 152px;
                 }
 

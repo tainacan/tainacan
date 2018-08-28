@@ -141,6 +141,33 @@ class Bulk_Edit  {
 		return $wpdb->prepare( "SELECT $fields FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s", $this->meta_key, $this->get_id() );
 
 	}
+	
+	/**
+	 * Sets the status to all items in the current group
+	 * 
+	 */
+	public function set_status($value) {
+
+		if (!$this->get_id()) {
+			return new \WP_Error( 'no_id', __( 'Bulk Edit group not initialized', 'tainacan' ) );
+		}
+		
+		$possible_values = ['draft', 'publish', 'private'];
+
+		// Specific validation
+		if (!in_array($value, $possible_values)) {
+			return new \WP_Error( 'invalid_action', __( 'Invalid status', 'tainacan' ) );
+		}
+
+		global $wpdb;
+
+		$select_q = $this->_build_select( 'post_id' );
+		
+		$query = $wpdb->prepare("UPDATE $wpdb->posts SET post_status = %s WHERE ID IN ($select_q)", $value);
+
+		return $wpdb->query($query);
+
+	}
 
 	/**
 	 * Adds a value to a metadatum to all items in the current group

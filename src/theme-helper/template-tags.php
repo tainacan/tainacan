@@ -70,7 +70,7 @@ function tainacan_get_the_document() {
 	if (!$item)
 		return;
 	
-	return $item->get_document_html();
+	return apply_filters('tainacan-get-the-document', $item->get_document_html(), $item);
 	
 }
 
@@ -140,7 +140,7 @@ function tainacan_get_the_collection_name() {
 	if ( $collection ) {
 		$name = $collection->get_name();
 	}
-	return $name;
+	return apply_filters('tainacan-get-collection-name', $name, $collection);
 }
 
 /**
@@ -163,7 +163,7 @@ function tainacan_get_the_collection_description() {
 	if ( $collection ) {
 		$description = $collection->get_description();
 	}
-	return $description;
+	return apply_filters('tainacan-get-collection-description', $description, $collection);
 }
 
 /**
@@ -219,6 +219,52 @@ function tainacan_get_term() {
 		}
 	}
 	return false;
+}
+
+/**
+ * When visiting a taxonomy archive, returns the term name
+ *
+ * @return string
+ */
+function tainacan_get_the_term_name() {
+	$term = tainacan_get_term();
+	$name = '';
+	if ( $term ) {
+		$name = $term->name;
+	}
+	return apply_filters('tainacan-get-term-name', $name, $term);
+}
+
+/**
+ * When visiting a taxonomy archive, prints the term name
+ *
+ * @return void
+ */
+function tainacan_the_term_name() {
+	echo tainacan_get_the_term_name();
+}
+
+/**
+ * When visiting a taxonomy archive, returns the term description
+ *
+ * @return string
+ */
+function tainacan_get_the_term_description() {
+	$term = tainacan_get_term();
+	$description = '';
+	if ( $term ) {
+		$description = $term->description;
+	}
+	return apply_filters('tainacan-get-term-description', $description, $term);
+}
+
+/**
+ * When visiting a taxonomy archive, prints the term description
+ *
+ * @return void
+ */
+function tainacan_the_term_description() {
+	echo tainacan_get_the_term_description();
 }
 
 /**
@@ -310,5 +356,6 @@ function tainacan_get_initials($string, $one = false) {
 		$second = $words[ sizeof($words) - 1 ][0];
 	}
 	
-	return strtoupper($first . $second);	
+	$result = strtoupper($first . $second);	
+	return apply_filters('tainacan-get-initials', $result, $string, $one);
 }

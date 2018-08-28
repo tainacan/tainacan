@@ -88,7 +88,7 @@
                         <!-- Thumbnail -->
                         <td 
                                 class="thumbnail-cell column-default-width"
-                                @click="goToCollectionPage(collection.id)"
+                                @click="onClickCollection($event, collection.id, index)"
                                 :label="$i18n.get('label_thumbnail')" 
                                 :aria-label="$i18n.get('label_thumbnail')">
                             <span>
@@ -100,7 +100,7 @@
                         <!-- Name -->
                         <td 
                                 class="column-default-width column-main-content"
-                                @click="goToCollectionPage(collection.id)"
+                                @click="onClickCollection($event, collection.id, index)"
                                 :label="$i18n.get('label_name')" 
                                 :aria-label="$i18n.get('label_name') + ': ' + collection.name">
                             <p
@@ -114,7 +114,7 @@
                         <!-- Description -->
                         <td
                                 class="column-large-width" 
-                                @click="goToCollectionPage(collection.id)"
+                                @click="onClickCollection($event, collection.id, index)"
                                 :label="$i18n.get('label_description')" 
                                 :aria-label="$i18n.get('label_description') + ': ' + collection.description">
                             <p
@@ -127,7 +127,7 @@
                         </td>
                         <!-- Creation Date -->
                         <td
-                                @click="goToCollectionPage(collection.id)"
+                                @click="onClickCollection($event, collection.id, index)"
                                 class="table-creation column-default-width" 
                                 :label="$i18n.get('label_creation_date')" 
                                 :aria-label="$i18n.get('label_creation_date') + ': ' + collection.creation_date">
@@ -141,7 +141,7 @@
                         </td>
                         <!-- Created by -->
                         <td
-                                @click="goToCollectionPage(collection.id)"
+                                @click="onClickCollection($event, collection.id, index)"
                                 class="table-creation column-default-width" 
                                 :label="$i18n.get('label_created_by')" 
                                 :aria-label="$i18n.get('label_created_by') + ': ' + collection.author_name">
@@ -155,7 +155,7 @@
                         </td>
                         <!-- Total items -->
                         <td
-                                @click="goToCollectionPage(collection.id)"
+                                @click="onClickCollection($event, collection.id, index)"
                                 class="column-small-width column-align-right" 
                                 :label="$i18n.get('label_total_items')" 
                                 v-if="collection.total_items != undefined"
@@ -170,7 +170,7 @@
                         </td>
                         <!-- Actions -->
                         <td 
-                                @click="goToCollectionPage(collection.id)"
+                                @click="onClickCollection($event, collection.id, index)"
                                 class="actions-cell column-default-width" 
                                 :label="$i18n.get('label_actions')">
                             <div class="actions-container">
@@ -325,8 +325,12 @@ export default {
                 }
             });
         },
-        goToCollectionPage(collectionId) {
-            this.$router.push(this.$routerHelper.getCollectionPath(collectionId));
+        onClickCollection($event, collectionId, index) {
+            if ($event.ctrlKey) {
+                this.$set(this.selectedCollections, index, !this.selectedCollections[index]); 
+            } else {
+                this.$router.push(this.$routerHelper.getCollectionPath(collectionId));
+            }
         },
         goToCollectionEditPage(collectionId) {
             this.$router.push(this.$routerHelper.getCollectionEditPath(collectionId));

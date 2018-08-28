@@ -46,7 +46,7 @@ export default {
     }
     .help-tooltip {
         z-index: 99999999999999999999;
-        color: $blue5;
+        color: $turquoise5;
         background-color: $turquoise2;
         border: none;
         display: block;

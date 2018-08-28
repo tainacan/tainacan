@@ -17,6 +17,7 @@
     }
 
     .tainacan-record {
+        background-color: #f6f6f6;
         padding: 0px;
         flex-basis: 0;
         margin: 0 auto 42px auto;
@@ -28,7 +29,7 @@
         display: block;
 
         &:hover {
-            background-color: #f2f2f2 !important;
+            background-color: $gray1 !important;
         }
 
         .record-checkbox {
@@ -86,6 +87,7 @@
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 overflow: hidden;
+                transition: background-color 0.3s;
             }
         }
         &:hover .metadata-title {

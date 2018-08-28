@@ -141,14 +141,17 @@
                 this.load();
             },
             onChangePerPage(value) {
-               this.taxonomiesPerPage = value;
-                this.$userPrefs.set('taxonomies_per_page', value)
-                .then((newValue) => {
-                    this.taxonomiesPerPage = newValue;
-                })
-                .catch(() => {
-                    this.$console.log("Error settings user prefs for taxonomies per page")
-                });
+                if (value != this.taxonomiesPerPage) { 
+                    this.$userPrefs.set('taxonomies_per_page', value)
+                        .then((newValue) => {
+                            this.taxonomiesPerPage = newValue;
+                        })
+                        .catch(() => {
+                            this.$console.log("Error settings user prefs for taxonomies per page")
+                        });
+
+                }
+                this.taxonomiesPerPage = value;
                 this.load();
             },
             onPageChange(page) {

@@ -23,6 +23,7 @@
 @import "../scss/_tags.scss";
 @import "../scss/_notices.scss";
 @import "../scss/_filters-menu-modal.scss";
+@import "../scss/_repository-level-overrides.scss";
 
 // Clears wordpress content
 body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, body.tainacan-admin-page #wp-auth-check-wrap {
@@ -65,92 +66,6 @@ a:hover {
     }
 }
 
-// Repository-level pages
-.repository-level-page {
-    margin-top: 94px; 
-    height: $page-height !important;
-
-    @media screen and (max-width: 769px) {
-        margin-top: 42px;
-    }
-
-    .is-primary:not(.upload-draggable), .is-primary:hover, .is-primary:focus {
-        background-color: $blue4 !important;
-        color: white !important;
-    }
-    .is-secondary, .is-secondary:hover, .is-secondary:focus {
-        background-color: $blue5 !important;
-        color: white !important;
-    }
-    .has-text-primary, .has-text-primary:hover, .is-has-text-primary:focus {
-        color: $blue4 !important;
-    }
-    a, a:hover,
-    .has-text-secondary, .has-text-secondary:hover, .is-has-text-secondary:focus {
-        color: $blue5 !important;
-    }
-    .tainacan-page-title {
-        h1 {
-            color: $blue5 !important;
-        }
-    }
-    .button[disabled]:not(.is-white), .button:hover[disabled]:not(.is-white) {
-        border: none !important;
-        cursor: not-allowed !important;
-        color: $gray4 !important;
-        background-color: $gray2 !important;
-    }
-    .button.is-outlined {
-        color: $blue5 !important;
-    }
-    .tabs {
-        li.is-active a {
-            border-bottom: 5px solid $blue5;
-            color: $blue5; 
-        }
-    }
-    .select:not(.is-multiple)::after {
-        color: $blue5;
-
-        option:checked, option:hover {
-            background-color: $gray2 !important;
-        }
-    }
-    .tainacan-table {
-        tr.selected-row { 
-            background-color: $blue1 !important; 
-            .checkbox-cell .checkbox, .actions-cell .actions-container {
-                background-color: $blue2 !important;
-            }
-        }
-    }
-    .dropdown-trigger {
-        .button .icon {
-            color: $blue5;
-        }
-    }
-    .dropdown-menu .dropdown-content {
-        .dropdown-item.is-active { background-color: $blue2; }
-    }
-
-    .switch {
-        &:hover input[type="checkbox"]:checked + .check {
-            background-color: $blue2;
-        }
-        input[type="checkbox"]:checked + .check {
-            border: 2px solid $blue5;
-    
-            &::before {
-                background-color: $blue5;
-            }
-        }
-        &.is-small {
-            input[type="checkbox"]:checked + .check {
-                border: 1.5px solid $blue5;
-            }
-        }
-    }
-}
 // Generic page container
 .page-container {
     padding: $page-top-padding $page-side-padding;

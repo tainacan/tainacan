@@ -358,7 +358,7 @@ export default {
         }
         this.$termsListBus.$on('editTerm', (term) => {
 
-                        // Position edit form in a visible area
+            // Position edit form in a visible area
             let container = document.getElementById('repository-container');
             if (container && container.scrollTop && container.scrollTop > 80)
                 this.termEditionFormTop = container.scrollTop - 80;
@@ -368,9 +368,12 @@ export default {
             this.editTerm = term;
             this.isEditingTerm = true;
         });
-        this.$termsListBus.$on('termEditionSaved', () => {
+        this.$termsListBus.$on('termEditionSaved', ({hasChangedParent}) => {
             this.isEditingTerm = false;
             this.editTerm = null;
+
+            if (hasChangedParent)
+                this.loadTerms(0);
         });
         this.$termsListBus.$on('termEditionCanceled', () => {
             this.isEditingTerm = false;
