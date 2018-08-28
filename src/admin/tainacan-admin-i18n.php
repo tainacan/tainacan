@@ -69,6 +69,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'redefine'                                       => __( 'Redefine', 'tainacan' ),
 	'replace'                                        => __( 'Replace', 'tainacan' ),
 	'conclude'                                       => __( 'Conclude', 'tainacan' ),
+	'select_to_create'                               => __( 'select to create', 'tainacan' ),
 
 	// Wordpress Status
 	'publish'                                        => __( 'Publish', 'tainacan' ),

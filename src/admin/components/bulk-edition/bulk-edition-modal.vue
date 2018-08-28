@@ -77,6 +77,10 @@
                               getMetadataByID(bulkEditionProcedures[criterion].metadatumID).multiple == 'yes'))">
 
                         <component
+                                :forced-component-type="getMetadataByID(bulkEditionProcedures[criterion].metadatumID)
+                                 .metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
+                                :allow-new="false"
+                                :allow-select-to-create="true"
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
                                 :disabled="bulkEditionProcedures[criterion].isDone"
                                 :id="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).metadata_type_object.component +
@@ -126,6 +130,10 @@
                              bulkEditionProcedures[criterion].metadatumID &&
                              bulkEditionProcedures[criterion].action">
                         <component
+                                :forced-component-type="getMetadataByID(bulkEditionProcedures[criterion].metadatumID)
+                                 .metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
+                                :allow-new="false"
+                                :allow-select-to-create="true"
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
                                 :disabled="bulkEditionProcedures[criterion].isDone"
                                 :id="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).metadata_type_object.component +
@@ -155,13 +163,20 @@
                                     type="is-gray4"
                                     icon="close-circle-outline"/>
                         </button>
-                        <a
+                        <div
                                 v-if="bulkEditionProcedures[criterion].isDone"
                                 class="is-pulled-right">
                             <b-icon
                                     type="is-success"
                                     icon="check-circle"/>
-                        </a>
+                        </div>
+                        <div
+                                v-if="bulkEditionProcedures[criterion].isDoneWithError && !bulkEditionProcedures[criterion].isExecuting"
+                                class="is-pulled-right">
+                            <b-icon
+                                    type="is-danger"
+                                    icon="alert-circle"/>
+                        </div>
                         <button
                                 v-if="!bulkEditionProcedures[criterion].isDone &&
                                  !bulkEditionProcedures[criterion].isExecuting &&
@@ -182,8 +197,8 @@
                     </div>
                 </div>
                 <button
-                        style="padding-left: 2px !important;"
-                        class="button is-white is-text"
+                        style="padding-left: 3px !important;"
+                        class="button is-white"
                         :disabled="dones.every((item) => item === true) === false"
                         @click="addEditionCriterion()">
                     <a
@@ -205,6 +220,7 @@
             <footer class="field form-submit">
                 <div class="control is-pulled-right">
                     <button
+                            :disabled="dones.every((item) => item === true) === false"
                             class="button is-success"
                             type="button"
                             @click="$parent.close()">{{ $i18n.get('conclude') }}
@@ -245,10 +261,10 @@
                 },
                 editionCriteria: [1],
                 editionActionsForMultiple: {
-                    remove: this.$i18n.get('remove'),
+                    add: this.$i18n.get('add'),
                     redefine: this.$i18n.get('redefine'),
+                    remove: this.$i18n.get('remove'),
                     replace: this.$i18n.get('replace'),
-                    add: this.$i18n.get('add')
                 },
                 editionActionsForNotMultiple: {
                     redefine: this.$i18n.get('redefine'),
@@ -256,11 +272,13 @@
                 bulkEditionProcedures: {
                     1: {
                         isDone: false,
+                        isDoneWithError: false,
                         isExecuting: false
                     }
                 },
                 groupID: null,
                 dones: [false],
+                totalItemsEditedWithSuccess: 0
             }
         },
         methods: {
@@ -275,30 +293,39 @@
                 'replaceValueInBulk',
                 'redefineValueInBulk',
                 'setStatusInBulk',
+                'removeValueInBulk'
             ]),
-            finalizeProcedure(criterion){
-                this.$set(this.bulkEditionProcedures[criterion], 'isDone', true);
+            finalizeProcedure(criterion, withError){
+                this.$set(this.bulkEditionProcedures[criterion], 'isDone', !withError);
+                this.$set(this.bulkEditionProcedures[criterion], 'isDoneWithError', withError);
 
                 let index = this.editionCriteria.indexOf(criterion);
 
-                this.dones[index] = true;
+                this.dones[index] = !withError;
 
                 this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', false);
             },
             executeBulkEditionProcedure(criterion){
                 let procedure = this.bulkEditionProcedures[criterion];
 
-                if(procedure.action === 'Redefine'){
+                if(procedure.action === this.editionActionsForMultiple.redefine){
                     this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
 
-                    if(procedure.metadatumID == 'status'){
+                    if(procedure.metadatumID === 'status'){
                         this.setStatusInBulk({
                             collectionID: this.collectionID,
                             groupID: this.groupID,
                             bodyParams: { value: procedure.newValue }
                         }).then(() => {
-                            this.finalizeProcedure(criterion)
-                        })
+                            let actionResult = this.getActionResult();
+
+                            if(actionResult.constructor.name === 'Object' && actionResult.data.status.toString().split('')[0] != 2 ) {
+                                this.finalizeProcedure(criterion, true);
+                            } else {
+                                this.finalizeProcedure(criterion);
+                                this.totalItemsEditedWithSuccess = actionResult;
+                            }
+                        });
                     } else {
                         this.setValueInBulk({
                             collectionID: this.collectionID,
@@ -308,9 +335,77 @@
                                 value: procedure.newValue
                             }
                         }).then(() => {
-                            this.finalizeProcedure(criterion)
+                            let actionResult = this.getActionResult();
+
+                            if(actionResult.constructor.name === 'Object' && actionResult.data.status.toString().split('')[0] != 2 ) {
+                                this.finalizeProcedure(criterion, true);
+                            } else {
+                                this.finalizeProcedure(criterion);
+                                this.totalItemsEditedWithSuccess = actionResult;
+                            }
                         });
                     }
+                } else if(procedure.action === this.editionActionsForMultiple.add){
+                    this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
+
+                    this.addValueInBulk({
+                        collectionID: this.collectionID,
+                        groupID: this.groupID,
+                        bodyParams: {
+                            metadatum_id: procedure.metadatumID,
+                            value: procedure.newValue,
+                        }
+                    }).then(() => {
+                        let actionResult = this.getActionResult();
+
+                        if(actionResult.constructor.name === 'Object' && actionResult.data.status.toString().split('')[0] != 2 ) {
+                            this.finalizeProcedure(criterion, true);
+                        } else {
+                            this.finalizeProcedure(criterion);
+                            this.totalItemsEditedWithSuccess = actionResult;
+                        }
+                    });
+                } else if(procedure.action === this.editionActionsForMultiple.replace){
+                    this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
+
+                    this.replaceValueInBulk({
+                        collectionID: this.collectionID,
+                        groupID: this.groupID,
+                        bodyParams: {
+                            metadatum_id: procedure.metadatumID,
+                            old_value: procedure.oldValue,
+                            new_value: procedure.newValue,
+                        }
+                    }).then(() => {
+                        let actionResult = this.getActionResult();
+
+                        if(actionResult.constructor.name === 'Object' && actionResult.data.status.toString().split('')[0] != 2 ) {
+                            this.finalizeProcedure(criterion, true);
+                        } else {
+                            this.finalizeProcedure(criterion);
+                            this.totalItemsEditedWithSuccess = actionResult;
+                        }
+                    });
+                } else if(procedure.action === this.editionActionsForMultiple.remove){
+                    this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
+
+                    this.removeValueInBulk({
+                        collectionID: this.collectionID,
+                        groupID: this.groupID,
+                        bodyParams: {
+                            metadatum_id: procedure.metadatumID,
+                            value: procedure.newValue,
+                        }
+                    }).then(() => {
+                        let actionResult = this.getActionResult();
+
+                        if(actionResult.constructor.name === 'Object' && actionResult.data.status.toString().split('')[0] != 2 ) {
+                            this.finalizeProcedure(criterion, true);
+                        } else {
+                            this.finalizeProcedure(criterion);
+                            this.totalItemsEditedWithSuccess = actionResult;
+                        }
+                    });
                 }
             },
             addEditionCriterion() {
@@ -326,6 +421,7 @@
                     this.bulkEditionProcedures = Object.assign({}, this.bulkEditionProcedures, {
                         [`${aleatoryKey}`]: {
                             isDone: false,
+                            isDoneWithError: false,
                             isExecuting: false
                         }
                     });
@@ -354,6 +450,10 @@
                 return found ? found : {};
             },
             addToBulkEditionProcedures(value, key, criterion){
+                if(Array.isArray(value)){
+                    value = value[0];
+                }
+
                 this.$set(this.bulkEditionProcedures[criterion], `${key}`, value);
             }
         },
@@ -366,6 +466,7 @@
 
     .modal-card-body {
         padding: 0 !important;
+        overflow: unset !important;
     }
 
     .tainacan-total-objects-info {
@@ -393,7 +494,51 @@
             }
         }
 
+        .taginput-container {
+            height: 32px !important;
+
+            .tags {
+                margin-bottom: calc(0.275em - 1px) !important;
+
+                .tag {
+                    height: 2em !important;
+                    padding-left: 0.75em !important;
+                    padding-right: 0.75em !important;
+                    margin-right: 0 !important;
+                }
+            }
+
+            .icon {
+                height: 28px !important;
+            }
+        }
+
         .is-field-history {
+
+            .input[disabled], .taginput [disabled].taginput-container.is-focusable, .textarea[disabled] {
+                color: black !important;
+                border: none !important;
+                background-color: white !important;
+            }
+
+            .taginput-container {
+                .tags {
+                    color: black !important;
+                    background-color: white !important;
+
+                    .tag.is-delete {
+                        display: none !important;
+                    }
+
+                    .tag {
+                        max-width: 100% !important;
+                    }
+                }
+
+                .icon {
+                    display: none !important;
+                }
+            }
 
             input {
                 color: black !important;
@@ -425,8 +570,7 @@
             flex-shrink: 1;
             text-align: center;
             padding-bottom: 9px;
-            max-height: 150px;
-            overflow-y: auto;
+            flex-basis: 10%;
 
             &:not(:first-child) {
                 padding-left: 13px;
@@ -439,13 +583,16 @@
             height: 32px;
             margin-left: 10px;
             flex-direction: row-reverse;
+
+            .icon.has-text-gray4:hover {
+                color: $gray5 !important;
+            }
         }
     }
 
     .tainacan-add-edition-criterion-button {
         font-size: 12px;
         color: $turquoise5;
-        text-decoration: none !important;
     }
 
     .tainacan-add-edition-criterion-button-disabled {

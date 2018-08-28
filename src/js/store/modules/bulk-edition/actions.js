@@ -22,7 +22,7 @@ export const createEditGroup = ({commit}, parameters) => {
         })
         .catch(error => {
             console.error(error);
-        })
+        });
 };
 
 export const setValueInBulk = ({commit}, parameters) => {
@@ -37,9 +37,11 @@ export const setValueInBulk = ({commit}, parameters) => {
     return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/set`, bodyParams)
         .then(response => {
             commit('setActionResult', response.data);
+            return response;
         })
         .catch(error => {
             console.error(error);
+            commit('setActionResult', error.response.data);
         });
 };
 
@@ -55,9 +57,11 @@ export const addValueInBulk = ({commit}, parameters) => {
     return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/add`, bodyParams)
         .then(response => {
             commit('setActionResult', response.data);
+            return response;
         })
         .catch(error => {
             console.error(error);
+            commit('setActionResult', error.response.data);
         });
 };
 
@@ -76,6 +80,7 @@ export const removeValueInBulk = ({commit}, parameters) => {
         })
         .catch(error => {
             console.error(error);
+            commit('setActionResult', error.response.data);
         });
 };
 
@@ -91,9 +96,11 @@ export const replaceValueInBulk = ({commit}, parameters) => {
     return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/replace`, bodyParams)
         .then(response => {
             commit('setActionResult', response.data);
+            return response;
         })
         .catch(error => {
             console.error(error);
+            commit('setActionResult', error.response.data);
         });
 };
 
@@ -110,8 +117,10 @@ export const setStatusInBulk = ({commit}, parameters) => {
     return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/set_status`, bodyParams)
         .then(response => {
             commit('setActionResult', response.data);
+            return response;
         })
         .catch(error => {
             console.error(error);
+            commit('setActionResult', error.response.data);
         });
 };

@@ -9,7 +9,6 @@
                             :value="allItemsOnPageSelected">{{ $i18n.get('label_select_all_items_page') }}</b-checkbox>
                 </span>
 
-                <!-- TODO: Only appear if had more than 1 page -->
                 <span>
                     <b-checkbox
                             @click.native="selectAllItems()"
@@ -22,7 +21,7 @@
                         :mobile-modal="true"
                         position="is-bottom-left"
                         v-if="items.length > 0 && items[0].current_user_can_edit"
-                        :disabled="!isSelectingItems"
+                        :disabled="selectedItemsIDs.every(id => id === false) || this.selectedItemsIDs.filter(item => item !== false).length <= 1"
                         id="bulk-actions-dropdown">
                     <button
                             class="button is-white"
@@ -579,25 +578,30 @@ export default {
     },
     mounted() {
         this.selectedItems = [];
-        for (let i = 0; i < this.items.length; i++)
+        this.selectedItemsIDs = [];
+
+        for (let i = 0; i < this.items.length; i++) {
+            this.selectedItemsIDs.push(false);
             this.selectedItems.push(false);
+        }
     },
     watch: {
         selectedItems() {
             let allSelected = true;
             let isSelecting = false;
 
-            for (let i = 0; i < this.selectedItems.length; i++) {
-                if (this.selectedItems[i] == false) {
-                    allSelected = false;
+            allSelected = !this.selectedItems.some(item => item === false);
 
-                    this.selectedItemsIDs.splice(i, 1);
+            this.selectedItems.map((item, index) => {
+                if(item === false){
+                    this.selectedItemsIDs.splice(index, 1, false);
                     this.queryAllItemsSelected = {};
-                } else {
+                } else if(item === true) {
                     isSelecting = true;
-                    this.selectedItemsIDs.splice(i, 1, this.items[i].id);
+
+                    this.selectedItemsIDs.splice(index, 1, this.items[index].id);
                 }
-            }
+            });
 
             if(!allSelected) {
                 this.isAllItemsSelected = allSelected;
@@ -617,8 +621,8 @@ export default {
                 component: BulkEditionModal,
                 props: {
                     modalTitle: this.$i18n.get('info_editing_items_in_bulk'),
-                    totalItems: Object.keys(this.queryAllItemsSelected).length ? this.totalItems : this.selectedItemsIDs.length,
-                    selectedForBulk: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItemsIDs,
+                    totalItems: Object.keys(this.queryAllItemsSelected).length ? this.totalItems : this.selectedItemsIDs.filter(item => item !== false).length,
+                    selectedForBulk: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItemsIDs.filter(item => item !== false),
                     objectType: this.$i18n.get('items'),
                     metadata: this.tableMetadata,
                     collectionID: this.$route.params.collectionId,

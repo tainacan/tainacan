@@ -2,6 +2,7 @@
     <div>
         <div class="block">
             <b-select
+                    :disabled="disabled"
                     :id="id"
                     v-model="selected"
                     @input="emitChange()"
@@ -39,7 +40,8 @@
             options: {
                 type: Array
             },
-            value: [ Number, String, Array ]
+            value: [ Number, String, Array ],
+            disabled: false,
         },
         methods: {
             emitChange() {

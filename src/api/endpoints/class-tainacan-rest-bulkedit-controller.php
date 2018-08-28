@@ -49,7 +49,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
                             'description' => __( 'The metadatum ID', 'tainacan' ),
                         ],
                         'value' => [
-                            'type'        => 'string',
+                            'type'        => 'string/integer',
                             'description' => __( 'The value to be added', 'tainacan' ),
                         ],
                     ],
@@ -110,7 +110,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
                             'description' => __( 'The metadatum ID', 'tainacan' ),
                         ],
                         'value' => [
-                            'type'        => 'string',
+                            'type'        => 'string/integer',
                             'description' => __( 'The value to be added', 'tainacan' ),
                         ],
                     ],
@@ -129,7 +129,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
                             'description' => __( 'The metadatum ID', 'tainacan' ),
                         ],
                         'value' => [
-                            'type'        => 'string',
+                            'type'        => 'string/integer',
                             'description' => __( 'The value to be added', 'tainacan' ),
                         ],
                     ],
@@ -140,7 +140,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 			array(
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
-					'callback'            => array($this, 'add_value'),
+					'callback'            => array($this, 'replace_value'),
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
 					'args'                => [
                         'metadatum_id' => [
@@ -148,11 +148,11 @@ class REST_Bulkedit_Controller extends REST_Controller {
                             'description' => __( 'The metadatum ID', 'tainacan' ),
                         ],
                         'old_value' => [
-                            'type'        => 'string',
+                            'type'        => 'string/integer',
                             'description' => __( 'The value to search for', 'tainacan' ),
                         ],
                         'new_value' => [
-                            'type'        => 'string',
+                            'type'        => 'string/integer',
                             'description' => __( 'The value to be set', 'tainacan' ),
                         ],
                     ],

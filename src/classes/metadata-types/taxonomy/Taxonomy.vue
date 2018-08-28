@@ -1,8 +1,11 @@
 <template>
     <div>
         <component
+                :disabled="disabled"
                 :is="getComponent()"
+                :maxtags="maxtags"
                 v-model="valueComponent"
+                :allow-select-to-create="allowSelectToCreate"
                 :allow-new="allowNew"
                 :terms="terms"
                 :taxonomy-id="taxonomy"
@@ -40,7 +43,7 @@
             }
 
             // This condition is temporary
-            if(this.component != 'tainacan-taxonomy-tag-input'){
+            if(this.component != 'tainacan-taxonomy-tag-input' || this.forcedComponentType != 'tainacan-taxonomy-tag-input'){
                 this.getTermsFromTaxonomy();
             }
 
@@ -60,7 +63,6 @@
                 collectionId: '',
                 taxonomy: '',
                 terms:[], // object with names
-                allowNew: false
             }
         },
         watch: {
@@ -78,11 +80,18 @@
                 type: String
             },
             value: [ Number, String, Array,Object ],
-            id: ''
+            id: '',
+            disabled: false,
+            forcedComponentType: '',
+            allowNew: false,
+            maxtags: '',
+            allowSelectToCreate: false,
         },
         methods: {
             getComponent(){
-                if( this.metadatum.metadatum
+                if(this.forcedComponentType){
+                   return this.forcedComponentType;
+                } else if( this.metadatum.metadatum
                     && this.metadatum.metadatum.metadata_type_options && this.metadatum.metadatum.metadata_type_options.input_type ){
                     return this.metadatum.metadatum.metadata_type_options.input_type;
                 }

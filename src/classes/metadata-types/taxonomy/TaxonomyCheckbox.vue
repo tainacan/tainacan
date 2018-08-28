@@ -4,6 +4,7 @@
                 v-for="(option, index) in options"
                 :key="index">
             <b-checkbox
+                    :disabled="disabled"
                     :id="id"
                     :style="{ paddingLeft: (option.level * 30) + 'px' }"
                     :key="index"
@@ -39,7 +40,8 @@
             options: {
                 type: Array
             },
-            value: [ Number, String, Array ]
+            value: [ Number, String, Array ],
+            disabled: false,
         },
         methods: {
             onChecked() {
