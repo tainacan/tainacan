@@ -174,6 +174,20 @@ export const fetchCollectionCommentStatus = ({ commit }, id) => {
     });
 };
 
+export const fetchCollectionAllowComments = ({ commit }, id) => {
+    return new Promise((resolve, reject) =>{ 
+        axios.tainacan.get('/collections/' + id + '?fetch_only=allow_comments')
+        .then(res => {
+            let collectionAllowComments = res.data;
+            commit('setCollectionAllowComments', collectionAllowComments.allow_comments);
+            resolve( collectionAllowComments.allow_comments );
+        })
+        .catch(error => {
+            reject(error);
+        })
+    });
+};
+
 export const fetchCollectionNameAndURL = ({ commit }, id) => {
     //commit('cleanCollectionName');
     return new Promise((resolve, reject) =>{ 
@@ -223,7 +237,8 @@ export const updateCollection = ({ commit }, {
         parent,
         enabled_view_modes,
         default_view_mode,
-        comment_status
+        comment_status,
+        allow_comments
     }) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collection_id, {
@@ -237,7 +252,8 @@ export const updateCollection = ({ commit }, {
             parent: parent,
             enabled_view_modes: enabled_view_modes,
             default_view_mode: default_view_mode,
-            comment_status: comment_status
+            comment_status: comment_status,
+            allow_comments: allow_comments
         }).then( res => {
             commit('setCollection', { 
                 id: collection_id, 
@@ -251,7 +267,8 @@ export const updateCollection = ({ commit }, {
                 parent: parent,
                 enabled_view_modes: enabled_view_modes,
                 default_view_mode: default_view_mode,
-                comment_status: comment_status
+                comment_status: comment_status,
+                allow_comments: allow_comments
             });
             commit('setCollectionName', res.data.name);
             commit('setCollectionURL', res.data.url);

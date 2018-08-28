@@ -29,3 +29,7 @@ export const getAttachments =  state => {
 export const getCollectionCommentStatus = state => {
     return state.collectionCommentStatus;
 }
+
+export const getCollectionAllowComments = state => {
+    return state.collectionAllowComments;
+}
