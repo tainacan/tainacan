@@ -299,7 +299,6 @@
                 if ((metadatum.metadata_type_object && metadatum.metadata_type_object.form_component) || metadatum.edit_form == '') {
                     
                     this.fillExtraFormData(this.editForm, 'metadatum');
-
                     this.updateMetadatum({
                         collectionId: this.collectionId,
                         metadatumId: metadatum.id,

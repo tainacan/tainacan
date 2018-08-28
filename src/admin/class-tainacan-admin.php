@@ -212,6 +212,18 @@ class Admin {
 				'begin-right' => '<input type="text" name="collection-border-color" value="black" />',
 				'end-right' => '<input type="text" name="collection-highlight-color" value="green" />'
 			],
+			'form-item' => [
+				'begin-left' => '<input type="text" name="item-background-color" value="blue" />',
+				'end-left' => '<input type="text" name="item-color" value="red" />',
+				'begin-right' => '<input type="text" name="item-border-color" value="black" />',
+				'end-right' => '<input type="text" name="item-highlight-color" value="green" />'
+			],
+			'view-item' => [
+				'begin-left' => '<p>blue</p>',
+				'end-left' => '<p>black</p>',
+				'begin-right' => '<p>red</p>',
+				'end-right' => '<p>green</p>',
+			],
 			'form-taxonomy' => [
 				'begin' => '<input type="text" name="taxonomy-background-color" value="blue" />',
 				'end' => '<input type="text" name="taxonomy-color" value="red" />'
@@ -223,6 +235,10 @@ class Admin {
 			'form-metadatum' => [
 				'begin' => '<input type="text" name="metadatum-background-color" value="blue" />',
 				'end' => '<input type="text" name="metadatum-color" value="red" />'
+			],
+			'form-filter' => [
+				'begin' => '<input type="text" name="filter-background-color" value="blue" />',
+				'end' => '<input type="text" name="filter-color" value="red" />'
 			]
 		];
 		
