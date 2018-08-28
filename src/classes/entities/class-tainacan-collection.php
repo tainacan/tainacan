@@ -34,7 +34,8 @@ class Collection extends Entity {
         $header_image_id,
 	    $header_image,
         $moderators_ids,
-        $comment_status;
+        $comment_status,
+        $allow_comments;
 
     /**
 	 * {@inheritDoc}
@@ -501,6 +502,14 @@ class Collection extends Entity {
 	public function get_comment_status() {
 	    return $this->get_mapped_property('comment_status');
 	}
+	
+	/**
+	 * Checks if comments are allowed for the current Collection Items.
+	 * @return bool
+	 */
+	public function get_allow_comments() {
+	    return $this->get_mapped_property('allow_comments');
+	}
 
 	/**
 	 * Set the collection name
@@ -701,6 +710,15 @@ class Collection extends Entity {
 	 */
 	public function set_comment_status( $value ) {
 	    $this->set_mapped_property('comment_status', $value);
+	}
+	
+	/**
+	 * Sets if comments are allowed for the current Collection Items.
+	 *
+	 * @param $value bool
+	 */
+	public function set_allow_comments( $value ) {
+	    $this->set_mapped_property('allow_comments', $value );
 	}
 
 	// Moderators methods
