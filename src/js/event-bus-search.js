@@ -47,7 +47,6 @@ export default {
             },
             watch: {
                 '$route'  (to, from) {
-                    console.log("router watch");
                     // Should set Collection ID from URL only when in admin.
                     if (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage')
                         this.collectionId = !this.$route.params.collectionId ? this.$route.params.collectionId : parseInt(this.$route.params.collectionId);
@@ -291,7 +290,6 @@ export default {
                     this.updateURLQueries();  
                 },
                 updateURLQueries() {
-                    console.log("update");
                     this.$router.replace({query: {}});
                     this.$router.replace({query: this.$store.getters['search/getPostQuery']});
                 },
