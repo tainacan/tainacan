@@ -46,7 +46,8 @@ export default {
                 });
             },
             watch: {
-                '$route' (to, from) {
+                '$route'  (to, from) {
+                    console.log("router watch");
                     // Should set Collection ID from URL only when in admin.
                     if (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage')
                         this.collectionId = !this.$route.params.collectionId ? this.$route.params.collectionId : parseInt(this.$route.params.collectionId);
@@ -290,8 +291,9 @@ export default {
                     this.updateURLQueries();  
                 },
                 updateURLQueries() {
-                    this.$router.push({query: {}});
-                    this.$router.push({query: this.$store.getters['search/getPostQuery']});
+                    console.log("update");
+                    this.$router.replace({query: {}});
+                    this.$router.replace({query: this.$store.getters['search/getPostQuery']});
                 },
                 updateStoreFromURL() {
                     this.$store.dispatch('search/set_postquery', this.$route.query);
@@ -316,7 +318,7 @@ export default {
                             this.$emit( 'hasFiltered', res.hasFiltered);
 
                             if(res.advancedSearchResults){
-                                this.$router.push({query: this.$store.getters['search/getPostQuery'],});
+                                this.$router.replace({query: this.$store.getters['search/getPostQuery'],});
                                 this.$emit('advancedSearchResults', res.advancedSearchResults);
                             }
                         })
