@@ -171,7 +171,7 @@
                     <b-dropdown
                             ref="displayedMetadataDropdown"
                             :mobile-modal="true"
-                            :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards'"
+                            :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry'"
                             class="show">
                         <button
                                 class="button is-white"

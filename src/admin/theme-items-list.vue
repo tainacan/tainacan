@@ -66,6 +66,7 @@ export default {
         a:hover, a:hover:not([href]) {
             cursor: pointer;
             color: $secondary;
+            text-decoration: underline;
         }
         ul {
             list-style: none;

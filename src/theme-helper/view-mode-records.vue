@@ -17,7 +17,7 @@
             <!-- RECORDS VIEW MODE -->
             <masonry 
                     :cols="{default: 4, 1919: 3, 1407: 2, 1215: 2, 1023: 1, 767: 1, 343: 1}"
-                    :gutter="42"
+                    :gutter="30"
                     class="tainacan-records-container">
                 <a 
                         :href="item.url"

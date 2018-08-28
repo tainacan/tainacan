@@ -240,3 +240,56 @@ $modal-z: 9999999;
     }
 }
 
+// Filter Item Collapse 
+@keyframes filter-item-in {
+    from {
+        opacity: 0;
+        height: 0px;
+        max-height: 0px;
+        min-height: 0px;
+        -ms-transform: translate(2%, -30%); /* IE 9 */
+        -webkit-transform: translate(2%, -30%); /* Safari */
+        transform: translate(2%, -30%);
+    }
+    to {
+        height: 80px;
+        max-height: 80px;
+        min-height: 80px;
+        opacity: 1;        
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes filter-item-out {
+    from {
+        height: 80px;
+        max-height: 80px;
+        min-height: 80px;
+        opacity: 1;
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+    to {
+        height: 0px;
+        max-height: 0px;
+        min-height: 0px;
+        opacity: 0;
+        -ms-transform: translate(2%, -30%); /* IE 9 */
+        -webkit-transform: translate(2%, -30%); /* Safari */
+        transform: translate(2%, -30%);
+    }
+}
+
+.filter-item-enter-active {
+    animation-name: filter-item-in;
+    animation-duration: 0.1s;
+    animation-timing-function: ease;   
+}
+.filter-item-leave-active {
+    animation-name: filter-item-out;
+    animation-duration: 0.1s;
+    animation-timing-function: ease;   
+}

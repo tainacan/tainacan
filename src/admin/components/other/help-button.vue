@@ -35,7 +35,7 @@ export default {
     }
 
     a.help-button .icon {
-        i, i::before { font-size: 0.9em !important; }
+        i, i::before { font-size: 0.875rem !important }
     }
 
     .help-wrapper:hover .help-tooltip {
