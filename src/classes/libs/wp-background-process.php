@@ -178,7 +178,7 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 				wp_die();
 			}
 			$this->debug('checking nonce');
-			check_ajax_referer( $this->identifier, 'nonce' );
+			//check_ajax_referer( $this->identifier, 'nonce' );
 			$this->debug('ok!');
 			$this->handle();
 
