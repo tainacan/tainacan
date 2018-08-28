@@ -91,8 +91,10 @@
     }
 }
 .selected-list-box {
-    padding: 4px 0px;
-    border: 1px solid $gray2;
+    padding: 4px 6px 0px 6px;
+    border-color: $gray2;
+    border-width: 0px 1px 1px 1px;
+    border-style: solid;
     background-color: white;
     display: flex;
     font-size: 12px;

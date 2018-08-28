@@ -20,6 +20,12 @@
             border-collapse: separate;
             border-spacing: 0;
 
+            &.is-narrow {
+                tbody td {
+                    height: 42px;
+                }
+            }
+
             .checkbox-cell {
                 min-width: 38px;
                 width: 38px;

@@ -1,17 +1,23 @@
 .input, .textarea {
     font-size: 14px;
-    border: none;
     border-radius: 1px !important;
     box-shadow: none !important;
+    background-color: white;
+    border: 1px solid $gray2;
+    color: $tainacan-input-color;
+    transition: background-color 0.1s, border 0.3s;
 
     &:focus, &:active {
         box-shadow: none !important;
         background-color: white;
-        border: 1px solid $gray2 !important;
-    }    
+        border: 1px solid $gray4 !important;
+    }  
     &[disabled] {
         color: $gray4 !important;
         background-color: $gray2 !important;
+    }
+    &.readonly, &[readonly] {
+        background-color: white !important;
     }
     &::placeholder,
     &::-ms-input-placeholder,

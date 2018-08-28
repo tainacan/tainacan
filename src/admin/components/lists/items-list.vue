@@ -275,7 +275,7 @@
             <!-- RECORDS VIEW MODE -->
             <masonry 
                     :cols="{default: 4, 1919: 3, 1407: 2, 1215: 2, 1023: 1, 767: 1, 343: 1}"
-                    :gutter="42"
+                    :gutter="30"
                     class="tainacan-records-container"
                     v-if="viewMode == 'records'">
                 <div 
@@ -691,7 +691,7 @@ export default {
             }
         },
         getLimitedDescription(description) {
-            let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 100 : 220;
+            let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 100 : 210;
             return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
         }
     }
