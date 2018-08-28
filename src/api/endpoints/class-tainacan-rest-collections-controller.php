@@ -203,7 +203,9 @@ class REST_Collections_Controller extends REST_Controller {
 				$item_arr['total_items']['private'] = $total_items->private;
 			}
 
-            return $item_arr;
+			$extra_metadata = apply_filters('tainacan-api-response-collection-meta', []);
+			
+			return $item_arr;
         }
 
         return $item;
