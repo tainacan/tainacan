@@ -62,7 +62,11 @@ class REST_Facets_Controller extends REST_Controller {
 
 		$response = $this->prepare_item_for_response($metadatum, $request );
 
-        return new \WP_REST_Response($response, 200);
+		$rest_response = new \WP_REST_Response($response, 200);
+
+		$rest_response->header('X-WP-Total', (int) count($response));
+
+        return $rest_response;
     }
 
 	/**
@@ -127,6 +131,8 @@ class REST_Facets_Controller extends REST_Controller {
 				$metadatum_id = $metadatum->get_id();
 				$offset = '';
 				$number = '';
+				$collection_id = ( isset($request['collection_id']) ) ? $request['collection_id'] : false;
+
 				if($request['offset'] >= 0 && $request['number'] >= 1){
 					$offset = $request['offset'];
 					$number = $request['number'];
