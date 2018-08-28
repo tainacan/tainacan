@@ -62,10 +62,11 @@ export default {
         display: flex;
         -webkit-overflow-scrolling: touch;
 
-        a{ color: $secondary !important }
-        a:hover {
+        a, a:not([href]){ color: $secondary }
+        a:hover, a:hover:not([href]) {
             cursor: pointer;
-            color: $secondary !important;
+            color: $secondary;
+            text-decoration: underline;
         }
         ul {
             list-style: none;

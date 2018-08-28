@@ -24,9 +24,11 @@
         &.is-delete {
             border-radius: 50px !important;
             border-radius: 50px !important;
+            color: $gray4;
 
             &:hover {
                 background-color: white !important;
+                color: $gray5;
             }
         }
     }

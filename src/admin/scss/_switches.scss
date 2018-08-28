@@ -13,7 +13,7 @@
         }
     } 
     &:hover input[type="checkbox"]:checked + .check {
-        background-color: $turquoise2;
+        background-color: transparent;
     }
 
     input[type="checkbox"]:checked + .check {

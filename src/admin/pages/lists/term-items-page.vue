@@ -54,7 +54,7 @@
             </div>
             <a
                     @click="openAdvancedSearch = !openAdvancedSearch"
-                    class="is-size-7 has-text-secondary is-pulled-right is-hidden-mobile">{{ $i18n.get('advanced_search') }}</a>
+                    class="is-size-7 is-pulled-right is-hidden-mobile">{{ $i18n.get('advanced_search') }}</a>
             
             <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
             <a
@@ -171,7 +171,7 @@
                     <b-dropdown
                             ref="displayedMetadataDropdown"
                             :mobile-modal="true"
-                            :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards'"
+                            :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry'"
                             class="show">
                         <button
                                 class="button is-white"

@@ -9,6 +9,7 @@
     display: inline-flex !important;
     cursor: pointer;
     background-color: white;
+    text-shadow: none !important;
 
     &.is-secondary:hover, &.is-secondary:focus {
         background: $secondary !important;
@@ -39,6 +40,12 @@
         cursor: not-allowed !important;
         color: $gray4 !important;
         background-color: $gray2 !important;
+        text-shadow: none !important;
+    }
+    &.is-outlined[disabled], &.is-outlined:hover[disabled] {
+        border: 1px solid $gray2 !important;
+        color: $gray4 !important;
+        background-color: white !important;
     }
     &.is-white[disabled] {
         background-color: white !important;

@@ -19,11 +19,11 @@
     .tainacan-card {
         padding: 0px;
         flex-basis: 0;
-        margin: 0.75rem;
+        margin: 15px;
         max-width: 425px;
         min-width: 425px;
-        min-height: 218px;
-        max-height: 218px;
+        min-height: 210px;
+        max-height: 210px;
         cursor: pointer;
 
         @media screen and (max-width: 480px) {
@@ -45,12 +45,12 @@
         .card-checkbox {
             position: absolute;
             margin-left: 1.0rem;
-            margin-top: 9px;
+            margin-top: 7px;
         }
         .actions-area {
             position: relative;
             float: right;
-            top: -7px;
+            top: -5px;
             padding-right: 12px;
             width: 80px;
             display: flex;
@@ -73,15 +73,15 @@
             visibility: hidden;
         }
         img {
-            width: 172px;
-            height: 172px;
+            width: 170px;
+            height: 170px;
             border-radius: 0px;
         }
         .metadata-title {
             flex-shrink: 0;
-            padding: 0.75rem 4.75rem 0.75rem 2.75rem;
+            padding: 0.5rem 4.75rem 0.5rem 2.75rem;
             margin-bottom: -27px;
-            min-height: 42px;
+            min-height: 40px;
             font-size: 0.875rem !important; 
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -105,7 +105,7 @@
                 padding: 0.75rem 1.375rem;
                 flex: 1;
                 width: 100%;
-                height: 172px;
+                height: 170px;
                 color: $gray4;
 
                 p.metadata-description {

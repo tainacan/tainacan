@@ -1,7 +1,7 @@
 <template>
     <div class="table-container">
          <div class="table-wrapper">
-            <table class="tainacan-table">
+            <table class="tainacan-table is-narrow">
                 <thead>
                     <tr>
                         <!-- Title -->

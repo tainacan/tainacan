@@ -28,7 +28,7 @@
     import TainacanHeader from './components/navigation/tainacan-header.vue';
     import TainacanRepositorySubheader from './components/navigation/tainacan-repository-subheader.vue';
 
-    export default {
+    export default { 
         name: "AdminPage",
         data(){
             return {
