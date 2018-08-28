@@ -254,7 +254,7 @@
                     <b-field
                             :addons="false" 
                             :label="$i18n.get('label_comment_status')"
-                            v-if="collectionCommentStatus == 'open'">
+                            v-if="collectionAllowComments == 'open'">
                         <b-switch
                                 id="tainacan-checkbox-comment-status" 
                                 size="is-small"
@@ -485,7 +485,7 @@ export default {
             textLink: '',
             isUpdatingValues: false,
             collectionName: '',
-            collectionCommentStatus: ''
+            collectionAllowComments: ''
         }
     },
     computed: {
@@ -524,7 +524,7 @@ export default {
         ]),
         ...mapActions('collection', [
             'fetchCollectionName',
-            'fetchCollectionCommentStatus',
+            'fetchCollectionAllowComments',
             'deleteItem',
         ]),
         onSubmit(status) {
@@ -827,9 +827,9 @@ export default {
             this.collectionName = collectionName;
         });
         
-        // Obtains collection name
-        this.fetchCollectionCommentStatus(this.collectionId).then((collectionCommentStatus) => {
-            this.collectionCommentStatus = collectionCommentStatus;
+        // Obtains if collection allow items comments
+        this.fetchCollectionAllowComments(this.collectionId).then((collectionAllowComments) => {
+            this.collectionAllowComments = collectionAllowComments;
         });
 
         // Sets feedback variables
