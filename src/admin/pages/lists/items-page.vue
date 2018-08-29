@@ -111,7 +111,7 @@
             <filters-tags-list 
                     class="filter-tags-list"
                     :filters="filters"
-                    v-if="hasFiltered">Teste</filters-tags-list>
+                    v-if="hasFiltered && !openAdvancedSearch">Teste</filters-tags-list>
 
             <!-- SEARCH CONTROL ------------------------- -->
             <div
