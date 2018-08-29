@@ -9,7 +9,7 @@
                             :value="allItemsOnPageSelected">{{ $i18n.get('label_select_all_items_page') }}</b-checkbox>
                 </span>
 
-                <span>
+                <span v-if="allItemsOnPageSelected">
                     <b-checkbox
                             @click.native="selectAllItems()"
                             v-model="isAllItemsSelected">{{ $i18n.get('label_select_all_items') }}</b-checkbox>
