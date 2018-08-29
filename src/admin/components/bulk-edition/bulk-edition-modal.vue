@@ -497,6 +497,10 @@
 
     @import '../../scss/_variables.scss';
 
+    .tainacan-modal-content {
+        border-radius: 10px;
+    }
+
     .modal-card-body {
         padding: 0 !important;
         overflow: unset !important;
