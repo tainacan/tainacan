@@ -190,6 +190,7 @@ class Bulk_Edit  {
 		}
 
 		$dummyItem = new Entities\Item();
+		$dummyItem->set_status('publish');
 		$checkItemMetadata = new Entities\Item_Metadata_Entity($dummyItem, $metadatum);
 		$checkItemMetadata->set_value([$value]);
 
@@ -221,6 +222,7 @@ class Bulk_Edit  {
 		}
 
 		$dummyItem = new Entities\Item();
+		$dummyItem->set_status('publish');
 		$checkItemMetadata = new Entities\Item_Metadata_Entity($dummyItem, $metadatum);
 		$checkItemMetadata->set_value( $metadatum->is_multiple() ? [$value] : $value );
 
@@ -276,6 +278,7 @@ class Bulk_Edit  {
 		}
 
 		$dummyItem = new Entities\Item();
+		$dummyItem->set_status('publish');
 		$checkItemMetadata = new Entities\Item_Metadata_Entity($dummyItem, $metadatum);
 		$checkItemMetadata->set_value( $metadatum->is_multiple() ? [$new_value] : $new_value );
 

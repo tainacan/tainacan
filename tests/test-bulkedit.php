@@ -1006,9 +1006,6 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 
 	}
 
-	/**
-	 * @group testt
-	 */
 	function test_repeated_terms() {
 
 		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
@@ -1063,6 +1060,79 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 		]);
 
 		$this->assertEquals(40, $items->found_posts);
+
+	}
+
+	function test_allow_new_terms() {
+
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		
+		$taxonomy2 = $this->tainacan_entity_factory->create_entity(
+        	'taxonomy',
+	        array(
+	        	'name'         => 'tax2',
+		        'description'  => 'tipos de musica',
+		        'allow_insert' => 'yes'
+	        ),
+	        true
+		);
+
+		$category2 = $this->tainacan_entity_factory->create_entity(
+		    'metadatum',
+		    array(
+			    'name'   => 'category_2',
+			    'status' => 'publish',
+			    'collection' => $this->collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
+				'metadata_type_options' => [
+					'allow_new_terms' => false,
+					'taxonomy_id' => $taxonomy2->get_id()
+				],
+				'multiple' => 'yes'
+		    ),
+		    true
+		);
+
+		$bulk = new \Tainacan\Bulk_Edit([
+			'items_ids' => $this->items_ids,
+		]);
+
+		$bulk->add_value($category2, 'test_new_value');
+
+
+		$items = $Tainacan_Items->fetch([
+			
+			'tax_query' => [
+				[
+					'taxonomy' => $taxonomy2->get_db_identifier(),
+					'field' => 'name',
+					'terms' => 'test_new_value'
+				]
+			],
+			'posts_per_page' => -1
+		]);
+
+		$this->assertEquals(0, $items->found_posts);
+
+
+
+		$bulk->set_value($category2, 'test_new_value');
+
+		$items = $Tainacan_Items->fetch([
+			
+			'tax_query' => [
+				[
+					'taxonomy' => $taxonomy2->get_db_identifier(),
+					'field' => 'name',
+					'terms' => 'test_new_value'
+				]
+			],
+			'posts_per_page' => -1
+		]);
+
+		$this->assertEquals(0, $items->found_posts);
+
+
 
 	}
 
