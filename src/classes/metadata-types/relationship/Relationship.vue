@@ -1,10 +1,11 @@
 <template>
     <div :class="{ 'is-flex': metadatum.metadatum.multiple != 'yes' }">
         <b-taginput
+                :disabled="disabled"
                 :id="id"
                 v-model="selected"
                 :data="options"
-                :maxtags="metadatum.metadatum.multiple === 'yes' ? 100 : 1"
+                :maxtags="metadatum.metadatum.multiple === 'yes' && allowNew === true ? 100 : 1"
                 autocomplete
                 attached
                 :loading="loading"
@@ -69,7 +70,9 @@
             collection_id: {
                 type: Number
             },
-            id: ''
+            id: '',
+            disabled: false,
+            allowNew: true,
         },
         watch: {
             selected( value ){

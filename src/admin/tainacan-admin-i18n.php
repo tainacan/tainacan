@@ -64,6 +64,12 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'run'                                            => __( 'Run', 'tainacan' ),
 	'edit_search'                                    => __( 'Edit search', 'tainacan' ),
 	'apply'                                          => __( 'Apply', 'tainacan' ),
+	'add_another_edition_criterion'                  => __( 'Add another edition criterion', 'tainacan' ),
+	'add_one_edition_criterion'                      => __( 'Add one edition criterion', 'tainacan' ),
+	'redefine'                                       => __( 'Redefine', 'tainacan' ),
+	'replace'                                        => __( 'Replace', 'tainacan' ),
+	'conclude'                                       => __( 'Conclude', 'tainacan' ),
+	'select_to_create'                               => __( 'select to create', 'tainacan' ),
 
 	// Wordpress Status
 	'publish'                                        => __( 'Publish', 'tainacan' ),
@@ -285,6 +291,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_log_file'                                 => __( 'Log file', 'tainacan' ),
 	'label_error_log_file'	                     	 => __( 'Error Log file', 'tainacan' ),
 	'label_import_items'	                     	 => __( 'Import items', 'tainacan' ),
+	'label_select_all_items'                         => __( 'Select all items', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -292,6 +299,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_delete_selected_taxonomies'         => __( 'Delete selected taxonomies', 'tainacan' ),
 	'instruction_image_upload_box'                   => __( 'Drop an image here or click to upload.', 'tainacan' ),
 	'instruction_select_a_status'                    => __( 'Select a status:', 'tainacan' ),
+	'instruction_select_a_status2'                   => __( 'Select a status', 'tainacan' ),
 	'instruction_select_a_filter_type'               => __( 'Select a filter type:', 'tainacan' ),
 	'instruction_select_a_parent_term'               => __( 'Select a parent term:', 'tainacan' ),
 	'instruction_select_a_metadatum'                 => __( 'Select a metadatum', 'tainacan' ),
@@ -317,6 +325,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_insert_mapper_metadatum_info'       => __( 'Insert the new mapper\'s metadatum info', 'tainacan' ),
 	'instruction_select_max_options_to_show'         => __( 'Select max options to show', 'tainacan' ),
 	'instruction_select_collection_fetch_items'      => __( 'Select a collection to fecth items', 'tainacan' ),
+	'instruction_select_a_action'                    => __( 'Select a action', 'tainacan' ),
 	'instruction_parent_term'                        => __( 'Type to search a Parent Term to choose.', 'tainacan' ),
 
 	// Info. Other feedback to user.
@@ -417,6 +426,11 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_there_are_no_metadata_in_repository_level' => __( 'There are no metadata in repository level', 'tainacan' ),
 	'info_import_collection'						 => __( 'Import from external sources.', 'tainacan' ),
 	'info_import_items'								 => __( 'Import items from external sources.', 'tainacan' ),
+	'info_editing_items_in_bulk'                     => __( 'Editing items in bulk', 'tainacan' ),
+	'info_by_inner'                                  => __( 'by', 'tainacan' ),
+	'info_items_selected'                            => __( 'items selected', 'tainacan' ),
+	'info_items_edited'                              => __( 'items edited', 'tainacan' ),
+	'info_item_edited'                               => __( 'item edited', 'tainacan'),
 	'info_no_parent_term_found'                      => __( 'No valid parent term was found with this name.', 'tainacan' ),
 	'info_warning_changing_parent_term'              => __( 'Warning! Changing parent term will reload the terms list, thus uncheking any selection.', 'tainacan' ),
 

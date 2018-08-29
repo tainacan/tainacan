@@ -1,5 +1,6 @@
 <template>
     <b-input
+            :disabled="disabled"
             :class="{'has-content': value !== undefined && value !== ''}"
             :id="id"
             :value="value"
@@ -14,7 +15,8 @@
                 type: Object
             },
             value: [String, Number, Array],
-            id: ''
+            id: '',
+            disabled: false
         },
         methods: {
             onInput(value) {
