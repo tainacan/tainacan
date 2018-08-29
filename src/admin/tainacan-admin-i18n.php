@@ -429,6 +429,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_editing_items_in_bulk'                     => __( 'Editing items in bulk', 'tainacan' ),
 	'info_by_inner'                                  => __( 'by', 'tainacan' ),
 	'info_items_selected'                            => __( 'items selected', 'tainacan' ),
+	'info_items_edited'                              => __( 'items edited', 'tainacan' ),
+	'info_item_edited'                               => __( 'item edited', 'tainacan'),
 	'info_no_parent_term_found'                      => __( 'No valid parent term was found with this name.', 'tainacan' ),
 	'info_warning_changing_parent_term'              => __( 'Warning! Changing parent term will reload the terms list, thus uncheking any selection.', 'tainacan' ),
 

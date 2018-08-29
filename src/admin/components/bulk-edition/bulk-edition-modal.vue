@@ -80,7 +80,9 @@
                                 :forced-component-type="getMetadataByID(bulkEditionProcedures[criterion].metadatumID)
                                  .metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
                                 :allow-new="false"
-                                :allow-select-to-create="true"
+                                :allow-select-to-create="getMetadataByID(bulkEditionProcedures[criterion].metadatumID)
+                                 .metadata_type_options.allow_new_terms === 'yes'"
+                                :maxtags="1"
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
                                 :disabled="bulkEditionProcedures[criterion].isDone"
                                 :id="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).metadata_type_object.component +
@@ -133,7 +135,9 @@
                                 :forced-component-type="getMetadataByID(bulkEditionProcedures[criterion].metadatumID)
                                  .metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
                                 :allow-new="false"
-                                :allow-select-to-create="true"
+                                :allow-select-to-create="getMetadataByID(bulkEditionProcedures[criterion].metadatumID)
+                                 .metadata_type_options.allow_new_terms === 'yes'"
+                                :maxtags="1"
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
                                 :disabled="bulkEditionProcedures[criterion].isDone"
                                 :id="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).metadata_type_object.component +
@@ -166,16 +170,24 @@
                         <div
                                 v-if="bulkEditionProcedures[criterion].isDone"
                                 class="is-pulled-right">
-                            <b-icon
-                                    type="is-success"
-                                    icon="check-circle"/>
+                            <b-tooltip
+                                    class="is-success"
+                                    :label="actionResult.constructor.name !== 'Object' && actionResult === 1 ? `${actionResult} ${$i18n.get('info_item_edited')}` : `${actionResult} ${$i18n.get('info_items_edited')}`">
+                                <b-icon
+                                        type="is-success"
+                                        icon="check-circle"/>
+                            </b-tooltip>
                         </div>
                         <div
                                 v-if="bulkEditionProcedures[criterion].isDoneWithError && !bulkEditionProcedures[criterion].isExecuting"
                                 class="is-pulled-right">
-                            <b-icon
-                                    type="is-danger"
-                                    icon="alert-circle"/>
+                            <b-tooltip
+                                    class="is-danger"
+                                    :label="actionResult.constructor.name === 'Object' ? (actionResult.error_message ? actionResult.error_message : actionResult.message) : ''">
+                                <b-icon
+                                        type="is-danger"
+                                        icon="alert-circle"/>
+                            </b-tooltip>
                         </div>
                         <button
                                 v-if="!bulkEditionProcedures[criterion].isDone &&
@@ -215,7 +227,7 @@
                     </a>
                 </button>
             </div>
-            <pre>{{ bulkEditionProcedures }}</pre>
+            <!--<pre>{{ bulkEditionProcedures }}</pre>-->
 
             <footer class="field form-submit">
                 <div class="control is-pulled-right">
@@ -278,7 +290,8 @@
                 },
                 groupID: null,
                 dones: [false],
-                totalItemsEditedWithSuccess: 0
+                totalItemsEditedWithSuccess: 0,
+                actionResult: '',
             }
         },
         methods: {
@@ -317,13 +330,17 @@
                             groupID: this.groupID,
                             bodyParams: { value: procedure.newValue }
                         }).then(() => {
-                            let actionResult = this.getActionResult();
+                            this.actionResult = this.getActionResult();
 
-                            if(actionResult.constructor.name === 'Object' && actionResult.data.status.toString().split('')[0] != 2 ) {
+                            if(this.actionResult.constructor.name === 'Object' &&
+                                (this.actionResult.data &&
+                                    this.actionResult.data.status.toString().split('')[0] != 2) ||
+                                this.actionResult.error_message) {
+
                                 this.finalizeProcedure(criterion, true);
                             } else {
                                 this.finalizeProcedure(criterion);
-                                this.totalItemsEditedWithSuccess = actionResult;
+                                this.totalItemsEditedWithSuccess = this.actionResult;
                             }
                         });
                     } else {
@@ -335,13 +352,17 @@
                                 value: procedure.newValue
                             }
                         }).then(() => {
-                            let actionResult = this.getActionResult();
+                            this.actionResult = this.getActionResult();
 
-                            if(actionResult.constructor.name === 'Object' && actionResult.data.status.toString().split('')[0] != 2 ) {
+                            if(this.actionResult.constructor.name === 'Object' &&
+                                (this.actionResult.data &&
+                                    this.actionResult.data.status.toString().split('')[0] != 2) ||
+                                this.actionResult.error_message) {
+
                                 this.finalizeProcedure(criterion, true);
                             } else {
                                 this.finalizeProcedure(criterion);
-                                this.totalItemsEditedWithSuccess = actionResult;
+                                this.totalItemsEditedWithSuccess = this.actionResult;
                             }
                         });
                     }
@@ -356,13 +377,17 @@
                             value: procedure.newValue,
                         }
                     }).then(() => {
-                        let actionResult = this.getActionResult();
+                        this.actionResult = this.getActionResult();
 
-                        if(actionResult.constructor.name === 'Object' && actionResult.data.status.toString().split('')[0] != 2 ) {
+                        if(this.actionResult.constructor.name === 'Object' &&
+                            (this.actionResult.data &&
+                                this.actionResult.data.status.toString().split('')[0] != 2) ||
+                            this.actionResult.error_message) {
+
                             this.finalizeProcedure(criterion, true);
                         } else {
                             this.finalizeProcedure(criterion);
-                            this.totalItemsEditedWithSuccess = actionResult;
+                            this.totalItemsEditedWithSuccess = this.actionResult;
                         }
                     });
                 } else if(procedure.action === this.editionActionsForMultiple.replace){
@@ -377,13 +402,17 @@
                             new_value: procedure.newValue,
                         }
                     }).then(() => {
-                        let actionResult = this.getActionResult();
+                        this.actionResult = this.getActionResult();
 
-                        if(actionResult.constructor.name === 'Object' && actionResult.data.status.toString().split('')[0] != 2 ) {
+                        if(this.actionResult.constructor.name === 'Object' &&
+                            (this.actionResult.data &&
+                                this.actionResult.data.status.toString().split('')[0] != 2) ||
+                            this.actionResult.error_message) {
+
                             this.finalizeProcedure(criterion, true);
                         } else {
                             this.finalizeProcedure(criterion);
-                            this.totalItemsEditedWithSuccess = actionResult;
+                            this.totalItemsEditedWithSuccess = this.actionResult;
                         }
                     });
                 } else if(procedure.action === this.editionActionsForMultiple.remove){
@@ -397,13 +426,17 @@
                             value: procedure.newValue,
                         }
                     }).then(() => {
-                        let actionResult = this.getActionResult();
+                        this.actionResult = this.getActionResult();
 
-                        if(actionResult.constructor.name === 'Object' && actionResult.data.status.toString().split('')[0] != 2 ) {
+                        if(this.actionResult.constructor.name === 'Object' &&
+                            (this.actionResult.data &&
+                                this.actionResult.data.status.toString().split('')[0] != 2) ||
+                            this.actionResult.error_message) {
+
                             this.finalizeProcedure(criterion, true);
                         } else {
                             this.finalizeProcedure(criterion);
-                            this.totalItemsEditedWithSuccess = actionResult;
+                            this.totalItemsEditedWithSuccess = this.actionResult;
                         }
                     });
                 }
@@ -525,6 +558,7 @@
                 .tags {
                     color: black !important;
                     background-color: white !important;
+                    border: none !important;
 
                     .tag.is-delete {
                         display: none !important;
@@ -532,6 +566,10 @@
 
                     .tag {
                         max-width: 100% !important;
+                    }
+
+                    &:hover {
+                        background-color: white !important;
                     }
                 }
 

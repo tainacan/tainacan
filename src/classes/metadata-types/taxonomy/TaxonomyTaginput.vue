@@ -5,7 +5,7 @@
                 size="is-small"
                 icon="magnify"
                 :allow-new="allowNew"
-                :maxtags="!allowNew ? 1 : ''"
+                :maxtags="maxtags"
                 @add="emitAdd"
                 @remove="emitRemove"
                 v-model="selected"
@@ -32,6 +32,14 @@
                 isFetching: false,
             }
         },
+        watch: {
+          selected(){
+              if(this.allowSelectToCreate && this.selected[0]){
+                  this.selected[0].label.includes(`(${this.$i18n.get('select_to_create')})`);
+                  this.selected[0].label = this.selected[0].label.split('(')[0];
+              }
+          }
+        },
         props: {
             options: {
                 type: Array
@@ -41,6 +49,7 @@
             taxonomyId: Number,
             disabled: false,
             allowSelectToCreate: false,
+            maxtags: '',
         },
         created(){
             if(this.value && this.value.length > 0){
