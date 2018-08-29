@@ -190,6 +190,7 @@ class Bulk_Edit  {
 		}
 
 		$dummyItem = new Entities\Item();
+		$dummyItem->set_status('publish');
 		$checkItemMetadata = new Entities\Item_Metadata_Entity($dummyItem, $metadatum);
 		$checkItemMetadata->set_value([$value]);
 
@@ -221,6 +222,7 @@ class Bulk_Edit  {
 		}
 
 		$dummyItem = new Entities\Item();
+		$dummyItem->set_status('publish');
 		$checkItemMetadata = new Entities\Item_Metadata_Entity($dummyItem, $metadatum);
 		$checkItemMetadata->set_value( $metadatum->is_multiple() ? [$value] : $value );
 
@@ -276,6 +278,7 @@ class Bulk_Edit  {
 		}
 
 		$dummyItem = new Entities\Item();
+		$dummyItem->set_status('publish');
 		$checkItemMetadata = new Entities\Item_Metadata_Entity($dummyItem, $metadatum);
 		$checkItemMetadata->set_value( $metadatum->is_multiple() ? [$new_value] : $new_value );
 
@@ -386,7 +389,7 @@ class Bulk_Edit  {
 
 				$insert_q = $this->_build_select( $wpdb->prepare("post_id, %d", $term['term_taxonomy_id']) );
 
-				$query = "INSERT INTO $wpdb->term_relationships (object_id, term_taxonomy_id) $insert_q";
+				$query = "INSERT IGNORE INTO $wpdb->term_relationships (object_id, term_taxonomy_id) $insert_q";
 
 				return $wpdb->query($query);
 
@@ -401,7 +404,7 @@ class Bulk_Edit  {
 
 			$insert_q = $this->_build_select( $wpdb->prepare("post_id, %s, %s", $metadatum->get_id(), $value) );
 
-			$query = "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) $insert_q";
+			$query = "INSERT IGNORE INTO $wpdb->postmeta (post_id, meta_key, meta_value) $insert_q";
 
 			$affected = $wpdb->query($query);
 
