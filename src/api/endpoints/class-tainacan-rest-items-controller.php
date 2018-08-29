@@ -183,6 +183,19 @@ class REST_Items_Controller extends REST_Controller {
 			$item_arr['url'] = get_permalink( $item_arr['id'] );
 			$item_arr['exposer_urls'] = \Tainacan\Exposers\Exposers::get_exposer_urls(get_rest_url(null, "{$this->namespace}/{$this->rest_base}/{$item->get_id()}/"));
 			
+			/**
+			 * Use this filter to add additional post_meta to the api response
+			 * Use the $request object to get the context of the request and other variables
+			 * For example, id context is edit, you may want to add your meta or not.
+			 * 
+			 * Also take care to do any permissions verification before exposing the data
+			 */
+			$extra_metadata = apply_filters('tainacan-api-response-item-meta', [], $request);
+
+			foreach ($extra_metadata as $extra_meta) {
+				$item_arr[$extra_meta] = get_post_meta($item_arr['id'], $extra_meta, true);
+			}
+			
 			return $item_arr;
 		}
 

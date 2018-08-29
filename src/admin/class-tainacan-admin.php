@@ -205,45 +205,7 @@ class Admin {
             $settings['i18n']['helpers_label'][$class->get_component()] = $class->get_form_labels();
 		}
 		
-		$settings['form_hooks'] = [
-			'form-collection' => [
-				'begin-left' => [
-					'<input type="text" name="collection-background-color" value="blue" /><input type="text" name="collection-background-color1" value="blue" />',
-					'<input type="text" name="collection-background-color2" value="blue" />'
-				],
-				'end-left' => ['<input type="text" name="collection-color" value="red" />'],
-				'begin-right' => ['<input type="text" name="collection-border-color" value="black" />'],
-				'end-right' => ['<input type="text" name="collection-highlight-color" value="green" />']
-			],
-			'form-item' => [
-				'begin-left' => ['<input type="text" name="item-background-color" value="blue" />'],
-				'end-left' => ['<input type="text" name="item-color" value="red" />'],
-				'begin-right' => ['<input type="text" name="item-border-color" value="black" />'],
-				'end-right' => ['<input type="text" name="item-highlight-color" value="green" />']
-			],
-			'view-item' => [
-				'begin-left' => ['<p>blue</p>'],
-				'end-left' => ['<p>black</p>'],
-				'begin-right' => ['<p>red</p>'],
-				'end-right' => ['<p>green</p>'],
-			],
-			'form-taxonomy' => [
-				'begin' => ['<input type="text" name="taxonomy-background-color" value="blue" />'],
-				'end' => ['<input type="text" name="taxonomy-color" value="red" />']
-			],
-			'form-term' => [
-				'begin' => ['<input type="text" name="term-background-color" value="blue" />'],
-				'end' => ['<input type="text" name="term-color" value="red" />']
-			],
-			'form-metadatum' => [
-				'begin' => ['<input type="text" name="metadatum-background-color" value="blue" />'],
-				'end' => ['<input type="text" name="metadatum-color" value="red" />']
-			],
-			'form-filter' => [
-				'begin' => ['<input type="text" name="filter-background-color" value="blue" />'],
-				'end' => ['<input type="text" name="filter-color" value="red" />']
-			]
-		];
+		$settings['form_hooks'] = Admin_Hooks::get_instance()->get_registered_hooks();
 		
 		return $settings;
 		
