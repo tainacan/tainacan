@@ -244,6 +244,7 @@
                         {{ $i18n.getFrom('items','edit_item') }}
                     </router-link>
                     <a
+                            target="_blank"
                             class="button is-success is-pulled-right"
                             :href="item.url">
                         {{ $i18n.getFrom('items', 'view_item') }}
