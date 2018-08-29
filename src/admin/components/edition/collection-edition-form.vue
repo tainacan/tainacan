@@ -7,44 +7,26 @@
                 v-if="collection != null && collection != undefined" 
                 class="tainacan-form" 
                 label-width="120px">
-
-            <!-- Header Page -------------------------------- --> 
-            <b-field :addons="false">
-                <label class="label">{{ $i18n.get('label_header_image') }}</label>
-                <div class="header-field">
-                    <figure class="image">
-                        <span 
-                                v-if="collection.header_image == undefined || collection.header_image == false"
-                                class="image-placeholder">{{ $i18n.get('label_empty_header_image') }}</span>
-                        <img  
-                                :alt="$i18n.get('label_thumbnail')" 
-                                :src="(collection.header_image == undefined || collection.header_image == false) ? headerPlaceholderPath : collection.header_image">
-                    </figure>
-                    <div class="header-buttons-row">
-                        <a 
-                                class="button is-rounded is-secondary"
-                                id="button-edit-header-image" 
-                                :aria-label="$i18n.get('label_button_edit_header_image')"
-                                @click="headerImageMediaFrame.openFrame($event)">
-                            <b-icon 
-                                    size="is-small"
-                                    icon="pencil" />
-                        </a>
-                        <a 
-                                class="button is-rounded is-secondary"
-                                id="button-delete-header-image" 
-                                :aria-label="$i18n.get('label_button_delete_thumb')" 
-                                @click="deleteHeaderImage()">
-                            <b-icon 
-                                    size="is-small"
-                                    icon="delete" />
-                        </a>
-                    </div>     
-                </div>
-            </b-field>
-
+        
             <div class="columns">
                 <div class="column is-4">
+
+                    <!-- Name -------------------------------- --> 
+                    <b-field 
+                            :addons="false"
+                            :label="$i18n.get('label_name')"
+                            :type="editFormErrors['name'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['name'] != undefined ? editFormErrors['name'] : ''">
+                        <span class="required-metadatum-asterisk">*</span>
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'name')" 
+                                :message="$i18n.getHelperMessage('collections', 'name')"/>
+                        <b-input
+                                id="tainacan-text-name"
+                                v-model="form.name"
+                                @blur="updateSlug"
+                                @focus="clearErrors('name')"/>
+                    </b-field>
 
                     <!-- Thumbnail -------------------------------- --> 
                     <b-field :addons="false">
@@ -142,9 +124,7 @@
                             <a 
                                     target="_blank" 
                                     :href="coverPage.link">
-                                <b-icon 
-                                        size="is-small"
-                                        icon="eye"/>
+                                <eye-icon :style="{fill: isNewCollection ? '#01295c' : '#298596' }" />
                             </a>
                             &nbsp;&nbsp;
                             <a 
@@ -244,6 +224,7 @@
                 </div>
                 <div class="column is-1" />
                 <div class="column">
+
                     <!-- Status -------------------------------- --> 
                     <b-field
                             :addons="false" 
@@ -268,22 +249,40 @@
                             </b-radio>
                         </div>
                     </b-field>
-            
-                    <!-- Name -------------------------------- --> 
-                    <b-field 
-                            :addons="false"
-                            :label="$i18n.get('label_name')"
-                            :type="editFormErrors['name'] != undefined ? 'is-danger' : ''" 
-                            :message="editFormErrors['name'] != undefined ? editFormErrors['name'] : ''">
-                        <span class="required-metadatum-asterisk">*</span>
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'name')" 
-                                :message="$i18n.getHelperMessage('collections', 'name')"/>
-                        <b-input
-                                id="tainacan-text-name"
-                                v-model="form.name"
-                                @blur="updateSlug"
-                                @focus="clearErrors('name')"/>
+
+                    <!-- Header Page -------------------------------- --> 
+                    <b-field :addons="false">
+                        <label class="label">{{ $i18n.get('label_header_image') }}</label>
+                        <div class="header-field">
+                            <figure class="image">
+                                <span 
+                                        v-if="collection.header_image == undefined || collection.header_image == false"
+                                        class="image-placeholder">{{ $i18n.get('label_empty_header_image') }}</span>
+                                <img  
+                                        :alt="$i18n.get('label_thumbnail')" 
+                                        :src="(collection.header_image == undefined || collection.header_image == false) ? headerPlaceholderPath : collection.header_image">
+                            </figure>
+                            <div class="header-buttons-row">
+                                <a 
+                                        class="button is-rounded is-secondary"
+                                        id="button-edit-header-image" 
+                                        :aria-label="$i18n.get('label_button_edit_header_image')"
+                                        @click="headerImageMediaFrame.openFrame($event)">
+                                    <b-icon 
+                                            size="is-small"
+                                            icon="pencil" />
+                                </a>
+                                <a 
+                                        class="button is-rounded is-secondary"
+                                        id="button-delete-header-image" 
+                                        :aria-label="$i18n.get('label_button_delete_thumb')" 
+                                        @click="deleteHeaderImage()">
+                                    <b-icon 
+                                            size="is-small"
+                                            icon="delete" />
+                                </a>
+                            </div>     
+                        </div>
                     </b-field>
                         
                     <!-- Description -------------------------------- --> 
@@ -418,6 +417,7 @@
 import { mapActions } from 'vuex';
 import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
+import EyeIcon from '../other/eye-icon.vue';
 import { wpAjax } from '../../js/mixins';
 
 export default {
@@ -485,7 +485,8 @@ export default {
         }
     },
     components: {
-        FileItem
+        FileItem,
+        EyeIcon
     },
     methods: {
         ...mapActions('collection', [
@@ -844,7 +845,8 @@ export default {
     @import "../../scss/_variables.scss";
 
     .column {
-        padding: 0;
+        padding-left: 0;
+        padding-right: 0;
     }
 
     .field {
@@ -878,19 +880,20 @@ export default {
         }
     }
     .header-field {  
+        padding-top: 1.5rem;
 
         .image-placeholder {
             position: absolute;
-            left: 30%;
-            right: 30%;
-            top: 40%;
+            left: 10%;
+            right: 10%;
+            top: 35%;
             font-size: 2.0rem;
             font-weight: bold;
             z-index: 99;
             text-align: center;
             color: $gray4;
             
-            @media screen and (max-width: 769px) {
+            @media screen and (max-width: 1024px) {
                 font-size: 1.2rem;
             }
             
@@ -902,7 +905,7 @@ export default {
         }
     }
     .thumbnail-field {  
-        // padding: 26px;
+        padding: 1.5rem;
         // margin-top: 16px;
         // margin-bottom: 38px;
 
@@ -932,6 +935,10 @@ export default {
             bottom: 20px;
         }
     }
+    .switch {
+        position: relative;
+        top: -1px;
+    }
     .selected-cover-page {
         border: 1px solid $gray2;
         padding: 8px;
@@ -945,12 +952,19 @@ export default {
     .selected-cover-page-buttons {
         float: right;
         padding: 4px 6px;
-        .icon { font-size: 20px; }
+        .icon { font-size: 20px; }   
+        .eye-icon {
+            position: relative;
+            top: 2px;         
+        }
         &.disabled {
             pointer-events: none;
             cursor: not-allowed;
            
            .icon { color: $gray2; }
+            .eye-icon {
+                fill: $gray2 !important;
+            }
         }
     }
     .status-radios {
