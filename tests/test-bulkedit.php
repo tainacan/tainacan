@@ -1006,5 +1006,65 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 
 	}
 
+	/**
+	 * @group testt
+	 */
+	function test_repeated_terms() {
+
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+
+		$query = [
+			'meta_query' => [
+				[
+					'key' => $this->metadatum->get_id(),
+					'value' => 'even'
+				]
+			],
+			'posts_per_page' => -1
+		];
+		
+		$bulk = new \Tainacan\Bulk_Edit([
+			'query' => $query,
+			'collection_id' => $this->collection->get_id()
+		]);
+
+		$bulk->add_value($this->category, 'test');
+
+		$items = $Tainacan_Items->fetch([
+			
+			'tax_query' => [
+				[
+					'taxonomy' => $this->taxonomy->get_db_identifier(),
+					'field' => 'name',
+					'terms' => 'test'
+				]
+			],
+			'posts_per_page' => -1
+		]);
+
+		$this->assertEquals(20, $items->found_posts);
+
+		$bulk = new \Tainacan\Bulk_Edit([
+			'items_ids' => $this->items_ids,
+		]);
+
+		$bulk->add_value($this->category, 'test');
+
+		$items = $Tainacan_Items->fetch([
+			
+			'tax_query' => [
+				[
+					'taxonomy' => $this->taxonomy->get_db_identifier(),
+					'field' => 'name',
+					'terms' => 'test'
+				]
+			],
+			'posts_per_page' => -1
+		]);
+
+		$this->assertEquals(40, $items->found_posts);
+
+	}
+
 
 }
