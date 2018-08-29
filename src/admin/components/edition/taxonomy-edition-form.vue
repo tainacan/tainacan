@@ -254,6 +254,9 @@
 
                         this.taxonomy = updatedTaxonomy;
 
+                        // Fills hook forms with it's real values 
+                        this.updateExtraFormData('taxonomy', this.taxonomy);
+
                         // Fill this.form data with current data.
                         this.form.name = this.taxonomy.name;
                         this.form.slug = this.taxonomy.slug;
@@ -357,6 +360,9 @@
 
                 this.fetchTaxonomy(this.taxonomyId).then(res => {
                     this.taxonomy = res.taxonomy;
+
+                    // Fills hook forms with it's real values 
+                    this.updateExtraFormData('taxonomy', this.taxonomy);
 
                     // Fill this.form data with current data.
                     this.form.name = this.taxonomy.name;

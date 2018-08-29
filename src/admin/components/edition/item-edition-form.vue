@@ -585,6 +585,9 @@ export default {
 
                 this.item = updatedItem;
 
+                // Fills hook forms with it's real values 
+                this.updateExtraFormData('item', this.item);
+
                 // Fill this.form data with current data.
                 this.form.status = this.item.status;
                 this.form.document = this.item.document;
@@ -845,6 +848,9 @@ export default {
 
             this.fetchItem(this.itemId).then(res => {
                 this.item = res;
+
+                // Fills hook forms with it's real values 
+                this.updateExtraFormData('item', this.item);
 
                 // Fill this.form data with current data.
                 this.form.status = this.item.status;

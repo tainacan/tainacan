@@ -372,6 +372,9 @@
         },
         computed: {
             item() {
+                // Fills hook forms with it's real values 
+                this.updateExtraFormData('item', this.getItem());
+
                 return this.getItem();
             },
             metadatumList() {

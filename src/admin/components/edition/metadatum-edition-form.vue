@@ -278,6 +278,9 @@
 
             this.oldForm = JSON.parse(JSON.stringify(this.originalMetadatum));
 
+            // Fills hook forms with it's real values 
+            this.updateExtraFormData('metadatum', this.editForm);
+
         },
         beforeDestroy() {
             if (this.closedByForm) {

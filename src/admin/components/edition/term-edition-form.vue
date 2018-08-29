@@ -342,6 +342,9 @@
         },
         mounted() {
             
+            // Fills hook forms with it's real values 
+            this.updateExtraFormData('term', this.editForm);
+ 
             this.showCheckboxesWarning = false;
             this.hasParent = this.editForm.parent != undefined && this.editForm.parent > 0;
             this.initialParentId = this.editForm.parent;
