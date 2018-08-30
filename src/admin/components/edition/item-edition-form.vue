@@ -19,11 +19,11 @@
                     <!-- Hook for extra Form options -->
                     <template 
                             v-if="formHooks != undefined && 
-                                formHooks['form-item'] != undefined &&
-                                formHooks['form-item']['begin-left'] != undefined">  
+                                formHooks['item'] != undefined &&
+                                formHooks['item']['begin-left'] != undefined">  
                         <form 
                             id="form-item-begin-left"
-                            v-html="formHooks['form-item']['begin-left'].join('')"/>
+                            v-html="formHooks['item']['begin-left'].join('')"/>
                     </template>
 
                     <!-- Document -------------------------------- -->
@@ -305,11 +305,11 @@
                     <!-- Hook for extra Form options -->
                     <template 
                             v-if="formHooks != undefined && 
-                                formHooks['form-item'] != undefined &&
-                                formHooks['form-item']['end-left'] != undefined">  
+                                formHooks['item'] != undefined &&
+                                formHooks['item']['end-left'] != undefined">  
                         <form 
                             id="form-item-end-left"
-                            v-html="formHooks['form-item']['end-left'].join('')"/>
+                            v-html="formHooks['item']['end-left'].join('')"/>
                     </template>
 
                 </div>
@@ -320,11 +320,11 @@
                     <!-- Hook for extra Form options -->
                     <template 
                             v-if="formHooks != undefined && 
-                                formHooks['form-item'] != undefined &&
-                                formHooks['form-item']['begin-right'] != undefined">  
+                                formHooks['item'] != undefined &&
+                                formHooks['item']['begin-right'] != undefined">  
                         <form 
                             id="form-item-begin-right"
-                            v-html="formHooks['form-item']['begin-right'].join('')"/>
+                            v-html="formHooks['item']['begin-right'].join('')"/>
                     </template>
 
                     
@@ -390,11 +390,11 @@
                     <!-- Hook for extra Form options -->
                     <template 
                             v-if="formHooks != undefined && 
-                                formHooks['form-item'] != undefined &&
-                                formHooks['form-item']['end-right'] != undefined">  
+                                formHooks['item'] != undefined &&
+                                formHooks['item']['end-right'] != undefined">  
                         <form 
                             id="form-item-end-right"
-                            v-html="formHooks['form-item']['end-right'].join('')"/>
+                            v-html="formHooks['item']['end-right'].join('')"/>
                     </template>
                 </div>
             </div>

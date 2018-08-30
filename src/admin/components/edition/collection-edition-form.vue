@@ -30,11 +30,11 @@
                     <!-- Hook for extra Form options -->
                     <template 
                             v-if="formHooks != undefined && 
-                                formHooks['form-collection'] != undefined &&
-                                formHooks['form-collection']['begin-left'] != undefined">  
+                                formHooks['collection'] != undefined &&
+                                formHooks['collection']['begin-left'] != undefined">  
                         <form 
                             id="form-collection-begin-left"
-                            v-html="this.formHooks['form-collection']['begin-left'].join('')"/>
+                            v-html="this.formHooks['collection']['begin-left'].join('')"/>
                     </template>
 
                     <!-- Thumbnail -------------------------------- --> 
@@ -234,11 +234,12 @@
                     <!-- Hook for extra Form options -->
                     <template 
                             v-if="formHooks != undefined && 
-                                formHooks['form-collection'] != undefined &&
-                                formHooks['form-collection']['end-left'] != undefined">  
-                        <form 
+                                formHooks['collection'] != undefined &&
+                                formHooks['collection']['end-left'] != undefined">  
+                        <form
+                            ref="form-collection-end-left" 
                             id="form-collection-end-left"
-                            v-html="formHooks['form-collection']['end-left'].join('')"/>
+                            v-html="formHooks['collection']['end-left'].join('')"/>
                     </template>
 
                 </div>
@@ -248,11 +249,11 @@
                     <!-- Hook for extra Form options -->
                     <template 
                             v-if="formHooks != undefined && 
-                                formHooks['form-collection'] != undefined &&
-                                formHooks['form-collection']['begin-right'] != undefined">  
+                                formHooks['collection'] != undefined &&
+                                formHooks['collection']['begin-right'] != undefined">  
                         <form 
                             id="form-collection-begin-right"
-                            v-html="formHooks['form-collection']['begin-right'].join('')"/>
+                            v-html="formHooks['collection']['begin-right'].join('')"/>
                     </template>
 
                     <!-- Status -------------------------------- --> 
@@ -419,11 +420,11 @@
                     <!-- Hook for extra Form options -->
                     <template 
                             v-if="formHooks != undefined && 
-                                formHooks['form-collection'] != undefined &&
-                                formHooks['form-collection']['end-right'] != undefined">  
+                                formHooks['collection'] != undefined &&
+                                formHooks['collection']['end-right'] != undefined">  
                         <form 
                             id="form-collection-end-right"
-                            v-html="formHooks['form-collection']['end-right'].join('')"/>
+                            v-html="formHooks['collection']['end-right'].join('')"/>
                     </template>
                 </div>
 
@@ -611,10 +612,10 @@ export default {
                 this.formErrorMessage = '';
                 this.editFormErrors = {};
 
-                // if (this.fromImporter)
-                //     this.$router.go(-1);
-                // else
-                //     this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
+                if (this.fromImporter)
+                    this.$router.go(-1);
+                else
+                    this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
             })
             .catch((errors) => {
                 for (let error of errors.errors) {     
@@ -827,9 +828,12 @@ export default {
 
                 // Initializes Media Frames now that collectonId exists
                 this.initializeMediaFrames();
-
-                // Fills hook forms with it's real values 
-                this.updateExtraFormData('collection', this.collection);
+                this.$nextTick()
+                .then(() => {
+                     // Fills hook forms with it's real values 
+                    this.updateExtraFormData('collection', this.collection);
+                });
+               
   
                 // Fill this.form data with current data.
                 this.form.name = this.collection.name;

@@ -11,11 +11,11 @@
         <!-- Hook for extra Form options -->
         <template 
                 v-if="formHooks != undefined && 
-                    formHooks['form-term'] != undefined &&
-                    formHooks['form-term']['begin'] != undefined">  
+                    formHooks['term'] != undefined &&
+                    formHooks['term']['begin-left'] != undefined">  
             <form 
                 id="form-term-begin"
-                v-html="formHooks['form-term']['begin'].join('')"/>
+                v-html="formHooks['term']['begin-left'].join('')"/>
         </template>
 
         <!-- Header Image -------------------------------- -->
@@ -135,11 +135,11 @@
         <!-- Hook for extra Form options -->
         <template 
                 v-if="formHooks != undefined && 
-                    formHooks['form-term'] != undefined &&
-                    formHooks['form-term']['end'] != undefined">  
+                    formHooks['term'] != undefined &&
+                    formHooks['term']['end-left'] != undefined">  
             <form 
                 id="form-term-end"
-                v-html="formHooks['form-term']['end'].join('')"/>
+                v-html="formHooks['term']['end-left'].join('')"/>
         </template>
 
         <!-- Submit buttons -------------- -->

@@ -8,11 +8,11 @@
         <!-- Hook for extra Form options -->
         <template 
                 v-if="formHooks != undefined && 
-                    formHooks['form-metadatum'] != undefined &&
-                    formHooks['form-metadatum']['begin'] != undefined">  
+                    formHooks['metadatum'] != undefined &&
+                    formHooks['metadatum']['begin-left'] != undefined">  
             <form 
                 id="form-metadatum-begin"
-                v-html="formHooks['form-metadatum']['begin'].join('')"/>
+                v-html="formHooks['metadatum']['begin-left'].join('')"/>
         </template>
 
         <b-field
@@ -219,11 +219,11 @@
         <!-- Hook for extra Form options -->
         <template 
                 v-if="formHooks != undefined && 
-                    formHooks['form-metadatum'] != undefined &&
-                    formHooks['form-metadatum']['end'] != undefined">  
+                    formHooks['metadatum'] != undefined &&
+                    formHooks['metadatum']['end-left'] != undefined">  
             <form 
                 id="form-metadatum-end"
-                v-html="formHooks['form-metadatum']['end'].join('')"/>
+                v-html="formHooks['metadatum']['end-left'].join('')"/>
         </template>
 
         <div class="field is-grouped form-submit">

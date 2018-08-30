@@ -12,11 +12,11 @@
                         <!-- Hook for extra Form options -->
                         <template 
                                 v-if="formHooks != undefined && 
-                                    formHooks['form-taxonomy'] != undefined &&
-                                    formHooks['form-taxonomy']['begin'] != undefined">  
+                                    formHooks['taxonomy'] != undefined &&
+                                    formHooks['taxonomy']['begin-left'] != undefined">  
                             <form 
                                 id="form-taxonomy-begin"
-                                v-html="formHooks['form-taxonomy']['begin'].join('')"/>
+                                v-html="formHooks['taxonomy']['begin-left'].join('')"/>
                         </template>
 
                         <!-- Name -------------------------------- -->
@@ -112,11 +112,11 @@
                         <!-- Hook for extra Form options -->
                         <template 
                                 v-if="formHooks != undefined && 
-                                    formHooks['form-taxonomy'] != undefined &&
-                                    formHooks['form-taxonomy']['end'] != undefined">  
+                                    formHooks['taxonomy'] != undefined &&
+                                    formHooks['taxonomy']['end-left'] != undefined">  
                             <form 
                                 id="form-taxonomy-end"
-                                v-html="formHooks['form-taxonomy']['end'].join('')"/>
+                                v-html="formHooks['taxonomy']['end-left'].join('')"/>
                         </template>
 
                         <!-- Submit -->

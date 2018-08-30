@@ -7,11 +7,11 @@
         <!-- Hook for extra Form options -->
         <template 
                 v-if="formHooks != undefined && 
-                    formHooks['form-filter'] != undefined &&
-                    formHooks['form-filter']['begin'] != undefined">  
+                    formHooks['filter'] != undefined &&
+                    formHooks['filter']['begin-left'] != undefined">  
             <form 
                 id="form-filter-begin"
-                v-html="formHooks['form-filter']['begin'].join('')"/>
+                v-html="formHooks['filter']['begin-left'].join('')"/>
         </template>
 
         <b-field 
@@ -150,11 +150,11 @@
         <!-- Hook for extra Form options -->
         <template 
                 v-if="formHooks != undefined && 
-                    formHooks['form-filter'] != undefined &&
-                    formHooks['form-filter']['end'] != undefined">  
+                    formHooks['filter'] != undefined &&
+                    formHooks['filter']['end-left'] != undefined">  
             <form 
                 id="form-filter-end"
-                v-html="formHooks['form-filter']['end'].join('')"/>
+                v-html="formHooks['filter']['end-left'].join('')"/>
         </template>
 
         <div class="field is-grouped form-submit">
