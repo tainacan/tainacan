@@ -70,6 +70,7 @@ export const formHooks = {
                     if (formElement) {
                         let formData = new FormData(formElement);   
                         for (let [key, value] of formData.entries()) {
+                            console.log(key, value)
                             data[key] = value;
                         }
                     }
@@ -90,12 +91,20 @@ export const formHooks = {
                     if (formElement) {
 
                         for (let element of formElement.elements) {
-                            // console.log(entityObject);
+                            console.log(element['name'], element['value'], element['checked']);
+                            element['value'] = null;
                             for (let key of Object.keys(entityObject)) {
                                 // console.log(key, entityObject[key]);
-                                if (element['name'] == key)
-                                    element['value'] = entityObject[key];
+                                if (element['name'] == key)  {
+                                    if (Array.isArray(entityObject[key])) {
+                                        element['value'].length != undefined ? element['value'] = [] : null;
+                                        element['value'].push(entityObject[key]);
+                                    } else
+                                        element['value'] = entityObject[key];
+                                
+                                }
                             }
+                            console.log(element['name'], element['value'], element['checked']);
                         }
                     }
                 }
