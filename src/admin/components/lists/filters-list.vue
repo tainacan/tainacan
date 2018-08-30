@@ -205,7 +205,7 @@ export default {
             isLoadingFilters: false,
             isLoadingFilterTypes: false,
             isLoadingFilter: false,
-            iisUpdatingFiltersOrder: false,
+            isUpdatingFiltersOrder: false,
             openedFilterId: '',
             formWithErrors: '',
             editForms: {},
@@ -293,8 +293,8 @@ export default {
             }
             this.isUpdatingFiltersOrder = true;
             this.updateCollectionFiltersOrder({ collectionId: this.collectionId, filtersOrder: filtersOrder })
-                .then(() => this.isUpdatingFiltersOrder = false)
-                .catch(() => this.isUpdatingFiltersOrder = false);
+                .then(() => { this.isUpdatingFiltersOrder = false; })
+                .catch(() => { this.isUpdatingFiltersOrder = false });
         },
         updateListOfMetadata() {
 
