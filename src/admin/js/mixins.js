@@ -87,23 +87,15 @@ export const formHooks = {
             for (let position of positions) {
                 if (this.formHooks[entity][position] && this.formHooks[entity][position] != undefined) {
                     let formElement = document.getElementById('form-' + entity + '-' + position);
-                    console.log(formElement.elements);
                     if (formElement) {
 
                         for (let element of formElement.elements) {
-                            console.log(entityObject);
+                            // console.log(entityObject);
                             for (let key of Object.keys(entityObject)) {
-                                console.log(key, entityObject[key]);
+                                // console.log(key, entityObject[key]);
                                 if (element['name'] == key)
                                     element['value'] = entityObject[key];
                             }
-                        }
-
-                        let formData = new FormData(formElement); 
-                        for (let [key, value] of formData.entries()) {
-                            console.log(key, value);
-                            // if (entityObject[key] != undefined && entityObject[key] != null)
-                            //     formData.set(key, entityObject[key]);
                         }
                     }
                 }
