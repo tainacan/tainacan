@@ -20,7 +20,7 @@
                 <b-icon
                         :icon="props.open ? 'menu-down' : 'menu-right'"
                         />
-                {{ filter.name }}
+                <span class="collapse-label">{{ filter.name }}</span>
             </label>
 
             <div>
@@ -170,6 +170,12 @@
             margin-left: -5px;
             .icon {
                 margin-right: 12px;
+            }
+            .collapse-label {
+                display: inline-block;
+                width: 100%;
+                overflow-x: hidden;
+                text-overflow: ellipsis;
             }
         }
         .collapse-content {

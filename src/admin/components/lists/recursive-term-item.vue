@@ -62,24 +62,26 @@
             </a>
         </span>
     </div>
-    <div    
-            class="term-item"
-            :style="{
-                'border-left-color': term.parent > 0 && childTerm.parent > 0 ? '#f2f2f2' : 'transparent'
-            }"
-            :class="{
-                'opened-term': childTerm.opened,
-            }" 
-            v-for="(childTerm, childIndex) in term.children"
-            :key="childTerm.id"
-            v-if="showChildren">
-        
-        <recursive-term-item
-                :term="childTerm"
-                :index="childIndex"
-                :taxonomy-id="taxonomyId"
-                :order="order"/>
-    </div>
+    <transition-group name="filter-item">
+        <div    
+                class="term-item"
+                :style="{
+                    'border-left-color': term.parent > 0 && childTerm.parent > 0 ? '#f2f2f2' : 'transparent'
+                }"
+                :class="{
+                    'opened-term': childTerm.opened,
+                }" 
+                v-for="(childTerm, childIndex) in term.children"
+                :key="childTerm.id"
+                v-if="showChildren">
+            
+            <recursive-term-item
+                    :term="childTerm"
+                    :index="childIndex"
+                    :taxonomy-id="taxonomyId"
+                    :order="order"/>
+        </div>
+    </transition-group>
     <a 
             class="view-more-terms"
             :class="{'is-disabled': isEditingTerm}"
@@ -257,10 +259,9 @@ export default {
         border-left: 1px solid transparent;
         visibility: visible;
         opacity: 1;
-        transition: display 0.3s, visibility 0.3s, opacity 0.3s;
         width: 100%;
 
-        &:first-child:hover {
+        & .term-item:first-child:hover {
             background-color: $gray1 !important;
             .controls {
                 visibility: visible;
@@ -367,7 +368,6 @@ export default {
             display: none;
             visibility: hidden;
             opacity: 0;
-            transition: display 0.3s, visibility 0.3s, opacity 0.3s;
         }
     }
     .view-more-terms {

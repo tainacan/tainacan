@@ -137,6 +137,9 @@ export default {
                     top: 5px;
                 }
             }
+            .filter-item-forms .datepicker .dropdown-content {
+                max-width: 100% !important;
+            }
         }
 
         .search-control {   

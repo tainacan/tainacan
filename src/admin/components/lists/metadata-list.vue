@@ -104,17 +104,19 @@
                                         </a>
                                     </span>
                                 </div>
-                                <div v-if="openedMetadatumId == metadatum.id">
-                                    <metadatum-edition-form
-                                            :collection-id="collectionId"
-                                            :is-repository-level="isRepositoryLevel"
-                                            @onEditionFinished="onEditionFinished()"
-                                            @onEditionCanceled="onEditionCanceled()"
-                                            @onErrorFound="formWithErrors = metadatum.id"
-                                            :index="index"
-                                            :original-metadatum="metadatum"
-                                            :edited-metadatum="editForms[metadatum.id]"/>
-                                </div>
+                                <transition name="form-collapse">
+                                    <div v-if="openedMetadatumId == metadatum.id">
+                                        <metadatum-edition-form
+                                                :collection-id="collectionId"
+                                                :is-repository-level="isRepositoryLevel"
+                                                @onEditionFinished="onEditionFinished()"
+                                                @onEditionCanceled="onEditionCanceled()"
+                                                @onErrorFound="formWithErrors = metadatum.id"
+                                                :index="index"
+                                                :original-metadatum="metadatum"
+                                                :edited-metadatum="editForms[metadatum.id]"/>
+                                    </div>
+                                </transition>
                             </div>
                         </draggable> 
                     </div>
@@ -832,6 +834,10 @@ export default {
             position: relative;
             cursor: grab;
             opacity: 1 !important;
+                    
+            &>.field, form {
+                background-color: white !important;
+            }
             
             .handle {
                 padding-right: 6em;
@@ -903,6 +909,10 @@ export default {
             background-color: $secondary;
             border-color: $secondary;
             color: white !important;
+                    
+            &>.field, form {
+                background-color: white !important;
+            }
 
             .label-details, .icon, .not-saved, .icon-level-identifier>i {
                 color: white !important;

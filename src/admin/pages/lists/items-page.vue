@@ -25,9 +25,10 @@
         </button>
 
         <!-- Side bar with search and filters -->
+        <!-- <transition name="filters-menu"> -->
         <aside
                 :style="{ top: searchControlHeight + 'px' }"
-                v-show="!isFiltersMenuCompressed && !openAdvancedSearch"
+                v-if="!isFiltersMenuCompressed && !openAdvancedSearch"
                 class="filters-menu tainacan-form is-hidden-mobile">
             <b-loading
                     :is-full-page="false"
@@ -100,7 +101,7 @@
             </section>
 
         </aside>
-        
+        <!-- </transition> -->
         <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
         <div 
                 id="items-list-area"
