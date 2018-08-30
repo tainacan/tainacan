@@ -26,7 +26,7 @@
                         v-model="activeFilterList" 
                         :options="{
                             group: { name:'filters', pull: false, put: true }, 
-                            sort: openedFilterId == '' || openedFilterId == undefined, 
+                            sort: (openedFilterId == '' || openedFilterId == undefined) && !isRepositoryLevel, 
                             //disabled: openedFilterId != '' && openedFilterId != undefined,
                             handle: '.handle', 
                             ghostClass: 'sortable-ghost',
@@ -35,7 +35,7 @@
                     <div  
                             class="active-filter-item" 
                             :class="{
-                                'not-sortable-item': (filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true),
+                                'not-sortable-item': (filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || isRepositoryLevel),
                                 'not-focusable-item': openedFilterId == filter.id, 
                                 'disabled-filter': filter.enabled == false,
                                 'inherited-filter': filter.collection_id != collectionId || isRepositoryLevel
@@ -71,6 +71,7 @@
                                     class="controls" 
                                     v-if="filter.filter_type != undefined">
                                 <b-switch
+                                        v-if="!isRepositoryLevel"
                                         :disabled="isUpdatingFiltersOrder" 
                                         size="is-small" 
                                         :value="filter.enabled" 
