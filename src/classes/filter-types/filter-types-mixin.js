@@ -24,7 +24,7 @@ export const filter_type_mixin = {
             let url = `/collection/${this.collection}/facets/${metadatumId}?`;
 
             if(offset != undefined && number != undefined){
-                url += `offset=${offset}&number=${number}`;
+                url += `offset=${offset}&number=${number}&`;
             }
 
             if(isRepositoryLevel){
@@ -32,7 +32,7 @@ export const filter_type_mixin = {
             }
 
             if(search && offset != undefined && number != undefined){
-                url += `&search=${search}&` + qs.stringify(query_items);
+                url += `search=${search}&` + qs.stringify(query_items);
             } else if(search){
                 url += `search=${search}&` + qs.stringify(query_items);
             } else {
@@ -107,7 +107,7 @@ export const filter_type_mixin = {
             let url = '/collection/' + this.filter.collection_id + '/facets/' + this.filter.metadatum.metadatum_id + '?';
 
             if(offset != undefined && number != undefined){
-                url += `offset=${offset}&perpage=${number}`;
+                url += `offset=${offset}&number=${number}`;
             } else {
                 url += `nopaging=1`
             }

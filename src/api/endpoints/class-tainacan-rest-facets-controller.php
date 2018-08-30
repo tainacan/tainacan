@@ -13,6 +13,8 @@ class REST_Facets_Controller extends REST_Controller {
 	 */
 	public function __construct() {
 		$this->rest_base = 'facets';
+		$this->total_pages = 0;
+		$this->total_items = 0;
 		parent::__construct();
         add_action('init', array(&$this, 'init_objects'), 11);
 	}
@@ -56,15 +58,16 @@ class REST_Facets_Controller extends REST_Controller {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function get_item( $request ) {
-        
-        $metadatum_id = $request['metadatum_id'];
+		
+		$metadatum_id = $request['metadatum_id'];
         $metadatum = $this->metadatum_repository->fetch($metadatum_id);
 
 		$response = $this->prepare_item_for_response($metadatum, $request );
 
 		$rest_response = new \WP_REST_Response($response, 200);
 
-		$rest_response->header('X-WP-Total', (int) count($response));
+		$rest_response->header('X-WP-Total', $this->total_items);
+		$rest_response->header('X-WP-TotalPages', $this->total_pages);
 
         return $rest_response;
     }
@@ -95,6 +98,10 @@ class REST_Facets_Controller extends REST_Controller {
 
 				$restItemsClass = new REST_Items_Controller();
 
+				if(isset($request['number'])){
+					$args['posts_per_page'] = $request['number'];
+				}
+
 				$items = $this->items_repository->fetch($args, $options['collection_id'], 'WP_Query');
 				if ($items->have_posts()) {
 					while ( $items->have_posts() ) {
@@ -108,6 +115,9 @@ class REST_Facets_Controller extends REST_Controller {
 		
 					wp_reset_postdata();
 				}
+
+				$this->total_items  = $items->found_posts;
+				$this->total_pages = ceil($this->total_items / (int) $items->query_vars['posts_per_page']);
 
 			} else if ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ){
 				
@@ -126,6 +136,8 @@ class REST_Facets_Controller extends REST_Controller {
 				foreach ($terms as $term) {
 					array_push($response, $restTermClass->prepare_item_for_response( $term, $request ));
 				}
+
+				$this->set_pagination_properties_term_type( $args, $response );
 
 			} else {
 				$metadatum_id = $metadatum->get_id();
@@ -153,6 +165,7 @@ class REST_Facets_Controller extends REST_Controller {
 					}
 				}
 
+				$this->set_pagination_properties_text_type( $collection_id, $metadatum_id, ($request['search']) ? $request['search'] : '' , $offset, $number );
 			}
         }
 
@@ -181,7 +194,7 @@ class REST_Facets_Controller extends REST_Controller {
 			foreach ( $response as $key => $item ) {
 
 				if( $type === 'Tainacan\Metadata_Types\Taxonomy' ){
-
+				
 					$row = [
 						'label' => $item['name'],
 						'value' => $item['id'],
@@ -222,6 +235,63 @@ class REST_Facets_Controller extends REST_Controller {
 		}
 		
 		return $result;
+	}
+
+	/**
+	 * set attributes for text metadata
+	 */
+	private function set_pagination_properties_text_type( $collection_id, $metadatum_id, $search , $offset, $number ){
+		$response = $this->metadatum_repository->fetch_all_metadatum_values( $collection_id, $metadatum_id, $search);
+
+		if( $response && is_array( $response ) ){
+
+			if ( $offset !== '' && $number) {
+				$per_page = (int) $number;
+				$page = ceil( ( ( (int) $offset ) / $per_page ) + 1 );
+			
+				$this->total_items  = count( $response );
+			
+				$max_pages = ceil( $this->total_items / $per_page );
+			
+				$this->total_pages = (int) $max_pages ;	
+			} else {
+				$this->total_items = count( $response );
+				$this->total_pages = 1;	
+			}
+		} else {
+			$this->total_items = 0;
+			$this->total_pages = 0;
+		}
+	}
+
+	/**
+	 * set attributes for term metadata
+	 */
+	private function set_pagination_properties_term_type( $args, $response ){
+
+		if(isset($args['number'], $args['offset'])){
+			$number = $args['number'];
+			$offset = $args['offset'];
+
+			unset( $args['number'], $args['offset'] );
+			$total_terms = wp_count_terms( $this->taxonomy->get_db_identifier(), $args );
+
+			if ( ! $total_terms ) {
+				$total_terms = 0;
+			}
+
+			$per_page = (int) $number;
+			$page     = ceil( ( ( (int) $offset ) / $per_page ) + 1 );
+		
+			$this->total_items  = (int) $total_terms ;
+		
+			$max_pages = ceil( $total_terms / $per_page );
+		
+			$this->total_pages = (int) $max_pages ;
+		} else{
+			$this->total_items  = count($response) ;
+			$this->total_pages = 1 ;
+		}
 	}
 }
 
