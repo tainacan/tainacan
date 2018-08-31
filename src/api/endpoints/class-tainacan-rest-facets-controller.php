@@ -198,12 +198,12 @@ class REST_Facets_Controller extends REST_Controller {
 					$row = [
 						'label' => $item['name'],
 						'value' => $item['id'],
-						'img' => $item['header_image'],
-						'parent' => $item['parent'],
-						'total_children' => $item['total_children'],
+						'img' => ( isset($item['header_image']) ) ? $item['header_image'] : false ,
+						'parent' => ( isset($item['parent']) ) ? $item['parent'] : 0,
+						'total_children' => ( isset($item['total_children']) ) ? $item['total_children'] : 0,
 						'type' => 'Taxonomy',
 						'taxonomy_id' => $this->taxonomy->WP_Post->ID,
-						'taxonomy' => $item['taxonomy'],
+						'taxonomy' => ( isset($item['taxonomy']) ) ? $item['taxonomy'] : false,
 					];
 
 				} else if( $type === 'Tainacan\Metadata_Types\Relationship' ){
@@ -211,7 +211,7 @@ class REST_Facets_Controller extends REST_Controller {
 					$row = [
 						'label' => $item['title'],
 						'value' => $item['id'],
-						'img' => $item['thumbnail']['thumb'],
+						'img' => ( isset($item['thumbnail']['thumb']) ) ? $item['thumbnail']['thumb'] : false,
 						'parent' => false,
 						'total_children' => 0,
 						'type' => 'Relationship'

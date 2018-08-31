@@ -453,7 +453,7 @@
                             let valueIndex = this.finderColumns[i].findIndex(option => option.value == selected);
 
                             if (valueIndex >= 0) {
-                                onlyLabels.push(this.finderColumns[i][valueIndex].name);
+                                onlyLabels.push(this.finderColumns[i][valueIndex].label);
                             }
                         }
                     }
