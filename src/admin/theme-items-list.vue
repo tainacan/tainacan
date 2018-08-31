@@ -62,10 +62,11 @@ export default {
         display: flex;
         -webkit-overflow-scrolling: touch;
 
-        a{ color: $secondary !important }
-        a:hover {
+        a, a:not([href]){ color: $secondary }
+        a:hover, a:hover:not([href]) {
             cursor: pointer;
-            color: $secondary !important;
+            color: $secondary;
+            text-decoration: underline;
         }
         ul {
             list-style: none;
@@ -135,6 +136,9 @@ export default {
                 .control.has-icons-left .icon {
                     top: 5px;
                 }
+            }
+            .filter-item-forms .datepicker .dropdown-content {
+                max-width: 100% !important;
             }
         }
 

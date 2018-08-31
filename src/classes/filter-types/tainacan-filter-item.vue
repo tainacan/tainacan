@@ -5,7 +5,8 @@
             :type="filterTypeMessage">
         <b-collapse
                 class="show" 
-                :open="open">
+                :open.sync="open"
+                animation="filter-item">
             <label
                     v-tooltip="{
                                     content: filter.name,
@@ -19,7 +20,7 @@
                 <b-icon
                         :icon="props.open ? 'menu-down' : 'menu-right'"
                         />
-                {{ filter.name }}
+                <span class="collapse-label">{{ filter.name }}</span>
             </label>
 
             <div>
@@ -170,6 +171,12 @@
             .icon {
                 margin-right: 12px;
             }
+            .collapse-label {
+                display: inline-block;
+                width: 100%;
+                overflow-x: hidden;
+                text-overflow: ellipsis;
+            }
         }
         .collapse-content {
             margin-top: 12px;
@@ -204,16 +211,23 @@
         }
 
         .taginput-container {
-            //display: table-cell;
             border: none !important;
-            &.is-focusable:active, &.is-focusable:focus  {
+            &.is-focused, 
+            &.is-focused:active, 
+            &.is-focused:focus, 
+            &.is-focusable,
+            &.is-focusable:active 
+            &.is-focusable:focus  {
                 border: none !important;
+                input:active, input:focus {
+                    border: 1px solid $gray4 !important;
+                }
             }    
-            input, input:active, input:focus {
+            input{
                 border: 1px solid $gray2 !important;
             }
             .control.has-icons-left .icon {
-                top: 0px !important;
+                top: 3px !important;
             }
             .tags {
                 display: none !important;

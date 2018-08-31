@@ -183,25 +183,31 @@
                 }
             },
             onChangeEventsPerPage(value) {
+                
+                if (value != this.eventsPerPage) {
+                    this.$userPrefs.set('events_per_page', value)
+                        .then((newValue) => {
+                            this.eventsPerPage = newValue;
+                        })
+                        .catch(() => {
+                            this.$console.log("Error settings user prefs for events per page")
+                        });
+                }
                 this.eventsPerPage = value;
-                this.$userPrefs.set('events_per_page', value)
-                .then((newValue) => {
-                    this.eventsPerPage = newValue;
-                })
-                .catch(() => {
-                    this.$console.log("Error settings user prefs for events per page")
-                });
                 this.loadEvents();
             },
             onChangeProcessesPerPage(value) {
+                
+                if (value != this.processesPerPage) {
+                    this.$userPrefs.set('processes_per_page', value)
+                    .then((newValue) => {
+                        this.processesPerPage = newValue;
+                    })
+                    .catch(() => {
+                        this.$console.log("Error settings user prefs for processes per page")
+                    });
+                }
                 this.processesPerPage = value;
-                this.$userPrefs.set('processes_per_page', value)
-                .then((newValue) => {
-                    this.processesPerPage = newValue;
-                })
-                .catch(() => {
-                    this.$console.log("Error settings user prefs for processes per page")
-                });
                 this.loadProcesses();
             },
             onPageChange(page) {

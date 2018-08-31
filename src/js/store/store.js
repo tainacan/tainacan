@@ -10,6 +10,7 @@ import taxonomy from './modules/taxonomy/';
 import event from './modules/event';
 import importer from './modules/importer';
 import bgprocess from './modules/bgprocess';
+import bulkedition from './modules/bulk-edition';
 
 Vue.use(Vuex);
 
@@ -31,6 +32,7 @@ export default new Vuex.Store({
         taxonomy,
         event,
         importer,
-        bgprocess
+        bgprocess,
+        bulkedition
     }
 })

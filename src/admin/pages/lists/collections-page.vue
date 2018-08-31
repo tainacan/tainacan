@@ -186,14 +186,17 @@ export default {
             this.loadCollections();
         },
         onChangeCollectionsPerPage(value) {
+            
+            if (value != this.collectionsPerPage) {
+                this.$userPrefs.set('collections_per_page', value)
+                    .then((newValue) => {
+                        this.collectionsPerPage = newValue;
+                    })
+                    .catch(() => {
+                        this.$console.log("Error settings user prefs for collection per page")
+                    });
+            }
             this.collectionsPerPage = value;
-            this.$userPrefs.set('collections_per_page', value)
-            .then((newValue) => {
-                this.collectionsPerPage = newValue;
-            })
-            .catch(() => {
-                this.$console.log("Error settings user prefs for collection per page")
-            });
             this.loadCollections();
         },
         onPageChange(page) {

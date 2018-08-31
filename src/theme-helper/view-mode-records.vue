@@ -17,7 +17,7 @@
             <!-- RECORDS VIEW MODE -->
             <masonry 
                     :cols="{default: 4, 1919: 3, 1407: 2, 1215: 2, 1023: 1, 767: 1, 343: 1}"
-                    :gutter="42"
+                    :gutter="30"
                     class="tainacan-records-container">
                 <a 
                         :href="item.url"
@@ -127,9 +127,9 @@ export default {
     $tainacan-input-color: #1d1d1d;
     $gray1: #f2f2f2; 
     $gray2: #e5e5e5;
-    $gray4: #898d8f;
     $gray3: #dcdcdc;
-    $gray4: #898d8f; 
+    $gray4: #898d8f;
+    $gray5: #454647; 
 
     @import "../../src/admin/scss/_view-mode-records.scss";
 

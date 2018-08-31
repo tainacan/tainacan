@@ -322,7 +322,7 @@ export default {
             span {
                 text-overflow: ellipsis;
                 white-space: nowrap;
-                overflow-x: hidden;
+                overflow: hidden;
                 max-width: 115px;
                 margin: 0 0.1rem;
                 display: inline-block;

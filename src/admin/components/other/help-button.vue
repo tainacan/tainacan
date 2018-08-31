@@ -32,10 +32,11 @@ export default {
     .help-wrapper {
         position: absolute;
         margin-top: -2px;
+        margin-left: 4px;
     }
 
     a.help-button .icon {
-        i, i::before { font-size: 0.9em !important; }
+        i, i::before { font-size: 0.875rem !important }
     }
 
     .help-wrapper:hover .help-tooltip {
@@ -46,7 +47,7 @@ export default {
     }
     .help-tooltip {
         z-index: 99999999999999999999;
-        color: $blue5;
+        color: $turquoise5;
         background-color: $turquoise2;
         border: none;
         display: block;

@@ -29,7 +29,7 @@
                                 :class="{'metadata-area-receive': isDraggingFromAvailable}"
                                 :options="{ 
                                         group: { name:'metadata', pull: false, put: true },
-                                        sort: openedMetadatumId == '' || openedMetadatumId == undefined,
+                                        sort: (openedMetadatumId == '' || openedMetadatumId == undefined) && !isRepositoryLevel,
                                         //disabled: openedMetadatumId != '' && openedMetadatumId != undefined,
                                         handle: '.handle', 
                                         ghostClass: 'sortable-ghost',
@@ -39,7 +39,7 @@
                             <div  
                                     class="active-metadatum-item"
                                     :class="{
-                                        'not-sortable-item': metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder,
+                                        'not-sortable-item': isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder,
                                         'not-focusable-item': openedMetadatumId == metadatum.id,
                                         'disabled-metadatum': metadatum.enabled == false,
                                         'inherited-metadatum': metadatum.collection_id != collectionId || isRepositoryLevel
@@ -75,6 +75,7 @@
                                             class="controls" 
                                             v-if="metadatum.id !== undefined">
                                         <b-switch 
+                                                v-if="!isRepositoryLevel"
                                                 :disabled="isUpdatingMetadataOrder"
                                                 size="is-small" 
                                                 :value="metadatum.enabled"
@@ -103,17 +104,19 @@
                                         </a>
                                     </span>
                                 </div>
-                                <div v-if="openedMetadatumId == metadatum.id">
-                                    <metadatum-edition-form
-                                            :collection-id="collectionId"
-                                            :is-repository-level="isRepositoryLevel"
-                                            @onEditionFinished="onEditionFinished()"
-                                            @onEditionCanceled="onEditionCanceled()"
-                                            @onErrorFound="formWithErrors = metadatum.id"
-                                            :index="index"
-                                            :original-metadatum="metadatum"
-                                            :edited-metadatum="editForms[metadatum.id]"/>
-                                </div>
+                                <transition name="form-collapse">
+                                    <div v-if="openedMetadatumId == metadatum.id">
+                                        <metadatum-edition-form
+                                                :collection-id="collectionId"
+                                                :is-repository-level="isRepositoryLevel"
+                                                @onEditionFinished="onEditionFinished()"
+                                                @onEditionCanceled="onEditionCanceled()"
+                                                @onErrorFound="formWithErrors = metadatum.id"
+                                                :index="index"
+                                                :original-metadatum="metadatum"
+                                                :edited-metadatum="editForms[metadatum.id]"/>
+                                    </div>
+                                </transition>
                             </div>
                         </draggable> 
                     </div>
@@ -159,11 +162,11 @@
                                         icon="format-list-bulleted-type"
                                         size="is-large"/>
                             </p>
-                            <p>{{ $i18n.get('info_there_is_no_metadatum' ) }}</p>  
-                            <p>{{ $i18n.get('info_create_metadata' ) }}</p>
+                            <p>{{ $i18n.get('info_there_is_no_metadatum') }}</p>  
+                            <p>{{ $i18n.get('info_create_metadata') }}</p>
                         </div>
                     </section>
-                    <section >
+                    <section>
                         <div class="field is-grouped form-submit">
                             <b-select
                                     id="mappers-options-dropdown"
@@ -831,6 +834,10 @@ export default {
             position: relative;
             cursor: grab;
             opacity: 1 !important;
+                    
+            &>.field, form {
+                background-color: white !important;
+            }
             
             .handle {
                 padding-right: 6em;
@@ -902,6 +909,10 @@ export default {
             background-color: $secondary;
             border-color: $secondary;
             color: white !important;
+                    
+            &>.field, form {
+                background-color: white !important;
+            }
 
             .label-details, .icon, .not-saved, .icon-level-identifier>i {
                 color: white !important;

@@ -29,29 +29,29 @@ class CSV extends Importer {
      * @inheritdoc
      */
     public function get_source_metadata(){
-        $file =  new \SplFileObject( $this->tmp_file, 'r' );
-        $file->seek(0);
+        if (($handle = fopen($this->tmp_file, "r")) !== false) {
 
-        $columns = [];
-        $rawColumns = str_getcsv( $file->fgets(), $this->get_option('delimiter'), $this->get_option('enclosure') );
+            $rawColumns = fgetcsv($handle, 0, $this->get_option('delimiter'));
+            $columns = [];
 
-        if( $rawColumns ){
-            foreach( $rawColumns as $index => $rawColumn ){
-              
-                if( strpos($rawColumn,'special_') === 0 ){
-                    
-                    if( $rawColumn === 'special_document' ){
-                        $this->set_option('document_index', $index);
-                    } else if( $rawColumn === 'special_attachments' ){
-                        $this->set_option('attachment_index', $index);    
+            if( $rawColumns ){
+                foreach( $rawColumns as $index => $rawColumn ){
+                  
+                    if( strpos($rawColumn,'special_') === 0 ){
+                        
+                        if( $rawColumn === 'special_document' ){
+                            $this->set_option('document_index', $index);
+                        } else if( $rawColumn === 'special_attachments' ){
+                            $this->set_option('attachment_index', $index);    
+                        }
+    
+                    } else {
+                        $columns[] = $rawColumn;
                     }
-
-                } else {
-                    $columns[] = $rawColumn;
                 }
+    
+                return $columns;
             }
-
-            return $columns;
         }
 
         return [];
@@ -62,9 +62,12 @@ class CSV extends Importer {
      * returns all header including special
      */
     public function raw_source_metadata(){
-        $file =  new \SplFileObject( $this->tmp_file, 'r' );
-        $file->seek(0);
-        return $file->fgetcsv( $this->get_option('delimiter') );
+
+        if (($handle = fopen($this->tmp_file, "r")) !== false) {
+            return fgetcsv($handle, 0, $this->get_option('delimiter'));
+        }
+
+        return false;
     }
 
     /**
@@ -75,29 +78,42 @@ class CSV extends Importer {
         $headers = $this->raw_source_metadata();
 
         $this->add_log('Proccessing item index ' . $index . ' in collection ' . $collection_definition['id'] );
-        // search the index in the file and get values
-        $file =  new \SplFileObject( $this->tmp_file, 'r' );
-        $file->setFlags(\SplFileObject::SKIP_EMPTY);
-        $file->seek( $index );
+
+        if (($handle = fopen($this->tmp_file, "r")) !== false) {
+            $file = $handle;
+
+        } else {
+            $this->add_error_log(' Error reading the file ');
+            return false;
+            
+        }
 
         if( $index === 0 ){
-            $file->current();
-            $file->next();
 
-            $this->add_log(' Delimiter to parse' . $this->get_option('delimiter') );
-            $values = str_getcsv( $file->fgets(), $this->get_option('delimiter'), $this->get_option('enclosure') );
-        }else{
-            $this->add_log(' Delimiter to parse' . $this->get_option('delimiter') );
-            $values = str_getcsv( rtrim($file->fgets()), $this->get_option('delimiter'), $this->get_option('enclosure')  );
+            // moves the pointer forward
+            fgetcsv($file, 0, $this->get_option('delimiter'));
+
+        } else {
+            //get the pointer
+            $csv_pointer= $this->get_transient('csv_pointer');
+
+            if( $csv_pointer ){
+                fseek($file, $csv_pointer);
+            }
         }
+
+        $this->add_transient('csv_last_pointer', ftell($file)); // add reference to post_process item in after_inserted_item()
+		$values =  fgetcsv($file, 0, $this->get_option('delimiter'), $this->get_option('enclosure'));
+        $this->add_transient('csv_pointer', ftell($file)); // add reference for insert
 
         if( count( $headers ) !== count( $values ) ){
             $string = (is_array($values)) ? implode('::', $values ) : $values;
 
-            $this->add_log(' Mismatch count headers and row columns ');
-            $this->add_log(' Headers count: ' . count( $headers ) );
-            $this->add_log(' Values count: ' . count( $values ) );
-            $this->add_log(' Values string: ' . $string );
+            $this->add_error_log(' Mismatch count headers and row columns ');
+            $this->add_error_log(' Headers count: ' . count( $headers ) );
+            $this->add_error_log(' Values count: ' . count( $values ) );
+            $this->add_error_log(' enclosure : ' .  $enclosure );
+            $this->add_error_log(' Values string: ' . $string );
             return false;
         }
         
@@ -120,7 +136,6 @@ class CSV extends Importer {
         }
         
         $this->add_log('Success to proccess index: ' . $index  );
-        $this->add_transient('actual_index', $index); // add reference for insert
         return $processedItem;
     }
 
@@ -133,17 +148,17 @@ class CSV extends Importer {
 
         if( !empty($column_document) || !empty( $column_attachment ) ){
             
-            $index = $this->get_transient('actual_index');
-            $file =  new \SplFileObject( $this->tmp_file, 'r' );
-            $file->setFlags(\SplFileObject::SKIP_EMPTY);
-            $file->seek( $index );
-
-            if( $index === 0 ){
-                $file->current();
-                $file->next();
-            }
-
-            $values = str_getcsv( rtrim($file->fgets()), $this->get_option('delimiter'), $this->get_option('enclosure')  );
+			if (($handle = fopen($this->tmp_file, "r")) !== false) {
+	            $file = $handle;
+	        } else {
+	            $this->add_error_log(' Error reading the file ');
+	            return false;
+	        }
+			
+			$csv_pointer= $this->get_transient('csv_last_pointer');
+			fseek($file, $csv_pointer);
+			
+            $values = fgetcsv($file, 0, $this->get_option('delimiter'), $this->get_option('enclosure'));
             
             if( is_array($values) && !empty($column_document) ){
                 $this->handle_document( $values[$column_document], $inserted_item);
@@ -159,14 +174,17 @@ class CSV extends Importer {
      * @inheritdoc
      */
     public function get_source_number_of_items(){
-        if (isset($this->tmp_file) && file_exists($this->tmp_file)) {
-            $file = new \SplFileObject( $this->tmp_file, 'r' );
-            $file->seek(PHP_INT_MAX);
-            // -1 removing header
-            return $this->total_items = $file->key() - 1;
+        if ( isset($this->tmp_file) && file_exists($this->tmp_file) && ($handle = fopen($this->tmp_file, "r")) !== false) {
+            $cont = 0;
+
+            while ( ($data = fgetcsv($handle, 0, $this->get_option('delimiter')) ) !== false ) {
+                $cont++; 
+            }
+
+            // does not count the header
+            return $cont - 1;
         }
         return false;
-        
     }
 
     
@@ -329,6 +347,7 @@ class CSV extends Importer {
      */
     private function handle_document($column_value, $item_inserted){
         $TainacanMedia = \Tainacan\Media::get_instance();
+		$this->items_repo->disable_logs();
 
         if( strpos($column_value,'url:') === 0 ){
             $correct_value = trim(substr($column_value, 4));
@@ -393,6 +412,8 @@ class CSV extends Importer {
             $this->add_log('Setting item thumbnail: ' . $thumb_id);
             set_post_thumbnail( $item_inserted->get_id(), (int) $thumb_id );
         }
+		
+		$this->items_repo->enable_logs();
 
         return true;
 
@@ -403,6 +424,8 @@ class CSV extends Importer {
      */
     private function handle_attachment( $column_value, $item_inserted){
         $TainacanMedia = \Tainacan\Media::get_instance();
+		
+		$this->items_repo->disable_logs();
 
         $attachments = explode( $this->get_option('multivalued_delimiter'), $column_value);
 
@@ -433,5 +456,8 @@ class CSV extends Importer {
                 $this->add_log('Attachment file in Server imported from ' . $attachment);
             }
        }
+	   
+	   $this->items_repo->enable_logs();
+	   
     }
 }

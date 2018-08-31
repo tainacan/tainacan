@@ -14,9 +14,9 @@
     }
 
     .tainacan-grid-item {
-        max-width: 258px;
+        max-width: 255px;
         flex-basis: 0;
-        margin: 1rem 1.5rem 1.5rem 1.5rem;
+        margin: 15px;
         text-align: center;
         height: 100%;
 
@@ -33,11 +33,12 @@
             position: relative;
             float: right;
             width: 100%;
+            height: 30px;
             display: flex;
             justify-content: flex-end;
             visibility: hidden;
             opacity: 0;
-            padding: 8px;
+            padding: 3px 8px;
             transition: visibility 0.2s, opacity 0.2s;
             margin-top: -43px;
             background-color: $gray2;
@@ -51,16 +52,12 @@
         &:hover .actions-area { 
             visibility: visible;
             opacity: 1.0;
-        }
-        &.selected-grid-item {
-            .actions-area {
-                background-color: $turquoise1;
-            }
+            background-color: $gray2 !important;
         }
 
         img {
-            min-width: 258px;
-            max-width: 258px;
+            min-width: 255px;
+            max-width: 255px;
             height: auto;
             border-radius: 0px;
             margin-bottom: -5px;

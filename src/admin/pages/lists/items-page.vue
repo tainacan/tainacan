@@ -30,9 +30,10 @@
         </button>
 
         <!-- Side bar with search and filters -->
+        <!-- <transition name="filters-menu"> -->
         <aside
                 :style="{ top: searchControlHeight + 'px' }"
-                v-show="!isFiltersMenuCompressed && !openAdvancedSearch"
+                v-if="!isFiltersMenuCompressed && !openAdvancedSearch"
                 class="filters-menu tainacan-form is-hidden-mobile">
             <b-loading
                     :is-full-page="false"
@@ -57,7 +58,7 @@
             </div>
             <a
                     @click="openAdvancedSearch = !openAdvancedSearch"
-                    class="is-size-7 has-text-secondary is-pulled-right is-hidden-mobile">{{ $i18n.get('advanced_search') }}</a>
+                    class="is-size-7 is-pulled-right is-hidden-mobile">{{ $i18n.get('advanced_search') }}</a>
             
             <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
             <a
@@ -105,7 +106,7 @@
             </section>
 
         </aside>
-        
+        <!-- </transition> -->
         <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
         <div 
                 id="items-list-area"
@@ -116,7 +117,7 @@
             <filters-tags-list 
                     class="filter-tags-list"
                     :filters="filters"
-                    v-if="hasFiltered">Teste</filters-tags-list>
+                    v-if="hasFiltered && !openAdvancedSearch">Teste</filters-tags-list>
 
             <!-- SEARCH CONTROL ------------------------- -->
             <div
@@ -174,7 +175,7 @@
                     <b-dropdown
                             ref="displayedMetadataDropdown"
                             :mobile-modal="true"
-                            :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards'"
+                            :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry'"
                             class="show">
                         <button
                                 class="button is-white"
@@ -491,6 +492,7 @@
                         :collection-id="collectionId"
                         :table-metadata="displayedMetadata"
                         :items="items"
+                        :total-items="totalItems"
                         :is-loading="isLoadingItems"
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"/>
@@ -505,6 +507,7 @@
                         :collection-id="collectionId"
                         :table-metadata="displayedMetadata"
                         :items="items"
+                        :total-items="totalItems"
                         :is-loading="isLoadingItems"
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"/>
@@ -530,6 +533,7 @@
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata"
                         :items="items"
+                        :total-items="totalItems"
                         :is-loading="isLoadingItems"
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/> 
                 
@@ -552,6 +556,7 @@
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata"
                         :items="items"
+                        :total-items="totalItems"
                         :is-loading="isLoadingItems"
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>     
 
@@ -576,7 +581,7 @@
                                 class="button is-secondary"
                                 :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
                             {{ $i18n.getFrom('items', 'add_new') }}
-                        </router-link>
+                        </router-link> 
                     </div>
                 </section>
 
@@ -953,19 +958,21 @@
                                     //         display = false;
                                     // }
 
-                                    metadata.push(
-                                        {
+                                    metadata.push({
                                             name: metadatum.name,
                                             metadatum: metadatum.description,
                                             slug: metadatum.slug,
                                             metadata_type: metadatum.metadata_type,
                                             metadata_type_object: metadatum.metadata_type_object,
+                                            metadata_type_options: metadatum.metadata_type_options,
                                             id: metadatum.id,
-                                            display: display
-                                        }
-                                    );    
-                                    if (display)
-                                        fetchOnlyMetadatumIds.push(metadatum.id);                      
+                                            display: display,
+                                            collection_id: metadatum.collection_id,
+                                            multiple: metadatum.multiple,
+                                    });
+                                    if (display) {
+                                        fetchOnlyMetadatumIds.push(metadatum.id);
+                                    }
                                 }
                                 this.sortingMetadata.push(metadatum);
                             }
@@ -1033,7 +1040,7 @@
                                     display: authorNameMetadatumDisplay
                                 });
                             }
-                        // Loads only basic attributes necessay to view modes that do not allow custom meta
+                        // Loads only basic attributes necessary to view modes that do not allow custom meta
                         } else {
                        
                             this.$eventBusSearch.addFetchOnly({
