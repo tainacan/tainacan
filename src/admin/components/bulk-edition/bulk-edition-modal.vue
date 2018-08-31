@@ -9,7 +9,7 @@
             <hr>
         </header>
         <div class="tainacan-form">
-            <div class="modal-card-body">
+            <div class="modal-card-body no-overflow-modal-card-body">
                 <div
                         v-for="criterion in editionCriteria"
                         :key="criterion"
@@ -501,7 +501,7 @@
         border-radius: 10px;
     }
 
-    .modal-card-body {
+    .no-overflow-modal-card-body {
         padding: 0 !important;
         overflow: unset !important;
     }
