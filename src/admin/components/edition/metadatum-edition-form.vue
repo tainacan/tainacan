@@ -5,16 +5,6 @@
             :class="{ 'inCollapse': !isOnModal }"
             @submit.prevent="saveEdition(editForm)">
 
-        <!-- Hook for extra Form options -->
-        <template 
-                v-if="formHooks != undefined && 
-                    formHooks['metadatum'] != undefined &&
-                    formHooks['metadatum']['begin-left'] != undefined">  
-            <form 
-                id="form-metadatum-begin"
-                v-html="formHooks['metadatum']['begin-left'].join('')"/>
-        </template>
-
         <b-field
                 :addons="false"
                 :type="formErrors['name'] != undefined ? 'is-danger' : ''"
@@ -33,6 +23,16 @@
                     name="name"
                     @focus="clearErrors('name')"/>
         </b-field>
+
+        <!-- Hook for extra Form options -->
+        <template 
+                v-if="formHooks != undefined && 
+                    formHooks['metadatum'] != undefined &&
+                    formHooks['metadatum']['begin-left'] != undefined">  
+            <form 
+                id="form-metadatum-begin-left"
+                v-html="formHooks['metadatum']['begin-left'].join('')"/>
+        </template>
 
         <b-field
                 :addons="false"
@@ -222,7 +222,7 @@
                     formHooks['metadatum'] != undefined &&
                     formHooks['metadatum']['end-left'] != undefined">  
             <form 
-                id="form-metadatum-end"
+                id="form-metadatum-end-left"
                 v-html="formHooks['metadatum']['end-left'].join('')"/>
         </template>
 
@@ -278,9 +278,13 @@
 
             this.oldForm = JSON.parse(JSON.stringify(this.originalMetadatum));
 
+        },
+        mounted() {
             // Fills hook forms with it's real values 
-            this.updateExtraFormData('metadatum', this.editForm);
-
+            this.$nextTick()
+                .then(() => {
+                    this.updateExtraFormData('metadatum', this.editForm);
+                });
         },
         beforeDestroy() {
             if (this.closedByForm) {

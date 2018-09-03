@@ -850,8 +850,11 @@ export default {
                 this.item = res;
 
                 // Fills hook forms with it's real values 
-                this.updateExtraFormData('item', this.item);
-
+                this.$nextTick()
+                    .then(() => {
+                        this.updateExtraFormData('item', this.item);
+                    });
+                    
                 // Fill this.form data with current data.
                 this.form.status = this.item.status;
                 this.form.document = this.item.document;

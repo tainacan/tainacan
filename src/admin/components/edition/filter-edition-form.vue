@@ -4,16 +4,6 @@
             class="tainacan-form" 
             @submit.prevent="saveEdition(editForm)">
 
-        <!-- Hook for extra Form options -->
-        <template 
-                v-if="formHooks != undefined && 
-                    formHooks['filter'] != undefined &&
-                    formHooks['filter']['begin-left'] != undefined">  
-            <form 
-                id="form-filter-begin"
-                v-html="formHooks['filter']['begin-left'].join('')"/>
-        </template>
-
         <b-field 
                 :addons="false"
                 :type="formErrors['name'] != undefined ? 'is-danger' : ''" 
@@ -32,6 +22,16 @@
                     name="name" 
                     @focus="clearErrors('name')"/>
         </b-field>
+
+        <!-- Hook for extra Form options -->
+        <template 
+                v-if="formHooks != undefined && 
+                    formHooks['filter'] != undefined &&
+                    formHooks['filter']['begin-left'] != undefined">  
+            <form 
+                id="form-filter-begin-left"
+                v-html="formHooks['filter']['begin-left'].join('')"/>
+        </template>
 
         <b-field
                 :addons="false" 
@@ -153,7 +153,7 @@
                     formHooks['filter'] != undefined &&
                     formHooks['filter']['end-left'] != undefined">  
             <form 
-                id="form-filter-end"
+                id="form-filter-end-left"
                 v-html="formHooks['filter']['end-left'].join('')"/>
         </template>
 
@@ -204,10 +204,13 @@ export default {
         this.formErrorMessage = this.editForm.formErrors != undefined ? this.editForm.formErrorMessage : ''; 
 
         this.oldForm = JSON.parse(JSON.stringify(this.originalFilter));
-
+    },
+    mounted() {
         // Fills hook forms with it's real values 
-        this.updateExtraFormData('filter', this.editForm);
-  
+        this.$nextTick()
+            .then(() => {
+                this.updateExtraFormData('filter', this.editForm);
+            });
     },
     beforeDestroy() {
         if (this.closedByForm) {

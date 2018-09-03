@@ -8,16 +8,6 @@
             <hr>
         </div>
 
-        <!-- Hook for extra Form options -->
-        <template 
-                v-if="formHooks != undefined && 
-                    formHooks['term'] != undefined &&
-                    formHooks['term']['begin-left'] != undefined">  
-            <form 
-                id="form-term-begin"
-                v-html="formHooks['term']['begin-left'].join('')"/>
-        </template>
-
         <!-- Header Image -------------------------------- -->
         <b-field
                 :addons="false"
@@ -72,6 +62,16 @@
                     name="name"
                     @focus="clearErrors({ name: 'name', repeated: 'repeated' })"/>
         </b-field>
+
+        <!-- Hook for extra Form options -->
+        <template 
+                v-if="formHooks != undefined && 
+                    formHooks['term'] != undefined &&
+                    formHooks['term']['begin-left'] != undefined">  
+            <form 
+                id="form-term-begin-left"
+                v-html="formHooks['term']['begin-left'].join('')"/>
+        </template>
 
         <!-- Description -------------- -->
         <b-field
@@ -138,7 +138,7 @@
                     formHooks['term'] != undefined &&
                     formHooks['term']['end-left'] != undefined">  
             <form 
-                id="form-term-end"
+                id="form-term-end-left"
                 v-html="formHooks['term']['end-left'].join('')"/>
         </template>
 
@@ -343,8 +343,11 @@
         mounted() {
             
             // Fills hook forms with it's real values 
-            this.updateExtraFormData('term', this.editForm);
- 
+            this.$nextTick()
+                .then(() => {
+                    this.updateExtraFormData('term', this.editForm);
+                });
+
             this.showCheckboxesWarning = false;
             this.hasParent = this.editForm.parent != undefined && this.editForm.parent > 0;
             this.initialParentId = this.editForm.parent;

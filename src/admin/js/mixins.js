@@ -67,7 +67,6 @@ export const formHooks = {
             for (let position of positions) {
                 if (this.formHooks[entity][position] && this.formHooks[entity][position] != undefined) {
                     let formElement = document.getElementById('form-' + entity + '-' + position);
-                    
                     if (formElement) {  
                         for (let element of formElement.elements) {
                             if (element.type == "checkbox" || (element.type == "select" && element.multiple != undefined && element.multiple == true)) {

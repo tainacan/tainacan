@@ -246,16 +246,6 @@
                 <div class="column is-1" />
                 <div class="column">
 
-                    <!-- Hook for extra Form options -->
-                    <template 
-                            v-if="formHooks != undefined && 
-                                formHooks['collection'] != undefined &&
-                                formHooks['collection']['begin-right'] != undefined">  
-                        <form 
-                            id="form-collection-begin-right"
-                            v-html="formHooks['collection']['begin-right'].join('')"/>
-                    </template>
-
                     <!-- Status -------------------------------- --> 
                     <b-field
                             :addons="false" 
@@ -315,7 +305,17 @@
                             </div>     
                         </div>
                     </b-field>
-                        
+                    
+                    <!-- Hook for extra Form options -->
+                    <template 
+                            v-if="formHooks != undefined && 
+                                formHooks['collection'] != undefined &&
+                                formHooks['collection']['begin-right'] != undefined">  
+                        <form 
+                            id="form-collection-begin-right"
+                            v-html="formHooks['collection']['begin-right'].join('')"/>
+                    </template>
+
                     <!-- Description -------------------------------- --> 
                     <b-field
                             :addons="false" 

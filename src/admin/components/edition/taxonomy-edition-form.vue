@@ -9,16 +9,6 @@
                             class="tainacan-form" 
                             label-width="120px">
 
-                        <!-- Hook for extra Form options -->
-                        <template 
-                                v-if="formHooks != undefined && 
-                                    formHooks['taxonomy'] != undefined &&
-                                    formHooks['taxonomy']['begin-left'] != undefined">  
-                            <form 
-                                id="form-taxonomy-begin"
-                                v-html="formHooks['taxonomy']['begin-left'].join('')"/>
-                        </template>
-
                         <!-- Name -------------------------------- -->
                         <b-field
                                 :addons="false"
@@ -34,6 +24,16 @@
                                     @focus="clearErrors('name')"
                                     @blur="updateSlug()"/>
                         </b-field>
+
+                        <!-- Hook for extra Form options -->
+                        <template 
+                                v-if="formHooks != undefined && 
+                                    formHooks['taxonomy'] != undefined &&
+                                    formHooks['taxonomy']['begin-left'] != undefined">  
+                            <form 
+                                id="form-taxonomy-begin-left"
+                                v-html="formHooks['taxonomy']['begin-left'].join('')"/>
+                        </template>
 
                         <!-- Description -------------------------------- -->
                         <b-field
@@ -115,7 +115,7 @@
                                     formHooks['taxonomy'] != undefined &&
                                     formHooks['taxonomy']['end-left'] != undefined">  
                             <form 
-                                id="form-taxonomy-end"
+                                id="form-taxonomy-end-left"
                                 v-html="formHooks['taxonomy']['end-left'].join('')"/>
                         </template>
 
@@ -362,7 +362,10 @@
                     this.taxonomy = res.taxonomy;
 
                     // Fills hook forms with it's real values 
-                    this.updateExtraFormData('taxonomy', this.taxonomy);
+                    this.$nextTick()
+                        .then(() => {
+                            this.updateExtraFormData('taxonomy', this.taxonomy);
+                        });
 
                     // Fill this.form data with current data.
                     this.form.name = this.taxonomy.name;
