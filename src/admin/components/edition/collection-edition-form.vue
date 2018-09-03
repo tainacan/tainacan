@@ -216,10 +216,10 @@
                                 size="is-small"
                                 true-value="open" 
                                 false-value="closed"
-                                v-model="form.comment_status" />
+                                v-model="form.allow_comments" />
                         <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'comment_status')" 
-                                :message="$i18n.getHelperMessage('collections', 'comment_status')"/>
+                                :title="$i18n.getHelperTitle('collections', 'allow_comments')" 
+                                :message="$i18n.getHelperMessage('collections', 'allow_comments')"/>
                     </b-field>
                 </div>
                 <div class="column is-1" />
@@ -440,7 +440,7 @@ export default {
                 moderators_ids: [],
                 enabled_view_modes: [],
                 default_view_mode: [],
-                comment_status: ''
+                allow_comments: ''
             },
             thumbnail: {},
             cover: {},
@@ -544,7 +544,7 @@ export default {
                 parent: this.form.parent,
                 enabled_view_modes: this.form.enabled_view_modes,
                 default_view_mode: this.form.default_view_mode,
-                comment_status: this.form.comment_status
+                allow_comments: this.form.allow_comments
             };
             this.updateCollection(data).then(updatedCollection => {    
                 
@@ -559,7 +559,7 @@ export default {
                 this.form.enable_cover_page = this.collection.enable_cover_page;
                 this.form.enabled_view_modes = this.collection.enabled_view_modes;
                 this.form.default_view_mode = this.collection.default_view_mode;
-                this.form.comment_status = this.collection.comment_status;
+                this.form.allow_comments = this.collection.allow_comments;
 
                 this.isLoading = false;
                 this.formErrorMessage = '';
@@ -604,7 +604,7 @@ export default {
                 this.form.default_view_mode = this.collection.default_view_mode;
                 this.form.enabled_view_modes = [];
                 this.moderators = [];
-                this.form.comment_status = this.collection.comment_status;
+                this.form.allow_comments = this.collection.allow_comments;
 
                 // Pre-fill status with publish to incentivate it
                 this.form.status = 'publish';
@@ -791,7 +791,7 @@ export default {
                 this.form.default_view_mode = this.collection.default_view_mode;
                 this.form.enabled_view_modes = JSON.parse(JSON.stringify(this.collection.enabled_view_modes));
                 this.moderators = JSON.parse(JSON.stringify(this.collection.moderators));
-                this.form.comment_status = this.collection.comment_status;
+                this.form.allow_comments = this.collection.allow_comments;
                  
                 // Generates CoverPage from current cover_page_id info
                 if (this.form.cover_page_id != undefined && this.form.cover_page_id != '') {

@@ -347,6 +347,7 @@ export default {
             this.deleteTerm({taxonomyId: this.taxonomyId, termId: term.id })
                 .then(() => {
                     this.searchTerms(this.offset);
+                    this.totalTerms--;
                 })
                 .catch((error) => {
                     this.$console.log(error);

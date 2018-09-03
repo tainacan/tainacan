@@ -88,7 +88,7 @@
                     <b-field
                             :addons="false" 
                             :label="$i18n.get('label_comment_status')"
-                            v-if="collectionCommentStatus == 'open'">
+                            v-if="collectionAllowComments == 'open'">
                         <b-switch
                                 id="tainacan-checkbox-comment-status" 
                                 size="is-small"
@@ -274,7 +274,7 @@
                 collectionName: '',
                 thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
                 urls_open: false,
-                collectionCommentStatus: ''
+                collectionAllowComments: ''
             }
         },
         components: {
@@ -289,7 +289,7 @@
             ]),
             ...mapActions('collection', [
                 'fetchCollectionName',
-                'fetchCollectionCommentStatus'
+                'fetchCollectionAllowComments'
             ]),
             ...mapGetters('item', [
                 'getItem',
@@ -374,8 +374,8 @@
             this.fetchAttachments(this.itemId);
             
             // Obtains collection Comment Status
-            this.fetchCollectionCommentStatus(this.collectionId).then((collectionCommentStatus) => {
-                this.collectionCommentStatus = collectionCommentStatus;
+            this.fetchCollectionAllowComments(this.collectionId).then((collectionAllowComments) => {
+                this.collectionAllowComments = collectionAllowComments;
             });
         }
 
