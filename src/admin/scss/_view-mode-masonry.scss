@@ -17,7 +17,7 @@
         display: block;
         width: 100%;
         flex-basis: 0;
-        margin-bottom: 30px;
+        margin-bottom: 25px;
         text-align: center;
         text-decoration: none;
         transition: background-color 0.3s;
@@ -39,12 +39,10 @@
             justify-content: flex-end;
             visibility: hidden;
             opacity: 0;
-            padding: 8px;
+            padding: 2px 8px;
             transition: visibility 0.2s, opacity 0.2s;
-            margin-top: -43px;
+            margin-top: -31px;
             background-color: $gray2;
-            border-bottom-left-radius: 2px;
-            border-bottom-right-radius: 2px;
 
             a {
                 margin-left: 12px;

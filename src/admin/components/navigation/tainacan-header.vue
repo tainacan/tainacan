@@ -211,7 +211,6 @@
                     .search-header {
                         border: 1px solid $gray2 !important;
                         height: 27px;
-                        font-size: 11px;
                         transition: width linear 0.15s;
                         -webkit-transition: width linear 0.15s;
                         width: 220px;

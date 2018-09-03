@@ -14,13 +14,16 @@
         .metadata-title {
             background-color: $turquoise2;
         }
+        .media {
+            background-color: $turquoise1;
+        }
     }
 
     .tainacan-record {
         background-color: #f6f6f6;
         padding: 0px;
         flex-basis: 0;
-        margin: 0 auto 42px auto;
+        margin: 0 auto 30px auto;
         width: 100%;
         max-width: 425px;
         min-height: 100px;
@@ -35,12 +38,12 @@
         .record-checkbox {
             position: absolute;
             margin-left: 1.0rem;
-            margin-top: 9px;
+            margin-top: 7px;
         }
         .actions-area {
             position: relative;
             float: right;
-            top: -7px;
+            top: -5px;
             padding-right: 12px;
             width: 80px;
             display: flex;
@@ -64,7 +67,7 @@
         }
         .thumbnail {
             float: right;
-            margin: 0 0 1.5rem 1.5rem;
+            margin: 0 0 25px 25px;
         }
         img {
             width: 120px;
@@ -73,9 +76,9 @@
         }
         .metadata-title {
             flex-shrink: 0;
-            padding: 0.75rem 4.75rem 0.75rem 2.75rem;
+            padding: 0.5rem 4.75rem 0.5rem 2.75rem;
             margin-bottom: -27px;
-            min-height: 42px;
+            min-height: 40px;
             font-size: 0.875rem !important; 
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -83,6 +86,7 @@
             color: black;
 
             p {
+                line-height: 1.7;
                 font-size: 0.875rem !important; 
                 text-overflow: ellipsis;
                 white-space: nowrap;
@@ -93,12 +97,15 @@
         &:hover .metadata-title {
             background-color: $gray2 !important;
         }
+        &:hover .media {
+            background-color: $gray1 !important;
+        }
 
         .media {
             width: 100%;
 
             .list-metadata {
-                padding: 0.75rem 1.375rem;
+                padding: 25px;
                 flex: 1;
                 font-size: 0.6875rem;
                 color: $gray4;
@@ -107,12 +114,12 @@
             
                 .metadata-label {
                     font-size: 0.75rem;
-                    margin-bottom: 0.2rem;
                     font-weight: 700;
                     color: #454647;
                 }
 
                 .metadata-value {
+                    font-size: 0.75rem;
                     margin-bottom: 1rem;
                     color: $gray4;
                 }

@@ -46,8 +46,7 @@ export default {
                 });
             },
             watch: {
-                '$route' (to, from) {
-
+                '$route'  (to, from) {
                     // Should set Collection ID from URL only when in admin.
                     if (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage')
                         this.collectionId = !this.$route.params.collectionId ? this.$route.params.collectionId : parseInt(this.$route.params.collectionId);
@@ -291,21 +290,20 @@ export default {
                     this.updateURLQueries();  
                 },
                 updateURLQueries() {
-                    this.$router.push({query: {}});
-                    this.$router.push({query: this.$store.getters['search/getPostQuery']});
+                    this.$router.replace({query: {}});
+                    this.$router.replace({query: this.$store.getters['search/getPostQuery']});
                 },
                 updateStoreFromURL() {
                     this.$store.dispatch('search/set_postquery', this.$route.query);
                 },
                 loadItems(to) {
                     
-                    // Forces fetch_only to be filled before any search happens
-                    if (this.$store.getters['search/getPostQuery']['fetch_only'] == undefined) {
-                        this.$emit( 'hasToPrepareMetadataAndFilters', to);
-                    } else {
+                    this.$emit( 'isLoadingItems', true);
 
-                        this.$emit( 'isLoadingItems', true);
-                    
+                    // Forces fetch_only to be filled before any search happens
+                    if (this.$store.getters['search/getPostQuery']['fetch_only'] == undefined) {     
+                        this.$emit( 'hasToPrepareMetadataAndFilters', to);
+                    } else {   
                         this.$store.dispatch('collection/fetchItems', {
                             'collectionId': this.collectionId,
                             'isOnTheme': (this.$route.name == null),
@@ -318,7 +316,7 @@ export default {
                             this.$emit( 'hasFiltered', res.hasFiltered);
 
                             if(res.advancedSearchResults){
-                                this.$router.push({query: this.$store.getters['search/getPostQuery'],});
+                                this.$router.replace({query: this.$store.getters['search/getPostQuery'],});
                                 this.$emit('advancedSearchResults', res.advancedSearchResults);
                             }
                         })

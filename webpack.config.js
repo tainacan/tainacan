@@ -81,7 +81,7 @@ const production = false;
 if (production === true) {
     const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-    console.log(`production: ${production}`);
+    console.log(`Production: ${production}`);
 
     module.exports.mode = 'production';
 
@@ -109,7 +109,7 @@ if (production === true) {
         }
     }
 } else {
-    console.log(`production: ${production}`);
+    console.log(`Production: ${production}`);
 
     module.exports.devtool = '';
 

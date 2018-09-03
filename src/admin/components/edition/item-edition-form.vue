@@ -29,7 +29,9 @@
                                         form.document_type != undefined && form.document_type != null &&
                                         form.document != '' && form.document_type != 'empty'">
                             <div v-if="form.document_type == 'attachment'">
-                                <div v-html="item.document_as_html" />
+                                <!-- <div v-html="item.document_as_html" /> -->
+                                <document-item :document-html="item.document_as_html"/>
+
                                 <div class="document-buttons-row">
                                     <a
                                             class="button is-rounded is-secondary"
@@ -338,14 +340,16 @@
                     </div>
 
                     <!-- Metadata from Collection-------------------------------- -->
-                    <label class="section-label">{{ $i18n.get('metadata') }}</label>
+                    <span class="section-label">
+                        <label >{{ $i18n.get('metadata') }}</label>
+                    </span>
                     <br>
                     <a
                             class="collapse-all"
                             @click="toggleCollapseAll()">
                         {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
                         <b-icon
-                                type="is-gray"
+                                type="is-turoquoise5"
                                 :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
                     </a>
                     <tainacan-form-item
@@ -437,6 +441,7 @@ import { mapActions, mapGetters } from 'vuex';
 import { eventBus } from '../../../js/event-bus-web-components.js'
 import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
+import DocumentItem from '../other/document-item.vue';
 import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
@@ -500,7 +505,8 @@ export default {
         }
     },
     components: {
-        FileItem
+        FileItem,
+        DocumentItem
     },
     methods: {
         ...mapActions('item', [

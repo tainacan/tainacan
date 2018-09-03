@@ -4,6 +4,7 @@
                 :class="{'has-content': dateValue !== undefined && dateValue !== ''}"
                 class="control is-inline">
             <input
+                    :disabled="disabled"
                     class="input"
                     type="text"
                     v-mask="dateMask"
@@ -65,6 +66,7 @@
                 type: Object
             },
             value: [String, Number, Array],
+            disabled: false,
         },
         methods: {
             onBlur() {

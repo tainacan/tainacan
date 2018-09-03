@@ -177,9 +177,9 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 				// No data to process.
 				wp_die();
 			}
-
-			check_ajax_referer( $this->identifier, 'nonce' );
-
+			$this->debug('checking nonce');
+			//check_ajax_referer( $this->identifier, 'nonce' );
+			$this->debug('ok!');
 			$this->handle();
 
 			wp_die();
@@ -221,6 +221,7 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		protected function is_process_running() {
 			if ( get_site_transient( $this->identifier . '_process_lock' ) ) {
 				// Process already running.
+				$this->debug('process already running');
 				return true;
 			}
 
@@ -235,6 +236,7 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		 * defined in the time_exceeded() method.
 		 */
 		protected function lock_process() {
+			$this->debug('locking process');
 			$this->start_time = time(); // Set start time of current process.
 
 			$lock_duration = ( property_exists( $this, 'queue_lock_time' ) ) ? $this->queue_lock_time : 60; // 1 minute
@@ -251,6 +253,7 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		 * @return $this
 		 */
 		protected function unlock_process() {
+			$this->debug('unlocking process');
 			delete_site_transient( $this->identifier . '_process_lock' );
 
 			return $this;
@@ -441,17 +444,21 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		 * and data exists in the queue.
 		 */
 		public function handle_cron_healthcheck() {
+			$this->debug('running handle_cron_healthcheck');
 			if ( $this->is_process_running() ) {
 				// Background process already running.
+				$this->debug('running handle_cron_healthcheck: process running');
 				exit;
 			}
 
 			if ( $this->is_queue_empty() ) {
 				// No data to process.
+				$this->debug('running handle_cron_healthcheck: queue empty');
 				$this->clear_scheduled_event();
 				exit;
 			}
 
+			$this->debug('running handle_cron_healthcheck: dispatching');
 			$this->dispatch();
 
 			exit;
@@ -475,6 +482,7 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 				exit;
 			}
 
+			$this->debug('handle_cron_healthcheck_check scheduling event');
 			$this->schedule_event();
 
 		}
@@ -485,6 +493,7 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		protected function schedule_event() {
 			if ( ! wp_next_scheduled( $this->cron_hook_identifier ) ) {
 				wp_schedule_event( time(), $this->cron_interval_identifier, $this->cron_hook_identifier );
+				$this->debug('cron event scheduled');
 			}
 		}
 
@@ -496,6 +505,7 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 
 			if ( $timestamp ) {
 				wp_unschedule_event( $timestamp, $this->cron_hook_identifier );
+				$this->debug('cron event unscheduled');
 			}
 		}
 
@@ -529,6 +539,19 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		 * @return mixed
 		 */
 		abstract protected function task( $item );
+
+		/**
+		 * desperate method to help debug bg processes
+		 */
+		public function debug($message) {
+			if ( !defined('TAINACAN_DEBUG_BG_PROCESS') || true !== TAINACAN_DEBUG_BG_PROCESS || !is_string($message) ) {
+				return;
+			}
+
+			$message = 'BG_PROCESS: ' . $message;
+			error_log($message);
+			
+		}
 
 	}
 }

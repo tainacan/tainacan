@@ -25,7 +25,8 @@
                                         item.document !== '' && item.document_type !== 'empty'">
 
                             <div v-if="item.document_type === 'attachment'">
-                                <div v-html="item.document_as_html"/>
+                                <!-- <div v-html="item.document_as_html"/> -->
+                                <document-item :document-html="item.document_as_html"/>
                             </div>
 
                             <div v-else-if="item.document_type === 'text'">
@@ -244,6 +245,7 @@
                         {{ $i18n.getFrom('items','edit_item') }}
                     </router-link>
                     <a
+                            target="_blank"
                             class="button is-success is-pulled-right"
                             :href="item.url">
                         {{ $i18n.getFrom('items', 'view_item') }}
@@ -257,6 +259,7 @@
 <script>
     import {mapActions, mapGetters} from 'vuex'
     import FileItem from '../../components/other/file-item.vue';
+    import DocumentItem from '../../components/other/document-item.vue';
 
     export default {
         name: 'ItemPage',
@@ -275,7 +278,8 @@
             }
         },
         components: {
-            FileItem
+            FileItem,
+            DocumentItem
         },
         methods: {
             ...mapActions('item', [

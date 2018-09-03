@@ -54,7 +54,7 @@
             </div>
             <a
                     @click="openAdvancedSearch = !openAdvancedSearch"
-                    class="is-size-7 has-text-secondary is-pulled-right is-hidden-mobile">{{ $i18n.get('advanced_search') }}</a>
+                    class="is-size-7 is-pulled-right is-hidden-mobile">{{ $i18n.get('advanced_search') }}</a>
             
             <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
             <a
@@ -113,7 +113,7 @@
             <filters-tags-list 
                     class="filter-tags-list"
                     :filters="filters"
-                    v-if="hasFiltered">Teste</filters-tags-list>
+                    v-if="hasFiltered && !openAdvancedSearch">Teste</filters-tags-list>
 
             <!-- SEARCH CONTROL ------------------------- -->
             <div
@@ -171,7 +171,7 @@
                     <b-dropdown
                             ref="displayedMetadataDropdown"
                             :mobile-modal="true"
-                            :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards'"
+                            :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry'"
                             class="show">
                         <button
                                 class="button is-white"
@@ -557,9 +557,7 @@
                         class="section">
                     <div class="content has-text-grey has-text-centered">
                         <p>
-                            <b-icon
-                                    icon="inbox"
-                                    size="is-large"/>
+                            <b-icon icon="file-multiple"/>
                         </p>
                         <p v-if="status == undefined || status == ''">{{ hasFiltered ? $i18n.get('info_no_item_found_filter') : $i18n.get('info_no_item_created') }}</p>
                         <p v-if="status == 'draft'">{{ $i18n.get('info_no_item_draft') }}</p>

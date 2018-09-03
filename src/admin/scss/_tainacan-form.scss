@@ -18,7 +18,7 @@
         }
     }
     .field:not(:last-child) {
-        margin-bottom: 1.125rem;
+        margin-bottom: 1.5rem;
     }
     .field>.field:not(:last-child) {
         margin-bottom: 0.5rem;
@@ -38,16 +38,10 @@
             color: $danger;
         }
     }
-    .input, .textarea {
-        background-color: white;
-        border: 1px solid $gray2;
-        color: $tainacan-input-color;
-        transition: background-color 0.1s;
-
+    .input, .textarea { 
         &.is-danger {
-          background-color: #e7dede;  
+          background-color: $red1;  
         }
-
     }
     .control{
         &.has-icons-right {
@@ -111,6 +105,9 @@
         }
     }
     .upload-draggable {
+        color: $gray4;
+        transition: color 0.2s background-color 0.2s;
         border-radius: 0 !important;
+        border-color: $gray2;
     }
 }

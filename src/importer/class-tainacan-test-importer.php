@@ -690,7 +690,9 @@ class Test_Importer extends Importer {
 		$metadatum->set_name($args['name']);
 		$metadatum->set_collection($collection);
 		$metadatum->set_metadata_type($args['type']);
-		$metadatum->set_metadata_type_options($args['options']);
+		if ( isset($args['options']) ) {
+			$metadatum->set_metadata_type_options($args['options']);
+		}
 		$metadatum->set_status('publish');
 		if ($metadatum->validate()) {
 			$metadatum = $this->metadata_repo->insert($metadatum);

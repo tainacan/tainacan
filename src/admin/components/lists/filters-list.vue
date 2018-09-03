@@ -26,7 +26,7 @@
                         v-model="activeFilterList" 
                         :options="{
                             group: { name:'filters', pull: false, put: true }, 
-                            sort: openedFilterId == '' || openedFilterId == undefined, 
+                            sort: (openedFilterId == '' || openedFilterId == undefined) && !isRepositoryLevel, 
                             //disabled: openedFilterId != '' && openedFilterId != undefined,
                             handle: '.handle', 
                             ghostClass: 'sortable-ghost',
@@ -35,7 +35,7 @@
                     <div  
                             class="active-filter-item" 
                             :class="{
-                                'not-sortable-item': (filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true),
+                                'not-sortable-item': (filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || isRepositoryLevel),
                                 'not-focusable-item': openedFilterId == filter.id, 
                                 'disabled-filter': filter.enabled == false,
                                 'inherited-filter': filter.collection_id != collectionId || isRepositoryLevel
@@ -71,6 +71,7 @@
                                     class="controls" 
                                     v-if="filter.filter_type != undefined">
                                 <b-switch
+                                        v-if="!isRepositoryLevel"
                                         :disabled="isUpdatingFiltersOrder" 
                                         size="is-small" 
                                         :value="filter.enabled" 
@@ -123,15 +124,17 @@
                                 </div>
                             </form>
                         </div>
-                        <b-field v-if="openedFilterId == filter.id">
-                            <filter-edition-form
-                                    @onEditionFinished="onEditionFinished()"
-                                    @onEditionCanceled="onEditionCanceled()"
-                                    @onErrorFound="formWithErrors = filter.id"
-                                    :index="index"
-                                    :original-filter="filter"
-                                    :edited-filter="editForms[openedFilterId]"/>
-                        </b-field>
+                        <transition name="form-collapse">
+                            <b-field v-if="openedFilterId == filter.id">
+                                <filter-edition-form
+                                        @onEditionFinished="onEditionFinished()"
+                                        @onEditionCanceled="onEditionCanceled()"
+                                        @onErrorFound="formWithErrors = filter.id"
+                                        :index="index"
+                                        :original-filter="filter"
+                                        :edited-filter="editForms[openedFilterId]"/>
+                            </b-field>
+                        </transition>
                     </div>
                 </draggable>
             </div>
@@ -204,7 +207,7 @@ export default {
             isLoadingFilters: false,
             isLoadingFilterTypes: false,
             isLoadingFilter: false,
-            iisUpdatingFiltersOrder: false,
+            isUpdatingFiltersOrder: false,
             openedFilterId: '',
             formWithErrors: '',
             editForms: {},
@@ -292,8 +295,8 @@ export default {
             }
             this.isUpdatingFiltersOrder = true;
             this.updateCollectionFiltersOrder({ collectionId: this.collectionId, filtersOrder: filtersOrder })
-                .then(() => this.isUpdatingFiltersOrder = false)
-                .catch(() => this.isUpdatingFiltersOrder = false);
+                .then(() => { this.isUpdatingFiltersOrder = false; })
+                .catch(() => { this.isUpdatingFiltersOrder = false });
         },
         updateListOfMetadata() {
 
@@ -532,6 +535,10 @@ export default {
             transition: top 0.1s ease;
             cursor: grab;
         
+            &>.field, form {
+                background-color: white !important;
+            }
+
             .handle {
                 padding-right: 6em;
             }
@@ -608,6 +615,10 @@ export default {
             background-color: $secondary;
             border-color: $secondary;
             color: white !important;
+
+            &>.field, form {
+                background-color: white !important;
+            }
 
             .grip-icon { 
                 fill: $white;

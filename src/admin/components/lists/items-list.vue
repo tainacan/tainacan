@@ -8,13 +8,20 @@
                             @click.native="selectAllItemsOnPage()"
                             :value="allItemsOnPageSelected">{{ $i18n.get('label_select_all_items_page') }}</b-checkbox>
                 </span>
+
+                <span v-if="allItemsOnPageSelected">
+                    <b-checkbox
+                            @click.native="selectAllItems()"
+                            v-model="isAllItemsSelected">{{ $i18n.get('label_select_all_items') }}</b-checkbox>
+                    <small v-if="isAllItemsSelected">{{ `(${ totalItems } ${ $i18n.get('info_items_selected') })` }}</small>
+                </span>
             </div>
             <div class="field is-pulled-right">
                 <b-dropdown
                         :mobile-modal="true"
                         position="is-bottom-left"
                         v-if="items.length > 0 && items[0].current_user_can_edit"
-                        :disabled="!isSelectingItems"
+                        :disabled="selectedItemsIDs.every(id => id === false) || this.selectedItemsIDs.filter(item => item !== false).length <= 1"
                         id="bulk-actions-dropdown">
                     <button
                             class="button is-white"
@@ -28,7 +35,9 @@
                             id="item-delete-selected-items">
                         {{ isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('label_send_to_trash') }}
                     </b-dropdown-item>
-                    <b-dropdown-item disabled>{{ $i18n.get('label_edit_selected_items') + ' (Not ready)' }}
+                    <b-dropdown-item
+                            @click="openBulkEditionModal()">
+                        {{ $i18n.get('label_edit_selected_items') }}
                     </b-dropdown-item>
                 </b-dropdown>
             </div>
@@ -105,7 +114,7 @@
             <masonry 
                     v-if="viewMode == 'masonry'"
                     :cols="{default: 7, 1919: 6, 1407: 5, 1215: 4, 1023: 3, 767: 2, 343: 1}"
-                    :gutter="30"
+                    :gutter="25"
                     class="tainacan-masonry-container">
                 <div
                         :key="index"
@@ -140,8 +149,8 @@
                             @click="onClickItem($event, item, index)"
                             v-if="item.thumbnail != undefined"
                             class="thumbnail"
-                            :style="{ backgroundImage: 'url(' + (item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)) + ')' }">  
-                        <img :src="item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)">  
+                            :style="{ backgroundImage: 'url(' + (item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)) + ')' }">
+                        <img :src="item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)">
                     </div>
                     
                     <!-- Actions -->
@@ -243,7 +252,7 @@
                                         placement: 'auto-start'
                                     }"   
                                     class="metadata-description"
-                                    v-html="item.description != undefined ? getLimitedDescription(item.description) : ''" />                             
+                                    v-html="item.description != undefined ? getLimitedDescription(item.description) : ''" />
                             <!-- Author-->
                             <p 
                                     v-tooltip="{
@@ -273,9 +282,9 @@
             </div>
 
             <!-- RECORDS VIEW MODE -->
-            <masonry 
+            <masonry
                     :cols="{default: 4, 1919: 3, 1407: 2, 1215: 2, 1023: 1, 767: 1, 343: 1}"
-                    :gutter="42"
+                    :gutter="30" 
                     class="tainacan-records-container"
                     v-if="viewMode == 'records'">
                 <div 
@@ -288,13 +297,13 @@
                     <div 
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="record-checkbox">
-                        <label 
-                                tabindex="0" 
+                        <label
+                                tabindex="0"
                                 class="b-checkbox checkbox is-small">
-                            <input 
+                            <input
                                     type="checkbox"
-                                    v-model="selectedItems[index]"> 
-                                <span class="check" /> 
+                                    v-model="selectedItems[index]">
+                                <span class="check" />
                                 <span class="control-label" />
                         </label>
                     </div>
@@ -435,7 +444,7 @@
 
                         <!-- Item Displayed Metadata -->
                         <td 
-                                :key="columnIndex"    
+                                :key="columnIndex"
                                 v-for="(column, columnIndex) in tableMetadata"
                                 v-if="column.display"
                                 :label="column.name" 
@@ -543,14 +552,18 @@
 <script>
 import { mapActions } from 'vuex';
 import CustomDialog from '../other/custom-dialog.vue';
+import BulkEditionModal from '../bulk-edition/bulk-edition-modal.vue';
 
 export default {
     name: 'ItemsList',
     data(){
         return {
             allItemsOnPageSelected: false,
+            isAllItemsSelected: false,
             isSelectingItems: false,
             selectedItems: [],
+            selectedItemsIDs: [],
+            queryAllItemsSelected: {},
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
         }
     },
@@ -560,35 +573,75 @@ export default {
         items: Array,
         isLoading: false,
         isOnTrash: false,
+        totalItems: Number,
         viewMode: 'card'
     },
     mounted() {
         this.selectedItems = [];
-        for (let i = 0; i < this.items.length; i++)
+        this.selectedItemsIDs = [];
+
+        for (let i = 0; i < this.items.length; i++) {
+            this.selectedItemsIDs.push(false);
             this.selectedItems.push(false);
+        }
     },
     watch: {
         selectedItems() {
             let allSelected = true;
             let isSelecting = false;
-            for (let i = 0; i < this.selectedItems.length; i++) {
-                if (this.selectedItems[i] == false) {
-                    allSelected = false;
-                } else {
+
+            allSelected = !this.selectedItems.some(item => item === false);
+
+            this.selectedItems.map((item, index) => {
+                if(item === false){
+                    this.selectedItemsIDs.splice(index, 1, false);
+                    this.queryAllItemsSelected = {};
+                } else if(item === true) {
                     isSelecting = true;
+
+                    this.selectedItemsIDs.splice(index, 1, this.items[index].id);
                 }
+            });
+
+            if(!allSelected) {
+                this.isAllItemsSelected = allSelected;
             }
+
             this.allItemsOnPageSelected = allSelected;
             this.isSelectingItems = isSelecting;
-        }
+        },
     },
     methods: {
         ...mapActions('collection', [
             'deleteItem',
         ]),
+        openBulkEditionModal(){
+            this.$modal.open({
+                parent: this,
+                component: BulkEditionModal,
+                props: {
+                    modalTitle: this.$i18n.get('info_editing_items_in_bulk'),
+                    totalItems: Object.keys(this.queryAllItemsSelected).length ? this.totalItems : this.selectedItemsIDs.filter(item => item !== false).length,
+                    selectedForBulk: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItemsIDs.filter(item => item !== false),
+                    objectType: this.$i18n.get('items'),
+                    metadata: this.tableMetadata,
+                    collectionID: this.$route.params.collectionId,
+                },
+                width: 'calc(100% - 8.333333333%)',
+            });
+        },
         selectAllItemsOnPage() {
-            for (let i = 0; i < this.selectedItems.length; i++) 
+            for (let i = 0; i < this.selectedItems.length; i++) {
                 this.selectedItems.splice(i, 1, !this.allItemsOnPageSelected);
+            }
+        },
+        selectAllItems(){
+            this.isAllItemsSelected = !this.isAllItemsSelected;
+            this.queryAllItemsSelected = this.$route.query;
+
+            for (let i = 0; i < this.selectedItems.length; i++) {
+                this.selectedItems.splice(i, 1, !this.isAllItemsSelected);
+            }
         },
         deleteOneItem(itemId) {
             this.$modal.open({
@@ -670,7 +723,7 @@ export default {
         },
         onClickItem($event, item, index) {
             if ($event.ctrlKey) {
-                this.$set(this.selectedItems, index, !this.selectedItems[index]); 
+                this.$set(this.selectedItems, index, !this.selectedItems[index]);
             } else {
                 this.$router.push(this.$routerHelper.getItemPath(item.collection_id, item.id));
             }
@@ -691,7 +744,7 @@ export default {
             }
         },
         getLimitedDescription(description) {
-            let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 100 : 220;
+            let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 100 : 210;
             return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
         }
     }
