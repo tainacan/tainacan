@@ -79,7 +79,8 @@
             <div    
                     v-if="searchQuery == undefined || searchQuery == ''"
                     v-for="(term, index) in localTerms"
-                    :key="term.id">
+                    :key="term.id"
+                    class="parent-term">
                 
                 <recursive-term-item 
                         :term="term"
@@ -441,6 +442,17 @@ export default {
                 margin-left: 12px;
                 white-space: nowrap; 
             }
+        }
+    }
+
+    .parent-term>div>.term-item:first-child:hover {
+        background-color: $gray1 !important;
+        .controls {
+            visibility: visible;
+            opacity: 1.0;
+        }
+        &::before {
+            border-color: transparent transparent transparent $gray2 !important;
         }
     }
 
