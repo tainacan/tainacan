@@ -147,12 +147,9 @@
                         <b-dropdown-item disabled>
                             {{ $i18n.get('add_items_bulk') + ' (Not ready)' }}
                         </b-dropdown-item>
-                        <b-dropdown-item disabled>
-                            {{ $i18n.get('add_items_external_source') + ' (Not ready)' }}
-                        </b-dropdown-item>
                         <b-dropdown-item>
                             <div
-                                    id="a-import-collection"
+                                    id="a-import-items"
                                     tag="div"
                                     @click="onOpenImportersModal">
                                 {{ $i18n.get('label_import_items') }}

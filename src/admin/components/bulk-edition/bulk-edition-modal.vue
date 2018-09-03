@@ -21,7 +21,8 @@
                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                             :placeholder="$i18n.get('instruction_select_a_metadatum')"
                             @input="addToBulkEditionProcedures($event, 'metadatumID', criterion)">
-                        <template v-for="(metadatum, index) in metadata">
+                        <template 
+                                v-for="(metadatum, index) in metadata">
                             <option
                                     v-if="metadatum.id"
                                     :value="metadatum.id">
@@ -246,7 +247,7 @@
                             :disabled="dones.every((item) => item === true) === false"
                             class="button is-success"
                             type="button"
-                            @click="$parent.close()">
+                            @click="$eventBusSearch.loadItems(); $parent.close();">
                         {{ $i18n.get('conclude') }}
                     </button>
                 </div>
