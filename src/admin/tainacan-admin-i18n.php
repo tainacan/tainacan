@@ -33,6 +33,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'processes'                                      => __( 'Processes', 'tainacan' ),
 
 	// Actions
+	'close'                                          => __( 'Close', 'tainacan' ),
 	'edit'                                           => __( 'Edit', 'tainacan' ),
 	'settings'                                       => __( 'Settings', 'tainacan' ),
 	'new'                                            => __( 'New', 'tainacan' ),

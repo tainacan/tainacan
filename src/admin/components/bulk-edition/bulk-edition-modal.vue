@@ -229,13 +229,25 @@
             </div>
             <!--<pre>{{ bulkEditionProcedures }}</pre>-->
 
-            <footer class="field form-submit">
-                <div class="control is-pulled-right">
+            <footer class="field is-grouped form-submit">
+                <div class="control">
+                    <button
+                            @click="$parent.close()"
+                            :disabled="(Object.keys(bulkEditionProcedures).length &&
+                             bulkEditionProcedures[editionCriteria[editionCriteria.length-1]].isExecuting) ||
+                              (dones.every((item) => item === true) === true)"
+                            type="button"
+                            class="button">
+                        {{ $i18n.get('close') }}
+                    </button>
+                </div>
+                <div class="control">
                     <button
                             :disabled="dones.every((item) => item === true) === false"
                             class="button is-success"
                             type="button"
-                            @click="$parent.close()">{{ $i18n.get('conclude') }}
+                            @click="$parent.close()">
+                        {{ $i18n.get('conclude') }}
                     </button>
                 </div>
             </footer>
