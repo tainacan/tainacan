@@ -557,9 +557,7 @@
                         class="section">
                     <div class="content has-text-grey has-text-centered">
                         <p>
-                            <b-icon
-                                    icon="inbox"
-                                    size="is-large"/>
+                            <b-icon icon="file-multiple"/>
                         </p>
                         <p v-if="status == undefined || status == ''">{{ hasFiltered ? $i18n.get('info_no_item_found_filter') : $i18n.get('info_no_item_created') }}</p>
                         <p v-if="status == 'draft'">{{ $i18n.get('info_no_item_draft') }}</p>

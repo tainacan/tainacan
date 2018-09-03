@@ -112,9 +112,7 @@
         <section class="section">
             <div class="content has-text-grey has-text-centered">
                 <p>
-                    <b-icon
-                            icon="inbox"
-                            size="is-large"/>
+                    <taxonomies-icon class="taxonomies-term-icon"/>
                 </p>
                 <p>{{ $i18n.get('info_no_terms_created_on_taxonomy') }}</p>
                 <button
@@ -134,6 +132,7 @@ import { mapActions, mapGetters } from 'vuex';
 import TermEditionForm from '../edition/term-edition-form.vue';
 import RecursiveTermItem from './recursive-term-item.vue'
 import BasicTermItem from './basic-term-item.vue'
+import TaxonomiesIcon from '../other/taxonomies-icon.vue';
 import t from 't';
 
 export default {
@@ -180,7 +179,8 @@ export default {
     components: {
         RecursiveTermItem,
         BasicTermItem,
-        TermEditionForm
+        TermEditionForm,
+        TaxonomiesIcon
     },
     methods: {
         ...mapActions('taxonomy', [
@@ -391,7 +391,10 @@ export default {
 </script>
 
 <style lang="scss">
-
+    .taxonomies-term-icon {
+        height: 24px;
+        width: 24px;
+    }
     @import "../../scss/_variables.scss";
 
     .columns {
