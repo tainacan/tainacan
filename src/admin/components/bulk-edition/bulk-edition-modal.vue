@@ -234,8 +234,7 @@
                     <button
                             @click="$parent.close()"
                             :disabled="(Object.keys(bulkEditionProcedures).length &&
-                             bulkEditionProcedures[editionCriteria[editionCriteria.length-1]].isExecuting) ||
-                              (dones.every((item) => item === true) === true)"
+                             bulkEditionProcedures[editionCriteria[editionCriteria.length-1]].isExecuting) || false"
                             type="button"
                             class="button">
                         {{ $i18n.get('close') }}
@@ -511,6 +510,11 @@
 
     .tainacan-modal-content {
         border-radius: 10px;
+        min-height: 400px;
+    }
+
+    .tainacan-modal-content .form-submit {
+        padding: 120px 0 0.4em 0 !important;
     }
 
     .no-overflow-modal-card-body {
@@ -584,7 +588,7 @@
                         max-width: 100% !important;
                     }
 
-                    &:hover {
+                    &:hover, .tag {
                         background-color: white !important;
                     }
                 }
