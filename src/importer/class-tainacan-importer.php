@@ -763,6 +763,7 @@ abstract class Importer {
      */
     public function insert( $processed_item, $collection_index ) {
 		
+		remove_action( 'post_updated', 'wp_save_post_revision' );
 		$collections = $this->get_collections();
 		$collection_definition = isset($collections[$collection_index]) ? $collections[$collection_index] : false;
 		if ( !$collection_definition || !is_array($collection_definition) || !isset($collection_definition['id']) || !isset($collection_definition['mapping']) ) {
@@ -778,6 +779,7 @@ abstract class Importer {
 		
 		$Tainacan_Items->disable_logs();
 		$Tainacan_Metadata->disable_logs();
+		$Tainacan_Item_Metadata->disable_logs();
 
         $item = new Entities\Item();
 		$itemMetadataArray = [];

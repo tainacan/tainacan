@@ -1,9 +1,11 @@
 <template>
     <div class="block">
         <b-taginput
+                :disabled="disabled"
                 size="is-small"
                 icon="magnify"
                 :allow-new="allowNew"
+                :maxtags="maxtags"
                 @add="emitAdd"
                 @remove="emitRemove"
                 v-model="selected"
@@ -30,13 +32,24 @@
                 isFetching: false,
             }
         },
+        watch: {
+          selected(){
+              if(this.allowSelectToCreate && this.selected[0]){
+                  this.selected[0].label.includes(`(${this.$i18n.get('select_to_create')})`);
+                  this.selected[0].label = this.selected[0].label.split('(')[0];
+              }
+          }
+        },
         props: {
             options: {
                 type: Array
             },
             value: [ Number, String, Array ],
-            allowNew: [ Boolean ],
+            allowNew: true,
             taxonomyId: Number,
+            disabled: false,
+            allowSelectToCreate: false,
+            maxtags: '',
         },
         created(){
             if(this.value && this.value.length > 0){
@@ -73,6 +86,11 @@
                     for(let term of this.termList){
                         this.labels.push({label: term.name, value: term.id});
                     }
+
+                    if(this.termList.length <= 0 && this.allowSelectToCreate){
+                        this.labels.push({label: `${value} (${this.$i18n.get('select_to_create')})`, value: value})
+                    }
+
                     this.isFetching = false;
                 }).catch((error) => {
                     this.isFetching = false;

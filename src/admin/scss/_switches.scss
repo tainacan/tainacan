@@ -13,7 +13,7 @@
         }
     } 
     &:hover input[type="checkbox"]:checked + .check {
-        background-color: $turquoise2;
+        background-color: transparent;
     }
 
     input[type="checkbox"]:checked + .check {
@@ -31,11 +31,11 @@
 
     &:focus input[type="checkbox"] + .check,
     &:focus input[type="checkbox"]:checked + .check {
-        box-shadow: none;
+        box-shadow: none !important;
     }
 
     &.is-small {
-        font-size: 9px;
+        font-size: 8px;
 
         input[type="checkbox"] + .check {
             border: 1.5px solid $gray4;

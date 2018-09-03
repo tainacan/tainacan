@@ -45,9 +45,7 @@
                     <section class="section">
                         <div class="content has-text-grey has-text-centered">
                             <p>
-                                <b-icon
-                                        icon="inbox"
-                                        size="is-large"/>
+                                <activities-icon />
                             </p>
                             <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_process') }}</p>
                         </div>
@@ -137,6 +135,7 @@
 <script>
     import EventsList from "../../components/lists/events-list.vue";
     import ProcessesList from "../../components/lists/processes-list.vue";
+    import ActivitiesIcon from '../../components/other/activities-icon.vue';
     import { mapActions, mapGetters } from 'vuex';
     import moment from 'moment'
 
@@ -156,7 +155,8 @@
         },
         components: {
             EventsList,
-            ProcessesList
+            ProcessesList,
+            ActivitiesIcon
         },
         methods: {
             ...mapActions('event', [
@@ -183,25 +183,31 @@
                 }
             },
             onChangeEventsPerPage(value) {
+                
+                if (value != this.eventsPerPage) {
+                    this.$userPrefs.set('events_per_page', value)
+                        .then((newValue) => {
+                            this.eventsPerPage = newValue;
+                        })
+                        .catch(() => {
+                            this.$console.log("Error settings user prefs for events per page")
+                        });
+                }
                 this.eventsPerPage = value;
-                this.$userPrefs.set('events_per_page', value)
-                .then((newValue) => {
-                    this.eventsPerPage = newValue;
-                })
-                .catch(() => {
-                    this.$console.log("Error settings user prefs for events per page")
-                });
                 this.loadEvents();
             },
             onChangeProcessesPerPage(value) {
+                
+                if (value != this.processesPerPage) {
+                    this.$userPrefs.set('processes_per_page', value)
+                    .then((newValue) => {
+                        this.processesPerPage = newValue;
+                    })
+                    .catch(() => {
+                        this.$console.log("Error settings user prefs for processes per page")
+                    });
+                }
                 this.processesPerPage = value;
-                this.$userPrefs.set('processes_per_page', value)
-                .then((newValue) => {
-                    this.processesPerPage = newValue;
-                })
-                .catch(() => {
-                    this.$console.log("Error settings user prefs for processes per page")
-                });
                 this.loadProcesses();
             },
             onPageChange(page) {
@@ -307,6 +313,11 @@
 
 <style lang="scss" scoped>
     @import '../../scss/_variables.scss';
+
+    .activities-icon {
+        height: 24px;
+        width: 24px;
+    }
 
     .sub-header {
         max-height: $header-height;

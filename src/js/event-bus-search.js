@@ -46,8 +46,7 @@ export default {
                 });
             },
             watch: {
-                '$route' (to, from) {
-
+                '$route'  (to, from) {
                     // Should set Collection ID from URL only when in admin.
                     if (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage')
                         this.collectionId = !this.$route.params.collectionId ? this.$route.params.collectionId : parseInt(this.$route.params.collectionId);
@@ -159,8 +158,7 @@ export default {
                         }
                         
                         this.loadItems(to);
-                    }  
-                    
+                    }                      
                 }
             },
             methods: {
@@ -192,15 +190,14 @@ export default {
                     this.updateURLQueries();             
                 },
                 addFetchOnly( metadatum ){
-                    let prefsFetchOnly = this.collectionId != undefined ? 'fetch_only_' + this.collectionId : 'fetch_only';
-
-                    if(this.$userPrefs.get(prefsFetchOnly) != metadatum) {
-                        this.$userPrefs.set(prefsFetchOnly, metadatum)
-                            .catch(() => {});
-                    }
-                
                     this.$store.dispatch('search/add_fetchonly', metadatum );
-                    this.updateURLQueries();   
+                    this.updateURLQueries();  
+                    
+                    let prefsFetchOnly = this.collectionId != undefined ? 'fetch_only_' + this.collectionId : 'fetch_only';
+                    if (JSON.stringify(this.$userPrefs.get(prefsFetchOnly)) != JSON.stringify(metadatum)) {
+                        this.$userPrefs.set(prefsFetchOnly, metadatum)
+                            .catch(() => { this.$console.log("Error setting user prefs for fetch_only"); });
+                    }
                 },
                 cleanFetchOnly() {
                     this.$store.dispatch('search/cleanFetchOnly');
@@ -228,14 +225,14 @@ export default {
                     this.updateURLQueries();
                 },
                 setItemsPerPage(itemsPerPage) {
+                    this.$store.dispatch('search/setItemsPerPage', itemsPerPage);
+                    this.updateURLQueries();
+
                     let prefsPerPage = this.collectionId != undefined ? 'items_per_page_' + this.collectionId : 'items_per_page';
                     if(this.$userPrefs.get(prefsPerPage) != itemsPerPage) {
                         this.$userPrefs.set(prefsPerPage, itemsPerPage)
                             .catch(() => {});
                     }
-
-                    this.$store.dispatch('search/setItemsPerPage', itemsPerPage);
-                    this.updateURLQueries();
                 },
                 setOrderBy(orderBy) { 
                     let prefsOrderBy = this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by';
@@ -265,24 +262,24 @@ export default {
                     this.updateURLQueries();
                 },
                 setViewMode(viewMode) {
+                    this.$store.dispatch('search/setViewMode', viewMode);
+                    this.updateURLQueries(); 
+                    
                     let prefsViewMode = this.collectionId != undefined ? 'view_mode_' + this.collectionId : 'view_mode';
                     if(this.$userPrefs.get(prefsViewMode) != viewMode) {
                         this.$userPrefs.set(prefsViewMode, viewMode)
                             .catch(() => {});
                     }
-
-                    this.$store.dispatch('search/setViewMode', viewMode);
-                    this.updateURLQueries();  
                 },
                 setAdminViewMode(adminViewMode) {
+                    this.$store.dispatch('search/setAdminViewMode', adminViewMode);
+                    this.updateURLQueries();  
+
                     let prefsAdminViewMode = this.collectionId != undefined ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
                     if(this.$userPrefs.get(prefsAdminViewMode) != adminViewMode) {
                         this.$userPrefs.set(prefsAdminViewMode, adminViewMode)
-                            .catch(() => { });
+                            .catch(() => {  });
                     }
-
-                    this.$store.dispatch('search/setAdminViewMode', adminViewMode);
-                    this.updateURLQueries();  
                 },
                 setInitialViewMode(viewMode) {
                     this.$store.dispatch('search/setViewMode', viewMode);
@@ -293,21 +290,20 @@ export default {
                     this.updateURLQueries();  
                 },
                 updateURLQueries() {
-                    this.$router.push({query: {}});
-                    this.$router.push({query: this.$store.getters['search/getPostQuery']});
+                    this.$router.replace({query: {}});
+                    this.$router.replace({query: this.$store.getters['search/getPostQuery']});
                 },
                 updateStoreFromURL() {
                     this.$store.dispatch('search/set_postquery', this.$route.query);
                 },
                 loadItems(to) {
                     
-                    // Forces fetch_only to be filled before any search happens
-                    if (this.$store.getters['search/getPostQuery']['fetch_only'] == undefined) {
-                        this.$emit( 'hasToPrepareMetadataAndFilters', to);
-                    } else {
+                    this.$emit( 'isLoadingItems', true);
 
-                        this.$emit( 'isLoadingItems', true);
-                    
+                    // Forces fetch_only to be filled before any search happens
+                    if (this.$store.getters['search/getPostQuery']['fetch_only'] == undefined) {     
+                        this.$emit( 'hasToPrepareMetadataAndFilters', to);
+                    } else {   
                         this.$store.dispatch('collection/fetchItems', {
                             'collectionId': this.collectionId,
                             'isOnTheme': (this.$route.name == null),
@@ -320,7 +316,7 @@ export default {
                             this.$emit( 'hasFiltered', res.hasFiltered);
 
                             if(res.advancedSearchResults){
-                                this.$router.push({query: this.$store.getters['search/getPostQuery'],});
+                                this.$router.replace({query: this.$store.getters['search/getPostQuery'],});
                                 this.$emit('advancedSearchResults', res.advancedSearchResults);
                             }
                         })

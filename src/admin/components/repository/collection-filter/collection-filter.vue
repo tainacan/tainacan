@@ -2,7 +2,8 @@
     <b-field class="filter-item-forms">
         <b-collapse
                 class="show"
-                :open="open">
+                :open="open"
+                animation="filter-item">
             <label
                     class="label"
                     slot="trigger"

@@ -19,59 +19,63 @@
                     :title="metadatum.metadatum.name"
                     :message="metadatum.metadatum.description"/>
         </span>
-        <div   
-                v-show="isCollapsed || metadatumTypeMessage == 'is-danger'"
-                v-if="isTextInputComponent( metadatum.metadatum.metadata_type_object.component )">
-            <component 
-                    :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
-                    :is="metadatum.metadatum.metadata_type_object.component"
-                    v-model="inputs[0]" 
-                    :metadatum="metadatum"
-                    @input="emitIsChangingValue()"/>
-            <div v-if="metadatum.metadatum.multiple == 'yes'">
-                <div 
-                        v-if="index > 0" 
-                        v-for="(input, index) in inputsList " 
-                        :key="index" 
-                        class="multiple-inputs">
-                    <component 
-                            :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
-                            :is="metadatum.metadatum.metadata_type_object.component"
-                            v-model="inputs[index]" 
-                            :metadatum="metadatum"
-                            @input="emitIsChangingValue()"/>
-                        <a 
-                                v-if="index > 0" 
-                                @click="removeInput(index)"
-                                class="is-inline add-link">
-                            <b-icon
-                                    icon="minus-circle"
-                                    size="is-small"
-                                    type="is-secondary"/>
-                                {{ $i18n.get('label_remove_value') }}</a>
+        <transition name="filter-item">
+            <div   
+                    v-show="isCollapsed || metadatumTypeMessage == 'is-danger'"
+                    v-if="isTextInputComponent( metadatum.metadatum.metadata_type_object.component )">
+                <component 
+                        :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
+                        :is="metadatum.metadatum.metadata_type_object.component"
+                        v-model="inputs[0]" 
+                        :metadatum="metadatum"
+                        @input="emitIsChangingValue()"/>
+                <div v-if="metadatum.metadatum.multiple == 'yes'">
+                    <div 
+                            v-if="index > 0" 
+                            v-for="(input, index) in inputsList " 
+                            :key="index" 
+                            class="multiple-inputs">
+                        <component 
+                                :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
+                                :is="metadatum.metadatum.metadata_type_object.component"
+                                v-model="inputs[index]" 
+                                :metadatum="metadatum"
+                                @input="emitIsChangingValue()"/>
+                            <a 
+                                    v-if="index > 0" 
+                                    @click="removeInput(index)"
+                                    class="is-inline add-link">
+                                <b-icon
+                                        icon="minus-circle"
+                                        size="is-small"
+                                        type="is-secondary"/>
+                                    {{ $i18n.get('label_remove_value') }}</a>
+                    </div>
+
+                    <a 
+                            @click="addInput"
+                            class="is-inline add-link">
+                        <b-icon
+                                icon="plus-circle"
+                                size="is-small"
+                                type="is-secondary"/>
+                            {{ $i18n.get('label_add_value') }}</a>
+
                 </div>
-
-                <a 
-                        @click="addInput"
-                        class="is-inline add-link">
-                    <b-icon
-                            icon="plus-circle"
-                            size="is-small"
-                            type="is-secondary"/>
-                        {{ $i18n.get('label_add_value') }}</a>
-
             </div>
-        </div>
-        <div 
-                v-show="isCollapsed"
-                v-else>
-            <component
-                    :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
-                    :is="metadatum.metadatum.metadata_type_object.component"
-                    v-model="inputs"
-                    :metadatum="metadatum"
-                    @input="emitIsChangingValue()"/>
-        </div>
+        </transition>
+        <transition name="filter-item">
+            <div 
+                    v-show="isCollapsed"
+                    v-if="!isTextInputComponent( metadatum.metadatum.metadata_type_object.component )">
+                <component
+                        :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
+                        :is="metadatum.metadatum.metadata_type_object.component"
+                        v-model="inputs"
+                        :metadatum="metadatum"
+                        @input="emitIsChangingValue()"/>
+            </div>
+        </transition>
     </b-field>
 </template>
 

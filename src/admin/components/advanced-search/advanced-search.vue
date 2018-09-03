@@ -137,8 +137,7 @@
                     class="field column is-12">
                 <a
                     @click="addSearchCriteria"
-                    style="font-size: 12px;"
-                    class="has-text-secondary">
+                    style="font-size: 12px;">
                     <b-icon
                             class="add-i"
                             icon="plus-circle"

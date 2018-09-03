@@ -276,24 +276,29 @@ abstract class Background_Process extends \WP_Background_Process {
 			}
 		} while ( false !== $task && ! $this->time_exceeded() && ! $this->memory_exceeded() );
 
-		
+		$this->debug('process limit reached');
 
 		if ( false !== $task )  {
 			$this->update( $batch->key, $task );
+			$this->debug('Batch updated');
 		} else {
 			$this->close( $batch->key );
+			$this->debug('Batch closed');
 		}
 
 		$this->unlock_process();
 
 		// Start next batch or complete process.
 		if ( ! $this->is_queue_empty() ) {
+			$this->debug('Dispatch after limit reached');
 			$this->dispatch();
 		} else {
+			$this->debug('Complete');
 			$this->complete();
 			$this->write_log($batch->key, ['Process Finished']);
 		}
 
+		$this->debug('dying');
 		wp_die();
 	}
 

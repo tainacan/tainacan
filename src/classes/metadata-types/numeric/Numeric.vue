@@ -1,5 +1,6 @@
 <template>
     <b-input
+            :disabled="disabled"
             :class="{'has-content': inputValue !== undefined && inputValue !== ''}"
             :id="id"
             type="number"
@@ -28,6 +29,7 @@
                 type: Object
             },
             value: [String, Number, Array],
+            disabled: false,
         },
         methods: {
             onBlur() {

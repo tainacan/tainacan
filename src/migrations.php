@@ -273,6 +273,11 @@ class Migrations {
 
         }
 	}
+
+	static function refresh_rewrite_rules() {
+		// needed after we changed the Collections post type rewrite slug
+		flush_rewrite_rules(false);
+	}
 	
 }
 

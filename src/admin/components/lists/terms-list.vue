@@ -79,7 +79,8 @@
             <div    
                     v-if="searchQuery == undefined || searchQuery == ''"
                     v-for="(term, index) in localTerms"
-                    :key="term.id">
+                    :key="term.id"
+                    class="parent-term">
                 
                 <recursive-term-item 
                         :term="term"
@@ -112,9 +113,7 @@
         <section class="section">
             <div class="content has-text-grey has-text-centered">
                 <p>
-                    <b-icon
-                            icon="inbox"
-                            size="is-large"/>
+                    <taxonomies-icon class="taxonomies-term-icon"/>
                 </p>
                 <p>{{ $i18n.get('info_no_terms_created_on_taxonomy') }}</p>
                 <button
@@ -134,6 +133,7 @@ import { mapActions, mapGetters } from 'vuex';
 import TermEditionForm from '../edition/term-edition-form.vue';
 import RecursiveTermItem from './recursive-term-item.vue'
 import BasicTermItem from './basic-term-item.vue'
+import TaxonomiesIcon from '../other/taxonomies-icon.vue';
 import t from 't';
 
 export default {
@@ -180,7 +180,8 @@ export default {
     components: {
         RecursiveTermItem,
         BasicTermItem,
-        TermEditionForm
+        TermEditionForm,
+        TaxonomiesIcon
     },
     methods: {
         ...mapActions('taxonomy', [
@@ -358,7 +359,7 @@ export default {
         }
         this.$termsListBus.$on('editTerm', (term) => {
 
-                        // Position edit form in a visible area
+            // Position edit form in a visible area
             let container = document.getElementById('repository-container');
             if (container && container.scrollTop && container.scrollTop > 80)
                 this.termEditionFormTop = container.scrollTop - 80;
@@ -368,9 +369,12 @@ export default {
             this.editTerm = term;
             this.isEditingTerm = true;
         });
-        this.$termsListBus.$on('termEditionSaved', () => {
+        this.$termsListBus.$on('termEditionSaved', ({hasChangedParent}) => {
             this.isEditingTerm = false;
             this.editTerm = null;
+
+            if (hasChangedParent)
+                this.loadTerms(0);
         });
         this.$termsListBus.$on('termEditionCanceled', () => {
             this.isEditingTerm = false;
@@ -388,7 +392,10 @@ export default {
 </script>
 
 <style lang="scss">
-
+    .taxonomies-term-icon {
+        height: 24px;
+        width: 24px;
+    }
     @import "../../scss/_variables.scss";
 
     .columns {
@@ -435,6 +442,17 @@ export default {
                 margin-left: 12px;
                 white-space: nowrap; 
             }
+        }
+    }
+
+    .parent-term>div>.term-item:first-child:hover {
+        background-color: $gray1 !important;
+        .controls {
+            visibility: visible;
+            opacity: 1.0;
+        }
+        &::before {
+            border-color: transparent transparent transparent $gray2 !important;
         }
     }
 

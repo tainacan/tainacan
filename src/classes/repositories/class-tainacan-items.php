@@ -425,7 +425,7 @@ class Items extends Repository {
 				$TainacanMedia = \Tainacan\Media::get_instance();
 				$thumb_blob    = $TainacanMedia->get_pdf_cover( $filepath );
 				if ( $thumb_blob ) {
-					$thumb_id = $TainacanMedia->insert_attachment_from_blob( $thumb_blob, basename( $filepath ) . '-cover.jpg', $item->get_id() );
+					$thumb_id = $TainacanMedia->insert_attachment_from_blob( $thumb_blob, basename( $filepath ) . '-cover.jpg' );
 
 					return $thumb_id;
 				}
@@ -443,7 +443,7 @@ class Items extends Repository {
 					return $existing_thumb;
 				} else {
 					$TainacanMedia = \Tainacan\Media::get_instance();
-					$thumb_id      = $TainacanMedia->insert_attachment_from_url( $thumb_url, $item->get_id() );
+					$thumb_id      = $TainacanMedia->insert_attachment_from_url( $thumb_url );
 					update_post_meta( $item->get_id(), $meta_key, $thumb_id );
 
 					return $thumb_id;

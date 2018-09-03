@@ -42,11 +42,9 @@ class REST_Controller extends \WP_REST_Controller {
 	 * @return \Tainacan\Entities\Entity
 	 */
 	protected function prepare_item_for_updating($object, $new_values){
-
 		foreach ($new_values as $key => $value) {
 			$object->set($key, $value);
 		}
-
 		return $object;
 	}
 
@@ -84,8 +82,10 @@ class REST_Controller extends \WP_REST_Controller {
 			'postin'       => 'post__in',
 			'relation'     => 'relation',
 			'nopaging'     => 'nopaging',
-			'meta_key'     => 'meta_key',
-			'meta_type'    => 'meta_type'
+			'metatype'     => 'meta_type',
+			'hierarchical' => 'hierarchical',
+			'exclude'      => 'exclude',
+			'excludetree'  => 'exclude_tree'
 		];
 
 		$meta_query = [

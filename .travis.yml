@@ -56,7 +56,7 @@ before_deploy:
 - ssh-add -l
 deploy:
 - provider: script
-  script:  sshpass -p '$ssh_password' ssh $ssh_user@$ssh_host sh /home/l3p/atualiza_git/atualiza_todos.sh      #ssh   $ssh_user@$ssh_host $script_deploy_tainacan
+  script:  sshpass -p '$ssh_password' ssh $ssh_user@$ssh_host sh /home/l3p/atualiza_git/atualiza_todos.sh   #MECHI AQUI!!   #ssh   $ssh_user@$ssh_host $script_deploy_tainacan
   skip_cleanup: true
   on:
     branch: develop
