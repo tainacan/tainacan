@@ -67,11 +67,21 @@ export const formHooks = {
             for (let position of positions) {
                 if (this.formHooks[entity][position] && this.formHooks[entity][position] != undefined) {
                     let formElement = document.getElementById('form-' + entity + '-' + position);
-                    if (formElement) {
-                        let formData = new FormData(formElement);   
-                        for (let [key, value] of formData.entries()) {
-                            console.log(key, value)
-                            data[key] = value;
+                    
+                    if (formElement) {  
+                        for (let element of formElement.elements) {
+                            if (element.type == "checkbox" || (element.type == "select" && element.multiple != undefined && element.multiple == true)) {
+                                if (element.checked && element.name != undefined && element.name != '') {
+                                    if (!Array.isArray(data[element.name]))
+                                        data[element.name] = [];
+                                    data[element.name].push(element.value);
+                                }
+                            } else if (element.type == "radio") {
+                                if (element.checked && element.name != undefined && element.name != '')
+                                    data[element.name] = element.value;
+                            } else {
+                                data[element.name] = element.value;
+                            }
                         }
                     }
                 }
@@ -88,23 +98,25 @@ export const formHooks = {
             for (let position of positions) {
                 if (this.formHooks[entity][position] && this.formHooks[entity][position] != undefined) {
                     let formElement = document.getElementById('form-' + entity + '-' + position);
-                    if (formElement) {
-
+                    
+                    if (formElement) {   
                         for (let element of formElement.elements) {
-                            console.log(element['name'], element['value'], element['checked']);
-                            element['value'] = null;
                             for (let key of Object.keys(entityObject)) {
-                                // console.log(key, entityObject[key]);
                                 if (element['name'] == key)  {
                                     if (Array.isArray(entityObject[key])) {
-                                        element['value'].length != undefined ? element['value'] = [] : null;
-                                        element['value'].push(entityObject[key]);
-                                    } else
-                                        element['value'] = entityObject[key];
-                                
+                                        let obj = entityObject[key].find((value) => { return value == element['value'] });
+                                        element['checked'] = obj != undefined ? true : false;
+                                    } else {
+                                        if (entityObject[key] != null && entityObject[key] != undefined && entityObject[key] != ''){
+                                            if (element.type == "radio")
+                                                element['checked'] = entityObject[key] == element['value'] ? true : false;
+                                            else 
+                                                element['value'] = entityObject[key];
+                                        }
+                                            
+                                    }
                                 }
                             }
-                            console.log(element['name'], element['value'], element['checked']);
                         }
                     }
                 }

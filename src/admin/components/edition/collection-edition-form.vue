@@ -590,7 +590,8 @@ export default {
             };
             this.fillExtraFormData(data, 'collection');
 
-            this.updateCollection({collection_id: this.collectionId, collection: data }).then(updatedCollection => {    
+            this.updateCollection({collection_id: this.collectionId, collection: data })
+            .then(updatedCollection => {    
                 
                 this.collection = updatedCollection;
 
@@ -829,10 +830,10 @@ export default {
                 // Initializes Media Frames now that collectonId exists
                 this.initializeMediaFrames();
                 this.$nextTick()
-                .then(() => {
-                     // Fills hook forms with it's real values 
-                    this.updateExtraFormData('collection', this.collection);
-                });
+                    .then(() => {
+                        // Fills hook forms with it's real values 
+                        this.updateExtraFormData('collection', this.collection);
+                    });
                
   
                 // Fill this.form data with current data.
