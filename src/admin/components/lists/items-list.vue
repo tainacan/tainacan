@@ -6,14 +6,19 @@
                 <span>
                     <b-checkbox
                             @click.native="selectAllItemsOnPage()"
-                            :value="allItemsOnPageSelected">{{ $i18n.get('label_select_all_items_page') }}</b-checkbox>
+                            :value="allItemsOnPageSelected">
+                        {{ $i18n.get('label_select_all_items_page') }}
+                    </b-checkbox>
                 </span>
 
-                <span v-if="allItemsOnPageSelected">
+                <span
+                        style="margin-left: 10px"
+                        v-if="allItemsOnPageSelected && items.length > 1">
                     <b-checkbox
                             @click.native="selectAllItems()"
-                            v-model="isAllItemsSelected">{{ $i18n.get('label_select_all_items') }}</b-checkbox>
-                    <small v-if="isAllItemsSelected">{{ `(${ totalItems } ${ $i18n.get('info_items_selected') })` }}</small>
+                            v-model="isAllItemsSelected">
+                        {{ `${$i18n.get('label_select_all')} ${totalItems} ${$i18n.get('items').toLowerCase()}` }}
+                    </b-checkbox>
                 </span>
             </div>
             <div class="field is-pulled-right">
@@ -28,16 +33,17 @@
                             slot="trigger">
                         <span>{{ $i18n.get('label_bulk_actions') }}</span>
                         <b-icon icon="menu-down"/>
-                    </button> 
+                    </button>
 
+                    <b-dropdown-item
+                            v-if="$route.params.collectionId && $userCaps.hasCapability('edit_others_posts')"
+                            @click="openBulkEditionModal()">
+                        {{ $i18n.get('label_edit_selected_items') }}
+                    </b-dropdown-item>
                     <b-dropdown-item 
                             @click="deleteSelectedItems()"
                             id="item-delete-selected-items">
                         {{ isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('label_send_to_trash') }}
-                    </b-dropdown-item>
-                    <b-dropdown-item
-                            @click="openBulkEditionModal()">
-                        {{ $i18n.get('label_edit_selected_items') }}
                     </b-dropdown-item>
                 </b-dropdown>
             </div>
@@ -624,7 +630,6 @@ export default {
                     totalItems: Object.keys(this.queryAllItemsSelected).length ? this.totalItems : this.selectedItemsIDs.filter(item => item !== false).length,
                     selectedForBulk: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItemsIDs.filter(item => item !== false),
                     objectType: this.$i18n.get('items'),
-                    metadata: this.tableMetadata,
                     collectionID: this.$route.params.collectionId,
                 },
                 width: 'calc(100% - 8.333333333%)',
