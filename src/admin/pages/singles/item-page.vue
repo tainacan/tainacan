@@ -13,6 +13,16 @@
             <div class="columns">
                 <div class="column is-5-5">
 
+                    <!-- Hook for extra Form options -->
+                    <template 
+                            v-if="formHooks != undefined && 
+                                formHooks['view-item'] != undefined &&
+                                formHooks['view-item']['begin-left'] != undefined">  
+                        <div 
+                            id="view-item-begin-left"
+                            v-html="formHooks['view-item']['begin-left'].join('')"/>
+                    </template>
+
                     <!-- Document -------------------------------- -->
                     <div class="section-label">
                         <label>{{ item.document !== undefined && item.document !== null && item.document !== '' ?
@@ -156,11 +166,32 @@
                             </b-collapse>
                         </div>
                     </div>
+
+                    <!-- Hook for extra Form options -->
+                    <template 
+                            v-if="formHooks != undefined && 
+                                formHooks['view-item'] != undefined &&
+                                formHooks['view-item']['end-left'] != undefined">  
+                        <div 
+                            id="view-item-end-left"
+                            v-html="formHooks['view-item']['end-left'].join('')"/>
+                    </template>
+
                 </div>
                 <div 
                         v-show="!isMetadataColumnCompressed"
                         class="column is-4-5">
                     
+                    <!-- Hook for extra Form options -->
+                    <template 
+                            v-if="formHooks != undefined && 
+                                formHooks['view-item'] != undefined &&
+                                formHooks['view-item']['begin-right'] != undefined">  
+                        <div 
+                            id="view-item-begin-right"
+                            v-html="formHooks['view-item']['begin-right'].join('')"/>
+                    </template>
+
                     <!-- Visibility (status public or private) -------------------------------- -->
                     <div class="section-label">
                         <label>{{ $i18n.get('label_visibility') }}</label>
@@ -235,6 +266,16 @@
                             </b-collapse>
                         </div>
                     </div>
+
+                    <!-- Hook for extra Form options -->
+                    <template 
+                            v-if="formHooks != undefined && 
+                                formHooks['view-item'] != undefined &&
+                                formHooks['view-item']['end-right'] != undefined">  
+                        <div 
+                            id="view-item-end-right"
+                            v-html="formHooks['view-item']['end-right'].join('')"/>
+                    </template>
                 </div>
             </div>
             <div class="footer">
@@ -260,9 +301,11 @@
     import {mapActions, mapGetters} from 'vuex'
     import FileItem from '../../components/other/file-item.vue';
     import DocumentItem from '../../components/other/document-item.vue';
+    import { formHooks } from '../../js/mixins';
 
     export default {
         name: 'ItemPage',
+        mixins: [ formHooks ],
         data() {
             return {
                 collectionId: Number,
@@ -329,6 +372,9 @@
         },
         computed: {
             item() {
+                // Fills hook forms with it's real values 
+                this.updateExtraFormData('item', this.getItem());
+
                 return this.getItem();
             },
             metadatumList() {
@@ -411,6 +457,10 @@
     .page-container {
         padding: 25px 0;
 
+        &>.tainacan-form {
+            margin-bottom: 110px;
+        }
+
         .tainacan-page-title {
             padding-left: $page-side-padding;
             padding-right: $page-side-padding;
@@ -472,7 +522,7 @@
         label {
             font-size: 16px !important;
             font-weight: 500 !important;
-            color: $blue5 !important;
+            color: $gray5 !important;
             line-height: 1.2em;
         }
     }

@@ -2,7 +2,8 @@
     <form 
             id="filterEditForm" 
             class="tainacan-form" 
-            @submit.prevent="saveEdition(editForm)">     
+            @submit.prevent="saveEdition(editForm)">
+
         <b-field 
                 :addons="false"
                 :type="formErrors['name'] != undefined ? 'is-danger' : ''" 
@@ -21,6 +22,16 @@
                     name="name" 
                     @focus="clearErrors('name')"/>
         </b-field>
+
+        <!-- Hook for extra Form options -->
+        <template 
+                v-if="formHooks != undefined && 
+                    formHooks['filter'] != undefined &&
+                    formHooks['filter']['begin-left'] != undefined">  
+            <form 
+                id="form-filter-begin-left"
+                v-html="formHooks['filter']['begin-left'].join('')"/>
+        </template>
 
         <b-field
                 :addons="false" 
@@ -135,6 +146,16 @@
         <div 
                 v-html="editForm.edit_form" 
                 v-else/>
+    
+        <!-- Hook for extra Form options -->
+        <template 
+                v-if="formHooks != undefined && 
+                    formHooks['filter'] != undefined &&
+                    formHooks['filter']['end-left'] != undefined">  
+            <form 
+                id="form-filter-end-left"
+                v-html="formHooks['filter']['end-left'].join('')"/>
+        </template>
 
         <div class="field is-grouped form-submit">
             <div class="control">
@@ -156,9 +177,11 @@
 
 <script>
 import { mapActions } from 'vuex';
+import { formHooks } from "../../js/mixins";
 
 export default {
     name: 'FilterEditionForm',
+    mixins: [ formHooks ],
     data(){
         return {
             editForm: {},
@@ -182,6 +205,13 @@ export default {
 
         this.oldForm = JSON.parse(JSON.stringify(this.originalFilter));
     },
+    mounted() {
+        // Fills hook forms with it's real values 
+        this.$nextTick()
+            .then(() => {
+                this.updateExtraFormData('filter', this.editForm);
+            });
+    },
     beforeDestroy() {
         if (this.closedByForm) {
             this.editedFilter.saved = true;
@@ -201,6 +231,7 @@ export default {
 
             if ((filter.filter_type_object && filter.filter_type_object.form_component) || filter.edit_form == '') {
                 
+                // this.fillExtraFormData(this.editForm, 'filter');
                 this.updateFilter({ filterId: filter.id, index: this.index, options: this.editForm})
                     .then(() => {
                         this.editForm = {};
@@ -229,6 +260,7 @@ export default {
                     formObj[key] = value;
                 }
 
+                this.fillExtraFormData(formObj, 'filter');
                 this.updateFilter({ filterId: filter.id, index: this.index, options: formObj})
                     .then(() => {
                         this.editForm = {};
@@ -265,7 +297,7 @@ export default {
 
     @import "../../scss/_variables.scss";
  
-    form {
+    form#filterEditForm {
         padding: 1.0em 2.0em;
         border-top: 1px solid $gray2;
         border-bottom: 1px solid $gray2;

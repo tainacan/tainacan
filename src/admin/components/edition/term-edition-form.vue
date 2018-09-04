@@ -63,6 +63,16 @@
                     @focus="clearErrors({ name: 'name', repeated: 'repeated' })"/>
         </b-field>
 
+        <!-- Hook for extra Form options -->
+        <template 
+                v-if="formHooks != undefined && 
+                    formHooks['term'] != undefined &&
+                    formHooks['term']['begin-left'] != undefined">  
+            <form 
+                id="form-term-begin-left"
+                v-html="formHooks['term']['begin-left'].join('')"/>
+        </template>
+
         <!-- Description -------------- -->
         <b-field
                 :addons="false"
@@ -122,6 +132,16 @@
             </transition>
         </b-field>
 
+        <!-- Hook for extra Form options -->
+        <template 
+                v-if="formHooks != undefined && 
+                    formHooks['term'] != undefined &&
+                    formHooks['term']['end-left'] != undefined">  
+            <form 
+                id="form-term-end-left"
+                v-html="formHooks['term']['end-left'].join('')"/>
+        </template>
+
         <!-- Submit buttons -------------- -->
         <div class="field is-grouped form-submit">
             <div class="control">
@@ -154,11 +174,13 @@
 </template>
 
 <script>
+    import { formHooks } from "../../js/mixins";
     import {mapActions, mapGetters} from 'vuex';
     import wpMediaFrames from '../../js/wp-media-frames';
 
     export default {
         name: 'TermEditionForm',
+        mixins: [ formHooks ],
         data() {
             return {
                 formErrors: {},
@@ -190,12 +212,16 @@
             saveEdition(term) {
 
                 if (term.id === 'new') {
-                    this.sendChildTerm({
-                        taxonomyId: this.taxonomyId,
+                    let data = {
                         name: this.editForm.name,
                         description: this.editForm.description,
                         parent: this.hasParent ? this.editForm.parent : 0,
-                        headerImageId: this.editForm.header_image_id,
+                        header_image_id: this.editForm.header_image_id,
+                    };
+                    this.fillExtraFormData(data, 'term');
+                    this.sendChildTerm({
+                        taxonomyId: this.taxonomyId,
+                        term: data
                     })
                         .then((term) => {
                             this.$emit('onEditionFinished', {term: term, hasChangedParent: this.hasChangedParent });
@@ -213,13 +239,17 @@
 
                 } else {
 
-                    this.updateChildTerm({
-                        taxonomyId: this.taxonomyId,
-                        termId: this.editForm.id,
+                    let data = {
+                        term_id: this.editForm.id,
                         name: this.editForm.name,
                         description: this.editForm.description,
                         parent: this.hasParent ? this.editForm.parent : 0,
-                        headerImageId: this.editForm.header_image_id,
+                        header_image_id: this.editForm.header_image_id,
+                    }
+                    this.fillExtraFormData(data, 'term');
+                    this.updateChildTerm({
+                        taxonomyId: this.taxonomyId,
+                        term: data
                     })
                         .then((term) => {
                             this.formErrors = {};
@@ -312,6 +342,12 @@
         },
         mounted() {
             
+            // Fills hook forms with it's real values 
+            this.$nextTick()
+                .then(() => {
+                    this.updateExtraFormData('term', this.editForm);
+                });
+
             this.showCheckboxesWarning = false;
             this.hasParent = this.editForm.parent != undefined && this.editForm.parent > 0;
             this.initialParentId = this.editForm.parent;
@@ -358,7 +394,7 @@
         }
     }
 
-    form {
+    form#termEditForm {
         padding: 1.7rem 0 1.5rem 1.5rem;
         border-left: 1px solid $gray2;
         margin-left: 0.75rem;

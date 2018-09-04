@@ -4,13 +4,7 @@ import qs from 'qs'
 // TAXONOMIES
 export const createTaxonomy = ({commit}, taxonomy) => {
     return new Promise(( resolve, reject ) => {
-        axios.tainacan.post('/taxonomies', {
-            name: taxonomy.name,
-            description: taxonomy.description,
-            status: taxonomy.status,
-            slug: taxonomy.slug,
-            allow_insert: taxonomy.allowInsert
-        })
+        axios.tainacan.post('/taxonomies', taxonomy)
             .then( res => {
                 let taxonomy = res.data;
                 commit('setTaxonomy', taxonomy);
@@ -39,18 +33,10 @@ export const deleteTaxonomy = ({ commit }, { taxonomyId, isPermanently }) => {
 
 export const updateTaxonomy = ({ commit }, taxonomy) => {
     return new Promise(( resolve, reject ) => {
-        axios.tainacan.patch(`/taxonomies/${taxonomy.taxonomyId}`, {
-            name: taxonomy.name,
-            description: taxonomy.description,
-            status: taxonomy.status,
-            slug: taxonomy.slug ? taxonomy.slug : '',
-            allow_insert: taxonomy.allowInsert
-        })
+        axios.tainacan.patch(`/taxonomies/${taxonomy.taxonomyId}`, taxonomy)
             .then( res => {
                 let taxonomy = res.data;
-
                 commit('setTaxonomy', taxonomy);
-
                 resolve( taxonomy );
             })
             .catch(error => {
@@ -239,18 +225,13 @@ export const fetchChildTerms = ({ commit }, { parentId, taxonomyId, fetchOnly, s
     });
 };
 
-export const sendChildTerm = ({ commit }, { taxonomyId, name, description, parent, headerImageId }) => {
+export const sendChildTerm = ({ commit }, { taxonomyId, term }) => {
     return new Promise(( resolve, reject ) => {
-        axios.tainacan.post(`/taxonomy/${taxonomyId}/terms/`, {
-            name: name,
-            description: description,
-            parent: parent,
-            header_image_id: headerImageId,
-        })
+        axios.tainacan.post(`/taxonomy/${taxonomyId}/terms/`, term)
             .then( res => {
-                let term = res.data;
-                commit('addChildTerm', {term: term, parent: parent });
-                resolve( term );
+                let newTerm = res.data;
+                commit('addChildTerm', {term: newTerm, parent: term.parent });
+                resolve( newTerm );
             })
             .catch(error => {
                 reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
@@ -258,17 +239,12 @@ export const sendChildTerm = ({ commit }, { taxonomyId, name, description, paren
     });
 };
 
-export const updateChildTerm = ({ commit }, { taxonomyId, termId, name, description, parent, headerImageId, oldParent }) => {
+export const updateChildTerm = ({ commit }, { taxonomyId, term }) => {
     return new Promise(( resolve, reject ) => {
-        axios.tainacan.patch(`/taxonomy/${taxonomyId}/terms/${termId}`, {
-            name: name,
-            description: description,
-            parent: parent,
-            header_image_id: headerImageId,
-        })
+        axios.tainacan.patch(`/taxonomy/${taxonomyId}/terms/${term.term_id}`, term)
             .then( res => {
-                let term = res.data;
-                commit('updateChildTerm', { term: term, parent: parent, oldParent: oldParent });
+                let updatedTerm = res.data;
+                commit('updateChildTerm', { term: updatedTerm, parent: updatedTerm.parent, oldParent: term.parent });
                 resolve( term );
             })
             .catch(error => {
