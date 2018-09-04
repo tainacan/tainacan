@@ -33,14 +33,15 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'processes'                                      => __( 'Processes', 'tainacan' ),
 
 	// Actions
+	'close'                                          => __( 'Close', 'tainacan' ),
 	'edit'                                           => __( 'Edit', 'tainacan' ),
 	'settings'                                       => __( 'Settings', 'tainacan' ),
 	'new'                                            => __( 'New', 'tainacan' ),
-	'add'                                            => __( 'Add', 'tainacan' ),
+	'add_value'                                      => __( 'Add value', 'tainacan' ),
 	'import'                                         => __( 'Import', 'tainacan' ),
 	'export'                                         => __( 'Export', 'tainacan' ),
 	'cancel'                                         => __( 'Cancel', 'tainacan' ),
-	'remove'                                         => __( 'Remove', 'tainacan' ),
+	'remove_value'                                   => __( 'Remove value', 'tainacan' ),
 	'save'                                           => __( 'Save', 'tainacan' ),
 	'next'                                           => __( 'Next', 'tainacan' ),
 	'back'                                           => __( 'Back', 'tainacan' ),
@@ -66,9 +67,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'apply'                                          => __( 'Apply', 'tainacan' ),
 	'add_another_edition_criterion'                  => __( 'Add another edition criterion', 'tainacan' ),
 	'add_one_edition_criterion'                      => __( 'Add one edition criterion', 'tainacan' ),
-	'redefine'                                       => __( 'Redefine', 'tainacan' ),
-	'replace'                                        => __( 'Replace', 'tainacan' ),
-	'conclude'                                       => __( 'Conclude', 'tainacan' ),
+	'set_new_value'                                  => __( 'Set new value', 'tainacan' ),
+	'replace_value'                                  => __( 'Replace value', 'tainacan' ),
+	'done'                                           => __( 'Done', 'tainacan' ),
 	'select_to_create'                               => __( 'select to create', 'tainacan' ),
 
 	// Wordpress Status
@@ -294,6 +295,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_hide_filters'	                     	 => __( 'Hide filters menu', 'tainacan' ),
 	'label_show_filters'	                     	 => __( 'Show filters menu', 'tainacan' ),
 	'label_select_all_items'                         => __( 'Select all items', 'tainacan' ),
+	'label_select_all'                               => __( 'Select all', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -431,8 +433,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_editing_items_in_bulk'                     => __( 'Editing items in bulk', 'tainacan' ),
 	'info_by_inner'                                  => __( 'by', 'tainacan' ),
 	'info_items_selected'                            => __( 'items selected', 'tainacan' ),
-	'info_items_edited'                              => __( 'items edited', 'tainacan' ),
-	'info_item_edited'                               => __( 'item edited', 'tainacan'),
+	'info_items_affected'                            => __( 'items affected', 'tainacan' ),
+	'info_item_affected'                             => __( 'item affected', 'tainacan'),
 	'info_no_parent_term_found'                      => __( 'No valid parent term was found with this name.', 'tainacan' ),
 	'info_warning_changing_parent_term'              => __( 'Warning! Changing parent term will reload the terms list, thus uncheking any selection.', 'tainacan' ),
 

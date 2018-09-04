@@ -156,10 +156,10 @@
 
                 if(!isNaN(this.selected[0])){
                     for (let option of this.options) {
-                        let valueIndex = this.selected.findIndex(item => item == option.value);
+                        let value = this.selected.find(item => item == option.value);
 
-                        if (valueIndex >= 0) {
-                            onlyLabels.push(this.options[valueIndex].label);
+                        if (value != undefined) {
+                            onlyLabels.push(option.label);
                         }
                     }
                 }

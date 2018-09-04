@@ -20,23 +20,20 @@
         </div>
 
         <!-- Numeric -->
-        <div
-                class="columns"
-                v-else>
+        <div v-else>
             <b-input
                     size="is-small"
                     type="number"
                     step="any"
                     @input="validate_values()"
-                    class="column"
                     v-model="value_init"/>
+            <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
             <b-input
                     size="is-small"
                     type="number"
                     step="any"
                     @input="validate_values()"
                     @focus="isTouched = true"
-                    class="column"
                     v-model="value_end"/>
         </div>
     </div>

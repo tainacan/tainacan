@@ -277,6 +277,19 @@ class REST_Terms_Controller extends REST_Controller {
 				$item_arr = $this->filter_object_by_attributes($item, $attributes_to_filter);
 			}
 
+			/**
+			 * Use this filter to add additional term_meta to the api response
+			 * Use the $request object to get the context of the request and other variables
+			 * For example, id context is edit, you may want to add your meta or not.
+			 * 
+			 * Also take care to do any permissions verification before exposing the data
+			 */
+			$extra_metadata = apply_filters('tainacan-api-response-term-meta', [], $request);
+
+			foreach ($extra_metadata as $extra_meta) {
+				$item_arr[$extra_meta] = get_term_meta($item_arr['id'], $extra_meta, true);
+			}
+			
 			return $item_arr;
 		}
 

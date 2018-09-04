@@ -1054,7 +1054,13 @@ class Metadata extends Repository {
 			}
 		}
 
-		return $this->unique_multidimensional_array( $results, 'mvalue' );
+		$spliced = $this->unique_multidimensional_array( $results, 'mvalue' );
+
+		if($number > 0 && count($spliced) > $number){
+			array_splice($spliced, (int) $number);
+		}
+
+		return $spliced;
 	}
 
 	/**

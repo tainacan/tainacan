@@ -154,7 +154,7 @@ class Entity {
      * @return mixed property value
      */
     public function get_mapped_property($prop) {
-    	if (isset($this->$prop) ){
+    	if ( isset($this->$prop) ){
     		return $this->$prop;
     	}
 

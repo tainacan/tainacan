@@ -25,6 +25,16 @@
                                     @blur="updateSlug()"/>
                         </b-field>
 
+                        <!-- Hook for extra Form options -->
+                        <template 
+                                v-if="formHooks != undefined && 
+                                    formHooks['taxonomy'] != undefined &&
+                                    formHooks['taxonomy']['begin-left'] != undefined">  
+                            <form 
+                                id="form-taxonomy-begin-left"
+                                v-html="formHooks['taxonomy']['begin-left'].join('')"/>
+                        </template>
+
                         <!-- Description -------------------------------- -->
                         <b-field
                                 :addons="false"
@@ -99,6 +109,16 @@
                             </div>
                         </b-field>
 
+                        <!-- Hook for extra Form options -->
+                        <template 
+                                v-if="formHooks != undefined && 
+                                    formHooks['taxonomy'] != undefined &&
+                                    formHooks['taxonomy']['end-left'] != undefined">  
+                            <form 
+                                id="form-taxonomy-end-left"
+                                v-html="formHooks['taxonomy']['end-left'].join('')"/>
+                        </template>
+
                         <!-- Submit -->
                         <div class="field is-grouped form-submit">
                             <div class="control">
@@ -133,14 +153,14 @@
 </template>
 
 <script>
-    import { wpAjax } from "../../js/mixins";
+    import { wpAjax, formHooks } from "../../js/mixins";
     import { mapActions, mapGetters } from 'vuex';
     import TermsList from '../lists/terms-list.vue';
     import CustomDialog from '../other/custom-dialog.vue';
 
     export default {
         name: 'TaxonomyEditionForm',
-        mixins: [ wpAjax ],
+        mixins: [ wpAjax, formHooks ],
         data(){
             return {
                 taxonomyId: String,
@@ -169,8 +189,7 @@
                     label: this.$i18n.get('trash')
                 }],
                 editFormErrors: {},
-                formErrorMessage: '',
-                // baseUrl: tainacan_plugin.base_url,
+                formErrorMessage: ''
             }
         },
         components: {
@@ -225,15 +244,18 @@
                     taxonomyId: this.taxonomyId,
                     name: this.form.name,
                     description: this.form.description,
-                    slug: this.form.slug,
+                    slug: this.form.slug ? this.form.slug : '',
                     status: this.form.status,
-                    allowInsert: this.form.allowInsert
+                    allow_insert: this.form.allowInsert
                 };
-
+                this.fillExtraFormData(data, 'taxonomy');
                 this.updateTaxonomy(data)
                     .then(updatedTaxonomy => {
 
                         this.taxonomy = updatedTaxonomy;
+
+                        // Fills hook forms with it's real values 
+                        this.updateExtraFormData('taxonomy', this.taxonomy);
 
                         // Fill this.form data with current data.
                         this.form.name = this.taxonomy.name;
@@ -291,9 +313,9 @@
                     description: '',
                     status: 'auto-draft',
                     slug: '',
-                    allowInsert: '',
+                    allow_insert: '',
                 };
-
+                this.fillExtraFormData(data, 'taxonomy');
                 this.createTaxonomy(data)
                     .then(res => {
 
@@ -324,8 +346,8 @@
                 return ( this.form.allowInsert === 'yes' ) ? this.$i18n.get('label_yes') : this.$i18n.get('label_no');
             }
         },
-        created(){
-
+        mounted(){
+  
             if (this.$route.fullPath.split("/").pop() === "new") {
                 this.createNewTaxonomy();
             } else if (this.$route.fullPath.split("/").pop() === "edit" || this.$route.fullPath.split("/").pop() === "terms") {
@@ -338,6 +360,12 @@
 
                 this.fetchTaxonomy(this.taxonomyId).then(res => {
                     this.taxonomy = res.taxonomy;
+
+                    // Fills hook forms with it's real values 
+                    this.$nextTick()
+                        .then(() => {
+                            this.updateExtraFormData('taxonomy', this.taxonomy);
+                        });
 
                     // Fill this.form data with current data.
                     this.form.name = this.taxonomy.name;

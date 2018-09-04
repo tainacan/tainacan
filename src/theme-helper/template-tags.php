@@ -1,3 +1,4 @@
+
 <?php 
 
 use \Tainacan\Entities;
@@ -181,7 +182,6 @@ function tainacan_the_collection_description() {
 function tainacan_the_faceted_search() {
 
 	$props = ' ';
-	$id = '';
 	
 	// if in a collection page
 	$collection_id = tainacan_get_collection_id();
@@ -190,7 +190,6 @@ function tainacan_the_faceted_search() {
 		$collection = new  \Tainacan\Entities\Collection($collection_id);
 		$props .= 'default-view-mode="' . $collection->get_default_view_mode() . '" ';
 		$props .= 'enabled-view-modes="' . implode(',', $collection->get_enabled_view_modes()) . '" ';
-		$id = 'tainacan-items-page';
 	}
 	
 	// if in a tainacan taxonomy
@@ -198,10 +197,9 @@ function tainacan_the_faceted_search() {
 	if ($term) {
 		$props .= 'term-id="' . $term->term_id . '" ';
 		$props .= 'taxonomy="' . $term->taxonomy . '" ';
-		$id = 'tainacan-items-page';
 	}
 
-	echo "<div id='$id' $props ></div>";
+	echo "<div id='tainacan-items-page' $props ></div>";
 
 }
 

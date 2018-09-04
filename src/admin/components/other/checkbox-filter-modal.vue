@@ -447,7 +447,6 @@
                         terms: this.selected
                     });
 
-
                     for (let selected of this.selected) {
 
                         for(let i in this.finderColumns){

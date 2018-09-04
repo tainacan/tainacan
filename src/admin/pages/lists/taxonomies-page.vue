@@ -48,9 +48,7 @@
                         <section class="section">
                             <div class="content has-text-grey has-text-centered">
                                 <p>
-                                    <b-icon
-                                            icon="inbox"
-                                            size="is-large"/>
+                                    <taxonomies-icon class="taxonomies-term-icon"/>
                                 </p>
                                 <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_taxonomy_created') }}</p>
                                 <p v-if="status == 'draft'">{{ $i18n.get('info_no_taxonomy_draft') }}</p>
@@ -112,6 +110,7 @@
 
 <script>
     import TaxonomiesList from "../../components/lists/taxonomies-list.vue";
+    import TaxonomiesIcon from '../../components/other/taxonomies-icon.vue';
     import { mapActions, mapGetters } from 'vuex';
     //import moment from 'moment'
 
@@ -127,7 +126,8 @@
             }
         },
         components: {
-            TaxonomiesList
+            TaxonomiesList,
+            TaxonomiesIcon
         },
         methods: {
             ...mapActions('taxonomy', [
@@ -198,6 +198,10 @@
 </script>
 
 <style lang="scss" scoped>
+    .taxonomies-icon {
+        height: 24px;
+        width: 24px;
+    }
     @import '../../scss/_variables.scss';
 
     .sub-header {

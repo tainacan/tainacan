@@ -145,7 +145,7 @@
                         padding: 0.2rem 0.1rem !important;
                     }
                 }
-
+                
                 .select {
                     select {
                         display: unset;
@@ -161,9 +161,6 @@
                     padding: 0px;
                 }
             }
-        }
-        .select:not(.is-loading)::after {
-            margin-top: -12px !important;
         }
 
         .collapse-trigger {

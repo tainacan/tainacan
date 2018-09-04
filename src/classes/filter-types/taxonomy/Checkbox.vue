@@ -8,11 +8,10 @@
             <b-checkbox
                     v-model="selected"
                     :native-value="option.id"
-                    v-if="!option.isChild"
             >{{ option.name }}</b-checkbox>
             <div
                     class="see-more-container"
-                    v-if="option.seeMoreLink"
+                    v-if="option.seeMoreLink && index == options.length-1"
                     @click="openCheckboxModal(option.parent)"
                     v-html="option.seeMoreLink"/>
         </div>
@@ -35,7 +34,6 @@
 
                     let selectedOption = this.options.find(option => option.name == filterTag.singleValue);
                     if(selectedOption) {
-                    
                         let selectedIndex = this.selected.findIndex(option => option == selectedOption.id);
                         if (selectedIndex >= 0) {
 
@@ -106,7 +104,6 @@
                             this.taxonomy = item.taxonomy;
                             this.options.push(item);
                         }
-
                     })
                     .catch(error => {
                         this.$console.log(error);
@@ -203,9 +200,9 @@
                                     id: res.data.id
                                 })
                             })
-                                .catch(error => {
-                                    this.$console.log(error);
-                                });
+                            .catch(error => {
+                                this.$console.log(error);
+                            });
                     }
                 }
 

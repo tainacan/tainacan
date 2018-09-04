@@ -9,25 +9,29 @@
             <hr>
         </header>
         <div class="tainacan-form">
-            <div class="modal-card-body">
+            <div class="modal-card-body no-overflow-modal-card-body">
                 <div
                         v-for="criterion in editionCriteria"
                         :key="criterion"
                         class="tainacan-bulk-edition-inline-fields">
 
                     <b-select
+                            :loading="metadataIsLoading"
                             :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
                             :disabled="!!bulkEditionProcedures[criterion].metadatumID"
                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                             :placeholder="$i18n.get('instruction_select_a_metadatum')"
                             @input="addToBulkEditionProcedures($event, 'metadatumID', criterion)">
-                        <template v-for="(metadatum, index) in metadata">
+                        <template 
+                                v-for="(metadatum, index) in metadata">
                             <option
+                                    :key="index"
                                     v-if="metadatum.id"
                                     :value="metadatum.id">
                                 {{ metadatum.name }}
                             </option>
                             <option
+                                    :key="index"
                                     v-if="index === Object.keys(metadata).length-1"
                                     value="status">
                                 {{ $i18n.get('label_status') }}
@@ -40,6 +44,7 @@
                             v-if="bulkEditionProcedures[criterion] &&
                             bulkEditionProcedures[criterion].metadatumID"
                             :disabled="!!bulkEditionProcedures[criterion].action"
+                            :value="bulkEditionProcedures[criterion].action ? bulkEditionProcedures[criterion].action : undefined"
                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                             :placeholder="$i18n.get('instruction_select_a_action')"
                             @input="addToBulkEditionProcedures($event, 'action', criterion)">
@@ -139,7 +144,7 @@
                                  .metadata_type_options.allow_new_terms === 'yes'"
                                 :maxtags="1"
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
-                                :disabled="bulkEditionProcedures[criterion].isDone"
+                                :disabled="bulkEditionProcedures[criterion].isDone || bulkEditionProcedures[criterion].isExecuting"
                                 :id="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).metadata_type_object.component +
                              '-' + getMetadataByID(bulkEditionProcedures[criterion].metadatumID).slug"
                                 :is="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).metadata_type_object.component"
@@ -172,7 +177,11 @@
                                 class="is-pulled-right">
                             <b-tooltip
                                     class="is-success"
-                                    :label="actionResult.constructor.name !== 'Object' && actionResult === 1 ? `${actionResult} ${$i18n.get('info_item_edited')}` : `${actionResult} ${$i18n.get('info_items_edited')}`">
+                                    size="is-small"
+                                    position="is-left"
+                                    animated
+                                    multilined
+                                    :label="actionResult.constructor.name !== 'Object' && actionResult === 1 ? `${actionResult} ${$i18n.get('info_item_affected')}` : `${actionResult} ${$i18n.get('info_items_affected')}`">
                                 <b-icon
                                         type="is-success"
                                         icon="check-circle"/>
@@ -183,6 +192,10 @@
                                 class="is-pulled-right">
                             <b-tooltip
                                     class="is-danger"
+                                    size="is-small"
+                                    position="is-left"
+                                    animated
+                                    multilined
                                     :label="actionResult.constructor.name === 'Object' ? (actionResult.error_message ? actionResult.error_message : actionResult.message) : ''">
                                 <b-icon
                                         type="is-danger"
@@ -190,6 +203,7 @@
                             </b-tooltip>
                         </div>
                         <button
+                                :disabled="!groupID"
                                 v-if="!bulkEditionProcedures[criterion].isDone &&
                                  !bulkEditionProcedures[criterion].isExecuting &&
                                    bulkEditionProcedures[criterion].metadatumID &&
@@ -229,13 +243,24 @@
             </div>
             <!--<pre>{{ bulkEditionProcedures }}</pre>-->
 
-            <footer class="field form-submit">
-                <div class="control is-pulled-right">
+            <footer class="field is-grouped form-submit">
+                <div class="control">
+                    <button
+                            @click="$eventBusSearch.loadItems(); $parent.close()"
+                            :disabled="(Object.keys(bulkEditionProcedures).length &&
+                             bulkEditionProcedures[editionCriteria[editionCriteria.length-1]].isExecuting) || false"
+                            type="button"
+                            class="button is-outlined">
+                        {{ $i18n.get('close') }}
+                    </button>
+                </div>
+                <div class="control">
                     <button
                             :disabled="dones.every((item) => item === true) === false"
                             class="button is-success"
                             type="button"
-                            @click="$parent.close()">{{ $i18n.get('conclude') }}
+                            @click="$eventBusSearch.loadItems(); $parent.close();">
+                        {{ $i18n.get('done') }}
                     </button>
                 </div>
             </footer>
@@ -252,17 +277,37 @@
             modalTitle: String,
             totalItems: Array,
             objectType: String,
-            metadata: Array,
             selectedForBulk: Object,
             collectionID: Number,
         },
         created(){
+            if(!this.collectionID){
+                // is repository level
+
+            } else {
+                this.metadataIsLoading = true;
+
+                this.fetchMetadata({
+                    collectionId: this.collectionID,
+                    isRepositoryLevel: false,
+                    isContextEdit: true,
+                    includeDisabled: true,
+                }).then(() => {
+                    this.metadataIsLoading = false;
+                });
+            }
+
             this.createEditGroup({
                 object: this.selectedForBulk,
-                collectionID: this.collectionID
+                collectionID: this.collectionID ? this.collectionID : 'default'
             }).then(() => {
                 this.groupID = this.getGroupID();
             });
+        },
+        computed: {
+            metadata() {
+                return this.getMetadata();
+            }
         },
         data() {
             return {
@@ -273,13 +318,13 @@
                 },
                 editionCriteria: [1],
                 editionActionsForMultiple: {
-                    add: this.$i18n.get('add'),
-                    redefine: this.$i18n.get('redefine'),
-                    remove: this.$i18n.get('remove'),
-                    replace: this.$i18n.get('replace'),
+                    add: this.$i18n.get('add_value'),
+                    redefine: this.$i18n.get('set_new_value'),
+                    remove: this.$i18n.get('remove_value'),
+                    replace: this.$i18n.get('replace_value'),
                 },
                 editionActionsForNotMultiple: {
-                    redefine: this.$i18n.get('redefine'),
+                    redefine: this.$i18n.get('set_new_value'),
                 },
                 bulkEditionProcedures: {
                     1: {
@@ -292,6 +337,7 @@
                 dones: [false],
                 totalItemsEditedWithSuccess: 0,
                 actionResult: '',
+                metadataIsLoading: false,
             }
         },
         methods: {
@@ -307,6 +353,12 @@
                 'redefineValueInBulk',
                 'setStatusInBulk',
                 'removeValueInBulk'
+            ]),
+            ...mapActions('metadata', [
+                'fetchMetadata'
+            ]),
+            ...mapGetters('metadata', [
+                'getMetadata'
             ]),
             finalizeProcedure(criterion, withError){
                 this.$set(this.bulkEditionProcedures[criterion], 'isDone', !withError);
@@ -483,11 +535,19 @@
                 return found ? found : {};
             },
             addToBulkEditionProcedures(value, key, criterion){
+
                 if(Array.isArray(value)){
                     value = value[0];
                 }
 
                 this.$set(this.bulkEditionProcedures[criterion], `${key}`, value);
+                
+                if (key == 'metadatumID') {
+                    if (this.getMetadataByID(this.bulkEditionProcedures[criterion].metadatumID).multiple != 'yes') {
+                        let value = Object.values(this.editionActionsForNotMultiple)[0];
+                        this.addToBulkEditionProcedures(value, 'action', criterion);
+                    }
+                }
             }
         },
     }
@@ -497,11 +557,31 @@
 
     @import '../../scss/_variables.scss';
 
-    .tainacan-modal-content {
-        border-radius: 10px;
+    @media screen and (max-width: 768px) {
+        .tainacan-bulk-edition-inline-fields {
+            flex-direction: column !important;
+
+            .tainacan-bulk-edition-field:not(:first-child) {
+                padding-left: 0 !important;
+            }
+
+            .buttons-r-bulk {
+                margin-left: 0 !important;
+                justify-content: center !important;
+            }
+        }
     }
 
-    .modal-card-body {
+    .tainacan-modal-content {
+        border-radius: 10px;
+        min-height: 400px;
+    }
+
+    .tainacan-modal-content .form-submit {
+        padding: 120px 0 0.4em 0 !important;
+    }
+
+    .no-overflow-modal-card-body {
         padding: 0 !important;
         overflow: unset !important;
     }
@@ -572,7 +652,7 @@
                         max-width: 100% !important;
                     }
 
-                    &:hover {
+                    &:hover, .tag {
                         background-color: white !important;
                     }
                 }

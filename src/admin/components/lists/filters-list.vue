@@ -583,12 +583,6 @@ export default {
                 }
             }
 
-            form {
-                padding: 1.0em 2.0em;
-                border-top: 1px solid $gray2;
-                border-bottom: 1px solid $gray2;
-                margin-top: 1.0em;
-            }
             &.not-sortable-item, &.not-sortable-item:hover {
                 cursor: default;
                 background-color: white !important;

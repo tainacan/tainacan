@@ -279,7 +279,7 @@ class Items extends TAINACAN_UnitTestCase {
             'collection',
             array(
                 'name'   => 'collectionComments',
-                'comment_status' => 'closed'
+                'allow_comments' => 'closed'
             ),
             true,
             true
@@ -303,8 +303,8 @@ class Items extends TAINACAN_UnitTestCase {
         $this->assertFalse(comments_open($item->get_id()));
         
         $collections = \Tainacan\Repositories\Collections::get_instance();
-        $collection->set('comment_status', 'open');
-        $collection->validate();
+        $collection->set('allow_comments', 'open');
+        $this->assertTrue($collection->validate());
         $collections->update($collection);
         
         $this->assertTrue(comments_open($item->get_id()));
@@ -312,7 +312,7 @@ class Items extends TAINACAN_UnitTestCase {
         $items = \Tainacan\Repositories\Items::get_instance();
         
         $item->set('comment_status', 'closed');
-        $item->validate();
+        $this->assertTrue($item->validate());
         $items->update($item);
         
         $this->assertFalse(comments_open($item->get_id()));

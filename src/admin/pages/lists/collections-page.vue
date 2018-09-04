@@ -76,9 +76,7 @@
                     <section class="section">
                         <div class="content has-text-grey has-text-centered">
                             <p>
-                                <b-icon
-                                        icon="inbox"
-                                        size="is-large"/>
+                                <b-icon icon="folder-multiple"/>
                             </p>
                             <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_collection_created') }}</p>
                             <p v-if="status == 'draft'">{{ $i18n.get('info_no_collection_draft') }}</p>

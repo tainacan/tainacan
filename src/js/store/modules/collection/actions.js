@@ -174,6 +174,20 @@ export const fetchCollectionCommentStatus = ({ commit }, id) => {
     });
 };
 
+export const fetchCollectionAllowComments = ({ commit }, id) => {
+    return new Promise((resolve, reject) =>{ 
+        axios.tainacan.get('/collections/' + id + '?fetch_only=allow_comments')
+        .then(res => {
+            let collectionAllowComments = res.data;
+            commit('setCollectionAllowComments', collectionAllowComments.allow_comments);
+            resolve( collectionAllowComments.allow_comments );
+        })
+        .catch(error => {
+            reject(error);
+        })
+    });
+};
+
 export const fetchCollectionNameAndURL = ({ commit }, id) => {
     //commit('cleanCollectionName');
     return new Promise((resolve, reject) =>{ 
@@ -213,46 +227,11 @@ export const deleteCollection = ({ commit }, { collectionId, isPermanently }) =>
 
 export const updateCollection = ({ commit }, { 
         collection_id, 
-        name, 
-        description, 
-        slug, 
-        status, 
-        enable_cover_page, 
-        cover_page_id,
-        moderators_ids, 
-        parent,
-        enabled_view_modes,
-        default_view_mode,
-        comment_status
+        collection
     }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.patch('/collections/' + collection_id, {
-            name: name,
-            description: description,
-            status: status,
-            slug: slug,
-            cover_page_id: "" + cover_page_id,
-            enable_cover_page: enable_cover_page,
-            moderators_ids: moderators_ids,
-            parent: parent,
-            enabled_view_modes: enabled_view_modes,
-            default_view_mode: default_view_mode,
-            comment_status: comment_status
-        }).then( res => {
-            commit('setCollection', { 
-                id: collection_id, 
-                name: name, 
-                description: description, 
-                slug: slug, 
-                status: status, 
-                enable_cover_page: enable_cover_page, 
-                cover_page_id: cover_page_id,
-                moderators_ids: moderators_ids,
-                parent: parent,
-                enabled_view_modes: enabled_view_modes,
-                default_view_mode: default_view_mode,
-                comment_status: comment_status
-            });
+        axios.tainacan.patch('/collections/' + collection_id, collection).then( res => {
+            commit('setCollection', collection);
             commit('setCollectionName', res.data.name);
             commit('setCollectionURL', res.data.url);
             resolve( res.data );
@@ -263,18 +242,16 @@ export const updateCollection = ({ commit }, {
     });
 };
 
-export const sendCollection = ( { commit }, { name, description, status, mapper }) => {
+export const sendCollection = ( { commit }, collection) => {
     return new Promise(( resolve, reject ) => {
-        var param = {
-            name: name,
-            description: description,
-            status: status,
-        };
-        param[tainacan_plugin.exposer_mapper_param] = mapper;
+        var param = collection;
+        param['mapper'] = null;
+        param[tainacan_plugin.exposer_mapper_param] = collection.mapper;
         axios.tainacan.post('/collections/', param)
             .then( res => {
-                commit('setCollection', { name: name, description: description, status: status, mapper: mapper });
-                resolve( res.data );
+                let collection = res.data;
+                commit('setCollection', collection);
+                resolve( collection );
             })
             .catch(error => {
                 reject( error.response );

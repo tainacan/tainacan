@@ -16,6 +16,16 @@
             <div class="columns">
                 <div class="column is-5-5">
 
+                    <!-- Hook for extra Form options -->
+                    <template 
+                            v-if="formHooks != undefined && 
+                                formHooks['item'] != undefined &&
+                                formHooks['item']['begin-left'] != undefined">  
+                        <form 
+                            id="form-item-begin-left"
+                            v-html="formHooks['item']['begin-left'].join('')"/>
+                    </template>
+
                     <!-- Document -------------------------------- -->
                     <div class="section-label">
                         <label>{{ form.document != undefined && form.document != null && form.document != '' ? $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
@@ -256,7 +266,7 @@
                     <b-field
                             :addons="false" 
                             :label="$i18n.get('label_comment_status')"
-                            v-if="collectionCommentStatus == 'open'">
+                            v-if="collectionAllowComments == 'open'">
                         <b-switch
                                 id="tainacan-checkbox-comment-status" 
                                 size="is-small"
@@ -292,10 +302,30 @@
                         </div>
                     </div>
 
+                    <!-- Hook for extra Form options -->
+                    <template 
+                            v-if="formHooks != undefined && 
+                                formHooks['item'] != undefined &&
+                                formHooks['item']['end-left'] != undefined">  
+                        <form 
+                            id="form-item-end-left"
+                            v-html="formHooks['item']['end-left'].join('')"/>
+                    </template>
+
                 </div>
                 <div 
                         class="column is-4-5"
                         v-show="!isMetadataColumnCompressed">
+
+                    <!-- Hook for extra Form options -->
+                    <template 
+                            v-if="formHooks != undefined && 
+                                formHooks['item'] != undefined &&
+                                formHooks['item']['begin-right'] != undefined">  
+                        <form 
+                            id="form-item-begin-right"
+                            v-html="formHooks['item']['begin-right'].join('')"/>
+                    </template>
 
                     
                     <!-- Visibility (status public or private) -------------------------------- -->
@@ -341,16 +371,14 @@
 
                     <!-- Metadata from Collection-------------------------------- -->
                     <span class="section-label">
-                        <label >{{ $i18n.get('metadata') }}</label>
+                        <label>{{ $i18n.get('metadata') }}</label>
                     </span>
                     <br>
                     <a
                             class="collapse-all"
                             @click="toggleCollapseAll()">
                         {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                        <b-icon
-                                type="is-turoquoise5"
-                                :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
+                        <b-icon :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
                     </a>
                     <tainacan-form-item
                             v-for="(metadatum, index) of metadatumList"
@@ -359,6 +387,15 @@
                             :is-collapsed="metadatumCollapses[index]"
                             @changeCollapse="onChangeCollapse($event, index)"/>
 
+                    <!-- Hook for extra Form options -->
+                    <template 
+                            v-if="formHooks != undefined && 
+                                formHooks['item'] != undefined &&
+                                formHooks['item']['end-right'] != undefined">  
+                        <form 
+                            id="form-item-end-right"
+                            v-html="formHooks['item']['end-right'].join('')"/>
+                    </template>
                 </div>
             </div>
             <div class="footer">
@@ -443,9 +480,11 @@ import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
 import DocumentItem from '../other/document-item.vue';
 import CustomDialog from '../other/custom-dialog.vue';
+import { formHooks } from '../../js/mixins';
 
 export default {
     name: 'ItemEditionForm',
+    mixins: [ formHooks ],
     data(){
         return {
             pageTitle: '',
@@ -490,7 +529,7 @@ export default {
             textLink: '',
             isUpdatingValues: false,
             collectionName: '',
-            collectionCommentStatus: ''
+            collectionAllowComments: ''
         }
     },
     computed: {
@@ -530,7 +569,7 @@ export default {
         ]),
         ...mapActions('collection', [
             'fetchCollectionName',
-            'fetchCollectionCommentStatus',
+            'fetchCollectionAllowComments',
             'deleteItem',
         ]),
         onSubmit(status) {
@@ -540,11 +579,14 @@ export default {
             let previousStatus = this.form.status;
             this.form.status = status;
 
-            let data = {item_id: this.itemId, status: this.form.status, comment_status: this.form.comment_status};
-
+            let data = {id: this.itemId, status: this.form.status, comment_status: this.form.comment_status};
+            this.fillExtraFormData(data, 'item');
             this.updateItem(data).then(updatedItem => {
 
                 this.item = updatedItem;
+
+                // Fills hook forms with it's real values 
+                this.updateExtraFormData('item', this.item);
 
                 // Fill this.form data with current data.
                 this.form.status = this.item.status;
@@ -582,6 +624,7 @@ export default {
 
             // Creates draft Item
             let data = {collection_id: this.form.collectionId, status: 'auto-draft', comment_status: this.form.comment_status};
+            this.fillExtraFormData(data, 'item');
             this.sendItem(data).then(res => {
 
                 this.itemId = res.id;
@@ -806,6 +849,12 @@ export default {
             this.fetchItem(this.itemId).then(res => {
                 this.item = res;
 
+                // Fills hook forms with it's real values 
+                this.$nextTick()
+                    .then(() => {
+                        this.updateExtraFormData('item', this.item);
+                    });
+                    
                 // Fill this.form data with current data.
                 this.form.status = this.item.status;
                 this.form.document = this.item.document;
@@ -833,9 +882,9 @@ export default {
             this.collectionName = collectionName;
         });
         
-        // Obtains collection name
-        this.fetchCollectionCommentStatus(this.collectionId).then((collectionCommentStatus) => {
-            this.collectionCommentStatus = collectionCommentStatus;
+        // Obtains if collection allow items comments
+        this.fetchCollectionAllowComments(this.collectionId).then((collectionAllowComments) => {
+            this.collectionAllowComments = collectionAllowComments;
         });
 
         // Sets feedback variables
@@ -907,6 +956,10 @@ export default {
     .page-container {
         padding: 25px 0px;
 
+        &>.tainacan-form {
+            margin-bottom: 110px;
+        }
+
         .tainacan-page-title {
             padding-left: $page-side-padding;
             padding-right: $page-side-padding;
@@ -945,7 +998,7 @@ export default {
         label {
             font-size: 16px !important;
             font-weight: 500 !important;
-            color: $blue5 !important;
+            color: $gray5 !important;
             line-height: 1.2em;
         }
     }

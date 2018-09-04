@@ -24,6 +24,16 @@
                     @focus="clearErrors('name')"/>
         </b-field>
 
+        <!-- Hook for extra Form options -->
+        <template 
+                v-if="formHooks != undefined && 
+                    formHooks['metadatum'] != undefined &&
+                    formHooks['metadatum']['begin-left'] != undefined">  
+            <form 
+                id="form-metadatum-begin-left"
+                v-html="formHooks['metadatum']['begin-left'].join('')"/>
+        </template>
+
         <b-field
                 :addons="false"
                 :type="formErrors['description'] != undefined ? 'is-danger' : ''"
@@ -206,6 +216,16 @@
                 v-html="editForm.edit_form"
                 v-else/>
 
+        <!-- Hook for extra Form options -->
+        <template 
+                v-if="formHooks != undefined && 
+                    formHooks['metadatum'] != undefined &&
+                    formHooks['metadatum']['end-left'] != undefined">  
+            <form 
+                id="form-metadatum-end-left"
+                v-html="formHooks['metadatum']['end-left'].join('')"/>
+        </template>
+
         <div class="field is-grouped form-submit">
             <div class="control">
                 <button
@@ -228,9 +248,11 @@
 
 <script>
     import {mapActions} from 'vuex';
+    import { formHooks } from "../../js/mixins";
 
     export default {
         name: 'MetadatumEditionForm',
+        mixins: [ formHooks ],
         data() {
             return {
                 editForm: {},
@@ -257,6 +279,13 @@
             this.oldForm = JSON.parse(JSON.stringify(this.originalMetadatum));
 
         },
+        mounted() {
+            // Fills hook forms with it's real values 
+            this.$nextTick()
+                .then(() => {
+                    this.updateExtraFormData('metadatum', this.editForm);
+                });
+        },
         beforeDestroy() {
             if (this.closedByForm) {
                 this.editedMetadatum.saved = true;
@@ -275,7 +304,8 @@
             saveEdition(metadatum) {
 
                 if ((metadatum.metadata_type_object && metadatum.metadata_type_object.form_component) || metadatum.edit_form == '') {
-
+                    
+                    this.fillExtraFormData(this.editForm, 'metadatum');
                     this.updateMetadatum({
                         collectionId: this.collectionId,
                         metadatumId: metadatum.id,
@@ -309,6 +339,7 @@
                     for (let [key, value] of formData.entries())
                         formObj[key] = value;
 
+                    this.fillExtraFormData(formObj, 'metadatum');
                     this.updateMetadatum({
                         collectionId: this.collectionId,
                         metadatumId: metadatum.id,

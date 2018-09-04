@@ -398,7 +398,7 @@ class Items extends Repository {
 	/**
 	 * Get a default thumbnail ID from the item document.
 	 *
-	 * @param  EntitiesItem $item The item
+	 * @param  Entities\Item $item The item
 	 *
 	 * @return int|null           The thumbnail ID or null if it was not possible to find a thumbnail
 	 */
@@ -491,7 +491,7 @@ class Items extends Repository {
 	    
 	    if($item != false && $item instanceof Entities\Item) {
     	    $collection = $item->get_collection();
-    	    if($collection->get_comment_status() !== 'open' ) return false;
+    	    if( $collection->get_allow_comments() !== 'open' ) return false;
 	    }
 	    
 	    return $open_comment;

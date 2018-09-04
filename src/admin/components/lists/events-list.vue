@@ -103,9 +103,7 @@
             <section class="section">
                 <div class="content has-text-grey has-text-centered">
                     <p>
-                        <b-icon
-                                icon="inbox"
-                                size="is-large"/>
+                        <activities-icon />
                     </p>
                     <p>{{ $i18n.get('info_no_events') }}</p>
                 </div>
@@ -115,7 +113,7 @@
 </template>
 
 <script>
-    // import { mapActions } from 'vuex'
+    import ActivitiesIcon from '../other/activities-icon.vue';
 
     export default {
         name: 'EventsList',
@@ -123,6 +121,9 @@
             return {
                 selectedEvents: []
             }
+        },
+        components: {
+            ActivitiesIcon
         },
         props: {
             isLoading: false,
@@ -149,6 +150,9 @@
     }
 </script>
 
-<style>
-
+<style scoped>
+    .activities-icon {
+        height: 24px;
+        width: 24px;
+    }
 </style>

@@ -49,6 +49,13 @@ class Theme_Helper {
 		add_filter('get_the_archive_title', array($this, 'filter_archive_title'));
 
 		add_shortcode( 'tainacan-search', array($this, 'search_shortcode'));
+		
+		add_action( 'generate_rewrite_rules', array( &$this, 'rewrite_rules' ), 10, 1 );
+		add_filter( 'query_vars', array( &$this, 'rewrite_rules_query_vars' ) );
+		add_filter( 'template_include', array( &$this, 'rewrite_rule_template_include' ) );
+		add_action( 'pre_get_posts', array($this, 'archive_repository_pre_get_posts'));
+		// TODO: fix the WP Title 
+		// add_filter( 'wp_title', array($this, 'archive_repository_wp_title'), 10, 3);
 
 		$this->register_view_mode('table', [
 			'label' => __('Table', 'tainacan'),
@@ -81,7 +88,7 @@ class Theme_Helper {
 	
 	public function enqueue_scripts($force = false) {
 		global $TAINACAN_BASE_URL;
-		if ( $force || is_post_type_archive( \Tainacan\Repositories\Repository::get_collections_db_identifiers() ) || tainacan_get_term() ) {
+		if ( $force || is_post_type_archive( \Tainacan\Repositories\Repository::get_collections_db_identifiers() ) || tainacan_get_term() || get_query_var('tainacan_repository_archive') == 1 ) {
 			//\Tainacan\Admin::get_instance()->add_admin_js();
 			wp_enqueue_script('tainacan-search', $TAINACAN_BASE_URL . '/assets/user_search-components.js' , [] , null, true);
 			wp_localize_script('tainacan-search', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params());
@@ -112,7 +119,12 @@ class Theme_Helper {
 			if (in_array($current_post_type, $collections_post_types)) {
 				$title = sprintf( __( 'Collection: %s' ), post_type_archive_title( '', false ) );
 			}
+		} elseif (is_archive()) {
+			if (get_query_var('tainacan_repository_archive') == 1) {
+				$title = __( 'All items in repository', 'tainacan' );
+			}
 		}
+		
 		return $title;
 	}
 
@@ -323,6 +335,50 @@ class Theme_Helper {
 		return "<div id='tainacan-items-page' $params ></div>";
 
 
+	}
+	
+	function rewrite_rules( &$wp_rewrite ) {
+        
+        /* Translators: The Items slug - will be the URL for the repository archive */
+		$items_base = sanitize_title(_x('items', 'Slug: the string that will be used to build the URL to list all items of the repository', 'tainacan'));
+		
+		$new_rules = array(
+            $items_base . "/?$"               => "index.php?tainacan_repository_archive=1",
+			$items_base . "/page/([0-9]+)/?$" => 'index.php?tainacan_repository_archive=1&paged=$matches[1]'
+        );
+
+        $wp_rewrite->rules = $new_rules + $wp_rewrite->rules;
+    }
+
+    function rewrite_rules_query_vars( $public_query_vars ) {
+        $public_query_vars[] = "tainacan_repository_archive";
+        return $public_query_vars;
+    }
+
+    function rewrite_rule_template_include( $template ) {
+        global $wp_query;
+        if ( $wp_query->get( 'tainacan_repository_archive' ) == 1 ) {
+
+            $templates = apply_filters('tainacan_repository_archive_template_hierarchy', ['tainacan/archive-repository.php', 'index.php']);
+			
+			return locate_template($templates, false);
+			
+        }
+        return $template;
+    }
+	
+	function archive_repository_pre_get_posts($wp_query) {
+		if (!$wp_query->is_main_query() || $wp_query->get( 'tainacan_repository_archive' ) != 1)
+			return;
+		
+		$wp_query->set( 'is_archive', true );
+		$wp_query->set( 'is_post_type_archive', false );
+		$wp_query->set( 'is_home', false );
+		$wp_query->is_home = false;
+		$wp_query->is_post_type_archive = false;
+		$wp_query->is_archive = true;
+		$wp_query->set( 'post_type', \Tainacan\Repositories\Repository::get_collections_db_identifiers() );
+		
 	}
 
 	/**

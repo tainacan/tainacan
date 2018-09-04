@@ -297,7 +297,6 @@ export default {
                     this.$store.dispatch('search/set_postquery', this.$route.query);
                 },
                 loadItems(to) {
-                    
                     this.$emit( 'isLoadingItems', true);
 
                     // Forces fetch_only to be filled before any search happens

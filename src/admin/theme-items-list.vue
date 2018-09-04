@@ -1,7 +1,7 @@
 <template>
 <div>
     <items-page
-            v-if="$root.collectionId != undefined && $root.collectionId != ''"
+            v-if="$root.termId == undefined || $root.termId == ''"
             class="theme-items-list"
             :enabled-view-modes="$root.enabledViewModes" 
             :default-view-mode="$root.defaultViewMode"

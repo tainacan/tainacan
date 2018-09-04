@@ -3,7 +3,7 @@ import axios from '../../../axios/axios';
 // Actions related to background processes
 export const fetchProcesses = ({ commit }, {page, processesPerPage}) => {
     return new Promise((resolve, reject) => {
-        let endpoint = '/bg-processes?';
+        let endpoint = '/bg-processes?all_users=1';
 
         if (page != undefined)
             endpoint += 'paged=' + page;

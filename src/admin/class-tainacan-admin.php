@@ -203,7 +203,9 @@ class Admin {
         foreach ( $metadata_types as $index => $metadata_type){
 		    $class = new $metadata_type;
             $settings['i18n']['helpers_label'][$class->get_component()] = $class->get_form_labels();
-        }
+		}
+		
+		$settings['form_hooks'] = Admin_Hooks::get_instance()->get_registered_hooks();
 		
 		return $settings;
 		

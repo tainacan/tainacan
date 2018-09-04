@@ -321,6 +321,19 @@ class REST_Metadata_Controller extends REST_Controller {
 				$item_arr['enabled'] = $item->get_enabled_for_collection();
 			}
 
+			/**
+			 * Use this filter to add additional post_meta to the api response
+			 * Use the $request object to get the context of the request and other variables
+			 * For example, id context is edit, you may want to add your meta or not.
+			 * 
+			 * Also take care to do any permissions verification before exposing the data
+			 */
+			$extra_metadata = apply_filters('tainacan-api-response-metadatum-meta', [], $request);
+
+			foreach ($extra_metadata as $extra_meta) {
+				$item_arr[$extra_meta] = get_post_meta($item_arr['id'], $extra_meta, true);
+			}
+			
 			return $item_arr;
 		}
 

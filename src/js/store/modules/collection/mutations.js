@@ -78,3 +78,11 @@ export const setCollectionCommentStatus = (state, collectionCommentStatus) => {
 export const cleanCollectionCommentStatus = (state) => {
     state.collectionCommentStatus = '';
 }
+
+export const setCollectionAllowComments = (state, collectionAllowComments) => {
+    state.collectionAllowComments = collectionAllowComments;
+}
+
+export const cleanCollectionAllowComments = (state) => {
+    state.collectionAllowComments = '';
+}

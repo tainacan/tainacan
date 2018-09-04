@@ -27,6 +27,15 @@
                                 @blur="updateSlug"
                                 @focus="clearErrors('name')"/>
                     </b-field>
+                    <!-- Hook for extra Form options -->
+                    <template 
+                            v-if="formHooks != undefined && 
+                                formHooks['collection'] != undefined &&
+                                formHooks['collection']['begin-left'] != undefined">  
+                        <form 
+                            id="form-collection-begin-left"
+                            v-html="this.formHooks['collection']['begin-left'].join('')"/>
+                    </template>
 
                     <!-- Thumbnail -------------------------------- --> 
                     <b-field :addons="false">
@@ -216,11 +225,23 @@
                                 size="is-small"
                                 true-value="open" 
                                 false-value="closed"
-                                v-model="form.comment_status" />
+                                v-model="form.allow_comments" />
                         <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'comment_status')" 
-                                :message="$i18n.getHelperMessage('collections', 'comment_status')"/>
+                                :title="$i18n.getHelperTitle('collections', 'allow_comments')" 
+                                :message="$i18n.getHelperMessage('collections', 'allow_comments')"/>
                     </b-field>
+
+                    <!-- Hook for extra Form options -->
+                    <template 
+                            v-if="formHooks != undefined && 
+                                formHooks['collection'] != undefined &&
+                                formHooks['collection']['end-left'] != undefined">  
+                        <form
+                            ref="form-collection-end-left" 
+                            id="form-collection-end-left"
+                            v-html="formHooks['collection']['end-left'].join('')"/>
+                    </template>
+
                 </div>
                 <div class="column is-1" />
                 <div class="column">
@@ -284,7 +305,17 @@
                             </div>     
                         </div>
                     </b-field>
-                        
+                    
+                    <!-- Hook for extra Form options -->
+                    <template 
+                            v-if="formHooks != undefined && 
+                                formHooks['collection'] != undefined &&
+                                formHooks['collection']['begin-right'] != undefined">  
+                        <form 
+                            id="form-collection-begin-right"
+                            v-html="formHooks['collection']['begin-right'].join('')"/>
+                    </template>
+
                     <!-- Description -------------------------------- --> 
                     <b-field
                             :addons="false" 
@@ -385,7 +416,18 @@
                                 v-model="form.slug"
                                 @focus="clearErrors('slug')"/>
                     </b-field>
+
+                    <!-- Hook for extra Form options -->
+                    <template 
+                            v-if="formHooks != undefined && 
+                                formHooks['collection'] != undefined &&
+                                formHooks['collection']['end-right'] != undefined">  
+                        <form 
+                            id="form-collection-end-right"
+                            v-html="formHooks['collection']['end-right'].join('')"/>
+                    </template>
                 </div>
+
             </div>
 
             <!-- Form submit -------------------------------- --> 
@@ -418,11 +460,11 @@ import { mapActions } from 'vuex';
 import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
 import EyeIcon from '../other/eye-icon.vue';
-import { wpAjax } from '../../js/mixins';
+import { wpAjax, formHooks } from '../../js/mixins';
 
 export default {
     name: 'CollectionEditionForm',
-    mixins: [ wpAjax ],
+    mixins: [ wpAjax, formHooks ],
     data(){
         return {
             collectionId: Number,
@@ -440,7 +482,7 @@ export default {
                 moderators_ids: [],
                 enabled_view_modes: [],
                 default_view_mode: [],
-                comment_status: ''
+                allow_comments: ''
             },
             thumbnail: {},
             cover: {},
@@ -481,7 +523,7 @@ export default {
             viewModesList: [],
             fromImporter: '',
             newPagePath: tainacan_plugin.admin_url + 'post-new.php?post_type=page',
-            isUpdatingSlug: false,
+            isUpdatingSlug: false
         }
     },
     components: {
@@ -526,8 +568,8 @@ export default {
                 });
         }, 500),
         onSubmit() {
+           
             this.isLoading = true;
-
             this.form.moderators_ids = [];
             for (let moderator of this.moderators)
                 this.form.moderators_ids.push(moderator.id);
@@ -544,12 +586,18 @@ export default {
                 parent: this.form.parent,
                 enabled_view_modes: this.form.enabled_view_modes,
                 default_view_mode: this.form.default_view_mode,
-                comment_status: this.form.comment_status
+                allow_comments: this.form.allow_comments
             };
-            this.updateCollection(data).then(updatedCollection => {    
+            this.fillExtraFormData(data, 'collection');
+
+            this.updateCollection({collection_id: this.collectionId, collection: data })
+            .then(updatedCollection => {    
                 
                 this.collection = updatedCollection;
 
+                // Fills hook forms with it's real values 
+                this.updateExtraFormData('collection', this.collection);
+                
                 // Fill this.form data with current data.
                 this.form.name = this.collection.name;
                 this.form.slug = this.collection.slug;
@@ -559,7 +607,7 @@ export default {
                 this.form.enable_cover_page = this.collection.enable_cover_page;
                 this.form.enabled_view_modes = this.collection.enabled_view_modes;
                 this.form.default_view_mode = this.collection.default_view_mode;
-                this.form.comment_status = this.collection.comment_status;
+                this.form.allow_comments = this.collection.allow_comments;
 
                 this.isLoading = false;
                 this.formErrorMessage = '';
@@ -586,6 +634,8 @@ export default {
 
             // Creates draft Collection
             let data = { name: '', description: '', status: 'auto-draft', mapper: (this.isMapped && this.mapper != false ? this.mapper : false ) };
+            this.fillExtraFormData(data, 'collection');
+            
             this.sendCollection(data).then(res => {
 
                 this.collectionId = res.id;
@@ -593,7 +643,7 @@ export default {
 
                 // Initializes Media Frames now that collectonId exists
                 this.initializeMediaFrames();
-
+        
                 // Fill this.form data with current data.
                 this.form.name = this.collection.name;
                 this.form.description = this.collection.description;
@@ -604,7 +654,7 @@ export default {
                 this.form.default_view_mode = this.collection.default_view_mode;
                 this.form.enabled_view_modes = [];
                 this.moderators = [];
-                this.form.comment_status = this.collection.comment_status;
+                this.form.allow_comments = this.collection.allow_comments;
 
                 // Pre-fill status with publish to incentivate it
                 this.form.status = 'publish';
@@ -758,7 +808,7 @@ export default {
             }
         }
     },
-    created(){
+    mounted(){
 
         if (this.$route.query.fromImporter != undefined) 
             this.fromImporter = this.$route.query.fromImporter;
@@ -779,7 +829,13 @@ export default {
 
                 // Initializes Media Frames now that collectonId exists
                 this.initializeMediaFrames();
-
+                this.$nextTick()
+                    .then(() => {
+                        // Fills hook forms with it's real values 
+                        this.updateExtraFormData('collection', this.collection);
+                    });
+               
+  
                 // Fill this.form data with current data.
                 this.form.name = this.collection.name;
                 this.form.description = this.collection.description;
@@ -791,7 +847,7 @@ export default {
                 this.form.default_view_mode = this.collection.default_view_mode;
                 this.form.enabled_view_modes = JSON.parse(JSON.stringify(this.collection.enabled_view_modes));
                 this.moderators = JSON.parse(JSON.stringify(this.collection.moderators));
-                this.form.comment_status = this.collection.comment_status;
+                this.form.allow_comments = this.collection.allow_comments;
                  
                 // Generates CoverPage from current cover_page_id info
                 if (this.form.cover_page_id != undefined && this.form.cover_page_id != '') {
