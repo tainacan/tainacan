@@ -145,7 +145,7 @@
                         padding: 0.2rem 0.1rem !important;
                     }
                 }
-
+                
                 .select {
                     select {
                         display: unset;
