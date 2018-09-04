@@ -65,7 +65,7 @@ export const formHooks = {
             ];
             // Gets data from existing extra form hooks
             for (let position of positions) {
-                if (this.formHooks[entity][position] && this.formHooks[entity][position] != undefined) {
+                if (this.formHooks[entity] && this.formHooks[entity][position] && this.formHooks[entity][position] != undefined) {
                     let formElement = document.getElementById('form-' + entity + '-' + position);
                     if (formElement) {  
                         for (let element of formElement.elements) {
@@ -95,7 +95,7 @@ export const formHooks = {
             ];
             // Gets data from existing extra form hooks
             for (let position of positions) {
-                if (this.formHooks[entity][position] && this.formHooks[entity][position] != undefined) {
+                if (this.formHooks[entity] && this.formHooks[entity][position] && this.formHooks[entity][position] != undefined) {
                     let formElement = document.getElementById('form-' + entity + '-' + position);
                     
                     if (formElement) {   

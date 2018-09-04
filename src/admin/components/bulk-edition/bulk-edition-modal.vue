@@ -25,11 +25,13 @@
                         <template 
                                 v-for="(metadatum, index) in metadata">
                             <option
+                                    :key="index"
                                     v-if="metadatum.id"
                                     :value="metadatum.id">
                                 {{ metadatum.name }}
                             </option>
                             <option
+                                    :key="index"
                                     v-if="index === Object.keys(metadata).length-1"
                                     value="status">
                                 {{ $i18n.get('label_status') }}
@@ -42,6 +44,7 @@
                             v-if="bulkEditionProcedures[criterion] &&
                             bulkEditionProcedures[criterion].metadatumID"
                             :disabled="!!bulkEditionProcedures[criterion].action"
+                            :value="bulkEditionProcedures[criterion].action ? bulkEditionProcedures[criterion].action : undefined"
                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                             :placeholder="$i18n.get('instruction_select_a_action')"
                             @input="addToBulkEditionProcedures($event, 'action', criterion)">
@@ -57,7 +60,6 @@
                             <option
                                     v-for="(edtAct, key) in editionActionsForNotMultiple"
                                     :value="edtAct"
-                                    :selected="Object.keys(editionActionsForNotMultiple).length === 1"
                                     :key="key">
                                 {{ edtAct }}
                             </option>
@@ -533,11 +535,19 @@
                 return found ? found : {};
             },
             addToBulkEditionProcedures(value, key, criterion){
+
                 if(Array.isArray(value)){
                     value = value[0];
                 }
 
                 this.$set(this.bulkEditionProcedures[criterion], `${key}`, value);
+                
+                if (key == 'metadatumID') {
+                    if (this.getMetadataByID(this.bulkEditionProcedures[criterion].metadatumID).multiple != 'yes') {
+                        let value = Object.values(this.editionActionsForNotMultiple)[0];
+                        this.addToBulkEditionProcedures(value, 'action', criterion);
+                    }
+                }
             }
         },
     }

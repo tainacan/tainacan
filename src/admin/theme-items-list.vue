@@ -20,7 +20,6 @@
 export default {
     name: "ThemeItemsList",
     created() {
-        console.log("oi")
         this.$userPrefs.init(); 
     }
 }
