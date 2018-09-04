@@ -36,6 +36,7 @@ import ViewModeTable from '../../theme-helper/view-mode-table.vue';
 import ViewModeCards from '../../theme-helper/view-mode-cards.vue';
 import ViewModeRecords from '../../theme-helper/view-mode-records.vue';
 import ViewModeMasonry from '../../theme-helper/view-mode-masonry.vue';
+import ViewModeSlide from '../../theme-helper/view-mode-slide.vue';
 
 // Remaining imports
 import HelpButton from '../components/other/help-button.vue';
@@ -91,6 +92,7 @@ Vue.component('view-mode-table', ViewModeTable);
 Vue.component('view-mode-cards', ViewModeCards);
 Vue.component('view-mode-records', ViewModeRecords);
 Vue.component('view-mode-masonry', ViewModeMasonry);
+Vue.component('view-mode-slide', ViewModeSlide);
 
 Vue.use(eventBusSearch, { store: store, router: routerTheme});
 

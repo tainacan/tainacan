@@ -84,6 +84,13 @@ class Theme_Helper {
 			'icon' => '<span class="icon"><i class="mdi mdi-view-dashboard mdi-24px"></i></span>',
 			'type' => 'component'
 		]);
+		$this->register_view_mode('slide', [
+			'label' => __('Slide', 'tainacan'),
+			'dynamic_metadata' => false,
+			'description' => 'A slideshow view, fullscreen.',
+			'icon' => '<span class="icon"><i class="mdi mdi-fullscreen mdi-24px"></i></span>',
+			'type' => 'component'
+		]);
 	}
 	
 	public function enqueue_scripts($force = false) {
