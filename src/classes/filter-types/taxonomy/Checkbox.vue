@@ -8,11 +8,10 @@
             <b-checkbox
                     v-model="selected"
                     :native-value="option.id"
-                    v-if="!option.isChild"
             >{{ option.name }}</b-checkbox>
             <div
                     class="see-more-container"
-                    v-if="option.seeMoreLink"
+                    v-if="option.seeMoreLink && index == options.length-1"
                     @click="openCheckboxModal(option.parent)"
                     v-html="option.seeMoreLink"/>
         </div>
