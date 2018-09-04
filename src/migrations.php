@@ -279,6 +279,11 @@ class Migrations {
 		flush_rewrite_rules(false);
 	}
 	
+	static function refresh_rewrite_rules_items() {
+		// needed after we added the /items rewrite rule
+		flush_rewrite_rules(false);
+	}
+	
 }
 
 
