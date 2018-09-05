@@ -2,7 +2,7 @@
     <div>
         <component
                 :disabled="disabled"
-                :is="getComponent()"
+                :is="getComponent"
                 :maxtags="maxtags"
                 v-model="valueComponent"
                 :allow-select-to-create="allowSelectToCreate"
@@ -10,9 +10,15 @@
                 :terms="terms"
                 :taxonomy-id="taxonomy"
                 :options="getOptions(0)"/>
+        <a 
+                class="add-new-term"
+                v-if="(getComponent == 'tainacan-taxonomy-checkbox' || getComponent == 'tainacan-taxonomy-radio') && terms.length < totalTerms"
+                @click="getTermsFromTaxonomy()">
+            {{ $i18n.get('label_view_more') + ' (' + Number(totalTerms - terms.length) + ' ' + $i18n.get('terms') + ')' }}
+        </a>
         <add-new-term
                 class="add-new-term"
-                v-if="getComponent() !== 'tainacan-taxonomy-tag-input' && allowNew"
+                v-if="getComponent !== 'tainacan-taxonomy-tag-input' && allowNew"
                 :taxonomy_id="taxonomy"
                 :metadatum="metadatum"
                 :item_id="metadatum.item.id"
@@ -63,6 +69,9 @@
                 collectionId: '',
                 taxonomy: '',
                 terms:[], // object with names
+                totalTerms: 0,
+                offset: 0,
+                termsNumber: 40
             }
         },
         watch: {
@@ -87,17 +96,29 @@
             maxtags: '',
             allowSelectToCreate: false,
         },
-        methods: {
-            getComponent(){
+        computed: {
+            getComponent() {
                 if(this.forcedComponentType){
                    return this.forcedComponentType;
                 } else if( this.metadatum.metadatum
                     && this.metadatum.metadatum.metadata_type_options && this.metadatum.metadatum.metadata_type_options.input_type ){
                     return this.metadatum.metadatum.metadata_type_options.input_type;
                 }
-            },
+            }
+        },
+        methods: {
             getTermsFromTaxonomy(){
-                axios.get('/taxonomy/' + this.taxonomy + '/terms?hideempty=0&order=asc' ).then( res => {
+                let endpoint = '/taxonomy/' + this.taxonomy + '/terms?hideempty=0&order=asc';
+
+                if (this.getComponent == 'tainacan-taxonomy-checkbox' || this.getComponent == 'tainacan-taxonomy-radio')
+                    endpoint = endpoint + '&number=' + this.termsNumber + '&offset=' + this.offset; 
+
+                axios.get(endpoint)
+                .then( res => {
+                    if (this.getComponent == 'tainacan-taxonomy-checkbox' || this.getComponent == 'tainacan-taxonomy-radio') {
+                        this.totalTerms = Number(res.headers['x-wp-total']);
+                        this.offset += this.termsNumber;
+                    }
                     for (let item of res.data) {
                         this.terms.push( item );
                     }
@@ -164,5 +185,6 @@
     .add-new-term{
         margin-top: 15px;
         margin-bottom: 30px;
+        font-size: 0.75rem;
     }
 </style>

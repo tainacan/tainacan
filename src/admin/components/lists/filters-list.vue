@@ -384,7 +384,6 @@ export default {
             .then(() => {
                 // Reload Available Metadatum Types List
                 this.updateListOfMetadata();
-   
             })
             .catch((error) => { this.$console.log(error)});
         

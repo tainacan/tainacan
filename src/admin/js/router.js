@@ -65,7 +65,7 @@ const routes = [
     { path: '/taxonomies', name: 'Page', component: Page, meta: {title: i18nGet('title_taxonomies_page'), icon: 'shape'} },
     { path: '/taxonomies/new', name: 'TaxonomyCreationForm', component: TaxonomyEditionForm, meta: {title: i18nGet('title_create_taxonomy_page'), icon: 'shape'} },
     { path: '/taxonomies/:taxonomyId/edit', name: 'TaxonomyEditionForm', component: TaxonomyEditionForm, meta: {title: i18nGet('title_taxonomy_edition_page'), icon: 'shape'} },
-    { path: '/taxonomies/:taxonomyId', name: 'TaxonomyPage', component: TaxonomyPage, meta: {title: i18nGet('title_taxonomy_page'), icon: 'shape'} },
+    { path: '/taxonomies/:taxonomyId', redirect: '/taxonomies/:taxonomyId/edit' },
 
     { path: '/events',  name: 'EventsPage', component: EventsPage, meta: {title: i18nGet('title_repository_events_page'), icon: 'flash'} },
     { path: '/events/:eventId', name: 'EventPage', component: EventPage, meta: {title: i18nGet('title_event_page'), icon: 'flash'} },
