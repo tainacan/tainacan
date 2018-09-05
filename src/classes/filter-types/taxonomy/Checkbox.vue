@@ -144,7 +144,7 @@
                         }
                     }
 
-                    if(this.filter.max_options && (this.options.length >= this.filter.max_options || hasChildren)){
+                    if (this.filter.max_options && (this.options.length >= this.filter.max_options || hasChildren)) {
                         if(this.options.length > this.filter.max_options){
                             this.options.splice(this.filter.max_options);
                         }

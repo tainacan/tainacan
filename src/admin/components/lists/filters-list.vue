@@ -384,7 +384,6 @@ export default {
             .then(() => {
                 // Reload Available Metadatum Types List
                 this.updateListOfMetadata();
-   
             })
             .catch((error) => { this.$console.log(error)});
         
@@ -444,7 +443,7 @@ export default {
         }
 
     },
-    created() {
+   mounted() {
 
         this.isRepositoryLevel = this.$route.name == 'FiltersPage' ? true : false;
         if (this.isRepositoryLevel)

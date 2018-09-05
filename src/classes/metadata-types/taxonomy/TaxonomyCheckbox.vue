@@ -28,7 +28,7 @@
         },
         data(){
             return {
-                checked: []
+                checked: [],
             }
         },
         watch: {

@@ -445,7 +445,8 @@ export default {
             'updateMetadata',
             'updateCollectionMetadataOrder',
             'fetchMetadatumMappers',
-            'updateMetadataMapperMetadata'
+            'updateMetadataMapperMetadata',
+            'cleanMetadata'
         ]),
         ...mapGetters('metadata',[
             'getMetadatumTypes',
@@ -746,7 +747,6 @@ export default {
             else
                 this.collectionId = this.$route.params.collectionId;
             
-
             this.fetchMetadata({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true, includeDisabled: true})
                 .then(() => {
                     this.isLoadingMetadata = false;
@@ -756,7 +756,8 @@ export default {
                 });
         }
     },
-    created() {
+    mounted() {
+        this.cleanMetadata();
         this.isLoadingMetadatumTypes = true;
         this.isLoadingMetadata = true;
 
