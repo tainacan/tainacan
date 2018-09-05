@@ -249,14 +249,14 @@
                     status: this.form.status,
                     allow_insert: this.form.allowInsert
                 };
-                this.fillExtraFormData(data, 'taxonomy');
+                this.fillExtraFormData(data);
                 this.updateTaxonomy(data)
                     .then(updatedTaxonomy => {
 
                         this.taxonomy = updatedTaxonomy;
 
                         // Fills hook forms with it's real values 
-                        this.updateExtraFormData('taxonomy', this.taxonomy);
+                        this.updateExtraFormData(this.taxonomy);
 
                         // Fill this.form data with current data.
                         this.form.name = this.taxonomy.name;
@@ -316,7 +316,7 @@
                     slug: '',
                     allow_insert: '',
                 };
-                this.fillExtraFormData(data, 'taxonomy');
+                this.fillExtraFormData(data);
                 this.createTaxonomy(data)
                     .then(res => {
 
@@ -365,7 +365,7 @@
                     // Fills hook forms with it's real values 
                     this.$nextTick()
                         .then(() => {
-                            this.updateExtraFormData('taxonomy', this.taxonomy);
+                            this.updateExtraFormData(this.taxonomy);
                         });
 
                     // Fill this.form data with current data.

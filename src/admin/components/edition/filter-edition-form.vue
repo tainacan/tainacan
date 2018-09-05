@@ -210,7 +210,7 @@ export default {
         // Fills hook forms with it's real values 
         this.$nextTick()
             .then(() => {
-                this.updateExtraFormData('filter', this.editForm);
+                this.updateExtraFormData(this.editForm);
             });
     },
     beforeDestroy() {
@@ -232,7 +232,7 @@ export default {
 
             if ((filter.filter_type_object && filter.filter_type_object.form_component) || filter.edit_form == '') {
                 
-                // this.fillExtraFormData(this.editForm, 'filter');
+                // this.fillExtraFormData(this.editForm);
                 this.updateFilter({ filterId: filter.id, index: this.index, options: this.editForm})
                     .then(() => {
                         this.editForm = {};
@@ -261,7 +261,7 @@ export default {
                     formObj[key] = value;
                 }
 
-                this.fillExtraFormData(formObj, 'filter');
+                this.fillExtraFormData(formObj);
                 this.updateFilter({ filterId: filter.id, index: this.index, options: formObj})
                     .then(() => {
                         this.editForm = {};
