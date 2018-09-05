@@ -26,7 +26,7 @@ In WordPress language, each item is a post and its post type represents its coll
 Document is the main information of the item. It is the object which all metadata refer to. Tainacan accepts 3 different document types:
 
 * Attachment: A file attached to the item. An image, video, pdf, audio or other media file.
-* URL: An URL pointing to an external website or file. It can be a general website, a specific file, or media services. In the case of media services, Tainacan recognizes addresses and displays the appropriate player, using [oEmbed](https://oembed.com/)
+* URL: An URL pointing to an external website or file. It can be a general website, a specific file, or media services. In the case of media services, Tainacan recognizes addresses and displays the appropriate player, using [oEmbed](https://oembed.com/). A list of services automatically conveted to embeds by WordPress can be found [here](https://codex.wordpress.org/Embeds).
 * Text: A plain text, stored directly in the database, the user can type upon creating or editing an item
 
 ## Metadata
