@@ -77,10 +77,11 @@
                         <b-taginput
                                 v-else-if="advancedSearchQuery.taxquery[searchCriterion]"
                                 :data="terms"
-                                :value="advancedSearchQuery.taxquery[searchCriterion].btags.length > 0 ?
+                                :value="advancedSearchQuery.taxquery[searchCriterion] &&
+                                 advancedSearchQuery.taxquery[searchCriterion].btags.length > 0 ?
                                  Array.from(new Set(advancedSearchQuery.taxquery[searchCriterion].btags)) : []"
                                 autocomplete
-                                :loading="isFetching"
+                                :loading="advancedSearchQuery.taxquery[searchCriterion].isFetching"
                                 attached
                                 ellipsis
                                 @remove="removeValueOf($event, searchCriterion)"
@@ -193,7 +194,7 @@
                 <div class="field is-grouped is-pulled-right">
                     <p
                             v-if="Object.keys(this.advancedSearchQuery.taxquery).length > 0 ||
-                 Object.keys(this.advancedSearchQuery.metaquery).length > 0"
+                             Object.keys(this.advancedSearchQuery.metaquery).length > 0"
                             class="control">
                         <button
                                 @click="clearSearch"
@@ -315,11 +316,12 @@
                 advancedSearchQuery: {
                     advancedSearch: true,
                     metaquery: {},
-                    taxquery: {},
+                    taxquery: {
+                        isFetching: false,
+                    },
                 },
                 termList: [],
                 terms: [],
-                isFetching: false,
                 dateMask: this.getDateLocaleMask(),
                 dateFormat: '',
             }
@@ -334,7 +336,7 @@
             autoCompleteTerm: _.debounce( function(value, searchCriterion){
                 this.termList = [];
                 this.terms = [];
-                this.isFetching = true;
+                this.$set(this.advancedSearchQuery.taxquery[searchCriterion], 'isFetching', true);
 
                 this.fetchTerms({ 
                     taxonomyId: this.advancedSearchQuery.taxquery[searchCriterion].taxonomy_id,
@@ -357,9 +359,9 @@
                         this.termList[term].i = i;
                     }
 
-                    this.isFetching = false;
+                    this.$set(this.advancedSearchQuery.taxquery[searchCriterion], 'isFetching', false);
                 }).catch((error) => {
-                    this.isFetching = false;
+                    this.$set(this.advancedSearchQuery.taxquery[searchCriterion], 'isFetching', false);
                     throw error;
                 });
             }, 300),
@@ -435,7 +437,9 @@
                 this.advancedSearchQuery = {
                     advancedSearch: true,
                     metaquery: {},
-                    taxquery: {}
+                    taxquery: {
+                        isFetching: false,
+                    }
                 };
             },
             convertDateToMatchInDB(dateValue){
@@ -649,6 +653,17 @@
 
         .dropdown-content {
             width: 800px !important;
+        }
+
+        .autocomplete {
+            .dropdown-menu {
+                top: auto !important;
+                min-width: 100% !important;
+
+                .dropdown-content {
+                    width: auto !important;
+                }
+            }
         }
 
         .dropdown-item:hover {

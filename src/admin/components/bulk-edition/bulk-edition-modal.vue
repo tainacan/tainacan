@@ -178,8 +178,11 @@
                         </button>
                         <div
                                 v-if="bulkEditionProcedures[criterion].isDone"
+                                @mouseover="$set(bulkEditionProcedures[criterion], 'tooltipShow', !bulkEditionProcedures[criterion].tooltipShow)"
                                 class="is-pulled-right">
                             <b-tooltip
+                                    :active="bulkEditionProcedures[criterion].tooltipShow"
+                                    always
                                     class="is-success"
                                     size="is-small"
                                     position="is-left"
@@ -193,8 +196,11 @@
                         </div>
                         <div
                                 v-if="bulkEditionProcedures[criterion].isDoneWithError && !bulkEditionProcedures[criterion].isExecuting"
+                                @mouseover="$set(bulkEditionProcedures[criterion], 'tooltipShow', !bulkEditionProcedures[criterion].tooltipShow)"
                                 class="is-pulled-right">
                             <b-tooltip
+                                    :active="bulkEditionProcedures[criterion].tooltipShow"
+                                    always
                                     class="is-danger"
                                     size="is-small"
                                     position="is-left"
@@ -230,7 +236,7 @@
             <!--<pre>{{ bulkEditionProcedures }}</pre>-->
 
             <footer class="field is-grouped form-submit">
-                <div class="control">
+                <p class="control">
                     <button
                             @click="$eventBusSearch.loadItems(); $parent.close()"
                             :disabled="(Object.keys(bulkEditionProcedures).length &&
@@ -239,25 +245,22 @@
                             class="button is-outlined">
                         {{ $i18n.get('close') }}
                     </button>
-                </div>
-                <div class="control">
+                </p>
+                <p class="control">
                     <button
                             class="button is-turquoise5"
                             :disabled="dones.every((item) => item === true) === false"
                             @click="addEditionCriterion()">
-                            {{ editionCriteria.length &lt;= 0 ?
-                            $i18n.get('add_one_edition_criterion') :
-                            $i18n.get('add_another_edition_criterion')
-                            }}
+                            {{ $i18n.get('new_action') }}
                     </button>
                     <button
                             :disabled="dones.every((item) => item === true) === false"
                             class="button is-success"
                             type="button"
                             @click="$eventBusSearch.loadItems(); $parent.close();">
-                        {{ $i18n.get('done') }}
+                        {{ $i18n.get('finish') }}
                     </button>
-                </div>
+                </p>
             </footer>
         </div>
     </div>
@@ -328,6 +331,7 @@
                         isExecuting: false,
                         actionResult: '',
                         totalItemsEditedWithSuccess: 0,
+                        tooltipShow: true,
                     }
                 },
                 groupID: null,
@@ -355,7 +359,21 @@
             ...mapGetters('metadata', [
                 'getMetadata'
             ]),
-            finalizeProcedure(criterion, withError){
+            finalizeProcedure(criterion){
+                this.$set(this.bulkEditionProcedures[criterion], 'actionResult', this.getActionResult());
+
+                let withError = false;
+
+                if(this.bulkEditionProcedures[criterion].actionResult.constructor.name === 'Object' &&
+                    (this.bulkEditionProcedures[criterion].actionResult.data &&
+                        this.bulkEditionProcedures[criterion].actionResult.data.status.toString().split('')[0] != 2) ||
+                    this.bulkEditionProcedures[criterion].actionResult.error_message) {
+
+                    withError = true;
+                } else {
+                    this.$set(this.bulkEditionProcedures[criterion], 'totalItemsEditedWithSuccess', this.actionResult);
+                }
+
                 this.$set(this.bulkEditionProcedures[criterion], 'isDone', !withError);
                 this.$set(this.bulkEditionProcedures[criterion], 'isDoneWithError', withError);
 
@@ -377,18 +395,7 @@
                             groupID: this.groupID,
                             bodyParams: { value: procedure.newValue }
                         }).then(() => {
-                            this.$set(this.bulkEditionProcedures[criterion], 'actionResult', this.getActionResult());
-
-                            if(this.bulkEditionProcedures[criterion].actionResult.constructor.name === 'Object' &&
-                                (this.bulkEditionProcedures[criterion].actionResult.data &&
-                                    this.bulkEditionProcedures[criterion].actionResult.data.status.toString().split('')[0] != 2) ||
-                                this.bulkEditionProcedures[criterion].actionResult.error_message) {
-
-                                this.finalizeProcedure(criterion, true);
-                            } else {
-                                this.$set(this.bulkEditionProcedures[criterion], 'totalItemsEditedWithSuccess', this.actionResult);
-                                this.finalizeProcedure(criterion);
-                            }
+                            this.finalizeProcedure(criterion);
                         });
                     } else {
                         this.setValueInBulk({
@@ -399,18 +406,7 @@
                                 value: procedure.newValue
                             }
                         }).then(() => {
-                            this.$set(this.bulkEditionProcedures[criterion], 'actionResult', this.getActionResult());
-
-                            if(this.bulkEditionProcedures[criterion].actionResult.constructor.name === 'Object' &&
-                                (this.bulkEditionProcedures[criterion].actionResult.data &&
-                                    this.bulkEditionProcedures[criterion].actionResult.data.status.toString().split('')[0] != 2) ||
-                                this.bulkEditionProcedures[criterion].actionResult.error_message) {
-
-                                this.finalizeProcedure(criterion, true);
-                            } else {
-                                this.$set(this.bulkEditionProcedures[criterion], 'totalItemsEditedWithSuccess', this.actionResult);
-                                this.finalizeProcedure(criterion);
-                            }
+                            this.finalizeProcedure(criterion);
                         });
                     }
                 } else if(procedure.action === this.editionActionsForMultiple.add){
@@ -424,18 +420,7 @@
                             value: procedure.newValue,
                         }
                     }).then(() => {
-                        this.$set(this.bulkEditionProcedures[criterion], 'actionResult', this.getActionResult());
-
-                        if(this.bulkEditionProcedures[criterion].actionResult.constructor.name === 'Object' &&
-                            (this.bulkEditionProcedures[criterion].actionResult.data &&
-                                this.bulkEditionProcedures[criterion].actionResult.data.status.toString().split('')[0] != 2) ||
-                            this.bulkEditionProcedures[criterion].actionResult.error_message) {
-
-                            this.finalizeProcedure(criterion, true);
-                        } else {
-                            this.$set(this.bulkEditionProcedures[criterion], 'totalItemsEditedWithSuccess', this.actionResult);
-                            this.finalizeProcedure(criterion);
-                        }
+                        this.finalizeProcedure(criterion);
                     });
                 } else if(procedure.action === this.editionActionsForMultiple.replace){
                     this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
@@ -449,18 +434,7 @@
                             new_value: procedure.newValue,
                         }
                     }).then(() => {
-                        this.$set(this.bulkEditionProcedures[criterion], 'actionResult', this.getActionResult());
-
-                        if(this.bulkEditionProcedures[criterion].actionResult.constructor.name === 'Object' &&
-                            (this.bulkEditionProcedures[criterion].actionResult.data &&
-                                this.bulkEditionProcedures[criterion].actionResult.data.status.toString().split('')[0] != 2) ||
-                            this.bulkEditionProcedures[criterion].actionResult.error_message) {
-
-                            this.finalizeProcedure(criterion, true);
-                        } else {
-                            this.$set(this.bulkEditionProcedures[criterion], 'totalItemsEditedWithSuccess', this.actionResult);
-                            this.finalizeProcedure(criterion);
-                        }
+                        this.finalizeProcedure(criterion);
                     });
                 } else if(procedure.action === this.editionActionsForMultiple.remove){
                     this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
@@ -473,18 +447,7 @@
                             value: procedure.newValue,
                         }
                     }).then(() => {
-                        this.$set(this.bulkEditionProcedures[criterion], 'actionResult', this.getActionResult());
-
-                        if(this.bulkEditionProcedures[criterion].actionResult.constructor.name === 'Object' &&
-                            (this.bulkEditionProcedures[criterion].actionResult.data &&
-                                this.bulkEditionProcedures[criterion].actionResult.data.status.toString().split('')[0] != 2) ||
-                            this.bulkEditionProcedures[criterion].actionResult.error_message) {
-
-                            this.finalizeProcedure(criterion, true);
-                        } else {
-                            this.$set(this.bulkEditionProcedures[criterion], 'totalItemsEditedWithSuccess', this.actionResult);
-                            this.finalizeProcedure(criterion);
-                        }
+                        this.finalizeProcedure(criterion);
                     });
                 }
             },
@@ -504,7 +467,8 @@
                             isDoneWithError: false,
                             isExecuting: false,
                             actionResult: '',
-                            totalItemsEditedWithSuccess: 0
+                            totalItemsEditedWithSuccess: 0,
+                            tooltipShow: true,
                         }
                     });
 
@@ -575,7 +539,7 @@
     }
 
     .tainacan-modal-content .form-submit {
-        padding: 120px 0 0.4em 0 !important;
+        padding: 160px 0 0.4em 0 !important;
     }
 
     .no-overflow-modal-card-body {
