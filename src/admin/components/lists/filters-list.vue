@@ -444,7 +444,7 @@ export default {
         }
 
     },
-    created() {
+   mounted() {
 
         this.isRepositoryLevel = this.$route.name == 'FiltersPage' ? true : false;
         if (this.isRepositoryLevel)
