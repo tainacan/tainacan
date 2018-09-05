@@ -276,6 +276,10 @@ class Bulk_Edit  {
 		if ($metadatum->is_collection_key()) {
 			return new \WP_Error( 'invalid_action', __( 'Unable to set a value to a metadata set to be a collection key', 'tainacan' ) );
 		}
+		
+		if ($new_value == $old_value) {
+			return new \WP_Error( 'invalid_action', __( 'Old value and new value can not be the same', 'tainacan' ) );
+		}
 
 		$dummyItem = new Entities\Item();
 		$dummyItem->set_status('publish');
@@ -283,8 +287,7 @@ class Bulk_Edit  {
 		$checkItemMetadata->set_value( $metadatum->is_multiple() ? [$new_value] : $new_value );
 
 		if ($checkItemMetadata->validate()) {
-			$this->_remove_value($metadatum, $old_value);
-			return $this->_add_value($metadatum, $new_value);
+			return $this->_replace_value($metadatum, $new_value, $old_value);
 		} else {
 			return new \WP_Error( 'invalid_value', __( 'Invalid Value', 'tainacan' ) );
 		}
@@ -473,6 +476,107 @@ class Bulk_Edit  {
 			$query = $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s AND post_id IN ( SELECT implicitTemp.post_id FROM ($delete_q) implicitTemp )", $metadatum->get_id(), $value );
 
 			return $wpdb->query($query);
+
+		}
+
+	}
+	
+	/**
+	 * Replaces a value in the current group of items
+	 * 
+	 * This method replaces a value from the database directly, and adds a new value to all itemsm that had the previous value
+	 *
+	 * TODO: Possible refactor: This method is almost identical to the _add_value method and calls the _remove_value at the end. So it is almost 
+	 * the same thing as calling _add_value() and _remove_value() one after another. The only difference is that it does both checks before doing anything to the DB
+	 * and a small change to the insert queries (marked below)
+	 * 
+	 */
+	private function _replace_value(Entities\Metadatum $metadatum, $newvalue, $value) {
+		global $wpdb;
+		
+		if ($value == $newvalue) {
+			return new \WP_Error( 'error', __( 'New value and old value can not be the same', 'tainacan' ) );
+		}
+		
+		$type = $metadatum->get_metadata_type_object();
+
+		if ($type->get_primitive_type() == 'term') {
+
+			$options = $metadatum->get_metadata_type_options();
+			$taxonomy_id = $options['taxonomy_id'];
+			$tax = Repositories\Taxonomies::get_instance()->fetch($taxonomy_id);
+
+			if ($tax instanceof Entities\Taxonomy) {
+
+				// check old term
+				$term = term_exists($value, $tax->get_db_identifier());
+
+				if (!$term) {
+					return 0;
+				}
+
+				if (is_WP_Error($term) || !isset($term['term_taxonomy_id'])) {
+					return new \WP_Error( 'error', __( 'Term not found', 'tainacan' ) );
+				}
+				
+				// check new term
+				$newterm = term_exists($newvalue, $tax->get_db_identifier());
+
+				if (!is_array($newterm)) {
+					$newterm = wp_insert_term($newvalue, $tax->get_db_identifier());
+				}
+
+				if (is_WP_Error($newterm) || !isset($newterm['term_taxonomy_id'])) {
+					return new \WP_Error( 'error', __( 'Error adding term', 'tainacan' ) );
+				}
+
+				$insert_q = $this->_build_select( $wpdb->prepare("post_id, %d", $newterm['term_taxonomy_id']) );
+				
+				// only where old_value is present (this is what this method have different from the _add_value())
+				$insert_q .= $wpdb->prepare( " AND post_id IN(SELECT object_id FROM $wpdb->term_relationships WHERE term_taxonomy_id = %d)", $term['term_taxonomy_id'] );
+				
+				$query = "INSERT IGNORE INTO $wpdb->term_relationships (object_id, term_taxonomy_id) $insert_q ";
+				
+				// Add
+				$wpdb->query($query);
+				
+				// Remove
+				return $this->_remove_value($metadatum, $value);
+				
+				//TODO update term count
+
+			}
+
+		} else {
+
+			global $wpdb;
+
+			$insert_q = $this->_build_select( $wpdb->prepare("post_id, %s, %s", $metadatum->get_id(), $newvalue) );
+			
+			// only where old_value is present (this is what this method have different from the _add_value())
+			$insert_q .= $wpdb->prepare( " AND post_id IN (SELECT post_ID FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s)", $metadatum->get_id(), $value );
+
+			$query = "INSERT IGNORE INTO $wpdb->postmeta (post_id, meta_key, meta_value) $insert_q";
+
+			$affected = $wpdb->query($query);
+
+			if ($type->get_core()) {
+				$field = $type->get_related_mapped_prop();
+				$map_field = [
+					'title' => 'post_title',
+					'description' => 'post_content'
+				];
+				$column = $map_field[$field];
+				$update_q = $this->_build_select( "post_id" );				
+				// only where old_value is present (this is what this method have different from the _add_value())
+				$update_q .= $wpdb->prepare( " AND post_id IN (SELECT post_ID FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s)", $metadatum->get_id(), $value );
+
+				$core_query = $wpdb->prepare( "UPDATE $wpdb->posts SET $column = %s WHERE ID IN ($update_q)", $newvalue );
+
+				$wpdb->query($core_query);
+			}
+
+			return $this->_remove_value($metadatum, $value);
 
 		}
 
