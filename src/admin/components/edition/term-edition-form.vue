@@ -192,7 +192,8 @@
                 showCheckboxesWarning: false,
                 hasParent: false,
                 hasChangedParent: false,
-                initialParentId: undefined
+                initialParentId: undefined,
+                entityName: 'term'
             }
         },
         props: {
@@ -218,7 +219,7 @@
                         parent: this.hasParent ? this.editForm.parent : 0,
                         header_image_id: this.editForm.header_image_id,
                     };
-                    this.fillExtraFormData(data, 'term');
+                    this.fillExtraFormData(data);
                     this.sendChildTerm({
                         taxonomyId: this.taxonomyId,
                         term: data
@@ -246,7 +247,7 @@
                         parent: this.hasParent ? this.editForm.parent : 0,
                         header_image_id: this.editForm.header_image_id,
                     }
-                    this.fillExtraFormData(data, 'term');
+                    this.fillExtraFormData(data);
                     this.updateChildTerm({
                         taxonomyId: this.taxonomyId,
                         term: data
@@ -345,7 +346,7 @@
             // Fills hook forms with it's real values 
             this.$nextTick()
                 .then(() => {
-                    this.updateExtraFormData('term', this.editForm);
+                    this.updateExtraFormData(this.editForm);
                 });
 
             this.showCheckboxesWarning = false;

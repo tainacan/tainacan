@@ -12,7 +12,6 @@
                 :class="{'has-selected': selected != undefined && selected != []}"
                 field="label"
                 @typing="search"/>
-
     </div>
 </template>
 

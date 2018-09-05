@@ -529,7 +529,8 @@ export default {
             textLink: '',
             isUpdatingValues: false,
             collectionName: '',
-            collectionAllowComments: ''
+            collectionAllowComments: '',
+            entityName: 'item'
         }
     },
     computed: {
@@ -560,7 +561,7 @@ export default {
             'updateThumbnail',
             'fetchAttachments',
             'cleanLastUpdated',
-            'setLastUpdated'
+            'setLastUpdated',
         ]),
         ...mapGetters('item',[
             'getMetadata',
@@ -580,13 +581,13 @@ export default {
             this.form.status = status;
 
             let data = {id: this.itemId, status: this.form.status, comment_status: this.form.comment_status};
-            this.fillExtraFormData(data, 'item');
+            this.fillExtraFormData(data);
             this.updateItem(data).then(updatedItem => {
 
                 this.item = updatedItem;
 
                 // Fills hook forms with it's real values 
-                this.updateExtraFormData('item', this.item);
+                this.updateExtraFormData(this.item);
 
                 // Fill this.form data with current data.
                 this.form.status = this.item.status;
@@ -624,7 +625,7 @@ export default {
 
             // Creates draft Item
             let data = {collection_id: this.form.collectionId, status: 'auto-draft', comment_status: this.form.comment_status};
-            this.fillExtraFormData(data, 'item');
+            this.fillExtraFormData(data);
             this.sendItem(data).then(res => {
 
                 this.itemId = res.id;
@@ -852,7 +853,7 @@ export default {
                 // Fills hook forms with it's real values 
                 this.$nextTick()
                     .then(() => {
-                        this.updateExtraFormData('item', this.item);
+                        this.updateExtraFormData(this.item);
                     });
                     
                 // Fill this.form data with current data.
