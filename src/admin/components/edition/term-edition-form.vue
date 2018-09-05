@@ -192,7 +192,8 @@
                 showCheckboxesWarning: false,
                 hasParent: false,
                 hasChangedParent: false,
-                initialParentId: undefined
+                initialParentId: undefined,
+                entityName: 'term'
             }
         },
         props: {

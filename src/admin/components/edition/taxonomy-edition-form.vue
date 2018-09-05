@@ -189,7 +189,8 @@
                     label: this.$i18n.get('trash')
                 }],
                 editFormErrors: {},
-                formErrorMessage: ''
+                formErrorMessage: '',
+                entityName: 'taxonomy'
             }
         },
         components: {

@@ -259,7 +259,8 @@
                 oldForm: {},
                 formErrors: {},
                 formErrorMessage: '',
-                closedByForm: false
+                closedByForm: false,
+                entityName: 'metadatum'
             }
         },
         props: {

@@ -529,7 +529,8 @@ export default {
             textLink: '',
             isUpdatingValues: false,
             collectionName: '',
-            collectionAllowComments: ''
+            collectionAllowComments: '',
+            entityName: 'item'
         }
     },
     computed: {
@@ -560,7 +561,7 @@ export default {
             'updateThumbnail',
             'fetchAttachments',
             'cleanLastUpdated',
-            'setLastUpdated'
+            'setLastUpdated',
         ]),
         ...mapGetters('item',[
             'getMetadata',

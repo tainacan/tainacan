@@ -190,6 +190,7 @@ export default {
             formErrorMessage: '',
             closedByForm: false,
             showEditMaxOptions: false,
+            entityName: 'filter'
         }
     }, 
     props: {

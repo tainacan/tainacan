@@ -523,7 +523,8 @@ export default {
             viewModesList: [],
             fromImporter: '',
             newPagePath: tainacan_plugin.admin_url + 'post-new.php?post_type=page',
-            isUpdatingSlug: false
+            isUpdatingSlug: false,
+            entityName: 'collection'
         }
     },
     components: {
@@ -892,7 +893,6 @@ export default {
             }
         }
     }
-
 }
 </script>
 

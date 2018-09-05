@@ -52,8 +52,16 @@ export const dateInter = {
 export const formHooks = {
     data() {
         return { 
-            formHooks: JSON.parse(JSON.stringify(tainacan_plugin['form_hooks'])) 
+            formHooks: JSON.parse(JSON.stringify(tainacan_plugin['form_hooks'])), 
+            formHookEventName: ''
         }
+    },
+    created() {
+        this.formHookEventName = 'tainacan-' + this.entityName + '-hook-reload';
+        this.formHookEvent = new Event(this.formHookEventName);
+    },
+    updated() {
+        document.dispatchEvent(this.formHookEvent);
     },
     methods: {
         fillExtraFormData(data, entity) {
