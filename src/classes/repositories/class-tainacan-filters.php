@@ -251,7 +251,6 @@ class Filters extends Repository {
 			// TODO: get filters from parent collections
 			$args = array_merge( [
 				'posts_per_page' => - 1,
-				'post_status'    => 'publish'
 			], $args );
 
 			$args = $this->parse_fetch_args( $args );
