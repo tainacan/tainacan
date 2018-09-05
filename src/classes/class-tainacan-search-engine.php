@@ -152,7 +152,7 @@ class Search_Engine {
 		$searchQuery .= $this->search_authors();
 		
 
-		if ( $searchQuery != '' ) {
+		if ( $searchQuery != '' && $searchQuery != '()' ) {
             // lets use _OUR_ query instead of WP's, as we have posts already included in our query as well(assuming it's not empty which we check for)
 			$where = " AND ((" . $searchQuery . ")) ";
 		}
