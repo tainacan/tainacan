@@ -61,12 +61,25 @@
                                     <span   
                                             v-if="metadatum.id != undefined"
                                             class="label-details">  
-                                        ({{ $i18n.get(metadatum.metadata_type_object.component) }}) <em>{{ (metadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
-                                            <span 
-                                                class="not-saved" 
-                                                v-if="(editForms[metadatum.id] != undefined && editForms[metadatum.id].saved != true) || metadatum.status == 'auto-draft'">
-                                            {{ $i18n.get('info_not_saved') }}
-                                            </span>
+                                        ({{ $i18n.get(metadatum.metadata_type_object.component) }}) 
+                                        <em v-if="metadatum.collection_id != collectionId">{{ $i18n.get('label_inherited') }}</em>
+                                        <em 
+                                                v-if="metadatum.metadata_type_object && 
+                                                    metadatum.metadata_type_object.core && 
+                                                    metadatum.metadata_type_object.related_mapped_prop == 'title'">
+                                                {{ $i18n.get('label_core_title') }}
+                                        </em>
+                                        <em 
+                                                v-if="metadatum.metadata_type_object && 
+                                                    metadatum.metadata_type_object.core && 
+                                                    metadatum.metadata_type_object.related_mapped_prop == 'description'">
+                                                {{ $i18n.get('label_core_description') }}
+                                        </em>
+                                        <span 
+                                            class="not-saved" 
+                                            v-if="(editForms[metadatum.id] != undefined && editForms[metadatum.id].saved != true) || metadatum.status == 'auto-draft'">
+                                        {{ $i18n.get('info_not_saved') }}
+                                        </span>
                                     </span>
                                     <span 
                                             class="loading-spinner" 
