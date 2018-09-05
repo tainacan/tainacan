@@ -169,6 +169,7 @@ export default {
     methods: {
          ...mapActions('collection', [
             'fetchCollections',
+            'cleanCollections'
         ]),
         ...mapActions('metadata', [
             'fetchMetadatumMappers'
@@ -201,7 +202,8 @@ export default {
             this.page = page;
             this.loadCollections();
         },
-        loadCollections() {    
+        loadCollections() {
+            this.cleanCollections();    
             this.isLoading = true;
             this.fetchCollections({ 'page': this.page, 'collectionsPerPage': this.collectionsPerPage, 'status': this.status })
             .then((res) => {
