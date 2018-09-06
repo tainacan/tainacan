@@ -437,8 +437,7 @@
                         :is-repository-level="isRepositoryLevel"
                         :advanced-search-results="advancedSearchResults"
                         :open-form-advanced-search="openFormAdvancedSearch"
-                        :is-do-search="isDoSearch"
-                        :metadata="metadata"/>
+                        :is-do-search="isDoSearch"/>
             </div>
 
             <!-- --------------- -->

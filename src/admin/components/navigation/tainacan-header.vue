@@ -64,7 +64,6 @@
                             style="padding-left: 0 !important; padding-right: 0 !important;"
                             :custom="true">
                         <advanced-search
-                                :metadata="metadata"
                                 :is-repository-level="true"
                                 :is-header="true"/>
                     </b-dropdown-item>

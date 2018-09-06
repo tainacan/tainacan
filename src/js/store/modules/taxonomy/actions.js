@@ -176,6 +176,7 @@ export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search, all, orde
     if (offset != undefined && number != undefined) {
         query += '&offset=' + offset + '&number=' + number;
     }
+
     return new Promise((resolve, reject) => {
         axios.tainacan.get(`/taxonomy/${taxonomyId}/terms${query}`)
             .then(res => {
