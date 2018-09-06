@@ -523,7 +523,8 @@ export default {
             viewModesList: [],
             fromImporter: '',
             newPagePath: tainacan_plugin.admin_url + 'post-new.php?post_type=page',
-            isUpdatingSlug: false
+            isUpdatingSlug: false,
+            entityName: 'collection'
         }
     },
     components: {
@@ -588,7 +589,7 @@ export default {
                 default_view_mode: this.form.default_view_mode,
                 allow_comments: this.form.allow_comments
             };
-            this.fillExtraFormData(data, 'collection');
+            this.fillExtraFormData(data);
 
             this.updateCollection({collection_id: this.collectionId, collection: data })
             .then(updatedCollection => {    
@@ -596,7 +597,7 @@ export default {
                 this.collection = updatedCollection;
 
                 // Fills hook forms with it's real values 
-                this.updateExtraFormData('collection', this.collection);
+                this.updateExtraFormData(this.collection);
                 
                 // Fill this.form data with current data.
                 this.form.name = this.collection.name;
@@ -634,7 +635,7 @@ export default {
 
             // Creates draft Collection
             let data = { name: '', description: '', status: 'auto-draft', mapper: (this.isMapped && this.mapper != false ? this.mapper : false ) };
-            this.fillExtraFormData(data, 'collection');
+            this.fillExtraFormData(data);
             
             this.sendCollection(data).then(res => {
 
@@ -832,7 +833,7 @@ export default {
                 this.$nextTick()
                     .then(() => {
                         // Fills hook forms with it's real values 
-                        this.updateExtraFormData('collection', this.collection);
+                        this.updateExtraFormData(this.collection);
                     });
                
   
@@ -892,7 +893,6 @@ export default {
             }
         }
     }
-
 }
 </script>
 

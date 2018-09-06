@@ -259,7 +259,8 @@
                 oldForm: {},
                 formErrors: {},
                 formErrorMessage: '',
-                closedByForm: false
+                closedByForm: false,
+                entityName: 'metadatum'
             }
         },
         props: {
@@ -283,7 +284,7 @@
             // Fills hook forms with it's real values 
             this.$nextTick()
                 .then(() => {
-                    this.updateExtraFormData('metadatum', this.editForm);
+                    this.updateExtraFormData(this.editForm);
                 });
         },
         beforeDestroy() {
@@ -305,7 +306,7 @@
 
                 if ((metadatum.metadata_type_object && metadatum.metadata_type_object.form_component) || metadatum.edit_form == '') {
                     
-                    this.fillExtraFormData(this.editForm, 'metadatum');
+                    this.fillExtraFormData(this.editForm);
                     this.updateMetadatum({
                         collectionId: this.collectionId,
                         metadatumId: metadatum.id,
@@ -339,7 +340,7 @@
                     for (let [key, value] of formData.entries())
                         formObj[key] = value;
 
-                    this.fillExtraFormData(formObj, 'metadatum');
+                    this.fillExtraFormData(formObj);
                     this.updateMetadatum({
                         collectionId: this.collectionId,
                         metadatumId: metadatum.id,

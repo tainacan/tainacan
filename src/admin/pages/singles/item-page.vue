@@ -373,7 +373,7 @@
         computed: {
             item() {
                 // Fills hook forms with it's real values 
-                this.updateExtraFormData('item', this.getItem());
+                this.updateExtraFormData(this.getItem());
 
                 return this.getItem();
             },

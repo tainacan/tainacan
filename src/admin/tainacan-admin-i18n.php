@@ -69,8 +69,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'add_one_edition_criterion'                      => __( 'Add one edition criterion', 'tainacan' ),
 	'set_new_value'                                  => __( 'Set new value', 'tainacan' ),
 	'replace_value'                                  => __( 'Replace value', 'tainacan' ),
-	'done'                                           => __( 'Done', 'tainacan' ),
+	'finish'                                         => __( 'Finish', 'tainacan' ),
 	'select_to_create'                               => __( 'select to create', 'tainacan' ),
+	'new_action'                                     => __( 'New action', 'tainacan' ),
 
 	// Wordpress Status
 	'publish'                                        => __( 'Publish', 'tainacan' ),
@@ -195,6 +196,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_no_parent_term'                           => __( 'No parent term', 'tainacan' ),
 	'label_term_without_name'                        => __( 'Term without name', 'tainacan' ),
 	'label_inherited'                                => __( 'Inherited', 'tainacan' ),
+	'label_core_title'	 	                         => __( 'Core Title', 'tainacan' ),
+	'label_core_description'                         => __( 'Core Description', 'tainacan' ),
 	'label_sorting'                                  => __( 'Sorting', 'tainacan' ),
 	'label_event_date'                               => __( 'Event date', 'tainacan' ),
 	'label_event_title'                              => __( 'Event', 'tainacan' ),

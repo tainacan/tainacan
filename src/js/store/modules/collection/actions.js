@@ -110,7 +110,6 @@ export const deleteItem = ({ commit }, { itemId, isPermanently }) => {
 };
 
 export const fetchCollections = ({commit} , { page, collectionsPerPage, status }) => {
-    commit('cleanCollections');
     return new Promise((resolve, reject) => {
         let endpoint = '/collections?paged='+page+'&perpage='+collectionsPerPage+'&context=edit';
 
@@ -128,6 +127,10 @@ export const fetchCollections = ({commit} , { page, collectionsPerPage, status }
             reject(error);
         });
     });
+};
+
+export const cleanCollections = ({ commit }) => {
+    commit('cleanCollections');
 };
 
 export const fetchCollection = ({ commit }, id) => {

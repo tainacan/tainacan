@@ -52,11 +52,21 @@ export const dateInter = {
 export const formHooks = {
     data() {
         return { 
-            formHooks: JSON.parse(JSON.stringify(tainacan_plugin['form_hooks'])) 
+            formHooks: JSON.parse(JSON.stringify(tainacan_plugin['form_hooks'])), 
+            formHookEventName: ''
         }
     },
+    created() {
+        this.formHookEventName = 'tainacan-' + this.entityName + '-hook-reload';
+        this.formHookEvent = new Event(this.formHookEventName);
+    },
+    updated() {
+        // Emits event on every Vue update to allow javascript plugins on hooks to re-render 
+        if (this.formHooks[this.entityName])
+            document.dispatchEvent(this.formHookEvent);
+    },
     methods: {
-        fillExtraFormData(data, entity) {
+        fillExtraFormData(data) {
             let positions  =  [
                 'begin-left', 
                 'begin-right',
@@ -65,8 +75,8 @@ export const formHooks = {
             ];
             // Gets data from existing extra form hooks
             for (let position of positions) {
-                if (this.formHooks[entity] && this.formHooks[entity][position] && this.formHooks[entity][position] != undefined) {
-                    let formElement = document.getElementById('form-' + entity + '-' + position);
+                if (this.formHooks[this.entityName] && this.formHooks[this.entityName][position] && this.formHooks[this.entityName][position] != undefined) {
+                    let formElement = document.getElementById('form-' + this.entityName + '-' + position);
                     if (formElement) {  
                         for (let element of formElement.elements) {
                             if (element.type == "checkbox" || (element.type == "select" && element.multiple != undefined && element.multiple == true)) {
@@ -86,7 +96,7 @@ export const formHooks = {
                 }
             }
         },
-        updateExtraFormData(entity, entityObject) {
+        updateExtraFormData(entityObject) {
             let positions  =  [
                 'begin-left', 
                 'begin-right',
@@ -95,8 +105,8 @@ export const formHooks = {
             ];
             // Gets data from existing extra form hooks
             for (let position of positions) {
-                if (this.formHooks[entity] && this.formHooks[entity][position] && this.formHooks[entity][position] != undefined) {
-                    let formElement = document.getElementById('form-' + entity + '-' + position);
+                if (this.formHooks[this.entityName] && this.formHooks[this.entityName][position] && this.formHooks[this.entityName][position] != undefined) {
+                    let formElement = document.getElementById('form-' + this.entityName + '-' + position);
                     
                     if (formElement) {   
                         for (let element of formElement.elements) {

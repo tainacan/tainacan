@@ -103,6 +103,7 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 			
 			$this->tainacan_item_metadata_factory->create_item_metadata($item, $metadatum, $i % 2 == 0 ? 'even' : 'odd');
 			$this->tainacan_item_metadata_factory->create_item_metadata($item, $category, ['good', 'bad']);
+			$this->tainacan_item_metadata_factory->create_item_metadata($item, $collection->get_core_title_metadatum(), 'testeItem ' . $i);
 		
 		}
 
@@ -475,6 +476,141 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 
 		$this->assertEquals(15, $items->found_posts);
 
+	}
+	
+	/**
+	 * @group replace
+	 */
+	function test_replace_only_when_search_is_present_tax() {
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		
+		$query = [
+			'meta_query' => [
+				[
+					'key' => $this->metadatum->get_id(),
+					'value' => 'even'
+				]
+			],
+			'posts_per_page' => -1
+		];
+		
+		$bulk = new \Tainacan\Bulk_Edit([
+			'query' => $query,
+			'collection_id' => $this->collection->get_id()
+		]);
+		
+		// add test to 20 items
+		$bulk->add_value($this->category, 'test');
+		
+		$bulk = new \Tainacan\Bulk_Edit([
+			'items_ids' => $this->items_ids,
+		]);
+	
+		$bulk->replace_value($this->category, 'super', 'test');
+
+		// should add super only to the 20 items that had test
+		$items = $Tainacan_Items->fetch([
+			'tax_query' => [
+				[
+					'taxonomy' => $this->taxonomy->get_db_identifier(),
+					'field' => 'name',
+					'terms' => 'super'
+				]
+			],
+			'posts_per_page' => -1
+		]);
+
+		$this->assertEquals(20, $items->found_posts);
+
+
+		$items = $Tainacan_Items->fetch([
+			'tax_query' => [
+				[
+					'taxonomy' => $this->taxonomy->get_db_identifier(),
+					'field' => 'name',
+					'terms' => 'test'
+				]
+			],
+			'posts_per_page' => -1
+		]);
+
+		$this->assertEquals(0, $items->found_posts);
+		
+	}
+	
+	/**
+	 * @group replace
+	 */
+	function test_replace_only_when_search_is_present() {
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		
+		// all items
+		$bulk = new \Tainacan\Bulk_Edit([
+			'items_ids' => $this->items_ids,
+		]);
+	
+		$bulk->replace_value($this->metadatum, 'super', 'even');
+
+		// should add super only to the 20 items that had even
+		$items = $Tainacan_Items->fetch([
+			'meta_query' => [
+				[
+					'key' => $this->metadatum->get_id(),
+					'value' => 'super'
+				]
+			],
+			'posts_per_page' => -1
+		]);
+
+		$this->assertEquals(20, $items->found_posts);
+
+
+		$items = $Tainacan_Items->fetch([
+			'meta_query' => [
+				[
+					'key' => $this->metadatum->get_id(),
+					'value' => 'even'
+				]
+			],
+			'posts_per_page' => -1
+		]);
+
+		$this->assertEquals(0, $items->found_posts);
+
+	}
+	
+	/**
+	 * @group replace
+	 */
+	function test_replace_core_metadatum() {
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		
+		// all items
+		$bulk = new \Tainacan\Bulk_Edit([
+			'items_ids' => $this->items_ids,
+		]);
+		
+		$core_title = $this->collection->get_core_title_metadatum();
+		
+		// all items selected, search and replace the value of one
+		$bulk->replace_value($core_title, 'super_test', 'testeItem 22');
+		
+		$items = $Tainacan_Items->fetch([
+			'meta_query' => [
+				[
+					'key' => $core_title->get_id(),
+					'value' => 'super_test'
+				]
+			],
+			'posts_per_page' => -1
+		]);
+
+		$this->assertEquals(1, $items->found_posts);
+		
+		$items = $Tainacan_Items->fetch(['title' => 'super_test']);
+		
+		$this->assertEquals(1, $items->found_posts);
+		
 	}
 
 	function test_set_tax_meta() {

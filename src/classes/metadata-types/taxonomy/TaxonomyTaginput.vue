@@ -63,7 +63,7 @@
             ...mapGetters('taxonomy', [
                 'getTerms'
             ]),
-            autoCompleteTerm: _.debounce( function(value){
+            autoCompleteTerm: _.debounce( function(value) {
                 this.termList = [];
                 this.labels = [];
                 this.isFetching = true;

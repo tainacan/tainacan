@@ -67,22 +67,18 @@
 
         </b-field>
 
-        <b-field :addons="false">
-            <label class="label">
-                {{ $i18n.get('label_taxonomy_allow_new_terms') }}
-                <help-button
-                        :title="$i18n.getHelperTitle('tainacan-taxonomy', 'allow_new_terms')"
-                        :message="$i18n.getHelperMessage('tainacan-taxonomy', 'allow_new_terms')"/>
-            </label>
-            <div class="block">
-                <b-checkbox 
-                        v-model="allow_new_terms"
-                        @input="emitValues()"
-                        true-value="yes"
-                        false-value="no">
-                    {{ labelNewTerms() }}
-                </b-checkbox>
-            </div>
+        <b-field 
+                :addons="false"
+                :label="$i18n.get('label_taxonomy_allow_new_terms')">
+            <b-switch
+                    size="is-small" 
+                    v-model="allow_new_terms"
+                    @input="emitValues()"
+                    true-value="yes"
+                    false-value="no" />
+            <help-button
+                    :title="$i18n.getHelperTitle('tainacan-taxonomy', 'allow_new_terms')"
+                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'allow_new_terms')"/>
         </b-field>
 
     </section>

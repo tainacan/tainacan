@@ -163,7 +163,11 @@
                                 <!--disabled >-->
                     <!--</template>-->
 
-                    <div class="field buttons-r-bulk">
+                    <div
+                            :style="{
+                              marginRight: !bulkEditionProcedures[criterion].isDone && !bulkEditionProcedures[criterion].isExecuting ? '-7.4px': 0
+                            }"
+                            class="field buttons-r-bulk">
                         <button
                                 v-if="!bulkEditionProcedures[criterion].isDone && !bulkEditionProcedures[criterion].isExecuting"
                                 @click="removeThis(criterion)"
@@ -174,14 +178,17 @@
                         </button>
                         <div
                                 v-if="bulkEditionProcedures[criterion].isDone"
+                                @mouseover="$set(bulkEditionProcedures[criterion], 'tooltipShow', !bulkEditionProcedures[criterion].tooltipShow)"
                                 class="is-pulled-right">
                             <b-tooltip
+                                    :active="bulkEditionProcedures[criterion].tooltipShow"
+                                    always
                                     class="is-success"
                                     size="is-small"
                                     position="is-left"
                                     animated
                                     multilined
-                                    :label="actionResult.constructor.name !== 'Object' && actionResult === 1 ? `${actionResult} ${$i18n.get('info_item_affected')}` : `${actionResult} ${$i18n.get('info_items_affected')}`">
+                                    :label="bulkEditionProcedures[criterion].actionResult.constructor.name !== 'Object' && bulkEditionProcedures[criterion].actionResult === 1 ? `${bulkEditionProcedures[criterion].actionResult} ${$i18n.get('info_item_affected')}` : `${bulkEditionProcedures[criterion].actionResult} ${$i18n.get('info_items_affected')}`">
                                 <b-icon
                                         type="is-success"
                                         icon="check-circle"/>
@@ -189,14 +196,17 @@
                         </div>
                         <div
                                 v-if="bulkEditionProcedures[criterion].isDoneWithError && !bulkEditionProcedures[criterion].isExecuting"
+                                @mouseover="$set(bulkEditionProcedures[criterion], 'tooltipShow', !bulkEditionProcedures[criterion].tooltipShow)"
                                 class="is-pulled-right">
                             <b-tooltip
+                                    :active="bulkEditionProcedures[criterion].tooltipShow"
+                                    always
                                     class="is-danger"
                                     size="is-small"
                                     position="is-left"
                                     animated
                                     multilined
-                                    :label="actionResult.constructor.name === 'Object' ? (actionResult.error_message ? actionResult.error_message : actionResult.message) : ''">
+                                    :label="bulkEditionProcedures[criterion].actionResult.constructor.name === 'Object' ? (bulkEditionProcedures[criterion].actionResult.error_message ? bulkEditionProcedures[criterion].actionResult.error_message : bulkEditionProcedures[criterion].actionResult.message) : ''">
                                 <b-icon
                                         type="is-danger"
                                         icon="alert-circle"/>
@@ -222,29 +232,11 @@
                         </div>
                     </div>
                 </div>
-                <button
-                        style="padding-left: 3px !important;"
-                        class="button is-white"
-                        :disabled="dones.every((item) => item === true) === false"
-                        @click="addEditionCriterion()">
-                    <a
-                            :class="{ 'tainacan-add-edition-criterion-button-disabled': dones.every((item) => item === true) === false }"
-                            class="tainacan-add-edition-criterion-button">
-                        <b-icon
-                                icon="plus-circle"
-                                size="is-small"
-                                type="is-secondary"/>
-                        {{ editionCriteria.length &lt;= 0 ?
-                            $i18n.get('add_one_edition_criterion') :
-                            $i18n.get('add_another_edition_criterion')
-                        }}
-                    </a>
-                </button>
             </div>
             <!--<pre>{{ bulkEditionProcedures }}</pre>-->
 
             <footer class="field is-grouped form-submit">
-                <div class="control">
+                <p class="control">
                     <button
                             @click="$eventBusSearch.loadItems(); $parent.close()"
                             :disabled="(Object.keys(bulkEditionProcedures).length &&
@@ -253,16 +245,22 @@
                             class="button is-outlined">
                         {{ $i18n.get('close') }}
                     </button>
-                </div>
-                <div class="control">
+                </p>
+                <p class="control">
+                    <button
+                            class="button is-turquoise5"
+                            :disabled="dones.every((item) => item === true) === false"
+                            @click="addEditionCriterion()">
+                            {{ $i18n.get('new_action') }}
+                    </button>
                     <button
                             :disabled="dones.every((item) => item === true) === false"
                             class="button is-success"
                             type="button"
                             @click="$eventBusSearch.loadItems(); $parent.close();">
-                        {{ $i18n.get('done') }}
+                        {{ $i18n.get('finish') }}
                     </button>
-                </div>
+                </p>
             </footer>
         </div>
     </div>
@@ -330,13 +328,14 @@
                     1: {
                         isDone: false,
                         isDoneWithError: false,
-                        isExecuting: false
+                        isExecuting: false,
+                        actionResult: '',
+                        totalItemsEditedWithSuccess: 0,
+                        tooltipShow: true,
                     }
                 },
                 groupID: null,
                 dones: [false],
-                totalItemsEditedWithSuccess: 0,
-                actionResult: '',
                 metadataIsLoading: false,
             }
         },
@@ -360,7 +359,21 @@
             ...mapGetters('metadata', [
                 'getMetadata'
             ]),
-            finalizeProcedure(criterion, withError){
+            finalizeProcedure(criterion){
+                this.$set(this.bulkEditionProcedures[criterion], 'actionResult', this.getActionResult());
+
+                let withError = false;
+
+                if(this.bulkEditionProcedures[criterion].actionResult.constructor.name === 'Object' &&
+                    (this.bulkEditionProcedures[criterion].actionResult.data &&
+                        this.bulkEditionProcedures[criterion].actionResult.data.status.toString().split('')[0] != 2) ||
+                    this.bulkEditionProcedures[criterion].actionResult.error_message) {
+
+                    withError = true;
+                } else {
+                    this.$set(this.bulkEditionProcedures[criterion], 'totalItemsEditedWithSuccess', this.actionResult);
+                }
+
                 this.$set(this.bulkEditionProcedures[criterion], 'isDone', !withError);
                 this.$set(this.bulkEditionProcedures[criterion], 'isDoneWithError', withError);
 
@@ -382,18 +395,7 @@
                             groupID: this.groupID,
                             bodyParams: { value: procedure.newValue }
                         }).then(() => {
-                            this.actionResult = this.getActionResult();
-
-                            if(this.actionResult.constructor.name === 'Object' &&
-                                (this.actionResult.data &&
-                                    this.actionResult.data.status.toString().split('')[0] != 2) ||
-                                this.actionResult.error_message) {
-
-                                this.finalizeProcedure(criterion, true);
-                            } else {
-                                this.finalizeProcedure(criterion);
-                                this.totalItemsEditedWithSuccess = this.actionResult;
-                            }
+                            this.finalizeProcedure(criterion);
                         });
                     } else {
                         this.setValueInBulk({
@@ -404,18 +406,7 @@
                                 value: procedure.newValue
                             }
                         }).then(() => {
-                            this.actionResult = this.getActionResult();
-
-                            if(this.actionResult.constructor.name === 'Object' &&
-                                (this.actionResult.data &&
-                                    this.actionResult.data.status.toString().split('')[0] != 2) ||
-                                this.actionResult.error_message) {
-
-                                this.finalizeProcedure(criterion, true);
-                            } else {
-                                this.finalizeProcedure(criterion);
-                                this.totalItemsEditedWithSuccess = this.actionResult;
-                            }
+                            this.finalizeProcedure(criterion);
                         });
                     }
                 } else if(procedure.action === this.editionActionsForMultiple.add){
@@ -429,18 +420,7 @@
                             value: procedure.newValue,
                         }
                     }).then(() => {
-                        this.actionResult = this.getActionResult();
-
-                        if(this.actionResult.constructor.name === 'Object' &&
-                            (this.actionResult.data &&
-                                this.actionResult.data.status.toString().split('')[0] != 2) ||
-                            this.actionResult.error_message) {
-
-                            this.finalizeProcedure(criterion, true);
-                        } else {
-                            this.finalizeProcedure(criterion);
-                            this.totalItemsEditedWithSuccess = this.actionResult;
-                        }
+                        this.finalizeProcedure(criterion);
                     });
                 } else if(procedure.action === this.editionActionsForMultiple.replace){
                     this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
@@ -454,18 +434,7 @@
                             new_value: procedure.newValue,
                         }
                     }).then(() => {
-                        this.actionResult = this.getActionResult();
-
-                        if(this.actionResult.constructor.name === 'Object' &&
-                            (this.actionResult.data &&
-                                this.actionResult.data.status.toString().split('')[0] != 2) ||
-                            this.actionResult.error_message) {
-
-                            this.finalizeProcedure(criterion, true);
-                        } else {
-                            this.finalizeProcedure(criterion);
-                            this.totalItemsEditedWithSuccess = this.actionResult;
-                        }
+                        this.finalizeProcedure(criterion);
                     });
                 } else if(procedure.action === this.editionActionsForMultiple.remove){
                     this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
@@ -478,18 +447,7 @@
                             value: procedure.newValue,
                         }
                     }).then(() => {
-                        this.actionResult = this.getActionResult();
-
-                        if(this.actionResult.constructor.name === 'Object' &&
-                            (this.actionResult.data &&
-                                this.actionResult.data.status.toString().split('')[0] != 2) ||
-                            this.actionResult.error_message) {
-
-                            this.finalizeProcedure(criterion, true);
-                        } else {
-                            this.finalizeProcedure(criterion);
-                            this.totalItemsEditedWithSuccess = this.actionResult;
-                        }
+                        this.finalizeProcedure(criterion);
                     });
                 }
             },
@@ -507,7 +465,10 @@
                         [`${aleatoryKey}`]: {
                             isDone: false,
                             isDoneWithError: false,
-                            isExecuting: false
+                            isExecuting: false,
+                            actionResult: '',
+                            totalItemsEditedWithSuccess: 0,
+                            tooltipShow: true,
                         }
                     });
 
@@ -578,7 +539,7 @@
     }
 
     .tainacan-modal-content .form-submit {
-        padding: 120px 0 0.4em 0 !important;
+        padding: 160px 0 0.4em 0 !important;
     }
 
     .no-overflow-modal-card-body {

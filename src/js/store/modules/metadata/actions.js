@@ -1,7 +1,6 @@
 import axios from '../../../axios/axios';
 
 export const fetchMetadata = ({commit}, {collectionId, isRepositoryLevel, isContextEdit, includeDisabled}) => {
-    commit('cleanMetadata');
 
     return new Promise((resolve, reject) => {
         let endpoint = '';
@@ -25,7 +24,6 @@ export const fetchMetadata = ({commit}, {collectionId, isRepositoryLevel, isCont
                 resolve(metadata);
             })
             .catch((error) => {
-                console.log(error);
                 reject(error);
             });
     });
@@ -120,6 +118,10 @@ export const deleteMetadatum = ({commit}, {collectionId, metadatumId, isReposito
         });
 
     });
+};
+
+export const cleanMetadata = ({commit}) => {
+    commit('cleanMetadata');
 };
 
 export const updateCollectionMetadataOrder = ({ commit }, {collectionId, metadataOrder}) => {

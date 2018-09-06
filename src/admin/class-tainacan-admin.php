@@ -125,6 +125,8 @@ class Admin {
 		wp_enqueue_script('jcrop');
 		wp_enqueue_script( 'customize-controls' );
 		
+		do_action('tainacan-enqueue-admin-scripts');
+		
 	}
 	
 	/**
