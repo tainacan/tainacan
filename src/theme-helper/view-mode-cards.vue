@@ -132,7 +132,7 @@ export default {
     @import "../../src/admin/scss/_view-mode-cards.scss";
 
     .tainacan-cards-container .tainacan-card .metadata-title {
-        padding: 0.75rem;
+        padding: 0.6rem 0.75rem;
         margin-bottom: 0px;
     }
 </style>

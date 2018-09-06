@@ -1134,14 +1134,28 @@
                 let prefsViewMode = !this.isRepositoryLevel ? 'view_mode_' + this.collectionId : 'view_mode';
                 if (this.$userPrefs.get(prefsViewMode) == undefined)
                     this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
-                else 
-                    this.$eventBusSearch.setInitialViewMode(this.$userPrefs.get(prefsViewMode));
+                else {
+                    let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
+                    if (existingViewModeIndex >= 0)
+                        this.$eventBusSearch.setInitialViewMode(this.$userPrefs.get(prefsViewMode));
+                    else   
+                        this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
+                }
             } else {
                 let prefsAdminViewMode = !this.isRepositoryLevel ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
                 if (this.$userPrefs.get(prefsAdminViewMode) == undefined)
-                    this.$eventBusSearch.setInitialAdminViewMode('cards');
-                else 
-                    this.$eventBusSearch.setInitialAdminViewMode(this.$userPrefs.get(prefsAdminViewMode));
+                    this.$eventBusSearch.setInitialAdminViewMode('table');
+                else {
+                    let existingViewMode = this.$userPrefs.get(prefsAdminViewMode);
+                    if (existingViewMode == 'cards' || 
+                        existingViewMode == 'table' || 
+                        existingViewMode == 'records' || 
+                        existingViewMode == 'grid' || 
+                        existingViewMode == 'masonry')
+                        this.$eventBusSearch.setInitialAdminViewMode(this.$userPrefs.get(prefsAdminViewMode));
+                    else
+                        this.$eventBusSearch.setInitialAdminViewMode('table');
+                }
             }
 
             // Watches window resize to adjust filter's top position and compression on mobile 
