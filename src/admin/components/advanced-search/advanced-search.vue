@@ -238,6 +238,24 @@
               this.searchAdvanced();
           }
         },
+        mounted(){
+          this.$root.$on('metadatumUpdated', (isRepositoryLevel) => {
+              if(isRepositoryLevel) {
+                  this.metadataIsLoading = true;
+
+                  this.fetchMetadata({
+                      collectionId: this.isRepositoryLevel ? false : this.$route.params.collectionId,
+                      isRepositoryLevel: this.isRepositoryLevel,
+                      isContextEdit: false,
+                      includeDisabled: false,
+                      isAdvancedSearch: true
+                  }).then((metadata) => {
+                      this.metadata = metadata;
+                      this.metadataIsLoading = false;
+                  });
+              }
+          });
+        },
         created(){
 
             this.metadataIsLoading = true;

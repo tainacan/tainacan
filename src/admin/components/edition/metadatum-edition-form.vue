@@ -319,6 +319,8 @@
                             this.formErrors = {};
                             this.formErrorMessage = '';
                             this.closedByForm = true;
+
+                            this.$root.$emit('metadatumUpdated', this.isRepositoryLevel);
                             this.$emit('onEditionFinished');
                         })
                         .catch((errors) => {
@@ -353,6 +355,8 @@
                             this.formErrors = {};
                             this.formErrorMessage = '';
                             this.closedByForm = true;
+
+                            this.$root.$emit('metadatumUpdated', this.isRepositoryLevel);
                             this.$emit('onEditionFinished');
                         })
                         .catch((errors) => {
