@@ -110,8 +110,9 @@ export const ThemeItemsListing =  new Vue({
     },
     render: h => h(ThemeItemsList),
     beforeMount () {
-        if (this.$el.attributes['collection-id'] != undefined)
-            this.collectionId = this.$el.attributes['collection-id'].value;
+        
+        this.collectionId = this.$el.attributes['collection-id'] != undefined ? this.$el.attributes['collection-id'].value : undefined;
+        
         if (this.$el.attributes['default-view-mode'] != undefined)
             this.defaultViewMode = this.$el.attributes['default-view-mode'].value;
         if (this.$el.attributes['enabled-view-modes'] != undefined)

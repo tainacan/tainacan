@@ -74,6 +74,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 
 	// Wordpress Status
 	'publish'                                        => __( 'Publish', 'tainacan' ),
+	'public'                                         => __( 'Public', 'tainacan' ),
 	'draft'                                          => __( 'Draft', 'tainacan' ),
 	'private'                                        => __( 'Private', 'tainacan' ),
 	'trash'                                          => __( 'Trash', 'tainacan' ),

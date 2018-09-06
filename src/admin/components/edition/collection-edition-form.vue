@@ -489,13 +489,13 @@ export default {
             // Can be obtained from api later
             statusOptions: [{ 
                 value: 'publish',
-                label: this.$i18n.get('publish')
-                }, {
-                value: 'draft',
-                label: this.$i18n.get('draft')
+                label: this.$i18n.get('public')
                 }, {
                 value: 'private',
                 label: this.$i18n.get('private')
+                }, {
+                value: 'draft',
+                label: this.$i18n.get('draft')
                 }, {
                 value: 'trash',
                 label: this.$i18n.get('trash')
