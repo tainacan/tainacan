@@ -800,7 +800,7 @@ class Old_Tainacan extends Importer{
             $type = "Numeric";
         } else if(strcmp($type, 'item') === 0) {
             $type = "Relationship";
-        } else if(strcmp($type, 'tree') === 0) {
+        } else if(strcmp($type, 'tree') === 0 || strcmp($type, 'selectbox')) {
             $type = "Taxonomy";
         } else if(strcmp($type, 'compound') === 0) {
             $type = "Compound";
