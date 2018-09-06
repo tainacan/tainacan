@@ -625,6 +625,21 @@
             }
         }
 
+        .taginput-container {
+            height: 32px !important;
+
+            .tags {
+                margin-bottom: calc(0.275em - 1px) !important;
+
+                .tag {
+                    height: 2em !important;
+                    padding-left: 0.75em !important;
+                    padding-right: 0.75em !important;
+                    margin-right: 0 !important;
+                }
+            }
+        }
+
         .add-link-advanced-search {
             margin-top: -15px !important;
             padding-left: 8px !important;
