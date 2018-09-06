@@ -189,14 +189,16 @@ export default {
                     this.$store.dispatch('search/add_fetchonly_meta', metadatum );
                     this.updateURLQueries();             
                 },
-                addFetchOnly( metadatum ){
+                addFetchOnly( metadatum, ignorePrefs ){
                     this.$store.dispatch('search/add_fetchonly', metadatum );
                     this.updateURLQueries();  
                     
-                    let prefsFetchOnly = this.collectionId != undefined ? 'fetch_only_' + this.collectionId : 'fetch_only';
-                    if (JSON.stringify(this.$userPrefs.get(prefsFetchOnly)) != JSON.stringify(metadatum)) {
-                        this.$userPrefs.set(prefsFetchOnly, metadatum)
-                            .catch(() => { this.$console.log("Error setting user prefs for fetch_only"); });
+                    if (!ignorePrefs) {
+                        let prefsFetchOnly = this.collectionId != undefined ? 'fetch_only_' + this.collectionId : 'fetch_only';
+                        if (JSON.stringify(this.$userPrefs.get(prefsFetchOnly)) != JSON.stringify(metadatum)) {
+                            this.$userPrefs.set(prefsFetchOnly, metadatum)
+                                .catch(() => { this.$console.log("Error setting user prefs for fetch_only"); });
+                        }
                     }
                 },
                 cleanFetchOnly() {

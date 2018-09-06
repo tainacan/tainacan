@@ -943,15 +943,15 @@
                                     else if (metadatum.display == 'yes')
                                         display = true;
 
-                                    // // Deciding display based on user prefs
-                                    // if (prefsFetchOnlyObject != undefined && 
-                                    //     prefsFetchOnlyObject.meta != undefined) {
-                                    //     let index = prefsFetchOnlyObject.meta.findIndex(metadatumId => metadatumId == metadatum.id);
-                                    //     if (index >= 0)
-                                    //         display = true;
-                                    //     else
-                                    //         display = false;
-                                    // }
+                                    // Deciding display based on user prefs
+                                    if (prefsFetchOnlyObject != undefined && 
+                                        prefsFetchOnlyObject.meta != undefined) {
+                                        let index = prefsFetchOnlyObject.meta.findIndex(metadatumId => metadatumId == metadatum.id);
+                                        if (index >= 0)
+                                            display = true;
+                                        else
+                                            display = false;
+                                    }
 
                                     metadata.push({
                                             name: metadatum.name,
@@ -1045,7 +1045,7 @@
                                 '2': 'author_name',
                                 '3': 'title',
                                 '4': 'description'
-                            });
+                            }, true);
                             
                             this.sortingMetadata.push({
                                 name: this.$i18n.get('label_title'),
