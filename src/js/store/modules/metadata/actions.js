@@ -1,6 +1,6 @@
 import axios from '../../../axios/axios';
 
-export const fetchMetadata = ({commit}, {collectionId, isRepositoryLevel, isContextEdit, includeDisabled}) => {
+export const fetchMetadata = ({commit}, {collectionId, isRepositoryLevel, isContextEdit, includeDisabled, isAdvancedSearch}) => {
 
     return new Promise((resolve, reject) => {
         let endpoint = '';
@@ -20,7 +20,8 @@ export const fetchMetadata = ({commit}, {collectionId, isRepositoryLevel, isCont
         axios.tainacan.get(endpoint)
             .then((res) => {
                 let metadata = res.data;
-                commit('setMetadata', metadata);
+                if (!isAdvancedSearch)
+                    commit('setMetadata', metadata);
                 resolve(metadata);
             })
             .catch((error) => {

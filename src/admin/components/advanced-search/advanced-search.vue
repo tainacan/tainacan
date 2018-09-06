@@ -247,6 +247,7 @@
                 isRepositoryLevel: this.isRepositoryLevel,
                 isContextEdit: false,
                 includeDisabled: false,
+                isAdvancedSearch: true
             }).then((metadata) => {
                 this.metadata = metadata;
                 this.metadataIsLoading = false;

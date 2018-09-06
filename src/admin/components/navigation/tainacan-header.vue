@@ -90,7 +90,6 @@
 <script>
     import AdvancedSearch from '../advanced-search/advanced-search.vue';
     import ProcessesPopup from '../other/processes-popup.vue';
-    import { mapActions } from 'vuex';
 
     export default {
         name: 'TainacanHeader',
@@ -100,7 +99,6 @@
                 wordpressAdmin: window.location.origin + window.location.pathname.replace('admin.php', ''),
                 searchQuery: '',
                 futureSearchQuery: '',
-                metadata: Array,
                 showProcesses: false,
                 hasNewProcess: false
             }
@@ -110,9 +108,6 @@
             ProcessesPopup
         },
         methods: {
-            ...mapActions('metadata', [
-                'fetchMetadata'
-            ]),
             // toItemsPage() {
             //     if(this.$route.path == '/items') {
             //         this.$root.$emit('openAdvancedSearch', true);
@@ -142,16 +137,6 @@
             this.$root.$on('closeAdvancedSearchShortcut', () => {
                 this.$refs.advancedSearchShortcut.toggle();
             });
-
-            this.fetchMetadata({
-                collectionId: false,
-                isRepositoryLevel: true,
-                isContextEdit: false,
-                includeDisabled: false,
-            })
-                .then((metadata) => {
-                      this.metadata = metadata;
-                });
         },
     }
 </script>
