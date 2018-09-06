@@ -134,7 +134,7 @@ export default {
     @import "../../src/admin/scss/_view-mode-records.scss";
 
     .tainacan-records-container .tainacan-record .metadata-title {
-        padding: 0.75rem;
+        padding: 0.6rem 0.75rem;
         margin-bottom: 0px;
     }
 </style>
