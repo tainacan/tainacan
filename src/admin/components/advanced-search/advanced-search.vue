@@ -1,9 +1,15 @@
 <template>
     <div>
         <section
+                style="position: relative;"
                 v-if="!metadata || metadata.length <= 0"
                 class="field is-grouped-centered section">
-            <div class="content has-text-gray has-text-centered">
+            <b-loading
+                    :is-full-page="false"
+                    :active.sync="metadataIsLoading"/>
+            <div
+                    v-if="!metadataIsLoading"
+                    class="content has-text-gray has-text-centered">
                 <p>
                     <b-icon
                             icon="format-list-checks"
@@ -35,7 +41,6 @@
                             :class="{'is-3': isHeader}"
                             class="column">
                         <b-select
-                                :loading="metadataIsLoading"
                                 :placeholder="$i18n.get('instruction_select_a_metadatum')"
                                 :disabled="advancedSearchQuery.taxquery[searchCriterion] ||
                                  advancedSearchQuery.metaquery[searchCriterion] ? true : false"
@@ -347,6 +352,10 @@
                 'fetchMetadata'
             ]),
             autoCompleteTerm: _.debounce( function(value, searchCriterion){
+                if(!value){
+                    return;
+                }
+
                 this.termList = [];
                 this.terms = [];
                 this.$set(this.advancedSearchQuery.taxquery[searchCriterion], 'isFetching', 1);
@@ -545,6 +554,9 @@
                 }
             },
             addToAdvancedSearchQuery(value, type, searchCriterion){
+                if(!value){
+                    return;
+                }
 
                 if(type == 'metadatum'){
                     const criteriaKey = value.split('-');
