@@ -450,6 +450,9 @@ export default {
             }
         }
 
+        .tooltip.is-primary {
+            z-index: 99;
+        }
         .tooltip.is-primary::after {
             background-color: $turquoise1;
             color: $turquoise5;
