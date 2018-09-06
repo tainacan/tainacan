@@ -289,7 +289,7 @@
                     collectionId: this.collectionID,
                     isRepositoryLevel: false,
                     isContextEdit: true,
-                    includeDisabled: true,
+                    includeDisabled: false,
                 }).then(() => {
                     this.metadataIsLoading = false;
                 });

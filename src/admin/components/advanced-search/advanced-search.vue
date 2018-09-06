@@ -214,7 +214,7 @@
 
 <script>
 
-    import { mapActions, mapGetters } from 'vuex';
+    import { mapActions } from 'vuex';
     import { dateInter } from '../../js/mixins.js';
     import moment from 'moment';
 
@@ -233,21 +233,17 @@
               this.searchAdvanced();
           }
         },
-        computed: {
-            metadata() {
-                return this.getMetadata();
-            }
-        },
         created(){
 
             this.metadataIsLoading = true;
 
             this.fetchMetadata({
-                collectionId: this.isRepositoryLevel ? undefined : this.$route.params.collectionId,
+                collectionId: this.isRepositoryLevel ? false : this.$route.params.collectionId,
                 isRepositoryLevel: this.isRepositoryLevel,
-                isContextEdit: true,
-                includeDisabled: true,
-            }).then(() => {
+                isContextEdit: false,
+                includeDisabled: false,
+            }).then((metadata) => {
+                this.metadata = metadata;
                 this.metadataIsLoading = false;
             });
 
@@ -340,6 +336,7 @@
                 dateMask: this.getDateLocaleMask(),
                 dateFormat: '',
                 metadataIsLoading: false,
+                metadata: [],
             }
         },
         methods: {
@@ -348,9 +345,6 @@
             ]),
             ...mapActions('metadata', [
                 'fetchMetadata'
-            ]),
-            ...mapGetters('metadata', [
-                'getMetadata'
             ]),
             autoCompleteTerm: _.debounce( function(value, searchCriterion){
                 this.termList = [];
