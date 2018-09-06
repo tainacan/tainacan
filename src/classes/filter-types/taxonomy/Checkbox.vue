@@ -34,24 +34,24 @@
 
                     let selectedOption = this.options.find(option => option.name == filterTag.singleValue);
                     if(selectedOption) {
+                        
                         let selectedIndex = this.selected.findIndex(option => option == selectedOption.id);
                         if (selectedIndex >= 0) {
-
-                            let newSelected = this.selected.slice();
-                            newSelected.splice(selectedIndex, 1); 
-
+                            
+                            this.selected.splice(selectedIndex, 1); 
+                            
                             this.$emit('input', {
                                 filter: 'checkbox',
                                 compare: 'IN',
                                 taxonomy: this.taxonomy,
                                 metadatum_id: this.metadatum,
                                 collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
-                                terms: newSelected
+                                terms: this.selected
                             });
 
                             this.$eventBusSearch.$emit( 'sendValuesToTags', {
                                 filterId: this.filter.id,
-                                value: newSelected
+                                value: this.selected
                             });
 
                             this.selectedValues();

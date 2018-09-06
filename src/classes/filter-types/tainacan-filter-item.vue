@@ -72,8 +72,8 @@
             ...mapActions('search', [
                 'setPage'
             ]),
-            listen( event ){
-                this.$eventBusSearch.$emit( 'input', ( event.metadatum_id ) ?  event :  event.detail[0] );
+            listen( inputEvent ){
+                this.$eventBusSearch.$emit( 'input', ( inputEvent.metadatum_id ) ?  inputEvent :  inputEvent.detail[0] );
             },
             setFilterTypeMessage( message ){
                 this.filterTypeMessage = message;
