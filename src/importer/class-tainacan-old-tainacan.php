@@ -239,6 +239,11 @@ class Old_Tainacan extends Importer{
         $info = json_decode($info['body']);
 
         if( !isset( $info->items ) ){
+
+            if( isset($info->code) && $info->code === 'empty_search' ){
+                return true;
+            }
+
             $this->add_error_log('Error in fetch remote (' . $url_to_fetch . ')');
             $this->abort();
             return false;
@@ -709,7 +714,7 @@ class Old_Tainacan extends Importer{
              
             if( isset( $meta->metadata->children ) ){
                 foreach( $meta->metadata->children as $child ){
-                    $this->create_metadata( $node_metadata_old, $collection_id);
+                    $this->create_metadata( $child, $collection_id);
                 }
             }
 

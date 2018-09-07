@@ -688,7 +688,12 @@ abstract class Importer {
 		
 		$this->add_log('Processing item ' . $current_collection_item);
 		$processed_item = $this->process_item( $current_collection_item, $collection_definition );
-		if( $processed_item) {
+		if( $processed_item ) {
+
+			if( is_bool($processed_item) ){
+				return $this->next_item();	
+			}
+
 			$this->add_log('Inserting item ' . $current_collection_item);
 			$this->insert( $processed_item, $current_collection );
 		} else {
