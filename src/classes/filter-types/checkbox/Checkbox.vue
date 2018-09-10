@@ -5,13 +5,14 @@
                 :key="index"
                 class="metadatum">
             <b-checkbox
+                    v-if="index <= filter.max_options - 1"
                     v-model="selected"
                     :native-value="option.value">
                 {{ option.label }}
             </b-checkbox>
             <div
                     class="view-all-button-container"
-                    v-if="option.seeMoreLink"
+                    v-if="option.seeMoreLink && index == options.length - 1"
                     @click="openCheckboxModal()"
                     v-html="option.seeMoreLink"/>
         </div>
@@ -52,34 +53,32 @@
                 if (filterTag.filterId == this.filter.id) {
 
                     let selectedIndex = this.selected.findIndex(option => option == filterTag.singleValue);
-                    let alternativeIndex = this.options.findIndex(option => option.label == filterTag.singleValue);
+                    let optionIndex = this.options.findIndex(option => option.label == filterTag.singleValue);
+                    let alternativeIndex;
+
+                    if (optionIndex >= 0) {
+                        alternativeIndex = this.selected.findIndex(option => this.options[optionIndex].value == option);
+                    }
 
                     if (selectedIndex >= 0 || alternativeIndex >= 0) {
 
-                        let newSelected = this.selected.slice();
-                        newSelected.splice(selectedIndex, 1); 
+                        selectedIndex >= 0 ? this.selected.splice(selectedIndex, 1) : this.selected.splice(alternativeIndex, 1); 
 
                         this.$emit('input', {
                             filter: 'checkbox',
                             compare: 'IN',
                             metadatum_id: this.metadatum,
                             collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
-                            value: newSelected
+                            value: this.selected
                         });
 
                         this.$eventBusSearch.$emit( 'sendValuesToTags', {
                             filterId: this.filter.id,
-                            value: newSelected
+                            value: this.selected
                         });
 
                         this.selectedValues();
                     }
-                }
-            });
-
-            this.$root.$on('appliedCheckBoxModal', (labels) => {
-                if(labels.length){
-                    this.selectedValues();
                 }
             });
         },
@@ -155,11 +154,11 @@
                 let onlyLabels = [];
 
                 if(!isNaN(this.selected[0])){
-                    for (let option of this.options) {
-                        let value = this.selected.find(item => item == option.value);
-
-                        if (value != undefined) {
-                            onlyLabels.push(option.label);
+                    for (let aSelected of this.selected) {
+                        let valueIndex = this.options.findIndex(option => option.value == aSelected);
+                        
+                        if (valueIndex >= 0) {
+                            onlyLabels.push(this.options[valueIndex].label);
                         }
                     }
                 }
@@ -197,8 +196,26 @@
                         metadatum_type: this.type,
                         metadatum_object: this.metadatum_object,
                         isRepositoryLevel: this.isRepositoryLevel,
+                    },
+                    events: {
+                        appliedCheckBoxModal: (options) => { this. appliedCheckBoxModal(options) }
                     }
                 });
+            },
+            appliedCheckBoxModal(options) {
+                if(options.length){
+                    this.options = this.options.concat(options)
+                    for(let i = 0; i < this.options.length; ++i) {
+                        for(let j = i + 1; j < this.options.length; ++j) {
+                            if(this.options[i].value == this.options[j].value)
+                                this.options.splice(j--, 1);
+                        }
+                        if (i == this.options.length - 1)
+                            this.options[i].seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_view_all') } </a>`;
+                    }
+
+                    this.selectedValues();
+                }
             }
         }
     }

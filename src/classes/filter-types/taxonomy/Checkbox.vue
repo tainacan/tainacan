@@ -1,7 +1,7 @@
 <template>
     <div class="block">
         <div
-                v-for="(option, index) in getOptions()"
+                v-for="(option, index) in options.slice(0, filter.max_options)"
                 :key="index"
                 :value="index"
                 class="control">
@@ -12,7 +12,7 @@
             >{{ option.label }}</b-checkbox>
             <div
                     class="see-more-container"
-                    v-if="option.seeMoreLink && index == options.length-1"
+                    v-if="option.seeMoreLink && index == options.slice(0, filter.max_options).length - 1"
                     @click="openCheckboxModal(option.parent)"
                     v-html="option.seeMoreLink"/>
         </div>
@@ -34,14 +34,15 @@
             this.$eventBusSearch.$on('removeFromFilterTag', (filterTag) => {
                 if (filterTag.filterId == this.filter.id) {
 
-                    let selectedOption = this.options.find(option => option.name == filterTag.singleValue);
+                    let selectedOption = this.options.find(option => option.label == filterTag.singleValue);
+
                     if(selectedOption) {
-                        
-                        let selectedIndex = this.selected.findIndex(option => option == selectedOption.id);
+                    
+                        let selectedIndex = this.selected.findIndex(option => option == selectedOption.value);
                         if (selectedIndex >= 0) {
-                            
+
                             this.selected.splice(selectedIndex, 1); 
-                            
+
                             this.$emit('input', {
                                 filter: 'checkbox',
                                 compare: 'IN',
@@ -59,12 +60,6 @@
                             this.selectedValues();
                         }
                     }
-                }
-            });
-
-            this.$root.$on('appliedCheckBoxModal', (labels) => {
-                if(labels.length){
-                    this.selectedValues();
                 }
             });
         },
@@ -113,6 +108,32 @@
                             this.options.push(item);
                         }
 
+
+                        if ( this.options ){
+                            let hasChildren = false;
+
+                            for( let term of this.options ){
+                                if(term.total_children > 0){
+                                    hasChildren = true;
+                                    break;
+                                }
+                            }
+
+                            if(this.filter.max_options && (this.options.length >= this.filter.max_options || hasChildren)){
+                                if(this.options.length > this.filter.max_options){
+                                    this.options.splice(this.filter.max_options);
+                                }
+
+                                let seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_view_all') } </a>`;
+
+                                if(this.options.length === this.filter.max_options){
+                                    this.options[this.filter.max_options-1].seeMoreLink = seeMoreLink;
+                                } else {
+                                    this.options[this.options.length-1].seeMoreLink = seeMoreLink;
+                                }
+                            }
+                        }
+
                         this.isLoading = false;
                         this.selectedValues();
                     })
@@ -120,34 +141,6 @@
                         this.$console.log(error);
                         this.isLoading = false;
                     });
-            },
-            getOptions(){
-                if ( this.options ){
-                    let hasChildren = false;
-
-                    for( let term of this.options ){
-                        if(term.total_children > 0){
-                            hasChildren = true;
-                            break;
-                        }
-                    }
-
-                    if (this.filter.max_options && (this.options.length >= this.filter.max_options || hasChildren)) {
-                        if(this.options.length > this.filter.max_options){
-                            this.options.splice(this.filter.max_options);
-                        }
-
-                        let seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_view_all') } </a>`;
-
-                        if(this.options.length === this.filter.max_options){
-                            this.options[this.filter.max_options-1].seeMoreLink = seeMoreLink;
-                        } else {
-                            this.options[this.options.length-1].seeMoreLink = seeMoreLink;
-                        }
-                    }
-                }
-
-                return this.options;
             },
             selectedValues(){
                 
@@ -217,9 +210,27 @@
                         taxonomy: this.taxonomy,
                         collection_id: this.collection,
                         isTaxonomy: true,
+                    },                    
+                    events: {
+                        appliedCheckBoxModal: (options) => { this. appliedCheckBoxModal(options) }
                     },
                     width: 'calc(100% - 8.333333333%)',
                 });
+            },
+            appliedCheckBoxModal(options) {
+                if(options.length){
+                    this.options = this.options.concat(options)
+                    for(let i = 0; i < this.options.length; ++i) {
+                        for(let j = i + 1; j < this.options.length; ++j) {
+                            if(this.options[i].value == this.options[j].value)
+                                this.options.splice(j--, 1);
+                        }
+                        if (i == this.options.length - 1)
+                            this.options[i].seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_view_all') } </a>`;
+                    }
+
+                    this.selectedValues();
+                }
             }
         }
     }
