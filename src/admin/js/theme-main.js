@@ -115,6 +115,9 @@ export const ThemeItemsListing =  new Vue({
         
         if (this.$el.attributes['default-view-mode'] != undefined)
             this.defaultViewMode = this.$el.attributes['default-view-mode'].value;
+        else
+            this.defaultViewMode = 'cards';
+
         if (this.$el.attributes['enabled-view-modes'] != undefined)
             this.enabledViewModes = this.$el.attributes['enabled-view-modes'].value.split(',');
 
