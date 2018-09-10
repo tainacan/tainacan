@@ -434,6 +434,7 @@
 
                 </div>
                 <advanced-search
+                        :collection-id="collectionId"
                         :is-repository-level="isRepositoryLevel"
                         :advanced-search-results="advancedSearchResults"
                         :open-form-advanced-search="openFormAdvancedSearch"

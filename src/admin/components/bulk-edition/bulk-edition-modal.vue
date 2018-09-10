@@ -1,5 +1,5 @@
 <template>
-    <div class="tainacan-modal-content">
+    <div class="tainacan-modal-content this-tainacan-modal-content">
         <header class="tainacan-modal-title">
             <h2>{{ modalTitle }}
                 <small class="tainacan-total-objects-info">
@@ -168,6 +168,7 @@
                               marginRight: !bulkEditionProcedures[criterion].isDone && !bulkEditionProcedures[criterion].isExecuting ? '-7.4px': 0
                             }"
                             class="field buttons-r-bulk">
+
                         <button
                                 v-if="!bulkEditionProcedures[criterion].isDone && !bulkEditionProcedures[criterion].isExecuting"
                                 @click="removeThis(criterion)"
@@ -176,8 +177,9 @@
                                     type="is-gray4"
                                     icon="close-circle-outline"/>
                         </button>
+
                         <div
-                                v-if="bulkEditionProcedures[criterion].isDone"
+                                v-if="bulkEditionProcedures[criterion].isDone && bulkEditionProcedures[criterion].actionResult >= totalItems"
                                 @mouseover="$set(bulkEditionProcedures[criterion], 'tooltipShow', !bulkEditionProcedures[criterion].tooltipShow)"
                                 class="is-pulled-right">
                             <b-tooltip
@@ -194,27 +196,53 @@
                                         icon="check-circle"/>
                             </b-tooltip>
                         </div>
+
                         <div
-                                v-if="bulkEditionProcedures[criterion].isDoneWithError && !bulkEditionProcedures[criterion].isExecuting"
+                                v-if="bulkEditionProcedures[criterion].isDone && bulkEditionProcedures[criterion].actionResult < totalItems"
                                 @mouseover="$set(bulkEditionProcedures[criterion], 'tooltipShow', !bulkEditionProcedures[criterion].tooltipShow)"
                                 class="is-pulled-right">
                             <b-tooltip
                                     :active="bulkEditionProcedures[criterion].tooltipShow"
                                     always
-                                    class="is-danger"
+                                    class="is-yellow2"
                                     size="is-small"
                                     position="is-left"
                                     animated
                                     multilined
-                                    :label="bulkEditionProcedures[criterion].actionResult.constructor.name === 'Object' ? (bulkEditionProcedures[criterion].actionResult.error_message ? bulkEditionProcedures[criterion].actionResult.error_message : bulkEditionProcedures[criterion].actionResult.message) : ''">
+                                    :label="bulkEditionProcedures[criterion].actionResult.constructor.name !== 'Object' && bulkEditionProcedures[criterion].actionResult === 1 ? `${bulkEditionProcedures[criterion].actionResult} ${$i18n.get('info_item_affected')}` : `${bulkEditionProcedures[criterion].actionResult} ${$i18n.get('info_items_affected')}`">
                                 <b-icon
-                                        type="is-danger"
-                                        icon="alert-circle"/>
+                                        type="is-yellow2"
+                                        icon="exclamation"/>
                             </b-tooltip>
                         </div>
+
                         <button
                                 :disabled="!groupID"
-                                v-if="!bulkEditionProcedures[criterion].isDone &&
+                                v-if="bulkEditionProcedures[criterion].isDoneWithError &&
+                                 !bulkEditionProcedures[criterion].isExecuting"
+                                @click="executeBulkEditionProcedure(criterion)"
+                                @mousedown="$set(bulkEditionProcedures[criterion], 'tooltipShow', !bulkEditionProcedures[criterion].tooltipShow)"
+                                @mouseup="$set(bulkEditionProcedures[criterion], 'tooltipShow', !bulkEditionProcedures[criterion].tooltipShow)"
+                                class="button is-white is-pulled-right">
+                            <b-tooltip
+                                    :active="bulkEditionProcedures[criterion].tooltipShow"
+                                    always
+                                    class="is-red2"
+                                    size="is-small"
+                                    position="is-bottom"
+                                    animated
+                                    multilined
+                                    :label="bulkEditionProcedures[criterion].actionResult.constructor.name === 'Object' ? (bulkEditionProcedures[criterion].actionResult.error_message ? bulkEditionProcedures[criterion].actionResult.error_message : bulkEditionProcedures[criterion].actionResult.message) : ''">
+                                <b-icon
+                                        type="is-red2"
+                                        icon="sync-alert"/>
+                            </b-tooltip>
+                        </button>
+
+                        <button
+                                :disabled="!groupID"
+                                v-if="!bulkEditionProcedures[criterion].isDoneWithError &&
+                                !bulkEditionProcedures[criterion].isDone &&
                                  !bulkEditionProcedures[criterion].isExecuting &&
                                    bulkEditionProcedures[criterion].metadatumID &&
                                     bulkEditionProcedures[criterion].action"
@@ -224,6 +252,7 @@
                                     type="is-gray4"
                                     icon="play-circle"/>
                         </button>
+
                         <div v-if="bulkEditionProcedures[criterion].isExecuting">
                             <b-icon
                                     class="tainacan-loader"
@@ -533,12 +562,12 @@
         }
     }
 
-    .tainacan-modal-content {
+    .this-tainacan-modal-content {
         border-radius: 10px;
         min-height: 400px;
     }
 
-    .tainacan-modal-content .form-submit {
+    .this-tainacan-modal-content .form-submit {
         padding: 160px 0 0.4em 0 !important;
     }
 

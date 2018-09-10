@@ -232,6 +232,7 @@
             advancedSearchResults: false,
             openFormAdvancedSearch: false,
             isDoSearch: false,
+            collectionId: ''
         },
         watch: {
           isDoSearch(){
@@ -244,7 +245,7 @@
                   this.metadataIsLoading = true;
 
                   this.fetchMetadata({
-                      collectionId: this.isRepositoryLevel ? false : this.$route.params.collectionId,
+                      collectionId: this.isRepositoryLevel ? false : this.collectionId,
                       isRepositoryLevel: this.isRepositoryLevel,
                       isContextEdit: false,
                       includeDisabled: false,
@@ -261,7 +262,7 @@
             this.metadataIsLoading = true;
 
             this.fetchMetadata({
-                collectionId: this.isRepositoryLevel ? false : this.$route.params.collectionId,
+                collectionId: this.isRepositoryLevel ? false : this.collectionId,
                 isRepositoryLevel: this.isRepositoryLevel,
                 isContextEdit: false,
                 includeDisabled: false,
