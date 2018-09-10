@@ -470,17 +470,26 @@
                         collection_id: this.collection_id ? this.collection_id : this.filter.collection_id,
                         value: this.selected,
                     });
+                    // if(!isNaN(this.selected[0])){
+                    //     for (let option of this.options) {
+                    //         let valueIndex = this.selected.findIndex(item => item == option.value);
 
+                    //         if (valueIndex >= 0) {
+                    //             onlyLabels.push(this.options[valueIndex].label);
+                    //             console.log(this.selected[valueIndex]);
+                    //             console.log(this.options[valueIndex].value);
+                    //         }
+                    //     }
+                    // }
                     if(!isNaN(this.selected[0])){
-                        for (let option of this.options) {
-                            let valueIndex = this.selected.findIndex(item => item == option.value);
+                        for (let aSelected of this.selected) {
+                            let valueIndex = this.options.findIndex(option => option.value == aSelected);
 
                             if (valueIndex >= 0) {
                                 onlyLabels.push(this.options[valueIndex].label);
                             }
                         }
                     }
-
                     onlyLabels = onlyLabels.length ? onlyLabels : this.selected;
 
                     this.$eventBusSearch.$emit( 'sendValuesToTags', {
