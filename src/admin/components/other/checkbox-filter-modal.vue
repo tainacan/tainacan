@@ -77,8 +77,8 @@
                             :key="index">
                         <b-checkbox
                                 v-model="selected"
-                                :native-value="option.id">
-                            {{ `${option.name}` }}
+                                :native-value="option.value">
+                            {{ `${option.label}` }}
                         </b-checkbox>
                         <a
                                 v-if="option.total_children > 0"
@@ -151,7 +151,7 @@
 </template>
 
 <script>
-
+    import qs from 'qs';
     import {tainacan as axios} from '../../../js/axios/axios';
     import { filter_type_mixin } from '../../../classes/filter-types/filter-types-mixin';
 
@@ -281,10 +281,11 @@
 
                 if(this.isTaxonomy) {
                     this.isSearchingLoading = true;
+                    let query_items = { 'current_query': this.query };
 
-                    let query = `?hideempty=0&order=asc&number=${this.maxNumSearchResultsShow}&searchterm=${this.optionName}`;
+                    let query = `?hideempty=0&order=asc&number=${this.maxNumSearchResultsShow}&searchterm=${this.optionName}&` + qs.stringify(query_items);
 
-                    axios.get(`/taxonomy/${this.taxonomy_id}/terms${query}`)
+                    axios.get(`/collection/${this.collection_id}/facets/${this.metadatum_id}${query}`)
                         .then((res) => {
                             this.searchResults = res.data;
                             this.isSearchingLoading = false;
@@ -362,7 +363,7 @@
 
                 if (children.length > 0) {
                     for (let f in this.finderColumns) {
-                        if (this.finderColumns[f][0].id == children[0].id) {
+                        if (this.finderColumns[f][0].value == children[0].value) {
                             first = f;
                             break;
                         }
@@ -381,6 +382,7 @@
                 }
             },
             getOptionChildren(option, key, index) {
+                let query_items = { 'current_query': this.query };
 
                 if(key != undefined) {
                     this.addToHierarchicalPath(key, index);
@@ -389,14 +391,14 @@
                 let parent = 0;
 
                 if (option) {
-                    parent = option.id;
+                    parent = option.value;
                 }
 
-                let query = `?hideempty=0&order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=0`;
+                let query = `?hideempty=0&order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=0&` + qs.stringify(query_items);
 
                 this.isColumnLoading = true;
 
-                axios.get(`/taxonomy/${this.taxonomy_id}/terms${query}`)
+                axios.get(`/collection/${this.collection_id}/facets/${this.metadatum_id}${query}`)
                     .then(res => {
                         this.removeLevelsAfter(key);
                         this.createColumn(res, key);
@@ -414,12 +416,13 @@
                 if (finderColumn.length > 0) {
                     let parent = finderColumn[0].parent;
                     let offset = finderColumn.length;
+                    let query_items = { 'current_query': this.query };
 
-                    let query = `?hideempty=0&order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=${offset}`;
+                    let query = `?hideempty=0&order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=${offset}&` + qs.stringify(query_items);
 
                     this.isColumnLoading = true;
 
-                    axios.get(`/taxonomy/${this.taxonomy_id}/terms${query}`)
+                    axios.get(`/collection/${this.collection_id}/facets/${this.metadatum_id}${query}`)
                         .then(res => {
                             this.appendMore(res.data, key);
 
@@ -435,7 +438,7 @@
             applyFilter() {
                 this.$parent.close();
 
-                let onlyLabels = [];
+                let selectedOptions = [];
 
                 if(this.isTaxonomy){
                     this.$eventBusSearch.$emit('input', {
@@ -446,22 +449,23 @@
                         collection_id: this.collection_id,
                         terms: this.selected
                     });
-
+                    
                     for (let selected of this.selected) {
-
                         for(let i in this.finderColumns){
-                            let valueIndex = this.finderColumns[i].findIndex(option => option.id == selected);
-
+                            let valueIndex = this.finderColumns[i].findIndex(option => option.value == selected);
+                            
                             if (valueIndex >= 0) {
-                                onlyLabels.push(this.finderColumns[i][valueIndex].name);
+                                selectedOptions.push(this.finderColumns[i][valueIndex]);
                             }
                         }
                     }
 
                     this.$eventBusSearch.$emit('sendValuesToTags', {
                         filterId: this.filter.id,
-                        value: onlyLabels,
+                        value: selectedOptions,
                     });
+                    
+                    this.$emit('appliedCheckBoxModal', selectedOptions);
                 } else {
                     this.$eventBusSearch.$emit('input', {
                         filter: 'checkbox',
@@ -470,35 +474,36 @@
                         collection_id: this.collection_id ? this.collection_id : this.filter.collection_id,
                         value: this.selected,
                     });
+                     
                     // if(!isNaN(this.selected[0])){
                     //     for (let option of this.options) {
                     //         let valueIndex = this.selected.findIndex(item => item == option.value);
 
                     //         if (valueIndex >= 0) {
-                    //             onlyLabels.push(this.options[valueIndex].label);
-                    //             console.log(this.selected[valueIndex]);
-                    //             console.log(this.options[valueIndex].value);
+                    //             selectedOptions.push(this.options[valueIndex].label);
                     //         }
                     //     }
                     // }
-                    if(!isNaN(this.selected[0])){
+                    if(Array.isArray(this.selected)){
                         for (let aSelected of this.selected) {
                             let valueIndex = this.options.findIndex(option => option.value == aSelected);
-
+                            
                             if (valueIndex >= 0) {
-                                onlyLabels.push(this.options[valueIndex].label);
+                                selectedOptions.push(this.options[valueIndex]);
                             }
                         }
+                    } else {
+                        let valueIndex = this.options.findIndex(option => option.value == this.selected);
+                        
+                        if (valueIndex >= 0) {
+                            selectedOptions.push(this.options[valueIndex]);
+                        }
                     }
-                    onlyLabels = onlyLabels.length ? onlyLabels : this.selected;
 
-                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                        filterId: this.filter.id,
-                        value: onlyLabels,
-                    });
+                    this.$emit('appliedCheckBoxModal', selectedOptions);
                 }
 
-                this.$root.$emit('appliedCheckBoxModal', onlyLabels);
+                
             }
         }
     }

@@ -1,17 +1,18 @@
 <template>
     <div class="block">
         <div
-                v-for="(option, index) in getOptions()"
+                v-for="(option, index) in options.slice(0, filter.max_options)"
                 :key="index"
                 :value="index"
                 class="control">
             <b-checkbox
                     v-model="selected"
-                    :native-value="option.id"
-            >{{ option.name }}</b-checkbox>
+                    :native-value="option.value"
+                    v-if="!option.isChild"
+            >{{ option.label }}</b-checkbox>
             <div
                     class="see-more-container"
-                    v-if="option.seeMoreLink && index == options.length-1"
+                    v-if="option.seeMoreLink && index == options.slice(0, filter.max_options).length - 1"
                     @click="openCheckboxModal(option.parent)"
                     v-html="option.seeMoreLink"/>
         </div>
@@ -19,6 +20,7 @@
 </template>
 
 <script>
+    import qs from 'qs';
     import { tainacan as axios } from '../../../js/axios/axios';
     import CheckboxFilterModal from '../../../admin/components/other/checkbox-filter-modal.vue';
 
@@ -32,14 +34,15 @@
             this.$eventBusSearch.$on('removeFromFilterTag', (filterTag) => {
                 if (filterTag.filterId == this.filter.id) {
 
-                    let selectedOption = this.options.find(option => option.name == filterTag.singleValue);
+                    let selectedOption = this.options.find(option => option.label == filterTag.singleValue);
+
                     if(selectedOption) {
-                        
-                        let selectedIndex = this.selected.findIndex(option => option == selectedOption.id);
+                    
+                        let selectedIndex = this.selected.findIndex(option => option == selectedOption.value);
                         if (selectedIndex >= 0) {
-                            
+
                             this.selected.splice(selectedIndex, 1); 
-                            
+
                             this.$emit('input', {
                                 filter: 'checkbox',
                                 compare: 'IN',
@@ -57,12 +60,6 @@
                             this.selectedValues();
                         }
                     }
-                }
-            });
-
-            this.$root.$on('appliedCheckBoxModal', (labels) => {
-                if(labels.length){
-                    this.selectedValues();
                 }
             });
         },
@@ -91,86 +88,70 @@
             }
         },
         watch: {
-            selected: function(val){
-                this.selected = val;
+            selected: function(){
+                //this.selected = val;
                 this.onSelect();
             }
         },
         methods: {
-            getValuesTaxonomy( taxonomy ){
-                return axios.get(`/taxonomy/${taxonomy}/terms?hideempty=0&order=asc&parent=0&number=${this.filter.max_options}`)
+            loadOptions(){
+                this.isLoading = true;
+                let query_items = { 'current_query': this.query };
+
+                axios.get('/collection/'+ this.collection +'/facets/' + this.metadatum 
+                + `?hideempty=0&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items))
                     .then( res => {
+
                         for (let item of res.data) {
                             this.taxonomy = item.taxonomy;
+                            this.taxonomy_id = item.taxonomy_id;
                             this.options.push(item);
                         }
+
+                        if ( this.options ){
+                            let hasChildren = false;
+
+                            for( let term of this.options ){
+                                if(term.total_children > 0){
+                                    hasChildren = true;
+                                    break;
+                                }
+                            }
+
+                            if(this.filter.max_options && (this.options.length >= this.filter.max_options || hasChildren)){
+                                if(this.options.length > this.filter.max_options){
+                                    this.options.splice(this.filter.max_options);
+                                }
+
+                                let seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_view_all') } </a>`;
+
+                                if(this.options.length === this.filter.max_options){
+                                    this.options[this.filter.max_options-1].seeMoreLink = seeMoreLink;
+                                } else {
+                                    this.options[this.options.length-1].seeMoreLink = seeMoreLink;
+                                }
+                            }
+                        }
+
+                        this.isLoading = false;
+                        this.selectedValues();
                     })
                     .catch(error => {
                         this.$console.log(error);
+                        this.isLoading = false;
                     });
-            },
-            loadOptions(){
-                let promise = null;
-                this.isLoading = true;
-
-                axios.get('/collection/'+ this.collection +'/metadata/' + this.metadatum)
-                    .then( res => {
-                        let metadatum = res.data;
-                        this.taxonomy_id = metadatum.metadata_type_options.taxonomy_id;
-
-                        promise = this.getValuesTaxonomy( metadatum.metadata_type_options.taxonomy_id );
-
-                        promise.then( () => {
-                            this.isLoading = false;
-                            this.selectedValues();
-                        })
-                            .catch( error => {
-                                this.$console.log('error select', error );
-                                this.isLoading = false;
-                            });
-                    })
-                    .catch(error => {
-                        this.$console.log(error);
-                    });
-            },
-            getOptions(){
-                if ( this.options ){
-                    let hasChildren = false;
-
-                    for( let term of this.options ){
-                        if(term.total_children > 0){
-                            hasChildren = true;
-                            break;
-                        }
-                    }
-
-                    if (this.filter.max_options && (this.options.length >= this.filter.max_options || hasChildren)) {
-                        if(this.options.length > this.filter.max_options){
-                            this.options.splice(this.filter.max_options);
-                        }
-
-                        let seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_view_all') } </a>`;
-
-                        if(this.options.length === this.filter.max_options){
-                            this.options[this.filter.max_options-1].seeMoreLink = seeMoreLink;
-                        } else {
-                            this.options[this.options.length-1].seeMoreLink = seeMoreLink;
-                        }
-                    }
-                }
-
-                return this.options;
             },
             selectedValues(){
                 
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;
-
-                let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy === this.taxonomy );
+                
+                let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == this.taxonomy );
                 if ( index >= 0){
                     let metadata = this.query.taxquery[ index ];
                     this.selected = metadata.terms;
                 } else {
+                    this.selected = [];
                     return false;
                 }
             },
@@ -186,18 +167,23 @@
                 
                 let onlyLabels = [];
                 for(let selected of this.selected) {
-                    let valueIndex = this.options.findIndex(option => option.id == selected );
+                    let valueIndex = this.options.findIndex(option => option.value == selected );
 
                     if (valueIndex >= 0) {
-                        onlyLabels.push(this.options[valueIndex].name)
+                        onlyLabels.push(this.options[valueIndex].label)
                     } else {
-                        axios.get(`/taxonomy/${this.taxonomy_id}/terms/${selected}?fetch_only[0]=name&fetch_only[1]=id`)
+                        axios.get('/collection/'+ this.collection +'/facets/' + this.metadatum +`?term_id=${selected}&fetch_only[0]=name&fetch_only[1]=id`)
                             .then( res => {
-                                onlyLabels.push(res.data.name);
+                                
+                                if(!res || !res.data){
+                                    return false;
+                                }
+
+                                onlyLabels.push(res.data[0].label);
                                 this.options.push({
                                     isChild: true,
-                                    name: res.data.name,
-                                    id: res.data.id
+                                    label: res.data[0].label,
+                                    value: res.data[0].value
                                 })
                             })
                             .catch(error => {
@@ -224,9 +210,26 @@
                         taxonomy: this.taxonomy,
                         collection_id: this.collection,
                         isTaxonomy: true,
+                        query: this.query
+                    },                    
+                    events: {
+                        appliedCheckBoxModal: (options) => { this. appliedCheckBoxModal(options) }
                     },
                     width: 'calc(100% - 8.333333333%)',
                 });
+            },
+            appliedCheckBoxModal(options) {
+                this.options = this.options.concat(options)
+                for(let i = 0; i < this.options.length; ++i) {
+                    for(let j = i + 1; j < this.options.length; ++j) {
+                        if(this.options[i].value == this.options[j].value)
+                            this.options.splice(j--, 1);
+                    }
+                    if (i == this.options.length - 1)
+                        this.options[i].seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_view_all') } </a>`;
+                }
+                
+                this.selectedValues();
             }
         }
     }
