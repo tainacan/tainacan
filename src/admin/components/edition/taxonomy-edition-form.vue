@@ -93,20 +93,19 @@
                         </b-field>
 
                         <!-- Allow Insert -->
-                        <b-field 
-                                :addons="false"
-                                :label="$i18n.get('label_taxonomy_allow_new_terms')">
-                            <help-button 
-                                :title="$i18n.getHelperTitle('taxonomies', 'allow_insert')" 
-                                :message="$i18n.getHelperMessage('taxonomies', 'allow_insert')"/>
-                            <div class="block" >
-                                <b-checkbox
-                                        v-model="form.allowInsert"
-                                        true-value="yes"
-                                        false-value="no">
-                                    {{ labelNewTerms() }}
-                                </b-checkbox>
-                            </div>
+                        <b-field :addons="false">
+                            <label class="label is-inline">
+                                    {{ $i18n.get('label_taxonomy_allow_new_terms') }}
+                                    <b-switch
+                                            id="tainacan-checkbox-allow-insert" 
+                                            size="is-small"
+                                            v-model="form.allowInsert"
+                                            true-value="yes"
+                                            false-value="no" />
+                                    <help-button 
+                                        :title="$i18n.getHelperTitle('taxonomies', 'allow_insert')" 
+                                        :message="$i18n.getHelperMessage('taxonomies', 'allow_insert')"/>
+                                </label>
                         </b-field>
 
                         <!-- Hook for extra Form options -->

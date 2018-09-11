@@ -347,7 +347,7 @@ export default {
             user-select: none;
         }
 
-        &.opened-term:first-child {
+        &.opened-term>div:first-child>div {
             cursor: default;
             background-color: $gray1;
 

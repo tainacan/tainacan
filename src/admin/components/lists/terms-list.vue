@@ -460,6 +460,29 @@ export default {
             border-color: transparent transparent transparent $gray2 !important;
         }
     }
+    .parent-term>div>.opened-term.term-item:first-child {
+        cursor: default;
+        background-color: $gray1 !important;
+
+        &:before {
+            content: '';
+            display: block;
+            position: absolute;
+            left: 100%;
+            right: -20px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-color: transparent transparent transparent $gray1;
+            border-left-width: 24px;
+            border-top-width: 20px;
+            border-bottom-width: 20px;
+            top: 0;
+        }
+        &:hover:before {
+            border-color: transparent transparent transparent $gray1;
+        }
+    }
 
     .view-more-terms-level-0 {
         font-size: 0.875rem;
