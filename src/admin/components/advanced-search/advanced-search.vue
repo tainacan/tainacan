@@ -175,7 +175,8 @@
                                 @close="removeThis(searchCriterion)"
                                 attached 
                                 closable>
-                                {{ Array.isArray(advancedSearchQuery.taxquery[searchCriterion].terms) ?
+                                {{ Array.isArray(advancedSearchQuery.taxquery[searchCriterion].terms) &&
+                                advancedSearchQuery.taxquery[searchCriterion].btags ?
                                  advancedSearchQuery.taxquery[searchCriterion].btags.toString() :
                                   advancedSearchQuery.taxquery[searchCriterion].btags }}
                         </b-tag>

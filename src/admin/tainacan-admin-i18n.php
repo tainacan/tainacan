@@ -143,6 +143,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_button_view'                              => __( 'Button View', 'tainacan' ),
 	'label_button_edit'                              => __( 'Button Edit', 'tainacan' ),
 	'label_button_delete'                            => __( 'Button Delete', 'tainacan' ),
+	'label_button_untrash'                           => __( 'Button Remove from Trash', 'tainacan'),
 	'label_button_delete_header_image'               => __( 'Button Delete Header Image', 'tainacan' ),
 	'label_button_edit_thumb'                        => __( 'Button Edit Thumbnail', 'tainacan' ),
 	'label_button_edit_header_image'                 => __( 'Button Edit Header Image', 'tainacan' ),
@@ -300,6 +301,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_show_filters'	                     	 => __( 'Show filters menu', 'tainacan' ),
 	'label_select_all_items'                         => __( 'Select all items', 'tainacan' ),
 	'label_select_all'                               => __( 'Select all', 'tainacan' ),
+	'label_untrash_selected_items'                   => __( 'Remove from trash the selected items', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -364,6 +366,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_warning_collection_delete'                 => __( 'Do you really want to permanently delete this collection?', 'tainacan' ),
 	'info_warning_collection_trash'                  => __( 'Do you really want to trash this collection?', 'tainacan' ),
 	'info_warning_item_delete'                       => __( 'Do you really want to permanently delete this item?', 'tainacan' ),
+	'info_warning_remove_item_from_trash'            => __( 'Do you really want to remove this item from trash?', 'tainacan' ),
 	'info_warning_item_trash'                        => __( 'Do you really want to trash this item?', 'tainacan' ),
 	'info_warning_metadatum_delete'                  => __( 'Do you really want to permanently delete this metadatum?', 'tainacan' ),
 	'info_warning_taxonomy_delete'                   => __( 'Do you really want to delete this taxonomy?', 'tainacan' ),
@@ -441,6 +444,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_item_affected'                             => __( 'item affected', 'tainacan'),
 	'info_no_parent_term_found'                      => __( 'No valid parent term was found with this name.', 'tainacan' ),
 	'info_warning_changing_parent_term'              => __( 'Warning! Changing parent term will reload the terms list, thus uncheking any selection.', 'tainacan' ),
+	'info_warning_selected_items_remove_from_trash'  => __( 'Do you really want to remove from trash the selected items?', 'tainacan'),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),

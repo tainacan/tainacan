@@ -124,3 +124,48 @@ export const setStatusInBulk = ({commit}, parameters) => {
             commit('setActionResult', error.response.data);
         });
 };
+
+export const trashItemsInBulk = ({commit}, parameters) => {
+    let groupID = parameters.groupID;
+    let collectionID = parameters.collectionID;
+
+    return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/trash`)
+        .then(response => {
+            commit('setActionResult', response.data);
+            return response;
+        })
+        .catch(error => {
+            console.log(error);
+            commit('setActionResult', error.response.data);
+        });
+};
+
+export const untrashItemsInBulk = ({commit}, parameters) => {
+    let groupID = parameters.groupID;
+    let collectionID = parameters.collectionID;
+
+    return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/untrash`)
+        .then(response => {
+            commit('setActionResult', response.data);
+            return response;
+        })
+        .catch(error => {
+            console.log(error);
+            commit('setActionResult', error.response.data)
+        });
+};
+
+export const deleteItemsInBulk = ({commit}, parameters) => {
+    let groupID = parameters.groupID;
+    let collectionID = parameters.collectionID;
+
+    return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/delete_items`)
+        .then(response => {
+            commit('setActionResult', response.data);
+            return response;
+        })
+        .catch(error => {
+            console.log(error);
+            commit('setActionResult', error.response.data);
+        });
+};

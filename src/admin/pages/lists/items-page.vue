@@ -454,7 +454,8 @@
                     <li 
                             @click="onChangeTab('draft')"
                             :class="{ 'is-active': status == 'draft'}"><a>{{ $i18n.get('label_draft_items') }}</a></li>
-                    <li 
+                    <li
+                            v-if="!isRepositoryLevel"
                             @click="onChangeTab('trash')"
                             :class="{ 'is-active': status == 'trash'}"><a>{{ $i18n.get('label_trash_items') }}</a></li>
                 </ul>

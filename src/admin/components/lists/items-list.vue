@@ -1,7 +1,10 @@
 <template>
     <div class="table-container">
 
-        <div class="selection-control">
+        <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
+        <div
+                v-if="collectionId"
+                class="selection-control">
             <div class="field select-all is-pulled-left">
                 <span>
                     <b-checkbox
@@ -21,6 +24,7 @@
                     </b-checkbox>
                 </span>
             </div>
+
             <div class="field is-pulled-right">
                 <b-dropdown
                         :mobile-modal="true"
@@ -40,16 +44,29 @@
                             @click="openBulkEditionModal()">
                         {{ $i18n.get('label_edit_selected_items') }}
                     </b-dropdown-item>
-                    <b-dropdown-item 
+                    <b-dropdown-item
+                            v-if="collectionId"
                             @click="deleteSelectedItems()"
                             id="item-delete-selected-items">
                         {{ isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('label_send_to_trash') }}
+                    </b-dropdown-item>
+                    <b-dropdown-item
+                            v-if="collectionId && isOnTrash"
+                            @click="untrashSelectedItems()">
+                        {{ $i18n.get('label_untrash_selected_items') }}
                     </b-dropdown-item>
                 </b-dropdown>
             </div>
         </div>
 
         <div class="table-wrapper">
+            <div
+                    v-show="isLoading"
+                    class="loading-container">
+                <b-loading
+                        :is-full-page="false"
+                        :active.sync="isLoading"/>
+            </div>
             
             <!-- GRID VIEW MODE -->
             <div
@@ -62,7 +79,9 @@
                         class="tainacan-grid-item">
                     
                     <!-- Checkbox -->
-                    <div 
+                    <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
+                    <div
+                            v-if="collectionId"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="grid-item-checkbox">
                         <b-checkbox 
@@ -71,7 +90,12 @@
                     </div>
 
                     <!-- Title -->
-                    <div class="metadata-title">
+                    <div
+                            :style="{
+                             'padding-left': !collectionId ? '0.5rem !important' : '2.75rem',
+                             'margin-left': !collectionId ? '0 !important' : '24px'
+                            }"
+                            class="metadata-title">
                         <p 
                                 v-tooltip="{
                                     content: item.title != undefined ? item.title : '',
@@ -103,7 +127,16 @@
                                     type="is-secondary" 
                                     icon="pencil"/>
                         </a>
-                        <a 
+                        <a
+                                :aria-lavel="$i18n.get('label_button_untrash')"
+                                @click.prevent.stop="untrashOneItem(item.id)"
+                                v-if="isOnTrash">
+                            <b-icon
+                                    type="is-secondary"
+                                    icon="delete-restore"/>
+                        </a>
+                        <a
+                                v-if="collectionId"
                                 id="button-delete" 
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
@@ -129,7 +162,9 @@
                         class="tainacan-masonry-item">
 
                     <!-- Checkbox -->
-                    <div 
+                    <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
+                    <div
+                            v-if="collectionId"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="masonry-item-checkbox">
                         <label 
@@ -144,7 +179,11 @@
                     </div>
 
                     <!-- Title -->
-                    <div 
+                    <div
+                            :style="{
+                             'padding-left': !collectionId ? '0.5rem !important' : '2.75rem',
+                             'margin-left': !collectionId ? '0 !important' : '24px'
+                            }"
                             @click="onClickItem($event, item, index)"
                             class="metadata-title">
                         <p>{{ item.title != undefined ? item.title : '' }}</p>                             
@@ -172,7 +211,16 @@
                                     type="is-secondary" 
                                     icon="pencil"/>
                         </a>
-                        <a 
+                        <a
+                                :aria-lavel="$i18n.get('label_button_untrash')"
+                                @click.prevent.stop="untrashOneItem(item.id)"
+                                v-if="isOnTrash">
+                            <b-icon
+                                    type="is-secondary"
+                                    icon="delete-restore"/>
+                        </a>
+                        <a
+                                v-if="collectionId"
                                 id="button-delete" 
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
@@ -195,7 +243,9 @@
                         class="tainacan-card">
                     
                     <!-- Checkbox -->
-                    <div 
+                    <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
+                    <div
+                            v-if="collectionId"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="card-checkbox">
                         <b-checkbox 
@@ -204,7 +254,9 @@
                     </div>
                     
                     <!-- Title -->
-                    <div class="metadata-title">
+                    <div
+                            :style="{ 'padding-left': !collectionId ? '0.5rem !important' : '2.75rem' }"
+                            class="metadata-title">
                         <p 
                                 v-tooltip="{
                                     content: item.title != undefined ? item.title : '',
@@ -229,7 +281,16 @@
                                     type="is-secondary" 
                                     icon="pencil"/>
                         </a>
-                        <a 
+                        <a
+                                :aria-lavel="$i18n.get('label_button_untrash')"
+                                @click.prevent.stop="untrashOneItem(item.id)"
+                                v-if="isOnTrash">
+                            <b-icon
+                                    type="is-secondary"
+                                    icon="delete-restore"/>
+                        </a>
+                        <a
+                                v-if="collectionId"
                                 id="button-delete" 
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
@@ -300,7 +361,9 @@
                         class="tainacan-record">
                     
                     <!-- Checkbox -->
-                    <div 
+                    <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
+                    <div
+                            v-if="collectionId"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="record-checkbox">
                         <label
@@ -315,7 +378,9 @@
                     </div>
                     
                     <!-- Title -->
-                    <div class="metadata-title">
+                    <div
+                            class="metadata-title"
+                            :style="{ 'padding-left': !collectionId ? '1.5rem !important' : '2.75rem' }">
                         <p 
                                 v-tooltip="{
                                     content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
@@ -354,7 +419,16 @@
                                     type="is-secondary" 
                                     icon="pencil"/>
                         </a>
-                        <a 
+                        <a
+                                :aria-lavel="$i18n.get('label_button_untrash')"
+                                @click.prevent.stop="untrashOneItem(item.id)"
+                                v-if="isOnTrash">
+                            <b-icon
+                                    type="is-secondary"
+                                    icon="delete-restore"/>
+                        </a>
+                        <a
+                                v-if="collectionId"
                                 id="button-delete" 
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
@@ -405,7 +479,8 @@
                 <thead>
                     <tr>
                         <!-- Checking list -->
-                        <th>
+                        <th
+                                v-if="collectionId">
                             &nbsp;
                             <!-- nothing to show on header for checkboxes -->
                         </th>
@@ -440,7 +515,9 @@
                             :key="index"
                             v-for="(item, index) of items">
                         <!-- Checking list -->
-                        <td 
+                        <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
+                        <td
+                                v-if="collectionId"
                                 :class="{ 'is-selecting': isSelectingItems }"
                                 class="checkbox-cell">
                             <b-checkbox 
@@ -538,7 +615,16 @@
                                             type="is-secondary" 
                                             icon="pencil"/>
                                 </a>
-                                <a 
+                                <a
+                                        :aria-lavel="$i18n.get('label_button_untrash')"
+                                        @click.prevent.stop="untrashOneItem(item.id)"
+                                        v-if="isOnTrash">
+                                    <b-icon
+                                            type="is-secondary"
+                                            icon="delete-restore"/>
+                                </a>
+                                <a
+                                        v-if="collectionId"
                                         id="button-delete" 
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneItem(item.id)">
@@ -556,7 +642,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import CustomDialog from '../other/custom-dialog.vue';
 import BulkEditionModal from '../bulk-edition/bulk-edition-modal.vue';
 
@@ -574,7 +660,7 @@ export default {
         }
     },
     props: {
-        collectionId: Number,
+        collectionId: undefined,
         tableMetadata: Array,
         items: Array,
         isLoading: false,
@@ -621,6 +707,15 @@ export default {
         ...mapActions('collection', [
             'deleteItem',
         ]),
+        ...mapActions('bulkedition', [
+            'createEditGroup',
+            'trashItemsInBulk',
+            'deleteItemsInBulk',
+            'untrashItemsInBulk',
+        ]),
+        ...mapGetters('bulkedition', [
+            'getGroupID'
+        ]),
         openBulkEditionModal(){
             this.$modal.open({
                 parent: this,
@@ -648,6 +743,34 @@ export default {
                 this.selectedItems.splice(i, 1, !this.isAllItemsSelected);
             }
         },
+        untrashOneItem(itemId) {
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_remove_item_from_trash'),
+                    onConfirm: () => {
+                        this.isLoading = true;
+
+                        this.createEditGroup({
+                            collectionID: this.collectionId,
+                            object: [itemId]
+                        }).then(() => {
+                            let groupID = this.getGroupID();
+
+                            this.untrashItemsInBulk({
+                                collectionID: this.collectionId,
+                                groupID: groupID
+                            }).then(() => {
+                                this.$eventBusSearch.loadItems();
+                            });
+                        });
+                    }
+                }
+            });
+        },
         deleteOneItem(itemId) {
             this.$modal.open({
                 parent: this,
@@ -657,29 +780,42 @@ export default {
                     title: this.$i18n.get('label_warning'),
                     message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
                     onConfirm: () => {
-                        this.deleteItem({ itemId: itemId, isPermanently: this.isOnTrash })
-            //         .then(() => {
-            //         //     this.$toast.open({
-            //         //         duration: 3000,
-            //         //         message: this.$i18n.get('info_item_deleted'),
-            //         //         position: 'is-bottom',
-            //         //         type: 'is-secondary',
-            //         //         queue: true
-            //         //     });
-            //             for (let i = 0; i < this.selectedItems.length; i++) {
-            //                 if (this.selectedItems[i].id == itemId)
-            //                     this.selectedItems.splice(i, 1);
-            //             }
-            //         }).catch(() => {
+                        this.isLoading = true;
 
-            //         //     this.$toast.open({ 
-            //         //         duration: 3000,
-            //         //         message: this.$i18n.get('info_error_deleting_item'),
-            //         //         position: 'is-bottom',
-            //         //         type: 'is-danger',
-            //         //         queue: true
-            //         //     })
-            //         });
+                        this.deleteItem({
+                            itemId: itemId,
+                            isPermanently: this.isOnTrash
+                        }).then(() => {
+                            this.$eventBusSearch.loadItems();
+                        });
+                    }
+                }
+            });
+        },
+        untrashSelectedItems(){
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_selected_items_remove_from_trash'),
+                    onConfirm: () => {
+                        this.isLoading = true;
+
+                        this.createEditGroup({
+                            collectionID: this.collectionId,
+                            object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItemsIDs.filter(item => item !== false)
+                        }).then(() => {
+                            let groupID = this.getGroupID();
+
+                            this.untrashItemsInBulk({
+                                collectionID: this.collectionId,
+                                groupID: groupID
+                            }).then(() => {
+                                this.$eventBusSearch.loadItems();
+                            });
+                        });
                     }
                 }
             });
@@ -693,35 +829,30 @@ export default {
                     title: this.$i18n.get('label_warning'),
                     message: this.isOnTrash ? this.$i18n.get('info_warning_selected_items_delete') : this.$i18n.get('info_warning_selected_items_trash'),
                     onConfirm: () => {
+                        this.isLoading = true;
 
-                        for (let i = 0; i < this.selectedItems.length; i++) {
-                            if (this.selectedItems[i]) {
-                                this.deleteItem({ itemId: this.items[i].id, isPermanently: this.isOnTrash })
-                                .then(() => {
-                                //     this.$toast.open({
-                                //         duration: 3000,
-                                //         message: this.$i18n.get('info_item_deleted'),
-                                //         position: 'is-bottom',
-                                //         type: 'is-secondary',
-                                //         queue: false
-                                //     });
-                                    for (let i = 0; i < this.selectedItems.length; i++) {
-                                        if (this.selectedItems[i].id == this.itemId)
-                                            this.selectedItems.splice(i, 1);
-                                    }
-                                                            
-                                }).catch(() => { 
-                                //     this.$toast.open({
-                                //         duration: 3000,
-                                //         message: this.$i18n.get('info_error_deleting_item'),
-                                //         position: 'is-bottom',
-                                //         type: 'is-danger',
-                                //         queue: false
-                                //     });
+                        this.createEditGroup({
+                            collectionID: this.collectionId,
+                            object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItemsIDs.filter(item => item !== false)
+                        }).then(() => {
+                            let groupID = this.getGroupID();
+
+                            if (this.isOnTrash) {
+                                this.deleteItemsInBulk({
+                                    collectionID: this.collectionId,
+                                    groupID: groupID
+                                }).then(() => {
+                                    this.$eventBusSearch.loadItems();
+                                });
+                            } else {
+                                this.trashItemsInBulk({
+                                    collectionID: this.collectionId,
+                                    groupID: groupID
+                                }).then(() => {
+                                    this.$eventBusSearch.loadItems();
                                 });
                             }
-                        }
-                        this.allItemsOnPageSelected = false;
+                        });
                     }
                 }
             });

@@ -90,7 +90,7 @@ export const fetchItemTitle = ({ commit }, id) => {
             reject(error);
         })
     });
-}
+};
 
 export const sendItem = ( { commit }, item) => {
     return new Promise(( resolve, reject ) => {
