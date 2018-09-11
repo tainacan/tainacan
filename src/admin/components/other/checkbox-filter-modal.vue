@@ -449,11 +449,11 @@
                         collection_id: this.collection_id,
                         terms: this.selected
                     });
-
+                    
                     for (let selected of this.selected) {
-
                         for(let i in this.finderColumns){
                             let valueIndex = this.finderColumns[i].findIndex(option => option.value == selected);
+                            
                             if (valueIndex >= 0) {
                                 selectedOptions.push(this.finderColumns[i][valueIndex]);
                             }

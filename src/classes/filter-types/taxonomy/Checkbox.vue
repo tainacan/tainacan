@@ -108,7 +108,6 @@
                             this.options.push(item);
                         }
 
-
                         if ( this.options ){
                             let hasChildren = false;
 
@@ -183,8 +182,8 @@
                                 onlyLabels.push(res.data[0].label);
                                 this.options.push({
                                     isChild: true,
-                                    name: res.data[0].label,
-                                    id: res.data[0].value
+                                    label: res.data[0].label,
+                                    value: res.data[0].value
                                 })
                             })
                             .catch(error => {
