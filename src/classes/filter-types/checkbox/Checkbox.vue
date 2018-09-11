@@ -98,8 +98,8 @@
         },
         mixins: [filter_type_mixin],
         watch: {
-            selected: function(val){
-                this.selected = val;
+            selected: function(){
+                //this.selected = val;
                 this.onSelect();
             }
         },
@@ -113,34 +113,35 @@
                         this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
 
                     promise = this.getValuesRelationship( collectionTarget, null, [], 0, this.filter.max_options);
-
-                    promise.then(() => {
-                        if(this.options.length > this.filter.max_options){
-                            this.options.splice(this.filter.max_options);
-                        }
-                    }).catch((error) => {
-                        this.$console.error(error);
+                    promise
+                        .then(() => {
+                            if(this.options.length > this.filter.max_options){
+                                this.options.splice(this.filter.max_options);
+                            }
+                        }).catch((error) => {
+                            this.$console.error(error);
                     })
                 } else {
                     promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel, [], 0, this.filter.max_options );
-
-                    promise.then(() => {
-                        if(this.options.length > this.filter.max_options){
-                            this.options.splice(this.filter.max_options);
-                        }
-                    }).catch((error) => {
-                        this.$console.error(error);
-                    })
+                    promise
+                        .then(() => {
+                            if(this.options.length > this.filter.max_options){
+                                this.options.splice(this.filter.max_options);
+                            }
+                        }).catch((error) => {
+                            this.$console.error(error);
+                        })
                 }
 
-                promise.then(() => {
-                    this.isLoading = false;
-                    this.selectedValues()
-                })
-                .catch( error => {
-                    this.$console.log('error select', error );
-                    this.isLoading = false;
-                });
+                promise
+                    .then(() => {
+                        this.isLoading = false;
+                        this.selectedValues()
+                    })
+                    .catch( error => {
+                        this.$console.log('error select', error );
+                        this.isLoading = false;
+                    });
             },
             onSelect(){
                 this.$emit('input', {

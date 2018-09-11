@@ -88,8 +88,8 @@
             }
         },
         watch: {
-            selected: function(val){
-                this.selected = val;
+            selected: function(){
+                //this.selected = val;
                 this.onSelect();
             }
         },
@@ -146,7 +146,7 @@
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;
                 
-                let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy === this.taxonomy );
+                let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == this.taxonomy );
                 if ( index >= 0){
                     let metadata = this.query.taxquery[ index ];
                     this.selected = metadata.terms;

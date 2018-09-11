@@ -6,6 +6,8 @@
     margin-right: 0.375rem;
     max-width: 100%;
     overflow: hidden;
+    animation-name: appear;
+    animation-duration: 0.2s;
 
     &:hover, &:hover .tag {
         background-color: $gray2;
@@ -21,14 +23,18 @@
         text-overflow: ellipsis;
         white-space: nowrap;
 
-        &.is-delete {
+        &.is-delete, 
+        &.is-delete:hover, 
+        &.is-delete:focus, 
+        &.is-delete:active {
             border-radius: 50px !important;
             border-radius: 50px !important;
             color: $gray4;
+            background-color: transparent;
 
             &:hover {
-                background-color: white !important;
-                color: $gray5;
+                background-color: transparent;
+                color: $gray4;
             }
         }
     }

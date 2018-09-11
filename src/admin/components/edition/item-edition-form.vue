@@ -312,7 +312,7 @@
                             v-html="formHooks['item']['end-left'].join('')"/>
                     </template>
 
-                </div>
+                </div> 
                 <div 
                         class="column is-4-5"
                         v-show="!isMetadataColumnCompressed">
@@ -933,9 +933,9 @@ export default {
     @import '../../scss/_variables.scss';
 
     #metadata-column-compress-button {
-        position: relative;
+        position: absolute;
         z-index: 99;
-        float: right;
+        right: 0;
         top: 70px;
         max-width: 36px;
         height: 36px;
