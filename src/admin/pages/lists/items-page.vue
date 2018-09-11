@@ -1187,8 +1187,8 @@
         }
 
         h1 {
-            font-size: 20px;
-            font-weight: 500;
+            font-size: 1.25rem;
+            font-weight: normal;
             color: $blue5;
             display: inline-block;
         }
@@ -1204,8 +1204,8 @@
         padding: 0 $table-side-padding;
 
         h1 {
-            font-size: 20px;
-            font-weight: 500;
+            font-size: 1.25rem;
+            font-weight: normal;
             color: $blue5;
             display: inline-block;
         }
@@ -1276,7 +1276,7 @@
                     cursor: pointer;
                     color: $blue5;
                     height: 27px;
-                    font-size: 18px !important;
+                    font-size: 1.125rem !important;
                     height: 2rem !important;
                 }
                 margin-bottom: 5px;
@@ -1284,7 +1284,7 @@
         }
 
         .label {
-            font-size: 12px;
+            font-size: 0.75rem;
             font-weight: normal;
         }
 
@@ -1376,7 +1376,7 @@
             padding-right: 10px;
         }
         .gray-icon .icon i::before, .gray-icon i::before {
-            font-size: 21px !important;
+            font-size: 1.3125rem !important;
         }
         
         .view-mode-icon {
@@ -1427,7 +1427,7 @@
                     cursor: pointer;
                     color: $blue5;
                     height: 27px;
-                    font-size: 18px !important;
+                    font-size: 1.125rem !important;
                     height: 2rem !important;
                 }
             }

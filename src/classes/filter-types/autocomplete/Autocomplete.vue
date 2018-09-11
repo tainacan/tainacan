@@ -180,10 +180,10 @@
     #profileImage {
         width: 32px;
         height: 32px;
-        font-size: 35px;
+        font-size: 2.1875rem;
         color: #fff;
         text-align: center;
-        line-height: 150px;
+        line-height: 9.375rem;
         margin: 20px 0;
     }
 </style>

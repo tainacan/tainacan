@@ -671,7 +671,7 @@
             color: $blue5;
             cursor: pointer;
             height: 27px;
-            font-size: 18px;
+            font-size: 1.125rem;
             width: 30px !important;
             position: absolute;
             right: 0;

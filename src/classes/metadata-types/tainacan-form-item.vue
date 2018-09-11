@@ -226,13 +226,13 @@
         padding: 10px 25px;
 
         .label {
-            font-size: 14px;
+            font-size: 0.875rem;
             font-weight: 500;
             margin-left: 15px;
             margin-bottom: 0.5em;
         }
         .metadata-type {
-            font-size: 13px;
+            font-size: 0.8125rem;
             font-weight: 400;
             color: $gray3;
             top: -0.2em;

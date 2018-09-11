@@ -67,8 +67,8 @@
                 max-width: 80px;
                 p {
                     color: $gray4;
-                    font-size: 11px;
-                    line-height: 1.5;
+                    font-size: 0.6875rem;
+                    line-height: 1.03125rem;
                 }
             }
             .column-default-width {
@@ -76,8 +76,8 @@
                 max-width: 160px;
                 p {
                     color: $gray4;
-                    font-size: 11px;
-                    line-height: 1.5;
+                    font-size: 0.6875rem;
+                    line-height: 1.03125rem;
                 }
             }
             .column-medium-width {
@@ -85,8 +85,8 @@
                 max-width: 200px;
                 p {
                     color: $gray4;
-                    font-size: 11px;
-                    line-height: 1.5;
+                    font-size: 0.6875rem;
+                    line-height: 1.03125rem;
                 }
             }
             .column-large-width {
@@ -94,15 +94,15 @@
                 max-width: 240px;
                 p {
                     color: $gray4;
-                    font-size: 11px;
-                    line-height: 1.5;
+                    font-size: 0.6875rem;
+                    line-height: 1.03125rem;
                 }
             }
             .column-main-content {
                 min-width: 120px !important;
                 max-width: 240px !important;
                 p { 
-                    font-size: 14px !important;
+                    font-size: 0.875rem !important;
                     color: $tainacan-input-color !important;
                     margin: 0px !important; 
                 }
@@ -125,7 +125,7 @@
                 vertical-align: bottom;
     
                 .th-wrap {
-                    font-size: 12px !important;
+                    font-size: 0.75rem !important;
                     color: $gray4;
                     font-weight: normal !important;
                     text-overflow: ellipsis;
@@ -149,10 +149,10 @@
                         max-height: 60px;
                         padding: 10px;
                         vertical-align: middle;
-                        line-height: 12px;
+                        line-height: 0.75rem;
                         border: none !important;
                         p { 
-                            font-size: 14px;
+                            font-size: 0.875rem;
                             margin: 0px; 
                             text-overflow: ellipsis;
                             overflow-x: hidden;
@@ -186,10 +186,10 @@
     
                         a {
                             margin: auto;
-                            font-size: 18px !important;
+                            font-size: 1.125rem !important;
 
                             .mdi-settings, .mdi-settings::before {
-                                font-size: 23px;
+                                font-size: 1.4375rem;
                             }
                         }
     

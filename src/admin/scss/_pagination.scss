@@ -39,7 +39,7 @@
             flex-grow: 5;
             margin-right: 0.5em;
             .label {
-                font-size: 1em !important;
+                // font-size: 1em !important;
                 font-weight: normal !important;
                 color: $gray4;
             }
@@ -78,12 +78,12 @@
         }
         .mdi-chevron-left::before {
             content: "\F40A";
-            font-size: 17px;
+            font-size: 1.0625rem;
             transform: rotate(180deg);
         }
         .mdi-chevron-right::before {
             content: "\F40A";
-            font-size: 17px;
+            font-size: 1.0625rem;
         }
 
         @media screen and (max-width: 768px) {

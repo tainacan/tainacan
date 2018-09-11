@@ -903,7 +903,7 @@ export default {
 
         .select-all {
             color: $gray4;
-            font-size: 14px;
+            font-size: 0.875rem;
             &:hover {
                 color: $gray4;
             }

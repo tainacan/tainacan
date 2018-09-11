@@ -144,7 +144,7 @@
                     class="field column is-12">
                 <a
                     @click="addSearchCriteria"
-                    style="font-size: 12px;">
+                    style="font-size: 0.75rem;">
                     <b-icon
                             class="add-i"
                             icon="plus-circle"
@@ -746,12 +746,12 @@
 
         .advanced-search-text {
             margin: 0 12px;
-            font-size: 12px;
+            font-size: 0.75rem;
             color: $blue5;
         }
 
         .advanced-search-text-di {
-            font-size: 14px;
+            font-size: 0.875rem;
             font-weight: 500;
             color: #01295c;
             margin-top: 4px;

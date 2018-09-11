@@ -123,7 +123,7 @@
                                     this.options.splice(this.filter.max_options);
                                 }
 
-                                let seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_view_all') } </a>`;
+                                let seeMoreLink = `<a style="font-size: 0.75rem;"> ${ this.$i18n.get('label_view_all') } </a>`;
 
                                 if(this.options.length === this.filter.max_options){
                                     this.options[this.filter.max_options-1].seeMoreLink = seeMoreLink;
@@ -226,7 +226,7 @@
                             this.options.splice(j--, 1);
                     }
                     if (i == this.options.length - 1)
-                        this.options[i].seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_view_all') } </a>`;
+                        this.options[i].seeMoreLink = `<a style="font-size: 0.75rem;"> ${ this.$i18n.get('label_view_all') } </a>`;
                 }
                 
                 this.selectedValues();

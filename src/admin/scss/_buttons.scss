@@ -53,10 +53,10 @@
 }
 .button.is-small {
     height: 26px !important;
-    line-height: 12px;
+    line-height: 0.75rem;
 }
 .button:not(.is-small):not(.is-medium):not(.is-large) {
     height: 30px !important;
-    line-height: 20px !important;
-    font-size: 14px !important;
+    line-height: 1.25rem !important;
+    font-size: 0.875rem !important;
 }

@@ -15,8 +15,8 @@
     align-items: flex-end;
 
     h1, h2 {
-        font-size: 20px;
-        font-weight: 500;
+        font-size: 1.25rem;
+        font-weight: normal;
         color: $blue5;
         display: inline-block;
         width: 90%;
@@ -109,8 +109,8 @@
                 display: inline-flex !important;
                 cursor: pointer;
                 height: 30px !important;
-                line-height: 20px !important;
-                font-size: 14px !important;
+                line-height: 1.25rem !important;
+                font-size: 0.875rem !important;
             }
             .button.is-success {
                 border: none;

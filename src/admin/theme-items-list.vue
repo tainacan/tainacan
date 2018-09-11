@@ -163,7 +163,7 @@ export default {
             .gray-icon, .gray-icon .icon {
                 color: $gray4 !important;
                 i::before {
-                    font-size: 21px;
+                    font-size: 1.3125rem;
                 }
             }
             .dropdown-item {
@@ -175,7 +175,7 @@ export default {
                 margin-left: 4px;
 
                 &.icon i::before, .gray-icon i::before {
-                    font-size: 19px !important;
+                    font-size: 1.1875px !important;
                 }
             }
         }

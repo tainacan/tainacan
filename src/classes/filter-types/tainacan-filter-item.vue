@@ -117,14 +117,14 @@
                         margin: 0;
                         height: 24px;
                         padding: 0;
-                        font-size: 12px; 
+                        font-size: 0.75rem; 
                     }
 
                     .pagination-next {
                         margin: 0;
                         height: 24px;
                         padding: 0;
-                        font-size: 12px;
+                        font-size: 0.75rem;
                     }
                 }
 
@@ -195,12 +195,12 @@
 
         .label {
             font-weight: normal !important;
-            font-size: 14px;
+            font-size: 0.875rem;
             width: 100%;
         }
 
         .taginput-container {
-            font-size: 14px;
+            font-size: 0.875rem;
             border-radius: 1px !important;
             box-shadow: none !important;
             transition: background-color 0.1s;
@@ -261,7 +261,7 @@
         
         .b-checkbox.checkbox  {
             font-weight: normal;
-            font-size: 12px;
+            font-size: 0.75rem;
             margin-right: 2px;
         }
 
