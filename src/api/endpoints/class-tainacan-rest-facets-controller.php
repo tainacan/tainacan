@@ -90,10 +90,6 @@ class REST_Facets_Controller extends REST_Controller {
 			$options = $metadatum->get_metadata_type_options();
 			$args = $this->prepare_filters($request);
 
-			if(isset($request['current_query'])){
-				//TODO: HANDLE FILTERS
-			}
-
 			if( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ){
 
 				$restItemsClass = new REST_Items_Controller();
@@ -120,6 +116,7 @@ class REST_Facets_Controller extends REST_Controller {
 				$this->total_pages = ceil($this->total_items / (int) $items->query_vars['posts_per_page']);
 
 			} else if ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ){
+				$selected = $this->getTaxonomySelectedValues($request, $options['taxonomy_id']);
 				
 				if( isset($request['term_id']) ){
 					$this->taxonomy = $this->taxonomy_repository->fetch($options['taxonomy_id']);
@@ -292,6 +289,34 @@ class REST_Facets_Controller extends REST_Controller {
 			$this->total_items  = count($response) ;
 			$this->total_pages = 1 ;
 		}
+	}
+
+	/**
+	 * 
+	 */
+	private function getTaxonomySelectedValues($request, $taxonomy_id){
+		$selected = [];
+
+		if( isset($request['current_query']['taxquery']) ){
+
+			foreach( $request['current_query']['taxquery'] as $taxquery ){
+				 
+				if( $taxquery['taxonomy'] === 'tnc_tax_' . $taxonomy_id ){
+
+					foreach($taxquery['terms'] as $term_id){
+						$term = new Entities\Term($term_id,'tnc_tax_' . $taxonomy_id);	
+						$selected[] = [
+							'label' => $term->get_name(),
+							'value' => $term->get_id(),
+						];
+					}
+						
+				}
+
+			}
+		}
+
+		return $selected;
 	}
 }
 

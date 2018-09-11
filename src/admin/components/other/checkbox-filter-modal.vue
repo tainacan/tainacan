@@ -151,7 +151,7 @@
 </template>
 
 <script>
-
+    import qs from 'qs';
     import {tainacan as axios} from '../../../js/axios/axios';
     import { filter_type_mixin } from '../../../classes/filter-types/filter-types-mixin';
 
@@ -281,8 +281,9 @@
 
                 if(this.isTaxonomy) {
                     this.isSearchingLoading = true;
+                    let query_items = { 'current_query': this.query };
 
-                    let query = `?hideempty=0&order=asc&number=${this.maxNumSearchResultsShow}&searchterm=${this.optionName}`;
+                    let query = `?hideempty=0&order=asc&number=${this.maxNumSearchResultsShow}&searchterm=${this.optionName}&` + qs.stringify(query_items);
 
                     axios.get(`/collection/${this.collection_id}/facets/${this.metadatum_id}${query}`)
                         .then((res) => {
@@ -381,6 +382,7 @@
                 }
             },
             getOptionChildren(option, key, index) {
+                let query_items = { 'current_query': this.query };
 
                 if(key != undefined) {
                     this.addToHierarchicalPath(key, index);
@@ -392,7 +394,7 @@
                     parent = option.value;
                 }
 
-                let query = `?hideempty=0&order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=0`;
+                let query = `?hideempty=0&order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=0&` + qs.stringify(query_items);
 
                 this.isColumnLoading = true;
 
@@ -414,8 +416,9 @@
                 if (finderColumn.length > 0) {
                     let parent = finderColumn[0].parent;
                     let offset = finderColumn.length;
+                    let query_items = { 'current_query': this.query };
 
-                    let query = `?hideempty=0&order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=${offset}`;
+                    let query = `?hideempty=0&order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=${offset}&` + qs.stringify(query_items);
 
                     this.isColumnLoading = true;
 

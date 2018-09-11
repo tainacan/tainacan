@@ -196,6 +196,7 @@
                         metadatum_type: this.type,
                         metadatum_object: this.metadatum_object,
                         isRepositoryLevel: this.isRepositoryLevel,
+                        query: this.query
                     },
                     events: {
                         appliedCheckBoxModal: (options) => { this. appliedCheckBoxModal(options) }
