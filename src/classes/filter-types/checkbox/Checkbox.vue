@@ -152,7 +152,7 @@
                 });
 
                 let onlyLabels = [];
-                
+
                 if(!isNaN(this.selected[0])){
                     for (let aSelected of this.selected) {
                         let valueIndex = this.options.findIndex(option => option.value == aSelected);
@@ -213,6 +213,7 @@
                     if (i == this.options.length - 1)
                         this.options[i].seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_view_all') } </a>`;
                 }
+                
                 this.selectedValues();
             }
         }

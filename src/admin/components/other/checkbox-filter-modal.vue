@@ -459,6 +459,7 @@
                             }
                         }
                     }
+
                     this.$eventBusSearch.$emit('sendValuesToTags', {
                         filterId: this.filter.id,
                         value: selectedOptions,
@@ -473,6 +474,7 @@
                         collection_id: this.collection_id ? this.collection_id : this.filter.collection_id,
                         value: this.selected,
                     });
+                     
                     // if(!isNaN(this.selected[0])){
                     //     for (let option of this.options) {
                     //         let valueIndex = this.selected.findIndex(item => item == option.value);

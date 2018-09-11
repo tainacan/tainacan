@@ -146,12 +146,13 @@
                 
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;
-
+                
                 let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy === this.taxonomy );
                 if ( index >= 0){
                     let metadata = this.query.taxquery[ index ];
                     this.selected = metadata.terms;
                 } else {
+                    this.selected = [];
                     return false;
                 }
             },
@@ -219,19 +220,17 @@
                 });
             },
             appliedCheckBoxModal(options) {
-                if(options.length){
-                    this.options = this.options.concat(options)
-                    for(let i = 0; i < this.options.length; ++i) {
-                        for(let j = i + 1; j < this.options.length; ++j) {
-                            if(this.options[i].value == this.options[j].value)
-                                this.options.splice(j--, 1);
-                        }
-                        if (i == this.options.length - 1)
-                            this.options[i].seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_view_all') } </a>`;
+                this.options = this.options.concat(options)
+                for(let i = 0; i < this.options.length; ++i) {
+                    for(let j = i + 1; j < this.options.length; ++j) {
+                        if(this.options[i].value == this.options[j].value)
+                            this.options.splice(j--, 1);
                     }
-
-                    this.selectedValues();
+                    if (i == this.options.length - 1)
+                        this.options[i].seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_view_all') } </a>`;
                 }
+                
+                this.selectedValues();
             }
         }
     }
