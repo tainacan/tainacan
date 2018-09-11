@@ -152,7 +152,7 @@
                 });
 
                 let onlyLabels = [];
-
+                
                 if(!isNaN(this.selected[0])){
                     for (let aSelected of this.selected) {
                         let valueIndex = this.options.findIndex(option => option.value == aSelected);
@@ -204,19 +204,16 @@
                 });
             },
             appliedCheckBoxModal(options) {
-                if(options.length){
-                    this.options = this.options.concat(options)
-                    for(let i = 0; i < this.options.length; ++i) {
-                        for(let j = i + 1; j < this.options.length; ++j) {
-                            if(this.options[i].value == this.options[j].value)
-                                this.options.splice(j--, 1);
-                        }
-                        if (i == this.options.length - 1)
-                            this.options[i].seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_view_all') } </a>`;
+                this.options = this.options.concat(options)
+                for(let i = 0; i < this.options.length; ++i) {
+                    for(let j = i + 1; j < this.options.length; ++j) {
+                        if(this.options[i].value == this.options[j].value)
+                            this.options.splice(j--, 1);
                     }
-
-                    this.selectedValues();
+                    if (i == this.options.length - 1)
+                        this.options[i].seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_view_all') } </a>`;
                 }
+                this.selectedValues();
             }
         }
     }
