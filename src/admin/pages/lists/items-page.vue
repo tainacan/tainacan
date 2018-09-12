@@ -1403,7 +1403,7 @@
                 .dropdown-item-apply {
                     width: 100%;
                     border-top: 1px solid #efefef;
-                    padding: 8px 12px;
+                    padding: 8px 12px 2px 12px;
                     text-align: right;
                 }
                 .dropdown-item-apply .button {

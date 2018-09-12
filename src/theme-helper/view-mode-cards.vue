@@ -47,13 +47,13 @@
                            <!-- Description -->
                             <p 
                                     v-tooltip="{
-                                        content: item.description != undefined ? item.description : '',
+                                        content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`,
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }"   
                                     class="metadata-description"
-                                    v-html="item.description != undefined ? getLimitedDescription(item.description) : ''" />                                                        
+                                    v-html="item.description != undefined && item.description != '' ? getLimitedDescription(item.description) : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`" />                                                        
                             <br>
                             <!-- Author and Creation Date-->
 <!--                            <p 

@@ -302,6 +302,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_select_all_items'                         => __( 'Select all items', 'tainacan' ),
 	'label_select_all'                               => __( 'Select all', 'tainacan' ),
 	'label_untrash_selected_items'                   => __( 'Remove from trash the selected items', 'tainacan' ),
+	'label_value_not_informed'		                 => __( 'Value not informed.', 'tainacan' ),
+	'label_description_not_informed'                 => __( 'Description not informed.', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

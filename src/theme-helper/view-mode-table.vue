@@ -69,7 +69,7 @@
 
                             <p
                                     v-tooltip="{
-                                        content: item.title,
+                                        content: item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -77,10 +77,10 @@
                                     v-if="collectionId == undefined &&
                                           column.metadata_type_object != undefined && 
                                           column.metadata_type_object.related_mapped_prop == 'title'"
-                                    v-html="item.title != undefined ? item.title : ''"/>
+                                    v-html="item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
                             <p
                                     v-tooltip="{
-                                        content: item.description,
+                                        content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -88,10 +88,10 @@
                                     v-if="collectionId == undefined &&
                                           column.metadata_type_object != undefined && 
                                           column.metadata_type_object.related_mapped_prop == 'description'"
-                                    v-html="item.description != undefined ? item.description : ''"/>
+                                    v-html="item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
                             <p
                                     v-tooltip="{
-                                        content: renderMetadata( item.metadata[column.slug] ),
+                                        content: renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -101,7 +101,7 @@
                                           column.metadatum !== 'row_actions' &&
                                           column.metadatum !== 'row_creation' &&
                                           column.metadatum !== 'row_author'"
-                                    v-html="renderMetadata( item.metadata[column.slug] )"/>
+                                    v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
 
                             <span v-if="column.metadatum == 'row_thumbnail'">
                                 <img 
@@ -135,7 +135,9 @@ export default {
         goToItemPage(item) {
             window.location.href = item.url;   
         },
-        renderMetadata(metadata) {
+        renderMetadata(itemMetadata, column) {
+
+            let metadata = (itemMetadata != undefined && itemMetadata[column.slug] != undefined) ? itemMetadata[column.slug] : false;
 
             if (!metadata) {
                 return '';

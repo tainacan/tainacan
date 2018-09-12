@@ -71,10 +71,10 @@
                                 <span 
                                         v-for="(column, index) in displayedMetadata"
                                         :key="index"
-                                        v-if="column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
+                                        v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
                                     <h3 class="metadata-label">{{ column.name }}</h3>
                                     <p      
-                                            v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"
+                                            v-html="renderMetadata(item.metadata, column)"
                                             class="metadata-value"/>
                                 </span>
                             </div>
@@ -107,7 +107,7 @@ export default {
         },
         renderMetadata(itemMetadata, column) {
 
-            let metadata = itemMetadata[column.slug] != undefined ? itemMetadata[column.slug] : false;
+            let metadata = (itemMetadata != undefined && itemMetadata[column.slug] != undefined) ? itemMetadata[column.slug] : false;
 
             if (!metadata) {
                 return '';

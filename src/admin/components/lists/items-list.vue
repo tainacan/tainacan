@@ -313,13 +313,13 @@
                             <!-- Description -->
                             <p 
                                     v-tooltip="{
-                                        content: item.description != undefined ? item.description : '',
+                                        content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`,
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }"   
                                     class="metadata-description"
-                                    v-html="item.description != undefined ? getLimitedDescription(item.description) : ''" />
+                                    v-html="item.description != undefined && item.description != '' ? getLimitedDescription(item.description) : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`" />
                             <!-- Author-->
                             <p 
                                     v-tooltip="{
@@ -460,10 +460,10 @@
                             <span 
                                     v-for="(column, index) in tableMetadata"
                                     :key="index"
-                                    v-if="column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
+                                    v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
                                 <h3 class="metadata-label">{{ column.name }}</h3>
                                 <p 
-                                        v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"
+                                        v-html="renderMetadata(item.metadata, column)"
                                         class="metadata-value"/>
                             </span>
                         </div>
@@ -549,7 +549,7 @@
 
                             <p
                                     v-tooltip="{
-                                        content: item.title,
+                                        content: item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -557,10 +557,10 @@
                                     v-if="collectionId == undefined &&
                                           column.metadata_type_object != undefined && 
                                           column.metadata_type_object.related_mapped_prop == 'title'"
-                                    v-html="item.title != undefined ? item.title : ''"/>
+                                    v-html="item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
                             <p
                                     v-tooltip="{
-                                        content: item.description,
+                                        content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -568,10 +568,10 @@
                                     v-if="collectionId == undefined &&
                                           column.metadata_type_object != undefined && 
                                           column.metadata_type_object.related_mapped_prop == 'description'"
-                                    v-html="item.description != undefined ? item.description : ''"/>
+                                    v-html="item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
                             <p
                                     v-tooltip="{
-                                        content: renderMetadata(item.metadata, column),
+                                        content: renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -581,7 +581,7 @@
                                           column.metadatum !== 'row_actions' &&
                                           column.metadatum !== 'row_creation' &&
                                           column.metadatum !== 'row_author'"
-                                    v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"/>
+                                    v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
 
                             <span v-if="column.metadatum == 'row_thumbnail'">
                                 <img 
@@ -869,9 +869,9 @@ export default {
         },
         renderMetadata(itemMetadata, column) {
 
-            let metadata = itemMetadata[column.slug] != undefined ? itemMetadata[column.slug] : false;
+            let metadata = (itemMetadata != undefined && itemMetadata[column.slug] != undefined) ? itemMetadata[column.slug] : false;
 
-            if (!metadata) {
+            if (!metadata || itemMetadata == undefined) {
                 return '';
             } else if (metadata.date_i18n) {
                 return metadata.date_i18n;
