@@ -92,10 +92,15 @@ class REST_Facets_Controller extends REST_Controller {
 
 			if( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ){
 
+				$selected =  $this->getRelationshipSelectedValues($request, $metadatum->get_id());
 				$restItemsClass = new REST_Items_Controller();
 
 				if(isset($request['number'])){
 					$args['posts_per_page'] = $request['number'];
+				}
+
+				if( $selected ){
+					//$args['postin'] = $selected;
 				}
 
 				$items = $this->items_repository->fetch($args, $options['collection_id'], 'WP_Query');
@@ -116,19 +121,24 @@ class REST_Facets_Controller extends REST_Controller {
 				$this->total_pages = ceil($this->total_items / (int) $items->query_vars['posts_per_page']);
 
 			} else if ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ){
+				$this->taxonomy = $this->taxonomy_repository->fetch($options['taxonomy_id']);
 				$selected = $this->getTaxonomySelectedValues($request, $options['taxonomy_id']);
-				
+
 				if( isset($request['term_id']) ){
-					$this->taxonomy = $this->taxonomy_repository->fetch($options['taxonomy_id']);
+					
 					$terms[] = $this->terms_repository->fetch($request['term_id'], $this->taxonomy);
 					$restTermClass = new REST_Terms_Controller();
 
 				} else {
-					$this->taxonomy = $this->taxonomy_repository->fetch($options['taxonomy_id']);
+
+					if( $selected ){
+						//$args['include'] = $selected;
+					}
+
 					$terms = $this->terms_repository->fetch($args, $this->taxonomy);
 					$restTermClass = new REST_Terms_Controller();
 				}
-				
+
 				
 				foreach ($terms as $term) {
 					array_push($response, $restTermClass->prepare_item_for_response( $term, $request ));
@@ -137,10 +147,12 @@ class REST_Facets_Controller extends REST_Controller {
 				$this->set_pagination_properties_term_type( $args, $response );
 
 			} else {
+
 				$metadatum_id = $metadatum->get_id();
 				$offset = '';
 				$number = '';
 				$collection_id = ( isset($request['collection_id']) ) ? $request['collection_id'] : false;
+				$selected = $this->getTextSelectedValues($request, $metadatum_id);
 
 				if($request['offset'] >= 0 && $request['number'] >= 1){
 					$offset = $request['offset'];
@@ -162,11 +174,17 @@ class REST_Facets_Controller extends REST_Controller {
 					}
 				}
 
+				if($selected){
+					//foreach( $selected as $value ){
+						//$response[] = ['mvalue' => $value];
+					//}
+				}
+
 				$this->set_pagination_properties_text_type( $collection_id, $metadatum_id, ($request['search']) ? $request['search'] : '' , $offset, $number );
 			}
         }
 
-        return $this->prepare_response( $response, $metadatum_type );
+		return $this->prepare_response( $response, $metadatum_type );
     }
 
 	/**
@@ -292,31 +310,74 @@ class REST_Facets_Controller extends REST_Controller {
 	}
 
 	/**
+	 * get text metadata selected facets 
 	 * 
+	 * @param $request
+	 * @param $taxonomy_id 
 	 */
 	private function getTaxonomySelectedValues($request, $taxonomy_id){
 		$selected = [];
+		$restTermClass = new REST_Terms_Controller();
 
 		if( isset($request['current_query']['taxquery']) ){
 
 			foreach( $request['current_query']['taxquery'] as $taxquery ){
 				 
 				if( $taxquery['taxonomy'] === 'tnc_tax_' . $taxonomy_id ){
-
-					foreach($taxquery['terms'] as $term_id){
-						$term = new Entities\Term($term_id,'tnc_tax_' . $taxonomy_id);	
-						$selected[] = [
-							'label' => $term->get_name(),
-							'value' => $term->get_id(),
-						];
-					}
-						
+					return $taxquery['terms']; 
 				}
 
 			}
 		}
 
-		return $selected;
+		return [];
+	}
+
+	/**
+	 * get text metadata selected facets
+	 * 
+	 * @param $request
+	 * @param $metadatum_id
+	 */
+	private function getTextSelectedValues($request, $metadatum_id){
+		if( isset($request['current_query']['metaquery']) ){
+
+			foreach( $request['current_query']['metaquery'] as $metaquery ){
+				if( $metaquery['key'] === $metadatum_id ){
+
+					return $metaquery['value'];
+						
+				}
+			}
+
+		}
+
+		return [];
+	}
+
+	/**
+	 * get only selected relationship values
+	 * 
+	 * @param $request
+	 * @param $metadatum_id
+	 */
+	private function getRelationshipSelectedValues($request, $metadatum_id){
+		$selected = [];
+		$restTermClass = new REST_Terms_Controller();
+
+		if( isset($request['current_query']['metaquery']) ){
+
+			foreach( $request['current_query']['metaquery'] as $metaquery ){
+				if( $metaquery['key'] === $metadatum_id ){
+
+					return $metaquery['value'];
+						
+				}
+			}
+
+		}
+
+		return [];
 	}
 }
 
