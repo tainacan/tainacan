@@ -329,14 +329,14 @@ class Search_Engine {
 			$searchand = '';
 			$searchSlug = '';
 			foreach ( $search_terms as $term ) {
-				$term = $wpdb->prepare("%s", $exact ? $term : "%". sanitize_title_with_dashes($term) . "%");
-				$searchSlug .= "{$searchand}(tter.slug LIKE $term)";
+				$term = $wpdb->prepare("%s", $exact ? $term : "%". $term . "%");
+				$searchSlug .= "{$searchand}(tter.name LIKE $term)";
 				$searchand = ' AND ';
 			}
 
-			$term = $wpdb->prepare("%s", $exact ? $term : "%". sanitize_title_with_dashes($s) . "%");
+			$term = $wpdb->prepare("%s", $exact ? $term : "%". $s . "%");
 			if ( count( $search_terms ) > 1 && $search_terms[0] != $s ) {
-				$searchSlug = "($searchSlug) OR (tter.slug LIKE $term)";
+				$searchSlug = "($searchSlug) OR (tter.name LIKE $term)";
 			}
 			if ( !empty( $searchSlug ) )
 				$search = " OR ({$searchSlug}) ";
