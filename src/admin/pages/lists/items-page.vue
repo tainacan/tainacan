@@ -271,7 +271,7 @@
 
                 <!-- View Modes Dropdown -->
                 <div 
-                        v-if="isOnTheme && !isRepositoryLevel"
+                        v-if="isOnTheme"
                         class="search-control-item">
                     <b-field>
                         <b-dropdown
