@@ -91,14 +91,14 @@
                                 class="column-large-width" 
                                 @click="onClickTaxonomy($event, taxonomy.id, index)"
                                 :label="$i18n.get('label_description')" 
-                                :aria-label="$i18n.get('label_description') + ': ' + taxonomy.description">
+                                :aria-label="$i18n.get('label_description') + ': ' + taxonomy.description != undefined && taxonomy.description != '' ? taxonomy.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`">
                             <p
                                     v-tooltip="{
-                                        content: taxonomy.description,
+                                        content: taxonomy.description != undefined && taxonomy.description != '' ? taxonomy.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`,
                                         autoHide: false,
                                         placement: 'auto-start'
-                                    }">
-                                {{ taxonomy.description }}</p>
+                                    }"
+                                    v-html="(taxonomy.description != undefined && taxonomy.description != '') ? taxonomy.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`" />
                         </td>
                         <!-- Actions -->
                         <td 

@@ -271,7 +271,7 @@
                 </div>
 
                 <!-- View Modes Dropdown -->
-                <!-- <div 
+                <div 
                         v-if="isOnTheme"
                         class="search-control-item">
                     <b-field>
@@ -372,7 +372,7 @@
                             </b-dropdown-item>
                         </b-dropdown>
                     </b-field>
-                </div> -->
+                </div>
 
                 <!-- Text simple search (used on mobile, instead of the one from filter list)-->
                 <div class="is-hidden-tablet search-control-item">

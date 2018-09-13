@@ -116,14 +116,14 @@
                                 class="column-large-width" 
                                 @click="onClickCollection($event, collection.id, index)"
                                 :label="$i18n.get('label_description')" 
-                                :aria-label="$i18n.get('label_description') + ': ' + collection.description">
+                                :aria-label="$i18n.get('label_description') + ': ' + (collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`">
                             <p
                                     v-tooltip="{
-                                        content: collection.description,
+                                        content: (collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`,
                                         autoHide: false,
                                         placement: 'auto-start'
-                                    }">
-                                {{ collection.description }}</p>
+                                    }" 
+                                    v-html="(collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`"/>
                         </td>
                         <!-- Creation Date -->
                         <td

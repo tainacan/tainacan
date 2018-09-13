@@ -99,7 +99,7 @@
                 let query_items = { 'current_query': this.query };
 
                 axios.get('/collection/'+ this.collection +'/facets/' + this.metadatum 
-                + `?hideempty=0&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items))
+                + `?getSelected=1&hideempty=0&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items))
                     .then( res => {
 
                         for (let item of res.data) {
@@ -213,23 +213,10 @@
                         query: this.query
                     },                    
                     events: {
-                        appliedCheckBoxModal: (options) => { this. appliedCheckBoxModal(options) }
+                        appliedCheckBoxModal: () => this.loadOptions()
                     },
                     width: 'calc(100% - 8.333333333%)',
                 });
-            },
-            appliedCheckBoxModal(options) {
-                this.options = this.options.concat(options)
-                for(let i = 0; i < this.options.length; ++i) {
-                    for(let j = i + 1; j < this.options.length; ++j) {
-                        if(this.options[i].value == this.options[j].value)
-                            this.options.splice(j--, 1);
-                    }
-                    if (i == this.options.length - 1)
-                        this.options[i].seeMoreLink = `<a style="font-size: 0.75rem;"> ${ this.$i18n.get('label_view_all') } </a>`;
-                }
-                
-                this.selectedValues();
             }
         }
     }

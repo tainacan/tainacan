@@ -45,7 +45,7 @@
             this.taxonomy = metadata_type_options.taxonomy_id;
 
             if( metadata_type_options && metadata_type_options.allow_new_terms && this.metadatum.item ){
-                this.allowNew = metadata_type_options.allow_new_terms === 'yes'
+                this.allowNew = metadata_type_options.allow_new_terms == 'yes';
             }
 
             // This condition is temporary
@@ -70,6 +70,7 @@
                 taxonomy: '',
                 terms:[], // object with names
                 totalTerms: 0,
+                allowNew: false,
                 offset: 0,
                 termsNumber: 40
             }
@@ -92,7 +93,6 @@
             id: '',
             disabled: false,
             forcedComponentType: '',
-            allowNew: false,
             maxtags: '',
             allowSelectToCreate: false,
         },
@@ -103,6 +103,7 @@
                 } else if( this.metadatum.metadatum
                     && this.metadatum.metadatum.metadata_type_options && this.metadatum.metadatum.metadata_type_options.input_type ){
                     return this.metadatum.metadatum.metadata_type_options.input_type;
+                    
                 }
             }
         },

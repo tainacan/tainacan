@@ -438,8 +438,6 @@
             applyFilter() {
                 this.$parent.close();
 
-                let selectedOptions = [];
-
                 if(this.isTaxonomy){
                     this.$eventBusSearch.$emit('input', {
                         filter: 'checkbox',
@@ -448,24 +446,7 @@
                         metadatum_id: this.metadatum_id,
                         collection_id: this.collection_id,
                         terms: this.selected
-                    });
-                    
-                    for (let selected of this.selected) {
-                        for(let i in this.finderColumns){
-                            let valueIndex = this.finderColumns[i].findIndex(option => option.value == selected);
-                            
-                            if (valueIndex >= 0) {
-                                selectedOptions.push(this.finderColumns[i][valueIndex]);
-                            }
-                        }
-                    }
-
-                    this.$eventBusSearch.$emit('sendValuesToTags', {
-                        filterId: this.filter.id,
-                        value: selectedOptions,
-                    });
-                    
-                    this.$emit('appliedCheckBoxModal', selectedOptions);
+                    });         
                 } else {
                     this.$eventBusSearch.$emit('input', {
                         filter: 'checkbox',
@@ -474,36 +455,9 @@
                         collection_id: this.collection_id ? this.collection_id : this.filter.collection_id,
                         value: this.selected,
                     });
-                     
-                    // if(!isNaN(this.selected[0])){
-                    //     for (let option of this.options) {
-                    //         let valueIndex = this.selected.findIndex(item => item == option.value);
-
-                    //         if (valueIndex >= 0) {
-                    //             selectedOptions.push(this.options[valueIndex].label);
-                    //         }
-                    //     }
-                    // }
-                    if(Array.isArray(this.selected)){
-                        for (let aSelected of this.selected) {
-                            let valueIndex = this.options.findIndex(option => option.value == aSelected);
-                            
-                            if (valueIndex >= 0) {
-                                selectedOptions.push(this.options[valueIndex]);
-                            }
-                        }
-                    } else {
-                        let valueIndex = this.options.findIndex(option => option.value == this.selected);
-                        
-                        if (valueIndex >= 0) {
-                            selectedOptions.push(this.options[valueIndex]);
-                        }
-                    }
-
-                    this.$emit('appliedCheckBoxModal', selectedOptions);
                 }
 
-                
+                this.$emit('appliedCheckBoxModal');
             }
         }
     }
