@@ -243,5 +243,64 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
         //first 2 metadata are repository metadata
         $this->assertTrue( in_array('metadado', $names) );
         
-    }
+	}
+	
+	function test_metadata_text_textarea() {
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+
+        $collection = $this->tainacan_entity_factory->create_entity(
+	        'collection',
+	        array(
+		        'name' => 'teste'
+	        ),
+	        true
+		);
+		
+		$i = $this->tainacan_entity_factory->create_entity(
+		    'item',
+		    array(
+			    'title'       => 'item teste',
+			    'description' => 'description',
+			    'collection'  => $collection,
+			    'status'      => 'publish'
+		    ),
+		    true
+	    );
+
+	    $metadatum_text = $this->tainacan_entity_factory->create_entity(
+	        'metadatum',
+	        array(
+		        'name'              => 'metadadoText',
+		        'description'       => 'descricao',
+		        'collection_id'     => $collection->get_id(),
+		        'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+	        ),
+	        true
+		);
+		
+		$metadatum_textarea = $this->tainacan_entity_factory->create_entity(
+	        'metadatum',
+	        array(
+		        'name'              => 'metadadoTextarea',
+		        'description'       => 'descricao',
+		        'collection_id'     => $collection->get_id(),
+		        'metadata_type'  => 'Tainacan\Metadata_Types\Textarea',
+	        ),
+	        true
+		);
+		
+		$value_text = 'GOOGLE: www.google.com';
+		$item_metadata_text = new \Tainacan\Entities\Item_Metadata_Entity($i, $metadatum_text);
+		$item_metadata_text->set_value($value_text);
+		
+		$value_textarea = 'GOOGLE: www.google.com \n GOOGLE: https://www.google.com';
+		$item_metadata_textarea = new \Tainacan\Entities\Item_Metadata_Entity($i, $metadatum_textarea);
+		$item_metadata_textarea->set_value($value_textarea);
+
+		$response_text = 'GOOGLE: <a href="www.google.com" target="_blank" title="www.google.com">www.google.com</a>';
+		$response_textarea = 'GOOGLE: <a href="www.google.com" target="_blank" title="www.google.com">www.google.com</a> \n GOOGLE: <a href="https://www.google.com" target="_blank" title="https://www.google.com">https://www.google.com</a>';
+
+		$this->assertEquals($item_metadata_text->get_value_as_html(), $response_text);
+		$this->assertEquals($item_metadata_textarea->get_value_as_html(), $response_textarea);
+	}
 }
