@@ -1,7 +1,7 @@
 <template>
     <div class="block">
         <div
-                v-for="(option, index) in options"
+                v-for="(option, index) in options.slice(0, filter.max_options)"
                 :key="index"
                 class="metadatum">
             <b-checkbox
@@ -12,7 +12,7 @@
             </b-checkbox>
             <div
                     class="view-all-button-container"
-                    v-if="option.seeMoreLink && index == options.length - 1"
+                    v-if="option.seeMoreLink && index == options.slice(0, filter.max_options).length - 1"
                     @click="openCheckboxModal()"
                     v-html="option.seeMoreLink"/>
         </div>
@@ -200,22 +200,9 @@
                         query: this.query
                     },
                     events: {
-                        appliedCheckBoxModal: (options) => { this. appliedCheckBoxModal(options) }
+                        appliedCheckBoxModal: () => this.loadOptions()
                     }
                 });
-            },
-            appliedCheckBoxModal(options) {
-                this.options = this.options.concat(options)
-                for(let i = 0; i < this.options.length; ++i) {
-                    for(let j = i + 1; j < this.options.length; ++j) {
-                        if(this.options[i].value == this.options[j].value)
-                            this.options.splice(j--, 1);
-                    }
-                    if (i == this.options.length - 1)
-                        this.options[i].seeMoreLink = `<a style="font-size: 0.75rem;"> ${ this.$i18n.get('label_view_all') } </a>`;
-                }
-                
-                this.selectedValues();
             }
         }
     }
