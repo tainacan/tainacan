@@ -12,7 +12,7 @@
 
          </span>
         <div>
-            <transition name="fade">
+            <!-- <transition name="fade"> -->
 
                 <section
                         v-if="showForm"
@@ -43,7 +43,7 @@
                             @click="save">{{ $i18n.get('save') }}</a>
                 </section>
 
-            </transition>
+            <!-- </transition> -->
         </div>
     </div>
 
