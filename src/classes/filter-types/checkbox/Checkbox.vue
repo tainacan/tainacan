@@ -112,7 +112,7 @@
                     let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
                         this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
 
-                    promise = this.getValuesRelationship( collectionTarget, null, [], 0, this.filter.max_options);
+                    promise = this.getValuesRelationship( collectionTarget, null, [], 0, this.filter.max_options, false, '1');
                     promise
                         .then(() => {
                             if(this.options.length > this.filter.max_options){
@@ -122,7 +122,7 @@
                             this.$console.error(error);
                     })
                 } else {
-                    promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel, [], 0, this.filter.max_options );
+                    promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1' );
                     promise
                         .then(() => {
                             if(this.options.length > this.filter.max_options){

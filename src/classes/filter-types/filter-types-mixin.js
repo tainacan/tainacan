@@ -18,10 +18,10 @@ export const filter_type_mixin = {
         query: {}
     },
     methods: {
-        getValuesPlainText(metadatumId, search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal) {
+        getValuesPlainText(metadatumId, search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0') {
             let query_items = { 'current_query': this.query };
 
-            let url = `/collection/${this.collection}/facets/${metadatumId}?`;
+            let url = `/collection/${this.collection}/facets/${metadatumId}?getSelected=${getSelected}&`;
 
             if(offset != undefined && number != undefined){
                 url += `offset=${offset}&number=${number}&`;
@@ -102,9 +102,9 @@ export const filter_type_mixin = {
                     this.$console.error(error);
                 });
         },
-        getValuesRelationship(collectionTarget, search, valuesToIgnore, offset, number, isInCheckboxModal) {
+        getValuesRelationship(collectionTarget, search, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0') {
             let query_items = { 'current_query': this.query };
-            let url = '/collection/' + this.filter.collection_id + '/facets/' + this.filter.metadatum.metadatum_id + '?';
+            let url = '/collection/' + this.filter.collection_id + '/facets/' + this.filter.metadatum.metadatum_id + `?getSelected=${getSelected}&`;
 
             if(offset != undefined && number != undefined){
                 url += `offset=${offset}&number=${number}`;

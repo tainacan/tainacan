@@ -99,7 +99,7 @@
                 let query_items = { 'current_query': this.query };
 
                 axios.get('/collection/'+ this.collection +'/facets/' + this.metadatum 
-                + `?hideempty=0&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items))
+                + `?getSelected=1&hideempty=0&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items))
                     .then( res => {
 
                         for (let item of res.data) {
