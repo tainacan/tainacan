@@ -120,8 +120,7 @@ export const ThemeItemsListing =  new Vue({
 
         if (this.$el.attributes['enabled-view-modes'] != undefined)
             this.enabledViewModes = this.$el.attributes['enabled-view-modes'].value.split(',');
-        console.log(this.enabledViewModes)
-        console.log(this.defaultViewMode)
+
         if (this.$el.attributes['term-id'] != undefined)
             this.termId = this.$el.attributes['term-id'].value;
         if (this.$el.attributes['taxonomy'] != undefined)
