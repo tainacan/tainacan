@@ -40,7 +40,7 @@
                     </button>
 
                     <b-dropdown-item
-                            v-if="$route.params.collectionId && $userCaps.hasCapability('edit_others_posts')"
+                            v-if="$route.params.collectionId && $userCaps.hasCapability('edit_others_posts') && !isOnTrash"
                             @click="openBulkEditionModal()">
                         {{ $i18n.get('label_edit_selected_items') }}
                     </b-dropdown-item>
@@ -119,7 +119,8 @@
                             v-if="item.current_user_can_edit"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
-                        <a 
+                        <a
+                                v-if="!isOnTrash"
                                 id="button-edit"   
                                 :aria-label="$i18n.getFrom('items','edit_item')" 
                                 @click.prevent.stop="goToItemEditPage(item)">
@@ -203,7 +204,8 @@
                             v-if="item.current_user_can_edit"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
-                        <a 
+                        <a
+                                v-if="!isOnTrash"
                                 id="button-edit"   
                                 :aria-label="$i18n.getFrom('items','edit_item')" 
                                 @click.prevent.stop="goToItemEditPage(item)">
@@ -273,7 +275,8 @@
                             v-if="item.current_user_can_edit"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
-                        <a 
+                        <a
+                                v-if="!isOnTrash"
                                 id="button-edit"   
                                 :aria-label="$i18n.getFrom('items','edit_item')" 
                                 @click.prevent.stop="goToItemEditPage(item)">
@@ -388,8 +391,8 @@
                                     autoHide: false,
                                     placement: 'auto-start'
                                 }"
-                                v-for="(column, index) in tableMetadata"
-                                :key="index"
+                                v-for="(column, columnIndex) in tableMetadata"
+                                :key="columnIndex"
                                 v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
                                 @click="onClickItem($event, item, index)"
                                 v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />  
@@ -400,8 +403,8 @@
                                     autoHide: false,
                                     placement: 'auto-start'
                                 }"
-                                v-for="(column, index) in tableMetadata"
-                                :key="index"
+                                v-for="(column, columnIndex) in tableMetadata"
+                                :key="columnIndex"
                                 v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
                                 @click="onClickItem($event, item, index)"
                                 v-html="item.title != undefined ? item.title : ''" />                             
@@ -411,7 +414,8 @@
                             v-if="item.current_user_can_edit"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
-                        <a 
+                        <a
+                                v-if="!isOnTrash"
                                 id="button-edit"   
                                 :aria-label="$i18n.getFrom('items','edit_item')" 
                                 @click.prevent.stop="goToItemEditPage(item)">
@@ -607,7 +611,8 @@
                                 class="actions-cell"
                                 :label="$i18n.get('label_actions')">
                             <div class="actions-container">
-                                <a 
+                                <a
+                                        v-if="!isOnTrash"
                                         id="button-edit"   
                                         :aria-label="$i18n.getFrom('items','edit_item')" 
                                         @click.prevent.stop="goToItemEditPage(item)">
@@ -858,10 +863,19 @@ export default {
             });
         },
         onClickItem($event, item, index) {
-            if ($event.ctrlKey) {
+            if ($event.ctrlKey || $event.shiftKey) {
                 this.$set(this.selectedItems, index, !this.selectedItems[index]);
             } else {
-                this.$router.push(this.$routerHelper.getItemPath(item.collection_id, item.id));
+                if(this.isOnTrash){
+                    this.$toast.open({
+                        duration: 3000,
+                        message: this.$i18n.get('info_warning_remove_from_trash_first'),
+                        position: 'is-bottom',
+                        type: 'is-warning'
+                    });
+                } else {
+                    this.$router.push(this.$routerHelper.getItemPath(item.collection_id, item.id));
+                }
             }
         },
         goToItemEditPage(item) {
