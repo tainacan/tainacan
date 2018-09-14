@@ -14,10 +14,25 @@
                     <p>{{ $i18n.get('info_no_item_found') }}</p>
                 </div>
             </section>
-            <!-- RECORDS VIEW MODE -->
-            <div class="tainacan-records-container">
+            <!-- SLIDE MAIN VIEW-->
+            <section class="tainacan-slide-main-view">
+                <transition 
+                        mode="out-in"
+                        name="slide" >
+                    <div
+                            :key="index"
+                            v-for="(item, index) of items"
+                            v-if="index == slideIndex">
+                        <a :href="item.url" >
+                            <img :src="item.thumbnail != undefined && item['thumbnail'].full ? item['thumbnail'].full : thumbPlaceholderPath">  
+                        </a>
+                    </div>
+                </transition>
+            </section>
+            <!-- SLIDE ITEMS LIST -->
+            <div class="tainacan-slide-container">
                 <a 
-                        :href="item.url"
+                        @click="slideIndex = index"
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-record">
@@ -47,35 +62,13 @@
                                 v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
                                 v-html="item.title != undefined ? item.title : ''" />                             
 
-                        <!-- Remaining metadata -->  
-                        <div class="media">
-
-                            <div class="list-metadata media-body">
-                                <div 
-                                        class="thumbnail"
-                                        v-if="item.thumbnail != undefined">
-                                    <img :src="item['thumbnail'].tainacan_full ? item['thumbnail'].tainacan_full : (item['thumbnail'].full ? item['thumbnail'].full : thumbPlaceholderPath)">  
-                                </div>
-                                <span 
-                                        v-for="(column, index) in tableMetadata"
-                                        :key="index"
-                                        v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'description')">
-                                    <h3 class="metadata-label">{{ $i18n.get('label_description') }}</h3>
-                                    <p 
-                                            v-html="item.description != undefined ? item.description : ''"
-                                            class="metadata-value"/>
-                                </span>
-                                <span 
-                                        v-for="(column, index) in displayedMetadata"
-                                        :key="index"
-                                        v-if="column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
-                                    <h3 class="metadata-label">{{ column.name }}</h3>
-                                    <p      
-                                            v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"
-                                            class="metadata-value"/>
-                                </span>
-                            </div>
-                        </div>
+                        <!-- thumbnail -->  
+                        <div 
+                                class="thumbnail"
+                                v-if="item.thumbnail != undefined">
+                            <img :src="item['thumbnail']['tainacan_small'] ? item['thumbnail']['tainacan_small'] : (item['thumbnail'].thumb ? item['thumbnail'].thumb : thumbPlaceholderPath)">  
+                        </div>           
+                        
                     </a>
                 <!-- </div> -->
             </div>
@@ -91,10 +84,11 @@ export default {
         collectionId: Number,
         displayedMetadata: Array,
         items: Array,
-        isLoading: false
+        isLoading: false,
     },
     data () {
         return {
+            slideIndex: 0,
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png'
         }
     },
@@ -114,13 +108,6 @@ export default {
                 return metadata.value_as_html;
             }
         }
-    },
-    mounted() {
-        this.$modal.open(
-            `<div class="main-picture">
-                <img src="` + (this.items[0]['thumbnail'].full ? this.items[0]['thumbnail'].full : this.thumbPlaceholderPath) + `">  
-            </div>`       
-        );
     }
 }
 </script>
@@ -135,7 +122,7 @@ export default {
     $gray4: #898d8f;
     $gray5: #454647; 
 
-    @import "../../src/admin/scss/_view-mode-records.scss";
+    @import "../../src/admin/scss/_view-mode-slide.scss";
 
     .tainacan-records-container .tainacan-record .metadata-title {
         padding: 0.75rem;

@@ -1,7 +1,10 @@
 <template>
     <div 
             v-hammer:swipe="onSwipeFiltersMenu"
-            :class="{'repository-level-page': isRepositoryLevel}">
+            :class="{
+                    'repository-level-page': isRepositoryLevel,
+                    'is-fullscreen': viewMode == 'slide' 
+            }">
 
         <!-- SEARCH AND FILTERS --------------------- -->
         <!-- Filter menu compress button -->
@@ -1173,6 +1176,18 @@
 <style lang="scss" scoped>
 
     @import '../../scss/_variables.scss';
+
+    .is-fullscreen {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 9999999999999999999999999999;
+        background-color: black;
+    }
 
     .collapse-all {
         display: inline-flex;

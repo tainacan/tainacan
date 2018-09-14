@@ -1,8 +1,16 @@
-.tainacan-records-container {
-    min-height: 50vh;
+.tainacan-slide-main-view {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 65vh;
+    margin-bottom: 1rem;
+}
+
+.tainacan-slide-container {
     padding: 0;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow: auto;
     flex-grow: 1;
     flex-shrink: 1;
     justify-content: space-evenly;
@@ -20,57 +28,11 @@
     }
 
     .tainacan-record {
-        background-color: #f6f6f6;
-        padding: 0px;
-        flex-basis: 0;
-        margin: 0 auto 30px auto;
-        width: 100%;
-        max-width: 425px;
-        min-height: 100px;
-        cursor: pointer;
-        text-decoration: none;
-        display: block;
 
-        &:hover {
-            background-color: $gray1 !important;
-        }
-
-        .record-checkbox {
-            position: absolute;
-            margin-left: 1.0rem;
-            margin-top: 7px;
-        }
-        .actions-area {
-            position: relative;
-            float: right;
-            top: -5px;
-            padding-right: 12px;
-            width: 80px;
-            display: flex;
-            justify-content: space-between;
-            visibility: hidden;
-            opacity: 0;
-            transition: visibility 0.2s, opacity 0.2s;
-        }
-        &:hover .actions-area {
-            visibility: visible;
-            opacity: 1.0;
-        }
-
-        .record-line {
-            height: 1px;
-            background-color: $gray2;
-            margin-left: -44px;
-            margin-right: -44px;
-            opacity: 0;
-            visibility: hidden;
-        }
-        .thumbnail {
-            float: right;
-            margin: 0 0 25px 25px;
-        }
+        padding: 0.75rem;
+        
         img {
-            width: 120px;
+            width: 80px;
             height: auto;
             border-radius: 0px;
         }
@@ -93,40 +55,7 @@
                 overflow: hidden;
                 transition: background-color 0.3s;
             }
-        }
-        &:hover .metadata-title {
-            background-color: $gray2 !important;
-        }
-        &:hover .media {
-            background-color: $gray1 !important;
-        }
-
-        .media {
-            width: 100%;
-
-            .list-metadata {
-                padding: 25px;
-                flex: 1;
-                font-size: 0.6875rem;
-                color: $gray4;
-                overflow: hidden;
-                width: 100%;
-            
-                .metadata-label {
-                    font-size: 0.75rem;
-                    font-weight: 700;
-                    color: #454647;
-                }
-
-                .metadata-value {
-                    font-size: 0.75rem;
-                    margin-bottom: 1rem;
-                    color: $gray4;
-                }
-   
-            }
-        }
-    
+        }    
     
     }
 }

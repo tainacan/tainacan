@@ -405,3 +405,45 @@ $modal-z: 9999999;
     animation-duration: 0.2s;
     animation-timing-function: ease;   
 }
+
+// Slide
+@keyframes slide-in {
+    from {
+        opacity: 0;
+        -ms-transform: translate(10%, 0%); /* IE 9 */
+        -webkit-transform: translate(10%, 0%); /* Safari */
+        transform: translate(10%, 0%);
+    }
+    to {
+        opacity: 1;        
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes slide-out {
+    from {
+        opacity: 1;
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+    to {
+        opacity: 0;
+        -ms-transform: translate(-10%, 0%); /* IE 9 */
+        -webkit-transform: translate(-10%, 0%); /* Safari */
+        transform: translate(-10%, 0%);
+    }
+}
+
+.slide-enter-active {
+    animation-name: slide-in;
+    animation-duration: 0.4s;
+    animation-timing-function: ease;   
+}
+.slide-leave-active {
+    animation-name: slide-out;
+    animation-duration: 0.4s;
+    animation-timing-function: ease;   
+}
