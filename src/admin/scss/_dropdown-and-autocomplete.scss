@@ -54,19 +54,26 @@
 }
 
 .taginput-container {
-    padding: 0 !important;
+    padding: 0px !important;
     background-color: white !important;
 
     &:focus, &:active {
         border: none !important;
     }
+    .autocomplete .icon {
+        height: 2.2em !important;
+    }
     .input { 
         margin-bottom: 0px !important; 
         height: 1.85rem !important;
+        text-overflow: ellipsis;
     }
     .input.has-selected, .input:focus, .input:active {
         background-color: white;
         border: 1px solid $gray2 !important;
+    }
+    .tags {
+        margin:  0.17rem 0.25rem 0.08rem 0.25rem !important;
     }
     .tag {
         background: white;
@@ -100,7 +107,7 @@
     font-size: 0.75rem;
 
     .tags {
-        margin-right: 8px;
+        margin: 4px 6px 0px 6px;
     }
     .tag {
         background: white;

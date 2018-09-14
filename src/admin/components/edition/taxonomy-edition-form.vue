@@ -2,7 +2,9 @@
     <div>
         <div class="page-container repository-level-page">
             <tainacan-title />
-            <b-tabs v-model="activeTab">    
+            <b-tabs 
+                    @change="onChangeTab($event)"
+                    v-model="tabIndex">    
                 <b-tab-item :label="$i18n.get('taxonomy')">
                     <form 
                             v-if="taxonomy != null && taxonomy != undefined" 
@@ -163,7 +165,7 @@
         data(){
             return {
                 taxonomyId: String,
-                activeTab: 0,
+                tabIndex: 0,
                 taxonomy: null,
                 isLoadingTaxonomy: false,
                 isUpdatingSlug: false,
@@ -236,6 +238,14 @@
             ...mapGetters('taxonomy',[
                 'getTaxonomy',
             ]),
+            onChangeTab(tab) {
+                this.tabIndex = tab;
+                if (this.tabIndex == 1) {
+                    this.$router.push({query: {tab: 'terms'}});
+                } else {
+                    this.$router.push({query: {}});
+                }
+            },
             onSubmit() {
 
                 this.isLoadingTaxonomy = true;
@@ -348,9 +358,12 @@
         },
         mounted(){
   
-            if (this.$route.fullPath.split("/").pop() === "new") {
+            if (this.$route.query.tab == 'terms')
+                this.tabIndex = 1;
+
+            if (this.$route.path.split("/").pop() === "new") {
                 this.createNewTaxonomy();
-            } else if (this.$route.fullPath.split("/").pop() === "edit" || this.$route.fullPath.split("/").pop() === "terms") {
+            } else if (this.$route.path.split("/").pop() === "edit") {
 
                 this.isLoadingTaxonomy = true;
 
@@ -376,9 +389,6 @@
 
                     this.isLoadingTaxonomy = false;
                 });
-
-                if (this.$route.fullPath.split("/").pop() === "terms") 
-                    this.activeTab = 1;
             }
         }
     }

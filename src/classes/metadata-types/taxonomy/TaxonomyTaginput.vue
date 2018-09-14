@@ -4,7 +4,7 @@
                 :disabled="disabled"
                 size="is-small"
                 icon="magnify"
-                :allow-new="allowNew"
+                :allow-new="false"
                 :maxtags="maxtags"
                 @add="emitAdd"
                 @remove="emitRemove"
@@ -13,14 +13,15 @@
                 field="label"
                 attached
                 ellipsis
+                :placeholder="$i18n.get('instruction_type_existing_term')"
                 :loading="isFetching"
                 :class="{'has-selected': selected != undefined && selected != []}"
                 autocomplete
                 @typing="autoCompleteTerm"/>
     </div>
 </template>
-<script>
 
+<script>
     import { mapActions, mapGetters } from 'vuex';
 
     export default {
@@ -110,7 +111,7 @@
                 let val = this.selected;
                 let results = [];
 
-                if(val.length > 0){
+                if (val.length > 0){
                     for( let term of val ){
                         results.push( term.value );
                     }

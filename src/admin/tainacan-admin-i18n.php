@@ -191,7 +191,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_collection_filters'                       => __( 'Collection Filters', 'tainacan' ),
 	'label_parent_term'                              => __( 'Parent Term', 'tainacan' ),
 	'label_children_terms'                           => __( 'children terms', 'tainacan' ),
-	'label_new_term'                                 => __( 'New Term', 'tainacan' ),
+	'label_new_term'                                 => __( 'Create New Term', 'tainacan' ),
 	'label_new_child'                                => __( 'New Child', 'tainacan' ),
 	'label_taxonomy_terms'                           => __( 'Taxonomy Terms', 'tainacan' ),
 	'label_no_parent_term'                           => __( 'No parent term', 'tainacan' ),
@@ -339,6 +339,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_select_collection_fetch_items'      => __( 'Select a collection to fecth items', 'tainacan' ),
 	'instruction_select_a_action'                    => __( 'Select a action', 'tainacan' ),
 	'instruction_parent_term'                        => __( 'Type to search a Parent Term to choose.', 'tainacan' ),
+	'instruction_type_existing_term'				 => __( 'Type to add an existing term...', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_search_results'                            => __( 'Search Results', 'tainacan' ),
