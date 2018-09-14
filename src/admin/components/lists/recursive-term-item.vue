@@ -62,7 +62,9 @@
             </a>
         </span>
     </div>
-    <transition-group name="filter-item">
+    <transition-group 
+            class="children-area"
+            name="filter-item">
         <div    
                 class="term-item"
                 :style="{
@@ -278,6 +280,7 @@ export default {
                 border-color: transparent transparent transparent $gray2 !important;
             }
         }
+
 
         .children-icon {
             color: $blue2;

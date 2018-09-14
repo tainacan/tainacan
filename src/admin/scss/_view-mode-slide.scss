@@ -1,9 +1,34 @@
 .tainacan-slide-main-view {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     min-height: 65vh;
     margin-bottom: 1rem;
+
+    .slide-control-arrow {
+        background-color: transparent;
+        border: none !important;
+        height: 3.5rem;
+        width: 3.5rem;
+        text-align: center;
+        vertical-align: middle;
+
+        &:focus, &:active {
+            border: none;
+            outline: none;
+        }
+        .icon {
+            height: 3.5rem;
+            width: 3.5rem;
+            text-align: center;
+
+            .mdi::before {
+                line-height: 5rem;
+                font-size: 5rem;
+                color: $turquoise5;
+            }
+        }
+    }
 }
 
 .tainacan-slide-container {
@@ -28,12 +53,13 @@
     }
 
     .tainacan-slide-item {
-        padding: 0 0 0.75rem 0;
+        padding: 0 0 0.25rem 0;
         margin: 0.75rem;
+        border-bottom: 4px solid transparent; 
         transition: border-bottom 0.2s;
 
         &.active-item {
-            border-bottom: 4px solid $turquoise5;
+            border-bottom: 4px solid $turquoise5 !important;
         }
         &:hover {
             border-bottom: 4px solid $gray2;

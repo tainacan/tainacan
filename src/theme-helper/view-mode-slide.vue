@@ -1,5 +1,8 @@
 <template>
-    <div class="table-container">
+    <div 
+            class="table-container"
+            @keyup.left="slideIndex > 1 ? prevSlide() : null"
+            @keyup.right="slideIndex < items.length - 1 ? nextSlide() : null">
         <div class="table-wrapper">
             <!-- Empty result placeholder -->
             <section
@@ -16,9 +19,17 @@
             </section>
             <!-- SLIDE MAIN VIEW-->
             <section class="tainacan-slide-main-view">
+                <button 
+                        @click="prevSlide()"
+                        v-show="slideIndex > 0"
+                        class="slide-control-arrow">
+                    <span class="icon is-large">
+                        <icon class="mdi mdi-48px mdi-chevron-left"/>
+                    </span>
+                </button>
                 <transition 
                         mode="out-in"
-                        name="slide" >
+                        :name="goingRight ? 'slide-right' : 'slide-left'" >
                     <div
                             :key="index"
                             v-for="(item, index) of items"
@@ -28,6 +39,14 @@
                         </a>
                     </div>
                 </transition>
+                <button 
+                        @click="nextSlide()"
+                        v-if="slideIndex < items.length - 1"
+                        class="slide-control-arrow">
+                    <span class="icon is-large has-text-turoquoise5">
+                        <icon class="mdi mdi-48px mdi-chevron-right"/>
+                    </span>
+                </button>
             </section>
             <!-- SLIDE ITEMS LIST -->
             <div class="tainacan-slide-container">
@@ -36,7 +55,9 @@
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-slide-item"
-                        :class="{'active-item': slideIndex == index}">
+                        :class="{'active-item': slideIndex == index}"
+                        @keyup.left="slideIndex > 1 ? prevSlide() : null"
+                        @keyup.right="slideIndex < items.length - 1 ? nextSlide() : null">
                     <!-- <div :href="item.url"> -->
                         <!-- Title -->           
                         <p 
@@ -86,6 +107,7 @@ export default {
         displayedMetadata: Array,
         items: Array,
         isLoading: false,
+        goingRight: true
     },
     data () {
         return {
@@ -94,8 +116,13 @@ export default {
         }
     },
     methods: {
-        goToItemPage(item) {
-            window.location.href = item.url;   
+        nextSlide() {
+            this.goingRight = true;
+            this.slideIndex++;
+        },
+        prevSlide() {
+            this.goingRight = false;
+            this.slideIndex--;
         },
         renderMetadata(itemMetadata, column) {
 
@@ -126,9 +153,8 @@ export default {
 
     @import "../../src/admin/scss/_view-mode-slide.scss";
 
-    .tainacan-records-container .tainacan-record .metadata-title {
-        padding: 0.75rem;
-        margin-bottom: 0px;
+    .table-wrapper {
+        overflow-x: hidden !important;
     }
 </style>
 
