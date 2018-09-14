@@ -16,11 +16,12 @@
             </section>
             <!-- CARDS VIEW MODE -->
             <div class="tainacan-cards-container">
-                <div 
+                <!-- <div> -->
+                <a
                         :key="index"
                         v-for="(item, index) of items"
-                        class="tainacan-card">
-                                                
+                        class="tainacan-card"
+                        :href="item.url">                                
                     <!-- Title -->
                     <div class="metadata-title">
                         <p 
@@ -29,15 +30,12 @@
                                     html: true,
                                     autoHide: false,
                                     placement: 'auto-start'
-                                }"                               
-                                @click="goToItemPage(item)">
+                                }">
                             {{ item.title != undefined ? item.title : '' }}
                         </p>                            
                     </div>
                     <!-- Remaining metadata -->  
-                    <div    
-                            class="media"
-                            @click="goToItemPage(item)">
+                    <div class="media">
 
                         <img 
                                 v-if="item.thumbnail != undefined"
@@ -73,7 +71,8 @@
                         </div>
                     </div>
                
-                </div>
+                </a>
+                <!-- </div> -->
             </div>
         </div> 
     </div>
@@ -96,9 +95,6 @@ export default {
         }
     },
     methods: {
-        goToItemPage(item) {
-            window.location.href = item.url;   
-        },
         renderMetadata(itemMetadata, column) {
 
             let metadata = itemMetadata[column.slug] != undefined ? itemMetadata[column.slug] : false;

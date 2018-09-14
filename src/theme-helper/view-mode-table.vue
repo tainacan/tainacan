@@ -44,7 +44,7 @@
                     <tr     
                             :key="index"
                             v-for="(item, index) of items">
-
+                        
                         <!-- Item Displayed Metadata -->
                         <td 
                                 :key="index"    
@@ -64,9 +64,8 @@
                                                                                                             column.metadata_type_object.primitive_type == 'term' || 
                                                                                                             column.metadata_type_object.primitive_type == 'compound') : false,
                                         'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' || column.metadata_type_object.related_mapped_prop == 'description') : false,
-                                }"
-                                @click="goToItemPage(item)">
-
+                                }">
+                            <a :href="item.url">
                             <p
                                     v-tooltip="{
                                         content: item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
@@ -108,6 +107,7 @@
                                         class="table-thumb" 
                                         :src="item['thumbnail'].tainacan_small ? item['thumbnail'].tainacan_small : (item['thumbnail'].thumb ? item['thumbnail'].thumb : thumbPlaceholderPath)">
                             </span> 
+                        </a>
                         </td>
                     </tr>
                 </tbody>
@@ -132,9 +132,6 @@ export default {
         }
     },
     methods: {
-        goToItemPage(item) {
-            window.location.href = item.url;   
-        },
         renderMetadata(itemMetadata, column) {
 
             let metadata = (itemMetadata != undefined && itemMetadata[column.slug] != undefined) ? itemMetadata[column.slug] : false;
@@ -152,7 +149,9 @@ export default {
 </script>
 
 <style>
-
+    td>a:hover {
+        text-decoration: none !important;
+    }
 </style>
 
 

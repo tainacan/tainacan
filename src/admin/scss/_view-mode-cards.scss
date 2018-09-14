@@ -25,12 +25,13 @@
         min-height: 210px;
         max-height: 210px;
         cursor: pointer;
+        text-decoration: none !important;
 
         @media screen and (max-width: 480px) {
             max-width: 100%;
             min-width: 100%;
-            min-height: 176px;
-            max-height: 176px;
+            min-height: 171px;
+            max-height: 171px;
 
             img {
                 width: 130px !important;
@@ -86,7 +87,9 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
+            color: black !important;
             p {
+                color: black !important;
                 font-size: 0.875rem !important; 
                 text-overflow: ellipsis;
                 white-space: nowrap;
@@ -96,6 +99,7 @@
         }
         &:hover .metadata-title {
             background-color: $gray2 !important;
+            p { text-decoration: none !important; }
         }
 
         .media {
