@@ -3,7 +3,7 @@
             v-hammer:swipe="onSwipeFiltersMenu"
             :class="{
                     'repository-level-page': isRepositoryLevel,
-                    'is-fullscreen': viewMode == 'slide' 
+                    'is-fullscreen': registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen
             }">
 
         <!-- SEARCH AND FILTERS --------------------- -->
@@ -14,7 +14,7 @@
                     autoHide: false,
                     placement: 'auto-start'
                 }"  
-                v-if="!openAdvancedSearch"
+                v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="is-hidden-mobile"
                 id="filter-menu-compress-button"
                 :style="{ top: !isOnTheme ? (isRepositoryLevel ? '172px' : '120px') : '76px' }"
@@ -23,7 +23,7 @@
         </button>
         <!-- Filters mobile modal button -->
         <button 
-                v-if="!openAdvancedSearch"
+                v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="is-hidden-tablet"
                 id="filter-menu-compress-button"
                 :style="{ top: !isOnTheme ? (isRepositoryLevel ? (searchControlHeight + 100) : (searchControlHeight + 70) + 'px') : (searchControlHeight - 25) + 'px' }"
@@ -36,7 +36,9 @@
         <!-- <transition name="filters-menu"> -->
         <aside
                 :style="{ top: searchControlHeight + 'px' }"
-                v-if="!isFiltersMenuCompressed && !openAdvancedSearch"
+                v-if="!isFiltersMenuCompressed && 
+                        !openAdvancedSearch && 
+                        !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="filters-menu tainacan-form is-hidden-mobile">
             <b-loading
                     :is-full-page="false"
@@ -114,7 +116,7 @@
         <div 
                 id="items-list-area"
                 class="items-list-area"
-                :class="{ 'spaced-to-right': !isFiltersMenuCompressed && !openAdvancedSearch }">
+                :class="{ 'spaced-to-right': !isFiltersMenuCompressed && !openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)}">
 
             <!-- FILTERS TAG LIST-->
             <filters-tags-list 
