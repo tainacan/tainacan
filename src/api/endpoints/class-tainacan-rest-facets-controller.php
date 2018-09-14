@@ -162,22 +162,31 @@ class REST_Facets_Controller extends REST_Controller {
 
 					if( $selected && $request['getSelected'] && $request['getSelected'] === '1' ){
 						$ids = $this->get_terms_ids( $terms );
+						$realResponse = [];
 
 						foreach( $selected as $index => $term_id ){
 
-							if( in_array($term_id,$ids) ){
+							$term_selected = $this->terms_repository->fetch($term_id, $this->taxonomy);
+							$realResponse[] = $term_selected;
+
+						}
+
+						foreach( $terms as $index => $term ){
+
+							if( in_array($term->WP_Term->term_id,$selected) ){
 								continue;
 							}
 
-							$term_selected = $this->terms_repository->fetch($term_id, $this->taxonomy);
-							array_unshift($terms, $term_selected);
+							$realResponse[] = $term;
 
-							if( isset($request['number']) && ($index+1) >= $request['number']){
+							if( isset($request['number']) && count($realResponse) >= $request['number']){
 								break;
 							}
 						}
-					}
 
+						$terms = $realResponse;
+					}
+					
 					$restTermClass = new REST_Terms_Controller();
 				}
 
