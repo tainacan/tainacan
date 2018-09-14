@@ -35,7 +35,8 @@
                         @click="slideIndex = index"
                         :key="index"
                         v-for="(item, index) of items"
-                        class="tainacan-record">
+                        class="tainacan-slide-item"
+                        :class="{'active-item': slideIndex == index}">
                     <!-- <div :href="item.url"> -->
                         <!-- Title -->           
                         <p 
@@ -115,6 +116,7 @@ export default {
 <style  lang="scss" scoped>
     $turquoise1: #e6f6f8;
     $turquoise2: #d1e6e6;
+    $turquoise5: #298596;
     $tainacan-input-color: #1d1d1d;
     $gray1: #f2f2f2; 
     $gray2: #e5e5e5;
