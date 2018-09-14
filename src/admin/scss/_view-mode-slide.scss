@@ -5,7 +5,16 @@
     min-height: 65vh;
     margin-bottom: 1rem;
 
+    .slide-main-content {
+        img {
+            height: 100%;
+            width: auto;
+            max-width: 100%;
+        }
+    }
+
     .slide-control-arrow {
+        cursor: pointer;
         background-color: transparent;
         border: none !important;
         height: 3.5rem;
@@ -19,7 +28,7 @@
         }
         .icon {
             height: 3.5rem;
-            width: 3.5rem;
+            width: 2.5rem;
             text-align: center;
 
             .mdi::before {
@@ -30,7 +39,20 @@
         }
     }
 }
+.slide-title-area {
+    width: 100%;
+    position: relative;
+    top: -80px;
+    margin-bottom: -80px;
+    background-color: rgba(0,0,0,0.5);
+    padding: 1rem 0;
 
+    h1 {
+        color: white;
+        font-size: 2rem;
+        font-weight: normal;
+    }
+}
 .tainacan-slide-container {
     padding: 0;
     display: flex;

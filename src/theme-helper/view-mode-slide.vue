@@ -1,7 +1,7 @@
 <template>
     <div 
             class="table-container"
-            @keyup.left="slideIndex > 1 ? prevSlide() : null"
+            @keyup.left="slideIndex > 0 ? prevSlide() : null"
             @keyup.right="slideIndex < items.length - 1 ? nextSlide() : null">
         <div class="table-wrapper">
             <!-- Empty result placeholder -->
@@ -21,7 +21,7 @@
             <section class="tainacan-slide-main-view">
                 <button 
                         @click="prevSlide()"
-                        v-show="slideIndex > 0"
+                        :style="{ visibility: slideIndex > 0 ? 'visible' : 'hidden' }"
                         class="slide-control-arrow">
                     <span class="icon is-large">
                         <icon class="mdi mdi-48px mdi-chevron-left"/>
@@ -33,7 +33,8 @@
                     <div
                             :key="index"
                             v-for="(item, index) of items"
-                            v-if="index == slideIndex">
+                            v-if="index == slideIndex"
+                            class="slide-main-content">
                         <a :href="item.url" >
                             <img :src="item.thumbnail != undefined && item['thumbnail'].full ? item['thumbnail'].full : thumbPlaceholderPath">  
                         </a>
@@ -41,13 +42,19 @@
                 </transition>
                 <button 
                         @click="nextSlide()"
-                        v-if="slideIndex < items.length - 1"
+                        :style="{ visibility: slideIndex < items.length - 1 ? 'visible' : 'hidden' }"
                         class="slide-control-arrow">
                     <span class="icon is-large has-text-turoquoise5">
                         <icon class="mdi mdi-48px mdi-chevron-right"/>
                     </span>
                 </button>
             </section>
+            <section 
+                    v-if="items[slideIndex] != undefined"
+                    class="slide-title-area">
+                <h1>{{ items[slideIndex].title }}</h1>
+            </section>
+
             <!-- SLIDE ITEMS LIST -->
             <div class="tainacan-slide-container">
                 <a 
@@ -56,43 +63,17 @@
                         v-for="(item, index) of items"
                         class="tainacan-slide-item"
                         :class="{'active-item': slideIndex == index}"
-                        @keyup.left="slideIndex > 1 ? prevSlide() : null"
+                        @keyup.left="slideIndex > 0 ? prevSlide() : null"
                         @keyup.right="slideIndex < items.length - 1 ? nextSlide() : null">
-                    <!-- <div :href="item.url"> -->
-                        <!-- Title -->           
-                        <p 
-                                v-tooltip="{
-                                    content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
-                                    html: true,
-                                    autoHide: false,
-                                    placement: 'auto-start'
-                                }"
-                                v-for="(column, index) in displayedMetadata"
-                                :key="index"
-                                class="metadata-title"
-                                v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                             
-                        <p 
-                                v-tooltip="{
-                                    content: item.title != undefined ? item.title : '',
-                                    html: true,
-                                    autoHide: false,
-                                    placement: 'auto-start'
-                                }"
-                                v-for="(column, index) in tableMetadata"
-                                :key="index"
-                                v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                v-html="item.title != undefined ? item.title : ''" />                             
 
-                        <!-- thumbnail -->  
-                        <div 
-                                class="thumbnail"
-                                v-if="item.thumbnail != undefined">
-                            <img :src="item['thumbnail']['tainacan_small'] ? item['thumbnail']['tainacan_small'] : (item['thumbnail'].thumb ? item['thumbnail'].thumb : thumbPlaceholderPath)">  
-                        </div>           
-                        
-                    </a>
-                <!-- </div> -->
+                    <!-- thumbnail -->  
+                    <div 
+                            class="thumbnail"
+                            v-if="item.thumbnail != undefined">
+                        <img :src="item['thumbnail']['tainacan_small'] ? item['thumbnail']['tainacan_small'] : (item['thumbnail'].thumb ? item['thumbnail'].thumb : thumbPlaceholderPath)">  
+                    </div>           
+                    
+                </a>
             </div>
         </div> 
     </div>
@@ -122,7 +103,8 @@ export default {
         },
         prevSlide() {
             this.goingRight = false;
-            this.slideIndex--;
+            if (this.slideIndex > 0)
+                this.slideIndex--;
         },
         renderMetadata(itemMetadata, column) {
 
