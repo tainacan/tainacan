@@ -90,6 +90,8 @@ class REST_Facets_Controller extends REST_Controller {
 			$options = $metadatum->get_metadata_type_options();
 			$args = $this->prepare_filters($request);
 
+			// handle filter with relationship metadata
+
 			if( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ){
 
 				$selected =  $this->getRelationshipSelectedValues($request, $metadatum->get_id());
@@ -99,14 +101,13 @@ class REST_Facets_Controller extends REST_Controller {
 					$args['posts_per_page'] = $request['number'];
 				}
 
-				if( $selected ){
-					//$args['postin'] = $selected;
-				}
-
 				$items = $this->items_repository->fetch($args, $options['collection_id'], 'WP_Query');
+				$ids = [];
+
 				if ($items->have_posts()) {
 					while ( $items->have_posts() ) {
 						$items->the_post();
+						$ids[] = (string) $items->post->ID;
 		
 						$item = new Entities\Item($items->post);
 						$prepared_item = $restItemsClass->prepare_item_for_response($item, $request);
@@ -117,10 +118,34 @@ class REST_Facets_Controller extends REST_Controller {
 					wp_reset_postdata();
 				}
 
+				// retrieve selected items
+
+				if( $selected && $request['getSelected'] && $request['getSelected'] === '1' ){
+					foreach( $selected as $index => $item_id ){
+
+						if( in_array($item_id,$ids) ){
+							continue;
+						}
+
+						$item = new Entities\Item($item_id);
+						$prepared_item = $restItemsClass->prepare_item_for_response($item, $request);
+						$response[$index] = $prepared_item;
+
+						if( isset($request['number']) && ($index+1) >= $request['number']){
+							break;
+						}
+					}
+				}
+
 				$this->total_items  = $items->found_posts;
 				$this->total_pages = ceil($this->total_items / (int) $items->query_vars['posts_per_page']);
 
-			} else if ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ){
+			} 
+
+			// handle filter with Taxonomy metadata
+			
+			else if ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ){
+
 				$this->taxonomy = $this->taxonomy_repository->fetch($options['taxonomy_id']);
 				$selected = $this->getTaxonomySelectedValues($request, $options['taxonomy_id']);
 
@@ -131,22 +156,42 @@ class REST_Facets_Controller extends REST_Controller {
 
 				} else {
 
-					if( $selected ){
-						//$args['include'] = $selected;
+					$terms = $this->terms_repository->fetch($args, $this->taxonomy);
+
+					// retrieve selected items
+
+					if( $selected && $request['getSelected'] && $request['getSelected'] === '1' ){
+						$ids = $this->get_terms_ids( $terms );
+
+						foreach( $selected as $index => $term_id ){
+
+							if( in_array($term_id,$ids) ){
+								continue;
+							}
+
+							$term_selected = $this->terms_repository->fetch($term_id, $this->taxonomy);
+							array_unshift($terms, $term_selected);
+
+							if( isset($request['number']) && ($index+1) >= $request['number']){
+								break;
+							}
+						}
 					}
 
-					$terms = $this->terms_repository->fetch($args, $this->taxonomy);
 					$restTermClass = new REST_Terms_Controller();
 				}
 
-				
 				foreach ($terms as $term) {
 					array_push($response, $restTermClass->prepare_item_for_response( $term, $request ));
 				}
 
 				$this->set_pagination_properties_term_type( $args, $response );
 
-			} else {
+			} 
+			
+			// handle filter with Text metadata
+
+			else {
 
 				$metadatum_id = $metadatum->get_id();
 				$offset = '';
@@ -174,10 +219,25 @@ class REST_Facets_Controller extends REST_Controller {
 					}
 				}
 
-				if($selected){
-					//foreach( $selected as $value ){
-						//$response[] = ['mvalue' => $value];
-					//}
+				// retrieve selected items
+
+				if( $selected && $request['getSelected'] && $request['getSelected'] === '1'){
+					$rawValues = $this->get_values( $response );
+					
+					foreach( $selected as $index => $value ){
+
+						if( in_array($value,$rawValues) ){
+							continue;
+						}
+
+						$row = ['mvalue' => $value, 'metadatum_id' => $metadatum_id ];
+						$response[$index] = $row;
+
+						if( isset($request['number']) && ($index+1) >= $request['number']){
+							break;
+						}
+					}
+					
 				}
 
 				$this->set_pagination_properties_text_type( $collection_id, $metadatum_id, ($request['search']) ? $request['search'] : '' , $offset, $number );
@@ -343,7 +403,7 @@ class REST_Facets_Controller extends REST_Controller {
 		if( isset($request['current_query']['metaquery']) ){
 
 			foreach( $request['current_query']['metaquery'] as $metaquery ){
-				if( $metaquery['key'] === $metadatum_id ){
+				if( $metaquery['key'] == $metadatum_id ){
 
 					return $metaquery['value'];
 						
@@ -368,7 +428,7 @@ class REST_Facets_Controller extends REST_Controller {
 		if( isset($request['current_query']['metaquery']) ){
 
 			foreach( $request['current_query']['metaquery'] as $metaquery ){
-				if( $metaquery['key'] === $metadatum_id ){
+				if( $metaquery['key'] == $metadatum_id ){
 
 					return $metaquery['value'];
 						
@@ -378,6 +438,32 @@ class REST_Facets_Controller extends REST_Controller {
 		}
 
 		return [];
+	}
+
+	/**
+	 * 
+	 */
+	private function get_terms_ids( $terms ){
+		$ids = [];
+
+		foreach( $terms as $term ){
+            $ids[] = (string) $term->WP_Term->term_id;
+		}
+
+		return $ids;
+	}
+
+	/**
+	 * 
+	 */
+	private function get_values( $rows ){
+		$values = [];
+
+		foreach( $rows as $row ){
+            $values[] = $row['mvalue'];
+		}
+
+		return $values;
 	}
 }
 

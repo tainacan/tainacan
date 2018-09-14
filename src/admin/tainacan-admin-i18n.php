@@ -385,6 +385,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_showing_taxonomies'                        => __( 'Showing taxonomies ', 'tainacan' ),
 	'info_showing_events'                            => __( 'Showing events ', 'tainacan' ),
 	'info_showing_processes'                         => __( 'Showing processes ', 'tainacan' ),
+	'info_warning_remove_from_trash_first'           => __( 'Remove this item from trash first'),
 	'info_to'                                        => __( ' to ', 'tainacan' ),
 	'info_of'                                        => __( ' of ', 'tainacan' ),
 	'info_created_by'                                => __( 'Created by: ', 'tainacan' ),
