@@ -107,7 +107,7 @@
                                         placement: 'auto-start'
                                     }">
                                 <span :class="{'occluding-content': bgProcess.progress_value }">{{ bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process') }}</span>
-                                <span>{{ bgProcess.progress_value ? ' (' + bgProcess.progress_value + '%)' : '' }}</span>
+                                <span>{{ bgProcess.progress_value &lt;&equals; 0 ? `(0%)` : ' ('+ bgProcess.progress_value +'%)' }}</span>
                             </p>
                         </td>
                         <!-- Queued on -->
@@ -206,6 +206,7 @@
 <script>
     import { mapActions } from 'vuex';
     import CustomDialog from '../other/custom-dialog.vue';
+    import moment from 'moment'
 
     export default {
         name: 'List',
@@ -214,7 +215,8 @@
                 selected: [],
                 allOnPageSelected: false,
                 isSelecting: false,
-                highlightedProcess: ''
+                highlightedProcess: '',
+                dateFormat: '',
             }
         },
         props: {
@@ -327,17 +329,25 @@
                 });
             },
             getDate(rawDate) {
-                let date = new Date(rawDate);
+                let date = moment(rawDate).format(this.dateFormat);
 
-                if (date instanceof Date && !isNaN(date))
-                    return date.toLocaleString();
-                else   
+                if (date != 'Invalid date') {
+                    return date;
+                } else {
                     return this.$i18n.get('info_unknown_date');
+                }
             },
             pauseProcess() { 
             }
         },
         mounted() {
+            let locale = navigator.language;
+
+            moment.locale(locale);
+
+            let localeData = moment.localeData();
+            this.dateFormat = localeData.longDateFormat('lll');
+
             if (this.$route.query.highlight) {
                 this.highlightedProcess = this.$route.query.highlight;
             }
