@@ -18,7 +18,8 @@
         </a>
         <add-new-term
                 class="add-new-term"
-                v-if="getComponent !== 'tainacan-taxonomy-tag-input' && allowNew"
+                v-if="allowNew"
+                :component-type="getComponent"
                 :taxonomy_id="taxonomy"
                 :metadatum="metadatum"
                 :item_id="metadatum.item.id"
@@ -89,7 +90,7 @@
             componentAttribute: {
                 type: String
             },
-            value: [ Number, String, Array,Object ],
+            value: [ Number, String, Array, Object ],
             id: '',
             disabled: false,
             forcedComponentType: '',
@@ -171,12 +172,14 @@
                 this.$emit('input', this.inputValue);
                 this.$emit('blur');
             },
-            reload( val ){
-                this.valueComponent = val;
-
-                this.terms = [];
-                this.getTermsFromTaxonomy();
-                this.getTermsId();
+            reload( $event ) {
+                if ($event.taxonomyId == this.taxonomy && $event.metadatumId == this.metadatum.metadatum.id) {
+                    this.valueComponent = $event.values;
+                    this.terms = [];
+                    this.offset = 0;
+                    this.getTermsFromTaxonomy();
+                    this.getTermsId();
+                }
             }
         }
     }

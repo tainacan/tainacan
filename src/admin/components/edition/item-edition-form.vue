@@ -936,7 +936,7 @@ export default {
         position: absolute;
         z-index: 99;
         right: 0;
-        top: 70px;
+        top: 148px;
         max-width: 36px;
         height: 36px;
         width: 36px;
