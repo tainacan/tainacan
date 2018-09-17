@@ -821,7 +821,8 @@
 
                 // Updates searchControlHeight before in case we need to adjust filters position on mobile
                 setTimeout(() => {
-                    this.searchControlHeight = this.$refs['search-control'].clientHeight;
+                    if (this.$refs['search-control'] != undefined)
+                        this.searchControlHeight = this.$refs['search-control'].clientHeight;
                 }, 500);
             },
             onChangeAdminViewMode(adminViewMode) {
@@ -831,7 +832,8 @@
 
                 // Updates searchControlHeight before in case we need to adjust filters position on mobile
                 setTimeout(() => {
-                    this.searchControlHeight = this.$refs['search-control'].clientHeight;
+                    if (this.$refs['search-control'] != undefined)
+                        this.searchControlHeight = this.$refs['search-control'].clientHeight;
                 }, 500);
             },
             onChangeDisplayedMetadata() {
@@ -1084,7 +1086,8 @@
             },
             adjustSearchControlHeight() {
                 this.$nextTick(() => {
-                    this.searchControlHeight = this.$refs['search-control'] ? this.$refs['search-control'].clientHeight + this.$refs['search-control'].offsetTop : 0;
+                    if (this.$refs['search-control'] != undefined)
+                        this.searchControlHeight = this.$refs['search-control'] ? this.$refs['search-control'].clientHeight + this.$refs['search-control'].offsetTop : 0;
                     this.isFiltersMenuCompressed = jQuery(window).width() <= 768;
                 });
             }
