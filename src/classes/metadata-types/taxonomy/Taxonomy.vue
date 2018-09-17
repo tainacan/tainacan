@@ -5,28 +5,29 @@
                 :is="getComponent"
                 :maxtags="maxtags"
                 v-model="valueComponent"
+                @input="onInput"
                 :allow-select-to-create="allowSelectToCreate"
                 :allow-new="allowNew"
                 :terms="terms"
                 :taxonomy-id="taxonomy"
                 :options="getOptions(0)"/>
-        <a 
-                class="add-new-term"
-                v-if="(getComponent == 'tainacan-taxonomy-checkbox' || getComponent == 'tainacan-taxonomy-radio') && terms.length < totalTerms"
-                @click="getTermsFromTaxonomy()">
-            {{ $i18n.get('label_view_more') + ' (' + Number(totalTerms - terms.length) + ' ' + $i18n.get('terms') + ')' }}
-        </a>
-        <!--<a-->
+        <!--<a -->
                 <!--class="add-new-term"-->
-                <!--v-if="(getComponent == 'tainacan-taxonomy-checkbox') && terms.length < totalTerms"-->
-                <!--@click="openCheckboxModal()">-->
-            <!--{{ $i18n.get('label_view_all') }}-->
+                <!--v-if="(getComponent == 'tainacan-taxonomy-checkbox' || getComponent == 'tainacan-taxonomy-radio') && terms.length < totalTerms"-->
+                <!--@click="getTermsFromTaxonomy()">-->
+            <!--{{ $i18n.get('label_view_more') + ' (' + Number(totalTerms - terms.length) + ' ' + $i18n.get('terms') + ')' }}-->
         <!--</a>-->
+        <a
+                class="add-new-term"
+                v-if="(getComponent == 'tainacan-taxonomy-checkbox') && terms.length < totalTerms"
+                @click="openCheckboxModal()">
+            {{ $i18n.get('label_view_all') }}
+        </a>
         <add-new-term
                 class="add-new-term"
                 v-if="allowNew"
                 :component-type="getComponent"
-                :taxonomy_id="taxonomy"
+                :taxonomy_id="taxonomy_id"
                 :metadatum="metadatum"
                 :item_id="metadatum.item.id"
                 :value="valueComponent"
@@ -82,7 +83,7 @@
                 totalTerms: 0,
                 allowNew: false,
                 offset: 0,
-                termsNumber: 40
+                termsNumber: 7
             }
         },
         watch: {
@@ -126,12 +127,13 @@
                         isFilter: false,
                         parent: 0,
                         taxonomy_id: this.taxonomy_id,
-                        selected: this.value,
+                        selected: !this.valueComponent ? [] : this.valueComponent,
                         metadatum_id: this.metadatum.metadatum.id,
                         taxonomy: this.taxonomy,
                         collection_id: this.collectionId,
                         isTaxonomy: true,
                         query: '',
+                        metadatum: this.metadatum,
                     },
                     width: 'calc(100% - 8.333333333%)',
                 });
@@ -196,6 +198,7 @@
             },
             onInput($event) {
                 this.inputValue = $event;
+                this.valueComponent = $event;
                 this.$emit('input', this.inputValue);
                 this.$emit('blur');
             },

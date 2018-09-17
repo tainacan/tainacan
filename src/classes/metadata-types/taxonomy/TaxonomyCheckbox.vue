@@ -46,7 +46,7 @@
         methods: {
             onChecked() {
                 this.$emit('blur');
-                this.onInput(this.checked)
+                this.onInput(this.checked);
             },
             onInput($event) {
                 this.inputValue = $event;

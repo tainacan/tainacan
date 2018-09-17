@@ -1,7 +1,8 @@
 <template>
     <div class="tainacan-modal-content">
         <header class="tainacan-modal-title">
-            <h2>{{ this.$i18n.get('filter') }} <em>{{ filter.name }}</em></h2>
+            <h2 v-if="isFilter">{{ this.$i18n.get('filter') }} <em>{{ filter.name }}</em></h2>
+            <h2 v-else>{{ this.$i18n.get('metadatum') }} <em>{{ metadatum.name }}</em></h2>
             <hr>
         </header>
         <div class="tainacan-form">
@@ -106,7 +107,7 @@
             </div>
             <!--<pre>{{ hierarchicalPath }}</pre>-->
             <!--<pre>{{ totalRemaining }}</pre>-->
-            <!--<pre>{{ selected }}</pre>-->
+            <pre>{{ selected }}</pre>
             <!--<pre>{{ options }}</pre>-->
             <!--<pre>{{ searchResults }}</pre>-->
 
@@ -169,6 +170,7 @@
             taxonomy: String,
             collection_id: Number,
             metadatum_id: Number,
+            metadatum: Object,
             selected: Array,
             isTaxonomy: {
                 type: Boolean,
