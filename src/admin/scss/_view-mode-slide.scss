@@ -1,3 +1,113 @@
+#close-fullscren-button {
+    border-radius: 50px;
+    color: white;
+    background-color: transparent;
+    border: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 1rem;
+    cursor: pointer;
+    z-index: 9999999999;
+
+    &:focus, &:active {
+        outline: none;
+    }
+}
+.metadata-menu {
+    position: absolute;
+    z-index: 10;
+    width: 20.83%;
+    min-width: 180px;
+    min-height: 100%;
+    height: 100%;
+    padding: $page-side-padding;
+    float: left;
+    overflow-y: auto;
+    overflow-x: hidden;
+    visibility: visible;
+    display: block;
+    transition: visibility ease 0.5s, display ease 0.5s;
+
+    @media screen and (max-width: 768px) {
+        width: 100%;
+        padding: $page-small-side-padding !important;
+        
+        h3 {
+            margin-top: 0 !important;
+        }
+    }
+    @media screen and (min-width: 769px) {
+        top: 0px !important;
+    }
+
+    h3 {
+        font-size: 100%;
+        margin-top: 48px;
+    }
+
+    .label {
+        font-size: 0.75rem;
+        font-weight: normal;
+    }
+
+    .checkbox {
+        margin-bottom: 5px;
+        align-items: baseline;
+    }
+
+}
+
+#metadata-compress-button {
+    position: absolute;
+    z-index: 99;
+    top: 120px;
+    left: 0;
+    max-width: 23px;
+    height: 21px;
+    width: 23px;
+    border: none;
+    background-color: $turquoise1;
+    color: $turquoise5;
+    padding: 0;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    cursor: pointer;
+    transition: top 0.3s;
+
+    &:focus, &:active {
+        outline: none;
+    }
+
+    .icon {
+        margin-top: -1px;
+    }
+
+    @media screen and (max-width: 768px) {
+        max-width: 100%;
+        width: auto;
+        padding: 3px 6px 3px 0px;
+        height: 24px;
+
+        .icon {
+            position: relative;
+            top: -3px;
+        }
+        .text {
+            position: relative;
+            top: -6px;
+        }
+    }
+}
+
+.spaced-to-right {
+    margin-left:  20.83%;
+
+    @media screen and (max-width: 768px) {
+        margin-left: 0px !important;
+    }
+}
+
 .tainacan-slide-main-view {
     display: flex;
     justify-content: space-between;

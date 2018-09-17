@@ -122,12 +122,14 @@
             <filters-tags-list 
                     class="filter-tags-list"
                     :filters="filters"
-                    v-if="hasFiltered && !openAdvancedSearch">Teste</filters-tags-list>
+                    v-if="hasFiltered && 
+                        !openAdvancedSearch &&
+                        !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)">Teste</filters-tags-list>
 
             <!-- SEARCH CONTROL ------------------------- -->
             <div
                     ref="search-control"
-                    v-if="!openAdvancedSearch"
+                    v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                     class="search-control">
                 <b-loading
                         :is-full-page="false"
@@ -1187,7 +1189,7 @@
         right: 0;
         width: 100vw;
         height: 100vh;
-        z-index: 9999999999999999999999999999;
+        z-index: 999999999;
         background-color: black;
     }
 
