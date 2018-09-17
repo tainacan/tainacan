@@ -1,7 +1,7 @@
 <template>
     <div>
         <section
-                style="position: relative;"
+                :style="{ position: relative }"
                 v-if="!metadata || metadata.length <= 0"
                 class="field is-grouped-centered section">
             <b-loading
@@ -645,6 +645,10 @@
 <style lang="scss">
 
     @import '../../scss/_variables.scss';
+
+    .loading-overlay {
+        min-height: 200px;
+    }
 
     .padding-in-header {
         padding-right: 3.3%;
