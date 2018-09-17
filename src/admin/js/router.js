@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import qs from 'qs';
 
 // Main Pages
+import HomePage from '../pages/singles/home-page.vue'
 import CollectionsPage from '../pages/lists/collections-page.vue'
 import CollectionPage from '../pages/singles/collection-page.vue'
 import ItemsPage from '../pages/lists/items-page.vue'
@@ -35,7 +36,8 @@ const i18nGet = function (key) {
 };
 
 const routes = [                
-    { path: '/', redirect:'/collections' },
+    { path: '/', redirect:'/home' },
+    { path: '/home', name: 'HomePage', component: HomePage, meta: {title: 'Tainacan'} },
 
     { path: '/collections', name: 'CollectionsPage', component: CollectionsPage, meta: {title: i18nGet('title_repository_collections_page'), icon: 'folder-multiple'} },
     { path: '/collections/new', name: 'CollectionCreationForm', component: CollectionEditionForm, meta: {title: i18nGet('title_create_collection'), icon: 'folder-multiple'} },

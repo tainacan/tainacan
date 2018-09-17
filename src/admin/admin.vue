@@ -2,24 +2,30 @@
     <div 
             id="tainacan-admin-app" 
             class="columns is-fullheight">
-        <primary-menu 
-                :active-route="activeRoute"
-                :is-menu-compressed="isMenuCompressed"/>
-        <button 
-                class="is-hidden-mobile"
-                id="menu-compress-button"
-                @click="isMenuCompressed = !isMenuCompressed">
-            <b-icon :icon="isMenuCompressed ? 'menu-right' : 'menu-left'" />
-        </button>
-        <tainacan-header />
-        <tainacan-repository-subheader 
-                :is-repository-level="isRepositoryLevel"
-                :is-menu-compressed="isMenuCompressed"/>
-        <div 
-                id="repository-container"
-                class="column is-main-content">  
+        <template v-if="activeRoute == 'HomePage'">
+            <tainacan-header />
             <router-view /> 
-        </div>
+        </template>
+        <template v-else>
+            <primary-menu 
+                    :active-route="activeRoute"
+                    :is-menu-compressed="isMenuCompressed"/>
+            <button 
+                    class="is-hidden-mobile"
+                    id="menu-compress-button"
+                    @click="isMenuCompressed = !isMenuCompressed">
+                <b-icon :icon="isMenuCompressed ? 'menu-right' : 'menu-left'" />
+            </button>
+            <tainacan-header />
+            <tainacan-repository-subheader 
+                    :is-repository-level="isRepositoryLevel"
+                    :is-menu-compressed="isMenuCompressed"/>
+            <div 
+                    id="repository-container"
+                    class="column is-main-content">  
+                <router-view /> 
+            </div>
+        </template>
     </div>
 </template>
 
