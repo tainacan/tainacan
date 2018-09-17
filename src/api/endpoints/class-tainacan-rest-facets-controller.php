@@ -47,7 +47,7 @@ class REST_Facets_Controller extends REST_Controller {
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_item'),
-				'permission_callback' => array($this, 'get_item_permissions_check')
+				'permission_callback' => array($this, 'get_items_permissions_check')
 			)
 		));
 	}
@@ -173,7 +173,7 @@ class REST_Facets_Controller extends REST_Controller {
 
 						foreach( $terms as $index => $term ){
 
-							if( in_array($term->WP_Term->term_id,$selected) ){
+							if( in_array($term->WP_Term->term_id, $selected) ){
 								continue;
 							}
 
@@ -232,7 +232,8 @@ class REST_Facets_Controller extends REST_Controller {
 
 				if( $selected && $request['getSelected'] && $request['getSelected'] === '1'){
 					$rawValues = $this->get_values( $response );
-					
+					$realResponse = [];
+
 					foreach( $selected as $index => $value ){
 						
 						$row = ['mvalue' => $value, 'metadatum_id' => $metadatum_id ];
@@ -240,13 +241,13 @@ class REST_Facets_Controller extends REST_Controller {
 
 					}
 
-					foreach( $rawValues as $index => $row ){
+					foreach( $rawValues as $index => $row0 ){
 
-						if( in_array($row['mvalue'],$selected) ){
+						if( in_array($row0, $selected) ){
 							continue;
 						}
 
-						$realResponse[] = $row;
+						$realResponse[] = ['mvalue' => $row0, 'metadatum_id' => $metadatum_id];
 
 						if( isset($request['number']) && count($realResponse) >= $request['number']){
 							break;

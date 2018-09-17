@@ -98,8 +98,15 @@
                 this.isLoading = true;
                 let query_items = { 'current_query': this.query };
 
-                axios.get('/collection/'+ this.collection +'/facets/' + this.metadatum 
-                + `?getSelected=1&hideempty=0&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items))
+                let route = `/collection/${this.collection}/facets/${this.metadatum}?getSelected=1&hideempty=0&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
+
+                if(this.collection == 'filter_in_repository'){
+                    route = `/facets/${this.metadatum}?getSelected=1&hideempty=0&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
+                }
+
+                this.options = [];
+
+                axios.get(route)
                     .then( res => {
 
                         for (let item of res.data) {
@@ -172,7 +179,14 @@
                     if (valueIndex >= 0) {
                         onlyLabels.push(this.options[valueIndex].label)
                     } else {
-                        axios.get('/collection/'+ this.collection +'/facets/' + this.metadatum +`?term_id=${selected}&fetch_only[0]=name&fetch_only[1]=id`)
+
+                        let route = '/collection/'+ this.collection +'/facets/' + this.metadatum +`?term_id=${selected}&fetch_only[0]=name&fetch_only[1]=id`;
+
+                        if(this.collection == 'filter_in_repository'){
+                            route = '/facets/' + this.metadatum +`?term_id=${selected}&fetch_only[0]=name&fetch_only[1]=id`
+                        }
+
+                        axios.get(route)
                             .then( res => {
                                 
                                 if(!res || !res.data){

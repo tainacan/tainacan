@@ -163,8 +163,9 @@ export default {
             let nUnfinishedProcesses = 0;
 
             for(let i = 0; i < this.bgProcesses.length; i++) {
-                if (this.bgProcesses[i].done <= 0)
+                if (this.bgProcesses[i].done <= 0){
                     nUnfinishedProcesses++;
+                }
             }
 
             return nUnfinishedProcesses;

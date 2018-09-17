@@ -16,6 +16,12 @@
                 @click="getTermsFromTaxonomy()">
             {{ $i18n.get('label_view_more') + ' (' + Number(totalTerms - terms.length) + ' ' + $i18n.get('terms') + ')' }}
         </a>
+        <!--<a-->
+                <!--class="add-new-term"-->
+                <!--v-if="(getComponent == 'tainacan-taxonomy-checkbox') && terms.length < totalTerms"-->
+                <!--@click="openCheckboxModal()">-->
+            <!--{{ $i18n.get('label_view_all') }}-->
+        <!--</a>-->
         <add-new-term
                 class="add-new-term"
                 v-if="allowNew"
@@ -35,6 +41,7 @@
     import TainacanTaxonomyTagInput from './TaxonomyTaginput.vue'
     import TainacanTaxonomySelectbox from './TaxonomySelectbox.vue'
     import AddNewTerm from  './AddNewTerm.vue'
+    import HierarchicalCheckboxModal from '../../../admin/components/other/checkbox-filter-modal.vue'
 
     export default {
         created(){
@@ -43,7 +50,8 @@
                 ? this.metadatum.metadatum.metadata_type_options.input_type : this.componentAttribute;
 
             this.collectionId = this.metadatum.metadatum.collection_id;
-            this.taxonomy = metadata_type_options.taxonomy_id;
+            this.taxonomy_id = metadata_type_options.taxonomy_id;
+            this.taxonomy = metadata_type_options.taxonomy;
 
             if( metadata_type_options && metadata_type_options.allow_new_terms && this.metadatum.item ){
                 this.allowNew = metadata_type_options.allow_new_terms == 'yes';
@@ -68,6 +76,7 @@
                 valueComponent: null,
                 component: '',
                 collectionId: '',
+                taxonomy_id: '',
                 taxonomy: '',
                 terms:[], // object with names
                 totalTerms: 0,
@@ -109,8 +118,26 @@
             }
         },
         methods: {
+            openCheckboxModal(){
+                this.$modal.open({
+                    parent: this,
+                    component: HierarchicalCheckboxModal,
+                    props: {
+                        isFilter: false,
+                        parent: 0,
+                        taxonomy_id: this.taxonomy_id,
+                        selected: this.value,
+                        metadatum_id: this.metadatum.metadatum.id,
+                        taxonomy: this.taxonomy,
+                        collection_id: this.collectionId,
+                        isTaxonomy: true,
+                        query: '',
+                    },
+                    width: 'calc(100% - 8.333333333%)',
+                });
+            },
             getTermsFromTaxonomy(){
-                let endpoint = '/taxonomy/' + this.taxonomy + '/terms?hideempty=0&order=asc';
+                let endpoint = '/taxonomy/' + this.taxonomy_id + '/terms?hideempty=0&order=asc';
 
                 if (this.getComponent == 'tainacan-taxonomy-checkbox' || this.getComponent == 'tainacan-taxonomy-radio')
                     endpoint = endpoint + '&number=' + this.termsNumber + '&offset=' + this.offset; 

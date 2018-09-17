@@ -152,13 +152,17 @@
 
 <script>
     import qs from 'qs';
-    import {tainacan as axios} from '../../../js/axios/axios';
+    import { tainacan as axios } from '../../../js/axios/axios';
     import { filter_type_mixin } from '../../../classes/filter-types/filter-types-mixin';
 
     export default {
         name: 'CheckboxFilterModal',
         mixins: [ filter_type_mixin ],
         props: {
+            isFilter: {
+                type: Boolean,
+                default: true
+            },
             filter: '',
             parent: Number,
             taxonomy_id: Number,
@@ -166,7 +170,10 @@
             collection_id: Number,
             metadatum_id: Number,
             selected: Array,
-            isTaxonomy: false,
+            isTaxonomy: {
+                type: Boolean,
+                default: false
+            },
             metadatum_type: String,
             metadatum_object: Object,
             isRepositoryLevel: Boolean,
@@ -285,7 +292,13 @@
 
                     let query = `?hideempty=0&order=asc&number=${this.maxNumSearchResultsShow}&searchterm=${this.optionName}&` + qs.stringify(query_items);
 
-                    axios.get(`/collection/${this.collection_id}/facets/${this.metadatum_id}${query}`)
+                    let route = `/collection/${this.collection_id}/facets/${this.metadatum_id}${query}`;
+
+                    if(this.collection_id == 'default' || this.collection_id == 'filter_in_repository'){
+                        route = `/facets/${this.metadatum_id}${query}`
+                    }
+
+                    axios.get(route)
                         .then((res) => {
                             this.searchResults = res.data;
                             this.isSearchingLoading = false;
@@ -398,7 +411,13 @@
 
                 this.isColumnLoading = true;
 
-                axios.get(`/collection/${this.collection_id}/facets/${this.metadatum_id}${query}`)
+                let route = `/collection/${this.collection_id}/facets/${this.metadatum_id}${query}`;
+
+                if(this.collection_id == 'default' || this.collection_id == 'filter_in_repository'){
+                    route = `/facets/${this.metadatum_id}${query}`
+                }
+
+                axios.get(route)
                     .then(res => {
                         this.removeLevelsAfter(key);
                         this.createColumn(res, key);
@@ -422,7 +441,13 @@
 
                     this.isColumnLoading = true;
 
-                    axios.get(`/collection/${this.collection_id}/facets/${this.metadatum_id}${query}`)
+                    let route = `/collection/${this.collection_id}/facets/${this.metadatum_id}${query}`;
+
+                    if(this.collection_id == 'default' || this.collection_id == 'filter_in_repository'){
+                        route = `/facets/${this.metadatum_id}${query}`
+                    }
+
+                    axios.get(route)
                         .then(res => {
                             this.appendMore(res.data, key);
 
@@ -438,7 +463,7 @@
             applyFilter() {
                 this.$parent.close();
 
-                if(this.isTaxonomy){
+                if(this.isTaxonomy && this.isFilter){
                     this.$eventBusSearch.$emit('input', {
                         filter: 'checkbox',
                         taxonomy: this.taxonomy,
@@ -447,7 +472,7 @@
                         collection_id: this.collection_id,
                         terms: this.selected
                     });         
-                } else {
+                } else if(this.isFilter) {
                     this.$eventBusSearch.$emit('input', {
                         filter: 'checkbox',
                         compare: 'IN',
