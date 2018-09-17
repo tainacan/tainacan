@@ -8,7 +8,7 @@
                 :allow-select-to-create="allowSelectToCreate"
                 :allow-new="allowNew"
                 :terms="terms"
-                :taxonomy-id="taxonomy"
+                :taxonomy-id="taxonomy_id"
                 :options="getOptions(0)"/>
         <a 
                 class="add-new-term"
@@ -26,7 +26,7 @@
                 class="add-new-term"
                 v-if="allowNew"
                 :component-type="getComponent"
-                :taxonomy_id="taxonomy"
+                :taxonomy_id="taxonomy_id"
                 :metadatum="metadatum"
                 :item_id="metadatum.item.id"
                 :value="valueComponent"
@@ -200,7 +200,7 @@
                 this.$emit('blur');
             },
             reload( $event ) {
-                if ($event.taxonomyId == this.taxonomy && $event.metadatumId == this.metadatum.metadatum.id) {
+                if ($event.taxonomyId == this.taxonomy_id && $event.metadatumId == this.metadatum.metadatum.id) {
                     this.valueComponent = $event.values;
                     this.terms = [];
                     this.offset = 0;
