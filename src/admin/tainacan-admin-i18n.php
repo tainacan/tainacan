@@ -288,6 +288,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_last_processed_on'                        => __( 'Last processed on:', 'tainacan' ),
 	'label_progress'                                 => __( 'Progress', 'tainacan' ),
 	'label_process_completed'                        => __( 'Process completed', 'tainacan' ),
+	'label_stop_process'                             => __( 'Stop process', 'tainacan' ),
 	'label_process_failed'	                         => __( 'Process failed', 'tainacan' ),
 	'label_max_options_to_show'                      => __( 'Max options to show', 'tainacan' ),
 	'label_unamed_process'                       	 => __( 'Unamed process', 'tainacan' ),
