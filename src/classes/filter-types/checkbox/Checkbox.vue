@@ -1,5 +1,11 @@
 <template>
     <div class="block">
+        <span 
+                v-if="isLoading"
+                style="width: 100%"
+                class="icon has-text-centered loading-icon">
+            <div class="control has-icons-right is-loading is-clearfix" />
+        </span>
         <div
                 v-for="(option, index) in options.slice(0, filter.max_options)"
                 :key="index"
@@ -115,6 +121,8 @@
                     promise = this.getValuesRelationship( collectionTarget, null, [], 0, this.filter.max_options, false, '1');
                     promise
                         .then(() => {
+
+                        this.isLoading = false;
                             if(this.options.length > this.filter.max_options){
                                 this.options.splice(this.filter.max_options);
                             }
@@ -125,6 +133,8 @@
                     promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1' );
                     promise
                         .then(() => {
+
+                        this.isLoading = false;
                             if(this.options.length > this.filter.max_options){
                                 this.options.splice(this.filter.max_options);
                             }
@@ -212,5 +222,11 @@
     .view-all-button-container {
         display: flex;
         padding-left: 18px;
+    }
+
+    .is-loading:after {
+        border: 2px solid white !important;
+        border-top-color: #dbdbdb !important;
+        border-right-color: #dbdbdb !important;
     }
 </style>
