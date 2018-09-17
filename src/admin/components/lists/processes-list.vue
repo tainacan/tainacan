@@ -338,7 +338,7 @@
                 }
             },
             pauseProcess(index) {
-                this.updateProcess({ id: this.bgProcesses[index].ID, status: 'closed' });
+                this.updateProcess({ id: this.processes[index].ID, status: 'closed' });
             }
         },
         mounted() {
