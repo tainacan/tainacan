@@ -86,12 +86,8 @@ function tainacan_the_document() {
  * @return bool True if item has document, false if it does not
  */
 function tainacan_has_document() {
-	$item = tainacan_get_item();
 	
-	if (!$item)
-		return;
-	
-	$document = $item->get_document();
+	$document = tainacan_get_the_document();
 
 	return ! empty($document);
 	
