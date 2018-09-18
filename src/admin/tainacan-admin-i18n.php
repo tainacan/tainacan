@@ -343,6 +343,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_type_existing_term'				 => __( 'Type to add an existing term...', 'tainacan' ),
 
 	// Info. Other feedback to user.
+	'info_error_invalid_date'                        => __( 'Invalid date', 'tainacan' ),
 	'info_search_results'                            => __( 'Search Results', 'tainacan' ),
 	'info_search_criteria'                           => __( 'Search Criteria', 'tainacan' ),
 	'info_name_is_required'                          => __( 'Name is required.', 'tainacan' ),
