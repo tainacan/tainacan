@@ -231,7 +231,7 @@ class Test_Importer extends Importer {
 		</div>
 
 		<div class="field">
-			<label class="label"><?php _e('Horizontal image size', 'tainacan'); ?></label>
+			<label class="label"><?php _e('Horizontal image size (0 for random)', 'tainacan'); ?></label>
 			<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
@@ -243,7 +243,7 @@ class Test_Importer extends Importer {
 							<h5><?php _e('Horizontal image size', 'tainacan'); ?></h5>
 						</div>
 						<div class="help-tooltip-body">
-							<p><?php _e('Horizontal image size ( 0 for random size )', 'tainacan'); ?></p>
+							<p><?php _e('Horizontal image size in pixels ( 0 for random size )', 'tainacan'); ?></p>
 						</div>
 					</div> 
 			</span>
@@ -253,7 +253,7 @@ class Test_Importer extends Importer {
 		</div>
 
 		<div class="field">
-			<label class="label"><?php _e('Vertical image size', 'tainacan'); ?></label>
+			<label class="label"><?php _e('Vertical image size (0 for random)', 'tainacan'); ?></label>
 			<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
@@ -265,7 +265,7 @@ class Test_Importer extends Importer {
 							<h5><?php _e('Vertical image size', 'tainacan'); ?></h5>
 						</div>
 						<div class="help-tooltip-body">
-							<p><?php _e('Vertical image size ( 0 for random size )', 'tainacan'); ?></p>
+							<p><?php _e('Vertical image size in pixels ( 0 for random size )', 'tainacan'); ?></p>
 						</div>
 					</div> 
 			</span>
