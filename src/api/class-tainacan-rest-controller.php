@@ -164,7 +164,7 @@ class REST_Controller extends \WP_REST_Controller {
 			foreach ( $request_meta_query as $index1 => $a ) {
 
                 // handle core metadatum
-                if( is_array($a) && array_key_exists("key", $a) && !$request['advancedSearch'] ){
+                if( is_array($a) && array_key_exists("key", $a) && ( !isset($request['advancedSearch']) || !$request['advancedSearch'] ) ){
                     $metadatum = new \Tainacan\Entities\Metadatum($a['key']);
                     if( strpos( $metadatum->get_metadata_type(), 'Core_Title') !== false ){
                         $args[ 'post_title_in' ] = [

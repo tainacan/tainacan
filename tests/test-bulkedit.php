@@ -948,9 +948,9 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 			'POST', $this->api_baseroute
 		);
 
-		$request->set_query_params($query);
+		//$request->set_query_params($query);
 
-		$request->set_body( json_encode(['use_query' => 1]) );
+		$request->set_body( json_encode(['use_query' => $query]) );
 
 		$response = $this->server->dispatch($request);
 
@@ -1127,6 +1127,10 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 		$bulk = new \Tainacan\Bulk_Edit([
 			'items_ids' => $ids,
 		]);
+
+		$this->assertEquals( 0, $bulk->delete_items(), 'Items must be on trash to be deleted' );
+
+		$bulk->trash_items();
 
 		$this->assertEquals( 17, $bulk->delete_items() );
 
