@@ -2,6 +2,8 @@
 
 namespace Tainacan\Metadata_Types;
 
+use Tainacan\Entities\Item_Metadata_Entity;
+
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 use Tainacan\Helpers;
@@ -28,4 +30,19 @@ class Date extends Metadata_Type {
                                value=\''.json_encode( $itemMetadata->get_value() ).'\'  
                                name="'.$itemMetadata->get_metadatum()->get_name().'"></tainacan-date>';
     }
+
+
+    public function validate( Item_Metadata_Entity $item_metadata) {
+        
+        $value = $item_metadata->get_value();
+
+        $format = 'Y-m-d';
+
+        $d = \DateTime::createFromFormat($format, $value);
+
+        return $d && $d->format($format) === $value;
+        
+    }
+
+
 }

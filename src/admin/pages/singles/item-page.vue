@@ -8,7 +8,15 @@
                 @click="isMetadataColumnCompressed = !isMetadataColumnCompressed">
             <b-icon :icon="isMetadataColumnCompressed ? 'menu-left' : 'menu-right'" />
         </button>
-        <tainacan-title/>
+        <div class="tainacan-page-title">
+            <h1>{{ $i18n.get('title_item_page') + ' ' }}<span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span></h1>
+            <a 
+                    @click="$router.go(-1)"
+                    class="back-link has-text-secondary">
+                {{ $i18n.get('back') }}
+            </a>
+            <hr>
+        </div>
         <div class="tainacan-form">
             <div class="columns">
                 <div class="column is-5-5">
@@ -436,7 +444,7 @@
         position: absolute;
         z-index: 99;
         right: 0;
-        top: 70px;
+        top: 148px;
         max-width: 36px;
         height: 36px;
         width: 36px;
@@ -462,8 +470,33 @@
         }
 
         .tainacan-page-title {
-            padding-left: $page-side-padding;
-            padding-right: $page-side-padding;
+            padding: 0 $page-side-padding;
+            margin-bottom: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            justify-content: space-between;
+
+            h1, h2 {
+                font-size: 20px;
+                font-weight: 500;
+                color: $gray5;
+                display: inline-block;
+                width: 80%;
+                flex-shrink: 1;
+                flex-grow: 1;
+            }
+            a.back-link{
+                font-weight: 500;
+                float: right;
+                margin-top: 5px;
+            }
+            hr{
+                margin: 3px 0px 4px 0px; 
+                height: 1px;
+                background-color: $secondary;
+                width: 100%;
+            }
         }
 
         .tainacan-form>.columns {
