@@ -1272,5 +1272,32 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 
 	}
 
+	function test_create_delete_group() {
+
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+
+		$ids = array_slice($this->items_ids, 2, 7);
+		
+		$bulk = new \Tainacan\Bulk_Edit([
+			'items_ids' => $ids,
+		]);
+
+		$bulk->trash_items();
+
+		$query = [
+			'status' => 'trash',
+			'posts_per_page' => -1
+		];
+		
+		$bulk = new \Tainacan\Bulk_Edit([
+			'query' => $query,
+			'collection_id' => $this->collection->get_id()
+		]);
+
+		$this->assertEquals(7, $bulk->count_posts());
+
+
+	}
+
 
 }
