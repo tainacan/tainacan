@@ -356,7 +356,9 @@ class Bulk_Edit  {
 
 		$select_q = $this->_build_select( 'post_id' );
 
-		$query_delete = "DELETE FROM $wpdb->posts WHERE ID IN ($select_q)";
+		$security = " AND post_status = 'trash'";
+
+		$query_delete = "DELETE FROM $wpdb->posts WHERE ID IN ($select_q) $security";
 
 		return $wpdb->query($query_delete);
 
