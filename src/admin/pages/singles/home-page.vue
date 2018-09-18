@@ -150,6 +150,7 @@ export default {
     .home-page {
         margin-top: $header-height;
         background-color: $gray1;
+        height: calc(100% - 52px);
 
         .home-section {
             .home-section-header {

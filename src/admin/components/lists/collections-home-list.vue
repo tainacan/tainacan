@@ -123,7 +123,6 @@
                         <!-- <span class="menu-text">{{ $i18n.get('events') }}</span> -->
                     </router-link> 
                 </li>
-            
             </ul>
         </router-link>
     </div>

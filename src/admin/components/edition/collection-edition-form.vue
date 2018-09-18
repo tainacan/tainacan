@@ -27,6 +27,7 @@
                                 @blur="updateSlug"
                                 @focus="clearErrors('name')"/>
                     </b-field>
+
                     <!-- Hook for extra Form options -->
                     <template 
                             v-if="formHooks != undefined && 
@@ -439,11 +440,28 @@
                             type="button"
                             @click="cancelBack">{{ $i18n.get('cancel') }}</button>
                 </div>
+                
+                <div 
+                        style="margin-left: auto;"
+                        class="control">
+                    <button
+                            v-if="isNewCollection"
+                            id="button-submit-goto-metadata"
+                            @click.prevent="onSubmit('metadata')"
+                            class="button is-turquoise5">{{ $i18n.get('label_save_goto_metadata') }}</button>
+                </div>
+                 <div class="control">
+                    <button
+                            v-if="isNewCollection"
+                            id="button-submit-goto-filter"
+                            @click.prevent="onSubmit('filters')"
+                            class="button is-turquoise5">{{ $i18n.get('label_save_goto_filter') }}</button>
+                </div>
                 <div class="control">
                     <button
                             id="button-submit-collection-creation"
-                            @click.prevent="onSubmit"
-                            class="button is-success">{{ $i18n.get('save') }}</button>
+                            @click.prevent="onSubmit('items')"
+                            class="button is-success">{{ $i18n.get('finish') }}</button>
                 </div>
             </div>
             <p class="help is-danger">{{ formErrorMessage }}</p> 
@@ -568,7 +586,7 @@ export default {
                     this.isUpdatingSlug = false;
                 });
         }, 500),
-        onSubmit() {
+        onSubmit(goTo) {
            
             this.isLoading = true;
             this.form.moderators_ids = [];
@@ -616,8 +634,14 @@ export default {
 
                 if (this.fromImporter)
                     this.$router.go(-1);
-                else
-                    this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
+                else {
+                    if (goTo == 'metadata')
+                        this.$router.push(this.$routerHelper.getCollectionMetadataPath(this.collectionId));
+                    else if (goTo == 'filters')
+                        this.$router.push(this.$routerHelper.getCollectionFiltersPath(this.collectionId));
+                    else
+                        this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
+                }
             })
             .catch((errors) => {
                 for (let error of errors.errors) {     

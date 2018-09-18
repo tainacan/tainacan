@@ -3,7 +3,17 @@
             id="tainacan-header"
             class="level is-mobile">
         <div class="level-left">
-            <div class="level-item">
+            <div class="level-item home-area">
+                <router-link
+                        tag="a"
+                        to="/">
+                    <b-icon 
+                            type="is-blue5"
+                            size="is-medium"
+                            icon="home"/>
+                </router-link>
+            </div>
+            <div class="level-item logo-area">
                 <router-link
                         tag="a"
                         to="/">
@@ -161,8 +171,12 @@
 
         .level-left {
             margin-left: -12px;
-
-            .level-item {
+            .home-area {
+                width: 50px;
+                height: $header-height;
+                background-color: $gray1;
+            }
+            .logo-area {
                 height: $header-height;
                 width: $side-menu-width;
                 cursor: pointer;
@@ -173,7 +187,7 @@
                 .tainacan-logo {
                     height: 24px;
                     padding: 0px;
-                    margin-left: 19px;
+                    // margin-left: 19px;
                 }
             }
         }
