@@ -31,12 +31,12 @@
 
             <b-loading
                     :is-full-page="false"
-                    :active.sync="isLoadingMetadata"/>
+                    :active.sync="isLoadingItem"/>
 
             <h3 class="has-text-white has-text-weight-semibold">{{ $i18n.get('metadata') }}</h3>
             
             <a
-                    v-if="!isLoadingMetadata && metadata.length > 0"
+                    v-if="!isLoadingItem && item.metadata.length > 0"
                     class="collapse-all is-size-7"
                     @click="collapseAll = !collapseAll">
                 {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
@@ -82,11 +82,16 @@
                     <transition 
                             mode="out-in"
                             :name="goingRight ? 'slide-right' : 'slide-left'" >
-                        <div
+                        <!-- <div
                                 :key="index"
                                 v-for="(item, index) of items"
                                 v-if="index == slideIndex"
                                 class="slide-main-content">
+                            <a :href="item.url" >
+                                <img :src="item.thumbnail != undefined && item['thumbnail'].full ? item['thumbnail'].full : thumbPlaceholderPath">  
+                            </a>
+                        </div> -->
+                        <div class="slide-main-content">
                             <a :href="item.url" >
                                 <img :src="item.thumbnail != undefined && item['thumbnail'].full ? item['thumbnail'].full : thumbPlaceholderPath">  
                             </a>
@@ -133,6 +138,7 @@
 </template>
 
 <script>
+import {mapActions, mapGetters} from 'vuex'
 
 export default {
     name: 'ViewModeSlide',
@@ -146,14 +152,40 @@ export default {
             isLoading: false,
             goingRight: true,
             collapseAll: false,
-            isLoadingMetadata: false,
+            isLoadingItem: false,
             isMetadataCompressed: true,
-            metadata: [],
             slideIndex: 0,
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png'
         }
     },
+    computed: {
+        item() {
+            return this.getItem();
+        }
+    },
+    watch: {
+        slideIndex() {
+            if (items[slideIndex] && items[slideIndex].id != undefined) {
+                
+                this.isLoadingItem = true;
+
+                fetchItem(items[slideIndex].id)
+                    .then(() => {
+                        this.isLoadingItem = false;
+                    })
+                    .catch(() => {
+                        this.isLoadingItem = false;
+                    });
+            }
+        }
+    },
     methods: {
+        ...mapActions('item', [
+            'fetchItem'
+        ]),
+        ...mapGetters('item', [
+            'getItem',
+        ]),
         nextSlide() {
             this.goingRight = true;
             this.slideIndex++;
