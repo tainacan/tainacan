@@ -5,18 +5,11 @@
                 :is="getComponent"
                 :maxtags="maxtags"
                 v-model="valueComponent"
-                @input="onInput"
                 :allow-select-to-create="allowSelectToCreate"
                 :allow-new="allowNew"
                 :terms="terms"
                 :taxonomy-id="taxonomy_id"
                 :options="getOptions(0)"/>
-        <!--<a -->
-                <!--class="add-new-term"-->
-                <!--v-if="(getComponent == 'tainacan-taxonomy-checkbox' || getComponent == 'tainacan-taxonomy-radio') && terms.length < totalTerms"-->
-                <!--@click="getTermsFromTaxonomy()">-->
-            <!--{{ $i18n.get('label_view_more') + ' (' + Number(totalTerms - terms.length) + ' ' + $i18n.get('terms') + ')' }}-->
-        <!--</a>-->
         <a
                 class="add-new-term"
                 v-if="(getComponent == 'tainacan-taxonomy-checkbox') && terms.length < totalTerms"
@@ -133,7 +126,12 @@
                         collection_id: this.collectionId,
                         isTaxonomy: true,
                         query: '',
-                        metadatum: this.metadatum,
+                        metadatum: this.metadatum.metadatum,
+                    },
+                    events: {
+                        input: (selected) => {
+                            this.valueComponent = selected;
+                        }
                     },
                     width: 'calc(100% - 8.333333333%)',
                 });

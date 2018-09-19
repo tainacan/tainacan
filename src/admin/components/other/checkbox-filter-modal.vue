@@ -107,7 +107,7 @@
             </div>
             <!--<pre>{{ hierarchicalPath }}</pre>-->
             <!--<pre>{{ totalRemaining }}</pre>-->
-            <pre>{{ selected }}</pre>
+            <!--<pre>{{ selected }}</pre>-->
             <!--<pre>{{ options }}</pre>-->
             <!--<pre>{{ searchResults }}</pre>-->
 
@@ -482,6 +482,8 @@
                         collection_id: this.collection_id ? this.collection_id : this.filter.collection_id,
                         value: this.selected,
                     });
+                } else {
+                    this.$emit('input', this.selected)
                 }
 
                 this.$emit('appliedCheckBoxModal');
