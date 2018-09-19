@@ -21,7 +21,7 @@
     min-width: 180px;
     min-height: 100%;
     height: 100%;
-    padding: $page-side-padding;
+    padding: $page-side-padding 25px $page-side-padding $page-side-padding;
     float: left;
     overflow-y: auto;
     overflow-x: hidden;
@@ -43,12 +43,46 @@
 
     h3 {
         font-size: 100%;
-        margin-top: 48px;
+        margin-top: 0px;
     }
 
-    .label {
-        font-size: 0.75rem;
-        font-weight: normal;
+    .collapse-all {
+        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 1rem;
+
+        .icon {
+            vertical-align: bottom;
+        }
+    }
+
+    // Overrides bootstrap behavior
+    .collapse:not(.show) {
+        display: initial;
+    }
+
+    .field {        
+        margin-bottom: 0px !important;
+        border-bottom: 1px solid $gray2;
+        padding: 1rem 0px 0.2rem 0px;
+
+        .label {
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 0.75rem !important;
+            display: inline-flex;
+            align-items: center;
+
+            span {
+                margin-right: 5px;
+                margin-left: -5px;
+            }
+        }
+        .content {
+            font-size: 0.75rem;
+        }
     }
 
     .checkbox {
@@ -67,8 +101,8 @@
     height: 21px;
     width: 23px;
     border: none;
-    background-color: $turquoise1;
-    color: $turquoise5;
+    background-color: $gray5;
+    color: white;
     padding: 0;
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
@@ -112,10 +146,27 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    min-height: 82vh;
+    min-height: calc(100vh - 142px);
     margin-bottom: 1rem;
 
     .slide-main-content {
+        position: relative;
+        min-height: 82vh;
+        max-height: 82vh;
+        width: 100vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &>div, 
+        &>div>audio,
+        &>div>video,
+        &>div.tainacan-embed-container {
+            width: 100%;
+            max-width: 82vh;
+            text-align: center;
+            color: white;
+        }
         img {
             height: 100%;
             width: auto;
@@ -128,9 +179,11 @@
         background-color: transparent;
         border: none !important;
         height: 3.5rem;
-        width: 3.5rem;
+        width: 2.8rem;
         text-align: center;
         vertical-align: middle;
+        position: absolute;
+        z-index: 9;
 
         &:focus, &:active {
             border: none;
@@ -147,15 +200,24 @@
                 color: $turquoise5;
             }
         }
+        &.arrow-left { 
+            left: 0; 
+            margin-left: $page-side-padding;
+            
+        }
+        &.arrow-right { 
+            right: 0;     
+            margin-right: $page-side-padding;
+        }
     }
 }
 .slide-title-area {
     width: 100%;
     position: relative;
-    top: -80px;
-    margin-bottom: -80px;
+    top: -85px;
+    margin-bottom: -85px;
     background-color: rgba(0,0,0,0.5);
-    padding: 1rem 0;
+    padding: 1rem $page-side-padding;
 
     h1 {
         color: white;
@@ -164,7 +226,7 @@
     }
 }
 .tainacan-slide-container {
-    padding: 0;
+    padding: 0 $page-side-padding;
     display: flex;
     flex-wrap: nowrap;
     overflow: auto;
@@ -185,7 +247,7 @@
     }
 
     .tainacan-slide-item {
-        padding: 0 0 0.25rem 0;
+        padding: 0 0 6px 0;
         margin: 0.75rem;
         border-bottom: 4px solid transparent; 
         transition: border-bottom 0.2s;
@@ -197,32 +259,10 @@
             border-bottom: 4px solid $gray2;
         }
         img {
-            width: 80px;
+            width: 85px;
             height: auto;
             border-radius: 0px;
         }
-        .metadata-title {
-            flex-shrink: 0;
-            padding: 0.5rem 4.75rem 0.5rem 2.75rem;
-            margin-bottom: -27px;
-            min-height: 40px;
-            font-size: 0.875rem !important; 
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
-            color: black;
-
-            p {
-                line-height: 1.7;
-                font-size: 0.875rem !important; 
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                overflow: hidden;
-                transition: background-color 0.3s;
-            }
-        }    
-    
     }
 }
-
 

@@ -183,6 +183,7 @@ export default {
         #items-list-area {
             width: 100%;
             overflow-y: hidden;
+            overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
             margin-left: 0;
             &.spaced-to-right {

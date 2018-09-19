@@ -29,14 +29,10 @@
                 v-if="!isMetadataCompressed"
                 class="metadata-menu tainacan-form is-hidden-mobile">
 
-            <b-loading
-                    :is-full-page="false"
-                    :active.sync="isLoadingItem"/>
-
             <h3 class="has-text-white has-text-weight-semibold">{{ $i18n.get('metadata') }}</h3>
             
             <a
-                    v-if="!isLoadingItem && item.metadata.length > 0"
+                    v-if="!isLoadingItem && Object.keys(item.metadata).length > 0"
                     class="collapse-all is-size-7"
                     @click="collapseAll = !collapseAll">
                 {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
@@ -45,12 +41,42 @@
                         :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
             </a>
 
+            <span 
+                    v-if="isLoadingItem"
+                    style="width: 100%;"
+                    class="icon is-large loading-icon">
+                <div class="is-large control has-icons-right is-loading is-clearfix" />
+            </span>
+
+            <div
+                    v-for="(metadatum, index) of item.metadata"
+                    :key="index"
+                    class="field">
+                <b-collapse :open="!collapseAll">
+                    <label
+                            class="label has-text-white"
+                            slot="trigger"
+                            slot-scope="props">
+                        <b-icon
+                                type="is-secondary"
+                                :icon="props.open ? 'menu-down' : 'menu-right'"
+                        />
+                        {{ metadatum.name }}
+                    </label>
+                    <div class="content">
+                        <p  
+                            class="has-text-white"
+                            v-html="metadatum.value_as_html != '' ? metadatum.value_as_html : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                    </div>
+                </b-collapse>
+
+            </div>
+
             <br>
             <br>
 
         </aside>
         <div 
-                class="table-container"
                 :class="{ 'spaced-to-right': !isMetadataCompressed }"
                 @keyup.left="slideIndex > 0 ? prevSlide() : null"
                 @keyup.right="slideIndex < items.length - 1 ? nextSlide() : null">
@@ -74,33 +100,34 @@
                     <button 
                             @click="prevSlide()"
                             :style="{ visibility: slideIndex > 0 ? 'visible' : 'hidden' }"
-                            class="slide-control-arrow">
+                            class="slide-control-arrow arrow-left">
                         <span class="icon is-large">
                             <icon class="mdi mdi-48px mdi-chevron-left"/>
                         </span>
                     </button>
-                    <transition 
-                            mode="out-in"
-                            :name="goingRight ? 'slide-right' : 'slide-left'" >
-                        <!-- <div
-                                :key="index"
-                                v-for="(item, index) of items"
-                                v-if="index == slideIndex"
-                                class="slide-main-content">
-                            <a :href="item.url" >
-                                <img :src="item.thumbnail != undefined && item['thumbnail'].full ? item['thumbnail'].full : thumbPlaceholderPath">  
-                            </a>
-                        </div> -->
-                        <div class="slide-main-content">
-                            <a :href="item.url" >
-                                <img :src="item.thumbnail != undefined && item['thumbnail'].full ? item['thumbnail'].full : thumbPlaceholderPath">  
-                            </a>
-                        </div>
-                    </transition>
+                    <div class="slide-main-content">
+
+                        <transition 
+                                mode="out-in"
+                                :name="goingRight ? 'slide-right' : 'slide-left'" >
+                            <span 
+                                    v-if="isLoadingItem"
+                                    class="icon is-large loading-icon">
+                                <div class="is-large control has-icons-right is-loading is-clearfix" />
+                            </span>
+                            <div 
+                                    v-if="!isLoadingItem && (item.document != undefined && item.document != null)"
+                                    v-html="item.document_as_html" />  
+                            <img 
+                                    v-else
+                                    :alt="$i18n.get('label_document_empty')" 
+                                    :src="thumbPlaceholderPath">
+                        </transition>
+                    </div>
                     <button 
                             @click="nextSlide()"
                             :style="{ visibility: slideIndex < items.length - 1 ? 'visible' : 'hidden' }"
-                            class="slide-control-arrow">
+                            class="slide-control-arrow arrow-right">
                         <span class="icon is-large has-text-turoquoise5">
                             <icon class="mdi mdi-48px mdi-chevron-right"/>
                         </span>
@@ -165,11 +192,11 @@ export default {
     },
     watch: {
         slideIndex() {
-            if (items[slideIndex] && items[slideIndex].id != undefined) {
+            if (this.items && this.items[this.slideIndex] && this.items[this.slideIndex].id != undefined) {
                 
                 this.isLoadingItem = true;
 
-                fetchItem(items[slideIndex].id)
+                this.fetchItem(this.items[this.slideIndex].id)
                     .then(() => {
                         this.isLoadingItem = false;
                     })

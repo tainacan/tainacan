@@ -68,7 +68,7 @@
                         :active.sync="isLoading"/>
             </div>
             
-            <!-- GRID VIEW MODE -->
+            <!-- GRID (THUMBNAILS) VIEW MODE -->
             <div
                     class="tainacan-grid-container"
                     v-if="viewMode == 'grid'">

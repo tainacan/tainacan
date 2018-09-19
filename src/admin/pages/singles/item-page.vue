@@ -495,9 +495,9 @@
                 width: 100%;
             }
         }
-            .collapse .collapse-content {
-                margin-left: 30px; 
-            }
+        .collapse .collapse-content {
+            margin-left: 30px; 
+        }
     }
 
     .field {
