@@ -97,9 +97,9 @@
     z-index: 99;
     top: 120px;
     left: 0;
-    max-width: 23px;
-    height: 21px;
-    width: 23px;
+    max-width: 33px;
+    height: 26px;
+    width: 33px;
     border: none;
     background-color: $gray5;
     color: white;
@@ -114,7 +114,7 @@
     }
 
     .icon {
-        margin-top: -1px;
+        margin-top: 1px;
     }
 
     @media screen and (max-width: 768px) {
@@ -136,6 +136,10 @@
 
 .spaced-to-right {
     margin-left:  20.83%;
+
+    .arrow-left {
+        left: 20.83% !important;
+    }
 
     @media screen and (max-width: 768px) {
         margin-left: 0px !important;
@@ -159,18 +163,14 @@
         justify-content: center;
 
         &>div, 
-        &>div>audio,
-        &>div>video,
+        &>div audio,
+        &>div img,
+        &>div video,
         &>div.tainacan-embed-container {
             width: 100%;
             max-width: 82vh;
             text-align: center;
             color: white;
-        }
-        img {
-            height: 100%;
-            width: auto;
-            max-width: 100%;
         }
     }
 
@@ -218,14 +218,33 @@
     margin-bottom: -85px;
     background-color: rgba(0,0,0,0.5);
     padding: 1rem $page-side-padding;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
     h1 {
         color: white;
         font-size: 2rem;
         font-weight: normal;
     }
+
+    .play-button {
+        cursor: pointer;
+        border: 0;
+        background: transparent;
+
+        .icon {
+            border-radius: 100px;
+            background: white;
+            border: 3px solid black;
+        }
+        &:focus, &:active {
+            outline: 0;
+            border: 0;
+        }
+    }
 }
-.tainacan-slide-container {
+#tainacan-slide-container {
     padding: 0 $page-side-padding;
     display: flex;
     flex-wrap: nowrap;
@@ -246,22 +265,23 @@
         }
     }
 
-    .tainacan-slide-item {
-        padding: 0 0 6px 0;
+    .tainacan-slide-item {    
         margin: 0.75rem;
-        border-bottom: 4px solid transparent; 
-        transition: border-bottom 0.2s;
 
-        &.active-item {
+        &.active-item img {
             border-bottom: 4px solid $turquoise5 !important;
         }
-        &:hover {
+        &:hover img{
             border-bottom: 4px solid $gray2;
         }
+
         img {
             width: 85px;
             height: auto;
             border-radius: 0px;
+            padding: 0 0 6px 0;
+            border-bottom: 4px solid transparent; 
+            transition: border-bottom 0.4s;
         }
     }
 }

@@ -643,6 +643,9 @@ class Item extends Entity {
 				$img = wp_get_attachment_image($this->get_document(), $img_size);
 				$img_full = wp_get_attachment_url($this->get_document());
 				
+				$image_attributes = wp_get_attachment_image_src( $this->get_document(), $img_size );
+                $img = "<img style='max-width: 100%;' src='" . $image_attributes[0] . "' />";
+
 				$output .= sprintf("<a href='%s' target='blank'>%s</a>", $img_full, $img);
 				
 			} else {

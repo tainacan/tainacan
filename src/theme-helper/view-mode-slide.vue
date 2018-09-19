@@ -1,5 +1,5 @@
 <template>
-        <div>
+    <div>
         <!-- CLOSE BUTTON -->
         <button
                 v-tooltip="{
@@ -98,12 +98,14 @@
                 <!-- SLIDE MAIN VIEW-->
                 <section class="tainacan-slide-main-view">
                     <button 
+                            ref="prevArrow"
+                            id='prevArrow'
                             @click="prevSlide()"
                             :style="{ visibility: slideIndex > 0 ? 'visible' : 'hidden' }"
                             class="slide-control-arrow arrow-left">
                         <span class="icon is-large">
                             <icon class="mdi mdi-48px mdi-chevron-left"/>
-                        </span>
+                        </span> 
                     </button>
                     <div class="slide-main-content">
 
@@ -118,13 +120,16 @@
                             <div 
                                     v-if="!isLoadingItem && (item.document != undefined && item.document != null)"
                                     v-html="item.document_as_html" />  
-                            <img 
-                                    v-else
-                                    :alt="$i18n.get('label_document_empty')" 
-                                    :src="thumbPlaceholderPath">
+                            <div v-else>
+                                <img 
+                                        :alt="$i18n.get('label_document_empty')" 
+                                        :src="thumbPlaceholderPath">
+                            </div>
                         </transition>
                     </div>
                     <button 
+                            ref="nextArrow"
+                            id='nextArrow'
                             @click="nextSlide()"
                             :style="{ visibility: slideIndex < items.length - 1 ? 'visible' : 'hidden' }"
                             class="slide-control-arrow arrow-right">
@@ -137,10 +142,20 @@
                         v-if="items[slideIndex] != undefined"
                         class="slide-title-area">
                     <h1>{{ items[slideIndex].title }}</h1>
+                    <button 
+                            class="play-button"
+                            @click="isPlaying = !isPlaying">
+                        <b-icon
+                                type="is-secondary" 
+                                size="is-medium"
+                                :icon="isPlaying ? 'pause-circle' : 'play-circle' "/>
+                    </button>
                 </section>
 
-                <!-- SLIDE ITEMS LIST -->
-                <div class="tainacan-slide-container">
+                <!-- SLIDE ITEMS LIST --> 
+                <div 
+                        class="is-hidden-mobile"
+                        id="tainacan-slide-container">
                     <a 
                             @click="slideIndex = index"
                             :key="index"
@@ -178,6 +193,9 @@ export default {
         return {
             isLoading: false,
             goingRight: true,
+            isPlaying: false,
+            slideTimeout: 5000, 
+            intervalId: 0, 
             collapseAll: false,
             isLoadingItem: false,
             isMetadataCompressed: true,
@@ -204,6 +222,15 @@ export default {
                         this.isLoadingItem = false;
                     });
             }
+        }, 
+        isPlaying() {
+            if (this.isPlaying) {
+                this.intervalId = setInterval(() => {
+                    this.$refs.nextArrow.click()
+                }, this.slideTimeout)
+            } else {
+                clearInterval(this.intervalId);
+            }
         }
     },
     methods: {
@@ -215,7 +242,10 @@ export default {
         ]),
         nextSlide() {
             this.goingRight = true;
-            this.slideIndex++;
+            if (this.slideIndex < this.items.length - 1)
+                this.slideIndex++;
+            else
+                this.isPlaying = false;
         },
         prevSlide() {
             this.goingRight = false;
@@ -237,6 +267,51 @@ export default {
         closeSlideViewMode() {
             this.$parent.onChangeViewMode(this.$parent.defaultViewMode);
         }
+    },
+    mounted() {
+
+        let carrousel = jQuery('#tainacan-slide-container');
+        carrousel.slick({
+            acessibility: false,
+            arrows: true,
+            centerMode: true,
+            focusOnSelect: true,
+            infinite: false,
+            slidesToShow: 12,
+            slidesToScroll: 12,
+            nextArrow: '#nextArrow',
+            prevArrow: '#prevArrow',
+            responsive: [
+                {
+                    breakpoint: 1408,
+                    settings: {
+                        slidesToShow: 9,
+                        slidesToScroll: 9,
+                    }
+                },
+                {
+                    breakpoint: 1024,
+                    settings: {
+                        slidesToShow: 6,
+                        slidesToScroll: 6,
+                    }
+                },
+                {
+                    breakpoint: 768,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 3,
+                    }
+                },
+                {
+                    breakpoint: 348,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 2,
+                    }
+                }
+            ]
+        });
     }
 }
 </script>
@@ -252,7 +327,7 @@ export default {
     $gray4: #898d8f;
     $gray5: #454647; 
     $page-small-side-padding: 25px;
-    $page-side-padding: 4.166666667%;
+    $page-side-padding: 4.166666667%; 
 
     @import "../../src/admin/scss/_view-mode-slide.scss";
 

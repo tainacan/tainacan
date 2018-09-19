@@ -1194,6 +1194,7 @@
         height: 100vh;
         z-index: 999999999;
         background-color: black;
+        transition: all 0.3s ease;
     }
 
     .collapse-all {
