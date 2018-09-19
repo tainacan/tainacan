@@ -56,7 +56,7 @@ class Test_Importer extends Importer {
 	];
 
 	protected $date_values = [
-		'03/04/1993', '03/12/1998', '10/09/2001', '03/01/2018', '13/11/2016', '22/04/1993'
+		'1993-12-03', '1998-04-03', '2001-09-10', '2018-01-03', '2016-11-13', '1993-04-22'
 	];
 
 	protected $numeric_values = [
@@ -231,7 +231,7 @@ class Test_Importer extends Importer {
 		</div>
 
 		<div class="field">
-			<label class="label"><?php _e('Horizontal image size', 'tainacan'); ?></label>
+			<label class="label"><?php _e('Horizontal image size (0 for random)', 'tainacan'); ?></label>
 			<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
@@ -243,7 +243,7 @@ class Test_Importer extends Importer {
 							<h5><?php _e('Horizontal image size', 'tainacan'); ?></h5>
 						</div>
 						<div class="help-tooltip-body">
-							<p><?php _e('Horizontal image size ( 0 for random size )', 'tainacan'); ?></p>
+							<p><?php _e('Horizontal image size in pixels ( 0 for random size )', 'tainacan'); ?></p>
 						</div>
 					</div> 
 			</span>
@@ -253,7 +253,7 @@ class Test_Importer extends Importer {
 		</div>
 
 		<div class="field">
-			<label class="label"><?php _e('Vertical image size', 'tainacan'); ?></label>
+			<label class="label"><?php _e('Vertical image size (0 for random)', 'tainacan'); ?></label>
 			<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
@@ -265,7 +265,7 @@ class Test_Importer extends Importer {
 							<h5><?php _e('Vertical image size', 'tainacan'); ?></h5>
 						</div>
 						<div class="help-tooltip-body">
-							<p><?php _e('Vertical image size ( 0 for random size )', 'tainacan'); ?></p>
+							<p><?php _e('Vertical image size in pixels ( 0 for random size )', 'tainacan'); ?></p>
 						</div>
 					</div> 
 			</span>

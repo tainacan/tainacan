@@ -183,12 +183,12 @@ class REST_Bulkedit_Controller extends REST_Controller {
             $args['items_ids'] = $body['items_ids'];
         } elseif ( isset($body['use_query']) && $body['use_query'] ) {
 
-            unset($request['paged']);
-            unset($request['offset']);
-            unset($request['perpage']);
-            $request['nopaging'] = 1;
+            unset($body['use_query']['paged']);
+            unset($body['use_query']['offset']);
+            unset($body['use_query']['perpage']);
+            $body['use_query']['nopaging'] = 1;
             
-            $query_args = $this->prepare_filters($request);
+            $query_args = $this->prepare_filters($body['use_query']);
 
             $collection_id = $request['collection_id'];
 

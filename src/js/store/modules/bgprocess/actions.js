@@ -6,7 +6,7 @@ export const fetchProcesses = ({ commit }, {page, processesPerPage}) => {
         let endpoint = '/bg-processes?all_users=1';
 
         if (page != undefined)
-            endpoint += 'paged=' + page;
+            endpoint += '&paged=' + page;
         if (processesPerPage != undefined)
             endpoint += '&perpage=' + processesPerPage;
 

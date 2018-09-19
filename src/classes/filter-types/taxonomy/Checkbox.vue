@@ -1,5 +1,11 @@
 <template>
     <div class="block">
+        <span 
+                v-if="isLoading"
+                style="width: 100%"
+                class="icon has-text-centered loading-icon">
+            <div class="control has-icons-right is-loading is-clearfix" />
+        </span>
         <div
                 v-for="(option, index) in options.slice(0, filter.max_options)"
                 :key="index"
@@ -240,5 +246,11 @@
     .see-more-container {
         display: flex;
         padding-left: 18px;
+    }
+
+    .is-loading:after {
+        border: 2px solid white !important;
+        border-top-color: #dbdbdb !important;
+        border-right-color: #dbdbdb !important;
     }
 </style>

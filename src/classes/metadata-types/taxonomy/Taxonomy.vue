@@ -9,7 +9,7 @@
                 :allow-select-to-create="allowSelectToCreate"
                 :allow-new="allowNew"
                 :terms="terms"
-                :taxonomy-id="taxonomy"
+                :taxonomy-id="taxonomy_id"
                 :options="getOptions(0)"/>
         <!--<a -->
                 <!--class="add-new-term"-->
@@ -203,7 +203,7 @@
                 this.$emit('blur');
             },
             reload( $event ) {
-                if ($event.taxonomyId == this.taxonomy && $event.metadatumId == this.metadatum.metadatum.id) {
+                if ($event.taxonomyId == this.taxonomy_id && $event.metadatumId == this.metadatum.metadatum.id) {
                     this.valueComponent = $event.values;
                     this.terms = [];
                     this.offset = 0;

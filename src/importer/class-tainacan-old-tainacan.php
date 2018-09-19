@@ -643,6 +643,11 @@ class Old_Tainacan extends Importer{
             if($term_father){
                 $new_term->set_parent($term_father->get_id());
             }
+            
+            // block terms with same name and parent in taxonomy
+            if( get_term_by( 'name', $term->name, $taxonomy_father->get_db_identifier()) ){
+                continue;
+            }
 
             $inserted_term = $this->term_repo->insert($new_term);
 

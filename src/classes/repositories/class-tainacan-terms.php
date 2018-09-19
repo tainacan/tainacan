@@ -77,7 +77,7 @@ class Terms extends Repository {
 				'description' => __( 'The term creator', 'tainacan' ),
 				'on_error'    => __( 'The user is empty or invalid', 'tainacan' ),
 				'default'     => get_current_user_id(),
-				'validation'  => v::numeric(),
+				//'validation'  => v::numeric(),
 			],
 			'header_image_id' => [
 				'map'         => 'termmeta',
@@ -222,7 +222,6 @@ class Terms extends Repository {
 
 			foreach ( $terms as $term ) {
 				$tainacan_term = new Entities\Term( $term );
-				$tainacan_term->set_user( get_term_meta( $tainacan_term->get_id(), 'user', true ) );
 				$return[] = $tainacan_term;
 			}
 
@@ -230,8 +229,6 @@ class Terms extends Repository {
 		} elseif ( is_numeric( $args ) && ! empty( $cpt ) && ! is_array( $cpt ) ) { // if an id is passed taxonomy cannot be an array
 			$wp_term       = get_term_by( 'id', $args, $cpt );
 			$tainacan_term = new Entities\Term( $wp_term );
-			$tainacan_term->set_user( get_term_meta( $tainacan_term->get_id(), 'user', true ) );
-
 			return $tainacan_term;
 		} else {
 			return [];

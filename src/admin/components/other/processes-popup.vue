@@ -52,17 +52,17 @@
                             <p>{{ bgProcess.name ? bgProcess.name : $i18n.get('label_unamed_process') }}</p>
                         </div>
                         <!-- <span 
-                                v-if="bgProcess.done <= 0"
+                                v-if="bgProcess.done <= 0 && bgProcess.status == 'closed'"
                                 class="icon has-text-gray action-icon"
-                                @click="pauseProcess(index)">
-                            <i class="mdi mdi-18px mdi-pause-circle"/>
-                        </span>
+                                @click="resumeProcess(index)">
+                            <i class="mdi mdi-18px mdi-play-circle"/>
+                        </span> -->
                         <span 
                                 v-if="bgProcess.done <= 0"
                                 class="icon has-text-gray action-icon"
                                 @click="pauseProcess(index)">
-                            <i class="mdi mdi-18px mdi-close-circle-outline"/>
-                        </span> -->
+                            <i class="mdi mdi-18px mdi-stop-circle"/>
+                        </span>
                         <span 
                                 v-if="bgProcess.done > 0 && !bgProcess.error_log"
                                 class="icon has-text-success">
@@ -152,7 +152,8 @@ export default {
     },
     methods: {
         ...mapActions('bgprocess', [
-            'fetchProcesses'
+            'fetchProcesses',
+            'updateProcess'
         ]),
         ...mapGetters('bgprocess', [
             'getProcesses',
@@ -180,7 +181,8 @@ export default {
                 return this.$i18n.get('info_unknown_date');
             }
         },
-        pauseProcess() { 
+        pauseProcess(index) {
+            this.updateProcess({ id: this.bgProcesses[index].ID, status: 'closed' });
         },
     },
     created() {
