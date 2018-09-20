@@ -136,7 +136,8 @@ export default {
             showProcessesList: false,
             processesCollapses: [],
             hasAnyProcessExecuting: false,
-            dateFormat: ''
+            dateFormat: '',
+            intervalID: null,
         }
     },
     watch: {
@@ -183,22 +184,6 @@ export default {
         pauseProcess(index) {
             this.updateProcess({ id: this.bgProcesses[index].ID, status: 'closed' });
         },
-        // resumeProcess(index) {
-        //     this.updateProcess({ id: this.bgProcesses[index].ID, status: 'open' });
-        // },
-        getProcessState(){
-            // Recursively
-            this.fetchProcesses({
-                page: 1,
-                processesPerPage: 12
-            }).then(() => {
-                setTimeout(() => {
-                    if (this.getUnfinishedProcesses() > 0) {
-                        this.getProcessState();
-                    }
-                }, 20000);
-            });
-        }
     },
     created() {
         let locale = navigator.language;
@@ -208,7 +193,16 @@ export default {
         let localeData = moment.localeData();
         this.dateFormat = localeData.longDateFormat('lll');
 
-        this.getProcessState();
+        this.intervalID = setInterval(() => {
+            this.fetchProcesses({
+                page: 1,
+                processesPerPage: 12
+            }).then(() => {
+                if (this.getUnfinishedProcesses() > 0) {
+                    clearInterval(this.intervalID);
+                }
+            });
+        }, 20000);
 
         this.showProcessesList = false;
     }

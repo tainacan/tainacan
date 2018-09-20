@@ -10,18 +10,13 @@
                 :terms="terms"
                 :taxonomy-id="taxonomy_id"
                 :options="getOptions(0)"/>
-        <a 
+        <a
                 class="add-new-term"
-                v-if="(getComponent == 'tainacan-taxonomy-checkbox' || getComponent == 'tainacan-taxonomy-radio') && terms.length < totalTerms"
-                @click="getTermsFromTaxonomy()">
-            {{ $i18n.get('label_view_more') + ' (' + Number(totalTerms - terms.length) + ' ' + $i18n.get('terms') + ')' }}
+                v-if="(this.getComponent == 'tainacan-taxonomy-checkbox' || this.getComponent == 'tainacan-taxonomy-radio') &&
+                 terms.length < totalTerms"
+                @click="openCheckboxModal()">
+            {{ $i18n.get('label_view_all') }}
         </a>
-        <!--<a-->
-                <!--class="add-new-term"-->
-                <!--v-if="(getComponent == 'tainacan-taxonomy-checkbox') && terms.length < totalTerms"-->
-                <!--@click="openCheckboxModal()">-->
-            <!--{{ $i18n.get('label_view_all') }}-->
-        <!--</a>-->
         <add-new-term
                 class="add-new-term"
                 v-if="allowNew"
@@ -82,7 +77,7 @@
                 totalTerms: 0,
                 allowNew: false,
                 offset: 0,
-                termsNumber: 40
+                termsNumber: 12
             }
         },
         watch: {
@@ -126,12 +121,19 @@
                         isFilter: false,
                         parent: 0,
                         taxonomy_id: this.taxonomy_id,
-                        selected: this.value,
+                        selected: !this.valueComponent ? [] : this.valueComponent,
                         metadatum_id: this.metadatum.metadatum.id,
                         taxonomy: this.taxonomy,
                         collection_id: this.collectionId,
                         isTaxonomy: true,
                         query: '',
+                        metadatum: this.metadatum.metadatum,
+                        isCheckbox: this.getComponent == 'tainacan-taxonomy-checkbox'
+                    },
+                    events: {
+                        input: (selected) => {
+                            this.valueComponent = selected;
+                        }
                     },
                     width: 'calc(100% - 8.333333333%)',
                 });
@@ -196,6 +198,7 @@
             },
             onInput($event) {
                 this.inputValue = $event;
+                this.valueComponent = $event;
                 this.$emit('input', this.inputValue);
                 this.$emit('blur');
             },

@@ -72,6 +72,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'finish'                                         => __( 'Finish', 'tainacan' ),
 	'select_to_create'                               => __( 'select to create', 'tainacan' ),
 	'new_action'                                     => __( 'New action', 'tainacan' ),
+	'clear_radio'                                    => __( 'Clear selected radio', 'tainacan'),
 
 	// Wordpress Status
 	'publish'                                        => __( 'Publish', 'tainacan' ),

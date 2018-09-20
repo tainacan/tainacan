@@ -1,7 +1,8 @@
 <template>
     <div class="tainacan-modal-content">
         <header class="tainacan-modal-title">
-            <h2>{{ this.$i18n.get('filter') }} <em>{{ filter.name }}</em></h2>
+            <h2 v-if="isFilter">{{ this.$i18n.get('filter') }} <em>{{ filter.name }}</em></h2>
+            <h2 v-else>{{ this.$i18n.get('metadatum') }} <em>{{ metadatum.name }}</em></h2>
             <hr>
         </header>
         <div class="tainacan-form">
@@ -76,10 +77,17 @@
                             :ref="`${key}.${index}-tainacan-li-checkbox-model`"
                             :key="index">
                         <b-checkbox
+                                v-if="isCheckbox"
                                 v-model="selected"
                                 :native-value="option.value">
                             {{ `${option.label}` }}
                         </b-checkbox>
+                        <b-radio
+                                v-else
+                                v-model="selected"
+                                :native-value="option.value">
+                            {{ `${option.label}` }}
+                        </b-radio>
                         <a
                                 v-if="option.total_children > 0"
                                 @click="getOptionChildren(option, key, index)">
@@ -119,10 +127,17 @@
                             v-for="(option, key) in searchResults"
                             :key="key">
                         <b-checkbox
+                                v-if="isCheckbox"
                                 v-model="selected"
                                 :native-value="option.id ? option.id : option.value">
                             {{ `${ option.name ? limitChars(option.name) : limitChars(option.label) }` }}
                         </b-checkbox>
+                        <b-radio
+                                v-else
+                                v-model="selected"
+                                :native-value="option.id ? option.id : option.value">
+                            {{ `${ option.name ? limitChars(option.name) : limitChars(option.label) }` }}
+                        </b-radio>
                     </li>
                     <b-loading
                             :is-full-page="false"
@@ -169,14 +184,19 @@
             taxonomy: String,
             collection_id: Number,
             metadatum_id: Number,
+            metadatum: Object,
             selected: Array,
             isTaxonomy: {
                 type: Boolean,
-                default: false
+                default: false,
             },
             metadatum_type: String,
             metadatum_object: Object,
             isRepositoryLevel: Boolean,
+            isCheckbox: {
+                type: Boolean,
+                default: true,
+            },
         },
         data() {
             return {
@@ -480,6 +500,8 @@
                         collection_id: this.collection_id ? this.collection_id : this.filter.collection_id,
                         value: this.selected,
                     });
+                } else {
+                    this.$emit('input', this.selected)
                 }
 
                 this.$emit('appliedCheckBoxModal');
@@ -559,7 +581,7 @@
         flex-shrink: 1;
         max-width: calc(50% - 8.3333333%);
 
-        .b-checkbox {
+        .b-checkbox, .b-radio {
             max-width: 86%;
             margin-right: 10px;
         }
@@ -573,7 +595,7 @@
         display: flex;
         padding: 0;
 
-        .b-checkbox {
+        .b-checkbox, .b-radio {
             max-width: 86%;
             margin-left: 0.7rem;
             height: 24px;
@@ -590,7 +612,7 @@
         flex-shrink: 1;
         max-width: calc(50% - 8.3333333%);
 
-        .b-checkbox {
+        .b-checkbox, .b-radio {
             margin-right: 10px;
         }
 

@@ -1,6 +1,15 @@
 <template>
     <div>
-        <div 
+        <b-radio
+                :disabled="disabled"
+                :id="id"
+                v-model="checked"
+                @input="onChecked()"
+                :native-value="''"
+                border>
+            {{ $i18n.get('clear_radio') }}
+        </b-radio>
+        <div
                 v-for="(option, index) in options"
                 :key="index">
             <b-radio
