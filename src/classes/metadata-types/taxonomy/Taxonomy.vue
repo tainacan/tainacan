@@ -12,7 +12,8 @@
                 :options="getOptions(0)"/>
         <a
                 class="add-new-term"
-                v-if="(getComponent == 'tainacan-taxonomy-checkbox') && terms.length < totalTerms"
+                v-if="(this.getComponent == 'tainacan-taxonomy-checkbox' || this.getComponent == 'tainacan-taxonomy-radio') &&
+                 terms.length < totalTerms"
                 @click="openCheckboxModal()">
             {{ $i18n.get('label_view_all') }}
         </a>
@@ -76,7 +77,7 @@
                 totalTerms: 0,
                 allowNew: false,
                 offset: 0,
-                termsNumber: 7
+                termsNumber: 12
             }
         },
         watch: {
@@ -127,6 +128,7 @@
                         isTaxonomy: true,
                         query: '',
                         metadatum: this.metadatum.metadatum,
+                        isCheckbox: this.getComponent == 'tainacan-taxonomy-checkbox'
                     },
                     events: {
                         input: (selected) => {
