@@ -78,12 +78,12 @@
         </aside>
         <div 
                 :class="{ 'spaced-to-right': !isMetadataCompressed }"
-                @keyup.left="slideIndex > 0 ? prevSlide() : null"
-                @keyup.right="slideIndex < items.length - 1 ? nextSlide() : null">
+                @keyup.left.prevent="slideIndex > 0 ? prevSlide() : null"
+                @keyup.right.prevent="slideIndex < slideItems.length - 1 ? nextSlide() : null">
             <div class="table-wrapper">
                 <!-- Empty result placeholder -->
                 <section
-                        v-if="!isLoading && items.length <= 0"
+                        v-if="!isLoading && slideItems.length <= 0"
                         class="section">
                     <div class="content has-text-gray4 has-text-centered">
                         <p>
@@ -98,10 +98,8 @@
                 <!-- SLIDE MAIN VIEW-->
                 <section class="tainacan-slide-main-view">
                     <button 
-                            ref="prevArrow"
-                            id='prevArrow'
-                            @click="prevSlide()"
-                            :style="{ visibility: slideIndex > 0 ? 'visible' : 'hidden' }"
+                            @click.prevent="prevSlide()"
+                            :style="{ visibility: slideIndex > 0 ? 'visible' : 'visible' }"
                             class="slide-control-arrow arrow-left">
                         <span class="icon is-large">
                             <icon class="mdi mdi-48px mdi-chevron-left"/>
@@ -128,10 +126,8 @@
                         </transition>
                     </div>
                     <button 
-                            ref="nextArrow"
-                            id='nextArrow'
-                            @click="nextSlide()"
-                            :style="{ visibility: slideIndex < items.length - 1 ? 'visible' : 'hidden' }"
+                            @click.prevent="nextSlide()"
+                            :style="{ visibility: slideIndex < slideItems.length - 1 ? 'visible' : 'visible' }"
                             class="slide-control-arrow arrow-right">
                         <span class="icon is-large has-text-turoquoise5">
                             <icon class="mdi mdi-48px mdi-chevron-right"/>
@@ -139,9 +135,9 @@
                     </button>
                 </section>
                 <section 
-                        v-if="items[slideIndex] != undefined"
+                        v-if="slideItems[slideIndex] != undefined"
                         class="slide-title-area">
-                    <h1>{{ items[slideIndex].title }}</h1>
+                    <h1>{{ slideItems[slideIndex].title }}</h1>
                     <button 
                             class="play-button"
                             @click="isPlaying = !isPlaying">
@@ -153,34 +149,41 @@
                 </section>
 
                 <!-- SLIDE ITEMS LIST --> 
-                <div 
-                        class="is-hidden-mobile"
+                <swiper 
+                        @slideChange="onSlideChange()"
+                        ref="mySwiper"
+                        :options="swiperOption"
                         id="tainacan-slide-container">
-                    <a 
-                            @click="slideIndex = index"
+                    <swiper-slide 
+                            :ref="'thumb-' + item.id"
+                            @click="slideIndex = index;"
                             :key="index"
-                            v-for="(item, index) of items"
+                            v-for="(item, index) of slideItems"
                             class="tainacan-slide-item"
-                            :class="{'active-item': slideIndex == index}"
-                            @keyup.left="slideIndex > 0 ? prevSlide() : null"
-                            @keyup.right="slideIndex < items.length - 1 ? nextSlide() : null">
-
-                        <!-- thumbnail -->  
-                        <div 
-                                class="thumbnail"
-                                v-if="item.thumbnail != undefined">
-                            <img :src="item['thumbnail']['tainacan_small'] ? item['thumbnail']['tainacan_small'] : (item['thumbnail'].thumb ? item['thumbnail'].thumb : thumbPlaceholderPath)">  
-                        </div>           
-                        
-                    </a>
-                </div>
+                            :class="{'active-item': slideIndex == index}">
+                        <img 
+                                class="thumnail" 
+                                :src="item['thumbnail']['tainacan_small'] ? item['thumbnail']['tainacan_small'] : (item['thumbnail'].thumb ? item['thumbnail'].thumb : thumbPlaceholderPath)">  
+                           
+                    </swiper-slide>
+                    <div    
+                            style="visibility: hidden;"
+                            class="swiper-button-prev" 
+                            slot="button-prev"/>
+                    <div 
+                            style="visibility: hidden;"
+                            class="swiper-button-next" 
+                            slot="button-next"/>
+                </swiper>
             </div> 
         </div>
     </div>
 </template>
 
 <script>
-import {mapActions, mapGetters} from 'vuex'
+import {mapActions, mapGetters} from 'vuex';
+import 'swiper/dist/css/swiper.css';
+import { swiper, swiperSlide } from 'vue-awesome-swiper';
 
 export default {
     name: 'ViewModeSlide',
@@ -188,9 +191,14 @@ export default {
         collectionId: Number,
         displayedMetadata: Array,
         items: Array
+    },  
+    components: {
+        swiper,
+        swiperSlide
     },
     data () {
         return {
+            slideItems: [],
             isLoading: false,
             goingRight: true,
             isPlaying: false,
@@ -200,6 +208,41 @@ export default {
             isLoadingItem: false,
             isMetadataCompressed: true,
             slideIndex: 0,
+            swiperOption: {
+                preventInteractionOnTransition: true,
+                freeMode: true,
+                freeModeSticky: true,
+                allowClick: true,
+                slidesPerView: 14,
+                slidesPerGroup: 1,
+                centeredSlides: true,
+                spaceBetween: 20,
+                slideToClickedSlide: true,
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev'
+                },
+                breakpoints: {
+                    320: {
+                        slidesPerView: 2
+                    },
+                    480: {
+                        slidesPerView: 3,
+                    },
+                    640: {
+                        slidesPerView: 4
+                    },
+                    768: {
+                        slidesPerView: 6
+                    },
+                    1024: {
+                        slidesPerView: 9
+                    },
+                    1406: {
+                        slidesPerView: 12
+                    }
+                }
+            },
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png'
         }
     },
@@ -209,24 +252,43 @@ export default {
         }
     },
     watch: {
-        slideIndex() {
-            if (this.items && this.items[this.slideIndex] && this.items[this.slideIndex].id != undefined) {
-                
-                this.isLoadingItem = true;
+        items: {
+            handler () {
+                for (let newItem of this.items) {
+                    let existingItemIndex = this.slideItems.findIndex(anItem => anItem.id == newItem.id);
+                    if (existingItemIndex < 0) {
+                        this.slideItems.push(newItem);
+                    } else {
+                        this.$set(this.slideItems, existingItemIndex, newItem);
+                    }
+                }       
+            },
+            immediate: true
+        },
+        slideIndex:{
+            handler() {  
+                if (this.slideItems && this.slideItems[this.slideIndex] && this.slideItems[this.slideIndex].id != undefined) {
+                    
+                    this.isLoadingItem = true;
 
-                this.fetchItem(this.items[this.slideIndex].id)
-                    .then(() => {
-                        this.isLoadingItem = false;
-                    })
-                    .catch(() => {
-                        this.isLoadingItem = false;
-                    });
-            }
+                    this.fetchItem(this.slideItems[this.slideIndex].id)
+                        .then(() => {
+                            this.isLoadingItem = false;
+                        })
+                        .catch(() => {
+                            this.isLoadingItem = false;
+                        });
+                }
+                if (this.slideIndex == this.slideItems.length - 1) {
+                    this.loadMoreItems();
+                }
+            },
+            immediate: true
         }, 
         isPlaying() {
             if (this.isPlaying) {
                 this.intervalId = setInterval(() => {
-                    this.$refs.nextArrow.click()
+                    this.$refs.mySwiper.swiper.navigation.nextEl.click();
                 }, this.slideTimeout)
             } else {
                 clearInterval(this.intervalId);
@@ -240,17 +302,23 @@ export default {
         ...mapGetters('item', [
             'getItem',
         ]),
-        nextSlide() {
-            this.goingRight = true;
-            if (this.slideIndex < this.items.length - 1)
-                this.slideIndex++;
+         ...mapGetters('search', [
+            'getTotalItems',
+            'getPage',
+        ]),
+        onSlideChange() {
+            if (this.slideIndex < this.$refs.mySwiper.swiper.activeIndex)
+                this.goingRight = true;
             else
-                this.isPlaying = false;
+                this.goingRight = false;
+
+            this.slideIndex = this.$refs.mySwiper.swiper.activeIndex
+        },
+        nextSlide() { 
+            this.$refs.mySwiper.swiper.navigation.nextEl.click();    
         },
         prevSlide() {
-            this.goingRight = false;
-            if (this.slideIndex > 0)
-                this.slideIndex--;
+            this.$refs.mySwiper.swiper.navigation.prevEl.click();
         },
         renderMetadata(itemMetadata, column) {
 
@@ -264,54 +332,12 @@ export default {
                 return metadata.value_as_html;
             }
         },
+        loadMoreItems() {
+            this.$eventBusSearch.setPage(this.getPage() + 1);
+        },
         closeSlideViewMode() {
             this.$parent.onChangeViewMode(this.$parent.defaultViewMode);
         }
-    },
-    mounted() {
-
-        let carrousel = jQuery('#tainacan-slide-container');
-        carrousel.slick({
-            acessibility: false,
-            arrows: true,
-            centerMode: true,
-            focusOnSelect: true,
-            infinite: false,
-            slidesToShow: 12,
-            slidesToScroll: 12,
-            nextArrow: '#nextArrow',
-            prevArrow: '#prevArrow',
-            responsive: [
-                {
-                    breakpoint: 1408,
-                    settings: {
-                        slidesToShow: 9,
-                        slidesToScroll: 9,
-                    }
-                },
-                {
-                    breakpoint: 1024,
-                    settings: {
-                        slidesToShow: 6,
-                        slidesToScroll: 6,
-                    }
-                },
-                {
-                    breakpoint: 768,
-                    settings: {
-                        slidesToShow: 3,
-                        slidesToScroll: 3,
-                    }
-                },
-                {
-                    breakpoint: 348,
-                    settings: {
-                        slidesToShow: 2,
-                        slidesToScroll: 2,
-                    }
-                }
-            ]
-        });
     }
 }
 </script>

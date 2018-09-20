@@ -554,9 +554,9 @@
 
                 <component
                         v-else-if="isOnTheme && 
-                              !isLoadingItems && 
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'component' &&
+                              (!isLoadingItems || !registeredViewModes[viewMode].show_pagination) && 
                               !openAdvancedSearch"
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata"
