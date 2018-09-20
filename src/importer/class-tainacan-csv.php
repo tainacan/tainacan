@@ -13,7 +13,7 @@ class CSV extends Importer {
             'delimiter' => ',',
             'multivalued_delimiter' => '||',
             'encode' => 'utf8',
-            'enclosure' => '"'
+            'enclosure' => ''
 		]);
         
     }
@@ -31,7 +31,13 @@ class CSV extends Importer {
     public function get_source_metadata(){
         if (($handle = fopen($this->tmp_file, "r")) !== false) {
 
-            $rawColumns = fgetcsv($handle, 0, $this->get_option('delimiter'));
+            if( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ){
+                $rawColumns = $this->handle_enclosure( $handle );
+    
+            } else {
+                $rawColumns = fgetcsv($handle, 0, $this->get_option('delimiter'));
+            }
+
             $columns = [];
 
             if( $rawColumns ){
@@ -64,7 +70,13 @@ class CSV extends Importer {
     public function raw_source_metadata(){
 
         if (($handle = fopen($this->tmp_file, "r")) !== false) {
-            return fgetcsv($handle, 0, $this->get_option('delimiter'));
+
+            if( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ){
+                return $this->handle_enclosure( $handle );
+    
+            } else {
+                return fgetcsv($handle, 0, $this->get_option('delimiter'));
+            }
         }
 
         return false;
@@ -103,7 +115,14 @@ class CSV extends Importer {
         }
 
         $this->add_transient('csv_last_pointer', ftell($file)); // add reference to post_process item in after_inserted_item()
-		$values =  fgetcsv($file, 0, $this->get_option('delimiter'), $this->get_option('enclosure'));
+
+        if( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ){
+            $values = $this->handle_enclosure( $file );
+
+        } else {
+            $values = fgetcsv($file, 0, $this->get_option('delimiter'));
+        }
+		
         $this->add_transient('csv_pointer', ftell($file)); // add reference for insert
 
         if( count( $headers ) !== count( $values ) ){
@@ -112,7 +131,7 @@ class CSV extends Importer {
             $this->add_error_log(' Mismatch count headers and row columns ');
             $this->add_error_log(' Headers count: ' . count( $headers ) );
             $this->add_error_log(' Values count: ' . count( $values ) );
-            $this->add_error_log(' enclosure : ' .  $enclosure );
+            $this->add_error_log(' enclosure : ' .  $this->get_option('enclosure') );
             $this->add_error_log(' Values string: ' . $string );
             return false;
         }
@@ -158,7 +177,12 @@ class CSV extends Importer {
 			$csv_pointer= $this->get_transient('csv_last_pointer');
 			fseek($file, $csv_pointer);
 			
-            $values = fgetcsv($file, 0, $this->get_option('delimiter'), $this->get_option('enclosure'));
+            if( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ){
+                $values = $this->handle_enclosure( $file );
+    
+            } else {
+                $values = fgetcsv($file, 0, $this->get_option('delimiter'));
+            }
             
             if( is_array($values) && !empty($column_document) ){
                 $this->handle_document( $values[$column_document], $inserted_item);
@@ -459,5 +483,30 @@ class CSV extends Importer {
 	   
 	   $this->items_repo->enable_logs();
 	   
+    }
+
+    /**
+     * @param $file resource the csv file uploaded
+     */
+    private function handle_enclosure( &$file ){
+
+        $line = trim(fgets($file));
+        $start = substr($line, 0, strlen($this->get_option('enclosure'))); 
+
+        if( $this->get_option('enclosure') === $start ){
+
+            $cut_start = strlen($this->get_option('enclosure'));
+            $line = substr($line, $cut_start); 
+        }
+
+        $end = substr($line, ( strlen($line)  -  strlen($this->get_option('enclosure')) ) , strlen($this->get_option('enclosure')));
+
+        if( $this->get_option('enclosure') === $end ){
+            $line = substr($line, 0,  ( strlen($line)  -  strlen($this->get_option('enclosure')) ) ); 
+        }
+
+        $delimiter = $this->get_option('enclosure').$this->get_option('delimiter').$this->get_option('enclosure');
+        $values = explode($delimiter, $line);
+        return $values;
     }
 }
