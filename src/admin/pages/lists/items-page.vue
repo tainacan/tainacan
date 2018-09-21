@@ -124,7 +124,7 @@
                     :filters="filters"
                     v-if="hasFiltered && 
                         !openAdvancedSearch &&
-                        !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)">Teste</filters-tags-list>
+                        !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)" />
 
             <!-- SEARCH CONTROL ------------------------- -->
             <div
@@ -472,7 +472,8 @@
             <div class="above-search-control">
 
                 <div 
-                        v-show="isLoadingItems"
+                        v-show="isLoadingItems && 
+                                !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                         class="loading-container">
                     <b-loading 
                             :is-full-page="false"
@@ -781,14 +782,21 @@
                 'getAdminViewMode'
             ]),
             onSwipeFiltersMenu($event) {
-                let screenWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
+                if (this.registeredViewModes[this.viewMode] == undefined || 
+                    (this.registeredViewModes[this.viewMode] != undefined && 
+                        (this.registeredViewModes[this.viewMode].full_screen == false || 
+                        this.registeredViewModes[this.viewMode].full_screen == undefined)
+                    )
+                   ) {
+                    let screenWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
 
-                if ($event.offsetDirection == 4 && screenWidth <= 768) {
-                    if (!this.isFilterModalActive)
-                        this.isFilterModalActive = true;
-                } else if ($event.offsetDirection == 2 && screenWidth <= 768) {
-                    if (this.isFilterModalActive)
-                        this.isFilterModalActive = false;
+                    if ($event.offsetDirection == 4 && screenWidth <= 768) {
+                        if (!this.isFilterModalActive)
+                            this.isFilterModalActive = true;
+                    } else if ($event.offsetDirection == 2 && screenWidth <= 768) {
+                        if (this.isFilterModalActive)
+                            this.isFilterModalActive = false;
+                    }
                 }
             },
             onOpenImportersModal() {

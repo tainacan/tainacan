@@ -173,43 +173,6 @@
             color: white;
         }
     }
-
-    .slide-control-arrow {
-        cursor: pointer;
-        background-color: transparent;
-        border: none !important;
-        height: 3.5rem;
-        width: 2.8rem;
-        text-align: center;
-        vertical-align: middle;
-        position: absolute;
-        z-index: 9;
-
-        &:focus, &:active {
-            border: none;
-            outline: none;
-        }
-        .icon {
-            height: 3.5rem;
-            width: 2.5rem;
-            text-align: center;
-
-            .mdi::before {
-                line-height: 5rem;
-                font-size: 5rem;
-                color: $turquoise5;
-            }
-        }
-        &.arrow-left { 
-            left: 0; 
-            margin-left: $page-side-padding;
-            
-        }
-        &.arrow-right { 
-            right: 0;     
-            margin-right: $page-side-padding;
-        }
-    }
 }
 .slide-title-area {
     width: 100%;
@@ -241,6 +204,56 @@
         &:focus, &:active {
             outline: 0;
             border: 0;
+        }
+    }
+}
+.slide-control-arrow {
+    cursor: pointer;
+    background-color: transparent;
+    border: none !important;
+    height: 3.5rem;
+    width: 2.8rem;
+    text-align: center;
+    vertical-align: middle;
+    position: absolute;
+    z-index: 9;
+
+    &:focus, &:active {
+        border: none;
+        outline: none;
+    }
+    .icon {
+        height: 3.5rem;
+        width: 2.5rem;
+        text-align: center;
+
+        .mdi::before {
+            line-height: 5rem;
+            font-size: 5rem;
+            color: $turquoise5;
+        }
+    }
+    &.arrow-left { 
+        left: 0; 
+        margin-left: $page-side-padding;
+        
+    }
+    &.arrow-right { 
+        right: 0;     
+        margin-right: $page-side-padding;
+    }
+    &.slide-group-arrow {
+        top: calc(50% - 33px);
+
+        .icon {
+            height: 2.5rem;
+            width: 1.5rem;
+        
+            .mdi::before {
+                line-height: 3rem;
+                font-size: 3rem;
+                color: white;
+            }
         }
     }
 }
@@ -276,7 +289,7 @@
         }
 
         img {
-            width: 85px;
+            width: 100%;//85px;
             height: auto;
             border-radius: 0px;
             padding: 0 0 6px 0;
