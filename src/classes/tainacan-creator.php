@@ -73,7 +73,7 @@ function tainacan_autoload($class_name){
 	    }
 
         if( in_array('Metadata_Types', $class_path) || in_array('Filter_Types', $class_path) ){
-    	    $exceptions = ['taxonomytaginput','taxonomycheckbox','taxonomyselectbox'];
+    	    $exceptions = ['taxonomytaginput','taxonomycheckbox'];
     	    if( in_array( strtolower( $class_name ), $exceptions) ){
                 $dir.= 'taxonomy/';
             }else{
@@ -115,7 +115,6 @@ $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Taginput');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Checkbox');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomyTaginput');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomyCheckbox');
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomySelectbox');
 
 $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
 

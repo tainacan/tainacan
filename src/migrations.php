@@ -239,7 +239,16 @@ class Migrations {
 	        ['meta_value' => 'Tainacan\Filter_Types\TaxonomySelectbox'],
 	        ['meta_value' => 'Tainacan\Filter_Types\CategorySelectbox'],
 	        '%s', '%s');
-		
+
+		$wpdb->update($wpdb->postmeta,
+			['meta_value' => 'Tainacan\Filter_Types\TaxonomyTaginput'],
+			['meta_value' => 'Tainacan\Filter_Types\TaxonomySelectbox'],
+			'%s', '%s');
+
+		$wpdb->query(
+			$wpdb->prepare(
+				"UPDATE $wpdb->postmeta SET meta_value = REPLACE(meta_value, 'tainacan-taxonomy-selectbox', 'tainacan-taxonomy-radio')"
+			));
 	}
 	
 	static function update_core_metadata() {

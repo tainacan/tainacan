@@ -34,7 +34,6 @@
     import TainacanTaxonomyRadio from './TaxonomyRadio.vue'
     import TainacanTaxonomyCheckbox from './TaxonomyCheckbox.vue'
     import TainacanTaxonomyTagInput from './TaxonomyTaginput.vue'
-    import TainacanTaxonomySelectbox from './TaxonomySelectbox.vue'
     import AddNewTerm from  './AddNewTerm.vue'
     import HierarchicalCheckboxModal from '../../../admin/components/other/checkbox-filter-modal.vue'
 
@@ -63,7 +62,6 @@
             TainacanTaxonomyRadio,
             TainacanTaxonomyCheckbox,
             TainacanTaxonomyTagInput,
-            TainacanTaxonomySelectbox,
             AddNewTerm
         },
         data(){

@@ -26,7 +26,6 @@ import FilterTaginput from '../../classes/filter-types/taginput/Taginput.vue';
 
 import FilterTaxonomyCheckbox from '../../classes/filter-types/taxonomy/Checkbox.vue';
 import FilterTaxonomyTaginput from '../../classes/filter-types/taxonomy/Taginput.vue';
-import FilterTaxonomySelectbox from '../../classes/filter-types/taxonomy/Selectbox.vue';
 
 import TaincanFormItem from '../../classes/metadata-types/tainacan-form-item.vue';
 import TaincanFiltersList from '../../classes/filter-types/tainacan-filter-item.vue';
@@ -78,7 +77,6 @@ Vue.component('tainacan-filter-checkbox', FilterCheckbox);
 Vue.component('tainacan-filter-taginput', FilterTaginput);
 Vue.component('tainacan-filter-taxonomy-checkbox', FilterTaxonomyCheckbox);
 Vue.component('tainacan-filter-taxonomy-taginput', FilterTaxonomyTaginput);
-Vue.component('tainacan-filter-taxonomy-selectbox', FilterTaxonomySelectbox);
 
 /* Others */
 Vue.component('help-button', HelpButton);
