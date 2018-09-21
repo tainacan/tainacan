@@ -349,7 +349,17 @@ export default {
             this.$refs.mySwiper.swiper.slideTo(this.slideIndex + amountToSkip);    
         },
         prevGroupOfSlides() {
-            this.$refs.mySwiper.swiper.navigation.prevEl.click();
+             let screenWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
+            let amountToSkip = 0;
+
+            if (screenWidth <= 480) amountToSkip = 1;
+            else if (screenWidth > 480 && screenWidth <= 640) amountToSkip = 2;
+            else if (screenWidth > 640 && screenWidth <= 768) amountToSkip = 4;
+            else if (screenWidth > 768 && screenWidth <= 1366) amountToSkip = 5;
+            else if (screenWidth > 1366 && screenWidth <= 1600) amountToSkip = 6;
+            else if (screenWidth > 1600) amountToSkip = 7;
+            
+            this.$refs.mySwiper.swiper.slideTo(this.slideIndex - amountToSkip);    
         },
         renderMetadata(itemMetadata, column) {
 
