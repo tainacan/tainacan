@@ -211,7 +211,8 @@ export default {
     props: {
         collectionId: Number,
         displayedMetadata: Array,
-        items: Array
+        items: Array,
+        totalItems: Number
     },  
     components: {
         swiper,
@@ -266,22 +267,35 @@ export default {
     watch: {
         items: {
             handler () {
-                for (let newItem of this.items) {
+                let updatedSlideIndex = this.slideIndex;
+
+                for (let newItem of (this.goingRight ? this.items : JSON.parse(JSON.stringify(this.items)).reverse())) {
                     let existingItemIndex = this.slideItems.findIndex(anItem => anItem.id == newItem.id);
                     if (existingItemIndex < 0) {
-                        this.slideItems.push(newItem);
+                        if (this.goingRight) {
+                            this.slideItems.push(newItem);
+                        } else {
+                            this.slideItems.unshift(newItem);
+                            updatedSlideIndex++;
+                        }
                     } else {
                         this.$set(this.slideItems, existingItemIndex, newItem);
                     }
                     this.$nextTick(() => {
                         this.$refs.mySwiper.swiper.update();
+                        this.$refs.mySwiper.swiper.slideTo(updatedSlideIndex);
                     });
                 }       
             },
             immediate: true
         },
         slideIndex:{
-            handler() {  
+            handler(val, oldVal) { 
+                if (val >= oldVal)
+                    this.goingRight = true;
+                else    
+                    this.goingRight = false;
+                
                 if (this.slideItems && this.slideItems[this.slideIndex] && this.slideItems[this.slideIndex].id != undefined) {
                     
                     this.isLoadingItem = true;
@@ -294,9 +308,11 @@ export default {
                             this.isLoadingItem = false;
                         });
                 }
-                if (this.slideIndex == this.slideItems.length - 1) {
-                    this.loadMoreItems();
-                }
+
+                if (this.slideIndex == this.slideItems.length - 1 && this.slideItems.length < this.totalItems)
+                    this.$eventBusSearch.setPage(this.getPage() + 1);
+                else if (this.slideIndex == 0 && this.getPage() > 1 && this.slideItems.length < this.totalItems)
+                    this.$eventBusSearch.setPage(this.getPage() - 1);
             },
             immediate: true
         }, 
@@ -304,7 +320,7 @@ export default {
             if (this.isPlaying) {
                 this.intervalId = setInterval(() => {
                     this.$refs.mySwiper.swiper.navigation.nextEl.click();
-                }, this.slideTimeout)
+                }, this.slideTimeout);
             } else {
                 clearInterval(this.intervalId);
             }
@@ -322,18 +338,13 @@ export default {
             'getPage'
         ]),
         onSlideChange() {
-            if (this.slideIndex < this.$refs.mySwiper.swiper.activeIndex)
-                this.goingRight = true;
-            else
-                this.goingRight = false;
-
             this.slideIndex = this.$refs.mySwiper.swiper.activeIndex;
         },
         nextSlide() { 
-            this.$refs.mySwiper.swiper.navigation.nextEl.click();    
+            this.$refs.mySwiper.swiper.slideNext();    
         },
         prevSlide() {
-            this.$refs.mySwiper.swiper.navigation.prevEl.click();
+            this.$refs.mySwiper.swiper.slidePrev();
         },
         nextGroupOfSlides() { 
             let screenWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
@@ -359,7 +370,7 @@ export default {
             else if (screenWidth > 1366 && screenWidth <= 1600) amountToSkip = 6;
             else if (screenWidth > 1600) amountToSkip = 7;
             
-            this.$refs.mySwiper.swiper.slideTo(this.slideIndex - amountToSkip);    
+            this.$refs.mySwiper.swiper.slideTo(this.slideIndex - amountToSkip);  
         },
         renderMetadata(itemMetadata, column) {
 
@@ -372,9 +383,6 @@ export default {
             } else {
                 return metadata.value_as_html;
             }
-        },
-        loadMoreItems() {
-            this.$eventBusSearch.setPage(this.getPage() + 1);
         },
         closeSlideViewMode() {
             this.$parent.onChangeViewMode(this.$parent.defaultViewMode);

@@ -261,7 +261,7 @@
     padding: 0 $page-side-padding;
     display: flex;
     flex-wrap: nowrap;
-    overflow: auto;
+    overflow: hidden;
     flex-grow: 1;
     flex-shrink: 1;
     justify-content: space-evenly;
