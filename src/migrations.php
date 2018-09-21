@@ -241,7 +241,7 @@ class Migrations {
 	        '%s', '%s');
 	}
 
-	static function migrate_selectbox_to_radio_and_taginput(){
+	static function update_tainacan_selectbox_to_radio_and_taginput(){
 		global $wpdb;
 
 		// update filter type
