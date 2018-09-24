@@ -633,7 +633,11 @@ class Item extends Entity {
 		
 		if ( $type == 'url' ) {
 			global $wp_embed;
-			$output .= $wp_embed->autoembed($this->get_document());
+			$_embed = $wp_embed->autoembed($this->get_document());
+			if ( $_embed == $this->get_document() ) {
+				$_embed = sprintf('<a href="%s" target="blank">%s</a>', $this->get_document(), $this->get_document());
+			}
+			$output .= $_embed;
 		} elseif ( $type == 'text' ) {
 			$output .= $this->get_document();
 		} elseif ( $type == 'attachment' ) {
