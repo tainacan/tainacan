@@ -44,9 +44,9 @@ class Importer_Handler {
 		]);
 
 		$this->register_importer([
-			'name' => 'Vocabularies',
-			'description' => __('Importa a terms - vocabularies', 'tainacan'),
-			'slug' => 'term_vocabularies',
+			'name' => 'Terms',
+			'description' => __('Import a terms', 'tainacan'),
+			'slug' => 'terms',
 			'class_name' => '\Tainacan\Importer\Term_Importer',
 			'manual_collection' => false,
 			'manual_mapping' => false,

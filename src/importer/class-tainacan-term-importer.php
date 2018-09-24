@@ -55,7 +55,7 @@ class Term_Importer extends Importer {
 					</a>
 					<div class="help-tooltip">
 						<div class="help-tooltip-header">
-							<h5><?php _e('Taxonomies', 'tainacan'); ?></h5>
+							<h5><?php _e('taxonomy', 'tainacan'); ?></h5>
 						</div>
 						<div class="help-tooltip-body">
 							<p><?php _e('The taxonomies where imported term will be added.', 'tainacan'); ?></p>
@@ -64,27 +64,78 @@ class Term_Importer extends Importer {
 				</span>
 				<div class="control is-clearfix">
 					<select class="input" type="text" name="taxonomies">
-						<option>tax-1</option>
-						<option>tax-2</option>
-						<option>tax-3</option>
-					</select>
-					<?php 
+					<?php
+						$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
+						$taxonomies  = $Tainacan_Taxonomies->fetch( [
+							'status' => [
+								'auto-draft',
+								'draft',
+								'publish',
+								'private'
+							]
+						], 'OBJECT' );
 
-						$request = new \WP_REST_Request(
-							'GET', $this->namespace . '/taxonomies'
-						);
-						$response = $this->server->dispatch($request);
-						echo $response;
-
+						foreach( $taxonomies as $taxonomie) {
+							?>
+							<option value="<?php echo $taxonomie->get_db_identifier();?>"><?php echo $taxonomie->get_name() ?> </option>
+							<?php
+						}
 					?>
+					</select>
 				</div>
 			</div>
 			
 		<?php
 		return ob_get_clean();
 	}
-
+	
 	public function process_item($index, $collection_definition) {
-		$this->add_log('Proccessing item index ' . $index . ' in collection ' . $collection_definition['id'] );
+		
+		if (($handle = fopen($this->tmp_file, "r")) !== false) {
+			$file = $handle;
+        } else {
+			$this->add_error_log(' Error reading the file ');
+			return false;
+		}
+
+		$term_repo = \Tainacan\Repositories\Terms::get_instance();
+		$parent = array();
+		$position = 0;
+		$last_term = 0;
+		$auxId = 1;
+		$taxonomy_id = $this->get_option('taxonomies');
+		while (($values =  fgetcsv($file, 0, $this->get_option('delimiter'), '"')) !== FALSE) {
+			if ($values[$position] == '') { // next degree
+				$position++;
+				array_push($parent, $last_term);
+			}
+			if ($position > 0 && $values[$position-1] != '') { // back degree
+				$position--;
+				array_pop($parent);
+			}
+			
+			$term = new \Tainacan\Entities\Term();
+			$term->set_name($values[$position]);
+			$term->set_description($values[$position+1]);
+			$term->set_taxonomy($taxonomy_id);
+			
+			if(end($parent))
+				$term->set_parent(end($parent));
+		
+			if ($term->validate()) {
+				$term_insert = $term_repo->insert($term);
+				$last_term = $term_insert->get_id();
+				$this->add_log('Added term: id=' . $last_term . ' name=' . $term->get_name() . ' id parent=' . $term->get_parent());
+			} else {
+				$validationErrors = $term->get_errors();
+				$err_msg = "";
+				foreach($validationErrors as $err) {
+					$err_msg .= $err;
+				}
+				$this->add_error_log("err! = ". $err_msg);
+				return false;
+			}
+		}
+		return true;
 	}
 }
