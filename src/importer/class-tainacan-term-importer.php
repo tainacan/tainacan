@@ -1,6 +1,10 @@
 <?php
 
 /** 
+ * @author: MediaLab-UFG(Vinicius Nunes).
+ * Term Importer
+ *
+ * Class to import files CSV with terms
  *
  */
 
@@ -16,7 +20,7 @@ class Term_Importer extends Importer {
 		$this->remove_import_method('url');
 
 		$this->set_default_options([
-            'delimiter' => ','
+			'delimiter' => ','
 		]);
 	}
 	
@@ -93,7 +97,7 @@ class Term_Importer extends Importer {
 		
 		if (($handle = fopen($this->tmp_file, "r")) !== false) {
 			$file = $handle;
-        } else {
+		} else {
 			$this->add_error_log(' Error reading the file ');
 			return false;
 		}
