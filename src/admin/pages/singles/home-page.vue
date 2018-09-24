@@ -130,8 +130,7 @@ export default {
     },
     computed: {
         collections() {
-            //return this.getCollections(); 
-            return [];
+            return this.getCollections(); 
         }
     },
     methods: {
@@ -229,7 +228,7 @@ export default {
 
         .repository-menu-list {
             display: flex;
-            width: 100%;
+            width: calc(100% + 1.25rem);
             justify-content: space-between;
             flex-wrap: wrap;
             margin: 0 -0.75rem;

@@ -270,18 +270,18 @@ export default {
 
     .new-collection-menu {
         display: flex;
-        width: 100%;
+        width: calc(100% + 1.25rem);
         justify-content: space-between;
         flex-wrap: wrap;
+        margin: 0 -0.75rem;
 
         li {
             padding: 0.75rem;
             display: flex;
             background-color: $gray1;
             flex-grow: 1;
-            margin: 0.75rem 0;
+            margin: 0.75rem;
             height: 120px;
-            max-width: 13%;
             min-width: 140px; 
             text-align: center;
 
