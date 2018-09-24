@@ -1,5 +1,6 @@
 <template>
-    <div>
+
+    <div :class="{ 'hide-controls': hideControls }">
         <!-- CLOSE BUTTON -->
         <button
                 v-tooltip="{
@@ -81,7 +82,6 @@
                 @keyup.left.prevent="slideIndex > 0 ? prevSlide() : null"
                 @keyup.right.prevent="slideIndex < slideItems.length - 1 ? nextSlide() : null">
             <div class="table-wrapper">
-                
 
                 <!-- SLIDE MAIN VIEW-->
                 <section class="tainacan-slide-main-view">
@@ -93,7 +93,9 @@
                             <icon class="mdi mdi-48px mdi-chevron-left"/>
                         </span> 
                     </button>
-                    <div class="slide-main-content">
+                    <div 
+                            @click.prevent="hideControls = !hideControls"
+                            class="slide-main-content">
 
                         <transition 
                                 mode="out-in"
@@ -150,7 +152,7 @@
                 </section>
 
                 <!-- SLIDE ITEMS LIST --> 
-                <div style="position: relative;">
+                <div class="tainacan-slides-list">
                     <swiper 
                             @slideChange="onSlideChange()"
                             ref="mySwiper"
@@ -212,7 +214,8 @@ export default {
         collectionId: Number,
         displayedMetadata: Array,
         items: Array,
-        totalItems: Number
+        totalItems: Number,
+        hideControls: true,
     },  
     components: {
         swiper,

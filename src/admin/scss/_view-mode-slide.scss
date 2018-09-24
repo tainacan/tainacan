@@ -152,6 +152,7 @@
     align-items: center;
     min-height: calc(100vh - 142px);
     margin-bottom: 1rem;
+    transition: height 0.3s, min-height 0.3s;
 
     .slide-main-content {
         position: relative;
@@ -184,6 +185,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: opacity 0.3s, visibility 0.3s, display 0.3s;
 
     h1 {
         color: white;
@@ -257,6 +259,10 @@
         }
     }
 }
+.tainacan-slides-list {
+    position: relative;
+    transition: opacity 0.3s, visibility 0.3s, display 0.3s;
+}
 #tainacan-slide-container {
     padding: 0 $page-side-padding;
     display: flex;
@@ -298,4 +304,15 @@
         }
     }
 }
-
+.hide-controls {
+    @media screen and (max-width: 768px) {
+        .slide-title-area,
+        .tainacan-slides-list {
+            visibility: hidden;
+            opacity: 0;
+        }
+        .tainacan-slide-main-view {
+            min-height: 100vh;
+        }
+    }
+}
