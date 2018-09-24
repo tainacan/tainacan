@@ -61,6 +61,8 @@
             </div>
 
             <b-tabs
+                    size="is-small"
+                    :animated="false"
                     v-if="!isSearching && isTaxonomy"
                     @input="fetchSelectedLabels()"
                     v-model="activeTab">
@@ -576,6 +578,10 @@
 
     @import "../../scss/variables.scss";
 
+    .breadcrumb {
+        background-color: white !important;
+    }
+
     @media screen and (max-width: 768px) {
         .tainacan-modal-content {
             flex-direction: column;
@@ -706,7 +712,9 @@
         list-style: none;
         margin: 0;
         padding: 0rem;
+    }
 
+    ul {
         // For Safari
         -webkit-margin-after: 0;
         -webkit-margin-start: 0;
@@ -793,13 +801,6 @@
         flex-direction: column;
         flex-wrap: wrap;
         max-height: 253px;
-
-        // For Safari
-        -webkit-margin-after: 0;
-        -webkit-margin-start: 0;
-        -webkit-margin-end: 0;
-        -webkit-padding-start: 0;
-        -webkit-margin-before: 0;
     }
 
     .tainacan-li-no-children {
