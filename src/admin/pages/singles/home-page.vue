@@ -6,7 +6,14 @@
                 <div class="home-section-icon">
                     <b-icon icon="archive"/>
                 </div>
-                <h1>{{ $i18n.get('repository') }}</h1>
+                <h1>{{ $i18n.get('repository') + ' ' }}<span class="has-text-bold">{{ repositoryName }}</span></h1>
+                <a
+                        target="_blank"
+                        :href="baseURL + '/collections'">
+                    <b-icon
+                            icon="eye"/>
+                    <span class="menu-text">{{ $i18n.get('label_view_on_theme') }}</span>
+                </a>
             </div>
             <nav>
                 <ul class="repository-menu-list">
@@ -15,7 +22,7 @@
                                 tag="a"
                                 to="/collections">
                             <b-icon
-                                    size="is-small"
+                                    size="is-medium"
                                     icon="folder-multiple"/>
                             <span class="menu-text">{{ $i18n.getFrom('collections', 'name') }}</span>
                         </router-link>
@@ -25,7 +32,7 @@
                                 tag="a"
                                 to="/items">
                             <b-icon
-                                    size="is-small"
+                                    size="is-medium"
                                     icon="file-multiple"/>
                             <span class="menu-text">{{ $i18n.getFrom('items', 'name') }}</span>
                         </router-link>
@@ -34,8 +41,8 @@
                         <router-link
                                 tag="a"
                                 to="/metadata">
-                            <span class="icon">
-                                <i class="mdi mdi-format-list-bulleted-type"/>
+                            <span class="icon is-medium">
+                                <i class="mdi mdi-36px mdi-format-list-bulleted-type"/>
                             </span>
                             <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
                         </router-link>
@@ -44,8 +51,8 @@
                         <router-link
                                 tag="a"
                                 to="/filters">
-                            <span class="icon">
-                                <i class="mdi mdi-filter"/>
+                            <span class="icon is-medium">
+                                <i class="mdi mdi-36px mdi-filter"/>
                             </span>
                             <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                         </router-link>
@@ -69,8 +76,8 @@
                         <router-link
                                 tag="a"
                                 to="/importers">
-                            <span class="icon">
-                                <i class="mdi mdi-24px mdi-import"/>
+                            <span class="icon is-medium">
+                                <i class="mdi mdi-36px mdi-import"/>
                             </span>
                             <span class="menu-text menu-text-import">{{ $i18n.get('importers') }}</span>
                         </router-link>
@@ -85,6 +92,13 @@
                     <b-icon icon="folder-multiple"/>
                 </div>
                 <h1>{{ $i18n.get('collections') }}</h1>
+                 <router-link
+                        tag="a"
+                        to="/collections">
+                    <b-icon
+                            icon="view-list"/>
+                    <span class="menu-text">{{ $i18n.get('label_view_all_collections') }}</span>
+                </router-link>
             </div>
             <collections-home-list
                     :is-loading="isLoading"
@@ -105,6 +119,8 @@ export default {
     data(){
         return {
             isLoadingCollections: false,
+            repositoryName: tainacan_plugin.repository_name,
+            baseURL: tainacan_plugin.base_url,
         }
     },
     components: {
@@ -149,8 +165,9 @@ export default {
 
     .home-page {
         margin-top: $header-height;
-        background-color: $gray1;
+        background-color: white;
         height: calc(100% - 52px);
+        padding: 25px 8.333333333% !important;
 
         .home-section {
             .home-section-header {
@@ -171,19 +188,30 @@ export default {
                 h1 {
                     color: white;
                     font-size: 1.375rem;
-                    font-weight: bold;
+                    font-weight: normal;
                     padding: 0.75rem 1.375rem;
+                    margin-right: auto;
+                }
+
+                a {
+                    color: white;
+                    margin-right: 2rem;
+                    display: inline-flex;
+
+                    .menu-text { margin-left: 0.5rem;}
                 }
 
                 &.repository-section-header {
                     background-color: $blue5;
                     .home-section-icon {
+                        background-color: $gray1;
                         color: $blue5;
                     }
                 }
                 &.collections-section-header {
                     background-color: $turquoise5;
                     .home-section-icon {
+                        background-color: $gray1;
                         color: $turquoise5;
                     }
                 }
@@ -194,19 +222,36 @@ export default {
             display: flex;
             width: 100%;
             justify-content: space-between;
+            flex-wrap: wrap;
 
             li {
                 padding: 0.75rem;
                 display: flex;
-                background-color: $blue5;
+                background-color: $gray1;
                 height: 90px;
                 flex-grow: 1;
                 margin: 1rem;
+                height: 120px;
 
                 &:first-of-type { margin-left: 0px; }
                 &:last-of-type { margin-right: 0px; }
 
-                a { color: white; }
+                a { 
+                    width: 100%;
+                    color: $blue5; 
+                    display: flex;
+                    flex-wrap: wrap;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: space-evenly;
+
+                    svg.taxonomies-icon,
+                    svg.activities-icon {
+                        fill: $blue5;
+                        height: 34px;
+                        width: 34px;
+                    }
+                }
             }
         }
 

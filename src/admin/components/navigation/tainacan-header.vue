@@ -9,7 +9,6 @@
                         to="/">
                     <b-icon 
                             type="is-blue5"
-                            size="is-medium"
                             icon="home"/>
                 </router-link>
             </div>
