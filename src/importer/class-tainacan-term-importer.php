@@ -102,20 +102,31 @@ class Term_Importer extends Importer {
 			return false;
 		}
 
+		/*
+		$this->add_transient('csv_pointer', ftell($file)); // add reference for insert
+		$csv_pointer= $this->get_transient('csv_pointer');
+		if( $csv_pointer ){
+			fseek($file, $csv_pointer);
+		}
+		*/
 		$term_repo = \Tainacan\Repositories\Terms::get_instance();
 		$parent = array();
 		$position = 0;
 		$last_term = 0;
-		$auxId = 1;
 		$taxonomy_id = $this->get_option('taxonomies');
 		while (($values =  fgetcsv($file, 0, $this->get_option('delimiter'), '"')) !== FALSE) {
 			if ($values[$position] == '') { // next degree
 				$position++;
 				array_push($parent, $last_term);
 			}
-			if ($position > 0 && $values[$position-1] != '') { // back degree
+			while( $position > 0 && !($values[$position] != '' && $values[$position-1] == '' )) {
 				$position--;
 				array_pop($parent);
+			}
+			if ($position == 0 && $values[$position] == '') {
+				$this->add_error_log("incorrect formatted csv");
+				$this->abort();
+				return false;
 			}
 			
 			$term = new \Tainacan\Entities\Term();
@@ -132,11 +143,8 @@ class Term_Importer extends Importer {
 				$this->add_log('Added term: id=' . $last_term . ' name=' . $term->get_name() . ' id parent=' . $term->get_parent());
 			} else {
 				$validationErrors = $term->get_errors();
-				$err_msg = "";
-				foreach($validationErrors as $err) {
-					$err_msg .= $err;
-				}
-				$this->add_error_log("err! = ". $err_msg);
+				$err_msg = json_encode($validationErrors);
+				$this->add_error_log("erro=>$err_msg");
 				return false;
 			}
 		}
