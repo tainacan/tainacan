@@ -1,29 +1,29 @@
 <template>
     <div class="tainacan-cards-container">
-        <router-link
-                tag="a" 
-                :to="$routerHelper.getNewCollectionPath()"
-                class="tainacan-card new-card">
-            <div class="list-metadata">
-                <b-icon 
-                        size="is-large"
-                        icon="folder-plus" />
-                <div>{{ $i18n.get('label_create_collection') }}</div>
-            </div>
-            <ul class="menu-list">
+        <template v-if="collections.length <= 0 && !isLoading">
+            <ul class="new-collection-menu">
+                <li>
+                    <router-link
+                            tag="a" 
+                            :to="$routerHelper.getNewCollectionPath()"
+                            class="first-card">
+                        <div class="list-metadata">
+                            <b-icon 
+                                    size="is-large"
+                                    icon="folder-plus" />
+                            <div>{{ $i18n.get('label_create_collection') }}</div>
+                        </div>
+                    </router-link>
+                </li>
                 <li>
                     <router-link 
                             tag="a" 
                             :to="{ path: $routerHelper.getNewCollectionPath() }" 
                             :aria-label="$i18n.get('label_collection_items')">
-                        <b-tooltip 
-                                :label="$i18n.get('items')"
-                                position="is-bottom">
-                            <span class="icon">
-                                <i class="mdi mdi-file-multiple"/>
-                            </span>
-                        </b-tooltip>
-                        <!-- <span class="menu-text">{{ $i18n.get('items') }}</span> -->
+                        <span class="icon is-medium">
+                            <i class="mdi mdi-36px mdi-file-multiple"/>
+                        </span>
+                        <span class="menu-text">{{ $i18n.get('items') }}</span>
                     </router-link>
                 </li>
                 <li>
@@ -31,14 +31,10 @@
                             tag="a" 
                             :to="{ path: $routerHelper.getNewCollectionPath() }"
                             :aria-label="$i18n.get('label_collection_metadata')">
-                        <b-tooltip 
-                                :label="$i18n.getFrom('metadata', 'name')"
-                                position="is-bottom">
-                            <span class="icon">
-                                <i class="mdi mdi-format-list-bulleted-type"/>
-                            </span>
-                        </b-tooltip>
-                        <!-- <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span> -->
+                        <span class="icon is-medium">
+                            <i class="mdi mdi-36px mdi-format-list-bulleted-type"/>
+                        </span>
+                        <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
                     </router-link>
                 </li>
                 <li>
@@ -46,134 +42,203 @@
                             tag="a" 
                             :to="{ path: $routerHelper.getNewCollectionPath() }" 
                             :aria-label="$i18n.get('label_collection_filters')">
-                        <b-tooltip 
-                                animated
-                                :label="$i18n.getFrom('filters', 'name')"
-                                position="is-bottom">
-                            <span class="icon">
-                                <i class="mdi mdi-filter"/>
-                            </span>
-                        </b-tooltip>
-                        <!-- <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span> -->
+                        <span class="icon is-medium">
+                            <i class="mdi mdi-36px mdi-filter"/>
+                        </span>
+                        <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                     </router-link>
                 </li>
             </ul>
-        </router-link>
-        <router-link
-                tag="a"
-                :to="$routerHelper.getCollectionPath(collection.id)"
-                v-if="collections.length > 0 && !isLoading" 
-                :key="index"
-                v-for="(collection, index) of collections"
-                class="tainacan-card">                                 
-        
-            <img 
-                    v-if="collection.thumbnail != undefined"
-                    :src="collection['thumbnail'].tainacan_medium ? collection['thumbnail'].tainacan_medium : (collection['thumbnail'].medium ? collection['thumbnail'].medium : thumbPlaceholderPath)">  
+        </template>
+        <template v-else>
+            <router-link
+                    tag="a" 
+                    :to="$routerHelper.getNewCollectionPath()"
+                    class="tainacan-card new-card">
+                <div class="list-metadata">
+                    <b-icon 
+                            size="is-large"
+                            icon="folder-plus" />
+                    <div>{{ $i18n.get('label_create_collection') }}</div>
+                </div>
+                <ul class="menu-list">
+                    <li>
+                        <router-link 
+                                tag="a" 
+                                :to="{ path: $routerHelper.getNewCollectionPath() }" 
+                                :aria-label="$i18n.get('label_collection_items')">
+                            <b-tooltip 
+                                    :label="$i18n.get('items')"
+                                    position="is-bottom">
+                                <span class="icon">
+                                    <i class="mdi mdi-file-multiple"/>
+                                </span>
+                            </b-tooltip>
+                            <!-- <span class="menu-text">{{ $i18n.get('items') }}</span> -->
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link  
+                                tag="a" 
+                                :to="{ path: $routerHelper.getNewCollectionPath() }"
+                                :aria-label="$i18n.get('label_collection_metadata')">
+                            <b-tooltip 
+                                    :label="$i18n.getFrom('metadata', 'name')"
+                                    position="is-bottom">
+                                <span class="icon">
+                                    <i class="mdi mdi-format-list-bulleted-type"/>
+                                </span>
+                            </b-tooltip>
+                            <!-- <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span> -->
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link 
+                                tag="a" 
+                                :to="{ path: $routerHelper.getNewCollectionPath() }" 
+                                :aria-label="$i18n.get('label_collection_filters')">
+                            <b-tooltip 
+                                    animated
+                                    :label="$i18n.getFrom('filters', 'name')"
+                                    position="is-bottom">
+                                <span class="icon">
+                                    <i class="mdi mdi-filter"/>
+                                </span>
+                            </b-tooltip>
+                            <!-- <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span> -->
+                        </router-link>
+                    </li>
+                </ul>
+            </router-link>
+            <router-link
+                    tag="a"
+                    :to="$routerHelper.getCollectionPath(collection.id)"
+                    v-if="collections.length > 0 && !isLoading" 
+                    :key="index"
+                    v-for="(collection, index) of collections"
+                    class="tainacan-card">                                 
+            
+                <img 
+                        v-if="collection.thumbnail != undefined"
+                        :src="collection['thumbnail'].tainacan_medium ? collection['thumbnail'].tainacan_medium : (collection['thumbnail'].medium ? collection['thumbnail'].medium : thumbPlaceholderPath)">  
 
-            <div class="list-metadata">
-                <!-- Name -->
-                <div class="metadata-title">
+                <div class="list-metadata">
+                    <!-- Name -->
+                    <div class="metadata-title">
+                        <p 
+                                v-tooltip="{
+                                    content: collection.name != undefined ? collection.name : '',
+                                    html: true,
+                                    autoHide: false,
+                                    placement: 'auto-start'
+                                }">
+                            {{ collection.name != undefined ? collection.name : '' }}
+                        </p>                            
+                    </div>
+                    <!-- Description -->
                     <p 
                             v-tooltip="{
-                                content: collection.name != undefined ? collection.name : '',
+                                content: collection.description != undefined && collection.description != '' ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`,
                                 html: true,
                                 autoHide: false,
                                 placement: 'auto-start'
-                            }">
-                        {{ collection.name != undefined ? collection.name : '' }}
-                    </p>                            
+                            }"   
+                            class="metadata-description"
+                            v-html="collection.description != undefined && collection.description != '' ? getLimitedDescription(collection.description) : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`" />                                                        
+                    <br>                    
                 </div>
-                <!-- Description -->
-                <p 
-                        v-tooltip="{
-                            content: collection.description != undefined && collection.description != '' ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`,
-                            html: true,
-                            autoHide: false,
-                            placement: 'auto-start'
-                        }"   
-                        class="metadata-description"
-                        v-html="collection.description != undefined && collection.description != '' ? getLimitedDescription(collection.description) : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`" />                                                        
-                <br>                    
-            </div>
-        
-            <ul class="menu-list">
-                <li>
-                    <router-link 
-                            tag="a" 
-                            :to="{ path: $routerHelper.getCollectionItemsPath(collection.id, '') }" 
-                            :aria-label="$i18n.get('label_collection_items')">
-                        <b-tooltip 
-                                :label="$i18n.get('items')"
-                                position="is-bottom">
-                            <span class="icon">
-                                <i class="mdi mdi-file-multiple"/>
-                            </span>
-                        </b-tooltip>
-                        <!-- <span class="menu-text">{{ $i18n.get('items') }}</span> -->
-                    </router-link>
-                </li>
-                <li>
-                    <router-link
-                            tag="a" 
-                            :to="{ path: $routerHelper.getCollectionEditPath(collection.id) }" 
-                            :aria-label="$i18n.get('label_settings')">
-                        <b-tooltip 
-                                :label="$i18n.get('label_settings')"
-                                position="is-bottom">
-                            <span class="icon">
-                                <i class="mdi mdi-settings"/>
-                            </span>
-                        </b-tooltip>
-                        <!-- <span class="menu-text">{{ $i18n.get('label_settings') }}</span> -->
-                    </router-link>
-                </li>
-                <li>
-                    <router-link  
-                            tag="a" 
-                            :to="{ path: $routerHelper.getCollectionMetadataPath(collection.id) }"
-                            :aria-label="$i18n.get('label_collection_metadata')">
-                        <b-tooltip 
-                                :label="$i18n.getFrom('metadata', 'name')"
-                                position="is-bottom">
-                            <span class="icon">
-                                <i class="mdi mdi-format-list-bulleted-type"/>
-                            </span>
-                        </b-tooltip>
-                        <!-- <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span> -->
-                    </router-link>
-                </li>
-                <li>
-                    <router-link 
-                            tag="a" 
-                            :to="{ path: $routerHelper.getCollectionFiltersPath(collection.id) }" 
-                            :aria-label="$i18n.get('label_collection_filters')">
-                        <b-tooltip 
-                                animated
-                                :label="$i18n.getFrom('filters', 'name')"
-                                position="is-bottom">
-                            <span class="icon">
-                                <i class="mdi mdi-filter"/>
-                            </span>
-                        </b-tooltip>
-                        <!-- <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span> -->
-                    </router-link>
-                </li>
-                <li>
-                    <router-link 
-                            tag="a" 
-                            :to="{ path: $routerHelper.getCollectionEventsPath(collection.id) }" 
-                            :aria-label="$i18n.get('label_collection_events')">
-                        <b-tooltip 
-                                :label="$i18n.get('events')"
-                                position="is-bottom">
-                            <activities-icon />
-                        </b-tooltip>
-                        <!-- <span class="menu-text">{{ $i18n.get('events') }}</span> -->
-                    </router-link> 
-                </li>
-            </ul>
-        </router-link>
+            
+                <ul class="menu-list">
+                    <li style="width: 100%;">
+                        <a 
+                                :href="collection.url" 
+                                :aria-label="$i18n.get('label_view_collection')">
+                            <b-tooltip 
+                                    :label="$i18n.get('label_view_collection')"
+                                    position="is-bottom">
+                                <span class="icon">
+                                    <i class="mdi mdi-eye"/>
+                                </span>
+                            </b-tooltip>
+                        </a>
+                    </li>
+                    <li>
+                        <router-link 
+                                tag="a" 
+                                :to="{ path: $routerHelper.getCollectionItemsPath(collection.id, '') }" 
+                                :aria-label="$i18n.get('label_collection_items')">
+                            <b-tooltip 
+                                    :label="$i18n.get('items')"
+                                    position="is-bottom">
+                                <span class="icon">
+                                    <i class="mdi mdi-file-multiple"/>
+                                </span>
+                            </b-tooltip>
+                            <!-- <span class="menu-text">{{ $i18n.get('items') }}</span> -->
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link
+                                tag="a" 
+                                :to="{ path: $routerHelper.getCollectionEditPath(collection.id) }" 
+                                :aria-label="$i18n.get('label_settings')">
+                            <b-tooltip 
+                                    :label="$i18n.get('label_settings')"
+                                    position="is-bottom">
+                                <span class="icon">
+                                    <i class="mdi mdi-settings"/>
+                                </span>
+                            </b-tooltip>
+                            <!-- <span class="menu-text">{{ $i18n.get('label_settings') }}</span> -->
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link  
+                                tag="a" 
+                                :to="{ path: $routerHelper.getCollectionMetadataPath(collection.id) }"
+                                :aria-label="$i18n.get('label_collection_metadata')">
+                            <b-tooltip 
+                                    :label="$i18n.getFrom('metadata', 'name')"
+                                    position="is-bottom">
+                                <span class="icon">
+                                    <i class="mdi mdi-format-list-bulleted-type"/>
+                                </span>
+                            </b-tooltip>
+                            <!-- <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span> -->
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link 
+                                tag="a" 
+                                :to="{ path: $routerHelper.getCollectionFiltersPath(collection.id) }" 
+                                :aria-label="$i18n.get('label_collection_filters')">
+                            <b-tooltip 
+                                    animated
+                                    :label="$i18n.getFrom('filters', 'name')"
+                                    position="is-bottom">
+                                <span class="icon">
+                                    <i class="mdi mdi-filter"/>
+                                </span>
+                            </b-tooltip>
+                            <!-- <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span> -->
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link 
+                                tag="a" 
+                                :to="{ path: $routerHelper.getCollectionEventsPath(collection.id) }" 
+                                :aria-label="$i18n.get('label_collection_events')">
+                            <b-tooltip 
+                                    :label="$i18n.get('events')"
+                                    position="is-bottom">
+                                <activities-icon />
+                            </b-tooltip>
+                            <!-- <span class="menu-text">{{ $i18n.get('events') }}</span> -->
+                        </router-link> 
+                    </li>
+                </ul>
+            </router-link>
+        </template>
     </div>
 </template>
 
@@ -203,6 +268,46 @@ export default {
     @import "../../scss/_variables.scss";
     @import "../../scss/_collection-home-cards.scss";
 
+    .new-collection-menu {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+
+        li {
+            padding: 0.75rem;
+            display: flex;
+            background-color: $gray1;
+            flex-grow: 1;
+            margin: 0.75rem 0;
+            height: 120px;
+            max-width: 13%;
+            min-width: 140px; 
+            text-align: center;
+
+            &:first-of-type {
+                width: 56.7%;
+                max-width: 56.7%;
+            }
+
+            a { 
+                width: 100%;
+                color: $turquoise5; 
+                display: flex;
+                flex-wrap: wrap;
+                flex-direction: column;
+                align-items: center;
+                justify-content: space-evenly;
+
+                svg.taxonomies-icon,
+                svg.activities-icon {
+                    fill: $turquoise5;
+                    height: 34px;
+                    width: 34px;
+                }
+            }
+        }
+    }
     
 </style>
 

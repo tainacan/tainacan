@@ -6,7 +6,7 @@
                 <div class="home-section-icon">
                     <b-icon icon="archive"/>
                 </div>
-                <h1>{{ $i18n.get('repository') + ' ' }}<span class="has-text-bold">{{ repositoryName }}</span></h1>
+                <h1>{{ $i18n.get('repository') + ' ' }}<span class="has-text-weight-semibold">{{ repositoryName }}</span></h1>
                 <a
                         target="_blank"
                         :href="baseURL + '/collections'">
@@ -130,7 +130,8 @@ export default {
     },
     computed: {
         collections() {
-            return this.getCollections(); 
+            //return this.getCollections(); 
+            return [];
         }
     },
     methods: {
@@ -168,11 +169,13 @@ export default {
         background-color: white;
         height: calc(100% - 52px);
         padding: 25px 8.333333333% !important;
+        width: 100vw;
 
         .home-section {
             .home-section-header {
                 width: 100%;
-                margin: 1rem 0;
+                margin-top: 1rem;
+                margin-bottom: 0.5rem;
                 display: flex;
                 align-items: center;
                 height: 52px;
@@ -191,12 +194,18 @@ export default {
                     font-weight: normal;
                     padding: 0.75rem 1.375rem;
                     margin-right: auto;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                 }
 
                 a {
                     color: white;
                     margin-right: 2rem;
                     display: inline-flex;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
 
                     .menu-text { margin-left: 0.5rem;}
                 }
@@ -223,18 +232,16 @@ export default {
             width: 100%;
             justify-content: space-between;
             flex-wrap: wrap;
+            margin: 0 -0.75rem;
 
             li {
                 padding: 0.75rem;
                 display: flex;
                 background-color: $gray1;
-                height: 90px;
                 flex-grow: 1;
-                margin: 1rem;
+                margin: 0.75rem;
                 height: 120px;
-
-                &:first-of-type { margin-left: 0px; }
-                &:last-of-type { margin-right: 0px; }
+                min-width: 140px; 
 
                 a { 
                     width: 100%;

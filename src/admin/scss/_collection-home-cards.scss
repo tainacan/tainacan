@@ -6,6 +6,7 @@
     flex-grow: 1;
     flex-shrink: 1;
     justify-content: space-between;
+    align-content: baseline;
     animation-name: item-appear;
     animation-duration: 0.5s;
 
@@ -19,7 +20,8 @@
     .tainacan-card {
         background-color: $gray1;
         padding: 0px;
-        margin: 1rem 0;
+        margin-top: 0.75rem;
+        margin-bottom: 0.5rem;
         flex-basis: 0;
         min-width: 48%;
         min-height: 120px;
@@ -28,16 +30,9 @@
         text-decoration: none !important;
         display: flex;
 
-        @media screen and (max-width: 480px) {
+        @media screen and (max-width: 768px) {
             max-width: 100%;
             min-width: 100%;
-            min-height: 171px;
-            max-height: 171px;
-
-            img {
-                width: 130px !important;
-                height: 130px !important;
-            }
         }
 
         img {
@@ -51,11 +46,27 @@
                 text-align: center;
                 color: $turquoise5;
                 max-width: calc(100% - 46px); 
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
             }
             .menu-list { 
                 flex-wrap: nowrap; 
                 flex-direction: column;
                 width: 46px;
+            }
+        }
+
+        &.first-card {
+            .list-metadata { 
+                text-align: center;
+                color: $turquoise5;
+                max-width:100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
             }
         }
 
