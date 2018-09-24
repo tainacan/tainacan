@@ -60,63 +60,104 @@
                 </a>
             </div>
 
-            <div
+            <b-tabs
                     v-if="!isSearching && isTaxonomy"
-                    class="modal-card-body tainacan-finder-columns-container">
-                <ul
-                        class="tainacan-finder-column"
-                        v-for="(finderColumn, key) in finderColumns"
-                        :key="key">
+                    @input="fetchSelectedLabels()"
+                    v-model="activeTab">
+                <b-tab-item :label="$i18n.get('label_all_terms')">
+                    <div class="modal-card-body tainacan-finder-columns-container">
+                        <ul
+                                class="tainacan-finder-column"
+                                v-for="(finderColumn, key) in finderColumns"
+                                :key="key">
+                            <b-field
+                                    role="li"
+                                    :addons="false"
+                                    v-if="finderColumn.length"
+                                    class="tainacan-li-checkbox-modal"
+                                    v-for="(option, index) in finderColumn"
+                                    :id="`${key}.${index}-tainacan-li-checkbox-model`"
+                                    :ref="`${key}.${index}-tainacan-li-checkbox-model`"
+                                    :key="index">
+                                <b-checkbox
+                                        v-if="isCheckbox"
+                                        v-model="selected"
+                                        :native-value="option.value">
+                                    {{ `${option.label}` }}
+                                </b-checkbox>
+                                <b-radio
+                                        v-else
+                                        v-model="selected"
+                                        :native-value="option.value">
+                                    {{ `${option.label}` }}
+                                </b-radio>
+                                <a
+                                        v-if="option.total_children > 0"
+                                        @click="getOptionChildren(option, key, index)">
+                                    <b-icon
+                                            class="is-pulled-right"
+                                            icon="menu-right"
+                                    />
+                                </a>
+                            </b-field>
+                            <li v-if="finderColumn.length">
+                                <div
+                                        v-if="finderColumn.length < totalRemaining[key].remaining"
+                                        @click="getMoreOptions(finderColumn, key)"
+                                        class="tainacan-show-more">
+                                    <b-icon
+                                            size="is-small"
+                                            icon="chevron-down"/>
+                                </div>
+                            </li>
+                        </ul>
+                        <b-loading
+                                :is-full-page="false"
+                                :active.sync="isColumnLoading"/>
+                    </div>
+                    <nav
+                            style="margin-top: 10px;"
+                            class="breadcrumb is-small has-succeeds-separator"
+                            aria-label="breadcrumbs">
+                        <ul>
+                            <li
+                                    v-for="(pathItem, pi) in hierarchicalPath"
+                                    :key="pi">
+                                <a
+                                        @click="getOptionChildren(pathItem.option, pathItem.column, pathItem.element)"
+                                        :class="{'is-active': pi == Object.keys(hierarchicalPath).length-1}">
+                                    {{ pathItem.option.label }}
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </b-tab-item>
+
+                <b-tab-item
+                        :label="$i18n.get('label_selected_terms')">
                     <b-field
-                            role="li"
-                            :addons="false"
-                            v-if="finderColumn.length"
-                            class="tainacan-li-checkbox-modal"
-                            v-for="(option, index) in finderColumn"
-                            :id="`${key}.${index}-tainacan-li-checkbox-model`"
-                            :ref="`${key}.${index}-tainacan-li-checkbox-model`"
-                            :key="index">
-                        <b-checkbox
-                                v-if="isCheckbox"
-                                v-model="selected"
-                                :native-value="option.value">
-                            {{ `${option.label}` }}
-                        </b-checkbox>
-                        <b-radio
-                                v-else
-                                v-model="selected"
-                                :native-value="option.value">
-                            {{ `${option.label}` }}
-                        </b-radio>
-                        <a
-                                v-if="option.total_children > 0"
-                                @click="getOptionChildren(option, key, index)">
-                            <b-icon
-                                    class="is-pulled-right"
-                                    icon="menu-right"
-                            />
-                        </a>
-                    </b-field>
-                    <li v-if="finderColumn.length">
+                            grouped
+                            group-multiline>
                         <div
-                                v-if="finderColumn.length < totalRemaining[key].remaining"
-                                @click="getMoreOptions(finderColumn, key)"
-                                class="tainacan-show-more">
-                            <b-icon
-                                    size="is-small"
-                                    icon="chevron-down"/>
+                                v-for="(term, index) in (selected instanceof Array ? selected : [this.selected])"
+                                :key="index"
+                                class="control">
+                            <b-tag
+                                    attached
+                                    closable
+                                    @close="selected.splice(index, 1)">
+                                {{ selectedTagsName[term] }}
+                            </b-tag>
                         </div>
-                    </li>
-                    <b-loading
-                            :is-full-page="false"
-                            :active.sync="isColumnLoading"/>
-                </ul>
-            </div>
+                    </b-field>
+                </b-tab-item>
+            </b-tabs>
             <!--<pre>{{ hierarchicalPath }}</pre>-->
             <!--<pre>{{ totalRemaining }}</pre>-->
             <!--<pre>{{ selected }}</pre>-->
             <!--<pre>{{ options }}</pre>-->
             <!--<pre>{{ searchResults }}</pre>-->
+            <!--<pre>{{ selectedTagsName }}</pre>-->
 
             <div
                     v-if="isSearching"
@@ -219,6 +260,8 @@
                 isSearchingLoading: false,
                 noMorePage: 0,
                 maxTextToShow: 47,
+                activeTab: 0,
+                selectedTagsName: {}
             }
         },
         updated(){
@@ -236,6 +279,24 @@
             }
         },
         methods: {
+            fetchSelectedLabels() {
+                let selected = this.selected instanceof Array ? this.selected : [this.selected];
+
+                for(const term of selected) {
+                    axios.get(`/taxonomy/${this.taxonomy_id}/terms/${term}`)
+                        .then((res) => {
+                            this.saveSelectedTagName(res.data.id, res.data.name);
+                        })
+                        .catch((error) => {
+                            this.$console.log(error);
+                        });
+                }
+            },
+            saveSelectedTagName(value, label){
+                if(!this.selectedTagsName[value]) {
+                    this.$set(this.selectedTagsName, `${value}`, label);
+                }
+            },
             limitChars(label){
                 if(label.length > this.maxTextToShow){
                     return label.slice(0, this.maxTextToShow)+'...';
@@ -342,12 +403,13 @@
                     }
                 }
             },
-            addToHierarchicalPath(column, element){
+            addToHierarchicalPath(column, element, option){
 
                 let found = undefined;
                 let toBeAdded = {
                     column: column,
-                    element: element
+                    element: element,
+                    option: option,
                 };
 
                 for (let f in this.hierarchicalPath) {
@@ -418,7 +480,7 @@
                 let query_items = { 'current_query': this.query };
 
                 if(key != undefined) {
-                    this.addToHierarchicalPath(key, index);
+                    this.addToHierarchicalPath(key, index, option);
                 }
 
                 let parent = 0;

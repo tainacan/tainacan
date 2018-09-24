@@ -306,6 +306,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_untrash_selected_items'                   => __( 'Recover from trash', 'tainacan' ),
 	'label_value_not_informed'		                 => __( 'Value not informed.', 'tainacan' ),
 	'label_description_not_informed'                 => __( 'Description not informed.', 'tainacan' ),
+	'label_all_terms'                                => __( 'All terms', 'tainacan' ),
+	'label_selected_terms'                           => __( 'Selected terms', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

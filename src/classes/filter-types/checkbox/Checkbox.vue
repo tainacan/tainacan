@@ -28,7 +28,7 @@
 <script>
     import { tainacan as axios } from '../../../js/axios/axios';
     import { filter_type_mixin } from '../filter-types-mixin';
-    import CheckboxFilterModal from '../../../admin/components/other/checkbox-filter-modal.vue';
+    import CheckboxRadioModal from '../../../admin/components/other/checkbox-radio-modal.vue';
 
     export default {
         created(){
@@ -195,7 +195,7 @@
             openCheckboxModal() {
                 this.$modal.open({
                     parent: this,
-                    component: CheckboxFilterModal,
+                    component: CheckboxRadioModal,
                     props: {
                         //parent: parent,
                         filter: this.filter,

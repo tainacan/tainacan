@@ -28,7 +28,7 @@
 <script>
     import qs from 'qs';
     import { tainacan as axios } from '../../../js/axios/axios';
-    import CheckboxFilterModal from '../../../admin/components/other/checkbox-filter-modal.vue';
+    import CheckboxRadioModal from '../../../admin/components/other/checkbox-radio-modal.vue';
 
     export default {
         created(){
@@ -220,7 +220,7 @@
             openCheckboxModal(parent) {
                 this.$modal.open({
                     parent: this,
-                    component: CheckboxFilterModal,
+                    component: CheckboxRadioModal,
                     props: {
                         parent: parent,
                         filter: this.filter,

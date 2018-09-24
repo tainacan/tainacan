@@ -35,7 +35,7 @@
     import TainacanTaxonomyCheckbox from './TaxonomyCheckbox.vue'
     import TainacanTaxonomyTagInput from './TaxonomyTaginput.vue'
     import AddNewTerm from  './AddNewTerm.vue'
-    import HierarchicalCheckboxModal from '../../../admin/components/other/checkbox-filter-modal.vue'
+    import CheckboxRadioModal from '../../../admin/components/other/checkbox-radio-modal.vue'
 
     export default {
         created(){
@@ -114,7 +114,7 @@
             openCheckboxModal(){
                 this.$modal.open({
                     parent: this,
-                    component: HierarchicalCheckboxModal,
+                    component: CheckboxRadioModal,
                     props: {
                         isFilter: false,
                         parent: 0,
