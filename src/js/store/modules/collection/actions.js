@@ -78,9 +78,15 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                 resolve({'itemsListTemplate': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered, advancedSearchResults:  advancedSearchResults});
             } else {
                 commit('setItems', items);
-                resolve({'items': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered, advancedSearchResults: advancedSearchResults });
+                resolve({
+                    'items': items, 
+                    'total': res.headers['x-wp-total'],
+                    totalPages: res.headers['x-wp-totalpages'], 
+                    hasFiltered: hasFiltered, 
+                    advancedSearchResults: advancedSearchResults });
             }
             dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
+            dispatch('search/setTotalPages', res.headers['x-wp-totalpages'], { root: true } );
         })
         .catch(error => reject(error));
         

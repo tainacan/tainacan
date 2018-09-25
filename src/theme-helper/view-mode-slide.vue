@@ -97,7 +97,7 @@
                 <section class="tainacan-slide-main-view">
                     <button 
                             @click.prevent="prevSlide()"
-                            :style="{ visibility: slideIndex > 0 ? 'visible' : 'visible' }"
+                            :style="{ visibility: (page > 1 && slideIndex <= 0) || slideIndex > 0 ? 'visible' : 'hidden' }"
                             class="slide-control-arrow arrow-left">
                         <span class="icon is-large">
                             <icon class="mdi mdi-48px mdi-chevron-left"/>
@@ -140,7 +140,7 @@
                     </div>
                     <button 
                             @click.prevent="nextSlide()"
-                            :style="{ visibility: slideIndex < slideItems.length - 1 ? 'visible' : 'visible' }"
+                            :style="{ visibility: (slideIndex < slideItems.length - 1) || page < totalPages ? 'visible' : 'hidden' }"
                             class="slide-control-arrow arrow-right">
                         <span class="icon is-large has-text-turoquoise5">
                             <icon class="mdi mdi-48px mdi-chevron-right"/>
@@ -152,15 +152,16 @@
                         class="slide-title-area">
                     <h1>{{ slideItems[slideIndex].title }}</h1>
                     <button 
+                            :disabled="(slideIndex == slideItems.length - 1 && page == totalPages)"
                             class="play-button"
                             @click="isPlaying = !isPlaying">
                         <b-icon
                                 type="is-secondary" 
                                 size="is-medium"
                                 :icon="isPlaying ? 'pause-circle' : 'play-circle' "/>
-                        <circular-counter 
+                        <!-- <circular-counter 
                                 v-if="isPlaying"
-                                :time="this.slideTimeout/1000" /> 
+                                :time="this.slideTimeout/1000" />  -->
                     </button>
                 </section>
 
@@ -196,7 +197,7 @@
                     <!-- Extra buttons for sliding groups of slides -->
                     <button 
                             @click.prevent="prevGroupOfSlides()"
-                            :style="{ visibility: slideIndex >= 0 ? 'visible' : 'visible' }"
+                            :style="{ visibility: (page > 1 && slideIndex <= 0) || slideIndex > 0 ? 'visible' : 'hidden' }"
                             class="slide-control-arrow slide-group-arrow arrow-left">
                         <span class="icon is-medium has-text-white">
                             <icon class="mdi mdi-24px mdi-chevron-left"/>
@@ -204,7 +205,7 @@
                     </button>
                     <button 
                             @click.prevent="nextGroupOfSlides()"
-                            :style="{ visibility: slideIndex < slideItems.length - 1 ? 'visible' : 'visible' }"
+                            :style="{ visibility: (slideIndex < slideItems.length - 1) || page < totalPages ? 'visible' : 'hidden' }"
                             class="slide-control-arrow slide-group-arrow arrow-right">
                         <span class="icon is-medium has-text-white">
                             <icon class="mdi mdi-24px mdi-chevron-right"/>
@@ -281,6 +282,12 @@ export default {
     computed: {
         item() {
             return this.getItem();
+        },
+        page() {
+            return this.getPage();
+        },
+        totalPages() {
+            return this.getTotalPages();
         }
     },
     watch: {
@@ -305,16 +312,19 @@ export default {
                         this.$refs.mySwiper.swiper.slideTo(updatedSlideIndex);
                     });
                 }       
+
             },
             immediate: true
         },
         slideIndex:{
             handler(val, oldVal) { 
+                // Handles direction information, used by animations
                 if (val >= oldVal)
                     this.goingRight = true;
                 else    
                     this.goingRight = false;
                 
+                // Handles loading main item info, displayed in the middle
                 if (this.slideItems && this.slideItems[this.slideIndex] && this.slideItems[this.slideIndex].id != undefined) {
                     
                     this.isLoadingItem = true;
@@ -328,10 +338,15 @@ export default {
                         });
                 }
 
-                if (this.slideIndex == this.slideItems.length - 1 && this.slideItems.length < this.totalItems)
-                    this.$eventBusSearch.setPage(this.getPage() + 1);
-                else if (this.slideIndex == 0 && this.getPage() > 1 && this.slideItems.length < this.totalItems)
-                    this.$eventBusSearch.setPage(this.getPage() - 1);
+                // Handles requesting new page of items, either to left or right
+                if (this.slideIndex == this.slideItems.length - 1 && this.page < this.totalPages)
+                    this.$eventBusSearch.setPage(this.page + 1);
+                else if (this.slideIndex == 0 && this.page > 1 && this.slideItems.length < this.totalItems)
+                    this.$eventBusSearch.setPage(this.page - 1);
+
+                // Handles pausing auto play when reaches the end of the list.
+                if (this.slideIndex == this.slideItems.length - 1 && this.page == this.totalPages)
+                    this.isPlaying = false;
             },
             immediate: true
         }, 
@@ -353,7 +368,7 @@ export default {
             'getItem'
         ]),
          ...mapGetters('search', [
-            'getTotalItems',
+            'getTotalPages',
             'getPage'
         ]),
         onHideControls() {
