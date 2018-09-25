@@ -737,7 +737,7 @@ class Old_Tainacan extends Importer{
 
             if(!empty($meta->metadata->cardinality)){
 
-                if($meta->metadata->cardinality > 1){
+                if($meta->metadata->cardinality === 'n'){
                     $newMetadatum->set_multiple('yes');
                 }
 
