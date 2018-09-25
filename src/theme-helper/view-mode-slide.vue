@@ -9,6 +9,7 @@
                     placement: 'auto-start'
                 }"  
                 id="close-fullscren-button"
+                :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
                 @click="closeSlideViewMode()">
             <b-icon icon="close" />
         </button>
@@ -20,7 +21,6 @@
                     autoHide: false,
                     placement: 'auto-start'
                 }"  
-                class="is-hidden-mobile"
                 id="metadata-compress-button"
                 @click="isMetadataCompressed = !isMetadataCompressed">
             <b-icon :icon="isMetadataCompressed ? 'menu-right' : 'menu-left'" />
@@ -28,7 +28,17 @@
 
         <aside
                 v-if="!isMetadataCompressed"
-                class="metadata-menu tainacan-form is-hidden-mobile">
+                class="metadata-menu tainacan-form">
+
+            <div class="metadata-menu-header is-hidden-tablet">
+                <h2>{{ item.title }}</h2>
+                <button
+                        id="close-metadata-button"
+                        @click="isMetadataCompressed = true">
+                    <b-icon icon="close" />
+                </button>
+                <hr>
+            </div>
 
             <h3 class="has-text-white has-text-weight-semibold">{{ $i18n.get('metadata') }}</h3>
             
@@ -94,9 +104,9 @@
                         </span> 
                     </button>
                     <div 
-                            @click.prevent="hideControls = !hideControls"
-                            class="slide-main-content">
-
+                            @click.prevent="onHideControls()"
+                            class="slide-main-content"
+                            v-hammer:swipe.prevent="onSwipeFiltersMenu">
                         <transition 
                                 mode="out-in"
                                 :name="goingRight ? 'slide-right' : 'slide-left'" >
@@ -141,6 +151,7 @@
                         v-if="slideItems[slideIndex] != undefined"
                         class="slide-title-area">
                     <h1>{{ slideItems[slideIndex].title }}</h1>
+                    <!-- <circular-counter :time="10" />  -->
                     <button 
                             class="play-button"
                             @click="isPlaying = !isPlaying">
@@ -207,6 +218,7 @@
 import {mapActions, mapGetters} from 'vuex';
 import 'swiper/dist/css/swiper.css';
 import { swiper, swiperSlide } from 'vue-awesome-swiper';
+import CircularCounter from '../admin/components/other/circular-counter.vue'
 
 export default {
     name: 'ViewModeSlide',
@@ -216,10 +228,12 @@ export default {
         items: Array,
         totalItems: Number,
         hideControls: true,
+        isSwiping: false
     },  
     components: {
         swiper,
-        swiperSlide
+        swiperSlide,
+        CircularCounter
     },
     data () {
         return {
@@ -340,6 +354,21 @@ export default {
             'getTotalItems',
             'getPage'
         ]),
+        onHideControls() {
+            if (!this.isSwiping)
+                this.hideControls = !this.hideControls;
+        },
+        onSwipeFiltersMenu($event) {
+            this.isSwiping = true;
+            if ($event.offsetDirection == 2) {
+                this.nextSlide();
+            } else if ($event.offsetDirection == 4) {
+                this.prevSlide();
+            }
+            setTimeout(() => {
+                this.isSwiping = false;
+            }, 500);
+        },
         onSlideChange() {
             this.slideIndex = this.$refs.mySwiper.swiper.activeIndex;
         },

@@ -15,6 +15,7 @@
     }
 }
 .metadata-menu {
+    background-color: black;
     position: absolute;
     z-index: 10;
     width: 20.83%;
@@ -41,6 +42,39 @@
         top: 0px !important;
     }
 
+    .metadata-menu-header {
+        display: flex;
+        flex-wrap: wrap;
+        h2 {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-right: auto;
+            color: white;
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 0;
+        }
+        #close-metadata-button {
+            border-radius: 50px;
+            color: white;
+            background-color: transparent;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            z-index: 9999999999;
+        
+            &:focus, &:active {
+                outline: none;
+            }
+        }
+        hr {
+            margin-top: 0;
+            width: 100%;
+            background-color: $turquoise5;
+        }
+    }
+
     h3 {
         font-size: 100%;
         margin-top: 0px;
@@ -64,7 +98,7 @@
 
     .field {        
         margin-bottom: 0px !important;
-        border-bottom: 1px solid $gray2;
+        border-bottom: 1px solid $gray5;
         padding: 1rem 0px 0.2rem 0px;
 
         .label {
@@ -95,7 +129,7 @@
 #metadata-compress-button {
     position: absolute;
     z-index: 99;
-    top: 120px;
+    top: 123px;
     left: 0;
     max-width: 33px;
     height: 26px;
@@ -107,7 +141,7 @@
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
     cursor: pointer;
-    transition: top 0.3s;
+    transition: top 0.3s, left 0.3s, opacity 0.3s, visibility 0.3s;
 
     &:focus, &:active {
         outline: none;
@@ -137,7 +171,7 @@
 .spaced-to-right {
     margin-left:  20.83%;
 
-    .arrow-left {
+    .tainacan-slide-main-view .arrow-left {
         left: 20.83% !important;
     }
 
@@ -156,8 +190,8 @@
 
     .slide-main-content {
         position: relative;
-        min-height: 82vh;
-        max-height: 82vh;
+        min-height: 70vh;
+        max-height: 70vh;
         width: 100vw;
         display: flex;
         align-items: center;
@@ -169,7 +203,7 @@
         &>div video,
         &>div.tainacan-embed-container {
             width: 100%;
-            max-width: 82vh;
+            max-width: 100vh;
             text-align: center;
             color: white;
         }
@@ -238,11 +272,12 @@
     &.arrow-left { 
         left: 0; 
         margin-left: $page-side-padding;
-        
+        transition: margin-left 0.3s;
     }
     &.arrow-right { 
         right: 0;     
         margin-right: $page-side-padding;
+        transition: margin-right 0.3s;
     }
     &.slide-group-arrow {
         top: calc(50% - 33px);
@@ -264,6 +299,7 @@
     transition: opacity 0.3s, visibility 0.3s, display 0.3s;
 }
 #tainacan-slide-container {
+    background-color: rgba(0,0,0,0.5);
     padding: 0 $page-side-padding;
     display: flex;
     flex-wrap: nowrap;
@@ -306,6 +342,21 @@
 }
 .hide-controls {
     @media screen and (max-width: 768px) {
+        .slide-control-arrow {
+            visibility: hidden;
+            opacity: 0;
+        }
+        .arrow-right {
+            margin-right: 0%;
+        }
+        .arrow-left {
+            margin-left: 0%;
+        }
+        #metadata-compress-button {
+            visibility: hidden;
+            opacity: 0;
+            left: -20px;
+        }
         .slide-title-area,
         .tainacan-slides-list {
             visibility: hidden;
