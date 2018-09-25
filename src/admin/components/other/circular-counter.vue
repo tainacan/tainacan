@@ -1,21 +1,19 @@
 <template>
-
-<div class="item html">
+<div class="circular-counter html">
     <svg 
-            width="42" 
-            height="42" 
+            width="48" 
+            height="48" 
             xmlns="http://www.w3.org/2000/svg">
         <g>
-            <title>Layer 1</title>
             <circle     
                     id="circle" 
                     class="circle_animation" 
-                    :style="{ 'stroke-dashoffset': initialOffset-((i+1)*(initialOffset/time))}"
-                    r="9" 
-                    cy="12" 
-                    cx="12" 
-                    stroke-width="2" 
-                    stroke="#6fdb6f" 
+                    :style="{ 'stroke-dashoffset': strokeDashOffset}"
+                    r="16" 
+                    cy="28" 
+                    cx="28" 
+                    stroke-width="3" 
+                    stroke="white" 
                     fill="none"/>
         </g>
     </svg>
@@ -27,37 +25,42 @@ export default {
     name: 'CircularCounter',
     data() {
         return {
-            initialOffset: '120',
-            i: 1,
+            initialOffset: 100,
+            i: -1,
             interval: null
+        }
+    },
+    computed: {
+        strokeDashOffset() {
+            return this.initialOffset - ((this.i) * (this.initialOffset/this.time));
         }
     },
     props: {
         time: Number
     },
     created() {
+        if (this.i == this.time) {  	
+            this.initialOffset = 100;
+        }
+        this.i++; 
+
         this.interval = setInterval(() => {
             if (this.i == this.time) {  	
-                clearInterval(this.interval);
-                return;
+                this.initialOffset = 100;
             }
             this.i++;  
-        }, 1000)
+        }, 1000);
+    },
+    beforeDestroy() {
+        clearInterval(this.interval);
     }
 }
 </script>
 
 <style scoped>
-.item {
+.circular-counter {
     position: relative;
     float: left;
-}
-
-.item h2 {
-    text-align:center;
-    position: absolute;
-    line-height: 125px;
-    width: 100%;
 }
 
 svg {
@@ -66,9 +69,9 @@ svg {
 }
 
 .circle_animation {
-  stroke-dasharray: 440; /* this value is the pixel circumference of the circle */
-  stroke-dashoffset: 440;
-  transition: all 1s linear;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    transition: all 0.3s linear;
 }
 </style>
 

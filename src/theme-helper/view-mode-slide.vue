@@ -151,7 +151,6 @@
                         v-if="slideItems[slideIndex] != undefined"
                         class="slide-title-area">
                     <h1>{{ slideItems[slideIndex].title }}</h1>
-                    <!-- <circular-counter :time="10" />  -->
                     <button 
                             class="play-button"
                             @click="isPlaying = !isPlaying">
@@ -159,6 +158,9 @@
                                 type="is-secondary" 
                                 size="is-medium"
                                 :icon="isPlaying ? 'pause-circle' : 'play-circle' "/>
+                        <circular-counter 
+                                v-if="isPlaying"
+                                :time="this.slideTimeout/1000" /> 
                     </button>
                 </section>
 
@@ -392,7 +394,7 @@ export default {
             this.$refs.mySwiper.swiper.slideTo(this.slideIndex + amountToSkip);    
         },
         prevGroupOfSlides() {
-             let screenWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
+            let screenWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
             let amountToSkip = 0;
 
             if (screenWidth <= 480) amountToSkip = 1;

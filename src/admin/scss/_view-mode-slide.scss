@@ -241,6 +241,11 @@
             outline: 0;
             border: 0;
         }
+        .circular-counter {
+            position: absolute;
+            right: calc(4.16667% + 4px);
+            top: 18px;
+        }
     }
 }
 .slide-control-arrow {
@@ -321,7 +326,7 @@
     }
 
     .tainacan-slide-item {    
-        margin: 0.75rem;
+        // margin: 0.75rem;
 
         &.active-item img {
             border-bottom: 4px solid $turquoise5 !important;
