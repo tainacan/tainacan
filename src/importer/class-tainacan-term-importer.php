@@ -13,6 +13,14 @@ use \Tainacan\Entities;
 
 class Term_Importer extends Importer {
 
+	protected $steps = [
+		[
+			'name' => 'Import Terms',
+			'progress_label' => 'Creating terms',
+			'callback' => 'create_terms'
+		]
+	];
+
 	public function __construct($attributes = array()) {
 		parent::__construct($attributes);
 		$this->add_import_method('file');
@@ -67,25 +75,27 @@ class Term_Importer extends Importer {
 					</div> 
 				</span>
 				<div class="control is-clearfix">
-					<select class="input" type="text" name="taxonomies">
-					<?php
-						$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
-						$taxonomies  = $Tainacan_Taxonomies->fetch( [
-							'status' => [
-								'auto-draft',
-								'draft',
-								'publish',
-								'private'
-							]
-						], 'OBJECT' );
+					<div class="select">
+						<select name="taxonomies">
+						<?php
+							$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
+							$taxonomies  = $Tainacan_Taxonomies->fetch( [
+								'status' => [
+									'auto-draft',
+									'draft',
+									'publish',
+									'private'
+								]
+							], 'OBJECT' );
 
-						foreach( $taxonomies as $taxonomie) {
-							?>
-							<option value="<?php echo $taxonomie->get_db_identifier();?>"><?php echo $taxonomie->get_name() ?> </option>
-							<?php
-						}
-					?>
-					</select>
+							foreach( $taxonomies as $taxonomie) {
+								?>
+								<option value="<?php echo $taxonomie->get_db_identifier();?>"><?php echo $taxonomie->get_name() ?> </option>
+								<?php
+							}
+						?>
+						</select>
+					</div>
 				</div>
 			</div>
 			
@@ -94,6 +104,10 @@ class Term_Importer extends Importer {
 	}
 	
 	public function process_item($index, $collection_definition) {
+	 	return true;
+	}
+
+	public function create_terms( ) {
 		
 		if (($handle = fopen($this->tmp_file, "r")) !== false) {
 			$file = $handle;
@@ -102,24 +116,20 @@ class Term_Importer extends Importer {
 			return false;
 		}
 
-		/*
-		$this->add_transient('csv_pointer', ftell($file)); // add reference for insert
-		$csv_pointer= $this->get_transient('csv_pointer');
-		if( $csv_pointer ){
-			fseek($file, $csv_pointer);
-		}
-		*/
-		$term_repo = \Tainacan\Repositories\Terms::get_instance();
-		$parent = array();
-		$position = 0;
-		$last_term = 0;
-		$taxonomy_id = $this->get_option('taxonomies');
-		while (($values =  fgetcsv($file, 0, $this->get_option('delimiter'), '"')) !== FALSE) {
+		$parent = $this->get_transient('parent');
+		if ($parent == null) $parent = array();
+		$position = $this->get_transient('position') == null ? 0: $this->get_transient('position');
+		$last_term = $this->get_transient('last_term') == null ? 0: $this->get_transient('last_term');
+		
+		$position_file = $this->get_in_step_count();
+		fseek($file, $position_file);
+		if (($values =  fgetcsv($file, 0, $this->get_option('delimiter'), '"')) !== FALSE) {
+			$position_file = ftell($file);
 			if ($values[$position] == '') { // next degree
 				$position++;
 				array_push($parent, $last_term);
 			}
-			while( $position > 0 && !($values[$position] != '' && $values[$position-1] == '' )) {
+			while( $position > 0 && !($values[$position] != '' && $values[$position-1] == '' )) {  // back degree
 				$position--;
 				array_pop($parent);
 			}
@@ -132,8 +142,9 @@ class Term_Importer extends Importer {
 			$term = new \Tainacan\Entities\Term();
 			$term->set_name($values[$position]);
 			$term->set_description($values[$position+1]);
-			$term->set_taxonomy($taxonomy_id);
+			$term->set_taxonomy($this->get_option('taxonomies'));
 			
+			$term_repo = \Tainacan\Repositories\Terms::get_instance();
 			if(end($parent))
 				$term->set_parent(end($parent));
 		
@@ -147,7 +158,12 @@ class Term_Importer extends Importer {
 				$this->add_error_log("erro=>$err_msg");
 				return false;
 			}
+			$this->add_transient('parent', $parent);
+			$this->add_transient('last_term', $last_term);
+			$this->add_transient('position', $position);
+			return $position_file;
+		} else {
+			return true;
 		}
-		return true;
 	}
 }
