@@ -259,6 +259,8 @@ export default {
             isLoadingItem: true,
             isMetadataCompressed: true,
             slideIndex: 0,
+            minPage: 1,
+            maxPage: 1,
             preloadedItem: {},
             swiperOption: {
                 preventInteractionOnTransition: true,
@@ -299,28 +301,66 @@ export default {
         }
     },
     watch: {
+        page: {
+            handler() {
+                this.minPage = this.page < this.minPage ? this.page : this.minPage;
+                this.maxPage = this.page > this.maxPage ? this.page : this.maxPage;
+            },
+            immediate: true
+        },
         items: {
             handler () {
-                let updatedSlideIndex = this.slideIndex;
+                if (this.items.length > 0) {
+                    let updatedSlideIndex = this.slideIndex != undefined ? JSON.parse(JSON.stringify(this.slideIndex)) : 0;
 
-                for (let newItem of (this.goingRight ? this.items : JSON.parse(JSON.stringify(this.items)).reverse())) {
-                    let existingItemIndex = this.slideItems.findIndex(anItem => anItem.id == newItem.id);
-                    if (existingItemIndex < 0) {
-                        if (this.goingRight) {
-                            this.slideItems.push(newItem);
+                    // Loops through new items list. Depending on direction, goes from start or end of list.
+                    for (let newItem of (this.goingRight ? this.items : JSON.parse(JSON.stringify(this.items)).reverse())) {
+                        let existingItemIndex = this.slideItems.findIndex(anItem => anItem.id == newItem.id);
+                        if (existingItemIndex < 0) {
+                            if (this.goingRight) {
+                                this.slideItems.push(newItem);
+                            } else {
+                                this.slideItems.unshift(newItem);
+                                updatedSlideIndex++;
+                            }
                         } else {
-                            this.slideItems.unshift(newItem);
-                            updatedSlideIndex++;
+                            this.$set(this.slideItems, existingItemIndex, newItem);
                         }
-                    } else {
-                        this.$set(this.slideItems, existingItemIndex, newItem);
+                    }   
+                    
+                    // Checks if list got too big. In this case we remove items from a page that is far from index
+                    if (
+                        (this.getItemsPerPage() == 96 && this.slideItems.length > 192) || 
+                        (this.getItemsPerPage() == 48 && this.slideItems.length > 96) ||
+                        (this.getItemsPerPage() < 48 && this.slideItems.length > 48)
+                        ) {
+                        if (this.goingRight) {
+                            this.slideItems.splice(0, this.getItemsPerPage());
+                            this.minPage++;
+                            updatedSlideIndex = this.slideItems.length - 1 - this.getItemsPerPage();
+                        } else {
+                            this.slideItems.splice(-this.getItemsPerPage());
+                            this.maxPage--;
+                            updatedSlideIndex = this.getItemsPerPage();
+                        }
                     }
-                    this.$nextTick(() => {
-                        this.$refs.mySwiper.swiper.update();
-                        this.$refs.mySwiper.swiper.slideTo(updatedSlideIndex);
-                    });
-                }       
 
+                    if (this.$refs.mySwiper != undefined && this.$refs.mySwiper.swiper != undefined)
+                        this.$refs.mySwiper.swiper.update();
+
+                    // When changes where made in the array, updates slider position                   
+                    this.$nextTick(() => {
+                        this.slideIndex = updatedSlideIndex;
+
+                        if (this.slideIndex != undefined && this.$refs.mySwiper.swiper.slides[this.slideIndex] != undefined) 
+                            this.$refs.mySwiper.swiper.slides[this.slideIndex].click();
+                        
+                        this.$refs.mySwiper.swiper.activeIndex == this.slideIndex;
+                        this.$refs.mySwiper.swiper.slideTo(this.slideIndex);
+                        
+                        this.$refs.mySwiper.swiper.update();
+                    });
+                }
             },
             immediate: true
         },
@@ -331,10 +371,10 @@ export default {
                     this.goingRight = true;
                 else    
                     this.goingRight = false;
-                
+
                 // Handles loading main item info, displayed in the middle
                 if (this.slideItems && this.slideItems[this.slideIndex] && this.slideItems[this.slideIndex].id != undefined) {
-                    
+
                     this.isLoadingItem = true;
 
                     // Checks if item is preloaded
@@ -367,9 +407,10 @@ export default {
                 
                 // Handles requesting new page of items, either to left or right
                 if (this.slideIndex == this.slideItems.length - 1 && this.page < this.totalPages)
-                    this.$eventBusSearch.setPage(this.page + 1);
-                else if (this.slideIndex == 0 && this.page > 1 && this.slideItems.length < this.totalItems)
-                    this.$eventBusSearch.setPage(this.page - 1);
+                    oldVal == undefined ? this.$eventBusSearch.setPage(this.page + 1) : this.$eventBusSearch.setPage(this.maxPage + 1);
+                else if (this.slideIndex == 0 && this.page > 1 && this.slideItems.length < this.totalItems) {
+                    oldVal == undefined ? this.$eventBusSearch.setPage(this.page - 1) : this.$eventBusSearch.setPage(this.minPage - 1);
+                }
 
                 // Handles pausing auto play when reaches the end of the list.
                 if (this.slideIndex == this.slideItems.length - 1 && this.page == this.totalPages)
@@ -380,7 +421,8 @@ export default {
         isPlaying() {
             if (this.isPlaying) {
                 this.intervalId = setInterval(() => {
-                    this.$refs.mySwiper.swiper.navigation.nextEl.click();
+                    if (this.$refs.mySwiper.swiper != undefined)
+                        this.$refs.mySwiper.swiper.navigation.nextEl.click();
                 }, this.slideTimeout);
             } else {
                 clearInterval(this.intervalId);
@@ -397,7 +439,8 @@ export default {
         ]),
          ...mapGetters('search', [
             'getTotalPages',
-            'getPage'
+            'getPage',
+            'getItemsPerPage'
         ]),
         onHideControls() {
             if (!this.isSwiping)
@@ -415,13 +458,16 @@ export default {
             }, 500);
         },
         onSlideChange() {
-            this.slideIndex = this.$refs.mySwiper.swiper.activeIndex;
+            if (this.$refs.mySwiper.swiper != undefined)
+                this.slideIndex = this.$refs.mySwiper.swiper.activeIndex;
         },
         nextSlide() { 
-            this.$refs.mySwiper.swiper.slideNext();    
+            if (this.$refs.mySwiper.swiper != undefined)
+                this.$refs.mySwiper.swiper.slideNext();    
         },
         prevSlide() {
-            this.$refs.mySwiper.swiper.slidePrev();
+            if (this.$refs.mySwiper.swiper != undefined)
+                this.$refs.mySwiper.swiper.slidePrev();
         },
         nextGroupOfSlides() { 
             let screenWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
@@ -434,7 +480,8 @@ export default {
             else if (screenWidth > 1366 && screenWidth <= 1600) amountToSkip = 6;
             else if (screenWidth > 1600) amountToSkip = 7;
             
-            this.$refs.mySwiper.swiper.slideTo(this.slideIndex + amountToSkip);    
+            if (this.$refs.mySwiper.swiper != undefined)
+                this.$refs.mySwiper.swiper.slideTo(this.slideIndex + amountToSkip);    
         },
         prevGroupOfSlides() {
             let screenWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
@@ -447,7 +494,8 @@ export default {
             else if (screenWidth > 1366 && screenWidth <= 1600) amountToSkip = 6;
             else if (screenWidth > 1600) amountToSkip = 7;
             
-            this.$refs.mySwiper.swiper.slideTo(this.slideIndex - amountToSkip);  
+            if (this.$refs.mySwiper.swiper != undefined)
+                this.$refs.mySwiper.swiper.slideTo(this.slideIndex - amountToSkip);  
         },
         renderMetadata(itemMetadata, column) {
 
@@ -466,7 +514,12 @@ export default {
         }
     },
     mounted() {
-        this.$refs.mySwiper.swiper.initialSlide = this.slideIndex;
+        this.minPage = this.page;
+        this.maxPage = this.page;
+
+        if (this.$refs.mySwiper.swiper != undefined) {
+            this.$refs.mySwiper.swiper.initialSlide = this.slideIndex;
+        }
     },
     beforeDestroy() {
         clearInterval(this.intervalId);
