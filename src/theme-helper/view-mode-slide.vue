@@ -180,6 +180,7 @@
                                 class="tainacan-slide-item"
                                 :class="{'active-item': slideIndex == index}">
                             <img 
+                                    :alt="item.title"
                                     class="thumnail" 
                                     :src="item['thumbnail']['tainacan_small'] ? item['thumbnail']['tainacan_small'] : (item['thumbnail'].thumb ? item['thumbnail'].thumb : thumbPlaceholderPath)">  
                             
@@ -194,6 +195,13 @@
                                 class="swiper-button-next" 
                                 slot="button-next"/>
                     </swiper>
+                    <!-- List loading -->
+                    <span 
+                            v-if="isLoading"
+                            :style="{ left: !goingRight ? '' : '25%', right: !goingRight ? '25%' : '' }"
+                            class="icon loading-icon">
+                        <div class="control has-icons-right is-loading is-clearfix" />
+                    </span>
                     <!-- Extra buttons for sliding groups of slides -->
                     <button 
                             @click.prevent="prevGroupOfSlides()"
@@ -221,7 +229,7 @@
 import {mapActions, mapGetters} from 'vuex';
 import 'swiper/dist/css/swiper.css';
 import { swiper, swiperSlide } from 'vue-awesome-swiper';
-import CircularCounter from '../admin/components/other/circular-counter.vue'
+import CircularCounter from '../admin/components/other/circular-counter.vue';
 
 export default {
     name: 'ViewModeSlide',
@@ -229,6 +237,7 @@ export default {
         collectionId: Number,
         displayedMetadata: Array,
         items: Array,
+        isLoading: Boolean,
         totalItems: Number,
         hideControls: true,
         isSwiping: false
@@ -241,24 +250,21 @@ export default {
     data () {
         return {
             slideItems: [],
-            isLoading: false,
             goingRight: true,
             isPlaying: false,
             slideTimeout: 5000, 
             intervalId: 0, 
             collapseAll: false,
-            isLoadingItem: false,
+            isLoadingItem: true,
             isMetadataCompressed: true,
             slideIndex: 0,
             swiperOption: {
                 preventInteractionOnTransition: true,
-                normalizeSlideIndex: true,
                 allowClick: true,
                 allowTouchMove: true,
                 slidesPerView: 18,
                 slidesPerGroup: 1,
                 centeredSlides: true,
-                watchSlidesVisibility: true,
                 spaceBetween: 12,
                 slideToClickedSlide: true,
                 navigation: {
@@ -337,7 +343,7 @@ export default {
                             this.isLoadingItem = false;
                         });
                 }
-
+                
                 // Handles requesting new page of items, either to left or right
                 if (this.slideIndex == this.slideItems.length - 1 && this.page < this.totalPages)
                     this.$eventBusSearch.setPage(this.page + 1);

@@ -253,7 +253,7 @@
     background-color: transparent;
     border: none !important;
     height: 3.5rem;
-    width: 2.8rem;
+    width: 3.5rem;
     text-align: center;
     vertical-align: middle;
     position: absolute;
@@ -272,6 +272,7 @@
             line-height: 5rem;
             font-size: 5rem;
             color: $turquoise5;
+            text-shadow: 0px 0px 2px $gray5;
         }
     }
     &.arrow-left { 
@@ -295,6 +296,7 @@
                 line-height: 3rem;
                 font-size: 3rem;
                 color: white;
+                text-shadow: 0px 0px 2px $gray5;
             }
         }
     }
@@ -302,6 +304,13 @@
 .tainacan-slides-list {
     position: relative;
     transition: opacity 0.3s, visibility 0.3s, display 0.3s;
+
+    .loading-icon {
+        width: 100%;
+        top: calc(50% - 33px);
+        position: absolute;
+        z-index: 9;
+    }
 }
 #tainacan-slide-container {
     background-color: rgba(0,0,0,0.5);
@@ -326,6 +335,7 @@
     }
 
     .tainacan-slide-item {    
+        cursor: pointer;
 
         &.active-item img {
             border-bottom: 4px solid $turquoise5 !important;
@@ -335,6 +345,7 @@
         }
 
         img {
+            color: white;
             width: 100%;//85px;
             height: auto;
             border-radius: 0px;
