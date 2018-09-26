@@ -54,7 +54,11 @@ function tainacan_autoload($class_name){
     	$sliced = array_slice($class_path, 1, count($class_path) -2);
 
     	if( isset( $class_path[1] ) && $class_path[1] === 'Importer' ){
-            $dir = TAINACAN_IMPORTER_DIR;
+			$dir = TAINACAN_IMPORTER_DIR;
+			$dir_import = strtolower(str_replace('_', '-' , $class_name));
+			if (file_exists("$dir$dir_import/")) {
+				$dir .= "$dir_import/";
+			}
     	} else if( isset( $class_path[1] ) && $class_path[1] === 'Exposers' ){
     		$dir = TAINACAN_EXPOSERS_DIR;
     		if(count($class_path) > 3) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;

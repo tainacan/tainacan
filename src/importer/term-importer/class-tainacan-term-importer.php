@@ -15,6 +15,11 @@ class Term_Importer extends Importer {
 
 	protected $steps = [
 		[
+			'name' => 'Create Taxonomy',
+			'progress_label' => 'Creating taxonomy',
+			'callback' => 'create_taxonomy'
+		],
+		[
 			'name' => 'Import Terms',
 			'progress_label' => 'Creating terms',
 			'callback' => 'create_terms'
@@ -28,7 +33,8 @@ class Term_Importer extends Importer {
 		$this->remove_import_method('url');
 
 		$this->set_default_options([
-			'delimiter' => ','
+			'delimiter' => ',',
+			'new_taxonomy' => ''
 		]);
 	}
 	
@@ -57,8 +63,8 @@ class Term_Importer extends Importer {
 				</div>
 			</div>
 
-			<div class="field">
-				<label class="label"><?php _e('Taxonomies:', 'tainacan'); ?></label>
+			<div class="field import_term_csv_taxonomies">
+				<label class="label"><?php _e('Select a taxonomies:', 'tainacan'); ?></label>
 				<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
@@ -76,18 +82,18 @@ class Term_Importer extends Importer {
 				</span>
 				<div class="control is-clearfix">
 					<div class="select">
-						<select name="taxonomies">
+						<select name="select_taxonomy" class="select_taxonomy">
+							<option disabled selected></option>
 						<?php
 							$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
 							$taxonomies  = $Tainacan_Taxonomies->fetch( [
 								'status' => [
-									'auto-draft',
+									//'auto-draft',
 									'draft',
 									'publish',
 									'private'
 								]
 							], 'OBJECT' );
-
 							foreach( $taxonomies as $taxonomie) {
 								?>
 								<option value="<?php echo $taxonomie->get_db_identifier();?>"><?php echo $taxonomie->get_name() ?> </option>
@@ -96,6 +102,11 @@ class Term_Importer extends Importer {
 						?>
 						</select>
 					</div>
+				</div>
+				
+				<label class="label"><?php _e('or create a new:', 'tainacan'); ?></label>
+				<div class="control is-clearfix">
+					<input class="input new_taxonomy" type="text" name="new_taxonomy" value="<?php echo $this->get_option('new_taxonomy'); ?>"  onchange="changeValueTaxonomy(this.value)">
 				</div>
 			</div>
 			
@@ -118,8 +129,9 @@ class Term_Importer extends Importer {
 
 		$parent = $this->get_transient('parent');
 		if ($parent == null) $parent = array();
-		$position = $this->get_transient('position') == null ? 0: $this->get_transient('position');
-		$last_term = $this->get_transient('last_term') == null ? 0: $this->get_transient('last_term');
+		$position 	= $this->get_transient('position')     == null ? 0: $this->get_transient('position');
+		$last_term 	= $this->get_transient('last_term')    == null ? 0: $this->get_transient('last_term');
+		$id_taxonomy= $this->get_transient('new_taxonomy') == null ? $this->get_option('select_taxonomy') : $this->get_transient('new_taxonomy');
 		
 		$position_file = $this->get_in_step_count();
 		fseek($file, $position_file);
@@ -142,7 +154,7 @@ class Term_Importer extends Importer {
 			$term = new \Tainacan\Entities\Term();
 			$term->set_name($values[$position]);
 			$term->set_description($values[$position+1]);
-			$term->set_taxonomy($this->get_option('taxonomies'));
+			$term->set_taxonomy($id_taxonomy);
 			
 			$term_repo = \Tainacan\Repositories\Terms::get_instance();
 			if(end($parent))
@@ -166,4 +178,28 @@ class Term_Importer extends Importer {
 			return true;
 		}
 	}
+
+	public function create_taxonomy() {
+		if ($this->get_option('new_taxonomy') == '')
+			return false;
+		$tax1 = new Entities\Taxonomy();
+		$tax1->set_name($this->get_option('new_taxonomy'));
+		$tax1->set_allow_insert('yes');
+		$tax1->set_status('publish');
+		
+		if ($tax1->validate()) {
+			$tax_repo = \Tainacan\Repositories\Taxonomies::get_instance();
+			$tax1 = $tax_repo->insert($tax1);
+			$name = $tax1->get_name();
+			$this->add_transient('new_taxonomy', $tax1->get_db_identifier());
+			$this->add_log("taxonomy $name Created.");
+			return true;
+		} else {
+			$this->add_error_log('Error creating taxonomy');
+			$this->add_error_log($tax1->get_errors());
+			$this->abort();
+		}
+		return false;
+	}
+
 }
