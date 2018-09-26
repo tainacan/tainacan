@@ -44,8 +44,8 @@ class Importer_Handler {
 		]);
 
 		$this->register_importer([
-			'name' => 'Terms',
-			'description' => __('Import a terms', 'tainacan'),
+			'name' => 'Vocabulary CSV',
+			'description' => __('Import a vaculary from a CSV file into a taxonomy', 'tainacan'),
 			'slug' => 'terms',
 			'class_name' => '\Tainacan\Importer\Term_Importer',
 			'manual_collection' => false,

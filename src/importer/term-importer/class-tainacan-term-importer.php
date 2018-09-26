@@ -29,7 +29,6 @@ class Term_Importer extends Importer {
 	public function __construct($attributes = array()) {
 		parent::__construct($attributes);
 		$this->add_import_method('file');
-		$this->remove_import_method('both');
 		$this->remove_import_method('url');
 
 		$this->set_default_options([
@@ -64,7 +63,7 @@ class Term_Importer extends Importer {
 			</div>
 
 			<div class="field import_term_csv_taxonomies">
-				<label class="label"><?php _e('Select a taxonomies:', 'tainacan'); ?></label>
+				<label class="label"><?php _e('Target taxonomy:', 'tainacan'); ?></label>
 				<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
@@ -73,27 +72,21 @@ class Term_Importer extends Importer {
 					</a>
 					<div class="help-tooltip">
 						<div class="help-tooltip-header">
-							<h5><?php _e('taxonomy', 'tainacan'); ?></h5>
+							<h5><?php _e('Existing Taxonomy', 'tainacan'); ?></h5>
 						</div>
 						<div class="help-tooltip-body">
-							<p><?php _e('The taxonomies where imported term will be added.', 'tainacan'); ?></p>
+							<p><?php _e('Inform the taxonomy you want to import the terms to.', 'tainacan'); ?></p>
+							<p><?php _e('Select an existing taxonomy or create a new one on the fly.', 'tainacan'); ?></p>
 						</div>
 					</div> 
 				</span>
 				<div class="control is-clearfix">
 					<div class="select">
 						<select name="select_taxonomy" class="select_taxonomy">
-							<option disabled selected></option>
+							<option value="" selected><?php _e('Create a new taxonomy', 'tainacan'); ?></option>
 						<?php
 							$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
-							$taxonomies  = $Tainacan_Taxonomies->fetch( [
-								'status' => [
-									//'auto-draft',
-									'draft',
-									'publish',
-									'private'
-								]
-							], 'OBJECT' );
+							$taxonomies  = $Tainacan_Taxonomies->fetch( ['nopaging' => true], 'OBJECT' );
 							foreach( $taxonomies as $taxonomie) {
 								?>
 								<option value="<?php echo $taxonomie->get_db_identifier();?>"><?php echo $taxonomie->get_name() ?> </option>
@@ -101,13 +94,13 @@ class Term_Importer extends Importer {
 							}
 						?>
 						</select>
+						
 					</div>
+					
+					<input class="input new_taxonomy" type="text" name="new_taxonomy" value="<?php echo $this->get_option('new_taxonomy'); ?>" placeholder="<?php _e('New taxonomy name', 'tainacan'); ?>" >
+					
 				</div>
-				
-				<label class="label"><?php _e('or create a new:', 'tainacan'); ?></label>
-				<div class="control is-clearfix">
-					<input class="input new_taxonomy" type="text" name="new_taxonomy" value="<?php echo $this->get_option('new_taxonomy'); ?>"  onchange="changeValueTaxonomy(this.value)">
-				</div>
+
 			</div>
 			
 		<?php
@@ -131,7 +124,7 @@ class Term_Importer extends Importer {
 		if ($parent == null) $parent = array();
 		$position 	= $this->get_transient('position')     == null ? 0: $this->get_transient('position');
 		$last_term 	= $this->get_transient('last_term')    == null ? 0: $this->get_transient('last_term');
-		$id_taxonomy= $this->get_transient('new_taxonomy') == null ? $this->get_option('select_taxonomy') : $this->get_transient('new_taxonomy');
+		$id_taxonomy= $this->get_transient('new_taxonomy');
 		
 		$position_file = $this->get_in_step_count();
 		fseek($file, $position_file);
@@ -168,6 +161,7 @@ class Term_Importer extends Importer {
 				$validationErrors = $term->get_errors();
 				$err_msg = json_encode($validationErrors);
 				$this->add_error_log("erro=>$err_msg");
+				$this->abort();
 				return false;
 			}
 			$this->add_transient('parent', $parent);
@@ -180,8 +174,17 @@ class Term_Importer extends Importer {
 	}
 
 	public function create_taxonomy() {
-		if ($this->get_option('new_taxonomy') == '')
+		if ( $this->get_option('select_taxonomy') != '' ) {
+			$this->add_transient('new_taxonomy',  $this->get_option('select_taxonomy'));
 			return false;
+		}
+		
+		if ( $this->get_option('select_taxonomy') == '' && $this->get_option('new_taxonomy') == '' ) {
+			$this->abort();
+			$this->add_error_log('No taxonomy selected');
+			return false;
+		}
+		
 		$tax1 = new Entities\Taxonomy();
 		$tax1->set_name($this->get_option('new_taxonomy'));
 		$tax1->set_allow_insert('yes');
