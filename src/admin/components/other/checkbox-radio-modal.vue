@@ -154,10 +154,13 @@
                                         attached
                                         closable
                                         @close="selected.splice(index, 1)">
-                                    {{ selectedTagsName[term] ? selectedTagsName[term] : term }}
+                                    {{ isTaxonomy ? selectedTagsName[term] : term }}
                                 </b-tag>
                             </div>
                         </b-field>
+                        <b-loading
+                                :is-full-page="false"
+                                :active.sync="isSelectedTermsLoading"/>
                     </div>
                 </b-tab-item>
             </b-tabs>
@@ -270,7 +273,8 @@
                 noMorePage: 0,
                 maxTextToShow: 47,
                 activeTab: 0,
-                selectedTagsName: {}
+                selectedTagsName: {},
+                isSelectedTermsLoading: false,
             }
         },
         updated(){
@@ -289,18 +293,29 @@
         },
         methods: {
             fetchSelectedLabels() {
+                this.isSelectedTermsLoading = true;
+
                 let selected = this.selected instanceof Array ? this.selected : [this.selected];
 
-                if(this.taxonomy_id) {
+                if(this.taxonomy_id && selected.length) {
                     for (const term of selected) {
+
+                        if(!this.isSelectedTermsLoading){
+                            this.isSelectedTermsLoading = true;
+                        }
+
                         axios.get(`/taxonomy/${this.taxonomy_id}/terms/${term}`)
                             .then((res) => {
                                 this.saveSelectedTagName(res.data.id, res.data.name);
+                                this.isSelectedTermsLoading = false;
                             })
                             .catch((error) => {
                                 this.$console.log(error);
+                                this.isSelectedTermsLoading = false;
                             });
                     }
+                } else {
+                    this.isSelectedTermsLoading = false;
                 }
             },
             saveSelectedTagName(value, label){
