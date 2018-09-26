@@ -107,7 +107,6 @@
             }
 
             this.single_types['tainacan-taxonomy-radio'] = 'Radio';
-            this.single_types['tainacan-taxonomy-selectbox'] = 'Selectbox';
             this.multiple_types['tainacan-taxonomy-tag-input'] = 'Tag Input';
             this.multiple_types['tainacan-taxonomy-checkbox'] = 'Checkbox';
 

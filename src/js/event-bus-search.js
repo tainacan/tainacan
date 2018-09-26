@@ -312,12 +312,10 @@ export default {
                             'taxonomy': this.taxonomy
                         })
                         .then((res) => {
-
                             this.$emit( 'isLoadingItems', false);
                             this.$emit( 'hasFiltered', res.hasFiltered);
 
                             if(res.advancedSearchResults){
-                                this.$router.replace({query: this.$store.getters['search/getPostQuery'],});
                                 this.$emit('advancedSearchResults', res.advancedSearchResults);
                             }
                         })

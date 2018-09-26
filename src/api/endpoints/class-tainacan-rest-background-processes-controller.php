@@ -235,11 +235,18 @@ class REST_Background_Processes_Controller extends REST_Controller {
             }
         }
 
-        $query = "UPDATE $this->table $status_q WHERE 1=1 $id_q $user_q";
+        $query = "UPDATE $this->table SET $status_q WHERE 1=1 $id_q $user_q";
 
         $result = $wpdb->query($query);
 
+        $query = "SELECT * FROM $this->table WHERE 1=1 $id_q $user_q LIMIT 1";
+
+        $result = $wpdb->get_row($query);
+
+        $result = $this->prepare_item_for_response($result, $request);
+
         return new \WP_REST_Response( $result, 200 );
+
 
     }
 

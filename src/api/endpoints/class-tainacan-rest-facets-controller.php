@@ -47,7 +47,7 @@ class REST_Facets_Controller extends REST_Controller {
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_item'),
-				'permission_callback' => array($this, 'get_item_permissions_check')
+				'permission_callback' => array($this, 'get_items_permissions_check')
 			)
 		));
 	}
@@ -100,41 +100,41 @@ class REST_Facets_Controller extends REST_Controller {
 				if(isset($request['number'])){
 					$args['posts_per_page'] = $request['number'];
 				}
-
+	
 				$items = $this->items_repository->fetch($args, $options['collection_id'], 'WP_Query');
 				$ids = [];
-
-				if ($items->have_posts()) {
-					while ( $items->have_posts() ) {
-						$items->the_post();
-						$ids[] = (string) $items->post->ID;
-		
-						$item = new Entities\Item($items->post);
-						$prepared_item = $restItemsClass->prepare_item_for_response($item, $request);
-		
-						array_push($response, $prepared_item);
-					}
-		
-					wp_reset_postdata();
-				}
 
 				// retrieve selected items
 
 				if( $selected && $request['getSelected'] && $request['getSelected'] === '1' ){
 					foreach( $selected as $index => $item_id ){
 
-						if( in_array($item_id,$ids) ){
-							continue;
-						}
-
 						$item = new Entities\Item($item_id);
 						$prepared_item = $restItemsClass->prepare_item_for_response($item, $request);
-						$response[$index] = $prepared_item;
+						$response[] = $prepared_item;
+						$ids[] = $item_id;
+					}
+				}
 
-						if( isset($request['number']) && ($index+1) >= $request['number']){
+				if ($items->have_posts()) {
+					while ( $items->have_posts() ) {
+						$items->the_post();
+		
+						$item = new Entities\Item($items->post);
+						$prepared_item = $restItemsClass->prepare_item_for_response($item, $request);
+
+						if( in_array((string) $items->post->ID,$ids) ){
+							continue;
+						} 
+
+						if( isset($request['number']) && count($response) >= $request['number']){
 							break;
 						}
+		
+						array_push($response, $prepared_item);
 					}
+		
+					wp_reset_postdata();
 				}
 
 				$this->total_items  = $items->found_posts;
@@ -173,7 +173,7 @@ class REST_Facets_Controller extends REST_Controller {
 
 						foreach( $terms as $index => $term ){
 
-							if( in_array($term->WP_Term->term_id,$selected) ){
+							if( in_array($term->WP_Term->term_id, $selected) ){
 								continue;
 							}
 
@@ -232,21 +232,29 @@ class REST_Facets_Controller extends REST_Controller {
 
 				if( $selected && $request['getSelected'] && $request['getSelected'] === '1'){
 					$rawValues = $this->get_values( $response );
-					
-					foreach( $selected as $index => $value ){
+					$realResponse = [];
 
-						if( in_array($value,$rawValues) ){
+					foreach( $selected as $index => $value ){
+						
+						$row = ['mvalue' => $value, 'metadatum_id' => $metadatum_id ];
+						$realResponse[] = $row;
+
+					}
+
+					foreach( $rawValues as $index => $row0 ){
+
+						if( in_array($row0, $selected) ){
 							continue;
 						}
 
-						$row = ['mvalue' => $value, 'metadatum_id' => $metadatum_id ];
-						$response[$index] = $row;
+						$realResponse[] = ['mvalue' => $row0, 'metadatum_id' => $metadatum_id];
 
-						if( isset($request['number']) && ($index+1) >= $request['number']){
+						if( isset($request['number']) && count($realResponse) >= $request['number']){
 							break;
 						}
 					}
 					
+					$response = $realResponse;
 				}
 
 				$this->set_pagination_properties_text_type( $collection_id, $metadatum_id, ($request['search']) ? $request['search'] : '' , $offset, $number );

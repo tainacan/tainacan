@@ -1342,6 +1342,10 @@
         cursor: pointer;
         transition: top 0.3s;
 
+        &:focus {
+            outline: none !important;
+        }
+
         .icon {
             margin-top: -1px;
         }

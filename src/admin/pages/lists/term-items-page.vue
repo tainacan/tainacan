@@ -1156,7 +1156,7 @@
             } else {
                 let prefsAdminViewMode = !this.isRepositoryLevel ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
                 if (this.$userPrefs.get(prefsAdminViewMode) == undefined)
-                    this.$eventBusSearch.setInitialAdminViewMode('table');
+                    this.$eventBusSearch.setInitialAdminViewMode('cards');
                 else {
                     let existingViewMode = this.$userPrefs.get(prefsAdminViewMode);
                     if (existingViewMode == 'cards' || 
@@ -1166,7 +1166,7 @@
                         existingViewMode == 'masonry')
                         this.$eventBusSearch.setInitialAdminViewMode(this.$userPrefs.get(prefsAdminViewMode));
                     else
-                        this.$eventBusSearch.setInitialAdminViewMode('table');
+                        this.$eventBusSearch.setInitialAdminViewMode('cards');
                 }
             }
 
@@ -1335,6 +1335,10 @@
         border-bottom-right-radius: 2px;
         cursor: pointer;
         transition: top 0.3s;
+
+        &:focus {
+            outline: none !important;
+        }
 
         .icon {
             margin-top: -1px;

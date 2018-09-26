@@ -47,22 +47,22 @@
                             <span class="icon has-text-gray">
                                 <i 
                                         class="mdi mdi-18px"
-                                        :class="{ 'mdi-menu-down': processesColapses[index], 'mdi-menu-right': !processesColapses[index] }" />
+                                        :class="{ 'mdi-menu-down': processesCollapses[index], 'mdi-menu-right': !processesCollapses[index] }" />
                             </span>  
                             <p>{{ bgProcess.name ? bgProcess.name : $i18n.get('label_unamed_process') }}</p>
                         </div>
                         <!-- <span 
-                                v-if="bgProcess.done <= 0"
+                                v-if="bgProcess.done <= 0 && bgProcess.status == 'closed'"
                                 class="icon has-text-gray action-icon"
-                                @click="pauseProcess(index)">
-                            <i class="mdi mdi-18px mdi-pause-circle"/>
-                        </span>
+                                @click="resumeProcess(index)">
+                            <i class="mdi mdi-18px mdi-play-circle"/>
+                        </span> -->
                         <span 
                                 v-if="bgProcess.done <= 0"
                                 class="icon has-text-gray action-icon"
                                 @click="pauseProcess(index)">
-                            <i class="mdi mdi-18px mdi-close-circle-outline"/>
-                        </span> -->
+                            <i class="mdi mdi-18px mdi-stop-circle"/>
+                        </span>
                         <span 
                                 v-if="bgProcess.done > 0 && !bgProcess.error_log"
                                 class="icon has-text-success">
@@ -76,14 +76,20 @@
                         <span 
                                 v-if="bgProcess.done <= 0"
                                 class="icon has-text-success loading-icon">
+                            <!--<progress-->
+                                    <!--:value="bgProcess.progress_value > 0 ? bgProcess.progress_value : 0"-->
+                                    <!--max="100"-->
+                                    <!--class="progress is-success is-small is-loading">-->
+                                <!--{{ `(${ bgProcess.progress_value &lt;&equals; 0 ? 0 : bgProcess.progress_value }%)` }}-->
+                            <!--</progress>-->
                             <div class="control has-icons-right is-loading is-clearfix" />
                         </span>
                     </div>
                     <div 
-                            v-if="processesColapses[index]"
+                            v-if="processesCollapses[index]"
                             class="process-label">
                         {{ bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process') }}
-                        <span class="process-label-value">{{ (bgProcesses[0].progress_value && bgProcesses[0].progress_value >= 0) ? '(' + bgProcesses[0].progress_value + '%)' : '' }}</span>
+                        <span class="process-label-value">{{ (bgProcess.progress_value && bgProcess.progress_value >= 0) ? '(' + bgProcess.progress_value + '%)' : '' }}</span>
                         <br>
                         {{ $i18n.get('label_queued_on') + ' ' + getDate(bgProcess.queued_on) }}
                         <br>
@@ -110,7 +116,7 @@
                     class="icon has-text-blue5"><i class="mdi mdi-18px mdi-autorenew"/></span>
             <p class="footer-title">    
                 {{ hasAnyProcessExecuting ? 
-                    (bgProcesses[0].progress_label ? bgProcesses[0].progress_label + ((bgProcesses[0].progress_value && bgProcesses[0].progress_value >= 0) ? ' - ' + bgProcesses[0].progress_value + '%' : '') : $i18n.get('label_no_details_of_process')): 
+                    (bgProcesses[0].progress_label ? bgProcesses[0].progress_label + ((bgProcesses[0].progress_value && bgProcesses[0].progress_value >= 0) ? ' - ' + bgProcesses[0].progress_value + '%' : '') : $i18n.get('label_no_details_of_process')):
                     $i18n.get('info_no_process') 
                 }}
             </p>
@@ -121,26 +127,22 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import moment from 'moment';
 
 export default {
     name: 'ProcessesPopup',
     data() {
         return {
             showProcessesList: false,
-            processesColapses: [],
-            hasAnyProcessExecuting: false
+            processesCollapses: [],
+            hasAnyProcessExecuting: false,
+            dateFormat: '',
+            intervalID: null,
         }
     },
     watch: {
-        bgProcesses() {
-            this.processesColapses = [];
-            this.hasAnyProcessExecuting = false;
-
-            for (let i = 0; i < this.bgProcesses.length; i++) {
-                this.$set(this.processesColapses, i , false);
-                if (this.bgProcesses[i].done <= 0)
-                    this.hasAnyProcessExecuting = true;
-            }
+        bgProcesses(newBG) {
+            this.hasAnyProcessExecuting = newBG.some((element) => element.done <= 0);
         }
     },
     computed: {
@@ -150,35 +152,58 @@ export default {
     },
     methods: {
         ...mapActions('bgprocess', [
-            'fetchProcesses'
+            'fetchProcesses',
+            'updateProcess'
         ]),
         ...mapGetters('bgprocess', [
             'getProcesses',
         ]),
         toggleDetails(index) {
-            this.$set(this.processesColapses, index, !this.processesColapses[index]);
+            this.$set(this.processesCollapses, index, !this.processesCollapses[index]);
         },
         getUnfinishedProcesses() {
-            let nUnfinishedProcesses = 0
+            let nUnfinishedProcesses = 0;
+
             for(let i = 0; i < this.bgProcesses.length; i++) {
-                if (this.bgProcesses[i].done <= 0)
+                if (this.bgProcesses[i].done <= 0){
                     nUnfinishedProcesses++;
+                }
             }
+
             return nUnfinishedProcesses;
         },
         getDate(rawDate) {
-            let date = new Date(rawDate);
+            let date = moment(rawDate).format(this.dateFormat);
 
-            if (date instanceof Date && !isNaN(date))
-                return date.toLocaleString();
-            else   
+            if (date != 'Invalid date') {
+                return date;
+            } else {
                 return this.$i18n.get('info_unknown_date');
+            }
         },
-        pauseProcess() { 
-        }
+        pauseProcess(index) {
+            this.updateProcess({ id: this.bgProcesses[index].ID, status: 'closed' });
+        },
     },
-    mounted() {    
-        this.fetchProcesses({ page: 1, processesPerPage: 12 });
+    created() {
+        let locale = navigator.language;
+
+        moment.locale(locale);
+
+        let localeData = moment.localeData();
+        this.dateFormat = localeData.longDateFormat('lll');
+
+        this.intervalID = setInterval(() => {
+            this.fetchProcesses({
+                page: 1,
+                processesPerPage: 12
+            }).then(() => {
+                if (this.getUnfinishedProcesses() > 0) {
+                    clearInterval(this.intervalID);
+                }
+            });
+        }, 20000);
+
         this.showProcessesList = false;
     }
 }
@@ -299,9 +324,9 @@ export default {
                     opacity: 1;
                     cursor: pointer;
                 }
-                .loading-icon {
-                    display: none;
-                }
+                /*.loading-icon {*/
+                    /*display: none;*/
+                /*}*/
                 .process-item>.process-title .mdi-menu-left, .process-item>.process-title .mdi-menu-right {
                     color: $gray3 !important;
                 }

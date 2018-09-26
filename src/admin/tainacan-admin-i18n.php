@@ -72,6 +72,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'finish'                                         => __( 'Finish', 'tainacan' ),
 	'select_to_create'                               => __( 'select to create', 'tainacan' ),
 	'new_action'                                     => __( 'New action', 'tainacan' ),
+	'clear_radio'                                    => __( 'Clear selected radio', 'tainacan'),
 
 	// Wordpress Status
 	'publish'                                        => __( 'Publish', 'tainacan' ),
@@ -288,6 +289,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_last_processed_on'                        => __( 'Last processed on:', 'tainacan' ),
 	'label_progress'                                 => __( 'Progress', 'tainacan' ),
 	'label_process_completed'                        => __( 'Process completed', 'tainacan' ),
+	'label_stop_process'                             => __( 'Stop process', 'tainacan' ),
 	'label_process_failed'	                         => __( 'Process failed', 'tainacan' ),
 	'label_max_options_to_show'                      => __( 'Max options to show', 'tainacan' ),
 	'label_unamed_process'                       	 => __( 'Unamed process', 'tainacan' ),
@@ -301,7 +303,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_show_filters'	                     	 => __( 'Show filters menu', 'tainacan' ),
 	'label_select_all_items'                         => __( 'Select all items', 'tainacan' ),
 	'label_select_all'                               => __( 'Select all', 'tainacan' ),
-	'label_untrash_selected_items'                   => __( 'Remove from trash the selected items', 'tainacan' ),
+	'label_untrash_selected_items'                   => __( 'Recover from trash', 'tainacan' ),
 	'label_value_not_informed'		                 => __( 'Value not informed.', 'tainacan' ),
 	'label_description_not_informed'                 => __( 'Description not informed.', 'tainacan' ),
 	'label_hide_metadata'	                     	 => __( 'Hide metadata', 'tainacan' ),
@@ -344,6 +346,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_type_existing_term'				 => __( 'Type to add an existing term...', 'tainacan' ),
 
 	// Info. Other feedback to user.
+	'info_error_invalid_date'                        => __( 'Invalid date', 'tainacan' ),
 	'info_search_results'                            => __( 'Search Results', 'tainacan' ),
 	'info_search_criteria'                           => __( 'Search Criteria', 'tainacan' ),
 	'info_name_is_required'                          => __( 'Name is required.', 'tainacan' ),
@@ -443,7 +446,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_there_are_no_metadata_in_repository_level' => __( 'There are no metadata in repository level', 'tainacan' ),
 	'info_import_collection'						 => __( 'Import from external sources.', 'tainacan' ),
 	'info_import_items'								 => __( 'Import items from external sources.', 'tainacan' ),
-	'info_editing_items_in_bulk'                     => __( 'Editing items in bulk', 'tainacan' ),
+	'info_editing_items_in_bulk'                     => __( 'Bulk edit items', 'tainacan' ),
 	'info_by_inner'                                  => __( 'by', 'tainacan' ),
 	'info_items_selected'                            => __( 'items selected', 'tainacan' ),
 	'info_items_affected'                            => __( 'items affected', 'tainacan' ),

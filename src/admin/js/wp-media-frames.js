@@ -68,8 +68,8 @@ export default {
 				id: null
 			}
 
-			this.params.flex_width = 0;
-			this.params.flex_height = 0;
+			this.params.flex_width = 1;
+			this.params.flex_height = 1;
 			this.params.width = 220;
 			this.params.height = 220;
 

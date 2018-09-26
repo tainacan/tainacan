@@ -107,7 +107,7 @@
                                         placement: 'auto-start'
                                     }">
                                 <span :class="{'occluding-content': bgProcess.progress_value }">{{ bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process') }}</span>
-                                <span>{{ bgProcess.progress_value ? ' (' + bgProcess.progress_value + '%)' : '' }}</span>
+                                <span>{{ bgProcess.progress_value &lt;&equals; 0 ? `(0%)` : ' ('+ bgProcess.progress_value +'%)' }}</span>
                             </p>
                         </td>
                         <!-- Queued on -->
@@ -162,18 +162,17 @@
                                         class="icon has-text-success loading-icon">
                                     <div class="control has-icons-right is-loading is-clearfix" />
                                 </span>
-                                <!-- <span
-                                        v-if="bgProcess.done <= 0"
-                                        class="icon has-text-gray action-icon"
-                                        @click="pauseProcess(index)">
-                                    <i class="mdi mdi-18px mdi-pause-circle"/>
-                                </span>
                                 <span 
+                                        v-tooltip="{
+                                            content: $i18n.get('label_stop_process'),
+                                            autoHide: false,
+                                            placement: 'auto-start'
+                                        }"
                                         v-if="bgProcess.done <= 0"
                                         class="icon has-text-gray action-icon"
                                         @click="pauseProcess(index)">
-                                    <i class="mdi mdi-18px mdi-close-circle-outline"/>
-                                </span> -->
+                                    <i class="mdi mdi-18px mdi-stop-circle"/>
+                                </span>
                                 <span 
                                         v-tooltip="{
                                             content: $i18n.get('label_process_completed'),
@@ -206,6 +205,7 @@
 <script>
     import { mapActions } from 'vuex';
     import CustomDialog from '../other/custom-dialog.vue';
+    import moment from 'moment'
 
     export default {
         name: 'List',
@@ -214,7 +214,8 @@
                 selected: [],
                 allOnPageSelected: false,
                 isSelecting: false,
-                highlightedProcess: ''
+                highlightedProcess: '',
+                dateFormat: '',
             }
         },
         props: {
@@ -246,7 +247,8 @@
         },
         methods: {
             ...mapActions('bgprocess', [
-                'deleteProcess'
+                'deleteProcess',
+                'updateProcess'
             ]),
             selectAllOnPage() {
                 for (let i = 0; i < this.selected.length; i++) 
@@ -327,17 +329,26 @@
                 });
             },
             getDate(rawDate) {
-                let date = new Date(rawDate);
+                let date = moment(rawDate).format(this.dateFormat);
 
-                if (date instanceof Date && !isNaN(date))
-                    return date.toLocaleString();
-                else   
+                if (date != 'Invalid date') {
+                    return date;
+                } else {
                     return this.$i18n.get('info_unknown_date');
+                }
             },
-            pauseProcess() { 
+            pauseProcess(index) {
+                this.updateProcess({ id: this.processes[index].ID, status: 'closed' });
             }
         },
         mounted() {
+            let locale = navigator.language;
+
+            moment.locale(locale);
+
+            let localeData = moment.localeData();
+            this.dateFormat = localeData.longDateFormat('lll');
+
             if (this.$route.query.highlight) {
                 this.highlightedProcess = this.$route.query.highlight;
             }
