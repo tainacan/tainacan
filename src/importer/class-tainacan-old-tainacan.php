@@ -860,7 +860,7 @@ class Old_Tainacan extends Importer{
                     $item->set_document_type( 'attachment' );
                     $this->add_log('Document imported from ' . $node_old->content_tainacan->guid);
                 } 
-            } else if(filter_var($node_old->content_tainacan, FILTER_VALIDATE_URL)){
+            } else if( isset($node_old->type_tainacan) && in_array( $node_old->type_tainacan, ['audio','video','image']) ){
                     $item->set_document( $node_old->content_tainacan );
                     $item->set_document_type( 'url' );
                     $this->add_log('URL imported from ' . $node_old->content_tainacan);
