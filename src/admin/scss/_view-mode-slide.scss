@@ -304,6 +304,7 @@
 .tainacan-slides-list {
     position: relative;
     transition: opacity 0.3s, visibility 0.3s, display 0.3s;
+    min-height: 60px;
 
     .loading-icon {
         width: 100%;
@@ -311,47 +312,49 @@
         position: absolute;
         z-index: 9;
     }
-}
-#tainacan-slide-container {
-    background-color: rgba(0,0,0,0.5);
-    padding: 0 $page-side-padding;
-    display: flex;
-    flex-wrap: nowrap;
-    overflow: hidden;
-    flex-grow: 1;
-    flex-shrink: 1;
-    justify-content: space-evenly;
-    animation-name: item-appear;
-    animation-duration: 0.5s;
 
-    .selected-record {
-        background-color: $turquoise1;
-        .metadata-title {
-            background-color: $turquoise2;
-        }
-        .media {
+    #tainacan-slide-container {
+        background-color: rgba(0,0,0,0.5);
+        padding: 0 $page-side-padding;
+        display: flex;
+        flex-wrap: nowrap;
+        overflow: hidden;
+        flex-grow: 1;
+        flex-shrink: 1;
+        justify-content: space-evenly;
+        animation-name: item-appear;
+        animation-duration: 0.5s;
+        
+
+        .selected-record {
             background-color: $turquoise1;
-        }
-    }
-
-    .tainacan-slide-item {    
-        cursor: pointer;
-
-        &.active-item img {
-            border-bottom: 4px solid $turquoise5 !important;
-        }
-        &:hover img{
-            border-bottom: 4px solid $gray2;
+            .metadata-title {
+                background-color: $turquoise2;
+            }
+            .media {
+                background-color: $turquoise1;
+            }
         }
 
-        img {
-            color: white;
-            width: 100%;//85px;
-            height: auto;
-            border-radius: 0px;
-            padding: 0 0 6px 0;
-            border-bottom: 4px solid transparent; 
-            transition: border-bottom 0.4s;
+        .tainacan-slide-item {    
+            cursor: pointer;
+
+            &.active-item img {
+                border-bottom: 4px solid $turquoise5 !important;
+            }
+            &:hover img{
+                border-bottom: 4px solid $gray2;
+            }
+
+            img {
+                color: white;
+                width: 100%;//85px;
+                height: auto;
+                border-radius: 0px;
+                padding: 0 0 6px 0;
+                border-bottom: 4px solid transparent; 
+                transition: border-bottom 0.4s;
+            }
         }
     }
 }

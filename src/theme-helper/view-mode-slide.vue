@@ -263,6 +263,8 @@ export default {
             maxPage: 1,
             preloadedItem: {},
             swiperOption: {
+                mousewheel: true,
+                keyboard: true,
                 preventInteractionOnTransition: true,
                 allowClick: true,
                 allowTouchMove: true,
@@ -312,7 +314,7 @@ export default {
             handler () {
                 if (this.items.length > 0) {
                     let updatedSlideIndex = this.slideIndex != undefined ? JSON.parse(JSON.stringify(this.slideIndex)) : 0;
-
+                    
                     // Loops through new items list. Depending on direction, goes from start or end of list.
                     for (let newItem of (this.goingRight ? this.items : JSON.parse(JSON.stringify(this.items)).reverse())) {
                         let existingItemIndex = this.slideItems.findIndex(anItem => anItem.id == newItem.id);
@@ -327,23 +329,23 @@ export default {
                             this.$set(this.slideItems, existingItemIndex, newItem);
                         }
                     }   
-                    
+                   
                     // Checks if list got too big. In this case we remove items from a page that is far from index
-                    if (
-                        (this.getItemsPerPage() == 96 && this.slideItems.length > 192) || 
-                        (this.getItemsPerPage() == 48 && this.slideItems.length > 96) ||
-                        (this.getItemsPerPage() < 48 && this.slideItems.length > 48)
-                        ) {
-                        if (this.goingRight) {
-                            this.slideItems.splice(0, this.getItemsPerPage());
-                            this.minPage++;
-                            updatedSlideIndex = this.slideItems.length - 1 - this.getItemsPerPage();
-                        } else {
-                            this.slideItems.splice(-this.getItemsPerPage());
-                            this.maxPage--;
-                            updatedSlideIndex = this.getItemsPerPage();
-                        }
-                    }
+                    // if (
+                    //     (this.getItemsPerPage() == 96 && this.slideItems.length > 192) || 
+                    //     (this.getItemsPerPage() == 48 && this.slideItems.length > 96) ||
+                    //     (this.getItemsPerPage() == 24 && this.slideItems.length > 48) ||
+                    //     (this.getItemsPerPage() == 12 && this.slideItems.length > 24)) {
+                    //     if (this.goingRight) {
+                    //         this.slideItems.splice(0, this.getItemsPerPage());
+                    //         this.minPage++;
+                    //         updatedSlideIndex = this.slideItems.length - 1 - this.getItemsPerPage();
+                    //     } else {
+                    //         this.slideItems.splice(-this.getItemsPerPage());
+                    //         this.maxPage--;
+                    //         updatedSlideIndex = this.getItemsPerPage();
+                    //     }
+                    // }
 
                     if (this.$refs.mySwiper != undefined && this.$refs.mySwiper.swiper != undefined)
                         this.$refs.mySwiper.swiper.update();
@@ -356,7 +358,7 @@ export default {
                             this.$refs.mySwiper.swiper.slides[this.slideIndex].click();
                         
                         this.$refs.mySwiper.swiper.activeIndex == this.slideIndex;
-                        this.$refs.mySwiper.swiper.slideTo(this.slideIndex);
+                        this.$refs.mySwiper.swiper.slideTo(this.slideIndex, 0, false);
                         
                         this.$refs.mySwiper.swiper.update();
                     });
