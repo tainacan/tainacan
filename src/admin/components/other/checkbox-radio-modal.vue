@@ -19,55 +19,59 @@
                 </span>
             </div>
 
-            <div
-                    v-if="!isSearching && !isTaxonomy"
-                    class="modal-card-body tainacan-checkbox-list-container">
-                <a
-                        v-if="checkboxListOffset"
-                        role="button"
-                        class="tainacan-checkbox-list-page-changer"
-                        @click="beforePage">
-                    <b-icon
-                            icon="chevron-left"/>
-                </a>
-                <ul
-                        :class="{
-                            'tainacan-modal-checkbox-list-body-dynamic-m-l': !checkboxListOffset,
-                            'tainacan-modal-checkbox-list-body-dynamic-m-r': noMorePage,
-                        }"
-                        class="tainacan-modal-checkbox-list-body">
-                    <li
-                            class="tainacan-li-checkbox-list"
-                            v-for="(option, key) in options"
-                            :key="key">
-                        <b-checkbox
-                                v-model="selected"
-                                :native-value="option.value">
-                            {{ `${ limitChars(option.label) }` }}
-                        </b-checkbox>
-                    </li>
-                    <b-loading
-                            :is-full-page="false"
-                            :active.sync="isCheckboxListLoading"/>
-                </ul>
-                <a
-                        v-if="!noMorePage"
-                        role="button"
-                        class="tainacan-checkbox-list-page-changer"
-                        @click="nextPage">
-                    <b-icon
-                            icon="chevron-right"/>
-                </a>
-            </div>
-
             <b-tabs
+                    v-if="!isSearching"
                     size="is-small"
-                    :animated="false"
-                    v-if="!isSearching && isTaxonomy"
+                    expanded
+                    animated
                     @input="fetchSelectedLabels()"
                     v-model="activeTab">
                 <b-tab-item :label="$i18n.get('label_all_terms')">
-                    <div class="modal-card-body tainacan-finder-columns-container">
+
+                    <div
+                            v-if="!isSearching && !isTaxonomy"
+                            class="modal-card-body tainacan-checkbox-list-container">
+                        <a
+                                v-if="checkboxListOffset"
+                                role="button"
+                                class="tainacan-checkbox-list-page-changer"
+                                @click="beforePage">
+                            <b-icon
+                                    icon="chevron-left"/>
+                        </a>
+                        <ul
+                                :class="{
+                            'tainacan-modal-checkbox-list-body-dynamic-m-l': !checkboxListOffset,
+                            'tainacan-modal-checkbox-list-body-dynamic-m-r': noMorePage,
+                        }"
+                                class="tainacan-modal-checkbox-list-body">
+                            <li
+                                    class="tainacan-li-checkbox-list"
+                                    v-for="(option, key) in options"
+                                    :key="key">
+                                <b-checkbox
+                                        v-model="selected"
+                                        :native-value="option.value">
+                                    {{ `${ limitChars(option.label) }` }}
+                                </b-checkbox>
+                            </li>
+                            <b-loading
+                                    :is-full-page="false"
+                                    :active.sync="isCheckboxListLoading"/>
+                        </ul>
+                        <a
+                                v-if="!noMorePage"
+                                role="button"
+                                class="tainacan-checkbox-list-page-changer"
+                                @click="nextPage">
+                            <b-icon
+                                    icon="chevron-right"/>
+                        </a>
+                    </div>
+
+                    <div
+                            v-if="!isSearching && isTaxonomy"
+                            class="modal-card-body tainacan-finder-columns-container">
                         <ul
                                 class="tainacan-finder-column"
                                 v-for="(finderColumn, key) in finderColumns"
@@ -124,10 +128,10 @@
                         <ul>
                             <li
                                     v-for="(pathItem, pi) in hierarchicalPath"
+                                    :class="{'is-active': pi === hierarchicalPath.length-1}"
                                     :key="pi">
                                 <a
-                                        @click="getOptionChildren(pathItem.option, pathItem.column, pathItem.element)"
-                                        :class="{'is-active': pi == Object.keys(hierarchicalPath).length-1}">
+                                        @click="getOptionChildren(pathItem.option, pathItem.column, pathItem.element)">
                                     {{ pathItem.option.label }}
                                 </a>
                             </li>
@@ -137,21 +141,24 @@
 
                 <b-tab-item
                         :label="$i18n.get('label_selected_terms')">
-                    <b-field
-                            grouped
-                            group-multiline>
-                        <div
-                                v-for="(term, index) in (selected instanceof Array ? selected : [this.selected])"
-                                :key="index"
-                                class="control">
-                            <b-tag
-                                    attached
-                                    closable
-                                    @close="selected.splice(index, 1)">
-                                {{ selectedTagsName[term] }}
-                            </b-tag>
-                        </div>
-                    </b-field>
+
+                    <div class="modal-card-body tainacan-tags-container">
+                        <b-field
+                                grouped
+                                group-multiline>
+                            <div
+                                    v-for="(term, index) in (selected instanceof Array ? selected : [this.selected])"
+                                    :key="index"
+                                    class="control">
+                                <b-tag
+                                        attached
+                                        closable
+                                        @close="selected.splice(index, 1)">
+                                    {{ selectedTagsName[term] ? selectedTagsName[term] : term }}
+                                </b-tag>
+                            </div>
+                        </b-field>
+                    </div>
                 </b-tab-item>
             </b-tabs>
             <!--<pre>{{ hierarchicalPath }}</pre>-->
@@ -284,14 +291,16 @@
             fetchSelectedLabels() {
                 let selected = this.selected instanceof Array ? this.selected : [this.selected];
 
-                for(const term of selected) {
-                    axios.get(`/taxonomy/${this.taxonomy_id}/terms/${term}`)
-                        .then((res) => {
-                            this.saveSelectedTagName(res.data.id, res.data.name);
-                        })
-                        .catch((error) => {
-                            this.$console.log(error);
-                        });
+                if(this.taxonomy_id) {
+                    for (const term of selected) {
+                        axios.get(`/taxonomy/${this.taxonomy_id}/terms/${term}`)
+                            .then((res) => {
+                                this.saveSelectedTagName(res.data.id, res.data.name);
+                            })
+                            .catch((error) => {
+                                this.$console.log(error);
+                            });
+                    }
                 }
             },
             saveSelectedTagName(value, label){
@@ -732,7 +741,7 @@
     }
 
     .tainacan-checkbox-search-section {
-        margin-bottom: 40px;
+        margin-bottom: 25px;
         display: flex;
         align-items: center;
         position: relative;
@@ -791,6 +800,11 @@
     }
 
     .tainacan-search-results-container {
+        padding: 0 20px !important;
+        min-height: 253px;
+    }
+
+    .tainacan-tags-container {
         padding: 0 20px !important;
         min-height: 253px;
     }
