@@ -111,7 +111,7 @@
                                 mode="out-in"
                                 :name="goingRight ? 'slide-right' : 'slide-left'" >
                             <span 
-                                    v-if="isLoadingItem || isLoadingItem"
+                                    v-if="isLoadingItem"
                                     class="icon is-large loading-icon">
                                 <div class="is-large control has-icons-right is-loading is-clearfix" />
                             </span>
@@ -226,7 +226,8 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
+import axios from '../js/axios/axios.js';
 import 'swiper/dist/css/swiper.css';
 import { swiper, swiperSlide } from 'vue-awesome-swiper';
 import CircularCounter from '../admin/components/other/circular-counter.vue';
@@ -258,6 +259,7 @@ export default {
             isLoadingItem: true,
             isMetadataCompressed: true,
             slideIndex: 0,
+            preloadedItem: {},
             swiperOption: {
                 preventInteractionOnTransition: true,
                 allowClick: true,
@@ -335,13 +337,32 @@ export default {
                     
                     this.isLoadingItem = true;
 
-                    this.fetchItem(this.slideItems[this.slideIndex].id)
-                        .then(() => {
-                            this.isLoadingItem = false;
-                        })
-                        .catch(() => {
-                            this.isLoadingItem = false;
-                        });
+                    // Checks if item is preloaded
+                    if (this.preloadedItem.id != undefined && this.preloadedItem.id == this.slideItems[this.slideIndex].id) {
+                        this.replaceItem(this.preloadedItem);
+                        this.$nextTick(() => this.isLoadingItem = false);
+                    } else {
+                        // Loads current item
+                        this.fetchItem(this.slideItems[this.slideIndex].id)
+                            .then(() => {
+                                this.isLoadingItem = false;
+                            })
+                            .catch(() => {
+                                this.isLoadingItem = false;
+                            });
+                    }
+
+                    // Loads next item, just in case
+                    let nextIndex = this.goingRight ? this.slideIndex + 1 : this.slideIndex - 1;
+                    if (this.slideItems[nextIndex] != undefined && this.slideItems[nextIndex].id != undefined) {
+                        axios.tainacan.get('/items/' + this.slideItems[nextIndex].id)
+                            .then(res => {
+                                this.preloadedItem = res.data;
+                            })
+                            .catch(error => {
+                                this.$console.log( error );
+                            });
+                    }
                 }
                 
                 // Handles requesting new page of items, either to left or right
@@ -368,7 +389,8 @@ export default {
     },
     methods: {
         ...mapActions('item', [
-            'fetchItem'
+            'fetchItem',
+            'replaceItem'
         ]),
         ...mapGetters('item', [
             'getItem'

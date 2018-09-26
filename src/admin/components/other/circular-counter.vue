@@ -39,20 +39,20 @@ export default {
         time: Number
     },
     created() {
-        if (this.i == this.time) {  	
-            this.initialOffset = 100;
-        }
-        this.i++; 
+        // if (this.i == this.time) {  	
+        //     this.initialOffset = 100;
+        // }
+        // this.i++; 
 
-        this.interval = setInterval(() => {
-            if (this.i == this.time) {  	
-                this.initialOffset = 100;
-            }
-            this.i++;  
-        }, 1000);
+        // this.interval = setInterval(() => {
+        //     if (this.i == this.time) {  	
+        //         this.initialOffset = 100;
+        //     }
+        //     this.i++;  
+        // }, 1000);
     },
     beforeDestroy() {
-        clearInterval(this.interval);
+        // clearInterval(this.interval);
     }
 }
 </script>
@@ -71,7 +71,7 @@ svg {
 .circle_animation {
     stroke-dasharray: 100;
     stroke-dashoffset: 100;
-    transition: all 0.3s linear;
+    transition: all 5s linear;
 }
 </style>
 
