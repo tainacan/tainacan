@@ -7,8 +7,8 @@
         <g>
             <circle     
                     id="circle" 
-                    class="circle_animation" 
-                    :style="{ 'stroke-dashoffset': initialOffset }"
+                    class="circle-animation" 
+                    :style="{ 'animation-duration': time + 's' }"
                     r="16" 
                     cy="28" 
                     cx="28" 
@@ -23,48 +23,14 @@
 <script>
 export default {
     name: 'CircularCounter',
-    data() {
-        return {
-            initialOffset: 0,
-            i: -1,
-            interval: null
-        }
-    },
-    computed: {
-        strokeDashOffset() {
-            return this.initialOffset;
-        }
-    },
     props: {
-        time: Number,
-        index: Number
-    },
-    mounted() {
-        // if (this.i == this.time) {  	
-        //     this.initialOffset = 100;
-        // }
-        // this.i++; 
-
-        // this.interval = setInterval(() => {
-        //     if (this.i == this.time) {  	
-        //         this.initialOffset = 100;
-        //     }
-        //     this.i++;  
-        // }, 1000);        
-        this.initialOffset = 200;
-        this.interval  = setInterval(() => {
-            this.initialOffset -= 40;
-            if (this.initialOffset <= -40)
-                this.initialOffset = 200;
-        }, 1000); 
-    },
-    beforeDestroy() {
-        clearInterval(this.interval);
+        time: Number
     }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
 .circular-counter {
     position: relative;
     float: left;
@@ -75,10 +41,19 @@ svg {
     transform: rotate(-90deg);
 }
 
-.circle_animation {
+@keyframes loading-counter {
+    from {
+        stroke-dashoffset: -100;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+.circle-animation {
     stroke-dasharray: 100;
-    stroke-dashoffset: 200;
-    transition: all 0.1s linear;
+    animation-name: loading-counter; 
+    animation-iteration-count: infinite;
 }
 </style>
 

@@ -162,10 +162,9 @@
                                 type="is-secondary" 
                                 size="is-medium"
                                 :icon="isPlaying ? 'pause-circle' : 'play-circle' "/>
-                        <!-- <circular-counter 
+                        <circular-counter 
                                 v-if="isPlaying"
-                                :index="slideIndex"
-                                :time="this.slideTimeout/1000" /> -->
+                                :time="this.slideTimeout/1000" />
                     </button>
                 </section>
 
