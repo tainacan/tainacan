@@ -207,6 +207,28 @@
             text-align: center;
             color: white;
         }
+
+        .empty_document {
+            font-size: 4rem;
+            font-weight: normal;
+            color: $gray4;
+            text-align: center;
+            position: relative;
+            width: 100%;
+            height: 80%;
+            margin: auto;
+            p {
+                position: absolute;
+                margin: calc(50% - 4rem) auto;
+                width: 100%;
+            }
+            @media screen and (max-width: 768px) {
+                font-size: 2rem;
+                p {
+                    margin: calc(50% - 2rem) auto;
+                }
+            }
+        }
     }
 }
 .slide-title-area {

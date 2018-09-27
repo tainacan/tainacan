@@ -8,7 +8,7 @@
             <circle     
                     id="circle" 
                     class="circle_animation" 
-                    :style="{ 'stroke-dashoffset': strokeDashOffset}"
+                    :style="{ 'stroke-dashoffset': initialOffset }"
                     r="16" 
                     cy="28" 
                     cx="28" 
@@ -25,20 +25,21 @@ export default {
     name: 'CircularCounter',
     data() {
         return {
-            initialOffset: 100,
+            initialOffset: 0,
             i: -1,
             interval: null
         }
     },
     computed: {
         strokeDashOffset() {
-            return this.initialOffset - ((this.i) * (this.initialOffset/this.time));
+            return this.initialOffset;
         }
     },
     props: {
-        time: Number
+        time: Number,
+        index: Number
     },
-    created() {
+    mounted() {
         // if (this.i == this.time) {  	
         //     this.initialOffset = 100;
         // }
@@ -49,10 +50,16 @@ export default {
         //         this.initialOffset = 100;
         //     }
         //     this.i++;  
-        // }, 1000);
+        // }, 1000);        
+        this.initialOffset = 200;
+        this.interval  = setInterval(() => {
+            this.initialOffset -= 40;
+            if (this.initialOffset <= -40)
+                this.initialOffset = 200;
+        }, 1000); 
     },
     beforeDestroy() {
-        // clearInterval(this.interval);
+        clearInterval(this.interval);
     }
 }
 </script>
@@ -70,8 +77,8 @@ svg {
 
 .circle_animation {
     stroke-dasharray: 100;
-    stroke-dashoffset: 100;
-    transition: all 5s linear;
+    stroke-dashoffset: 200;
+    transition: all 0.1s linear;
 }
 </style>
 
