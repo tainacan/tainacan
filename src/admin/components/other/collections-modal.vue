@@ -10,7 +10,7 @@
             <section class="tainacan-form">
                  <p>{{ $i18n.get('instruction_select_a_target_collection') }}</p>
                 <div 
-                        v-if="!isLoading"
+                        v-if="!isLoading" 
                         class="collection-types-container">
                     <div
                             class="collection-type"
