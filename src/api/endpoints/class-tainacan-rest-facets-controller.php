@@ -83,9 +83,12 @@ class REST_Facets_Controller extends REST_Controller {
 	 */
 	public function prepare_item_for_response($metadatum, $request){
 		$response = [];
+		$reference_id = 0;
+		$collection_id = ( isset($request['collection_id']) ) ? $request['collection_id'] : 0;
 
         if( !empty($metadatum) ){
 
+			$reference_id = $metadatum->get_id();
 			$metadatum_type = $metadatum->get_metadata_type();
 			$options = $metadatum->get_metadata_type_options();
 			$args = $this->prepare_filters($request);
@@ -157,6 +160,7 @@ class REST_Facets_Controller extends REST_Controller {
 				} else {
 
 					$terms = $this->terms_repository->fetch($args, $this->taxonomy);
+					$reference_id = $this->taxonomy;
 
 					// retrieve selected items
 
@@ -202,6 +206,7 @@ class REST_Facets_Controller extends REST_Controller {
 			else {
 
 				$metadatum_id = $metadatum->get_id();
+				$reference_id = $metadatum->get_id();
 				$offset = '';
 				$number = '';
 				$collection_id = ( isset($request['collection_id']) ) ? $request['collection_id'] : false;
@@ -260,7 +265,7 @@ class REST_Facets_Controller extends REST_Controller {
 			}
         }
 
-		return $this->prepare_response( $response, $metadatum_type );
+		return $this->prepare_response( $response, $metadatum_type, $reference_id, $collection_id, $request['curent_query'] );
     }
 
 	/**
@@ -278,13 +283,14 @@ class REST_Facets_Controller extends REST_Controller {
 	 * 
 	 * @return mixed|string|void|\WP_Error|\WP_REST_Response 
 	 */
-	public function prepare_response( $response, $type ){
+	public function prepare_response( $response, $type, $reference_id, $collection_id, $query  ){
         $result = [];
 
         if( $response ){
 			foreach ( $response as $key => $item ) {
 
 				if( $type === 'Tainacan\Metadata_Types\Taxonomy' ){
+					$total_items = $this->add_items_count( $item['id'], $reference_id, true, $query, $collection_id); 
 				
 					$row = [
 						'label' => $item['name'],
@@ -295,9 +301,11 @@ class REST_Facets_Controller extends REST_Controller {
 						'type' => 'Taxonomy',
 						'taxonomy_id' => $this->taxonomy->WP_Post->ID,
 						'taxonomy' => ( isset($item['taxonomy']) ) ? $item['taxonomy'] : false,
+						'total_items' => $total_items
 					];
 
 				} else if( $type === 'Tainacan\Metadata_Types\Relationship' ){
+					$total_items = $this->add_items_count( $item['id'], $reference_id, false, $query, $collection_id);
 
 					$row = [
 						'label' => $item['title'],
@@ -305,10 +313,12 @@ class REST_Facets_Controller extends REST_Controller {
 						'img' => ( isset($item['thumbnail']['thumb']) ) ? $item['thumbnail']['thumb'] : false,
 						'parent' => false,
 						'total_children' => 0,
-						'type' => 'Relationship'
+						'type' => 'Relationship',
+						'total_items' => $total_items
 					];
 
 				} else {
+					$total_items = $this->add_items_count( $item['mvalue'], $reference_id, false, $query, $collection_id);
 
 					$row = [
 						'label' => $item['mvalue'],
@@ -316,7 +326,8 @@ class REST_Facets_Controller extends REST_Controller {
 						'img' => false,
 						'parent' => false,
 						'total_children' => 0,
-						'type' => 'Text'
+						'type' => 'Text',
+						'total_items' => $total_items
 					];
 
 				}
