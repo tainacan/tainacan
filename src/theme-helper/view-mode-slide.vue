@@ -320,10 +320,10 @@ export default {
                     let updatedSlideIndex = this.slideIndex != undefined ? JSON.parse(JSON.stringify(this.slideIndex)) : 0;
 
                     // Loops through new items list. Depending on direction, goes from start or end of list.
-                    for (let newItem of (this.goingRight ? this.items : JSON.parse(JSON.stringify(this.items)).reverse())) {
+                    for (let newItem of ((this.goingRight) ? this.items : JSON.parse(JSON.stringify(this.items)).reverse())) {
                         let existingItemIndex = this.slideItems.findIndex(anItem => anItem.id == newItem.id);
                         if (existingItemIndex < 0) {
-                            if (this.goingRight || this.slideIndex == undefined) {
+                            if ( this.goingRight || this.slideIndex == undefined) {
                                 this.slideItems.push(newItem);
                             } else {
                                 this.slideItems.unshift(newItem);
@@ -335,16 +335,13 @@ export default {
                     }   
 
                     // Checks if list got too big. In this case we remove items from a page that is far from index
-                    if (
-                        (this.getItemsPerPage() == 96 && this.slideItems.length > 192) || 
-                        (this.getItemsPerPage() == 48 && this.slideItems.length > 96) ||
-                        (this.getItemsPerPage() == 24 && this.slideItems.length > 48) ||
-                        (this.getItemsPerPage() == 12 && this.slideItems.length > 24)) {
+                    if (this.slideItems.length > 36) {
                         if (this.goingRight) {
                             this.slideItems.splice(0, this.getItemsPerPage());
                             this.minPage++;
                             updatedSlideIndex = this.slideItems.length - 1 - this.items.length;
-                        } else {
+                  
+                  } else {
                             this.slideItems.splice(-this.getItemsPerPage());
                             this.maxPage--;
                             updatedSlideIndex = this.getItemsPerPage();
@@ -356,17 +353,20 @@ export default {
 
                     // When changes where made in the array, updates slider position                   
                     this.$nextTick(() => {
-                        setTimeout(() => {
+                        if (this.goingRight == undefined && updatedSlideIndex == 0) {
+                            this.slideIndex = -1; // Used to force reload of index when page has not loaded slideItems yet
+                        } else {
                             this.slideIndex = updatedSlideIndex;
+                        }
 
-                            if (this.slideIndex != undefined && this.$refs.mySwiper.swiper.slides[this.slideIndex] != undefined) 
-                                this.$refs.mySwiper.swiper.slides[this.slideIndex].click();
-                            
-                            this.$refs.mySwiper.swiper.activeIndex == this.slideIndex;
-                            this.$refs.mySwiper.swiper.slideTo(this.slideIndex, 0, false);
-                            
-                            this.$refs.mySwiper.swiper.update();
-                        }, 100);
+                        if (this.slideIndex != undefined && this.$refs.mySwiper.swiper.slides[this.slideIndex] != undefined) 
+                            this.$refs.mySwiper.swiper.slides[this.slideIndex].click();
+                        
+                        this.$refs.mySwiper.swiper.activeIndex == this.slideIndex;
+                        this.$refs.mySwiper.swiper.slideTo(this.slideIndex, 0, false);
+                        
+                        this.$refs.mySwiper.swiper.update();
+                    
                     });
                 }
             },
@@ -374,57 +374,35 @@ export default {
         },
         slideIndex:{
             handler(val, oldVal) { 
-                // Handles direction information, used by animations
-                if (val >= oldVal)
-                    this.goingRight = true;
-                else    
-                    this.goingRight = false;
+                if (this.slideIndex < 0) {
+                    this.slideIndex = 0;
+                } else {
+                    // Handles direction information, used by animations
+                    if (oldVal == undefined)
+                        this.goingRight = undefined;    
+                    else if (val < oldVal || (this.slideIndex == 0 && this.page == 1))
+                        this.goingRight = false;
+                    else    
+                        this.goingRight = true;
 
-                // Handles loading main item info, displayed in the middle
-                if (this.slideItems && this.slideItems[this.slideIndex] && this.slideItems[this.slideIndex].id != undefined) {
+                    // Handles loading main item info, displayed in the middle
+                    this.loadCurrentItem();
+                    
+                    // Handles requesting new page of items, either to left or right
+                    this.$nextTick(() => {
+                        if (this.slideItems.length > 0) {
+                            if (this.$refs.mySwiper.swiper.activeIndex == this.slideItems.length - 1 && this.page < this.totalPages)
+                                oldVal == undefined ? this.$eventBusSearch.setPage(this.page + 1) : this.$eventBusSearch.setPage(this.maxPage + 1);
+                            else if (this.$refs.mySwiper.swiper.activeIndex == 0 && this.page > 1 && this.slideItems.length < this.totalItems) {
+                                oldVal == undefined ? this.$eventBusSearch.setPage(this.page - 1) : this.$eventBusSearch.setPage(this.minPage - 1);
+                            }
+                        }
 
-                    this.isLoadingItem = true;
-
-                    // Checks if item is preloaded
-                    if (this.preloadedItem.id != undefined && this.preloadedItem.id == this.slideItems[this.slideIndex].id) {
-                        this.replaceItem(this.preloadedItem);
-                        this.$nextTick(() => this.isLoadingItem = false);
-                    } else {
-                        // Loads current item
-                        this.fetchItem(this.slideItems[this.slideIndex].id)
-                            .then(() => {
-                                this.isLoadingItem = false;
-                            })
-                            .catch(() => {
-                                this.isLoadingItem = false;
-                            });
-                    }
-
-                    // Loads next item, just in case
-                    let nextIndex = this.goingRight ? this.slideIndex + 1 : this.slideIndex - 1;
-                    if (this.slideItems[nextIndex] != undefined && this.slideItems[nextIndex].id != undefined) {
-                        axios.tainacan.get('/items/' + this.slideItems[nextIndex].id)
-                            .then(res => {
-                                this.preloadedItem = res.data;
-                            })
-                            .catch(error => {
-                                this.$console.log( error );
-                            });
-                    }
+                        // Handles pausing auto play when reaches the end of the list.
+                        if (this.$refs.mySwiper.swiper.activeIndex == this.slideItems.length - 1 && this.page == this.totalPages)
+                            this.isPlaying = false;
+                    });
                 }
-                
-                // Handles requesting new page of items, either to left or right
-                this.$nextTick(() => {
-                    if (this.$refs.mySwiper.swiper.activeIndex == this.slideItems.length - 1 && this.page < this.totalPages)
-                        oldVal == undefined ? this.$eventBusSearch.setPage(this.page + 1) : this.$eventBusSearch.setPage(this.maxPage + 1);
-                    else if (this.$refs.mySwiper.swiper.activeIndex == 0 && this.page > 1 && this.slideItems.length < this.totalItems) {
-                        oldVal == undefined ? this.$eventBusSearch.setPage(this.page - 1) : this.$eventBusSearch.setPage(this.minPage - 1);
-                    }
-
-                    // Handles pausing auto play when reaches the end of the list.
-                    if (this.$refs.mySwiper.swiper.activeIndex == this.slideItems.length - 1 && this.page == this.totalPages)
-                        this.isPlaying = false;
-                });
             },
             immediate: true
         }, 
@@ -515,6 +493,40 @@ export default {
                     this.$refs.mySwiper.swiper.slideTo(0);
             } 
         },
+        loadCurrentItem() {
+
+            if ((this.slideItems && this.slideItems[this.slideIndex] && this.slideItems[this.slideIndex].id != undefined)) {
+
+                this.isLoadingItem = true;
+
+                // Checks if item is preloaded
+                if (this.preloadedItem.id != undefined && this.preloadedItem.id == this.slideItems[this.slideIndex].id) {
+                    this.replaceItem(this.preloadedItem);
+                    this.$nextTick(() => this.isLoadingItem = false);
+                } else {
+                    // Loads current item
+                    this.fetchItem(this.slideItems[this.slideIndex].id)
+                        .then(() => {
+                            this.isLoadingItem = false;
+                        })
+                        .catch(() => {
+                            this.isLoadingItem = false;
+                        });
+                }
+
+                // Loads next item, just in case
+                let nextIndex = (this.goingRight || this.goingRight == undefined) ? this.slideIndex + 1 : this.slideIndex - 1;
+                if (this.slideItems[nextIndex] != undefined && this.slideItems[nextIndex].id != undefined) {
+                    axios.tainacan.get('/items/' + this.slideItems[nextIndex].id)
+                        .then(res => {
+                            this.preloadedItem = res.data;
+                        })
+                        .catch(error => {
+                            this.$console.log( error );
+                        });
+                }
+            }
+        },
         renderMetadata(itemMetadata, column) {
 
             let metadata = itemMetadata[column.slug] != undefined ? itemMetadata[column.slug] : false;
@@ -538,6 +550,7 @@ export default {
         if (this.$refs.mySwiper.swiper != undefined) {
             this.$refs.mySwiper.swiper.initialSlide = this.slideIndex;
         }
+
     },
     beforeDestroy() {
         clearInterval(this.intervalId);

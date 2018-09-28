@@ -824,6 +824,14 @@
                 this.prepareMetadata();
                 this.$eventBusSearch.setViewMode(viewMode);
 
+                // For view modes such as slides, we force pagination to request only 12 per page
+                let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(aViewMode => aViewMode == viewMode);
+                if (existingViewModeIndex >= 0) {
+                    if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination) {
+                        this.$eventBusSearch.setItemsPerPage(12);
+                    }
+                }
+
                 // Updates searchControlHeight before in case we need to adjust filters position on mobile
                 setTimeout(() => {
                     this.searchControlHeight = this.$refs['search-control'].clientHeight;
@@ -1153,6 +1161,15 @@
                     else   
                         this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
                 }
+                
+                // For view modes such as slides, we force pagination to request only 12 per page
+                let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
+                if (existingViewModeIndex >= 0) {
+                    if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination) {
+                        this.$eventBusSearch.setItemsPerPage(12);
+                    }
+                }
+
             } else {
                 let prefsAdminViewMode = !this.isRepositoryLevel ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
                 if (this.$userPrefs.get(prefsAdminViewMode) == undefined)

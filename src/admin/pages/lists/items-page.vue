@@ -827,6 +827,14 @@
                 this.prepareMetadata();
                 this.$eventBusSearch.setViewMode(viewMode);
 
+                // For view modes such as slides, we force pagination to request only 12 per page
+                let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(aViewMode => aViewMode == viewMode);
+                if (existingViewModeIndex >= 0) {
+                    if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination) {
+                        this.$eventBusSearch.setItemsPerPage(12);
+                    }
+                }
+
                 // Updates searchControlHeight before in case we need to adjust filters position on mobile
                 setTimeout(() => {
                     if (this.$refs['search-control'] != undefined)
@@ -1160,6 +1168,15 @@
                     else   
                         this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
                 }
+
+                // For view modes such as slides, we force pagination to request only 12 per page
+                let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
+                if (existingViewModeIndex >= 0) {
+                    if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination) {
+                        this.$eventBusSearch.setItemsPerPage(12);
+                    }
+                }
+                
             } else {
                 let prefsAdminViewMode = !this.isRepositoryLevel ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
                 if (this.$userPrefs.get(prefsAdminViewMode) == undefined)
@@ -1192,6 +1209,17 @@
 
     @import '../../scss/_variables.scss';
 
+    @keyframes open-full-screen {
+        from {
+            opacity: 0;
+            transform: scale(0.6);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1.0);
+        }
+    }
+
     .is-fullscreen {
         position: absolute;
         top: 0;
@@ -1202,7 +1230,8 @@
         height: 100vh;
         z-index: 999999999;
         background-color: black;
-        transition: all 0.3s ease;
+        transition: background-color 0.3s ease, width 0.3s ease, height 0.3s ease;
+        animation: open-full-screen 0.4s ease;
     }
 
     .collapse-all {
