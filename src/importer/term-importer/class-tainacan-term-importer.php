@@ -115,6 +115,7 @@ class Term_Importer extends Importer {
 		
 		if (($handle = fopen($this->tmp_file, "r")) !== false) {
 			$file = $handle;
+			$this->set_current_step_total( filesize($this->tmp_file) );
 		} else {
 			$this->add_error_log(' Error reading the file ');
 			return false;
