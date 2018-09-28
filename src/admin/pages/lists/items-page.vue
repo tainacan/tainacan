@@ -148,13 +148,21 @@
                             <b-icon icon="menu-down"/>
                         </button>
 
-                        <b-dropdown-item>
+                        <b-dropdown-item v-if="!isRepositoryLevel">
                             <router-link
                                     id="a-create-item"
                                     tag="div"
                                     :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
                                 {{ $i18n.get('add_one_item') }}
                             </router-link>
+                        </b-dropdown-item>
+                        <b-dropdown-item v-if="isRepositoryLevel">
+                            <div
+                                    id="a-create-item"
+                                    tag="div"
+                                    @click="onOpenCollectionsModal">
+                                {{ $i18n.get('add_one_item') }}
+                            </div>
                         </b-dropdown-item>
                         <b-dropdown-item disabled>
                             {{ $i18n.get('add_items_bulk') + ' (Not ready)' }}
@@ -669,6 +677,7 @@
     import Pagination from '../../components/search/pagination.vue'
     import AdvancedSearch from '../../components/advanced-search/advanced-search.vue';
     import AvailableImportersModal from '../../components/other/available-importers-modal.vue';
+    import CollectionsModal from '../../components/other/collections-modal.vue';
     import { mapActions, mapGetters } from 'vuex';
 
     export default {
@@ -808,6 +817,13 @@
                         targetCollection: this.collectionId,
                         hideWhenManualCollection: true
                     }
+                });
+            },
+            onOpenCollectionsModal() {
+                this.$modal.open({
+                    parent: this,
+                    component: CollectionsModal,
+                    hasModalCard: true
                 });
             },
             updateSearch() {

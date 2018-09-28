@@ -356,6 +356,33 @@ class Old_Tainacan extends Importer{
 
                 if( in_array($metadatum->type,['text', 'textarea', 'numeric', 'date']) ){
 
+                    if($metadatum->type === 'date'){
+                        
+                        if(is_array($value)){
+                            $values = [];
+
+                            foreach( $value as $day){
+                                $v = explode('/',$day);
+
+                                $v[1]= ( $v[1] < 10 ) ? '0'.$v[1] : $v[1];
+                                $v[0]= ( $v[0] < 10 ) ? '0'.$v[0] : $v[0];     
+
+                                $values[] = $v[2] . '-' . $v[1] . '-' . $v[0];
+                            }   
+                            
+                            
+                        } else {
+                            $v = explode('/',$value);
+
+                            $v[1]= ( $v[1] < 10 ) ? '0'. $v[1] : $v[1];
+                            $v[0]= ( $v[0] < 10 ) ? '0'. $v[0] : $v[0];  
+
+                            $values = $v[2] . '-' . $v[1] . '-' . $v[0];
+                        }
+
+                        $value = $values;
+                    }
+
                     $item_metadata->set_value($value);
 
                 } else if( $metadatum->type === 'item' ){ // RELATIONSHIPS
@@ -371,7 +398,7 @@ class Old_Tainacan extends Importer{
                     if( is_array($value) ) {
                         $values = [];
 
-                        foreach( is_array($value) as $cat){
+                        foreach( $value as $cat){
                             $id = $this->get_transient('term_' . $cat . '_id');
 
                             if( $id )
@@ -392,9 +419,9 @@ class Old_Tainacan extends Importer{
                     $inserted = $this->item_metadata_repo->insert( $item_metadata );
                     $this->add_log('Item Metadata inserted for item  ' .$item->get_title() . ' and metadata ' . $newMetadatum->get_name() );
                 } else {
-                    $this->add_error_log( 'Error inserting metadatum' );
-                    $this->add_error_log( $item_metadata->get_errors() );
-                    return false;
+                    $this->add_log( 'Error inserting metadatum' . $newMetadatum->get_name() );
+                    $this->add_log( 'Values' . $value );
+                    $this->add_log( $item_metadata->get_errors() );
                 }
             }
 
@@ -737,7 +764,7 @@ class Old_Tainacan extends Importer{
 
             if(!empty($meta->metadata->cardinality)){
 
-                if($meta->metadata->cardinality > 1){
+                if($meta->metadata->cardinality === 'n'){
                     $newMetadatum->set_multiple('yes');
                 }
 
@@ -860,7 +887,7 @@ class Old_Tainacan extends Importer{
                     $item->set_document_type( 'attachment' );
                     $this->add_log('Document imported from ' . $node_old->content_tainacan->guid);
                 } 
-            } else if(filter_var($node_old->content_tainacan, FILTER_VALIDATE_URL)){
+            } else if( isset($node_old->type_tainacan) && in_array( $node_old->type_tainacan, ['audio','video','image']) ){
                     $item->set_document( $node_old->content_tainacan );
                     $item->set_document_type( 'url' );
                     $this->add_log('URL imported from ' . $node_old->content_tainacan);

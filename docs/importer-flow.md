@@ -14,8 +14,8 @@ This method takes an array as argument, with the defintion of your importer. The
 
 ```
 	 	   @type string		 $name					The name of the importer. e.g. 'Example Importer'
-	 	   @type string		 $slug					A unique slug for the importer. e.g. 'This is an example importer description'
-	 	   @type string		 $description			The importer description. e.g. 'example-importer'
+	 	   @type string		 $slug					A unique slug for the importer. e.g. 'example-importer'
+	 	   @type string		 $description			The importer description. e.g. 'This is an example importer description'
 	 	   @type string		 $class_name			The Importer Class. e.g. '\Tainacan\Importer\Test_Importer'
 	 	   @type bool		 $manual_mapping		Wether Tainacan must present the user with an interface to manually map 
 	 												the metadata from the source to the target collection.

@@ -308,6 +308,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_description_not_informed'                 => __( 'Description not informed.', 'tainacan' ),
 	'label_hide_metadata'	                     	 => __( 'Hide metadata', 'tainacan' ),
 	'label_show_metadata'	                     	 => __( 'Show metadata', 'tainacan' ),
+	'label_all_terms'                                => __( 'All terms', 'tainacan' ),
+	'label_selected_terms'                           => __( 'Selected terms', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

@@ -283,7 +283,7 @@ class REST_Importers_Controller extends REST_Controller {
         $files = $request->get_file_params();
         $headers = $request->get_headers();
 
-        if ( $importer->add_file($files['file']) ) {
+        if ( isset($files['file']) && $importer->add_file($files['file']) ) {
             $response = $importer->_to_Array();
             return new \WP_REST_Response( $response, 200 );
         } else {
