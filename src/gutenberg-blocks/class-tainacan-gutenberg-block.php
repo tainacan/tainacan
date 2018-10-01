@@ -8,7 +8,9 @@ class GutenbergBlock {
 	private static $instance = null;
 
 	function __construct() {
-		$this->add_gutenberg_blocks_actions();
+		if(is_plugin_active('gutenberg/gutenberg.php')) {
+			$this->add_gutenberg_blocks_actions();
+		}
 	}
 
 	public static function get_instance() {
