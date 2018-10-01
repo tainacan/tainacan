@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAIA,wBAAyB;EACvB,KAAK,EAAE,IAAI",
+"sources": ["../../gutenberg-blocks/tainacan-collections/collections-carousel/collections-carousel.scss"],
+"names": [],
+"file": "tainacan-gutenberg-blocks-style.css"
+}

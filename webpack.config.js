@@ -6,7 +6,8 @@ module.exports = {
     entry: {
         //dev_admin: './src/js/main.js',\
         user_search: './src/admin/js/theme-main.js',
-        user_admin: './src/admin/js/main.js'
+        user_admin: './src/admin/js/main.js',
+        collections_carousel: './src/gutenberg-blocks/tainacan-collections/collections-carousel/index.js',
     },
     output: {
         path: path.resolve(__dirname, './src/assets/'),
