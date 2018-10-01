@@ -554,11 +554,16 @@ export default {
             this.$refs.mySwiper.swiper.initialSlide = this.slideIndex;
         }
 
+        // Adds clipped class to root html
+        document.documentElement.classList.add('is-clipped');
     },
     beforeDestroy() {
         clearInterval(this.intervalId);
         if (this.$refs.mySwiper.swiper)
             this.$refs.mySwiper.swiper.destroy();
+
+        // Remove clipped class from root html
+        document.documentElement.classList.remove('is-clipped');
     }
 }
 </script>
