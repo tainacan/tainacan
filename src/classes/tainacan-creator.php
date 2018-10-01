@@ -146,4 +146,6 @@ $Tainacan_Theme_Helper = \Tainacan\Theme_Helper::get_instance();
 $Tainacan_Search_Engine = new \Tainacan\Search_Engine();
 $Tainacan_Elastic_press = new \Tainacan\Elastic_Press();
 
+$Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();
+
 ?>
