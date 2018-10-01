@@ -84,10 +84,10 @@ class Theme_Helper {
 			'icon' => '<span class="icon"><i class="mdi mdi-view-dashboard mdi-24px"></i></span>',
 			'type' => 'component'
 		]);
-		$this->register_view_mode('slide', [
-			'label' => __('Slide', 'tainacan'),
+		$this->register_view_mode('slideshow', [
+			'label' => __('Slideshow', 'tainacan'),
 			'dynamic_metadata' => false,
-			'description' => 'A slideshow view, fullscreen.',
+			'description' => 'A fullscreen slideshow view.',
 			'icon' => '<span class="icon"><i class="mdi mdi-fullscreen mdi-24px"></i></span>',
 			'type' => 'component',
 			'show_pagination' => false,

@@ -302,7 +302,7 @@
                                     v-for="(viewModeOption, index) of enabledViewModes"
                                     :key="index"
                                     :value="viewModeOption"
-                                    v-if="registeredViewModes[viewModeOption] != undefined">
+                                     v-if="registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == false">
                                 <span 
                                         class="gray-icon"
                                         v-html="registeredViewModes[viewModeOption].icon"/>
@@ -379,6 +379,24 @@
                             </b-dropdown-item>
                         </b-dropdown>
                     </b-field>
+                </div>
+
+                <!-- Theme Full Screen mode, it's just a special view mode -->
+                <div 
+                        v-if="isOnTheme"
+                        class="search-control-item">
+                    <button 
+                            class="button is-white"
+                            @click="onChangeViewMode(viewModeOption)"
+                            v-for="(viewModeOption, index) of enabledViewModes"
+                            :key="index"
+                            :value="viewModeOption"
+                            v-if="registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == true ">
+                        <span 
+                                class="gray-icon"
+                                v-html="registeredViewModes[viewModeOption].icon"/>
+                        <span class="is-hidden-touch">{{ registeredViewModes[viewModeOption].label }}</span>
+                    </button>
                 </div>
 
                 <!-- Text simple search (used on mobile, instead of the one from filter list)-->

@@ -94,9 +94,11 @@
             <div class="table-wrapper">
 
                 <!-- SLIDE MAIN VIEW-->
-                <section class="tainacan-slide-main-view">
+                <section 
+                        @click.prevent.stop="onHideControls()"
+                        class="tainacan-slide-main-view">
                     <button 
-                            @click.prevent="prevSlide()"
+                            @click.stop.prevent="prevSlide()"
                             :style="{ visibility: (page > 1 && slideIndex <= 0) || slideIndex > 0 ? 'visible' : 'hidden' }"
                             class="slide-control-arrow arrow-left">
                         <span class="icon is-large">
@@ -104,7 +106,7 @@
                         </span> 
                     </button>
                     <div 
-                            @click.prevent="onHideControls()"
+                            
                             class="slide-main-content"
                             v-hammer:swipe.prevent="onSwipeFiltersMenu">
                         <transition 
@@ -142,7 +144,7 @@
                         </transition>
                     </div>
                     <button 
-                            @click.prevent="nextSlide()"
+                            @click.stop.prevent="nextSlide()"
                             :style="{ visibility: (slideIndex < slideItems.length - 1) || page < totalPages ? 'visible' : 'hidden' }"
                             class="slide-control-arrow arrow-right">
                         <span class="icon is-large has-text-turoquoise5">
@@ -151,13 +153,14 @@
                     </button>
                 </section>
                 <section 
+                        @click.prevent="onHideControls()"
                         v-if="slideItems[slideIndex] != undefined"
                         class="slide-title-area">
                     <h1>{{ slideItems[slideIndex].title }}</h1>
                     <button 
                             :disabled="(slideIndex == slideItems.length - 1 && page == totalPages)"
                             class="play-button"
-                            @click="isPlaying = !isPlaying">
+                            @click.stop.prevent="isPlaying = !isPlaying">
                         <b-icon
                                 type="is-secondary" 
                                 size="is-medium"
@@ -236,7 +239,7 @@ import { swiper, swiperSlide } from 'vue-awesome-swiper';
 import CircularCounter from '../admin/components/other/circular-counter.vue';
 
 export default {
-    name: 'ViewModeSlide',
+    name: 'ViewModeSlideshow',
     props: {
         collectionId: Number,
         displayedMetadata: Array,
@@ -431,7 +434,7 @@ export default {
             'getItemsPerPage'
         ]),
         onHideControls() {
-            if (!this.isSwiping)
+            if (this.isSwiping == undefined || this.isSwiping == false)
                 this.hideControls = !this.hideControls;
         },
         onSwipeFiltersMenu($event) {
@@ -573,10 +576,10 @@ export default {
     $page-small-side-padding: 25px;
     $page-side-padding: 4.166666667%; 
 
-    @import "../../src/admin/scss/_view-mode-slide.scss";
+    @import "../../src/admin/scss/_view-mode-slideshow.scss";
 
     .table-wrapper {
-        overflow-x: hidden !important;
+        overflow: hidden !important;
     }
 
 </style>
