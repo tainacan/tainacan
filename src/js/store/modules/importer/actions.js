@@ -11,7 +11,7 @@ export const fetchAvailableImporters = ({ commit }) => {
             resolve (availableImporters);
         }) 
         .catch((error) => {
-            reject(error);
+            reject(error.response.data);
         });
     });
 };
@@ -26,7 +26,7 @@ export const fetchImporter = ( { commit }, importerId ) => {
                 resolve( importer );
             })
             .catch(error => {
-                reject( error );
+                reject( error.response.data );
             });
     });
 };
@@ -43,7 +43,7 @@ export const sendImporter = ( { commit }, importerTypeSlug) => {
                 resolve( importer );
             })
             .catch(error => {
-                reject( error );
+                reject( error.response.data );
             });
     });
 };
@@ -58,7 +58,7 @@ export const updateImporter = ( { commit }, { sessionId, options }) => {
                 resolve( importer );
             })
             .catch(error => {
-                reject(error);
+                reject(error.response.data);
             });
     });
 };
@@ -74,7 +74,7 @@ export const updateImporterCollection = ( { commit }, { sessionId, collection })
                 resolve( importer );
             })
             .catch(error => {
-                reject(error);
+                reject(error.response.data);
             });
     });
 };
@@ -90,7 +90,7 @@ export const updateImporterURL = ( { commit }, { sessionId, url }) => {
                 resolve( importer );
             })
             .catch(error => {
-                reject(error);
+                reject(error.response.data);
             });
     });
 };
@@ -107,7 +107,7 @@ export const updateImporterOptions = ( { commit }, { sessionId, options }) => {
                 resolve( importer );
             })
             .catch(error => {
-                reject(error);
+                reject(error.response.data);
             });
     });
 };
@@ -129,7 +129,7 @@ export const updateImporterFile = ( { commit }, { sessionId, file }) => {
                 resolve( updatedImporter );
             })
             .catch(error => {
-                reject(error);
+                reject(error.response.data);
             });
     });
 };
@@ -143,7 +143,7 @@ export const fetchImporterSourceInfo = ({ commit }, sessionId ) => {
             resolve (importerSourceInfo);
         })
         .catch((error) => {
-            reject(error);
+            reject(error.response.data);
         });
     });
 };
@@ -158,7 +158,7 @@ export const runImporter = ( { dispatch } , importerId ) => {
                 resolve( backgroundProcessId );
             })
             .catch(error => {
-                reject( error );
+                reject( error.response.data );
             });
     });
 };
