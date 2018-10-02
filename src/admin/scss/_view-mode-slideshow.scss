@@ -168,7 +168,7 @@
     }
 }
 
-.spaced-to-right {
+.fullscreen-spaced-to-right {
     .table-wrapper { 
         margin-left: 20.83%;
         width: calc(100vw - 20.83%) !important;
@@ -287,6 +287,7 @@
         cursor: pointer;
         border: 0;
         background: transparent;
+        position: relative;
 
         .icon {
             border-radius: 100px;
@@ -299,8 +300,8 @@
         }
         .circular-counter {
             position: absolute;
-            right: calc(4.16667% + 3px);
-            top: 18px;
+            right: calc(4.16667% + 1px);
+            top: -3px;
         }
     }
 }

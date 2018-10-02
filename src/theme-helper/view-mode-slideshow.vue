@@ -88,7 +88,7 @@
 
         </aside>
         <div 
-                :class="{ 'spaced-to-right': !isMetadataCompressed }"
+                :class="{ 'fullscreen-spaced-to-right': !isMetadataCompressed }"
                 @keyup.left.prevent="slideIndex > 0 ? prevSlide() : null"
                 @keyup.right.prevent="slideIndex < slideItems.length - 1 ? nextSlide() : null">
             <div class="table-wrapper">
@@ -331,7 +331,7 @@ export default {
                                 this.slideItems.push(newItem);
                             } else {
                                 this.slideItems.unshift(newItem);
-                                updatedSlideIndex++;
+                                updatedSlideIndex++; 
                             }
                         } else {
                             this.$set(this.slideItems, existingItemIndex, newItem);
