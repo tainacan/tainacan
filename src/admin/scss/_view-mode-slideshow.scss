@@ -207,6 +207,9 @@
             overflow: hidden;
             transition: height 0.3s, max-height 0.3s;
         }
+        &>div img {
+            width: auto;
+        }
 
         .empty-document {
             font-size: 4rem;
@@ -260,6 +263,9 @@
         color: white;
         font-size: 2rem;
         font-weight: normal;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
     }
 
     .play-button {
@@ -278,7 +284,7 @@
         }
         .circular-counter {
             position: absolute;
-            right: calc(4.16667% + 4px);
+            right: calc(4.16667% + 3px);
             top: 18px;
         }
     }
@@ -426,13 +432,13 @@
                 &>div img,
                 &>div video,
                 &>div.tainacan-embed-container {
-                    max-height: 100vh;
+                    max-height: 95vh;
                 }
             }
         
         }
         .empty-document {
-            max-height: 100vh;
+            max-height: 95vh;
             img {
                 width: auto;
             }

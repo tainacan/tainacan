@@ -570,7 +570,7 @@ export default {
 }
 </script>
 
-<style  lang="scss" scoped>
+<style  lang="scss">
     $turquoise1: #e6f6f8;
     $turquoise2: #d1e6e6;
     $turquoise5: #298596;
@@ -585,7 +585,7 @@ export default {
 
     @import "../../src/admin/scss/_view-mode-slideshow.scss";
 
-    .table-wrapper {
+    .is-fullscreen .table-wrapper {
         overflow: hidden !important;
         display: flex;
         flex-wrap: nowrap;
