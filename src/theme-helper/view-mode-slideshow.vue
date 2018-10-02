@@ -556,6 +556,7 @@ export default {
         }
 
         // Adds clipped class to root html
+        document.documentElement.scrollTo(0,0);
         document.documentElement.classList.add('is-clipped');
     },
     beforeDestroy() {
