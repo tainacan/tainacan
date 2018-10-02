@@ -101,17 +101,17 @@ class Metadata extends Repository {
 				'map'         => 'meta',
 				'title'       => __( 'Required', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'The metadata is required', 'tainacan' ),
+				'description' => __( 'The metadata is required. All items in this collection must fill this field', 'tainacan' ),
 				'on_error'    => __( 'The metadata content is invalid', 'tainacan' ),
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 				'default'     => 'no'
 			],
 			'collection_key'        => [
 				'map'         => 'meta',
-				'title'       => __( 'Collection key', 'tainacan' ),
+				'title'       => __( 'Unique value', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'Metadata value should not be repeated', 'tainacan' ),
-				'on_error'    => __( 'Collection key is invalid', 'tainacan' ),
+				'description' => __( 'Metadata value should be unique accross all items in this collection', 'tainacan' ),
+				'on_error'    => __( 'You can not have two items with the same value for this metadatum', 'tainacan' ),
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 				'default'     => 'no'
 			],
@@ -119,7 +119,7 @@ class Metadata extends Repository {
 				'map'         => 'meta',
 				'title'       => __( 'Multiple', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'Allow multiple values for the metadata', 'tainacan' ),
+				'description' => __( 'Allow items to have more than one value for this metadatum', 'tainacan' ),
 				'on_error'    => __( 'Invalid multiple metadata', 'tainacan' ),
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ),
 				// yes or no. It cant be multiple if its collection_key
