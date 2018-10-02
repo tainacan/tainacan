@@ -519,4 +519,120 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $this->assertFalse( is_numeric($document_id) );
 
     }
+
+
+    /**
+     * @group importer_csv_special_fields
+     */
+    public function test_special_fields_status_and_id(){
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+        $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+        $file_name = 'demosaved.csv';
+        $csv_importer = new Importer\CSV();
+        $id = $csv_importer->get_id();
+
+        // open the file "demosaved.csv" for writing
+        $file = fopen($file_name, 'w');
+
+        // save the column headers
+        fputcsv($file, array('Column 1', 'special_item_status', 'Unknow Column'));
+
+        // Sample data
+        $data = array(
+            array('Data 11', 'publish', 'nothing'),
+            array('Data 21', 'private', 'void'),
+            array('Data 31', 'trash', 'empty'),
+            array('Data 41', 'future', 'null'),
+            array('Data 51', 'trash', 'zero')
+        );
+
+        // save each row of the data
+        foreach ($data as $row){
+            fputcsv($file, $row);
+        }
+
+        // Close the file
+        fclose($file);
+
+        $_SESSION['tainacan_importer'][$id]->set_tmp_file( $file_name );
+		
+        // file isset on importer
+        $this->assertTrue( !empty( $_SESSION['tainacan_importer'][$id]->get_tmp_file() ) );
+
+        // count total items
+        $this->assertEquals( 5, $_SESSION['tainacan_importer'][$id]->get_source_number_of_items() );
+  
+        // get metadata to mapping AVOIDING special fields
+        $headers =  $_SESSION['tainacan_importer'][$id]->get_source_metadata();
+        $this->assertEquals( $headers[1], 'Unknow Column' );
+  
+        $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_option('item_status_index'), 1 );
+  
+        // inserting the collection
+        $collection = $this->tainacan_entity_factory->create_entity(
+              'collection',
+              array(
+                  'name'          => 'Other',
+                  'description'   => 'adasdasdsa',
+                  'default_order' => 'DESC',
+                  'status'		=> 'publish'
+              ),
+              true
+          );
+  
+          $metadatum = $this->tainacan_entity_factory->create_entity(
+              'metadatum',
+              array(
+                  'name'        => 'Data multiplo',
+                  'description' => 'Descreve o dado do campo data.',
+                  'collection'  => $collection,
+                  'status'      => 'publish',
+                  'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+                  'multiple'    => 'yes'
+              ),
+              true
+          );
+          
+          $metadatum = $this->tainacan_entity_factory->create_entity(
+              'metadatum',
+              array(
+                  'name'        => 'Texto simples',
+                  'description' => 'Descreve o dado do campo data.',
+                  'collection'  => $collection,
+                  'status'      => 'publish',
+                  'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+                  'multiple'    => 'no'
+              ),
+              true
+          );
+          
+          $collection_definition = [
+              'id' => $collection->get_id(),
+              'total_items' => $_SESSION['tainacan_importer'][$id]->get_source_number_of_items(),
+          ];
+
+          // get collection metadata to map
+        $metadata = $Tainacan_Metadata->fetch_by_collection( $collection, [], 'OBJECT' ) ;
+
+        //create a random mapping
+        $map = [];
+        foreach ( $metadata as $index => $metadatum ){
+            if(isset($headers[$index]))
+                $map[$metadatum->get_id()] = $headers[$index];
+        }
+
+        $collection_definition['mapping'] = $map;
+
+        // add the collection
+        $_SESSION['tainacan_importer'][$id]->add_collection( $collection_definition );
+
+        while($_SESSION['tainacan_importer'][$id]->run()){
+            continue;
+        }
+
+        $items = $Tainacan_Items->fetch( ['order'=> 'DESC', 'orderby' => 'ID'], $collection, 'OBJECT' );
+
+        // only 3 items should be published
+        $this->assertEquals( 3, count( $items ) );
+    }
 }

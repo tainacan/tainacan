@@ -49,6 +49,8 @@ class CSV extends Importer {
                             $this->set_option('document_index', $index);
                         } else if( $rawColumn === 'special_attachments' ){
                             $this->set_option('attachment_index', $index);    
+                        } else if( $rawColumn === 'special_item_status' ){
+                            $this->set_option('item_status_index', $index);    
                         }
     
                     } else {
@@ -164,8 +166,9 @@ class CSV extends Importer {
     public function after_inserted_item( $inserted_item, $collection_index ) {
         $column_document = $this->get_option('document_index');
         $column_attachment = $this->get_option('attachment_index');
+        $column_item_status = $this->get_option('item_status_index');
 
-        if( !empty($column_document) || !empty( $column_attachment ) ){
+        if( !empty($column_document) || !empty( $column_attachment ) || !empty( $column_item_status ) ){
             
 			if (($handle = fopen($this->tmp_file, "r")) !== false) {
 	            $file = $handle;
@@ -191,6 +194,11 @@ class CSV extends Importer {
             if( is_array($values) && !empty($column_attachment) ){
                 $this->handle_attachment( $values[$column_attachment], $inserted_item);
             }
+
+            if( is_array($values) && !empty($column_item_status) ){
+                $this->handle_item_status( $values[$column_item_status], $inserted_item);
+            }
+
         }
     }
 
@@ -508,5 +516,20 @@ class CSV extends Importer {
         $delimiter = $this->get_option('enclosure').$this->get_option('delimiter').$this->get_option('enclosure');
         $values = explode($delimiter, $line);
         return $values;
+    }
+
+    /**
+     * @param $status string the item status
+     */
+    private function handle_item_status( $status, $item_inserted ){
+
+        if ( in_array( $status, array( 'auto-draft', 'draft', 'pending', 'future', 'publish', 'trash', 'inherit' ) ) ) {
+            $item_inserted->set_status($status);
+
+			if( $item_inserted->validate() ) {
+                $item_inserted = $this->items_repo->update($item_inserted);
+            }
+        }
+        
     }
 }
