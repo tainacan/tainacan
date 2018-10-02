@@ -23,6 +23,7 @@ class GutenbergBlock {
 
 	private function add_gutenberg_blocks_actions() {
 		add_action('init', array($this, 'register_tainacan_collections_carousel'));
+		add_action('init', array($this, 'add_plugin_settings'));
 	}
 
 	public function register_tainacan_collections_carousel(){
@@ -45,5 +46,21 @@ class GutenbergBlock {
 			'editor_script' => 'collections-carousel',
 			'style'         => 'collections-carousel'
 		));
+	}
+
+	public function get_plugin_js_settings(){
+		$settings = [
+			'root'                   => esc_url_raw( rest_url() ) . 'tainacan/v2',
+			'nonce'                  => wp_create_nonce( 'wp_rest' ),
+		];
+
+		return $settings;
+	}
+
+	function add_plugin_settings() {
+
+		$settings = $this->get_plugin_js_settings();
+
+		wp_localize_script( 'collections-carousel', 'tainacan_plugin', $settings );
 	}
 }

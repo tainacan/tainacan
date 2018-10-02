@@ -1,7 +1,9 @@
 const { registerBlockType } = wp.blocks;
 
 const { Modal, Button, Autocomplete } = wp.components;
-const { sprintf, __ } = wp.i18n;
+const { __ } = wp.i18n;
+
+import tainacan from '../../api-client/axios.js';
 
 registerBlockType('tainacan/collections-carousel', {
     title: 'Tainacan Collections Carousel',
@@ -24,23 +26,29 @@ registerBlockType('tainacan/collections-carousel', {
                 // The prefix that triggers this completer
                 triggerPrefix: '/',
                 // The option data
-                options: [
-                    { visual: 'a', name: 'Apple', id: 1 },
-                    { visual: 'o', name: 'Orange', id: 2 },
-                    { visual: 'g', name: 'Grapes', id: 3 },
-                ],
-                // Returns a label for an option like "🍊 Orange"
+                options: (keyword) => {
+                    if(!keyword){
+                        return [];
+                    }
+
+                    return tainacan.get(`/collections?search=${keyword}`)
+                        .then(response => {
+                            return response.data;
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
+                },
                 getOptionLabel: option => (
                     <span>
-                        <span className="icon" >{ option.visual }</span> { option.name }
+                        <span className="icon" >{ option.name }</span>
                     </span>
                 ),
-                // Declares that options should be matched by their name
                 getOptionKeywords: option => [ option.name ],
-                // Declares completions should be inserted as abbreviations
-                getOptionCompletion: option => (
-                    <abbr title={ option.name }>{ option.visual }</abbr>
-                ),
+                getOptionCompletion: option => {
+                    return ( <abbr title={ option.name }>{ option.name }</abbr> );
+                },
+                isDebounced: true,
             }
         ];
 
@@ -67,7 +75,7 @@ registerBlockType('tainacan/collections-carousel', {
                                     </div>
                                 ) }
                             </Autocomplete>
-                            <p>Type / for triggering the autocomplete.</p>
+                            <p>{ __('Type / for triggering the autocomplete.', 'tainacan') }</p>
                         </div>
 
                         <Button isDefault onClick={ () => setAttributes( { isOpen: false } ) }>
