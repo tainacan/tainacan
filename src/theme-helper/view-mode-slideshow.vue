@@ -134,7 +134,7 @@
                                     v-if="!isLoadingItem && slideItems.length > 0 && (item.document != undefined && item.document != undefined && item.document != '')"
                                     v-html="item.document_as_html" />  
                             <div v-else>
-                                <div class="empty_document">
+                                <div class="empty-document">
                                     <p>{{ $i18n.get('label_document_empty') }}</p>
                                     <img 
                                             :alt="$i18n.get('label_document_empty')" 
@@ -152,9 +152,13 @@
                         </span>
                     </button>
                 </section>
-                <section 
+
+
+                <!-- SLIDE ITEMS LIST --> 
+                <div class="tainacan-slides-list">
+                                    <section 
                         @click.prevent="onHideControls()"
-                        v-if="slideItems[slideIndex] != undefined"
+                        v-if="slideItems[slideIndex] != undefined" 
                         class="slide-title-area">
                     <h1>{{ slideItems[slideIndex].title }}</h1>
                     <button 
@@ -170,9 +174,6 @@
                                 :time="this.slideTimeout/1000" />
                     </button>
                 </section>
-
-                <!-- SLIDE ITEMS LIST --> 
-                <div class="tainacan-slides-list">
                     <swiper 
                             @slideChange="onSlideChange()"
                             ref="mySwiper"
@@ -274,7 +275,7 @@ export default {
                 keyboard: true,
                 preventInteractionOnTransition: true,
                 allowClick: true,
-                allowTouchMove: true,
+                allowTouchMove: true, 
                 slidesPerView: 18,
                 slidesPerGroup: 1,
                 centeredSlides: true,
@@ -585,6 +586,13 @@ export default {
 
     .table-wrapper {
         overflow: hidden !important;
+        display: flex;
+        flex-wrap: nowrap;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100vh;
+        width: 100vw;
+
     }
 
 </style>

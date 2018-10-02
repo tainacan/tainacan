@@ -185,13 +185,10 @@
     justify-content: space-between;
     align-items: center;
     min-height: calc(100vh - 142px);
-    margin-bottom: 1rem;
     transition: height 0.3s, min-height 0.3s;
 
     .slide-main-content {
         position: relative;
-        min-height: 70vh;
-        max-height: 70vh;
         width: 100vw;
         display: flex;
         align-items: center;
@@ -206,21 +203,36 @@
             max-width: 100vh;
             text-align: center;
             color: white;
+            max-height: calc(100vh - 115px);
+            overflow: hidden;
+            transition: height 0.3s, max-height 0.3s;
         }
 
-        .empty_document {
+        .empty-document {
             font-size: 4rem;
             font-weight: normal;
             color: $gray4;
             text-align: center;
             position: relative;
-            width: 100%;
-            height: 80%;
+            max-height: calc(100vh - 115px);
+            overflow: hidden;
+            transition: height 0.3s, max-height 0.3s;
             margin: auto;
+
+            img {
+                height: 100%;
+            }
+
             p {
                 position: absolute;
                 margin: calc(50% - 4rem) auto;
                 width: 100%;
+            }
+            @media screen and (max-width: 1024px) and (min-width: 768px) {
+                font-size: 3rem;
+                p {
+                    margin: calc(50% - 1rem) auto;
+                }
             }
             @media screen and (max-width: 768px) {
                 font-size: 2rem;
@@ -233,9 +245,10 @@
 }
 .slide-title-area {
     width: 100%;
-    position: relative;
-    top: -85px;
-    margin-bottom: -85px;
+    position: absolute;
+    bottom: 115px;
+    // top: -85px;
+    // margin-bottom: -85px;
     background-color: rgba(0,0,0,0.5);
     padding: 1rem $page-side-padding;
     display: flex;
@@ -324,9 +337,12 @@
     }
 }
 .tainacan-slides-list {
+    background-color: rgba(0,0,0,0.5);
     position: relative;
     transition: opacity 0.3s, visibility 0.3s, display 0.3s;
-    min-height: 60px;
+    height: 115px;
+    min-height: 115px;
+    padding: 0.75rem 0;
 
     .loading-icon {
         width: 100%;
@@ -336,7 +352,6 @@
     }
 
     #tainacan-slide-container {
-        background-color: rgba(0,0,0,0.5);
         padding: 0 $page-side-padding;
         display: flex;
         flex-wrap: nowrap;
@@ -362,7 +377,7 @@
             cursor: pointer;
 
             &.active-item img {
-                border-bottom: 4px solid $turquoise5 !important;
+                border-bottom: 4px solid $turquoise5;
             }
             &:hover img{
                 border-bottom: 4px solid $gray2;
@@ -381,7 +396,7 @@
     }
 }
 .hide-controls {
-    @media screen and (max-width: 768px) {
+    // @media screen and (max-width: 768px) {
         .slide-control-arrow {
             visibility: hidden;
             opacity: 0;
@@ -404,6 +419,26 @@
         }
         .tainacan-slide-main-view {
             min-height: 100vh;
+
+            .slide-main-content {
+                &>div, 
+                &>div audio,
+                &>div img,
+                &>div video,
+                &>div.tainacan-embed-container {
+                    max-height: 100vh;
+                }
+            }
+        
         }
-    }
+        .empty-document {
+            max-height: 100vh;
+            img {
+                width: auto;
+            }
+        }
+        @media screen and (max-width: 768px) {
+            .empty-document img { width: 100% !important; }
+        }
+    // }
 }
