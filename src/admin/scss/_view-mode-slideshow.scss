@@ -18,7 +18,7 @@
     background-color: black;
     position: absolute;
     z-index: 10;
-    width: 20.83%;
+    width: 20.83% !important;
     min-width: 180px;
     min-height: 100%;
     height: 100%;
@@ -31,7 +31,7 @@
     transition: visibility ease 0.5s, display ease 0.5s;
 
     @media screen and (max-width: 768px) {
-        width: 100%;
+        width: 100% !important;
         padding: $page-small-side-padding !important;
         
         h3 {
@@ -169,14 +169,29 @@
 }
 
 .spaced-to-right {
-    margin-left:  20.83%;
-
+    .table-wrapper { 
+        margin-left: 20.83%;
+        width: calc(100vw - 20.83%) !important;
+    };
     .tainacan-slide-main-view .arrow-left {
         left: 20.83% !important;
     }
+    .tainacan-slide-main-view .slide-main-content {
+        width: calc(100vw - 20.83%) !important;
+    }
 
     @media screen and (max-width: 768px) {
-        margin-left: 0px !important;
+        .table-wrapper { 
+            margin-left: 0;
+            width: 100vw !important;
+        };
+        .tainacan-slide-main-view .arrow-left {
+            left: 0 !important;
+            margin-left: 0;
+        }
+        .tainacan-slide-main-view .slide-main-content {
+            width: 100vw !important;
+        }
     }
 }
 
