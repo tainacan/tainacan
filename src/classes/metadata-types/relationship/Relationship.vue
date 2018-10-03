@@ -35,8 +35,9 @@
                     });
             }
 
-            if( this.metadatum.metadatum.metadata_type_options
-                    && this.metadatum.metadatum.metadata_type_options.search.length > 0){
+            if( this.metadatum.metadatum.metadata_type_options &&
+                this.metadatum.metadatum.metadata_type_options.search &&
+                this.metadatum.metadatum.metadata_type_options.search.length > 0){
                 axios.get('/collection/'+ collectionId +'/metadata?context=edit')
                     .then( res => {
                         for (let item of res.data) {
