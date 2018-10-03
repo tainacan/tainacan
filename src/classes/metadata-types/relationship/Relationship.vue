@@ -1,11 +1,11 @@
 <template>
-    <div :class="{ 'is-flex': metadatum.metadatum.multiple != 'yes' }">
+    <div :class="{ 'is-flex': metadatum.metadatum.multiple != 'yes' || maxtags != undefined }">
         <b-taginput
                 :disabled="disabled"
                 :id="id"
                 v-model="selected"
                 :data="options"
-                :maxtags="metadatum.metadatum.multiple === 'yes' && allowNew === true ? 100 : 1"
+                :maxtags="maxtags != undefined ? maxtags : (metadatum.metadatum.multiple == 'yes' || allowNew === true ? 100 : 1)"
                 autocomplete
                 attached
                 :loading="loading"
@@ -71,6 +71,7 @@
                 type: Number
             },
             id: '',
+            maxtags: undefined,
             disabled: false,
             allowNew: true,
         },
@@ -102,14 +103,16 @@
                 }
 
                 if (query !== '') {
-                    let metaquery = this.mountQuery( query );
                     this.loading = true;
                     this.options = [];
+                    
+                    let metaquery = this.mountQuery( query );
                     let collectionId = ( this.metadatum && this.metadatum.metadatum.metadata_type_options.collection_id ) ? this.metadatum.metadatum.metadata_type_options.collection_id : this.collection_id;
+                    
                     axios.get('/collection/'+collectionId+'/items?' + qs.stringify( metaquery ))
                     .then( res => {
                         this.loading = false;
-			this.options = [];
+                        this.options = [];
                         let result = res.data;
                         for (let item of result) {
                             this.options.push({ label: item.title, value: item.id })
