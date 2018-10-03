@@ -159,7 +159,12 @@ class Bulk_Edit  {
 	 * @param int $index THe position of the index to search for. From 1 to the length of the group 
 	 * @return int|bool Returns the ID of the item or false if the index is out of range
 	 */
-	public function get_item_id_by_index(int $index) {
+	public function get_item_id_by_index($index) {
+		
+		if (!is_int($index)) {
+			throw new InvalidArgumentException('get_item_id_by_index function only accepts integers. Input was: '.$index);
+		}
+		
 		$options = $this->get_options();
 		$query = [
 			'meta_query' => [
