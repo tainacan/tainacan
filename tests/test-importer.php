@@ -504,9 +504,6 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         if(@file_get_contents ( 'https://www.w3schools.com/w3css/img_lights.jpg' ))
             $this->assertEquals( 1, count( $attachments ) );
 
-        if(@file_get_contents ( 'https://www.youtube.com/watch?v=V8dpmD4HG5s&start_radio=1&list=RDEMZS6OrHEAut8dOA38mVtVpg' ))
-            $this->assertTrue( count($items[2]->get_attachments()) > 0 );
-
         $document_id = $items[2]->get_document();
 
         if(@file_get_contents ( 'https://www.codeproject.com/KB/GDI-plus/ImageProcessing2/img.jpg' ))

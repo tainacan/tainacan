@@ -51,6 +51,8 @@ class CSV extends Importer {
                             $this->set_option('attachment_index', $index);    
                         } else if( $rawColumn === 'special_item_status' ){
                             $this->set_option('item_status_index', $index);    
+                        } else if( $rawColumn === 'special_item_id' ){
+                            $this->set_option('item_id_index', $index);    
                         }
     
                     } else {
@@ -317,6 +319,33 @@ class CSV extends Importer {
                 </div>
 			</div>
 		</div>
+
+        <div class="field">
+			<label class="label"><?php _e('Repeated Item', 'tainacan'); ?></label>
+			<span class="help-wrapper">
+					<a class="help-button has-text-secondary">
+						<span class="icon is-small">
+							 <i class="mdi mdi-help-circle-outline" ></i>
+						 </span>
+					</a>
+					<div class="help-tooltip">
+						<div class="help-tooltip-header">
+							<h5><?php _e('Repeated Item', 'tainacan'); ?></h5>
+						</div>
+						<div class="help-tooltip-body">
+							<p><?php _e('Choose the action when a repeated item is found', 'tainacan'); ?></p>
+						</div>
+					</div> 
+			</span>
+			<div class="control is-clearfix">
+                <div class="select">
+                    <select name="repeated_item">
+                        <option value="update" <?php selected($this->get_option('repeated_item'), 'update'); ?> >Update</option>
+                        <option value="ignore" <?php selected($this->get_option('repeated_item'), 'ignore'); ?> >Ignore</option>
+                    </select>
+                </div>
+			</div>
+		</div>
 		
 		<div class="field">
 			<label class="label"><?php _e('Importing attachments', 'tainacan'); ?></label>
@@ -531,5 +560,14 @@ class CSV extends Importer {
             }
         }
         
+    }
+
+    private function handle_item_id( $values ){
+        $item_id_index = $this->set_option('item_id_index');
+        
+        if( $item_id_index && isset($values[$item_id_index]) ){
+            $this->add_transient( 'item_id',$values[$item_id_index] );
+            $this->add_transient( 'item_action',$this->get_option('repeated_item') );
+        }
     }
 }
