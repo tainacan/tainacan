@@ -500,6 +500,8 @@ export default {
             itemId: Number,
             item: {},
             collectionId: Number,
+            sequenceId: Number,
+            itemPosition: Number,
             isCreatingNewItem: false,
             isLoading: false,
             isMetadataColumnCompressed: false,
@@ -582,6 +584,12 @@ export default {
             'fetchCollectionName',
             'fetchCollectionAllowComments',
             'deleteItem',
+        ]),
+        ...mapActions('bulkedition', [
+            'fetchItemIdInSequence'
+        ]),
+        ...mapGetters('bulkedition', [
+            'getItemIdInSequence '
         ]),
         onSubmit(status) {
             // Puts loading on Item edition
@@ -836,25 +844,8 @@ export default {
                     }
                 }
             });
-        }
-    },
-    created(){
-        // Obtains collection ID
-        this.cleanMetadata();
-        eventBus.clearAllErrors();
-        this.formErrorMessage = '';
-        this.collectionId = this.$route.params.collectionId;
-        this.form.collectionId = this.collectionId;
-
-        if (this.$route.fullPath.split("/").pop() == "new") {
-            this.isCreatingNewItem = true;
-            this.createNewItem();
-        } else if (this.$route.fullPath.split("/").pop() == "edit") {
-            this.isLoading = true;
-
-            // Obtains current Item ID from URL
-            this.itemId = this.$route.params.itemId;
-
+        },
+        loadExistingItem() {
             // Initializes Media Frames now that itemId exists
             this.initializeMediaFrames();
 
@@ -887,6 +878,45 @@ export default {
 
             // Fetch current existing attachments
             this.fetchAttachments(this.itemId);
+        }
+    },
+    created(){
+        // Obtains collection ID
+        this.cleanMetadata();
+        eventBus.clearAllErrors();
+        this.formErrorMessage = '';
+        this.collectionId = this.$route.params.collectionId;
+        this.form.collectionId = this.collectionId;
+
+        // CREATING NEW SINGLE ITEM
+        if (this.$route.fullPath.split("/").pop() == "new") {
+            this.isCreatingNewItem = true;
+            this.createNewItem();
+
+        // EDITING EXISTING ITEM
+        } else if (this.$route.fullPath.split("/").pop() == "edit") {
+            this.isLoading = true;
+
+            // Obtains current Item ID from URL
+            this.itemId = this.$route.params.itemId;
+            this.loadExistingItem();
+
+        // EDITING EXISTING SEQUENCE
+        } else if (this.$route.params.collectionId != undefined && this.$route.params.sequenceId != undefined && this.$route.params.itemPosition != undefined){
+            
+            this.sequenceId = this.$route.params.sequenceId;
+            this.itemPosition = this.$route.params.itemPosition;
+            this.isLoading = true;
+
+            // Obtains current Item ID from Sequence
+            this.fetchItemIdInSequence({ collectionId: this.collectionId, sequenceId: this.sequenceId, itemPosition: this.itemPosition  })
+                .then((itemId) => {
+                    this.itemId = itemId;
+                    this.loadExistingItem();
+                })
+                .catch(() => {
+                    this.isLoading = true;
+                });
         }
 
         // Obtains collection name

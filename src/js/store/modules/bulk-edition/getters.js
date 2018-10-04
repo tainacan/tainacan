@@ -5,3 +5,7 @@ export const getGroupID = state => {
 export const getActionResult = state => {
     return state.actionResult;
 };
+
+export const getItemIdInSequence = state => {
+    return state.itemIdInSequence;
+};

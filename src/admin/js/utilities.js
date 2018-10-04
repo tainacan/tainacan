@@ -175,6 +175,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getCollectionItemsPath(collectionId, query) {
             return '/collections/'+ collectionId + '/items/?' + qs.stringify(query);
         },
+        getCollectionSequenceEditPath(collectionId, sequenceId, itemPosition) {
+            return '/collections/'+ collectionId + '/sequence/' + sequenceId + '/' + itemPosition;
+        },
         getCollectionMetadataPath(collectionId) {
             return '/collections/'+ collectionId + '/metadata/';
         },

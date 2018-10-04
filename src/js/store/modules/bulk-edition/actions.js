@@ -169,3 +169,19 @@ export const deleteItemsInBulk = ({commit}, parameters) => {
             commit('setActionResult', error.response.data);
         });
 };
+
+// SEQUENCE EDIT SPECIFIC
+export const fetchItemIdInSequence = ({commit}, { collectionId, sequenceId, itemPosition }) => {
+
+    return new Promise ((resolve, reject) => {
+        axios.tainacan.get(`/collection/${collectionId}/bulk-edit/${sequenceId}/sequence/${itemPosition}`)
+            .then(response => {
+                commit('setItemIdInSequence', response.data);
+                resolve(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+                reject(error);
+            });
+    });
+};
