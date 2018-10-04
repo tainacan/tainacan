@@ -4,16 +4,6 @@ This page shows how the internal API works and how to create and fetch all kinds
 
 Its important that you first get familiar with the [key concepts](key-concepts.md) of tainacan. 
 
-This page gives an overview of the API. Detailed documentation and reference on each entity can be found below:
-
-* [Collections Reference](class-reference-collections.md)
-* [Items Reference](class-reference-items.md)
-* [Item Metadata Reference](class-reference-item-metadata.md)
-* [Metadata Reference](class-reference-metadata.md)
-* [Filters Reference](class-reference-filters.md)
-* [Taxonomies Reference](class-reference-taxonomies.md)
-* [Terms Reference](class-reference-terms.md)
-* [Logs Reference](class-reference-logs.md)
 
 ## Overview
 
