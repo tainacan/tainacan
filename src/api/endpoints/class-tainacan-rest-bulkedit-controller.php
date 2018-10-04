@@ -224,13 +224,9 @@ class REST_Bulkedit_Controller extends REST_Controller {
 
         $bulk = new \Tainacan\Bulk_Edit($args);
 
-        $response = [
-            'id' => $bulk->get_id()
-        ];
+		$response = $this->prepare_item_for_response($bulk, $request);
 
         $rest_response = new \WP_REST_Response($response, 200);
-
-		$rest_response->header('X-WP-Total', $bulk->count_posts());
 
         return $rest_response;
 
@@ -291,23 +287,31 @@ class REST_Bulkedit_Controller extends REST_Controller {
 
         $bulk = new \Tainacan\Bulk_Edit($args);
 		
-		$count = $bulk->count_posts();
+		$return = $this->prepare_item_for_response($bulk, $request);
 		
-		if (0 === $count) {
+		if (0 === $return['items_count']) {
 			return new \WP_REST_Response([
                 'error_message' => __('Group not found', 'tainacan'),
             ], 404);
 		}
 		
-		$options = $bulk->get_options();
+		return new \WP_REST_Response($return, 200);
+	}
+	
+	function prepare_item_for_response($bulk_object, $request) {
+		
+		$count = $bulk_object->count_posts();
+		
+		$options = $bulk_object->get_options();
 		
 		$return = [
-			'id' => $group_id,
+			'id' => $bulk_object->get_id(),
 			'items_count' => $count,
 			'options' => $options
 		];
 		
-		return new \WP_REST_Response($return, 200);
+		return $return;
+		
 	}
 
     public function trash_items($request) {
