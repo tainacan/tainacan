@@ -225,6 +225,8 @@ export default {
                             break;
                     }
                     
+                } else if (this.arrayRealPath[i-1] == 'sequence' && i > 0){
+                    this.arrayViewPath.splice(i, 1, this.$i18n.get('label_editing_item_number') + this.$route.params.itemPosition );
                 } else {
                     if(this.arrayRealPath[i] == 'undefined'){
                         this.arrayViewPath.splice(i, 1, '');

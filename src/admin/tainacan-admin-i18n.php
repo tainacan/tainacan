@@ -31,6 +31,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'mapping'                                        => __( 'Mapping', 'tainacan' ),
 	'importers'                                      => __( 'Importers', 'tainacan' ),
 	'processes'                                      => __( 'Processes', 'tainacan' ),
+	'sequence'                                       => __( 'Sequence', 'tainacan' ),
 
 	// Actions
 	'close'                                          => __( 'Close', 'tainacan' ),
@@ -312,6 +313,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_show_metadata'	                     	 => __( 'Show metadata', 'tainacan' ),
 	'label_all_terms'                                => __( 'All terms', 'tainacan' ),
 	'label_selected_terms'                           => __( 'Selected terms', 'tainacan'),
+	'label_editing_item_number'                      => __( 'Editing item n.', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

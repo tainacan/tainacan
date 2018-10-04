@@ -595,6 +595,9 @@ export default {
         '$route.params.itemPosition'(newItemPosition) {
             this.itemPosition = Number(newItemPosition);
 
+            // Saves current itemPosition to user prefs
+            this.$userPrefs.set('sequence_' + this.sequenceId + '_position', this.itemPosition);
+
             // Clear form variables
             this.cleanMetadata();
             eventBus.clearAllErrors();
@@ -961,12 +964,15 @@ export default {
             this.loadExistingItem();
 
         // EDITING EXISTING SEQUENCE
-        } else if (this.$route.params.collectionId != undefined && this.$route.params.sequenceId != undefined && this.$route.params.itemPosition != undefined){
+        } else if (this.$route.params.collectionId != undefined && this.$route.params.sequenceId != undefined){
             this.isLoading = true;
 
             this.sequenceId = this.$route.params.sequenceId;
-            this.itemPosition = Number(this.$route.params.itemPosition);
+            this.itemPosition = this.$route.params.itemPosition != undefined ? Number(this.$route.params.itemPosition) : (this.$userPrefs.get('sequence_' + this.sequenceId + '_position') != undefined ? Number(this.$userPrefs.get('sequence_' + this.sequenceId + '_position')) : 1);
             this.isOnSequenceEdit = true;
+
+            // Saves current itemPosition to user prefs
+            this.$userPrefs.set('sequence_' + this.sequenceId + '_position', this.itemPosition);
 
             // Obtains current Item ID from Sequence
             this.fetchItemIdInSequence({ collectionId: this.collectionId, sequenceId: this.sequenceId, itemPosition: this.itemPosition  })
