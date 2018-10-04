@@ -443,7 +443,7 @@
                             type="button"
                             class="button is-success">{{ $i18n.get('label_publish') }}</button>
                     <button 
-                            v-if="isOnSequenceEdit"
+                            v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count > itemPosition)"
                             @click="onNextInSequence()"
                             type="button"
                             class="button is-outlined">{{ $i18n.get('next') }}</button>
@@ -475,7 +475,7 @@
                             type="button"
                             class="button is-success">{{ $i18n.get('label_publish') }}</button>
                     <button 
-                            v-if="isOnSequenceEdit"
+                            v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count > itemPosition)"
                             @click="onNextInSequence()"
                             type="button"
                             class="button is-outlined">{{ $i18n.get('next') }}</button>
@@ -502,7 +502,7 @@
                             type="button"
                             class="button is-secondary">{{ $i18n.get('label_update') }}</button>
                     <button 
-                            v-if="isOnSequenceEdit"
+                            v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count > itemPosition)"
                             @click="onNextInSequence()"
                             type="button"
                             class="button is-outlined">{{ $i18n.get('next') }}</button>
@@ -585,6 +585,12 @@ export default {
         },
         lastUpdated() {
             return this.getLastUpdated();
+        },
+        group() {
+            return this.getGroup();
+        },
+        itemIdInSequence() {
+            return this.getItemIdInSequence();
         }
     },
     components: {
@@ -607,13 +613,16 @@ export default {
 
             // Obtains current Item ID from Sequence
             this.fetchItemIdInSequence({ collectionId: this.collectionId, sequenceId: this.sequenceId, itemPosition: this.itemPosition  })
-                .then((itemId) => {
-                    this.itemId = itemId;
+                .then(() => {
+                    this.itemId = this.itemIdInSequence;
                     this.loadExistingItem();
                 })
                 .catch(() => {
                     this.isLoading = false;
                 });
+            
+            // Obtains current Sequence Group Info
+            this.fetchGroup({ collectionId: this.collectionId, groupId: this.sequenceId });
         }
     },
     methods: {
@@ -642,10 +651,12 @@ export default {
             'deleteItem',
         ]),
         ...mapActions('bulkedition', [
-            'fetchItemIdInSequence'
+            'fetchItemIdInSequence',
+            'fetchGroup'
         ]),
         ...mapGetters('bulkedition', [
-            'getItemIdInSequence '
+            'getItemIdInSequence',
+            'getGroup'
         ]),
         onSubmit(status) {
             // Puts loading on Item edition
@@ -976,13 +987,16 @@ export default {
 
             // Obtains current Item ID from Sequence
             this.fetchItemIdInSequence({ collectionId: this.collectionId, sequenceId: this.sequenceId, itemPosition: this.itemPosition  })
-                .then((itemId) => {
-                    this.itemId = itemId;
+                .then(() => {
+                    this.itemId = this.itemIdInSequence;
                     this.loadExistingItem();
                 })
                 .catch(() => {
                     this.isLoading = false;
                 });
+            
+            // Obtains current Sequence Group Info
+            this.fetchGroup({ collectionId: this.collectionId, groupId: this.sequenceId });
         }
 
         // Obtains collection name

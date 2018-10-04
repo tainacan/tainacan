@@ -25,6 +25,21 @@ export const createEditGroup = ({commit}, parameters) => {
         });
 };
 
+export const fetchGroup = ({commit}, { collectionId, groupId }) => {
+
+    return new Promise ((resolve, reject) => {
+        axios.tainacan.get(`/collection/${collectionId}/bulk-edit/${groupId}`)
+            .then(response => {
+                commit('setGroup', response.data);
+                resolve(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+                reject(error);
+            });
+    });
+};
+
 export const setValueInBulk = ({commit}, parameters) => {
     let groupID = parameters.groupID;
     let collectionID = parameters.collectionID;
