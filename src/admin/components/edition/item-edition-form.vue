@@ -979,7 +979,9 @@ export default {
             this.isLoading = true;
 
             this.sequenceId = this.$route.params.sequenceId;
-            this.itemPosition = this.$route.params.itemPosition != undefined ? Number(this.$route.params.itemPosition) : (this.$userPrefs.get('sequence_' + this.sequenceId + '_position') != undefined ? Number(this.$userPrefs.get('sequence_' + this.sequenceId + '_position')) : 1);
+            let savedItemPosition = (this.$userPrefs.get('sequence_' + this.sequenceId + '_position') != undefined ? Number(this.$userPrefs.get('sequence_' + this.sequenceId + '_position')) : 1);            
+            this.itemPosition = this.$route.params.itemPosition != undefined ? Number(this.$route.params.itemPosition) : savedItemPosition;
+
             this.isOnSequenceEdit = true;
 
             // Saves current itemPosition to user prefs
