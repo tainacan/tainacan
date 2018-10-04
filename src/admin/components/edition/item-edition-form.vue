@@ -426,6 +426,11 @@
                         class="form-submission-footer"
                         v-if="form.status == 'trash'">
                     <button 
+                            v-if="isOnSequenceEdit && itemPosition > 1"
+                            @click="onPrevInSequence()"
+                            type="button"
+                            class="button is-outlined">{{ $i18n.get('previous') }}</button>
+                    <button 
                             @click="onDeletePermanently()"
                             type="button"
                             class="button is-outlined">{{ $i18n.get('label_delete_permanently') }}</button>
@@ -437,10 +442,20 @@
                             @click="onSubmit(visibility)"
                             type="button"
                             class="button is-success">{{ $i18n.get('label_publish') }}</button>
+                    <button 
+                            v-if="isOnSequenceEdit"
+                            @click="onNextInSequence()"
+                            type="button"
+                            class="button is-outlined">{{ $i18n.get('next') }}</button>
                 </div>
                 <div 
                         class="form-submission-footer"
                         v-if="form.status == 'auto-draft' || form.status == 'draft' || form.status == undefined">
+                    <button 
+                            v-if="isOnSequenceEdit && itemPosition > 1"
+                            @click="onPrevInSequence()"
+                            type="button"
+                            class="button is-outlined">{{ $i18n.get('previous') }}</button>
                     <button 
                             v-if="form.status == 'draft'"
                             @click="onSubmit('trash')"
@@ -459,10 +474,20 @@
                             @click="onSubmit(visibility)"
                             type="button"
                             class="button is-success">{{ $i18n.get('label_publish') }}</button>
+                    <button 
+                            v-if="isOnSequenceEdit"
+                            @click="onNextInSequence()"
+                            type="button"
+                            class="button is-outlined">{{ $i18n.get('next') }}</button>
                 </div>
                 <div 
                         class="form-submission-footer"
                         v-if="form.status == 'publish' || form.status == 'private'">
+                    <button 
+                            v-if="isOnSequenceEdit && itemPosition > 1"
+                            @click="onPrevInSequence()"
+                            type="button"
+                            class="button is-outlined">{{ $i18n.get('previous') }}</button>
                     <button 
                             @click="onSubmit('trash')"
                             type="button"
@@ -476,6 +501,11 @@
                             @click="onSubmit(visibility)"
                             type="button"
                             class="button is-secondary">{{ $i18n.get('label_update') }}</button>
+                    <button 
+                            v-if="isOnSequenceEdit"
+                            @click="onNextInSequence()"
+                            type="button"
+                            class="button is-outlined">{{ $i18n.get('next') }}</button>
                 </div>
             </div>
         </form>
@@ -503,6 +533,7 @@ export default {
             sequenceId: Number,
             itemPosition: Number,
             isCreatingNewItem: false,
+            isOnSequenceEdit: false,
             isLoading: false,
             isMetadataColumnCompressed: false,
             metadatumCollapses: [],
@@ -559,6 +590,28 @@ export default {
     components: {
         FileItem,
         DocumentItem
+    },
+    watch: {
+        '$route.params.itemPosition'(newItemPosition) {
+            this.itemPosition = Number(newItemPosition);
+
+            // Clear form variables
+            this.cleanMetadata();
+            eventBus.clearAllErrors();
+            this.formErrorMessage = '';
+            
+            this.isLoading = true;
+
+            // Obtains current Item ID from Sequence
+            this.fetchItemIdInSequence({ collectionId: this.collectionId, sequenceId: this.sequenceId, itemPosition: this.itemPosition  })
+                .then((itemId) => {
+                    this.itemId = itemId;
+                    this.loadExistingItem();
+                })
+                .catch(() => {
+                    this.isLoading = false;
+                });
+        }
     },
     methods: {
         ...mapActions('item', [
@@ -839,7 +892,7 @@ export default {
                     title: this.$i18n.get('label_warning'),
                     message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
                     onConfirm: () => {
-                        this.deleteItem({ itemId: this.itemId, isPermanently: true })
+                        this.deleteItem({ itemId: this.itemId, isPermanently: true });
                         this.$router.push(this.$routerHelper.getCollectionPath(this.form.collectionId))
                     }
                 }
@@ -878,6 +931,12 @@ export default {
 
             // Fetch current existing attachments
             this.fetchAttachments(this.itemId);
+        },
+        onNextInSequence() {
+            this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, this.sequenceId, this.itemPosition + 1));
+        },
+        onPrevInSequence() {
+            this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, this.sequenceId, this.itemPosition - 1));
         }
     },
     created(){
@@ -903,10 +962,11 @@ export default {
 
         // EDITING EXISTING SEQUENCE
         } else if (this.$route.params.collectionId != undefined && this.$route.params.sequenceId != undefined && this.$route.params.itemPosition != undefined){
-            
-            this.sequenceId = this.$route.params.sequenceId;
-            this.itemPosition = this.$route.params.itemPosition;
             this.isLoading = true;
+
+            this.sequenceId = this.$route.params.sequenceId;
+            this.itemPosition = Number(this.$route.params.itemPosition);
+            this.isOnSequenceEdit = true;
 
             // Obtains current Item ID from Sequence
             this.fetchItemIdInSequence({ collectionId: this.collectionId, sequenceId: this.sequenceId, itemPosition: this.itemPosition  })
@@ -915,7 +975,7 @@ export default {
                     this.loadExistingItem();
                 })
                 .catch(() => {
-                    this.isLoading = true;
+                    this.isLoading = false;
                 });
         }
 

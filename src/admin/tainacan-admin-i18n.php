@@ -44,6 +44,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'remove_value'                                   => __( 'Remove value', 'tainacan' ),
 	'save'                                           => __( 'Save', 'tainacan' ),
 	'next'                                           => __( 'Next', 'tainacan' ),
+	'previous'                                       => __( 'Previous', 'tainacan' ),
 	'back'                                           => __( 'Back', 'tainacan' ),
 	'exit'                                           => __( 'Exit', 'tainacan' ),
 	'see'                                            => __( 'View', 'tainacan' ),

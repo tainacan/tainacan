@@ -746,7 +746,7 @@ export default {
                 collectionID: this.collectionId
             }).then(() => {
                 let sequenceId = this.getGroupID();
-                this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 0));
+                this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 1));
             });
         },
         selectAllItemsOnPage() {
