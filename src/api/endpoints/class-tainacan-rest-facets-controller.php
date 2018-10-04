@@ -265,7 +265,7 @@ class REST_Facets_Controller extends REST_Controller {
 			}
         }
 
-		return $this->prepare_response( $response, $metadatum_type, $reference_id, $collection_id, $request['curent_query'] );
+		return $this->prepare_response( $response, $metadatum_type, $reference_id, $collection_id, $request['current_query'] );
     }
 
 	/**
@@ -291,6 +291,10 @@ class REST_Facets_Controller extends REST_Controller {
 
 				if( $type === 'Tainacan\Metadata_Types\Taxonomy' ){
 					$total_items = $this->add_items_count( $item['id'], $reference_id, true, $query, $collection_id); 
+
+					if( $total_items === 0){
+						continue;
+					}
 				
 					$row = [
 						'label' => $item['name'],
@@ -307,6 +311,10 @@ class REST_Facets_Controller extends REST_Controller {
 				} else if( $type === 'Tainacan\Metadata_Types\Relationship' ){
 					$total_items = $this->add_items_count( $item['id'], $reference_id, false, $query, $collection_id);
 
+					if( $total_items === 0){
+						continue;
+					}
+
 					$row = [
 						'label' => $item['title'],
 						'value' => $item['id'],
@@ -319,6 +327,10 @@ class REST_Facets_Controller extends REST_Controller {
 
 				} else {
 					$total_items = $this->add_items_count( $item['mvalue'], $reference_id, false, $query, $collection_id);
+
+					if( $total_items === 0){
+						continue;
+					}
 
 					$row = [
 						'label' => $item['mvalue'],
@@ -505,18 +517,22 @@ class REST_Facets_Controller extends REST_Controller {
 		$new_args = $query;
 		$has_value = false;
 
+		$new_args['posts_per_page'] = 1;
+
 		if( !$is_taxonomy  ){
 
 			if( isset( $query['metaquery'] ) ){
+				$new_args['meta_query'] = $query['metaquery'];
+
 				foreach( $query['metaquery'] as $index => $metaquery ){
-					if( $metaquery['key'] == $metadatum_id ){
+					if( $metaquery['key'] == $reference_id ){
 						
 						$has_value = true;
 
 						if( is_array($metaquery['value']) )
-							$new_args['metaquery'][$index]['value'][] = $value;	
+							$new_args['meta_query'][$index]['value'][] = $value;	
 						else
-							$new_args['metaquery'][$index]['value'] = $value;
+							$new_args['meta_query'][$index]['value'] = $value;
 
 					} 
 				}
@@ -524,7 +540,7 @@ class REST_Facets_Controller extends REST_Controller {
 			
 			if( !$has_value ){
 
-				$new_args['metaquery'][] = [
+				$new_args['meta_query'][] = [
 					'key' => $reference_id,
 					'value' => $value
 				];
@@ -533,24 +549,26 @@ class REST_Facets_Controller extends REST_Controller {
 		} else {
 
 			if( isset( $query['taxquery'] ) ){
+				$new_args['tax_query'] = $query['taxquery'];
+
 				foreach( $query['taxquery'] as $taxquery ){
 					if( $taxquery['taxonomy'] === 'tnc_tax_' . $reference_id ){
 	
 						$has_value = true;
-						$new_args['taxquery'][$index]['terms'][] = $value;	
+						$new_args['tax_query'][$index]['terms'][] = $value;	
 					}
 				}
 			}
 			
 			if( !$has_value ){
 
-				$new_args['taxquery'][] = [
+				$new_args['tax_query'][] = [
 					'taxonomy' => 'tnc_tax_' . $reference_id,
 					'value' => [$value]
 				];
 			}
 		}
-
+		
 		$items = $this->items_repository->fetch($new_args, $collection_id, 'WP_Query');
 		return $items->found_posts;
 	}
