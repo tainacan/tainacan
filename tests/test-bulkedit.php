@@ -914,7 +914,7 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 
 		$this->assertTrue(is_string($data['id']));
 
-		$this->assertEquals(17, $response->headers['X-WP-Total']);
+		$this->assertEquals(17, $data['items_count']);
 
 
 	}
@@ -962,7 +962,7 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 
 		$this->assertTrue(is_string($data['id']));
 
-		$this->assertEquals(20, $response->headers['X-WP-Total']);
+		$this->assertEquals(20, $data['items_count']);
 
 
 	}
