@@ -199,7 +199,9 @@ class REST_Bulkedit_Controller extends REST_Controller {
 
         if (isset($body['items_ids']) && is_array($body['items_ids']) && !empty($body['items_ids'])) {
             $args['items_ids'] = $body['items_ids'];
-			// TODO: recieve and pass sort options
+			if (isset($body['options'])) {
+				$args['options'] = $body['options'];
+			}
         } elseif ( isset($body['use_query']) && $body['use_query'] ) {
 
             unset($body['use_query']['paged']);
