@@ -726,6 +726,10 @@ export default {
         ...mapGetters('bulkedition', [
             'getGroupID'
         ]),
+        ...mapGetters('search', [
+            'getOrder',
+            'getOrderBy'
+        ]),
         openBulkEditionModal(){
             this.$modal.open({
                 parent: this,
@@ -743,7 +747,9 @@ export default {
         sequenceEditSelectedItems() {
             this.createEditGroup({
                 object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItemsIDs.filter(item => item !== false),
-                collectionID: this.collectionId
+                collectionID: this.collectionId,
+                order: this.getOrder(),
+                orderBy: this.getOrderBy()
             }).then(() => {
                 let sequenceId = this.getGroupID();
                 this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 1));

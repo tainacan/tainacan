@@ -10,6 +10,12 @@ export const createEditGroup = ({commit}, parameters) => {
         bulkEditParams = {
             items_ids: object,
         };
+        if (parameters.order != undefined && parameters.order != undefined)
+            bulkEditParams['options'] = {
+                order: parameters.order,
+                orderby: parameters.orderBy
+            };
+
     } else if(object.constructor.name === 'Object'){
         bulkEditParams = {
             use_query: object,
