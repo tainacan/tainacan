@@ -143,12 +143,15 @@ class Bulk_Edit  {
 		return $this->id;
 	}
 	
-	// return the number of items selected in the current bulk group
+	/**
+	* return the number of items selected in the current bulk group
+	* @return int number of items in the group
+	*/
 	public function count_posts() {
 		global $wpdb;
 		$id = $this->get_id();
 		if (!empty($id)) {
-			return $wpdb->get_var( $wpdb->prepare("SELECT COUNT(post_id) FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s", $this->meta_key, $id) );
+			return (int) $wpdb->get_var( $wpdb->prepare("SELECT COUNT(post_id) FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s", $this->meta_key, $id) );
 		}
 		return 0;
 	}
@@ -190,11 +193,11 @@ class Bulk_Edit  {
 		return false;
 	}
 	
-	private function save_options($value) {
+	public function save_options($value) {
 		update_option('tainacan_bulk_' . $this->get_id(), $value);
 	}
 	
-	private function get_options() {
+	public function get_options() {
 		return get_option('tainacan_bulk_' . $this->get_id());
 	}
 

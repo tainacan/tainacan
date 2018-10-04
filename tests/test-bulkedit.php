@@ -1390,6 +1390,44 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 		
 		
 	}
+
+	function test_api_get_group() {
+		
+		$query = [
+			'posts_per_page' => 22,
+			'orderby' => 'title',
+			'order' => 'ASC'
+		];
+		
+		$bulk = new \Tainacan\Bulk_Edit([
+			'query' => $query,
+			'collection_id' => $this->collection->get_id()
+		]);
+		
+		
+		$request = new \WP_REST_Request(
+			'GET', $this->api_baseroute . '/' . $bulk->get_id()
+		);
+
+		$response = $this->server->dispatch($request);
+		
+		$data = $response->get_data();
+		
+		$this->assertEquals($bulk->get_id(), $data['id']);
+		$this->assertEquals($bulk->get_options()['order'], $data['options']['order']);
+		$this->assertEquals($bulk->get_options()['orderby'], $data['options']['orderby']);
+		$this->assertEquals($bulk->count_posts(), $data['items_count']);
+		
+		
+		$request = new \WP_REST_Request(
+			'GET', $this->api_baseroute . '/fefefe23232'
+		);
+		
+		$response = $this->server->dispatch($request);
+		
+		$this->assertEquals(404, $response->get_status());
+		
+	}
 	
 	
 
