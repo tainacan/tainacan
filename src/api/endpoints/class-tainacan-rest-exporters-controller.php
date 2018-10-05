@@ -12,68 +12,76 @@ use Tainacan\Entities;
  * */
 class REST_Exporters_Controller extends REST_Controller {
 
-    /**
-     * REST_Exporters_Controller constructor.
-     * Define the namespace, rest base and instantiate your attributes.
-     */
-    public function __construct() {
-        $this->rest_base = 'exporters';
-        if (session_status() == PHP_SESSION_NONE) {
-            @session_start(); // @ avoids Warnings when running phpunit tests
-        }
-        parent::__construct();
-    }
+	/**
+	* REST_Exporters_Controller constructor.
+	* Define the namespace, rest base and instantiate your attributes.
+	*/
+	public function __construct() {
+		$this->rest_base = 'exporters';
+		if (session_status() == PHP_SESSION_NONE) {
+			@session_start(); // @ avoids Warnings when running phpunit tests
+		}
+		parent::__construct();
+	}
 
 
-    /**
-     * Register the collections route and their endpoints
-     */
-    public function register_routes() {
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/available', array(
-            array(
-                'methods'             => \WP_REST_Server::READABLE,
-                'callback'            => array($this, 'get_registered_exporters'),
-                'permission_callback' => array($this, 'export_permissions_check'),
-            ),
-        ));
+	/**
+	* Register the collections route and their endpoints
+	*/
+	public function register_routes() {
+		register_rest_route($this->namespace, '/' . $this->rest_base . '/available', array(
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array($this, 'get_registered_exporters'),
+				'permission_callback' => array($this, 'export_permissions_check'),
+			),
+		));
 
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/session', array(
-	        array(
-		        'methods'             => \WP_REST_Server::CREATABLE,
-		        'callback'            => array($this, 'create_item'),
-		        'permission_callback' => array($this, 'export_permissions_check'),
-		        'args'                => [
-                    'importer_slug' => [
-                        'type'        => 'string',
-                        'description' => __( 'The slug of the exporter to be initialized', 'tainacan' ),
-                    ]
-                ],
-	        ),
-        ));
+		register_rest_route($this->namespace, '/' . $this->rest_base . '/session', array(
+			array(
+				'methods'             => \WP_REST_Server::CREATABLE,
+				'callback'            => array($this, 'create_item'),
+				'permission_callback' => array($this, 'export_permissions_check'),
+				'args'                => [
+					'importer_slug' => [
+						'type'        => 'string',
+						'description' => __( 'The slug of the exporter to be initialized', 'tainacan' ),
+					]
+				],
+			),
+		));
 
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/session/(?P<session_id>[0-9a-f]+)', array(
-            array(
-                'methods'             => \WP_REST_Server::EDITABLE,
-                'callback'            => array($this, 'update_item'),
-                'permission_callback' => array($this, 'export_permissions_check'),
-                'args'                => [
-                    'send_email' => [
-                        'type'        => 'string',
-                        'description' => __( 'The e-mail to be used by the export to send a message when the process ends', 'tainacan' ),
-                    ],
-                    'collection' => [
-                        'type'        => 'array/object',
-                        'description' => __( 'The array describing the collection as expected by the exporter', 'tainacan' ),
-                    ],
-                    'options' => [
-                        'type'        => 'array/object',
-                        'description' => __( 'The importer options', 'tainacan' ),
-                    ]
-                ],
-            ),
-            
-        ));
-    }
+		register_rest_route($this->namespace, '/' . $this->rest_base . '/session/(?P<session_id>[0-9a-f]+)', array(
+			array(
+				'methods'             => \WP_REST_Server::EDITABLE,
+				'callback'            => array($this, 'update_item'),
+				'permission_callback' => array($this, 'export_permissions_check'),
+				'args'                => [
+					'send_email' => [
+						'type'        => 'string',
+						'description' => __( 'The e-mail to be used by the export to send a message when the process ends', 'tainacan' ),
+					],
+					'collection' => [
+						'type'        => 'array/object',
+						'description' => __( 'The array describing the collection as expected by the exporter', 'tainacan' ),
+					],
+					'options' => [
+						'type'        => 'array/object',
+						'description' => __( 'The importer options', 'tainacan' ),
+					]
+				],
+			),
+		));
+
+		register_rest_route($this->namespace, '/' . $this->rest_base . '/session/(?P<session_id>[0-9a-f]+)/run', array(
+			array(
+				'methods'             => \WP_REST_Server::CREATABLE,
+				'callback'            => array($this, 'run'),
+				'permission_callback' => array($this, 'export_permissions_check'),
+			),
+		));
+
+	}
 
     /**
      *
@@ -84,34 +92,6 @@ class REST_Exporters_Controller extends REST_Controller {
      */
     public function  export_permissions_check($request) {
         return true;
-    }
-
-    public function run($request) {
-        $session_id = $request['session_id'];
-        $exporter = $_SESSION['tainacan_importer'][$session_id];
-
-        if(!$exporter) {
-            return new \WP_REST_Response([
-		    	'error_message' => __('Exporter Session not found', 'tainacan' ),
-			    'session_id' => $session_id
-		    ], 400);
-        }
-
-        global $Tainacan_Exporter_Handler;
-        $process = $Tainacan_Exporter_Handler->add_to_queue($exporter);
-
-        if (false === $process) {
-            return new \WP_REST_Response([
-		    	'error_message' => __('Error starting importer', 'tainacan' ),
-			    'session_id' => $session_id
-		    ], 400);
-        }
-
-        $response = [
-            'bg_process_id' => $process->ID
-        ];
-        return new \WP_REST_Response( $response, 200 );
-
     }
 
     public function get_registered_exporters() {
@@ -201,6 +181,39 @@ class REST_Exporters_Controller extends REST_Controller {
 			'body'          => $body
 		], 400);
 	}
+	
+	/**
+	 * Run a exporter
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return string|\WP_Error|\WP_REST_Response
+	 */
+	public function run($request) {
+		$session_id = $request['session_id'];
+		$exporter = $_SESSION['tainacan_exporter'][$session_id];
+
+		if(!$exporter) {
+			return new \WP_REST_Response([
+				'error_message' => __('Exporter Session not found', 'tainacan' ),
+				'session_id' => $session_id
+			], 400);
+		}
+
+		global $Tainacan_Exporter_Handler;
+		$process = $Tainacan_Exporter_Handler->add_to_queue($exporter);
+		if (false === $process) {
+			return new \WP_REST_Response([
+				'error_message' => __('Error starting exporter', 'tainacan' ),
+				'session_id' => $session_id
+			], 400);
+		}
+		$response = [
+			'bg_process_id' => $process->ID
+		];
+		return new \WP_REST_Response( $response, 200 );
+	}
+
 }
 
 ?>
