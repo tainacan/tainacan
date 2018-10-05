@@ -37,6 +37,15 @@ class REST_Bulkedit_Controller extends REST_Controller {
 				),
 			)
         );
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_item'),
+					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
+				),
+			)
+        );
         register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/add',
 			array(
 				array(
@@ -159,6 +168,15 @@ class REST_Bulkedit_Controller extends REST_Controller {
 				),
 			)
         );
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/sequence/(?P<sequence_index>[\d]+)',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_item_in_sequence'),
+					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
+				),
+			)
+        );
 		
     }
     
@@ -181,6 +199,9 @@ class REST_Bulkedit_Controller extends REST_Controller {
 
         if (isset($body['items_ids']) && is_array($body['items_ids']) && !empty($body['items_ids'])) {
             $args['items_ids'] = $body['items_ids'];
+			if (isset($body['options'])) {
+				$args['options'] = $body['options'];
+			}
         } elseif ( isset($body['use_query']) && $body['use_query'] ) {
 
             unset($body['use_query']['paged']);
@@ -205,13 +226,9 @@ class REST_Bulkedit_Controller extends REST_Controller {
 
         $bulk = new \Tainacan\Bulk_Edit($args);
 
-        $response = [
-            'id' => $bulk->get_id()
-        ];
+		$response = $this->prepare_item_for_response($bulk, $request);
 
         $rest_response = new \WP_REST_Response($response, 200);
-
-		$rest_response->header('X-WP-Total', $bulk->count_posts());
 
         return $rest_response;
 
@@ -264,6 +281,40 @@ class REST_Bulkedit_Controller extends REST_Controller {
         }
 
     }
+	
+	public function get_item($request) {
+		$group_id = $request['group_id'];
+
+        $args = ['id' => $group_id];
+
+        $bulk = new \Tainacan\Bulk_Edit($args);
+		
+		$return = $this->prepare_item_for_response($bulk, $request);
+		
+		if (0 === $return['items_count']) {
+			return new \WP_REST_Response([
+                'error_message' => __('Group not found', 'tainacan'),
+            ], 404);
+		}
+		
+		return new \WP_REST_Response($return, 200);
+	}
+	
+	function prepare_item_for_response($bulk_object, $request) {
+		
+		$count = $bulk_object->count_posts();
+		
+		$options = $bulk_object->get_options();
+		
+		$return = [
+			'id' => $bulk_object->get_id(),
+			'items_count' => $count,
+			'options' => $options
+		];
+		
+		return $return;
+		
+	}
 
     public function trash_items($request) {
         $group_id = $request['group_id'];
@@ -377,6 +428,25 @@ class REST_Bulkedit_Controller extends REST_Controller {
         }
     }
 
+	public function get_item_in_sequence($request) {
+        $group_id = $request['group_id'];
+		$index = $request['sequence_index'];
+
+        $args = ['id' => $group_id];
+
+        $bulk = new \Tainacan\Bulk_Edit($args);
+
+        $item_id = $bulk->get_item_id_by_index( (int) $index );
+
+        if ( !$item_id ) {
+            return new \WP_REST_Response([
+                'error_message' => __('Item not found.', 'tainacan'),
+            ], 404);
+        } else {
+            return new \WP_REST_Response($item_id, 200);
+        }
+
+    }
 
 
 	/**

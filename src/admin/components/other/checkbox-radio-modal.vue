@@ -1,8 +1,8 @@
 <template>
     <div class="tainacan-modal-content">
         <header class="tainacan-modal-title">
-            <h2 v-if="isFilter">{{ this.$i18n.get('filter') }} <em>{{ filter.name }}</em></h2>
-            <h2 v-else>{{ this.$i18n.get('metadatum') }} <em>{{ metadatum.name }}</em></h2>
+            <h2 v-if="isFilter">{{ $i18n.get('filter') }} <em>{{ filter.name }}</em></h2>
+            <h2 v-else>{{ $i18n.get('metadatum') }} <em>{{ metadatum.name }}</em></h2>
             <hr>
         </header>
         <div class="tainacan-form">
@@ -22,7 +22,6 @@
             <b-tabs
                     v-if="!isSearching"
                     size="is-small"
-                    expanded
                     animated
                     @input="fetchSelectedLabels()"
                     v-model="activeTab">
@@ -147,13 +146,14 @@
                                 grouped
                                 group-multiline>
                             <div
-                                    v-for="(term, index) in (selected instanceof Array ? selected : [this.selected])"
+                                    v-for="(term, index) in (selected instanceof Array ? selected : [selected])"
                                     :key="index"
                                     class="control">
                                 <b-tag
+                                        v-if="selected instanceof Array ? true : selected != ''"
                                         attached
                                         closable
-                                        @close="selected.splice(index, 1)">
+                                        @close="selected instanceof Array ? selected.splice(index, 1) : selected = ''">
                                     {{ isTaxonomy ? selectedTagsName[term] : term }}
                                 </b-tag>
                             </div>
