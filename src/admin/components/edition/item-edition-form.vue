@@ -21,7 +21,7 @@
         </div>
         <transition 
                 mode="out-in"
-                :name="isOnSequenceEdit ? (sequenceRightDirection ? 'page-right' : 'page-left') : ''">
+                :name="isOnSequenceEdit && sequenceRightDirection != undefined ? (sequenceRightDirection ? 'page-right' : 'page-left') : ''">
             <form
                     v-if="!isLoading"
                     class="tainacan-form"
@@ -416,11 +416,12 @@
         </transition>
         <footer class="footer">
             <!-- Sequence Progress -->
+            <div class="sequence-progress-background"/>
             <div 
                     v-if="itemPosition != undefined && group != null && group.items_count != undefined"
                     :style="{ width: (itemPosition/group.items_count)*100 + '%' }"
                     class="sequence-progress"/>
-
+            
             <!-- Last Updated Info --> 
             <div class="update-info-section">
                 <p v-if="isOnSequenceEdit">
@@ -444,7 +445,12 @@
                         v-if="isOnSequenceEdit && itemPosition > 1"
                         @click="onPrevInSequence()"
                         type="button"
-                        class="button is-outlined">{{ $i18n.get('previous') }}</button>
+                        class="button sequence-button">
+                    <span class="icon">
+                        <i class="mdi mdi-chevron-left"/>
+                    </span>
+                    <span>{{ $i18n.get('previous') }}</span>
+                </button>
                 <button 
                         @click="onDeletePermanently()"
                         type="button"
@@ -461,7 +467,12 @@
                         v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count > itemPosition)"
                         @click="onNextInSequence()"
                         type="button"
-                        class="button is-outlined">{{ $i18n.get('next') }}</button>
+                        class="button sequence-button">
+                    <span>{{ $i18n.get('next') }}</span>
+                    <span class="icon">
+                        <i class="mdi mdi-chevron-right"/>
+                    </span>
+                </button>
             </div>
             <div 
                     class="form-submission-footer"
@@ -470,7 +481,12 @@
                         v-if="isOnSequenceEdit && itemPosition > 1"
                         @click="onPrevInSequence()"
                         type="button"
-                        class="button is-outlined">{{ $i18n.get('previous') }}</button>
+                        class="button sequence-button">                    
+                    <span class="icon">
+                        <i class="mdi mdi-chevron-left"/>
+                    </span>
+                    <span>{{ $i18n.get('previous') }}</span>
+                </button>
                 <button 
                         v-if="form.status == 'draft'"
                         @click="onSubmit('trash')"
@@ -493,7 +509,12 @@
                         v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count > itemPosition)"
                         @click="onNextInSequence()"
                         type="button"
-                        class="button is-outlined">{{ $i18n.get('next') }}</button>
+                        class="button sequence-button">
+                    <span>{{ $i18n.get('next') }}</span>
+                    <span class="icon">
+                        <i class="mdi mdi-chevron-right"/>
+                    </span>
+                </button>
             </div>
             <div 
                     class="form-submission-footer"
@@ -502,7 +523,12 @@
                         v-if="isOnSequenceEdit && itemPosition > 1"
                         @click="onPrevInSequence()"
                         type="button"
-                        class="button is-outlined">{{ $i18n.get('previous') }}</button>
+                        class="button sequence-button">
+                    <span class="icon">
+                        <i class="mdi mdi-chevron-left"/>
+                    </span>
+                    <span>{{ $i18n.get('previous') }}</span>
+                </button>
                 <button 
                         @click="onSubmit('trash')"
                         type="button"
@@ -520,7 +546,12 @@
                         v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count > itemPosition)"
                         @click="onNextInSequence()"
                         type="button"
-                        class="button is-outlined">{{ $i18n.get('next') }}</button>
+                        class="button sequence-button">
+                    <span>{{ $i18n.get('next') }}</span>
+                    <span class="icon">
+                        <i class="mdi mdi-chevron-right"/>
+                    </span>
+                </button>
             </div>
         </footer>
     </div>
@@ -615,7 +646,9 @@ export default {
     watch: {
         '$route.params.itemPosition'(newItemPosition, oldItemPosition) {
             if (oldItemPosition == undefined)
-                this.sequenceRightDirection;      
+                this.sequenceRightDirection; 
+            else if (oldItemPosition == newItemPosition)
+                this.sequenceRightDirection = undefined;     
             
             this.itemPosition = Number(newItemPosition);
 
@@ -700,10 +733,12 @@ export default {
 
                 this.isLoading = false;
 
-                if (this.form.status != 'trash') 
-                    this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
-                else
-                    this.$router.push(this.$routerHelper.getCollectionPath(this.form.collectionId));
+                if (!this.isOnSequenceEdit) {
+                    if (this.form.status != 'trash') 
+                        this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
+                    else
+                        this.$router.push(this.$routerHelper.getCollectionPath(this.form.collectionId));
+                }
             })
             .catch((errors) => {
                 for (let error of errors.errors) {
@@ -1340,13 +1375,27 @@ export default {
         }
 
         .sequence-progress {
-            height: 3px;
+            height: 5px;
             background: $turquoise5;
             width: 0%;
             position: absolute;
             top: 0;
             left: 0;
             transition: width 0.2s;
+        }
+        .sequence-progress-background {
+            height: 5px;
+            background: $gray3;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .sequence-button {
+            background-color: transparent;
+            color: $turquoise5;
+            border: none;
         }
     }
 
