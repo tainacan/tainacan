@@ -2,10 +2,11 @@
     <div class="block">
         <span 
                 v-if="isLoading"
-                style="width: 100%"
+                style="width: 100%; position: absolute;"
                 class="icon has-text-centered loading-icon">
             <div class="control has-icons-right is-loading is-clearfix" />
         </span>
+
         <div
                 v-for="(option, index) in options.slice(0, filter.max_options)"
                 :key="index"
@@ -81,6 +82,8 @@
                             value: this.selected
                         });
 
+                        this.loadOptions(true);
+
                         this.$eventBusSearch.$emit( 'sendValuesToTags', {
                             filterId: this.filter.id,
                             value: this.selected
@@ -113,7 +116,8 @@
             }
         },
         methods: {
-            loadOptions(){
+            loadOptions(skipSelectValues){
+                
                 let promise = null;
                 this.isLoading = true;
 
@@ -125,9 +129,28 @@
                     promise
                         .then(() => {
 
-                        this.isLoading = false;
+                            this.isLoading = false;
                             if(this.options.length > this.filter.max_options){
                                 this.options.splice(this.filter.max_options);
+                            }
+
+                            if (skipSelectValues) {
+                                let onlyLabels = [];
+
+                                if(!isNaN(this.selected[0])){
+                                    for (let aSelected of this.selected) {
+                                        let valueIndex = this.options.findIndex(option => option.value == aSelected);
+                                        
+                                        if (valueIndex >= 0) {
+                                            onlyLabels.push(this.options[valueIndex].label);
+                                        }
+                                    }
+                                }
+
+                                this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                                    filterId: this.filter.id,
+                                    value: onlyLabels.length ? onlyLabels : this.selected,
+                                });
                             }
                         }).catch((error) => {
                             this.$console.error(error);
@@ -137,24 +160,46 @@
                     promise
                         .then(() => {
 
-                        this.isLoading = false;
+                            this.isLoading = false;
                             if(this.options.length > this.filter.max_options){
                                 this.options.splice(this.filter.max_options);
                             }
+
+                            if (skipSelectValues) {
+                                let onlyLabels = [];
+
+                                if(!isNaN(this.selected[0])){
+                                    for (let aSelected of this.selected) {
+                                        let valueIndex = this.options.findIndex(option => option.value == aSelected);
+                                        
+                                        if (valueIndex >= 0) {
+                                            onlyLabels.push(this.options[valueIndex].label);
+                                        }
+                                    }
+                                }
+
+                                this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                                    filterId: this.filter.id,
+                                    value: onlyLabels.length ? onlyLabels : this.selected,
+                                });
+                            }
+                            
                         }).catch((error) => {
                             this.$console.error(error);
                         })
                 }
 
-                promise
-                    .then(() => {
-                        this.isLoading = false;
-                        this.selectedValues()
-                    })
-                    .catch( error => {
-                        this.$console.log('error select', error );
-                        this.isLoading = false;
-                    });
+                if (skipSelectValues == undefined ||  skipSelectValues == false) {
+                    promise
+                        .then(() => {
+                            this.isLoading = false;
+                            this.selectedValues()
+                        })
+                        .catch( error => {
+                            this.$console.log('error select', error );
+                            this.isLoading = false;
+                        });
+                }
             },
             onSelect(){
                 this.$emit('input', {
@@ -165,22 +210,7 @@
                     value: this.selected
                 });
 
-                let onlyLabels = [];
-
-                if(!isNaN(this.selected[0])){
-                    for (let aSelected of this.selected) {
-                        let valueIndex = this.options.findIndex(option => option.value == aSelected);
-                        
-                        if (valueIndex >= 0) {
-                            onlyLabels.push(this.options[valueIndex].label);
-                        }
-                    }
-                }
-
-                this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                    filterId: this.filter.id,
-                    value: onlyLabels.length ? onlyLabels : this.selected,
-                });
+                this.loadOptions(true);
             },
             selectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
