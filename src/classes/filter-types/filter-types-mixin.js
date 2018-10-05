@@ -51,24 +51,28 @@ export const filter_type_mixin = {
                             if (search && isInCheckboxModal) {
                                 sResults.push({
                                     label: metadata.label,
-                                    value: metadata.value
+                                    value: metadata.value,
+                                    total_items: metadata.total_items
                                 });
                             } else if (indexToIgnore < 0) {
                                 opts.push({
                                     label: metadata.label,
-                                    value: metadata.value
+                                    value: metadata.value,
+                                    total_items: metadata.total_items
                                 });
                             }
                         } else {
                             if (search && isInCheckboxModal) {
                                 sResults.push({
                                     label: metadata.label,
-                                    value: metadata.value
+                                    value: metadata.value,
+                                    total_items: metadata.total_items
                                 });
                             } else {
                                 opts.push({
                                     label: metadata.label,
-                                    value: metadata.value
+                                    value: metadata.value,
+                                    total_items: metadata.total_items
                                 });
                             }
                         }
@@ -129,12 +133,14 @@ export const filter_type_mixin = {
                                 if (search && isInCheckboxModal) {
                                     sResults.push({
                                         label: item.label,
-                                        value: item.value
+                                        value: item.value,
+                                        total_items: item.total_items
                                     });
                                 } else if (indexToIgnore < 0) {
                                     opts.push({
                                         label: item.label,
                                         value: item.value,
+                                        total_items: item.total_items,
                                         img: (item.img ? item.img : this.thumbPlaceholderPath)
                                     });
                                 }
@@ -143,12 +149,14 @@ export const filter_type_mixin = {
                                     sResults.push({
                                         label: item.label,
                                         value: item.value,
+                                        total_items: item.total_items,
                                         img: (item.img ? item.img : this.thumbPlaceholderPath)
                                     });
                                 } else {
                                     opts.push({
                                         label: item.label,
                                         value: item.value,
+                                        total_items: item.total_items,
                                         img: (item.img ? item.img : this.thumbPlaceholderPath)
                                     });
                                 }

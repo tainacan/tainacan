@@ -12,7 +12,12 @@
                     v-for="(option, index) in options"
                     :key="index"
                     :label="option.label"
-                    :value="option.value">{{ option.label }}</option>
+                    :value="option.value">
+                {{ option.label }}
+                <span 
+                        v-if="option.total_items != undefined"
+                        class="has-text-gray">{{ "(" + option.total_items + ")" }}</span>    
+            </option>
         </b-select>
     </div>
 </template>

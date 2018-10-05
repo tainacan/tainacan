@@ -14,7 +14,10 @@
                     v-if="index <= filter.max_options - 1"
                     v-model="selected"
                     :native-value="option.value">
-                {{ option.label }}
+                {{ option.label }} 
+                <span 
+                        v-if="option.total_items != undefined"
+                        class="has-text-gray">{{ "(" + option.total_items + ")" }}</span>
             </b-checkbox>
             <div
                     class="view-all-button-container"

@@ -23,7 +23,7 @@ export default {
                     } else {
                         this.add_metaquery(data);
                     }
-        
+                    
                     this.updateURLQueries();
                 });
 
