@@ -157,7 +157,6 @@ export default {
             display: inline-block;
             width: 80%;
             flex-shrink: 1;
-            flex-grow: 1;
         }
         a.back-link{
             font-weight: 500;
