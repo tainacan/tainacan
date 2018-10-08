@@ -314,6 +314,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_all_terms'                                => __( 'All terms', 'tainacan' ),
 	'label_selected_terms'                           => __( 'Selected terms', 'tainacan'),
 	'label_editing_item_number'                      => __( 'Editing item n.', 'tainacan'),
+	'label_sequence_editing_item'                    => __( 'Sequence editing: Item', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

@@ -424,8 +424,10 @@
             
             <!-- Last Updated Info --> 
             <div class="update-info-section">
-                <p v-if="isOnSequenceEdit">
-                    {{ $i18n.get('sequence') + ": " + itemPosition + '/' + ((group != null && group.items_count != undefined) ? group.items_count : '') }}
+                <p 
+                        class="has-text-gray5"
+                        v-if="isOnSequenceEdit">
+                    {{ $i18n.get('label_sequence_editing_item') + " " + itemPosition + " " + $i18n.get('info_of') + " " + ((group != null && group.items_count != undefined) ? group.items_count : '') + "." }}
                 </p>       
                 <p v-if="!isUpdatingValues">
                     {{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
@@ -446,8 +448,8 @@
                         @click="onPrevInSequence()"
                         type="button"
                         class="button sequence-button">
-                    <span class="icon">
-                        <i class="mdi mdi-chevron-left"/>
+                    <span class="icon is-large">
+                        <i class="mdi mdi-24px mdi-chevron-left"/>
                     </span>
                     <span>{{ $i18n.get('previous') }}</span>
                 </button>
@@ -469,8 +471,8 @@
                         type="button"
                         class="button sequence-button">
                     <span>{{ $i18n.get('next') }}</span>
-                    <span class="icon">
-                        <i class="mdi mdi-chevron-right"/>
+                    <span class="icon is-large">
+                        <i class="mdi mdi-24px mdi-chevron-right"/>
                     </span>
                 </button>
             </div>
@@ -482,8 +484,8 @@
                         @click="onPrevInSequence()"
                         type="button"
                         class="button sequence-button">                    
-                    <span class="icon">
-                        <i class="mdi mdi-chevron-left"/>
+                    <span class="icon is-large">
+                        <i class="mdi mdi-24px mdi-chevron-left"/>
                     </span>
                     <span>{{ $i18n.get('previous') }}</span>
                 </button>
@@ -511,8 +513,8 @@
                         type="button"
                         class="button sequence-button">
                     <span>{{ $i18n.get('next') }}</span>
-                    <span class="icon">
-                        <i class="mdi mdi-chevron-right"/>
+                    <span class="icon is-large">
+                        <i class="mdi mdi-24px mdi-chevron-right"/>
                     </span>
                 </button>
             </div>
@@ -524,8 +526,8 @@
                         @click="onPrevInSequence()"
                         type="button"
                         class="button sequence-button">
-                    <span class="icon">
-                        <i class="mdi mdi-chevron-left"/>
+                    <span class="icon is-large">
+                        <i class="mdi mdi-24px mdi-chevron-left"/>
                     </span>
                     <span>{{ $i18n.get('previous') }}</span>
                 </button>
@@ -541,15 +543,15 @@
                         :disabled="formErrorMessage != undefined && formErrorMessage != ''"
                         @click="onSubmit(visibility)"
                         type="button"
-                        class="button is-secondary">{{ $i18n.get('label_update') }}</button>
+                        class="button is-success">{{ $i18n.get('label_update') }}</button>
                 <button 
                         v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count > itemPosition)"
                         @click="onNextInSequence()"
                         type="button"
                         class="button sequence-button">
                     <span>{{ $i18n.get('next') }}</span>
-                    <span class="icon">
-                        <i class="mdi mdi-chevron-right"/>
+                    <span class="icon is-large">
+                        <i class="mdi mdi-24px mdi-chevron-right"/>
                     </span>
                 </button>
             </div>
@@ -1346,6 +1348,9 @@ export default {
                 margin-left: 16px;
                 margin-right: 6px;
             }
+            .is-outlined {
+                border: none;
+            }
         }
 
         @keyframes blink {
@@ -1396,6 +1401,10 @@ export default {
             background-color: transparent;
             color: $turquoise5;
             border: none;
+
+            .icon {
+                margin-top: 0.3rem;
+            }
         }
     }
 
