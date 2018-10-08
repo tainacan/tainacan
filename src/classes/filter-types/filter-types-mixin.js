@@ -17,6 +17,12 @@ export const filter_type_mixin = {
         id: '',
         query: {}
     },
+    mounted() {
+        this.$eventBusSearch.$on('hasFiltered', hasFiltered => {
+            if (hasFiltered && typeof this.loadOptions == "function")
+                this.loadOptions(true);
+        });
+    },
     methods: {
         getValuesPlainText(metadatumId, search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0') {
             let query_items = { 'current_query': this.query };

@@ -100,7 +100,7 @@
             }
         },
         methods: {
-            loadOptions(){
+            loadOptions(skipSelected){
                 this.isLoading = true;
                 let query_items = { 'current_query': this.query };
 
@@ -147,7 +147,9 @@
                         }
 
                         this.isLoading = false;
-                        this.selectedValues();
+                        if (skipSelected == undefined || skipSelected == false) {
+                            this.selectedValues();
+                        }
                     })
                     .catch(error => {
                         this.$console.log(error);

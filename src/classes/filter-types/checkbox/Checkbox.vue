@@ -82,8 +82,6 @@
                             value: this.selected
                         });
 
-                        this.loadOptions(true);
-
                         this.$eventBusSearch.$emit( 'sendValuesToTags', {
                             filterId: this.filter.id,
                             value: this.selected
@@ -116,7 +114,7 @@
             }
         },
         methods: {
-            loadOptions(skipSelectValues){
+            loadOptions(skipSelected){
                 
                 let promise = null;
                 this.isLoading = true;
@@ -134,24 +132,6 @@
                                 this.options.splice(this.filter.max_options);
                             }
 
-                            if (skipSelectValues) {
-                                let onlyLabels = [];
-
-                                if(!isNaN(this.selected[0])){
-                                    for (let aSelected of this.selected) {
-                                        let valueIndex = this.options.findIndex(option => option.value == aSelected);
-                                        
-                                        if (valueIndex >= 0) {
-                                            onlyLabels.push(this.options[valueIndex].label);
-                                        }
-                                    }
-                                }
-
-                                this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                                    filterId: this.filter.id,
-                                    value: onlyLabels.length ? onlyLabels : this.selected,
-                                });
-                            }
                         }).catch((error) => {
                             this.$console.error(error);
                     })
@@ -164,32 +144,12 @@
                             if(this.options.length > this.filter.max_options){
                                 this.options.splice(this.filter.max_options);
                             }
-
-                            if (skipSelectValues) {
-                                let onlyLabels = [];
-
-                                if(!isNaN(this.selected[0])){
-                                    for (let aSelected of this.selected) {
-                                        let valueIndex = this.options.findIndex(option => option.value == aSelected);
-                                        
-                                        if (valueIndex >= 0) {
-                                            onlyLabels.push(this.options[valueIndex].label);
-                                        }
-                                    }
-                                }
-
-                                this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                                    filterId: this.filter.id,
-                                    value: onlyLabels.length ? onlyLabels : this.selected,
-                                });
-                            }
                             
                         }).catch((error) => {
                             this.$console.error(error);
                         })
                 }
-
-                if (skipSelectValues == undefined ||  skipSelectValues == false) {
+                if (skipSelected == undefined || skipSelected == false) {
                     promise
                         .then(() => {
                             this.isLoading = false;
@@ -200,8 +160,9 @@
                             this.isLoading = false;
                         });
                 }
+                
             },
-            onSelect(){
+            onSelect() {
                 this.$emit('input', {
                     filter: 'checkbox',
                     compare: 'IN',
@@ -210,7 +171,22 @@
                     value: this.selected
                 });
 
-                this.loadOptions(true);
+                let onlyLabels = [];
+
+                if(!isNaN(this.selected[0])){
+                    for (let aSelected of this.selected) {
+                        let valueIndex = this.options.findIndex(option => option.value == aSelected);
+                        
+                        if (valueIndex >= 0) {
+                            onlyLabels.push(this.options[valueIndex].label);
+                        }
+                    }
+                }
+
+                this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                    filterId: this.filter.id,
+                    value: onlyLabels.length ? onlyLabels : this.selected,
+                });
             },
             selectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
