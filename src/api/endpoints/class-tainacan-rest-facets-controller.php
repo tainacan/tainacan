@@ -160,7 +160,7 @@ class REST_Facets_Controller extends REST_Controller {
 				} else {
 
 					$terms = $this->terms_repository->fetch($args, $this->taxonomy);
-					$reference_id = $this->taxonomy;
+					$reference_id = $this->taxonomy->get_id();
 
 					// retrieve selected items
 
@@ -564,9 +564,11 @@ class REST_Facets_Controller extends REST_Controller {
 
 				$new_args['tax_query'][] = [
 					'taxonomy' => 'tnc_tax_' . $reference_id,
-					'value' => [$value]
+					'terms' => [$value],
+					'compare' => 'IN'
 				];
 			}
+
 		}
 		
 		$items = $this->items_repository->fetch($new_args, $collection_id, 'WP_Query');
