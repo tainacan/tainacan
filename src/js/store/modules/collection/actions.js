@@ -254,7 +254,6 @@ export const updateCollection = ({ commit }, {
 export const sendCollection = ( { commit }, collection) => {
     return new Promise(( resolve, reject ) => {
         let param = collection;
-        param['mapper'] = null;
         param[tainacan_plugin.exposer_mapper_param] = collection.mapper;
         axios.tainacan.post('/collections/', param)
             .then( res => {
