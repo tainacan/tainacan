@@ -14,8 +14,12 @@
             <b-checkbox
                     v-model="selected"
                     :native-value="option.value"
-                    v-if="!option.isChild"
-            >{{ option.label }}</b-checkbox>
+                    v-if="!option.isChild">
+                {{ option.label }}
+                <span 
+                        v-if="option.total_items != undefined"
+                        class="has-text-gray">{{ "(" + option.total_items + ")" }}</span>
+            </b-checkbox>
             <div
                     class="see-more-container"
                     v-if="option.seeMoreLink && index == options.slice(0, filter.max_options).length - 1"
