@@ -13,6 +13,16 @@
                 :class="{'has-selected': selected != undefined && selected != []}"
                 @typing="search"
                 :placeholder="$i18n.get('info_type_to_add_terms')" />
+            <template slot-scope="props">
+                <div class="media">
+                    <div class="media-content">
+                        <span class="ellipsed-text">{{ props.option.label }}</span>
+                        <span 
+                                v-if="props.option.total_items != undefined"
+                                class="has-text-gray">{{ "(" + props.option.total_items + ")" }}</span>
+                    </div>
+                </div>
+            </template>
     </div>
 </template>
 
