@@ -10,6 +10,12 @@ export const createEditGroup = ({commit}, parameters) => {
         bulkEditParams = {
             items_ids: object,
         };
+        if (parameters.order != undefined && parameters.order != undefined)
+            bulkEditParams['options'] = {
+                order: parameters.order,
+                orderby: parameters.orderBy
+            };
+
     } else if(object.constructor.name === 'Object'){
         bulkEditParams = {
             use_query: object,
@@ -23,6 +29,21 @@ export const createEditGroup = ({commit}, parameters) => {
         .catch(error => {
             console.error(error);
         });
+};
+
+export const fetchGroup = ({commit}, { collectionId, groupId }) => {
+
+    return new Promise ((resolve, reject) => {
+        axios.tainacan.get(`/collection/${collectionId}/bulk-edit/${groupId}`)
+            .then(response => {
+                commit('setGroup', response.data);
+                resolve(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+                reject(error);
+            });
+    });
 };
 
 export const setValueInBulk = ({commit}, parameters) => {
@@ -168,4 +189,20 @@ export const deleteItemsInBulk = ({commit}, parameters) => {
             console.log(error);
             commit('setActionResult', error.response.data);
         });
+};
+
+// SEQUENCE EDIT SPECIFIC
+export const fetchItemIdInSequence = ({commit}, { collectionId, sequenceId, itemPosition }) => {
+
+    return new Promise ((resolve, reject) => {
+        axios.tainacan.get(`/collection/${collectionId}/bulk-edit/${sequenceId}/sequence/${itemPosition}`)
+            .then(response => {
+                commit('setItemIdInSequence', response.data);
+                resolve(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+                reject(error);
+            });
+    });
 };

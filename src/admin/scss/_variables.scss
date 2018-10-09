@@ -400,7 +400,7 @@ $modal-z: 9999999;
     animation-duration: 0.2s;
     animation-timing-function: ease;   
 }
-.filtes-menu-leave-active {
+.filters-menu-leave-active {
     animation-name: filters-menu-out;
     animation-duration: 0.2s;
     animation-timing-function: ease;   
@@ -485,6 +485,91 @@ $modal-z: 9999999;
 }
 .slide-right-leave-active {
     animation-name: slide-right-out;
+    animation-duration: 0.3s;
+    animation-timing-function: ease;   
+}
+
+// Sequence page
+
+// Slide
+@keyframes page-left-in {
+    from {
+        opacity: 0;
+        -ms-transform: translate(-5%, 0%); /* IE 9 */
+        -webkit-transform: translate(-5%, 0%); /* Safari */
+        transform: translate(-5%, 0%);
+    }
+    to {
+        opacity: 1;        
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes page-left-out {
+    from {
+        opacity: 1;
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+    to {
+        opacity: 0;
+        -ms-transform: translate(10%, 0%); /* IE 9 */
+        -webkit-transform: translate(10%, 0%); /* Safari */
+        transform: translate(10%, 0%);
+    }
+}
+
+.page-left-enter-active {
+    animation-name: page-left-in;
+    animation-duration: 0.4s;
+    animation-timing-function: ease;   
+}
+.page-left-leave-active {
+    animation-name: page-left-out;
+    animation-duration: 0.4s;
+    animation-timing-function: ease;   
+}
+
+@keyframes page-right-in {
+    from {
+        opacity: 0;
+        -ms-transform: translate(10%, 0%); /* IE 9 */
+        -webkit-transform: translate(10%, 0%); /* Safari */
+        transform: translate(10%, 0%);
+    }
+    to {
+        opacity: 1;        
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes page-right-out {
+    from {
+        opacity: 1;
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+    to {
+        opacity: 0;
+        -ms-transform: translate(-5%, 0%); /* IE 9 */
+        -webkit-transform: translate(-5%, 0%); /* Safari */
+        transform: translate(-5%, 0%);
+    }
+}
+
+.page-right-enter-active {
+    animation-name: page-right-in;
+    animation-duration: 0.3s;
+    animation-timing-function: ease;   
+}
+.page-right-leave-active {
+    animation-name: page-right-out;
     animation-duration: 0.3s;
     animation-timing-function: ease;   
 }

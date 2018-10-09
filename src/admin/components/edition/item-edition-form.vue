@@ -1,6 +1,7 @@
 <template>
     <div>
         <b-loading
+                :is-full-page="false"
                 :active.sync="isLoading"
                 :can-cancel="false"/>
         <button 
@@ -18,467 +19,543 @@
             </a>
             <hr>
         </div>
-        <form
-                v-if="!isLoading"
-                class="tainacan-form"
-                label-width="120px">
-            <div class="columns">
-                <div class="column is-5-5">
+        <transition 
+                mode="out-in"
+                :name="isOnSequenceEdit && sequenceRightDirection != undefined ? (sequenceRightDirection ? 'page-right' : 'page-left') : ''">
+            <form
+                    v-if="!isLoading"
+                    class="tainacan-form"
+                    label-width="120px">
+                <div class="columns">
+                    <div class="column is-5-5">
 
-                    <!-- Hook for extra Form options -->
-                    <template 
-                            v-if="formHooks != undefined && 
-                                formHooks['item'] != undefined &&
-                                formHooks['item']['begin-left'] != undefined">  
-                        <form 
-                            id="form-item-begin-left"
-                            v-html="formHooks['item']['begin-left'].join('')"/>
-                    </template>
+                        <!-- Hook for extra Form options -->
+                        <template 
+                                v-if="formHooks != undefined && 
+                                    formHooks['item'] != undefined &&
+                                    formHooks['item']['begin-left'] != undefined">  
+                            <form 
+                                id="form-item-begin-left"
+                                v-html="formHooks['item']['begin-left'].join('')"/>
+                        </template>
 
-                    <!-- Document -------------------------------- -->
-                    <div class="section-label">
-                        <label>{{ form.document != undefined && form.document != null && form.document != '' ? $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
-                        <help-button
-                                :title="$i18n.getHelperTitle('items', 'document')"
-                                :message="$i18n.getHelperMessage('items', 'document')"/>
-                    </div>
-                    <div class="section-box document-field">
-                        <div
-                                v-if="form.document != undefined && form.document != null &&
-                                        form.document_type != undefined && form.document_type != null &&
-                                        form.document != '' && form.document_type != 'empty'">
-                            <div v-if="form.document_type == 'attachment'">
-                                <!-- <div v-html="item.document_as_html" /> -->
-                                <document-item :document-html="item.document_as_html"/>
+                        <!-- Document -------------------------------- -->
+                        <div class="section-label">
+                            <label>{{ form.document != undefined && form.document != null && form.document != '' ? $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
+                            <help-button
+                                    :title="$i18n.getHelperTitle('items', 'document')"
+                                    :message="$i18n.getHelperMessage('items', 'document')"/>
+                        </div>
+                        <div class="section-box document-field">
+                            <div
+                                    v-if="form.document != undefined && form.document != null &&
+                                            form.document_type != undefined && form.document_type != null &&
+                                            form.document != '' && form.document_type != 'empty'">
+                                <div v-if="form.document_type == 'attachment'">
+                                    <!-- <div v-html="item.document_as_html" /> -->
+                                    <document-item :document-html="item.document_as_html"/>
 
-                                <div class="document-buttons-row">
-                                    <a
-                                            class="button is-rounded is-secondary"
-                                            size="is-small"
-                                            id="button-edit-document"
-                                            :aria-label="$i18n.get('label_button_edit_document')"
+                                    <div class="document-buttons-row">
+                                        <a
+                                                class="button is-rounded is-secondary"
+                                                size="is-small"
+                                                id="button-edit-document"
+                                                :aria-label="$i18n.get('label_button_edit_document')"
+                                                @click.prevent="setFileDocument($event)">
+                                            <b-icon 
+                                                    size="is-small"
+                                                    icon="pencil" />
+                                        </a>
+                                        <a
+                                                class="button is-rounded is-secondary"
+                                                size="is-small"
+                                                id="button-delete-document"
+                                                :aria-label="$i18n.get('label_button_delete_document')"
+                                                @click.prevent="removeDocument()">
+                                            <b-icon 
+                                                    size="is-small"
+                                                    icon="delete" />
+                                        </a>
+                                    </div>
+                                </div>
+                                <div v-if="form.document_type == 'text'">
+                                    <div v-html="item.document_as_html" />
+                                    <div class="document-buttons-row">
+                                        <a
+                                                class="button is-rounded is-secondary"
+                                                :aria-label="$i18n.get('label_button_edit_document')"
+                                                id="button-edit-document"
+                                                @click.prevent="setTextDocument()">
+                                            <b-icon 
+                                                    size="is-small"
+                                                    icon="pencil" />
+                                        </a>
+                                        <a
+                                                class="button is-rounded is-secondary"
+                                                size="is-small"
+                                                :aria-label="$i18n.get('label_button_delete_document')"
+                                                id="button-delete-document"
+                                                @click.prevent="removeDocument()">
+                                            <b-icon 
+                                                    size="is-small"
+                                                    icon="delete" />
+                                        </a>
+                                    </div>
+                                </div>
+                                <div v-if="form.document_type == 'url'">
+                                    <div v-html="item.document_as_html" />
+                                    <div class="document-buttons-row">
+                                        <a
+                                                class="button is-rounded is-secondary"
+                                                size="is-small"
+                                                :aria-label="$i18n.get('label_button_edit_document')"
+                                                id="button-edit-document"
+                                                @click.prevent="setURLDocument()">
+                                            <b-icon 
+                                                    size="is-small"
+                                                    icon="pencil" />
+                                        </a>
+                                        <a
+                                                class="button is-rounded is-secondary"
+                                                size="is-small"
+                                                :aria-label="$i18n.get('label_button_delete_document')"
+                                                id="button-delete-document"
+                                                @click.prevent="removeDocument()">
+                                            <b-icon 
+                                                    size="is-small"
+                                                    icon="delete" />
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <ul v-else>
+                                <li>
+                                    <button 
+                                            type="button"
                                             @click.prevent="setFileDocument($event)">
-                                        <b-icon 
-                                                size="is-small"
-                                                icon="pencil" />
-                                    </a>
-                                    <a
-                                            class="button is-rounded is-secondary"
-                                            size="is-small"
-                                            id="button-delete-document"
-                                            :aria-label="$i18n.get('label_button_delete_document')"
-                                            @click.prevent="removeDocument()">
-                                        <b-icon 
-                                                size="is-small"
-                                                icon="delete" />
-                                    </a>
-                                </div>
-                            </div>
-                            <div v-if="form.document_type == 'text'">
-                                <div v-html="item.document_as_html" />
-                                <div class="document-buttons-row">
-                                    <a
-                                            class="button is-rounded is-secondary"
-                                            :aria-label="$i18n.get('label_button_edit_document')"
-                                            id="button-edit-document"
+                                        <b-icon icon="upload"/>
+                                    </button>
+                                    <p>{{ $i18n.get('label_file') }}</p>
+                                </li>
+                                <li>
+                                    <button 
+                                            type="button"
                                             @click.prevent="setTextDocument()">
-                                        <b-icon 
-                                                size="is-small"
-                                                icon="pencil" />
-                                    </a>
-                                    <a
-                                            class="button is-rounded is-secondary"
-                                            size="is-small"
-                                            :aria-label="$i18n.get('label_button_delete_document')"
-                                            id="button-delete-document"
-                                            @click.prevent="removeDocument()">
-                                        <b-icon 
-                                                size="is-small"
-                                                icon="delete" />
-                                    </a>
-                                </div>
-                            </div>
-                            <div v-if="form.document_type == 'url'">
-                                <div v-html="item.document_as_html" />
-                                <div class="document-buttons-row">
-                                    <a
-                                            class="button is-rounded is-secondary"
-                                            size="is-small"
-                                            :aria-label="$i18n.get('label_button_edit_document')"
-                                            id="button-edit-document"
+                                        <b-icon icon="format-text"/>
+                                    </button>
+                                    <p>{{ $i18n.get('label_text') }}</p>
+                                </li>
+                                <li>
+                                    <button 
+                                            type="button"
                                             @click.prevent="setURLDocument()">
+                                        <b-icon icon="code-tags"/>
+                                    </button>
+                                    <p>{{ $i18n.get('label_url') }}</p>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Text Insert Modal ----------------- -->
+                        <b-modal
+                                :can-cancel="false"
+                                :active.sync="isTextModalActive"
+                                :width="640"
+                                scroll="keep">
+                            <div class="tainacan-modal-content">
+                                <div class="tainacan-modal-title">
+                                    <h2>{{ $i18n.get('instruction_write_text') }}</h2>
+                                    <hr>
+                                </div>
+                                <b-input
+                                        type="textarea"
+                                        v-model="textContent"/>
+
+                                <div class="field is-grouped form-submit">
+                                    <div class="control">
+                                        <button
+                                                id="button-cancel-text-content-writing"
+                                                class="button is-outlined"
+                                                type="button"
+                                                @click="cancelTextWriting()">
+                                            {{ $i18n.get('cancel') }}</button>
+                                    </div>
+                                    <div class="control">
+                                        <button
+                                                id="button-submit-text-content-writing"
+                                                @click.prevent="confirmTextWriting()"
+                                                class="button is-success">
+                                            {{ $i18n.get('save') }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </b-modal>
+
+                        <!-- URL Insert Modal ----------------- -->
+                        <b-modal
+                                :can-cancel="false"
+                                :active.sync="isURLModalActive"
+                                :width="640"
+                                scroll="keep">
+                            <div class="tainacan-modal-content">
+                                <div class="tainacan-modal-title">
+                                    <h2>{{ $i18n.get('instruction_insert_url') }}</h2>
+                                    <hr>
+                                </div>
+                                <b-input v-model="urlLink"/>
+
+                                <div class="field is-grouped form-submit">
+                                    <div class="control">
+                                        <button
+                                                id="button-cancel-url-link-selection"
+                                                class="button is-outlined"
+                                                type="button"
+                                                @click="cancelURLSelection()">
+                                            {{ $i18n.get('cancel') }}</button>
+                                    </div>
+                                    <div class="control">
+                                        <button
+                                                id="button-submit-url-link-selection"
+                                                @click.prevent="confirmURLSelection()"
+                                                class="button is-success">
+                                            {{ $i18n.get('save') }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </b-modal>
+
+                        <!-- Thumbnail -------------------------------- -->
+                        <div class="section-label">
+                            <label>{{ $i18n.get('label_thumbnail') }}</label>
+                            <help-button
+                                    :title="$i18n.getHelperTitle('items', '_thumbnail_id')"
+                                    :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
+
+                        </div>                    
+                        <div class="section-box section-thumbnail">
+                            <div class="thumbnail-field">
+                                <file-item
+                                        v-if="item.thumbnail != undefined && ((item.thumbnail.tainacan_medium != undefined && item.thumbnail.tainacan_medium != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
+                                        :show-name="false"
+                                        :size="178"
+                                        :file="{ 
+                                            media_type: 'image', 
+                                            guid: { rendered: item.thumbnail.tainacan_medium ? item.thumbnail.tainacan_medium : item.thumbnail.medium },
+                                            title: { rendered: $i18n.get('label_thumbnail')},
+                                            description: { rendered: `<img alt='Thumbnail' src='` + item.thumbnail.full + `'/>` }}"/>
+                                <figure 
+                                        v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail.tainacan_medium == undefined || item.thumbnail.tainacan_medium == false))"
+                                        class="image">
+                                    <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
+                                    <img
+                                            :alt="$i18n.get('label_thumbnail')"
+                                            :src="thumbPlaceholderPath">
+                                </figure>
+                                <div class="thumbnail-buttons-row">
+                                    <a
+                                            class="button is-rounded is-secondary"
+                                            id="button-edit-thumbnail"
+                                            :aria-label="$i18n.get('label_button_edit_thumb')"
+                                            @click.prevent="thumbnailMediaFrame.openFrame($event)">
                                         <b-icon 
                                                 size="is-small"
                                                 icon="pencil" />
                                     </a>
                                     <a
+                                            v-if="item.thumbnail.thumb != undefined && item.thumbnail.thumb != false"
+                                            id="button-delete-thumbnail"
                                             class="button is-rounded is-secondary"
-                                            size="is-small"
-                                            :aria-label="$i18n.get('label_button_delete_document')"
-                                            id="button-delete-document"
-                                            @click.prevent="removeDocument()">
-                                        <b-icon 
-                                                size="is-small"
-                                                icon="delete" />
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <ul v-else>
-                            <li>
-                                <button 
-                                        type="button"
-                                        @click.prevent="setFileDocument($event)">
-                                    <b-icon icon="upload"/>
-                                </button>
-                                <p>{{ $i18n.get('label_file') }}</p>
-                            </li>
-                            <li>
-                                <button 
-                                        type="button"
-                                        @click.prevent="setTextDocument()">
-                                    <b-icon icon="format-text"/>
-                                </button>
-                                <p>{{ $i18n.get('label_text') }}</p>
-                            </li>
-                            <li>
-                                <button 
-                                        type="button"
-                                        @click.prevent="setURLDocument()">
-                                    <b-icon icon="code-tags"/>
-                                </button>
-                                <p>{{ $i18n.get('label_url') }}</p>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <!-- Text Insert Modal ----------------- -->
-                    <b-modal
-                            :can-cancel="false"
-                            :active.sync="isTextModalActive"
-                            :width="640"
-                            scroll="keep">
-                        <div class="tainacan-modal-content">
-                            <div class="tainacan-modal-title">
-                                <h2>{{ $i18n.get('instruction_write_text') }}</h2>
-                                <hr>
-                            </div>
-                            <b-input
-                                    type="textarea"
-                                    v-model="textContent"/>
-
-                            <div class="field is-grouped form-submit">
-                                <div class="control">
-                                    <button
-                                            id="button-cancel-text-content-writing"
-                                            class="button is-outlined"
-                                            type="button"
-                                            @click="cancelTextWriting()">
-                                        {{ $i18n.get('cancel') }}</button>
-                                </div>
-                                <div class="control">
-                                    <button
-                                            id="button-submit-text-content-writing"
-                                            @click.prevent="confirmTextWriting()"
-                                            class="button is-success">
-                                        {{ $i18n.get('save') }}</button>
-                                </div>
-                            </div>
-                        </div>
-                    </b-modal>
-
-                    <!-- URL Insert Modal ----------------- -->
-                    <b-modal
-                            :can-cancel="false"
-                            :active.sync="isURLModalActive"
-                            :width="640"
-                            scroll="keep">
-                        <div class="tainacan-modal-content">
-                            <div class="tainacan-modal-title">
-                                <h2>{{ $i18n.get('instruction_insert_url') }}</h2>
-                                <hr>
-                            </div>
-                            <b-input v-model="urlLink"/>
-
-                            <div class="field is-grouped form-submit">
-                                <div class="control">
-                                    <button
-                                            id="button-cancel-url-link-selection"
-                                            class="button is-outlined"
-                                            type="button"
-                                            @click="cancelURLSelection()">
-                                        {{ $i18n.get('cancel') }}</button>
-                                </div>
-                                <div class="control">
-                                    <button
-                                            id="button-submit-url-link-selection"
-                                            @click.prevent="confirmURLSelection()"
-                                            class="button is-success">
-                                        {{ $i18n.get('save') }}</button>
-                                </div>
-                            </div>
-                        </div>
-                    </b-modal>
-
-                    <!-- Thumbnail -------------------------------- -->
-                    <div class="section-label">
-                        <label>{{ $i18n.get('label_thumbnail') }}</label>
-                        <help-button
-                                :title="$i18n.getHelperTitle('items', '_thumbnail_id')"
-                                :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
-
-                    </div>                    
-                    <div class="section-box section-thumbnail">
-                        <div class="thumbnail-field">
-                            <file-item
-                                    v-if="item.thumbnail != undefined && ((item.thumbnail.tainacan_medium != undefined && item.thumbnail.tainacan_medium != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
-                                    :show-name="false"
-                                    :size="178"
-                                    :file="{ 
-                                        media_type: 'image', 
-                                        guid: { rendered: item.thumbnail.tainacan_medium ? item.thumbnail.tainacan_medium : item.thumbnail.medium },
-                                        title: { rendered: $i18n.get('label_thumbnail')},
-                                        description: { rendered: `<img alt='Thumbnail' src='` + item.thumbnail.full + `'/>` }}"/>
-                            <figure 
-                                    v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail.tainacan_medium == undefined || item.thumbnail.tainacan_medium == false))"
-                                    class="image">
-                                <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
-                                <img
-                                        :alt="$i18n.get('label_thumbnail')"
-                                        :src="thumbPlaceholderPath">
-                            </figure>
-                            <div class="thumbnail-buttons-row">
-                                <a
-                                        class="button is-rounded is-secondary"
-                                        id="button-edit-thumbnail"
-                                        :aria-label="$i18n.get('label_button_edit_thumb')"
-                                        @click.prevent="thumbnailMediaFrame.openFrame($event)">
+                                            :aria-label="$i18n.get('label_button_delete_thumb')"
+                                            @click="deleteThumbnail()">
                                     <b-icon 
                                             size="is-small"
-                                            icon="pencil" />
-                                </a>
-                                <a
-                                        v-if="item.thumbnail.thumb != undefined && item.thumbnail.thumb != false"
-                                        id="button-delete-thumbnail"
-                                        class="button is-rounded is-secondary"
-                                        :aria-label="$i18n.get('label_button_delete_thumb')"
-                                        @click="deleteThumbnail()">
-                                   <b-icon 
-                                        size="is-small"
-                                        icon="delete" />
-                                </a>
+                                            icon="delete" />
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Comment Status ------------------------ --> 
-                    <b-field
-                            :addons="false" 
-                            :label="$i18n.get('label_comment_status')"
-                            v-if="collectionAllowComments == 'open'">
-                        <b-switch
-                                id="tainacan-checkbox-comment-status" 
-                                size="is-small"
-                                true-value="open" 
-                                false-value="closed"
-                                v-model="form.comment_status" />
-                        <help-button 
-                                :title="$i18n.getHelperTitle('items', 'comment_status')" 
-                                :message="$i18n.getHelperMessage('items', 'comment_status')"/>
-                    </b-field>
+                        <!-- Comment Status ------------------------ --> 
+                        <b-field
+                                :addons="false" 
+                                :label="$i18n.get('label_comment_status')"
+                                v-if="collectionAllowComments == 'open'">
+                            <b-switch
+                                    id="tainacan-checkbox-comment-status" 
+                                    size="is-small"
+                                    true-value="open" 
+                                    false-value="closed"
+                                    v-model="form.comment_status" />
+                            <help-button 
+                                    :title="$i18n.getHelperTitle('items', 'comment_status')" 
+                                    :message="$i18n.getHelperMessage('items', 'comment_status')"/>
+                        </b-field>
 
-                    <!-- Attachments ------------------------------------------ -->
-                    <div class="section-label">
-                        <label>{{ $i18n.get('label_attachments') }}</label>
-                    </div>
-                    <div class="section-box section-attachments">
-                        <button
-                                type="button"
-                                class="button is-secondary"
-                                @click.prevent="attachmentMediaFrame.openFrame($event)">
-                            {{ $i18n.get("label_edit_attachments") }}
-                        </button>
-
-                        <div class="uploaded-files">
-                            <file-item
-                                    :style="{ margin: 15 + 'px'}"
-                                    v-if="attachmentsList.length > 0" 
-                                    v-for="(attachment, index) in attachmentsList"
-                                    :key="index"
-                                    :show-name="true"
-                                    :file="attachment"/>
-                            <p v-if="attachmentsList.length <= 0"><br>{{ $i18n.get('info_no_attachments_on_item_yet') }}</p>
+                        <!-- Attachments ------------------------------------------ -->
+                        <div class="section-label">
+                            <label>{{ $i18n.get('label_attachments') }}</label>
                         </div>
-                    </div>
+                        <div class="section-box section-attachments">
+                            <button
+                                    type="button"
+                                    class="button is-secondary"
+                                    @click.prevent="attachmentMediaFrame.openFrame($event)">
+                                {{ $i18n.get("label_edit_attachments") }}
+                            </button>
 
-                    <!-- Hook for extra Form options -->
-                    <template 
-                            v-if="formHooks != undefined && 
-                                formHooks['item'] != undefined &&
-                                formHooks['item']['end-left'] != undefined">  
-                        <form 
-                            id="form-item-end-left"
-                            v-html="formHooks['item']['end-left'].join('')"/>
-                    </template>
-
-                </div> 
-                <div 
-                        class="column is-4-5"
-                        v-show="!isMetadataColumnCompressed">
-
-                    <!-- Hook for extra Form options -->
-                    <template 
-                            v-if="formHooks != undefined && 
-                                formHooks['item'] != undefined &&
-                                formHooks['item']['begin-right'] != undefined">  
-                        <form 
-                            id="form-item-begin-right"
-                            v-html="formHooks['item']['begin-right'].join('')"/>
-                    </template>
-
-                    
-                    <!-- Visibility (status public or private) -------------------------------- -->
-                    <div class="section-label">
-                        <label>{{ $i18n.get('label_visibility') }}</label>
-                        <span class="required-metadatum-asterisk">*</span>
-                        <help-button
-                                :title="$i18n.get('label_visibility')"
-                                :message="$i18n.get('info_visibility_helper')"/>
-                    </div>
-                    <div class="section-status">
-                        <div class="field has-addons">
-                            <b-radio
-                                    v-model="visibility"
-                                    value="publish"
-                                    native-value="publish">
-                                <span class="icon">
-                                    <i class="mdi mdi-earth"/>
-                                </span> {{ $i18n.get('publish_visibility') }}
-                            </b-radio>
-                            <b-radio
-                                    v-model="visibility"
-                                    value="private"
-                                    native-value="private">
-                                <span class="icon">
-                                    <i class="mdi mdi-lock"/>
-                                </span>  {{ $i18n.get('private_visibility') }}
-                            </b-radio>
+                            <div class="uploaded-files">
+                                <file-item
+                                        :style="{ margin: 15 + 'px'}"
+                                        v-if="attachmentsList.length > 0" 
+                                        v-for="(attachment, index) in attachmentsList"
+                                        :key="index"
+                                        :show-name="true"
+                                        :file="attachment"/>
+                                <p v-if="attachmentsList.length <= 0"><br>{{ $i18n.get('info_no_attachments_on_item_yet') }}</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Collection -------------------------------- -->
-                    <div class="section-label">
-                        <label>{{ $i18n.get('collection') }}</label>
-                    </div>
-                    <div class="section-collection">
-                        <div class="field has-addons">
-                            <p>
-                                {{ collectionName }}
-                            </p>
+                        <!-- Hook for extra Form options -->
+                        <template 
+                                v-if="formHooks != undefined && 
+                                    formHooks['item'] != undefined &&
+                                    formHooks['item']['end-left'] != undefined">  
+                            <form 
+                                id="form-item-end-left"
+                                v-html="formHooks['item']['end-left'].join('')"/>
+                        </template>
+
+                    </div> 
+                    <div 
+                            class="column is-4-5"
+                            v-show="!isMetadataColumnCompressed">
+
+                        <!-- Hook for extra Form options -->
+                        <template 
+                                v-if="formHooks != undefined && 
+                                    formHooks['item'] != undefined &&
+                                    formHooks['item']['begin-right'] != undefined">  
+                            <form 
+                                id="form-item-begin-right"
+                                v-html="formHooks['item']['begin-right'].join('')"/>
+                        </template>
+
+                        
+                        <!-- Visibility (status public or private) -------------------------------- -->
+                        <div class="section-label">
+                            <label>{{ $i18n.get('label_visibility') }}</label>
+                            <span class="required-metadatum-asterisk">*</span>
+                            <help-button
+                                    :title="$i18n.get('label_visibility')"
+                                    :message="$i18n.get('info_visibility_helper')"/>
                         </div>
-                    </div>
+                        <div class="section-status">
+                            <div class="field has-addons">
+                                <b-radio
+                                        v-model="visibility"
+                                        value="publish"
+                                        native-value="publish">
+                                    <span class="icon">
+                                        <i class="mdi mdi-earth"/>
+                                    </span> {{ $i18n.get('publish_visibility') }}
+                                </b-radio>
+                                <b-radio
+                                        v-model="visibility"
+                                        value="private"
+                                        native-value="private">
+                                    <span class="icon">
+                                        <i class="mdi mdi-lock"/>
+                                    </span>  {{ $i18n.get('private_visibility') }}
+                                </b-radio>
+                            </div>
+                        </div>
 
-                    <!-- Metadata from Collection-------------------------------- -->
-                    <span class="section-label">
-                        <label>{{ $i18n.get('metadata') }}</label>
+                        <!-- Collection -------------------------------- -->
+                        <div class="section-label">
+                            <label>{{ $i18n.get('collection') }}</label>
+                        </div>
+                        <div class="section-collection">
+                            <div class="field has-addons">
+                                <p>
+                                    {{ collectionName }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Metadata from Collection-------------------------------- -->
+                        <span class="section-label">
+                            <label>{{ $i18n.get('metadata') }}</label>
+                        </span>
+                        <br>
+                        <a
+                                class="collapse-all"
+                                @click="toggleCollapseAll()">
+                            {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
+                            <b-icon :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
+                        </a>
+                        <tainacan-form-item
+                                v-for="(metadatum, index) of metadatumList"
+                                :key="index"
+                                :metadatum="metadatum"
+                                :is-collapsed="metadatumCollapses[index]"
+                                @changeCollapse="onChangeCollapse($event, index)"/>
+
+                        <!-- Hook for extra Form options -->
+                        <template 
+                                v-if="formHooks != undefined && 
+                                    formHooks['item'] != undefined &&
+                                    formHooks['item']['end-right'] != undefined">  
+                            <form 
+                                id="form-item-end-right"
+                                v-html="formHooks['item']['end-right'].join('')"/>
+                        </template>
+                    </div>
+                </div>
+                
+            </form>
+        </transition>
+        <footer class="footer">
+            <!-- Sequence Progress -->
+            <div class="sequence-progress-background"/>
+            <div 
+                    v-if="itemPosition != undefined && group != null && group.items_count != undefined"
+                    :style="{ width: (itemPosition/group.items_count)*100 + '%' }"
+                    class="sequence-progress"/>
+            
+            <!-- Last Updated Info --> 
+            <div class="update-info-section">
+                <p 
+                        class="has-text-gray5"
+                        v-if="isOnSequenceEdit">
+                    {{ $i18n.get('label_sequence_editing_item') + " " + itemPosition + " " + $i18n.get('info_of') + " " + ((group != null && group.items_count != undefined) ? group.items_count : '') + "." }}
+                </p>       
+                <p v-if="!isUpdatingValues">
+                    {{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
+                    <span class="help is-danger">{{ formErrorMessage }}</span>
+                </p>     
+                <p 
+                        class="update-warning"
+                        v-if="isUpdatingValues">
+                    <b-icon icon="autorenew" />{{ $i18n.get('info_updating_metadata_values') }}
+                    <span class="help is-danger">{{ formErrorMessage }}</span>
+                </p> 
+            </div>  
+            <div 
+                    class="form-submission-footer"
+                    v-if="form.status == 'trash'">
+                <button 
+                        v-if="isOnSequenceEdit && itemPosition > 1"
+                        @click="onPrevInSequence()"
+                        type="button"
+                        class="button sequence-button">
+                    <span class="icon is-large">
+                        <i class="mdi mdi-24px mdi-chevron-left"/>
                     </span>
-                    <br>
-                    <a
-                            class="collapse-all"
-                            @click="toggleCollapseAll()">
-                        {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                        <b-icon :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
-                    </a>
-                    <tainacan-form-item
-                            v-for="(metadatum, index) of metadatumList"
-                            :key="index"
-                            :metadatum="metadatum"
-                            :is-collapsed="metadatumCollapses[index]"
-                            @changeCollapse="onChangeCollapse($event, index)"/>
-
-                    <!-- Hook for extra Form options -->
-                    <template 
-                            v-if="formHooks != undefined && 
-                                formHooks['item'] != undefined &&
-                                formHooks['item']['end-right'] != undefined">  
-                        <form 
-                            id="form-item-end-right"
-                            v-html="formHooks['item']['end-right'].join('')"/>
-                    </template>
-                </div>
+                    <span>{{ $i18n.get('previous') }}</span>
+                </button>
+                <button 
+                        @click="onDeletePermanently()"
+                        type="button"
+                        class="button is-outlined">{{ $i18n.get('label_delete_permanently') }}</button>
+                <button 
+                        @click="onSubmit('draft')"
+                        type="button"
+                        class="button is-secondary">{{ $i18n.get('label_save_as_draft') }}</button>
+                <button 
+                        @click="onSubmit(visibility)"
+                        type="button"
+                        class="button is-success">{{ $i18n.get('label_publish') }}</button>
+                <button 
+                        v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count > itemPosition)"
+                        @click="onNextInSequence()"
+                        type="button"
+                        class="button sequence-button">
+                    <span>{{ $i18n.get('next') }}</span>
+                    <span class="icon is-large">
+                        <i class="mdi mdi-24px mdi-chevron-right"/>
+                    </span>
+                </button>
             </div>
-            <div class="footer">
-                <!-- Last Updated Info --> 
-                <div class="update-info-section">     
-                    <p v-if="!isUpdatingValues">
-                        {{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
-                        <span class="help is-danger">{{ formErrorMessage }}</span>
-                    </p>     
-                    <p 
-                            class="update-warning"
-                            v-if="isUpdatingValues">
-                        <b-icon icon="autorenew" />{{ $i18n.get('info_updating_metadata_values') }}
-                        <span class="help is-danger">{{ formErrorMessage }}</span>
-                    </p>
-                    
-                </div>  
-                <div 
-                        class="form-submission-footer"
-                        v-if="form.status == 'trash'">
-                    <button 
-                            @click="onDeletePermanently()"
-                            type="button"
-                            class="button is-outlined">{{ $i18n.get('label_delete_permanently') }}</button>
-                    <button 
-                            @click="onSubmit('draft')"
-                            type="button"
-                            class="button is-secondary">{{ $i18n.get('label_save_as_draft') }}</button>
-                    <button 
-                            @click="onSubmit(visibility)"
-                            type="button"
-                            class="button is-success">{{ $i18n.get('label_publish') }}</button>
-                </div>
-                <div 
-                        class="form-submission-footer"
-                        v-if="form.status == 'auto-draft' || form.status == 'draft' || form.status == undefined">
-                    <button 
-                            v-if="form.status == 'draft'"
-                            @click="onSubmit('trash')"
-                            type="button"
-                            class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
-                    <button 
-                            v-if="form.status == 'auto-draft'"
-                            @click="onDiscard()"
-                            type="button"
-                            class="button is-outlined">{{ $i18n.get('label_discard') }}</button>
-                    <button 
-                            @click="onSubmit('draft')"
-                            type="button"
-                            class="button is-secondary">{{ form.status == 'draft' ? $i18n.get('label_update') : $i18n.get('label_save_as_draft') }}</button>
-                    <button 
-                            @click="onSubmit(visibility)"
-                            type="button"
-                            class="button is-success">{{ $i18n.get('label_publish') }}</button>
-                </div>
-                <div 
-                        class="form-submission-footer"
-                        v-if="form.status == 'publish' || form.status == 'private'">
-                    <button 
-                            @click="onSubmit('trash')"
-                            type="button"
-                            class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
-                    <button 
-                            @click="onSubmit('draft')"
-                            type="button"
-                            class="button is-secondary">{{ $i18n.get('label_return_to_draft') }}</button>
-                    <button 
-                            :disabled="formErrorMessage != undefined && formErrorMessage != ''"
-                            @click="onSubmit(visibility)"
-                            type="button"
-                            class="button is-secondary">{{ $i18n.get('label_update') }}</button>
-                </div>
+            <div 
+                    class="form-submission-footer"
+                    v-if="form.status == 'auto-draft' || form.status == 'draft' || form.status == undefined">
+                <button 
+                        v-if="isOnSequenceEdit && itemPosition > 1"
+                        @click="onPrevInSequence()"
+                        type="button"
+                        class="button sequence-button">                    
+                    <span class="icon is-large">
+                        <i class="mdi mdi-24px mdi-chevron-left"/>
+                    </span>
+                    <span>{{ $i18n.get('previous') }}</span>
+                </button>
+                <button 
+                        v-if="form.status == 'draft'"
+                        @click="onSubmit('trash')"
+                        type="button"
+                        class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
+                <button 
+                        v-if="form.status == 'auto-draft'"
+                        @click="onDiscard()"
+                        type="button"
+                        class="button is-outlined">{{ $i18n.get('label_discard') }}</button>
+                <button 
+                        @click="onSubmit('draft')"
+                        type="button"
+                        class="button is-secondary">{{ form.status == 'draft' ? $i18n.get('label_update') : $i18n.get('label_save_as_draft') }}</button>
+                <button 
+                        @click="onSubmit(visibility)"
+                        type="button"
+                        class="button is-success">{{ $i18n.get('label_publish') }}</button>
+                <button 
+                        v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count > itemPosition)"
+                        @click="onNextInSequence()"
+                        type="button"
+                        class="button sequence-button">
+                    <span>{{ $i18n.get('next') }}</span>
+                    <span class="icon is-large">
+                        <i class="mdi mdi-24px mdi-chevron-right"/>
+                    </span>
+                </button>
             </div>
-        </form>
+            <div 
+                    class="form-submission-footer"
+                    v-if="form.status == 'publish' || form.status == 'private'">
+                <button 
+                        v-if="isOnSequenceEdit && itemPosition > 1"
+                        @click="onPrevInSequence()"
+                        type="button"
+                        class="button sequence-button">
+                    <span class="icon is-large">
+                        <i class="mdi mdi-24px mdi-chevron-left"/>
+                    </span>
+                    <span>{{ $i18n.get('previous') }}</span>
+                </button>
+                <button 
+                        @click="onSubmit('trash')"
+                        type="button"
+                        class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
+                <button 
+                        @click="onSubmit('draft')"
+                        type="button"
+                        class="button is-secondary">{{ $i18n.get('label_return_to_draft') }}</button>
+                <button 
+                        :disabled="formErrorMessage != undefined && formErrorMessage != ''"
+                        @click="onSubmit(visibility)"
+                        type="button"
+                        class="button is-success">{{ $i18n.get('label_update') }}</button>
+                <button 
+                        v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count > itemPosition)"
+                        @click="onNextInSequence()"
+                        type="button"
+                        class="button sequence-button">
+                    <span>{{ $i18n.get('next') }}</span>
+                    <span class="icon is-large">
+                        <i class="mdi mdi-24px mdi-chevron-right"/>
+                    </span>
+                </button>
+            </div>
+        </footer>
     </div>
 </template>
 
@@ -500,7 +577,11 @@ export default {
             itemId: Number,
             item: {},
             collectionId: Number,
+            sequenceId: Number,
+            itemPosition: Number,
             isCreatingNewItem: false,
+            isOnSequenceEdit: false,
+            sequenceRightDirection: false,
             isLoading: false,
             isMetadataColumnCompressed: false,
             metadatumCollapses: [],
@@ -552,11 +633,50 @@ export default {
         },
         lastUpdated() {
             return this.getLastUpdated();
+        },
+        group() {
+            return this.getGroup();
+        },
+        itemIdInSequence() {
+            return this.getItemIdInSequence();
         }
     },
     components: {
         FileItem,
         DocumentItem
+    },
+    watch: {
+        '$route.params.itemPosition'(newItemPosition, oldItemPosition) {
+            if (oldItemPosition == undefined)
+                this.sequenceRightDirection; 
+            else if (oldItemPosition == newItemPosition)
+                this.sequenceRightDirection = undefined;     
+            
+            this.itemPosition = Number(newItemPosition);
+
+            // Saves current itemPosition to user prefs
+            this.$userPrefs.set('sequence_' + this.sequenceId + '_position', this.itemPosition);
+
+            // Clear form variables
+            this.cleanMetadata();
+            eventBus.clearAllErrors();
+            this.formErrorMessage = '';
+            
+            this.isLoading = true;
+
+            // Obtains current Item ID from Sequence
+            this.fetchItemIdInSequence({ collectionId: this.collectionId, sequenceId: this.sequenceId, itemPosition: this.itemPosition  })
+                .then(() => {
+                    this.itemId = this.itemIdInSequence;
+                    this.loadExistingItem();
+                })
+                .catch(() => {
+                    this.isLoading = false;
+                });
+            
+            // Obtains current Sequence Group Info
+            this.fetchGroup({ collectionId: this.collectionId, groupId: this.sequenceId });
+        }
     },
     methods: {
         ...mapActions('item', [
@@ -583,6 +703,14 @@ export default {
             'fetchCollectionAllowComments',
             'deleteItem',
         ]),
+        ...mapActions('bulkedition', [
+            'fetchItemIdInSequence',
+            'fetchGroup'
+        ]),
+        ...mapGetters('bulkedition', [
+            'getItemIdInSequence',
+            'getGroup'
+        ]),
         onSubmit(status) {
             // Puts loading on Item edition
             this.isLoading = true;
@@ -607,10 +735,12 @@ export default {
 
                 this.isLoading = false;
 
-                if (this.form.status != 'trash') 
-                    this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
-                else
-                    this.$router.push(this.$routerHelper.getCollectionPath(this.form.collectionId));
+                if (!this.isOnSequenceEdit) {
+                    if (this.form.status != 'trash') 
+                        this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
+                    else
+                        this.$router.push(this.$routerHelper.getCollectionPath(this.form.collectionId));
+                }
             })
             .catch((errors) => {
                 for (let error of errors.errors) {
@@ -831,30 +961,13 @@ export default {
                     title: this.$i18n.get('label_warning'),
                     message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
                     onConfirm: () => {
-                        this.deleteItem({ itemId: this.itemId, isPermanently: true })
+                        this.deleteItem({ itemId: this.itemId, isPermanently: true });
                         this.$router.push(this.$routerHelper.getCollectionPath(this.form.collectionId))
                     }
                 }
             });
-        }
-    },
-    created(){
-        // Obtains collection ID
-        this.cleanMetadata();
-        eventBus.clearAllErrors();
-        this.formErrorMessage = '';
-        this.collectionId = this.$route.params.collectionId;
-        this.form.collectionId = this.collectionId;
-
-        if (this.$route.fullPath.split("/").pop() == "new") {
-            this.isCreatingNewItem = true;
-            this.createNewItem();
-        } else if (this.$route.fullPath.split("/").pop() == "edit") {
-            this.isLoading = true;
-
-            // Obtains current Item ID from URL
-            this.itemId = this.$route.params.itemId;
-
+        },
+        loadExistingItem() {
             // Initializes Media Frames now that itemId exists
             this.initializeMediaFrames();
 
@@ -887,6 +1000,62 @@ export default {
 
             // Fetch current existing attachments
             this.fetchAttachments(this.itemId);
+        },
+        onNextInSequence() {
+            this.sequenceRightDirection = true; 
+            this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, this.sequenceId, this.itemPosition + 1));
+        },
+        onPrevInSequence() {
+            this.sequenceRightDirection = false; 
+            this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, this.sequenceId, this.itemPosition - 1));
+        }
+    },
+    created(){
+        // Obtains collection ID
+        this.cleanMetadata();
+        eventBus.clearAllErrors();
+        this.formErrorMessage = '';
+        this.collectionId = this.$route.params.collectionId;
+        this.form.collectionId = this.collectionId;
+
+        // CREATING NEW SINGLE ITEM
+        if (this.$route.fullPath.split("/").pop() == "new") {
+            this.isCreatingNewItem = true;
+            this.createNewItem();
+
+        // EDITING EXISTING ITEM
+        } else if (this.$route.fullPath.split("/").pop() == "edit") {
+            this.isLoading = true;
+
+            // Obtains current Item ID from URL
+            this.itemId = this.$route.params.itemId;
+            this.loadExistingItem();
+
+        // EDITING EXISTING SEQUENCE
+        } else if (this.$route.params.collectionId != undefined && this.$route.params.sequenceId != undefined){
+            this.isLoading = true;
+
+            this.sequenceId = this.$route.params.sequenceId;
+            let savedItemPosition = (this.$userPrefs.get('sequence_' + this.sequenceId + '_position') != undefined ? Number(this.$userPrefs.get('sequence_' + this.sequenceId + '_position')) : 1);            
+            this.itemPosition = this.$route.params.itemPosition != undefined ? Number(this.$route.params.itemPosition) : savedItemPosition;
+
+            this.isOnSequenceEdit = true;
+
+            // Saves current itemPosition to user prefs
+            this.$userPrefs.set('sequence_' + this.sequenceId + '_position', this.itemPosition);
+
+            // Obtains current Item ID from Sequence
+            this.fetchItemIdInSequence({ collectionId: this.collectionId, sequenceId: this.sequenceId, itemPosition: this.itemPosition  })
+                .then(() => {
+                    this.itemId = this.itemIdInSequence;
+                    this.loadExistingItem();
+                })
+                .catch(() => {
+                    this.isLoading = false;
+                });
+            
+            // Obtains current Sequence Group Info
+            this.fetchGroup({ collectionId: this.collectionId, groupId: this.sequenceId });
         }
 
         // Obtains collection name
@@ -1179,6 +1348,9 @@ export default {
                 margin-left: 16px;
                 margin-right: 6px;
             }
+            .is-outlined {
+                border: none;
+            }
         }
 
         @keyframes blink {
@@ -1205,6 +1377,34 @@ export default {
             font-size: 1.0em;
             margin-top: 0;
             margin-left: 24px;
+        }
+
+        .sequence-progress {
+            height: 5px;
+            background: $turquoise5;
+            width: 0%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: width 0.2s;
+        }
+        .sequence-progress-background {
+            height: 5px;
+            background: $gray3;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .sequence-button {
+            background-color: transparent;
+            color: $turquoise5;
+            border: none;
+
+            .icon {
+                margin-top: 0.3rem;
+            }
         }
     }
 

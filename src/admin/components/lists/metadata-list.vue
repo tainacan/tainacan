@@ -42,7 +42,7 @@
                                         'not-sortable-item': isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder,
                                         'not-focusable-item': openedMetadatumId == metadatum.id,
                                         'disabled-metadatum': metadatum.enabled == false,
-                                        'inherited-metadatum': metadatum.collection_id != collectionId || isRepositoryLevel
+                                        'inherited-metadatum': (metadatum.collection_id != collectionId && metadatum.parent == 0) || isRepositoryLevel
                                     }" 
                                     v-for="(metadatum, index) in activeMetadatumList"
                                     :key="index">
@@ -901,9 +901,9 @@ export default {
                 cursor: default;
                 background-color: white !important;
 
-                .handle .label-details, .handle .icon, {
-                    color: $gray3 !important;
-                }
+                // .handle .label-details, .handle .icon, {
+                //     color: $gray3 !important;
+                // }
             } 
             &.not-focusable-item, &.not-focusable-item:hover {
                 cursor: default;

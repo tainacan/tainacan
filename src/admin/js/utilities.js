@@ -134,7 +134,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
             }
         },
         get(key) {
-            return this.tainacanPrefs[key];
+            return this.tainacanPrefs[key] ? this.tainacanPrefs[key] : undefined;
         },
         set(key, value) {
             this.tainacanPrefs[key] = value;
@@ -147,7 +147,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
                     if (prefs[key]) { 
                         resolve( prefs[key] );  
                     } else {
-                        reject('Key ' + key + ' does not exists in user preference.');
+                        this.tainacanPrefs[key] = value;
                     }
                 })
                 .catch(error => {
@@ -174,6 +174,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         },
         getCollectionItemsPath(collectionId, query) {
             return '/collections/'+ collectionId + '/items/?' + qs.stringify(query);
+        },
+        getCollectionSequenceEditPath(collectionId, sequenceId, itemPosition) {
+            return '/collections/'+ collectionId + '/sequence/' + sequenceId + '/' + itemPosition;
         },
         getCollectionMetadataPath(collectionId) {
             return '/collections/'+ collectionId + '/metadata/';
