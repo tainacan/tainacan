@@ -469,10 +469,10 @@ class Exporter extends CommunImportExport {
 	private $output_files = [];
 	private $mapping_accept = [
 		'any'  => true,
-		'list' => false,
-		'none' => false,
+		'list' => false
 	];
-	private $mapping_list = [];
+	protected $mapping_list = [];
+	public $mapping_selected = "";
 
 	public function __construct($attributess = array()) {
 		$this->array_attributes = array_merge($this->array_attributes, ['current_collection_item', 'current_collection']);
@@ -488,6 +488,7 @@ class Exporter extends CommunImportExport {
 		}
 	}
 
+	//"Tainacan\\Exposers\\Mappers\\Value"
 	public function _to_Array($short = false) {
 		$return = ['id' => $this->get_id()];
 		foreach ($this->array_attributes as $attr) {
@@ -500,12 +501,12 @@ class Exporter extends CommunImportExport {
 		$exporter_definition = $Tainacan_Exporter_Handler->get_exporter_by_object($this);
 
 		if ($short === false) {
-			$return['manual_collection'] = $exporter_definition['manual_collection'];
-			$return['manual_mapping'] = $exporter_definition['manual_mapping'];
-			$return['mapping_accept'] = $this->mapping_accept;
-			$return['mapping_list'] = $this->mapping_list;
-			$return['output_files'] = $this->output_files;
-			$return['options_form'] = $this->options_form();
+			$return['manual_collection'] 	= $exporter_definition['manual_collection'];
+			$return['mapping_selected'] 	= $this->mapping_selected;
+			$return['mapping_accept'] 		= $this->mapping_accept;
+			$return['mapping_list'] 			= $this->mapping_list;
+			$return['output_files'] 			= $this->output_files;
+			$return['options_form'] 			= $this->options_form();
 		}
 
 		return $return;
@@ -594,21 +595,30 @@ class Exporter extends CommunImportExport {
 			$this->append_to_file($key, $data);
 		}
 	}
-	
-	public function set_mapping_method($method, $list = []) {
+
+	public function set_mapping_method($method, $default_mapping = 'value', $list = []) {
 		if ( array_key_exists($method, $this->mapping_accept) ) {
 			foreach ($this->mapping_accept as &$value) {
 				$value = false;
 			}
 			$this->mapping_accept[$method] = true;
-			if(!empty($list)) {
+			if($method == 'any') {
+				$Tainacan_Exposers = \Tainacan\Exposers\Exposers::get_instance();
+				$metadatum_mappers = $Tainacan_Exposers->get_mappers();
+				$this->mapping_list = $metadatum_mappers;
+			} else if(!empty($list)) {
 				$this->mapping_list = $list;
 			}
+			$this->mapping_selected = $default_mapping;
 			return true;
 		}
 		return false;
 	}
-	
+
+	public function set_mapping_selected($mapping_selected) {
+		$this->mapping_selected = $mapping_selected;
+	}
+
 	/**
 	 * runs one iteration
 	 */
