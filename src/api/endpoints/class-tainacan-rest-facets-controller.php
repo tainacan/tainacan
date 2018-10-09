@@ -518,6 +518,8 @@ class REST_Facets_Controller extends REST_Controller {
 		$has_value = false;
 
 		$new_args['posts_per_page'] = 1;
+		$new_args['tax_query'] = ( isset($query['taxquery']) ) ? $query['taxquery'] : [];
+		$new_args['meta_query'] = ( isset($query['metaquery'])) ? $query['metaquery'] : [];
 
 		if( !$is_taxonomy  ){
 
@@ -529,10 +531,22 @@ class REST_Facets_Controller extends REST_Controller {
 						
 						$has_value = true;
 
-						if( is_array($metaquery['value']) )
-							$new_args['meta_query'][$index]['value'][] = $value;	
-						else
-							$new_args['meta_query'][$index]['value'] = $value;
+						if( is_array($metaquery['value']) ){
+							unset($new_args['meta_query'][$index]);
+
+							foreach( $metaquery['value'] as $val ){
+								$new_args['meta_query'][] = [
+									'key' => $reference_id,
+									'value' => $val
+								];
+							}
+
+						} 
+
+						$new_args['meta_query'][] = [
+							'key' => $reference_id,
+							'value' => $value
+						];
 
 					} 
 				}
@@ -540,38 +554,81 @@ class REST_Facets_Controller extends REST_Controller {
 			
 			if( !$has_value ){
 
-				$new_args['meta_query'][] = [
-					'key' => $reference_id,
-					'value' => $value
-				];
+				if( is_array( $value ) ){
+
+					foreach( $value as $val ){
+						$new_args['meta_query'][] = [
+							'key' => $reference_id,
+							'value' => $val
+						];
+					}
+
+				} else {
+					$new_args['meta_query'][] = [
+						'key' => $reference_id,
+						'value' => $value
+					];
+				}
+				
 			}
+
+			unset($new_args['metaquery']);
 
 		} else {
 
 			if( isset( $query['taxquery'] ) ){
 				$new_args['tax_query'] = $query['taxquery'];
 
-				foreach( $query['taxquery'] as $taxquery ){
+				foreach( $query['taxquery'] as $index => $taxquery ){
 					if( $taxquery['taxonomy'] === 'tnc_tax_' . $reference_id ){
 	
 						$has_value = true;
-						$new_args['tax_query'][$index]['terms'][] = $value;	
+
+						if( is_array($taxquery['terms']) ){
+							unset($new_args['tax_query'][$index]);
+
+							foreach( $taxquery['terms'] as $val ){
+								$new_args['tax_query'][] = [
+									'taxonomy' => $reference_id,
+									'terms' => [$val],
+									'compare' => 'IN'
+								];
+							}
+
+							$new_args['tax_query'][] = [
+								'taxonomy' => 'tnc_tax_' . $reference_id,
+								'terms' => [$value],
+								'compare' => 'IN'
+							];
+						} 
 					}
 				}
 			}
 			
 			if( !$has_value ){
 
-				$new_args['tax_query'][] = [
-					'taxonomy' => 'tnc_tax_' . $reference_id,
-					'terms' => [$value],
-					'compare' => 'IN'
-				];
+				if( is_array( $value ) ){
+
+					foreach( $value as $val ){
+						$new_args['tax_query'][] = [
+							'taxonomy' => 'tnc_tax_' . $reference_id,
+							'terms' => [$va],
+							'compare' => 'IN'
+						];
+					}
+
+				} else {
+					$new_args['tax_query'][] = [
+						'taxonomy' => 'tnc_tax_' . $reference_id,
+						'terms' => [$value],
+						'compare' => 'IN'
+					];
+				}
 			}
 
 		}
 		
-		$items = $this->items_repository->fetch($new_args, $collection_id, 'WP_Query');
+		$items = $this->items_repository->fetch($new_args, $collection_id, 'WP_Query');		
 		return $items->found_posts;
 	}
 }
