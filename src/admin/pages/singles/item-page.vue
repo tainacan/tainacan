@@ -306,7 +306,7 @@
 </template>
 
 <script>
-    import {mapActions, mapGetters} from 'vuex'
+    import {mapActions, mapGetters} from 'vuex';
     import FileItem from '../../components/other/file-item.vue';
     import DocumentItem from '../../components/other/document-item.vue';
     import { formHooks } from '../../js/mixins';
@@ -528,9 +528,9 @@
                 width: 100%;
             }
         }
-            .collapse .collapse-content {
-                margin-left: 30px; 
-            }
+        .collapse .collapse-content {
+            margin-left: 30px; 
+        }
     }
 
     .field {

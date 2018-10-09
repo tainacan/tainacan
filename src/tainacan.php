@@ -33,14 +33,10 @@ function tainacan_load_plugin_textdomain() {
 }
 add_action( 'plugins_loaded', 'tainacan_load_plugin_textdomain' );
 
-
 add_action( 'after_setup_theme', function() {
 	add_image_size( 'tainacan-small', 40, 40, true );
 	add_image_size( 'tainacan-medium', 275, 275, true );
 	add_image_size( 'tainacan-medium-full', 205, 1500 );
 } );
-
-$Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();
-register_activation_hook( __FILE__, array( $Tainacan_Capabilities, 'init' ) );
 
 add_action('init', ['Tainacan\Migrations', 'run_migrations']);

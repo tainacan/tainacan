@@ -56,7 +56,7 @@ export default {
     @import "../admin/scss/_tooltips.scss";
     @import "../admin/scss/_tainacan-form.scss";
     @import "../admin/scss/_filters-menu-modal.scss";
-    
+
     .theme-items-list {
         position: relative;
         display: flex;
@@ -183,6 +183,7 @@ export default {
         #items-list-area {
             width: 100%;
             overflow-y: hidden;
+            overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
             margin-left: 0;
             &.spaced-to-right {

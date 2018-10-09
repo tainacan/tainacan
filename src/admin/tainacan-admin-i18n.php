@@ -306,6 +306,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_untrash_selected_items'                   => __( 'Recover from trash', 'tainacan' ),
 	'label_value_not_informed'		                 => __( 'Value not informed.', 'tainacan' ),
 	'label_description_not_informed'                 => __( 'Description not informed.', 'tainacan' ),
+	'label_hide_metadata'	                     	 => __( 'Hide metadata', 'tainacan' ),
+	'label_show_metadata'	                     	 => __( 'Show metadata', 'tainacan' ),
 	'label_all_terms'                                => __( 'All terms', 'tainacan' ),
 	'label_selected_terms'                           => __( 'Selected terms', 'tainacan'),
 

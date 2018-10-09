@@ -2,7 +2,8 @@
     <div 
             class="repository-level-page page-container">
         <tainacan-title />
-        <form 
+        <form   
+                @click="formErrorMessage = ''"
                 class="tainacan-form" 
                 label-width="120px"
                 v-if="importer != undefined && importer != null">
@@ -116,11 +117,13 @@
                             type="button"
                             @click="cancelBack">{{ $i18n.get('cancel') }}</button>
                 </div>
+                <span class="help is-danger">{{ formErrorMessage }}</span>
                 <div 
                         v-if="!importer.manual_mapping"
                         class="control">
                     <button
                             :disabled="
+                                    (formErrorMessage != undefined && formErrorMessage != '') ||
                                     sessionId == undefined || 
                                     importer == undefined || 
                                     (importer.manual_collection && collectionId == undefined) ||
@@ -137,6 +140,7 @@
                         class="control">
                     <button
                             :disabled="
+                                    (formErrorMessage != undefined && formErrorMessage != '') ||
                                     sessionId == undefined || 
                                     importer == undefined || 
                                     (importer.manual_collection && collectionId == undefined) ||
@@ -169,9 +173,8 @@ export default {
             isLoadingRun: false,
             isLoadingUpload: false,
             isFetchingCollections: false,
-            form: {
-                
-            },
+            form: {},
+            formErrorMessage: '',
             mappedCollection: {
                 'id': Number,
                 'mapping': {},
@@ -254,7 +257,8 @@ export default {
                     resolve();
                 })
                 .catch((errors) => {
-                    this.$console.log(errors);
+                    this.formErrorMessage = errors.error_message;
+                    this.$console.error(errors);
                     reject(errors);
                 });
             });
@@ -267,7 +271,8 @@ export default {
                         resolve();
                     })
                     .catch((errors) => {
-                        this.$console.log(errors);
+                        this.formErrorMessage = errors.error_message;
+                        this.$console.error(errors);
                         reject(errors);
                     });
             });
@@ -289,6 +294,7 @@ export default {
                             resolve();
                         })
                         .catch((errors) => {
+                            this.formErrorMessage = errors.error_message;
                             this.$console.log(errors);
                             reject(errors);
                         });
@@ -304,7 +310,7 @@ export default {
                 if (this.importer.accepts.file && !this.importer.accepts.url) {
                     this.onUploadFile()
                         .then(() => { this.isLoadingUpload = false; resolve(); })
-                        .catch((errors) => { this.isLoadingUpload = false; this.$console.log(errors) }); 
+                        .catch((errors) => { this.isLoadingUpload = false; this.$console.error(errors) }); 
                 } else if (!this.importer.accepts.file && this.importer.accepts.url) {
                     this.onInputURL()
                         .then(() => { this.isLoadingUpload = false; resolve() })

@@ -49,6 +49,10 @@ class CSV extends Importer {
                             $this->set_option('document_index', $index);
                         } else if( $rawColumn === 'special_attachments' ){
                             $this->set_option('attachment_index', $index);    
+                        } else if( $rawColumn === 'special_item_status' ){
+                            $this->set_option('item_status_index', $index);    
+                        } else if( $rawColumn === 'special_item_id' ){
+                            $this->set_option('item_id_index', $index);    
                         }
     
                     } else {
@@ -164,8 +168,9 @@ class CSV extends Importer {
     public function after_inserted_item( $inserted_item, $collection_index ) {
         $column_document = $this->get_option('document_index');
         $column_attachment = $this->get_option('attachment_index');
+        $column_item_status = $this->get_option('item_status_index');
 
-        if( !empty($column_document) || !empty( $column_attachment ) ){
+        if( !empty($column_document) || !empty( $column_attachment ) || !empty( $column_item_status ) ){
             
 			if (($handle = fopen($this->tmp_file, "r")) !== false) {
 	            $file = $handle;
@@ -191,6 +196,11 @@ class CSV extends Importer {
             if( is_array($values) && !empty($column_attachment) ){
                 $this->handle_attachment( $values[$column_attachment], $inserted_item);
             }
+
+            if( is_array($values) && !empty($column_item_status) ){
+                $this->handle_item_status( $values[$column_item_status], $inserted_item);
+            }
+
         }
     }
 
@@ -305,6 +315,33 @@ class CSV extends Importer {
                     <select name="encode">
                         <option value="utf8" <?php selected($this->get_option('encode'), 'utf8'); ?> >UTF-8</option>
                         <option value="iso88591" <?php selected($this->get_option('encode'), 'iso88591'); ?> >ISO-88591</option>
+                    </select>
+                </div>
+			</div>
+		</div>
+
+        <div class="field">
+			<label class="label"><?php _e('Repeated Item', 'tainacan'); ?></label>
+			<span class="help-wrapper">
+					<a class="help-button has-text-secondary">
+						<span class="icon is-small">
+							 <i class="mdi mdi-help-circle-outline" ></i>
+						 </span>
+					</a>
+					<div class="help-tooltip">
+						<div class="help-tooltip-header">
+							<h5><?php _e('Repeated Item', 'tainacan'); ?></h5>
+						</div>
+						<div class="help-tooltip-body">
+							<p><?php _e('Choose the action when a repeated item is found', 'tainacan'); ?></p>
+						</div>
+					</div> 
+			</span>
+			<div class="control is-clearfix">
+                <div class="select">
+                    <select name="repeated_item">
+                        <option value="update" <?php selected($this->get_option('repeated_item'), 'update'); ?> >Update</option>
+                        <option value="ignore" <?php selected($this->get_option('repeated_item'), 'ignore'); ?> >Ignore</option>
                     </select>
                 </div>
 			</div>
@@ -508,5 +545,29 @@ class CSV extends Importer {
         $delimiter = $this->get_option('enclosure').$this->get_option('delimiter').$this->get_option('enclosure');
         $values = explode($delimiter, $line);
         return $values;
+    }
+
+    /**
+     * @param $status string the item status
+     */
+    private function handle_item_status( $status, $item_inserted ){
+
+        if ( in_array( $status, array( 'auto-draft', 'draft', 'pending', 'future', 'publish', 'trash', 'inherit' ) ) ) {
+            $item_inserted->set_status($status);
+
+			if( $item_inserted->validate() ) {
+                $item_inserted = $this->items_repo->update($item_inserted);
+            }
+        }
+        
+    }
+
+    private function handle_item_id( $values ){
+        $item_id_index = $this->set_option('item_id_index');
+        
+        if( $item_id_index && isset($values[$item_id_index]) ){
+            $this->add_transient( 'item_id',$values[$item_id_index] );
+            $this->add_transient( 'item_action',$this->get_option('repeated_item') );
+        }
     }
 }

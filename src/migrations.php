@@ -73,6 +73,11 @@ class Migrations {
 	    
 		
 	}
+
+	static function init_capabilites() {
+		$Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();
+		$Tainacan_Capabilities->init();
+	}
 	
 	static function tainacan_migrate_post_type_field_to_metadatum(){
 		global $wpdb;
@@ -288,6 +293,12 @@ class Migrations {
 
 	static function refresh_rewrite_rules() {
 		// needed after we changed the Collections post type rewrite slug
+		
+		$option_name = '_migration_refresh_rewrite_rules_items';
+		if (!get_option($option_name)) {
+			return; // avoid running twice cause there is the same update right below this one
+		}
+		
 		flush_rewrite_rules(false);
 	}
 	

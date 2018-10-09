@@ -137,7 +137,7 @@ class REST_Facets_Controller extends REST_Controller {
 					wp_reset_postdata();
 				}
 
-				$this->total_items  = $items->found_posts;
+				$this->total_items = $items->found_posts;
 				$this->total_pages = ceil($this->total_items / (int) $items->query_vars['posts_per_page']);
 
 			} 
@@ -168,7 +168,6 @@ class REST_Facets_Controller extends REST_Controller {
 
 							$term_selected = $this->terms_repository->fetch($term_id, $this->taxonomy);
 							$realResponse[] = $term_selected;
-
 						}
 
 						foreach( $terms as $index => $term ){
@@ -423,7 +422,6 @@ class REST_Facets_Controller extends REST_Controller {
 				if( $metaquery['key'] == $metadatum_id ){
 
 					return $metaquery['value'];
-						
 				}
 			}
 
@@ -447,8 +445,7 @@ class REST_Facets_Controller extends REST_Controller {
 			foreach( $request['current_query']['metaquery'] as $metaquery ){
 				if( $metaquery['key'] == $metadatum_id ){
 
-					return $metaquery['value'];
-						
+					return $metaquery['value'];	
 				}
 			}
 
@@ -481,6 +478,70 @@ class REST_Facets_Controller extends REST_Controller {
 		}
 
 		return $values;
+	}
+	
+	/**
+	 * method responsible to return the total of items for the facet value 
+	 * 
+	 * @param value string/int the facet value
+	 * @param reference_id int the taxonomy or the metadataid
+	 * @param is_taxonomy (default) false if the value param is a term 
+	 * @param query the actual request query to filter the items
+	 * 
+	 * @return int total of items found
+	 */
+	private function add_items_count( $value, $reference_id, $is_taxonomy = false, $query, $collection_id){
+		$new_args = $query;
+		$has_value = false;
+
+		if( !$is_taxonomy  ){
+
+			if( isset( $query['metaquery'] ) ){
+				foreach( $query['metaquery'] as $index => $metaquery ){
+					if( $metaquery['key'] == $metadatum_id ){
+						
+						$has_value = true;
+
+						if( is_array($metaquery['value']) )
+							$new_args['metaquery'][$index]['value'][] = $value;	
+						else
+							$new_args['metaquery'][$index]['value'] = $value;
+
+					} 
+				}
+			}
+			
+			if( !$has_value ){
+
+				$new_args['metaquery'][] = [
+					'key' => $reference_id,
+					'value' => $value
+				];
+			}
+
+		} else {
+
+			if( isset( $query['taxquery'] ) ){
+				foreach( $query['taxquery'] as $taxquery ){
+					if( $taxquery['taxonomy'] === 'tnc_tax_' . $reference_id ){
+	
+						$has_value = true;
+						$new_args['taxquery'][$index]['terms'][] = $value;	
+					}
+				}
+			}
+			
+			if( !$has_value ){
+
+				$new_args['taxquery'][] = [
+					'taxonomy' => 'tnc_tax_' . $reference_id,
+					'value' => [$value]
+				];
+			}
+		}
+
+		$items = $this->items_repository->fetch($new_args, $collection_id, 'WP_Query');
+		return $items->found_posts;
 	}
 }
 

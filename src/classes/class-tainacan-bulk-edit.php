@@ -42,6 +42,7 @@ class Bulk_Edit  {
 	 * @type int $collection_id The items collection ID. Required if initializing using a query search
 	 * @type array $query The query paramaters used to fetch items that will be part of this bulk edit group
 	 * @type array $items_ids an array containing the IDs of items that will be part of this bulk edit group
+	 * @type array $options an array containing additional options for this bulk edit group (currently used to store sorting information)
 	 * @type string $id The ID of the Bulk edit group.
 	 *
 	 * }
@@ -87,7 +88,10 @@ class Bulk_Edit  {
 			
 			$wpdb->query( "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) {$items_query->request}" );
 			
-			return;
+			$bulk_params = [
+				'orderby' => isset($params['query']['orderby']) ? $params['query']['orderby'] : 'post_date',
+				'order' => isset($params['query']['order']) ? $params['query']['order'] : 'DESC'
+			];
 			
 		} elseif (isset($params['items_ids']) && is_array($params['items_ids'])) {
 			$items_ids = array_filter($params['items_ids'], 'is_integer');
@@ -100,9 +104,22 @@ class Bulk_Edit  {
 			
 			$wpdb->query( "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) VALUES $insert_q" );
 			
-			return;
+			$bulk_params = [
+				'orderby' => isset($params['options']['orderby']) ? $params['options']['orderby'] : 'post_date',
+				'order' => isset($params['options']['order']) ? $params['options']['order'] : 'DESC'
+			];
 			
 		}
+		
+		/**
+		* This is stored to be used by the get_sequence_item_by_index() method, which is used 
+		* by the sequence edit routine.
+		*
+		* For everything else, the order does not matter...
+		*/
+		$this->save_options($bulk_params);
+		
+		return;
 		
 	}
 	
@@ -126,14 +143,62 @@ class Bulk_Edit  {
 		return $this->id;
 	}
 	
-	// return the number of items selected in the current bulk group
+	/**
+	* return the number of items selected in the current bulk group
+	* @return int number of items in the group
+	*/
 	public function count_posts() {
 		global $wpdb;
 		$id = $this->get_id();
 		if (!empty($id)) {
-			return $wpdb->get_var( $wpdb->prepare("SELECT COUNT(post_id) FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s", $this->meta_key, $id) );
+			return (int) $wpdb->get_var( $wpdb->prepare("SELECT COUNT(post_id) FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s", $this->meta_key, $id) );
 		}
 		return 0;
+	}
+	
+	/**
+	 * Gets the id of the item in a given position inside the group 
+	 * 
+	 * @param int $index THe position of the index to search for. From 1 to the length of the group 
+	 * @return int|bool Returns the ID of the item or false if the index is out of range
+	 */
+	public function get_item_id_by_index($index) {
+		
+		if (!is_int($index)) {
+			throw new InvalidArgumentException('get_item_id_by_index function only accepts integers. Input was: '.$index);
+		}
+		
+		$options = $this->get_options();
+		$query = [
+			'meta_query' => [
+				[
+					'key' => $this->meta_key,
+					'value' => $this->get_id()
+				]
+			],
+			'fields' => 'ids',
+			'post_type' => \Tainacan\Repositories\Repository::get_collections_db_identifiers(),
+			'posts_per_page' => 1,
+			'paged' => $index,
+			'orderby' => $options['orderby'],
+			'order' => $options['order']
+		];
+		
+		$object = new \WP_Query($query);
+		
+		if ( $object->have_posts() && isset($object->posts) && is_array($object->posts) && isset($object->posts[0]) && is_integer($object->posts[0]) ) {
+			return $object->posts[0];
+		}
+		
+		return false;
+	}
+	
+	public function save_options($value) {
+		update_option('tainacan_bulk_' . $this->get_id(), $value);
+	}
+	
+	public function get_options() {
+		return get_option('tainacan_bulk_' . $this->get_id());
 	}
 
 	private function _build_select($fields) {

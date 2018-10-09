@@ -69,8 +69,11 @@
             color: $secondary;
             border: none;
         }
+        .pagination-link:active {
+            box-shadow: none;
+        }
         .pagination-link.is-current {
-            color: $gray4;
+            color: $gray4 !important;
         }
         .pagination-link::after:not(:last-child) {
             content: ',';

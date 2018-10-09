@@ -23,7 +23,8 @@ const state = {
         admin_view_mode: 'table'
     },
     filter_tags: [],
-    totalItems: 0
+    totalItems: 0,
+    totalPages: 0
 };
 
 export default {

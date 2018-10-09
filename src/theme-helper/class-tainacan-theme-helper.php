@@ -84,6 +84,15 @@ class Theme_Helper {
 			'icon' => '<span class="icon"><i class="mdi mdi-view-dashboard mdi-24px"></i></span>',
 			'type' => 'component'
 		]);
+		$this->register_view_mode('slideshow', [
+			'label' => __('Slideshow', 'tainacan'),
+			'dynamic_metadata' => false,
+			'description' => 'A fullscreen slideshow view.',
+			'icon' => '<span class="icon"><i class="mdi mdi-fullscreen mdi-24px"></i></span>',
+			'type' => 'component',
+			'show_pagination' => false,
+			'full_screen' => true
+		]);
 	}
 	
 	public function enqueue_scripts($force = false) {
@@ -406,6 +415,7 @@ class Theme_Helper {
 	 * 		@type string		$thumbnail			Full URL to an thumbnail that represents the view mode. Displayed in admin.
 	 * 		@type string		$icon 				HTML that outputs an icon that represents the view mode. Displayed in front end.
 	 * 		@type bool			$show_pagination	Wether to display or not pagination controls. Default true.
+	 * 		@type bool			$full-screen		Wether the view mode will display full screen or not. Default false.
 	 * 		@type bool			$dynamic_metadata	Wether to display or not (and use or not) the "displayed metadata" selector. Default false.
 	 * 		
 	 * 
@@ -424,6 +434,7 @@ class Theme_Helper {
 			'thumbnail' => '', // get_stylesheet_directory() . '/tainacan/view-mode-' . $slug . '.png',
 			'icon' => '', //
 			'show_pagination' => true,
+			'full_screen' => false,
 			'dynamic_metadata' => false,
 			
 		);

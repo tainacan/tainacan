@@ -53,6 +53,9 @@ export const remove_metaquery = ( { commit }, filter  ) => {
 export const setTotalItems = ({ commit }, total ) => {
     commit('setTotalItems', total);
 };
+export const setTotalPages = ({ commit }, totalPages ) => {
+    commit('setTotalPages', totalPages);
+};
 
 export const setPage = ({ commit },  page ) => {
     commit('setPostQueryAttribute', {  attr: 'paged', value: page } );

@@ -77,6 +77,10 @@ export const fetchItem = ({ commit }, item_id) => {
     });
 };
 
+export const replaceItem = ({ commit }, item) => {
+    commit('setItem', item);
+};
+
 export const fetchItemTitle = ({ commit }, id) => {
     commit('cleanItemTitle');
     return new Promise((resolve, reject) =>{ 

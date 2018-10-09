@@ -78,9 +78,15 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                 resolve({'itemsListTemplate': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered, advancedSearchResults:  advancedSearchResults});
             } else {
                 commit('setItems', items);
-                resolve({'items': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered, advancedSearchResults: advancedSearchResults });
+                resolve({
+                    'items': items, 
+                    'total': res.headers['x-wp-total'],
+                    totalPages: res.headers['x-wp-totalpages'], 
+                    hasFiltered: hasFiltered, 
+                    advancedSearchResults: advancedSearchResults });
             }
             dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
+            dispatch('search/setTotalPages', res.headers['x-wp-totalpages'], { root: true } );
         })
         .catch(error => reject(error));
         
@@ -108,7 +114,7 @@ export const deleteItem = ({ commit }, { itemId, isPermanently }) => {
 
     });
 };
-
+ 
 export const fetchCollections = ({commit} , { page, collectionsPerPage, status }) => {
     return new Promise((resolve, reject) => {
         let endpoint = '/collections?paged='+page+'&perpage='+collectionsPerPage+'&context=edit';
@@ -248,7 +254,6 @@ export const updateCollection = ({ commit }, {
 export const sendCollection = ( { commit }, collection) => {
     return new Promise(( resolve, reject ) => {
         let param = collection;
-        param['mapper'] = null;
         param[tainacan_plugin.exposer_mapper_param] = collection.mapper;
         axios.tainacan.post('/collections/', param)
             .then( res => {

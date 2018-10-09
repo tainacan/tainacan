@@ -119,6 +119,10 @@ export const setTotalItems = ( state, total ) => {
     state.totalItems = total;
 };
 
+export const setTotalPages = ( state, totalPages ) => {
+    state.totalPages = totalPages;
+};
+
 export const setSearchQuery = ( state, searchQuery ) => {
     
     if (searchQuery != '')

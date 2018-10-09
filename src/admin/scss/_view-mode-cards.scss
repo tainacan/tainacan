@@ -1,13 +1,18 @@
 .tainacan-cards-container {
     min-height: 50vh;
     padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    flex-grow: 1;
-    flex-shrink: 1;
+    display: -ms-grid;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 455px);
+    grid-gap: 0px;
     justify-content: space-evenly;
     animation-name: item-appear;
     animation-duration: 0.5s;
+
+    @media screen and (max-width: 480px) {    
+        width: 91.666666667%;  
+        grid-template-columns: repeat(auto-fill, 100%);
+    }
 
     .selected-card {
         background-color: $turquoise1;
@@ -105,6 +110,7 @@
         .media {
             width: 100%;
             display: flex;
+            margin: 0 !important;
 
             .list-metadata {
                 padding: 0.75rem 1.375rem;

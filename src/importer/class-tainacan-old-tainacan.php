@@ -383,6 +383,10 @@ class Old_Tainacan extends Importer{
                         $value = $values;
                     }
 
+                    if( is_array($value) ){
+                        $value = array_filter($value);
+                    }
+
                     $item_metadata->set_value($value);
 
                 } else if( $metadatum->type === 'item' ){ // RELATIONSHIPS
