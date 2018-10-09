@@ -1,6 +1,6 @@
 {
 "version": 3,
-"mappings": "AAIA,wBAAyB;EACvB,KAAK,EAAE,IAAI",
+"mappings": "AAAA,uCAAwC;EACtC,UAAU,EAAE,KAAK;EAEjB,8FAAuD;IACrD,OAAO,EAAE,IAAI;IACb,UAAU,EAAE,IAAI;IAEhB,2JAA6D;MAC3D,OAAO,EAAE,IAAI;MACb,WAAW,EAAE,UAAU;MACvB,aAAa,EAAE,KAAK;IAGtB,4JAA8D;MAC5D,OAAO,EAAE,IAAI;MACb,cAAc,EAAE,MAAM;MACtB,WAAW,EAAE,QAAQ;;AAK3B,wBAAyB;EACvB,KAAK,EAAE,IAAI",
 "sources": ["../../gutenberg-blocks/tainacan-collections/collections-carousel/collections-carousel.scss"],
 "names": [],
 "file": "tainacan-gutenberg-blocks-style.css"

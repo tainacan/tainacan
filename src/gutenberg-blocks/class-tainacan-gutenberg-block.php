@@ -50,8 +50,8 @@ class GutenbergBlock {
 
 	public function get_plugin_js_settings(){
 		$settings = [
-			'root'                   => esc_url_raw( rest_url() ) . 'tainacan/v2',
-			'nonce'                  => wp_create_nonce( 'wp_rest' ),
+			'root'  => esc_url_raw( rest_url() ) . 'tainacan/v2',
+			'nonce' => wp_create_nonce( 'wp_rest' ),
 		];
 
 		return $settings;
