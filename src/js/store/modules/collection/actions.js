@@ -397,3 +397,24 @@ export const fetchCollectionsForParent = ({ commit }) => {
         })
     });
 };
+
+// Send Files to Item Bulk Addition
+export const sendFile = ( { commit }, file ) => {
+    return new Promise(( resolve, reject ) => {
+        axios.wp.post('/media/', file, {
+            headers: { 'Content-Type': 'multipart/form-data;', 'Content-Disposition': 'attachment; filename=' + file.name },
+        })
+            .then( res => {
+                let file = res.data;
+                commit('setSingleFile', file);
+                resolve( file );
+            })
+            .catch(error => {
+                reject( error.response );
+            });
+    });
+};
+
+export const cleanFiles = ({ commit }) => {
+    commit('cleanFiles');
+};
