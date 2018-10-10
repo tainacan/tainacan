@@ -416,9 +416,11 @@
         </transition>
         <footer class="footer">
             <!-- Sequence Progress -->
-            <div class="sequence-progress-background"/>
             <div 
-                    v-if="itemPosition != undefined && group != null && group.items_count != undefined"
+                    v-if="isOnSequenceEdit"
+                    class="sequence-progress-background"/>
+            <div 
+                    v-if="isOnSequenceEdit && itemPosition != undefined && group != null && group.items_count != undefined"
                     :style="{ width: (itemPosition/group.items_count)*100 + '%' }"
                     class="sequence-progress"/>
             
