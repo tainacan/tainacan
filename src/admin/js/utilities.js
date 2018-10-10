@@ -267,6 +267,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getNewEventPath() {
             return '/events/new';
         },
+        getNewItemBulkAddPath(collectionId) {
+            return '/collections/' + collectionId + '/bulk-add';
+        },
         // Edit
         getCollectionEditPath(id) {
             return '/collections/' + id + '/settings';

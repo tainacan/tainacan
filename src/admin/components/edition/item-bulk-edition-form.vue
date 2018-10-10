@@ -15,6 +15,7 @@
             <hr>
         </div>
         <form
+                @submit.prevent="createBulkEditGroup()"
                 v-if="!isLoading"
                 class="tainacan-form" 
                 label-width="120px">
@@ -44,23 +45,36 @@
             </b-field>
         
             <div class="document-list">
-                <transition-group name="page-left">
+                <!-- Sequence Progress -->
+                <div 
+                        v-if="uploadedItems.length > 0"
+                        :style="{ width: (amountFinished/uploadedItems.length)*100 + '%' }"
+                        class="sequence-progress"/>
+                <div    
+                        v-if="uploadedItems.length > 0"
+                        class="sequence-progress-background"/>
+
+                <transition-group name="item-appear">
                     <div 
                             class="document-item"
                             v-for="(item, index) of uploadedItems"
                             :key="index">
                         <img 
-                                v-if="item.document != '' && item.document_type != 'empty'"
+                                v-if="item.document!= undefined && item.document != '' && item.document_type != 'empty'"
                                 class="document-thumb"
                                 :alt="item.title"
                                 :src="item.thumbnail.tainacan_small ? item.thumbnail.tainacan_small : item.thumbnail.thumb" > 
                         <span 
                             class="document-name"
                             v-html="item.title" />                            
-                       
+                        <span 
+                                v-if="item.errorMessage != undefined" 
+                                class="help is-danger">
+                            {{ item.errorMessage }}
+                        </span>                       
                         <div class="document-actions">
                             <span 
-                                    v-if="item.document == '' || item.document_type == 'empty'"
+                                    v-if="(item.errorMessage == undefined) && (item.document == '' || item.document_type == 'empty')"
                                     class="icon has-text-success loading-icon">
                                 <div class="control has-icons-right is-loading is-clearfix" />
                             </span>  
@@ -72,14 +86,28 @@
                                     }"
                                     v-if="item.document != '' && item.document_type != 'empty'"
                                     class="icon has-text-gray action-icon"
-                                    @click="deleteItem(item.id, index)">
+                                    @click="deleteOneItem(item.id, index)">
                                 <i class="mdi mdi-18px mdi-delete"/>
                             </span>
                         </div>                    
                     </div>
                 </transition-group>
             </div>
-        
+            <div class="field is-grouped form-submit">
+                <div class="control">
+                    <button 
+                            type="button"
+                            class="button is-outlined" 
+                            @click.prevent="$router.go(-1)" 
+                            slot="trigger">{{ $i18n.get('cancel') }}</button>
+                </div>
+                <div class="control">
+                    <button 
+                            :disabled="uploadedItems.length <= 0 "
+                            class="button is-success" 
+                            type="submit">{{ $i18n.get('save') }}</button>
+                </div>
+            </div>
         </form>
     </div>
 </template>
@@ -97,7 +125,8 @@ export default {
             collectionName: '',
             submitedFileList: [],
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
-            uploadedItems: []
+            uploadedItems: [],
+            amountFinished: 0
         }
     },
     computed: {
@@ -121,7 +150,8 @@ export default {
         ]),
         ...mapActions('bulkedition', [
             'fetchItemIdInSequence',
-            'fetchGroup'
+            'fetchGroup',
+            'createEditGroup'
         ]),
         ...mapGetters('bulkedition', [
             'getItemIdInSequence',
@@ -157,6 +187,8 @@ export default {
                                         document_type: 'attachment' 
                                     })
                                     .then((item) => {     
+                                        this.amountFinished++;
+
                                         let index = this.uploadedItems.findIndex(existingItem => existingItem.id === item.id);
                                         if ( index >= 0)
                                             this.$set( this.uploadedItems, index, item );
@@ -168,6 +200,7 @@ export default {
                                     });
                             })
                             .catch((error) => {
+                                item.errorMessage = error.data.message;
                                 this.$console.error(error);
                             });
                 })
@@ -178,7 +211,18 @@ export default {
                     
             }
         },
-        deleteItem(itemId, index) {
+        createBulkEditGroup() {
+            let onlyItemIds = this.uploadedItems.map(item => item.id);
+
+            this.createEditGroup({
+                object: onlyItemIds,
+                collectionID: this.collectionId
+            }).then(() => {
+                let sequenceId = this.getGroupID();
+                this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 1));
+            }); 
+        },
+        deleteOneItem(itemId, index) {
             this.$modal.open({
                 parent: this,
                 component: CustomDialog,
@@ -187,10 +231,13 @@ export default {
                     title: this.$i18n.get('label_warning'),
                     message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
                     onConfirm: () => {
-                        
+                        this.teste
                         this.deleteItem({
                             itemId: itemId
-                        }).then(() => this.uploadedItems.splice(index, 1) );
+                        }).then(() => {
+                            this.uploadedItems.splice(index, 1) 
+                            this.amountFinished --;
+                        });
                     }
                 }
             });
@@ -275,6 +322,7 @@ export default {
                 justify-content: space-between;
                 align-items: center;
                 margin: 0.75rem;
+                cursor: default;
 
                 .document-thumb {
                     max-height: 42px;
@@ -292,8 +340,26 @@ export default {
                         top: 0;
                     }
                 }
+
+                .help.is-danger {
+                    margin-left: auto;
+                }
             }
-        
+
+            .sequence-progress {
+                height: 5px;
+                background: $turquoise5;
+                width: 0%;
+                transition: width 0.2s;
+            }
+            .sequence-progress-background {
+                height: 5px;
+                background: $gray3;
+                width: 100%;
+                top: -5px;
+                z-index: -1;
+                position: relative;
+            }        
         }
     }
 
