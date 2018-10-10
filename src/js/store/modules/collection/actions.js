@@ -139,6 +139,10 @@ export const cleanCollections = ({ commit }) => {
     commit('cleanCollections');
 };
 
+export const cleanItems = ({ commit }) => {
+    commit('cleanItems');
+};
+
 export const fetchCollection = ({ commit }, id) => {
     commit('cleanCollection');
     return new Promise((resolve, reject) =>{ 

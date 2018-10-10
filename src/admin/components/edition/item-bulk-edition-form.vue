@@ -18,72 +18,75 @@
                 v-if="!isLoading"
                 class="tainacan-form" 
                 label-width="120px">
-            <div class="columns">
-                <div class="column">
-                    
-                    <!-- File Source input -->
-                    <b-field :addons="false">
-                        <label class="label">{{ $i18n.get('label_source_file') }}</label>
-                        <br>
-                        <b-upload
-                                v-model="submitedFileList"
-                                drag-drop
-                                multiple
-                                @input="uploadFiles()"
-                                class="source-file-upload">
-                            <section class="drop-inner">
-                                <div class="content has-text-centered">
-                                    <p>
-                                        <b-icon
-                                                icon="upload"
-                                                size="is-large"/>
-                                    </p>
-                                    <p>{{ $i18n.get('instruction_drop_file_or_click_to_upload') }}</p>
-                                </div>
-                            </section>
-                        </b-upload>
-                    </b-field>
-                    <div class="document-list">
-                        <transition name="page-left">
-                            <div 
-                                    class="document-item"
-                                    v-for="(submitedFile, index) of submitedFileList"
-                                    :key="index"
-                                    v-if="submitedFileList.length > 0">
-                                <img 
-                                    class="document-thumb"
-                                    :alt="$i18n.get('label_placeholder')"
-                                    :src="thumbPlaceholderPath" > 
-                                <span class="document-name">{{ submitedFile.name }}</span>                       
-                            </div>
-                        </transition>
-                    </div>
-                </div>
-                <div class="column document-list">
-                    <transition-group name="page-left">
-                        <div 
-                                class="document-item"
-                                v-for="(uploadedFile, index) of uploadedFileList"
-                                :key="index"
-                                v-if="uploadedFileList.length > 0">
-                            <img 
-                                    class="document-thumb"
-                                    :alt="uploadedFile.title.rendered"
-                                    :src="uploadedFile.media_details.sizes.thumbnail.source_url" > 
-                            <span 
-                                class="document-name"
-                                v-html="uploadedFile.title.rendered" />
-                                                
+                
+            <!-- File Source input -->
+            <b-field :addons="false">
+                <label class="label">{{ $i18n.get('label_source_file') }}</label>
+                <br>
+                <b-upload
+                        native
+                        v-model="submitedFileList"
+                        drag-drop
+                        multiple
+                        @input="uploadFiles()"
+                        class="source-file-upload">
+                    <section class="drop-inner">
+                        <div class="content has-text-centered">
+                            <p>
+                                <b-icon
+                                        icon="upload"
+                                        size="is-large"/>
+                            </p>
+                            <p>{{ $i18n.get('instruction_drop_file_or_click_to_upload') }}</p>
                         </div>
-                    </transition-group>
-                </div>
+                    </section>
+                </b-upload>
+            </b-field>
+        
+            <div class="document-list">
+                <transition-group name="page-left">
+                    <div 
+                            class="document-item"
+                            v-for="(item, index) of uploadedItems"
+                            :key="index">
+                        <img 
+                                v-if="item.document != '' && item.document_type != 'empty'"
+                                class="document-thumb"
+                                :alt="item.title"
+                                :src="item.thumbnail.tainacan_small ? item.thumbnail.tainacan_small : item.thumbnail.thumb" > 
+                        <span 
+                            class="document-name"
+                            v-html="item.title" />                            
+                       
+                        <div class="document-actions">
+                            <span 
+                                    v-if="item.document == '' || item.document_type == 'empty'"
+                                    class="icon has-text-success loading-icon">
+                                <div class="control has-icons-right is-loading is-clearfix" />
+                            </span>  
+                            <span 
+                                    v-tooltip="{
+                                        content: $i18n.get('label_remove'),
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }"
+                                    v-if="item.document != '' && item.document_type != 'empty'"
+                                    class="icon has-text-gray action-icon"
+                                    @click="deleteItem(item.id, index)">
+                                <i class="mdi mdi-18px mdi-delete"/>
+                            </span>
+                        </div>                    
+                    </div>
+                </transition-group>
             </div>
+        
         </form>
     </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
     name: 'ItemBulkEditionForm',
@@ -93,7 +96,8 @@ export default {
             isCreatingBulkAdd: true,
             collectionName: '',
             submitedFileList: [],
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png'
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
+            uploadedItems: []
         }
     },
     computed: {
@@ -105,10 +109,15 @@ export default {
         ...mapActions('collection', [
             'sendFile',
             'cleanFiles',
-            'fetchCollectionName'
+            'fetchCollectionName',
+            'deleteItem'
         ]),
          ...mapGetters('collection', [
-            'getFiles'
+            'getFiles',
+        ]),
+        ...mapActions('item', [
+            'sendItem',
+            'updateItemDocument',
         ]),
         ...mapActions('bulkedition', [
             'fetchItemIdInSequence',
@@ -119,22 +128,73 @@ export default {
             'getGroup'
         ]),
         uploadFiles() {
-
+            
             for (let file of this.submitedFileList) {
 
-                this.sendFile(file)
-                    .then((uploadedFile) => {
-                        let indexToRemove = this.submitedFileList.findIndex(aFile => aFile.name == uploadedFile.source_url.split('/').pop())
-                        if (indexToRemove >= 0) {
-                            this.submitedFileList.splice(indexToRemove, 1);
-                        }
-                    })
-                    .catch((error) => {
-                        this.$console.error(error);
-                    });
-                
+                // Creates draft Item
+                let data = {
+                    collection_id: this.collectionId, 
+                    status: 'auto-draft', 
+                    title: file.name
+                };
+                this.sendItem(data)
+                    .then(item => {
+
+                        let index = this.uploadedItems.findIndex(existingItem => existingItem.id === item.id);
+                        if ( index >= 0)
+                            this.$set( this.uploadedItems, index, item );
+                        else 
+                            this.uploadedItems.push( item );
+                        
+                        // Uploads Media Document
+                        this.sendFile(file)
+                            .then((uploadedFile) => {
+                                
+                                // Updates Item with Document
+                                this.updateItemDocument({ 
+                                        item_id: item.id, 
+                                        document: new String(uploadedFile.id), 
+                                        document_type: 'attachment' 
+                                    })
+                                    .then((item) => {     
+                                        let index = this.uploadedItems.findIndex(existingItem => existingItem.id === item.id);
+                                        if ( index >= 0)
+                                            this.$set( this.uploadedItems, index, item );
+                                        else 
+                                            this.uploadedItems.unshift( item );
+                                    })
+                                    .catch((error) => {
+                                        this.$console.error(error);
+                                    });
+                            })
+                            .catch((error) => {
+                                this.$console.error(error);
+                            });
+                })
+                .catch((error) => {
+                    this.$console.error(error)
+                });
+
+                    
             }
-        } 
+        },
+        deleteItem(itemId, index) {
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
+                    onConfirm: () => {
+                        
+                        this.deleteItem({
+                            itemId: itemId
+                        }).then(() => this.uploadedItems.splice(index, 1) );
+                    }
+                }
+            });
+        },
     },
     created() {
         // Obtains collection ID
@@ -146,6 +206,7 @@ export default {
         });
 
         this.cleanFiles();
+
         // ITEM BULK ADDITION
         if (this.$route.fullPath.split("/").pop() == "bulk-add") {
             this.isCreatingBulkAdd = true;
@@ -168,6 +229,7 @@ export default {
     .page-container {
 
         &>.tainacan-form {
+            padding: 0 $page-side-padding; 
             margin-bottom: 110px;
         }
 
@@ -183,7 +245,6 @@ export default {
                 font-weight: 500;
                 color: $gray5;
                 display: inline-block;
-                width: 80%;
                 flex-shrink: 1;
                 flex-grow: 1;
             }
@@ -205,12 +266,13 @@ export default {
         }
         .document-list {
             display: inline-block;
+            width: 100%;
 
             .document-item {
                 display: flex;
                 flex-wrap: nowrap;
                 width: 100%;
-                justify-content: flex-start;
+                justify-content: space-between;
                 align-items: center;
                 margin: 0.75rem;
 
@@ -218,6 +280,17 @@ export default {
                     max-height: 42px;
                     max-width: 42px;
                     margin-right: 0.75rem;
+                }
+
+                .document-actions {
+                    margin-left: auto;
+                    
+
+                    .loading-icon .control.is-loading::after {
+                        position: relative !important;
+                        right: 0;
+                        top: 0;
+                    }
                 }
             }
         
