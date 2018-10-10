@@ -187,8 +187,7 @@
                     <!-- Title -->
                     <div
                             :style="{
-                             'padding-left': !collectionId ? '0.5rem !important' : '2.75rem',
-                             'margin-left': !collectionId ? '0 !important' : '24px'
+                                'padding-left': !collectionId ? '0 !important' : '1rem'
                             }"
                             @click="onClickItem($event, item, index)"
                             class="metadata-title">

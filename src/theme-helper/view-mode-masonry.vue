@@ -14,7 +14,7 @@
                     <p>{{ $i18n.get('info_no_item_found') }}</p>
                 </div>
             </section>
-            <!-- RECORDS VIEW MODE -->
+            <!-- MASONRY VIEW MODE -->
             <masonry 
                     :cols="{default: 7, 1919: 6, 1407: 5, 1215: 4, 1023: 3, 767: 2, 343: 1}"
                     :gutter="25"
