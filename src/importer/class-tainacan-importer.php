@@ -786,7 +786,7 @@ abstract class Importer {
 		$Tainacan_Metadata->disable_logs();
 		$Tainacan_Item_Metadata->disable_logs();
 
-        $item = new Entities\Item();
+        $item = new Entities\Item( ( $this->get_transient('item_id') ) ? $this->get_transient('item_id') : 0 );
 		$itemMetadataArray = [];
 		
         if( is_array( $processed_item ) ){
