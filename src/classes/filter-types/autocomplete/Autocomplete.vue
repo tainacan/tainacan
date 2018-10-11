@@ -98,7 +98,7 @@
                 });
                 this.selectedValues();
             },
-            search( query ){
+            search: _.debounce( function(query) {
                 if (query != '') {
                     let promise = null;
                     this.options = [];
@@ -117,7 +117,7 @@
                 } else {
                     this.cleanSearch();
                 }
-            },
+            }, 500),
             selectedValues(){
                 const instance = this;
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
