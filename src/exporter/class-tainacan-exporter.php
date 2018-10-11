@@ -618,12 +618,17 @@ class Exporter extends CommunImportExport {
 	public function set_mapping_selected($mapping_selected) {
 		$this->mapping_selected = $mapping_selected;
 	}
+	
+	public function finished() {
+		
+	}
 
 	/**
 	 * runs one iteration
 	 */
 	public function run() {
 		if ($this->is_finished()) {
+			$this->finished();
 			return false;
 		}
 		$steps = $this->get_steps();
