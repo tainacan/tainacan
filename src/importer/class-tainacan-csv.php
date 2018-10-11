@@ -140,6 +140,10 @@ class CSV extends Importer {
             return false;
         }
         
+        if( $this->get_option('item_id_index') ){
+            $this->handle_item_id( $values );
+        }
+        
         foreach ( $collection_definition['mapping'] as $metadatum_id => $header) {
             $metadatum = new \Tainacan\Entities\Metadatum($metadatum_id);
 
@@ -562,6 +566,9 @@ class CSV extends Importer {
         
     }
 
+    /**
+     * @param $status string the item ID
+     */
     private function handle_item_id( $values ){
         $item_id_index = $this->set_option('item_id_index');
         
