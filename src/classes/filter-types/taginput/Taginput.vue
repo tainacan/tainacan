@@ -134,7 +134,7 @@
             }
         },
         methods: {
-            search( query ){
+            search: _.debounce( function(query) {
                 let promise = null;
                 this.options = [];
                 let valuesToIgnore = [];
@@ -155,7 +155,7 @@
                 .catch( error => {
                     this.$console.log('error select', error );
                 });
-            },
+            }, 500),
             selectedValues(){
                 const instance = this;
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )

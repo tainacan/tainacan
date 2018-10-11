@@ -124,7 +124,7 @@
             }
         },
         methods: {
-            search( query ){
+            search: _.debounce( function(query) {
                 this.isLoading = true;
                 this.options = [];
                 
@@ -161,7 +161,7 @@
                     this.isLoading = false;
                     this.$console.log(error);
                 });
-            },
+            }, 500),
             selectedValues( taxonomy ){
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;
