@@ -5,8 +5,7 @@
                 :active.sync="isLoading"
                 :can-cancel="false"/>
         <div class="tainacan-page-title">
-            <h1 v-if="isCreatingBulkAdd">{{ $i18n.get('title_create_item_collection') + ' ' }}<span style="font-weight: 600;">{{ collectionName }}</span></h1>
-            <h1 v-else>{{ $i18n.get('title_edit_item') + ' ' }}<span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span></h1>
+            <h1>{{ $i18n.get('title_create_item_collection') + ' ' }}<span style="font-weight: 600;">{{ collectionName }}</span></h1>
             <a 
                     @click="$router.go(-1)"
                     class="back-link has-text-secondary">
@@ -121,7 +120,6 @@ export default {
     data(){
         return {
             isLoading: false,
-            isCreatingBulkAdd: true,
             collectionName: '',
             submitedFileList: [],
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
@@ -149,13 +147,7 @@ export default {
             'updateItemDocument',
         ]),
         ...mapActions('bulkedition', [
-            'fetchItemIdInSequence',
-            'fetchGroup',
             'createEditGroup'
-        ]),
-        ...mapGetters('bulkedition', [
-            'getItemIdInSequence',
-            'getGroup'
         ]),
         uploadFiles() {
             
@@ -219,6 +211,7 @@ export default {
                 collectionID: this.collectionId
             }).then((group) => {
                 let groupId = group.id;
+                console.log(this.$routerHelper.getItemMetadataBulkAddPath(this.collectionId, groupId))
                 this.$router.push(this.$routerHelper.getItemMetadataBulkAddPath(this.collectionId, groupId));
             }); 
         },
@@ -253,15 +246,6 @@ export default {
         });
 
         this.cleanFiles();
-
-        // ITEM BULK ADDITION
-        if (this.$route.fullPath.split("/").pop() == "bulk-add") {
-            this.isCreatingBulkAdd = true;
-
-        // EDITING BULK ADDITION
-        } else  {
-            this.isLoading = true;
-        }
 
     }
    

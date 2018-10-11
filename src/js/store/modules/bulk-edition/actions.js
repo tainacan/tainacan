@@ -22,12 +22,16 @@ export const createEditGroup = ({commit}, parameters) => {
         };
     }
 
-    return axios.tainacan.post(`/collection/${collectionID}/bulk-edit`, bulkEditParams)
-        .then(response => {
-            commit('setGroup', response.data);
-        })
-        .catch(error => {
-            console.error(error);
+    return new Promise ((resolve, reject) => {
+        axios.tainacan.post(`/collection/${collectionID}/bulk-edit`, bulkEditParams)
+            .then(response => {
+                commit('setGroup', response.data);
+                resolve(response.data);
+            })
+            .catch(error => {
+                console.error(error);
+                reject(error);
+            });
         });
 };
 
