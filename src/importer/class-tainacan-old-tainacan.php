@@ -117,7 +117,9 @@ class Old_Tainacan extends Importer{
 		foreach ($this->get_repo_metadata() as $metadata) {
 
             if (isset($metadata->slug) && strpos($metadata->slug, 'socialdb_property_fixed') === false) {
-               $metadatum_id = $this->create_metadata( $metadata );  
+                $metadatum_id = $this->create_metadata( $metadata );  
+            } elseif ( strpos($metadata->slug, 'socialdb_property_fixed_tags') !== false ){
+                $metadatum_id = $this->create_metadata( $metadata );     
             }
 
         }
@@ -150,6 +152,14 @@ class Old_Tainacan extends Importer{
                             $map[$metadatum_id] = $metadatum_old->id;          
                         }
                         
+                    } else if( isset($metadatum_old->slug) && strpos($metadatum_old->slug, 'socialdb_property_fixed_tags') !== false
+                        && isset($metadatum_old->type) && strpos($metadatum_old->type, 'checkbox') !== false
+                    ){
+                        $metadatum_id = $this->create_metadata( $metadatum_old, $collection_id );
+                        $this->add_log('Creating tag');
+                        if( $metadatum_id ){
+                            $map[$metadatum_id] = $metadatum_old->id;          
+                        }
                     }
 
                 }
@@ -381,10 +391,6 @@ class Old_Tainacan extends Importer{
                         }
 
                         $value = $values;
-                    }
-
-                    if( is_array($value) ){
-                        $value = array_filter($value);
                     }
 
                     $item_metadata->set_value($value);
@@ -711,6 +717,8 @@ class Old_Tainacan extends Importer{
      * @return int $metadatum_id 
      */
     protected function create_metadata( $node_metadata_old, $collection_id = null){
+        $this->add_log('Creating metadata' . $meta->name);
+
         $newMetadatum = new Entities\Metadatum();
         $meta = $node_metadata_old;
 
@@ -841,7 +849,7 @@ class Old_Tainacan extends Importer{
             $type = "Numeric";
         } else if(strcmp($type, 'item') === 0) {
             $type = "Relationship";
-        } else if(strcmp($type, 'tree') === 0 || strcmp($type, 'selectbox')) {
+        } else if(strcmp($type, 'tree') === 0 || strcmp($type, 'selectbox') || strcmp($type, 'checkbox')) {
             $type = "Taxonomy";
         } else if(strcmp($type, 'compound') === 0) {
             $type = "Compound";
