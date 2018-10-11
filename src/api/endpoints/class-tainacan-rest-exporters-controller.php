@@ -37,14 +37,6 @@ class REST_Exporters_Controller extends REST_Controller {
 				'permission_callback' => array($this, 'export_permissions_check'),
 			),
 		));
-		
-		register_rest_route($this->namespace, '/' . $this->rest_base . '/teste', array(
-			array(
-				'methods'             => \WP_REST_Server::READABLE,
-				'callback'            => array($this, 'teste'),
-				'permission_callback' => array($this, 'export_permissions_check'),
-			),
-		));
 
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/session', array(
 			array(
@@ -265,37 +257,6 @@ class REST_Exporters_Controller extends REST_Controller {
 		return $ret;
 	}
 	
-	public function teste() {
-		$filters = [
-			'posts_per_page' => 1,
-			'paged'   => $index+1,
-			'order'   => 'DESC'
-		];
-		$tainacan_items = \Tainacan\Repositories\Items::get_instance();
-		$items = $tainacan_items->fetch($filters, 6, 'WP_Query');
-		
-		$export_items = "";
-		if ($items->have_posts()) {
-			$items->the_post();
-			$item = new Entities\Item($items->post);
-			$items_metadata = $item->get_metadata();
-			$prepared_item = [];
-			foreach ($items_metadata as $item_metadata) {
-				array_push($prepared_item, $item_metadata->_toArray());
-				//array_push($prepared_item, $item_metadata);
-			}
-			
-			$mapper = 'Tainacan\\Exposers\\Mappers\\Value';
-			$instance_mapper = new $mapper();
-			//$instance_mapper = new Tainacan\Exposers\Mappers\Value;
-			//$instance_mapper = new \Tainacan\Exposers\Mappers\Value();
-			
-			$response = $this->map($prepared_item, $instance_mapper); 
-			//$response = $this->map($prepared_item, ['slug' => 'value']); 
-			return new \WP_REST_Response( $response, 200 );
-		}
-	}
-
 }
 
 ?>
