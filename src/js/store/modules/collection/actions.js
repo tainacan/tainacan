@@ -1,97 +1,110 @@
-import axios from '../../../axios/axios';
+import axios, { CancelToken } from '../../../axios/axios';
 import qs from 'qs';
 
+// THE ITEMS SEARCH
 export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, isOnTheme, termId, taxonomy }) => {
     commit('cleanItems');
 
-    return new Promise ((resolve, reject) => {
-        
-        // Adds queries for filtering
-        let postQueries = JSON.parse(JSON.stringify(rootGetters['search/getPostQuery']));
+    const source = CancelToken.source();
 
-        // Sets a flag to inform components that an empty sate is or not due to filtering
-        let hasFiltered = false;
-        let advancedSearchResults = false;
+    return new Object({ 
+        request: new Promise ((resolve, reject) => {
+                
+            // Adds queries for filtering
+            let postQueries = JSON.parse(JSON.stringify(rootGetters['search/getPostQuery']));
 
-        if ( (postQueries.metaquery != undefined &&
-             (Object.keys(postQueries.metaquery).length > 0 ||
-              postQueries.metaquery.length > 0)) || (postQueries.taxquery != undefined &&
-                (Object.keys(postQueries.taxquery).length > 0 ||
-                 postQueries.taxquery.length > 0)) ) {
-            
-            hasFiltered = true;
+            // Sets a flag to inform components that an empty sate is or not due to filtering
+            let hasFiltered = false;
+            let advancedSearchResults = false;
 
-            if(postQueries.advancedSearch){
-                advancedSearchResults = postQueries.advancedSearch;
+            if ( (postQueries.metaquery != undefined &&
+                (Object.keys(postQueries.metaquery).length > 0 ||
+                postQueries.metaquery.length > 0)) || (postQueries.taxquery != undefined &&
+                    (Object.keys(postQueries.taxquery).length > 0 ||
+                    postQueries.taxquery.length > 0)) ) {
+                
+                hasFiltered = true;
+
+                if(postQueries.advancedSearch){
+                    advancedSearchResults = postQueries.advancedSearch;
+                }
             }
-        }
-        
-        // Sets term query in case it's on a term items page
-        if (termId != undefined && taxonomy != undefined) {
-
-            if (postQueries.taxquery == undefined) 
-                postQueries.taxquery = [];
-
-            postQueries.taxquery.push({
-                taxonomy: taxonomy,
-                terms:[ termId ],
-                compare: 'IN'
-            });
-        }
-        
-        let query = qs.stringify(postQueries);
-
-        // Guarantees at least empty fetch_only are passed in case none is found
-        if (qs.stringify(postQueries.fetch_only) == ''){
-            dispatch('search/add_fetchonly', {}, { root: true });
-        }
-                
-        if (qs.stringify(postQueries.fetch_only['meta']) == ''){
-            dispatch('search/add_fetchonly_meta', 0, { root: true });
-        }
-
-        // Differentiates between repository level and collection level queries
-        let endpoint = '/collection/'+ collectionId +'/items?';
-
-        if (collectionId == undefined){
-            endpoint = '/items?';
-        }
-
-        if (!isOnTheme){
-            if (postQueries.view_mode != undefined)
-                postQueries.view_mode = null;
-                
-            endpoint = endpoint + 'context=edit&'
-        } else {
-            if (postQueries.admin_view_mode != undefined)
-                postQueries.admin_view_mode = null;
-        } 
-        
-        axios.tainacan.get(endpoint+query)
-        .then(res => {
             
-            let items = res.data;
-            let viewModeObject = tainacan_plugin.registered_view_modes[postQueries.view_mode];
+            // Sets term query in case it's on a term items page
+            if (termId != undefined && taxonomy != undefined) {
 
-            if (isOnTheme && viewModeObject != undefined && viewModeObject.type == 'template') {
-                commit('setItemsListTemplate', items);
-                resolve({'itemsListTemplate': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered, advancedSearchResults:  advancedSearchResults});
+                if (postQueries.taxquery == undefined) 
+                    postQueries.taxquery = [];
+
+                postQueries.taxquery.push({
+                    taxonomy: taxonomy,
+                    terms:[ termId ],
+                    compare: 'IN'
+                });
+            }
+            
+            let query = qs.stringify(postQueries);
+
+            // Guarantees at least empty fetch_only are passed in case none is found
+            if (qs.stringify(postQueries.fetch_only) == ''){
+                dispatch('search/add_fetchonly', {}, { root: true });
+            }
+                    
+            if (qs.stringify(postQueries.fetch_only['meta']) == ''){
+                dispatch('search/add_fetchonly_meta', 0, { root: true });
+            }
+
+            // Differentiates between repository level and collection level queries
+            let endpoint = '/collection/'+ collectionId +'/items?';
+
+            if (collectionId == undefined){
+                endpoint = '/items?';
+            }
+
+            if (!isOnTheme){
+                if (postQueries.view_mode != undefined)
+                    postQueries.view_mode = null;
+                    
+                endpoint = endpoint + 'context=edit&'
             } else {
-                commit('setItems', items);
-                resolve({
-                    'items': items, 
-                    'total': res.headers['x-wp-total'],
-                    totalPages: res.headers['x-wp-totalpages'], 
-                    hasFiltered: hasFiltered, 
-                    advancedSearchResults: advancedSearchResults });
-            }
-            dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
-            dispatch('search/setTotalPages', res.headers['x-wp-totalpages'], { root: true } );
-        })
-        .catch(error => reject(error));
+                if (postQueries.admin_view_mode != undefined)
+                    postQueries.admin_view_mode = null;
+            } 
+
+            axios.tainacan.get(endpoint+query, {
+                cancelToken: source.token
+            })
+                .then(res => {
+                    
+                    let items = res.data;
+                    let viewModeObject = tainacan_plugin.registered_view_modes[postQueries.view_mode];
+
+                    if (isOnTheme && viewModeObject != undefined && viewModeObject.type == 'template') {
+                        commit('setItemsListTemplate', items);
+                        resolve({'itemsListTemplate': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered, advancedSearchResults:  advancedSearchResults});
+                    } else {
+                        commit('setItems', items);
+                        resolve({
+                            'items': items, 
+                            'total': res.headers['x-wp-total'],
+                            totalPages: res.headers['x-wp-totalpages'], 
+                            hasFiltered: hasFiltered, 
+                            advancedSearchResults: advancedSearchResults });
+                    }
+                    dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
+                    dispatch('search/setTotalPages', res.headers['x-wp-totalpages'], { root: true } );
+                })
+                .catch((thrown) => {
+                    if (axios.isCancel(thrown)) {
+                        console.log('Request canceled: ', thrown.message);
+                      } else {
+                        reject(thrown);
+                      }
+                }); 
+        }),
+        source: source
+    })
         
-    });
-    
 };
 
 export const deleteItem = ({ commit }, { itemId, isPermanently }) => {

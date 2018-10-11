@@ -417,7 +417,7 @@
 
                     this.getOptions(0);
                 }
-            }, 300),
+            }, 500),
             highlightHierarchyPath(){
                 for(let [index, el] of this.hierarchicalPath.entries()){
                     let htmlEl = this.$refs[`${el.column}.${el.element}-tainacan-li-checkbox-model`][0].$el;

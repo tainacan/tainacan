@@ -1240,6 +1240,11 @@
         beforeDestroy() {
             this.$off();
             window.removeEventListener('resize', this.adjustSearchControlHeight);
+            
+            // Cancels previous Request
+            if (this.$eventBusSearch.searchCancel != undefined)
+                this.$eventBusSearch.searchCancel.cancel('Item search Canceled.');
+
         }
     }
 </script>
