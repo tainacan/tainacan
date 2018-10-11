@@ -217,9 +217,9 @@ export default {
             this.createEditGroup({
                 object: onlyItemIds,
                 collectionID: this.collectionId
-            }).then(() => {
-                let sequenceId = this.getGroupID();
-                this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 1));
+            }).then((group) => {
+                let groupId = group.id;
+                this.$router.push(this.$routerHelper.getItemMetadataBulkAddPath(this.collectionId, groupId));
             }); 
         },
         deleteOneItem(itemId, index) {
