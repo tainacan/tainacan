@@ -59,7 +59,6 @@
                     this.$console.log(error);
                 });
 
-            
             this.$eventBusSearch.$on('removeFromFilterTag', (filterTag) => {
                 if (filterTag.filterId == this.filter.id)
                     this.cleanSearch();
