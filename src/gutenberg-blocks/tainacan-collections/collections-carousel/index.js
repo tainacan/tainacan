@@ -1,15 +1,19 @@
+import Carousel, { Dots } from '@brainhubeu/react-carousel';
+
 const { registerBlockType } = wp.blocks;
 
 const { Modal, Button, Autocomplete } = wp.components;
 
 const { __ } = wp.i18n;
+const createHTML = wp.element.createElement;
 
 import tainacan from '../../api-client/axios.js';
 
 registerBlockType('tainacan/collections-carousel', {
     title: 'Tainacan Collections Carousel',
     icon: 'images-alt',
-    category: 'widgets',
+    category: 'tainacan-blocks',
+    supportHTML: false,
     attributes: {
         isOpen: {
             type: Boolean,
@@ -31,20 +35,23 @@ registerBlockType('tainacan/collections-carousel', {
             selector: 'div',
             default: [],
         },
-        content: {
+        content1: {
             type: 'array',
             source: 'html',
             selector: 'div',
             default: [],
+        },
+        content: {
+            type: 'array',
+            source: 'html',
+            selector: 'div',
+            default: []
         }
     },
     supports: {
-      align: ['left', 'full', 'right']
+      align: ['full']
     },
     edit({ attributes, setAttributes, className }) {
-        console.log('Edit');
-        console.log(attributes);
-
         function prepareCollection(collection) {
             return (<div key={ collection.id } data-value={collection}>{ collection.name }</div>);
         }
@@ -65,12 +72,12 @@ registerBlockType('tainacan/collections-carousel', {
 
         function prepareContent(content, featuredItems, setAttributes, collection){
             content.push(
-                <div style={ {display: 'flex', flexDirection: 'column', marginRight: '20px' } }>
+                <div style={{display: 'flex', flexDirection: 'column', marginRight: '20px'}}>
                     <div
                         className={`${className}__carousel-item`}
                         key={collection.id}>
 
-                        <div style={{marginRight: '20px'}} className={`${className}__carousel-item-first`}>
+                        <div style={{width: '99px', marginRight: '3px'}} className={`${className}__carousel-item-first`}>
                             {featuredItems[0] ?
                                 <picture>
                                     <img src={featuredItems[0].thumbnail.thumb} alt={featuredItems[0].title}/>
@@ -80,23 +87,22 @@ registerBlockType('tainacan/collections-carousel', {
 
                         <div className={`${className}__carousel-item-others`}>
                             {featuredItems[1] ?
-                                <picture style={{maxWidth: '64px', maxHeight: '64px', marginBottom: '3px'}}>
+                                <picture style={{width: '42px', height: '42px', marginBottom: '3px'}}>
                                     <img src={featuredItems[1].thumbnail.thumb} alt={featuredItems[1].title}/>
                                 </picture> : null
                             }
                             {featuredItems[2] ?
-                                <picture style={{maxWidth: '64px', maxHeight: '64px'}}>
+                                <picture style={{width: '42px', height: '42px'}}>
                                     <img src={featuredItems[2].thumbnail.thumb} alt={featuredItems[2].title}/>
                                 </picture> : null
                             }
                         </div>
-
                     </div>
-                    <small>{ collection.name }</small>
+                    <small><b>{collection.name}</b></small>
                 </div>
             );
 
-            setAttributes({ content: content });
+            setAttributes({ content1: content });
         }
 
         const autoCompleters = [
@@ -110,6 +116,7 @@ registerBlockType('tainacan/collections-carousel', {
 
                     return tainacan.get(`/collections?search=${keyword}`)
                         .then(response => {
+                            console.log(response);
                             return response.data;
                         })
                         .catch(error => {
@@ -125,12 +132,14 @@ registerBlockType('tainacan/collections-carousel', {
                     return attributes.collectionsMatched;
                 },
                 getOptionCompletion(option) {
+                    console.log('foi');
+
                     attributes.selectedCollections.push(prepareCollection(option));
 
                     getTop3ItemsOf(option).then((res) => {
                         attributes.featuredItems.push(res);
 
-                        prepareContent(attributes.content, res, setAttributes, option);
+                        prepareContent(attributes.content1, res, setAttributes, option);
 
                         setAttributes({ featuredItems: attributes.featuredItems });
                     });
@@ -163,7 +172,6 @@ registerBlockType('tainacan/collections-carousel', {
                                         aria-expanded={ isExpanded }
                                         aria-owns={ listBoxId }
                                         aria-activedescendant={ activeId }
-                                        onautocomplete={ () => { console.log('completed') } }
                                     >
                                     </div>
                                 ) }
@@ -178,14 +186,25 @@ registerBlockType('tainacan/collections-carousel', {
                     : null
                 }
 
-                <div style={ {display: 'flex'} }>{ attributes.content }</div>
+                <div>
+                    <Carousel
+                        slidesPerScroll={1}
+                        slidesPerPage={attributes.content1.length >= 3 ? 3 : attributes.content1.length}
+                        arrows
+                        slides={attributes.content1}/>
+                </div>
             </div>
         );
     },
     save({ attributes }) {
-        console.log('Save');
-        console.log(attributes);
-
-        return <div style={ {display: 'flex'} }>{ attributes.content }</div>;
+        return (
+            <div>
+                <Carousel
+                    slidesPerScroll={1}
+                    slidesPerPage={attributes.content1.length >= 3 ? 3 : attributes.content1.length}
+                    arrows
+                    slides={attributes.content1}/>
+            </div>
+        );
     },
 });

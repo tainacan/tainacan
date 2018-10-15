@@ -24,6 +24,23 @@ class GutenbergBlock {
 	private function add_gutenberg_blocks_actions() {
 		add_action('init', array($this, 'register_tainacan_collections_carousel'));
 		add_action('init', array($this, 'add_plugin_settings'));
+		add_filter( 'block_categories', array($this, 'register_tainacan_block_categories'), 10, 2 );
+	}
+
+	public function register_tainacan_block_categories($categories, $post){
+		if ( $post->post_type !== 'post' ) {
+			return $categories;
+		}
+
+		return array_merge(
+			$categories,
+			array(
+				array(
+					'slug' => 'tainacan-blocks',
+					'title' => __( 'Tainacan', 'tainacan' ),
+				),
+			)
+		);
 	}
 
 	public function register_tainacan_collections_carousel(){
