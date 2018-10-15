@@ -1235,6 +1235,7 @@
         beforeDestroy() {
             this.$off();
             window.removeEventListener('resize', this.adjustSearchControlHeight);
+            this.$root.$off('openAdvancedSearch');
             
             // Cancels previous Request
             if (this.$eventBusSearch.searchCancel != undefined)

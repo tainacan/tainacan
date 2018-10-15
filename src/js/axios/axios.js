@@ -13,5 +13,6 @@ export const wp = axios.create({
 wp.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
 
 export const CancelToken = axios.CancelToken;
+export const isCancel = axios.isCancel;
 
-export default { tainacan, wp, CancelToken };
+export default { tainacan, wp, CancelToken, isCancel };

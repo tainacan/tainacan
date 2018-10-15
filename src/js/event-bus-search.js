@@ -14,8 +14,7 @@ export default {
                 termId: undefined,
                 searchCancel: undefined
             },
-            created(){
-                
+            created() {
                 this.$on('input', data => {
                     this.$store.dispatch('search/setPage', 1);
         
@@ -213,16 +212,16 @@ export default {
                     let error = this.errors.find( errorItem => errorItem.metadatum_id === filter_id );
                     return ( error ) ? error.errors : false;
                 },
-                listener(){
-                    const components = this.getAllComponents();
-                    for (let eventElement of components){
-                        eventElement.addEventListener('input', (event) => {
-                            if( event.detail ) {
-                                this.add_metaquery( event.detail[0] );
-                            }
-                        });
-                    }
-                },
+                // listener(){
+                //     const components = this.getAllComponents();
+                //     for (let eventElement of components){
+                //         eventElement.addEventListener('input', (event) => {
+                //             if( event.detail ) {
+                //                 this.add_metaquery( event.detail[0] );
+                //             }
+                //         });
+                //     }
+                // },
                 setPage(page) {
                     this.$store.dispatch('search/setPage', page);
                     this.updateURLQueries();

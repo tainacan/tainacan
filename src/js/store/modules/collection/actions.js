@@ -1,11 +1,11 @@
-import axios, { CancelToken } from '../../../axios/axios';
+import axios from '../../../axios/axios';
 import qs from 'qs';
 
 // THE ITEMS SEARCH
 export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, isOnTheme, termId, taxonomy }) => {
     commit('cleanItems');
 
-    const source = CancelToken.source();
+    const source = axios.CancelToken.source();
 
     return new Object({ 
         request: new Promise ((resolve, reject) => {
