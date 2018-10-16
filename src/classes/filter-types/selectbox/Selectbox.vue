@@ -73,21 +73,29 @@
                 }
                 return undefined;
             }
-        },
+        }, 
         methods: {
             loadOptions(){
                 this.isLoading = true;
 
+                // Cancels previous Request
+                if (this.getOptionsValuesCancel != undefined)
+                    this.getOptionsValuesCancel.cancel('Facet search Canceled.');
+
                 let promise = null;
                 promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel );
 
-                promise.then(() => {
-                    this.isLoading = false;
-                })
-                .catch( error => {
-                    this.$console.error('error select', error );
-                    this.isLoading = false;
-                });
+                promise.request
+                    .then(() => {
+                        this.isLoading = false;
+                    })
+                    .catch( error => {
+                        this.$console.error('error select', error );
+                        this.isLoading = false;
+                    });
+
+                // Search Request Token for cancelling
+                this.getOptionsValuesCancel = promise.source;
             },
             onSelect(value){
                 this.selected = value;

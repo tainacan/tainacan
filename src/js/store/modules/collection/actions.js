@@ -104,7 +104,6 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
         }),
         source: source
     })
-        
 };
 
 export const deleteItem = ({ commit }, { itemId, isPermanently }) => {

@@ -98,6 +98,12 @@
                 if (query != '') {
                     let promise = null;
                     this.options = [];
+
+                    // Cancels previous Request
+                    if (this.getOptionsValuesCancel != undefined)
+                    this.getOptionsValuesCancel.cancel('Facet search Canceled.');
+
+
                     if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
                         let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
                             this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
@@ -107,9 +113,13 @@
                         promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel );
                     }
 
-                    promise.catch( error => {
+                    promise.request.catch( error => {
                         this.$console.log('error select', error );
                     });
+
+                    // Search Request Token for cancelling
+                    this.getOptionsValuesCancel = promise.source;
+                
                 } else {
                     this.cleanSearch();
                 }

@@ -168,6 +168,7 @@ export default {
             this.arrayRealPath = this.arrayRealPath.filter((item) => item.length != 0);
             
             this.generateViewPath();
+
         }
     },
     methods: {
