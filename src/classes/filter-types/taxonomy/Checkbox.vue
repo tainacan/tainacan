@@ -37,37 +37,7 @@
             this.type = ( this.filter_type ) ? this.filter_type : this.filter.metadatum.metadata_type;
             this.loadOptions();
 
-            this.$eventBusSearch.$on('removeFromFilterTag', (filterTag) => {
-                if (filterTag.filterId == this.filter.id) {
-
-                    let selectedOption = this.options.find(option => option.label == filterTag.singleValue);
-
-                    if(selectedOption) {
-                    
-                        let selectedIndex = this.selected.findIndex(option => option == selectedOption.value);
-                        if (selectedIndex >= 0) {
-
-                            this.selected.splice(selectedIndex, 1); 
-
-                            this.$emit('input', {
-                                filter: 'checkbox',
-                                compare: 'IN',
-                                taxonomy: this.taxonomy,
-                                metadatum_id: this.metadatum,
-                                collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
-                                terms: this.selected
-                            });
-
-                            this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                                filterId: this.filter.id,
-                                value: this.selected
-                            });
-
-                            this.selectedValues();
-                        }
-                    }
-                }
-            });
+            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTag);
         },
         data(){
             return {
@@ -237,7 +207,41 @@
                     },
                     width: 'calc(100% - 8.333333333%)',
                 });
+            },
+            cleanSearchFromTag(filterTag) {
+                if (filterTag.filterId == this.filter.id) {
+
+                    let selectedOption = this.options.find(option => option.label == filterTag.singleValue);
+
+                    if(selectedOption) {
+                    
+                        let selectedIndex = this.selected.findIndex(option => option == selectedOption.value);
+                        if (selectedIndex >= 0) {
+
+                            this.selected.splice(selectedIndex, 1); 
+
+                            this.$emit('input', {
+                                filter: 'checkbox',
+                                compare: 'IN',
+                                taxonomy: this.taxonomy,
+                                metadatum_id: this.metadatum,
+                                collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                                terms: this.selected
+                            });
+
+                            this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                                filterId: this.filter.id,
+                                value: this.selected
+                            });
+
+                            this.selectedValues();
+                        }
+                    }
+                }
             }
+        },
+        beforeDestroy() {
+            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
         }
     }
 </script>

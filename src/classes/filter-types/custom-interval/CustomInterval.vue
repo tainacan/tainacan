@@ -69,10 +69,7 @@
                     this.$console.log(error);
                 });
 
-            this.$eventBusSearch.$on('removeFromFilterTag', (filterTag) => {
-                if (filterTag.filterId == this.filter.id)
-                    this.clearSearch();
-            });
+            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
         },
         data(){
             return {
@@ -193,6 +190,10 @@
                 //     return this.value_init + ' - ' +this.value_end;
                 // }
             },
+            cleanSearchFromTags(filterTag) {
+                if (filterTag.filterId == this.filter.id)
+                    this.cleanSearch();
+            },
             clearSearch(){
 
                 this.clear = true;
@@ -281,6 +282,9 @@
                     });
                 }
             }
+        },
+        beforeDestroy() {
+            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
         }
     }
 </script>

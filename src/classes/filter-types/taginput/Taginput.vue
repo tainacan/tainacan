@@ -60,37 +60,7 @@
                     this.$console.log(error);
                 });
             
-            this.$eventBusSearch.$on('removeFromFilterTag', (filterTag) => {
-               
-                if (filterTag.filterId == this.filter.id) {
-
-                    let selectedIndex = this.selected.findIndex(option => option.label == filterTag.singleValue);
-                    if (selectedIndex >= 0) {
-
-                        this.selected.splice(selectedIndex, 1);
-
-                        let values = [];
-                        let labels = [];  
-                        for(let val of this.selected){
-                            values.push( val.value );
-                            labels.push( val.label );
-                        }
-                        
-                        this.$emit('input', {
-                            filter: 'taginput',
-                            compare: 'IN',
-                            metadatum_id: this.metadatum,
-                            collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
-                            value: values
-                        });
-
-                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                            filterId: this.filter.id,
-                            value: labels
-                        });
-                    }
-                }
-            });
+            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
         },
         data(){
             return {
@@ -188,7 +158,41 @@
                 } else {
                     return false;
                 }
+            },
+            cleanSearchFromTags(filterTag) {
+                               
+                if (filterTag.filterId == this.filter.id) {
+
+                    let selectedIndex = this.selected.findIndex(option => option.label == filterTag.singleValue);
+                    if (selectedIndex >= 0) {
+
+                        this.selected.splice(selectedIndex, 1);
+
+                        let values = [];
+                        let labels = [];  
+                        for(let val of this.selected){
+                            values.push( val.value );
+                            labels.push( val.label );
+                        }
+                        
+                        this.$emit('input', {
+                            filter: 'taginput',
+                            compare: 'IN',
+                            metadatum_id: this.metadatum,
+                            collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                            value: values
+                        });
+
+                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                            filterId: this.filter.id,
+                            value: labels
+                        });
+                    }
+                }
             }
+        },
+        beforeDestroy() {
+            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
         }
     }
 </script>

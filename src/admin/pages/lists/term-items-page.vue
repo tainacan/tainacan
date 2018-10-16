@@ -1118,6 +1118,19 @@
                 });
             }
         },
+        removeEventListeners() {
+            // Component
+            this.$off();
+            // Window
+            window.removeEventListener('resize', this.adjustSearchControlHeight);
+            // $root
+            this.$root.$off('openAdvancedSearch');
+            // $eventBusSearch
+            this.$eventBusSearch.$off('isLoadingItems');
+            this.$eventBusSearch.$off('hasFiltered');
+            this.$eventBusSearch.$off('advancedSearchResults');
+            this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
+        },
         created() {
 
             this.isOnTheme = (this.$route.name === null);
@@ -1210,8 +1223,11 @@
             window.addEventListener('resize', this.adjustSearchControlHeight);
         },
         beforeDestroy() {
-            this.$off();
-            window.removeEventListener('resize', this.adjustSearchControlHeight);
+            this.removeEventListeners();
+                        
+            // Cancels previous Request
+            if (this.$eventBusSearch.searchCancel != undefined)
+                this.$eventBusSearch.searchCancel.cancel('Item search Canceled.');
         }
     }
 </script>

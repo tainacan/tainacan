@@ -155,8 +155,9 @@
                             font-size: 0.875rem;
                             margin: 0px; 
                             text-overflow: ellipsis;
-                            overflow-x: hidden;
+                            overflow: hidden;
                             white-space: nowrap;
+                            // max-height: 1rem;
                         }
                     }
                     img.table-thumb {
