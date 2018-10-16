@@ -36,7 +36,7 @@ export const filter_type_mixin = {
             } else if(search){
                 url += `search=${search}&` + qs.stringify(query_items);
             } else {
-                url += qs.stringify(query_items, { addQueryPrefix: true });
+                url += qs.stringify(query_items);
             }
 
             return axios.get(url)
