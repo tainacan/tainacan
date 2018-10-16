@@ -205,6 +205,9 @@ export default {
         }, 20000);
 
         this.showProcessesList = false;
+    },
+    beforeDestroy() {
+        clearInterval(this.intervalID);
     }
 }
 </script>

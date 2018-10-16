@@ -1145,6 +1145,19 @@
                         this.searchControlHeight = this.$refs['search-control'] ? this.$refs['search-control'].clientHeight + this.$refs['search-control'].offsetTop : 0;
                     this.isFiltersMenuCompressed = jQuery(window).width() <= 768;
                 });
+            },
+            removeEventListeners() {
+                // Component
+                this.$off();
+                // Window
+                window.removeEventListener('resize', this.adjustSearchControlHeight);
+                // $root
+                this.$root.$off('openAdvancedSearch');
+                // $eventBusSearch
+                this.$eventBusSearch.$off('isLoadingItems');
+                this.$eventBusSearch.$off('hasFiltered');
+                this.$eventBusSearch.$off('advancedSearchResults');
+                this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
             }
         },
         created() {
@@ -1158,6 +1171,7 @@
 
             this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
                 this.isLoadingItems = isLoadingItems;
+
             });
 
             this.$eventBusSearch.$on('hasFiltered', hasFiltered => {
@@ -1238,9 +1252,7 @@
             window.addEventListener('resize', this.adjustSearchControlHeight);
         },
         beforeDestroy() {
-            this.$off();
-            window.removeEventListener('resize', this.adjustSearchControlHeight);
-            this.$root.$off('openAdvancedSearch');
+            this.removeEventListeners();
             
             // Cancels previous Request
             if (this.$eventBusSearch.searchCancel != undefined)

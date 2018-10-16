@@ -11,7 +11,7 @@ export const eventBus = new Vue({
         if( tainacan_plugin.components ){
             this.componentsTag = tainacan_plugin.components;
         }
-        this.$on('input', data => this.updateValue(data) );
+        this.$on('input', this.updateValue );
     },
     watch: {
         errors() {
@@ -128,6 +128,9 @@ export const eventBus = new Vue({
                 }
             }
         }
+    },
+    beforeUpdate() {
+        this.$off('input', this.updateValue );
     }
 
 });

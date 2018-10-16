@@ -46,10 +46,7 @@
                     this.$console.error(error);
                 });
             
-            this.$eventBusSearch.$on('removeFromFilterTag', (filterTag) => {
-                if (filterTag.filterId == this.filter.id)
-                    this.onSelect();
-            });
+            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
         },
         props: {
             isRepositoryLevel: Boolean,
@@ -120,7 +117,14 @@
                 } else {
                     return false;
                 }
+            },
+            cleanSearchFromTags(filterTag) {
+                if (filterTag.filterId == this.filter.id)
+                    this.onSelect();
             }
+        },
+        beforeDestroy() {
+            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
         }
     }
 </script>
