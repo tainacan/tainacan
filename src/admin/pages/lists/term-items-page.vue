@@ -5,7 +5,8 @@
                 'repository-level-page': isRepositoryLevel,
                 'is-fullscreen': registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen
             }"> -->
-    <div :class="{
+    <div 
+            :class="{
                 'repository-level-page': isRepositoryLevel,
                 'is-fullscreen': registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen
             }">

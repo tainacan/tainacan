@@ -42,7 +42,12 @@
             open: false,
         },
         created(){
-            this.fetchCollections({page: 1, collectionsPerPage: -1, status: null});
+            this.fetchCollections({
+                    page: 1, 
+                    collectionsPerPage: -1, 
+                    status: null,
+                    contextEdit: false
+            });
         },
         mounted(){
             let routeQueries = this.$route.query;
