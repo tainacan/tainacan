@@ -328,7 +328,28 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 				'multiple'    => 'no'
 			),
 			true
-		);
+        );
+        
+        $taxonomy = $this->tainacan_entity_factory->create_entity(
+		    'taxonomy',
+		    array(
+			    'name' => 'genero',
+		    ),
+		    true
+        );
+        
+        $this->tainacan_entity_factory->create_entity(
+		    'metadatum',
+		    array(
+			    'name'              => 'metadatum son',
+                'collection_id'     => $collection->get_id(),
+                'metadata_type_options' => ['taxonomy_id' => $taxonomy->get_id(), 'allow_new_terms' => true ],
+			    'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
+			    'status'            => 'publish'
+		    ),
+		    true
+	    );
+
 		
 		$collection_definition = [
 			'id' => $collection->get_id(),
