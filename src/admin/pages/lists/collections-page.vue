@@ -205,7 +205,11 @@ export default {
         loadCollections() {
             this.cleanCollections();    
             this.isLoading = true;
-            this.fetchCollections({ 'page': this.page, 'collectionsPerPage': this.collectionsPerPage, 'status': this.status })
+            this.fetchCollections({ 
+                'page': this.page, 
+                'collectionsPerPage': this.collectionsPerPage,
+                'status': this.status,
+                'contextEdit': true })
             .then((res) => {
                 this.isLoading = false;
                 this.totalCollections = res.total;
