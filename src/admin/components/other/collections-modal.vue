@@ -52,7 +52,11 @@ export default {
     },
     mounted() {
         this.isLoading = true;
-        this.fetchCollections({ page: 1, collectionsPerPage: 96 })
+        this.fetchCollections({ 
+                page: 1, 
+                collectionsPerPage: 96, 
+                contextEdit: true
+            })
             .then((res) => {
                 this.collections = res.collections;
                 this.isLoading = false;

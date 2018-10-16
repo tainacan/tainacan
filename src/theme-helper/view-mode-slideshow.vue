@@ -105,10 +105,11 @@
                             <icon class="mdi mdi-48px mdi-chevron-left"/>
                         </span> 
                     </button>
-                    <div 
-                            
+                    <div     
+                            class="slide-main-content">
+                    <!-- <div <IF WE USE HAMMER JS>
                             class="slide-main-content"
-                            v-hammer:swipe.prevent="onSwipeFiltersMenu">
+                            v-hammer:swipe.prevent="onSwipeFiltersMenu"> -->
                         <transition 
                                 mode="out-in"
                                 :name="goingRight ? 'slide-right' : 'slide-left'" >

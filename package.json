@@ -21,7 +21,6 @@
     "vue-masonry-css": "^1.0.3",
     "vue-router": "^3.0.1",
     "vue-the-mask": "^0.11.1",
-    "vue2-hammer": "^2.0.1",
     "vuedraggable": "^2.16.0",
     "vuex": "^3.0.1"
   },
