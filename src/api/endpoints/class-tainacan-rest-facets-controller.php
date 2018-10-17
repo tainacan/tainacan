@@ -50,7 +50,7 @@ class REST_Facets_Controller extends REST_Controller {
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<metadatum_id>[\d]+)', array(
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
-				'callback'            => array($this, 'get_item'),
+				'callback'            => array($this, 'get_items'),
 				'permission_callback' => array($this, 'get_items_permissions_check')
 			)
         ));
@@ -58,7 +58,7 @@ class REST_Facets_Controller extends REST_Controller {
         register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<metadatum_id>[\d]+)', array(
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
-				'callback'            => array($this, 'get_item'),
+				'callback'            => array($this, 'get_items'),
 				'permission_callback' => array($this, 'get_items_permissions_check')
 			)
 		));
@@ -69,7 +69,7 @@ class REST_Facets_Controller extends REST_Controller {
 	 *
 	 * @return \WP_Error|\WP_REST_Response
 	 */
-	public function get_item( $request ) {
+	public function get_items( $request ) {
 		
 		$metadatum_id = $request['metadatum_id'];
         $metadatum = $this->metadatum_repository->fetch($metadatum_id);
@@ -249,22 +249,18 @@ class REST_Facets_Controller extends REST_Controller {
 					$realResponse = [];
 
 					foreach( $selected as $index => $value ){
-						
-						$row = ['mvalue' => $value, 'metadatum_id' => $metadatum_id ];
+						$row = (object) ['mvalue' => $value, 'metadatum_id' => $metadatum_id ];
 						$realResponse[] = $row;
-
 					}
 
 					foreach( $rawValues as $index => $row0 ){
 
-						if( in_array($row0, $selected) ){
-							continue;
-						}
+						if( !in_array($row0, $selected) ){
+							$realResponse[] = (object) ['mvalue' => $row0, 'metadatum_id' => $metadatum_id];
 
-						$realResponse[] = ['mvalue' => $row0, 'metadatum_id' => $metadatum_id];
-
-						if( isset($request['number']) && count($realResponse) >= $request['number']){
-							break;
+							if( isset($request['number']) && count($realResponse) >= $request['number']){
+								break;
+							}
 						}
 					}
 					
@@ -300,8 +296,7 @@ class REST_Facets_Controller extends REST_Controller {
 			foreach ( $response as $key => $item ) {
 
 				if( $type === 'Tainacan\Metadata_Types\Taxonomy' ){
-				
-					$row = [
+					$result[] = [
 						'label' => $item['name'],
 						'value' => $item['id'],
 						'img' => ( isset($item['header_image']) ) ? $item['header_image'] : false ,
@@ -311,10 +306,8 @@ class REST_Facets_Controller extends REST_Controller {
 						'taxonomy_id' => $this->taxonomy->WP_Post->ID,
 						'taxonomy' => ( isset($item['taxonomy']) ) ? $item['taxonomy'] : false,
 					];
-
 				} else if( $type === 'Tainacan\Metadata_Types\Relationship' ){
-
-					$row = [
+					$result[] = [
 						'label' => $item['title'],
 						'value' => $item['id'],
 						'img' => ( isset($item['thumbnail']['thumb']) ) ? $item['thumbnail']['thumb'] : false,
@@ -322,21 +315,16 @@ class REST_Facets_Controller extends REST_Controller {
 						'total_children' => 0,
 						'type' => 'Relationship'
 					];
-
 				} else {
-
-					$row = [
-						'label' => $item['mvalue'],
-						'value' => $item['mvalue'],
+					$result[] = [
+						'label' => $item->mvalue,
+						'value' => $item->mvalue,
 						'img' => false,
 						'parent' => false,
 						'total_children' => 0,
 						'type' => 'Text'
 					];
-
 				}
-
-				$result[] = $row;
 			}
 		}
 		
@@ -355,7 +343,7 @@ class REST_Facets_Controller extends REST_Controller {
 
 			if ( $offset !== '' && $number) {
 				$per_page = (int) $number;
-				$page = ceil( ( ( (int) $offset ) / $per_page ) + 1 );
+				//$page = ceil( ( ( (int) $offset ) / $per_page ) + 1 );
 			
 				$this->total_items  = count( $response );
 			
@@ -382,7 +370,7 @@ class REST_Facets_Controller extends REST_Controller {
 
 		if(isset($args['number'], $args['offset'])){
 			$number = $args['number'];
-			$offset = $args['offset'];
+			//$offset = $args['offset'];
 
 			unset( $args['number'], $args['offset'] );
 			$total_terms = wp_count_terms( $this->taxonomy->get_db_identifier(), $args );
@@ -392,7 +380,7 @@ class REST_Facets_Controller extends REST_Controller {
 			}
 
 			$per_page = (int) $number;
-			$page     = ceil( ( ( (int) $offset ) / $per_page ) + 1 );
+			//$page     = ceil( ( ( (int) $offset ) / $per_page ) + 1 );
 		
 			$this->total_items  = (int) $total_terms ;
 		
@@ -494,13 +482,15 @@ class REST_Facets_Controller extends REST_Controller {
 	}
 
 	/**
-	 * 
+	 * @param $rows
+	 *
+	 * @return array
 	 */
 	private function get_values( $rows ){
 		$values = [];
 
 		foreach( $rows as $row ){
-            $values[] = $row['mvalue'];
+            $values[] = $row->mvalue;
 		}
 
 		return $values;
