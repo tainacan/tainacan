@@ -316,7 +316,6 @@ export default {
                             'termId': this.termId,
                             'taxonomy': this.taxonomy
                         }).then((resp) => {
-
                             // The actual fetch item request
                             resp.request.then((res) => {
                                 this.$emit( 'isLoadingItems', false);
