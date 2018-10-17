@@ -8,6 +8,18 @@ use \Tainacan\API\REST_Controller;
 
 class REST_Facets_Controller extends REST_Controller {
 
+	private $total_pages;
+	private $total_items;
+
+	private $collection;
+	private $collection_repository;
+	private $metadatum_repository;
+	private $filter_repository;
+	private $terms_repository;
+	private $taxonomy_repository;
+	private $items_repository;
+	private $taxonomy;
+
 	/**
 	 * REST_Facets_Controller constructor.
 	 */
@@ -83,6 +95,7 @@ class REST_Facets_Controller extends REST_Controller {
 	 */
 	public function prepare_item_for_response($metadatum, $request){
 		$response = [];
+		$metadatum_type = null;
 
         if( !empty($metadatum) ){
 
@@ -202,8 +215,8 @@ class REST_Facets_Controller extends REST_Controller {
 			else {
 
 				$metadatum_id = $metadatum->get_id();
-				$offset = '';
-				$number = '';
+				$offset = null;
+				$number = null;
 				$collection_id = ( isset($request['collection_id']) ) ? $request['collection_id'] : false;
 				$selected = $this->getTextSelectedValues($request, $metadatum_id);
 
@@ -221,15 +234,17 @@ class REST_Facets_Controller extends REST_Controller {
 		
 				} else {
 					if($collection_id) {
-						$response = $this->metadatum_repository->fetch_all_metadatum_values( $collection_id, $metadatum_id, '', $offset, $number);
+						$response = $this->metadatum_repository->fetch_all_metadatum_values( $collection_id, $metadatum_id, null, $offset, $number);
 					} else {
-						$response = $this->metadatum_repository->fetch_all_metadatum_values( null, $metadatum_id, '', $offset, $number);
+						$response = $this->metadatum_repository->fetch_all_metadatum_values( null, $metadatum_id, null, $offset, $number);
 					}
 				}
 
+				$rawResponse = $response;
+
 				// retrieve selected items
 
-				if( $selected && $request['getSelected'] && $request['getSelected'] === '1'){
+				if( count($selected) && $request['getSelected'] && $request['getSelected'] === '1'){
 					$rawValues = $this->get_values( $response );
 					$realResponse = [];
 
@@ -256,7 +271,7 @@ class REST_Facets_Controller extends REST_Controller {
 					$response = $realResponse;
 				}
 
-				$this->set_pagination_properties_text_type( $collection_id, $metadatum_id, ($request['search']) ? $request['search'] : '' , $offset, $number );
+				$this->set_pagination_properties_text_type( $offset, $number, $rawResponse );
 			}
         }
 
@@ -330,10 +345,12 @@ class REST_Facets_Controller extends REST_Controller {
 
 	/**
 	 * set attributes for text metadata
+	 *
+	 * @param $offset
+	 * @param $number
+	 * @param $response
 	 */
-	private function set_pagination_properties_text_type( $collection_id, $metadatum_id, $search , $offset, $number ){
-		$response = $this->metadatum_repository->fetch_all_metadatum_values( $collection_id, $metadatum_id, $search);
-
+	private function set_pagination_properties_text_type( $offset, $number, $response ){
 		if( $response && is_array( $response ) ){
 
 			if ( $offset !== '' && $number) {
@@ -357,6 +374,9 @@ class REST_Facets_Controller extends REST_Controller {
 
 	/**
 	 * set attributes for term metadata
+	 *
+	 * @param $args
+	 * @param $response
 	 */
 	private function set_pagination_properties_term_type( $args, $response ){
 
@@ -386,10 +406,12 @@ class REST_Facets_Controller extends REST_Controller {
 	}
 
 	/**
-	 * get text metadata selected facets 
-	 * 
+	 * get text metadata selected facets
+	 *
 	 * @param $request
-	 * @param $taxonomy_id 
+	 * @param $taxonomy_id
+	 *
+	 * @return array
 	 */
 	private function getTaxonomySelectedValues($request, $taxonomy_id){
 		$selected = [];
@@ -411,9 +433,11 @@ class REST_Facets_Controller extends REST_Controller {
 
 	/**
 	 * get text metadata selected facets
-	 * 
+	 *
 	 * @param $request
 	 * @param $metadatum_id
+	 *
+	 * @return array
 	 */
 	private function getTextSelectedValues($request, $metadatum_id){
 		if( isset($request['current_query']['metaquery']) ){
@@ -432,9 +456,11 @@ class REST_Facets_Controller extends REST_Controller {
 
 	/**
 	 * get only selected relationship values
-	 * 
+	 *
 	 * @param $request
 	 * @param $metadatum_id
+	 *
+	 * @return array
 	 */
 	private function getRelationshipSelectedValues($request, $metadatum_id){
 		$selected = [];
@@ -479,15 +505,16 @@ class REST_Facets_Controller extends REST_Controller {
 
 		return $values;
 	}
-	
+
 	/**
-	 * method responsible to return the total of items for the facet value 
-	 * 
-	 * @param value string/int the facet value
-	 * @param reference_id int the taxonomy or the metadataid
-	 * @param is_taxonomy (default) false if the value param is a term 
-	 * @param query the actual request query to filter the items
-	 * 
+	 * method responsible to return the total of items for the facet value
+	 *
+	 * @param $value
+	 * @param $reference_id
+	 * @param bool $is_taxonomy
+	 * @param $query
+	 * @param $collection_id
+	 *
 	 * @return int total of items found
 	 */
 	private function add_items_count( $value, $reference_id, $is_taxonomy = false, $query, $collection_id){
