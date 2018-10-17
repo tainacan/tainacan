@@ -602,7 +602,7 @@ class CSV extends Importer {
 		
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
-		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 		
 		$Tainacan_Items->disable_logs();
 		$Tainacan_Metadata->disable_logs();
@@ -620,10 +620,9 @@ class CSV extends Importer {
                     $singleItemMetadata = new Entities\Item_Metadata_Entity( $item, $metadatum); // *empty item will be replaced by inserted in the next foreach
                    
                     if( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Taxonomy' ){
-
-                        // TODO: explode hierarchy values
-
-                        $singleItemMetadata->set_value( $values );     
+                        
+                        $ids = $this->insert_hierarchy( $metadatum, $values );
+                         $singleItemMetadata->set_value( $ids );     
                     } else {
                         $singleItemMetadata->set_value( $values );   
                     }
@@ -686,5 +685,44 @@ class CSV extends Importer {
             return false;
         }
 
-	}
+    }
+    
+    /**
+     * @param $metadatum the metadata
+     * @param $values the categories names
+     * 
+     * @return array empty with no category or array with IDs
+     */
+    private function insert_hierarchy( $metadatum, $values ){
+
+        $Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
+        $taxonomy = new Entities\Taxonomy( $metadatum->get_metadata_type_options()['taxonomy_id']);
+        $exploded_values = explode(">>",$values);
+
+        if( is_array($exploded_values) ){
+            $parent = 0;
+
+            foreach ( $exploded_values as $key => $value) {
+                $value = trim($value);
+
+                $exists = term_exists( $value ,$taxonomy->get_db_identifier(), $parent );
+                if( 0 !== $exists && null !== $exists && isset($exists['term_id']) ){
+                    $exists = new Entities\Term($exists['term_id']);
+                    $parent = $term->get_id();
+                } else {
+                    $term = new Entities\Term();
+                    $term->set_name( $value );
+                    $term->set_parent( $parent );
+                    $term->set_taxonomy( $taxonomy->get_db_identifier() );
+                    $term = $Tainacan_Terms->insert( $term );
+
+                    $parent = $term->get_id();
+                }
+            }
+
+            return $parent !== 0 ? $parent : false;
+        } else {
+            return false;
+        }
+    }
 }
