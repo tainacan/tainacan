@@ -510,13 +510,6 @@ export default {
         width: 1em;
     }
 
-    form.tainacan-form {
-        padding: 1.0em 2.0em;
-        border-top: 1px solid $gray2;
-        border-bottom: 1px solid $gray2;
-        margin-top: 1.0em;
-    }
-
     .active-filters-area {
         font-size: 14px;
         margin-right: 0.8em;
@@ -550,6 +543,13 @@ export default {
             display: block; 
             transition: top 0.1s ease;
             cursor: grab;
+
+            form.tainacan-form {
+                padding: 1.0em 2.0em;
+                margin-top: 1.0em;
+                border-top: 1px solid $gray2;
+                border-bottom: 1px solid $gray2;
+            }
         
             &>.field, form {
                 background-color: white !important;
