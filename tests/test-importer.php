@@ -2,6 +2,7 @@
 
 namespace Tainacan\Tests;
 use Tainacan\Importer;
+use Tainacan\Entities;
 /**
 * Class Importer
 *
@@ -261,7 +262,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 
         // Sample data
         $data = array(
-            array('Data 11', 'Data 12', 'Data 13||TESTE', 'Data 14', 'Data 15'),
+            array('Data 11', 'Data 12', 'Data 13||TESTE', 'Data 14', 'Data 15>>DATA 151'),
             array('Data 21', 'Data 22', 'this
             is
             having
@@ -269,7 +270,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
             lines', 'Data 24', 'Data 25'),
             array('Data 31', 'Data 32', utf8_decode( 'Data 33||Rééço' ), 'Data 34', 'Data 35'),
             array('Data 41', 'Data 42', 'Data 43||limbbo', 'Data 44', 'Data 45'),
-            array('Data 51', 'Data 52', 'Data 53', 'Data 54', 'Data 55')
+            array('Data 51', 'Data 52', 'Data 53', 'Data 54', 'Data 55>>DATA551')
         );
 
         // save each row of the data
@@ -338,10 +339,10 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		    true
         );
         
-        $this->tainacan_entity_factory->create_entity(
+        $metadata_taxonomy =$this->tainacan_entity_factory->create_entity(
 		    'metadatum',
 		    array(
-			    'name'              => 'metadatum son',
+			    'name'              => 'taxonomia',
                 'collection_id'     => $collection->get_id(),
                 'metadata_type_options' => ['taxonomy_id' => $taxonomy->get_id(), 'allow_new_terms' => true ],
 			    'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
@@ -364,7 +365,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         foreach ( $metadata as $index => $metadatum ){
             $map[$metadatum->get_id()] = $headers[$index];
         }
-		
+
 		$collection_definition['mapping'] = $map;
 
         // add the collection
