@@ -753,10 +753,11 @@ abstract class Repository {
 		$key_array  = array();
 
 		foreach ( $array as $val ) {
-			if ( ! in_array( $val[ $key ], $key_array ) ) {
-				$key_array[ $i ]  = $val[ $key ];
+			if ( ! in_array( $val->$key, $key_array ) ) {
+				$key_array[ $i ]  = $val->$key;
 				$temp_array[ $i ] = $val;
 			}
+
 			$i ++;
 		}
 

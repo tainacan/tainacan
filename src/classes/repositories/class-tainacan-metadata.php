@@ -996,7 +996,7 @@ class Metadata extends Repository {
 					);
 				}
 
-				$pre_result = $wpdb->get_results( $sql_string, ARRAY_A );
+				$pre_result = $wpdb->get_results( $sql_string, OBJECT );
 
 				if ( ! empty( $pre_result ) ) {
 					foreach ( $pre_result as $pre ) {
@@ -1045,7 +1045,7 @@ class Metadata extends Repository {
 					);
 				}
 
-				$pre_result = $wpdb->get_results( $sql_string, ARRAY_A );
+				$pre_result = $wpdb->get_results( $sql_string, OBJECT );
 
 				if ( ! empty( $pre_result ) ) {
 					foreach ( $pre_result as $pre ) {
