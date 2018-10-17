@@ -205,7 +205,7 @@ export default {
                     switch(this.arrayRealPath[i-1]) {
                         case 'collections':
                             this.fetchCollectionNameAndURL(this.arrayRealPath[i])
-                                .then(collection => this.arrayViewPath.splice(i, 1, collection.name))
+                                .then(collection => { this.arrayViewPath.splice(i, 1, collection.name); })
                                 .catch((error) => this.$console.error(error));
 
                             break;
@@ -239,6 +239,11 @@ export default {
                     }
                 }
                 
+            }
+
+            let itemsIndex = this.arrayViewPath.findIndex(viewItem => viewItem == this.$i18n.get('items'));
+            if (itemsIndex >= 0 && itemsIndex == this.arrayRealPath.length - 1) {
+                this.arrayViewPath.splice(itemsIndex, 1);
             }
         }
     },
