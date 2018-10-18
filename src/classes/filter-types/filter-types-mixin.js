@@ -216,5 +216,11 @@ export const filter_type_mixin = {
                 source: source
             });
         }
-    }
+    },
+    beforeDestroy() {
+        // Cancels previous Request
+        if (this.getOptionsValuesCancel != undefined)
+            this.getOptionsValuesCancel.cancel('Facet search Canceled.');
+    
+    },
 };

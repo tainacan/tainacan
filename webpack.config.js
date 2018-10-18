@@ -31,7 +31,7 @@ module.exports = {
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
-                exclude: /node_modules/
+                exclude: /node_modules/,
             },
             {
                 test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
@@ -105,7 +105,8 @@ if (production === true) {
 
     module.exports.resolve = {
         alias: {
-            'vue$': 'vue/dist/vue.min'
+            'vue$': 'vue/dist/vue.min',
+            'swiper$': 'swiper/dist/js/swiper.js'
         }
     }
 } else {
