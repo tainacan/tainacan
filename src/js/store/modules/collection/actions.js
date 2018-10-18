@@ -171,8 +171,8 @@ export const fetchCollection = ({ commit }, id) => {
 };
 
 export const fetchCollectionName = ({ commit }, id) => {
-    //commit('cleanCollectionName');
-    return new Promise((resolve, reject) =>{ 
+
+    return new Promise ((resolve, reject) => {
         axios.tainacan.get('/collections/' + id + '?fetch_only=name')
         .then(res => {
             let collectionName = res.data;
@@ -214,18 +214,29 @@ export const fetchCollectionAllowComments = ({ commit }, id) => {
 };
 
 export const fetchCollectionNameAndURL = ({ commit }, id) => {
-    //commit('cleanCollectionName');
-    return new Promise((resolve, reject) =>{ 
-        axios.tainacan.get('/collections/' + id + '?fetch_only[0]=name&fetch_only[1]=url')
-        .then(res => {
-            let collection = res.data;
-            commit('setCollectionName', collection.name);
-            commit('setCollectionURL', collection.url);
-            resolve( collection );
-        })
-        .catch(error => {
-            reject(error);
-        })
+    const source = axios.CancelToken.source();
+
+    return new Object({ 
+        request: new Promise ((resolve, reject) => {
+
+            axios.tainacan.get(
+                '/collections/' + id + '?fetch_only[0]=name&fetch_only[1]=url', 
+                { cancelToken: source.token })
+            .then(res => {
+                let collection = res.data;
+                commit('setCollectionName', collection.name);
+                commit('setCollectionURL', collection.url);
+                resolve( collection );
+            })
+            .catch((thrown) => {
+                if (axios.isCancel(thrown)) {
+                    console.log('Request canceled: ', thrown.message);
+                } else {
+                    reject(thrown);
+                }
+            }); 
+        }),
+        source: source
     });
 };
 

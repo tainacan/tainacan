@@ -149,6 +149,7 @@ export default {
             arrayRealPath: [],
             arrayViewPath: [],
             activeRouteName: '',
+            collectionNameRequestCancel: undefined
         }
     },
     components: {
@@ -158,17 +159,17 @@ export default {
         id: Number,
     },
     watch: {
-        '$route' (to) {
+        '$route' (to, from) {
+            if (to.path != from.path) {
+                this.activeRoute = to.name;
 
-            this.activeRoute = to.name;
+                this.pageTitle = this.$route.meta.title;
 
-            this.pageTitle = this.$route.meta.title;
-
-            this.arrayRealPath = to.path.split("/");
-            this.arrayRealPath = this.arrayRealPath.filter((item) => item.length != 0);
-            
-            this.generateViewPath();
-
+                this.arrayRealPath = to.path.split("/");
+                this.arrayRealPath = this.arrayRealPath.filter((item) => item.length != 0);
+                
+                this.generateViewPath();
+            }
         }
     },
     methods: {
@@ -201,11 +202,21 @@ export default {
                 this.arrayViewPath.push('');
                 
                 if (!isNaN(this.arrayRealPath[i]) && i > 0) {
-                    
+
                     switch(this.arrayRealPath[i-1]) {
                         case 'collections':
+                            // Cancels previous Request
+                            if (this.collectionNameRequestCancel != undefined)
+                                this.collectionNameRequestCancel.cancel('Collection name Canceled.');
+
                             this.fetchCollectionNameAndURL(this.arrayRealPath[i])
-                                .then(collection => this.arrayViewPath.splice(i, 1, collection.name) )
+                                .then((resp) => {
+                                    resp.request
+                                        .then(collection => this.arrayViewPath.splice(i, 1, collection.name))
+                                        .catch((error) => this.$console.error(error));
+
+                                    this.collectionNameRequestCancel = resp.source;
+                                })
                                 .catch((error) => this.$console.error(error));
 
                             break;
@@ -251,6 +262,11 @@ export default {
         this.arrayRealPath = this.arrayRealPath.filter((item) => item.length != 0);
 
         this.generateViewPath();
+    },
+    beforeDestroy() {
+        // Cancels previous Request
+        if (this.collectionNameRequestCancel != undefined)
+            this.collectionNameRequestCancel.cancel('Collection name Canceled.');
     }
 }
 </script>
