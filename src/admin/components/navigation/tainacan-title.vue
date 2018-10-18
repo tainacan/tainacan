@@ -116,14 +116,16 @@ export default {
         }
     },
     watch: {
-        '$route' (to) {
-            this.isRepositoryLevel = (to.params.collectionId == undefined);
-            this.pageTitle = this.$route.meta.title;
+        '$route' (to, from) {
+            if (to.path != from.path) {
+                this.isRepositoryLevel = (to.params.collectionId == undefined);
+                this.pageTitle = this.$route.meta.title;
 
-            this.arrayRealPath = to.path.split("/");
-            this.arrayRealPath = this.arrayRealPath.filter((item) => item.length != 0);
-            
-            this.generateViewPath();
+                this.arrayRealPath = to.path.split("/");
+                this.arrayRealPath = this.arrayRealPath.filter((item) => item.length != 0);
+                
+                this.generateViewPath();
+            }
         }
     },
     created() {
