@@ -30,14 +30,9 @@
   "devDependencies": {
     "@babel/core": "^7.1.2",
     "@babel/preset-env": "^7.1.0",
-<<<<<<< HEAD
     "@babel/preset-react": "^7.0.0",
-    "autoprefixer": "^9.1.5",
-    "babel-loader": "^8.0.2",
-=======
     "autoprefixer": "^9.2.1",
     "babel-loader": "^8.0.4",
->>>>>>> develop
     "cross-env": "^5.2.0",
     "css-loader": "^1.0.0",
     "element-theme-chalk": "^2.4.8",
