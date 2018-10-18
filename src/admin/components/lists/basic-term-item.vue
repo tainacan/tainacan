@@ -101,20 +101,28 @@ export default {
                     },
                 }
             });  
+        },
+        eventOnEditTerm() {
+            this.isEditingTerm = true;
+        },
+        eventOnTermEditionSaved() {
+            this.isEditingTerm = false;
+            this.term.opened = false;
+        },
+        eventOnTermEditionCanceled() {
+            this.isEditingTerm = false;
+            this.term.opened = false;
         }
     },
     created() {
-        this.$termsListBus.$on('editTerm', () => {
-            this.isEditingTerm = true;
-        });
-        this.$termsListBus.$on('termEditionSaved', () => {
-            this.isEditingTerm = false;
-            this.term.opened = false;
-        });
-        this.$termsListBus.$on('termEditionCanceled', () => {
-            this.isEditingTerm = false;
-            this.term.opened = false;
-        });        
+        this.$termsListBus.$on('editTerm', this.eventOnEditTerm);
+        this.$termsListBus.$on('termEditionSaved', this.eventOnTermEditionSaved);
+        this.$termsListBus.$on('termEditionCanceled', this.eventOnTermEditionCanceled);        
+    },
+    beforeDestroy() {
+        this.$termsListBus.$off('editTerm', this.eventOnEditTerm);
+        this.$termsListBus.$off('termEditionSaved', this.eventOnTermEditionSaved);
+        this.$termsListBus.$off('termEditionCanceled', this.eventOnTermEditionCanceled);                
     }
 }
 </script>

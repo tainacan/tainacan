@@ -2,6 +2,7 @@
 
 namespace Tainacan\Importer;
 use Tainacan;
+use Tainacan\Entities;
 
 class CSV extends Importer {
 
@@ -138,6 +139,10 @@ class CSV extends Importer {
             $this->add_error_log(' enclosure : ' .  $this->get_option('enclosure') );
             $this->add_error_log(' Values string: ' . $string );
             return false;
+        }
+        
+        if( $this->get_option('item_id_index') ){
+            $this->handle_item_id( $values );
         }
         
         foreach ( $collection_definition['mapping'] as $metadatum_id => $header) {
@@ -562,12 +567,162 @@ class CSV extends Importer {
         
     }
 
+    /**
+     * @param $status string the item ID
+     */
     private function handle_item_id( $values ){
         $item_id_index = $this->set_option('item_id_index');
         
         if( $item_id_index && isset($values[$item_id_index]) ){
             $this->add_transient( 'item_id',$values[$item_id_index] );
             $this->add_transient( 'item_action',$this->get_option('repeated_item') );
+        }
+    }
+
+    /**
+     * insert processed item from source to Tainacan
+     *
+     * @param array $processed_item Associative array with metadatum source's as index with
+     *                              its value or values
+     * @param integet $collection_index The index in the $this->collections array of the collection the item is beeing inserted into
+     * 
+     * @return Tainacan\Entities\Item Item inserted
+     */
+    public function insert( $processed_item, $collection_index ) {
+		
+		remove_action( 'post_updated', 'wp_save_post_revision' );
+		$collections = $this->get_collections();
+		$collection_definition = isset($collections[$collection_index]) ? $collections[$collection_index] : false;
+		if ( !$collection_definition || !is_array($collection_definition) || !isset($collection_definition['id']) || !isset($collection_definition['mapping']) ) {
+			$this->add_error_log('Collection misconfigured');
+            return false;
+		}
+		
+		$collection = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_definition['id']);
+		
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		
+		$Tainacan_Items->disable_logs();
+		$Tainacan_Metadata->disable_logs();
+		$Tainacan_Item_Metadata->disable_logs();
+
+        $item = new Entities\Item( ( $this->get_transient('item_id') ) ? $this->get_transient('item_id') : 0 );
+		$itemMetadataArray = [];
+		
+        if( is_array( $processed_item ) ){
+            foreach ( $processed_item as $metadatum_source => $values ){
+                $tainacan_metadatum_id = array_search( $metadatum_source, $collection_definition['mapping'] );
+                $metadatum = $Tainacan_Metadata->fetch( $tainacan_metadatum_id );
+
+                if( $metadatum instanceof Entities\Metadatum ){
+                    $singleItemMetadata = new Entities\Item_Metadata_Entity( $item, $metadatum); // *empty item will be replaced by inserted in the next foreach
+                   
+                    if( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Taxonomy' ){
+                        
+                        $ids = $this->insert_hierarchy( $metadatum, $values );
+                         $singleItemMetadata->set_value( $ids );     
+                    } else {
+                        $singleItemMetadata->set_value( $values );   
+                    }
+
+                    $itemMetadataArray[] = $singleItemMetadata;
+                } else {
+					$this->add_error_log('Metadata ' . $metadatum_source . ' not found');
+				}
+
+            }
+        }
+		
+        if( !empty( $itemMetadataArray ) && $collection instanceof Entities\Collection ){
+			$item->set_collection( $collection );
+
+            if( $item->validate() ){
+				$insertedItem = $Tainacan_Items->insert( $item );
+            } else {
+                $this->add_error_log( 'Error inserting item' );
+                $this->add_error_log( $item->get_errors() );
+                return false;
+            }
+			
+            foreach ( $itemMetadataArray as $itemMetadata ) {
+                $itemMetadata->set_item( $insertedItem );  // *I told you
+
+                if( $itemMetadata->validate() ){
+					$result = $Tainacan_Item_Metadata->insert( $itemMetadata );
+                } else {
+                    $this->add_error_log('Error saving value for ' . $itemMetadata->get_metadatum()->get_name());
+                    $this->add_error_log($itemMetadata->get_errors());
+                    continue;
+                }
+
+                //if( $result ){
+                //	$values = ( is_array( $itemMetadata->get_value() ) ) ? implode( PHP_EOL, $itemMetadata->get_value() ) : $itemMetadata->get_value();
+                //    $this->add_log( 'Item ' . $insertedItem->get_id() .
+                //        ' has inserted the values: ' . $values . ' on metadata: ' . $itemMetadata->get_metadatum()->get_name() );
+                //} else {
+                //    $this->add_error_log( 'Item ' . $insertedItem->get_id() . ' has an error' );
+                //}
+			}
+			
+			$insertedItem->set_status('publish' );
+			
+            if($insertedItem->validate()) {
+				$insertedItem = $Tainacan_Items->update( $insertedItem );
+
+				$this->after_inserted_item(  $insertedItem, $collection_index );
+            } else {
+	            $this->add_error_log( 'Error publishing Item'  ); 
+	            $this->add_error_log( $insertedItem->get_errors() ); 
+	            return false;
+			}
+			
+            return $insertedItem;
+			
+        } else {
+            $this->add_error_log(  'Collection not set');
+            return false;
+        }
+
+    }
+    
+    /**
+     * @param $metadatum the metadata
+     * @param $values the categories names
+     * 
+     * @return array empty with no category or array with IDs
+     */
+    private function insert_hierarchy( $metadatum, $values ){
+
+        $Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
+        $taxonomy = new Entities\Taxonomy( $metadatum->get_metadata_type_options()['taxonomy_id']);
+        $exploded_values = explode(">>",$values);
+
+        if( is_array($exploded_values) ){
+            $parent = 0;
+
+            foreach ( $exploded_values as $key => $value) {
+                $value = trim($value);
+
+                $exists = term_exists( $value ,$taxonomy->get_db_identifier(), $parent );
+                if( 0 !== $exists && null !== $exists && isset($exists['term_id']) ){
+                    $exists = new Entities\Term($exists['term_id']);
+                    $parent = $term->get_id();
+                } else {
+                    $term = new Entities\Term();
+                    $term->set_name( $value );
+                    $term->set_parent( $parent );
+                    $term->set_taxonomy( $taxonomy->get_db_identifier() );
+                    $term = $Tainacan_Terms->insert( $term );
+
+                    $parent = $term->get_id();
+                }
+            }
+
+            return $parent !== 0 ? $parent : false;
+        } else {
+            return false;
         }
     }
 }

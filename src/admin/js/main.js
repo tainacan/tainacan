@@ -6,8 +6,10 @@
 import Vue from 'vue';
 import Buefy from 'buefy';
 import VTooltip from 'v-tooltip';
-import { VueHammer } from 'vue2-hammer';
+// import { VueHammer } from 'vue2-hammer';
 import VueMasonry from 'vue-masonry-css';
+import draggable from 'vuedraggable';
+import VueTheMask from 'vue-the-mask';
 
 // Custom elements
 import Text from '../../classes/metadata-types/text/Text.vue';
@@ -38,18 +40,16 @@ import TainacanFiltersList from '../../classes/filter-types/tainacan-filter-item
 import AdminPage from '../admin.vue'
 import HelpButton from '../components/other/help-button.vue';
 import TainacanTitle from '../components/navigation/tainacan-title.vue';
-import draggable from 'vuedraggable'
 import store from '../../js/store/store'
 import router from './router'
 import eventBusSearch from '../../js/event-bus-search';
 import termsListBus from './terms-list-bus.js';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, UserCapabilitiesPlugin } from './utilities';
-import VueTheMask from 'vue-the-mask';
 
 // Configure and Register Plugins
 Vue.use(Buefy);
 Vue.use(VTooltip);
-Vue.use(VueHammer);
+// Vue.use(VueHammer);
 Vue.use(VueMasonry);
 Vue.use(I18NPlugin);
 Vue.use(UserPrefsPlugin);

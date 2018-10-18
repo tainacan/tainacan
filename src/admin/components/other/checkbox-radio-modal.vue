@@ -359,13 +359,17 @@
             getOptions(offset){
                 let promise = '';
 
+                // Cancels previous Request
+                if (this.getOptionsValuesCancel != undefined)
+                    this.getOptionsValuesCancel.cancel('Facet search Canceled.');
+
                 if ( this.metadatum_type === 'Tainacan\\Metadata_Types\\Relationship' ) {
                     let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
                         this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
 
                     promise = this.getValuesRelationship( collectionTarget, this.optionName, [], offset, this.maxNumOptionsCheckboxList, true);
 
-                    promise
+                    promise.request
                         .then(() => {
                             this.isCheckboxListLoading = false;
                             this.isSearchingLoading = false;
@@ -376,7 +380,7 @@
                 } else {
                     promise = this.getValuesPlainText( this.metadatum_id, this.optionName, this.isRepositoryLevel, [], offset, this.maxNumOptionsCheckboxList, true);
 
-                    promise
+                    promise.request
                         .then(() => {
                             this.isCheckboxListLoading = false;
                             this.isSearchingLoading = false;
@@ -385,6 +389,9 @@
                             this.$console.log(error);
                         })
                 }
+
+                // Search Request Token for cancelling
+                this.getOptionsValuesCancel = promise.source;
             },
             autoComplete: _.debounce( function () {
                 this.isSearching = !!this.optionName.length;
@@ -417,7 +424,7 @@
 
                     this.getOptions(0);
                 }
-            }, 300),
+            }, 500),
             highlightHierarchyPath(){
                 for(let [index, el] of this.hierarchicalPath.entries()){
                     let htmlEl = this.$refs[`${el.column}.${el.element}-tainacan-li-checkbox-model`][0].$el;

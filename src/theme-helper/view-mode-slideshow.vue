@@ -105,10 +105,11 @@
                             <icon class="mdi mdi-48px mdi-chevron-left"/>
                         </span> 
                     </button>
-                    <div 
-                            
+                    <div     
+                            class="slide-main-content">
+                    <!-- <div <IF WE USE HAMMER JS>
                             class="slide-main-content"
-                            v-hammer:swipe.prevent="onSwipeFiltersMenu">
+                            v-hammer:swipe.prevent="onSwipeFiltersMenu"> -->
                         <transition 
                                 mode="out-in"
                                 :name="goingRight ? 'slide-right' : 'slide-left'" >
@@ -304,6 +305,7 @@ export default {
             return this.getItem();
         },
         page() {
+            this.setMaxAndMinPages();
             return this.getPage();
         },
         totalPages() {
@@ -311,13 +313,6 @@ export default {
         }
     },
     watch: {
-        page: {
-            handler() {
-                this.minPage = this.page < this.minPage ? this.page : this.minPage;
-                this.maxPage = this.page > this.maxPage ? this.page : this.maxPage;
-            },
-            immediate: true
-        },
         items: {
             handler () {
                 if (this.items.length > 0) {
@@ -396,7 +391,6 @@ export default {
                             this.readjustedSlideIndex = this.slideIndex;
                             this.$refs.mySwiper.swiper.activeIndex = this.slideIndex + 0;
 
-                            // console.log("Index: " + this.slideIndex, this.$refs.mySwiper.swiper.activeIndex, this.readjustedSlideIndex)
                         } else if (this.slideItems.length > 0) {
                             if (this.$refs.mySwiper.swiper.activeIndex == this.slideItems.length - 1 && this.page < this.totalPages)
                                 oldVal == undefined ? this.$eventBusSearch.setPage(this.page + 1) : this.$eventBusSearch.setPage(this.maxPage + 1);
@@ -437,6 +431,10 @@ export default {
             'getPage',
             'getItemsPerPage'
         ]),
+        setMaxAndMinPages () {
+            this.minPage = JSON.parse(JSON.stringify(this.getPage() < this.minPage ? this.getPage() : this.minPage));
+            this.maxPage = JSON.parse(JSON.stringify(this.getPage() > this.maxPage ? this.getPage() : this.maxPage));
+        },
         onHideControls() {
             if (this.isSwiping == undefined || this.isSwiping == false)
                 this.hideControls = !this.hideControls;
@@ -453,7 +451,7 @@ export default {
             }, 500);
         },
         onSlideChange() {
-            // console.log(this.slideIndex, this.$refs.mySwiper.swiper.activeIndex, this.readjustedSlideIndex)
+
             if (this.$refs.mySwiper.swiper != undefined)
                 this.slideIndex = this.$refs.mySwiper.swiper.activeIndex;
 
@@ -464,6 +462,10 @@ export default {
                     //     this.$refs.mySwiper.swiper.slides[this.slideIndex].click();
                     this.$refs.mySwiper.swiper.activeIndex = this.slideIndex + 0;
                     this.readjustedSlideIndex = undefined;
+
+                    if (this.slideIndex != undefined && this.$refs.mySwiper.swiper.slides[this.slideIndex] != undefined) 
+                        this.$refs.mySwiper.swiper.slides[this.slideIndex].click();
+
                 }
             });
             

@@ -11,10 +11,10 @@ export default {
                 query: {},
                 collectionId: undefined,
                 taxonomy: undefined,
-                termId: undefined
+                termId: undefined,
+                searchCancel: undefined
             },
-            created(){
-                
+            created() {
                 this.$on('input', data => {
                     this.$store.dispatch('search/setPage', 1);
         
@@ -212,16 +212,16 @@ export default {
                     let error = this.errors.find( errorItem => errorItem.metadatum_id === filter_id );
                     return ( error ) ? error.errors : false;
                 },
-                listener(){
-                    const components = this.getAllComponents();
-                    for (let eventElement of components){
-                        eventElement.addEventListener('input', (event) => {
-                            if( event.detail ) {
-                                this.add_metaquery( event.detail[0] );
-                            }
-                        });
-                    }
-                },
+                // listener(){
+                //     const components = this.getAllComponents();
+                //     for (let eventElement of components){
+                //         eventElement.addEventListener('input', (event) => {
+                //             if( event.detail ) {
+                //                 this.add_metaquery( event.detail[0] );
+                //             }
+                //         });
+                //     }
+                // },
                 setPage(page) {
                     this.$store.dispatch('search/setPage', page);
                     this.updateURLQueries();
@@ -304,24 +304,36 @@ export default {
                     // Forces fetch_only to be filled before any search happens
                     if (this.$store.getters['search/getPostQuery']['fetch_only'] == undefined) {     
                         this.$emit( 'hasToPrepareMetadataAndFilters', to);
-                    } else {   
+                    } else {  
+                        
+                        // Cancels previous Request
+                        if (this.searchCancel != undefined)
+                            this.searchCancel.cancel('Item search Canceled.');
+
                         this.$store.dispatch('collection/fetchItems', {
                             'collectionId': this.collectionId,
                             'isOnTheme': (this.$route.name == null),
                             'termId': this.termId,
                             'taxonomy': this.taxonomy
-                        })
-                        .then((res) => {
-                            this.$emit( 'isLoadingItems', false);
-                            this.$emit( 'hasFiltered', res.hasFiltered);
+                        }).then((resp) => {
+                            // The actual fetch item request
+                            resp.request.then((res) => {
+                                this.$emit( 'isLoadingItems', false);
+                                this.$emit( 'hasFiltered', res.hasFiltered);
 
-                            if(res.advancedSearchResults){
-                                this.$emit('advancedSearchResults', res.advancedSearchResults);
-                            }
-                        })
-                        .catch(() => {
-                            this.$emit( 'isLoadingItems', false);
+                                if(res.advancedSearchResults){
+                                    this.$emit('advancedSearchResults', res.advancedSearchResults);
+                                }
+                            })
+                            .catch(() => {
+                                this.$emit( 'isLoadingItems', false);
+                            });
+
+                            // Search Request Token for cancelling
+                            this.searchCancel = resp.source;
                         });
+
+                        
                     }
                     
                 },

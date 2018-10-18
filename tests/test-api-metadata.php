@@ -483,15 +483,10 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		//=======================
 
-		$query = [
-			'fetch' => 'all_metadatum_values'
-		];
-
 		$request = new \WP_REST_Request(
 			'GET',
-			$this->namespace . '/collection/' . $collection->get_id() . '/metadata/' . $metadatum->get_id()
+			$this->namespace . '/collection/' . $collection->get_id() . '/facets/' . $metadatum->get_id()
 		);
-		$request->set_query_params($query);
 
 		//=======================
 
@@ -503,7 +498,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$data1 = $response1->get_data();
 
 		$this->assertCount(1, $data1);
-		$this->assertEquals('12/12/2017', $data1[0]['mvalue']);
+		$this->assertEquals('12/12/2017', $data1[0]['value']);
 
 		//=======================
 
@@ -515,7 +510,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$data1 = $response1->get_data();
 
 		$this->assertCount(1, $data1);
-		$this->assertEquals('12/12/2017', $data1[0]['mvalue']);
+		$this->assertEquals('12/12/2017', $data1[0]['value']);
 
 		//=======================
 
@@ -528,8 +523,8 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		// Only two without duplicates
 		$this->assertCount(2, $data2);
-		$this->assertEquals('12/12/2017', $data2[0]['mvalue']);
-		$this->assertEquals('02/03/2018', $data2[1]['mvalue']);
+		$this->assertEquals('12/12/2017', $data2[0]['value']);
+		$this->assertEquals('02/03/2018', $data2[1]['value']);
 	}
 }
 

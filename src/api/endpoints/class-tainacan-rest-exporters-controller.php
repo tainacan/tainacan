@@ -5,6 +5,7 @@ namespace Tainacan\API\EndPoints;
 use \Tainacan\API\REST_Controller;
 use Tainacan\Repositories;
 use Tainacan\Entities;
+use \Tainacan\Exposers\Mappers\Value;
 
 /**
  * Represents the Exporters REST Controller
@@ -213,7 +214,49 @@ class REST_Exporters_Controller extends REST_Controller {
 		];
 		return new \WP_REST_Response( $response, 200 );
 	}
+	
+	protected function map($item_arr, $mapper) {
+		$ret = $item_arr;
+		if(array_key_exists('metadatum', $item_arr)) { // getting a unique metadatum
+			$ret = $this->map_metadatum($item_arr, $mapper);
+		} else { // array of elements
+			$ret = [];
+			foreach ($item_arr as $item) {
+				if(array_key_exists('metadatum', $item)) {
+					$ret = array_merge($ret, $this->map($item, $mapper) );
+				} else {
+					$ret[] = $this->map($item, $mapper);
+				}
+			}
+		}
+		return $ret;
+	}
 
+	protected function map_metadatum($item_arr, $mapper) {
+		$ret = $item_arr;
+		$metadatum_mapping = $item_arr['metadatum']['exposer_mapping'];
+		if(array_key_exists($mapper->slug, $metadatum_mapping)) {
+			if(
+					is_string($metadatum_mapping[$mapper->slug]) && is_array($mapper->metadata) && !array_key_exists( $metadatum_mapping[$mapper->slug], $mapper->metadata) ||
+					is_array($metadatum_mapping[$mapper->slug]) && $mapper->allow_extra_metadata != true
+			) {
+				throw new \Exception('Invalid Mapper Option');
+			}
+			$slug = '';
+			if(is_string($metadatum_mapping[$mapper->slug])) {
+				$slug = $metadatum_mapping[$mapper->slug];
+			} else {
+				$slug = $metadatum_mapping[$mapper->slug]['slug'];
+			}
+			$ret = [$mapper->prefix.$slug.$mapper->sufix => $item_arr['value']]; //TODO Validate option
+		} elseif($mapper->slug == 'value') {
+			$ret = [$item_arr['metadatum']['name'] => $item_arr['value']];
+		} else {
+			$ret = [];
+		}
+		return $ret;
+	}
+	
 }
 
 ?>

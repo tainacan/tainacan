@@ -352,18 +352,12 @@ export default {
                 .catch((error) => {
                     this.$console.log(error);
                 });
-        }
-    },
-    created() {
-        if (this.taxonomyId !== String) {
-            this.loadTerms(0);
-        }
-        this.$root.$on('onChildTermDeleted', (parentTermId) => {
+        },
+        eventOnChildTermDeleted(parentTermId) {
             if ((parentTermId == 0 || parentTermId == undefined ) && this.totalTerms > 0)
                 this.totalTerms--;
-        });
-        this.$termsListBus.$on('editTerm', (term) => {
-
+        },
+        eventOnEditTerm(term) {
             // Position edit form in a visible area
             let container = document.getElementById('repository-container');
             if (container && container.scrollTop && container.scrollTop > 80)
@@ -373,24 +367,37 @@ export default {
 
             this.editTerm = term;
             this.isEditingTerm = true;
-        });
-        this.$termsListBus.$on('termEditionSaved', ({hasChangedParent}) => {
+        },
+        eventOnTermEditionSaved({hasChangedParent}) {
             this.isEditingTerm = false;
             this.editTerm = null;
 
             if (hasChangedParent)
                 this.loadTerms(0);
-        });
-        this.$termsListBus.$on('termEditionCanceled', () => {
+        },
+        eventOnTermEditionCanceled() {
             this.isEditingTerm = false;
             this.editTerm = null;
-        });
-        this.$termsListBus.$on('addNewChildTerm', (parentId) => {
-            this.addNewTerm(parentId);
-        });
-        this.$termsListBus.$on('deleteBasicTermItem', (term) => {
-            this.deleteBasicTerm(term);
-        });
+        }
+    },
+    created() {
+        if (this.taxonomyId !== String) {
+            this.loadTerms(0);
+        }
+        this.$root.$on('onChildTermDeleted', this.eventOnChildTermDeleted);
+        this.$termsListBus.$on('editTerm', this.eventOnEditTerm);
+        this.$termsListBus.$on('termEditionSaved', this.eventOnTermEditionSaved);
+        this.$termsListBus.$on('termEditionCanceled', this.eventOnTermEditionCanceled);
+        this.$termsListBus.$on('addNewChildTerm', this.addNewTerm);
+        this.$termsListBus.$on('deleteBasicTermItem', this.deleteBasicTerm);
+    },
+    beforeDestroy() {
+        this.$root.$off('onChildTermDeleted', this.eventOnChildTermDeleted);
+        this.$termsListBus.$off('editTerm', this.eventOnEditTerm);
+        this.$termsListBus.$off('termEditionSaved', this.eventOnTermEditionSaved);
+        this.$termsListBus.$off('termEditionCanceled', this.eventOnTermEditionCanceled);
+        this.$termsListBus.$off('addNewChildTerm', this.addNewTerm);
+        this.$termsListBus.$off('deleteBasicTermItem', this.deleteBasicTerm);
     }
     
 }

@@ -11,7 +11,7 @@ export const eventBus = new Vue({
         if( tainacan_plugin.components ){
             this.componentsTag = tainacan_plugin.components;
         }
-        this.$on('input', data => this.updateValue(data) );
+        this.$on('input', this.updateValue );
     },
     watch: {
         errors() {
@@ -24,21 +24,21 @@ export const eventBus = new Vue({
                 this.componentsTag.push( name );
             }
         },
-        listener(){
-            const components = this.getAllComponents();
-            for (let eventElement of components){
-                eventElement.addEventListener('input', (event) => {
+        // listener(){
+        //     const components = this.getAllComponents();
+        //     for (let eventElement of components){
+        //         eventElement.addEventListener('input', (event) => {
 
-                    if (event.detail && event.detail[0] ){
-                        this.updateValue({
-                            item_id: $(eventElement).attr("item_id"),
-                            metadatum_id: $(eventElement).attr("metadatum_id"),
-                            values: event.detail
-                        })
-                    }
-                });
-            }
-        }, 
+        //             if (event.detail && event.detail[0] ){
+        //                 this.updateValue({
+        //                     item_id: $(eventElement).attr("item_id"),
+        //                     metadatum_id: $(eventElement).attr("metadatum_id"),
+        //                     values: event.detail
+        //                 })
+        //             }
+        //         });
+        //     }
+        // }, 
         updateValue(data){
             
             this.$emit('isUpdatingValue', true);
@@ -128,6 +128,9 @@ export const eventBus = new Vue({
                 }
             }
         }
+    },
+    beforeUpdate() {
+        this.$off('input', this.updateValue );
     }
 
 });

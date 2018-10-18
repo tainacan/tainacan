@@ -32,6 +32,7 @@
 
     export default {
         created(){
+
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
             this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id;
             const vm = this;
@@ -55,38 +56,7 @@
                     this.$console.log(error);
                 });
 
-            this.$eventBusSearch.$on('removeFromFilterTag', (filterTag) => {
-                if (filterTag.filterId == this.filter.id) {
-
-                    let selectedIndex = this.selected.findIndex(option => option == filterTag.singleValue);
-                    let optionIndex = this.options.findIndex(option => option.label == filterTag.singleValue);
-                    let alternativeIndex;
-
-                    if (optionIndex >= 0) {
-                        alternativeIndex = this.selected.findIndex(option => this.options[optionIndex].value == option);
-                    }
-
-                    if (selectedIndex >= 0 || alternativeIndex >= 0) {
-
-                        selectedIndex >= 0 ? this.selected.splice(selectedIndex, 1) : this.selected.splice(alternativeIndex, 1); 
-
-                        this.$emit('input', {
-                            filter: 'checkbox',
-                            compare: 'IN',
-                            metadatum_id: this.metadatum,
-                            collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
-                            value: this.selected
-                        });
-
-                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                            filterId: this.filter.id,
-                            value: this.selected
-                        });
-
-                        this.selectedValues();
-                    }
-                }
-            });
+            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
         },
         props: {
             isRepositoryLevel: Boolean,
@@ -112,46 +82,56 @@
         methods: {
             loadOptions(){
                 let promise = null;
-                this.isLoading = true;
+                
+                // Cancels previous Request
+                if (this.getOptionsValuesCancel != undefined)
+                    this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
                 if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
+                    this.isLoading = true;
                     let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
                         this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
 
                     promise = this.getValuesRelationship( collectionTarget, null, [], 0, this.filter.max_options, false, '1');
-                    promise
+                    promise.request
                         .then(() => {
-
-                        this.isLoading = false;
+                            this.isLoading = false;
                             if(this.options.length > this.filter.max_options){
                                 this.options.splice(this.filter.max_options);
                             }
+                            this.selectedValues();
                         }).catch((error) => {
                             this.$console.error(error);
-                    })
+                    }) 
                 } else {
+                    this.isLoading = true;
                     promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1' );
-                    promise
+                    promise.request
                         .then(() => {
 
-                        this.isLoading = false;
+                            this.isLoading = false;
                             if(this.options.length > this.filter.max_options){
                                 this.options.splice(this.filter.max_options);
                             }
+                            this.selectedValues();
                         }).catch((error) => {
                             this.$console.error(error);
-                        })
+                        });
                 }
 
-                promise
-                    .then(() => {
-                        this.isLoading = false;
-                        this.selectedValues()
-                    })
-                    .catch( error => {
-                        this.$console.log('error select', error );
-                        this.isLoading = false;
-                    });
+                // promise.request
+                //     .then(() => {
+                //         this.isLoading = false;
+                        
+                //     })
+                //     .catch( error => {
+                //         this.$console.log('error select', error );
+                //         this.isLoading = false;
+                //     });
+
+                // Search Request Token for cancelling
+                this.getOptionsValuesCancel = promise.source;
+
             },
             onSelect(){
                 this.$emit('input', {
@@ -213,7 +193,42 @@
                         appliedCheckBoxModal: () => this.loadOptions()
                     }
                 });
+            },
+            cleanSearchFromTags(filterTag) {
+                if (filterTag.filterId == this.filter.id) {
+
+                    let selectedIndex = this.selected.findIndex(option => option == filterTag.singleValue);
+                    let optionIndex = this.options.findIndex(option => option.label == filterTag.singleValue);
+                    let alternativeIndex;
+
+                    if (optionIndex >= 0) {
+                        alternativeIndex = this.selected.findIndex(option => this.options[optionIndex].value == option);
+                    }
+
+                    if (selectedIndex >= 0 || alternativeIndex >= 0) {
+
+                        selectedIndex >= 0 ? this.selected.splice(selectedIndex, 1) : this.selected.splice(alternativeIndex, 1); 
+
+                        this.$emit('input', {
+                            filter: 'checkbox',
+                            compare: 'IN',
+                            metadatum_id: this.metadatum,
+                            collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                            value: this.selected
+                        });
+
+                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                            filterId: this.filter.id,
+                            value: this.selected
+                        });
+
+                        this.selectedValues();
+                    }
+                }
             }
+        },
+        beforeDestroy() {
+            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
         }
     }
 </script>

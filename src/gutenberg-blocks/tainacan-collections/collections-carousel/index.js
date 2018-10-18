@@ -25,14 +25,28 @@ registerBlockType('tainacan/collections-carousel', {
         },
         selectedCollections: {
             type: 'array',
-            source: 'html',
+            source: 'query',
             selector: 'div',
-            default: [],
+            query: {
+                dataValue: { source: 'attribute', attribute: 'data-value'},
+            },
+            default: []
         },
-        featuredItems: {
+        items: {
             type: 'array',
-            source: 'html',
-            selector: 'div',
+            source: 'query',
+            selector: 'picture',
+            query: {
+                style: { source: 'attribute', attribute: 'style'},
+                img: {
+                    source: 'query',
+                    selector: 'img',
+                    query: {
+                        src: { source: 'attribute', attribute: 'src'},
+                        alt: { source: 'attribute', attribute: 'alt' },
+                    }
+                }
+            },
             default: [],
         },
         content1: {
@@ -42,7 +56,7 @@ registerBlockType('tainacan/collections-carousel', {
             default: [],
         },
         content: {
-            type: 'array',
+            type: 'string',
             source: 'html',
             selector: 'div',
             default: []
@@ -52,8 +66,20 @@ registerBlockType('tainacan/collections-carousel', {
       align: ['full']
     },
     edit({ attributes, setAttributes, className }) {
+        console.log('edit', attributes);
+
         function prepareCollection(collection) {
             return (<div key={ collection.id } data-value={collection}>{ collection.name }</div>);
+        }
+        
+        function prepareItem(item, style) {
+            return (
+                <picture style={style}>
+                    <img
+                        src={item.thumbnail.thumb ? item.thumbnail.thumb : 'https://dummyimage.com/150x150/cccccc/000000.png&text=+++NO+THUMBNAIL'}
+                        alt={item.title} />
+                </picture>
+            );
         }
 
         function getTop3ItemsOf(collection) {
@@ -70,7 +96,7 @@ registerBlockType('tainacan/collections-carousel', {
                });
         }
 
-        function prepareContent(content, featuredItems, setAttributes, collection){
+        function prepareContent(content, items, setAttributes, collection){
             content.push(
                 <div style={{display: 'flex', flexDirection: 'column', marginRight: '20px'}}>
                     <div
@@ -78,27 +104,17 @@ registerBlockType('tainacan/collections-carousel', {
                         key={collection.id}>
 
                         <div style={{width: '99px', marginRight: '3px'}} className={`${className}__carousel-item-first`}>
-                            {featuredItems[0] ?
-                                <picture>
-                                    <img src={featuredItems[0].thumbnail.thumb} alt={featuredItems[0].title}/>
-                                </picture> : null
-                            }
+                            {items[0] ? prepareItem(items[0]) : null}
                         </div>
 
                         <div className={`${className}__carousel-item-others`}>
-                            {featuredItems[1] ?
-                                <picture style={{width: '42px', height: '42px', marginBottom: '3px'}}>
-                                    <img src={featuredItems[1].thumbnail.thumb} alt={featuredItems[1].title}/>
-                                </picture> : null
-                            }
-                            {featuredItems[2] ?
-                                <picture style={{width: '42px', height: '42px'}}>
-                                    <img src={featuredItems[2].thumbnail.thumb} alt={featuredItems[2].title}/>
-                                </picture> : null
-                            }
+                            {items[1] ? prepareItem(items[1], {width: '42px', height: '42px', marginBottom: '3px'}) : null}
+                            {items[2] ? prepareItem(items[2], {width: '42px', height: '42px'}) : null}
                         </div>
                     </div>
-                    <small><b>{collection.name}</b></small>
+                    <small>
+                        <b>{collection.name}</b>
+                    </small>
                 </div>
             );
 
@@ -137,11 +153,13 @@ registerBlockType('tainacan/collections-carousel', {
                     attributes.selectedCollections.push(prepareCollection(option));
 
                     getTop3ItemsOf(option).then((res) => {
-                        attributes.featuredItems.push(res);
+                        res.map((item) =>  {
+                            attributes.items.push(prepareItem(item))
+                        });
 
                         prepareContent(attributes.content1, res, setAttributes, option);
 
-                        setAttributes({ featuredItems: attributes.featuredItems });
+                        setAttributes({ items: attributes.items });
                     });
 
                     setAttributes({ selectedCollections: attributes.selectedCollections });
@@ -160,7 +178,20 @@ registerBlockType('tainacan/collections-carousel', {
                     <Modal
                         shouldCloseOnClickOutside={ false }
                         title={ __('Add collection', 'tainacan') }
-                        onRequestClose={ () => setAttributes( { isOpen: false } ) }>
+                        onRequestClose={ () => {
+                            setAttributes( { isOpen: false } );
+                            setAttributes({
+                                content: (
+                                    <div>
+                                        {attributes.content1.length ?
+                                            <Carousel
+                                                slidesPerScroll={1}
+                                                slidesPerPage={attributes.content1.length >= 3 ? 3 : attributes.content1.length}
+                                                arrows
+                                                slides={attributes.content1}/> : null
+                                        }</div>
+                                )});
+                        }}>
 
                         <div>
                             <Autocomplete completers={ autoCompleters }>
@@ -179,7 +210,20 @@ registerBlockType('tainacan/collections-carousel', {
                             <p>{ __('Type '+ autoCompleters[0].triggerPrefix +' for triggering the autocomplete.', 'tainacan') }</p>
                         </div>
 
-                        <Button isDefault onClick={ () => setAttributes( { isOpen: false } ) }>
+                        <Button isDefault onClick={ () => {
+                            setAttributes( { isOpen: false } );
+                            setAttributes({
+                                content: (
+                                    <div>
+                                    {attributes.content1.length ?
+                                        <Carousel
+                                            slidesPerScroll={1}
+                                            slidesPerPage={attributes.content1.length >= 3 ? 3 : attributes.content1.length}
+                                            arrows
+                                            slides={attributes.content1}/> : null
+                                    }</div>
+                                )});
+                        } }>
                             { __('Close', 'tainacan') }
                         </Button>
                     </Modal>
@@ -187,24 +231,28 @@ registerBlockType('tainacan/collections-carousel', {
                 }
 
                 <div>
-                    <Carousel
-                        slidesPerScroll={1}
-                        slidesPerPage={attributes.content1.length >= 3 ? 3 : attributes.content1.length}
-                        arrows
-                        slides={attributes.content1}/>
+                    {attributes.content1.length ?
+                        <Carousel
+                            slidesPerScroll={1}
+                            slidesPerPage={attributes.content1.length >= 3 ? 3 : attributes.content1.length}
+                            arrows
+                            slides={attributes.content1}/> : null
+                    }
                 </div>
             </div>
         );
     },
     save({ attributes }) {
-        return (
-            <div>
-                <Carousel
-                    slidesPerScroll={1}
-                    slidesPerPage={attributes.content1.length >= 3 ? 3 : attributes.content1.length}
-                    arrows
-                    slides={attributes.content1}/>
-            </div>
-        );
+        // return (
+        //     <div>
+        //         <Carousel
+        //             slidesPerScroll={1}
+        //             slidesPerPage={attributes.content1.length >= 3 ? 3 : attributes.content1.length}
+        //             arrows
+        //             slides={attributes.content1}/>
+        //     </div>
+        // );
+
+        return attributes.content;
     },
 });

@@ -8,6 +8,7 @@ export const set_postquery = ({ commit }, postquery ) => {
 };
 
 export const set_advanced_query = ({commit}, advancedSearchQuery) => {
+    commit('removePostQueryAttribute', 'search');
     commit('setAdvancedSearchQuery', advancedSearchQuery);
 };
 
@@ -74,7 +75,7 @@ export const setStatus= ({ commit }, status ) => {
 
 // Sorting queries
 export const setOrderBy = ({ state, commit }, orderBy ) => {
-    commit('cleanPostQueryAttribute', {  attr: 'orderby' } );
+    commit('removePostQueryAttribute', 'orderby');
     
     // Primitive Types: string, date, item, term, compound, float
     if (orderBy.slug == 'creation_date') {

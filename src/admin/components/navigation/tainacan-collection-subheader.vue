@@ -168,6 +168,7 @@ export default {
             this.arrayRealPath = this.arrayRealPath.filter((item) => item.length != 0);
             
             this.generateViewPath();
+
         }
     },
     methods: {
@@ -204,7 +205,7 @@ export default {
                     switch(this.arrayRealPath[i-1]) {
                         case 'collections':
                             this.fetchCollectionNameAndURL(this.arrayRealPath[i])
-                                .then(collection => this.arrayViewPath.splice(i, 1, collection.name))
+                                .then(collection => this.arrayViewPath.splice(i, 1, collection.name) )
                                 .catch((error) => this.$console.error(error));
 
                             break;
@@ -225,6 +226,11 @@ export default {
                             break;
                     }
                     
+                } else if (this.arrayRealPath[i-1] == 'sequence' && i > 0){
+                    if (this.$route.params.itemPosition != undefined) {
+                        this.arrayViewPath.splice(i, 1, this.$i18n.get('label_editing_item_number') + this.$route.params.itemPosition);
+                    } else
+                        this.arrayViewPath.splice(i, 1, this.$i18n.get('edit'));
                 } else {
                     if(this.arrayRealPath[i] == 'undefined'){
                         this.arrayViewPath.splice(i, 1, '');
