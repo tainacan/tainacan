@@ -238,7 +238,7 @@ import axios from '../js/axios/axios.js';
 import 'swiper/dist/css/swiper.css';
 import { swiper, swiperSlide } from 'vue-awesome-swiper';
 import CircularCounter from '../admin/components/other/circular-counter.vue';
-
+ 
 export default {
     name: 'ViewModeSlideshow',
     props: {
