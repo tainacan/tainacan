@@ -36,7 +36,7 @@
   margin: 0;
   padding: 0; }
 
-.BrainhubCarousel .BrainhubCarousel__trackContainer .BrainhubCarousel__track.BrainhubCarousel__track--transition {
+.BrainhubCarousel .BrainhubCarousel__trackContainer .BrainhubCarousel__track .BrainhubCarousel__track--transition {
   -webkit-transition: -webkit-transform;
   transition: -webkit-transform;
   transition: transform;
@@ -68,7 +68,7 @@
   cursor: pointer;
   -webkit-appearance: none; }
 
-.BrainhubCarousel__dots .BrainhubCarousel__dot.BrainhubCarousel__dot--selected {
+.BrainhubCarousel__dots .BrainhubCarousel__dot .BrainhubCarousel__dot--selected {
   opacity: 1 !important; }
 
 .BrainhubCarousel__dots .BrainhubCarousel__dot:hover {
@@ -91,7 +91,7 @@
   opacity: 0.5;
   cursor: pointer; }
 
-.BrainhubCarousel__dots .BrainhubCarousel__thumbnail.BrainhubCarousel__thumbnail--selected {
+.BrainhubCarousel__dots .BrainhubCarousel__thumbnail .BrainhubCarousel__thumbnail--selected {
   opacity: 1 !important; }
 
 .BrainhubCarousel__dots .BrainhubCarousel__thumbnail:hover {
@@ -140,6 +140,11 @@
   transform: translate(-50%, -50%) rotate(45deg);
   margin-left: -2.45px; }
 
+.BrainhubCarousel__track {
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important; }
+
 .BrainhubCarouselItem {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -150,7 +155,10 @@
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  position: relative; }
+  position: relative;
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important; }
 
 .BrainhubCarouselItem.BrainhubCarouselItem--clickable {
   cursor: pointer; }

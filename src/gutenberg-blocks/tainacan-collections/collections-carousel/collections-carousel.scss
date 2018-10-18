@@ -47,7 +47,7 @@
   padding: 0;
 }
 
-.BrainhubCarousel .BrainhubCarousel__trackContainer .BrainhubCarousel__track.BrainhubCarousel__track--transition {
+.BrainhubCarousel .BrainhubCarousel__trackContainer .BrainhubCarousel__track .BrainhubCarousel__track--transition {
   -webkit-transition: -webkit-transform;
   transition: -webkit-transform;
   transition: transform;
@@ -83,7 +83,7 @@
   -webkit-appearance: none;
 }
 
-.BrainhubCarousel__dots .BrainhubCarousel__dot.BrainhubCarousel__dot--selected {
+.BrainhubCarousel__dots .BrainhubCarousel__dot .BrainhubCarousel__dot--selected {
   opacity: 1 !important;
 }
 
@@ -110,7 +110,7 @@
   cursor: pointer;
 }
 
-.BrainhubCarousel__dots .BrainhubCarousel__thumbnail.BrainhubCarousel__thumbnail--selected {
+.BrainhubCarousel__dots .BrainhubCarousel__thumbnail .BrainhubCarousel__thumbnail--selected {
   opacity: 1 !important;
 }
 
@@ -168,6 +168,12 @@
   margin-left: -2.45px;
 }
 
+.BrainhubCarousel__track {
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
+
 .BrainhubCarouselItem {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -179,6 +185,10 @@
   -ms-flex-align: center;
   align-items: center;
   position: relative;
+
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
 }
 
 .BrainhubCarouselItem.BrainhubCarouselItem--clickable {

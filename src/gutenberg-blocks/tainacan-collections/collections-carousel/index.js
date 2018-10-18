@@ -1,4 +1,4 @@
-import Carousel, { Dots } from '@brainhubeu/react-carousel';
+import Carousel from '@brainhubeu/react-carousel';
 
 const { registerBlockType } = wp.blocks;
 
@@ -28,7 +28,7 @@ registerBlockType('tainacan/collections-carousel', {
             source: 'query',
             selector: 'div',
             query: {
-                dataValue: { source: 'attribute', attribute: 'data-value'},
+                dataValue: { source: 'attribute', attribute: 'value'},
             },
             default: []
         },
@@ -42,8 +42,14 @@ registerBlockType('tainacan/collections-carousel', {
                     source: 'query',
                     selector: 'img',
                     query: {
-                        src: { source: 'attribute', attribute: 'src'},
-                        alt: { source: 'attribute', attribute: 'alt' },
+                        src: {
+                            source: 'attribute',
+                            attribute: 'src'
+                        },
+                        alt: {
+                            source: 'attribute',
+                            attribute: 'alt'
+                        },
                     }
                 }
             },
@@ -58,8 +64,7 @@ registerBlockType('tainacan/collections-carousel', {
         content: {
             type: 'string',
             source: 'html',
-            selector: 'div',
-            default: []
+            selector: 'div'
         }
     },
     supports: {
@@ -69,14 +74,14 @@ registerBlockType('tainacan/collections-carousel', {
         console.log('edit', attributes);
 
         function prepareCollection(collection) {
-            return (<div key={ collection.id } data-value={collection}>{ collection.name }</div>);
+            return (<input key={ collection.id } value={collection} />);
         }
         
         function prepareItem(item, style) {
             return (
                 <picture style={style}>
                     <img
-                        src={item.thumbnail.thumb ? item.thumbnail.thumb : 'https://dummyimage.com/150x150/cccccc/000000.png&text=+++NO+THUMBNAIL'}
+                        src={item.thumbnail.thumb ? item.thumbnail.thumb : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
                         alt={item.title} />
                 </picture>
             );
@@ -179,18 +184,21 @@ registerBlockType('tainacan/collections-carousel', {
                         shouldCloseOnClickOutside={ false }
                         title={ __('Add collection', 'tainacan') }
                         onRequestClose={ () => {
-                            setAttributes( { isOpen: false } );
+
                             setAttributes({
                                 content: (
                                     <div>
-                                        {attributes.content1.length ?
+                                        { attributes.content1.length ?
                                             <Carousel
                                                 slidesPerScroll={1}
                                                 slidesPerPage={attributes.content1.length >= 3 ? 3 : attributes.content1.length}
                                                 arrows
                                                 slides={attributes.content1}/> : null
-                                        }</div>
+                                        }
+                                    </div>
                                 )});
+
+                            setAttributes( { isOpen: false } );
                         }}>
 
                         <div>
@@ -211,18 +219,20 @@ registerBlockType('tainacan/collections-carousel', {
                         </div>
 
                         <Button isDefault onClick={ () => {
-                            setAttributes( { isOpen: false } );
                             setAttributes({
                                 content: (
                                     <div>
-                                    {attributes.content1.length ?
-                                        <Carousel
-                                            slidesPerScroll={1}
-                                            slidesPerPage={attributes.content1.length >= 3 ? 3 : attributes.content1.length}
-                                            arrows
-                                            slides={attributes.content1}/> : null
-                                    }</div>
+                                        { attributes.content1.length ?
+                                            <Carousel
+                                                slidesPerScroll={1}
+                                                slidesPerPage={attributes.content1.length >= 3 ? 3 : attributes.content1.length}
+                                                arrows
+                                                slides={attributes.content1}/> : null
+                                        }
+                                    </div>
                                 )});
+
+                            setAttributes( { isOpen: false } );
                         } }>
                             { __('Close', 'tainacan') }
                         </Button>
@@ -231,7 +241,7 @@ registerBlockType('tainacan/collections-carousel', {
                 }
 
                 <div>
-                    {attributes.content1.length ?
+                    { attributes.content1.length ?
                         <Carousel
                             slidesPerScroll={1}
                             slidesPerPage={attributes.content1.length >= 3 ? 3 : attributes.content1.length}
@@ -243,16 +253,14 @@ registerBlockType('tainacan/collections-carousel', {
         );
     },
     save({ attributes }) {
-        // return (
-        //     <div>
-        //         <Carousel
-        //             slidesPerScroll={1}
-        //             slidesPerPage={attributes.content1.length >= 3 ? 3 : attributes.content1.length}
-        //             arrows
-        //             slides={attributes.content1}/>
-        //     </div>
-        // );
+        let { content } = attributes;
 
-        return attributes.content;
+        console.log('save', content);
+
+        return (
+            <div>
+                { content }
+            </div>
+        );
     },
 });
