@@ -381,7 +381,19 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		$this->assertEquals(false, $_SESSION['tainacan_importer'][$id]->run(), '5 items and return false because its finished');
 		$this->assertEquals(false, $_SESSION['tainacan_importer'][$id]->run(), 'if call run again after finish, do nothing');
 
-        $items = $Tainacan_Items->fetch( [], $collection, 'OBJECT' );
+        $items = $Tainacan_Items->fetch( ['orderby' => 'date'], $collection, 'OBJECT' );
+
+        foreach ( $items as $index => $item ) {
+            $singleItemMetadata = new Entities\Item_Metadata_Entity( $item, $metadata_taxonomy ); 
+
+            if( $index === 0 ){
+                $term = $singleItemMetadata->get_value();
+
+                if( in_array( $item->get_title(),['Data 11','Data 51'] ) )
+                    $this->assertTrue(in_array( $term->get_name(),['DATA 151','DATA551'] ));
+            } 
+               
+        }
 
         $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_source_number_of_items(), count( $items ) );
     }
