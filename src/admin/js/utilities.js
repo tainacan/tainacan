@@ -236,6 +236,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getImporterPath(importerType, sessionId) {
             return '/importers/' + importerType + '/' + sessionId;
         },
+        getCollectionEventPath(collectionId, eventId) {
+            return '/collections/' + collectionId + '/events/' + eventId;
+        },
         // New
         getNewCollectionPath() {
             return '/collections/new';

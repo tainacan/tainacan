@@ -765,6 +765,12 @@ export default {
             // Puts loading on Draft Item creation
             this.isLoading = true;
 
+            // Updates Collection BreadCrumb
+            this.$root.$emit('onCollectionBreadCrumbUpdate', [
+                { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
+                { path: '', label: this.$i18n.get('new') }
+            ]);
+
             // Creates draft Item
             let data = {collection_id: this.form.collectionId, status: 'auto-draft', comment_status: this.form.comment_status};
             this.fillExtraFormData(data);
@@ -975,6 +981,22 @@ export default {
 
             this.fetchItem(this.itemId).then(res => {
                 this.item = res;
+
+                // Updates Collection BreadCrumb
+                if (this.isOnSequenceEdit) {
+                    this.$root.$emit('onCollectionBreadCrumbUpdate', [
+                        { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
+                        { path: '', label: this.$i18n.get('sequence') },
+                        { path: '', label: this.item.title },   
+                        { path: '', label: this.$i18n.get('edit') }
+                    ]);
+                } else {
+                    this.$root.$emit('onCollectionBreadCrumbUpdate', [
+                        { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
+                        { path: this.$routerHelper.getItemPath(this.form.collectionId, this.itemId), label: this.item.title },
+                        { path: '', label: this.$i18n.get('edit') }
+                    ]);
+                }
 
                 // Fills hook forms with it's real values 
                 this.$nextTick()

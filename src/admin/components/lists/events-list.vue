@@ -144,7 +144,10 @@
             //     this.notApprove(eventId);
             // },
             goToEventPage(eventId) {
-                this.$router.push(this.$routerHelper.getEventPath(eventId));
+                if (this.$route.params.collectionId == undefined)
+                    this.$router.push(this.$routerHelper.getEventPath(eventId));
+                else
+                    this.$router.push(this.$routerHelper.getCollectionEventPath(this.$route.params.collectionId, eventId));
             }
         }
     }
