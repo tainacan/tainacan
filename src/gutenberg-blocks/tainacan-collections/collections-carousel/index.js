@@ -5,6 +5,9 @@ const { registerBlockType } = wp.blocks;
 const { Modal, Button, Autocomplete } = wp.components;
 
 const { __ } = wp.i18n;
+
+const { RichText } = wp.editor;
+
 const createHTML = wp.element.createElement;
 
 import tainacan from '../../api-client/axios.js';
@@ -13,7 +16,7 @@ registerBlockType('tainacan/collections-carousel', {
     title: 'Tainacan Collections Carousel',
     icon: 'images-alt',
     category: 'tainacan-blocks',
-    supportHTML: false,
+    supportHTML: true,
     attributes: {
         isOpen: {
             type: Boolean,
@@ -28,7 +31,7 @@ registerBlockType('tainacan/collections-carousel', {
             source: 'query',
             selector: 'div',
             query: {
-                dataValue: { source: 'attribute', attribute: 'value'},
+                dataValue: { source: 'attribute', attribute: 'content'},
             },
             default: []
         },
@@ -55,15 +58,15 @@ registerBlockType('tainacan/collections-carousel', {
             },
             default: [],
         },
-        content1: {
+        contentTemp: {
             type: 'array',
             source: 'html',
             selector: 'div',
             default: [],
         },
         content: {
-            type: 'string',
-            source: 'html',
+            type: 'array',
+            source: 'children',
             selector: 'div'
         }
     },
@@ -73,10 +76,12 @@ registerBlockType('tainacan/collections-carousel', {
     edit({ attributes, setAttributes, className }) {
         console.log('edit', attributes);
 
+        let { contentTemp, collectionsMatched, selectedCollections, items, isOpen } = attributes;
+
         function prepareCollection(collection) {
-            return (<input key={ collection.id } value={collection} />);
+            return (<div key={ collection.id } content={collection} />);
         }
-        
+
         function prepareItem(item, style) {
             return (
                 <picture style={style}>
@@ -103,27 +108,29 @@ registerBlockType('tainacan/collections-carousel', {
 
         function prepareContent(content, items, setAttributes, collection){
             content.push(
-                <div style={{display: 'flex', flexDirection: 'column', marginRight: '20px'}}>
-                    <div
-                        className={`${className}__carousel-item`}
-                        key={collection.id}>
+                <div>
+                    <div style={{display: 'flex', flexDirection: 'column', marginRight: '20px'}}>
+                        <div
+                            className={`${className}__carousel-item`}
+                            key={collection.id}>
 
-                        <div style={{width: '99px', marginRight: '3px'}} className={`${className}__carousel-item-first`}>
-                            {items[0] ? prepareItem(items[0]) : null}
-                        </div>
+                            <div style={{width: '99px', marginRight: '3px'}} className={`${className}__carousel-item-first`}>
+                                {items[0] ? prepareItem(items[0]) : null}
+                            </div>
 
-                        <div className={`${className}__carousel-item-others`}>
-                            {items[1] ? prepareItem(items[1], {width: '42px', height: '42px', marginBottom: '3px'}) : null}
-                            {items[2] ? prepareItem(items[2], {width: '42px', height: '42px'}) : null}
+                            <div className={`${className}__carousel-item-others`}>
+                                {items[1] ? prepareItem(items[1], {width: '42px', height: '42px', marginBottom: '3px'}) : null}
+                                {items[2] ? prepareItem(items[2], {width: '42px', height: '42px'}) : null}
+                            </div>
                         </div>
+                        <small>
+                            <b>{collection.name}</b>
+                        </small>
                     </div>
-                    <small>
-                        <b>{collection.name}</b>
-                    </small>
                 </div>
             );
 
-            setAttributes({ content1: content });
+            setAttributes({ contentTemp: content });
         }
 
         const autoCompleters = [
@@ -148,26 +155,24 @@ registerBlockType('tainacan/collections-carousel', {
                     return (<span>{option.name}</span>);
                 },
                 getOptionKeywords(option) {
-                    attributes.collectionsMatched.push(option.name);
+                    collectionsMatched.push(option.name);
 
-                    return attributes.collectionsMatched;
+                    return collectionsMatched;
                 },
                 getOptionCompletion(option) {
-                    console.log('foi');
-
-                    attributes.selectedCollections.push(prepareCollection(option));
+                    selectedCollections.push(prepareCollection(option));
 
                     getTop3ItemsOf(option).then((res) => {
                         res.map((item) =>  {
-                            attributes.items.push(prepareItem(item))
+                            items.push(prepareItem(item))
                         });
 
-                        prepareContent(attributes.content1, res, setAttributes, option);
+                        prepareContent(contentTemp, res, setAttributes, option);
 
-                        setAttributes({ items: attributes.items });
+                        setAttributes({ items: items });
                     });
 
-                    setAttributes({ selectedCollections: attributes.selectedCollections });
+                    setAttributes({ selectedCollections: selectedCollections });
 
                     return (<abbr title={option.name}>{` | ${option.name} `}</abbr>);
                 },
@@ -179,7 +184,7 @@ registerBlockType('tainacan/collections-carousel', {
             <div className={ className }>
                 <Button isDefault onClick={ () => setAttributes( { isOpen: true } ) }>{ __('Add collection', 'tainacan') }</Button>
 
-                { attributes.isOpen ?
+                { isOpen ?
                     <Modal
                         shouldCloseOnClickOutside={ false }
                         title={ __('Add collection', 'tainacan') }
@@ -188,12 +193,12 @@ registerBlockType('tainacan/collections-carousel', {
                             setAttributes({
                                 content: (
                                     <div>
-                                        { attributes.content1.length ?
+                                        { contentTemp.length ?
                                             <Carousel
                                                 slidesPerScroll={1}
-                                                slidesPerPage={attributes.content1.length >= 3 ? 3 : attributes.content1.length}
+                                                slidesPerPage={contentTemp.length >= 3 ? 3 : contentTemp.length}
                                                 arrows
-                                                slides={attributes.content1}/> : null
+                                                slides={contentTemp}/> : null
                                         }
                                     </div>
                                 )});
@@ -222,12 +227,12 @@ registerBlockType('tainacan/collections-carousel', {
                             setAttributes({
                                 content: (
                                     <div>
-                                        { attributes.content1.length ?
+                                        { contentTemp.length ?
                                             <Carousel
                                                 slidesPerScroll={1}
-                                                slidesPerPage={attributes.content1.length >= 3 ? 3 : attributes.content1.length}
+                                                slidesPerPage={contentTemp.length >= 3 ? 3 : contentTemp.length}
                                                 arrows
-                                                slides={attributes.content1}/> : null
+                                                slides={contentTemp}/> : null
                                         }
                                     </div>
                                 )});
@@ -241,26 +246,24 @@ registerBlockType('tainacan/collections-carousel', {
                 }
 
                 <div>
-                    { attributes.content1.length ?
+                    { contentTemp.length ?
                         <Carousel
                             slidesPerScroll={1}
-                            slidesPerPage={attributes.content1.length >= 3 ? 3 : attributes.content1.length}
+                            slidesPerPage={contentTemp.length >= 3 ? 3 : contentTemp.length}
                             arrows
-                            slides={attributes.content1}/> : null
+                            slides={contentTemp}/> : null
                     }
                 </div>
             </div>
         );
     },
     save({ attributes }) {
-        let { content } = attributes;
+        const { content, items } = attributes;
 
-        console.log('save', content);
+        console.log('save', attributes, items);
 
-        return (
-            <div>
-                { content }
-            </div>
-        );
+        console.info(content);
+
+        return <div>{ content }</div>
     },
 });
