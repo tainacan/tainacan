@@ -28,7 +28,21 @@
                         <router-link 
                                 tag="a" 
                                 :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link> > 
-                        <span 
+                        <router-link 
+                                tag="a" 
+                                :to="{ path: collectionBreadCrumbItem.url, query: { fromBreadcrumb: true }}">{{ collectionBreadCrumbItem.name }}</router-link> 
+                        <template v-for="(childBreadCrumbItem, index) of childrenBreadCrumbItems">
+                            <span :key="index"> > </span>
+                            <router-link    
+                                    :key="index"
+                                    v-if="childBreadCrumbItem.path != ''"
+                                    tag="a"
+                                    :to="childBreadCrumbItem.path">{{ childBreadCrumbItem.label }}</router-link>
+                            <span 
+                                    :key="index"
+                                    v-else>{{ childBreadCrumbItem.label }}</span>
+                        </template>
+                        <!-- <span 
                                 v-for="(pathItem, index) in arrayRealPath" 
                                 :key="index">
                             <router-link
@@ -39,7 +53,7 @@
                             </router-link>
                             <span v-if="index == arrayRealPath.length - 1">{{ arrayViewPath[index] }}</span>
                             <span v-if="index != arrayRealPath.length - 1 && arrayViewPath[index]"> > </span>
-                        </span>   
+                        </span>    -->
                     </nav>
                 </div>
             </div>
@@ -137,7 +151,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
 import ActivitiesIcon from '../other/activities-icon.vue';
 
 export default {
@@ -146,10 +160,10 @@ export default {
         return {
             activeRoute: 'ItemsList',
             pageTitle: '',
-            arrayRealPath: [],
-            arrayViewPath: [],
             activeRouteName: '',
-            collectionNameRequestCancel: undefined
+            collectionNameRequestCancel: undefined,
+            collectionBreadCrumbItem: {},
+            childrenBreadCrumbItems: []
         }
     },
     components: {
@@ -164,11 +178,6 @@ export default {
                 this.activeRoute = to.name;
 
                 this.pageTitle = this.$route.meta.title;
-
-                this.arrayRealPath = to.path.split("/");
-                this.arrayRealPath = this.arrayRealPath.filter((item) => item.length != 0);
-                
-                this.generateViewPath();
             }
         }
     },
@@ -176,81 +185,8 @@ export default {
         ...mapActions('collection', [
             'fetchCollectionNameAndURL'
         ]),
-        ...mapGetters('collection', [
-            'getCollectionName',
-            'getCollection'
-        ]),
-        ...mapActions('item', [
-            'fetchItemTitle'
-        ]),
-        ...mapGetters('item', [
-            'getItemTitle'
-        ]),
-        ...mapActions('taxonomy', [
-            'fetchTaxonomyName'
-        ]),
-        ...mapGetters('taxonomy', [
-            'getTaxonomyName'
-        ]),
-        ...mapActions('event', [
-            'fetchEventTitle'
-        ]),
-        generateViewPath() {
-
-            for (let i = 0; i < this.arrayRealPath.length; i++) {
-                
-                this.arrayViewPath.push('');
-                
-                if (!isNaN(this.arrayRealPath[i]) && i > 0) {
-
-                    switch(this.arrayRealPath[i-1]) {
-                        case 'collections':
-                            // Cancels previous Request
-                            if (this.collectionNameRequestCancel != undefined)
-                                this.collectionNameRequestCancel.cancel('Collection name Canceled.');
-
-                            this.fetchCollectionNameAndURL(this.arrayRealPath[i])
-                                .then((resp) => {
-                                    resp.request
-                                        .then(collection => this.arrayViewPath.splice(i, 1, collection.name))
-                                        .catch((error) => this.$console.error(error));
-
-                                    this.collectionNameRequestCancel = resp.source;
-                                })
-                                .catch((error) => this.$console.error(error));
-
-                            break;
-                        case 'items':
-                            this.fetchItemTitle(this.arrayRealPath[i])
-                                .then(itemTitle => this.arrayViewPath.splice(i, 1, itemTitle))
-                                .catch((error) => this.$console.error(error));
-                            break;
-                        case 'taxonomies':
-                            this.fetchTaxonomyName(this.arrayRealPath[i])
-                                .then(taxonomyName => this.arrayViewPath.splice(i, 1, taxonomyName))
-                                .catch((error) => this.$console.error(error));
-                            break;
-                        case 'events':
-                            this.fetchEventTitle(this.arrayRealPath[i])
-                                .then(eventName => this.arrayViewPath.splice(i, 1, eventName))
-                                .catch((error) => this.$console.error(error));
-                            break;
-                    }
-                    
-                } else if (this.arrayRealPath[i-1] == 'sequence' && i > 0){
-                    if (this.$route.params.itemPosition != undefined) {
-                        this.arrayViewPath.splice(i, 1, this.$i18n.get('label_editing_item_number') + this.$route.params.itemPosition);
-                    } else
-                        this.arrayViewPath.splice(i, 1, this.$i18n.get('edit'));
-                } else {
-                    if(this.arrayRealPath[i] == 'undefined'){
-                        this.arrayViewPath.splice(i, 1, '');
-                    } else {
-                        this.arrayViewPath.splice(i, 1, this.$i18n.get(this.arrayRealPath[i]));
-                    }
-                }
-                
-            }
+        collectionBreadCrumbUpdate(breadCrumbItems) {
+            this.childrenBreadCrumbItems = breadCrumbItems;
         }
     },
     created() {
@@ -258,15 +194,31 @@ export default {
 
         this.pageTitle = this.$route.meta.title;
 
-        this.arrayRealPath = this.$route.path.split("/");
-        this.arrayRealPath = this.arrayRealPath.filter((item) => item.length != 0);
-
-        this.generateViewPath();
+        this.$root.$on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
     },
-    beforeDestroy() {
+    mounted() {
+
         // Cancels previous Request
         if (this.collectionNameRequestCancel != undefined)
             this.collectionNameRequestCancel.cancel('Collection name Canceled.');
+            
+        this.fetchCollectionNameAndURL(this.id)
+            .then((resp) => {
+                resp.request
+                    .then(collection => this.collectionBreadCrumbItem = { url: this.$routerHelper.getCollectionPath(this.id), name: collection.name })
+                    .catch((error) => this.$console.error(error));
+                this.collectionNameRequestCancel = resp.source;
+            })
+            .catch((error) => this.$console.error(error));
+
+    },
+    beforeDestroy() {
+
+        // Cancels previous Request
+        if (this.collectionNameRequestCancel != undefined)
+            this.collectionNameRequestCancel.cancel('Collection name Canceled.');
+
+        this.$root.$on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
     }
 }
 </script>

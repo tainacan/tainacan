@@ -1214,6 +1214,10 @@
             this.prepareMetadata();
             this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
 
+            // Updates Collection Header Breadcrumb
+            if (!this.isOnTheme)
+                this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('items') }]);
+
             // Setting initial view mode on Theme
             if (this.isOnTheme) {
                 let prefsViewMode = !this.isRepositoryLevel ? 'view_mode_' + this.collectionId : 'view_mode';

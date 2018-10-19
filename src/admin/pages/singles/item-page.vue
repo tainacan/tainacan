@@ -415,7 +415,11 @@
             });
             
             // Obtains Item
-            this.fetchItem(this.itemId).then(() => {
+            this.fetchItem(this.itemId).then((item) => {
+                this.$root.$emit('onCollectionBreadCrumbUpdate', [
+                    { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
+                    { path: '', label: item.title}
+                ]);
                 this.loadMetadata();
             });
 
@@ -431,8 +435,7 @@
             this.fetchCollectionAllowComments(this.collectionId).then((collectionAllowComments) => {
                 this.collectionAllowComments = collectionAllowComments;
             });
-        }
-
+        } 
     }
 </script>
 

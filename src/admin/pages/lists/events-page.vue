@@ -285,6 +285,9 @@
             this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
         },
         mounted(){
+            if (!this.isRepositoryLevel)
+                this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('events') }]);
+
             if (this.$route.query.tab == 'processes' && this.isRepositoryLevel)
                 this.tab = 'processes';
 

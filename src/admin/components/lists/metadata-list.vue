@@ -760,6 +760,10 @@ export default {
         }
     },
     mounted() {
+
+        if (!this.isRepositoryLevel)
+            this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('metadata') }]);
+
         this.cleanMetadata();
         this.isLoadingMetadatumTypes = true;
         this.isLoadingMetadata = true;
