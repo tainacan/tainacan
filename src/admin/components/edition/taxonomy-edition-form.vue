@@ -1,7 +1,11 @@
 <template>
     <div>
         <div class="page-container repository-level-page">
-            <tainacan-title />
+            <tainacan-title 
+                    :bread-crumb-items="[
+                        { path: $routerHelper.getTaxonomiesPath(), label: $i18n.get('taxonomies') },
+                        { path: '', label: (taxonomy!= null && taxonomy.name != undefined) ? taxonomy.name : $i18n.get('taxonomy') }
+                    ]"/>
             <b-tabs 
                     @change="onChangeTab($event)"
                     v-model="tabIndex">    
@@ -278,7 +282,7 @@
                         this.formErrorMessage = '';
                         this.editFormErrors = {};
 
-                        this.$router.push(this.$routerHelper.getPath());
+                        this.$router.push(this.$routerHelper.getTaxonomiesPath());
                     })
                     .catch((errors) => {
                         for (let error of errors.errors) {
@@ -350,7 +354,7 @@
                 this.editFormErrors[attribute] = undefined;
             },
             cancelBack(){
-                this.$router.push(this.$routerHelper.getPath());
+                this.$router.go(-1);
             },
             labelNewTerms(){
                 return ( this.form.allowInsert === 'yes' ) ? this.$i18n.get('label_yes') : this.$i18n.get('label_no');

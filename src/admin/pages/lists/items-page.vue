@@ -1069,7 +1069,7 @@
                                 '3': (this.isRepositoryLevel ? 'title' : null),
                                 '4': (this.isRepositoryLevel ? 'description' : null),
                             });
-
+                            
                             // Sorting metadata
                             if (this.isRepositoryLevel) {
                                 this.sortingMetadata.push({
@@ -1184,11 +1184,11 @@
             });
 
             this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', (to) => {
-                /* This condition is to prevent a incorrect fetch by filter or metadata when we come from items
+                /* This condition is to prevent a incorrect fetch by filter or metadata when we coming from items
                  * at collection level to items page at repository level
                  */
 
-                if (this.isOnTheme || this.collectionId === to.params.collectionId) {
+                if (this.isOnTheme || this.collectionId === to.params.collectionId || to.query.fromBreadcrumb) {
                     this.prepareMetadata();
                     this.prepareFilters();
                 }
@@ -1208,6 +1208,10 @@
             this.prepareFilters();
             this.prepareMetadata();
             this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
+
+            // Updates Collection Header Breadcrumb
+            if (!this.isOnTheme)
+                this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('items') }]);
 
             // Setting initial view mode on Theme
             if (this.isOnTheme) {
