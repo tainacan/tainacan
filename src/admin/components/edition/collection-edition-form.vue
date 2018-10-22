@@ -2,7 +2,8 @@
     <div 
             class="page-container"
             :class="{'repository-level-page' : isNewCollection }">
-        <tainacan-title />
+        <tainacan-title 
+                :bread-crumb-items="[{ path: '', label: $i18n.get('collection') }]"/>
         <form 
                 v-if="collection != null && collection != undefined" 
                 class="tainacan-form" 
