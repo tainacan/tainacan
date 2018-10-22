@@ -1,7 +1,8 @@
 <template>
     <div>
         <div class="repository-level-page page-container">
-            <tainacan-title />
+            <tainacan-title 
+                    :bread-crumb-items="[{ path: '', label: this.$i18n.get('taxonomies') }]"/>
             <div 
                     class="sub-header" 
                     v-if="$userCaps.hasCapability('edit_tainacan-taxonomies')">

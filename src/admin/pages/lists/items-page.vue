@@ -1189,7 +1189,7 @@
             });
 
             this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', (to) => {
-                /* This condition is to prevent a incorrect fetch by filter or metadata when we come from items
+                /* This condition is to prevent a incorrect fetch by filter or metadata when we coming from items
                  * at collection level to items page at repository level
                  */
 
