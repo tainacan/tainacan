@@ -1074,7 +1074,7 @@
                                 '3': (this.isRepositoryLevel ? 'title' : null),
                                 '4': (this.isRepositoryLevel ? 'description' : null),
                             });
-
+                            
                             // Sorting metadata
                             if (this.isRepositoryLevel) {
                                 this.sortingMetadata.push({
@@ -1193,7 +1193,7 @@
                  * at collection level to items page at repository level
                  */
 
-                if (this.isOnTheme || this.collectionId === to.params.collectionId) {
+                if (this.isOnTheme || this.collectionId === to.params.collectionId || to.query.fromBreadcrumb) {
                     this.prepareMetadata();
                     this.prepareFilters();
                 }
