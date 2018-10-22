@@ -27,12 +27,13 @@
                     <nav class="breadcrumbs">
                         <router-link 
                                 tag="a" 
-                                :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link> > 
+                                :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link>
+                        &nbsp;>&nbsp; 
                         <router-link 
                                 tag="a" 
                                 :to="{ path: collectionBreadCrumbItem.url, query: { fromBreadcrumb: true }}">{{ collectionBreadCrumbItem.name }}</router-link> 
                         <template v-for="(childBreadCrumbItem, index) of childrenBreadCrumbItems">
-                            <span :key="index"> > </span>
+                            <span :key="index">&nbsp;>&nbsp;</span>
                             <router-link    
                                     :key="index"
                                     v-if="childBreadCrumbItem.path != ''"
@@ -42,18 +43,6 @@
                                     :key="index"
                                     v-else>{{ childBreadCrumbItem.label }}</span>
                         </template>
-                        <!-- <span 
-                                v-for="(pathItem, index) in arrayRealPath" 
-                                :key="index">
-                            <router-link
-                                    v-if="index < arrayRealPath.length - 1" 
-                                    tag="a" 
-                                    :to="'/' + arrayRealPath.slice(0, index + 1).join('/')">
-                                {{ arrayViewPath[index] }}
-                            </router-link>
-                            <span v-if="index == arrayRealPath.length - 1">{{ arrayViewPath[index] }}</span>
-                            <span v-if="index != arrayRealPath.length - 1 && arrayViewPath[index]"> > </span>
-                        </span>    -->
                     </nav>
                 </div>
             </div>

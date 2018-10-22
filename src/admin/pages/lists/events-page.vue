@@ -5,7 +5,8 @@
                     'repository-level-page': isRepositoryLevel,
                     'page-container': isRepositoryLevel
                 }">
-            <tainacan-title />
+            <tainacan-title 
+                :bread-crumb-items="[{ path: '', label: this.$i18n.get('events') }]"/>
             <div :class="{ 'above-subheader': isRepositoryLevel }">
 
                 <div 

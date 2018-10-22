@@ -4,7 +4,11 @@
             <div 
                     class="page-container"
                     :class="{ 'repository-level-page': $route.params.collectionId == undefined }">
-                <tainacan-title/>
+                <tainacan-title
+                        :bread-crumb-items="[
+                                { path: $routerHelper.getEventsPath(), label: $i18n.get('events') },
+                                { path: '', label: (event != undefined && event.title != undefined) ? event.title : $i18n.get('event') }
+                            ]"/>
                 <h1 class="event-titles">{{ event.description }}</h1>
                 <div
                         class="level"
