@@ -15,6 +15,8 @@ Assuming:
 
 ```
 cd $GIT_PATH
+git checkout develop
+git pull
 ```
 
 ### Edit version numbers
@@ -25,9 +27,6 @@ Edit `src/readme.txt` and 'src/tainacan.php' and change the verion numbers to `$
 
 ```
 git commit -am"Releasing verion $NEW_VERSION"
-git tag $NEW_VERSION
-git push
-git push --tags
 ```
 
 ### Build and cleanup 
@@ -89,6 +88,16 @@ Commit!
 
 ```
 svn ci
+```
+
+### Create tag on git
+
+```
+git tag $NEW_VERSION
+git checkout master
+git merge develop
+git push --all
+git push --tags
 ```
 
 
