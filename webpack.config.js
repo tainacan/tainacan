@@ -76,7 +76,7 @@ module.exports = {
 };
 
 // Change to true for production mode
-const production = false;
+const production = true;
 
 if (production === true) {
     const TerserPlugin = require('terser-webpack-plugin');
