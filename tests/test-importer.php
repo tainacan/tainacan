@@ -385,11 +385,10 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 
         foreach ( $items as $index => $item ) {
             $singleItemMetadata = new Entities\Item_Metadata_Entity( $item, $metadata_taxonomy );
+            $term = $singleItemMetadata->get_value();
 
-            if( in_array( $item->get_title(),[ 'Data 11','Data 51', 'Data 12','Data 52'] ) ){
-
-                $term = $singleItemMetadata->get_value();
-                $this->assertTrue(in_array( $term->get_name(),['DATA 151','DATA551'] ));
+            if( in_array( $item->get_title(),[ 'Data 11','Data 51', 'Data 12','Data 52'] ) && $term ){
+                $this->assertTrue(in_array( strtoupper($term->get_name()),['DATA 151','DATA551'] ));
             }
                
         }
