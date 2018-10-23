@@ -1,8 +1,14 @@
 <template>
     <div>
         <div class="is-fullheight">
-            <div class="page-container repository-level-page">
-                <tainacan-title/>
+            <div 
+                    class="page-container"
+                    :class="{ 'repository-level-page': $route.params.collectionId == undefined }">
+                <tainacan-title
+                        :bread-crumb-items="[
+                                { path: $routerHelper.getEventsPath(), label: $i18n.get('events') },
+                                { path: '', label: (event != undefined && event.title != undefined) ? event.title : $i18n.get('event') }
+                            ]"/>
                 <h1 class="event-titles">{{ event.description }}</h1>
                 <div
                         class="level"
@@ -94,21 +100,20 @@
         created() {
             this.eventId = parseInt(this.$route.params.eventId);
 
-            this.fetchEvent(this.eventId);
+            this.fetchEvent(this.eventId).then(() => {
+
+                if (this.$route.params.collectionId != undefined)
+                    this.$root.$emit('onCollectionBreadCrumbUpdate', [
+                        { path: this.$routerHelper.getCollectionEventsPath(this.$route.params.collectionId), label: this.$i18n.get('events') },
+                        { path: '', label: this.event.title}
+                    ]);
+            });
         }
 
     }
 </script>
 
 <style>
-    .back-hlight {
-        background-color: rgb(231, 255, 237);
-    }
-
-    .bottom-space-tainacan {
-        margin-bottom: 0.2rem;
-    }
-
     .event-titles {
         font-size: 20px;
         font-weight: 500;

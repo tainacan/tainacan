@@ -93,7 +93,8 @@ Vue.use(eventBusSearch, { store: store, router: router});
 // Changing title of pages
 router.beforeEach((to, from, next) => {
     document.title = to.meta.title;
-    next();
+    if (next() != undefined)
+        next();
 });
 
 new Vue({

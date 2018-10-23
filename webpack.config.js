@@ -32,7 +32,7 @@ module.exports = {
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
-                exclude: /node_modules/
+                exclude: /node_modules/,
             },
             {
                 test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
@@ -80,7 +80,7 @@ module.exports = {
 const production = false;
 
 if (production === true) {
-    const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+    const TerserPlugin = require('terser-webpack-plugin');
 
     console.log(`Production: ${production}`);
 
@@ -94,7 +94,7 @@ if (production === true) {
                 NODE_ENV: JSON.stringify('production')
             }
         }),
-        new UglifyJsPlugin({
+        new TerserPlugin({
             parallel: true,
             sourceMap: false
         }),
@@ -106,7 +106,8 @@ if (production === true) {
 
     module.exports.resolve = {
         alias: {
-            'vue$': 'vue/dist/vue.min'
+            'vue$': 'vue/dist/vue.min',
+            'swiper$': 'swiper/dist/js/swiper.js'
         }
     }
 } else {

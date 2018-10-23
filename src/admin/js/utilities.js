@@ -190,8 +190,8 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getItemsPath(query) {
             return '/items/?' + qs.stringify(query);
         },
-        getPath(query) {
-            return '/taxonomies/?' + qs.stringify(query);
+        getTaxonomiesPath() {
+            return '/taxonomies/'
         },
         getTaxonomyTermsPath(taxonomyId, query) {
             return '/taxonomyId/' + taxonomyId + '/terms/?' + qs.stringify(query);
@@ -206,7 +206,7 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
             return '/events/?' + qs.stringify(query);
         },
         getAvailableImportersPath() {
-            return '/importers/new';
+            return '/importers';
         },
         getProcessesPage(highlightedProcess) {
             if (highlightedProcess)
@@ -235,6 +235,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         },
         getImporterPath(importerType, sessionId) {
             return '/importers/' + importerType + '/' + sessionId;
+        },
+        getCollectionEventPath(collectionId, eventId) {
+            return '/collections/' + collectionId + '/events/' + eventId;
         },
         // New
         getNewCollectionPath() {

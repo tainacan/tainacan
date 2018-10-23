@@ -215,7 +215,7 @@ export default {
             openedFilterId: '',
             formWithErrors: '',
             editForms: {},
-            allowedFilterTypes: [],
+            allowedFilterTypes: [], 
             selectedFilterType: {},
             choosenMetadatum: {},
             newIndex: 0,
@@ -451,9 +451,11 @@ export default {
             delete this.editForms[this.openedFilterId];
             this.openedFilterId = '';
         }
-
     },
    mounted() {
+
+        if (!this.isRepositoryLevel)
+            this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('filter') }]);
 
         this.isRepositoryLevel = this.$route.name == 'FiltersPage' ? true : false;
         if (this.isRepositoryLevel)

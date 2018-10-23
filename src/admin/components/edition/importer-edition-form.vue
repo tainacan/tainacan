@@ -1,7 +1,11 @@
 <template>
     <div 
             class="repository-level-page page-container">
-        <tainacan-title />
+        <tainacan-title 
+                :bread-crumb-items="[
+                    { path: $routerHelper.getAvailableImportersPath(), label: $i18n.get('importers') },
+                    { path: '', label: importerType != undefined ? importerType : $i18n.get('title_importer_page') }
+                ]"/>
         <form   
                 @click="formErrorMessage = ''"
                 class="tainacan-form" 
@@ -81,7 +85,7 @@
                         <div 
                                 class="control selected-source-file"
                                 v-if="importerFile != undefined">
-                            <span>{{ importerFile[0].name }}</span>
+                            <span>{{ (importerFile.length != undefined && importerFile.length > 0 ) ? importerFile[0].name : importerFile.name }}</span>
                             <a 
                                     target="_blank"
                                     @click.prevent="importerFile = undefined">
@@ -251,7 +255,7 @@ export default {
         },
         onUploadFile() {
             return new Promise((resolve, reject) => {
-               this.updateImporterFile({ sessionId: this.sessionId, file: this.importerFile[0] })
+               this.updateImporterFile({ sessionId: this.sessionId, file: (this.importerFile.length != undefined && this.importerFile.length > 0) ? this.importerFile[0] : this.importerFile})
                 .then(updatedImporter => {    
                     this.importer = updatedImporter;
                     resolve();
