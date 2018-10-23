@@ -31,6 +31,10 @@
                         &nbsp;>&nbsp; 
                         <router-link 
                                 tag="a" 
+                                :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('collections') }}</router-link>
+                        &nbsp;>&nbsp; 
+                        <router-link 
+                                tag="a" 
                                 :to="{ path: collectionBreadCrumbItem.url, query: { fromBreadcrumb: true }}">{{ collectionBreadCrumbItem.name }}</router-link> 
                         <template v-for="(childBreadCrumbItem, index) of childrenBreadCrumbItems">
                             <span :key="index">&nbsp;>&nbsp;</span>

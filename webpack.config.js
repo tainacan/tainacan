@@ -79,7 +79,7 @@ module.exports = {
 const production = false;
 
 if (production === true) {
-    const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+    const TerserPlugin = require('terser-webpack-plugin');
 
     console.log(`Production: ${production}`);
 
@@ -93,7 +93,7 @@ if (production === true) {
                 NODE_ENV: JSON.stringify('production')
             }
         }),
-        new UglifyJsPlugin({
+        new TerserPlugin({
             parallel: true,
             sourceMap: false
         }),
