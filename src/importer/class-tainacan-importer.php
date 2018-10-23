@@ -908,8 +908,8 @@ abstract class Importer {
      * @throws \Exception
      */
     protected function create_metadata( $metadata_description, $collection_id){
-        $taxonomy_repo = \Repositories\Taxonomy::get_instance();
-        $metadata_repo = \Repositories\Metadata::get_instance();
+        $taxonomy_repo = \Tainacan\Repositories\Taxonomies::get_instance();
+        $metadata_repo = \Tainacan\Repositories\Metadata::get_instance();
 
         $properties =  array_filter( explode('|', $metadata_description) );
 
