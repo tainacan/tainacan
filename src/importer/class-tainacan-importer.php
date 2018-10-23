@@ -900,4 +900,65 @@ abstract class Importer {
 		
 		
     }
+
+    /**
+     * @param $metadata_description
+     * @param $collection_id
+     * @return bool
+     * @throws \Exception
+     */
+    protected function create_metadata( $metadata_description, $collection_id){
+        $taxonomy_repo = \Repositories\Taxonomy::get_instance();
+        $metadata_repo = \Repositories\Metadata::get_instance();
+
+        $properties =  array_filter( explode('|', $metadata_description) );
+
+        if( !$properties || count($properties) < 2 ){
+            return false;
+        }
+
+        $name = $properties[0];
+        $type = $properties[1];
+
+        $newMetadatum = new Entities\Metadatum();
+        $newMetadatum->set_name($name);
+
+        $type = ucfirst($type);
+        $newMetadatum->set_metadata_type('Tainacan\Metadata_Types\\'.$type);
+        $newMetadatum->set_collection_id( (isset($collection_id)) ? $collection_id : 'default');
+        $newMetadatum->set_status('publish');
+
+        if( strcmp($type, "Taxonomy") === 0 ){
+            $taxonomy = new Entities\Taxonomy();
+            $taxonomy->set_name($name);
+            $taxonomy->set_allow_insert('yes');
+
+            if($taxonomy->validate()){
+                $inserted_tax = $taxonomy_repo->insert( $taxonomy );
+                $newMetadatum->set_metadata_type_options(['taxonomy_id' => $inserted_tax->get_id()]);
+            }
+
+        }
+
+        /*Properties of metadatum*/
+        if( isset($properties[2]) && $properties[2] === 'required'){
+            $newMetadatum->set_required(true);
+        }
+
+        if( isset($properties[3]) && $properties[3] === 'multiple' ){
+            $newMetadatum->set_multiple('yes');
+        }
+
+
+        if($newMetadatum->validate()){
+            $inserted_metadata = $metadata_repo->insert( $newMetadatum );
+
+            $this->add_log('Metadata created: ' . $inserted_metadata->get_name());
+            return $inserted_metadata;
+        } else{
+            $this->add_log('Error creating metadata ' . $name . ' in collection ' . $collection_id);
+            $this->add_log($newMetadatum->get_errors());
+            return false;
+        }
+    }
 }
