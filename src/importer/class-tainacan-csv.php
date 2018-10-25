@@ -160,7 +160,7 @@ class CSV extends Importer {
             $valueToInsert = $this->handle_encoding( $values[ $column ] );
 
             if( !is_numeric($metadatum_id) ){
-                $metadatum = $this->create_metadata( $metadatum_id, $collection_definition['id']);
+                $metadatum = $this->create_metadata( $headers[ $column ], $collection_definition['id']);
             } else {
                 $metadatum = new \Tainacan\Entities\Metadatum($metadatum_id);
             }

@@ -258,7 +258,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $file = fopen($file_name, 'w');
 
         // save the column headers
-        fputcsv($file, array('Column 1', 'Column 2', 'Column 3', 'Column 4', 'Column 5'));
+        fputcsv($file, array('novo metadatao|text', 'Column 2', 'Column 3', 'Column 4', 'Column 5'));
 
         // Sample data
         $data = array(
@@ -363,7 +363,12 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         //create a random mapping
         $map = [];
         foreach ( $metadata as $index => $metadatum ){
-            $map[$metadatum->get_id()] = $headers[$index];
+            if( $index === 0){
+                $map['create_metadata'] = $headers[$index];
+            } else {
+                $map[$metadatum->get_id()] = $headers[$index];
+            }
+
         }
 
 		$collection_definition['mapping'] = $map;
@@ -382,17 +387,6 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		$this->assertEquals(false, $_SESSION['tainacan_importer'][$id]->run(), 'if call run again after finish, do nothing');
 
         $items = $Tainacan_Items->fetch( ['order'=> 'ASC','orderby' => 'date'], $collection, 'OBJECT' );
-
-        foreach ( $items as $index => $item ) {
-            $singleItemMetadata = new Entities\Item_Metadata_Entity( $item, $metadata_taxonomy );
-
-            if( in_array( $item->get_title(),[ 'Data 11','Data 51', 'Data 12','Data 52'] ) ){
-
-                $term = $singleItemMetadata->get_value();
-                $this->assertTrue(in_array( $term->get_name(),['DATA 151','DATA551'] ));
-            }
-               
-        }
 
         $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_source_number_of_items(), count( $items ) );
     }
