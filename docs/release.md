@@ -30,7 +30,7 @@ Edit `webpack.config.js` to set production mode.
 ### Commit and create tag
 
 ```
-git commit -am"Releasing version $NEW_VERSION"
+git commit -am "Releasing verion $NEW_VERSION"
 ```
 
 ### Build and cleanup 
