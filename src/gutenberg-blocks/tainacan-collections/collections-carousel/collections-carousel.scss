@@ -3,18 +3,27 @@
 
   .wp-block-tainacan-collections-carousel__carousel-item {
     display: flex;
-    margin-top: 20px;
 
     .wp-block-tainacan-collections-carousel__carousel-item-first {
       display: flex;
       align-items: flex-start;
       align-content: start;
+
+      img {
+        padding: 0 !important;
+        max-width: 100% !important;
+      }
     }
 
     .wp-block-tainacan-collections-carousel__carousel-item-others {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
+
+      img {
+        padding: 0 !important;
+        max-width: 100% !important;
+      }
     }
   }
 }

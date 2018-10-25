@@ -1,16 +1,21 @@
 .wp-block-tainacan-collections-carousel {
   min-height: 200px; }
   .wp-block-tainacan-collections-carousel .wp-block-tainacan-collections-carousel__carousel-item {
-    display: flex;
-    margin-top: 20px; }
+    display: flex; }
     .wp-block-tainacan-collections-carousel .wp-block-tainacan-collections-carousel__carousel-item .wp-block-tainacan-collections-carousel__carousel-item-first {
       display: flex;
       align-items: flex-start;
       align-content: start; }
+      .wp-block-tainacan-collections-carousel .wp-block-tainacan-collections-carousel__carousel-item .wp-block-tainacan-collections-carousel__carousel-item-first img {
+        padding: 0 !important;
+        max-width: 100% !important; }
     .wp-block-tainacan-collections-carousel .wp-block-tainacan-collections-carousel__carousel-item .wp-block-tainacan-collections-carousel__carousel-item-others {
       display: flex;
       flex-direction: column;
       align-items: flex-end; }
+      .wp-block-tainacan-collections-carousel .wp-block-tainacan-collections-carousel__carousel-item .wp-block-tainacan-collections-carousel__carousel-item-others img {
+        padding: 0 !important;
+        max-width: 100% !important; }
 
 .components-modal__frame {
   width: 100%; }

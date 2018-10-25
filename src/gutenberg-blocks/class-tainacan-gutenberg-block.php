@@ -26,7 +26,7 @@ class GutenbergBlock {
 		add_action('init', array($this, 'add_plugin_settings'));
 
 		add_action('wp_enqueue_scripts', array($this, 'enqueue_on_theme'));
-		add_filter( 'block_categories', array($this, 'register_tainacan_block_categories'), 10, 2 );
+		add_filter('block_categories', array($this, 'register_tainacan_block_categories'), 10, 2);
 	}
 
 	public function register_tainacan_block_categories($categories, $post){

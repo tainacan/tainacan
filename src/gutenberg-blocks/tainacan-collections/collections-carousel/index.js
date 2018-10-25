@@ -2,13 +2,11 @@ import Carousel from '@brainhubeu/react-carousel';
 
 const { registerBlockType } = wp.blocks;
 
-const { Modal, Button, Autocomplete } = wp.components;
-
-const { __ } = wp.i18n;
+const { Modal, Button, IconButton } = wp.components;
 
 const { RichText } = wp.editor;
 
-const createHTML = wp.element.createElement;
+const { __ } = wp.i18n;
 
 import tainacan from '../../api-client/axios.js';
 
@@ -16,7 +14,6 @@ registerBlockType('tainacan/collections-carousel', {
     title: 'Tainacan Collections Carousel',
     icon: 'images-alt',
     category: 'tainacan-blocks',
-    supportHTML: true,
     attributes: {
         isOpen: {
             type: Boolean,
@@ -27,12 +24,7 @@ registerBlockType('tainacan/collections-carousel', {
             default: []
         },
         selectedCollections: {
-            type: 'array',
-            source: 'query',
-            selector: 'div',
-            query: {
-                dataValue: { source: 'attribute', attribute: 'content'},
-            },
+            type: Array,
             default: []
         },
         items: {
@@ -40,7 +32,14 @@ registerBlockType('tainacan/collections-carousel', {
             source: 'query',
             selector: 'picture',
             query: {
-                style: { source: 'attribute', attribute: 'style'},
+                style: {
+                    source: 'attribute',
+                    attribute: 'style'
+                },
+                collection_id: {
+                    source: 'attribute',
+                    attribute: 'class'
+                },
                 img: {
                     source: 'query',
                     selector: 'img',
@@ -59,35 +58,61 @@ registerBlockType('tainacan/collections-carousel', {
             default: [],
         },
         contentTemp: {
-            type: 'array',
-            source: 'html',
-            selector: 'div',
+            type: Array,
             default: [],
         },
         content: {
             type: 'array',
             source: 'children',
             selector: 'div'
-        }
+        },
     },
     supports: {
-      align: ['full']
+        align: ['full', 'left', 'right', 'wide'],
+        html: false
     },
+    keywords: [__('tainacan', 'tainacan'), __('carousel', 'tainacan'), __('collections', 'tainacan')],
     edit({ attributes, setAttributes, className }) {
         console.log('edit', attributes);
 
-        let { contentTemp, collectionsMatched, selectedCollections, items, isOpen } = attributes;
+        let { contentTemp, collectionsMatched, selectedCollections, items, isOpen, content } = attributes;
+        let isInEdit = true;
+
+        const arrowRight = (
+            <span style={{cursor: 'pointer'}}>
+                <svg style={{width: '48px', height: '48px'}} viewBox="0 0 24 24">
+                    <path fill="#298596" d="M10,17L15,12L10,7V17Z"/>
+                </svg>
+            </span>
+        );
+
+        const arrowLeft = (
+            <span style={{ cursor: 'pointer' }}>
+                <svg style={{width: '48px', height: '48px'}} viewBox="0 0 24 24">
+                    <path fill="#298596" d="M14,7L9,12L14,17V7Z" />
+                </svg>
+            </span>
+        );
 
         function prepareCollection(collection) {
-            return (<div key={ collection.id } content={collection} />);
+            return (
+                <input style={{display: 'none'}} key={ collection.id } value={collection} />
+            );
         }
 
-        function prepareItem(item, style) {
+        function prepareItem(item, style, collectionName) {
             return (
-                <picture style={style}>
+                <picture
+                    className={`${item.collection_id.split('{}')[0]}{}${collectionName}`}
+                    style={style}>
                     <img
-                        src={item.thumbnail.thumb ? item.thumbnail.thumb : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
-                        alt={item.title} />
+                        src={
+                            (item.thumbnail && item.thumbnail.thumb) ?
+                                item.thumbnail.thumb :
+                                ( (item.img && item.img[0].src) ?
+                                    item.img[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
+                        }
+                        alt={ item.title ? item.title : item.alt } />
                 </picture>
             );
         }
@@ -97,8 +122,6 @@ registerBlockType('tainacan/collections-carousel', {
 
            return tainacan.get(`/collection/${collectionID}/items?perpage=3&paged=1&orderby=date`)
                .then(response => {
-                   console.log(response.data);
-
                    return response.data;
                })
                .catch(error => {
@@ -106,141 +129,200 @@ registerBlockType('tainacan/collections-carousel', {
                });
         }
 
-        function prepareContent(content, items, setAttributes, collection){
-            content.push(
-                <div>
-                    <div style={{display: 'flex', flexDirection: 'column', marginRight: '20px'}}>
-                        <div
-                            className={`${className}__carousel-item`}
-                            key={collection.id}>
+        function updateContent(contentTemp){
+            setAttributes({
+                content: contentTemp.length ?
+                    (<div>
+                        <Carousel
+                            arrowLeft={arrowLeft}
+                            arrowRight={arrowRight}
+                            addArrowClickHandler
+                            slidesPerScroll={1}
+                            slidesPerPage={contentTemp.length >= 3 ? 3 : contentTemp.length}
+                            arrows
+                            slides={contentTemp}/>
+                    </div>) : []
+            });
+        }
+
+        function removeCollection(collectionID) {
+            let index = contentTemp.findIndex((coll) => {
+                return coll.key == collectionID;
+            });
+
+            if(index >= 0){
+               contentTemp.splice(index, 1);
+               setAttributes({contentTemp: contentTemp});
+               updateContent(contentTemp);
+            }
+        }
+
+        function prepareContent(newContent, items, collection){
+            newContent.push(
+                <div key={collection.id}>
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        marginLeft: '20px'}}>
+
+                        { isInEdit ? (
+                            <IconButton
+                                style={{position: 'absolute'}}
+                                label={ __('Remove', 'tainacan') }
+                                onClick={() => {
+                                    console.log('clicked', collection.id);
+                                    removeCollection(collection.id);
+                                }}
+                                icon="trash"/>
+                        ) : null }
+
+                        <div className={`${className}__carousel-item`}>
 
                             <div style={{width: '99px', marginRight: '3px'}} className={`${className}__carousel-item-first`}>
-                                {items[0] ? prepareItem(items[0]) : null}
+                                {items[0] ? prepareItem(items[0], null, collection.name) : null}
                             </div>
 
                             <div className={`${className}__carousel-item-others`}>
-                                {items[1] ? prepareItem(items[1], {width: '42px', height: '42px', marginBottom: '3px'}) : null}
-                                {items[2] ? prepareItem(items[2], {width: '42px', height: '42px'}) : null}
+                                {items[1] ? prepareItem(items[1], {width: '42px', height: '42px', marginBottom: '3px'}, collection.name) : null}
+                                {items[2] ? prepareItem(items[2], {width: '42px', height: '42px'}, collection.name) : null}
                             </div>
                         </div>
-                        <small>
-                            <b>{collection.name}</b>
+                        <small style={{
+                            maxWidth: '130px',
+                            marginLeft: '10px'}}>
+                            <p style={{
+                                fontSize: '10px',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                fontWeight: '600'
+                            }}>{collection.name}</p>
                         </small>
                     </div>
                 </div>
             );
 
-            setAttributes({ contentTemp: content });
+            setAttributes({ contentTemp: newContent });
         }
 
-        const autoCompleters = [
-            {
-                name: __('Collections', 'tainacan'),
-                triggerPrefix: '/',
-                options(keyword) {
-                    if (!keyword) {
-                        return [];
+        if(content && content.length && content[0].type && !contentTemp.length){
+            let itemsTemp = [];
+            let a = 0;
+            let index = 0;
+
+            for(let item of items) {
+                if(a <= 2) {
+                    if(itemsTemp.length && item.collection_id.split('{}')[0] === itemsTemp[itemsTemp.length-1].collection_id.split('{}')[0]) {
+                        itemsTemp.push(item);
+                    } else if(!itemsTemp.length) {
+                        itemsTemp.push(item);
+
+                        if (items[index + 1] && item.collection_id.split('{}')[0] !== items[index + 1].collection_id.split('{}')[0]) {
+                            a = 2;
+                        }
                     }
+                }
 
-                    return tainacan.get(`/collections?search=${keyword}`)
-                        .then(response => {
-                            console.log(response);
-                            return response.data;
-                        })
-                        .catch(error => {
-                            console.log(error);
-                        });
-                },
-                getOptionLabel(option) {
-                    return (<span>{option.name}</span>);
-                },
-                getOptionKeywords(option) {
-                    collectionsMatched.push(option.name);
+                let b = false;
+                if (a === 2) {
+                    a = 0;
+                    b = true;
 
-                    return collectionsMatched;
-                },
-                getOptionCompletion(option) {
-                    selectedCollections.push(prepareCollection(option));
-
-                    getTop3ItemsOf(option).then((res) => {
-                        res.map((item) =>  {
-                            items.push(prepareItem(item))
-                        });
-
-                        prepareContent(contentTemp, res, setAttributes, option);
-
-                        setAttributes({ items: items });
+                    prepareContent(contentTemp, itemsTemp, {
+                        name: itemsTemp[0].collection_id.split('{}')[1],
+                        id: itemsTemp[0].collection_id.split('{}')[0]
                     });
 
-                    setAttributes({ selectedCollections: selectedCollections });
+                    itemsTemp = [];
+                }
 
-                    return (<abbr title={option.name}>{` | ${option.name} `}</abbr>);
-                },
-                isDebounced: true,
+                index++;
+
+                if(!b) {
+                    a++;
+                }
             }
-        ];
+        }
+
+        const autocompleters = [{
+            name: __('Collections', 'tainacan'),
+            triggerPrefix: '/',
+            options(keyword) {
+                if (!keyword) {
+                    return [];
+                }
+
+                return tainacan.get(`/collections?search=${keyword}`)
+                    .then(response => {
+                        console.log(response);
+                        return response.data;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            },
+            getOptionLabel(option) {
+                return (<span>{option.name}</span>);
+            },
+            getOptionKeywords(option) {
+                collectionsMatched.push(option.name);
+
+                return collectionsMatched;
+            },
+            getOptionCompletion(option) {
+                selectedCollections.push(prepareCollection(option));
+
+                getTop3ItemsOf(option).then((res) => {
+                    res.map((item) => {
+                        items.push(prepareItem(item))
+                    });
+
+                    prepareContent(contentTemp, res, option);
+
+                    setAttributes({items: items});
+                });
+
+                setAttributes({selectedCollections: selectedCollections});
+
+                return (<abbr title={option.name}>{` | ${option.name} `}</abbr>);
+            },
+            isDebounced: true,
+        }];
 
         return (
             <div className={ className }>
-                <Button isDefault onClick={ () => setAttributes( { isOpen: true } ) }>{ __('Add collection', 'tainacan') }</Button>
+                <div style={{marginBottom: '20px'}}>
+                    <Button isDefault onClick={ () => setAttributes( { isOpen: true } ) }>{ __('Add collection', 'tainacan') }</Button>
+                </div>
 
                 { isOpen ?
                     <Modal
                         shouldCloseOnClickOutside={ false }
+                        shouldCloneOnEsc={false}
+                        focusOnMount={false}
                         title={ __('Add collection', 'tainacan') }
                         onRequestClose={ () => {
-
-                            setAttributes({
-                                content: (
-                                    <div>
-                                        { contentTemp.length ?
-                                            <Carousel
-                                                slidesPerScroll={1}
-                                                slidesPerPage={contentTemp.length >= 3 ? 3 : contentTemp.length}
-                                                arrows
-                                                slides={contentTemp}/> : null
-                                        }
-                                    </div>
-                                )});
-
                             setAttributes( { isOpen: false } );
+                            updateContent(contentTemp);
                         }}>
 
                         <div>
-                            <Autocomplete completers={ autoCompleters }>
-                                { ( { isExpanded, listBoxId, activeId } ) => (
-                                    <div
-                                        contentEditable
-                                        suppressContentEditableWarning
-                                        aria-autocomplete="list"
-                                        aria-expanded={ isExpanded }
-                                        aria-owns={ listBoxId }
-                                        aria-activedescendant={ activeId }
-                                    >
-                                    </div>
-                                ) }
-                            </Autocomplete>
-                            <p>{ __('Type '+ autoCompleters[0].triggerPrefix +' for triggering the autocomplete.', 'tainacan') }</p>
+                            <RichText
+                                onChange={() => true}
+                                tagName="p"
+                                autocompleters={autocompleters}
+                            />
+                            <p>{ __('Type '+ autocompleters[0].triggerPrefix +' for triggering the autocomplete.', 'tainacan') }</p>
                         </div>
 
-                        <Button isDefault onClick={ () => {
-                            setAttributes({
-                                content: (
-                                    <div>
-                                        { contentTemp.length ?
-                                            <Carousel
-                                                slidesPerScroll={1}
-                                                slidesPerPage={contentTemp.length >= 3 ? 3 : contentTemp.length}
-                                                arrows
-                                                slides={contentTemp}/> : null
-                                        }
-                                    </div>
-                                )});
-
-                            setAttributes( { isOpen: false } );
-                        } }>
-                            { __('Close', 'tainacan') }
-                        </Button>
+                        <div>
+                            <Button isDefault onClick={ () => {
+                                setAttributes( { isOpen: false } );
+                                updateContent(contentTemp);
+                            } }>
+                                { __('Close', 'tainacan') }
+                            </Button>
+                        </div>
                     </Modal>
                     : null
                 }
@@ -248,6 +330,9 @@ registerBlockType('tainacan/collections-carousel', {
                 <div>
                     { contentTemp.length ?
                         <Carousel
+                            arrowLeft={arrowLeft}
+                            arrowRight={arrowRight}
+                            addArrowClickHandler
                             slidesPerScroll={1}
                             slidesPerPage={contentTemp.length >= 3 ? 3 : contentTemp.length}
                             arrows
@@ -258,12 +343,10 @@ registerBlockType('tainacan/collections-carousel', {
         );
     },
     save({ attributes }) {
-        const { content, items } = attributes;
+        console.log('save', attributes);
 
-        console.log('save', attributes, items);
+        const { content } = attributes;
 
-        console.info(content);
-
-        return <div>{ content }</div>
+        return <div>{content}</div>
     },
 });
