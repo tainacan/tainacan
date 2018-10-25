@@ -14,7 +14,6 @@
             <hr>
         </div>
         <form
-                @submit.prevent="createBulkEditGroup()"
                 v-if="!isLoading"
                 class="tainacan-form" 
                 label-width="120px">
@@ -44,7 +43,26 @@
             </b-field>
         
             <div class="document-list">
+
                 <!-- Sequence Progress -->
+                <div class="sequence-progress-info">
+                    <p v-if="uploadedItems.length > 0 && uploadedItems.length != amountFinished">
+                        <span class="icon is-small">
+                            <i class="mdi mdi-18px mdi-autorenew"/>
+                        </span>
+                        {{ $i18n.get('label_upload_file_prepare_items') }}
+                    </p>
+                    <p    
+                            v-if="uploadedItems.length > 0 && (uploadedItems.length - amountFinished) > 1"
+                            class="has-text-gray">
+                        {{ (uploadedItems.length - amountFinished) + " " + $i18n.get('label_files_remaining') }}
+                    </p>
+                    <p    
+                            v-if="uploadedItems.length > 0 && (uploadedItems.length - amountFinished) == 1"
+                            class="has-text-gray">
+                        {{ "1 " + $i18n.get('label_file_remaining') }}
+                    </p>
+                </div>
                 <div 
                         v-if="uploadedItems.length > 0"
                         :style="{ width: (amountFinished/uploadedItems.length)*100 + '%' }"
@@ -52,7 +70,8 @@
                 <div    
                         v-if="uploadedItems.length > 0"
                         class="sequence-progress-background"/>
-
+                
+                <!-- Uploaded Items -->
                 <transition-group name="item-appear">
                     <div 
                             class="document-item"
@@ -79,7 +98,7 @@
                             </span>  
                             <span 
                                     v-tooltip="{
-                                        content: $i18n.get('label_remove'),
+                                        content: $i18n.get('delete'),
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }"
@@ -92,21 +111,33 @@
                     </div>
                 </transition-group>
             </div>
-            <div class="field is-grouped form-submit">
-                <div class="control">
-                    <button 
-                            type="button"
-                            class="button is-outlined" 
-                            @click.prevent="$router.go(-1)" 
-                            slot="trigger">{{ $i18n.get('cancel') }}</button>
+            <footer class="footer">
+                <div class="form-submission-footer field is-grouped form-submit">
+                    <div class="control">
+                        <button 
+                                type="button"
+                                class="button is-outlined" 
+                                @click.prevent="$router.go(-1)" 
+                                slot="trigger">{{ $i18n.get('cancel') }}</button>
+                    </div>
+                    <div 
+                            style="margin-left: auto"
+                            class="control">
+                        <button 
+                                :disabled="uploadedItems.length <= 0"
+                                class="button is-turquoise5" 
+                                @click.prevent="sequenceEditGroup()"
+                                type="submit">{{ $i18n.get('label_sequence_edit_items') }}</button>
+                    </div>
+                    <div class="control">
+                        <button 
+                                :disabled="uploadedItems.length <= 0"
+                                class="button is-turquoise5" 
+                                @click.prevent="createBulkEditGroup()"
+                                type="submit">{{ $i18n.get('label_bulk_edit_items') }}</button>
+                    </div>
                 </div>
-                <div class="control">
-                    <button 
-                            :disabled="uploadedItems.length <= 0 "
-                            class="button is-success" 
-                            type="submit">{{ $i18n.get('save') }}</button>
-                </div>
-            </div>
+            </footer>
         </form>
     </div>
 </template>
@@ -203,9 +234,19 @@ export default {
                     
             }
         },
+        sequenceEditGroup() {
+            let onlyItemIds = this.uploadedItems.map(item => item.id);
+            console.log(onlyItemIds)
+            this.createEditGroup({
+                object: onlyItemIds,
+                collectionID: this.collectionId
+            }).then((group) => {
+                let sequenceId = group.id;
+                this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 1));
+            });
+        },
         createBulkEditGroup() {
             let onlyItemIds = this.uploadedItems.map(item => item.id);
-
             this.createEditGroup({
                 object: onlyItemIds,
                 collectionID: this.collectionId
@@ -298,6 +339,7 @@ export default {
         .document-list {
             display: inline-block;
             width: 100%;
+            padding: 1rem $page-side-padding;
 
             .document-item {
                 display: flex;
@@ -305,7 +347,7 @@ export default {
                 width: 100%;
                 justify-content: space-between;
                 align-items: center;
-                margin: 0.75rem;
+                padding: 0.5rem 0.75rem;
                 cursor: default;
 
                 .document-thumb {
@@ -317,7 +359,6 @@ export default {
                 .document-actions {
                     margin-left: auto;
                     
-
                     .loading-icon .control.is-loading::after {
                         position: relative !important;
                         right: 0;
@@ -329,21 +370,54 @@ export default {
                     margin-left: auto;
                 }
             }
+            .sequence-progress-info {
+                display: flex;
+                justify-content: space-between;
 
+                .i::before {
+                    font-size: 18px;
+                }
+            }
             .sequence-progress {
                 height: 5px;
                 background: $turquoise5;
                 width: 0%;
                 transition: width 0.2s;
+                margin-bottom: 1rem;
             }
             .sequence-progress-background {
                 height: 5px;
                 background: $gray3;
                 width: 100%;
-                top: -5px;
+                top: -21px;
                 z-index: -1;
                 position: relative;
+                margin-bottom: 1rem;
             }        
+        }
+
+        .footer {
+            padding: 18px $page-side-padding;
+            position: absolute;
+            bottom: 0;
+            z-index: 999999;
+            background-color: $gray1;
+            width: 100%;
+            height: 65px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            left: 0;
+
+            .form-submission-footer {    
+                .button {
+                    margin-left: 16px;
+                    margin-right: 6px;
+                }
+                // .is-outlined {
+                //     border: none;
+                // }
+            }
         }
     }
 

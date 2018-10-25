@@ -315,6 +315,11 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_selected_terms'                           => __( 'Selected terms', 'tainacan'),
 	'label_editing_item_number'                      => __( 'Editing item n.', 'tainacan'),
 	'label_sequence_editing_item'                    => __( 'Sequence editing: Item', 'tainacan'),
+	'label_files_remaining'		                     => __( 'files remaining.', 'tainacan'),
+	'label_file_remaining'		                     => __( 'file remaining.', 'tainacan'),
+	'label_upload_file_prepare_items'                => __( 'Uploading files and preparing items', 'tainacan'),
+	'label_bulk_edit_items'		                     => __( 'Bulk edit items', 'tainacan'),
+	'label_sequence_edit_items'	                     => __( 'Sequence edit items', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
