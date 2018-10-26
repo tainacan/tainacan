@@ -140,7 +140,24 @@ registerBlockType('tainacan/collections-carousel', {
                             slidesPerScroll={1}
                             slidesPerPage={contentTemp.length >= 3 ? 3 : contentTemp.length}
                             arrows
-                            slides={contentTemp}/>
+                            slides={contentTemp}
+                            breakpoints={{
+                                1000: { // these props will be applied when screen width is less than 1000px
+                                    slidesPerPage: 2,
+                                    clickToChange: false,
+                                    centered: false,
+                                    arrows: true,
+                                    infinite: false,
+                                },
+                                500: {
+                                    slidesPerPage: 1,
+                                    slidesPerScroll: 1,
+                                    clickToChange: false,
+                                    centered: false,
+                                    animationSpeed: 2000,
+                                    infinite: false,
+                                }
+                            }}/>
                     </div>) : []
             });
         }
@@ -291,8 +308,19 @@ registerBlockType('tainacan/collections-carousel', {
 
         return (
             <div className={ className }>
-                <div style={{marginBottom: '20px'}}>
-                    <Button isDefault onClick={ () => setAttributes( { isOpen: true } ) }>{ __('Add collection', 'tainacan') }</Button>
+                <div style={{
+                    marginBottom: '20px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignContent: 'center'
+                }}>
+                    <Button
+                        style={{
+                            justifyContent: 'center',
+                            width: '100%'
+                        }}
+                        isDefault
+                        onClick={ () => setAttributes( { isOpen: true } ) }>{ __('Add collection', 'tainacan') }</Button>
                 </div>
 
                 { isOpen ?
@@ -336,7 +364,24 @@ registerBlockType('tainacan/collections-carousel', {
                             slidesPerScroll={1}
                             slidesPerPage={contentTemp.length >= 3 ? 3 : contentTemp.length}
                             arrows
-                            slides={contentTemp}/> : null
+                            slides={contentTemp}
+                            breakpoints={{
+                                1000: { // these props will be applied when screen width is less than 1000px
+                                    slidesPerPage: 2,
+                                    clickToChange: false,
+                                    centered: false,
+                                    arrows: true,
+                                    infinite: false,
+                                },
+                                500: {
+                                    slidesPerPage: 1,
+                                    slidesPerScroll: 1,
+                                    clickToChange: false,
+                                    centered: false,
+                                    animationSpeed: 2000,
+                                    infinite: false,
+                                }
+                            }}/> : null
                     }
                 </div>
             </div>
