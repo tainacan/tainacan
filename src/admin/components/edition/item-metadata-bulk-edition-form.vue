@@ -86,7 +86,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
     name: 'ItemMetadataBulkEditionForm',
@@ -98,6 +97,38 @@ export default {
             items: '',
             collapseAll: false,
             metadatumCollapses: [],
+            statuses: {
+                draft: 'draft',
+                publish: 'publish',
+                private: 'private'
+            },
+            editionCriteria: [1],
+            editionActionsForMultiple: {
+                add: this.$i18n.get('add_value'),
+                redefine: this.$i18n.get('set_new_value'),
+                remove: this.$i18n.get('remove_value'),
+                replace: this.$i18n.get('replace_value'),
+            },
+            editionActionsForNotMultiple: {
+                redefine: this.$i18n.get('set_new_value'),
+            },
+            bulkEditionProcedures: {
+                1: {
+                    isDone: false,
+                    isDoneWithError: false,
+                    isExecuting: false,
+                    actionResult: '',
+                    totalItemsEditedWithSuccess: 0,
+                    tooltipShow: true,
+                }
+            },
+            groupID: null,
+            dones: [false],
+        }
+    },
+    computed: {
+        metadata() {
+            return this.getMetadata();
         }
     },
     methods: {
@@ -111,9 +142,12 @@ export default {
             'getMetadata',
         ]),
         ...mapActions('bulkedition', [
-            'fetchItemIdInSequence',
-            'fetchGroup',
-            'createEditGroup'
+            'setValueInBulk',
+            'addValueInBulk',
+            'replaceValueInBulk',
+            'redefineValueInBulk',
+            'setStatusInBulk',
+            'removeValueInBulk'
         ]),
         ...mapGetters('bulkedition', [
             'getItemIdInSequence',
@@ -132,13 +166,23 @@ export default {
     created() {
         // Obtains collection ID
         this.collectionId = this.$route.params.collectionId;
+        this.groupID = this.$route.params.groupId;
 
         // Obtains collection name
         this.fetchCollectionName(this.collectionId).then((collectionName) => {
             this.collectionName = collectionName;
         });
 
-        // this.isLoadingMetadata = true;
+        this.isLoadingMetadata = true;
+
+        this.fetchMetadata({
+            collectionId: this.collectionID,
+            isRepositoryLevel: false,
+            isContextEdit: true,
+            includeDisabled: false,
+        }).then(() => {
+            this.isLoadingMetadata = false;
+        });
        
     }
 }

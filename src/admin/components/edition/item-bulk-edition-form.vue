@@ -242,6 +242,7 @@ export default {
                 collectionID: this.collectionId
             }).then((group) => {
                 let sequenceId = group.id;
+                console.log(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 1))
                 this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 1));
             });
         },
