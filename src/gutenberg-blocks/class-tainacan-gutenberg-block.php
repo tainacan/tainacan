@@ -23,6 +23,8 @@ class GutenbergBlock {
 
 	private function add_gutenberg_blocks_actions() {
 		add_action('init', array($this, 'register_tainacan_collections_carousel'));
+		add_action('init', array($this, 'register_tainacan_items_grid'));
+
 		add_action('init', array($this, 'add_plugin_settings'));
 
 		add_action('wp_enqueue_scripts', array($this, 'enqueue_on_theme'));
@@ -55,10 +57,30 @@ class GutenbergBlock {
 		);
 	}
 
+	public function register_tainacan_items_grid(){
+		global $TAINACAN_BASE_URL;
+
+		wp_register_script(
+			'items-grid',
+			$TAINACAN_BASE_URL . '/assets/items_grid-components.js',
+			array('wp-blocks', 'wp-element')
+		);
+
+		wp_register_style(
+			'items-grid',
+			$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-blocks-style.css',
+			array('wp-edit-blocks')
+		);
+
+		register_block_type('tainacan/items-grid', array(
+			'editor_script' => 'items-grid',
+			'style'         => 'items-grid'
+		));
+	}
+
 	public function register_tainacan_collections_carousel(){
 		global $TAINACAN_BASE_URL;
 
-		// Collections carousel
 		wp_register_script(
 			'collections-carousel',
 			 $TAINACAN_BASE_URL . '/assets/collections_carousel-components.js',
@@ -94,5 +116,6 @@ class GutenbergBlock {
 		$settings = $this->get_plugin_js_settings();
 
 		wp_localize_script( 'collections-carousel', 'tainacan_plugin', $settings );
+		wp_localize_script( 'items-grid', 'tainacan_plugin', $settings );
 	}
 }

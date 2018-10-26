@@ -11,7 +11,7 @@ const { __ } = wp.i18n;
 import tainacan from '../../api-client/axios.js';
 
 registerBlockType('tainacan/collections-carousel', {
-    title: 'Tainacan Collections Carousel',
+    title: __('Tainacan Collections Carousel', 'tainacan'),
     icon: 'images-alt',
     category: 'tainacan-blocks',
     attributes: {

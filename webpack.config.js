@@ -8,6 +8,7 @@ module.exports = {
         user_search: './src/admin/js/theme-main.js',
         user_admin: './src/admin/js/main.js',
         collections_carousel: './src/gutenberg-blocks/tainacan-collections/collections-carousel/index.js',
+        items_grid: './src/gutenberg-blocks/tainacan-items/items-grid/index.js',
     },
     output: {
         path: path.resolve(__dirname, './src/assets/'),
