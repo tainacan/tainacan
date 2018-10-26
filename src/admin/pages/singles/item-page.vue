@@ -321,7 +321,7 @@
                 isLoading: false,
                 isLoadingMetadatumMappers: false,
                 isMetadataColumnCompressed: false,
-                open: false,
+                open: true,
                 collectionName: '',
                 thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
                 urls_open: false,
