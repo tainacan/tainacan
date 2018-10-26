@@ -117,7 +117,9 @@ class Old_Tainacan extends Importer{
 		foreach ($this->get_repo_metadata() as $metadata) {
 
             if (isset($metadata->slug) && strpos($metadata->slug, 'socialdb_property_fixed') === false) {
-               $metadatum_id = $this->create_metadata( $metadata );  
+                $metadatum_id = $this->create_metadata( $metadata );  
+            } elseif ( strpos($metadata->slug, 'socialdb_property_fixed_tags') !== false ){
+                $metadatum_id = $this->create_metadata( $metadata );     
             }
 
         }
@@ -150,6 +152,14 @@ class Old_Tainacan extends Importer{
                             $map[$metadatum_id] = $metadatum_old->id;          
                         }
                         
+                    } else if( isset($metadatum_old->slug) && strpos($metadatum_old->slug, 'socialdb_property_fixed_tags') !== false
+                        && isset($metadatum_old->type) && strpos($metadatum_old->type, 'checkbox') !== false
+                    ){
+                        $metadatum_id = $this->create_metadata( $metadatum_old, $collection_id );
+                        $this->add_log('Creating tag');
+                        if( $metadatum_id ){
+                            $map[$metadatum_id] = $metadatum_old->id;          
+                        }
                     }
 
                 }
@@ -356,6 +366,33 @@ class Old_Tainacan extends Importer{
 
                 if( in_array($metadatum->type,['text', 'textarea', 'numeric', 'date']) ){
 
+                    if($metadatum->type === 'date'){
+                        
+                        if(is_array($value)){
+                            $values = [];
+
+                            foreach( $value as $day){
+                                $v = explode('/',$day);
+
+                                $v[1]= ( $v[1] < 10 ) ? '0'.$v[1] : $v[1];
+                                $v[0]= ( $v[0] < 10 ) ? '0'.$v[0] : $v[0];     
+
+                                $values[] = $v[2] . '-' . $v[1] . '-' . $v[0];
+                            }   
+                            
+                            
+                        } else {
+                            $v = explode('/',$value);
+
+                            $v[1]= ( $v[1] < 10 ) ? '0'. $v[1] : $v[1];
+                            $v[0]= ( $v[0] < 10 ) ? '0'. $v[0] : $v[0];  
+
+                            $values = $v[2] . '-' . $v[1] . '-' . $v[0];
+                        }
+
+                        $value = $values;
+                    }
+
                     $item_metadata->set_value($value);
 
                 } else if( $metadatum->type === 'item' ){ // RELATIONSHIPS
@@ -371,7 +408,7 @@ class Old_Tainacan extends Importer{
                     if( is_array($value) ) {
                         $values = [];
 
-                        foreach( is_array($value) as $cat){
+                        foreach( $value as $cat){
                             $id = $this->get_transient('term_' . $cat . '_id');
 
                             if( $id )
@@ -392,9 +429,9 @@ class Old_Tainacan extends Importer{
                     $inserted = $this->item_metadata_repo->insert( $item_metadata );
                     $this->add_log('Item Metadata inserted for item  ' .$item->get_title() . ' and metadata ' . $newMetadatum->get_name() );
                 } else {
-                    $this->add_error_log( 'Error inserting metadatum' );
-                    $this->add_error_log( $item_metadata->get_errors() );
-                    return false;
+                    $this->add_log( 'Error inserting metadatum' . $newMetadatum->get_name() );
+                    $this->add_log( 'Values' . $value );
+                    $this->add_log( $item_metadata->get_errors() );
                 }
             }
 
@@ -643,6 +680,11 @@ class Old_Tainacan extends Importer{
             if($term_father){
                 $new_term->set_parent($term_father->get_id());
             }
+            
+            // block terms with same name and parent in taxonomy
+            if( get_term_by( 'name', $term->name, $taxonomy_father->get_db_identifier()) ){
+                continue;
+            }
 
             $inserted_term = $this->term_repo->insert($new_term);
 
@@ -675,6 +717,8 @@ class Old_Tainacan extends Importer{
      * @return int $metadatum_id 
      */
     protected function create_metadata( $node_metadata_old, $collection_id = null){
+        $this->add_log('Creating metadata' . $meta->name);
+
         $newMetadatum = new Entities\Metadatum();
         $meta = $node_metadata_old;
 
@@ -732,7 +776,7 @@ class Old_Tainacan extends Importer{
 
             if(!empty($meta->metadata->cardinality)){
 
-                if($meta->metadata->cardinality > 1){
+                if($meta->metadata->cardinality === 'n'){
                     $newMetadatum->set_multiple('yes');
                 }
 
@@ -805,7 +849,7 @@ class Old_Tainacan extends Importer{
             $type = "Numeric";
         } else if(strcmp($type, 'item') === 0) {
             $type = "Relationship";
-        } else if(strcmp($type, 'tree') === 0 || strcmp($type, 'selectbox')) {
+        } else if(strcmp($type, 'tree') === 0 || strcmp($type, 'selectbox') || strcmp($type, 'checkbox')) {
             $type = "Taxonomy";
         } else if(strcmp($type, 'compound') === 0) {
             $type = "Compound";
@@ -855,7 +899,7 @@ class Old_Tainacan extends Importer{
                     $item->set_document_type( 'attachment' );
                     $this->add_log('Document imported from ' . $node_old->content_tainacan->guid);
                 } 
-            } else if(filter_var($node_old->content_tainacan, FILTER_VALIDATE_URL)){
+            } else if( isset($node_old->type_tainacan) && in_array( $node_old->type_tainacan, ['audio','video','image']) ){
                     $item->set_document( $node_old->content_tainacan );
                     $item->set_document_type( 'url' );
                     $this->add_log('URL imported from ' . $node_old->content_tainacan);

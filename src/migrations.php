@@ -73,6 +73,11 @@ class Migrations {
 	    
 		
 	}
+
+	static function init_capabilites() {
+		$Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();
+		$Tainacan_Capabilities->init();
+	}
 	
 	static function tainacan_migrate_post_type_field_to_metadatum(){
 		global $wpdb;
@@ -239,7 +244,19 @@ class Migrations {
 	        ['meta_value' => 'Tainacan\Filter_Types\TaxonomySelectbox'],
 	        ['meta_value' => 'Tainacan\Filter_Types\CategorySelectbox'],
 	        '%s', '%s');
-		
+	}
+
+	static function update_tainacan_selectbox_to_tainacan_radio_and_tainacan_taginput(){
+		global $wpdb;
+
+		// update filter type
+		$wpdb->update($wpdb->postmeta,
+			['meta_value' => 'Tainacan\Filter_Types\TaxonomyTaginput'],
+			['meta_value' => 'Tainacan\Filter_Types\TaxonomySelectbox'],
+			'%s', '%s');
+
+		// update input type
+		$wpdb->query("UPDATE $wpdb->postmeta SET meta_value = REPLACE(meta_value, 'tainacan-taxonomy-selectbox', 'tainacan-taxonomy-radio')");
 	}
 	
 	static function update_core_metadata() {
@@ -276,6 +293,12 @@ class Migrations {
 
 	static function refresh_rewrite_rules() {
 		// needed after we changed the Collections post type rewrite slug
+		
+		$option_name = '_migration_refresh_rewrite_rules_items';
+		if (!get_option($option_name)) {
+			return; // avoid running twice cause there is the same update right below this one
+		}
+		
 		flush_rewrite_rules(false);
 	}
 	

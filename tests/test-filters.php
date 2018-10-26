@@ -99,7 +99,7 @@ class Filters extends TAINACAN_UnitTestCase {
         $Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
 
         $all_filter_types = $Tainacan_Filters->fetch_filter_types();
-        $this->assertEquals( 8, count( $all_filter_types ) );
+        $this->assertEquals( 7, count( $all_filter_types ) );
 
         $float_filters = $Tainacan_Filters->fetch_supported_filter_types('float');
         $this->assertTrue( count( $float_filters ) > 0 );

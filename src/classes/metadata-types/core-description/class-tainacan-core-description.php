@@ -10,7 +10,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * Class TainacanMetadatumType
  */
 class Core_Description extends Metadata_Type {
-
+    use \Tainacan\Traits\Formatter_Text;
+    
     function __construct(){
         // call metadatum type constructor
         parent::__construct();
@@ -78,6 +79,28 @@ class Core_Description extends Metadata_Type {
 		
 		return true;
 		
+    }
+    
+    /**
+	 * Get the value as a HTML string with links and breakline tag.
+	 * @return string
+	 */
+	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
+		$value = $item_metadata->get_value();
+		$return = '';
+		if ( $item_metadata->is_multiple() ) {
+			$total = sizeof($value);
+			$count = 0;
+			foreach ( $value as $el ) {
+				$return .= nl2br($this->make_clickable_links($el));
+				$count ++;
+				if ($count <= $total)
+					$return .= ', ';
+			}
+		} else {
+			$return = nl2br($this->make_clickable_links($value));
+		}
+		return $return;
 	}
     
 }

@@ -9,6 +9,7 @@ const TAINACAN_VENDOR_DIR 	   = __DIR__ . '/../vendor/';
 const TAINACAN_TAPI_DIR          = __DIR__ . '/../api/';
 const TAINACAN_ENDPOINTS_DIR    = __DIR__ . '/../api/endpoints/';
 const TAINACAN_IMPORTER_DIR      = __DIR__ . '/../importer/';
+const TAINACAN_EXPORTER_DIR     = __DIR__ . '/../exporter/';
 const TAINACAN_EXPOSERS_DIR		= __DIR__ . '/../exposers/';
 
 const DIRS = [
@@ -21,12 +22,14 @@ const DIRS = [
 	TAINACAN_TAPI_DIR,
 	TAINACAN_ENDPOINTS_DIR,
     TAINACAN_IMPORTER_DIR,
+    TAINACAN_EXPORTER_DIR,
 	TAINACAN_EXPOSERS_DIR
 ];
 
 require_once('libs/wp-async-request.php');
 require_once('libs/wp-background-process.php');
 require_once('class-tainacan-background-process.php');
+require_once('tainacan-utils.php');
 require_once(TAINACAN_IMPORTER_DIR . 'class-tainacan-bg-importer.php');
 
 require_once(TAINACAN_VENDOR_DIR . 'autoload.php');
@@ -34,58 +37,65 @@ require_once(TAINACAN_IMPORTER_DIR . 'class-tainacan-importer.php');
 require_once(TAINACAN_IMPORTER_DIR . 'class-tainacan-importer-handler.php');
 require_once(TAINACAN_EXPOSERS_DIR . 'class-tainacan-exposers.php');
 
+require_once(TAINACAN_EXPORTER_DIR . 'class-tainacan-bg-exporter.php');
+require_once(TAINACAN_EXPORTER_DIR . 'class-tainacan-export-handler.php');
 
 spl_autoload_register('tainacan_autoload');
 
 function tainacan_autoload($class_name){
-    $class_path = explode('\\', $class_name);
-    $class_name = end($class_path);
+	$class_path = explode('\\', $class_name);
+	$class_name = end($class_path);
 
-    if(count($class_path) == 1 ) {
-        foreach(DIRS as $dir) {
-            $file = $dir . 'class-'. strtolower(str_replace('_', '-' , $class_name)) . '.php';
+	if(count($class_path) == 1 ) {
+		foreach(DIRS as $dir) {
+			$file = $dir . 'class-'. strtolower(str_replace('_', '-' , $class_name)) . '.php';
 
-            if(file_exists($file)) {
-                require_once($file);
-            }
-        }
-    }
-    elseif ($class_path[0] == 'Tainacan') {
-    	$sliced = array_slice($class_path, 1, count($class_path) -2);
+			if(file_exists($file)) {
+				require_once($file);
+			}
+		}
+	}
+	elseif ($class_path[0] == 'Tainacan') {
+		$sliced = array_slice($class_path, 1, count($class_path) -2);
+		if( isset( $class_path[1] ) && $class_path[1] === 'Importer' ) {
+			$dir = TAINACAN_IMPORTER_DIR;
+			$dir_import = strtolower(str_replace('_', '-' , $class_name));
+			if (file_exists("$dir$dir_import/")) {
+				$dir .= "$dir_import/";
+			}
+		} else if( isset( $class_path[1] ) && $class_path[1] === 'Exporter' ) {
+			$dir = TAINACAN_EXPORTER_DIR;
+		} else if( isset( $class_path[1] ) && $class_path[1] === 'Exposers' ){
+			$dir = TAINACAN_EXPOSERS_DIR;
+			if(count($class_path) > 3) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
+		} else if( isset( $class_path[1] ) && $class_path[1] === 'API' ){
+			$dir = TAINACAN_TAPI_DIR;
+			if(count($class_path) > 3) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
+		} else if($sliced) {
+			$lower     = $sliced[0];
+			$sliced[0] = strtolower( $lower );
 
-    	if( isset( $class_path[1] ) && $class_path[1] === 'Importer' ){
-            $dir = TAINACAN_IMPORTER_DIR;
-    	} else if( isset( $class_path[1] ) && $class_path[1] === 'Exposers' ){
-    		$dir = TAINACAN_EXPOSERS_DIR;
-    		if(count($class_path) > 3) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
-    	} else if( isset( $class_path[1] ) && $class_path[1] === 'API' ){
-    		$dir = TAINACAN_TAPI_DIR;
-    		if(count($class_path) > 3) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
-    	} else if($sliced) {
-		    $lower     = $sliced[0];
-		    $sliced[0] = strtolower( $lower );
+			$dir = implode( DIRECTORY_SEPARATOR, $sliced ) . DIRECTORY_SEPARATOR;
+			$dir = TAINACAN_CLASSES_DIR . str_replace( '_', '-', $dir );
+		} else {
+			$dir = TAINACAN_CLASSES_DIR;
+		}
 
-		    $dir = implode( DIRECTORY_SEPARATOR, $sliced ) . DIRECTORY_SEPARATOR;
-		    $dir = TAINACAN_CLASSES_DIR . str_replace( '_', '-', $dir );
-	    } else {
-		    $dir = TAINACAN_CLASSES_DIR;
-	    }
+		if( in_array('Metadata_Types', $class_path) || in_array('Filter_Types', $class_path) ){
+			$exceptions = ['taxonomytaginput','taxonomycheckbox'];
+			if( in_array( strtolower( $class_name ), $exceptions) ){
+				$dir.= 'taxonomy/';
+			}else{
+				$dir.= strtolower(str_replace('_', '-' , $class_name)).'/';
+			}
+		}
 
-        if( in_array('Metadata_Types', $class_path) || in_array('Filter_Types', $class_path) ){
-    	    $exceptions = ['taxonomytaginput','taxonomycheckbox','taxonomyselectbox'];
-    	    if( in_array( strtolower( $class_name ), $exceptions) ){
-                $dir.= 'taxonomy/';
-            }else{
-                $dir.= strtolower(str_replace('_', '-' , $class_name)).'/';
-            }
-        }
-
-        $file = $dir . 'class-tainacan-'. strtolower(str_replace('_', '-' , $class_name)) . '.php';
-        
-        if(file_exists($file)) {
-            require_once($file);
-        }
-    }
+		$file = $dir . 'class-tainacan-'. strtolower(str_replace('_', '-' , $class_name)) . '.php';
+			
+		if(file_exists($file)) {
+			require_once($file);
+		}
+	}
 }
 
 $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
@@ -114,7 +124,6 @@ $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Taginput');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Checkbox');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomyTaginput');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomyCheckbox');
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomySelectbox');
 
 $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
 
@@ -141,5 +150,7 @@ $Tainacan_Theme_Helper = \Tainacan\Theme_Helper::get_instance();
 
 $Tainacan_Search_Engine = new \Tainacan\Search_Engine();
 $Tainacan_Elastic_press = new \Tainacan\Elastic_Press();
+
+$Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();
 
 ?>

@@ -1,11 +1,11 @@
 # Releasing a new version
 
-This is a work in progress documentaion on how to release a new verion.
+This is a work in progress documentaion on how to release a new version.
 
 Assuming:
 
 * $CURRENT_VERSION is the current "old" version (e.g. 0.2)
-* $NEW_VERSION is the verion we are releasing (e.g. 0.3)
+* $NEW_VERSION is the version we are releasing (e.g. 0.3)
 * $GIT_PATH is where our repository is cloned
 * $BUILD_PATH is where the plugin is condigured to buid 
 * $SVN_PATH is where the WordPress.org SVN repo is
@@ -15,19 +15,22 @@ Assuming:
 
 ```
 cd $GIT_PATH
+git checkout develop
+git pull
 ```
 
 ### Edit version numbers
 
-Edit `src/readme.txt` and 'src/tainacan.php' and change the verion numbers to `$NEW_VERSION`.
+Edit `src/readme.txt` and 'src/tainacan.php' and change the version numbers to `$NEW_VERSION`.
+
+### Set build to production mode
+
+Edit `webpack.config.js` to set production mode.
 
 ### Commit and create tag
 
 ```
-git commit -am"Releasing verion $NEW_VERSION"
-git tag $NEW_VERSION
-git push
-git push --tags
+git commit -am "Releasing verion $NEW_VERSION"
 ```
 
 ### Build and cleanup 
@@ -91,6 +94,18 @@ Commit!
 svn ci
 ```
 
+### Create tag on git
 
+```
+git tag $NEW_VERSION
+git checkout master
+git merge develop
+git push --all
+git push --tags
+```
+
+### Set build back to development mode
+
+Once you go back to develop branch, remember editing `webpack.config.js` to set production mode.
 
 

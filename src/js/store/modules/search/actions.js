@@ -8,6 +8,7 @@ export const set_postquery = ({ commit }, postquery ) => {
 };
 
 export const set_advanced_query = ({commit}, advancedSearchQuery) => {
+    commit('removePostQueryAttribute', 'search');
     commit('setAdvancedSearchQuery', advancedSearchQuery);
 };
 
@@ -53,6 +54,9 @@ export const remove_metaquery = ( { commit }, filter  ) => {
 export const setTotalItems = ({ commit }, total ) => {
     commit('setTotalItems', total);
 };
+export const setTotalPages = ({ commit }, totalPages ) => {
+    commit('setTotalPages', totalPages);
+};
 
 export const setPage = ({ commit },  page ) => {
     commit('setPostQueryAttribute', {  attr: 'paged', value: page } );
@@ -71,7 +75,7 @@ export const setStatus= ({ commit }, status ) => {
 
 // Sorting queries
 export const setOrderBy = ({ state, commit }, orderBy ) => {
-    commit('cleanPostQueryAttribute', {  attr: 'orderby' } );
+    commit('removePostQueryAttribute', 'orderby');
     
     // Primitive Types: string, date, item, term, compound, float
     if (orderBy.slug == 'creation_date') {

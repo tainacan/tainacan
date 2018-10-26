@@ -60,37 +60,7 @@
                     this.$console.log(error);
                 });
             
-            this.$eventBusSearch.$on('removeFromFilterTag', (filterTag) => {
-               
-                if (filterTag.filterId == this.filter.id) {
-
-                    let selectedIndex = this.selected.findIndex(option => option.label == filterTag.singleValue);
-                    if (selectedIndex >= 0) {
-
-                        this.selected.splice(selectedIndex, 1);
-
-                        let values = [];
-                        let labels = [];  
-                        for(let val of this.selected){
-                            values.push( val.value );
-                            labels.push( val.label );
-                        }
-                        
-                        this.$emit('input', {
-                            filter: 'taginput',
-                            compare: 'IN',
-                            metadatum_id: this.metadatum,
-                            collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
-                            value: values
-                        });
-
-                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                            filterId: this.filter.id,
-                            value: labels
-                        });
-                    }
-                }
-            });
+            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
         },
         data(){
             return {
@@ -134,7 +104,7 @@
             }
         },
         methods: {
-            search( query ){
+            search: _.debounce( function(query) {
                 let promise = null;
                 this.options = [];
                 let valuesToIgnore = [];
@@ -142,20 +112,28 @@
                 for(let val of this.selected)
                     valuesToIgnore.push( val.value );
 
+                // Cancels previous Request
+                if (this.getOptionsValuesCancel != undefined)
+                    this.getOptionsValuesCancel.cancel('Facet search Canceled.');
+
                 if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
                     let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
                         this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
                     promise = this.getValuesRelationship( collectionTarget, query, valuesToIgnore );
-
+ 
                 } else {
                     promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel, valuesToIgnore );
                 }
 
-                promise
-                .catch( error => {
-                    this.$console.log('error select', error );
-                });
-            },
+                promise.request
+                    .catch( error => {
+                        this.$console.log('error select', error );
+                    });
+
+                // Search Request Token for cancelling
+                this.getOptionsValuesCancel = promise.source;
+                
+            }, 500),
             selectedValues(){
                 const instance = this;
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
@@ -188,7 +166,41 @@
                 } else {
                     return false;
                 }
+            },
+            cleanSearchFromTags(filterTag) {
+                               
+                if (filterTag.filterId == this.filter.id) {
+
+                    let selectedIndex = this.selected.findIndex(option => option.label == filterTag.singleValue);
+                    if (selectedIndex >= 0) {
+
+                        this.selected.splice(selectedIndex, 1);
+
+                        let values = [];
+                        let labels = [];  
+                        for(let val of this.selected){
+                            values.push( val.value );
+                            labels.push( val.label );
+                        }
+                        
+                        this.$emit('input', {
+                            filter: 'taginput',
+                            compare: 'IN',
+                            metadatum_id: this.metadatum,
+                            collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                            value: values
+                        });
+
+                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                            filterId: this.filter.id,
+                            value: labels
+                        });
+                    }
+                }
             }
+        },
+        beforeDestroy() {
+            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
         }
     }
 </script>

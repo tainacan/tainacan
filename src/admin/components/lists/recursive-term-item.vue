@@ -62,7 +62,9 @@
             </a>
         </span>
     </div>
-    <transition-group name="filter-item">
+    <transition-group 
+            class="children-area"
+            name="filter-item">
         <div    
                 class="term-item"
                 :style="{
@@ -229,24 +231,34 @@ export default {
                     },
                 }
             });  
+        },
+        eventOnChildTermDeleted(parentTermId) {
+            if (this.term.id == parentTermId && this.totalTerms > 0)
+                this.totalTerms--;
+        },
+        eventOnEditTerm() {
+            this.isEditingTerm = true;
+        },
+        eventOnTermEditionSaved() {
+            this.isEditingTerm = false;
+            this.term.opened = false;
+        },
+        eventOnTermEditionCanceled() {
+            this.isEditingTerm = false;
+            this.term.opened = false;
         }
     },
     created() { 
-        this.$root.$on('onChildTermDeleted', (parentTermId) => {
-            if (this.term.id == parentTermId && this.totalTerms > 0)
-                this.totalTerms--;
-        });
-        this.$termsListBus.$on('editTerm', () => {
-            this.isEditingTerm = true;
-        });
-        this.$termsListBus.$on('termEditionSaved', () => {
-            this.isEditingTerm = false;
-            this.term.opened = false;
-        });
-        this.$termsListBus.$on('termEditionCanceled', () => {
-            this.isEditingTerm = false;
-            this.term.opened = false;
-        });        
+        this.$root.$on('onChildTermDeleted', this.eventOnChildTermDeleted);
+        this.$termsListBus.$on('editTerm', this.eventOnEditTerm);
+        this.$termsListBus.$on('termEditionSaved', this.eventOnTermEditionSaved);
+        this.$termsListBus.$on('termEditionCanceled', this.eventOnTermEditionCanceled);        
+    },
+    beforeDestroy() { 
+        this.$root.$off('onChildTermDeleted', this.eventOnChildTermDeleted);
+        this.$termsListBus.$off('editTerm', this.eventOnEditTerm);
+        this.$termsListBus.$off('termEditionSaved', this.eventOnTermEditionSaved);
+        this.$termsListBus.$off('termEditionCanceled', this.eventOnTermEditionCanceled);        
     }
 }
 </script>
@@ -278,6 +290,7 @@ export default {
                 border-color: transparent transparent transparent $gray2 !important;
             }
         }
+
 
         .children-icon {
             color: $blue2;

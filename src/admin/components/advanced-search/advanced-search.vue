@@ -638,6 +638,9 @@
                     }
                 }
             },
+        },
+        beforeDestroy() {
+            this.$root.$off('metadatumUpdated');
         }
     }
 </script>

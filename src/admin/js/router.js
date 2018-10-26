@@ -53,8 +53,11 @@ const routes = [
         { path: 'settings', component: CollectionEditionForm,  name: 'CollectionEditionForm', meta: {title: i18nGet('title_collection_settings'), icon: 'folder-multiple'} },
         { path: 'metadata', component: MetadataList, name: 'MetadataList', meta: {title: i18nGet('title_collection_metadata_edition'), icon: 'folder-multiple'} },
         { path: 'filters', component: FiltersList, name: 'FiltersList', meta: {title: i18nGet('title_collection_filters_edition'), icon: 'folder-multiple'} },
-        { path: 'events', component: EventsPage, name: 'CollectionEventsPage', meta: {title: i18nGet('title_collection_events'), icon: 'flash'} }
-      ]
+        { path: 'events', component: EventsPage, name: 'CollectionEventsPage', meta: {title: i18nGet('title_collection_events'), icon: 'flash'} },
+        { path: 'events/:eventId', name: 'CollectionEventPage', component: EventPage, meta: {title: i18nGet('title_event_page'), icon: 'flash'} },
+        { path: 'sequence/:sequenceId', name: 'SavedSequenceEditionForm', component: ItemEditionForm, meta: {title:  i18nGet('title_edit_item'), icon: 'folder-multiple'} },
+        { path: 'sequence/:sequenceId/:itemPosition', name: 'SequenceEditionForm', component: ItemEditionForm, meta: {title:  i18nGet('title_edit_item'), icon: 'folder-multiple'} },
+    ]
     },
 
     { path: '/items', name: 'ItemsPage', component: ItemsPage, meta: {title: i18nGet('title_items_page'), icon: 'file-multiple'} },

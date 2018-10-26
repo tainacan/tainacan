@@ -2,6 +2,7 @@
 
 namespace Tainacan\Tests;
 use Tainacan\Importer;
+use Tainacan\Entities;
 /**
 * Class Importer
 *
@@ -257,11 +258,11 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $file = fopen($file_name, 'w');
 
         // save the column headers
-        fputcsv($file, array('Column 1', 'Column 2', 'Column 3', 'Column 4', 'Column 5'));
+        fputcsv($file, array('novo metadatao|text', 'Column 2', 'Column 3', 'Column 4', 'Column 5'));
 
         // Sample data
         $data = array(
-            array('Data 11', 'Data 12', 'Data 13||TESTE', 'Data 14', 'Data 15'),
+            array('Data 11', 'Data 12', 'Data 13||TESTE', 'Data 14', 'Data 15>>DATA 151'),
             array('Data 21', 'Data 22', 'this
             is
             having
@@ -269,7 +270,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
             lines', 'Data 24', 'Data 25'),
             array('Data 31', 'Data 32', utf8_decode( 'Data 33||Rééço' ), 'Data 34', 'Data 35'),
             array('Data 41', 'Data 42', 'Data 43||limbbo', 'Data 44', 'Data 45'),
-            array('Data 51', 'Data 52', 'Data 53', 'Data 54', 'Data 55')
+            array('Data 51', 'Data 52', 'Data 53', 'Data 54', 'Data 55>>DATA551')
         );
 
         // save each row of the data
@@ -328,7 +329,28 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 				'multiple'    => 'no'
 			),
 			true
-		);
+        );
+        
+        $taxonomy = $this->tainacan_entity_factory->create_entity(
+		    'taxonomy',
+		    array(
+			    'name' => 'genero',
+		    ),
+		    true
+        );
+        
+        $metadata_taxonomy =$this->tainacan_entity_factory->create_entity(
+		    'metadatum',
+		    array(
+			    'name'              => 'taxonomia',
+                'collection_id'     => $collection->get_id(),
+                'metadata_type_options' => ['taxonomy_id' => $taxonomy->get_id(), 'allow_new_terms' => true ],
+			    'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
+			    'status'            => 'publish'
+		    ),
+		    true
+	    );
+
 		
 		$collection_definition = [
 			'id' => $collection->get_id(),
@@ -341,9 +363,14 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         //create a random mapping
         $map = [];
         foreach ( $metadata as $index => $metadatum ){
-            $map[$metadatum->get_id()] = $headers[$index];
+            if( $index === 0){
+                $map['create_metadata'] = $headers[$index];
+            } else {
+                $map[$metadatum->get_id()] = $headers[$index];
+            }
+
         }
-		
+
 		$collection_definition['mapping'] = $map;
 
         // add the collection
@@ -359,7 +386,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		$this->assertEquals(false, $_SESSION['tainacan_importer'][$id]->run(), '5 items and return false because its finished');
 		$this->assertEquals(false, $_SESSION['tainacan_importer'][$id]->run(), 'if call run again after finish, do nothing');
 
-        $items = $Tainacan_Items->fetch( [], $collection, 'OBJECT' );
+        $items = $Tainacan_Items->fetch( ['order'=> 'ASC','orderby' => 'date'], $collection, 'OBJECT' );
 
         $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_source_number_of_items(), count( $items ) );
     }
@@ -491,7 +518,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
             continue;
         }
 
-        $items = $Tainacan_Items->fetch( ['order'=> 'DESC', 'orderby' => 'ID'], $collection, 'OBJECT' );
+        $items = $Tainacan_Items->fetch( ['order'=> 'ASC', 'orderby' => 'ID'], $collection, 'OBJECT' );
 
         $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_source_number_of_items(), count( $items ) );
 
@@ -504,9 +531,6 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         if(@file_get_contents ( 'https://www.w3schools.com/w3css/img_lights.jpg' ))
             $this->assertEquals( 1, count( $attachments ) );
 
-        if(@file_get_contents ( 'https://www.youtube.com/watch?v=V8dpmD4HG5s&start_radio=1&list=RDEMZS6OrHEAut8dOA38mVtVpg' ))
-            $this->assertTrue( count($items[2]->get_attachments()) > 0 );
-
         $document_id = $items[2]->get_document();
 
         if(@file_get_contents ( 'https://www.codeproject.com/KB/GDI-plus/ImageProcessing2/img.jpg' ))
@@ -518,5 +542,121 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $document_id = $items[4]->get_document();
         $this->assertFalse( is_numeric($document_id) );
 
+    }
+
+
+    /**
+     * @group importer_csv_special_fields
+     */
+    public function test_special_fields_status_and_id(){
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+        $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+        $file_name = 'demosaved.csv';
+        $csv_importer = new Importer\CSV();
+        $id = $csv_importer->get_id();
+
+        // open the file "demosaved.csv" for writing
+        $file = fopen($file_name, 'w');
+
+        // save the column headers
+        fputcsv($file, array('Column 1', 'special_item_status', 'Unknow Column'));
+
+        // Sample data
+        $data = array(
+            array('Data 11', 'publish', 'nothing'),
+            array('Data 21', 'private', 'void'),
+            array('Data 31', 'trash', 'empty'),
+            array('Data 41', 'future', 'null'),
+            array('Data 51', 'trash', 'zero')
+        );
+
+        // save each row of the data
+        foreach ($data as $row){
+            fputcsv($file, $row);
+        }
+
+        // Close the file
+        fclose($file);
+
+        $_SESSION['tainacan_importer'][$id]->set_tmp_file( $file_name );
+		
+        // file isset on importer
+        $this->assertTrue( !empty( $_SESSION['tainacan_importer'][$id]->get_tmp_file() ) );
+
+        // count total items
+        $this->assertEquals( 5, $_SESSION['tainacan_importer'][$id]->get_source_number_of_items() );
+  
+        // get metadata to mapping AVOIDING special fields
+        $headers =  $_SESSION['tainacan_importer'][$id]->get_source_metadata();
+        $this->assertEquals( $headers[1], 'Unknow Column' );
+  
+        $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_option('item_status_index'), 1 );
+  
+        // inserting the collection
+        $collection = $this->tainacan_entity_factory->create_entity(
+              'collection',
+              array(
+                  'name'          => 'Other',
+                  'description'   => 'adasdasdsa',
+                  'default_order' => 'DESC',
+                  'status'		=> 'publish'
+              ),
+              true
+          );
+  
+          $metadatum = $this->tainacan_entity_factory->create_entity(
+              'metadatum',
+              array(
+                  'name'        => 'Data multiplo',
+                  'description' => 'Descreve o dado do campo data.',
+                  'collection'  => $collection,
+                  'status'      => 'publish',
+                  'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+                  'multiple'    => 'yes'
+              ),
+              true
+          );
+          
+          $metadatum = $this->tainacan_entity_factory->create_entity(
+              'metadatum',
+              array(
+                  'name'        => 'Texto simples',
+                  'description' => 'Descreve o dado do campo data.',
+                  'collection'  => $collection,
+                  'status'      => 'publish',
+                  'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+                  'multiple'    => 'no'
+              ),
+              true
+          );
+          
+          $collection_definition = [
+              'id' => $collection->get_id(),
+              'total_items' => $_SESSION['tainacan_importer'][$id]->get_source_number_of_items(),
+          ];
+
+          // get collection metadata to map
+        $metadata = $Tainacan_Metadata->fetch_by_collection( $collection, [], 'OBJECT' ) ;
+
+        //create a random mapping
+        $map = [];
+        foreach ( $metadata as $index => $metadatum ){
+            if(isset($headers[$index]))
+                $map[$metadatum->get_id()] = $headers[$index];
+        }
+
+        $collection_definition['mapping'] = $map;
+
+        // add the collection
+        $_SESSION['tainacan_importer'][$id]->add_collection( $collection_definition );
+
+        while($_SESSION['tainacan_importer'][$id]->run()){
+            continue;
+        }
+
+        $items = $Tainacan_Items->fetch( ['order'=> 'DESC', 'orderby' => 'ID'], $collection, 'OBJECT' );
+
+        // only 3 items should be published
+        $this->assertEquals( 3, count( $items ) );
     }
 }

@@ -8,25 +8,20 @@
                 :allow-select-to-create="allowSelectToCreate"
                 :allow-new="allowNew"
                 :terms="terms"
-                :taxonomy-id="taxonomy"
+                :taxonomy-id="taxonomy_id"
                 :options="getOptions(0)"/>
-        <a 
+        <a
                 class="add-new-term"
-                v-if="(getComponent == 'tainacan-taxonomy-checkbox' || getComponent == 'tainacan-taxonomy-radio') && terms.length < totalTerms"
-                @click="getTermsFromTaxonomy()">
-            {{ $i18n.get('label_view_more') + ' (' + Number(totalTerms - terms.length) + ' ' + $i18n.get('terms') + ')' }}
+                v-if="(this.getComponent == 'tainacan-taxonomy-checkbox' || this.getComponent == 'tainacan-taxonomy-radio') &&
+                 terms.length < totalTerms"
+                @click="openCheckboxModal()">
+            {{ $i18n.get('label_view_all') }}
         </a>
-        <!--<a-->
-                <!--class="add-new-term"-->
-                <!--v-if="(getComponent == 'tainacan-taxonomy-checkbox') && terms.length < totalTerms"-->
-                <!--@click="openCheckboxModal()">-->
-            <!--{{ $i18n.get('label_view_all') }}-->
-        <!--</a>-->
         <add-new-term
                 class="add-new-term"
                 v-if="allowNew"
                 :component-type="getComponent"
-                :taxonomy_id="taxonomy"
+                :taxonomy_id="taxonomy_id"
                 :metadatum="metadatum"
                 :item_id="metadatum.item.id"
                 :value="valueComponent"
@@ -39,9 +34,8 @@
     import TainacanTaxonomyRadio from './TaxonomyRadio.vue'
     import TainacanTaxonomyCheckbox from './TaxonomyCheckbox.vue'
     import TainacanTaxonomyTagInput from './TaxonomyTaginput.vue'
-    import TainacanTaxonomySelectbox from './TaxonomySelectbox.vue'
     import AddNewTerm from  './AddNewTerm.vue'
-    import HierarchicalCheckboxModal from '../../../admin/components/other/checkbox-filter-modal.vue'
+    import CheckboxRadioModal from '../../../admin/components/other/checkbox-radio-modal.vue'
 
     export default {
         created(){
@@ -68,7 +62,6 @@
             TainacanTaxonomyRadio,
             TainacanTaxonomyCheckbox,
             TainacanTaxonomyTagInput,
-            TainacanTaxonomySelectbox,
             AddNewTerm
         },
         data(){
@@ -82,7 +75,7 @@
                 totalTerms: 0,
                 allowNew: false,
                 offset: 0,
-                termsNumber: 40
+                termsNumber: 12
             }
         },
         watch: {
@@ -121,17 +114,24 @@
             openCheckboxModal(){
                 this.$modal.open({
                     parent: this,
-                    component: HierarchicalCheckboxModal,
+                    component: CheckboxRadioModal,
                     props: {
                         isFilter: false,
                         parent: 0,
                         taxonomy_id: this.taxonomy_id,
-                        selected: this.value,
+                        selected: !this.valueComponent ? [] : this.valueComponent,
                         metadatum_id: this.metadatum.metadatum.id,
                         taxonomy: this.taxonomy,
                         collection_id: this.collectionId,
                         isTaxonomy: true,
                         query: '',
+                        metadatum: this.metadatum.metadatum,
+                        isCheckbox: this.getComponent == 'tainacan-taxonomy-checkbox'
+                    },
+                    events: {
+                        input: (selected) => {
+                            this.valueComponent = selected;
+                        }
                     },
                     width: 'calc(100% - 8.333333333%)',
                 });
@@ -196,11 +196,12 @@
             },
             onInput($event) {
                 this.inputValue = $event;
+                this.valueComponent = $event;
                 this.$emit('input', this.inputValue);
                 this.$emit('blur');
             },
             reload( $event ) {
-                if ($event.taxonomyId == this.taxonomy && $event.metadatumId == this.metadatum.metadatum.id) {
+                if ($event.taxonomyId == this.taxonomy_id && $event.metadatumId == this.metadatum.metadatum.id) {
                     this.valueComponent = $event.values;
                     this.terms = [];
                     this.offset = 0;

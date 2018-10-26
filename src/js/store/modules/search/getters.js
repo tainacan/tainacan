@@ -18,6 +18,10 @@ export const getTotalItems = state => {
     return state.totalItems;
 };
 
+export const getTotalPages = state => {
+    return state.totalPages;
+};
+
 export const getPage = state => {
     if (state.postquery.paged == undefined)
         return 1;

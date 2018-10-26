@@ -188,20 +188,20 @@
             </b-field>
 
             <b-field
-                    :type="formErrors['unique'] != undefined ? 'is-danger' : ''"
-                    :message="formErrors['unique'] != undefined ? formErrors['unique'] : ''">
+                    :type="formErrors['collection_key'] != undefined ? 'is-danger' : ''"
+                    :message="formErrors['collection_key'] != undefined ? formErrors['collection_key'] : ''">
                 <b-checkbox
                         size="is-small"
-                        @input="clearErrors('unique')"
-                        v-model="editForm.unique"
+                        @input="clearErrors('collection_key')"
+                        v-model="editForm.collection_key"
                         true-value="yes"
                         false-value="no"
                         class="is-inline-block"
                         name="collecion_key">
                     {{ $i18n.get('label_unique_value') }}
                     <help-button
-                            :title="$i18n.getHelperTitle('metadata', 'unique')"
-                            :message="$i18n.getHelperMessage('metadata', 'unique')"/>
+                            :title="$i18n.getHelperTitle('metadata', 'collection_key')"
+                            :message="$i18n.getHelperMessage('metadata', 'collection_key')"/>
                 </b-checkbox>
             </b-field>
         </b-field>

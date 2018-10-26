@@ -187,7 +187,7 @@ class Metadata extends Repository {
 				'type'        => __( 'string' ),
 				'validation'  => v::stringType()->in( [ 'yes', 'no', 'never' ] ),
 				'description' => __( 'Display by default on listing or do not display or never display.', 'tainacan' ),
-				'default'     => 'yes'
+				'default'     => 'no'
 			],
 			'semantic_uri'          => [
 				'map'         => 'meta',
@@ -996,7 +996,7 @@ class Metadata extends Repository {
 					);
 				}
 
-				$pre_result = $wpdb->get_results( $sql_string, ARRAY_A );
+				$pre_result = $wpdb->get_results( $sql_string, OBJECT );
 
 				if ( ! empty( $pre_result ) ) {
 					foreach ( $pre_result as $pre ) {
@@ -1045,7 +1045,7 @@ class Metadata extends Repository {
 					);
 				}
 
-				$pre_result = $wpdb->get_results( $sql_string, ARRAY_A );
+				$pre_result = $wpdb->get_results( $sql_string, OBJECT );
 
 				if ( ! empty( $pre_result ) ) {
 					foreach ( $pre_result as $pre ) {

@@ -43,8 +43,23 @@ class Importer_Handler {
 			'manual_mapping' => false,
 		]);
 
+		$this->register_importer([
+			'name' => 'Vocabulary CSV',
+			'description' => __('Import a vaculary from a CSV file into a taxonomy', 'tainacan'),
+			'slug' => 'terms',
+			'class_name' => '\Tainacan\Importer\Term_Importer',
+			'manual_collection' => false,
+			'manual_mapping' => false,
+		]);
+
 		do_action('tainacan_register_importers');
 
+		add_action( 'tainacan-enqueue-admin-scripts', array($this, 'enqueue_scripts') );
+	}
+
+	function enqueue_scripts() {
+	 	global $TAINACAN_BASE_URL;
+	 	wp_enqueue_script('import_term_csv_script', $TAINACAN_BASE_URL . '/importer/term-importer/js/term.js', false, false, true);
 	}
 	
 	function add_to_queue(\Tainacan\Importer\Importer $importer_object) {

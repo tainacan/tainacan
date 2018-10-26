@@ -297,13 +297,6 @@ export default {
 <style lang="scss" scoped>
 
     @import "../../scss/_variables.scss";
- 
-    form#filterEditForm {
-        padding: 1.0em 2.0em;
-        border-top: 1px solid $gray2;
-        border-bottom: 1px solid $gray2;
-        margin-top: 1.0em;
-    }
 
 </style>
 

@@ -42,7 +42,7 @@
                                         'not-sortable-item': isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder,
                                         'not-focusable-item': openedMetadatumId == metadatum.id,
                                         'disabled-metadatum': metadatum.enabled == false,
-                                        'inherited-metadatum': metadatum.collection_id != collectionId || isRepositoryLevel
+                                        'inherited-metadatum': (metadatum.collection_id != collectionId && metadatum.parent == 0) || isRepositoryLevel
                                     }" 
                                     v-for="(metadatum, index) in activeMetadatumList"
                                     :key="index">
@@ -50,7 +50,10 @@
                                     <grip-icon/>
                                     <span class="icon icon-level-identifier">
                                         <i 
-                                            :class="{ 'mdi-folder has-text-turquoise5': (metadatum.collection_id == collectionId && !isRepositoryLevel), 'mdi-folder-multiple has-text-blue5': metadatum.collection_id != collectionId || isRepositoryLevel}"
+                                            :class="{ 
+                                                'mdi-folder has-text-turquoise5': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
+                                                'mdi-folder-multiple has-text-blue5': (metadatum.collection_id == 'default') || isRepositoryLevel
+                                            }"
                                             class="mdi" />
                                     </span>  
                                     <span 
@@ -757,6 +760,10 @@ export default {
         }
     },
     mounted() {
+
+        if (!this.isRepositoryLevel)
+            this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('metadata') }]);
+
         this.cleanMetadata();
         this.isLoadingMetadatumTypes = true;
         this.isLoadingMetadata = true;
@@ -901,9 +908,9 @@ export default {
                 cursor: default;
                 background-color: white !important;
 
-                .handle .label-details, .handle .icon, {
-                    color: $gray3 !important;
-                }
+                // .handle .label-details, .handle .icon, {
+                //     color: $gray3 !important;
+                // }
             } 
             &.not-focusable-item, &.not-focusable-item:hover {
                 cursor: default;

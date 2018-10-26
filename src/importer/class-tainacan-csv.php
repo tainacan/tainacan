@@ -2,6 +2,7 @@
 
 namespace Tainacan\Importer;
 use Tainacan;
+use Tainacan\Entities;
 
 class CSV extends Importer {
 
@@ -13,7 +14,7 @@ class CSV extends Importer {
             'delimiter' => ',',
             'multivalued_delimiter' => '||',
             'encode' => 'utf8',
-            'enclosure' => '"'
+            'enclosure' => ''
 		]);
         
     }
@@ -31,7 +32,13 @@ class CSV extends Importer {
     public function get_source_metadata(){
         if (($handle = fopen($this->tmp_file, "r")) !== false) {
 
-            $rawColumns = fgetcsv($handle, 0, $this->get_option('delimiter'));
+            if( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ){
+                $rawColumns = $this->handle_enclosure( $handle );
+    
+            } else {
+                $rawColumns = fgetcsv($handle, 0, $this->get_option('delimiter'));
+            }
+
             $columns = [];
 
             if( $rawColumns ){
@@ -43,6 +50,10 @@ class CSV extends Importer {
                             $this->set_option('document_index', $index);
                         } else if( $rawColumn === 'special_attachments' ){
                             $this->set_option('attachment_index', $index);    
+                        } else if( $rawColumn === 'special_item_status' ){
+                            $this->set_option('item_status_index', $index);    
+                        } else if( $rawColumn === 'special_item_id' ){
+                            $this->set_option('item_id_index', $index);    
                         }
     
                     } else {
@@ -64,7 +75,13 @@ class CSV extends Importer {
     public function raw_source_metadata(){
 
         if (($handle = fopen($this->tmp_file, "r")) !== false) {
-            return fgetcsv($handle, 0, $this->get_option('delimiter'));
+
+            if( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ){
+                return $this->handle_enclosure( $handle );
+    
+            } else {
+                return fgetcsv($handle, 0, $this->get_option('delimiter'));
+            }
         }
 
         return false;
@@ -103,7 +120,14 @@ class CSV extends Importer {
         }
 
         $this->add_transient('csv_last_pointer', ftell($file)); // add reference to post_process item in after_inserted_item()
-		$values =  fgetcsv($file, 0, $this->get_option('delimiter'), $this->get_option('enclosure'));
+
+        if( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ){
+            $values = $this->handle_enclosure( $file );
+
+        } else {
+            $values = fgetcsv($file, 0, $this->get_option('delimiter'));
+        }
+		
         $this->add_transient('csv_pointer', ftell($file)); // add reference for insert
 
         if( count( $headers ) !== count( $values ) ){
@@ -112,13 +136,17 @@ class CSV extends Importer {
             $this->add_error_log(' Mismatch count headers and row columns ');
             $this->add_error_log(' Headers count: ' . count( $headers ) );
             $this->add_error_log(' Values count: ' . count( $values ) );
-            $this->add_error_log(' enclosure : ' .  $enclosure );
+            $this->add_error_log(' enclosure : ' .  $this->get_option('enclosure') );
             $this->add_error_log(' Values string: ' . $string );
             return false;
         }
         
+        if( $this->get_option('item_id_index') ){
+            $this->handle_item_id( $values );
+        }
+        
         foreach ( $collection_definition['mapping'] as $metadatum_id => $header) {
-            $metadatum = new \Tainacan\Entities\Metadatum($metadatum_id);
+
 
             foreach ( $headers as $indexRaw => $headerRaw ) {
                if( $headerRaw === $header ){
@@ -130,6 +158,12 @@ class CSV extends Importer {
                 continue;
 
             $valueToInsert = $this->handle_encoding( $values[ $column ] );
+
+            if( !is_numeric($metadatum_id) ){
+                $metadatum = $this->create_metadata( $headers[ $column ], $collection_definition['id']);
+            } else {
+                $metadatum = new \Tainacan\Entities\Metadatum($metadatum_id);
+            }
 
             $processedItem[ $header ] = ( $metadatum->is_multiple() ) ? 
                 explode( $this->get_option('multivalued_delimiter'), $valueToInsert) : $valueToInsert;
@@ -145,8 +179,9 @@ class CSV extends Importer {
     public function after_inserted_item( $inserted_item, $collection_index ) {
         $column_document = $this->get_option('document_index');
         $column_attachment = $this->get_option('attachment_index');
+        $column_item_status = $this->get_option('item_status_index');
 
-        if( !empty($column_document) || !empty( $column_attachment ) ){
+        if( !empty($column_document) || !empty( $column_attachment ) || !empty( $column_item_status ) ){
             
 			if (($handle = fopen($this->tmp_file, "r")) !== false) {
 	            $file = $handle;
@@ -158,7 +193,12 @@ class CSV extends Importer {
 			$csv_pointer= $this->get_transient('csv_last_pointer');
 			fseek($file, $csv_pointer);
 			
-            $values = fgetcsv($file, 0, $this->get_option('delimiter'), $this->get_option('enclosure'));
+            if( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ){
+                $values = $this->handle_enclosure( $file );
+    
+            } else {
+                $values = fgetcsv($file, 0, $this->get_option('delimiter'));
+            }
             
             if( is_array($values) && !empty($column_document) ){
                 $this->handle_document( $values[$column_document], $inserted_item);
@@ -167,6 +207,11 @@ class CSV extends Importer {
             if( is_array($values) && !empty($column_attachment) ){
                 $this->handle_attachment( $values[$column_attachment], $inserted_item);
             }
+
+            if( is_array($values) && !empty($column_item_status) ){
+                $this->handle_item_status( $values[$column_item_status], $inserted_item);
+            }
+
         }
     }
 
@@ -281,6 +326,33 @@ class CSV extends Importer {
                     <select name="encode">
                         <option value="utf8" <?php selected($this->get_option('encode'), 'utf8'); ?> >UTF-8</option>
                         <option value="iso88591" <?php selected($this->get_option('encode'), 'iso88591'); ?> >ISO-88591</option>
+                    </select>
+                </div>
+			</div>
+		</div>
+
+        <div class="field">
+			<label class="label"><?php _e('Repeated Item', 'tainacan'); ?></label>
+			<span class="help-wrapper">
+					<a class="help-button has-text-secondary">
+						<span class="icon is-small">
+							 <i class="mdi mdi-help-circle-outline" ></i>
+						 </span>
+					</a>
+					<div class="help-tooltip">
+						<div class="help-tooltip-header">
+							<h5><?php _e('Repeated Item', 'tainacan'); ?></h5>
+						</div>
+						<div class="help-tooltip-body">
+							<p><?php _e('Choose the action when a repeated item is found', 'tainacan'); ?></p>
+						</div>
+					</div> 
+			</span>
+			<div class="control is-clearfix">
+                <div class="select">
+                    <select name="repeated_item">
+                        <option value="update" <?php selected($this->get_option('repeated_item'), 'update'); ?> >Update</option>
+                        <option value="ignore" <?php selected($this->get_option('repeated_item'), 'ignore'); ?> >Ignore</option>
                     </select>
                 </div>
 			</div>
@@ -459,5 +531,204 @@ class CSV extends Importer {
 	   
 	   $this->items_repo->enable_logs();
 	   
+    }
+
+    /**
+     * @param $file resource the csv file uploaded
+     */
+    private function handle_enclosure( &$file ){
+
+        $line = trim(fgets($file));
+        $start = substr($line, 0, strlen($this->get_option('enclosure'))); 
+
+        if( $this->get_option('enclosure') === $start ){
+
+            $cut_start = strlen($this->get_option('enclosure'));
+            $line = substr($line, $cut_start); 
+        }
+
+        $end = substr($line, ( strlen($line)  -  strlen($this->get_option('enclosure')) ) , strlen($this->get_option('enclosure')));
+
+        if( $this->get_option('enclosure') === $end ){
+            $line = substr($line, 0,  ( strlen($line)  -  strlen($this->get_option('enclosure')) ) ); 
+        }
+
+        $delimiter = $this->get_option('enclosure').$this->get_option('delimiter').$this->get_option('enclosure');
+        $values = explode($delimiter, $line);
+        return $values;
+    }
+
+    /**
+     * @param $status string the item status
+     */
+    private function handle_item_status( $status, $item_inserted ){
+
+        if ( in_array( $status, array( 'auto-draft', 'draft', 'pending', 'future', 'publish', 'trash', 'inherit' ) ) ) {
+            $item_inserted->set_status($status);
+
+			if( $item_inserted->validate() ) {
+                $item_inserted = $this->items_repo->update($item_inserted);
+            }
+        }
+        
+    }
+
+    /**
+     * @param $status string the item ID
+     */
+    private function handle_item_id( $values ){
+        $item_id_index = $this->set_option('item_id_index');
+        
+        if( $item_id_index && isset($values[$item_id_index]) ){
+            $this->add_transient( 'item_id',$values[$item_id_index] );
+            $this->add_transient( 'item_action',$this->get_option('repeated_item') );
+        }
+    }
+
+    /**
+     * insert processed item from source to Tainacan
+     *
+     * @param array $processed_item Associative array with metadatum source's as index with
+     *                              its value or values
+     * @param integet $collection_index The index in the $this->collections array of the collection the item is beeing inserted into
+     * 
+     * @return Tainacan\Entities\Item Item inserted
+     */
+    public function insert( $processed_item, $collection_index ) {
+		
+		remove_action( 'post_updated', 'wp_save_post_revision' );
+		$collections = $this->get_collections();
+		$collection_definition = isset($collections[$collection_index]) ? $collections[$collection_index] : false;
+		if ( !$collection_definition || !is_array($collection_definition) || !isset($collection_definition['id']) || !isset($collection_definition['mapping']) ) {
+			$this->add_error_log('Collection misconfigured');
+            return false;
+		}
+		
+		$collection = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_definition['id']);
+		
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		
+		$Tainacan_Items->disable_logs();
+		$Tainacan_Metadata->disable_logs();
+		$Tainacan_Item_Metadata->disable_logs();
+
+        $item = new Entities\Item( ( $this->get_transient('item_id') ) ? $this->get_transient('item_id') : 0 );
+		$itemMetadataArray = [];
+		
+        if( is_array( $processed_item ) ){
+            foreach ( $processed_item as $metadatum_source => $values ){
+                $tainacan_metadatum_id = array_search( $metadatum_source, $collection_definition['mapping'] );
+                $metadatum = $Tainacan_Metadata->fetch( $tainacan_metadatum_id );
+
+                if( $metadatum instanceof Entities\Metadatum ){
+                    $singleItemMetadata = new Entities\Item_Metadata_Entity( $item, $metadatum); // *empty item will be replaced by inserted in the next foreach
+                   
+                    if( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Taxonomy' ){
+                        
+                        $ids = $this->insert_hierarchy( $metadatum, $values );
+                         $singleItemMetadata->set_value( $ids );     
+                    } else {
+                        $singleItemMetadata->set_value( $values );   
+                    }
+
+                    $itemMetadataArray[] = $singleItemMetadata;
+                } else {
+					$this->add_error_log('Metadata ' . $metadatum_source . ' not found');
+				}
+
+            }
+        }
+		
+        if( !empty( $itemMetadataArray ) && $collection instanceof Entities\Collection ){
+			$item->set_collection( $collection );
+
+            if( $item->validate() ){
+				$insertedItem = $Tainacan_Items->insert( $item );
+            } else {
+                $this->add_error_log( 'Error inserting item' );
+                $this->add_error_log( $item->get_errors() );
+                return false;
+            }
+			
+            foreach ( $itemMetadataArray as $itemMetadata ) {
+                $itemMetadata->set_item( $insertedItem );  // *I told you
+
+                if( $itemMetadata->validate() ){
+					$result = $Tainacan_Item_Metadata->insert( $itemMetadata );
+                } else {
+                    $this->add_error_log('Error saving value for ' . $itemMetadata->get_metadatum()->get_name());
+                    $this->add_error_log($itemMetadata->get_errors());
+                    continue;
+                }
+
+                //if( $result ){
+                //	$values = ( is_array( $itemMetadata->get_value() ) ) ? implode( PHP_EOL, $itemMetadata->get_value() ) : $itemMetadata->get_value();
+                //    $this->add_log( 'Item ' . $insertedItem->get_id() .
+                //        ' has inserted the values: ' . $values . ' on metadata: ' . $itemMetadata->get_metadatum()->get_name() );
+                //} else {
+                //    $this->add_error_log( 'Item ' . $insertedItem->get_id() . ' has an error' );
+                //}
+			}
+			
+			$insertedItem->set_status('publish' );
+			
+            if($insertedItem->validate()) {
+				$insertedItem = $Tainacan_Items->update( $insertedItem );
+
+				$this->after_inserted_item(  $insertedItem, $collection_index );
+            } else {
+	            $this->add_error_log( 'Error publishing Item'  ); 
+	            $this->add_error_log( $insertedItem->get_errors() ); 
+	            return false;
+			}
+			
+            return $insertedItem;
+			
+        } else {
+            $this->add_error_log(  'Collection not set');
+            return false;
+        }
+
+    }
+    
+    /**
+     * @param $metadatum the metadata
+     * @param $values the categories names
+     * 
+     * @return array empty with no category or array with IDs
+     */
+    private function insert_hierarchy( $metadatum, $values ){
+
+        $Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
+        $taxonomy = new Entities\Taxonomy( $metadatum->get_metadata_type_options()['taxonomy_id']);
+        $exploded_values = explode(">>",$values);
+
+        if( is_array($exploded_values) ){
+            $parent = 0;
+
+            foreach ( $exploded_values as $key => $value) {
+                $value = trim($value);
+
+                $exists = term_exists( $value ,$taxonomy->get_db_identifier(), $parent );
+                if( 0 !== $exists && null !== $exists && isset($exists['term_id']) ){
+                    $exists = new Entities\Term($exists['term_id']);
+                    $parent = $term->get_id();
+                } else {
+                    $term = new Entities\Term();
+                    $term->set_name( $value );
+                    $term->set_parent( $parent );
+                    $term->set_taxonomy( $taxonomy->get_db_identifier() );
+                    $term = $Tainacan_Terms->insert( $term );
+
+                    $parent = $term->get_id();
+                }
+            }
+
+            return $parent !== 0 ? $parent : false;
+        } else {
+            return false;
+        }
     }
 }

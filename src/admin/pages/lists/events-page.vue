@@ -5,7 +5,8 @@
                     'repository-level-page': isRepositoryLevel,
                     'page-container': isRepositoryLevel
                 }">
-            <tainacan-title />
+            <tainacan-title 
+                :bread-crumb-items="[{ path: '', label: this.$i18n.get('events') }]"/>
             <div :class="{ 'above-subheader': isRepositoryLevel }">
 
                 <div 
@@ -285,6 +286,9 @@
             this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
         },
         mounted(){
+            if (!this.isRepositoryLevel)
+                this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('events') }]);
+
             if (this.$route.query.tab == 'processes' && this.isRepositoryLevel)
                 this.tab = 'processes';
 

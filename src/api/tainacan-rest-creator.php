@@ -14,6 +14,7 @@ $rest_logs_controller            = new \Tainacan\API\EndPoints\REST_Logs_Control
 $rest_metadata_types_controller = new \Tainacan\API\EndPoints\REST_Metadata_Types_Controller();
 $rest_filter_types_controller    = new \Tainacan\API\EndPoints\REST_Filter_Types_Controller();
 $rest_importers_controller    = new \Tainacan\API\EndPoints\REST_Importers_Controller();
+$rest_exporters_controller    = new \Tainacan\API\EndPoints\REST_Exporters_Controller();
 $rest_background_processes_controller    = new \Tainacan\API\EndPoints\REST_Background_Processes_Controller();
 $rest_bulkedit_controller    = new \Tainacan\API\EndPoints\REST_Bulkedit_Controller();
 new \Tainacan\API\EndPoints\REST_Export_Controller();

@@ -35,7 +35,7 @@
                     <div  
                             class="active-filter-item" 
                             :class="{
-                                'not-sortable-item': (filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || isRepositoryLevel),
+                                'not-sortable-item': (isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || isRepositoryLevel),
                                 'not-focusable-item': openedFilterId == filter.id, 
                                 'disabled-filter': filter.enabled == false,
                                 'inherited-filter': filter.collection_id != collectionId || isRepositoryLevel
@@ -146,12 +146,15 @@
                             v-model="availableMetadatumList"
                             :options="{ 
                                 sort: false, 
-                                group: { name:'filters', pull: true, put: false, revertClone: true },
+                                group: { name:'filters', pull: !isSelectingFilterType, put: false, revertClone: true },
                                 dragClass: 'sortable-drag'
                             }">
                         <div 
                                 class="available-metadatum-item"
-                                :class="{'inherited-metadatum': metadatum.collection_id != collectionId || isRepositoryLevel}"
+                                :class="{
+                                    'inherited-metadatum': metadatum.collection_id != collectionId || isRepositoryLevel,
+                                    'disabled-metadatum': isSelectingFilterType
+                                }"
                                 v-if="metadatum.enabled"
                                 v-for="(metadatum, index) in availableMetadatumList"
                                 :key="index"
@@ -207,11 +210,12 @@ export default {
             isLoadingFilters: false,
             isLoadingFilterTypes: false,
             isLoadingFilter: false,
+            isSelectingFilterType: false,
             isUpdatingFiltersOrder: false,
             openedFilterId: '',
             formWithErrors: '',
             editForms: {},
-            allowedFilterTypes: [],
+            allowedFilterTypes: [], 
             selectedFilterType: {},
             choosenMetadatum: {},
             newIndex: 0,
@@ -325,13 +329,18 @@ export default {
                 .catch(() => { this.isUpdatingFiltersOrder = false; });
         },
         addMetadatumViaButton(metadatumType, metadatumIndex) {
-            this.availableMetadatumList.splice(metadatumIndex, 1);
-            let lastIndex = this.activeFilterList.length;
 
-            // Updates store with temporary Filter
-            this.addTemporaryFilter(metadatumType);
+            if (this.isSelectingFilterType == false) {
+                this.isSelectingFilterType = true;
+                this.availableMetadatumList.splice(metadatumIndex, 1);
+                let lastIndex = this.activeFilterList.length;
 
-            this.addNewFilter(metadatumType, lastIndex);
+                // Updates store with temporary Filter
+                this.addTemporaryFilter(metadatumType);
+
+                this.addNewFilter(metadatumType, lastIndex);
+            }
+            
         },
         addNewFilter(choosenMetadatum, newIndex) {
             this.choosenMetadatum = choosenMetadatum;
@@ -348,7 +357,6 @@ export default {
             }
         },
         createChoosenFilter() {
-            
             this.sendFilter({
                 collectionId: this.collectionId, 
                 metadatumId: this.choosenMetadatum.id,
@@ -391,15 +399,17 @@ export default {
                 this.updateFiltersOrder(); 
         },
         confirmSelectedFilterType() {
+            this.isSelectingFilterType = false;
             this.createChoosenFilter();
         },
         cancelFilterTypeSelection() {
-           this.availableMetadatumList.push(this.choosenMetadatum);
-           this.choosenMetadatum = {};
-           this.allowedFilterTypes = [];
-           this.selectedFilterType = {};
-           this.deleteTemporaryFilter(this.newIndex);
-           this.newIndex = 0;
+            this.isSelectingFilterType = false;
+            this.availableMetadatumList.push(this.choosenMetadatum);
+            this.choosenMetadatum = {};
+            this.allowedFilterTypes = [];
+            this.selectedFilterType = {};
+            this.deleteTemporaryFilter(this.newIndex);
+            this.newIndex = 0;
         },
         editFilter(filter) {
             // Closing collapse
@@ -441,9 +451,11 @@ export default {
             delete this.editForms[this.openedFilterId];
             this.openedFilterId = '';
         }
-
     },
    mounted() {
+
+        if (!this.isRepositoryLevel)
+            this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('filter') }]);
 
         this.isRepositoryLevel = this.$route.name == 'FiltersPage' ? true : false;
         if (this.isRepositoryLevel)
@@ -533,6 +545,13 @@ export default {
             display: block; 
             transition: top 0.1s ease;
             cursor: grab;
+
+            form.tainacan-form {
+                padding: 1.0em 2.0em;
+                margin-top: 1.0em;
+                border-top: 1px solid $gray2;
+                border-bottom: 1px solid $gray2;
+            }
         
             &>.field, form {
                 background-color: white !important;
@@ -738,24 +757,26 @@ export default {
         .sortable-drag {
             opacity: 1 !important;
         }
-        .available-metadatum-item:hover {
-            background-color: $secondary;
-            border-color: $secondary;
-            color: white;
-            position: relative;
-            left: -4px;
-
-            &:after {
-                border-color: transparent $secondary transparent transparent;
-            }
-            &:before {
-                border-color: transparent $secondary transparent transparent;
-            }
-            .icon-level-identifier>i {
+        .available-metadatum-item:not(.disabled-metadatum)  {
+            &:hover{
+                background-color: $secondary;
+                border-color: $secondary;
                 color: white !important;
-            }
-            .grip-icon {
-                fill: white !important;
+                position: relative;
+                left: -4px;
+
+                &:after {
+                    border-color: transparent $secondary transparent transparent;
+                }
+                &:before {
+                    border-color: transparent $secondary transparent transparent;
+                }
+                .icon-level-identifier>i {
+                    color: white !important;
+                }
+                .grip-icon {
+                    fill: white !important;
+                }
             }
         }
     }

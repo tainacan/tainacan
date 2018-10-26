@@ -142,11 +142,13 @@
             },
         },
         created(){
-
             this.$root.$on('closeAdvancedSearchShortcut', () => {
                 this.$refs.advancedSearchShortcut.toggle();
             });
         },
+        beforeDestroy() {
+            this.$root.$off('closeAdvancedSearchShortcut');
+        }
     }
 </script>
 

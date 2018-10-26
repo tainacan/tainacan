@@ -1,7 +1,8 @@
 <template>
     <div class="repository-level-page page-container">
         <b-loading :active.sync="isLoadingMetadatumMappers"/>
-        <tainacan-title />
+        <tainacan-title 
+                :bread-crumb-items="[{ path: '', label: this.$i18n.get('collections') }]"/>
         <div
                 class="sub-header"
                 v-if="$userCaps.hasCapability('edit_tainacan-collections')">
@@ -205,7 +206,11 @@ export default {
         loadCollections() {
             this.cleanCollections();    
             this.isLoading = true;
-            this.fetchCollections({ 'page': this.page, 'collectionsPerPage': this.collectionsPerPage, 'status': this.status })
+            this.fetchCollections({ 
+                'page': this.page, 
+                'collectionsPerPage': this.collectionsPerPage,
+                'status': this.status,
+                'contextEdit': true })
             .then((res) => {
                 this.isLoading = false;
                 this.totalCollections = res.total;

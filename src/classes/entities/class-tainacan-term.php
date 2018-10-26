@@ -276,7 +276,7 @@ class Term extends Entity {
 			
 		}
 
-		return $return;
+		return apply_filters('tainacan-term-to-html', $return, $this);
 		
 	}
 }

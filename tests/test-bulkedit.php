@@ -89,10 +89,12 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 
 		for ($i = 1; $i<=40; $i++) {
 			
+			$title = 'testeItem ' . str_pad($i, 2, "0", STR_PAD_LEFT); 
+			
 			$item = $this->tainacan_entity_factory->create_entity(
 				'item',
 				array(
-					'title'      => 'testeItem ' . $i,
+					'title'      => $title,
 					'collection' => $collection,
 					'status' => 'publish'
 				),
@@ -103,7 +105,7 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 			
 			$this->tainacan_item_metadata_factory->create_item_metadata($item, $metadatum, $i % 2 == 0 ? 'even' : 'odd');
 			$this->tainacan_item_metadata_factory->create_item_metadata($item, $category, ['good', 'bad']);
-			$this->tainacan_item_metadata_factory->create_item_metadata($item, $collection->get_core_title_metadatum(), 'testeItem ' . $i);
+			$this->tainacan_item_metadata_factory->create_item_metadata($item, $collection->get_core_title_metadatum(), $title);
 		
 		}
 
@@ -912,7 +914,7 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 
 		$this->assertTrue(is_string($data['id']));
 
-		$this->assertEquals(17, $response->headers['X-WP-Total']);
+		$this->assertEquals(17, $data['items_count']);
 
 
 	}
@@ -948,9 +950,9 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 			'POST', $this->api_baseroute
 		);
 
-		$request->set_query_params($query);
+		//$request->set_query_params($query);
 
-		$request->set_body( json_encode(['use_query' => 1]) );
+		$request->set_body( json_encode(['use_query' => $query]) );
 
 		$response = $this->server->dispatch($request);
 
@@ -960,7 +962,7 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 
 		$this->assertTrue(is_string($data['id']));
 
-		$this->assertEquals(20, $response->headers['X-WP-Total']);
+		$this->assertEquals(20, $data['items_count']);
 
 
 	}
@@ -1128,6 +1130,10 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 			'items_ids' => $ids,
 		]);
 
+		$this->assertEquals( 0, $bulk->delete_items(), 'Items must be on trash to be deleted' );
+
+		$bulk->trash_items();
+
 		$this->assertEquals( 17, $bulk->delete_items() );
 
 		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
@@ -1271,6 +1277,159 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 
 
 	}
+
+	function test_create_delete_group() {
+
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+
+		$ids = array_slice($this->items_ids, 2, 7);
+		
+		$bulk = new \Tainacan\Bulk_Edit([
+			'items_ids' => $ids,
+		]);
+
+		$bulk->trash_items();
+
+		$query = [
+			'status' => 'trash',
+			'posts_per_page' => -1
+		];
+		
+		$bulk = new \Tainacan\Bulk_Edit([
+			'query' => $query,
+			'collection_id' => $this->collection->get_id()
+		]);
+
+		$this->assertEquals(7, $bulk->count_posts());
+
+
+	}
+	
+	/**
+	* @group sequence
+	*/
+	function test_get_item_in_sequence() {
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		
+		$query = [
+			'posts_per_page' => 22,
+			'orderby' => 'title'
+		];
+		
+		$bulk = new \Tainacan\Bulk_Edit([
+			'query' => $query,
+			'collection_id' => $this->collection->get_id()
+		]);
+		
+		$item_id = $bulk->get_item_id_by_index(7);
+		
+		$item = $Tainacan_Items->fetch($item_id);
+		
+		$this->assertEquals('testeItem 34', $item->get_title());
+		
+		$item_id = $bulk->get_item_id_by_index(15);
+		
+		$item = $Tainacan_Items->fetch($item_id);
+		
+		$this->assertEquals('testeItem 26', $item->get_title());
+		
+		$query = [
+			'posts_per_page' => 22,
+			'orderby' => 'title',
+			'order' => 'ASC'
+		];
+		
+		$bulk = new \Tainacan\Bulk_Edit([
+			'query' => $query,
+			'collection_id' => $this->collection->get_id()
+		]);
+		
+		$item_id = $bulk->get_item_id_by_index(19);
+		
+		$item = $Tainacan_Items->fetch($item_id);
+		
+		$this->assertEquals('testeItem 19', $item->get_title());
+		
+		$item_id = $bulk->get_item_id_by_index(30);
+		
+		$this->assertFalse($item_id);
+		
+		
+	}
+	
+	/**
+	* @group sequence
+	*/
+	function test_api_get_item_in_sequence() {
+		
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		
+		$query = [
+			'posts_per_page' => 22,
+			'orderby' => 'title',
+			'order' => 'ASC'
+		];
+		
+		$bulk = new \Tainacan\Bulk_Edit([
+			'query' => $query,
+			'collection_id' => $this->collection->get_id()
+		]);
+		
+		
+		$request = new \WP_REST_Request(
+			'GET', $this->api_baseroute . '/' . $bulk->get_id() . '/sequence/7'
+		);
+
+		$response = $this->server->dispatch($request);
+		
+		$id = $response->get_data();
+		
+		$item = $Tainacan_Items->fetch($id);
+
+		$this->assertEquals('testeItem 07', $item->get_title());
+		
+		
+	}
+
+	function test_api_get_group() {
+		
+		$query = [
+			'posts_per_page' => 22,
+			'orderby' => 'title',
+			'order' => 'ASC'
+		];
+		
+		$bulk = new \Tainacan\Bulk_Edit([
+			'query' => $query,
+			'collection_id' => $this->collection->get_id()
+		]);
+		
+		
+		$request = new \WP_REST_Request(
+			'GET', $this->api_baseroute . '/' . $bulk->get_id()
+		);
+
+		$response = $this->server->dispatch($request);
+		
+		$data = $response->get_data();
+		
+		$this->assertEquals($bulk->get_id(), $data['id']);
+		$this->assertEquals($bulk->get_options()['order'], $data['options']['order']);
+		$this->assertEquals($bulk->get_options()['orderby'], $data['options']['orderby']);
+		$this->assertEquals($bulk->count_posts(), $data['items_count']);
+		
+		
+		$request = new \WP_REST_Request(
+			'GET', $this->api_baseroute . '/fefefe23232'
+		);
+		
+		$response = $this->server->dispatch($request);
+		
+		$this->assertEquals(404, $response->get_status());
+		
+	}
+	
+	
 
 
 }

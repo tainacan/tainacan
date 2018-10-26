@@ -1,6 +1,7 @@
 <template>
     <div class="repository-level-page page-container">
-        <tainacan-title />
+        <tainacan-title
+                :bread-crumb-items="[{ path: '', label: $i18n.get('importers') }]" />
 
         <h3>{{ $i18n.get('label_available_importers') }}</h3>
         <p>{{ $i18n.get('info_available_importers_helper') }}</p>

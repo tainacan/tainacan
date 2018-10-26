@@ -1,7 +1,15 @@
 <template>
-    <div 
+    <!-- <div <IF WE USE HAMMER JS>
             v-hammer:swipe="onSwipeFiltersMenu"
-            :class="{'repository-level-page': isRepositoryLevel}">
+            :class="{
+                'repository-level-page': isRepositoryLevel,
+                'is-fullscreen': registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen
+            }"> -->
+    <div 
+            :class="{
+                'repository-level-page': isRepositoryLevel,
+                'is-fullscreen': registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen
+            }">
 
         <!-- SEARCH AND FILTERS --------------------- -->
         <!-- Filter menu compress button -->
@@ -11,7 +19,7 @@
                     autoHide: false,
                     placement: 'auto-start'
                 }"  
-                v-if="!openAdvancedSearch"
+                v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="is-hidden-mobile"
                 id="filter-menu-compress-button"
                 :style="{ top: !isOnTheme ? (isRepositoryLevel ? '172px' : '120px') : '76px' }"
@@ -20,7 +28,7 @@
         </button>
         <!-- Filters mobile modal button -->
         <button 
-                v-if="!openAdvancedSearch"
+                v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="is-hidden-tablet"
                 id="filter-menu-compress-button"
                 :style="{ top: !isOnTheme ? (isRepositoryLevel ? (searchControlHeight + 100) : (searchControlHeight + 70) + 'px') : (searchControlHeight - 25) + 'px' }"
@@ -32,7 +40,9 @@
         <!-- Side bar with search and filters -->
         <aside
                 :style="{ top: searchControlHeight + 'px' }"
-                v-show="!isFiltersMenuCompressed && !openAdvancedSearch"
+                v-show="!isFiltersMenuCompressed && 
+                        !openAdvancedSearch && 
+                        !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="filters-menu tainacan-form is-hidden-mobile">
             <b-loading
                     :is-full-page="false"
@@ -110,18 +120,20 @@
         <div 
                 id="items-list-area"
                 class="items-list-area"
-                :class="{ 'spaced-to-right': !isFiltersMenuCompressed && !openAdvancedSearch }">
+                :class="{ 'spaced-to-right': !isFiltersMenuCompressed && !openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)}">
 
             <!-- FILTERS TAG LIST-->
             <filters-tags-list 
                     class="filter-tags-list"
                     :filters="filters"
-                    v-if="hasFiltered && !openAdvancedSearch">Teste</filters-tags-list>
+                    v-if="hasFiltered && 
+                        !openAdvancedSearch &&
+                        !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)" />
 
             <!-- SEARCH CONTROL ------------------------- -->
             <div
                     ref="search-control"
-                    v-if="!openAdvancedSearch"
+                    v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                     class="search-control">
                 <b-loading
                         :is-full-page="false"
@@ -295,7 +307,7 @@
                                     v-for="(viewModeOption, index) of enabledViewModes"
                                     :key="index"
                                     :value="viewModeOption"
-                                    v-if="registeredViewModes[viewModeOption] != undefined">
+                                     v-if="registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == false">
                                 <span 
                                         class="gray-icon"
                                         v-html="registeredViewModes[viewModeOption].icon"/>
@@ -372,6 +384,24 @@
                             </b-dropdown-item>
                         </b-dropdown>
                     </b-field>
+                </div>
+
+                <!-- Theme Full Screen mode, it's just a special view mode -->
+                <div 
+                        v-if="isOnTheme"
+                        class="search-control-item">
+                    <button 
+                            class="button is-white"
+                            @click="onChangeViewMode(viewModeOption)"
+                            v-for="(viewModeOption, index) of enabledViewModes"
+                            :key="index"
+                            :value="viewModeOption"
+                            v-if="registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == true ">
+                        <span 
+                                class="gray-icon"
+                                v-html="registeredViewModes[viewModeOption].icon"/>
+                        <span class="is-hidden-touch">{{ registeredViewModes[viewModeOption].label }}</span>
+                    </button>
                 </div>
 
                 <!-- Text simple search (used on mobile, instead of the one from filter list)-->
@@ -772,14 +802,21 @@
                 'getAdminViewMode'
             ]),
             onSwipeFiltersMenu($event) {
-                let screenWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
+                if (this.registeredViewModes[this.viewMode] == undefined || 
+                    (this.registeredViewModes[this.viewMode] != undefined && 
+                        (this.registeredViewModes[this.viewMode].full_screen == false || 
+                        this.registeredViewModes[this.viewMode].full_screen == undefined)
+                    )
+                   ) {
+                    let screenWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
 
-                if ($event.offsetDirection == 4 && screenWidth <= 768) {
-                    if (!this.isFilterModalActive)
-                        this.isFilterModalActive = true;
-                } else if ($event.offsetDirection == 2 && screenWidth <= 768) {
-                    if (this.isFilterModalActive)
-                        this.isFilterModalActive = false;
+                    if ($event.offsetDirection == 4 && screenWidth <= 768) {
+                        if (!this.isFilterModalActive)
+                            this.isFilterModalActive = true;
+                    } else if ($event.offsetDirection == 2 && screenWidth <= 768) {
+                        if (this.isFilterModalActive)
+                            this.isFilterModalActive = false;
+                    }
                 }
             },
             onOpenImportersModal() {
@@ -809,6 +846,14 @@
                 // We need to load metadata again as fetch_only might change from view mode
                 this.prepareMetadata();
                 this.$eventBusSearch.setViewMode(viewMode);
+
+                // For view modes such as slides, we force pagination to request only 12 per page
+                let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(aViewMode => aViewMode == viewMode);
+                if (existingViewModeIndex >= 0) {
+                    if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination) {
+                        this.$eventBusSearch.setItemsPerPage(12);
+                    }
+                }
 
                 // Updates searchControlHeight before in case we need to adjust filters position on mobile
                 setTimeout(() => {
@@ -1078,6 +1123,19 @@
                 });
             }
         },
+        removeEventListeners() {
+            // Component
+            this.$off();
+            // Window
+            window.removeEventListener('resize', this.adjustSearchControlHeight);
+            // $root
+            this.$root.$off('openAdvancedSearch');
+            // $eventBusSearch
+            this.$eventBusSearch.$off('isLoadingItems');
+            this.$eventBusSearch.$off('hasFiltered');
+            this.$eventBusSearch.$off('advancedSearchResults');
+            this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
+        },
         created() {
 
             this.isOnTheme = (this.$route.name === null);
@@ -1139,6 +1197,15 @@
                     else   
                         this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
                 }
+                
+                // For view modes such as slides, we force pagination to request only 12 per page
+                let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
+                if (existingViewModeIndex >= 0) {
+                    if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination) {
+                        this.$eventBusSearch.setItemsPerPage(12);
+                    }
+                }
+
             } else {
                 let prefsAdminViewMode = !this.isRepositoryLevel ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
                 if (this.$userPrefs.get(prefsAdminViewMode) == undefined)
@@ -1161,8 +1228,11 @@
             window.addEventListener('resize', this.adjustSearchControlHeight);
         },
         beforeDestroy() {
-            this.$off();
-            window.removeEventListener('resize', this.adjustSearchControlHeight);
+            this.removeEventListeners();
+                        
+            // Cancels previous Request
+            if (this.$eventBusSearch.searchCancel != undefined)
+                this.$eventBusSearch.searchCancel.cancel('Item search Canceled.');
         }
     }
 </script>
@@ -1170,6 +1240,20 @@
 <style lang="scss" scoped>
 
     @import '../../scss/_variables.scss';
+
+
+    .is-fullscreen {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 999999999;
+        background-color: black;
+        transition: all 0.3s ease;
+    }
 
     .collapse-all {
         display: inline-flex;
