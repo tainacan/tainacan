@@ -587,7 +587,7 @@ export default {
             isLoading: false,
             isMetadataColumnCompressed: false,
             metadatumCollapses: [],
-            collapseAll: false,
+            collapseAll: true,
             visibility: 'publish',
             form: {
                 collectionId: Number,
@@ -799,8 +799,9 @@ export default {
             // Obtains Item Metadatum
             this.fetchMetadata(this.itemId).then((metadata) => {
                 this.isLoading = false;
-                for (let metadatum of metadata) {
-                    this.metadatumCollapses.push(metadatum.metadatum.required == 'yes');
+                for (let i = 0; i < metadata.length; i++) {
+                    this.metadatumCollapses.push(false);
+                    this.metadatumCollapses[i] = true;
                 }
             });
         },

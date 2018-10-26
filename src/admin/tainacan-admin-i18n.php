@@ -414,7 +414,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_warning_metadata_not_saved'                => __( 'Are you sure? There are metadata not saved, changes will be lost.', 'tainacan' ),
 	'info_warning_filters_not_saved'                 => __( 'Are you sure? There are filters not saved, changes will be lost.', 'tainacan' ),
 	'info_no_description_provided'                   => __( 'No description provided.', 'tainacan' ),
-	'info_warning_taxonomy_not_saved'                => __( 'Are you sure? The metadata is not saved, changes will be lost.', 'tainacan' ),
+	'info_warning_taxonomy_not_saved'                => __( 'Are you sure? The taxonomy is not saved, changes will be lost.', 'tainacan' ),
 	'info_warning_terms_not_saved'                   => __( 'Are you sure? There are terms not saved, changes will be lost.', 'tainacan' ),
 	'info_warning_orphan_terms'                      => __( 'Are you sure? This term is parent of other terms. These will be converted to root terms.', 'tainacan' ),
 	'info_no_events'                                 => __( 'No events', 'tainacan' ),
