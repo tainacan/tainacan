@@ -19,7 +19,26 @@
                 
             <div class="columns">
                 <div class="column document-list">
-                    lista
+                    <transition-group name="item-appear">
+                        <div 
+                                class="document-item"
+                                v-for="(item, index) of uploadedItems"
+                                :key="index">
+                            <img 
+                                    v-if="item.document!= undefined && item.document != '' && item.document_type != 'empty'"
+                                    class="document-thumb"
+                                    :alt="item.title"
+                                    :src="item.thumbnail.tainacan_small ? item.thumbnail.tainacan_small : item.thumbnail.thumb" > 
+                            <span 
+                                class="document-name"
+                                v-html="item.title" />                            
+                            <span 
+                                    v-if="item.errorMessage != undefined" 
+                                    class="help is-danger">
+                                {{ item.errorMessage }}
+                            </span>                                 
+                        </div>
+                    </transition-group>
                 </div>
                 <div class="column">
 
@@ -34,13 +53,13 @@
                         {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
                         <b-icon :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
                     </a>
-                    <tainacan-form-item
+                    <!-- <tainacan-form-item
                             v-if="!isLoadingMetadata"
                             v-for="(metadatum, index) of metadatumList"
                             :key="index"
                             :metadatum="metadatum"
                             :is-collapsed="metadatumCollapses[index]"
-                            @changeCollapse="onChangeCollapse($event, index)"/>
+                            @changeCollapse="onChangeCollapse($event, index)"/> -->
                     <b-loading 
                             :is-full-page="false"
                             :active.sync="isLoadingMetadata"
@@ -81,11 +100,6 @@ export default {
             metadatumCollapses: [],
         }
     },
-    computed: {
-        metadatumList() {
-            return JSON.parse(JSON.stringify(this.getMetadata()));
-        },
-    },
     methods: {
         ...mapActions('collection', [
             'fetchCollectionName'
@@ -124,18 +138,8 @@ export default {
             this.collectionName = collectionName;
         });
 
-        this.isLoadingMetadata = true;
-        // Get Collection Metadata list
-        this.fetchMetadata({ collectionId: this.collectionId, isRepositoryLevel: false })
-            .then(() => {
-                this.isLoadingMetadata = false;
-                for (let metadatum of this.metadatumList) {
-                    this.metadatumCollapses.push(metadatum.metadatum.required == 'yes');
-                }
-            })
-            .catch((error) => {
-                this.$console.error(error);
-            }); 
+        // this.isLoadingMetadata = true;
+       
     }
 }
 </script>
