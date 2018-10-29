@@ -152,6 +152,7 @@ export default {
     name: 'ItemBulkEditionForm',
     data(){
         return {
+            collectionId: '',
             isLoading: false,
             isCreatingBulkEditGroup: false,
             isCreatingSequenceEditGroup: false,
@@ -264,10 +265,15 @@ export default {
                 object: onlyItemIds,
                 collectionID: this.collectionId
             }).then((group) => {
-                this.isCreatingBulkEditGroup = false;
                 let groupId = group.id;
-                console.log(this.$routerHelper.getItemMetadataBulkAddPath(this.collectionId, groupId))
-                this.$router.push(this.$routerHelper.getItemMetadataBulkAddPath(this.collectionId, groupId));
+                this.setStatusInBulk({
+                    groupID: groupId,
+                    collectionID: this.collectionId,
+                    bodyParams: { value: 'draft' }
+                }).then(() => {
+                    this.isCreatingBulkEditGroup = false;
+                    this.$router.push(this.$routerHelper.getItemMetadataBulkAddPath(this.collectionId, groupId));
+                });
             }); 
         },
         deleteOneItem(itemId, index) {
@@ -428,9 +434,9 @@ export default {
                     margin-left: 16px;
                     margin-right: 6px;
                 }
-                // .is-outlined {
-                //     border: none;
-                // }
+                .is-outlined {
+                    border: none;
+                }
             }
         }
     }

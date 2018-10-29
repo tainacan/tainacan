@@ -41,6 +41,35 @@
                     </transition-group>
                 </div>
                 <div class="column">
+                     
+                    <!-- Visibility (status public or private) -------------------------------- -->
+                    <div class="section-label">
+                        <label>{{ $i18n.get('label_visibility') }}</label>
+                        <span class="required-metadatum-asterisk">*</span>
+                        <help-button
+                                :title="$i18n.get('label_visibility')"
+                                :message="$i18n.get('info_visibility_helper')"/>
+                    </div>
+                    <div class="section-status">
+                        <div class="field has-addons">
+                            <b-radio
+                                    v-model="visibility"
+                                    value="publish"
+                                    native-value="publish">
+                                <span class="icon">
+                                    <i class="mdi mdi-earth"/>
+                                </span> {{ $i18n.get('publish_visibility') }}
+                            </b-radio>
+                            <b-radio
+                                    v-model="visibility"
+                                    value="private"
+                                    native-value="private">
+                                <span class="icon">
+                                    <i class="mdi mdi-lock"/>
+                                </span>  {{ $i18n.get('private_visibility') }}
+                            </b-radio>
+                        </div>
+                    </div>
 
                     <!-- Metadata from Collection-------------------------------- -->
                     <span class="section-label">
@@ -53,33 +82,129 @@
                         {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
                         <b-icon :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
                     </a>
-                    <!-- <tainacan-form-item
-                            v-if="!isLoadingMetadata"
-                            v-for="(metadatum, index) of metadatumList"
-                            :key="index"
-                            :metadatum="metadatum"
-                            :is-collapsed="metadatumCollapses[index]"
-                            @changeCollapse="onChangeCollapse($event, index)"/> -->
+
+                    <template 
+                                v-for="(metadatum, index) of metadata">
+                        <b-field
+                                :key="index"
+                                :addons="false"
+                                :message="getErrorMessage(metadatum)"
+                                :type="metadatumTypeMessage">
+                            <span   
+                                    class="collapse-handle"
+                                    @click="changeCollapse(metadatumTypeMessage != 'is-danger' ? !metadatumCollapses[index] : true, index)">
+                                <b-icon 
+                                        type="is-secondary"
+                                        :icon="metadatumCollapses[index] || metadatumTypeMessage == 'is-danger' ? 'menu-down' : 'menu-right'" />
+                                <label class="label">{{ metadatum.name }}</label>
+                                <span
+                                        v-if="metadatum.required == 'yes'"
+                                        class="required-metadatum-asterisk"
+                                        :class="metadatumTypeMessage">*</span>
+                                <span class="metadata-type">({{ $i18n.get(metadatum.metadata_type_object.component) }})</span>
+                                <help-button 
+                                        :title="metadatum.name"
+                                        :message="metadatum.description"/>
+                            </span>
+                            <transition name="filter-item">
+                                <div   
+                                        v-show="metadatumCollapses[index] || metadatumTypeMessage == 'is-danger'"
+                                        v-if="isTextInputComponent( metadatum.metadata_type_object.component )">
+
+                                        <component
+                                                :forced-component-type="metadatum.metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
+                                                :allow-new="false"
+                                                :allow-select-to-create="metadatum.metadata_type_options.allow_new_terms === 'yes'"
+                                                :maxtags="1"
+                                                :id="metadatum.metadata_type_object.component +
+                                                '-' + metadatum.slug"
+                                                :is="metadatum.metadata_type_object.component"
+                                                :metadatum="{ metadatum: metadatum }"
+                                                class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
+                                                @input="bulkEdit($event, metadatum)" />
+                                                <!-- :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
+                                                :disabled="bulkEditionProcedures[criterion].isDone || bulkEditionProcedures[criterion].isExecuting" -->
+                                </div>
+                            </transition>
+                        </b-field>
+                    </template>
+
                     <b-loading 
                             :is-full-page="false"
                             :active.sync="isLoadingMetadata"
                             :can-cancel="false"/>
                 </div>
             </div>
-            <div class="field is-grouped form-submit">
-                <div class="control">
+            <footer class="footer">
+                <!-- Last Updated Info --> 
+                <div class="update-info-section"> 
+                    <p v-if="!isExecutingBulkEdit">
+                        {{ ($i18n.get('info_updated_at') + ' ' + 'TO BE IMPLEMENTED lastUpdated') }}
+                        <span class="help is-danger">{{ formErrorMessage }}</span>
+                    </p>     
+                    <p 
+                            class="update-warning"
+                            v-if="isExecutingBulkEdit">
+                        <b-icon icon="autorenew" />{{ $i18n.get('info_updating_metadata_values') }}
+                        <span class="help is-danger">{{ formErrorMessage }}</span>
+                    </p> 
+                </div>  
+                <div 
+                        class="form-submission-footer"
+                        v-if="status == 'trash'">
                     <button 
+                            @click="onDeletePermanently()"
                             type="button"
-                            class="button is-outlined" 
-                            @click.prevent="$router.go(-1)" 
-                            slot="trigger">{{ $i18n.get('cancel') }}</button>
-                </div>
-                <div class="control">
+                            class="button is-outlined">{{ $i18n.get('label_delete_permanently') }}</button>
                     <button 
-                            class="button is-success" 
-                            type="submit">{{ $i18n.get('save') }}</button>
+                            @click="onSubmit('draft')"
+                            type="button"
+                            class="button is-secondary">{{ $i18n.get('label_save_as_draft') }}</button>
+                    <button 
+                            @click="onSubmit(visibility)"
+                            type="button"
+                            class="button is-success">{{ $i18n.get('label_publish') }}</button>
                 </div>
-            </div>
+                <div 
+                        class="form-submission-footer"
+                        v-if="status == 'auto-draft' || status == 'draft' || status == undefined">
+                    <button 
+                            v-if="status == 'draft'"
+                            @click="onSubmit('trash')"
+                            type="button"
+                            class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
+                    <button 
+                            v-if="status == 'auto-draft'"
+                            @click="onDiscard()"
+                            type="button"
+                            class="button is-outlined">{{ $i18n.get('label_discard') }}</button>
+                    <button 
+                            @click="onSubmit('draft')"
+                            type="button"
+                            class="button is-secondary">{{ status == 'draft' ? $i18n.get('label_update') : $i18n.get('label_save_as_draft') }}</button>
+                    <button 
+                            @click="onSubmit(visibility)"
+                            type="button"
+                            class="button is-success">{{ $i18n.get('label_publish') }}</button>
+                </div>
+                <div 
+                        class="form-submission-footer"
+                        v-if="status == 'publish' || status == 'private'">
+                    <button 
+                            @click="onSubmit('trash')"
+                            type="button"
+                            class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
+                    <button 
+                            @click="onSubmit('draft')"
+                            type="button"
+                            class="button is-secondary">{{ $i18n.get('label_return_to_draft') }}</button>
+                    <button 
+                            :disabled="formErrorMessage != undefined && formErrorMessage != ''"
+                            @click="onSubmit(visibility)"
+                            type="button"
+                            class="button is-success">{{ $i18n.get('label_update') }}</button>
+                </div>
+            </footer>
         </form>
     </div>
 </template>
@@ -91,39 +216,18 @@ export default {
     name: 'ItemMetadataBulkEditionForm',
     data(){
         return {
+            collectionId: '',
             isLoadingItems: false,
             isLoadingMetadata: false,
+            isExecutingBulkEdit: false,
             collectionName: '',
             items: '',
-            collapseAll: false,
+            visibility: 'publish',
+            collapseAll: true,
             metadatumCollapses: [],
-            statuses: {
-                draft: 'draft',
-                publish: 'publish',
-                private: 'private'
-            },
-            editionCriteria: [1],
-            editionActionsForMultiple: {
-                add: this.$i18n.get('add_value'),
-                redefine: this.$i18n.get('set_new_value'),
-                remove: this.$i18n.get('remove_value'),
-                replace: this.$i18n.get('replace_value'),
-            },
-            editionActionsForNotMultiple: {
-                redefine: this.$i18n.get('set_new_value'),
-            },
-            bulkEditionProcedures: {
-                1: {
-                    isDone: false,
-                    isDoneWithError: false,
-                    isExecuting: false,
-                    actionResult: '',
-                    totalItemsEditedWithSuccess: 0,
-                    tooltipShow: true,
-                }
-            },
-            groupID: null,
-            dones: [false],
+            metadatumTypeMessage:'',
+            status: 'draft',
+            groupID: null
         }
     },
     computed: {
@@ -147,7 +251,9 @@ export default {
             'replaceValueInBulk',
             'redefineValueInBulk',
             'setStatusInBulk',
-            'removeValueInBulk'
+            'removeValueInBulk',
+            'deleteItemsInBulk',
+            'trashItemsInBulk'
         ]),
         ...mapGetters('bulkedition', [
             'getItemIdInSequence',
@@ -159,9 +265,97 @@ export default {
             for (let i = 0; i < this.metadatumCollapses.length; i++)
                 this.metadatumCollapses[i] = this.collapseAll;
         },
-        onChangeCollapse(event, index) {
+        changeCollapse(event, index) {
             this.metadatumCollapses.splice(index, 1, event);
         },
+        getErrorMessage(metadatum) {
+                
+            let msg = '';
+            // let errors = eventBus.getErrors(metadatum.id);
+
+            // if ( errors) {
+            //     this.metadatumTypeMessage = 'is-danger';
+            //     for (let error of errors) { 
+            //         for (let index of Object.keys(error)) {
+            //             // this.$console.log(index);
+            //             msg += error[index] + '\n';
+            //         }
+            //     }
+            // } else {
+            //     this.metadatumTypeMessage = '';
+            // }
+
+            return msg;
+        },
+        isTextInputComponent( component ){
+            let array = ['tainacan-relationship','tainacan-taxonomy'];
+            return !( array.indexOf( component ) >= 0 );
+        },
+        bulkEdit: _.debounce(function(newValue, metadatum) {
+            this.isExecutingBulkEdit = true;
+            this.setValueInBulk({
+                collectionID: this.collectionId,
+                groupID: this.groupID,
+                bodyParams: {
+                    metadatum_id: metadatum.id,
+                    value: newValue,
+                }
+            }).then(() => {
+                this.isExecutingBulkEdit = false;
+                // this.finalizeProcedure(criterion);
+            }).catch(() => this.isExecutingBulkEdit = false);
+        }, 1000),
+        onSubmit(status) {
+            this.isExecutingBulkEdit = true;
+            console.log(status)
+            if (this.status != status && status != 'trash') {
+
+                this.setStatusInBulk({
+                        groupID: this.groupID,
+                        collectionID: this.collectionId,
+                        bodyParams: { value: status }
+                    }).then(() => {
+                        this.status = status;
+                        this.isExecutingBulkEdit = false;
+
+                        if (this.status != 'draft' && this.status != 'auto-draft')
+                            this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
+                    }).catch(() => this.isExecutingBulkEdit = false);
+
+            } else if (this.status != status && status == 'trash') {
+                
+                this.trashItemsInBulk({
+                        groupID: this.groupID,
+                        collectionID: this.collectionId
+                    }).then(() => {
+                        this.status = status;
+                        this.isExecutingBulkEdit = false;
+                        this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
+                    }).catch(() => this.isExecutingBulkEdit = false);
+            
+            } else {   
+
+                // Triggers updating animation.
+                this.isExecutingBulkEdit = true;
+                this.isExecutingBulkEdit = false;
+                if (this.status != 'draft' && this.status != 'auto-draft')
+                    this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
+            
+            }
+        },
+        onDeletePermanently() {
+            this.isExecutingBulkEdit = true;
+            this.deleteItemsInBulk({
+                    collectionID: this.collectionId,
+                    groupID: this.groupID
+                }).then(() => {
+                    this.isExecutingBulkEdit = false;
+                    this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
+                }).catch(() => this.isExecutingBulkEdit = false);
+        },
+        onDiscard() {
+            this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
+        }
     },
     created() {
         // Obtains collection ID
@@ -176,12 +370,17 @@ export default {
         this.isLoadingMetadata = true;
 
         this.fetchMetadata({
-            collectionId: this.collectionID,
+            collectionId: this.collectionId,
             isRepositoryLevel: false,
             isContextEdit: true,
             includeDisabled: false,
         }).then(() => {
             this.isLoadingMetadata = false;
+            for (let i = 0; i < this.metadata.length; i++) {
+                this.metadatumCollapses.push(false);
+                this.metadatumCollapses[i] = true;
+            }
+            this.visibility = 'publish';
         });
        
     }
@@ -227,10 +426,7 @@ export default {
                 width: 100%;
             }
         }
-        .source-file-upload {
-            width: 100%;
-            display: grid;
-        }
+
         .document-list {
             display: inline-block;
             width: 100%;
@@ -281,6 +477,111 @@ export default {
                 position: relative;
             }        
         }
+
+        .column {
+
+            .section-label {
+                position: relative;
+                label {
+                    font-size: 16px !important;
+                    font-weight: 500 !important;
+                    color: $gray5 !important;
+                    line-height: 1.2em;
+                }
+            }
+
+            .collapse-all {
+                font-size: 12px;
+                .icon { 
+                    vertical-align: bottom; 
+                }
+            }
+
+            .multiple-inputs {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .field {
+                border-bottom: 1px solid $gray2;
+                padding: 10px 0px 10px 60px;
+
+                .label {
+                    font-size: 0.875rem;
+                    font-weight: 500;
+                    margin-left: 15px;
+                    margin-bottom: 0.5em;
+                }
+                .metadata-type {
+                    font-size: 0.8125rem;
+                    font-weight: 400;
+                    color: $gray3;
+                    top: -0.2em;
+                    position: relative;
+                }
+                .help-wrapper {
+                    top: -0.2em;
+                }
+                .collapse-handle {
+                    cursor: pointer;
+                    position: relative;
+                    margin-left: -42px;
+                }
+            }
+        }
+
+        .footer {
+            padding: 18px $page-side-padding;
+            position: absolute;
+            bottom: 0;
+            z-index: 999999;
+            background-color: $gray1;
+            width: 100%;
+            height: 65px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            left: 0;
+
+            .form-submission-footer {    
+                .button {
+                    margin-left: 16px;
+                    margin-right: 6px;
+                }
+                .is-outlined {
+                    border: none;
+                }
+            }
+            
+
+            @keyframes blink {
+                from { color: $blue5; }
+                to { color: $gray4; }
+            }
+
+            .update-warning {
+                color: $blue5;
+                animation-name: blink;
+                animation-duration: 0.5s;
+                animation-delay: 0.5s;
+                align-items: center;
+                display: flex;
+            }
+
+            .update-info-section {
+                color: $gray4;
+                margin-right: auto;
+            }
+
+            .help {
+                display: inline-block;
+                font-size: 1.0em;
+                margin-top: 0;
+                margin-left: 24px;
+            }
+        }
+
     }
 
 </style>
