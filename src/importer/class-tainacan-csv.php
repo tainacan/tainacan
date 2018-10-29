@@ -118,7 +118,7 @@ class CSV extends Importer {
                 fseek($file, $csv_pointer);
             }
         }
-
+				
         $this->add_transient('csv_last_pointer', ftell($file)); // add reference to post_process item in after_inserted_item()
 
         if( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ){
@@ -139,22 +139,22 @@ class CSV extends Importer {
             $this->add_error_log(' enclosure : ' .  $this->get_option('enclosure') );
             $this->add_error_log(' Values string: ' . $string );
             return false;
-        }
-        
+				}
+				
         if( $this->get_option('item_id_index') ){
             $this->handle_item_id( $values );
         }
-        
+				
         foreach ( $collection_definition['mapping'] as $metadatum_id => $header) {
-
-
+					
+					
             foreach ( $headers as $indexRaw => $headerRaw ) {
                if( $headerRaw === $header ){
                     $column = $indexRaw;
                }
-            }
-            
-            if(!isset($column))
+						}
+					
+					  if(!isset($column))
                 continue;
 
             $valueToInsert = $this->handle_encoding( $values[ $column ] );
@@ -167,8 +167,8 @@ class CSV extends Importer {
 
             $processedItem[ $header ] = ( $metadatum->is_multiple() ) ? 
                 explode( $this->get_option('multivalued_delimiter'), $valueToInsert) : $valueToInsert;
-        }
-        
+				}
+				
         $this->add_log('Success to proccess index: ' . $index  );
         return $processedItem;
     }
@@ -617,29 +617,33 @@ class CSV extends Importer {
         $item = new Entities\Item( ( $this->get_transient('item_id') ) ? $this->get_transient('item_id') : 0 );
 		$itemMetadataArray = [];
 		
-        if( is_array( $processed_item ) ){
-            foreach ( $processed_item as $metadatum_source => $values ){
-                $tainacan_metadatum_id = array_search( $metadatum_source, $collection_definition['mapping'] );
-                $metadatum = $Tainacan_Metadata->fetch( $tainacan_metadatum_id );
+        if( is_array( $processed_item ) ) {
+          foreach ( $processed_item as $metadatum_source => $values ) {
+            $tainacan_metadatum_id = array_search( $metadatum_source, $collection_definition['mapping'] );
+            $metadatum = $Tainacan_Metadata->fetch( $tainacan_metadatum_id );
 
-                if( $metadatum instanceof Entities\Metadatum ){
-                    $singleItemMetadata = new Entities\Item_Metadata_Entity( $item, $metadatum); // *empty item will be replaced by inserted in the next foreach
-                   
-                    if( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Taxonomy' ){
-                        
-                        $ids = $this->insert_hierarchy( $metadatum, $values );
-                         $singleItemMetadata->set_value( $ids );     
-                    } else {
-                        $singleItemMetadata->set_value( $values );   
-                    }
-
-                    $itemMetadataArray[] = $singleItemMetadata;
-                } else {
-					$this->add_error_log('Metadata ' . $metadatum_source . ' not found');
+            if( $metadatum instanceof Entities\Metadatum ) {
+              $singleItemMetadata = new Entities\Item_Metadata_Entity( $item, $metadatum); // *empty item will be replaced by inserted in the next foreach
+              if( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Taxonomy' ) {
+								if( is_array( $values ) ) {
+									$ids = [];
+									foreach($values as $k => $v) {
+										$ids[] = $this->insert_hierarchy( $metadatum, $v );
+									}
+									$singleItemMetadata->set_value( $ids );
+								} else {
+									$id = $this->insert_hierarchy( $metadatum, $values );
+									$singleItemMetadata->set_value( $id );
+								}
+							} else {
+								$singleItemMetadata->set_value( $values );
+							}
+							$itemMetadataArray[] = $singleItemMetadata;
+						} else {
+							$this->add_error_log('Metadata ' . $metadatum_source . ' not found');
+						}
+					}
 				}
-
-            }
-        }
 		
         if( !empty( $itemMetadataArray ) && $collection instanceof Entities\Collection ){
 			$item->set_collection( $collection );
@@ -703,18 +707,19 @@ class CSV extends Importer {
 
         $Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
         $taxonomy = new Entities\Taxonomy( $metadatum->get_metadata_type_options()['taxonomy_id']);
-        $exploded_values = explode(">>",$values);
-
-        if( is_array($exploded_values) ){
+				$exploded_values = explode(">>",$values);
+				
+				if( is_array($exploded_values) ){
             $parent = 0;
 
             foreach ( $exploded_values as $key => $value) {
                 $value = trim($value);
 
-                $exists = term_exists( $value ,$taxonomy->get_db_identifier(), $parent );
+								$exists = term_exists( $value ,$taxonomy->get_db_identifier(), $parent );
                 if( 0 !== $exists && null !== $exists && isset($exists['term_id']) ){
-                    $exists = new Entities\Term($exists['term_id']);
-                    $parent = $term->get_id();
+									//$exists = new Entities\Term($exists['term_id']);
+									//$parent = $exists->get_id();
+									$parent = $value;
                 } else {
                     $term = new Entities\Term();
                     $term->set_name( $value );
@@ -724,7 +729,7 @@ class CSV extends Importer {
 
                     $parent = $term->get_id();
                 }
-            }
+						}
 
             return $parent !== 0 ? $parent : false;
         } else {
