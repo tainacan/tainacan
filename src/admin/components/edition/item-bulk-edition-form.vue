@@ -124,15 +124,17 @@
                             style="margin-left: auto"
                             class="control">
                         <button 
-                                :disabled="uploadedItems.length <= 0"
-                                class="button is-turquoise5" 
+                                :disabled="uploadedItems.length <= 0 || isCreatingBulkEditGroup"
+                                class="button is-secondary" 
+                                :class="{'is-loading': isCreatingSequenceEditGroup }"
                                 @click.prevent="sequenceEditGroup()"
                                 type="submit">{{ $i18n.get('label_sequence_edit_items') }}</button>
                     </div>
                     <div class="control">
                         <button 
-                                :disabled="uploadedItems.length <= 0"
-                                class="button is-turquoise5" 
+                                :disabled="uploadedItems.length <= 0 || isCreatingSequenceEditGroup"
+                                class="button is-secondary" 
+                                :class="{'is-loading': isCreatingBulkEditGroup }"
                                 @click.prevent="createBulkEditGroup()"
                                 type="submit">{{ $i18n.get('label_bulk_edit_items') }}</button>
                     </div>
@@ -151,6 +153,8 @@ export default {
     data(){
         return {
             isLoading: false,
+            isCreatingBulkEditGroup: false,
+            isCreatingSequenceEditGroup: false,
             collectionName: '',
             submitedFileList: [],
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
@@ -178,7 +182,8 @@ export default {
             'updateItemDocument',
         ]),
         ...mapActions('bulkedition', [
-            'createEditGroup'
+            'createEditGroup',
+            'setStatusInBulk'
         ]),
         uploadFiles() {
             
@@ -236,22 +241,30 @@ export default {
         },
         sequenceEditGroup() {
             let onlyItemIds = this.uploadedItems.map(item => item.id);
-            console.log(onlyItemIds)
+            this.isCreatingSequenceEditGroup = true;
             this.createEditGroup({
                 object: onlyItemIds,
                 collectionID: this.collectionId
             }).then((group) => {
                 let sequenceId = group.id;
-                console.log(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 1))
-                this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 1));
+                this.setStatusInBulk({
+                    groupID: sequenceId,
+                    collectionID: this.collectionId,
+                    bodyParams: { value: 'draft' }
+                }).then(() => {
+                    this.isCreatingSequenceEditGroup = true;
+                    this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 1));
+                });
             });
         },
         createBulkEditGroup() {
             let onlyItemIds = this.uploadedItems.map(item => item.id);
+            this.isCreatingBulkEditGroup = true;
             this.createEditGroup({
                 object: onlyItemIds,
                 collectionID: this.collectionId
             }).then((group) => {
+                this.isCreatingBulkEditGroup = false;
                 let groupId = group.id;
                 console.log(this.$routerHelper.getItemMetadataBulkAddPath(this.collectionId, groupId))
                 this.$router.push(this.$routerHelper.getItemMetadataBulkAddPath(this.collectionId, groupId));
