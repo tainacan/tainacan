@@ -28,9 +28,12 @@
         transform: none !important;
     }
     &.is-outlined {
-        color: $turquoise5 !important;
+        color: $turquoise5;
         background-color: white !important;
         border-color: $gray4 !important;
+    }
+    &.is-outlined:hover {
+        color: $turquoise5 !important;
     }
     &:focus {
         outline: 0px;

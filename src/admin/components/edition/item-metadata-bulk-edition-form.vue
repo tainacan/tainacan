@@ -88,42 +88,36 @@
                         <b-field
                                 :key="index"
                                 :addons="false"
-                                :message="getErrorMessage(metadatum)"
-                                :type="metadatumTypeMessage">
+                                :message="getErrorMessage(formErrors[metadatum.id])"
+                                :type="getErrorMessage(formErrors[metadatum.id]) != '' ? 'is-danger' : ''">
                             <span   
                                     class="collapse-handle"
-                                    @click="changeCollapse(metadatumTypeMessage != 'is-danger' ? !metadatumCollapses[index] : true, index)">
+                                    @click="changeCollapse(!metadatumCollapses[index], index)">
                                 <b-icon 
                                         type="is-secondary"
-                                        :icon="metadatumCollapses[index] || metadatumTypeMessage == 'is-danger' ? 'menu-down' : 'menu-right'" />
+                                        :icon="metadatumCollapses[index] ? 'menu-down' : 'menu-right'" />
                                 <label class="label">{{ metadatum.name }}</label>
                                 <span
                                         v-if="metadatum.required == 'yes'"
-                                        class="required-metadatum-asterisk"
-                                        :class="metadatumTypeMessage">*</span>
+                                        class="required-metadatum-asterisk">*</span>
                                 <span class="metadata-type">({{ $i18n.get(metadatum.metadata_type_object.component) }})</span>
                                 <help-button 
                                         :title="metadatum.name"
                                         :message="metadatum.description"/>
                             </span>
                             <transition name="filter-item">
-                                <div   
-                                        v-show="metadatumCollapses[index] || metadatumTypeMessage == 'is-danger'"
-                                        v-if="isTextInputComponent( metadatum.metadata_type_object.component )">
-
-                                        <component
-                                                :forced-component-type="metadatum.metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
-                                                :allow-new="false"
-                                                :allow-select-to-create="metadatum.metadata_type_options.allow_new_terms === 'yes'"
-                                                :maxtags="1"
-                                                :id="metadatum.metadata_type_object.component +
-                                                '-' + metadatum.slug"
-                                                :is="metadatum.metadata_type_object.component"
-                                                :metadatum="{ metadatum: metadatum }"
-                                                class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
-                                                @input="bulkEdit($event, metadatum)" />
-                                                <!-- :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
-                                                :disabled="bulkEditionProcedures[criterion].isDone || bulkEditionProcedures[criterion].isExecuting" -->
+                                <div v-show="metadatumCollapses[index]">
+                                    <component
+                                            :forced-component-type="false"
+                                            :allow-new="false"
+                                            :allow-select-to-create="metadatum.metadata_type_options.allow_new_terms === 'yes'"
+                                            :maxtags="1"
+                                            :id="metadatum.metadata_type_object.component + '-' + metadatum.slug"
+                                            :is="metadatum.metadata_type_object.component"
+                                            :metadatum="{ metadatum: metadatum }"
+                                            @input="clearErrorMessage(metadatum.id); bulkEdit($event, metadatum)"/>
+                                            <!-- :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
+                                            :disabled="bulkEditionProcedures[criterion].isDone || bulkEditionProcedures[criterion].isExecuting" -->
                                 </div>
                             </transition>
                         </b-field>
@@ -155,14 +149,17 @@
                     <button 
                             @click="onDeletePermanently()"
                             type="button"
+                            :class="{ 'is-loading': isTrashingItems }"
                             class="button is-outlined">{{ $i18n.get('label_delete_permanently') }}</button>
                     <button 
                             @click="onSubmit('draft')"
                             type="button"
+                            :class="{ 'is-loading': isUpdatingItems }"
                             class="button is-secondary">{{ $i18n.get('label_save_as_draft') }}</button>
                     <button 
                             @click="onSubmit(visibility)"
                             type="button"
+                            :class="{ 'is-loading': isPublishingItems }"
                             class="button is-success">{{ $i18n.get('label_publish') }}</button>
                 </div>
                 <div 
@@ -172,19 +169,23 @@
                             v-if="status == 'draft'"
                             @click="onSubmit('trash')"
                             type="button"
+                            :class="{ 'is-loading': isTrashingItems }"
                             class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
                     <button 
                             v-if="status == 'auto-draft'"
                             @click="onDiscard()"
                             type="button"
+                            :class="{ 'is-loading': isTrashingItems }"
                             class="button is-outlined">{{ $i18n.get('label_discard') }}</button>
                     <button 
                             @click="onSubmit('draft')"
                             type="button"
+                            :class="{ 'is-loading': isUpdatingItems }"
                             class="button is-secondary">{{ status == 'draft' ? $i18n.get('label_update') : $i18n.get('label_save_as_draft') }}</button>
                     <button 
                             @click="onSubmit(visibility)"
                             type="button"
+                            :class="{ 'is-loading': isPublishingItems }"
                             class="button is-success">{{ $i18n.get('label_publish') }}</button>
                 </div>
                 <div 
@@ -193,15 +194,18 @@
                     <button 
                             @click="onSubmit('trash')"
                             type="button"
+                            :class="{ 'is-loading': isTrashingItems }"
                             class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
                     <button 
                             @click="onSubmit('draft')"
                             type="button"
+                            :class="{ 'is-loading': isUpdatingItems }"
                             class="button is-secondary">{{ $i18n.get('label_return_to_draft') }}</button>
                     <button 
                             :disabled="formErrorMessage != undefined && formErrorMessage != ''"
                             @click="onSubmit(visibility)"
                             type="button"
+                            :class="{ 'is-loading': isPublishingItems }"
                             class="button is-success">{{ $i18n.get('label_update') }}</button>
                 </div>
             </footer>
@@ -220,12 +224,15 @@ export default {
             isLoadingItems: false,
             isLoadingMetadata: false,
             isExecutingBulkEdit: false,
+            isUpdatingItems: false,
+            isTrashingItems: false,
+            isPublishingItems: false,
             collectionName: '',
             items: '',
             visibility: 'publish',
             collapseAll: true,
             metadatumCollapses: [],
-            metadatumTypeMessage:'',
+            formErrors: {},
             status: 'draft',
             groupID: null
         }
@@ -236,6 +243,9 @@ export default {
         }
     },
     methods: {
+        ...mapActions('item', [
+            'updateItem'
+        ]),
         ...mapActions('collection', [
             'fetchCollectionName'
         ]),
@@ -253,7 +263,8 @@ export default {
             'setStatusInBulk',
             'removeValueInBulk',
             'deleteItemsInBulk',
-            'trashItemsInBulk'
+            'trashItemsInBulk',
+            'fetchItemIdInSequence'
         ]),
         ...mapGetters('bulkedition', [
             'getItemIdInSequence',
@@ -268,76 +279,60 @@ export default {
         changeCollapse(event, index) {
             this.metadatumCollapses.splice(index, 1, event);
         },
-        getErrorMessage(metadatum) {
-                
-            let msg = '';
-            // let errors = eventBus.getErrors(metadatum.id);
-
-            // if ( errors) {
-            //     this.metadatumTypeMessage = 'is-danger';
-            //     for (let error of errors) { 
-            //         for (let index of Object.keys(error)) {
-            //             // this.$console.log(index);
-            //             msg += error[index] + '\n';
-            //         }
-            //     }
-            // } else {
-            //     this.metadatumTypeMessage = '';
-            // }
-
-            return msg;
-        },
-        isTextInputComponent( component ){
-            let array = ['tainacan-relationship','tainacan-taxonomy'];
-            return !( array.indexOf( component ) >= 0 );
-        },
         bulkEdit: _.debounce(function(newValue, metadatum) {
-            this.isExecutingBulkEdit = true;
-            this.setValueInBulk({
-                collectionID: this.collectionId,
-                groupID: this.groupID,
-                bodyParams: {
-                    metadatum_id: metadatum.id,
-                    value: newValue,
-                }
-            }).then(() => {
-                this.isExecutingBulkEdit = false;
-                // this.finalizeProcedure(criterion);
-            }).catch(() => this.isExecutingBulkEdit = false);
+            let values = [];
+            if (!(Array.isArray(newValue)))
+                values.push(newValue);
+            else
+                values = newValue;
+
+            for (let value of values) {
+                this.isExecutingBulkEdit = true;
+                this.setValueInBulk({
+                    collectionID: this.collectionId,
+                    groupID: this.groupID,
+                    bodyParams: {
+                        metadatum_id: metadatum.id,
+                        value: value,
+                    }
+                }).then(() => {
+                    this.isExecutingBulkEdit = false;
+                    // this.finalizeProcedure(criterion);
+                }).catch(() => this.isExecutingBulkEdit = false);
+            }
+
         }, 1000),
         onSubmit(status) {
             this.isExecutingBulkEdit = true;
-            console.log(status)
+
             if (this.status != status && status != 'trash') {
-
-                this.setStatusInBulk({
-                        groupID: this.groupID,
-                        collectionID: this.collectionId,
-                        bodyParams: { value: status }
-                    }).then(() => {
-                        this.status = status;
-                        this.isExecutingBulkEdit = false;
-
-                        if (this.status != 'draft' && this.status != 'auto-draft')
-                            this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
-                    }).catch(() => this.isExecutingBulkEdit = false);
+                this.changeStatus(status);
 
             } else if (this.status != status && status == 'trash') {
-                
+
+                this.isTrashingItems = true;
                 this.trashItemsInBulk({
                         groupID: this.groupID,
                         collectionID: this.collectionId
                     }).then(() => {
                         this.status = status;
+                        this.isTrashingItems = false;
                         this.isExecutingBulkEdit = false;
                         this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
-                    }).catch(() => this.isExecutingBulkEdit = false);
+                    }).catch(() => {
+                        this.isExecutingBulkEdit = false;
+                        this.isTrashingItems = false;
+                    });
             
             } else {   
-
-                // Triggers updating animation.
+                
+                // Sets loading to cause a visual impression of updating
                 this.isExecutingBulkEdit = true;
-                this.isExecutingBulkEdit = false;
+                this.isUpdatingItems = true;
+                setTimeout(() => {
+                    this.isExecutingBulkEdit = false;
+                    this.isUpdatingItems = false;
+                }, 1000);
                 if (this.status != 'draft' && this.status != 'auto-draft')
                     this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
             
@@ -345,17 +340,95 @@ export default {
         },
         onDeletePermanently() {
             this.isExecutingBulkEdit = true;
+            this.isTrashingItems = true;
             this.deleteItemsInBulk({
                     collectionID: this.collectionId,
                     groupID: this.groupID
                 }).then(() => {
                     this.isExecutingBulkEdit = false;
+                    this.isTrashingItems = false;
                     this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
-                }).catch(() => this.isExecutingBulkEdit = false);
+                }).catch(() => {
+                    this.isExecutingBulkEdit = false;
+                    this.isTrashingItems = false;
+                });
         },
         onDiscard() {
             this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
-        }
+        },
+        changeStatus(status) {
+            this.isPublishingItems = true;
+
+            // Gets an item from the bulk group
+            this.fetchItemIdInSequence({ collectionId: this.collectionId, sequenceId: this.groupID, itemPosition: 1 })
+                .then((itemId) => {
+
+                    // Test if this item can be set to this status
+                    this.updateItem({ id: itemId, status: status })
+                        .then(() => {
+
+                            // The status can be applied to everyone.
+                            this.setStatusInBulk({
+                                groupID: this.groupID,
+                                collectionID: this.collectionId,
+                                bodyParams: { value: status }
+                            }).then(() => {
+                            
+                            this.status = status;
+                                this.isPublishingItems = false;
+                                this.isExecutingBulkEdit = false;
+
+                                if (this.status != 'draft' && this.status != 'auto-draft')
+                                    this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
+                            
+                            }).catch(() => {
+                                this.isPublishingItems = false;
+                                this.isExecutingBulkEdit = false;
+                            });
+                        })
+                        .catch((errors) => {
+                            // The status can not be applied.
+                            this.isPublishingItems = false;
+                            this.isExecutingBulkEdit = false;
+
+                            for (let error of errors.errors) {
+                                for (let metadatum of Object.keys(error)){
+                                    this.formErrors[metadatum] = error[metadatum];
+                                }
+                            }
+                            this.formErrorMessage = errors.error_message;
+                        });
+                })
+                .catch(() => {
+                    this.isPublishingItems = false;
+                    this.isExecutingBulkEdit = false;
+                });
+        },
+        clearErrorMessage(metadatumId) {
+            console.log(this.formErrors[metadatumId]);
+            this.formErrors[metadatumId] = false;
+            let amountClean = 0;
+
+            for (let formError in this.formErrors) {
+                if (formError == false || formError == undefined)
+                    amountClean++;
+            }
+
+            if (amountClean == 0)
+                this.formErrorMessage = '';
+        },
+        getErrorMessage(errors) {
+                
+            let msg = '';
+            if ( errors != undefined && errors != false) {
+                for (let error of errors) { 
+                    for (let index of Object.keys(error)) {
+                        msg += error[index] + '\n';
+                    }
+                }
+            } 
+            return msg;
+        },
     },
     created() {
         // Obtains collection ID
@@ -479,6 +552,17 @@ export default {
         }
 
         .column {
+
+            .section-status{
+                padding: 16px 0;     
+                .field .b-radio {
+                    margin-right: 24px;
+                    .icon  {
+                        font-size: 18px !important; 
+                        color: $gray3;
+                    }
+                }
+            }
 
             .section-label {
                 position: relative;
