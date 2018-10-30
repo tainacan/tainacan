@@ -55,7 +55,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'approve_item'                                   => __( 'Approve', 'tainacan' ),
 	'not_approve_item'                               => __( 'Not approve', 'tainacan' ),
 	'add_one_item'                                   => __( 'Add one item', 'tainacan' ),
-	'add_items_bulk'                                 => __( 'Add items in bulk', 'tainacan' ),
+	'add_items_bulk'                                 => __( 'Bulk add items', 'tainacan' ),
 	'add_items_external_source'                      => __( 'Add items from an external source', 'tainacan' ),
 	'new_mapped_item'                                => __( 'New mapped collection', 'tainacan' ),
 	'new_blank_collection'                           => __( 'New Blank Collection', 'tainacan' ),
@@ -120,6 +120,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'title_export_item_page'                         => __( 'Export Item', 'tainacan' ),
 	'title_export_page'                              => __( 'Export', 'tainacan' ),
 	'title_processes_page'                           => __( 'Processes', 'tainacan' ),
+	'title_item_bulk_add'							 => __( 'Bulk Add Items', 'tainacan' ),
 
 	// Labels (used mainly on Aria Labels and Inputs)
 	'label_clean'                                    => __( 'Clear', 'tainacan' ),
@@ -320,6 +321,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_upload_file_prepare_items'                => __( 'Uploading files and preparing items', 'tainacan'),
 	'label_bulk_edit_items'		                     => __( 'Bulk edit items', 'tainacan'),
 	'label_sequence_edit_items'	                     => __( 'Sequence edit items', 'tainacan'),
+	'label_documents_upload'	                     => __( 'Documents upload', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -466,6 +468,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_no_parent_term_found'                      => __( 'No valid parent term was found with this name.', 'tainacan' ),
 	'info_warning_changing_parent_term'              => __( 'Warning! Changing parent term will reload the terms list, thus uncheking any selection.', 'tainacan' ),
 	'info_warning_selected_items_remove_from_trash'  => __( 'Do you really want to remove from trash the selected items?', 'tainacan'),
+	'info_all_files_uploaded'  						 => __( 'All files uploaded.', 'tainacan'),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),

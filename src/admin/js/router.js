@@ -50,7 +50,7 @@ const routes = [
         { path: 'items/new', name: 'CollectionItemCreatePage', component: ItemEditionForm, meta: {title: i18nGet('title_create_item_collection'), icon: 'folder-multiple'} },
         { path: 'items/:itemId', name: 'ItemPage', component: ItemPage, meta: {title: i18nGet('title_item_page'), icon: 'folder-multiple'} },   
         { path: 'bulk-add', name: 'CollectionItemBulkAddPage', component: ItemBulkEditionForm, meta: {title: i18nGet('title_item_bulk_add'), icon: 'folder-multiple'} },
-        { path: 'bulk-add/:groupId', name: 'CollectionItemBulkAddMetadataPage', component: ItemMetadataBulkEditionForm, meta: {title: i18nGet('title_item_metadata_bulk_add'), icon: 'folder-multiple'} },
+        { path: 'bulk-add/:groupId', name: 'CollectionItemBulkAddMetadataPage', component: ItemMetadataBulkEditionForm, meta: {title: i18nGet('title_item_bulk_add'), icon: 'folder-multiple'} },
         { path: 'settings', component: CollectionEditionForm,  name: 'CollectionEditionForm', meta: {title: i18nGet('title_collection_settings'), icon: 'folder-multiple'} },
         { path: 'metadata', component: MetadataList, name: 'MetadataList', meta: {title: i18nGet('title_collection_metadata_edition'), icon: 'folder-multiple'} },
         { path: 'filters', component: FiltersList, name: 'FiltersList', meta: {title: i18nGet('title_collection_filters_edition'), icon: 'folder-multiple'} },

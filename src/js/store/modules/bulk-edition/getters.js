@@ -13,3 +13,7 @@ export const getActionResult = state => {
 export const getItemIdInSequence = state => {
     return state.itemIdInSequence;
 };
+
+export const getLastUpdated = state => {
+    return state.lastUpdated;
+}

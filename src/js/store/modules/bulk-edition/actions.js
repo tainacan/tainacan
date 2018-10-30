@@ -62,6 +62,7 @@ export const setValueInBulk = ({commit}, parameters) => {
     return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/set`, bodyParams)
         .then(response => {
             commit('setActionResult', response.data);
+            commit('setLastUpdated');
             return response;
         })
         .catch(error => {
@@ -142,6 +143,7 @@ export const setStatusInBulk = ({commit}, parameters) => {
     return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/set_status`, bodyParams)
         .then(response => {
             commit('setActionResult', response.data);
+            commit('setLastUpdated');
             return response;
         })
         .catch(error => {
@@ -157,6 +159,7 @@ export const trashItemsInBulk = ({commit}, parameters) => {
     return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/trash`)
         .then(response => {
             commit('setActionResult', response.data);
+            commit('setLastUpdated');
             return response;
         })
         .catch(error => {
@@ -187,6 +190,7 @@ export const deleteItemsInBulk = ({commit}, parameters) => {
     return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/delete_items`)
         .then(response => {
             commit('setActionResult', response.data);
+            commit('setLastUpdated');
             return response;
         })
         .catch(error => {

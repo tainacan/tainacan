@@ -1,11 +1,11 @@
 <template>
     <div>
-        <!-- <b-loading
+        <b-loading
                 :is-full-page="false"
-                :active.sync="isLoadingItems"
-                :can-cancel="false"/> -->
+                :active.sync="isLoadingMetadata"
+                :can-cancel="false"/>
         <div class="tainacan-page-title">
-            <h1>{{ $i18n.get('title_create_item_collection') + ' ' }}<span style="font-weight: 600;">{{ collectionName }}</span></h1>
+            <h1>{{ $i18n.get('add_items_bulk') }}</h1>
             <a 
                     @click="$router.go(-1)"
                     class="back-link has-text-secondary">
@@ -132,8 +132,8 @@
             <footer class="footer">
                 <!-- Last Updated Info --> 
                 <div class="update-info-section"> 
-                    <p v-if="!isExecutingBulkEdit">
-                        {{ ($i18n.get('info_updated_at') + ' ' + 'TO BE IMPLEMENTED lastUpdated') }}
+                    <p v-if="!isExecutingBulkEdit && lastUpdated != ''">
+                        {{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
                         <span class="help is-danger">{{ formErrorMessage }}</span>
                     </p>     
                     <p 
@@ -227,7 +227,6 @@ export default {
             isUpdatingItems: false,
             isTrashingItems: false,
             isPublishingItems: false,
-            collectionName: '',
             items: '',
             visibility: 'publish',
             collapseAll: true,
@@ -240,14 +239,14 @@ export default {
     computed: {
         metadata() {
             return this.getMetadata();
+        },
+        lastUpdated () {
+            return this.getLastUpdated();
         }
     },
     methods: {
         ...mapActions('item', [
             'updateItem'
-        ]),
-        ...mapActions('collection', [
-            'fetchCollectionName'
         ]),
         ...mapActions('metadata', [
             'fetchMetadata',
@@ -268,7 +267,8 @@ export default {
         ]),
         ...mapGetters('bulkedition', [
             'getItemIdInSequence',
-            'getGroup'
+            'getGroup',
+            'getLastUpdated'
         ]),
         toggleCollapseAll() {
             this.collapseAll = !this.collapseAll;
@@ -405,7 +405,6 @@ export default {
                 });
         },
         clearErrorMessage(metadatumId) {
-            console.log(this.formErrors[metadatumId]);
             this.formErrors[metadatumId] = false;
             let amountClean = 0;
 
@@ -435,13 +434,13 @@ export default {
         this.collectionId = this.$route.params.collectionId;
         this.groupID = this.$route.params.groupId;
 
-        // Obtains collection name
-        this.fetchCollectionName(this.collectionId).then((collectionName) => {
-            this.collectionName = collectionName;
-        });
+        // Updates Collection BreadCrumb
+        this.$root.$emit('onCollectionBreadCrumbUpdate', [
+            { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
+            { path: '', label: this.$i18n.get('add_items_bulk') }
+        ]);
 
         this.isLoadingMetadata = true;
-
         this.fetchMetadata({
             collectionId: this.collectionId,
             isRepositoryLevel: false,
@@ -555,11 +554,14 @@ export default {
 
             .section-status{
                 padding: 16px 0;     
-                .field .b-radio {
-                    margin-right: 24px;
-                    .icon  {
-                        font-size: 18px !important; 
-                        color: $gray3;
+                .field {
+                    border-bottom: none;
+                    .b-radio {
+                        margin-right: 24px;
+                        .icon  {
+                            font-size: 18px !important; 
+                            color: $gray3;
+                        }
                     }
                 }
             }

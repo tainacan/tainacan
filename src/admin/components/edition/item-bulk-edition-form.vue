@@ -5,7 +5,7 @@
                 :active.sync="isLoading"
                 :can-cancel="false"/>
         <div class="tainacan-page-title">
-            <h1>{{ $i18n.get('title_create_item_collection') + ' ' }}<span style="font-weight: 600;">{{ collectionName }}</span></h1>
+            <h1>{{ $i18n.get('add_items_bulk') }}</h1>
             <a 
                     @click="$router.go(-1)"
                     class="back-link has-text-secondary">
@@ -20,7 +20,7 @@
                 
             <!-- File Source input -->
             <b-field :addons="false">
-                <label class="label">{{ $i18n.get('label_source_file') }}</label>
+                <label class="label">{{ $i18n.get('label_documents_upload') }}</label>
                 <br>
                 <b-upload
                         native
@@ -44,13 +44,19 @@
         
             <div class="document-list">
 
-                <!-- Sequence Progress -->
+                <!-- Sequence Progress Info -->
                 <div class="sequence-progress-info">
                     <p v-if="uploadedItems.length > 0 && uploadedItems.length != amountFinished">
-                        <span class="icon is-small">
+                        <span class="icon is-small has-text-secondary">
                             <i class="mdi mdi-18px mdi-autorenew"/>
                         </span>
                         {{ $i18n.get('label_upload_file_prepare_items') }}
+                    </p>
+                    <p v-if="uploadedItems.length > 0 && uploadedItems.length == amountFinished">
+                        <span class="icon is-small has-text-success">
+                            <i class="mdi mdi-18px mdi-checkbox-marked-circle"/>
+                        </span>
+                        {{ $i18n.get('label_process_completed') }}
                     </p>
                     <p    
                             v-if="uploadedItems.length > 0 && (uploadedItems.length - amountFinished) > 1"
@@ -63,6 +69,7 @@
                         {{ "1 " + $i18n.get('label_file_remaining') }}
                     </p>
                 </div>
+                <!-- Sequence Progress Bar -->
                 <div 
                         v-if="uploadedItems.length > 0"
                         :style="{ width: (amountFinished/uploadedItems.length)*100 + '%' }"
@@ -81,7 +88,7 @@
                                 v-if="item.document!= undefined && item.document != '' && item.document_type != 'empty'"
                                 class="document-thumb"
                                 :alt="item.title"
-                                :src="item.thumbnail.tainacan_small ? item.thumbnail.tainacan_small : item.thumbnail.thumb" > 
+                                :src="item.thumbnail.tainacan_small ? item.thumbnail.tainacan_small : (item.thumbnail.thumb ? item.thumbnail.thumb : thumbPlaceholderPath)" > 
                         <span 
                             class="document-name"
                             v-html="item.title" />                            
@@ -90,24 +97,32 @@
                                 class="help is-danger">
                             {{ item.errorMessage }}
                         </span>                       
-                        <div class="document-actions">
+                        <div class="document-process-state">
                             <span 
                                     v-if="(item.errorMessage == undefined) && (item.document == '' || item.document_type == 'empty')"
                                     class="icon has-text-success loading-icon">
                                 <div class="control has-icons-right is-loading is-clearfix" />
                             </span>  
                             <span 
+                                    v-if="item.document != '' && item.document_type != 'empty'"
+                                    class="icon has-text-success">
+                                <i class="mdi mdi-24px mdi-checkbox-marked-circle" />
+                            </span>  
+                        </div>   
+                        <div 
+                                v-if="item.document != '' && item.document_type != 'empty'"
+                                class="document-actions">
+                            <span 
                                     v-tooltip="{
-                                        content: $i18n.get('delete'),
+                                        content: $i18n.get('label_button_delete_document'),
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }"
-                                    v-if="item.document != '' && item.document_type != 'empty'"
-                                    class="icon has-text-gray action-icon"
+                                    class="icon has-text-secondary action-icon"
                                     @click="deleteOneItem(item.id, index)">
                                 <i class="mdi mdi-18px mdi-delete"/>
                             </span>
-                        </div>                    
+                        </div>                 
                     </div>
                 </transition-group>
             </div>
@@ -124,7 +139,7 @@
                             style="margin-left: auto"
                             class="control">
                         <button 
-                                :disabled="uploadedItems.length <= 0 || isCreatingBulkEditGroup"
+                                :disabled="!(uploadedItems.length > 0 && uploadedItems.length == amountFinished) || isCreatingBulkEditGroup"
                                 class="button is-secondary" 
                                 :class="{'is-loading': isCreatingSequenceEditGroup }"
                                 @click.prevent="sequenceEditGroup()"
@@ -132,7 +147,7 @@
                     </div>
                     <div class="control">
                         <button 
-                                :disabled="uploadedItems.length <= 0 || isCreatingSequenceEditGroup"
+                                :disabled="!(uploadedItems.length > 0 && uploadedItems.length == amountFinished) || isCreatingSequenceEditGroup"
                                 class="button is-secondary" 
                                 :class="{'is-loading': isCreatingBulkEditGroup }"
                                 @click.prevent="createBulkEditGroup()"
@@ -156,7 +171,6 @@ export default {
             isLoading: false,
             isCreatingBulkEditGroup: false,
             isCreatingSequenceEditGroup: false,
-            collectionName: '',
             submitedFileList: [],
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
             uploadedItems: [],
@@ -172,7 +186,6 @@ export default {
         ...mapActions('collection', [
             'sendFile',
             'cleanFiles',
-            'fetchCollectionName',
             'deleteItem'
         ]),
          ...mapGetters('collection', [
@@ -229,7 +242,19 @@ export default {
                                     });
                             })
                             .catch((error) => {
+
+                                let index = this.uploadedItems.findIndex(existingItem => existingItem.id === item.id);
+                                if ( index >= 0)
+                                    this.uploadedItems.splice(index, 1);
+
                                 item.errorMessage = error.data.message;
+                                this.$toast.open({
+                                    message: item.errorMessage + ": " + file.name,
+                                    type: 'is-danger',
+                                    position: 'is-bottom',
+                                    duration: 3500
+                                });
+             
                                 this.$console.error(error);
                             });
                 })
@@ -301,13 +326,13 @@ export default {
         // Obtains collection ID
         this.collectionId = this.$route.params.collectionId;
 
-        // Obtains collection name
-        this.fetchCollectionName(this.collectionId).then((collectionName) => {
-            this.collectionName = collectionName;
-        });
-
         this.cleanFiles();
 
+        // Updates Collection BreadCrumb
+        this.$root.$emit('onCollectionBreadCrumbUpdate', [
+            { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
+            { path: '', label: this.$i18n.get('add_items_bulk') }
+        ]);
     }
    
 }
@@ -321,7 +346,6 @@ export default {
     .page-container {
 
         &>.tainacan-form {
-            padding: 0 $page-side-padding; 
             margin-bottom: 110px;
         }
 
@@ -354,12 +378,13 @@ export default {
         }
         .source-file-upload {
             width: 100%;
+            padding: 0.75rem $page-side-padding;
             display: grid;
         }
         .document-list {
             display: inline-block;
             width: 100%;
-            padding: 1rem $page-side-padding;
+            padding: 1rem 8.333333%;
 
             .document-item {
                 display: flex;
@@ -368,15 +393,23 @@ export default {
                 justify-content: space-between;
                 align-items: center;
                 padding: 0.5rem 0.75rem;
+                position: relative;
                 cursor: default;
 
                 .document-thumb {
                     max-height: 42px;
                     max-width: 42px;
-                    margin-right: 0.75rem;
+                    margin-right: 1rem;
                 }
 
-                .document-actions {
+                .document-name {
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    width: 100%;
+                    white-space: nowrap;
+                }
+
+                .document-process-state {
                     margin-left: auto;
                     
                     .loading-icon .control.is-loading::after {
@@ -386,16 +419,45 @@ export default {
                     }
                 }
 
+                .document-actions {
+                    position: absolute;
+                    right: 0;
+                    background: $gray2;
+                    height: 100%;
+                    display: none;
+                    justify-content: center;
+                    visibility: hidden;
+                    align-items: center;
+                    width: 42px;
+
+                    .icon {
+                        cursor: pointer;
+                    }
+                }
+
+                &:hover {
+                    background-color: $gray1;
+
+                    .document-actions {
+                        display: flex;
+                        visibility: visible;
+                    }
+                }
+
                 .help.is-danger {
                     margin-left: auto;
+                    width: 100%;
+                    text-align: right;
                 }
             }
             .sequence-progress-info {
                 display: flex;
                 justify-content: space-between;
+                margin-bottom: 0.25rem;
 
                 .i::before {
                     font-size: 18px;
+                    margin-left: 0.5rem;
                 }
             }
             .sequence-progress {
