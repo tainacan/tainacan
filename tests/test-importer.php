@@ -245,7 +245,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
     */
     
     /**
-     * @group importer
+     * @group importer_created
      */
     public function test_file_csv_multiple () {
         $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
@@ -258,7 +258,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $file = fopen($file_name, 'w');
 
         // save the column headers
-        fputcsv($file, array('novo metadatao|text', 'Column 2', 'Column 3', 'Column 4', 'Column 5'));
+        fputcsv($file, array('Column 1', 'Column 2', 'Column 3', 'Column 4', 'Column 5'));
 
         // Sample data
         $data = array(
