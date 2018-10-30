@@ -217,57 +217,60 @@ class REST_Facets_Controller extends REST_Controller {
 				$metadatum_id = $metadatum->get_id();
 				$offset = null;
 				$number = null;
-				$collection_id = ( isset($request['collection_id']) ) ? $request['collection_id'] : false;
-				$selected = $this->getTextSelectedValues($request, $metadatum_id);
+				$_search = null;
+				$collection_id = ( isset($request['collection_id']) ) ? $request['collection_id'] : null;
+				//$selected = $this->getTextSelectedValues($request, $metadatum_id);
+				
+				$query_args = $request['current_query'];
+				
+				
+				$query_args = $this->prepare_filters($query_args);
+				
 
 				if($request['offset'] >= 0 && $request['number'] >= 1){
 					$offset = $request['offset'];
 					$number = $request['number'];
 				}
-
-				if($request['search']){
-					if($collection_id) {
-						$response = $this->metadatum_repository->fetch_all_metadatum_values( $collection_id, $metadatum_id, $request['search'], $offset, $number );
-					} else {
-						$response = $this->metadatum_repository->fetch_all_metadatum_values( null, $metadatum_id, $request['search'], $offset, $number);
-					}
-		
-				} else {
-					if($collection_id) {
-						$response = $this->metadatum_repository->fetch_all_metadatum_values( $collection_id, $metadatum_id, null, $offset, $number);
-					} else {
-						$response = $this->metadatum_repository->fetch_all_metadatum_values( null, $metadatum_id, null, $offset, $number);
-					}
+				
+				if($request['search']) {
+					$_search = $request['search'];
 				}
-
-				$rawResponse = $response;
+				
+				$response = $this->metadatum_repository->fetch_all_metadatum_values( $collection_id, $metadatum_id, $_search, $offset, $number, $query_args );
+				
+				$this->total_items = $response['total'];
+				$this->total_pages = $response['pages'];
+				return $response['values'];	
+				
+				
+				//$rawResponse = $response;
 
 				// retrieve selected items
 
-				if( count($selected) && $request['getSelected'] && $request['getSelected'] === '1'){
-					$rawValues = $this->get_values( $response );
-					$realResponse = [];
+				//if( count($selected) && $request['getSelected'] && $request['getSelected'] === '1'){
+				//	$rawValues = $this->get_values( $response );
+				//	$realResponse = [];
 
-					foreach( $selected as $index => $value ){
-						$row = (object) ['mvalue' => $value, 'metadatum_id' => $metadatum_id ];
-						$realResponse[] = $row;
-					}
+				//	foreach( $selected as $index => $value ){
+				//		$row = (object) ['mvalue' => $value, 'metadatum_id' => $metadatum_id ];
+				//		$realResponse[] = $row;
+				//	}
 
-					foreach( $rawValues as $index => $row0 ){
+				//	foreach( $rawValues as $index => $row0 ){
 
-						if( !in_array($row0, $selected) ){
-							$realResponse[] = (object) ['mvalue' => $row0, 'metadatum_id' => $metadatum_id];
+				//		if( !in_array($row0, $selected) ){
+				//			$realResponse[] = (object) ['mvalue' => $row0, 'metadatum_id' => $metadatum_id];
 
-							if( isset($request['number']) && count($realResponse) >= $request['number']){
-								break;
-							}
-						}
-					}
-					
-					$response = $realResponse;
-				}
+				//			if( isset($request['number']) && count($realResponse) >= $request['number']){
+				//				break;
+				//			}
+				//		}
+				//	}
+				//	
+				//	$response = $realResponse;
+				//}
 
-				$this->set_pagination_properties_text_type( $offset, $number, $rawResponse );
+				//$this->set_pagination_properties_text_type( $offset, $number, $rawResponse );
 			}
         }
 

@@ -885,183 +885,71 @@ class Metadata extends Repository {
 	 * @return array|null|object
 	 * @throws \Exception
 	 */
-	public function fetch_all_metadatum_values( $collection_id, $metadatum_id, $search = '', $offset = 0, $number = '' ) {
+	public function fetch_all_metadatum_values( $collection_id, $metadatum_id, $search = '', $offset = 0, $number = '', $query_args = [] ) {
 		global $wpdb;
 
-		// Clear the result cache
-		$wpdb->flush();
-
-		$metadatum = new Entities\Metadatum( $metadatum_id );
-
-		// handle core titles
-		if ( strpos( $metadatum->get_metadata_type(), 'Core' ) !== false && $search ) {
-			$collection     = new Entities\Collection( $collection_id );
-			$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
-
-			if ( $number >= 1 && $offset >= 0 ) {
-				$items = $Tainacan_Items->fetch( [
-					's'              => $search,
-					'offset'         => $offset,
-					'posts_per_page' => $number
-				], $collection, 'OBJECT' );
-			} else {
-				$items = $Tainacan_Items->fetch( [ 's' => $search ], $collection, 'OBJECT' );
-			}
-
-			$return = [];
-
-			foreach ( $items as $item ) {
-				if ( strpos( $metadatum->get_metadata_type(), 'Core_Title' ) !== false ) {
-					$title = $item->get_title();
-
-					if ( ! empty( $search ) && stristr( $title, $search ) !== false ) {
-						$return[] = [ 'metadatum_id' => $metadatum_id, 'mvalue' => $title ];
-					} elseif ( empty( $search ) ) {
-						$return[] = [ 'metadatum_id' => $metadatum_id, 'mvalue' => $title ];
-					}
-				} else {
-					$description = $item->get_description();
-
-					if ( ! empty( $search ) && stristr( $description, $search ) !== false ) {
-						$return[] = [ 'metadatum_id' => $metadatum_id, 'mvalue' => $description ];
-					} elseif ( empty( $search ) ) {
-						$return[] = [ 'metadatum_id' => $metadatum_id, 'mvalue' => $description ];
-					}
-				}
-			}
-
-			return $return;
-		}
-
-		$item_post_type = "%%{$collection_id}_item";
-
-		$collection   = new Entities\Collection( $collection_id );
-		$capabilities = $collection->get_capabilities();
-
-		$results = [];
-
-		$search_query = '';
-		if ( $search ) {
-			$search_param = '%' . $search . '%';
-			$search_query = $wpdb->prepare( "WHERE meta_value LIKE %s", $search_param );
-		}
-
+		// Get the query for current items
+		// this avoids wp_query to run the query. We just want to build the query
+		add_filter('posts_pre_query', '__return_empty_array');
+		
+		$itemsRepo = Items::get_instance();
+		
+		$query_args['fields'] = 'ids';
+		unset($query_args['paged']);
+		unset($query_args['offset']);
+		unset($query_args['perpage']);
+		$query_args['nopaging'] = 1;
+		
+		$items_query = $itemsRepo->fetch($query_args, $collection_id);
+		$items_query = $items_query->request;
+		
+		remove_filter('posts_pre_query', '__return_empty_array');
+		
 		$pagination = '';
 		if ( $offset >= 0 && $number >= 1 ) {
 			$pagination = $wpdb->prepare( "LIMIT %d,%d", (int) $offset, (int) $number );
 		}
-
-		// If no has logged user or actual user can not read private posts
-		if ( get_current_user_id() === 0 || ! current_user_can( $capabilities->read_private_posts ) ) {
-			$args = [
-				'exclude_from_search' => false,
-				'public'              => true,
-				'private'             => false,
-				'internal'            => false,
-			];
-
-			$post_statuses = get_post_stati( $args, 'names', 'and' );
-
-			foreach ( $post_statuses as $post_status ) {
-
-				if ( $collection_id ) {
-					$sql_string = $wpdb->prepare(
-						"SELECT DISTINCT metadatum_id, mvalue 
-				  		FROM (
-			  				SELECT ID as item_id
-		  					FROM $wpdb->posts
-	  						WHERE post_type LIKE %s AND post_status = %s
-  						) items
-						JOIN (
-						  	SELECT meta_key as metadatum_id, meta_value as mvalue, post_id
-					  	  	FROM $wpdb->postmeta $search_query
-				  		) metas
-			  			ON items.item_id = metas.post_id AND metas.metadatum_id = %d ORDER BY mvalue $pagination",
-						$item_post_type, $post_status, $metadatum_id
-					);
-				} else {
-					$sql_string = $wpdb->prepare(
-						"SELECT DISTINCT metadatum_id, mvalue 
-				  		FROM (
-			  				SELECT ID as item_id
-		  					FROM $wpdb->posts
-	  						WHERE post_status = %s
-  						) items
-						JOIN (
-						  	SELECT meta_key as metadatum_id, meta_value as mvalue, post_id
-					  	  	FROM $wpdb->postmeta $search_query
-				  		) metas
-			  			ON items.item_id = metas.post_id AND metas.metadatum_id = %d ORDER BY mvalue $pagination",
-						$post_status, $metadatum_id
-					);
-				}
-
-				$pre_result = $wpdb->get_results( $sql_string, OBJECT );
-
-				if ( ! empty( $pre_result ) ) {
-					foreach ( $pre_result as $pre ) {
-						$results[] = $pre;
-					}
-				}
-			}
-		} elseif ( current_user_can( $capabilities->read_private_posts ) ) {
-			$args = [
-				'exclude_from_search' => false,
-			];
-
-			$post_statuses = get_post_stati( $args, 'names', 'and' );
-
-			foreach ( $post_statuses as $post_status ) {
-
-				if ( $collection_id ) {
-					$sql_string = $wpdb->prepare(
-						"SELECT DISTINCT metadatum_id, mvalue 
-		  	        	FROM (
-	  	  		        	SELECT ID as item_id
-  	  			        	FROM $wpdb->posts
-  				        	WHERE post_type LIKE %s AND post_status = %s
-					  	) items
-					  	JOIN (
-					    	SELECT meta_key as metadatum_id, meta_value as mvalue, post_id
-							FROM $wpdb->postmeta $search_query
-					  	) metas
-					  	ON items.item_id = metas.post_id AND metas.metadatum_id = %d ORDER BY mvalue $pagination",
-						$item_post_type, $post_status, $metadatum_id
-					);
-				} else {
-					$sql_string = $wpdb->prepare(
-						"SELECT DISTINCT metadatum_id, mvalue 
-		  	        	FROM (
-	  	  		        	SELECT ID as item_id
-  	  			        	FROM $wpdb->posts
-  				        	WHERE post_status = %s
-					  	) items
-					  	JOIN (
-					    	SELECT meta_key as metadatum_id, meta_value as mvalue, post_id
-							FROM $wpdb->postmeta $search_query
-					  	) metas
-					  	ON items.item_id = metas.post_id AND metas.metadatum_id = %d ORDER BY mvalue $pagination",
-						$post_status, $metadatum_id
-					);
-				}
-
-				$pre_result = $wpdb->get_results( $sql_string, OBJECT );
-
-				if ( ! empty( $pre_result ) ) {
-					foreach ( $pre_result as $pre ) {
-						$results[] = $pre;
+		
+		$search_q = '';
+		$search = trim($search);
+		if (!empty($search)) {
+			$search_q = $wpdb->prepare("AND meta_value LIKE %s", '%' . $search . '%');
+		}
+		
+		$total_query = $wpdb->prepare( "SELECT COUNT(DISTINCT meta_value) FROM $wpdb->postmeta WHERE meta_key = %s $search_q AND post_id IN($items_query) ORDER BY meta_value", $metadatum_id );
+		$query = $wpdb->prepare( "SELECT DISTINCT meta_value FROM $wpdb->postmeta WHERE meta_key = %s $search_q AND post_id IN($items_query) ORDER BY meta_value $pagination", $metadatum_id );
+		
+		$results = $wpdb->get_col($query);
+		$total = $wpdb->get_var($total_query);
+		$number = is_integer($number) && $number >=1 ? $number : $total;
+		$pages = ceil( $total / $number );
+		
+		// add selected to the result
+		if ( isset($query_args['metaquery']) && is_array($query_args['metaquery']) ) {
+			foreach( $query_args['metaquery'] as $metaquery ){
+				if( $metaquery['key'] == $metadatum_id ){
+					if (!in_array($metaquery['value'], $results)) {
+						array_unshift($results, $metaquery['value']);
 					}
 				}
 			}
 		}
-
-		$spliced = $this->unique_multidimensional_array( $results, 'mvalue' );
-
-		if($number > 0 && count($spliced) > $number){
-			array_splice($spliced, (int) $number);
+		
+		$values = [];
+		foreach ($results as $r) {
+			$values[] = [
+				'label' => $r,
+				'value' => $r,
+				'type' => 'Text'
+			];
 		}
-
-		return $spliced;
+		
+		return [
+			'total' => $total,
+			'pages' => $pages,
+			'values' => $values
+		];
+		
 	}
 
 	/**
