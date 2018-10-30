@@ -125,7 +125,7 @@ registerBlockType('tainacan/collections-carousel', {
                    return response.data;
                })
                .catch(error => {
-                   console.log(error);
+                   console.error(error);
                });
         }
 
@@ -271,11 +271,10 @@ registerBlockType('tainacan/collections-carousel', {
 
                 return tainacan.get(`/collections?search=${keyword}`)
                     .then(response => {
-                        console.log(response);
                         return response.data;
                     })
                     .catch(error => {
-                        console.log(error);
+                        console.error(error);
                     });
             },
             getOptionLabel(option) {
