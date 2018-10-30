@@ -650,9 +650,7 @@ class CSV extends Importer {
             foreach ( $exploded_values as $key => $value) {
                 $value = trim($value);
                 $exists = term_exists( $value ,$taxonomy->get_db_identifier(), $parent );
-                if( 0 !== $exists && null !== $exists && isset($exists['term_id']) ){
-                    //$exists = new Entities\Term($exists['term_id']);
-                    //$parent = $exists->get_id();
+                if ((0 !== $exists && null !== $exists && isset($exists['term_id'])) || ($value=='') ) {
                     $parent = $value;
                 } else {
                     $term = new Entities\Term();
