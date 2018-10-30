@@ -191,6 +191,18 @@ class REST_Importers_Controller extends REST_Controller {
                     
                     if ($att == 'collection') {
                         if (is_array($value) && isset($value['id'])) {
+
+                            if(isset($value['mapping']) && is_array($value['mapping'])){
+                                foreach( $value['mapping'] as $metadatum_id => $header ){
+
+                                    if( !is_numeric($metadatum_id) ) {
+                                        $metadatum = $importer->create_new_metadata( $header, $value['id']);
+                                        unset($value['mapping'][$metadatum_id]);
+                                        $value['mapping'][$metadatum->get_id()] = $header;
+                                    }
+                                }
+                            }
+
                             $importer->add_collection($value);
                             continue;
                         } else {

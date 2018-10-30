@@ -59,6 +59,9 @@
                             <option :value="undefined">
                                 {{ $i18n.get('label_select_metadatum') }}
                             </option>
+                            <option :value="'create_metadata' + index">
+                                {{ $i18n.get('label_create_metadatum') }}
+                            </option>
                             <option
                                     v-for="(metadatum, index) of collectionMetadata"
                                     :key="index"

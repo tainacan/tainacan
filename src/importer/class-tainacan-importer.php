@@ -907,13 +907,15 @@ abstract class Importer {
      * @return bool
      * @throws \Exception
      */
-    protected function create_metadata( $metadata_description, $collection_id){
+    public function create_new_metadata( $metadata_description, $collection_id){
         $taxonomy_repo = \Tainacan\Repositories\Taxonomies::get_instance();
         $metadata_repo = \Tainacan\Repositories\Metadata::get_instance();
 
         $properties =  array_filter( explode('|', $metadata_description) );
 
-        if( !$properties || count($properties) < 2 ){
+        if( is_array($properties) && count($properties) < 2 ){
+            $properties[1] = 'text';
+        } else if( !$properties ){
             return false;
         }
 

@@ -264,6 +264,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_url_source_link'                          => __( 'URL Source link', 'tainacan' ),
 	'label_metadata_mapping'                         => __( 'Metadata mapping', 'tainacan' ),
 	'label_select_metadatum'                         => __( 'Select metadatum', 'tainacan' ),
+	'label_create_metadatum'                         => __( 'Create metadatum', 'tainacan' ),
 	'label_select_metadatum_type'                    => __( 'Select a metadatum type', 'tainacan' ),
 	'label_add_more_metadata'                        => __( 'Add more metadata', 'tainacan' ),
 	'label_from_source_collection'                   => __( 'From source collection', 'tainacan' ),

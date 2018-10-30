@@ -137,12 +137,7 @@ class CSV extends Importer {
 
             $valueToInsert = $this->handle_encoding( $values[ $column ] );
 
-            if( !is_numeric($metadatum_id) ) {
-                $metadatum = $this->create_metadata( $headers[ $column ], $collection_definition['id']);
-            } else {
-                $metadatum = new \Tainacan\Entities\Metadatum($metadatum_id);
-            }
-
+            $metadatum = new \Tainacan\Entities\Metadatum($metadatum_id);
             $processedItem[ $header ] = ( $metadatum->is_multiple() ) ? 
                 explode( $this->get_option('multivalued_delimiter'), $valueToInsert) : $valueToInsert;
         }
