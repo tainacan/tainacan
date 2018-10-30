@@ -565,15 +565,24 @@ class CSV extends Importer {
                 if( $metadatum instanceof Entities\Metadatum ) {
                     $singleItemMetadata = new Entities\Item_Metadata_Entity( $item, $metadatum); // *empty item will be replaced by inserted in the next foreach
                     if( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Taxonomy' ) {
-                        if( is_array( $values ) ) {
-                            $ids = [];
-                            foreach($values as $k => $v) {
-                                $ids[] = $this->insert_hierarchy( $metadatum, $v );
+                        if( !is_array( $values ) ) {
+                            $tmp = $this->insert_hierarchy( $metadatum, $values);
+                            if ($tmp == false) {
+                                $this->add_error_log('Metadata ' . $metadatum_source . ' has a term empty');
+                            } else {
+                                $singleItemMetadata->set_value( $tmp );
                             }
-                            $singleItemMetadata->set_value( $ids );
                         } else {
-                            $id = $this->insert_hierarchy( $metadatum, $values );
-                            $singleItemMetadata->set_value( $id );
+                            $terms = [];
+                            foreach($values as $k => $v) {
+                                $tmp = $this->insert_hierarchy( $metadatum, $v);
+                                if ($tmp == false) {
+                                    $this->add_error_log('Metadata ' . $metadatum_source . ' has a term empty');
+                                } else {
+                                    $terms[] = $tmp;
+                                }
+                            }
+                            $singleItemMetadata->set_value( $terms );
                         }
                     } else {
                         $singleItemMetadata->set_value( $values );
@@ -644,8 +653,11 @@ class CSV extends Importer {
             $parent = 0;
             foreach ( $exploded_values as $key => $value) {
                 $value = trim($value);
+                if ($value=='') {
+                    return false;
+                }
                 $exists = term_exists( $value ,$taxonomy->get_db_identifier(), $parent );
-                if ((0 !== $exists && null !== $exists && isset($exists['term_id'])) || ($value=='') ) {
+                if (0 !== $exists && null !== $exists && isset($exists['term_id'])) {
                     $parent = $value;
                 } else {
                     $term = new Entities\Term();
