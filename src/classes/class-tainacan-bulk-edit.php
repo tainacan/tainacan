@@ -181,7 +181,8 @@ class Bulk_Edit  {
 			'posts_per_page' => 1,
 			'paged' => $index,
 			'orderby' => $options['orderby'],
-			'order' => $options['order']
+			'order' => $options['order'],
+			'post_status' => 'any'
 		];
 		
 		$object = new \WP_Query($query);

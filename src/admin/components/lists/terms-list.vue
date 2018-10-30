@@ -175,6 +175,9 @@ export default {
         },
         taxonomyId() {
             this.loadTerms(0);
+        },
+        isEditingTerm(value) {
+            this.$emit('isEditingTermUpdate', value);
         }
     },
     components: {

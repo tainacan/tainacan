@@ -146,7 +146,9 @@
                 
                 <b-tab-item :label="$i18n.get('terms')">
                     <!-- Terms List -->    
-                    <terms-list :taxonomy-id="taxonomyId"/>
+                    <terms-list 
+                            @isEditingTermUpdate="isEditingTermUpdate"
+                            :taxonomy-id="taxonomyId"/>
                 </b-tab-item>
 
                 <b-loading 
@@ -173,6 +175,7 @@
                 taxonomy: null,
                 isLoadingTaxonomy: false,
                 isUpdatingSlug: false,
+                isEditinTerm: false,
                 form: {
                     name: String,
                     status: String,
@@ -223,6 +226,19 @@
                         icon: 'alert',
                         title: this.$i18n.get('label_warning'),
                         message: this.$i18n.get('info_warning_taxonomy_not_saved'),
+                        onConfirm: () => {
+                            next();
+                        }
+                    }
+                });  
+            } else if (this.isEditinTerm) {
+                this.$modal.open({
+                    parent: this,
+                    component: CustomDialog,
+                    props: {
+                        icon: 'alert',
+                        title: this.$i18n.get('label_warning'),
+                        message: this.$i18n.get('info_warning_terms_not_saved'),
                         onConfirm: () => {
                             next();
                         }
@@ -358,6 +374,9 @@
             },
             labelNewTerms(){
                 return ( this.form.allowInsert === 'yes' ) ? this.$i18n.get('label_yes') : this.$i18n.get('label_no');
+            },
+            isEditingTermUpdate (value) {
+                this.isEditinTerm = value;
             }
         },
         mounted(){
