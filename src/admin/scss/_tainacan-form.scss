@@ -32,8 +32,14 @@
         overflow: hidden;
         vertical-align: top;
     }
+    .section-label>label {
+        cursor: default;
+    }
     .required-metadatum-asterisk {
         color: $gray5;
+        position: relative;
+        top: -3px;
+        
         &.is-danger {
             color: $danger;
         }

@@ -18,17 +18,34 @@
                 label-width="120px">
                 
             <div class="columns">
-                <div class="column document-list">
+                <div class="column is-half document-list">
+                    <div class="section-label">
+                        <label>{{ $i18n.get('label_added_items') }}
+                            <span 
+                                    v-if="!isLoadingGroupInfo && bulkEditGroup.items_count != undefined"
+                                    class="has-text-gray has-text-weight-normal">{{ ' (' + bulkEditGroup.items_count + ')' }}</span>
+                        </label>
+                    </div>
+                    <br>
+                    <p v-if="items.length <= 0 && !isLoadingGroupInfo && bulkEditGroup.items_count == 1">
+                        {{ $i18n.get('info_there_is') + ' ' + bulkEditGroup.items_count + ' ' + $i18n.get('info_item_being_edited') + '.' }}
+                    </p>
+                    <p v-if="items.length <= 0 && !isLoadingGroupInfo && bulkEditGroup.items_count > 1">
+                        {{ $i18n.get('info_there_are') + ' ' + bulkEditGroup.items_count + ' ' + $i18n.get('info_items_being_edited') + '.' }}
+                    </p>
+                    <p v-if="items.length <= 0 && !isLoadingGroupInfo">
+                        {{ $i18n.get('info_no_preview_found') }}
+                    </p>
                     <transition-group name="item-appear">
                         <div 
                                 class="document-item"
-                                v-for="(item, index) of uploadedItems"
+                                v-for="(item, index) of items"
                                 :key="index">
                             <img 
                                     v-if="item.document!= undefined && item.document != '' && item.document_type != 'empty'"
-                                    class="document-thumb"
-                                    :alt="item.title"
-                                    :src="item.thumbnail.tainacan_small ? item.thumbnail.tainacan_small : item.thumbnail.thumb" > 
+                                class="document-thumb"
+                                :alt="item.title"
+                                :src="item.thumbnail.tainacan_small ? item.thumbnail.tainacan_small : (item.thumbnail.thumb ? item.thumbnail.thumb : thumbPlaceholderPath)" > 
                             <span 
                                 class="document-name"
                                 v-html="item.title" />                            
@@ -40,7 +57,7 @@
                         </div>
                     </transition-group>
                 </div>
-                <div class="column">
+                <div class="column is-half">
                      
                     <!-- Visibility (status public or private) -------------------------------- -->
                     <div class="section-label">
@@ -223,25 +240,32 @@ export default {
             collectionId: '',
             isLoadingItems: false,
             isLoadingMetadata: false,
+            isLoadingGroupInfo: false,
             isExecutingBulkEdit: false,
             isUpdatingItems: false,
             isTrashingItems: false,
             isPublishingItems: false,
-            items: '',
             visibility: 'publish',
             collapseAll: true,
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
             metadatumCollapses: [],
             formErrors: {},
             status: 'draft',
-            groupID: null
+            groupID: null,
         }
     },
     computed: {
         metadata() {
             return this.getMetadata();
         },
-        lastUpdated () {
+        lastUpdated() {
             return this.getLastUpdated();
+        },
+        items() {
+            return this.getBulkAddItems();
+        },
+        bulkEditGroup() {
+            return this.getGroup();
         }
     },
     methods: {
@@ -263,13 +287,14 @@ export default {
             'removeValueInBulk',
             'deleteItemsInBulk',
             'trashItemsInBulk',
-            'fetchItemIdInSequence'
+            'fetchItemIdInSequence',
+            'fetchGroup'  
         ]),
         ...mapGetters('bulkedition', [
             'getItemIdInSequence',
-            'getActionResult',
             'getGroup',
-            'getLastUpdated'
+            'getLastUpdated',
+            'getBulkAddItems'
         ]),
         toggleCollapseAll() {
             this.collapseAll = !this.collapseAll;
@@ -298,14 +323,6 @@ export default {
                     }
                 }).then(() => {
                     this.isExecutingBulkEdit = false;
-
-                    let actionResult = this.getActionResult();
-                    console.log(actionResult);
-                    if(actionResult.constructor.name === 'Object' && (actionResult.data && actionResult.data.status.toString().split('')[0] != 2) || actionResult.error_message) {
-                        console.log("Xiii, deu ruim :(");
-                    } else {
-                        console.log("Tudo bem por aqui.");
-                    }
 
                 }).catch(() => this.isExecutingBulkEdit = false);
             }
@@ -463,6 +480,11 @@ export default {
             }
             this.visibility = 'publish';
         });
+
+        this.isLoadingGroupInfo = true;
+        this.fetchGroup({ collectionId: this.collectionId, groupId: this.groupID })
+            .then(() => this.isLoadingGroupInfo = false)
+            .then(() => this.isLoadingGroupInfo = false)
        
     }
 }
@@ -510,7 +532,6 @@ export default {
 
         .document-list {
             display: inline-block;
-            width: 100%;
 
             .document-item {
                 display: flex;
@@ -518,45 +539,23 @@ export default {
                 width: 100%;
                 justify-content: space-between;
                 align-items: center;
-                margin: 0.75rem;
+                padding: 0.5rem 0.75rem;
+                position: relative;
                 cursor: default;
 
                 .document-thumb {
                     max-height: 42px;
                     max-width: 42px;
-                    margin-right: 0.75rem;
+                    margin-right: 1rem;
                 }
 
-                .document-actions {
-                    margin-left: auto;
-                    
-
-                    .loading-icon .control.is-loading::after {
-                        position: relative !important;
-                        right: 0;
-                        top: 0;
-                    }
-                }
-
-                .help.is-danger {
-                    margin-left: auto;
+                .document-name {
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    width: 100%;
+                    white-space: nowrap;
                 }
             }
-
-            .sequence-progress {
-                height: 5px;
-                background: $turquoise5;
-                width: 0%;
-                transition: width 0.2s;
-            }
-            .sequence-progress-background {
-                height: 5px;
-                background: $gray3;
-                width: 100%;
-                top: -5px;
-                z-index: -1;
-                position: relative;
-            }        
         }
 
         .column {
@@ -576,6 +575,7 @@ export default {
             }
 
             .section-label {
+                cursor: default;
                 position: relative;
                 label {
                     font-size: 16px !important;

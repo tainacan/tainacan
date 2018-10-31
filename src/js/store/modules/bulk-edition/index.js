@@ -6,7 +6,8 @@ const state = {
     group: null,
     actionResult: null,
     itemIdInSequence: null,
-    lastUpdated: ''
+    lastUpdated: '',
+    bulkAddItems: []
 };
 
 export default {

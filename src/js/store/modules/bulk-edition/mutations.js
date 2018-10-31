@@ -18,3 +18,7 @@ export const setLastUpdated = (state, value) => {
         state.lastUpdated = now.toLocaleString();
     }
 }
+
+export const setBulkAddItems = (state, items) => {
+    return state.bulkAddItems = items;
+}

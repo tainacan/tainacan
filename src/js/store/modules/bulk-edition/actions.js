@@ -214,3 +214,8 @@ export const fetchItemIdInSequence = ({commit}, { collectionId, sequenceId, item
             });
     });
 };
+
+// BULK ADD SPECIFIC
+export const setBulkAddItems = ({commit}, items) => {
+    commit('setBulkAddItems', items);
+};

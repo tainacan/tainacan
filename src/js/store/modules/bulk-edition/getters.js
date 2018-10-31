@@ -17,3 +17,7 @@ export const getItemIdInSequence = state => {
 export const getLastUpdated = state => {
     return state.lastUpdated;
 }
+
+export const getBulkAddItems = state => {
+    return state.bulkAddItems;
+}

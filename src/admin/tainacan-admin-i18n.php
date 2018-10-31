@@ -322,6 +322,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_bulk_edit_items'		                     => __( 'Bulk edit items', 'tainacan'),
 	'label_sequence_edit_items'	                     => __( 'Sequence edit items', 'tainacan'),
 	'label_documents_upload'	                     => __( 'Documents upload', 'tainacan'),
+	'label_added_items'			                     => __( 'Added items', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -469,7 +470,12 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_warning_changing_parent_term'              => __( 'Warning! Changing parent term will reload the terms list, thus uncheking any selection.', 'tainacan' ),
 	'info_warning_selected_items_remove_from_trash'  => __( 'Do you really want to remove from trash the selected items?', 'tainacan'),
 	'info_all_files_uploaded'  						 => __( 'All files uploaded.', 'tainacan'),
-
+	'info_there_are'  						 		 => __( 'There are', 'tainacan'),
+	'info_items_being_edited'				 		 => __( 'items being edited', 'tainacan'),
+	'info_there_is'  						 		 => __( 'There is', 'tainacan'),
+	'info_item_being_edited'				 		 => __( 'item being edited', 'tainacan'),
+	'info_no_preview_found'				 		 	 => __( 'No preview was found.', 'tainacan'),
+	
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),
 	'tainacan-textarea'                              => __( 'Text area', 'tainacan' ),

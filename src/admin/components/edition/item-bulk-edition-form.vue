@@ -69,6 +69,7 @@
                         {{ "1 " + $i18n.get('label_file_remaining') }}
                     </p>
                 </div>
+
                 <!-- Sequence Progress Bar -->
                 <div 
                         v-if="uploadedItems.length > 0"
@@ -197,7 +198,8 @@ export default {
         ]),
         ...mapActions('bulkedition', [
             'createEditGroup',
-            'setStatusInBulk'
+            'setStatusInBulk',
+            'setBulkAddItems'
         ]),
         uploadFiles() {
             
@@ -233,7 +235,7 @@ export default {
 
                                         let index = this.uploadedItems.findIndex(existingItem => existingItem.id === item.id);
                                         if ( index >= 0)
-                                            this.$set( this.uploadedItems, index, item );
+                                            this.$set( this.uploadedItems, index, item);
                                         else 
                                             this.uploadedItems.unshift( item );
                                     })
@@ -284,7 +286,11 @@ export default {
             });
         },
         createBulkEditGroup() {
+            // Sends to store, so we can retrieve in next page.
+            this.setBulkAddItems(this.uploadedItems);
+
             let onlyItemIds = this.uploadedItems.map(item => item.id);
+
             this.isCreatingBulkEditGroup = true;
             this.createEditGroup({
                 object: onlyItemIds,
@@ -314,7 +320,7 @@ export default {
                         this.deleteItem({
                             itemId: itemId
                         }).then(() => {
-                            this.uploadedItems.splice(index, 1) 
+                            this.uploadedItems.splice(index, 1); 
                             this.amountFinished --;
                         });
                     }
@@ -327,6 +333,7 @@ export default {
         this.collectionId = this.$route.params.collectionId;
 
         this.cleanFiles();
+        this.setBulkAddItems([]);
 
         // Updates Collection BreadCrumb
         this.$root.$emit('onCollectionBreadCrumbUpdate', [
