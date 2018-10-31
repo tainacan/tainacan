@@ -15,8 +15,7 @@ use Tainacan\Entities;
  */
 class DateMetadatumTypes extends TAINACAN_UnitTestCase {
 
-	
-    function test_date_metadata_types() {
+	function test_date_metadata_types() {
 
         $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
@@ -76,6 +75,68 @@ class DateMetadatumTypes extends TAINACAN_UnitTestCase {
 		$this->assertFalse($item_metadata->validate());
 
     }
-	
+
+    function test_date_metadata_multiple_types() {
+        $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+
+        $collection = $this->tainacan_entity_factory->create_entity(
+            'collection',
+            array(
+                'name'   => 'test',
+            ),
+            true
+        );
+
+        $metadatum_multiple = $this->tainacan_entity_factory->create_entity(
+            'metadatum',
+            array(
+                'name' => 'meta',
+                'description' => 'description',
+                'collection' => $collection,
+                'metadata_type' => 'Tainacan\Metadata_Types\Date',
+                'status'	 => 'publish',
+                'multiple'    => 'yes'
+            ),
+           true
+        );
+
+        $i = $this->tainacan_entity_factory->create_entity(
+            'item',
+            array(
+                'title'         => 'item test',
+                'description'   => 'adasdasdsa',
+                'collection'    => $collection,
+                'status'        => 'publish',
+            ),
+            true
+        );
+
+        $item_metadata_multiple = new \Tainacan\Entities\Item_Metadata_Entity($i, $metadatum_multiple);
+        $item_metadata_multiple->set_value(['2010-01-01', '2010-12-01']);
+        $this->assertTrue($item_metadata_multiple->validate());
+        
+        $item_metadata_multiple->set_value(['2010-12-01']);
+        $this->assertTrue($item_metadata_multiple->validate());
+        
+        $item_metadata_multiple->set_value(['2010-12-31', '2010-05-05']);
+        $this->assertTrue($item_metadata_multiple->validate());
+        
+        $item_metadata_multiple->set_value('2010-22-01');
+        $this->assertFalse($item_metadata_multiple->validate());
+        
+        $item_metadata_multiple->set_value(['3/3/1202','2010-02-30']);
+        $this->assertFalse($item_metadata_multiple->validate());
+        
+        $item_metadata_multiple->set_value(['3/3/1202','2010-02-30', '2010-12-31', '2010-22-01', '2010-01-01', '2010-12-01']);
+        $this->assertFalse($item_metadata_multiple->validate());
+      
+        $item_metadata_multiple->set_value(['2010-01-01', '2010-12-01', null]);
+        $this->assertFalse($item_metadata_multiple->validate());
+
+        $item_metadata_multiple->set_value(['2010-01-01', '2010-12-01', '']);
+        $this->assertFalse($item_metadata_multiple->validate());
+    }
     
 }
