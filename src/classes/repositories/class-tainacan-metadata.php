@@ -888,61 +888,89 @@ class Metadata extends Repository {
 	public function fetch_all_metadatum_values( $collection_id, $metadatum_id, $search = '', $offset = 0, $number = '', $query_args = [] ) {
 		global $wpdb;
 
-		// Get the query for current items
-		// this avoids wp_query to run the query. We just want to build the query
-		add_filter('posts_pre_query', '__return_empty_array');
-		
-		$itemsRepo = Items::get_instance();
-		
-		$query_args['fields'] = 'ids';
-		unset($query_args['paged']);
-		unset($query_args['offset']);
-		unset($query_args['perpage']);
-		$query_args['nopaging'] = 1;
-		
-		$items_query = $itemsRepo->fetch($query_args, $collection_id);
-		$items_query = $items_query->request;
-		
-		remove_filter('posts_pre_query', '__return_empty_array');
-		
-		$pagination = '';
-		if ( $offset >= 0 && $number >= 1 ) {
-			$pagination = $wpdb->prepare( "LIMIT %d,%d", (int) $offset, (int) $number );
-		}
-		
-		$search_q = '';
-		$search = trim($search);
-		if (!empty($search)) {
-			$search_q = $wpdb->prepare("AND meta_value LIKE %s", '%' . $search . '%');
-		}
-		
-		$total_query = $wpdb->prepare( "SELECT COUNT(DISTINCT meta_value) FROM $wpdb->postmeta WHERE meta_key = %s $search_q AND post_id IN($items_query) ORDER BY meta_value", $metadatum_id );
-		$query = $wpdb->prepare( "SELECT DISTINCT meta_value FROM $wpdb->postmeta WHERE meta_key = %s $search_q AND post_id IN($items_query) ORDER BY meta_value $pagination", $metadatum_id );
-		
-		$results = $wpdb->get_col($query);
-		$total = $wpdb->get_var($total_query);
-		$number = is_integer($number) && $number >=1 ? $number : $total;
-		$pages = ceil( $total / $number );
-		
-		// add selected to the result
-		if ( isset($query_args['metaquery']) && is_array($query_args['metaquery']) ) {
-			foreach( $query_args['metaquery'] as $metaquery ){
-				if( $metaquery['key'] == $metadatum_id ){
-					if (!in_array($metaquery['value'], $results)) {
-						array_unshift($results, $metaquery['value']);
-					}
-				}
-			}
-		}
-		
-		$values = [];
-		foreach ($results as $r) {
-			$values[] = [
-				'label' => $r,
-				'value' => $r,
-				'type' => 'Text'
-			];
-		}
+        // Get the query for current items
+        // this avoids wp_query to run the query. We just want to build the query
+        add_filter('posts_pre_query', '__return_empty_array');
+
+        $itemsRepo = Items::get_instance();
+        $metadataRepo = Metadata::get_instance();
+
+
+
+        $metadatum = $metadataRepo->fetch($metadatum_id);
+        $metadatum_type = $metadatum->get_metadata_type();
+
+        $query_args['fields'] = 'ids';
+        unset($query_args['paged']);
+        unset($query_args['offset']);
+        unset($query_args['perpage']);
+        $query_args['nopaging'] = 1;
+
+        $items_query = $itemsRepo->fetch($query_args, $collection_id);
+        $items_query = $items_query->request;
+
+
+        remove_filter('posts_pre_query', '__return_empty_array');
+
+        $pagination = '';
+        if ( $offset >= 0 && $number >= 1 ) {
+            $pagination = $wpdb->prepare( "LIMIT %d,%d", (int) $offset, (int) $number );
+        }
+
+        $search_q = '';
+        $search = trim($search);
+        if (!empty($search)) {
+            if( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ){
+                $search_q = $wpdb->prepare("AND meta_value IN ( SELECT ID FROM $wpdb->posts WHERE post_title LIKE %s )", '%' . $search . '%');
+
+            } else {
+                $search_q = $wpdb->prepare("AND meta_value LIKE %s", '%' . $search . '%');
+            }
+
+
+        }
+
+		if( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ){
+
+            //TODO: Retrieve terms
+
+        } else {
+            $total_query = $wpdb->prepare( "SELECT COUNT(DISTINCT meta_value) FROM $wpdb->postmeta WHERE meta_key = %s $search_q AND post_id IN($items_query) ORDER BY meta_value", $metadatum_id );
+            $query = $wpdb->prepare( "SELECT DISTINCT meta_value FROM $wpdb->postmeta WHERE meta_key = %s $search_q AND post_id IN($items_query) ORDER BY meta_value $pagination", $metadatum_id );
+
+            $results = $wpdb->get_col($query);
+            $total = $wpdb->get_var($total_query);
+            $number = is_integer($number) && $number >=1 ? $number : $total;
+
+            if( $number < 1){
+                $pages = 1;
+            } else {
+                $pages = ceil( $total / $number );
+            }
+
+            // add selected to the result
+            if ( isset($query_args['metaquery']) && is_array($query_args['metaquery']) ) {
+                foreach( $query_args['metaquery'] as $metaquery ){
+                    if( $metaquery['key'] == $metadatum_id ){
+                        if (!in_array($metaquery['value'], $results)) {
+                            array_unshift($results, $metaquery['value']);
+                        }
+                    }
+                }
+            }
+
+            $values = [];
+            foreach ($results as $r) {
+                $label = ( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ) ?
+                                get_post($r)->post_title : $r;
+
+                $values[] = [
+                    'label' => $label,
+                    'value' => $r,
+                    'type' => 'Text'
+                ];
+            }
+        }
 		
 		return [
 			'total' => $total,

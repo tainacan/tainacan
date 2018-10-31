@@ -103,61 +103,8 @@ class REST_Facets_Controller extends REST_Controller {
 			$options = $metadatum->get_metadata_type_options();
 			$args = $this->prepare_filters($request);
 
-			// handle filter with relationship metadata
-
-			if( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ){
-
-				$selected =  $this->getRelationshipSelectedValues($request, $metadatum->get_id());
-				$restItemsClass = new REST_Items_Controller();
-
-				if(isset($request['number'])){
-					$args['posts_per_page'] = $request['number'];
-				}
-	
-				$items = $this->items_repository->fetch($args, $options['collection_id'], 'WP_Query');
-				$ids = [];
-
-				// retrieve selected items
-
-				if( $selected && $request['getSelected'] && $request['getSelected'] === '1' ){
-					foreach( $selected as $index => $item_id ){
-
-						$item = new Entities\Item($item_id);
-						$prepared_item = $restItemsClass->prepare_item_for_response($item, $request);
-						$response[] = $prepared_item;
-						$ids[] = $item_id;
-					}
-				}
-
-				if ($items->have_posts()) {
-					while ( $items->have_posts() ) {
-						$items->the_post();
-		
-						$item = new Entities\Item($items->post);
-						$prepared_item = $restItemsClass->prepare_item_for_response($item, $request);
-
-						if( in_array((string) $items->post->ID,$ids) ){
-							continue;
-						} 
-
-						if( isset($request['number']) && count($response) >= $request['number']){
-							break;
-						}
-		
-						array_push($response, $prepared_item);
-					}
-		
-					wp_reset_postdata();
-				}
-
-				$this->total_items = $items->found_posts;
-				$this->total_pages = ceil($this->total_items / (int) $items->query_vars['posts_per_page']);
-
-			} 
-
 			// handle filter with Taxonomy metadata
-			
-			else if ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ){
+			if ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ){
 
 				$this->taxonomy = $this->taxonomy_repository->fetch($options['taxonomy_id']);
 				$selected = $this->getTaxonomySelectedValues($request, $options['taxonomy_id']);
