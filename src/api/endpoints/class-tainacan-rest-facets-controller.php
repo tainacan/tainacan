@@ -69,6 +69,10 @@ class REST_Facets_Controller extends REST_Controller {
 			$query_args = defined('TAINACAN_FACETS_FILTER_ITEMS') && true === TAINACAN_FACETS_FILTER_ITEMS ? $request['current_query'] : [];
 			$query_args = $this->prepare_filters($query_args);
 			
+			if ( isset($request['hideempty']) && $request['hideempty'] == 0 ) {
+				$query_args = false;
+			}
+			
 			if($request['offset'] >= 0 && $request['number'] >= 1){
 				$offset = $request['offset'];
 				$number = $request['number'];
@@ -99,6 +103,11 @@ class REST_Facets_Controller extends REST_Controller {
 				}
 			}
 			
+			$parent_id = 0;
+			if ( isset($request['parent']) ) {
+				$parent_id = (int) $request['parent'];
+			}
+			
 			
 			$args = [
 				'collection_id' => $collection_id,
@@ -107,6 +116,7 @@ class REST_Facets_Controller extends REST_Controller {
 				'number' => $number,
 				'items_filter' => $query_args,
 				'include' => $include,
+				'parent_id' => $parent_id,
 				'count_items' => defined('TAINACAN_FACETS_COUNT_ITEMS') && true === TAINACAN_FACETS_COUNT_ITEMS ? true : false
 			];
 			

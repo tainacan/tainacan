@@ -888,7 +888,7 @@ class Metadata extends Repository {
 	  * 
 	  *     @type int		 $offset					The offset (for pagination). Default 0
 	  * 
-	  *     @type array		 $items_filter				Array in the same format used in @see \Tainacan\Repositories\Items::fetch(). It will filter the results to only return values used in the items inside this criteria. Defatul [] (all items)
+	  *     @type array|bool $items_filter				Array in the same format used in @see \Tainacan\Repositories\Items::fetch(). It will filter the results to only return values used in the items inside this criteria. If false, it will return all values, even unused ones. Defatul [] (all items)
 	  * 
 	  *     @type array		 $include					Array if ids to be included in the result. Default [] (nothing)
 	  *
@@ -934,32 +934,35 @@ class Metadata extends Repository {
 		//////////////////////////////////////////
 		// Get the query for current items
 		// this avoids wp_query to run the query. We just want to build the query
-		add_filter('posts_pre_query', '__return_empty_array');
-		
-		$args['items_filter']['fields'] = 'ids';
-		unset($args['items_filter']['paged']);
-		unset($args['items_filter']['offset']);
-		unset($args['items_filter']['perpage']);
-		$args['items_filter']['nopaging'] = 1;
-		
-		// When filtering the items, we should consider only other metadata, and ignore current metadatum 
-		// This is because the relation between values from the same metadatum when filtering item is OR, 
-		// so when you filter items by one value of a metadatum you dont want to exclude all the other possibilities for that meta.
-		// Only values of all other filters (facets) are reduced.
-		if ( $metadatum_type == 'Tainacan\Metadata_Types\Taxonomy' && isset($args['items_filter']['tax_query']) && is_array($args['items_filter']['tax_query']) ) {
-			// remove current taxonomy from tax_query
-			$args['items_filter']['tax_query'] = array_filter($args['items_filter']['tax_query'], function($t) use ($taxonomy_slug) { return $t['taxonomy'] != $taxonomy_slug; });
-		} elseif ( $metadatum_type != 'Tainacan\Metadata_Types\Taxonomy' && isset($args['items_filter']['meta_query']) && is_array($args['items_filter']['meta_query']) ) {
-			// remove current metadata from meta_query
-			//var_dump($args['items_filter']['meta_query']);
-			$args['items_filter']['meta_query'] = array_filter($args['items_filter']['meta_query'], function($t) use ($metadatum_id) { return $t['key'] != $metadatum_id; });
-			//var_dump($args['items_filter']['meta_query']);
+		$items_query = false;
+		if ( false !== $args['items_filter'] && is_array($args['items_filter']) ) {
+			add_filter('posts_pre_query', '__return_empty_array');
+			
+			$args['items_filter']['fields'] = 'ids';
+			unset($args['items_filter']['paged']);
+			unset($args['items_filter']['offset']);
+			unset($args['items_filter']['perpage']);
+			$args['items_filter']['nopaging'] = 1;
+			
+			// When filtering the items, we should consider only other metadata, and ignore current metadatum 
+			// This is because the relation between values from the same metadatum when filtering item is OR, 
+			// so when you filter items by one value of a metadatum you dont want to exclude all the other possibilities for that meta.
+			// Only values of all other filters (facets) are reduced.
+			if ( $metadatum_type == 'Tainacan\Metadata_Types\Taxonomy' && isset($args['items_filter']['tax_query']) && is_array($args['items_filter']['tax_query']) ) {
+				// remove current taxonomy from tax_query
+				$args['items_filter']['tax_query'] = array_filter($args['items_filter']['tax_query'], function($t) use ($taxonomy_slug) { return $t['taxonomy'] != $taxonomy_slug; });
+			} elseif ( $metadatum_type != 'Tainacan\Metadata_Types\Taxonomy' && isset($args['items_filter']['meta_query']) && is_array($args['items_filter']['meta_query']) ) {
+				// remove current metadata from meta_query
+				//var_dump($args['items_filter']['meta_query']);
+				$args['items_filter']['meta_query'] = array_filter($args['items_filter']['meta_query'], function($t) use ($metadatum_id) { return $t['key'] != $metadatum_id; });
+				//var_dump($args['items_filter']['meta_query']);
+			}
+			
+			$items_query = $itemsRepo->fetch($args['items_filter'], $args['collection_id']);
+			$items_query = $items_query->request;
+			
+			remove_filter('posts_pre_query', '__return_empty_array');
 		}
-		
-		$items_query = $itemsRepo->fetch($args['items_filter'], $args['collection_id']);
-		$items_query = $items_query->request;
-		
-		remove_filter('posts_pre_query', '__return_empty_array');
 		//// end filtering query ////////
 		////////////////////////////////////////////
 		////////////////////////////////////////////
@@ -985,19 +988,34 @@ class Metadata extends Repository {
 
 		if ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ) {
 			
-			$base_query = $wpdb->prepare("FROM $wpdb->term_relationships tr 
-				INNER JOIN $wpdb->term_taxonomy tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
-				INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id 
-				WHERE 
-				tt.parent = %d AND
-				tr.object_id IN ($items_query) AND 
-				tt.taxonomy = %s
-				$search_q
-				ORDER BY t.name ASC
-				",
-				$args['parent_id'],
-				$taxonomy_slug
-			);
+			if ($items_query) {
+				$base_query = $wpdb->prepare("FROM $wpdb->term_relationships tr 
+					INNER JOIN $wpdb->term_taxonomy tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+					INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id 
+					WHERE 
+					tt.parent = %d AND
+					tr.object_id IN ($items_query) AND 
+					tt.taxonomy = %s
+					$search_q
+					ORDER BY t.name ASC
+					",
+					$args['parent_id'],
+					$taxonomy_slug
+				);
+			} else {
+				$base_query = $wpdb->prepare("FROM $wpdb->term_taxonomy tt 
+					INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id 
+					WHERE 
+					tt.parent = %d AND
+					tt.taxonomy = %s
+					$search_q
+					ORDER BY t.name ASC
+					",
+					$args['parent_id'],
+					$taxonomy_slug
+				);
+			}
+			
 			
 			$query = "SELECT DISTINCT t.name, tt.term_taxonomy_id, tt.parent $base_query $pagination";
 			
@@ -1063,7 +1081,11 @@ class Metadata extends Repository {
 			
 		} else {
 			
-			$base_query = $wpdb->prepare( "FROM $wpdb->postmeta WHERE meta_key = %s $search_q AND post_id IN($items_query) ORDER BY meta_value", $metadatum_id );
+			$items_query_clause = '';
+			if ($items_query) {
+				$items_query_clause = "AND post_id IN($items_query)";
+			}
+			$base_query = $wpdb->prepare( "FROM $wpdb->postmeta WHERE meta_key = %s $search_q $items_query_clause ORDER BY meta_value", $metadatum_id );
 			
 			$total_query = "SELECT COUNT(DISTINCT meta_value) $base_query";
 			$query = "SELECT DISTINCT meta_value $base_query $pagination";
