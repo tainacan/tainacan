@@ -1,6 +1,7 @@
 <template>
     <div>
         <b-select
+                expanded
                 :disabled="disabled"
                 :id = "id"
                 :placeholder="$i18n.get('label_selectbox_init')"

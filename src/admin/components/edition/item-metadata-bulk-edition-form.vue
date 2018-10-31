@@ -267,6 +267,7 @@ export default {
         ]),
         ...mapGetters('bulkedition', [
             'getItemIdInSequence',
+            'getActionResult',
             'getGroup',
             'getLastUpdated'
         ]),
@@ -297,7 +298,15 @@ export default {
                     }
                 }).then(() => {
                     this.isExecutingBulkEdit = false;
-                    // this.finalizeProcedure(criterion);
+
+                    let actionResult = this.getActionResult();
+                    console.log(actionResult);
+                    if(actionResult.constructor.name === 'Object' && (actionResult.data && actionResult.data.status.toString().split('')[0] != 2) || actionResult.error_message) {
+                        console.log("Xiii, deu ruim :(");
+                    } else {
+                        console.log("Tudo bem por aqui.");
+                    }
+
                 }).catch(() => this.isExecutingBulkEdit = false);
             }
 
