@@ -16,22 +16,16 @@ registerBlockType('tainacan/items-grid', {
         items: {
             type: 'array',
             source: 'query',
-            selector: 'picture',
+            selector: 'img',
             query: {
-                img: {
-                    source: 'query',
-                    selector: 'img',
-                    query: {
-                        src: {
-                            source: 'attribute',
-                            attribute: 'src'
-                        },
-                        alt: {
-                            source: 'attribute',
-                            attribute: 'alt'
-                        },
-                    }
-                }
+                src: {
+                    source: 'attribute',
+                    attribute: 'src'
+                },
+                alt: {
+                    source: 'attribute',
+                    attribute: 'alt'
+                },
             },
             default: []
         },
@@ -45,6 +39,10 @@ registerBlockType('tainacan/items-grid', {
             selector: 'div'
         },
     },
+    supports: {
+        align: ['full', 'left', 'right', 'wide'],
+        html: false
+    },
     edit({ attributes, setAttributes, className }){
         console.log('edit', attributes);
 
@@ -55,16 +53,21 @@ registerBlockType('tainacan/items-grid', {
 
         function prepareItem(item) {
             return (
-                <picture>
-                    <img
-                        src={
-                            (item.thumbnail && item.thumbnail.thumb) ?
-                                item.thumbnail.thumb :
-                                ( (item.img && item.img[0].src) ?
-                                    item.img[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
-                        }
-                        alt={ item.title ? item.title : item.alt } />
-                </picture>
+                <img
+                    style={{
+                        width: '150px',
+                        height: '150px',
+                        padding: 0
+                    }}
+
+                    src={
+                        (item.thumbnail && item.thumbnail.thumb) ?
+                            item.thumbnail.thumb :
+                            ((item && item.src) ?
+                                item.src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
+                    }
+
+                    alt={item.title ? item.title : item.alt}/>
             );
         }
 
@@ -128,9 +131,10 @@ registerBlockType('tainacan/items-grid', {
             setAttributes({
                 content: (
                     <div style={{
-                        columnCount: 4,
-                        columnGap: 0,
-                        rowGap: 0,
+                        display: 'flex',
+                        flexDirection: 'row',
+                        flexWrap: 'wrap',
+                        alignContent: 'flex-start',
                     }}>
                         { items }
                     </div>
@@ -189,9 +193,10 @@ registerBlockType('tainacan/items-grid', {
                     </Modal> : null }
 
                 <div style={{
-                    columnCount: 4,
-                    columnGap: 0,
-                    rowGap: 0,
+                    display: 'flex',
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    alignContent: 'flex-start',
                 }}>
                     { items }
                 </div>

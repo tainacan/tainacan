@@ -134,6 +134,7 @@ registerBlockType('tainacan/collections-carousel', {
                 content: contentTemp.length ?
                     (<div>
                         <Carousel
+                            offset={20}
                             arrowLeft={arrowLeft}
                             arrowRight={arrowRight}
                             addArrowClickHandler
@@ -179,11 +180,12 @@ registerBlockType('tainacan/collections-carousel', {
                 <div key={collection.id}>
                     <div style={{
                         display: 'flex',
-                        flexDirection: 'column',
-                        marginLeft: '20px'}}>
+                        flexDirection: 'column'}}>
 
                         { isInEdit ? (
                             <IconButton
+                                isSmall
+                                isPrimary
                                 style={{position: 'absolute'}}
                                 label={ __('Remove', 'tainacan') }
                                 onClick={() => {
@@ -194,9 +196,8 @@ registerBlockType('tainacan/collections-carousel', {
                         ) : null }
 
                         <div className={`${className}__carousel-item`}>
-
-                            <div style={{width: '99px', marginRight: '3px'}} className={`${className}__carousel-item-first`}>
-                                {items[0] ? prepareItem(items[0], null, collection.name) : null}
+                            <div style={{width: '87px', marginRight: '3px'}} className={`${className}__carousel-item-first`}>
+                                {items[0] ? prepareItem(items[0], {display: 'flex', height: '87px'}, collection.name) : null}
                             </div>
 
                             <div className={`${className}__carousel-item-others`}>
@@ -204,6 +205,7 @@ registerBlockType('tainacan/collections-carousel', {
                                 {items[2] ? prepareItem(items[2], {width: '42px', height: '42px'}, collection.name) : null}
                             </div>
                         </div>
+
                         <small style={{
                             maxWidth: '130px',
                             marginLeft: '10px'}}>
@@ -357,6 +359,7 @@ registerBlockType('tainacan/collections-carousel', {
                 <div>
                     { contentTemp.length ?
                         <Carousel
+                            offset={20}
                             arrowLeft={arrowLeft}
                             arrowRight={arrowRight}
                             addArrowClickHandler
