@@ -1,7 +1,10 @@
 <template>
     <div class="home-page page-container">
         <b-loading :active.sync="isLoadingCollections"/>
-        <section class="home-section">
+        <section class="home-section home-section-repository">
+            <div 
+                    class="section-connector" 
+                    aria-hidden/>
             <div class="home-section-header repository-section-header">
                 <div class="home-section-icon">
                     <b-icon icon="archive"/>
@@ -86,7 +89,7 @@
             </nav>
         </section>
 
-        <section class="home-section">
+        <section class="home-section home-section-collection">
             <div class="home-section-header collections-section-header">
                 <div class="home-section-icon">
                     <b-icon icon="folder-multiple"/>
@@ -109,9 +112,9 @@
 </template>
 
 <script>
-import CollectionsHomeList from '../../components/lists/collections-home-list.vue';
-import ActivitiesIcon from '../../components/other/activities-icon.vue';
-import TaxonomiesIcon from '../../components/other/taxonomies-icon.vue';
+import CollectionsHomeList from '../components/lists/collections-home-list.vue';
+import ActivitiesIcon from '../components/other/activities-icon.vue';
+import TaxonomiesIcon from '../components/other/taxonomies-icon.vue';
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
@@ -171,6 +174,27 @@ export default {
         width: 100vw;
 
         .home-section {
+            
+            &.home-section-repository{
+                position: relative;
+                &>nav {
+                    padding-left: $page-side-padding;
+                }
+            }
+            &.home-section-collection {
+                margin-left: $page-side-padding;
+            }
+
+            .section-connector {
+                border-left: 1px solid $gray2;
+                border-bottom: 1px solid $gray2;
+                position: absolute;
+                width: 42px;
+                height: 100%;
+                top: 43px;
+                left: 26px;
+            }
+
             .home-section-header {
                 width: 100%;
                 margin-top: 1rem;
@@ -185,10 +209,11 @@ export default {
                     height: 52px;
                     width: 52px;
                     text-align: center;
+                    z-index: 9;
                 }
 
                 h1 {
-                    color: white;
+                    color: $gray5;
                     font-size: 1.375rem;
                     font-weight: normal;
                     padding: 0.75rem 1.375rem;
@@ -199,7 +224,6 @@ export default {
                 }
 
                 a {
-                    color: white;
                     margin-right: 2rem;
                     display: inline-flex;
                     overflow: hidden;
@@ -210,17 +234,23 @@ export default {
                 }
 
                 &.repository-section-header {
-                    background-color: $blue5;
-                    .home-section-icon {
-                        background-color: $gray1;
+                    border-bottom: 1px solid $blue5;
+                    a {
                         color: $blue5;
+                    }
+                    .home-section-icon {
+                        background-color: $blue5;
+                        color: white;
                     }
                 }
                 &.collections-section-header {
-                    background-color: $turquoise5;
-                    .home-section-icon {
-                        background-color: $gray1;
+                    border-bottom: 1px solid $turquoise5;
+                    a {
                         color: $turquoise5;
+                    }
+                    .home-section-icon {
+                        background-color: $turquoise5;
+                        color: white;
                     }
                 }
             }

@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import qs from 'qs';
 
 // Main Pages
-import HomePage from '../pages/singles/home-page.vue'
+import HomePage from '../pages/home-page.vue'
 import CollectionsPage from '../pages/lists/collections-page.vue'
 import CollectionPage from '../pages/singles/collection-page.vue'
 import ItemsPage from '../pages/lists/items-page.vue'
