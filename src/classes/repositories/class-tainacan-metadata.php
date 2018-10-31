@@ -895,6 +895,8 @@ class Metadata extends Repository {
 	  *     @type array		 $search					String to search. It will only return values that has this string. Default '' (nothing)
 	  *
 	  *     @type array		 $parent_id					Used by taxonomy metadata. The ID of the parent term to retrieve terms from. Default 0 
+	  *
+	  * 	@type bool		 $count_items				Include the count of items that can be found in each value (uses $items_filter as well). Default false
 	  * 
 	  * }
 	  * 
@@ -909,7 +911,8 @@ class Metadata extends Repository {
 			'number' => '',
 			'include' => [],
 			'items_filter' => [],
-			'parent_id' => 0
+			'parent_id' => 0,
+			'count_items' => false
 		);
 		$args = wp_parse_args($args, $defaults);
 		
@@ -1004,15 +1007,37 @@ class Metadata extends Repository {
 				$count_query = $wpdb->prepare("SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", $r->term_taxonomy_id);
 				$total_children = $wpdb->get_var($count_query);
 				
+				$label = $r->name;
+				$total_items = null;
+				
+				if ( $args['count_items'] ) {
+					$count_items_query = $args['items_filter'];
+					$count_items_query['posts_per_page'] = 1;
+					if ( !isset($count_items_query['tax_query']) ) {
+						$count_items_query['tax_query'] = [];
+					}
+					$count_items_query['tax_query'][] = [
+						'taxonomy' => $taxonomy_slug,
+						'terms' => $r->term_taxonomy_id
+					];
+					$count_items_results = $itemsRepo->fetch($count_items_query, $args['collection_id']);
+					$total_items = $count_items_results->found_posts;
+					
+					//$label .= " ($total_items)";
+					
+				}
+				
 				$values[] = [
 					'value' => $r->term_taxonomy_id,
-					'label' => $r->name,
+					'label' => $label,
 					'total_children' => $total_children,
 					'taxonomy' => $taxonomy_slug,
 					'taxonomy_id' => $taxonomy_id,
 					'parent' => $r->parent,
+					'total_items' => $total_items,
 					'type' => 'Taxonomy'
 				];
+				
 			}
 			
 			
@@ -1045,11 +1070,32 @@ class Metadata extends Repository {
 				$label = ( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ) ?
 				get_post($r)->post_title : $r;
 				
+				$total_items = null;
+				
+				if ( $args['count_items'] ) {
+					$count_items_query = $args['items_filter'];
+					$count_items_query['posts_per_page'] = 1;
+					if ( !isset($count_items_query['meta_query']) ) {
+						$count_items_query['meta_query'] = [];
+					}
+					$count_items_query['meta_query'][] = [
+						'key' => $metadatum_id,
+						'value' => $r
+					];
+					$count_items_results = $itemsRepo->fetch($count_items_query, $args['collection_id']);
+					$total_items = $count_items_results->found_posts;
+					
+					//$label .= " ($total_items)";
+					
+				}
+				
 				$values[] = [
 					'label' => $label,
 					'value' => $r,
+					'total_items' => $total_items,
 					'type' => 'Text'
 				];
+				
 			}
 		}
 		
