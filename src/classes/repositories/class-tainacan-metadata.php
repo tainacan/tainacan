@@ -869,108 +869,189 @@ class Metadata extends Repository {
 	}
 
 
-	# TODO: Fetch all metadatum value for repository level
-
 	/**
-	 * Fetch all values of a metadatum from a collection or repository
-	 *
-	 * @param $collection_id
-	 * @param $metadatum_id
-	 *
-	 * @param string $search
-	 *
-	 * @param int $offset
-	 * @param string $number
-	 *
-	 * @return array|null|object
-	 * @throws \Exception
-	 */
-	public function fetch_all_metadatum_values( $collection_id, $metadatum_id, $search = '', $offset = 0, $number = '', $query_args = [] ) {
+	  * Return all possible values for a metadatum 
+	  *
+	  * Each metadata is a label with the metadatum name and the value.
+	  *
+	  * If an ID, a slug or a Tainacan\Entities\Metadatum object is passed in the 'metadata' argument, it returns only one metadata, otherwise
+	  * it returns all metadata
+	  *
+	  * @param int $metadatum_id 	The ID of the metadata to fetch values from
+	  * @param array|string $args {
+	  *     Optional. Array or string of arguments.
+	  * 
+	  * 	@type mixed		 $collection_id				The collection ID you want to consider or null for all collections. If a collectoin is set
+	  *													then only values applied to items in this collection will be returned
+	  * 
+	  *     @type int		 $number					The number of values to return (for pagination). Default 0 (unlimited)
+	  * 
+	  *     @type int		 $offset					The offset (for pagination). Default 0
+	  * 
+	  *     @type array		 $items_filter				Array in the same format used in @see \Tainacan\Repositories\Items::fetch(). It will filter the results to only return values used in the items inside this criteria. Defatul [] (all items)
+	  * 
+	  *     @type array		 $include					Array if ids to be included in the result. Default [] (nothing)
+	  *
+	  *     @type array		 $search					String to search. It will only return values that has this string. Default '' (nothing)
+	  *
+	  *     @type array		 $parent_id					Used by taxonomy metadata. The ID of the parent term to retrieve terms from. Default 0 
+	  * 
+	  * }
+	  * 
+	  * @return array        Array with the total number of values found. The total number of pages with the current number and the results with id and label for each value. Terms also include parent, taxonomy and number of children.
+	  */
+	public function fetch_all_metadatum_values( $metadatum_id, $args = [] ) {
+		
+		$defaults = array(
+			'collection_id' => null,
+			'search' => '',
+			'offset' => 0,
+			'number' => '',
+			'include' => [],
+			'items_filter' => [],
+			'parent_id' => 0
+		);
+		$args = wp_parse_args($args, $defaults);
+		
 		global $wpdb;
 
-        // Get the query for current items
-        // this avoids wp_query to run the query. We just want to build the query
-        add_filter('posts_pre_query', '__return_empty_array');
+		$itemsRepo = Items::get_instance();
+		$metadataRepo = Metadata::get_instance();
+		
+		// Get the query for current items
+		// this avoids wp_query to run the query. We just want to build the query
+		add_filter('posts_pre_query', '__return_empty_array');
+		
+		$args['items_filter']['fields'] = 'ids';
+		unset($args['items_filter']['paged']);
+		unset($args['items_filter']['offset']);
+		unset($args['items_filter']['perpage']);
+		$args['items_filter']['nopaging'] = 1;
+		
+		$items_query = $itemsRepo->fetch($args['items_filter'], $args['collection_id']);
+		$items_query = $items_query->request;
+		
+		remove_filter('posts_pre_query', '__return_empty_array');
+		//// end filtering query ////////
+		
+		$metadatum = $metadataRepo->fetch($metadatum_id);
+		$metadatum_type = $metadatum->get_metadata_type();
+		
+		
+		$pagination = '';
+		if ( $args['offset'] >= 0 && $args['number'] >= 1 ) {
+			$pagination = $wpdb->prepare( "LIMIT %d,%d", (int) $args['offset'], (int) $args['number'] );
+		}
+		
+		$search_q = '';
+		$search = trim($args['search']);
+		if (!empty($search)) {
+			if( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ) {
+				$search_q = $wpdb->prepare("AND meta_value IN ( SELECT ID FROM $wpdb->posts WHERE post_title LIKE %s )", '%' . $search . '%');
+			} elseif ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ) {
+				$search_q = $wpdb->prepare("AND t.name LIKE %s", '%' . $search . '%');
+			} else {
+				$search_q = $wpdb->prepare("AND meta_value LIKE %s", '%' . $search . '%');
+			}
+			
+			
+		}
 
-        $itemsRepo = Items::get_instance();
-        $metadataRepo = Metadata::get_instance();
-
-
-
-        $metadatum = $metadataRepo->fetch($metadatum_id);
-        $metadatum_type = $metadatum->get_metadata_type();
-
-        $query_args['fields'] = 'ids';
-        unset($query_args['paged']);
-        unset($query_args['offset']);
-        unset($query_args['perpage']);
-        $query_args['nopaging'] = 1;
-
-        $items_query = $itemsRepo->fetch($query_args, $collection_id);
-        $items_query = $items_query->request;
-
-
-        remove_filter('posts_pre_query', '__return_empty_array');
-
-        $pagination = '';
-        if ( $offset >= 0 && $number >= 1 ) {
-            $pagination = $wpdb->prepare( "LIMIT %d,%d", (int) $offset, (int) $number );
-        }
-
-        $search_q = '';
-        $search = trim($search);
-        if (!empty($search)) {
-            if( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ){
-                $search_q = $wpdb->prepare("AND meta_value IN ( SELECT ID FROM $wpdb->posts WHERE post_title LIKE %s )", '%' . $search . '%');
-
-            } else {
-                $search_q = $wpdb->prepare("AND meta_value LIKE %s", '%' . $search . '%');
-            }
-
-
-        }
-
-		if( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ){
-
-            //TODO: Retrieve terms
-
-        } else {
-            $total_query = $wpdb->prepare( "SELECT COUNT(DISTINCT meta_value) FROM $wpdb->postmeta WHERE meta_key = %s $search_q AND post_id IN($items_query) ORDER BY meta_value", $metadatum_id );
-            $query = $wpdb->prepare( "SELECT DISTINCT meta_value FROM $wpdb->postmeta WHERE meta_key = %s $search_q AND post_id IN($items_query) ORDER BY meta_value $pagination", $metadatum_id );
-
-            $results = $wpdb->get_col($query);
-            $total = $wpdb->get_var($total_query);
-            $number = is_integer($number) && $number >=1 ? $number : $total;
-
-            if( $number < 1){
-                $pages = 1;
-            } else {
-                $pages = ceil( $total / $number );
-            }
-
-            // add selected to the result
-            if ( isset($query_args['metaquery']) && is_array($query_args['metaquery']) ) {
-                foreach( $query_args['metaquery'] as $metaquery ){
-                    if( $metaquery['key'] == $metadatum_id ){
-                        if (!in_array($metaquery['value'], $results)) {
-                            array_unshift($results, $metaquery['value']);
-                        }
-                    }
-                }
-            }
-
-            $values = [];
-            foreach ($results as $r) {
-                $label = ( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ) ?
-                                get_post($r)->post_title : $r;
-
-                $values[] = [
-                    'label' => $label,
-                    'value' => $r,
-                    'type' => 'Text'
-                ];
-            }
-        }
+		if ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ) {
+			
+			$metadatum_options = $metadatum->get_metadata_type_options();
+			$taxonomy_id = $metadatum_options['taxonomy_id'];
+			$taxonomy_slug = Taxonomies::get_instance()->get_db_identifier_by_id($taxonomy_id);
+			
+			$base_query = $wpdb->prepare("FROM $wpdb->term_relationships tr 
+				INNER JOIN $wpdb->term_taxonomy tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+				INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id 
+				WHERE 
+				tt.parent = %d AND
+				tr.object_id IN ($items_query) AND 
+				tt.taxonomy = %s
+				$search_q
+				ORDER BY t.name ASC
+				",
+				$args['parent_id'],
+				$taxonomy_slug
+			);
+			
+			$query = "SELECT DISTINCT t.name, tt.term_taxonomy_id, tt.parent $base_query $pagination";
+			
+			$total_query = "SELECT COUNT (DISTINCT tt.term_taxonomy_id) $base_query ";
+			
+			$results = $wpdb->get_results($query);
+			
+			// add selected to the result
+			if ( !empty($args['include']) ) {
+				if ( is_array($args['include']) ) {
+					$results = array_unique( array_merge($args['include'], $results) );
+				}
+			}
+			
+			$total = $wpdb->get_var($total_query);
+			$number = is_integer($number) && $number >=1 ? $number : $total;
+			if( $number < 1){
+				$pages = 1;
+			} else {
+				$pages = ceil( $total / $number );
+			}
+			
+			$values = [];
+			foreach ($results as $r) {
+				
+				$count_query = $wpdb->prepare("SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", $r->term_taxonomy_id);
+				$total_children = $wpdb->get_var($count_query);
+				
+				$values[] = [
+					'value' => $r->term_taxonomy_id,
+					'label' => $r->name,
+					'total_children' => $total_children,
+					'taxonomy' => $taxonomy_slug,
+					'taxonomy_id' => $taxonomy_id,
+					'parent' => $r->parent,
+					'type' => 'Taxonomy'
+				];
+			}
+			
+			
+			
+		} else {
+			
+			$base_query = $wpdb->prepare( "FROM $wpdb->postmeta WHERE meta_key = %s $search_q AND post_id IN($items_query) ORDER BY meta_value", $metadatum_id );
+			
+			$total_query = "SELECT COUNT(DISTINCT meta_value) $base_query";
+			$query = "SELECT DISTINCT meta_value $base_query $pagination";
+			
+			$results = $wpdb->get_col($query);
+			$total = $wpdb->get_var($total_query);
+			$number = is_integer($number) && $number >=1 ? $number : $total;
+			if( $number < 1){
+				$pages = 1;
+			} else {
+				$pages = ceil( $total / $number );
+			}
+			
+			// add selected to the result
+			if ( !empty($args['include']) ) {
+				if ( is_array($args['include']) ) {
+					$results = array_unique( array_merge($args['include'], $results) );
+				}
+			}
+			
+			$values = [];
+			foreach ($results as $r) {
+				$label = ( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ) ?
+				get_post($r)->post_title : $r;
+				
+				$values[] = [
+					'label' => $label,
+					'value' => $r,
+					'type' => 'Text'
+				];
+			}
+		}
 		
 		return [
 			'total' => $total,
