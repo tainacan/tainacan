@@ -471,6 +471,7 @@ class Exporter extends CommunImportExport {
 		'any'  => true,
 		'list' => false
 	];
+	private $send_email = null;
 	protected $mapping_list = [];
 	public $mapping_selected = "";
 
@@ -501,12 +502,13 @@ class Exporter extends CommunImportExport {
 		$exporter_definition = $Tainacan_Exporter_Handler->get_exporter_by_object($this);
 
 		if ($short === false) {
-			$return['manual_collection'] 	= $exporter_definition['manual_collection'];
+			$return['manual_collection']	= $exporter_definition['manual_collection'];
 			$return['mapping_selected'] 	= $this->mapping_selected;
-			$return['mapping_accept'] 		= $this->mapping_accept;
-			$return['mapping_list'] 			= $this->mapping_list;
-			$return['output_files'] 			= $this->output_files;
-			$return['options_form'] 			= $this->options_form();
+			$return['mapping_accept']		= $this->mapping_accept;
+			$return['mapping_list'] 		= $this->mapping_list;
+			$return['output_files'] 		= $this->output_files;
+			$return['send_email']			= $this->send_email;
+			$return['options_form'] 		= $this->options_form();
 		}
 
 		return $return;
@@ -618,9 +620,16 @@ class Exporter extends CommunImportExport {
 	public function set_mapping_selected($mapping_selected) {
 		$this->mapping_selected = $mapping_selected;
 	}
-	
+
+	public function set_send_email($email) {
+		$this->send_email = $email;
+	}
+
 	public function finished() {
-		
+		if($this->send_email != null) {
+			$msg = 'export completed successfully';
+			wp_mail($this->send_email, __('Finished export.', 'tainacan'), __($msg, 'tainacan'));
+		}
 	}
 
 	/**
