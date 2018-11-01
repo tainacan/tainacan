@@ -136,9 +136,7 @@
                                 @click.prevent="$router.go(-1)" 
                                 slot="trigger">{{ $i18n.get('cancel') }}</button>
                     </div>
-                    <div 
-                            style="margin-left: auto"
-                            class="control">
+                    <div class="control">
                         <button 
                                 :disabled="!(uploadedItems.length > 0 && uploadedItems.length == amountFinished) || isCreatingBulkEditGroup"
                                 class="button is-secondary" 
