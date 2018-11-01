@@ -2,10 +2,11 @@
     <div class="block">
         <span 
                 v-if="isLoading"
-                style="width: 100%"
+                style="width: 100%; position: absolute;"
                 class="icon has-text-centered loading-icon">
             <div class="control has-icons-right is-loading is-clearfix" />
         </span>
+
         <div
                 v-for="(option, index) in options.slice(0, filter.max_options)"
                 :key="index"
@@ -14,7 +15,10 @@
                     v-if="index <= filter.max_options - 1"
                     v-model="selected"
                     :native-value="option.value">
-                {{ option.label }}
+                {{ option.label }} 
+                <span 
+                        v-if="option.total_items != undefined"
+                        class="has-text-gray">{{ "(" + option.total_items + ")" }}</span>
             </b-checkbox>
             <div
                     class="view-all-button-container"
@@ -80,7 +84,8 @@
             }
         },
         methods: {
-            loadOptions(){
+            loadOptions(skipSelected){
+                
                 let promise = null;
                 
                 // Cancels previous Request
@@ -99,7 +104,6 @@
                             if(this.options.length > this.filter.max_options){
                                 this.options.splice(this.filter.max_options);
                             }
-                            this.selectedValues();
                         }).catch((error) => {
                             this.$console.error(error);
                     }) 
@@ -113,27 +117,25 @@
                             if(this.options.length > this.filter.max_options){
                                 this.options.splice(this.filter.max_options);
                             }
-                            this.selectedValues();
+                            
                         }).catch((error) => {
                             this.$console.error(error);
                         });
                 }
-
-                // promise.request
-                //     .then(() => {
-                //         this.isLoading = false;
-                        
-                //     })
-                //     .catch( error => {
-                //         this.$console.log('error select', error );
-                //         this.isLoading = false;
-                //     });
-
-                // Search Request Token for cancelling
-                this.getOptionsValuesCancel = promise.source;
-
+                if (skipSelected == undefined || skipSelected == false) {
+                    promise.request
+                        .then(() => {
+                            this.isLoading = false;
+                            this.selectedValues()
+                        })
+                        .catch( error => {
+                            this.$console.log('error select', error );
+                            this.isLoading = false;
+                        });
+                }
+                
             },
-            onSelect(){
+            onSelect() {
                 this.$emit('input', {
                     filter: 'checkbox',
                     compare: 'IN',

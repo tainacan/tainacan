@@ -142,7 +142,6 @@ class REST_Facets_Controller extends REST_Controller {
 		return true;
 	}
 
-
 }
 
 ?>

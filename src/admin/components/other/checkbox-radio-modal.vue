@@ -52,6 +52,9 @@
                                         v-model="selected"
                                         :native-value="option.value">
                                     {{ `${ limitChars(option.label) }` }}
+                                    <span 
+                                            v-if="option.total_items != undefined"
+                                            class="has-text-gray">{{ "(" + option.total_items + ")" }}</span>
                                 </b-checkbox>
                             </li>
                             <b-loading
@@ -89,7 +92,7 @@
                                         v-model="selected"
                                         :native-value="option.value">
                                     {{ `${option.label}` }}
-                                </b-checkbox>
+                                 </b-checkbox>
                                 <b-radio
                                         v-else
                                         v-model="selected"

@@ -14,8 +14,12 @@
             <b-checkbox
                     v-model="selected"
                     :native-value="option.value"
-                    v-if="!option.isChild"
-            >{{ option.label }}</b-checkbox>
+                    v-if="!option.isChild">
+                {{ option.label }}
+                <span 
+                        v-if="option.total_items != undefined"
+                        class="has-text-gray">{{ "(" + option.total_items + ")" }}</span>
+            </b-checkbox>
             <div
                     class="see-more-container"
                     v-if="option.seeMoreLink && index == options.slice(0, filter.max_options).length - 1"
@@ -70,14 +74,14 @@
             }
         },
         methods: {
-            loadOptions(){
+            loadOptions(skipSelected){
                 this.isLoading = true;
                 let query_items = { 'current_query': this.query };
 
-                let route = `/collection/${this.collection}/facets/${this.metadatum}?getSelected=1&hideempty=0&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
+                let route = `/collection/${this.collection}/facets/${this.metadatum}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
 
                 if(this.collection == 'filter_in_repository'){
-                    route = `/facets/${this.metadatum}?getSelected=1&hideempty=0&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
+                    route = `/facets/${this.metadatum}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
                 }
 
                 this.options = [];
@@ -117,7 +121,9 @@
                         }
 
                         this.isLoading = false;
-                        this.selectedValues();
+                        if (skipSelected == undefined || skipSelected == false) {
+                            this.selectedValues();
+                        }
                     })
                     .catch(error => {
                         this.$console.log(error);

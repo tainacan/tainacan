@@ -18,6 +18,12 @@ export const filter_type_mixin = {
         id: '',
         query: {}
     },
+    mounted() {
+        this.$eventBusSearch.$on('hasFiltered', hasFiltered => {
+            if (hasFiltered && typeof this.loadOptions == "function")
+                this.loadOptions(true);
+        });
+    },
     methods: {
         getValuesPlainText(metadatumId, search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0') {
             
@@ -64,24 +70,28 @@ export const filter_type_mixin = {
                                     if (search && isInCheckboxModal) {
                                         sResults.push({
                                             label: metadata.label,
-                                            value: metadata.value
+                                            value: metadata.value,
+                                            total_items: metadata.total_items
                                         });
                                     } else if (indexToIgnore < 0) {
                                         opts.push({
                                             label: metadata.label,
-                                            value: metadata.value
+                                            value: metadata.value,
+                                            total_items: metadata.total_items
                                         });
                                     }
                                 } else {
                                     if (search && isInCheckboxModal) {
                                         sResults.push({
                                             label: metadata.label,
-                                            value: metadata.value
+                                            value: metadata.value,
+                                            total_items: metadata.total_items
                                         });
                                     } else {
                                         opts.push({
                                             label: metadata.label,
-                                            value: metadata.value
+                                            value: metadata.value,
+                                            total_items: metadata.total_items
                                         });
                                     }
                                 }
@@ -147,7 +157,7 @@ export const filter_type_mixin = {
 
             return new Object ({
                 request:
-                        axios.tainacan.get(url + '&fetch_only[0]=thumbnail&fetch_only[1]=title&fetch_only[2]=id&' + qs.stringify(query_items))
+                    axios.tainacan.get(url + '&fetch_only[0]=thumbnail&fetch_only[1]=title&fetch_only[2]=id&' + qs.stringify(query_items))
                         .then(res => {
                             let sResults = [];
                             let opts = [];
@@ -160,13 +170,15 @@ export const filter_type_mixin = {
                                         if (search && isInCheckboxModal) {
                                             sResults.push({
                                                 label: item.label,
-                                                value: item.value
+                                                value: item.value,
+                                                total_items: item.total_items
                                             });
                                         } else if (indexToIgnore < 0) {
                                             opts.push({
                                                 label: item.label,
                                                 value: item.value,
-                                                img: (item.img ? item.img : this.thumbPlaceholderPath)
+                                                img: (item.img ? item.img : this.thumbPlaceholderPath),
+                                                total_items: item.total_items
                                             });
                                         }
                                     } else {
@@ -174,13 +186,15 @@ export const filter_type_mixin = {
                                             sResults.push({
                                                 label: item.label,
                                                 value: item.value,
-                                                img: (item.img ? item.img : this.thumbPlaceholderPath)
+                                                img: (item.img ? item.img : this.thumbPlaceholderPath),
+                                                total_items: item.total_items
                                             });
                                         } else {
                                             opts.push({
                                                 label: item.label,
                                                 value: item.value,
-                                                img: (item.img ? item.img : this.thumbPlaceholderPath)
+                                                img: (item.img ? item.img : this.thumbPlaceholderPath),
+                                                total_items: item.total_items
                                             });
                                         }
                                     }
@@ -210,8 +224,12 @@ export const filter_type_mixin = {
                             }
 
                         })
-                        .catch(error => {
-                            this.$console.error(error);
+                        .catch((thrown) => {
+                            if (axios.isCancel(thrown)) {
+                                console.log('Request canceled: ', thrown.message);
+                            } else {
+                                reject(thrown);
+                            }
                         }),
                 source: source
             });
