@@ -670,8 +670,15 @@ class CSV extends Importer {
                     $term->set_name( $value );
                     $term->set_parent( $parent );
 					$term->set_taxonomy( $taxonomy->get_db_identifier() );
-                    $term = $Tainacan_Terms->insert( $term );
-                    $parent = $term->get_id();
+                    if ( $term->validate() ) {
+                        $term = $Tainacan_Terms->insert( $term );
+                        $parent = $term->get_id();
+                    } else {
+                        $this->add_error_log('Invalid Term for Item ' . $this->get_current_collection_item() . ' on Metadatum ' . $metadatum->get_name() . '. Term skipped. Value: ' . $values);
+                        $this->add_error_log( implode(',', $term->get_errors()) );
+                        return false;
+                    }
+                    
                 }
             }
             return $parent !== 0 ? (int)$parent : false;

@@ -113,6 +113,10 @@ class Terms extends Repository {
 	 */
 	public function insert( $term ) {
 
+		if ( ! $term->get_validated() ) {
+			throw new \Exception( 'Entities must be validated before you can save them' );
+		}
+		
 		$is_update = false;
 		$diffs     = [];
 		if ( $term->get_id() ) {
