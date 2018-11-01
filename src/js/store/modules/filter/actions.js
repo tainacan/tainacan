@@ -1,8 +1,11 @@
 import axios from '../../../axios/axios';
 
 // FILTERS --------------------------------------------------------
-export const fetchFilters = ({ commit }, {collectionId, isRepositoryLevel, isContextEdit, includeDisabled}) => {
+export const fetchFilters = ({ commit }, { collectionId, isRepositoryLevel, isContextEdit, includeDisabled, customFilters }) => {
     return new Promise((resolve, reject) => {
+        console.log(collectionId)
+        console.log(isRepositoryLevel)
+        console.log(customFilters)
         let endpoint = '';
         if (!isRepositoryLevel) 
             endpoint = '/collection/' + collectionId + '/filters/';

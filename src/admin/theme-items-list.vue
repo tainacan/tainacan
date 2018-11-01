@@ -10,6 +10,8 @@
             v-if="$root.termId != undefined && $root.termId != ''"
             class="theme-items-list"
             :taxonomy="$root.taxonomy"
+            :custom-filters="$root.customFilters"
+            :collection-id="$root.collectionId"
             :enabled-view-modes="$root.enabledViewModes" 
             :default-view-mode="$root.defaultViewMode"
             :term-id="$root.termId" />

@@ -466,6 +466,7 @@
                 </div>
                 <advanced-search
                         :is-repository-level="isRepositoryLevel"
+                        :collection-id="collectionId"
                         :advanced-search-results="advancedSearchResults"
                         :open-form-advanced-search="openFormAdvancedSearch"
                         :is-do-search="isDoSearch"
@@ -716,11 +717,12 @@
             }
         },
         props: {
-            // collectionId: Number,
+            collectionId: Number,
             termId: Number,
             taxonomy: String,
             defaultViewMode: String, // Used only on theme
-            enabledViewModes: Object // Used only on theme
+            enabledViewModes: Object, // Used only on theme,
+            customFilters: Array 
         },
         computed: {
             items() {
@@ -910,6 +912,7 @@
                     isRepositoryLevel: this.isRepositoryLevel,
                     isContextEdit: !this.isOnTheme,
                     includeDisabled: 'no',
+                    customFilters: this.customFilters
                 })
                     .then(() => this.isLoadingFilters = false)
                     .catch(() => this.isLoadingFilters = false);
@@ -1142,7 +1145,10 @@
 
             this.isRepositoryLevel = (this.collectionId === undefined);
 
-            // this.$eventBusSearch.setCollectionId(this.collectionId);
+            console.log(this.customFilters);
+            if(this.collectionId != undefined && this.customFilters != undefined)
+                this.$eventBusSearch.setCollectionId(this.collectionId);
+
             this.$eventBusSearch.setTerm(this.termId, this.taxonomy);
             this.$eventBusSearch.updateStoreFromURL();
 

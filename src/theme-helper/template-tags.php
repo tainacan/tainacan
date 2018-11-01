@@ -196,13 +196,15 @@ function tainacan_the_faceted_search() {
 	if ($term) {
 		$props .= 'term-id="' . $term->term_id . '" ';
 		$props .= 'taxonomy="' . $term->taxonomy . '" ';
+		$props .= 'custom-filters="[72432,84385]" ';
+		$props .= 'collection-id="43385" ';
 	}
 	
 	$props .= 'default-view-mode="' . $default_view_mode . '" ';
 	$props .= 'enabled-view-modes="' . implode(',', $enabled_view_modes) . '" ';
 
 	echo "<div id='tainacan-items-page' $props ></div>";
-
+	
 }
 
 /**
