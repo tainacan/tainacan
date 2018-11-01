@@ -42,7 +42,13 @@
             this.loadOptions();
 
             this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTag);
-        },
+        },    
+        mounted() {
+            this.$eventBusSearch.$on('hasFiltered', hasFiltered => {
+                if (hasFiltered && typeof this.loadOptions == "function")
+                    this.loadOptions(true);
+            });
+        },        
         data(){
             return {
                 isLoading: false,
