@@ -1145,7 +1145,6 @@
 
             this.isRepositoryLevel = (this.collectionId === undefined);
 
-            console.log(this.customFilters);
             if(this.collectionId != undefined && this.customFilters != undefined)
                 this.$eventBusSearch.setCollectionId(this.collectionId);
 

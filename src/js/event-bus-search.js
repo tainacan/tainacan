@@ -47,7 +47,7 @@ export default {
             },
             watch: {
                 '$route'  (to, from) {
-
+                
                     // Should set Collection ID from URL only when in admin.
                     if (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage')
                         this.collectionId = !this.$route.params.collectionId ? this.$route.params.collectionId : parseInt(this.$route.params.collectionId);
@@ -321,7 +321,7 @@ export default {
                             resp.request.then((res) => {
                                 this.$emit( 'isLoadingItems', false);
                                 this.$emit( 'hasFiltered', res.hasFiltered);
-
+                                
                                 if(res.advancedSearchResults){
                                     this.$emit('advancedSearchResults', res.advancedSearchResults);
                                 }
