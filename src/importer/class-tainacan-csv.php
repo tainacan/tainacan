@@ -567,18 +567,14 @@ class CSV extends Importer {
                     if( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Taxonomy' ) {
                         if( !is_array( $values ) ) {
                             $tmp = $this->insert_hierarchy( $metadatum, $values);
-                            if ($tmp == false) {
-                                $this->add_error_log('Metadata ' . $metadatum_source . ' has a term empty');
-                            } else {
+                            if ($tmp !== false) {
                                 $singleItemMetadata->set_value( $tmp );
                             }
                         } else {
                             $terms = [];
                             foreach($values as $k => $v) {
                                 $tmp = $this->insert_hierarchy( $metadatum, $v);
-                                if ($tmp == false) {
-                                    $this->add_error_log('Metadata ' . $metadatum_source . ' has a term empty');
-                                } else {
+                                if ($tmp !== false) {
                                     $terms[] = $tmp;
                                 }
                             }
@@ -645,30 +641,40 @@ class CSV extends Importer {
      */
     private function insert_hierarchy( $metadatum, $values ){
 
-        $Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
+		if (empty($values)) {
+			return false;
+		}
+		
+		$Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
         $taxonomy = new Entities\Taxonomy( $metadatum->get_metadata_type_options()['taxonomy_id']);
-        $exploded_values = explode(">>",$values);
+		$exploded_values = explode(">>",$values);
+		
+		if (empty($exploded_values)) {
+			return false;
+		}
 
         if( is_array($exploded_values) ) {
-            $parent = 0;
+			$parent = 0;
             foreach ( $exploded_values as $key => $value) {
-                $value = trim($value);
+				$value = trim($value);
                 if ($value=='') {
-                    return false;
+					$this->add_error_log('Malformed term hierarchy for Item ' . $this->get_current_collection_item() . '. Term skipped. Value: ' . $values);
+					return false;
                 }
                 $exists = term_exists( $value ,$taxonomy->get_db_identifier(), $parent );
                 if (0 !== $exists && null !== $exists && isset($exists['term_id'])) {
-                    $parent = $value;
+					$parent = $exists['term_id'];
                 } else {
+					$this->add_log('New term created: ' . $value . ' in tax_id: ' . $taxonomy->get_db_identifier() . '; parent: ' . $parent);
                     $term = new Entities\Term();
                     $term->set_name( $value );
                     $term->set_parent( $parent );
-                    $term->set_taxonomy( $taxonomy->get_db_identifier() );
+					$term->set_taxonomy( $taxonomy->get_db_identifier() );
                     $term = $Tainacan_Terms->insert( $term );
                     $parent = $term->get_id();
                 }
             }
-            return $parent !== 0 ? $parent : false;
+            return $parent !== 0 ? (int)$parent : false;
         } else {
             return false;
         }
