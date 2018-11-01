@@ -1019,7 +1019,7 @@ class Metadata extends Repository {
 			
 			$query = "SELECT DISTINCT t.name, tt.term_taxonomy_id, tt.parent $base_query $pagination";
 			
-			$total_query = "SELECT COUNT (DISTINCT tt.term_taxonomy_id) $base_query ";
+			$total_query = "SELECT COUNT(DISTINCT tt.term_taxonomy_id) $base_query";
 			
 			$results = $wpdb->get_results($query);
 			
