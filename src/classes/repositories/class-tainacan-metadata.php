@@ -1025,8 +1025,24 @@ class Metadata extends Repository {
 			
 			// add selected to the result
 			if ( !empty($args['include']) ) {
-				if ( is_array($args['include']) ) {
-					$results = array_unique( array_merge($args['include'], $results) );
+				if ( is_array($args['include']) && !empty($args['include']) ) {
+					
+					// protect sql
+					$args['include'] = array_map(function($t) { return (int) $t; }, $args['include']);
+					
+					$include_ids = implode(',', $args['include']);
+					$query_to_include = "SELECT DISTINCT t.name, tt.term_taxonomy_id, tt.parent FROM $wpdb->term_taxonomy tt 
+						INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id 
+						WHERE 
+						tt.term_taxonomy_id IN ($include_ids)";
+					
+					$to_include = $wpdb->get_results($query_to_include);
+					
+					// remove terms that will be included at the begining
+					$results = array_filter($results, function($t) use($args) { return !in_array($t->term_taxonomy_id, $args['include']); });
+					
+					$results = array_merge($to_include, $results);
+					
 				}
 			}
 			
