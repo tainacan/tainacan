@@ -26,6 +26,11 @@
                     @click="openCheckboxModal()"
                     v-html="option.seeMoreLink"/>
         </div>
+        <p 
+                v-if="options.length != undefined && options.length <= 0"
+                class="has-text-gray">
+            {{ $i18n.get('info_no_options_avialable_filtering') }}
+        </p>
     </div>
 </template>
 
