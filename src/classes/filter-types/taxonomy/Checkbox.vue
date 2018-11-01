@@ -8,6 +8,7 @@
         </span>
         <div
                 v-for="(option, index) in options.slice(0, filter.max_options)"
+                v-if="!isLoading"
                 :key="index"
                 :value="index"
                 class="control">
@@ -26,6 +27,11 @@
                     @click="openCheckboxModal(option.parent)"
                     v-html="option.seeMoreLink"/>
         </div>
+        <p 
+                v-if="!isLoading && options.length != undefined && options.length <= 0"
+                class="no-options-placeholder">
+            {{ $i18n.get('info_no_options_avialable_filtering') }}
+        </p>
     </div>
 </template>
 
@@ -268,5 +274,11 @@
         border: 2px solid white !important;
         border-top-color: #dbdbdb !important;
         border-right-color: #dbdbdb !important;
+    }
+
+    .no-options-placeholder {
+        margin-left: 0.5rem;
+        font-size: 0.75rem;
+        color: #898d8f;
     }
 </style>
