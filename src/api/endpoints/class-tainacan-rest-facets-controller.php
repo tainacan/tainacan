@@ -85,9 +85,12 @@ class REST_Facets_Controller extends REST_Controller {
 			$include = [];
 			if ( isset($request['getSelected']) && $request['getSelected'] == 1 ) {
 				if ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ) {
+					$metadatum_options = $metadatum->get_metadata_type_options();
+					$taxonomy_id = $metadatum_options['taxonomy_id'];
+					$taxonomy_slug = Repositories\Taxonomies::get_instance()->get_db_identifier_by_id($taxonomy_id);
 					if( isset($request['current_query']['taxquery']) ){
 						foreach( $request['current_query']['taxquery'] as $taxquery ){
-							if( $taxquery['taxonomy'] === 'tnc_tax_' . $taxonomy_id ){
+							if( $taxquery['taxonomy'] === $taxonomy_slug ){
 								$include = $taxquery['terms']; 
 							}
 						}
