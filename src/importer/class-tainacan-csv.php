@@ -686,4 +686,41 @@ class CSV extends Importer {
             return false;
         }
     }
+
+    /**
+     * @param $collection_id int the collection id
+     * @param $mapping array the headers-metadata mapping
+     */
+    public function save_mapping( $collection_id, $mapping ){
+        update_post_meta( $collection_id, 'metadata_mapping', $mapping );
+    }
+
+    /**
+     * @param $collection_id
+     *
+     * @return array/bool false if has no mapping or associated array with metadata id and header
+     */
+    public function get_mapping( $collection_id ){
+        $mapping = get_post_meta( $collection_id, 'metadata_mapping', true );
+        return ( $mapping ) ? $mapping : false;
+    }
+
+
+    /**
+     * @inheritdoc
+     *
+     * allow save mapping
+     */
+    public function add_collection(array $collection) {
+        if (isset($collection['id'])) {
+
+            if( isset($collection['mapping']) && is_array($collection['mapping']) ){
+                $this->save_mapping( $collection['id'], $collection['mapping'] );
+            }
+
+            $this->remove_collection($collection['id']);
+            $this->collections[] = $collection;
+        }
+    }
+
 }
