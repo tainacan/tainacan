@@ -2,7 +2,7 @@
     <div class="block">
         <b-select
                 :id="id"
-                :loading="isLoading"
+                :loading="isLoadingOptions"
                 :value="selected"
                 @input="onSelect($event)"
                 :placeholder="$i18n.get('label_selectbox_init')"
@@ -58,7 +58,6 @@
         },
         data(){
             return {
-                isLoading: false,
                 options: [],
                 type: '',
                 collection: '',
@@ -81,7 +80,6 @@
         }, 
         methods: {
             loadOptions(){
-                this.isLoading = true;
 
                 // Cancels previous Request
                 if (this.getOptionsValuesCancel != undefined)
@@ -89,14 +87,11 @@
 
                 let promise = null;
                 promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel );
-
                 promise.request
                     .then(() => {
-                        this.isLoading = false;
                     })
                     .catch( error => {
                         this.$console.error('error select', error );
-                        this.isLoading = false;
                     });
 
                 // Search Request Token for cancelling

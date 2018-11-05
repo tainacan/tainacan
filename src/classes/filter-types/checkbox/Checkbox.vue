@@ -1,7 +1,7 @@
 <template>
     <div class="block">
         <span 
-                v-if="isLoading"
+                v-if="isLoadingOptions"
                 style="width: 100%; position: absolute;"
                 class="icon has-text-centered loading-icon">
             <div class="control has-icons-right is-loading is-clearfix" />
@@ -9,7 +9,7 @@
 
         <div
                 v-for="(option, index) in options.slice(0, filter.max_options)"
-                v-if="!isLoading"
+                v-if="!isLoadingOptions"
                 :key="index"
                 class="metadatum">
             <b-checkbox
@@ -28,7 +28,7 @@
                     v-html="option.seeMoreLink"/>
         </div>
         <p 
-                v-if="!isLoading && options.length != undefined && options.length <= 0"
+                v-if="!isLoadingOptions && options.length != undefined && options.length <= 0"
                 class="no-options-placeholder">
             {{ $i18n.get('info_no_options_avialable_filtering') }}
         </p>
@@ -72,7 +72,6 @@
         },
         data(){
             return {
-                isLoading: false,
                 options: [],
                 type: '',
                 collection: '',
@@ -98,14 +97,12 @@
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
                 if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
-                    this.isLoading = true;
                     let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
                         this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
 
                     promise = this.getValuesRelationship( collectionTarget, null, [], 0, this.filter.max_options, false, '1');
                     promise.request
                         .then(() => {
-                            this.isLoading = false;
                             if(this.options.length > this.filter.max_options){
                                 this.options.splice(this.filter.max_options);
                             }
@@ -113,12 +110,10 @@
                             this.$console.error(error);
                     }) 
                 } else {
-                    this.isLoading = true;
                     promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1' );
                     promise.request
                         .then(() => {
 
-                            this.isLoading = false;
                             if(this.options.length > this.filter.max_options){
                                 this.options.splice(this.filter.max_options);
                             }
@@ -130,12 +125,10 @@
                 if (skipSelected == undefined || skipSelected == false) {
                     promise.request
                         .then(() => {
-                            this.isLoading = false;
                             this.selectedValues()
                         })
                         .catch( error => {
                             this.$console.log('error select', error );
-                            this.isLoading = false;
                         });
                 }
                 

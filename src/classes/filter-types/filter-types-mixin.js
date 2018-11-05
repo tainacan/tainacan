@@ -20,8 +20,10 @@ export const filter_type_mixin = {
         isLoadingOptions: false
     },
     mounted() {
-        this.$eventBusSearch.$on('hasFiltered', hasFiltered => {
-            if (hasFiltered && typeof this.loadOptions == "function")
+        // We listen to event, but reload event if hasFiltered is negative, as 
+        // an empty query also demands filters reloading.
+        this.$eventBusSearch.$on('hasFiltered', () => {
+            if (typeof this.loadOptions == "function")
                 this.loadOptions(true);
         });
     },
