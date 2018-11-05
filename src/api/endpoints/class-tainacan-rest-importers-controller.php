@@ -207,8 +207,12 @@ class REST_Importers_Controller extends REST_Controller {
 
                                     if( !is_numeric($metadatum_id) ) {
                                         $metadatum = $importer->create_new_metadata( $header, $value['id']);
-                                        unset($value['mapping'][$metadatum_id]);
-                                        $value['mapping'][$metadatum->get_id()] = $header;
+
+                                        if( is_object($metadatum) ){
+                                            unset($value['mapping'][$metadatum_id]);
+                                            $value['mapping'][$metadatum->get_id()] = $header;
+                                        }
+
                                     }
                                 }
                             }
