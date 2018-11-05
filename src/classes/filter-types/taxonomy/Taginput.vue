@@ -6,13 +6,14 @@
                 v-model="selected"
                 :data="options"
                 autocomplete
+                :loading="isLoading"
                 expanded
                 :remove-on-keys="[]"
                 field="label"
                 attached
                 :class="{'has-selected': selected != undefined && selected != []}"
                 @typing="search"
-                :placeholder="$i18n.get('info_type_to_add_terms')" />
+                :placeholder="$i18n.get('info_type_to_add_terms')">
             <template slot-scope="props">
                 <div class="media">
                     <div class="media-content">
@@ -23,6 +24,8 @@
                     </div>
                 </div>
             </template>
+            <template slot="empty">{{ $i18n.get('info_no_options_found'	) }}</template>
+        </b-taginput>
     </div>
 </template>
 

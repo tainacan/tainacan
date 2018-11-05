@@ -7,6 +7,7 @@
                 v-model="selected"
                 :data="options"
                 expanded
+                :loading="isLoadingOptions"
                 @input="search"
                 field="label"
                 @select="option => setResults(option) "
@@ -28,6 +29,7 @@
                     </div>
                 </div>
             </template>
+            <template slot="empty">{{ $i18n.get('info_no_options_found'	) }}</template>
         </b-autocomplete>
     </div>
 </template>
@@ -115,7 +117,7 @@
                     } else {
                         promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel );
                     }
-
+                    
                     promise.request.catch( error => {
                         this.$console.log('error select', error );
                     });

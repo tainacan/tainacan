@@ -16,7 +16,8 @@ export const filter_type_mixin = {
         collection_id: [Number], // not required, but overrides the filter metadatum id if is set
         filter_type: [String],  // not required, but overrides the filter metadatum type if is set
         id: '',
-        query: {}
+        query: {},
+        isLoadingOptions: false
     },
     mounted() {
         this.$eventBusSearch.$on('hasFiltered', hasFiltered => {
@@ -55,11 +56,15 @@ export const filter_type_mixin = {
             } else {
                 url += qs.stringify(query_items);
             }
-
+            
+            this.isLoadingOptions = true;
+            
             return new Object ({
                 request: 
                     axios.tainacan.get(url, { cancelToken: source.token })
                         .then(res => {
+                            this.isLoadingOptions = false;
+
                             let sResults = [];
                             let opts = [];
 
@@ -125,6 +130,7 @@ export const filter_type_mixin = {
                             if (axios.isCancel(thrown)) {
                                 console.log('Request canceled: ', thrown.message);
                             } else {
+                                this.isLoadingOptions = false;
                                 reject(thrown);
                             }
                         }),
@@ -155,10 +161,14 @@ export const filter_type_mixin = {
                 url += `&search=${search}`;
             }
 
+            this.isLoadingOptions = true;
+
             return new Object ({
                 request:
                     axios.tainacan.get(url + '&fetch_only[0]=thumbnail&fetch_only[1]=title&fetch_only[2]=id&' + qs.stringify(query_items))
                         .then(res => {
+                            this.isLoadingOptions = false;
+
                             let sResults = [];
                             let opts = [];
 
@@ -228,6 +238,7 @@ export const filter_type_mixin = {
                             if (axios.isCancel(thrown)) {
                                 console.log('Request canceled: ', thrown.message);
                             } else {
+                                this.isLoadingOptions = false;
                                 reject(thrown);
                             }
                         }),

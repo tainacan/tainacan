@@ -7,6 +7,7 @@
                 :data="options"
                 autocomplete
                 expanded
+                :loading="isLoadingOptions"
                 :remove-on-keys="[]"
                 field="label"
                 attached
@@ -29,6 +30,7 @@
                     </div>
                 </div>
             </template>
+            <template slot="empty">{{ $i18n.get('info_no_options_found'	) }}</template>
         </b-taginput>
     </div>
 </template>

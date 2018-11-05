@@ -463,6 +463,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_warning_changing_parent_term'              => __( 'Warning! Changing parent term will reload the terms list, thus uncheking any selection.', 'tainacan' ),
 	'info_warning_selected_items_remove_from_trash'  => __( 'Do you really want to remove from trash the selected items?', 'tainacan'),
 	'info_no_options_avialable_filtering'  			 => __( 'No options for this filtering.', 'tainacan'),
+	'info_no_options_found'				  			 => __( 'No options found.', 'tainacan'),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),
