@@ -4,9 +4,7 @@ import qs from 'qs';
 // FILTERS --------------------------------------------------------
 export const fetchFilters = ({ commit }, { collectionId, isRepositoryLevel, isContextEdit, includeDisabled, customFilters }) => {
     return new Promise((resolve, reject) => {
-        console.log(collectionId)
-        console.log(isRepositoryLevel)
-        console.log(customFilters)
+
         let endpoint = '';
         if (!isRepositoryLevel) 
             endpoint = '/collection/' + collectionId + '/filters/';
