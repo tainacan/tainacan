@@ -266,7 +266,7 @@ export default {
             li {
                 padding: 0.75rem;
                 display: flex;
-                background-color: $gray1;
+                background-color: $gray0;
                 flex-grow: 1;
                 margin: 0.75rem;
                 height: 120px;

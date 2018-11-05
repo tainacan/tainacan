@@ -175,7 +175,7 @@
             .home-area {
                 width: 50px;
                 height: $header-height;
-                background-color: $gray1;
+                background-color: $gray0;
             }
             .logo-area {
                 height: $header-height;
