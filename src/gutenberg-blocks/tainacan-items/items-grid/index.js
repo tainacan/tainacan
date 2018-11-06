@@ -73,7 +73,7 @@ registerBlockType('tainacan/items-grid', {
 
         
         function getItems(collectionID) {
-            return tainacan.get(`/collection/${collectionID}/items`)
+            return tainacan.get(`/collection/${collectionID}/items?perpage=12`)
                 .then(response => {
                     console.log(response);
                     return response.data;

@@ -52,8 +52,7 @@ class GutenbergBlock {
 
 		wp_enqueue_script(
 			'collections-carousel',
-			$TAINACAN_BASE_URL . '/assets/collections_carousel-components.js',
-			array('wp-blocks', 'wp-element')
+			$TAINACAN_BASE_URL . '/assets/collections_carousel-components.js'
 		);
 	}
 
@@ -63,7 +62,7 @@ class GutenbergBlock {
 		wp_register_script(
 			'items-grid',
 			$TAINACAN_BASE_URL . '/assets/items_grid-components.js',
-			array('wp-blocks', 'wp-element')
+			array('wp-blocks', 'wp-element', 'wp-components', 'wp-editor')
 		);
 
 		wp_register_style(
@@ -84,7 +83,7 @@ class GutenbergBlock {
 		wp_register_script(
 			'collections-carousel',
 			 $TAINACAN_BASE_URL . '/assets/collections_carousel-components.js',
-			array('wp-blocks', 'wp-element')
+			array('wp-blocks', 'wp-element', 'wp-components', 'wp-editor')
 		);
 
 		wp_register_style(

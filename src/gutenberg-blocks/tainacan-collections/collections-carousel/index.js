@@ -1,5 +1,3 @@
-import Carousel from '@brainhubeu/react-carousel';
-
 const { registerBlockType } = wp.blocks;
 
 const { Modal, Button, IconButton } = wp.components;
@@ -9,6 +7,10 @@ const { RichText } = wp.editor;
 const { __ } = wp.i18n;
 
 import tainacan from '../../api-client/axios.js';
+
+import Carousel from '@brainhubeu/react-carousel';
+
+global.window.userSettings = { uid: 1 };
 
 registerBlockType('tainacan/collections-carousel', {
     title: __('Tainacan Collections Carousel', 'tainacan'),
@@ -30,7 +32,7 @@ registerBlockType('tainacan/collections-carousel', {
         items: {
             type: 'array',
             source: 'query',
-            selector: 'picture',
+            selector: 'a',
             query: {
                 style: {
                     source: 'attribute',
@@ -39,6 +41,10 @@ registerBlockType('tainacan/collections-carousel', {
                 collection_id: {
                     source: 'attribute',
                     attribute: 'class'
+                },
+                url: {
+                    source: 'attribute',
+                    attribute: 'href'
                 },
                 img: {
                     source: 'query',
@@ -87,22 +93,17 @@ registerBlockType('tainacan/collections-carousel', {
         );
 
         const arrowLeft = (
-            <span style={{ cursor: 'pointer' }}>
+            <span style={{cursor: 'pointer'}}>
                 <svg style={{width: '48px', height: '48px'}} viewBox="0 0 24 24">
                     <path fill="#298596" d="M14,7L9,12L14,17V7Z" />
                 </svg>
             </span>
         );
 
-        function prepareCollection(collection) {
-            return (
-                <input style={{display: 'none'}} key={ collection.id } value={collection} />
-            );
-        }
-
         function prepareItem(item, style, collectionName) {
             return (
-                <picture
+                <a
+                    href={item.url}
                     className={`${item.collection_id.split('{}')[0]}{}${collectionName}`}
                     style={style}>
                     <img
@@ -113,7 +114,7 @@ registerBlockType('tainacan/collections-carousel', {
                                     item.img[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
                         }
                         alt={ item.title ? item.title : item.alt } />
-                </picture>
+                </a>
             );
         }
 
@@ -142,23 +143,7 @@ registerBlockType('tainacan/collections-carousel', {
                             slidesPerPage={contentTemp.length >= 3 ? 3 : contentTemp.length}
                             arrows
                             slides={contentTemp}
-                            breakpoints={{
-                                1000: { // these props will be applied when screen width is less than 1000px
-                                    slidesPerPage: 2,
-                                    clickToChange: false,
-                                    centered: false,
-                                    arrows: true,
-                                    infinite: false,
-                                },
-                                500: {
-                                    slidesPerPage: 1,
-                                    slidesPerScroll: 1,
-                                    clickToChange: false,
-                                    centered: false,
-                                    animationSpeed: 2000,
-                                    infinite: false,
-                                }
-                            }}/>
+                        />
                     </div>) : []
             });
         }
@@ -170,6 +155,8 @@ registerBlockType('tainacan/collections-carousel', {
 
             if(index >= 0){
                contentTemp.splice(index, 1);
+               selectedCollections.splice(index, 1);
+
                setAttributes({contentTemp: contentTemp});
                updateContent(contentTemp);
             }
@@ -221,45 +208,29 @@ registerBlockType('tainacan/collections-carousel', {
                 </div>
             );
 
+            console.info(newContent);
+
             setAttributes({ contentTemp: newContent });
         }
 
         if(content && content.length && content[0].type && !contentTemp.length){
-            let itemsTemp = [];
-            let a = 0;
-            let index = 0;
+            let groupedItems = items.reduce((r, a) => {
+                r[a.collection_id] = r[a.collection_id] || [];
+                r[a.collection_id].push(a);
+                return r;
+            }, Object.create(null));
 
-            for(let item of items) {
-                if(a <= 2) {
-                    if(itemsTemp.length && item.collection_id.split('{}')[0] === itemsTemp[itemsTemp.length-1].collection_id.split('{}')[0]) {
-                        itemsTemp.push(item);
-                    } else if(!itemsTemp.length) {
-                        itemsTemp.push(item);
+            console.log('Grouped', groupedItems);
 
-                        if (items[index + 1] && item.collection_id.split('{}')[0] !== items[index + 1].collection_id.split('{}')[0]) {
-                            a = 2;
-                        }
-                    }
-                }
+            for(let group in groupedItems){
+                let itemsTemp = groupedItems[group];
 
-                let b = false;
-                if (a === 2) {
-                    a = 0;
-                    b = true;
+                prepareContent(contentTemp, itemsTemp, {
+                    name: itemsTemp[0].collection_id.split('{}')[1],
+                    id: itemsTemp[0].collection_id.split('{}')[0]
+                });
 
-                    prepareContent(contentTemp, itemsTemp, {
-                        name: itemsTemp[0].collection_id.split('{}')[1],
-                        id: itemsTemp[0].collection_id.split('{}')[0]
-                    });
-
-                    itemsTemp = [];
-                }
-
-                index++;
-
-                if(!b) {
-                    a++;
-                }
+                selectedCollections.push(itemsTemp[0].collection_id.split('{}')[0]);
             }
         }
 
@@ -283,26 +254,39 @@ registerBlockType('tainacan/collections-carousel', {
                 return (<span>{option.name}</span>);
             },
             getOptionKeywords(option) {
-                collectionsMatched.push(option.name);
-
-                return collectionsMatched;
-            },
-            getOptionCompletion(option) {
-                selectedCollections.push(prepareCollection(option));
-
-                getTop3ItemsOf(option).then((res) => {
-                    res.map((item) => {
-                        items.push(prepareItem(item))
-                    });
-
-                    prepareContent(contentTemp, res, option);
-
-                    setAttributes({items: items});
+                let found = selectedCollections.find((id) => {
+                    return id == option.id;
                 });
 
-                setAttributes({selectedCollections: selectedCollections});
+                if(found == undefined) {
+                    collectionsMatched.push(option.name);
 
-                return (<abbr title={option.name}>{` | ${option.name} `}</abbr>);
+                    return collectionsMatched;
+                }
+            },
+            getOptionCompletion(option) {
+
+                let found = selectedCollections.find((id) => {
+                    return id == option.id;
+                });
+
+                if(found == undefined) {
+                    selectedCollections.push(option.id);
+
+                    getTop3ItemsOf(option).then((res) => {
+                        res.map((item) => {
+                            items.push(prepareItem(item))
+                        });
+
+                        prepareContent(contentTemp, res, option);
+
+                        setAttributes({items: items});
+                    });
+
+                    setAttributes({selectedCollections: selectedCollections});
+
+                    return (<abbr title={option.name}>{` | ${option.name} `}</abbr>);
+                }
             },
             isDebounced: true,
         }];
@@ -367,23 +351,7 @@ registerBlockType('tainacan/collections-carousel', {
                             slidesPerPage={contentTemp.length >= 3 ? 3 : contentTemp.length}
                             arrows
                             slides={contentTemp}
-                            breakpoints={{
-                                1000: { // these props will be applied when screen width is less than 1000px
-                                    slidesPerPage: 2,
-                                    clickToChange: false,
-                                    centered: false,
-                                    arrows: true,
-                                    infinite: false,
-                                },
-                                500: {
-                                    slidesPerPage: 1,
-                                    slidesPerScroll: 1,
-                                    clickToChange: false,
-                                    centered: false,
-                                    animationSpeed: 2000,
-                                    infinite: false,
-                                }
-                            }}/> : null
+                        /> : null
                     }
                 </div>
             </div>
