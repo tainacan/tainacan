@@ -715,6 +715,20 @@ class CSV extends Importer {
         if (isset($collection['id'])) {
 
             if( isset($collection['mapping']) && is_array($collection['mapping']) ){
+
+                foreach( $collection['mapping'] as $metadatum_id => $header ){
+
+                    if( !is_numeric($metadatum_id) ) {
+                        $metadatum = $this->create_new_metadata( $header, $collection['id']);
+
+                        if( is_object($metadatum) ){
+                            unset($collection['mapping'][$metadatum_id]);
+                            $collection['mapping'][$metadatum->get_id()] = $header;
+                        }
+
+                    }
+                }
+
                 $this->save_mapping( $collection['id'], $collection['mapping'] );
             }
 
