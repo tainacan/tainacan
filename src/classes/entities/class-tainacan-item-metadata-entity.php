@@ -315,14 +315,27 @@ class Item_Metadata_Entity extends Entity {
         $value = $this->get_value();
         $metadatum = $this->get_metadatum();
         $item = $this->get_item();
-        
-        if (empty($value) && $this->is_required()) {
-            $this->add_error('required', $metadatum->get_name() . ' is required');
-            return false;
-        } elseif (empty($value) && !$this->is_required()) {
-            $this->set_as_valid();
-            return true;
-        }
+
+	    if (empty($value) && $this->is_required() && in_array( $item->get_status(), apply_filters( 'tainacan-status-require-validation', [
+			    'publish',
+			    'future',
+			    'private'
+		    ] ) )
+	    ) {
+		    $this->add_error('required', $metadatum->get_name() . ' is required');
+		    return false;
+	    } elseif (empty($value) && !$this->is_required()) {
+		    $this->set_as_valid();
+		    return true;
+	    } elseif(empty($value) && $this->is_required() && !in_array( $item->get_status(), apply_filters( 'tainacan-status-require-validation', [
+			    'publish',
+			    'future',
+			    'private'
+		    ] ) )) {
+
+		    $this->set_as_valid();
+		    return true;
+	    }
 
         $classMetadatumType = $metadatum->get_metadata_type_object();
         if( is_object( $classMetadatumType ) ){

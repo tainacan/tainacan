@@ -943,12 +943,20 @@ abstract class Importer {
         }
 
         /*Properties of metadatum*/
-        if( isset($properties[2]) && $properties[2] === 'required'){
+        if( is_array($properties) && in_array( 'required', $properties)){
             $newMetadatum->set_required(true);
         }
 
-        if( isset($properties[3]) && $properties[3] === 'multiple' ){
+        if(is_array($properties) && in_array( 'multiple', $properties) ){
             $newMetadatum->set_multiple('yes');
+        }
+
+        if(is_array($properties) && in_array( 'display_yes', $properties) ){
+            $newMetadatum->set_display('yes');
+        } else if(is_array($properties) && in_array( 'display_no', $properties) ){
+            $newMetadatum->set_display('no');
+        }  else if(is_array($properties) && in_array( 'display_never', $properties) ){
+            $newMetadatum->set_display('never');
         }
 
 

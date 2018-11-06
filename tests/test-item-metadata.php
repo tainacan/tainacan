@@ -101,6 +101,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
         	'item',
 	        array(
 	        	'title'       => 'item teste',
+		        'status'      => 'publish',
 		        'description' => 'adasdasdsa',
 		        'collection'  => $collection
 	        ),

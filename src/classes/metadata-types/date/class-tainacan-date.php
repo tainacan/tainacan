@@ -33,15 +33,21 @@ class Date extends Metadata_Type {
 
 
     public function validate( Item_Metadata_Entity $item_metadata) {
-        
         $value = $item_metadata->get_value();
-
         $format = 'Y-m-d';
 
-        $d = \DateTime::createFromFormat($format, $value);
+        if (is_array($value)) {
+            foreach ($value as $date_value) {
+                $d = \DateTime::createFromFormat($format, $date_value);
+                if ( !($d && $d->format($format) === $date_value) ) {
+                    return false;
+                }
+            }
+            return True;
+        }
 
+        $d = \DateTime::createFromFormat($format, $value);
         return $d && $d->format($format) === $value;
-        
     }
 
 

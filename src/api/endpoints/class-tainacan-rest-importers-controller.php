@@ -88,6 +88,16 @@ class REST_Importers_Controller extends REST_Controller {
             
         ));
 
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/session/(?P<session_id>[0-9a-f]+)/get_mapping/(?P<collection_id>[0-9a-f]+)', array(
+
+            array(
+                'methods'             => \WP_REST_Server::READABLE,
+                'callback'            => array($this, 'get_saved_mapping'),
+                'permission_callback' => array($this, 'import_permissions_check'),
+            ),
+
+        ));
+
         register_rest_route($this->namespace, '/' . $this->rest_base . '/session/(?P<session_id>[0-9a-f]+)', array(
             
             array(
@@ -197,8 +207,12 @@ class REST_Importers_Controller extends REST_Controller {
 
                                     if( !is_numeric($metadatum_id) ) {
                                         $metadatum = $importer->create_new_metadata( $header, $value['id']);
-                                        unset($value['mapping'][$metadatum_id]);
-                                        $value['mapping'][$metadatum->get_id()] = $header;
+
+                                        if( is_object($metadatum) ){
+                                            unset($value['mapping'][$metadatum_id]);
+                                            $value['mapping'][$metadatum->get_id()] = $header;
+                                        }
+
                                     }
                                 }
                             }
@@ -263,6 +277,26 @@ class REST_Importers_Controller extends REST_Controller {
 
         return new \WP_REST_Response( $response, 200 );
 
+    }
+
+    public function get_saved_mapping( $request ){
+        $session_id = $request['session_id'];
+        $collection_id = $request['collection_id'];
+        $importer = $_SESSION['tainacan_importer'][$session_id];
+        $response = false;
+
+        if(!$importer) {
+            return new \WP_REST_Response([
+                'error_message' => __('Importer Session not found', 'tainacan' ),
+                'session_id' => $session_id
+            ], 400);
+        }
+
+        if ( method_exists($importer, 'get_mapping') ) {
+            $response = $importer->get_mapping($collection_id);
+        }
+
+        return new \WP_REST_Response( $response, 200 );
     }
 
     public function get_item( $request ) {
