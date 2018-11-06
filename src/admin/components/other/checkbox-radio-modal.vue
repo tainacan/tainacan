@@ -53,7 +53,7 @@
                                         :native-value="option.value">
                                     {{ `${ limitChars(option.label) }` }}
                                     <span 
-                                            v-if="option.total_items != undefined"
+                                            v-if="isFilter && option.total_items != undefined"
                                             class="has-text-gray">{{ "(" + option.total_items + ")" }}</span>
                                 </b-checkbox>
                             </li>
@@ -93,7 +93,7 @@
                                         :native-value="option.value">
                                     {{ `${option.label}` }}
                                     <span 
-                                            v-if="option.total_items != undefined"
+                                            v-if="isFilter && option.total_items != undefined"
                                             class="has-text-gray">
                                         {{ " (" + option.total_items + ")" }}
                                     </span>
@@ -104,7 +104,7 @@
                                         :native-value="option.value">
                                     {{ `${option.label}` }}
                                     <span 
-                                            v-if="option.total_items != undefined"
+                                            v-if="isFilter && option.total_items != undefined"
                                             class="has-text-gray">
                                         {{ " (" + option.total_items + ")" }}
                                     </span>
@@ -146,7 +146,7 @@
                                         @click="getOptionChildren(pathItem.option, pathItem.column, pathItem.element)">
                                     {{ pathItem.option.label }}
                                     <span 
-                                            v-if="pathItem.option.total_items != undefined"
+                                            v-if="isFilter && pathItem.option.total_items != undefined"
                                             class="has-text-gray">
                                         {{ " (" + pathItem.option.total_items + ")" }}
                                     </span>
@@ -203,7 +203,7 @@
                                 :native-value="option.id ? option.id : option.value">
                             {{ `${ option.name ? limitChars(option.name) : limitChars(option.label) }` }}
                             <span 
-                                    v-if="option.total_items != undefined"
+                                    v-if="isFilter && option.total_items != undefined"
                                     class="has-text-gray">
                                 {{ " (" + option.total_items + ")" }}
                             </span>
@@ -214,7 +214,7 @@
                                 :native-value="option.id ? option.id : option.value">
                             {{ `${ option.name ? limitChars(option.name) : limitChars(option.label) }` }}
                             <span 
-                                    v-if="option.total_items != undefined"
+                                    v-if="isFilter && option.total_items != undefined"
                                     class="has-text-gray">
                                 {{ " (" + option.total_items + ")" }}
                             </span>
@@ -639,6 +639,10 @@
 
     .breadcrumb {
         background-color: white !important;
+
+        li + li::before {
+            content: ">" !important;
+        }
     }
 
     @media screen and (max-width: 768px) {
