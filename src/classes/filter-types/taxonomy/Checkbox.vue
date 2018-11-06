@@ -12,15 +12,21 @@
                 :key="index"
                 :value="index"
                 class="control">
-            <b-checkbox
-                    v-model="selected"
-                    :native-value="option.value"
-                    v-if="!option.isChild">
-                {{ option.label }}
-                <span 
-                        v-if="option.total_items != undefined"
-                        class="has-text-gray">{{ "(" + option.total_items + ")" }}</span>
-            </b-checkbox>
+            <label 
+                    v-if="!option.isChild"
+                    class="b-checkbox checkbox is-small">
+                <input 
+                        v-model="selected"
+                        :value="option.value"
+                        type="checkbox"> 
+                <span class="check" /> 
+                <span class="control-label">
+                    <span class="checkbox-label-text">{{ option.label }}</span> 
+                    <span 
+                            v-if="option.total_items != undefined"
+                            class="has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
+                </span>
+            </label>
             <div
                     class="see-more-container"
                     v-if="option.seeMoreLink && index == options.slice(0, filter.max_options).length - 1"
@@ -282,5 +288,16 @@
         margin-left: 0.5rem;
         font-size: 0.75rem;
         color: #898d8f;
+    }
+
+    .b-checkbox .control-label {
+        display: flex;
+        flex-wrap: nowrap;
+        width: 100%;
+    }
+    .checkbox-label-text {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
 </style>
