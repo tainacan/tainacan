@@ -92,12 +92,22 @@
                                         v-model="selected"
                                         :native-value="option.value">
                                     {{ `${option.label}` }}
+                                    <span 
+                                            v-if="option.total_items != undefined"
+                                            class="has-text-gray">
+                                        {{ " (" + option.total_items + ")" }}
+                                    </span>
                                  </b-checkbox>
                                 <b-radio
                                         v-else
                                         v-model="selected"
                                         :native-value="option.value">
                                     {{ `${option.label}` }}
+                                    <span 
+                                            v-if="option.total_items != undefined"
+                                            class="has-text-gray">
+                                        {{ " (" + option.total_items + ")" }}
+                                    </span>
                                 </b-radio>
                                 <a
                                         v-if="option.total_children > 0"
@@ -135,6 +145,11 @@
                                 <a
                                         @click="getOptionChildren(pathItem.option, pathItem.column, pathItem.element)">
                                     {{ pathItem.option.label }}
+                                    <span 
+                                            v-if="pathItem.option.total_items != undefined"
+                                            class="has-text-gray">
+                                        {{ " (" + pathItem.option.total_items + ")" }}
+                                    </span>
                                 </a>
                             </li>
                         </ul>
@@ -187,12 +202,22 @@
                                 v-model="selected"
                                 :native-value="option.id ? option.id : option.value">
                             {{ `${ option.name ? limitChars(option.name) : limitChars(option.label) }` }}
+                            <span 
+                                    v-if="option.total_items != undefined"
+                                    class="has-text-gray">
+                                {{ " (" + option.total_items + ")" }}
+                            </span>
                         </b-checkbox>
                         <b-radio
                                 v-else
                                 v-model="selected"
                                 :native-value="option.id ? option.id : option.value">
                             {{ `${ option.name ? limitChars(option.name) : limitChars(option.label) }` }}
+                            <span 
+                                    v-if="option.total_items != undefined"
+                                    class="has-text-gray">
+                                {{ " (" + option.total_items + ")" }}
+                            </span>
                         </b-radio>
                     </li>
                     <b-loading
