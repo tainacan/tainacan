@@ -14,7 +14,9 @@ class Text extends Metadata_Type {
         // call metadatum type constructor
         parent::__construct();
         parent::set_primitive_type('string');
-        parent::set_component('tainacan-text');
+		parent::set_component('tainacan-text');
+		$this->set_name( __('Text', 'tainacan') );
+        $this->set_description( __('A simple, one line, text input', 'tainacan') );
     }
 
     /**

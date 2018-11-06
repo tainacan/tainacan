@@ -19,6 +19,8 @@ class Core_Description extends Metadata_Type {
         $this->set_core(true);
         $this->set_related_mapped_prop('description');
         $this->set_component('tainacan-textarea');
+        $this->set_name( __('Core Description', 'tainacan') );
+        $this->set_description( __('The fixed "Description" metadatum automatically created to all collection. This is the default description displayed in items lists and where basic search features will look', 'tainacan') );
     }
 
     /**
