@@ -1124,8 +1124,16 @@ class Metadata extends Repository {
 			
 			$values = [];
 			foreach ($results as $r) {
-				$label = ( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ) ?
-				get_post($r)->post_title : $r;
+				
+				$label = $r;
+
+				if ( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ) {
+					$_post = get_post($r);
+					if ( ! $_post instanceof \WP_Post) {
+						continue;
+					}
+					$label = $_post->post_title;
+				}
 				
 				$total_items = null;
 				
