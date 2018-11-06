@@ -951,7 +951,7 @@ abstract class Importer {
             $newMetadatum->set_multiple('yes');
         }
 
-        if(is_array($properties) && in_array( 'display_yes', $properties) ){
+        if( is_array($properties) && in_array( 'display_yes', $properties) ){
             $newMetadatum->set_display('yes');
         } else if(is_array($properties) && in_array( 'display_no', $properties) ){
             $newMetadatum->set_display('no');
@@ -959,6 +959,11 @@ abstract class Importer {
             $newMetadatum->set_display('never');
         }
 
+        if( is_array($properties) && in_array( 'status_public', $properties) ){
+            $newMetadatum->set_status('public');
+        } else if( is_array($properties) && in_array( 'status_private', $properties) ){
+            $newMetadatum->set_status('private');
+        }
 
         if($newMetadatum->validate()){
             $inserted_metadata = $metadata_repo->insert( $newMetadatum );
