@@ -23,7 +23,7 @@ export default {
                     } else {
                         this.add_metaquery(data);
                     }
-        
+                    
                     this.updateURLQueries();
                 });
 
@@ -232,14 +232,14 @@ export default {
                     this.updateURLQueries();
 
                     let prefsPerPage = this.collectionId != undefined ? 'items_per_page_' + this.collectionId : 'items_per_page';
-                    if(this.$userPrefs.get(prefsPerPage) != itemsPerPage) {
+                    if (this.$userPrefs.get(prefsPerPage) != itemsPerPage) {
                         this.$userPrefs.set(prefsPerPage, itemsPerPage)
                             .catch(() => {});
                     }
                 },
                 setOrderBy(orderBy) { 
                     let prefsOrderBy = this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by';
-                    if(this.$userPrefs.get(prefsOrderBy) != orderBy) {
+                    if (this.$userPrefs.get(prefsOrderBy) != orderBy) {
                         this.$userPrefs.set(prefsOrderBy, orderBy)
                             .catch(() => {});
                     }
@@ -248,7 +248,7 @@ export default {
                 },
                 setOrder(order) {
                     let prefsOrder = this.collectionId != undefined ? 'order_' + this.collectionId : 'order';
-                    if(this.$userPrefs.get(prefsOrder) != order) {
+                    if (this.$userPrefs.get(prefsOrder) != order) {
                         this.$userPrefs.set(prefsOrder, order)
                             .catch(() => {});
                     }
@@ -279,7 +279,7 @@ export default {
                     this.updateURLQueries();  
 
                     let prefsAdminViewMode = this.collectionId != undefined ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
-                    if(this.$userPrefs.get(prefsAdminViewMode) != adminViewMode) {
+                    if (this.$userPrefs.get(prefsAdminViewMode) != adminViewMode) {
                         this.$userPrefs.set(prefsAdminViewMode, adminViewMode)
                             .catch(() => {  });
                     }
@@ -293,8 +293,8 @@ export default {
                     this.updateURLQueries();  
                 },
                 updateURLQueries() {
-                    this.$router.replace({query: {}});
-                    this.$router.replace({query: this.$store.getters['search/getPostQuery']});
+                    this.$router.replace({ query: {} });
+                    this.$router.replace({ query: this.$store.getters['search/getPostQuery'] });
                 },
                 updateStoreFromURL() {
                     this.$store.dispatch('search/set_postquery', this.$route.query);

@@ -136,25 +136,6 @@ class REST_Metadata_Controller extends REST_Controller {
 			$number = $request['number'];
 		}
 
-		if($request['fetch'] === 'all_metadatum_values' && $request['search']){
-			if($collection_id) {
-				$results = $this->metadatum_repository->fetch_all_metadatum_values( $collection_id, $metadatum_id, $request['search'], $offset, $number );
-			} else {
-				$results = $this->metadatum_repository->fetch_all_metadatum_values( null, $metadatum_id, $request['search'], $offset, $number);
-			}
-
-			return new \WP_REST_Response($results, 200);
-
-		} elseif($request['fetch'] === 'all_metadatum_values') {
-			if($collection_id) {
-				$results = $this->metadatum_repository->fetch_all_metadatum_values( $collection_id, $metadatum_id, '', $offset, $number);
-			} else {
-				$results = $this->metadatum_repository->fetch_all_metadatum_values( null, $metadatum_id, '', $offset, $number);
-			}
-
-			return new \WP_REST_Response($results, 200);
-		}
-
 		$result = $this->metadatum_repository->fetch($metadatum_id, 'OBJECT');
 
 		return new \WP_REST_Response($this->prepare_item_for_response($result, $request), 200);
@@ -546,11 +527,6 @@ class REST_Metadata_Controller extends REST_Controller {
 	public function get_endpoint_args_for_item_schema( $method = null ) {
 		$endpoint_args = [];
 		if($method === \WP_REST_Server::READABLE) {
-			$endpoint_args['fetch'] = [
-				'type'        => 'string',
-				'description' => __('Fetch all content of a metadata within a collection'),
-				'enum'        => ['all_metadatum_values']
-			];
 			$endpoint_args['context'] = array(
 				'type'    => 'string',
 				'default' => 'view',

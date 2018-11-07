@@ -25,7 +25,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                 
                 hasFiltered = true;
 
-                if(postQueries.advancedSearch){
+                if (postQueries.advancedSearch){
                     advancedSearchResults = postQueries.advancedSearch;
                 }
             }
