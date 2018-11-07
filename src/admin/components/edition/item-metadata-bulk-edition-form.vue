@@ -61,16 +61,17 @@
                      
                     <!-- Visibility (status public or private) -------------------------------- -->
                     <div class="section-label">
-                        <label>{{ $i18n.get('label_visibility') }}</label>
+                        <label>{{ $i18n.get('label_status') }}</label>
                         <span class="required-metadatum-asterisk">*</span>
                         <help-button
-                                :title="$i18n.get('label_visibility')"
+                                :title="$i18n.get('label_status')"
                                 :message="$i18n.get('info_visibility_helper')"/>
                     </div>
                     <div class="section-status">
                         <div class="field has-addons">
                             <b-radio
-                                    v-model="visibility"
+                                    v-model="status"
+                                    @input="changeStatus(status)"
                                     value="publish"
                                     native-value="publish">
                                 <span class="icon">
@@ -78,12 +79,22 @@
                                 </span> {{ $i18n.get('publish_visibility') }}
                             </b-radio>
                             <b-radio
-                                    v-model="visibility"
+                                    v-model="status"
+                                    @input="changeStatus(status)"
                                     value="private"
                                     native-value="private">
                                 <span class="icon">
                                     <i class="mdi mdi-lock"/>
                                 </span>  {{ $i18n.get('private_visibility') }}
+                            </b-radio>
+                            <b-radio
+                                    v-model="status"
+                                    @input="changeStatus(status)"
+                                    value="draft"
+                                    native-value="draft">
+                                <span class="icon">
+                                    <i class="mdi mdi-file"/>
+                                </span>  {{ $i18n.get('draft') }}
                             </b-radio>
                         </div>
                     </div>
@@ -160,70 +171,23 @@
                         <span class="help is-danger">{{ formErrorMessage }}</span>
                     </p> 
                 </div>  
-                <div 
-                        class="form-submission-footer"
-                        v-if="status == 'trash'">
-                    <button 
-                            @click="onDeletePermanently()"
-                            type="button"
-                            :class="{ 'is-loading': isTrashingItems }"
-                            class="button is-outlined">{{ $i18n.get('label_delete_permanently') }}</button>
-                    <button 
-                            @click="onSubmit('draft')"
-                            type="button"
-                            :class="{ 'is-loading': isUpdatingItems }"
-                            class="button is-secondary">{{ $i18n.get('label_save_as_draft') }}</button>
-                    <button 
-                            @click="onSubmit(visibility)"
-                            type="button"
-                            :class="{ 'is-loading': isPublishingItems }"
-                            class="button is-success">{{ $i18n.get('label_publish') }}</button>
-                </div>
-                <div 
-                        class="form-submission-footer"
-                        v-if="status == 'auto-draft' || status == 'draft' || status == undefined">
-                    <button 
-                            v-if="status == 'draft'"
-                            @click="onSubmit('trash')"
-                            type="button"
-                            :class="{ 'is-loading': isTrashingItems }"
-                            class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
-                    <button 
-                            v-if="status == 'auto-draft'"
-                            @click="onDiscard()"
-                            type="button"
-                            :class="{ 'is-loading': isTrashingItems }"
-                            class="button is-outlined">{{ $i18n.get('label_discard') }}</button>
-                    <button 
-                            @click="onSubmit('draft')"
-                            type="button"
-                            :class="{ 'is-loading': isUpdatingItems }"
-                            class="button is-secondary">{{ status == 'draft' ? $i18n.get('label_update') : $i18n.get('label_save_as_draft') }}</button>
-                    <button 
-                            @click="onSubmit(visibility)"
-                            type="button"
-                            :class="{ 'is-loading': isPublishingItems }"
-                            class="button is-success">{{ $i18n.get('label_publish') }}</button>
-                </div>
-                <div 
-                        class="form-submission-footer"
-                        v-if="status == 'publish' || status == 'private'">
+                <div class="form-submission-footer">
                     <button 
                             @click="onSubmit('trash')"
                             type="button"
                             :class="{ 'is-loading': isTrashingItems }"
-                            class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
+                            class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>        
                     <button 
-                            @click="onSubmit('draft')"
-                            type="button"
-                            :class="{ 'is-loading': isUpdatingItems }"
-                            class="button is-secondary">{{ $i18n.get('label_return_to_draft') }}</button>
+                            class="button is-secondary" 
+                            :class="{'is-loading': isCreatingSequenceEditGroup }"
+                            @click.prevent="sequenceEditGroup()"
+                            type="submit">{{ $i18n.get('label_sequence_edit_items') }}</button>           
                     <button 
                             :disabled="formErrorMessage != undefined && formErrorMessage != ''"
-                            @click="onSubmit(visibility)"
+                            @click="onSubmit(status)"
                             type="button"
                             :class="{ 'is-loading': isPublishingItems }"
-                            class="button is-success">{{ $i18n.get('label_update') }}</button>
+                            class="button is-success">{{ $i18n.get('finish') }}</button>
                 </div>
             </footer>
         </form>
@@ -242,10 +206,10 @@ export default {
             isLoadingMetadata: false,
             isLoadingGroupInfo: false,
             isExecutingBulkEdit: false,
+            isCreatingSequenceEditGroup: false,
             isUpdatingItems: false,
             isTrashingItems: false,
             isPublishingItems: false,
-            visibility: 'publish',
             collapseAll: true,
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
             metadatumCollapses: [],
@@ -285,6 +249,7 @@ export default {
             'redefineValueInBulk',
             'setStatusInBulk',
             'removeValueInBulk',
+            'createEditGroup',
             'deleteItemsInBulk',
             'trashItemsInBulk',
             'fetchItemIdInSequence',
@@ -332,7 +297,7 @@ export default {
             this.isExecutingBulkEdit = true;
 
             if (this.status != status && status != 'trash') {
-                this.changeStatus(status);
+                this.changeStatus(status, true);
 
             } else if (this.status != status && status == 'trash') {
 
@@ -358,11 +323,27 @@ export default {
                 setTimeout(() => {
                     this.isExecutingBulkEdit = false;
                     this.isUpdatingItems = false;
-                }, 1000);
-                if (this.status != 'draft' && this.status != 'auto-draft')
                     this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
+                }, 1000);                  
             
             }
+        },
+        sequenceEditGroup() {
+            this.isCreatingSequenceEditGroup = true;
+            this.createEditGroup({
+                object: this.items,
+                collectionID: this.collectionId
+            }).then((group) => {
+                let sequenceId = group.id;
+                this.setStatusInBulk({
+                    groupID: sequenceId,
+                    collectionID: this.collectionId,
+                    bodyParams: { value: 'draft' }
+                }).then(() => {
+                    this.isCreatingSequenceEditGroup = true;
+                    this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 1));
+                });
+            });
         },
         onDeletePermanently() {
             this.isExecutingBulkEdit = true;
@@ -382,7 +363,7 @@ export default {
         onDiscard() {
             this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
         },
-        changeStatus(status) {
+        changeStatus(status, finishEdition) {
             this.isPublishingItems = true;
 
             // Gets an item from the bulk group
@@ -400,11 +381,11 @@ export default {
                                 bodyParams: { value: status }
                             }).then(() => {
                             
-                            this.status = status;
+                                this.status = status;
                                 this.isPublishingItems = false;
                                 this.isExecutingBulkEdit = false;
 
-                                if (this.status != 'draft' && this.status != 'auto-draft')
+                                if (finishEdition != undefined && finishEdition == true)
                                     this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
                             
                             }).catch(() => {
@@ -478,7 +459,6 @@ export default {
                 this.metadatumCollapses.push(false);
                 this.metadatumCollapses[i] = true;
             }
-            this.visibility = 'publish';
         });
 
         this.isLoadingGroupInfo = true;
@@ -653,9 +633,6 @@ export default {
                 .button {
                     margin-left: 16px;
                     margin-right: 6px;
-                }
-                .is-outlined {
-                    border: none;
                 }
             }
             
