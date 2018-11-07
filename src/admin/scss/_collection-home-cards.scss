@@ -96,6 +96,11 @@
                 width: 50%;
                 text-align: center;
                 a { color: $turquoise5; }
+
+                svg.taxonomies-icon,
+                svg.activities-icon {
+                    fill: $turquoise5;
+                }
             }
         }
     
