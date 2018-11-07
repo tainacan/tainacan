@@ -71,7 +71,7 @@
                         <div class="field has-addons">
                             <b-radio
                                     v-model="status"
-                                    @input="changeStatus(status)"
+                                    @input="changeStatus($event)"
                                     value="publish"
                                     native-value="publish">
                                 <span class="icon">
@@ -80,7 +80,7 @@
                             </b-radio>
                             <b-radio
                                     v-model="status"
-                                    @input="changeStatus(status)"
+                                    @input="changeStatus($event)"
                                     value="private"
                                     native-value="private">
                                 <span class="icon">
@@ -89,7 +89,7 @@
                             </b-radio>
                             <b-radio
                                     v-model="status"
-                                    @input="changeStatus(status)"
+                                    @input="changeStatus($event)"
                                     value="draft"
                                     native-value="draft">
                                 <span class="icon">
@@ -302,8 +302,23 @@ export default {
             this.isExecutingBulkEdit = true;
 
             if (status != 'trash') {
-                this.changeStatus(status, true);
-
+                this.status = status;
+                this.isPublishingItems = false;
+                this.isExecutingBulkEdit = false;
+   
+                this.$modal.open({
+                    parent: this,
+                    component: CustomDialog,
+                    props: {
+                        icon: 'alert',
+                        title: this.$i18n.get('label_warning'),
+                        message: this.$i18n.get('info_leaving_bulk_edition'	),
+                        onConfirm: () => {
+                            this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
+                        }
+                    }
+                });
+                
             } else if (status == 'trash') {
 
                 this.$modal.open({
@@ -335,22 +350,9 @@ export default {
         },
         sequenceEditGroup() {
             this.isCreatingSequenceEditGroup = true;
-            this.createEditGroup({
-                object: this.items,
-                collectionID: this.collectionId
-            }).then((group) => {
-                let sequenceId = group.id;
-                this.setStatusInBulk({
-                    groupID: sequenceId,
-                    collectionID: this.collectionId,
-                    bodyParams: { value: 'draft' }
-                }).then(() => {
-                    this.isCreatingSequenceEditGroup = true;
-                    this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 1));
-                });
-            });
+            this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, this.groupID, 1));    
         },
-        changeStatus(status, finishEdition) {
+        changeStatus(status) {
             this.isPublishingItems = true;
 
             // Gets an item from the bulk group
@@ -371,22 +373,7 @@ export default {
                                 this.status = status;
                                 this.isPublishingItems = false;
                                 this.isExecutingBulkEdit = false;
-
-                                if (finishEdition != undefined && finishEdition == true) {
-                                    this.$modal.open({
-                                        parent: this,
-                                        component: CustomDialog,
-                                        props: {
-                                            icon: 'alert',
-                                            title: this.$i18n.get('label_warning'),
-                                            message: this.$i18n.get('info_leaving_bulk_edition'	),
-                                            onConfirm: () => {
-                                                this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
-                                            }
-                                        }
-                                    });
-                                }
-                            
+                                
                             }).catch(() => {
                                 this.isPublishingItems = false;
                                 this.isExecutingBulkEdit = false;
