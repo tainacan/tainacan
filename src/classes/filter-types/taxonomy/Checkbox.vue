@@ -55,7 +55,7 @@
 
             this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTag);
         },    
-        mounted() {
+        mounted(){
             // We listen to event, but reload event if hasFiltered is negative, as 
             // an empty query also demands filters reloading.
             this.$eventBusSearch.$on('hasFiltered', () => {
@@ -112,10 +112,15 @@
                         for (let item of res.data) {
                             this.taxonomy = item.taxonomy;
                             this.taxonomy_id = item.taxonomy_id;
-                            this.options.push(item);
+                            
+                            let existingOptionIndex = this.options.findIndex(anOption => anOption.value == item.value)
+                            if (existingOptionIndex < 0)
+                                this.options.push(item);  
+                            else  
+                                this.$set(this.options, item, existingOptionIndex); 
                         }
 
-                        if ( this.options ){
+                        if (this.options) {
                             let hasChildren = false;
 
                             for( let term of this.options ){
@@ -179,7 +184,13 @@
                     let valueIndex = this.options.findIndex(option => option.value == selected );
 
                     if (valueIndex >= 0) {
-                        onlyLabels.push(this.options[valueIndex].label)
+                        
+                        let existingLabelIndex = onlyLabels.findIndex(aLabel => aLabel == this.options[valueIndex].label)
+                        if (existingLabelIndex < 0)
+                            onlyLabels.push(this.options[valueIndex].label);
+                        else  
+                            this.$set(onlyLabels, onlyLabels.push(this.options[valueIndex].label), existingLabelIndex); 
+
                     } else {
 
                         let route = '/collection/'+ this.collection +'/facets/' + this.metadatum +`?term_id=${selected}&fetch_only[0]=name&fetch_only[1]=id`;
@@ -187,20 +198,30 @@
                         if(this.collection == 'filter_in_repository'){
                             route = '/facets/' + this.metadatum +`?term_id=${selected}&fetch_only[0]=name&fetch_only[1]=id`
                         }
-
+                        
                         axios.get(route)
                             .then( res => {
-                                
                                 if(!res || !res.data){
                                     return false;
                                 }
 
-                                onlyLabels.push(res.data[0].label);
-                                this.options.push({
-                                    isChild: true,
-                                    label: res.data[0].label,
-                                    value: res.data[0].value
-                                })
+                                let existingLabelIndex = onlyLabels.findIndex(aLabel => aLabel == res.data[0].label)
+                                if (existingLabelIndex < 0) {
+                                    onlyLabels.push(res.data[0].label);
+                                    this.options.push({
+                                        isChild: true,
+                                        label: res.data[0].label,
+                                        value: res.data[0].value
+                                    });
+                                } else {  
+                                    this.$set(onlyLabels, onlyLabels.push(res.data[0].label), existingLabelIndex);
+                                    this.$set(this.options, {
+                                            isChild: true,
+                                            label: res.data[0].label,
+                                            value: res.data[0].value
+                                        }
+                                    , existingLabelIndex); 
+                                }
                             })
                             .catch(error => {
                                 this.$console.log(error);
