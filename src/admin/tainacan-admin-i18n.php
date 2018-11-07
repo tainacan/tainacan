@@ -475,6 +475,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_there_is'  						 		 => __( 'There is', 'tainacan'),
 	'info_item_being_edited'				 		 => __( 'item being edited', 'tainacan'),
 	'info_no_preview_found'				 		 	 => __( 'No preview was found.', 'tainacan'),
+	'info_leaving_bulk_edition'				 	 	 => __( 'You are leaving the bulk edition now.', 'tainacan'),
 	
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),

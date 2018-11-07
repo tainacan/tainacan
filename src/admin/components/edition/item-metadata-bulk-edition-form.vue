@@ -163,7 +163,10 @@
                     <p v-if="!isExecutingBulkEdit && lastUpdated != ''">
                         {{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
                         <span class="help is-danger">{{ formErrorMessage }}</span>
-                    </p>     
+                    </p>
+                    <p v-if="!isExecutingBulkEdit && lastUpdated == ''">
+                        <span class="help is-danger">{{ formErrorMessage }}</span>
+                    </p>          
                     <p 
                             class="update-warning"
                             v-if="isExecutingBulkEdit">
@@ -196,6 +199,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
     name: 'ItemMetadataBulkEditionForm',
@@ -216,6 +220,7 @@ export default {
             formErrors: {},
             status: 'draft',
             groupID: null,
+            formErrorMessage: ''
         }
     },
     computed: {
@@ -296,36 +301,36 @@ export default {
         onSubmit(status) {
             this.isExecutingBulkEdit = true;
 
-            if (this.status != status && status != 'trash') {
+            if (status != 'trash') {
                 this.changeStatus(status, true);
 
-            } else if (this.status != status && status == 'trash') {
+            } else if (status == 'trash') {
 
-                this.isTrashingItems = true;
-                this.trashItemsInBulk({
-                        groupID: this.groupID,
-                        collectionID: this.collectionId
-                    }).then(() => {
-                        this.status = status;
-                        this.isTrashingItems = false;
-                        this.isExecutingBulkEdit = false;
-                        this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
-                    }).catch(() => {
-                        this.isExecutingBulkEdit = false;
-                        this.isTrashingItems = false;
-                    });
-            
-            } else {   
-                
-                // Sets loading to cause a visual impression of updating
-                this.isExecutingBulkEdit = true;
-                this.isUpdatingItems = true;
-                setTimeout(() => {
-                    this.isExecutingBulkEdit = false;
-                    this.isUpdatingItems = false;
-                    this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
-                }, 1000);                  
-            
+                this.$modal.open({
+                    parent: this,
+                    component: CustomDialog,
+                    props: {
+                        icon: 'alert',
+                        title: this.$i18n.get('label_warning'),
+                        message: this.$i18n.get('info_warning_selected_items_trash'),
+                        onConfirm: () => {
+                            
+                            this.isTrashingItems = true;
+                            this.trashItemsInBulk({
+                                    groupID: this.groupID,
+                                    collectionID: this.collectionId
+                                }).then(() => {
+                                    this.status = status;
+                                    this.isTrashingItems = false;
+                                    this.isExecutingBulkEdit = false;
+                                    this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
+                                }).catch(() => {
+                                    this.isExecutingBulkEdit = false;
+                                    this.isTrashingItems = false;
+                                });
+                        }
+                    }
+                });            
             }
         },
         sequenceEditGroup() {
@@ -344,24 +349,6 @@ export default {
                     this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 1));
                 });
             });
-        },
-        onDeletePermanently() {
-            this.isExecutingBulkEdit = true;
-            this.isTrashingItems = true;
-            this.deleteItemsInBulk({
-                    collectionID: this.collectionId,
-                    groupID: this.groupID
-                }).then(() => {
-                    this.isExecutingBulkEdit = false;
-                    this.isTrashingItems = false;
-                    this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
-                }).catch(() => {
-                    this.isExecutingBulkEdit = false;
-                    this.isTrashingItems = false;
-                });
-        },
-        onDiscard() {
-            this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
         },
         changeStatus(status, finishEdition) {
             this.isPublishingItems = true;
@@ -385,8 +372,20 @@ export default {
                                 this.isPublishingItems = false;
                                 this.isExecutingBulkEdit = false;
 
-                                if (finishEdition != undefined && finishEdition == true)
-                                    this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
+                                if (finishEdition != undefined && finishEdition == true) {
+                                    this.$modal.open({
+                                        parent: this,
+                                        component: CustomDialog,
+                                        props: {
+                                            icon: 'alert',
+                                            title: this.$i18n.get('label_warning'),
+                                            message: this.$i18n.get('info_leaving_bulk_edition'	),
+                                            onConfirm: () => {
+                                                this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
+                                            }
+                                        }
+                                    });
+                                }
                             
                             }).catch(() => {
                                 this.isPublishingItems = false;
