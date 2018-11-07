@@ -585,6 +585,7 @@ export default {
                 font-style: italic;
                 font-weight: bold;
                 color: $danger;
+                margin-left: 0.5rem;
             }
             .controls { 
                 position: absolute;

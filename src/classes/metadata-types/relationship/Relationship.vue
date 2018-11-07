@@ -1,6 +1,7 @@
 <template>
     <div :class="{ 'is-flex': metadatum.metadatum.multiple != 'yes' || maxtags != undefined }">
         <b-taginput
+                expanded
                 :disabled="disabled"
                 :id="id"
                 v-model="selected"

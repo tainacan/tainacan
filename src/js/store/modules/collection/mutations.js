@@ -63,6 +63,20 @@ export const setSingleAttachment = ( state, attachment ) => {
     }
 }
 
+export const setSingleFile = ( state, file ) => {
+    let index = state.files.findIndex(newfile => newfile.id === file.id);
+    if ( index >= 0){
+        //state.metadatum[index] = metadatum;
+        Vue.set( state.files, index, file );
+    } else {
+        state.files.push( file );
+    }
+}
+
+export const cleanFiles = (state) => {
+    state.files = [];
+}
+
 export const setAttachments = ( state, attachments ) => {
     state.attachments = attachments;
 }

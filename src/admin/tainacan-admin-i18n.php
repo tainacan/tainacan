@@ -55,7 +55,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'approve_item'                                   => __( 'Approve', 'tainacan' ),
 	'not_approve_item'                               => __( 'Not approve', 'tainacan' ),
 	'add_one_item'                                   => __( 'Add one item', 'tainacan' ),
-	'add_items_bulk'                                 => __( 'Add items in bulk', 'tainacan' ),
+	'add_items_bulk'                                 => __( 'Bulk add items', 'tainacan' ),
 	'add_items_external_source'                      => __( 'Add items from an external source', 'tainacan' ),
 	'new_mapped_item'                                => __( 'New mapped collection', 'tainacan' ),
 	'new_blank_collection'                           => __( 'New Blank Collection', 'tainacan' ),
@@ -120,6 +120,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'title_export_item_page'                         => __( 'Export Item', 'tainacan' ),
 	'title_export_page'                              => __( 'Export', 'tainacan' ),
 	'title_processes_page'                           => __( 'Processes', 'tainacan' ),
+	'title_item_bulk_add'							 => __( 'Bulk Add Items', 'tainacan' ),
 
 	// Labels (used mainly on Aria Labels and Inputs)
 	'label_clean'                                    => __( 'Clear', 'tainacan' ),
@@ -316,6 +317,13 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_selected_terms'                           => __( 'Selected terms', 'tainacan'),
 	'label_editing_item_number'                      => __( 'Editing item n.', 'tainacan'),
 	'label_sequence_editing_item'                    => __( 'Sequence editing: Item', 'tainacan'),
+	'label_files_remaining'		                     => __( 'files remaining.', 'tainacan'),
+	'label_file_remaining'		                     => __( 'file remaining.', 'tainacan'),
+	'label_upload_file_prepare_items'                => __( 'Uploading files and preparing items', 'tainacan'),
+	'label_bulk_edit_items'		                     => __( 'Bulk edit items', 'tainacan'),
+	'label_sequence_edit_items'	                     => __( 'Sequence edit items', 'tainacan'),
+	'label_documents_upload'	                     => __( 'Documents upload', 'tainacan'),
+	'label_added_items'			                     => __( 'Added items', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -465,6 +473,14 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_no_options_avialable_filtering'  			 => __( 'No options for this filtering.', 'tainacan'),
 	'info_no_options_found'				  			 => __( 'No options found.', 'tainacan'),
 
+	'info_all_files_uploaded'  						 => __( 'All files uploaded.', 'tainacan'),
+	'info_there_are'  						 		 => __( 'There are', 'tainacan'),
+	'info_items_being_edited'				 		 => __( 'items being edited', 'tainacan'),
+	'info_there_is'  						 		 => __( 'There is', 'tainacan'),
+	'info_item_being_edited'				 		 => __( 'item being edited', 'tainacan'),
+	'info_no_preview_found'				 		 	 => __( 'No preview was found.', 'tainacan'),
+	'info_leaving_bulk_edition'				 	 	 => __( 'You are leaving the bulk edition now.', 'tainacan'),
+	
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),
 	'tainacan-textarea'                              => __( 'Text area', 'tainacan' ),

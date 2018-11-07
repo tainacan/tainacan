@@ -12,7 +12,8 @@ const state = {
     collectionURL: '',
     attachments: [],
     collectionCommentStatus: '',
-    collectionAllowComments: ''
+    collectionAllowComments: '',
+    files: []
 };
 
 export default {
