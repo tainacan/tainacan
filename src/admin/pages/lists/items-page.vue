@@ -175,6 +175,8 @@
                                     tag="div"
                                     :to="{ path: $routerHelper.getNewItemBulkAddPath(collectionId) }">
                                 {{ $i18n.get('add_items_bulk') }}
+                                <br> 
+                                <small class="is-small">{{ $i18n.get('info_bulk_add_items') }}</small>
                             </router-link>
                         </b-dropdown-item>
                         <b-dropdown-item>
