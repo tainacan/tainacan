@@ -96,7 +96,7 @@ class Core_Description extends Metadata_Type {
 			foreach ( $value as $el ) {
 				$return .= nl2br($this->make_clickable_links($el));
 				$count ++;
-				if ($count <= $total)
+				if ($count < $total)
 					$return .= ', ';
 			}
 		} else {
