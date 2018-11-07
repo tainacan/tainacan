@@ -134,7 +134,8 @@
                     for( let index in this.searchMetadata ){
                         metaquery[index] = {
                             key: this.searchMetadata[index].id,
-                            value: search
+                            value: search,
+                            compare: 'LIKE'
                         }
                     }
 

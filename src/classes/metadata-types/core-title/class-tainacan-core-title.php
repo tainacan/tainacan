@@ -19,6 +19,8 @@ class Core_Title extends Metadata_Type {
         $this->set_core(true);
         $this->set_related_mapped_prop('title');
         $this->set_component('tainacan-text');
+        $this->set_name( __('Core Description', 'tainacan') );
+        $this->set_description( __('The fixed "Title" metadatum automatically created to all collection. This is the default title displayed in items lists and where basic search features will look', 'tainacan') );
     }
 
     /**

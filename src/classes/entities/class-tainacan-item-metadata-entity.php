@@ -77,7 +77,7 @@ class Item_Metadata_Entity extends Entity {
 				$return .= (string) $v;
 				
 				$count ++;
-				if ($count <= $total)
+				if ($count < $total)
 					$return .= ', ';
 			}
 			

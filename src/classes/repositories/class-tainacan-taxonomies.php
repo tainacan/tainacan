@@ -338,6 +338,11 @@ class Taxonomies extends Repository {
 			}
 		}
 	}
+	
+	public function get_db_identifier_by_id($id) {
+		$prefix = Entities\Taxonomy::$db_identifier_prefix;
+		return $prefix . $id;
+	}
 
 
 }
