@@ -71,7 +71,6 @@ class REST_Metadata_Types_Controller extends REST_Controller {
 		$metadata_type = new $name();
 
 		$metadatum_arr = $metadata_type->_toArray();
-		$metadatum_arr['name'] = $item;
 
 		return $metadatum_arr;
 	}

@@ -25,7 +25,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                 
                 hasFiltered = true;
 
-                if(postQueries.advancedSearch){
+                if (postQueries.advancedSearch){
                     advancedSearchResults = postQueries.advancedSearch;
                 }
             }
@@ -153,6 +153,10 @@ export const fetchCollections = ({commit} , { page, collectionsPerPage, status, 
 
 export const cleanCollections = ({ commit }) => {
     commit('cleanCollections');
+};
+
+export const cleanItems = ({ commit }) => {
+    commit('cleanItems');
 };
 
 export const fetchCollection = ({ commit }, id) => {
@@ -423,4 +427,25 @@ export const fetchCollectionsForParent = ({ commit }) => {
             reject(error);
         })
     });
+};
+
+// Send Files to Item Bulk Addition
+export const sendFile = ( { commit }, file ) => {
+    return new Promise(( resolve, reject ) => {
+        axios.wp.post('/media/', file, {
+            headers: { 'Content-Type': 'multipart/form-data;', 'Content-Disposition': 'attachment; filename=' + file.name },
+        })
+            .then( res => {
+                let file = res.data;
+                commit('setSingleFile', file);
+                resolve( file );
+            })
+            .catch(error => {
+                reject( error.response );
+            });
+    });
+};
+
+export const cleanFiles = ({ commit }) => {
+    commit('cleanFiles');
 };

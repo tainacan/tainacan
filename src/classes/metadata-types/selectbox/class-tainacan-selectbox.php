@@ -15,6 +15,8 @@ class Selectbox extends Metadata_Type {
         $this->set_primitive_type('string');
         $this->set_component('tainacan-selectbox');
         $this->set_form_component('tainacan-form-selectbox');
+        $this->set_name( __('Selectbox', 'tainacan') );
+        $this->set_description( __('A selectbox with a fixed list of value to choose one from', 'tainacan') );
     }
 
     /**

@@ -48,11 +48,19 @@
                                     class="tainacan-li-checkbox-list"
                                     v-for="(option, key) in options"
                                     :key="key">
-                                <b-checkbox
-                                        v-model="selected"
-                                        :native-value="option.value">
-                                    {{ `${ limitChars(option.label) }` }}
-                                </b-checkbox>
+                                <label class="b-checkbox checkbox is-small">
+                                    <input 
+                                            v-model="selected"
+                                            :value="option.value"
+                                            type="checkbox"> 
+                                    <span class="check" /> 
+                                    <span class="control-label">
+                                        <span class="checkbox-label-text">{{ `${ limitChars(option.label) }` }}</span> 
+                                        <span 
+                                            v-if="isFilter && option.total_items != undefined"
+                                            class="has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
+                                    </span>
+                                </label>
                             </li>
                             <b-loading
                                     :is-full-page="false"
@@ -84,17 +92,33 @@
                                     :id="`${key}.${index}-tainacan-li-checkbox-model`"
                                     :ref="`${key}.${index}-tainacan-li-checkbox-model`"
                                     :key="index">
-                                <b-checkbox
+                                <label 
                                         v-if="isCheckbox"
-                                        v-model="selected"
-                                        :native-value="option.value">
-                                    {{ `${option.label}` }}
-                                </b-checkbox>
+                                        class="b-checkbox checkbox is-small">
+                                    <input 
+                                            v-model="selected"
+                                            :value="option.value"
+                                            type="checkbox"> 
+                                    <span class="check" /> 
+                                    <span class="control-label">
+                                        <span class="checkbox-label-text">{{ `${option.label}` }}</span> 
+                                        <span 
+                                                v-if="isFilter && option.total_items != undefined"
+                                                class="has-text-gray">
+                                            &nbsp;{{ "(" + option.total_items + ")" }}
+                                        </span>
+                                    </span>
+                                </label>
                                 <b-radio
                                         v-else
                                         v-model="selected"
                                         :native-value="option.value">
                                     {{ `${option.label}` }}
+                                    <span 
+                                            v-if="isFilter && option.total_items != undefined"
+                                            class="has-text-gray">
+                                        &nbsp;{{ "(" + option.total_items + ")" }}
+                                    </span>
                                 </b-radio>
                                 <a
                                         v-if="option.total_children > 0"
@@ -132,6 +156,11 @@
                                 <a
                                         @click="getOptionChildren(pathItem.option, pathItem.column, pathItem.element)">
                                     {{ pathItem.option.label }}
+                                    <span 
+                                            v-if="isFilter && pathItem.option.total_items != undefined"
+                                            class="has-text-gray">
+                                        &nbsp;{{ "(" + pathItem.option.total_items + ")" }}
+                                    </span>
                                 </a>
                             </li>
                         </ul>
@@ -179,17 +208,33 @@
                             class="tainacan-li-search-results"
                             v-for="(option, key) in searchResults"
                             :key="key">
-                        <b-checkbox
+                        <label 
                                 v-if="isCheckbox"
-                                v-model="selected"
-                                :native-value="option.id ? option.id : option.value">
-                            {{ `${ option.name ? limitChars(option.name) : limitChars(option.label) }` }}
-                        </b-checkbox>
+                                class="b-checkbox checkbox is-small">
+                            <input                                     
+                                    v-model="selected"
+                                    :value="option.id ? option.id : option.value"
+                                    type="checkbox"> 
+                            <span class="check" /> 
+                            <span class="control-label">
+                                <span class="checkbox-label-text">{{ `${ option.name ? limitChars(option.name) : limitChars(option.label) }` }}</span> 
+                                <span 
+                                        v-if="isFilter && option.total_items != undefined"
+                                        class="has-text-gray">
+                                    &nbsp;{{ "(" + option.total_items + ")" }}
+                                </span>
+                            </span>
+                        </label>
                         <b-radio
                                 v-else
                                 v-model="selected"
                                 :native-value="option.id ? option.id : option.value">
                             {{ `${ option.name ? limitChars(option.name) : limitChars(option.label) }` }}
+                            <span 
+                                    v-if="isFilter && option.total_items != undefined"
+                                    class="has-text-gray">
+                                &nbsp;{{ "(" + option.total_items + ")" }}
+                            </span>
                         </b-radio>
                     </li>
                     <b-loading
@@ -404,7 +449,10 @@
                     this.isSearchingLoading = true;
                     let query_items = { 'current_query': this.query };
 
-                    let query = `?hideempty=0&order=asc&number=${this.maxNumSearchResultsShow}&searchterm=${this.optionName}&` + qs.stringify(query_items);
+                    let query = `?order=asc&number=${this.maxNumSearchResultsShow}&searchterm=${this.optionName}&` + qs.stringify(query_items);
+
+                    if (!this.isFilter)
+                        query += '&hideempty=0';
 
                     let route = `/collection/${this.collection_id}/facets/${this.metadatum_id}${query}`;
 
@@ -522,7 +570,10 @@
                     parent = option.value;
                 }
 
-                let query = `?hideempty=0&order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=0&` + qs.stringify(query_items);
+                let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=0&` + qs.stringify(query_items);
+
+                if (!this.isFilter)
+                    query += '&hideempty=0';
 
                 this.isColumnLoading = true;
 
@@ -552,7 +603,10 @@
                     let offset = finderColumn.length;
                     let query_items = { 'current_query': this.query };
 
-                    let query = `?hideempty=0&order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=${offset}&` + qs.stringify(query_items);
+                    let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=${offset}&` + qs.stringify(query_items);
+
+                    if (!this.isFilter)
+                        query += '&hideempty=0';
 
                     this.isColumnLoading = true;
 
@@ -611,6 +665,10 @@
 
     .breadcrumb {
         background-color: white !important;
+
+        li + li::before {
+            content: ">" !important;
+        }
     }
 
     @media screen and (max-width: 768px) {
@@ -681,7 +739,7 @@
         max-width: calc(50% - 8.3333333%);
 
         .b-checkbox, .b-radio {
-            max-width: 86%;
+            max-width: 81%;
             margin-right: 10px;
         }
 
@@ -692,10 +750,11 @@
 
     .tainacan-li-checkbox-modal {
         display: flex;
+        justify-content: space-between;
         padding: 0;
 
         .b-checkbox, .b-radio {
-            max-width: 86%;
+            max-width: 81%;
             margin-left: 0.7rem;
             height: 24px;
         }
@@ -850,6 +909,19 @@
     .tainacan-li-checkbox-parent-active {
         background-color: $turquoise1;
     }
+
+    .b-checkbox .control-label {
+        display: flex;
+        flex-wrap: nowrap;
+        width: 100%;
+
+        .checkbox-label-text {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+    }
+
 
 </style>
 

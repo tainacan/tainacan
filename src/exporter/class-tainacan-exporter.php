@@ -501,37 +501,19 @@ class Exporter extends CommunImportExport {
 		global $Tainacan_Exporter_Handler;
 		$exporter_definition = $Tainacan_Exporter_Handler->get_exporter_by_object($this);
 
+		$return['mapping_selected'] 	= $this->mapping_selected;
+		$return['output_files'] 		= $this->output_files;
+		$return['send_email']			= $this->send_email;
+
 		if ($short === false) {
 			$return['manual_collection']	= $exporter_definition['manual_collection'];
-			$return['mapping_selected'] 	= $this->mapping_selected;
 			$return['mapping_accept']		= $this->mapping_accept;
 			$return['mapping_list'] 		= $this->mapping_list;
-			$return['output_files'] 		= $this->output_files;
-			$return['send_email']			= $this->send_email;
 			$return['options_form'] 		= $this->options_form();
 		}
 
 		return $return;
 	}
-
-	/**
-	 * get the metadata of file/url to allow mapping
-	 * should return an array
-	 *
-	 * Used when $manual_mapping is set to true, to build the mapping interface
-	 *
-	 * @return array $metadata_source the metadata from the source
-	 */
-	public function get_source_metadata() {}
-
-	/**
-	 * Method implemented by the child importer/exporter class to return the total number of items that will be imported
-	 *
-	 * Used to build the progress bar
-	 * 
-	 * @return int
-	 */
-	public function get_source_number_of_items() {}
 
 	/**
 	 * Method implemented by child importer/exporter to return the HTML of the Options Form to be rendered in the Importer page
@@ -547,32 +529,133 @@ class Exporter extends CommunImportExport {
 		$collections = $this->get_collections();
 		$collection_definition = isset($collections[$current_collection]) ? $collections[$current_collection] : false;
 		$current_collection_item = $this->get_current_collection_item();
-		
+
 		if ( !$collection_definition || !is_array($collection_definition) || !isset($collection_definition['id']) || !isset($collection_definition['mapping']) ) {
 			$this->add_error_log('Collection misconfigured');
-		 	return false;
+			return false;
 		}
 		$this->add_log('Processing item ' . $current_collection_item);
-		$processed_item = $this->process_item( $current_collection_item, $collection_definition );
-		if( $processed_item ) {
-		 	$this->append_to_file('exporter', $processed_item."\n");
-		} else {
-		 	$this->add_error_log('failed on item '. $current_collection_item );
+
+		$processed_item = $this->get_item($current_collection_item, $collection_definition);
+		if($current_collection_item == 0) {
+			$this->process_header();
 		}
+		$this->process_item( $processed_item );
+		if ($current_collection_item == $collection_definition['total_items']-1) {
+			$this->process_footer();
+		}
+
 		return $this->next_item();
 	}
-	
-	/**
-	 * get values for a single item
-	 *
-	 * @param  $index
-	 * @return array with metadatum_source's as the index and values for the
-	 * item
-	 *
-	 * Ex: [ 'Metadatum1' => 'value1', 'Metadatum2' => [ 'value2','value3' ]
-	 */
-	public function process_item( $index, $collection_id ) { }
-	
+
+	public function process_item( $processed_item ) {
+		$this->append_to_file('exporter', "[--process item--]\n");
+	}
+
+	public function process_header() {
+		$this->append_to_file('exporter', "[--header--]\n");
+	}
+
+	public function process_footer() {
+		$this->append_to_file('exporter', "[--footer--]\n");
+	}
+
+	private function get_item($index, $collection_definition) {
+		$collection_id = $collection_definition['id'];
+		$tainacan_items = \Tainacan\Repositories\Items::get_instance();
+		
+		$filters = [
+			'posts_per_page' => 1,
+			'paged'   => $index+1,
+			'order'   => 'DESC'
+		];
+
+		$this->add_log('Proccessing item index ' . $index . ' in collection ' . $collection_definition['id'] );
+		$items = $tainacan_items->fetch($filters, $collection_id, 'WP_Query');
+		//$export_items = "";
+		$data = [];
+		while ($items->have_posts()) {
+			$items->the_post();
+			$item = new Entities\Item($items->post);
+			$printCol = $index == 0;
+			//$export_items .= $this->get_item_csv($item, $printCol);
+			$prepared_item = [];
+			foreach ($item->get_metadata() as $item_metadata) {
+				array_push($prepared_item, $item_metadata->_toArray());
+			}
+			$mapper = $this->mapping_list[$this->mapping_selected];
+			$instance_mapper = new $mapper();
+			$data[] = $this->map($prepared_item, $instance_mapper);
+			//return $this->str_putcsv($data, ',', '"', $printCol);
+		}
+		wp_reset_postdata();
+		//return $export_items;
+		return $data;
+	}
+
+	protected function map($item_arr, $mapper) {
+		$ret = $item_arr;
+		if(array_key_exists('metadatum', $item_arr)) { // getting a unique metadatum
+			$ret = $this->map_metadatum($item_arr, $mapper);
+		} else { // array of elements
+			$ret = [];
+			foreach ($item_arr as $item) {
+				if(array_key_exists('metadatum', $item)) {
+					$ret = array_merge($ret, $this->map($item, $mapper) );
+				} else {
+					$ret[] = $this->map($item, $mapper);
+				}
+			}
+		}
+		return $ret;
+	}
+
+	protected function map_metadatum($item_arr, $mapper) {
+		$ret = $item_arr;
+		$metadatum_mapping = $item_arr['metadatum']['exposer_mapping'];
+		if(array_key_exists($mapper->slug, $metadatum_mapping)) {
+			if(
+				is_string($metadatum_mapping[$mapper->slug]) && is_array($mapper->metadata) && !array_key_exists( $metadatum_mapping[$mapper->slug], $mapper->metadata) ||
+				is_array($metadatum_mapping[$mapper->slug]) && $mapper->allow_extra_metadata != true
+			) {
+				throw new \Exception('Invalid Mapper Option');
+			}
+			$slug = '';
+			if(is_string($metadatum_mapping[$mapper->slug])) {
+				$slug = $metadatum_mapping[$mapper->slug];
+			} else {
+				$slug = $metadatum_mapping[$mapper->slug]['slug'];
+			}
+			$data = $this->metadatum_to_array($item_arr);
+			$ret = [$mapper->prefix.$slug.$mapper->sufix => $data];
+			
+		} elseif($mapper->slug == 'value') {
+			$data = $this->metadatum_to_array($item_arr);
+			$ret = [$item_arr['metadatum']['name'] => $data];
+		} else {
+			$ret = [];
+		}
+		return $ret;
+	}
+
+	private function metadatum_to_array ($item_arr) {
+		$array_metadatum = [];
+		if ($item_arr['metadatum']['multiple'] == 'yes') {
+			$array_metadatum = $item_arr['value'];
+		} else {
+			$array_metadatum[] = $item_arr['value'];
+		}
+
+		$temp = [];
+		if ($item_arr['metadatum']['metadata_type'] == 'Tainacan\\Metadata_Types\\Taxonomy') {
+			foreach ($array_metadatum as $key => $value) {
+				$temp[] = $value["name"];
+			}
+			$array_metadatum = $temp;
+		}
+		return $array_metadatum;
+	}
+
 	public function add_new_file($key) {
 		$upload_dir = wp_upload_dir();
 		$upload_dir = trailingslashit( $upload_dir['basedir'] );
@@ -632,6 +715,9 @@ class Exporter extends CommunImportExport {
 		}
 	}
 
+	private function set_output_files($output_files) {
+		$this->output_files = $output_files;
+	}
 	/**
 	 * runs one iteration
 	 */

@@ -22,12 +22,16 @@ export const createEditGroup = ({commit}, parameters) => {
         };
     }
 
-    return axios.tainacan.post(`/collection/${collectionID}/bulk-edit`, bulkEditParams)
-        .then(response => {
-            commit('setGroup', response.data);
-        })
-        .catch(error => {
-            console.error(error);
+    return new Promise ((resolve, reject) => {
+        axios.tainacan.post(`/collection/${collectionID}/bulk-edit`, bulkEditParams)
+            .then(response => {
+                commit('setGroup', response.data);
+                resolve(response.data);
+            })
+            .catch(error => {
+                console.error(error);
+                reject(error);
+            });
         });
 };
 
@@ -58,6 +62,7 @@ export const setValueInBulk = ({commit}, parameters) => {
     return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/set`, bodyParams)
         .then(response => {
             commit('setActionResult', response.data);
+            commit('setLastUpdated');
             return response;
         })
         .catch(error => {
@@ -138,6 +143,7 @@ export const setStatusInBulk = ({commit}, parameters) => {
     return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/set_status`, bodyParams)
         .then(response => {
             commit('setActionResult', response.data);
+            commit('setLastUpdated');
             return response;
         })
         .catch(error => {
@@ -153,6 +159,7 @@ export const trashItemsInBulk = ({commit}, parameters) => {
     return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/trash`)
         .then(response => {
             commit('setActionResult', response.data);
+            commit('setLastUpdated');
             return response;
         })
         .catch(error => {
@@ -183,6 +190,7 @@ export const deleteItemsInBulk = ({commit}, parameters) => {
     return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/delete_items`)
         .then(response => {
             commit('setActionResult', response.data);
+            commit('setLastUpdated');
             return response;
         })
         .catch(error => {
@@ -205,4 +213,9 @@ export const fetchItemIdInSequence = ({commit}, { collectionId, sequenceId, item
                 reject(error);
             });
     });
+};
+
+// BULK ADD SPECIFIC
+export const setBulkAddItems = ({commit}, items) => {
+    commit('setBulkAddItems', items);
 };

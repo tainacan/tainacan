@@ -14,6 +14,8 @@ class Numeric extends Metadata_Type {
         parent::__construct();
         $this->set_primitive_type('float');
         $this->set_component('tainacan-numeric');
+        $this->set_name( __('Numeric', 'tainacan') );
+        $this->set_description( __('A numeric value, integer or float', 'tainacan') );
     }
 
     /**

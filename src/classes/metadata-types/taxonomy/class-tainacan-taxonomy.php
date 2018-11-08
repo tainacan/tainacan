@@ -23,7 +23,9 @@ class Taxonomy extends Metadata_Type {
         ]);
 
         $this->set_form_component('tainacan-form-taxonomy');
-        $this->set_component('tainacan-taxonomy');
+		$this->set_component('tainacan-taxonomy');
+		$this->set_name( __('Taxonomy', 'tainacan') );
+        $this->set_description( __('A metadatum to use a taxonomy in this collection', 'tainacan') );
     }
 
     /**

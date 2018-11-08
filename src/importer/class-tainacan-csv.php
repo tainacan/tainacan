@@ -519,7 +519,7 @@ class CSV extends Importer {
      * @param $status string the item ID
      */
     private function handle_item_id( $values ) {
-        $item_id_index = $this->set_option('item_id_index');
+        $item_id_index = $this->get_option('item_id_index');
         if( $item_id_index && isset($values[$item_id_index]) ){
             $this->add_transient( 'item_id',$values[$item_id_index] );
             $this->add_transient( 'item_action',$this->get_option('repeated_item') );
@@ -715,6 +715,20 @@ class CSV extends Importer {
         if (isset($collection['id'])) {
 
             if( isset($collection['mapping']) && is_array($collection['mapping']) ){
+
+                foreach( $collection['mapping'] as $metadatum_id => $header ){
+
+                    if( !is_numeric($metadatum_id) ) {
+                        $metadatum = $this->create_new_metadata( $header, $collection['id']);
+
+                        if( is_object($metadatum) ){
+                            unset($collection['mapping'][$metadatum_id]);
+                            $collection['mapping'][$metadatum->get_id()] = $header;
+                        }
+
+                    }
+                }
+
                 $this->save_mapping( $collection['id'], $collection['mapping'] );
             }
 

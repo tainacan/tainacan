@@ -2,7 +2,7 @@
     <div class="block">
         <b-select
                 :id="id"
-                :loading="isLoading"
+                :loading="isLoadingOptions"
                 :value="selected"
                 @input="onSelect($event)"
                 :placeholder="$i18n.get('label_selectbox_init')"
@@ -12,7 +12,12 @@
                     v-for="(option, index) in options"
                     :key="index"
                     :label="option.label"
-                    :value="option.value">{{ option.label }}</option>
+                    :value="option.value">
+                {{ option.label }}
+                <span 
+                        v-if="option.total_items != undefined"
+                        class="has-text-gray">{{ "(" + option.total_items + ")" }}</span>    
+            </option>
         </b-select>
     </div>
 </template>
@@ -53,7 +58,6 @@
         },
         data(){
             return {
-                isLoading: false,
                 options: [],
                 type: '',
                 collection: '',
@@ -76,7 +80,6 @@
         }, 
         methods: {
             loadOptions(){
-                this.isLoading = true;
 
                 // Cancels previous Request
                 if (this.getOptionsValuesCancel != undefined)
@@ -84,14 +87,11 @@
 
                 let promise = null;
                 promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel );
-
                 promise.request
                     .then(() => {
-                        this.isLoading = false;
                     })
                     .catch( error => {
                         this.$console.error('error select', error );
-                        this.isLoading = false;
                     });
 
                 // Search Request Token for cancelling

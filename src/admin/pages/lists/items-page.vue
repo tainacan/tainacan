@@ -169,8 +169,15 @@
                                 {{ $i18n.get('add_one_item') }}
                             </div>
                         </b-dropdown-item>
-                        <b-dropdown-item disabled>
-                            {{ $i18n.get('add_items_bulk') + ' (Not ready)' }}
+                        <b-dropdown-item v-if="!isRepositoryLevel">
+                            <router-link
+                                    id="a-item-add-bulk"
+                                    tag="div"
+                                    :to="{ path: $routerHelper.getNewItemBulkAddPath(collectionId) }">
+                                {{ $i18n.get('add_items_bulk') }}
+                                <br> 
+                                <small class="is-small">{{ $i18n.get('info_bulk_add_items') }}</small>
+                            </router-link>
                         </b-dropdown-item>
                         <b-dropdown-item>
                             <div

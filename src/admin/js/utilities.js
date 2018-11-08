@@ -270,6 +270,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getNewEventPath() {
             return '/events/new';
         },
+        getNewItemBulkAddPath(collectionId) {
+            return '/collections/' + collectionId + '/bulk-add';
+        },
         // Edit
         getCollectionEditPath(id) {
             return '/collections/' + id + '/settings';
@@ -294,6 +297,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         },   
         getImporterMappingPath(importerType, sessionId, collectionId) {
             return '/importers/' + importerType + '/' + sessionId + '/mapping/' +  collectionId;
+        },
+        getItemMetadataBulkAddPath(collectionId, groupId) {
+            return '/collections/' + collectionId + '/bulk-add/' + groupId;
         },
     }
 }

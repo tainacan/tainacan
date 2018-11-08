@@ -944,14 +944,14 @@ abstract class Importer {
 
         /*Properties of metadatum*/
         if( is_array($properties) && in_array( 'required', $properties)){
-            $newMetadatum->set_required(true);
+            $newMetadatum->set_required('yes');
         }
 
         if(is_array($properties) && in_array( 'multiple', $properties) ){
             $newMetadatum->set_multiple('yes');
         }
 
-        if(is_array($properties) && in_array( 'display_yes', $properties) ){
+        if( is_array($properties) && in_array( 'display_yes', $properties) ){
             $newMetadatum->set_display('yes');
         } else if(is_array($properties) && in_array( 'display_no', $properties) ){
             $newMetadatum->set_display('no');
@@ -959,6 +959,11 @@ abstract class Importer {
             $newMetadatum->set_display('never');
         }
 
+        if( is_array($properties) && in_array( 'status_public', $properties) ){
+            $newMetadatum->set_status('public');
+        } else if( is_array($properties) && in_array( 'status_private', $properties) ){
+            $newMetadatum->set_status('private');
+        }
 
         if($newMetadatum->validate()){
             $inserted_metadata = $metadata_repo->insert( $newMetadatum );
@@ -968,6 +973,7 @@ abstract class Importer {
         } else{
             $this->add_log('Error creating metadata ' . $name . ' in collection ' . $collection_id);
             $this->add_log($newMetadatum->get_errors());
+
             return false;
         }
     }

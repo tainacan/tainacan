@@ -14,7 +14,9 @@ class Textarea extends Metadata_Type {
         // call metadatum type constructor
         parent::__construct();
         $this->set_primitive_type('long_string');
-        $this->set_component('tainacan-textarea');
+		$this->set_component('tainacan-textarea');
+		$this->set_name( __('Textarea', 'tainacan') );
+        $this->set_description( __('A textarea with multiple lines', 'tainacan') );
     }
 
     /**
@@ -43,7 +45,7 @@ class Textarea extends Metadata_Type {
 			foreach ( $value as $el ) {
 				$return .= nl2br($this->make_clickable_links($el));
 				$count ++;
-				if ($count <= $total)
+				if ($count < $total)
 					$return .= ', ';
 			}
 		} else {

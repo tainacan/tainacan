@@ -1,6 +1,7 @@
 <template>
     <div :class="{ 'is-flex': metadatum.metadatum.multiple != 'yes' || maxtags != undefined }">
         <b-taginput
+                expanded
                 :disabled="disabled"
                 :id="id"
                 v-model="selected"
@@ -134,7 +135,8 @@
                     for( let index in this.searchMetadata ){
                         metaquery[index] = {
                             key: this.searchMetadata[index].id,
-                            value: search
+                            value: search,
+                            compare: 'LIKE'
                         }
                     }
 

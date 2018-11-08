@@ -7,6 +7,7 @@
                 :data="options"
                 autocomplete
                 expanded
+                :loading="isLoadingOptions"
                 :remove-on-keys="[]"
                 field="label"
                 attached
@@ -22,10 +23,14 @@
                                 :src="`${props.option.img}`">
                     </div>
                     <div class="media-content">
-                        {{ props.option.label }}
+                        <span class="ellipsed-text">{{ props.option.label }}</span>
+                        <span 
+                                v-if="props.option.total_items != undefined"
+                                class="has-text-gray">{{ "(" + props.option.total_items + ")" }}</span>
                     </div>
                 </div>
             </template>
+            <template slot="empty">{{ $i18n.get('info_no_options_found'	) }}</template>
         </b-taginput>
     </div>
 </template>
