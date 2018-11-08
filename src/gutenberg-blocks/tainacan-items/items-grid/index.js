@@ -2,29 +2,52 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { Button, Modal } = wp.components;
+const { Button, Modal, TextareaControl, QueryControls, Placeholder, CheckboxControl } = wp.components;
 
-const { RichText } = wp.editor;
+const { InspectorControls } = wp.editor;
 
 import tainacan from '../../api-client/axios.js';
+import qs from 'qs';
 
 registerBlockType('tainacan/items-grid', {
     title: __('Tainacan Items Grid', 'tainacan'),
-    icon: 'images-alt',
+    icon: (
+        <svg
+            style={{width:"24px", height:"24px"}}
+            viewBox="0 0 24 24">
+            <path
+                fill="#000000"
+                d="M10,4V8H14V4H10M16,4V8H20V4H16M16,10V14H20V10H16M16,16V20H20V16H16M14,20V16H10V20H14M8,20V16H4V20H8M8,14V10H4V14H8M8,8V4H4V8H8M10,14H14V10H10V14M4,2H20A2,2 0 0,1 22,4V20A2,2 0 0,1 20,22H4C2.92,22 2,21.1 2,20V4A2,2 0 0,1 4,2Z" />
+        </svg>
+    ),
     category: 'tainacan-blocks',
     attributes: {
+        items2: {
+          type: Array,
+          default: []
+        },
         items: {
             type: 'array',
             source: 'query',
-            selector: 'img',
+            selector: 'a',
             query: {
-                src: {
+                url: {
                     source: 'attribute',
-                    attribute: 'src'
+                    attribute: 'href'
                 },
-                alt: {
-                    source: 'attribute',
-                    attribute: 'alt'
+                img: {
+                    source: 'query',
+                    selector: 'img',
+                    query: {
+                        src: {
+                            source: 'attribute',
+                            attribute: 'src'
+                        },
+                        alt: {
+                            source: 'attribute',
+                            attribute: 'alt'
+                        },
+                    }
                 },
             },
             default: []
@@ -38,94 +61,95 @@ registerBlockType('tainacan/items-grid', {
             source: 'children',
             selector: 'div'
         },
+        itemsPerPage: {
+            type: Number,
+            default: 12
+        },
+        query: {
+            type: Object,
+            default: {}
+        },
+        URLCollectionID: {
+            type: String
+        },
+        tainacanURL: {
+            type: String,
+        },
+        showTitle: {
+            type: Boolean,
+            default: false
+        },
     },
     supports: {
-        align: ['full', 'left', 'right', 'wide'],
         html: false
     },
-    edit({ attributes, setAttributes, className }){
-        console.log('edit', attributes);
-
-        let collectionsMatched = [];
-        let collection = {};
-
-        let { items, isOpen, content } =  attributes;
+    edit({ attributes, setAttributes, className, isSelected }){
+        let { items, items2, isOpen, content, itemsPerPage, query, URLCollectionID, tainacanURL, showTitle } =  attributes;
 
         function prepareItem(item) {
             return (
-                <img
+                <a
                     style={{
-                        width: '150px',
-                        height: '150px',
-                        padding: 0
+                        padding: showTitle ? '2.5px 10px 2.5px 10px': 0,
+                        height: showTitle ? 'auto': '150px',
+                        textDecoration: 'none',
+                        color: 'black',
+                        display: showTitle ? 'flex' : 'block',
+                        flexDirection: showTitle ? 'column' : null
                     }}
+                    href={item.url} target="_blank">
+                    <img
+                        style={{
+                            width: '150px',
+                            maxWidth: '150px',
+                            height: '150px',
+                            padding: 0
+                        }}
 
-                    src={
-                        (item.thumbnail && item.thumbnail.thumb) ?
-                            item.thumbnail.thumb :
-                            ((item && item.src) ?
-                                item.src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
-                    }
+                        src={
+                            (item.thumbnail && item.thumbnail.thumb) ?
+                                item.thumbnail.thumb :
+                                ((item && item.img && item.img[0].src) ?
+                                    item.img[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
+                        }
 
-                    alt={item.title ? item.title : item.alt}/>
+                        alt={item.title ? item.title : item.img[0].alt}/>
+                    { showTitle ? (
+                        <small style={{
+                            maxWidth: '130px',
+                            }}>
+                            <p style={{
+                                fontSize: '10px',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                fontWeight: '600'
+                            }}>{item.title ? item.title : item.img[0].alt}</p>
+                        </small>
+                    ) : null }
+                </a>
             );
         }
 
-        
-        function getItems(collectionID) {
-            return tainacan.get(`/collection/${collectionID}/items?perpage=12`)
-                .then(response => {
-                    console.log(response);
-                    return response.data;
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        }
-        
-        const autocompleters = [{
-            name: __('Collections', 'tainacan'),
-            triggerPrefix: '/',
-            options(keyword) {
-                if (!keyword) {
-                    return [];
-                }
-
-                return tainacan.get(`/collections?search=${keyword}`)
+        function getItems(collectionID, query) {
+            if(collectionID) {
+                return tainacan.get(`/collection/${collectionID}/items?${query}`)
                     .then(response => {
                         return response.data;
                     })
                     .catch(error => {
                         console.error(error);
                     });
-            },
-            getOptionLabel(option) {
-                return (<span>{option.name}</span>);
-            },
-            getOptionKeywords(option) {
-                collectionsMatched.push(option.name);
-
-                return collectionsMatched;
-            },
-            getOptionCompletion(option) {
-
-                collection = option;
-
-                getItems(collection.id).then(data => {
-                    items = [];
-
-                    data.map((item) => {
-                        items.push(prepareItem(item));
+            } else {
+                return tainacan.get(`/items?${query}`)
+                    .then(response => {
+                        return response.data;
+                    })
+                    .catch(error => {
+                        console.error(error);
                     });
-
-                    setAttributes({items: items});
-                    setContent(items);
-                });
-
-                return (<abbr title={option.name}>{` | ${option.name} `}</abbr>);
-            },
-            isDebounced: true,
-        }];
+            }
+        }
 
         function setContent(items){
             setAttributes({
@@ -141,11 +165,58 @@ registerBlockType('tainacan/items-grid', {
                 )
             });
         }
+        
+        function updateQuery(query) {
+            let queryString = qs.stringify(query);
 
-        if(content && content.length && content[0].type){
+            getItems(URLCollectionID, queryString).then(data => {
+                items = [];
+
+                data.map((item) => {
+                    items.push(prepareItem(item));
+                });
+
+                setAttributes({items: items});
+                setAttributes({items2: data});
+                setContent(items);
+            });
+        }
+        
+        function parseURL(tainacanURL) {
+            setAttributes({tainacanURL: tainacanURL});
+
+            let tainacanURLSplited = tainacanURL.split('?');
+
+            let rawQuery = tainacanURLSplited[2];
+            let rawURL = tainacanURLSplited[1];
+
+            let parsedQuery = qs.parse(rawQuery);
+
+            if(parsedQuery.fetch_only && !Object.values(parsedQuery.fetch_only).some(value => value == 'title')){
+                parsedQuery.fetch_only[Object.keys(parsedQuery.fetch_only).length] = 'title';
+            }
+
+            setAttributes({query: parsedQuery});
+            setAttributes({URLCollectionID: rawURL.match(/\/(\d+)\/?/)[1]});
+            setAttributes({itemsPerPage: Number(parsedQuery.perpage)});
+
+            getItems(URLCollectionID, qs.stringify(query)).then(data => {
+                items = [];
+
+                data.map((item) => {
+                    items.push(prepareItem(item));
+                });
+
+                setAttributes({items: items});
+                setAttributes({items2: data});
+                setContent(items);
+            });
+        }
+
+        function mountBlock(itemsA) {
             let itemsP = [];
-            
-            for (const item of items){
+
+            for (const item of itemsA){
                 itemsP.push(prepareItem(item));
             }
 
@@ -154,42 +225,93 @@ registerBlockType('tainacan/items-grid', {
             setContent(itemsP);
         }
 
+        if(content && content.length && content[0].type){
+            mountBlock(items);
+        }
+
         return (
             <div className={className}>
-                <div style={{
-                    marginBottom: '20px',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignContent: 'center'
-                }}>
-                    <Button
-                        style={{
-                            justifyContent: 'center',
-                            width: '100%'
-                        }}
-                        isDefault
-                        onClick={ () => setAttributes( { isOpen: true } ) }>{ __('Select collection', 'tainacan') }</Button>
+
+                <div>
+                    <InspectorControls>
+                        <div style={{marginTop: '20px'}}>
+                            <CheckboxControl
+                                heading={__('Show items title', 'tainacan')}
+                                label={__('yes', 'tainacan')}
+                                checked={ showTitle }
+                                onChange={ ( isChecked ) => {
+                                    showTitle = isChecked;
+
+                                    mountBlock(items2);
+
+                                    setAttributes({showTitle: isChecked});
+                                } }
+                            />
+                        </div>
+                    </InspectorControls>
                 </div>
+
+                { isSelected ? (
+                        <div style={{
+                            marginBottom: '20px',
+                        }}>
+                            <Button
+                                isDefault
+                                onClick={() => setAttributes({isOpen: true})}>{ items.length ? __('Update items grid', 'tainacan') : __('Add items', 'tainacan')}</Button>
+                        </div>
+                    ) : null
+                }
+
+                { !items.length ? (
+                    <Placeholder
+                        icon={(
+                            <img
+                                width={96}
+                                src={`${tainacan_plugin.base_url}/admin/images/tainacan_logo_header.svg`}
+                                alt="Tainacan"/>
+                        )}
+                    />) : null
+                }
 
                 { isOpen ?
                     <Modal
                         shouldCloseOnClickOutside={ false }
                         shouldCloneOnEsc={false}
                         focusOnMount={false}
-                        title={ __('Select collection', 'tainacan') }
+                        title={ __('Add items', 'tainacan') }
                         onRequestClose={ () => setAttributes({isOpen: false}) }>
 
                         <div>
-                            <RichText
-                                autocompleters={autocompleters}
-                                onChange={() => true}
-                                tag="p" />
-                            <p>{ __('Type '+ autocompleters[0].triggerPrefix +' for triggering the autocomplete.', 'tainacan') }</p>
+                            <TextareaControl
+                                label={__(`Paste a Tainacan sharing URL for get items`, 'tainacan')}
+                                type="url"
+                                value={tainacanURL}
+                                onChange={ (tainacanURL) => parseURL( tainacanURL ) }
+                            />
                         </div>
 
-                        <Button isDefault onClick={ () => setAttributes({isOpen: false}) }>
-                            { __('Close', 'tainacan') }
-                        </Button>
+                        { Object.keys(query).length && query.perpage ? (
+                            <div>
+                                <QueryControls
+                                    numberOfItems={itemsPerPage}
+                                    onNumberOfItemsChange={
+                                        (numberOfItems) => {
+                                            query.perpage = numberOfItems;
+                                            setAttributes({itemsPerPage: numberOfItems});
+
+                                            _.debounce(updateQuery(query), 300);
+                                        }
+                                    }
+                                />
+                            </div>
+                            ) : null
+                        }
+
+                        <div>
+                            <Button isDefault onClick={ () => setAttributes({isOpen: false}) }>
+                                { __('Close', 'tainacan') }
+                            </Button>
+                        </div>
                     </Modal> : null }
 
                 <div style={{
@@ -205,8 +327,6 @@ registerBlockType('tainacan/items-grid', {
     },
     save({ attributes }){
         const { content } = attributes;
-
-        console.log('save', attributes);
 
         return <div>{ content }</div>
     }

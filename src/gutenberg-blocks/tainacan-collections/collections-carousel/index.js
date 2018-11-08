@@ -143,6 +143,22 @@ registerBlockType('tainacan/collections-carousel', {
                             slidesPerPage={contentTemp.length >= 3 ? 3 : contentTemp.length}
                             arrows
                             slides={contentTemp}
+                            breakpoints={{
+                                1000: { // these props will be applied when screen width is less than 1000px
+                                    slidesPerPage: 2,
+                                    clickToChange: false,
+                                    centered: false,
+                                    arrows: true,
+                                    infinite: false,
+                                },
+                                500: {
+                                    slidesPerPage: 1,
+                                    slidesPerScroll: 1,
+                                    clickToChange: false,
+                                    centered: false,
+                                    infinite: false,
+                                },
+                            }}
                         />
                     </div>) : []
             });
@@ -289,6 +305,7 @@ registerBlockType('tainacan/collections-carousel', {
                 }
             },
             isDebounced: true,
+            debounceSpeak: true,
         }];
 
         return (
@@ -351,6 +368,22 @@ registerBlockType('tainacan/collections-carousel', {
                             slidesPerPage={contentTemp.length >= 3 ? 3 : contentTemp.length}
                             arrows
                             slides={contentTemp}
+                            breakpoints={{
+                                1000: { // these props will be applied when screen width is less than 1000px
+                                    slidesPerPage: 2,
+                                    clickToChange: false,
+                                    centered: false,
+                                    arrows: true,
+                                    infinite: false,
+                                },
+                                500: {
+                                    slidesPerPage: 1,
+                                    slidesPerScroll: 1,
+                                    clickToChange: false,
+                                    centered: false,
+                                    infinite: false,
+                                },
+                            }}
                         /> : null
                     }
                 </div>
