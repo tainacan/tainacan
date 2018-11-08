@@ -1,8 +1,10 @@
 import axios from '../../../axios/axios';
+import qs from 'qs';
 
 // FILTERS --------------------------------------------------------
-export const fetchFilters = ({ commit }, {collectionId, isRepositoryLevel, isContextEdit, includeDisabled}) => {
+export const fetchFilters = ({ commit }, { collectionId, isRepositoryLevel, isContextEdit, includeDisabled, customFilters }) => {
     return new Promise((resolve, reject) => {
+
         let endpoint = '';
         if (!isRepositoryLevel) 
             endpoint = '/collection/' + collectionId + '/filters/';
@@ -17,6 +19,11 @@ export const fetchFilters = ({ commit }, {collectionId, isRepositoryLevel, isCon
 
         if (includeDisabled){
             endpoint += '&include_disabled=' + includeDisabled;
+        }
+
+        if (customFilters != undefined && customFilters.length > 0) {
+            let postin = { 'postin': customFilters };
+            endpoint += '&' + qs.stringify(postin);
         }
 
         axios.tainacan.get(endpoint)

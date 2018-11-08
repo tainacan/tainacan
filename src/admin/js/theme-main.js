@@ -106,7 +106,8 @@ export const ThemeItemsListing =  new Vue({
         taxonomy: '',
         collectionId: '',
         defaultViewMode: '',
-        enabledViewModes: {}   
+        enabledViewModes: {},
+        customFilters: []
     },
     render: h => h(ThemeItemsList),
     beforeMount () {
@@ -125,6 +126,9 @@ export const ThemeItemsListing =  new Vue({
             this.termId = this.$el.attributes['term-id'].value;
         if (this.$el.attributes['taxonomy'] != undefined)
             this.taxonomy = this.$el.attributes['taxonomy'].value;
+
+        if (this.$el.attributes['custom-filters'] != undefined)
+            this.customFilters = JSON.parse(this.$el.attributes['custom-filters'].value);
     }
     
 });
