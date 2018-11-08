@@ -13,8 +13,9 @@
                 <a
                         target="_blank"
                         :href="baseURL + '/collections'">
-                    <b-icon
-                            icon="eye"/>
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-24px tainacan-icon-see"/>
+                    </span>
                     <span class="menu-text">{{ $i18n.get('label_view_on_theme') }}</span>
                 </a>
             </div>
@@ -24,9 +25,9 @@
                         <router-link
                                 tag="a"
                                 to="/collections">
-                            <b-icon
-                                    size="is-medium"
-                                    icon="folder-multiple"/>
+                            <span class="icon is-medium">
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-collections"/>
+                            </span>
                             <span class="menu-text">{{ $i18n.getFrom('collections', 'name') }}</span>
                         </router-link>
                     </li>
@@ -34,9 +35,9 @@
                         <router-link
                                 tag="a"
                                 to="/items">
-                            <b-icon
-                                    size="is-medium"
-                                    icon="file-multiple"/>
+                            <span class="icon is-medium">
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-items"/>
+                            </span>
                             <span class="menu-text">{{ $i18n.getFrom('items', 'name') }}</span>
                         </router-link>
                     </li>
@@ -45,7 +46,7 @@
                                 tag="a"
                                 to="/metadata">
                             <span class="icon is-medium">
-                                <i class="mdi mdi-36px mdi-format-list-bulleted-type"/>
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
                             </span>
                             <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
                         </router-link>
@@ -55,7 +56,7 @@
                                 tag="a"
                                 to="/filters">
                             <span class="icon is-medium">
-                                <i class="mdi mdi-36px mdi-filter"/>
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters"/>
                             </span>
                             <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                         </router-link>
@@ -85,7 +86,7 @@
                                 tag="a"
                                 to="/importers">
                             <span class="icon is-medium">
-                                <i class="mdi mdi-36px mdi-import"/>
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-importers"/>
                             </span>
                             <span class="menu-text menu-text-import">{{ $i18n.get('importers') }}</span>
                         </router-link>
@@ -103,8 +104,9 @@
                  <router-link
                         tag="a"
                         to="/collections">
-                    <b-icon
-                            icon="view-list"/>
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-24px tainacan-icon-viewtable"/>
+                    </span>
                     <span class="menu-text">{{ $i18n.get('label_view_all_collections') }}</span>
                 </router-link>
             </div>

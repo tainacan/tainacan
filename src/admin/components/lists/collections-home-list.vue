@@ -21,7 +21,7 @@
                             :to="{ path: $routerHelper.getNewCollectionPath() }" 
                             :aria-label="$i18n.get('label_collection_items')">
                         <span class="icon is-medium">
-                            <i class="mdi mdi-36px mdi-file-multiple"/>
+                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-items"/>
                         </span>
                         <span class="menu-text">{{ $i18n.get('items') }}</span>
                     </router-link>
@@ -32,7 +32,7 @@
                             :to="{ path: $routerHelper.getNewCollectionPath() }"
                             :aria-label="$i18n.get('label_collection_metadata')">
                         <span class="icon is-medium">
-                            <i class="mdi mdi-36px mdi-format-list-bulleted-type"/>
+                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
                     </router-link>
@@ -43,7 +43,7 @@
                             :to="{ path: $routerHelper.getNewCollectionPath() }" 
                             :aria-label="$i18n.get('label_collection_filters')">
                         <span class="icon is-medium">
-                            <i class="mdi mdi-36px mdi-filter"/>
+                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                     </router-link>
@@ -75,7 +75,7 @@
                                         :label="$i18n.get('items')"
                                         position="is-bottom">
                                     <span class="icon">
-                                        <i class="mdi mdi-file-multiple"/>
+                                        <i class="tainacan-icon tainacan-icon-items"/>
                                     </span>
                                 </b-tooltip>
                                 <!-- <span class="menu-text">{{ $i18n.get('items') }}</span> -->
@@ -90,7 +90,7 @@
                                         :label="$i18n.getFrom('metadata', 'name')"
                                         position="is-bottom">
                                     <span class="icon">
-                                        <i class="mdi mdi-format-list-bulleted-type"/>
+                                        <i class="tainacan-icon tainacan-icon-metadata"/>
                                     </span>
                                 </b-tooltip>
                                 <!-- <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span> -->
@@ -106,7 +106,7 @@
                                         :label="$i18n.getFrom('filters', 'name')"
                                         position="is-bottom">
                                     <span class="icon">
-                                        <i class="mdi mdi-filter"/>
+                                        <i class="tainacan-icon tainacan-icon-filters"/>
                                     </span>
                                 </b-tooltip>
                                 <!-- <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span> -->
@@ -133,7 +133,7 @@
                                         :label="$i18n.get('label_view_collection')"
                                         position="is-bottom">
                                     <span class="icon">
-                                        <i class="mdi mdi-eye"/>
+                                        <i class="tainacan-icon tainacan-icon-see"/>
                                     </span>
                                 </b-tooltip>
                             </a>
@@ -147,7 +147,7 @@
                                         :label="$i18n.get('items')"
                                         position="is-bottom">
                                     <span class="icon">
-                                        <i class="mdi mdi-file-multiple"/>
+                                        <i class="tainacan-icon tainacan-icon-items"/>
                                     </span>
                                 </b-tooltip>
                                 <!-- <span class="menu-text">{{ $i18n.get('items') }}</span> -->
@@ -162,7 +162,7 @@
                                         :label="$i18n.get('label_settings')"
                                         position="is-bottom">
                                     <span class="icon">
-                                        <i class="mdi mdi-settings"/>
+                                        <i class="tainacan-icon tainacan-icon-settings"/>
                                     </span>
                                 </b-tooltip>
                                 <!-- <span class="menu-text">{{ $i18n.get('label_settings') }}</span> -->
@@ -177,7 +177,7 @@
                                         :label="$i18n.getFrom('metadata', 'name')"
                                         position="is-bottom">
                                     <span class="icon">
-                                        <i class="mdi mdi-format-list-bulleted-type"/>
+                                        <i class="tainacan-icon tainacan-icon-metadata"/>
                                     </span>
                                 </b-tooltip>
                                 <!-- <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span> -->
@@ -193,7 +193,7 @@
                                         :label="$i18n.getFrom('filters', 'name')"
                                         position="is-bottom">
                                     <span class="icon">
-                                        <i class="mdi mdi-filter"/>
+                                        <i class="tainacan-icon tainacan-icon-filters"/>
                                     </span>
                                 </b-tooltip>
                                 <!-- <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span> -->

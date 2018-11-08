@@ -97,7 +97,7 @@
                                 :label="$i18n.getFrom('metadata', 'name')"
                                 position="is-bottom">
                             <span class="icon">
-                                <i class="mdi mdi-format-list-bulleted-type"/>
+                                <i class="tainacan-icon tainacan-icon-metadata"/>
                             </span>
                         </b-tooltip>
                         <!-- <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span> -->

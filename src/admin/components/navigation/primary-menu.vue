@@ -38,7 +38,7 @@
                             to="/metadata"
                             :class="activeRoute == 'MetadataPage' ? 'is-active':''">
                         <span class="icon">
-                            <i class="mdi mdi-format-list-bulleted-type"/>
+                            <i class="tainacan-icon tainacan-icon-metadata"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
                     </router-link>

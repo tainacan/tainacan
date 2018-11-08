@@ -15,17 +15,17 @@
                     :disabled="localTerms.length <= 0 || isLoadingTerms || isEditingTerm || order == 'asc'"
                     class="button is-white is-small"
                     @click="onChangeOrder('asc')">
-                <b-icon 
-                        class="gray-icon"
-                        icon="sort-ascending"/>
+                <span class="icon gray-icon">
+                    <i class="tainacan-icon tainacan-icon-sortascending"/>
+                </span>
             </button>
             <button
                     :disabled="localTerms.length <= 0 || isLoadingTerms || isEditingTerm || order == 'desc'"
                     class="button is-white is-small"
                     @click="onChangeOrder('desc')">
-                <b-icon 
-                        class="gray-icon"
-                        icon="sort-descending"/>
+                <span class="icon gray-icon">
+                    <i class="tainacan-icon tainacan-icon-sortdescending"/>
+                </span>
             </button>
         </b-field>
         <div class="search-area is-hidden-mobile">
@@ -423,11 +423,15 @@ export default {
             padding: 4px;
             margin-left: auto;
 
-            .gray-icon, .gray-icon .icon {
+            .gray-icon, 
+            .gray-icon .icon {
                 color: $gray4 !important;
             }
-            .gray-icon .icon i::before, .gray-icon i::before {
+            .gray-icon 
+            .icon i::before, 
+            .gray-icon i::before {
                 font-size: 21px !important;
+                width: 26px;
             }
         }
 
