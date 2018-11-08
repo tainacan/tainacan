@@ -944,7 +944,7 @@ abstract class Importer {
 
         /*Properties of metadatum*/
         if( is_array($properties) && in_array( 'required', $properties)){
-            $newMetadatum->set_required(true);
+            $newMetadatum->set_required('yes');
         }
 
         if(is_array($properties) && in_array( 'multiple', $properties) ){
@@ -973,6 +973,7 @@ abstract class Importer {
         } else{
             $this->add_log('Error creating metadata ' . $name . ' in collection ' . $collection_id);
             $this->add_log($newMetadatum->get_errors());
+
             return false;
         }
     }

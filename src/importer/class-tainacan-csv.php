@@ -519,7 +519,7 @@ class CSV extends Importer {
      * @param $status string the item ID
      */
     private function handle_item_id( $values ) {
-        $item_id_index = $this->set_option('item_id_index');
+        $item_id_index = $this->get_option('item_id_index');
         if( $item_id_index && isset($values[$item_id_index]) ){
             $this->add_transient( 'item_id',$values[$item_id_index] );
             $this->add_transient( 'item_action',$this->get_option('repeated_item') );
