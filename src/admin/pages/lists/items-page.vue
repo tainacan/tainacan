@@ -275,7 +275,7 @@
                                 :disabled="totalItems <= 0 || order == 'DESC'"
                                 @click="onChangeOrder()">
                             <span class="icon is-small gray-icon">
-                                <i class="mdi mdi-sort-ascending"/>
+                                <i class="tainacan-icon tainacan-icon-sortascending"/>
                             </span>
                         </button>
                         <button
@@ -283,7 +283,7 @@
                                 class="button is-white is-small"
                                 @click="onChangeOrder()">
                             <span class="icon is-small gray-icon">
-                                <i class="mdi mdi-sort-descending"/>
+                                <i class="tainacan-icon tainacan-icon-sortdescending"/>
                             </span>
                         </button>
                     </b-field>
@@ -338,12 +338,12 @@
                                 <span>
                                         <span class="icon is-small gray-icon">
                                         <i 
-                                                :class="{'mdi-view-list' : ( adminViewMode == 'table' || adminViewMode == undefined),
-                                                        'mdi-view-module' : adminViewMode == 'cards',
-                                                        'mdi-apps' : adminViewMode == 'grid',
-                                                        'mdi-view-column' : adminViewMode == 'records',
-                                                        'mdi-view-dashboard' : adminViewMode == 'masonry'}"
-                                                class="mdi"/>
+                                                :class="{'tainacan-icon-viewtable' : ( adminViewMode == 'table' || adminViewMode == undefined),
+                                                        'tainacan-icon-viewcards' : adminViewMode == 'cards',
+                                                        'tainacan-icon-viewminiature' : adminViewMode == 'grid',
+                                                        'tainacan-icon-viewrecords' : adminViewMode == 'records',
+                                                        'tainacan-icon-viewmasonry' : adminViewMode == 'masonry'}"
+                                                class="tainacan-icon"/>
                                     </span>
                                 </span>
                                 &nbsp;&nbsp;&nbsp;{{ $i18n.get('label_visualization') }}
@@ -352,41 +352,41 @@
                             <b-dropdown-item 
                                     :class="{ 'is-active': adminViewMode == 'table' }"
                                     :value="'table'">
-                                <b-icon 
-                                        class="gray-icon" 
-                                        icon="view-list"/>
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-viewtable"/>
+                                </span>
                                 {{ $i18n.get('label_table') }}
                             </b-dropdown-item>
                             <b-dropdown-item 
                                     :class="{ 'is-active': adminViewMode == 'cards' }"
                                     :value="'cards'">
-                                <b-icon 
-                                        class="gray-icon" 
-                                        icon="view-module"/>
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-viewcards"/>
+                                </span>
                                 {{ $i18n.get('label_cards') }}
                             </b-dropdown-item>
                             <b-dropdown-item 
                                     :class="{ 'is-active': adminViewMode == 'grid' }"
                                     :value="'grid'">
-                                <b-icon 
-                                        class="gray-icon" 
-                                        icon="apps"/>
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-viewminiature"/>
+                                </span>
                                 {{ $i18n.get('label_thumbnails') }}
                             </b-dropdown-item>
                             <b-dropdown-item 
                                     :class="{ 'is-active': adminViewMode == 'records' }"
                                     :value="'records'">
-                                <b-icon 
-                                        class="gray-icon" 
-                                        icon="view-column"/>
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-viewrecords"/>
+                                </span>
                                 {{ $i18n.get('label_records') }}
                             </b-dropdown-item>
                             <b-dropdown-item 
                                     :class="{ 'is-active': adminViewMode == 'masonry' }"
                                     :value="'masonry'">
-                                <b-icon 
-                                        class="gray-icon" 
-                                        icon="view-dashboard"/>
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-viewmasonry"/>
+                                </span>
                                 {{ $i18n.get('label_masonry') }}
                             </b-dropdown-item>
                         </b-dropdown>
@@ -1489,7 +1489,7 @@
         }
 
         .button {
-            align-items: flex-start;
+            align-items: inherit;
         }
         
         .field {
@@ -1500,8 +1500,10 @@
             color: $gray4 !important;
             padding-right: 10px;
         }
-        .gray-icon .icon i::before, .gray-icon i::before {
+        .gray-icon .icon i::before, 
+        .gray-icon i::before {
             font-size: 1.3125rem !important;
+            max-width: 26px;
         }
         
         .view-mode-icon {

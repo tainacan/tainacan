@@ -25,9 +25,10 @@ export default {
 }
 </script>
 
-
 <style lang="scss">
-   @import "../admin/scss/_variables.scss";
+
+    // TAINACAN Variables
+    @import "./scss/_variables.scss";
 
     // Bulma imports
     @import "./scss/theme-basics.sass";
