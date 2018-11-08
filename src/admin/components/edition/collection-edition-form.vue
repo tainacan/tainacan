@@ -135,7 +135,9 @@
                             <a 
                                     target="_blank" 
                                     :href="coverPage.link">
-                                <eye-icon :style="{fill: isNewCollection ? '#01295c' : '#298596' }" />
+                                <span class="icon is-small">
+                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-see"/>
+                                </span>
                             </a>
                             &nbsp;&nbsp;
                             <a 
@@ -478,7 +480,6 @@
 import { mapActions } from 'vuex';
 import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
-import EyeIcon from '../other/eye-icon.vue';
 import { wpAjax, formHooks } from '../../js/mixins';
 
 export default {
@@ -547,8 +548,7 @@ export default {
         }
     },
     components: {
-        FileItem,
-        EyeIcon
+        FileItem
     },
     methods: {
         ...mapActions('collection', [
@@ -1036,18 +1036,11 @@ export default {
         float: right;
         padding: 4px 6px;
         .icon { font-size: 20px; }   
-        .eye-icon {
-            position: relative;
-            top: 2px;         
-        }
         &.disabled {
             pointer-events: none;
             cursor: not-allowed;
            
            .icon { color: $gray2; }
-            .eye-icon {
-                fill: $gray2 !important;
-            }
         }
     }
     .status-radios {

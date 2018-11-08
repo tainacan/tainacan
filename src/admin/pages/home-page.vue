@@ -64,7 +64,9 @@
                         <router-link
                                 tag="a"
                                 to="/taxonomies">
-                            <taxonomies-icon />
+                            <span class="icon is-medium">
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-taxonomies"/>
+                            </span>
                             <span class="menu-text">{{ $i18n.getFrom('taxonomies', 'name') }}</span>
                         </router-link>
                     </li>
@@ -72,7 +74,10 @@
                         <router-link
                                 tag="a"
                                 to="/events">
-                            <activities-icon /><span class="menu-text">{{ $i18n.get('events') }}</span>
+                            <span class="icon is-medium">
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-activities"/>
+                            </span>
+                            <span class="menu-text">{{ $i18n.get('events') }}</span>
                         </router-link>
                     </li>
                     <li>
@@ -113,8 +118,6 @@
 
 <script>
 import CollectionsHomeList from '../components/lists/collections-home-list.vue';
-import ActivitiesIcon from '../components/other/activities-icon.vue';
-import TaxonomiesIcon from '../components/other/taxonomies-icon.vue';
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
@@ -127,9 +130,7 @@ export default {
         }
     },
     components: {
-        CollectionsHomeList,
-        ActivitiesIcon,
-        TaxonomiesIcon
+        CollectionsHomeList
     },
     computed: {
         collections() {
@@ -280,13 +281,6 @@ export default {
                     flex-direction: column;
                     align-items: center;
                     justify-content: space-evenly;
-
-                    svg.taxonomies-icon,
-                    svg.activities-icon {
-                        fill: $blue5;
-                        height: 34px;
-                        width: 34px;
-                    }
                 }
             }
         }

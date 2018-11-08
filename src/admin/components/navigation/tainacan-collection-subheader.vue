@@ -131,7 +131,9 @@
                         <b-tooltip 
                                 :label="$i18n.get('events')"
                                 position="is-bottom">
-                            <activities-icon />
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-activities"/>
+                            </span>
                         </b-tooltip>
                         <!-- <span class="menu-text">{{ $i18n.get('events') }}</span> -->
                     </router-link>
@@ -145,7 +147,6 @@
 
 <script>
 import { mapActions } from 'vuex';
-import ActivitiesIcon from '../other/activities-icon.vue';
 
 export default {
     name: 'TainacanCollectionSubheader',
@@ -158,9 +159,6 @@ export default {
             collectionBreadCrumbItem: {},
             childrenBreadCrumbItems: []
         }
-    },
-    components: {
-        ActivitiesIcon
     },
     props: {
         id: Number,
@@ -305,11 +303,6 @@ export default {
             // overflow: hidden;
             // max-width: 50px;
 
-            svg.activities-icon {
-                top: 3px;
-                position: relative;
-            }
-
             &.is-active {
                 background-color: $turquoise4;
                 a { 
@@ -317,10 +310,6 @@ export default {
                     transition: color 0.2s ease;
                     color: white;
                     text-decoration: none;
-                }
-                svg.activities-icon {
-                    transition: fill 0.2s ease;
-                    fill: white !important;
                 }
             }
             &:hover:not(.is-active) {
@@ -331,9 +320,6 @@ export default {
                     background-color: transparent;
                     text-decoration: none; 
                     color: $turquoise5;
-                }
-                svg.activities-icon {
-                    fill: $turquoise5 !important;
                 }
                 // .menu-text {
                 //     opacity: 1.0;

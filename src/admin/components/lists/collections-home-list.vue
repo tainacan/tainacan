@@ -207,7 +207,9 @@
                                 <b-tooltip 
                                         :label="$i18n.get('events')"
                                         position="is-bottom">
-                                    <activities-icon />
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-activities"/>
+                                    </span>
                                 </b-tooltip>
                                 <!-- <span class="menu-text">{{ $i18n.get('events') }}</span> -->
                             </router-link> 
@@ -233,17 +235,12 @@
 </template>
 
 <script>
-import ActivitiesIcon from '../other/activities-icon.vue';
-
 export default {
     name: 'CollectionsHomeList',
     data(){
         return {
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png'
         }
-    },
-    components: {
-        ActivitiesIcon
     },
     props: {
         isLoading: false,
@@ -288,12 +285,6 @@ export default {
                 align-items: center;
                 justify-content: space-evenly;
 
-                svg.taxonomies-icon,
-                svg.activities-icon {
-                    fill: $turquoise5;
-                    height: 34px;
-                    width: 34px;
-                }
             }
         }
     }
