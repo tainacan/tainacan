@@ -14,9 +14,9 @@
                             tag="a"
                             to="/collections"
                             :class="activeRoute == 'CollectionsPage' || $route.params.collectionId != undefined ? 'is-active':''">
-                        <b-icon
-                                size="is-small"
-                                icon="folder-multiple"/>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-24px tainacan-icon-collections"/>
+                        </span>
                         <span class="menu-text">{{ $i18n.getFrom('collections', 'name') }}</span>
                     </router-link>
                 </li>
@@ -25,9 +25,9 @@
                             tag="a"
                             to="/items"
                             :class="activeRoute == 'ItemsPage' ? 'is-active':''">
-                        <b-icon
-                                size="is-small"
-                                icon="file-multiple"/>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-24px tainacan-icon-items"/>
+                        </span>
                         <span class="menu-text">{{ $i18n.getFrom('items', 'name') }}</span>
                     </router-link>
                 </li>
@@ -38,7 +38,7 @@
                             to="/metadata"
                             :class="activeRoute == 'MetadataPage' ? 'is-active':''">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-metadata"/>
+                            <i class="tainacan-icon tainacan-icon-24px tainacan-icon-metadata"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
                     </router-link>
@@ -49,7 +49,7 @@
                             to="/filters"
                             :class="activeRoute == 'FiltersPage' ? 'is-active':''">
                         <span class="icon">
-                            <i class="mdi mdi-filter"/>
+                            <i class="tainacan-icon tainacan-icon-24px tainacan-icon-filters"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                     </router-link>
@@ -60,7 +60,7 @@
                             to="/taxonomies"
                             :class="activeRoute == 'Page' ? 'is-active':''">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-taxonomies"/>
+                            <i class="tainacan-icon tainacan-icon-24px tainacan-icon-taxonomies"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('taxonomies', 'name') }}</span>
                     </router-link>
@@ -86,7 +86,7 @@
                                 activeRoute == 'ImporterCreationForm' ||
                                 activeRoute == 'ImporterMappingForm' ) ? 'is-active':''">
                         <span class="icon">
-                            <i class="mdi mdi-24px mdi-import"/>
+                            <i class="tainacan-icon tainacan-icon-24px tainacan-icon-importers"/>
                         </span>
                         <span class="menu-text menu-text-import">{{ $i18n.get('importers') }}</span>
                     </router-link>
@@ -155,17 +155,12 @@ export default {
                 -webkit-transition: padding 0.2s linear; /* Safari */
                 transition: padding 0.2s linear;
 
-                .mdi-import::before {
-                    font-size: 22px !important;
-                    position: relative;
-                    left: -2px;
-                }
                 .icon {
                     height: auto;
                     width: auto;
-                    i {
-                        font-size: 18px !important;
-                    }
+                    // i, i::before {
+                    //     font-size: 18px !important;
+                    // }
                 }
             }
 

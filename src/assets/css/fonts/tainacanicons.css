@@ -87,6 +87,9 @@
 .tainacan-icon-collections:before {
     content: "collections";
 }
+.tainacan-icon-delete:before {
+    content: "delete";
+}
 .tainacan-icon-deleteforever:before {
     content: "deleteforever";
 }

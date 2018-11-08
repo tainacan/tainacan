@@ -356,16 +356,18 @@
                                         value="publish"
                                         native-value="publish">
                                     <span class="icon">
-                                        <i class="mdi mdi-earth"/>
-                                    </span> {{ $i18n.get('publish_visibility') }}
+                                        <i class="tainacan-icon tainacan-icon-public"/>
+                                    </span>
+                                    {{ $i18n.get('publish_visibility') }}
                                 </b-radio>
                                 <b-radio
                                         v-model="visibility"
                                         value="private"
                                         native-value="private">
                                     <span class="icon">
-                                        <i class="mdi mdi-lock"/>
-                                    </span>  {{ $i18n.get('private_visibility') }}
+                                        <i class="tainacan-icon tainacan-icon-private"/>
+                                    </span>
+                                    {{ $i18n.get('private_visibility') }}
                                 </b-radio>
                             </div>
                         </div>
@@ -451,7 +453,7 @@
                         type="button"
                         class="button sequence-button">
                     <span class="icon is-large">
-                        <i class="mdi mdi-24px mdi-chevron-left"/>
+                        <i class="tainacan-icon tainacan-icon-24px tainacan-icon-previous"/>
                     </span>
                     <span>{{ $i18n.get('previous') }}</span>
                 </button>
@@ -474,7 +476,7 @@
                         class="button sequence-button">
                     <span>{{ $i18n.get('next') }}</span>
                     <span class="icon is-large">
-                        <i class="mdi mdi-24px mdi-chevron-right"/>
+                        <i class="tainacan-icon tainacan-icon-24px tainacan-icon-next"/>
                     </span>
                 </button>
             </div>
@@ -487,7 +489,7 @@
                         type="button"
                         class="button sequence-button">                    
                     <span class="icon is-large">
-                        <i class="mdi mdi-24px mdi-chevron-left"/>
+                        <i class="tainacan-icon tainacan-icon-24px tainacan-icon-previous"/>
                     </span>
                     <span>{{ $i18n.get('previous') }}</span>
                 </button>
@@ -516,7 +518,7 @@
                         class="button sequence-button">
                     <span>{{ $i18n.get('next') }}</span>
                     <span class="icon is-large">
-                        <i class="mdi mdi-24px mdi-chevron-right"/>
+                        <i class="tainacan-icon tainacan-icon-24px tainacan-icon-next"/>
                     </span>
                 </button>
             </div>
@@ -529,7 +531,7 @@
                         type="button"
                         class="button sequence-button">
                     <span class="icon is-large">
-                        <i class="mdi mdi-24px mdi-chevron-left"/>
+                        <i class="tainacan-icon tainacan-icon-24px tainacan-icon-previous"/>
                     </span>
                     <span>{{ $i18n.get('previous') }}</span>
                 </button>
@@ -553,7 +555,7 @@
                         class="button sequence-button">
                     <span>{{ $i18n.get('next') }}</span>
                     <span class="icon is-large">
-                        <i class="mdi mdi-24px mdi-chevron-right"/>
+                        <i class="tainacan-icon tainacan-icon-24px tainacan-icon-next"/>
                     </span>
                 </button>
             </div>

@@ -66,18 +66,18 @@
                                         id="button-edit-thumbnail" 
                                         :aria-label="$i18n.get('label_button_edit_thumb')"
                                         @click.prevent="thumbnailMediaFrame.openFrame($event)">
-                                    <b-icon 
-                                            size="is-small"
-                                            icon="pencil" />
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-edit"/>
+                                    </span>
                                 </a>
                                 <a 
                                         class="button is-rounded is-secondary"
                                         id="button-delete-header-image" 
                                         :aria-label="$i18n.get('label_button_delete_thumb')" 
                                         @click="deleteThumbnail()">
-                                    <b-icon 
-                                            size="is-small"
-                                            icon="delete" />
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-delete"/>
+                                    </span>
                                 </a>
                             </div>
                         </div>
@@ -123,9 +123,9 @@
                                 <a 
                                         target="_blank"
                                         @click.prevent="removeCoverPage()">
-                                    <b-icon 
-                                            size="is-small"
-                                            icon="close"/>
+                                    <span class="icon is-small">
+                                        <i class="tainacan-icon tainacan-icon-close"/>
+                                    </span>
                                 </a>
                             </span>
                         </div>
@@ -136,16 +136,16 @@
                                     target="_blank" 
                                     :href="coverPage.link">
                                 <span class="icon is-small">
-                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-see"/>
+                                    <i class="tainacan-icon tainacan-icon-24px tainacan-icon-see"/>
                                 </span>
                             </a>
                             &nbsp;&nbsp;
                             <a 
                                     target="blank" 
                                     :href="coverPageEditPath">
-                                <b-icon 
-                                        size="is-small"
-                                        icon="pencil"/>
+                                <span class="icon is-small">
+                                    <i class="tainacan-icon tainacan-icon-edit"/>
+                                </span>
                             </a>
                         </span>
                         <br>
@@ -154,11 +154,10 @@
                                 :class="{'disabled': form.enable_cover_page != 'yes'}"
                                 target="_blank"  
                                 :href="newPagePath">
-                            <b-icon
-                                    icon="plus-circle"
-                                    size="is-small"
-                                    type="is-secondary"/>
-                                {{ $i18n.get('label_create_new_page') }}</a>                        
+                            <span class="icon is-small">
+                                <i class="tainacan-icon tainacan-icon-add"/>
+                            </span>
+                            {{ $i18n.get('label_create_new_page') }}</a>                        
                     </b-field>
 
                     <!-- Enabled View Modes ------------------------------- --> 
@@ -179,7 +178,9 @@
                                         position="is-top-right"
                                         type="button">
                                     <span>{{ $i18n.get('label_enabled_view_modes') }}</span>
-                                    <b-icon icon="menu-down"/>
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-24px tainacan-icon-arrowdown"/>
+                                    </span>
                                 </button>
                                 <b-dropdown-item
                                         v-for="(viewMode, index) in Object.keys(registeredViewModes)"
@@ -267,8 +268,8 @@
                                     :native-value="statusOption.value">
                                 <span class="icon has-text-gray">
                                     <i 
-                                        class="mdi mdi-18px"
-                                        :class="'mdi-' + getStatusIcon(statusOption.value)"/>
+                                        class="tainacan-icon tainacan-icon-18px"
+                                        :class="'tainacan-icon-' + getStatusIcon(statusOption.value)"/>
                                 </span>
                                 {{ statusOption.label }}
                             </b-radio>
@@ -293,18 +294,18 @@
                                         id="button-edit-header-image" 
                                         :aria-label="$i18n.get('label_button_edit_header_image')"
                                         @click="headerImageMediaFrame.openFrame($event)">
-                                    <b-icon 
-                                            size="is-small"
-                                            icon="pencil" />
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-edit"/>
+                                    </span>
                                 </a>
                                 <a 
                                         class="button is-rounded is-secondary"
                                         id="button-delete-header-image" 
                                         :aria-label="$i18n.get('label_button_delete_thumb')" 
                                         @click="deleteHeaderImage()">
-                                    <b-icon 
-                                            size="is-small"
-                                            icon="delete" />
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-delete"/>
+                                    </span>
                                 </a>
                             </div>     
                         </div>
@@ -826,11 +827,11 @@ export default {
         },
         getStatusIcon(status) {
             switch(status) {
-                case 'publish': return 'earth';
-                case 'private': return 'lock';
-                case 'draft': return 'clipboard-text';
+                case 'publish': return 'public';
+                case 'private': return 'private';
+                case 'draft': return 'draft';
                 case 'trash': return 'delete';
-                default: return 'file';
+                default: return 'item';
             }
         }
     },
@@ -1034,8 +1035,7 @@ export default {
     }
     .selected-cover-page-buttons {
         float: right;
-        padding: 4px 6px;
-        .icon { font-size: 20px; }   
+        padding: 4px 6px;  
         &.disabled {
             pointer-events: none;
             cursor: not-allowed;

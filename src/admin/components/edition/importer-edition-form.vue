@@ -90,7 +90,7 @@
                                     target="_blank"
                                     @click.prevent="importerFile = undefined">
                                 <span class="icon">
-                                    <i class="mdi mdi-18px mdi-close"/>
+                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-close"/>
                                 </span>
                             </a>
                         </div>

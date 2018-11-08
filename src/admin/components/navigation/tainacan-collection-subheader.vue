@@ -8,7 +8,7 @@
                     @click="$router.go(-1)"
                     class="button is-turquoise4">
                 <span class="icon">
-                    <i class="mdi mdi-chevron-left"/>
+                    <i class="tainacan-icon tainacan-icon-previous"/>
                 </span>
             </button>
         </div>
@@ -19,7 +19,7 @@
                             @click="$router.go(-1)"
                             class="button is-turquoise4">
                         <span class="icon">
-                            <i class="mdi mdi-chevron-left"/>
+                            <i class="tainacan-icon tainacan-icon-previous"/>
                         </span>
                     </button>
                 </div>
@@ -63,7 +63,7 @@
                                 :label="$i18n.get('items')"
                                 position="is-bottom">
                             <span class="icon">
-                                <i class="mdi mdi-file-multiple"/>
+                                <i class="tainacan-icon tainacan-icon-items"/>
                             </span>
                         </b-tooltip>
                         <!-- <span class="menu-text">{{ $i18n.get('items') }}</span> -->
@@ -80,7 +80,7 @@
                                 :label="$i18n.get('label_settings')"
                                 position="is-bottom">
                             <span class="icon">
-                                <i class="mdi mdi-settings"/>
+                                <i class="tainacan-icon tainacan-icon-settings"/>
                             </span>
                         </b-tooltip>
                         <!-- <span class="menu-text">{{ $i18n.get('label_settings') }}</span> -->
@@ -115,7 +115,7 @@
                                 :label="$i18n.getFrom('filters', 'name')"
                                 position="is-bottom">
                             <span class="icon">
-                                <i class="mdi mdi-filter"/>
+                                <i class="tainacan-icon tainacan-icon-filters"/>
                             </span>
                         </b-tooltip>
                         <!-- <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span> -->
@@ -271,7 +271,7 @@ export default {
                 background-color: transparent !important;
                 border: none;
                 .icon i {
-                    font-size: 34px;
+                    font-size: 30px;
                 }
             }
         }
