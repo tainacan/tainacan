@@ -12,6 +12,7 @@
     font: normal normal normal 24px/1 "Tainacan Icons";
     font-size: inherit;
     text-rendering: auto;
+    vertical-align: middle;
     line-height: inherit;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -234,34 +235,38 @@
     content: "viewtable";
 }
 
-.tainacan-icon-18px.tainacan-icon-set, .tainacan-icon-18px.tainacan-icon:before {
-font-size: 18px;
+.tainacan-icon-18px.tainacan-icon-set, 
+.tainacan-icon-18px.tainacan-icon:before {
+    font-size: 18px;
 }
 
-.tainacan-icon-24px.tainacan-icon-set, .tainacan-icon-24px.tainacan-icon:before {
-font-size: 24px;
+.tainacan-icon-24px.tainacan-icon-set, 
+.tainacan-icon-24px.tainacan-icon:before {
+    font-size: 24px;
 }
 
-.tainacan-icon-36px.tainacan-icon-set, .tainacan-icon-36px.tainacan-icon:before {
-font-size: 36px;
+.tainacan-icon-36px.tainacan-icon-set, 
+.tainacan-icon-36px.tainacan-icon:before {
+    font-size: 36px;
 }
 
-.tainacan-icon-48px.tainacan-icon-set, .tainacan-icon-48px.tainacan-icon:before {
-font-size: 48px;
+.tainacan-icon-48px.tainacan-icon-set, 
+.tainacan-icon-48px.tainacan-icon:before {
+    font-size: 48px;
 }
 
 .tainacan-icon-dark:before {
-color: rgba(0, 0, 0, 0.54);
+    color: rgba(0, 0, 0, 0.54);
 }
 .tainacan-icon-dark.tainacan-icon-inactive:before {
-color: rgba(0, 0, 0, 0.26);
+    color: rgba(0, 0, 0, 0.26);
 }
 
 .tainacan-icon-light:before {
-color: white;
+    color: white;
 }
 .tainacan-icon-light.tainacan-icon-inactive:before {
-color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.3);
 }
 
 .tainacan-icon-rotate-45 {

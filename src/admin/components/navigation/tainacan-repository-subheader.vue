@@ -12,7 +12,7 @@
                 class="button"
                 id="view-collection-button">
             <span class="icon">
-                <i class="tainacan-icon tainacan-icon-see"/>
+                <i class="tainacan-icon tainacan-icon-24px tainacan-icon-see"/>
             </span>
              {{ $i18n.get('label_view_collection') }}
         </a>
