@@ -9,7 +9,15 @@
             <b-icon 
                     type="is-secondary"
                     :icon="isCollapsed || metadatumTypeMessage == 'is-danger' ? 'menu-down' : 'menu-right'" />
-            <label class="label">{{ metadatum.metadatum.name }}</label>
+            <label 
+                    v-tooltip="{
+                        content: metadatum.metadatum.name,
+                        autoHide: false,
+                        placement: 'auto-end'
+                    }" 
+                    class="label">
+                {{ metadatum.metadatum.name }}
+            </label>
             <span
                     v-if="metadatum.metadatum.required == 'yes'"
                     class="required-metadatum-asterisk"
@@ -230,12 +238,13 @@
             font-weight: 500;
             margin-left: 15px;
             margin-bottom: 0.5em;
+            max-width: 50%;
         }
         .metadata-type {
             font-size: 0.8125rem;
             font-weight: 400;
             color: $gray3;
-            top: -0.2em;
+            top: -0.4em;
             position: relative;
         }
         .help-wrapper {
@@ -245,6 +254,7 @@
             cursor: pointer;
             position: relative;
             margin-left: -42px;
+            white-space: nowrap;
         }
     }
 </style>

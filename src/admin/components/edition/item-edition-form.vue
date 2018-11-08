@@ -1194,17 +1194,17 @@ export default {
         }
 
         .column.is-5-5 {
-            width: 45.833333333%;
+            max-width: 55%; 
             padding-left: $page-side-padding;
             padding-right: $page-side-padding;
             transition: width 0.6s;
 
             @media screen and (max-width: 769px) {
-                width: 100%;
+                max-width: 100%;
             }
         }
         .column.is-4-5 {
-            width: 37.5%;
+            max-width: 45%;
             padding-left: $page-side-padding;
             padding-right: $page-side-padding;
             transition: all 0.6s;
@@ -1214,7 +1214,7 @@ export default {
             }
 
             @media screen and (max-width: 769px) {
-                width: 100%;
+                max-width: 100%;
             }
 
         }
