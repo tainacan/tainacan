@@ -182,8 +182,13 @@ registerBlockType('tainacan/items-grid', {
             });
         }
         
-        function parseURL(tainacanURL) {
-            setAttributes({tainacanURL: tainacanURL});
+        function parseURL(tainacanURLP) {
+            tainacanURL = tainacanURLP;
+            setAttributes({tainacanURL: tainacanURLP});
+
+            if (!tainacanURLP || !tainacanURLP.includes('tainacan_admin')){
+                return true;
+            }
 
             let tainacanURLSplited = tainacanURL.split('?');
 
@@ -196,8 +201,11 @@ registerBlockType('tainacan/items-grid', {
                 parsedQuery.fetch_only[Object.keys(parsedQuery.fetch_only).length] = 'title';
             }
 
+            let URLCollID = rawURL.match(/\/(\d+)\/?/);
+            URLCollectionID = URLCollID != undefined ? URLCollID[1]: URLCollID;
+
             setAttributes({query: parsedQuery});
-            setAttributes({URLCollectionID: rawURL.match(/\/(\d+)\/?/)[1]});
+            setAttributes({URLCollectionID: URLCollectionID});
             setAttributes({itemsPerPage: Number(parsedQuery.perpage)});
 
             getItems(URLCollectionID, qs.stringify(query)).then(data => {
@@ -290,7 +298,7 @@ registerBlockType('tainacan/items-grid', {
                             />
                         </div>
 
-                        { Object.keys(query).length && query.perpage ? (
+                        { Object.keys(query).length && query.perpage && tainacanURL ? (
                             <div>
                                 <QueryControls
                                     numberOfItems={itemsPerPage}
