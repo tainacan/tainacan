@@ -938,7 +938,11 @@ abstract class Importer {
 
             if($taxonomy->validate()){
                 $inserted_tax = $taxonomy_repo->insert( $taxonomy );
-                $newMetadatum->set_metadata_type_options(['taxonomy_id' => $inserted_tax->get_id()]);
+                $newMetadatum->set_metadata_type_options([
+                    'taxonomy_id' => $inserted_tax->get_id(),
+                    'allow_new_terms' => true,
+                    'input_type' => 'tainacan-taxonomy-checkbox'
+                ]);
             }
 
         }
@@ -964,6 +968,12 @@ abstract class Importer {
             $newMetadatum->set_status('publish');
         } else if( is_array($properties) && in_array( 'status_private', $properties) ){
             $newMetadatum->set_status('private');
+        }
+
+        if( is_array($properties) && in_array( 'collection_key_yes', $properties) ){
+            $newMetadatum->set_collection_key('yes');
+        } else if( is_array($properties) && in_array( 'collection_key_no', $properties) ){
+            $newMetadatum->set_collection_key('no');
         }
 
         if($newMetadatum->validate()){
