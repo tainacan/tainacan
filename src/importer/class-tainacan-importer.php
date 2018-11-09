@@ -933,6 +933,7 @@ abstract class Importer {
         if( strcmp($type, "Taxonomy") === 0 ){
             $taxonomy = new Entities\Taxonomy();
             $taxonomy->set_name($name);
+            $taxonomy->set_status('publish');
             $taxonomy->set_allow_insert('yes');
 
             if($taxonomy->validate()){
@@ -960,7 +961,7 @@ abstract class Importer {
         }
 
         if( is_array($properties) && in_array( 'status_public', $properties) ){
-            $newMetadatum->set_status('public');
+            $newMetadatum->set_status('publish');
         } else if( is_array($properties) && in_array( 'status_private', $properties) ){
             $newMetadatum->set_status('private');
         }

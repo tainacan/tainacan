@@ -507,12 +507,14 @@ class CSV extends Importer {
      * @param $status string the item status
      */
     private function handle_item_status( $status, $item_inserted ) {
-        if ( in_array( $status, array( 'auto-draft', 'draft', 'pending', 'future', 'publish', 'trash', 'inherit' ) ) ) {
+        //if ( in_array( $status, array( 'auto-draft', 'draft', 'pending', 'future', 'publish', 'trash', 'inherit' ) ) ) {
+
+            $status = ( $status == 'public' ) ? 'publish' : $status;
             $item_inserted->set_status($status);
             if( $item_inserted->validate() ) {
                 $item_inserted = $this->items_repo->update($item_inserted);
             }
-        }
+        //}
     }
 
     /**
