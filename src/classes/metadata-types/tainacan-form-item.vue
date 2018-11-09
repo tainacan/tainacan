@@ -6,9 +6,11 @@
         <span   
                 class="collapse-handle"
                 @click="$emit('changeCollapse', metadatumTypeMessage != 'is-danger' ? !isCollapsed : true)">
-            <b-icon 
-                    type="is-secondary"
-                    :icon="isCollapsed || metadatumTypeMessage == 'is-danger' ? 'menu-down' : 'menu-right'" />
+            <span class="icon">
+                <i 
+                        :class="{ 'tainacan-icon-arrowdown' : isCollapsed || metadatumTypeMessage == 'is-danger', 'tainacan-icon-arrowright' : !(isCollapsed || metadatumTypeMessage == 'is-danger') }"
+                        class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+            </span>
             <label 
                     v-tooltip="{
                         content: metadatum.metadatum.name,
@@ -57,17 +59,16 @@
                                         icon="minus-circle"
                                         size="is-small"
                                         type="is-secondary"/>
-                                    {{ $i18n.get('label_remove_value') }}</a>
+                                &nbsp;{{ $i18n.get('label_remove_value') }}</a>
                     </div>
 
                     <a 
                             @click="addInput"
                             class="is-inline add-link">
-                        <b-icon
-                                icon="plus-circle"
-                                size="is-small"
-                                type="is-secondary"/>
-                            {{ $i18n.get('label_add_value') }}</a>
+                        <span class="icon is-small">
+                            <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                        </span>
+                        &nbsp;{{ $i18n.get('label_add_value') }}</a>
 
                 </div>
             </div>

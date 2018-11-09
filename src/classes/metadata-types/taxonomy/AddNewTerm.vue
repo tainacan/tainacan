@@ -4,11 +4,10 @@
                 <a
                         @click="toggleForm()"
                         class="is-inline add-link">
-                    <b-icon
-                            icon="plus-circle"
-                            size="is-small"
-                            type="is-secondary"/>
-                        &nbsp;{{ $i18n.get('label_new_term') }}</a>
+                    <span class="icon is-small">
+                        <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                    </span>
+                    &nbsp;{{ $i18n.get('label_new_term') }}</a>
 
         </span>
         <transition name="appear">

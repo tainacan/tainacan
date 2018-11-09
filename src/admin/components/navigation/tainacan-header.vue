@@ -92,7 +92,9 @@
             <a
                     class="level-item"
                     :href="wordpressAdmin">
-                <b-icon icon="wordpress"/>
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-wordpress"/>
+                </span>
             </a>
         </div>
     </div>
@@ -179,6 +181,7 @@
                 width: 50px;
                 height: $header-height;
                 background-color: $gray0;
+                padding-bottom: 0.4rem;
             }
             .logo-area {
                 height: $header-height;
@@ -212,7 +215,7 @@
                 .control {
                     .search-header {
                         border: 1px solid $gray2 !important;
-                        height: 27px;
+                        height: 28px;
                         transition: width linear 0.15s;
                         -webkit-transition: width linear 0.15s;
                         width: 220px;

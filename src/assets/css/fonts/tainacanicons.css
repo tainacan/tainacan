@@ -57,11 +57,17 @@
 .tainacan-icon-heartoutline:before {
     content: "heartoutline";
 }
+.tainacan-icon-wordpress:before {
+    content: "wordpress";
+}
 .tainacan-icon-activities:before {
     content: "activities";
 }
 .tainacan-icon-add:before {
     content: "add";
+}
+.tainacan-icon-addcollection:before {
+    content: "addcollection";
 }
 .tainacan-icon-alert:before {
     content: "alert";
@@ -138,14 +144,23 @@
 .tainacan-icon-next:before {
     content: "next";
 }
+.tainacan-icon-drag:before {
+    content: "drag";
+}
 .tainacan-icon-notifications:before {
     content: "notifications";
+}
+.tainacan-icon-nextlevel:before {
+    content: "nextlevel";
 }
 .tainacan-icon-pause:before {
     content: "pause";
 }
 .tainacan-icon-play:before {
     content: "play";
+}
+.tainacan-icon-stop:before {
+    content: "stop";
 }
 .tainacan-icon-pause:before {
     content: "pause";

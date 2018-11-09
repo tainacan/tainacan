@@ -17,9 +17,11 @@
                     class="label"
                     slot="trigger"
                     slot-scope="props">
-                <b-icon
-                        :icon="props.open ? 'menu-down' : 'menu-right'"
-                        />
+                <span class="icon">
+                    <i 
+                            :class="{ 'tainacan-icon-arrowleft' : props.open, 'tainacan-icon-arrowright' : !props.open }"
+                            class="tainacan-icon tainacan-icon-20px"/>
+                </span>
                 <span class="collapse-label">{{ filter.name }}</span>
             </label>
 

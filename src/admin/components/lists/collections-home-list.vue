@@ -8,11 +8,11 @@
                             :to="$routerHelper.getNewCollectionPath()"
                             class="first-card">
                         <div class="list-metadata">
-                            <b-icon 
-                                    size="is-large"
-                                    icon="folder-plus" />
+                            <span class="icon is-large">
+                                <i class="tainacan-icon taincan-icon-36px taincan-icon-addcollection"/>
+                            </span>
                             <div>{{ $i18n.get('label_create_collection') }}</div>
-                        </div>
+                        </div>                         
                     </router-link>
                 </li>
                 <li>
@@ -21,7 +21,7 @@
                             :to="{ path: $routerHelper.getNewCollectionPath() }" 
                             :aria-label="$i18n.get('label_collection_items')">
                         <span class="icon is-medium">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-items"/>
+                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-items"/>
                         </span>
                         <span class="menu-text">{{ $i18n.get('items') }}</span>
                     </router-link>
@@ -32,7 +32,7 @@
                             :to="{ path: $routerHelper.getNewCollectionPath() }"
                             :aria-label="$i18n.get('label_collection_metadata')">
                         <span class="icon is-medium">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-metadata"/>
+                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
                     </router-link>
@@ -43,7 +43,7 @@
                             :to="{ path: $routerHelper.getNewCollectionPath() }" 
                             :aria-label="$i18n.get('label_collection_filters')">
                         <span class="icon is-medium">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-filters"/>
+                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                     </router-link>
@@ -60,9 +60,9 @@
                         :to="$routerHelper.getNewCollectionPath()"
                         class="tainacan-card new-card">
                     <div class="list-metadata">
-                        <b-icon 
-                                size="is-large"
-                                icon="folder-plus" />
+                        <span class="icon is-large">
+                            <i class="tainacan-icon taincan-icon-36px taincan-icon-addcollection"/>
+                        </span>
                         <div>{{ $i18n.get('label_create_collection') }}</div>
                     </div>
                     <ul class="menu-list">

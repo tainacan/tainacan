@@ -173,9 +173,9 @@
                                 v-if="!bulkEditionProcedures[criterion].isDone && !bulkEditionProcedures[criterion].isExecuting"
                                 @click="removeThis(criterion)"
                                 class="button is-white is-pulled-right">
-                            <b-icon
-                                    type="is-gray4"
-                                    icon="close-circle-outline"/>
+                            <span class="icon">
+                                <i class="has-text-gray4 tainacan-icon tainacan-icon-cancel"/>
+                            </span>
                         </button>
 
                         <div
@@ -191,9 +191,9 @@
                                     animated
                                     multilined
                                     :label="bulkEditionProcedures[criterion].actionResult.constructor.name !== 'Object' && bulkEditionProcedures[criterion].actionResult === 1 ? `${bulkEditionProcedures[criterion].actionResult} ${$i18n.get('info_item_affected')}` : `${bulkEditionProcedures[criterion].actionResult} ${$i18n.get('info_items_affected')}`">
-                                <b-icon
-                                        type="is-success"
-                                        icon="check-circle"/>
+                                <span class="icon">
+                                    <i class="has-text-success tainacan-icon tainacan-icon-approvedcircle"/>
+                                </span>
                             </b-tooltip>
                         </div>
 
@@ -210,9 +210,9 @@
                                     animated
                                     multilined
                                     :label="bulkEditionProcedures[criterion].actionResult.constructor.name !== 'Object' && bulkEditionProcedures[criterion].actionResult === 1 ? `${bulkEditionProcedures[criterion].actionResult} ${$i18n.get('info_item_affected')}` : `${bulkEditionProcedures[criterion].actionResult} ${$i18n.get('info_items_affected')}`">
-                                <b-icon
-                                        type="is-yellow2"
-                                        icon="exclamation"/>
+                                <span class="icon">
+                                    <i class="has-text-yello2 tainacan-icon tainacan-icon-alertcircle"/>
+                                </span>
                             </b-tooltip>
                         </div>
 
@@ -233,9 +233,9 @@
                                     animated
                                     multilined
                                     :label="bulkEditionProcedures[criterion].actionResult.constructor.name === 'Object' ? (bulkEditionProcedures[criterion].actionResult.error_message ? bulkEditionProcedures[criterion].actionResult.error_message : bulkEditionProcedures[criterion].actionResult.message) : ''">
-                                <b-icon
-                                        type="is-red2"
-                                        icon="sync-alert"/>
+                                <span class="icon">
+                                    <i class="has-text-danger tainacan-icon tainacan-icon-processerror"/>
+                                </span>
                             </b-tooltip>
                         </button>
 
@@ -248,14 +248,14 @@
                                     bulkEditionProcedures[criterion].action"
                                 @click="executeBulkEditionProcedure(criterion)"
                                 class="button is-white is-pulled-right">
-                            <b-icon
-                                    type="is-gray4"
-                                    icon="play-circle"/>
+                            <span class="icon">
+                                <i class="has-text-gray4 tainacan-icon tainacan-icon-play"/>
+                            </span>
                         </button>
 
                         <div v-if="bulkEditionProcedures[criterion].isExecuting">
                             <b-icon
-                                    class="tainacan-loader"
+                                    class="mdi-loader"
                                     type="is-success"
                                     icon="loading"/>
                         </div>
@@ -711,7 +711,7 @@
         cursor: not-allowed !important;
     }
 
-    .tainacan-loader {
+    .mdi-loader {
         -webkit-animation: spin 2s linear infinite; /* Safari */
         animation: spin 2s linear infinite;
     }

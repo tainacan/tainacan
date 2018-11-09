@@ -14,8 +14,7 @@
                         @input="autoComplete"
                         class="input">
                 <span class="icon is-right">
-                    <i
-                            class="mdi mdi-magnify"/>
+                    <i class="tainacan-icon tainacan-icon-search" />
                 </span>
             </div>
 
@@ -35,8 +34,9 @@
                                 role="button"
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="beforePage">
-                            <b-icon
-                                    icon="chevron-left"/>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-previous"/>
+                            </span>
                         </a>
                         <ul
                                 :class="{
@@ -63,8 +63,9 @@
                                 role="button"
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="nextPage">
-                            <b-icon
-                                    icon="chevron-right"/>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-next"/>
+                            </span>
                         </a>
                     </div>
 
@@ -99,10 +100,9 @@
                                 <a
                                         v-if="option.total_children > 0"
                                         @click="getOptionChildren(option, key, index)">
-                                    <b-icon
-                                            class="is-pulled-right"
-                                            icon="menu-right"
-                                    />
+                                    <span class="icon is-pulled-right">
+                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowright"/>
+                                    </span>
                                 </a>
                             </b-field>
                             <li v-if="finderColumn.length">

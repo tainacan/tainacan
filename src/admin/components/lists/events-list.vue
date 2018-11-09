@@ -79,8 +79,9 @@
                                         <!--id="button-approve"-->
                                         <!--:aria-label="$i18n.get('approve_item')"-->
                                         <!--@click.prevent.stop="approveEvent(event.id)">-->
-                                    <!--<b-icon-->
-                                        <!--icon="check" />-->
+                                        <!-- <span class="icon">
+                                            <i class="tainacan-icon taincan-icon-20px tainacan-icon-finish"/>
+                                        </span> -->
                                 <!--</a>-->
 
                                 <!--<a-->

@@ -13,14 +13,14 @@
                     @click="showProcessesList = !showProcessesList">
                 <span class="icon has-text-blue5">
                     <i 
-                            :class="{ 'mdi-menu-up': showProcessesList,  
-                                      'mdi-menu-down': !showProcessesList }"
-                            class="mdi mdi-18px"/>
+                            :class="{ 'tainacan-icon-arrowup': showProcessesList,  
+                                      'tainacan-icon-arrowdown': !showProcessesList }"
+                            class="tainacan-icon tainacan-icon-18px"/>
                 </span>
             </a>    
             <a @click="$emit('closeProcessesPopup')">
                 <span class="icon has-text-blue5">
-                    <i class="mdi mdi-close"/>
+                    <i class="tainacan-icon tainacan-icon-close"/>
                 </span>
             </a>       
         </div>
@@ -46,8 +46,8 @@
                                 class="process-title">
                             <span class="icon has-text-gray">
                                 <i 
-                                        class="mdi mdi-18px"
-                                        :class="{ 'mdi-menu-down': processesCollapses[index], 'mdi-menu-right': !processesCollapses[index] }" />
+                                        class="tainacan-icon tainacan-icon-18px"
+                                        :class="{ 'tainacan-icon-arrowdown': processesCollapses[index], 'tainacan-icon-arrowright': !processesCollapses[index] }" />
                             </span>  
                             <p>{{ bgProcess.name ? bgProcess.name : $i18n.get('label_unamed_process') }}</p>
                         </div>
@@ -55,23 +55,23 @@
                                 v-if="bgProcess.done <= 0 && bgProcess.status == 'closed'"
                                 class="icon has-text-gray action-icon"
                                 @click="resumeProcess(index)">
-                            <i class="mdi mdi-18px mdi-play-circle"/>
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-play-circle"/>
                         </span> -->
                         <span 
                                 v-if="bgProcess.done <= 0"
                                 class="icon has-text-gray action-icon"
                                 @click="pauseProcess(index)">
-                            <i class="mdi mdi-18px mdi-stop-circle"/>
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-stop"/>
                         </span>
                         <span 
                                 v-if="bgProcess.done > 0 && !bgProcess.error_log"
                                 class="icon has-text-success">
-                            <i class="mdi mdi-18px mdi-checkbox-marked-circle"/>
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-finish"/>
                         </span>
                         <span 
                                 v-if="bgProcess.done > 0 && bgProcess.error_log"
                                 class="icon has-text-danger">
-                            <i class="mdi mdi-18px mdi-sync-alert" />
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-processerror" />
                         </span>
                         <span 
                                 v-if="bgProcess.done <= 0"
@@ -113,7 +113,7 @@
         <div class="popup-footer">
             <span 
                     v-if="hasAnyProcessExecuting"
-                    class="icon has-text-blue5"><i class="mdi mdi-18px mdi-autorenew"/></span>
+                    class="icon has-text-blue5"><i class="tainacan-icon tainacan-icon-18px tainacan-icon-updating"/></span>
             <p class="footer-title">    
                 {{ hasAnyProcessExecuting ? 
                     (bgProcesses[0].progress_label ? bgProcesses[0].progress_label + ((bgProcesses[0].progress_value && bgProcesses[0].progress_value >= 0) ? ' - ' + bgProcesses[0].progress_value + '%' : '') : $i18n.get('label_no_details_of_process')):
@@ -330,7 +330,7 @@ export default {
                 /*.loading-icon {*/
                     /*display: none;*/
                 /*}*/
-                .process-item>.process-title .mdi-menu-left, .process-item>.process-title .mdi-menu-right {
+                .process-item>.process-title .tainacan-arrowleft, .process-item>.process-title .tainacan-arrowright {
                     color: $gray3 !important;
                 }
             }
@@ -355,7 +355,7 @@ export default {
                         top: -2px;
                     }
                     
-                    .mdi-menu-left, .mdi-menu-right {
+                    .tainacan-arrowleft, .tainacan-arrowright {
                         color: $turquoise2;
                     }
                 }

@@ -11,9 +11,9 @@
                         class="field is-grouped-centered section">
                     <div class="content has-text-gray has-text-centered">
                         <p>
-                            <b-icon
-                                    icon="filter"
-                                    size="is-large"/>
+                            <span class="icon is-large">
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters"/>
+                            </span>
                         </p>
                         <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>  
                         <p>{{ $i18n.get('info_create_filters' ) }}</p>
@@ -46,8 +46,8 @@
                             <grip-icon/>
                             <span class="icon icon-level-identifier">
                                 <i 
-                                    :class="{ 'mdi-folder has-text-turquoise5': filter.collection_id == collectionId, 'mdi-folder-multiple has-text-blue5': filter.collection_id != collectionId }"
-                                    class="mdi" />
+                                    :class="{ 'tainacan-icon-collection has-text-turquoise5': filter.collection_id == collectionId, 'tainacan-icon-repository has-text-blue5': filter.collection_id != collectionId }"
+                                    class="tainacan-icon" />
                             </span> 
                             <span 
                                     class="filter-name"
@@ -79,16 +79,16 @@
                                 <a 
                                         :style="{ visibility: filter.collection_id != collectionId && !isRepositoryLevel? 'hidden' : 'visible' }"
                                         @click.prevent="editFilter(filter)">
-                                    <b-icon 
-                                            type="is-gray" 
-                                            icon="pencil"/>
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
+                                    </span>
                                 </a>
                                 <a 
                                         :style="{ visibility: filter.collection_id != collectionId && !isRepositoryLevel ? 'hidden' : 'visible' }"
                                         @click.prevent="removeFilter(filter)">
-                                    <b-icon 
-                                            type="is-gray" 
-                                            icon="delete"/>
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
+                                    </span>
                                 </a>
                             </span>
                         </div>
@@ -162,8 +162,8 @@
                             <grip-icon/> 
                             <span class="icon icon-level-identifier">
                                 <i 
-                                    :class="{ 'mdi-folder has-text-turquoise5': metadatum.collection_id == collectionId, 'mdi-folder-multiple has-text-blue5': metadatum.collection_id != collectionId }"
-                                    class="mdi" />
+                                    :class="{ 'tainacan-icon-collection has-text-turquoise5': metadatum.collection_id == collectionId, 'tainacan-icon-repository has-text-blue5': metadatum.collection_id != collectionId }"
+                                    class="tainacan-icon" />
                             </span>  
                             <span class="metadatum-name">{{ metadatum.name }}</span>
                         </div>
@@ -174,9 +174,9 @@
                             class="field is-grouped-centered section">
                         <div class="content has-text-gray has-text-centered">
                             <p>
-                                <b-icon
-                                        icon="format-list-checks"
-                                        size="is-large"/>
+                                <span class="icon is-large">
+                                    <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
+                                </span>
                             </p>
                             <p>{{ $i18n.get('info_there_is_no_metadatum' ) }}</p>
                             <router-link

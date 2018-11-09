@@ -14,7 +14,11 @@
                     class="is-hidden-mobile"
                     id="menu-compress-button"
                     @click="isMenuCompressed = !isMenuCompressed">
-                <b-icon :icon="isMenuCompressed ? 'menu-right' : 'menu-left'" />
+                <span class="icon">
+                    <i 
+                            :class="{ 'tainacan-icon-arrowleft' : isMenuCompressed, 'tainacan-icon-arrowright' : !isMenuCompressed }"
+                            class="tainacan-icon tainacan-icon-20px"/>
+                </span>
             </button>
             <tainacan-header />
             <tainacan-repository-subheader 

@@ -41,7 +41,7 @@
                     <span
                             @click="searchTerms(0)"
                             class="icon is-right">
-                        <i class="mdi mdi-magnify" />
+                        <i class="tainacan-icon tainacan-icon-search" />
                     </span>
             </div>
         </div>

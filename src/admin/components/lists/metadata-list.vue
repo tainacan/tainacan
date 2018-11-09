@@ -14,9 +14,9 @@
                                 class="field is-grouped-centered section">
                             <div class="content has-text-gray has-text-centered">
                                 <p>
-                                    <b-icon
-                                            icon="format-list-bulleted-type"
-                                            size="is-large"/>
+                                    <span class="icon is-large">
+                                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
+                                    </span>
                                 </p>
                                 <p>{{ $i18n.get('info_there_is_no_metadatum' ) }}</p>
                                 <p>{{ $i18n.get('info_create_metadata' ) }}</p>
@@ -51,10 +51,10 @@
                                     <span class="icon icon-level-identifier">
                                         <i 
                                             :class="{ 
-                                                'mdi-folder has-text-turquoise5': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
-                                                'mdi-folder-multiple has-text-blue5': (metadatum.collection_id == 'default') || isRepositoryLevel
+                                                'tainacan-icon-collection has-text-turquoise5': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
+                                                'tainacan-icon-repository has-text-blue5': (metadatum.collection_id == 'default') || isRepositoryLevel
                                             }"
-                                            class="mdi" />
+                                            class="tainacan-icon" />
                                     </span>  
                                     <span 
                                             class="metadatum-name"
@@ -102,9 +102,9 @@
                                                         ? 'hidden' : 'visible'
                                                     }" 
                                                 @click.prevent="editMetadatum(metadatum)">
-                                            <b-icon 
-                                                    type="is-gray" 
-                                                    icon="pencil"/>
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
+                                            </span>
                                         </a>
                                         <a 
                                                 :style="{ visibility: 
@@ -114,9 +114,9 @@
                                                         ? 'hidden' : 'visible'
                                                     }" 
                                                 @click.prevent="removeMetadatum(metadatum)">
-                                            <b-icon 
-                                                    type="is-gray" 
-                                                    icon="delete"/>
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
+                                            </span>
                                         </a>
                                     </span>
                                 </div>
@@ -174,9 +174,9 @@
                             class="field is-grouped-centered section">
                         <div class="content has-text-gray has-text-centered">
                             <p>
-                                <b-icon
-                                        icon="format-list-bulleted-type"
-                                        size="is-large"/>
+                                <span class="icon is-large">
+                                    <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
+                                </span>
                             </p>
                             <p>{{ $i18n.get('info_there_is_no_metadatum') }}</p>  
                             <p>{{ $i18n.get('info_create_metadata') }}</p>
@@ -254,9 +254,9 @@
                                                         ? 'visible' : 'hidden'
                                                     }" 
                                                 @click.prevent="editMetadatumCustomMapper(props.row)">
-                                            <b-icon 
-                                                    type="is-gray" 
-                                                    icon="pencil"/>
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
+                                            </span>
                                         </a>
                                         <a 
                                                 :style="{ visibility: 
@@ -264,9 +264,9 @@
                                                         ? 'visible' : 'hidden'
                                                     }" 
                                                 @click.prevent="removeMetadatumCustomMapper(props.row)">
-                                            <b-icon 
-                                                    type="is-gray" 
-                                                    icon="delete"/>
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
+                                            </span>
                                         </a>
                                     </b-table-column>
                                 </template>
@@ -280,10 +280,9 @@
                                         v-if="collectionId != null && collectionId != undefined"
                                         class="is-inline is-pulled-left add-link"
                                         @click="onNewMetadataMapperMetadata()">
-                                    <b-icon
-                                            icon="plus-circle"
-                                            size="is-small"
-                                            type="is-secondary"/>
+                                    <span class="icon is-small">
+                                        <i class="tainacan-icon tainacan-icon-add"/>
+                                    </span>
                                     {{ $i18n.get('label_add_more_mapper_metadata') }}
                                 </a>
                             </div>

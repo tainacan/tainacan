@@ -27,18 +27,18 @@
                             id="button-edit-header"
                             :aria-label="$i18n.get('label_button_edit_header_image')"
                             @click="headerImageMediaFrame.openFrame($event)">
-                        <b-icon 
-                            size="is-small"
-                            icon="pencil"/>
+                        <span class="icon is-small">
+                            <i class="tainacan-icon tainacan-edit"/>
+                        </span>
                     </a>
                     <a
                             class="button is-rounded is-secondary"
                             id="button-delete-header"
                             :aria-label="$i18n.get('label_button_delete_thumb')"
                             @click="deleteHeaderImage()">
-                        <b-icon 
-                            size="is-small"
-                            icon="delete" />
+                        <span class="icon is-small">
+                            <i class="tainacan-icon tainacan-delete"/>
+                        </span>
                     </a>
                 </div>
                 <br>

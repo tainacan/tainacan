@@ -11,9 +11,9 @@
                     v-if="!metadataIsLoading"
                     class="content has-text-gray has-text-centered">
                 <p>
-                    <b-icon
-                            icon="format-list-checks"
-                            size="is-large"/>
+                    <span class="icon is-large">
+                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
+                    </span>
                 </p>
                 <p>{{ isRepositoryLevel ?
                     $i18n.get('info_there_are_no_metadata_in_repository_level' ) :
@@ -128,9 +128,9 @@
                         <button
                                 @click="removeThis(searchCriterion)"
                                 class="button is-white is-pulled-right">
-                            <b-icon
-                                    type="is-secondary"
-                                    icon="close"/>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-close"/>
+                            </span>
                         </button>
                     </div>
                 </b-field>
@@ -143,13 +143,11 @@
                     :class="{'add-link-advanced-search-header': isHeader, 'add-link-advanced-search': !isHeader }"
                     class="field column is-12">
                 <a
-                    @click="addSearchCriteria"
-                    style="font-size: 0.75rem;">
-                    <b-icon
-                            class="add-i"
-                            icon="plus-circle"
-                            size="is-small"
-                            type="is-secondary"/>
+                        @click="addSearchCriteria"
+                        style="font-size: 0.75rem;">
+                    <span class="icon is-small">
+                        <i class="tainacan-icon tainacan-icon-add"/>
+                    </span>
                     {{ searchCriteria.length &lt;= 0 ?
                         $i18n.get('add_one_search_criterion') :
                          $i18n.get('add_another_search_criterion')
