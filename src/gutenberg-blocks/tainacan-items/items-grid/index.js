@@ -304,7 +304,9 @@ registerBlockType('tainacan/items-grid', {
                                     numberOfItems={itemsPerPage}
                                     onNumberOfItemsChange={
                                         (numberOfItems) => {
-                                            query.perpage = numberOfItems;
+                                            query.perpage = !numberOfItems ? 1 : numberOfItems;
+                                            itemsPerPage = query.perpage;
+
                                             setAttributes({itemsPerPage: numberOfItems});
 
                                             _.debounce(updateQuery(query), 300);
