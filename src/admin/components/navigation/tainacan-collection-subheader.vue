@@ -63,7 +63,7 @@
                                 :label="$i18n.get('items')"
                                 position="is-bottom">
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-items"/>
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-items"/>
                             </span>
                         </b-tooltip>
                         <!-- <span class="menu-text">{{ $i18n.get('items') }}</span> -->
@@ -80,7 +80,7 @@
                                 :label="$i18n.get('label_settings')"
                                 position="is-bottom">
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-settings"/>
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-settings"/>
                             </span>
                         </b-tooltip>
                         <!-- <span class="menu-text">{{ $i18n.get('label_settings') }}</span> -->
@@ -97,7 +97,7 @@
                                 :label="$i18n.getFrom('metadata', 'name')"
                                 position="is-bottom">
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-metadata"/>
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-metadata"/>
                             </span>
                         </b-tooltip>
                         <!-- <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span> -->
@@ -115,7 +115,7 @@
                                 :label="$i18n.getFrom('filters', 'name')"
                                 position="is-bottom">
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-filters"/>
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-filters"/>
                             </span>
                         </b-tooltip>
                         <!-- <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span> -->
@@ -132,7 +132,7 @@
                                 :label="$i18n.get('events')"
                                 position="is-bottom">
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-activities"/>
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-activities"/>
                             </span>
                         </b-tooltip>
                         <!-- <span class="menu-text">{{ $i18n.get('events') }}</span> -->
@@ -271,7 +271,7 @@ export default {
                 background-color: transparent !important;
                 border: none;
                 .icon i {
-                    font-size: 30px;
+                    font-size: 24px;
                 }
             }
         }

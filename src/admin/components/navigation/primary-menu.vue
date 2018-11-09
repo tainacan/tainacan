@@ -15,7 +15,7 @@
                             to="/collections"
                             :class="activeRoute == 'CollectionsPage' || $route.params.collectionId != undefined ? 'is-active':''">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-24px tainacan-icon-collections"/>
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-collections"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('collections', 'name') }}</span>
                     </router-link>
@@ -26,7 +26,7 @@
                             to="/items"
                             :class="activeRoute == 'ItemsPage' ? 'is-active':''">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-24px tainacan-icon-items"/>
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-items"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('items', 'name') }}</span>
                     </router-link>
@@ -38,7 +38,7 @@
                             to="/metadata"
                             :class="activeRoute == 'MetadataPage' ? 'is-active':''">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-24px tainacan-icon-metadata"/>
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-metadata"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
                     </router-link>
@@ -49,7 +49,7 @@
                             to="/filters"
                             :class="activeRoute == 'FiltersPage' ? 'is-active':''">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-24px tainacan-icon-filters"/>
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-filters"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                     </router-link>
@@ -60,7 +60,7 @@
                             to="/taxonomies"
                             :class="activeRoute == 'Page' ? 'is-active':''">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-24px tainacan-icon-taxonomies"/>
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-taxonomies"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('taxonomies', 'name') }}</span>
                     </router-link>
@@ -71,7 +71,7 @@
                             to="/events"
                             :class="activeRoute == 'EventsPage' ? 'is-active':''">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-24px tainacan-icon-activities"/>
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-activities"/>
                         </span>
                         <span class="menu-text">{{ $i18n.get('events') }}</span>
                     </router-link>
@@ -86,7 +86,7 @@
                                 activeRoute == 'ImporterCreationForm' ||
                                 activeRoute == 'ImporterMappingForm' ) ? 'is-active':''">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-24px tainacan-icon-importers"/>
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-importers"/>
                         </span>
                         <span class="menu-text menu-text-import">{{ $i18n.get('importers') }}</span>
                     </router-link>

@@ -7,14 +7,17 @@
                     aria-hidden/>
             <div class="home-section-header repository-section-header">
                 <div class="home-section-icon">
-                    <b-icon icon="archive"/>
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-repository"/>
+                    </span>
                 </div>
+                
                 <h1>{{ $i18n.get('repository') + ' ' }}<span class="has-text-weight-semibold">{{ repositoryName }}</span></h1>
                 <a
                         target="_blank"
                         :href="baseURL + '/collections'">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-24px tainacan-icon-see"/>
+                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
                     </span>
                     <span class="menu-text">{{ $i18n.get('label_view_on_theme') }}</span>
                 </a>
@@ -98,14 +101,16 @@
         <section class="home-section home-section-collection">
             <div class="home-section-header collections-section-header">
                 <div class="home-section-icon">
-                    <b-icon icon="folder-multiple"/>
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-collections"/>
+                    </span>
                 </div>
                 <h1>{{ $i18n.get('collections') }}</h1>
                  <router-link
                         tag="a"
                         to="/collections">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-24px tainacan-icon-viewtable"/>
+                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-viewtable"/>
                     </span>
                     <span class="menu-text">{{ $i18n.get('label_view_all_collections') }}</span>
                 </router-link>
@@ -211,8 +216,12 @@ export default {
                     padding: 0.75rem;
                     height: 52px;
                     width: 52px;
+                    font-size: 30px;
                     text-align: center;
                     z-index: 9;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
                 }
 
                 h1 {

@@ -136,7 +136,7 @@
                                     target="_blank" 
                                     :href="coverPage.link">
                                 <span class="icon is-small">
-                                    <i class="tainacan-icon tainacan-icon-24px tainacan-icon-see"/>
+                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
                                 </span>
                             </a>
                             &nbsp;&nbsp;
@@ -179,7 +179,7 @@
                                         type="button">
                                     <span>{{ $i18n.get('label_enabled_view_modes') }}</span>
                                     <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-24px tainacan-icon-arrowdown"/>
+                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
                                     </span>
                                 </button>
                                 <b-dropdown-item

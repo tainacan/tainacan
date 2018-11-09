@@ -15,7 +15,7 @@
 .tainacan-icon:before,
 .tainacan-icon-set {
     display: inline-block;
-    font: normal normal normal 24px/1 "Tainacan Icons";
+    font: normal normal normal 20px/1 "Tainacan Icons";
     font-size: inherit;
     text-rendering: auto;
     vertical-align: middle;
@@ -249,9 +249,14 @@
     font-size: 18px;
 }
 
-.tainacan-icon-24px.tainacan-icon-set, 
-.tainacan-icon-24px.tainacan-icon:before {
-    font-size: 24px;
+.tainacan-icon-20px.tainacan-icon-set, 
+.tainacan-icon-20px.tainacan-icon:before {
+    font-size: 20px;
+}
+
+.tainacan-icon-30px.tainacan-icon-set, 
+.tainacan-icon-30px.tainacan-icon:before {
+    font-size: 30px;
 }
 
 .tainacan-icon-36px.tainacan-icon-set, 

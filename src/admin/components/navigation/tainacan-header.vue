@@ -8,7 +8,7 @@
                         tag="a"
                         to="/">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-24px tainacan-icon-home has-text-blue5"/>
+                        <i class="tainacan-icon tainacan-icon-home has-text-blue5"/>
                     </span>
                 </router-link>
             </div>
@@ -29,7 +29,7 @@
                         @click="$router.push($routerHelper.getItemsPath())"
                         class="button is-small is-white level-item">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-24px tainacan-icon-search"/>
+                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-search"/>
                     </span>
                 </button>
             </div>
@@ -64,7 +64,7 @@
                             <span 
                                     style="margin-top: 10px;"
                                     class="icon is-pulled-right">
-                                <i class="tainacan-icon tainacan-icon-24px tainacan-icon-arrowup has-text-secondary"/>
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowup has-text-secondary"/>
                             </span>
                         </div>
                         <hr class="advanced-search-hr">
@@ -83,7 +83,7 @@
                     @click="showProcesses = !showProcesses"
                     class="button is-small is-white level-item">
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-24px tainacan-icon-processes"/>
+                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-processes"/>
                 </span>
             </button>
             <processes-popup
@@ -175,6 +175,7 @@
         .level-left {
             margin-left: -12px;
             .home-area {
+                font-size: 24px;
                 width: 50px;
                 height: $header-height;
                 background-color: $gray0;

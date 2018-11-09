@@ -89,7 +89,6 @@
                             <help-button 
                                     :title="$i18n.getHelperTitle('taxonomies', 'slug')" 
                                     :message="$i18n.getHelperMessage('taxonomies', 'slug')"/>
-                            <b-icon :class="{'is-loading': isUpdatingSlug}"/>
                             <b-input
                                     @input="updateSlug()"
                                     id="tainacan-text-slug"
@@ -416,5 +415,6 @@
         }
     }
 </script>
+<style>
 
 

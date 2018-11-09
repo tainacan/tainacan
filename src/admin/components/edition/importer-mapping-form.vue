@@ -124,11 +124,10 @@
                             v-if="collectionId != null && collectionId != undefined"
                             class="is-inline is-pulled-right add-link has-text-secondary"
                             @click="createNewMetadatum()">
-                        <b-icon
-                                icon="plus-circle"
-                                size="is-small"
-                                type="is-secondary"/>
-                            {{ $i18n.get('label_add_more_metadata') }}</a>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-add"/>
+                        </span>
+                        {{ $i18n.get('label_add_more_metadata') }}</a>
                 </div>
                 <div 
                         v-if="importerSourceInfo == undefined || 
