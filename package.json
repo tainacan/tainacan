@@ -7,6 +7,7 @@
     "build": "cross-env NODE_ENV=development webpack --display-error-details --mode development --progress --hide-modules"
   },
   "dependencies": {
+    "@brainhubeu/react-carousel": "^1.10.1",
     "axios": "^0.18.0",
     "buefy": "^0.7.0",
     "bulma": "^0.7.2",
@@ -14,6 +15,8 @@
     "moment": "^2.22.2",
     "node-sass": "^4.9.4",
     "qs": "^6.5.2",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
     "t": "^0.5.1",
     "v-tooltip": "^2.0.0-rc.33",
     "vue": "^2.5.17",
@@ -27,6 +30,7 @@
   "devDependencies": {
     "@babel/core": "^7.1.2",
     "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
     "autoprefixer": "^9.2.1",
     "babel-loader": "^8.0.4",
     "cross-env": "^5.2.0",
@@ -43,7 +47,7 @@
     "vue-custom-element": "^3.2.6",
     "vue-loader": "^15.4.2",
     "vue-template-compiler": "^2.5.17",
-    "webpack": "^4.20.2",
+    "webpack": "^4.22.0",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.9"
   }

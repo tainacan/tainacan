@@ -8,13 +8,12 @@ command -v sass >/dev/null 2>&1 || {
  
 # Define o caminho.
 echo "Compilando Sass..."
-cd src/scss
- 
-sass -E 'UTF-8' --cache-location ../../.tmp/sass-cache-1 tainacan-embeds.scss:../assets/css/tainacan-embeds.css
 
-cd ../admin/scss
-sass -E 'UTF-8' --cache-location ../../../.tmp/sass-cache-2 tainacan-admin.scss:../../assets/css/tainacan-admin.css
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-1 src/scss/tainacan-embeds.scss:src/assets/css/tainacan-embeds.css
 
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-2 src/admin/scss/tainacan-admin.scss:src/assets/css/tainacan-admin.css
+
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-3 src/gutenberg-blocks/gutenberg-blocks-style.scss:src/assets/css/tainacan-gutenberg-blocks-style.css
 
 echo "Compilação do Sass Concluído!"
 exit 0

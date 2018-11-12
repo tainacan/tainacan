@@ -24,17 +24,18 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                     postQueries.taxquery.length > 0)) ) {
                 
                 hasFiltered = true;
-
-                if (postQueries.advancedSearch){
+                        
+                if(postQueries.advancedSearch){
                     advancedSearchResults = postQueries.advancedSearch;
                 }
+                
             }
-            
+
             // Sets term query in case it's on a term items page
             if (termId != undefined && taxonomy != undefined) {
 
-                if (postQueries.taxquery == undefined) 
-                    postQueries.taxquery = [];
+                if (postQueries.taxquery == undefined || postQueries.taxquery.length == undefined) 
+                    postQueries.taxquery = new Array();
 
                 postQueries.taxquery.push({
                     taxonomy: taxonomy,
@@ -70,7 +71,6 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                 if (postQueries.admin_view_mode != undefined)
                     postQueries.admin_view_mode = null;
             } 
-
             axios.tainacan.get(endpoint+query, {
                 cancelToken: source.token
             })
@@ -78,10 +78,14 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                     
                     let items = res.data;
                     let viewModeObject = tainacan_plugin.registered_view_modes[postQueries.view_mode];
-
+                    
                     if (isOnTheme && viewModeObject != undefined && viewModeObject.type == 'template') {
                         commit('setItemsListTemplate', items);
-                        resolve({'itemsListTemplate': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered, advancedSearchResults:  advancedSearchResults});
+                        resolve({
+                            'itemsListTemplate': items, 
+                            'total': res.headers['x-wp-total'], 
+                            hasFiltered: hasFiltered, 
+                            advancedSearchResults:  advancedSearchResults});
                     } else {
                         commit('setItems', items);
                         resolve({
@@ -89,7 +93,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                             'total': res.headers['x-wp-total'],
                             totalPages: res.headers['x-wp-totalpages'], 
                             hasFiltered: hasFiltered, 
-                            advancedSearchResults: advancedSearchResults });
+                            advancedSearchResults: advancedSearchResults });                            
                     }
                     dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
                     dispatch('search/setTotalPages', res.headers['x-wp-totalpages'], { root: true } );
