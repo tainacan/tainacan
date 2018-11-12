@@ -162,3 +162,18 @@ export const runImporter = ( { dispatch } , importerId ) => {
             });
     });
 };
+
+export const fetchMappingImporter = ( { commit }, { sessionId, collection } ) => {
+    return new Promise(( resolve, reject ) => {
+
+        axios.tainacan.get('importers/session/' +  sessionId + '/get_mapping/' + collection)
+            .then( res => {
+                let mapping = res.data;
+                commit('setMappingImporter', mapping);
+                resolve( mapping );
+            })
+            .catch(error => {
+                reject( error.response.data );
+            });
+    });
+};

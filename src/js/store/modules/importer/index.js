@@ -6,7 +6,8 @@ const state = {
     importer: {},
     available_importers: [],
     importer_file: {},
-    importer_source_info: {}
+    importer_source_info: {},
+    importer_mapping: []
 };
 
 export default {
