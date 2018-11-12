@@ -28,7 +28,7 @@
                             :aria-label="$i18n.get('label_button_edit_header_image')"
                             @click="headerImageMediaFrame.openFrame($event)">
                         <span class="icon is-small">
-                            <i class="tainacan-icon tainacan-edit"/>
+                            <i class="tainacan-icon tainacan-icon-edit"/>
                         </span>
                     </a>
                     <a
@@ -37,7 +37,7 @@
                             :aria-label="$i18n.get('label_button_delete_thumb')"
                             @click="deleteHeaderImage()">
                         <span class="icon is-small">
-                            <i class="tainacan-icon tainacan-delete"/>
+                            <i class="tainacan-icon tainacan-icon-delete"/>
                         </span>
                     </a>
                 </div>
@@ -453,7 +453,7 @@
                     display: inherit;
                     padding: 0;
                     margin: 0;
-                    margin-top: 1px;
+                    margin-top: -2px;
                     font-size: 18px;
                 }
             }

@@ -9,7 +9,7 @@
                             class="first-card">
                         <div class="list-metadata">
                             <span class="icon is-large">
-                                <i class="tainacan-icon taincan-icon-36px taincan-icon-addcollection"/>
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-addcollection"/>
                             </span>
                             <div>{{ $i18n.get('label_create_collection') }}</div>
                         </div>                         
@@ -61,7 +61,7 @@
                         class="tainacan-card new-card">
                     <div class="list-metadata">
                         <span class="icon is-large">
-                            <i class="tainacan-icon taincan-icon-36px taincan-icon-addcollection"/>
+                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-addcollection"/>
                         </span>
                         <div>{{ $i18n.get('label_create_collection') }}</div>
                     </div>

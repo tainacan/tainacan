@@ -270,7 +270,8 @@ export default {
                 color: $turquoise4;
                 background-color: transparent !important;
                 border: none;
-                .icon i {
+                .icon {
+                    margin-top: -2px;
                     font-size: 24px;
                 }
             }

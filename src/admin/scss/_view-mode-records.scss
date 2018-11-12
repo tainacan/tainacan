@@ -51,6 +51,10 @@
             visibility: hidden;
             opacity: 0;
             transition: visibility 0.2s, opacity 0.2s;
+
+            a {
+                margin-left: 12px;
+            }
         }
         &:hover .actions-area {
             visibility: visible;

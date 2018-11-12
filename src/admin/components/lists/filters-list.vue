@@ -43,7 +43,9 @@
                             v-for="(filter, index) in activeFilterList" 
                             :key="index">
                         <div class="handle">
-                            <grip-icon/>
+                            <span class="icon grip-icon">
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
+                            </span>
                             <span class="icon icon-level-identifier">
                                 <i 
                                     :class="{ 'tainacan-icon-collection has-text-turquoise5': filter.collection_id == collectionId, 'tainacan-icon-repository has-text-blue5': filter.collection_id != collectionId }"
@@ -159,7 +161,9 @@
                                 v-for="(metadatum, index) in availableMetadatumList"
                                 :key="index"
                                 @click.prevent="addMetadatumViaButton(metadatum, index)">
-                            <grip-icon/> 
+                            <span class="icon grip-icon">
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
+                            </span>
                             <span class="icon icon-level-identifier">
                                 <i 
                                     :class="{ 'tainacan-icon-collection has-text-turquoise5': metadatum.collection_id == collectionId, 'tainacan-icon-repository has-text-blue5': metadatum.collection_id != collectionId }"
@@ -195,7 +199,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import GripIcon from '../other/grip-icon.vue';
 import FilterEditionForm from './../edition/filter-edition-form.vue';
 import CustomDialog from '../other/custom-dialog.vue';
 
@@ -234,8 +237,7 @@ export default {
         }
     },
     components: {
-        FilterEditionForm,
-        GripIcon
+        FilterEditionForm
     },
     beforeRouteLeave ( to, from, next ) {
         let hasUnsavedForms = false;
@@ -561,8 +563,7 @@ export default {
                 padding-right: 6em;
             }
             .grip-icon { 
-                fill: $gray3;
-                top: 1px;
+                color: $gray3;
                 position: relative;
             }
             .filter-name {
@@ -633,7 +634,7 @@ export default {
             }
 
             .grip-icon { 
-                fill: $white;
+                color: $white;
             }
 
             .label-details, .icon, .icon-level-identifier>i {
@@ -665,7 +666,7 @@ export default {
             position: relative;
 
             .grip-icon { 
-                fill: $gray3;
+                color: $gray3;
                 top: 2px;
                 position: relative;
             }
@@ -709,8 +710,8 @@ export default {
             transition: left 0.2s ease;
             
             .grip-icon { 
-                fill: $gray3;
-                top: -3px;
+                color: $gray3;
+                top: -4px;
                 position: relative;
                 display: inline-block;
             }
@@ -775,7 +776,7 @@ export default {
                     color: white !important;
                 }
                 .grip-icon {
-                    fill: white !important;
+                    color: white !important;
                 }
             }
         }

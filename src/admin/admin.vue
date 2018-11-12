@@ -123,7 +123,7 @@
         top: 192px;
         left: 0px;
         max-width: 25px;
-        height: 20px;
+        height: 25px;
         width: 25px;
         border: none;
         background-color: $blue5;

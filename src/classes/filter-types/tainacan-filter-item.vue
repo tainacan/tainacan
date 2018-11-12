@@ -19,7 +19,7 @@
                     slot-scope="props">
                 <span class="icon">
                     <i 
-                            :class="{ 'tainacan-icon-arrowleft' : props.open, 'tainacan-icon-arrowright' : !props.open }"
+                            :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open }"
                             class="tainacan-icon tainacan-icon-20px"/>
                 </span>
                 <span class="collapse-label">{{ filter.name }}</span>

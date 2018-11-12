@@ -338,7 +338,7 @@
                                 <span 
                                         class="gray-icon"
                                         v-html="registeredViewModes[viewModeOption].icon"/>
-                                {{ registeredViewModes[viewModeOption].label }}
+                                <span>{{ registeredViewModes[viewModeOption].label }}</span>
                             </b-dropdown-item>
                         </b-dropdown>
                     </b-field>
@@ -377,7 +377,7 @@
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-viewtable"/>
                                 </span>
-                                {{ $i18n.get('label_table') }}
+                                <span>{{ $i18n.get('label_table') }}</span>
                             </b-dropdown-item>
                             <b-dropdown-item 
                                     :class="{ 'is-active': adminViewMode == 'cards' }"
@@ -385,7 +385,7 @@
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-viewcards"/>
                                 </span>
-                                {{ $i18n.get('label_cards') }}
+                                <span>{{ $i18n.get('label_cards') }}</span>
                             </b-dropdown-item>
                             <b-dropdown-item 
                                     :class="{ 'is-active': adminViewMode == 'grid' }"
@@ -393,7 +393,7 @@
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-viewminiature"/>
                                 </span>
-                                {{ $i18n.get('label_thumbnails') }}
+                                <span>{{ $i18n.get('label_thumbnails') }}</span>
                             </b-dropdown-item>
                             <b-dropdown-item 
                                     :class="{ 'is-active': adminViewMode == 'records' }"
@@ -401,7 +401,7 @@
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-viewrecords"/>
                                 </span>
-                                {{ $i18n.get('label_records') }}
+                                <span>{{ $i18n.get('label_records') }}</span>
                             </b-dropdown-item>
                             <b-dropdown-item 
                                     :class="{ 'is-active': adminViewMode == 'masonry' }"
@@ -409,7 +409,7 @@
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-viewmasonry"/>
                                 </span>
-                                {{ $i18n.get('label_masonry') }}
+                                <span>{{ $i18n.get('label_masonry') }}</span>
                             </b-dropdown-item>
                         </b-dropdown>
                     </b-field>
@@ -1446,7 +1446,7 @@
         top: 120px;
         left: 0;
         max-width: 23px;
-        height: 21px;
+        height: 24px;
         width: 23px;
         border: none;
         background-color: $turquoise1;

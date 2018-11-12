@@ -47,7 +47,9 @@
                                     v-for="(metadatum, index) in activeMetadatumList"
                                     :key="index">
                                 <div class="handle">
-                                    <grip-icon/>
+                                    <span class="icon grip-icon">
+                                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
+                                    </span>
                                     <span class="icon icon-level-identifier">
                                         <i 
                                             :class="{ 
@@ -153,7 +155,9 @@
                                         :class="{ 'hightlighted-metadatum' : hightlightedMetadatum == metadatum.name, 'inherited-metadatum': isRepositoryLevel }"
                                         v-for="(metadatum, index) in availableMetadatumList"
                                         :key="index">
-                                    <grip-icon/>
+                                    <span class="icon grip-icon">
+                                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
+                                    </span>
                                     <span class="metadatum-name">{{ metadatum.name }}</span>
                                     <span 
                                             class="loading-spinner" 
@@ -350,7 +354,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import GripIcon from '../other/grip-icon.vue';
 import MetadatumEditionForm from './../edition/metadatum-edition-form.vue';
 import CustomDialog from '../other/custom-dialog.vue';
 
@@ -382,8 +385,7 @@ export default {
         }
     },
     components: {
-        MetadatumEditionForm,
-        GripIcon
+        MetadatumEditionForm
     },
     computed: {
         availableMetadatumList: {
@@ -863,8 +865,7 @@ export default {
                 padding-right: 6em;
             }
             .grip-icon { 
-                fill: $gray3; 
-                top: 1px;
+                color: $gray3; 
                 position: relative;
             }
             .metadatum-name {
@@ -939,7 +940,7 @@ export default {
             }
 
             .grip-icon { 
-                fill: white; 
+                color: white; 
             }
 
             .switch.is-small {
@@ -967,7 +968,7 @@ export default {
             position: relative;
 
             .grip-icon { 
-                fill: white; 
+                color: white; 
             }
         }
     }
@@ -1009,8 +1010,8 @@ export default {
             transition: left 0.2s ease;
             
             .grip-icon { 
-                fill: $gray3;
-                top: -3px;
+                color: $gray3;
+                top: -4px;
                 position: relative;
                 display: inline-block;
             }
@@ -1082,10 +1083,10 @@ export default {
             }
         }
         @keyframes hightlighten-icon {
-            0%   { fill: #b1b1b1; }
-            25%  { fill: white; }
-            75%  { fill: white; }
-            100% { fill: #b1b1b1; }
+            0%   { color: #b1b1b1; }
+            25%  { color: white; }
+            75%  { color: white; }
+            100% { color: #b1b1b1; }
         }
         @keyframes hightlighten-arrow {
             0%   {
@@ -1144,7 +1145,7 @@ export default {
             }
           
             .grip-icon { 
-                fill: white;
+                color: white;
             }
             
         }

@@ -146,7 +146,7 @@
                         @click="addSearchCriteria"
                         style="font-size: 0.75rem;">
                     <span class="icon is-small">
-                        <i class="tainacan-icon tainacan-icon-add"/>
+                        <i class="has-text-secondary tainacan-icon tainacan-icon-add"/>
                     </span>
                     {{ searchCriteria.length &lt;= 0 ?
                         $i18n.get('add_one_search_criterion') :

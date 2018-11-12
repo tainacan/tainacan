@@ -110,9 +110,9 @@
                                         v-if="finderColumn.length < totalRemaining[key].remaining"
                                         @click="getMoreOptions(finderColumn, key)"
                                         class="tainacan-show-more">
-                                    <b-icon
-                                            size="is-small"
-                                            icon="chevron-down"/>
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-showmore"/>
+                                    </span>
                                 </div>
                             </li>
                         </ul>
@@ -668,7 +668,7 @@
         cursor: pointer;
         border: 1px solid $gray1;
         margin-top: 10px;
-        margin-bottom: 0.2rem;
+        margin-bottom: -0.2rem;
 
         &:hover {
             background-color: $blue1;

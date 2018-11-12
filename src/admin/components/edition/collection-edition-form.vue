@@ -959,7 +959,7 @@ export default {
             display: inherit;
             padding: 0;
             margin: 0;
-            margin-top: 1px;
+            margin-top: -2px;
             font-size: 18px;
         }
     }
