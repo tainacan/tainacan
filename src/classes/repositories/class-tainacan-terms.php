@@ -158,6 +158,10 @@ class Terms extends Repository {
 				'description' => $term->get_description(),
 			] );
 		}
+		
+		if ( is_wp_error($term_saved) ) {
+			throw new \Exception( 'Error adding term: ' . $term_saved->get_error_message() );
+		}
 
 		// Now run through properties stored as postmeta
 		foreach ( $map as $prop => $mapped ) {
