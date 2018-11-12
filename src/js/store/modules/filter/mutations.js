@@ -35,3 +35,15 @@ export const updateFiltersOrderFromCollection = (state, filtersOrder) => {
 export const setFilterTypes = (state, filterTypes) => {
     state.filterTypes = filterTypes;
 }
+
+export const setTaxonomyFilters = (state, taxonomyFilters) => {
+    state.taxonomyFilters = taxonomyFilters;
+}
+
+export const setTaxonomyFiltersForCollection = (state, { collectionName, taxonomyFilters }) => {
+    Vue.set(state.taxonomyFilters, collectionName, taxonomyFilters);
+}
+
+export const clearTaxonomyFilters = (state) => {
+    state.taxonomyFilters = {};
+}

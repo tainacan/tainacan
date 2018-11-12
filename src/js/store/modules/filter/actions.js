@@ -144,3 +144,44 @@ export const fetchFilterTypes = ({ commit} ) => {
 export const updateFilteTypes = ( { commit }, filterTypes) => {
     commit('setFilterTypes', filterTypes);
 };
+
+// TAXONOMY FILTERS - MULTIPLE COLLECTIONS ------------------------
+export const fetchTaxonomyFilters = ({ dispatch, commit }, taxonomyId ) => {
+    
+    commit('clearTaxonomyFilters');
+
+    return new Promise((resolve, reject) => {
+        dispatch('taxonomy/fetchTaxonomy', taxonomyId, { root: true })
+            .then((res) => {
+                let taxonomy = res.taxonomy;
+                if (taxonomy.collections_ids != undefined && taxonomy.collections_ids.length != undefined) {
+                    
+                    let amountOfCollectionsLoaded = 0;
+
+                    for (let collectionId of taxonomy.collections_ids ) {
+                
+                        let endpoint = '';
+                        endpoint = '/collection/' + collectionId + '/filters/?nopaging=1&include_disabled=no';
+
+                        axios.tainacan.get(endpoint)
+                            .then((resp) => {
+                                let filters = resp.data;
+                                commit('setTaxonomyFiltersForCollection', { collectionName: collectionId, taxonomyFilters: filters });
+                                amountOfCollectionsLoaded++;
+
+                                if (amountOfCollectionsLoaded == taxonomy.collections_ids.length) {
+                                    resolve();
+                                }
+                            }) 
+                            .catch((error) => {
+                                console.log(error);
+                                reject(error);
+                            });    
+                    }
+                }
+            })
+            .error(() => {
+                reject();
+            });
+    });
+};
