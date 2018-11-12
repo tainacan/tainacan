@@ -108,10 +108,17 @@
             margin-bottom: 0.75rem !important;
             display: inline-flex;
             align-items: center;
+            max-width: 100%;
 
-            span {
+            span:not(.ellipsed-text) {
                 margin-right: 5px;
                 margin-left: -5px;
+            }
+            .ellipsed-text {
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+                max-width: 100%;
             }
         }
         .content {

@@ -61,6 +61,7 @@
 
             <div
                     v-for="(metadatum, index) of item.metadata"
+                    v-if="metadatum.value_as_html != undefined && metadatum.value_as_html != ''"
                     :key="index"
                     class="field">
                 <b-collapse :open="!collapseAll">
@@ -70,14 +71,21 @@
                             slot-scope="props">
                         <b-icon
                                 type="is-secondary"
-                                :icon="props.open ? 'menu-down' : 'menu-right'"
-                        />
-                        {{ metadatum.name }}
+                                :icon="props.open ? 'menu-down' : 'menu-right'"/>
+                        <span 
+                                v-tooltip="{
+                                    content: metadatum.name,
+                                    autoHide: false,
+                                    placement: 'auto-start'
+                                }"  
+                                class="ellipsed-text">
+                            {{ metadatum.name }}
+                        </span>
                     </label>
                     <div class="content">
                         <p  
                             class="has-text-white"
-                            v-html="metadatum.value_as_html != '' ? metadatum.value_as_html : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                            v-html="metadatum.value_as_html"/>
                     </div>
                 </b-collapse>
 
