@@ -56,7 +56,8 @@
             filters: Array,
             collapsed: Boolean,
             isRepositoryLevel: Boolean,
-            taxonomyFilters: Object
+            taxonomyFilters: Object,
+            taxonomy: String
         },
         watch: {
             taxonomyFilters() {
@@ -64,7 +65,9 @@
                     for (let taxonomyFilter of Object.keys(this.taxonomyFilters)) {
                         
                         this.fetchCollectionName(taxonomyFilter)
-                            .then((collectionName) => this.taxonomyFiltersCollectionNames[taxonomyFilter] = collectionName)
+                            .then((collectionName) => {
+                                this.$set(this.taxonomyFiltersCollectionNames, taxonomyFilter, collectionName);
+                            });
                     }
                 }
             }
@@ -80,6 +83,10 @@
         computed: {
             getQuery() {
                 return this.getPostQuery();
+            },
+            taxonomyId () {
+                let taxonomyArray = this.taxonomy.split("_");
+                return taxonomyArray[taxonomyArray.length - 1];
             }
         },
         components: {

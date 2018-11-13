@@ -91,6 +91,7 @@
                     isRepositoryLevel) || filters.length > 0)"
                     :filters="filters"
                     :taxonomy-filters="taxonomyFilters"
+                    :taxonomy="taxonomy"
                     :collapsed="collapseAll"
                     :is-repository-level="isRepositoryLevel"/>
 
