@@ -475,6 +475,22 @@ class Exporter extends CommunImportExport {
 	protected $mapping_list = [];
 	public $mapping_selected = "";
 
+	protected $steps = [
+		[
+			'name' => 'Begin Exporter',
+			'progress_label' => 'Begin Exporter Process',
+			'callback' => 'begin_exporter'
+		],[
+			'name' => 'Process Items',
+			'progress_label' => 'Process Items',
+			'callback' => 'process_collections'
+		],[
+			'name' => 'End Exporter',
+			'progress_label' => 'End Exporter Process',
+			'callback' => 'end_exporter'
+		]
+	];
+
 	public function __construct($attributess = array()) {
 		$this->array_attributes = array_merge($this->array_attributes, ['current_collection_item', 'current_collection']);
 		parent::__construct();
@@ -489,7 +505,6 @@ class Exporter extends CommunImportExport {
 		}
 	}
 
-	//"Tainacan\\Exposers\\Mappers\\Value"
 	public function _to_Array($short = false) {
 		$return = ['id' => $this->get_id()];
 		foreach ($this->array_attributes as $attr) {
@@ -515,6 +530,30 @@ class Exporter extends CommunImportExport {
 		return $return;
 	}
 
+	public function add_collection(array $collection) {
+		parent::add_collection($collection);
+		$this->update_collection_mapping($collection['id']);
+	}
+
+	private function update_collection_mapping($collection_id) {
+		$collection_repo = Tainacan\Repositories\Collections::get_instance();
+		$collection = $collection_repo->fetch((int)$collection_id);
+		$metas = $collection->get_metadata();
+		
+		$mapping = [];
+		foreach ($metas as $key => $value) {
+			$mapper = $this->mapping_list[$this->mapping_selected];
+			$instance_mapper = new $mapper();
+			$metadatum_mapping = $value->get_exposer_mapping();
+			if(array_key_exists($instance_mapper->slug, $metadatum_mapping)) {
+				$mapping[$value->get_name()] = $metadatum_mapping[$instance_mapper->slug];
+			} else if ($instance_mapper->slug == 'value'){
+				$mapping[$value->get_name()] = $value->get_name();
+			}
+		}
+		$this->collections[$collection_id]['mapping'] = $mapping;
+	}
+
 	/**
 	 * Method implemented by child importer/exporter to return the HTML of the Options Form to be rendered in the Importer page
 	 */
@@ -536,28 +575,39 @@ class Exporter extends CommunImportExport {
 		}
 		$this->add_log('Processing item ' . $current_collection_item);
 
-		$processed_item = $this->get_item($current_collection_item, $collection_definition);
-		if($current_collection_item == 0) {
-			$this->process_header();
-		}
-		$this->process_item( $processed_item );
-		if ($current_collection_item == $collection_definition['total_items']-1) {
-			$this->process_footer();
-		}
+		$this->process_header($current_collection_item, $collection_definition);
 
+		$processed_item = $this->get_item($current_collection_item, $collection_definition);
+		$this->process_item( $processed_item, $collection_definition['mapping'] );
+
+		$this->process_footer($current_collection_item, $collection_definition);
 		return $this->next_item();
 	}
 
-	public function process_item( $processed_item ) {
+	public function process_item( $processed_item, $mapping ) {
 		$this->append_to_file('exporter', "[--process item--]\n");
 	}
 
-	public function process_header() {
-		$this->append_to_file('exporter', "[--header--]\n");
+	private function process_header($current_collection_item, $collection_definition) {
+		if ($current_collection_item == 0) {
+			$this->output_header($collection_definition);
+		}
 	}
 
-	public function process_footer() {
-		$this->append_to_file('exporter', "[--footer--]\n");
+	public function output_header($collection_definition) {
+		$this->append_to_file('exporter', "[header] \n");
+		return false;
+	}
+
+	private function process_footer($current_collection_item, $collection_definition) {
+		if ($current_collection_item == $collection_definition['total_items']-1) {
+			$this->output_footer();
+		}
+	}
+
+	public function output_footer() {
+		$this->append_to_file('exporter', "[footer] \n");
+		return false;
 	}
 
 	private function get_item($index, $collection_definition) {
@@ -572,24 +622,19 @@ class Exporter extends CommunImportExport {
 
 		$this->add_log('Proccessing item index ' . $index . ' in collection ' . $collection_definition['id'] );
 		$items = $tainacan_items->fetch($filters, $collection_id, 'WP_Query');
-		//$export_items = "";
 		$data = [];
 		while ($items->have_posts()) {
 			$items->the_post();
 			$item = new Entities\Item($items->post);
-			$printCol = $index == 0;
-			//$export_items .= $this->get_item_csv($item, $printCol);
 			$prepared_item = [];
 			foreach ($item->get_metadata() as $item_metadata) {
 				array_push($prepared_item, $item_metadata->_toArray());
 			}
 			$mapper = $this->mapping_list[$this->mapping_selected];
 			$instance_mapper = new $mapper();
-			$data[] = $this->map($prepared_item, $instance_mapper);
-			//return $this->str_putcsv($data, ',', '"', $printCol);
+			$data[] = $this->map($prepared_item, $instance_mapper);			
 		}
 		wp_reset_postdata();
-		//return $export_items;
 		return $data;
 	}
 
@@ -713,6 +758,14 @@ class Exporter extends CommunImportExport {
 			$msg = 'export completed successfully';
 			wp_mail($this->send_email, __('Finished export.', 'tainacan'), __($msg, 'tainacan'));
 		}
+	}
+
+	public function begin_exporter() {
+		return false;
+	}
+
+	public function end_exporter() {
+		return false;
 	}
 
 	private function set_output_files($output_files) {

@@ -15,3 +15,7 @@ export const setImporterFile = (state, importerFile) => {
 export const setImporterSourceInfo= (state, importerSourceInfo) => {
     state.importer_source_info = importerSourceInfo;
 }
+
+export const setMappingImporter = (state, importerMapping) => {
+    state.importer_mapping = importerMapping;
+}

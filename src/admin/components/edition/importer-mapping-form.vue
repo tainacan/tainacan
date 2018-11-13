@@ -217,7 +217,8 @@ export default {
             'updateImporterOptions',
             'fetchImporterSourceInfo',
             'updateImporterCollection',
-            'runImporter'
+            'runImporter',
+            'fetchMappingImporter'
         ]),
         ...mapActions('collection', [
             'fetchCollectionsForParent'
@@ -269,6 +270,11 @@ export default {
             .then((metadata) => {
                 this.collectionMetadata = JSON.parse(JSON.stringify(metadata));
                 this.isFetchingCollectionMetadata = false;
+
+                this.fetchMappingImporter({ collection: this.collectionId, sessionId: this.sessionId })
+                    .then(res => {
+                        // TODO: save mapping
+                    })
             })
             .catch((error) => {
                 this.$console.error(error);
