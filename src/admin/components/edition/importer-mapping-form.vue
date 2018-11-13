@@ -272,7 +272,9 @@ export default {
 
                 this.fetchMappingImporter({ collection: this.collectionId, sessionId: this.sessionId })
                     .then(res => {
-                        // TODO: save mapping
+                        if( res ) {
+                            this.mappedCollection['mapping'] = res;
+                        }
                     })
             })
             .catch((error) => {
