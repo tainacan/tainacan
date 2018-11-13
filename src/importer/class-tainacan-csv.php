@@ -663,9 +663,9 @@ class CSV extends Importer {
 					$this->add_error_log('Malformed term hierarchy for Item ' . $this->get_current_collection_item() . '. Term skipped. Value: ' . $values);
 					return false;
                 }
-                $exists = term_exists( $value ,$taxonomy->get_db_identifier(), $parent );
-                if (0 !== $exists && null !== $exists && isset($exists['term_id'])) {
-					$parent = $exists['term_id'];
+                $exists = $Tainacan_Terms->term_exists( $value ,$taxonomy->get_db_identifier(), $parent, true );
+                if (false !== $exists && isset($exists->term_taxonomy_id)) {
+					$parent = $exists->term_taxonomy_id;
                 } else {
 					$this->add_log('New term created: ' . $value . ' in tax_id: ' . $taxonomy->get_db_identifier() . '; parent: ' . $parent);
                     $term = new Entities\Term();

@@ -217,39 +217,16 @@ class Term extends Entity {
 		$parent = $this->get_parent();
 		$name = $this->get_name();
 		$taxonomy = $this->get_taxonomy();
-
-		/**
-		 * Code from WordPress Core, taxonomy.php#2070
-		 */
-
-		/*
-		* Prevent the creation of terms with duplicate names at the same level of a taxonomy hierarchy,
-		* unless a unique slug has been explicitly provided.
-		*/
-		$name_matches = get_terms( $taxonomy, array(
-			'name'       => $name,
-			'hide_empty' => false,
-			'parent'     => $parent,
-			'exclude'    => $this->get_id()
-		) );
-
-		/*
-		* The `name` match in `get_terms()` doesn't differentiate accented characters,
-		* so we do a stricter comparison here.
-		*/
-		$name_match = null;
-		if ( $name_matches ) {
-			foreach ( $name_matches as $_match ) {
-				if ( is_object($_match) && isset($_match) && strtolower( $name ) === strtolower( $_match->name ) ) {
-					$name_match = $_match;
-					break;
-				}
+		
+		$repo = $this->get_repository();
+		
+		$term_exists = $repo->term_exists($name, $taxonomy, $parent, true);
+		
+		if (false !== $term_exists) {
+			if ($this->get_id() != $term_exists->term_taxonomy_id) {
+				$this->add_error( 'repeated', __('You can not have two terms with the same name at the same level', 'tainacan') );
+				return false;
 			}
-		}
-
-		if ($name_match) {
-			$this->add_error( 'repeated', __('You can not have two terms with the same name at the same level', 'tainacan') );
-			return false;
 		}
 
 		$this->set_as_valid();
