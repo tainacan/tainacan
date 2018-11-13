@@ -12,9 +12,9 @@
                 :filter="filter"
                 :open="collapsed"
                 :is-repository-level="isRepositoryLevel"/>
-
     </div>
-</template>
+</template> 
+
 <script>
     import { mapGetters } from 'vuex';
     import CollectionsFilter from '../repository/collection-filter/collection-filter.vue';

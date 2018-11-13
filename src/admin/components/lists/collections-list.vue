@@ -20,7 +20,9 @@
                             class="button is-white"
                             slot="trigger">
                         <span>{{ $i18n.get('label_bulk_actions') }}</span>
-                        <b-icon icon="menu-down"/>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                        </span>
                     </button> 
 
                     <b-dropdown-item
@@ -177,18 +179,20 @@
                                 <a 
                                         id="button-edit" 
                                         :aria-label="$i18n.getFrom('collections','edit_item')" 
-                                        @click.prevent.stop="goToCollectionEditPage(collection.id)">
-                                    <b-icon 
-                                            type="is-secondary" 
-                                            icon="settings"/>
+                                        @click.prevent.stop="goToCollectionEditPage(collection.id)">                      
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-settings"/>
+                                    </span>
                                 </a>
                                 <a 
                                         id="button-delete" 
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneCollection(collection.id)">
-                                    <b-icon 
-                                            type="is-secondary" 
-                                            :icon="!isOnTrash ? 'delete' : 'delete-forever'"/>
+                                    <span class="icon">
+                                        <i 
+                                                :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
+                                                class="tainacan-icon tainacan-icon-20px"/>
+                                    </span>
                                 </a>
                             </div>
                         </td>

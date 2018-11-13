@@ -28,6 +28,7 @@
                                 @blur="updateSlug"
                                 @focus="clearErrors('name')"/>
                     </b-field>
+
                     <!-- Hook for extra Form options -->
                     <template 
                             v-if="formHooks != undefined && 
@@ -65,18 +66,18 @@
                                         id="button-edit-thumbnail" 
                                         :aria-label="$i18n.get('label_button_edit_thumb')"
                                         @click.prevent="thumbnailMediaFrame.openFrame($event)">
-                                    <b-icon 
-                                            size="is-small"
-                                            icon="pencil" />
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-edit"/>
+                                    </span>
                                 </a>
                                 <a 
                                         class="button is-rounded is-secondary"
                                         id="button-delete-header-image" 
                                         :aria-label="$i18n.get('label_button_delete_thumb')" 
                                         @click="deleteThumbnail()">
-                                    <b-icon 
-                                            size="is-small"
-                                            icon="delete" />
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-delete"/>
+                                    </span>
                                 </a>
                             </div>
                         </div>
@@ -122,9 +123,9 @@
                                 <a 
                                         target="_blank"
                                         @click.prevent="removeCoverPage()">
-                                    <b-icon 
-                                            size="is-small"
-                                            icon="close"/>
+                                    <span class="icon is-small">
+                                        <i class="tainacan-icon tainacan-icon-close"/>
+                                    </span>
                                 </a>
                             </span>
                         </div>
@@ -134,15 +135,17 @@
                             <a 
                                     target="_blank" 
                                     :href="coverPage.link">
-                                <eye-icon :style="{fill: isNewCollection ? '#01295c' : '#298596' }" />
+                                <span class="icon is-small">
+                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+                                </span>
                             </a>
                             &nbsp;&nbsp;
                             <a 
                                     target="blank" 
                                     :href="coverPageEditPath">
-                                <b-icon 
-                                        size="is-small"
-                                        icon="pencil"/>
+                                <span class="icon is-small">
+                                    <i class="tainacan-icon tainacan-icon-edit"/>
+                                </span>
                             </a>
                         </span>
                         <br>
@@ -151,11 +154,10 @@
                                 :class="{'disabled': form.enable_cover_page != 'yes'}"
                                 target="_blank"  
                                 :href="newPagePath">
-                            <b-icon
-                                    icon="plus-circle"
-                                    size="is-small"
-                                    type="is-secondary"/>
-                                {{ $i18n.get('label_create_new_page') }}</a>                        
+                            <span class="icon is-small">
+                                <i class="tainacan-icon tainacan-icon-add"/>
+                            </span>
+                            {{ $i18n.get('label_create_new_page') }}</a>                        
                     </b-field>
 
                     <!-- Enabled View Modes ------------------------------- --> 
@@ -176,7 +178,9 @@
                                         position="is-top-right"
                                         type="button">
                                     <span>{{ $i18n.get('label_enabled_view_modes') }}</span>
-                                    <b-icon icon="menu-down"/>
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                                    </span>
                                 </button>
                                 <b-dropdown-item
                                         v-for="(viewMode, index) in Object.keys(registeredViewModes)"
@@ -264,8 +268,8 @@
                                     :native-value="statusOption.value">
                                 <span class="icon has-text-gray">
                                     <i 
-                                        class="mdi mdi-18px"
-                                        :class="'mdi-' + getStatusIcon(statusOption.value)"/>
+                                        class="tainacan-icon tainacan-icon-18px"
+                                        :class="'tainacan-icon-' + getStatusIcon(statusOption.value)"/>
                                 </span>
                                 {{ statusOption.label }}
                             </b-radio>
@@ -290,18 +294,18 @@
                                         id="button-edit-header-image" 
                                         :aria-label="$i18n.get('label_button_edit_header_image')"
                                         @click="headerImageMediaFrame.openFrame($event)">
-                                    <b-icon 
-                                            size="is-small"
-                                            icon="pencil" />
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-edit"/>
+                                    </span>
                                 </a>
                                 <a 
                                         class="button is-rounded is-secondary"
                                         id="button-delete-header-image" 
                                         :aria-label="$i18n.get('label_button_delete_thumb')" 
                                         @click="deleteHeaderImage()">
-                                    <b-icon 
-                                            size="is-small"
-                                            icon="delete" />
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-delete"/>
+                                    </span>
                                 </a>
                             </div>     
                         </div>
@@ -440,11 +444,28 @@
                             type="button"
                             @click="cancelBack">{{ $i18n.get('cancel') }}</button>
                 </div>
+                
+                <div 
+                        style="margin-left: auto;"
+                        class="control">
+                    <button
+                            v-if="isNewCollection"
+                            id="button-submit-goto-metadata"
+                            @click.prevent="onSubmit('metadata')"
+                            class="button is-turquoise5">{{ $i18n.get('label_save_goto_metadata') }}</button>
+                </div>
+                 <div class="control">
+                    <button
+                            v-if="isNewCollection"
+                            id="button-submit-goto-filter"
+                            @click.prevent="onSubmit('filters')"
+                            class="button is-turquoise5">{{ $i18n.get('label_save_goto_filter') }}</button>
+                </div>
                 <div class="control">
                     <button
                             id="button-submit-collection-creation"
-                            @click.prevent="onSubmit"
-                            class="button is-success">{{ $i18n.get('save') }}</button>
+                            @click.prevent="onSubmit('items')"
+                            class="button is-success">{{ $i18n.get('finish') }}</button>
                 </div>
             </div>
             <p class="help is-danger">{{ formErrorMessage }}</p> 
@@ -460,7 +481,6 @@
 import { mapActions } from 'vuex';
 import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
-import EyeIcon from '../other/eye-icon.vue';
 import { wpAjax, formHooks } from '../../js/mixins';
 
 export default {
@@ -529,8 +549,7 @@ export default {
         }
     },
     components: {
-        FileItem,
-        EyeIcon
+        FileItem
     },
     methods: {
         ...mapActions('collection', [
@@ -569,7 +588,7 @@ export default {
                     this.isUpdatingSlug = false;
                 });
         }, 500),
-        onSubmit() {
+        onSubmit(goTo) {
            
             this.isLoading = true;
             this.form.moderators_ids = [];
@@ -617,8 +636,14 @@ export default {
 
                 if (this.fromImporter)
                     this.$router.go(-1);
-                else
-                    this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
+                else {
+                    if (goTo == 'metadata')
+                        this.$router.push(this.$routerHelper.getCollectionMetadataPath(this.collectionId));
+                    else if (goTo == 'filters')
+                        this.$router.push(this.$routerHelper.getCollectionFiltersPath(this.collectionId));
+                    else
+                        this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
+                }
             })
             .catch((errors) => {
                 for (let error of errors.errors) {     
@@ -802,11 +827,11 @@ export default {
         },
         getStatusIcon(status) {
             switch(status) {
-                case 'publish': return 'earth';
-                case 'private': return 'lock';
-                case 'draft': return 'clipboard-text';
+                case 'publish': return 'public';
+                case 'private': return 'private';
+                case 'draft': return 'draft';
                 case 'trash': return 'delete';
-                default: return 'file';
+                default: return 'item';
             }
         }
     },
@@ -934,7 +959,7 @@ export default {
             display: inherit;
             padding: 0;
             margin: 0;
-            margin-top: 1px;
+            margin-top: -2px;
             font-size: 18px;
         }
     }
@@ -1010,20 +1035,12 @@ export default {
     }
     .selected-cover-page-buttons {
         float: right;
-        padding: 4px 6px;
-        .icon { font-size: 20px; }   
-        .eye-icon {
-            position: relative;
-            top: 2px;         
-        }
+        padding: 4px 6px;  
         &.disabled {
             pointer-events: none;
             cursor: not-allowed;
            
            .icon { color: $gray2; }
-            .eye-icon {
-                fill: $gray2 !important;
-            }
         }
     }
     .status-radios {

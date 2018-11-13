@@ -3,7 +3,16 @@
             id="tainacan-header"
             class="level is-mobile">
         <div class="level-left">
-            <div class="level-item">
+            <div class="level-item home-area">
+                <router-link
+                        tag="a"
+                        to="/">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-home has-text-blue5"/>
+                    </span>
+                </router-link>
+            </div>
+            <div class="level-item logo-area">
                 <router-link
                         tag="a"
                         to="/">
@@ -17,10 +26,10 @@
         <div class="level-right">
             <div class="is-hidden-tablet">
                 <button
-                    @click="$router.push($routerHelper.getItemsPath())"
-                    class="button is-small is-white level-item">
-                    <span class="icon is-right">
-                        <i class="mdi mdi-24px mdi-magnify"/>
+                        @click="$router.push($routerHelper.getItemsPath())"
+                        class="button is-small is-white level-item">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-search"/>
                     </span>
                 </button>
             </div>
@@ -35,9 +44,9 @@
                             @input="futureSearchQuery = $event.target.value"
                             @keyup.enter="updateSearch()">
                     <span class="icon is-right">
-                        <i
+                        <i 
                                 @click="updateSearch()"
-                                class="mdi mdi-magnify"/>
+                                class="tainacan-icon tainacan-icon-search"/>
                     </span>
                 </div>
                 <b-dropdown
@@ -52,11 +61,11 @@
                     <b-dropdown-item>
                         <div :style="{'height': '25px'}">
                             <p class="is-pulled-left advanced-search-text-di">{{ $i18n.get('advanced_search') }}</p>
-                            <b-icon
-                                    style="margin-top: 2px"
-                                    type="is-secondary"
-                                    icon="menu-up"
-                                    class="is-pulled-right" />
+                            <span 
+                                    style="margin-top: 10px;"
+                                    class="icon is-pulled-right">
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowup has-text-secondary"/>
+                            </span>
                         </div>
                         <hr class="advanced-search-hr">
                     </b-dropdown-item>
@@ -73,7 +82,9 @@
             <button
                     @click="showProcesses = !showProcesses"
                     class="button is-small is-white level-item">
-                <b-icon icon="swap-vertical"/>
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-processes"/>
+                </span>
             </button>
             <processes-popup
                     v-if="showProcesses"
@@ -81,7 +92,9 @@
             <a
                     class="level-item"
                     :href="wordpressAdmin">
-                <b-icon icon="wordpress"/>
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-wordpress"/>
+                </span>
             </a>
         </div>
     </div>
@@ -163,8 +176,14 @@
 
         .level-left {
             margin-left: -12px;
-
-            .level-item {
+            .home-area {
+                font-size: 24px;
+                width: 50px;
+                height: $header-height;
+                background-color: $gray0;
+                padding-bottom: 0.4rem;
+            }
+            .logo-area {
                 height: $header-height;
                 width: $side-menu-width;
                 cursor: pointer;
@@ -175,7 +194,7 @@
                 .tainacan-logo {
                     height: 24px;
                     padding: 0px;
-                    margin-left: 19px;
+                    // margin-left: 19px;
                 }
             }
         }
@@ -196,7 +215,7 @@
                 .control {
                     .search-header {
                         border: 1px solid $gray2 !important;
-                        height: 27px;
+                        height: 28px;
                         transition: width linear 0.15s;
                         -webkit-transition: width linear 0.15s;
                         width: 220px;

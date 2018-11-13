@@ -12,7 +12,9 @@
                             class="button is-secondary"
                             slot="trigger">
                         <div>{{ $i18n.getFrom('collections', 'new_item') }}</div>
-                        <b-icon icon="menu-down"/>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
+                        </span>
                     </button>
                     <b-dropdown-item>
                         <router-link
@@ -77,7 +79,9 @@
                     <section class="section">
                         <div class="content has-text-grey has-text-centered">
                             <p>
-                                <b-icon icon="folder-multiple"/>
+                                <span class="icon is-large">
+                                    <i class="tainacan-icon tainacan-icon-36px tainacan-icon-collections" />
+                                </span>
                             </p>
                             <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_collection_created') }}</p>
                             <p v-if="status == 'draft'">{{ $i18n.get('info_no_collection_draft') }}</p>

@@ -7,9 +7,9 @@
                     class="section">
                 <div class="content has-text-gray4 has-text-centered">
                     <p>
-                        <b-icon
-                                icon="file-multiple"
-                                size="is-large"/>
+                        <span class="icon is-large">
+                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-items" />
+                        </span>
                     </p>
                     <p>{{ $i18n.get('info_no_item_found') }}</p>
                 </div>

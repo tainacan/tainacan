@@ -11,14 +11,16 @@
                 v-if="!isRepositoryLevel"
                 class="button"
                 id="view-collection-button">
-            <eye-icon /> {{ $i18n.get('label_view_collection') }}
+            <span class="icon">
+                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+            </span>
+             {{ $i18n.get('label_view_collection') }}
         </a>
     </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import EyeIcon from '../other/eye-icon.vue';
 
 export default {
     name: 'TainacanRepositorySubheader',
@@ -27,9 +29,6 @@ export default {
             repositoryName: tainacan_plugin.repository_name,
             collectionId: ''
         }
-    },
-    components: {
-        EyeIcon
     },
     props: {
         isMenuCompressed: false,
@@ -115,7 +114,7 @@ export default {
             background-color: $turquoise4;
             color: white;
             
-            .eye-icon {
+            .icon {
                 margin-right: 0.75rem;
             }
         }

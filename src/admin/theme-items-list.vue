@@ -27,9 +27,10 @@ export default {
 }
 </script>
 
-
 <style lang="scss">
-   @import "../admin/scss/_variables.scss";
+
+    // TAINACAN Variables
+    @import "./scss/_variables.scss";
 
     // Bulma imports
     @import "./scss/theme-basics.sass";
@@ -81,6 +82,10 @@ export default {
         }
         .dropdown-menu {
             display: block;
+        }
+        .dropdown .dropdown-trigger .button .icon, 
+        .autocomplete .dropdown-trigger .button .icon {
+            align-items: center;
         }
         .b-radio.radio {
 
