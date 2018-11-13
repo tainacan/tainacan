@@ -3,8 +3,8 @@ import * as getters from './getters';
 import * as mutations from './mutations';
 
 const state = {
-    events: [],
-    event: {},
+    activities: [],
+    activity: {},
     eventTitle: String,
 };
 

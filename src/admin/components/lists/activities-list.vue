@@ -6,15 +6,15 @@
                     <tr>
                         <!-- Title -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_event_title') }}</div>
+                            <div class="th-wrap">{{ $i18n.get('label_activity_title') }}</div>
                         </th>
                         <!-- Created by -->
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_created_by') }}</div>
                         </th>
-                        <!-- Event date -->
+                        <!-- Activity date -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_event_date') }}</div>
+                            <div class="th-wrap">{{ $i18n.get('label_activity_date') }}</div>
                         </th>
                         <!-- Status -->
                         <!--<th>-->
@@ -25,72 +25,72 @@
                 <tbody>
                     <tr     
                             :key="index"
-                            v-for="(event, index) of events">
+                            v-for="(activity, index) of activities">
                         <!-- Name -->
                         <td 
                                 class="column-default-width column-main-content"
-                                @click="goToEventPage(event.id)"
-                                :label="$i18n.get('label_event_title')" 
-                                :aria-label="$i18n.get('label_event_title') + ': ' + event.title">
+                                @click="goToActivityPage(activity.id)"
+                                :label="$i18n.get('label_activity_title')"
+                                :aria-label="$i18n.get('label_activity_title') + ': ' + activity.title">
                             <p
                                     v-tooltip="{
-                                        content: event.title,
+                                        content: activity.title,
                                         autoHide: false,
                                         placement: 'auto-start'
-                                    }">{{ event.title }}</p>
+                                    }">{{ activity.title }}</p>
                         </td>
                         <!-- User -->
                         <td
                                 class="table-creation column-small-width" 
-                                @click="goToEventPage(event.id)"
+                                @click="goToActivityPage(activity.id)"
                                 :label="$i18n.get('label_created_by')" 
-                                :aria-label="$i18n.get('label_created_by') + ': ' + event.user_name">
+                                :aria-label="$i18n.get('label_created_by') + ': ' + activity.user_name">
                             <p 
                                     v-tooltip="{
-                                        content: event.user_name,
+                                        content: activity.user_name,
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }" 
-                                    v-html="event.user_name" />
+                                    v-html="activity.user_name" />
                         </td>
-                        <!-- Event Date -->
+                        <!-- Activity Date -->
                         <td
                                 class="table-creation column-small-width" 
-                                @click="goToEventPage(event.id)"
-                                :label="$i18n.get('label_event_date')" 
-                                :aria-label="$i18n.get('label_event_date') + ': ' + event.log_date">
+                                @click="goToActivityPage(activity.id)"
+                                :label="$i18n.get('label_activity_date')"
+                                :aria-label="$i18n.get('label_activity_date') + ': ' + activity.log_date">
                             <p 
                                     v-tooltip="{
-                                        content: event.log_date,
+                                        content: activity.log_date,
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }" 
-                                    v-html="event.log_date" />
+                                    v-html="activity.log_date" />
                         </td>
                         <!-- Status -->
                         <!--<td-->
-                                <!--@click="goToEventPage(event.id)"-->
+                                <!--@click="goToActivityPage(activity.id)"-->
                                 <!--class="status-cell" -->
                                 <!--:label="$i18n.get('label_status')" -->
-                                <!--:aria-label="$i18n.get('label_status') + ': ' + event.status">-->
+                                <!--:aria-label="$i18n.get('label_status') + ': ' + activity.status">-->
                             <!--<p>-->
                                 <!--<a-->
-                                        <!--v-if="event.status === 'pending'"-->
+                                        <!--v-if="activity.status === 'pending'"-->
                                         <!--id="button-approve"-->
                                         <!--:aria-label="$i18n.get('approve_item')"-->
-                                        <!--@click.prevent.stop="approveEvent(event.id)">-->
+                                        <!--@click.prevent.stop="approveActivity(activity.id)">-->
                                     <!--<b-icon-->
                                         <!--icon="check" />-->
                                 <!--</a>-->
 
                                 <!--<a-->
-                                        <!--v-if="event.status === 'pending'"-->
+                                        <!--v-if="activity.status === 'pending'"-->
                                         <!--id="button-not-approve"-->
                                         <!--class="delete"-->
                                         <!--:aria-label="$i18n.get('not_approve_item')"-->
-                                        <!--@click.prevent.stop="notApproveEvent(event.id)" />-->
+                                        <!--@click.prevent.stop="notApproveActivity(activity.id)" />-->
 
-                                <!--<small v-if="event.status !== 'pending'">{{ $i18n.get('label_approved') }}</small>-->
+                                <!--<small v-if="activity.status !== 'pending'">{{ $i18n.get('label_approved') }}</small>-->
                             <!--</p>-->
                         <!--</td>-->
                     </tr>
@@ -99,13 +99,13 @@
         </div>
 
         <!-- Empty state image -->
-        <div v-if="(totalEvents <= 0 || !totalEvents) && !isLoading">
+        <div v-if="(totalActivities <= 0 || !totalActivities) && !isLoading">
             <section class="section">
                 <div class="content has-text-grey has-text-centered">
                     <p>
                         <activities-icon />
                     </p>
-                    <p>{{ $i18n.get('info_no_events') }}</p>
+                    <p>{{ $i18n.get('info_no_activities') }}</p>
                 </div>
             </section>
         </div> 
@@ -116,10 +116,10 @@
     import ActivitiesIcon from '../other/activities-icon.vue';
 
     export default {
-        name: 'EventsList',
+        name: 'ActivitiesList',
         data(){
             return {
-                selectedEvents: []
+                selectedActivities: []
             }
         },
         components: {
@@ -127,27 +127,27 @@
         },
         props: {
             isLoading: false,
-            totalEvents: 0,
+            totalActivities: 0,
             page: 1,
-            eventsPerPage: 12,
-            events: Array
+            activitiesPerPage: 12,
+            activities: Array
         },
         methods: {
-            // ...mapActions('event', [
+            // ...mapActions('activity', [
             //     'approve',
             //     'notApprove'
             // ]),
-            // approveEvent(eventId){
-            //    this.approve(eventId);
+            // approveActivity(activityId){
+            //    this.approve(activityId);
             // },
-            // notApproveEvent(eventId){
-            //     this.notApprove(eventId);
+            // notApproveActivity(activityId){
+            //     this.notApprove(activityId);
             // },
-            goToEventPage(eventId) {
+            goToActivityPage(activityId) {
                 if (this.$route.params.collectionId == undefined)
-                    this.$router.push(this.$routerHelper.getEventPath(eventId));
+                    this.$router.push(this.$routerHelper.getActivityPath(activityId));
                 else
-                    this.$router.push(this.$routerHelper.getCollectionEventPath(this.$route.params.collectionId, eventId));
+                    this.$router.push(this.$routerHelper.getCollectionActivityPath(this.$route.params.collectionId, activityId));
             }
         }
     }

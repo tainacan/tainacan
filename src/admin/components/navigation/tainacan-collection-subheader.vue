@@ -122,18 +122,18 @@
                     </router-link>
                 </li>
                 <li 
-                        :class="activeRoute == 'CollectionEventsPage' ? 'is-active':''"
+                        :class="activeRoute == 'CollectionActivitiesPage' ? 'is-active':''"
                         class="level-item">
                     <router-link 
                             tag="a" 
-                            :to="{ path: $routerHelper.getCollectionEventsPath(id) }" 
-                            :aria-label="$i18n.get('label_collection_events')">
+                            :to="{ path: $routerHelper.getCollectionActivitiesPath(id) }"
+                            :aria-label="$i18n.get('label_collection_activities')">
                         <b-tooltip 
-                                :label="$i18n.get('events')"
+                                :label="$i18n.get('activities')"
                                 position="is-bottom">
                             <activities-icon />
                         </b-tooltip>
-                        <!-- <span class="menu-text">{{ $i18n.get('events') }}</span> -->
+                        <!-- <span class="menu-text">{{ $i18n.get('activities') }}</span> -->
                     </router-link>
                    
                 </li>

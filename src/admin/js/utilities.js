@@ -105,7 +105,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
             'items_per_page': 12,
             'collections_per_page': 12,
             'taxonomies_per_page': 12,
-            'events_per_page': 12,
+            'activities_per_page': 12,
             'order': 'DESC',
             'order_by': { 
                 slug: 'creation_date',
@@ -184,8 +184,8 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getCollectionFiltersPath(collectionId) {
             return '/collections/'+ collectionId + '/filters/';
         },
-        getCollectionEventsPath(collectionId) {
-            return '/collections/'+ collectionId + '/events/';
+        getCollectionActivitiesPath(collectionId) {
+            return '/collections/'+ collectionId + '/activities/';
         },
         getItemsPath(query) {
             return '/items/?' + qs.stringify(query);
@@ -202,17 +202,17 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getMetadataPath(query) {
             return '/metadata/?' + qs.stringify(query);
         },
-        getEventsPath(query) {
-            return '/events/?' + qs.stringify(query);
+        getActivitiesPath(query) {
+            return '/activities/?' + qs.stringify(query);
         },
         getAvailableImportersPath() {
             return '/importers';
         },
         getProcessesPage(highlightedProcess) {
             if (highlightedProcess)
-                return '/events?tab=processes&highlight=' + highlightedProcess;
+                return '/activities?tab=processes&highlight=' + highlightedProcess;
             else 
-                return '/events?tab=processes';
+                return '/activities?tab=processes';
         },
         // Singles
         getCollectionPath(id) {
@@ -230,14 +230,14 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getTermPath(taxonomyId, termId) {
             return '/taxonomies/' + taxonomyId + '/terms/' + termId;
         },
-        getEventPath(id) {
-            return '/events/' + id;
+        getActivityPath(id) {
+            return '/activities/' + id;
         },
         getImporterPath(importerType, sessionId) {
             return '/importers/' + importerType + '/' + sessionId;
         },
-        getCollectionEventPath(collectionId, eventId) {
-            return '/collections/' + collectionId + '/events/' + eventId;
+        getCollectionActivityPath(collectionId, activityId) {
+            return '/collections/' + collectionId + '/activities/' + activityId;
         },
         // New
         getNewCollectionPath() {
@@ -267,8 +267,8 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getNewTermPath(taxonomyId) {
             return '/taxonomies/' + taxonomyId + '/terms/new';
         },
-        getNewEventPath() {
-            return '/events/new';
+        getNewActivityPath() {
+            return '/activities/new';
         },
         getNewItemBulkAddPath(collectionId) {
             return '/collections/' + collectionId + '/bulk-add';
@@ -289,8 +289,8 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getTermEditPath(taxonomyId, termId) {
             return '/taxonomies/' + taxonomyId + '/terms/' + termId + '/edit';
         },
-        getEventEditPath(id) {
-            return '/events/' + id + '/edit';
+        getActivityEditPath(id) {
+            return '/activities/' + id + '/edit';
         },
         getImporterEditionPath(importerType) {
             return '/importers/' + importerType;

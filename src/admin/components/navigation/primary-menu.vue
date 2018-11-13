@@ -66,9 +66,9 @@
                 <li>
                     <router-link
                             tag="a"
-                            to="/events"
-                            :class="activeRoute == 'EventsPage' ? 'is-active':''">
-                        <activities-icon /><span class="menu-text">{{ $i18n.get('events') }}</span>
+                            to="/activities"
+                            :class="activeRoute == 'ActivitiesPage' ? 'is-active':''">
+                        <activities-icon /><span class="menu-text">{{ $i18n.get('activities') }}</span>
                     </router-link>
                 </li>
                 <li>

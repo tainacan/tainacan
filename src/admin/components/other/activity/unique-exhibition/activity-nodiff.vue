@@ -2,14 +2,14 @@
     <div>
         <div
                 class="tile is-ancestor"
-                v-if="event.log_diffs.constructor === Object &&
-                 Object.keys(event.log_diffs).length > 0 ||
-                  event.log_diffs.length > 0">
+                v-if="activity.log_diffs.constructor === Object &&
+                 Object.keys(activity.log_diffs).length > 0 ||
+                  activity.log_diffs.length > 0">
             <div class="tile is-parent">
                 <article class="tile box is-child">
                     <div class="content">
                         <div
-                                v-for="(diff, key) in event.log_diffs"
+                                v-for="(diff, key) in activity.log_diffs"
                                 :key="key">
 
                             <p/>
@@ -80,9 +80,9 @@
 
 <script>
     export default {
-        name: "EventNoDiff",
+        name: "ActivityNoDiff",
         props: {
-            event: Object
+            activity: Object
         }
     }
 </script>

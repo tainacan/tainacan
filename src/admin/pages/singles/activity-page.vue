@@ -6,13 +6,13 @@
                     :class="{ 'repository-level-page': $route.params.collectionId == undefined }">
                 <tainacan-title
                         :bread-crumb-items="[
-                                { path: $routerHelper.getEventsPath(), label: $i18n.get('events') },
-                                { path: '', label: (event != undefined && event.title != undefined) ? event.title : $i18n.get('event') }
+                                { path: $routerHelper.getActivitiesPath(), label: $i18n.get('activities') },
+                                { path: '', label: (activity != undefined && activity.title != undefined) ? activity.title : $i18n.get('activity') }
                             ]"/>
-                <h1 class="event-titles">{{ event.description }}</h1>
+                <h1 class="activity-titles">{{ activity.description }}</h1>
                 <div
                         class="level"
-                        v-if="event.title !== undefined && event.title.includes('updated')">
+                        v-if="activity.title !== undefined && activity.title.includes('updated')">
                     <div class="level-left"/>
                     <div class="level-right">
                         <div class="level-item">
@@ -46,14 +46,14 @@
 
                 <hr class="divider">
 
-                <div v-if="event.title !== undefined && event.title.includes('updated')">
+                <div v-if="activity.title !== undefined && activity.title.includes('updated')">
                     <component
                             :is="comp"
-                            :event="event"/>
+                            :activity="activity"/>
                 </div>
 
-                <div v-else-if="event.title !== undefined">
-                    <no-diff :event="event"/>
+                <div v-else-if="activity.title !== undefined">
+                    <no-diff :activity="activity"/>
                 </div>
 
             </div>
@@ -64,31 +64,31 @@
 <script>
     import {mapActions, mapGetters} from 'vuex';
 
-    import Split from '../../components/other/event/diff-exhibition/event-split.vue';
-    import Unified from '../../components/other/event/diff-exhibition/event-unified.vue';
-    import NoDiff from '../../components/other/event/unique-exhibition/event-nodiff.vue';
+    import Split from '../../components/other/activity/diff-exhibition/activity-split.vue';
+    import Unified from '../../components/other/activity/diff-exhibition/activity-unified.vue';
+    import NoDiff from '../../components/other/activity/unique-exhibition/activity-nodiff.vue';
     import TainacanTitle from '../../components/navigation/tainacan-title.vue';
 
 
     export default {
-        name: 'EventPage',
+        name: 'ActivityPage',
         data() {
             return {
-                eventId: Number,
+                activityId: Number,
                 comp: 'Split',
             }
         },
         methods: {
-            ...mapActions('event', [
-                'fetchEvent'
+            ...mapActions('activity', [
+                'fetchActivity'
             ]),
-            ...mapGetters('event', [
-                'getEvent'
+            ...mapGetters('activity', [
+                'getActivity'
             ])
         },
         computed: {
-            event() {
-                return this.getEvent();
+            activity() {
+                return this.getActivity();
             }
         },
         components: {
@@ -98,14 +98,14 @@
             TainacanTitle,
         },
         created() {
-            this.eventId = parseInt(this.$route.params.eventId);
+            this.activityId = parseInt(this.$route.params.activityId);
 
-            this.fetchEvent(this.eventId).then(() => {
+            this.fetchActivity(this.activityId).then(() => {
 
                 if (this.$route.params.collectionId != undefined)
                     this.$root.$emit('onCollectionBreadCrumbUpdate', [
-                        { path: this.$routerHelper.getCollectionEventsPath(this.$route.params.collectionId), label: this.$i18n.get('events') },
-                        { path: '', label: this.event.title}
+                        { path: this.$routerHelper.getCollectionActivitiesPath(this.$route.params.collectionId), label: this.$i18n.get('activities') },
+                        { path: '', label: this.activity.title}
                     ]);
             });
         }
@@ -114,7 +114,7 @@
 </script>
 
 <style>
-    .event-titles {
+    .activity-titles {
         font-size: 20px;
         font-weight: 500;
         color: #01295c;

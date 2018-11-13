@@ -4,10 +4,11 @@
 
             <div class="tile is-parent">
                 <article class="tile box is-child">
+
                     <div class="content">
-                        <h1 class="event-titles">{{ this.$i18n.get('info_logs_before') }}</h1>
+                        <h1 class="activity-titles">{{ this.$i18n.get('info_changes') }}</h1>
                         <div
-                                v-for="(diff, key) in event.log_diffs"
+                                v-for="(diff, key) in activity.log_diffs"
                                 v-if="diff.old"
                                 :key="key">
 
@@ -29,6 +30,7 @@
                                     v-else
                                     v-for="(o, ind) in diff.old"
                                     :key="ind">
+
                                 <div v-if="o.hasOwnProperty('mime_type') && o.mime_type.includes('image') && key === 'attachments'">
 
                                     <article class="media">
@@ -81,16 +83,11 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </article>
-            </div>
 
-            <div class="tile is-parent">
-                <article class="tile box is-child">
-                    <div class="content">
-                        <h1 class="event-titles">{{ this.$i18n.get('info_logs_after') }}</h1>
+                        <hr class="divider">
+
                         <div
-                                v-for="(diff, key) in event.log_diffs"
+                                v-for="(diff, key) in activity.log_diffs"
                                 :key="key">
 
                             <p/>
@@ -166,6 +163,7 @@
 
                         </div>
                     </div>
+
                 </article>
             </div>
 
@@ -175,9 +173,9 @@
 
 <script>
     export default {
-        name: "EventSplit",
+        name: "ActivityUnified",
         props: {
-            event: Object
+            activity: Object
         }
     }
 </script>
@@ -187,7 +185,7 @@
         overflow: auto;
     }
 
-    .event-titles {
+    .activity-titles {
         font-size: 20px;
         font-weight: 500;
         color: #01295c;
