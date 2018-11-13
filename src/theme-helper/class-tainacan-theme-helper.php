@@ -88,7 +88,7 @@ class Theme_Helper {
 			'label' => __('Slideshow', 'tainacan'),
 			'dynamic_metadata' => false,
 			'description' => 'A fullscreen slideshow view.',
-			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-gallery tainacan-icon-20px"></i></span>',
+			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-20px"></i></span>',
 			'type' => 'component',
 			'show_pagination' => false,
 			'full_screen' => true

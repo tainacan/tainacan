@@ -52,7 +52,7 @@
         </template>
         <template v-else>
             <masonry 
-                    :cols="{ default: 6, 1919: 5, 1407: 4, 1215: 3, 1023: 2, 767: 1 }"
+                    :cols="{ default: 5, 1919: 4, 1407: 3, 1215: 2, 1023: 2, 767: 1 }"
                     :gutter="25"
                     style="width=100%;">
                 <router-link
@@ -120,10 +120,7 @@
                         v-if="collections.length > 0 && !isLoading" 
                         :key="index"
                         v-for="(collection, index) of collections"
-                        class="tainacan-card">                                 
-                    <img 
-                            v-if="collection.thumbnail != undefined"
-                            :src="collection['thumbnail'].tainacan_medium ? collection['thumbnail'].tainacan_medium : (collection['thumbnail'].medium ? collection['thumbnail'].medium : thumbPlaceholderPath)">  
+                        class="tainacan-card">       
                     <ul class="menu-list">
                         <li>
                             <a 
@@ -215,7 +212,11 @@
                             </router-link> 
                         </li>
                     </ul>
-
+                          
+                    <img 
+                            v-if="collection.thumbnail != undefined"
+                            :src="collection['thumbnail'].tainacan_medium ? collection['thumbnail'].tainacan_medium : (collection['thumbnail'].medium ? collection['thumbnail'].medium : thumbPlaceholderPath)">  
+                    
                     <!-- Name -->
                     <div class="metadata-title">
                         <p 

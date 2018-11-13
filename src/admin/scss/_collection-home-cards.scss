@@ -10,35 +10,31 @@
     animation-name: item-appear;
     animation-duration: 0.5s;
 
-    .selected-card {
-        background-color: $turquoise1;
-        .metadata-title {
-            background-color: $turquoise2;
-        }
-    }
-
     .tainacan-card {
         background-color: $gray0;
         padding: 0px;
         margin-top: 0.75rem;
         margin-bottom: 1.25rem;
         flex-basis: 0;
-        min-width: 48%;
         min-height: 125px;
         cursor: pointer;
         text-decoration: none !important;
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-between;
 
         @media screen and (max-width: 768px) {
             max-width: 100%;
             min-width: 100%;
         }
 
+        &:hover .menu-list {
+            background-color: $gray2;
+            a { background-color: $gray2; }
+        }
+
         img {
-            width: 125px;
-            height: 125px;
+            width: 96px;
+            height: 96px;
             border-radius: 0px;
         }
 
@@ -51,12 +47,14 @@
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
+                flex-wrap: wrap;
                 width: 100%;
             }
             .menu-list { 
+                width: 46px;
                 flex-wrap: nowrap; 
                 flex-direction: column;
-                width: 46px;
+                li { height: 100%; }
             }
         }
 
@@ -73,7 +71,6 @@
         }
 
         .metadata-title {
-            width: 100%;
             overflow: hidden;
             padding: 0.75rem 1rem;
             p {
@@ -87,15 +84,20 @@
         }
         
         .menu-list {
-            width: 84px;
+            width: 100%;
             display: flex;
             justify-content: space-between;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             
             li {
-                width: 50%;
                 text-align: center;
-                a { color: $turquoise5; }
+                width: 100%;
+                a { 
+                    color: $turquoise5; 
+                    padding: 0.5em 0.5em;
+                    border-radius: 0;
+                    transition: none;
+                }
             }
         }
     

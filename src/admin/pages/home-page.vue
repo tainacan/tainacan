@@ -15,7 +15,7 @@
                 <h1>{{ $i18n.get('repository') + ' ' }}<span class="has-text-weight-semibold">{{ repositoryName }}</span></h1>
                 <a
                         target="_blank"
-                        :href="baseURL + '/collections'">
+                        :href="themeCollectionListURL">
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
                     </span>
@@ -24,7 +24,7 @@
             </div>
             <nav>
                 <ul class="repository-menu-list">
-                    <li>
+                    <!-- <li>
                         <router-link
                                 tag="a"
                                 to="/collections">
@@ -33,7 +33,7 @@
                             </span>
                             <span class="menu-text">{{ $i18n.getFrom('collections', 'name') }}</span>
                         </router-link>
-                    </li>
+                    </li> -->
                     <li>
                         <router-link
                                 tag="a"
@@ -41,7 +41,7 @@
                             <span class="icon is-medium">
                                 <i class="tainacan-icon tainacan-icon-36px tainacan-icon-items"/>
                             </span>
-                            <span class="menu-text">{{ $i18n.getFrom('items', 'name') }}</span>
+                            <span class="menu-text">{{ $i18n.get('label_all_items') }}</span>
                         </router-link>
                     </li>
                     <li>
@@ -51,7 +51,7 @@
                             <span class="icon is-medium">
                                 <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
                             </span>
-                            <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
+                            <span class="menu-text">{{ $i18n.get('title_repository_metadata_page' ) }}</span>
                         </router-link>
                     </li>
                     <li>
@@ -61,7 +61,7 @@
                             <span class="icon is-medium">
                                 <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters"/>
                             </span>
-                            <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
+                            <span class="menu-text">{{ $i18n.get('title_repository_filters_page') }}</span>
                         </router-link>
                     </li>
                     <li>
@@ -81,7 +81,7 @@
                             <span class="icon is-medium">
                                 <i class="tainacan-icon tainacan-icon-36px tainacan-icon-activities"/>
                             </span>
-                            <span class="menu-text">{{ $i18n.get('events') }}</span>
+                            <span class="menu-text">{{ $i18n.get('title_repository_events_page') }}</span>
                         </router-link>
                     </li>
                     <li>
@@ -116,7 +116,7 @@
                 </router-link>
             </div>
             <collections-home-list
-                    :is-loading="isLoading"
+                    :is-loading="isLoadingCollections"
                     :collections="collections"/> 
         </section>
 
@@ -133,7 +133,7 @@ export default {
         return {
             isLoadingCollections: false,
             repositoryName: tainacan_plugin.repository_name,
-            baseURL: tainacan_plugin.base_url,
+            themeCollectionListURL: tainacan_plugin.theme_collection_list_url,
         }
     },
     components: {
@@ -186,11 +186,11 @@ export default {
             &.home-section-repository{
                 position: relative;
                 &>nav {
-                    padding-left: $page-side-padding;
+                    padding-left: 52px;
                 }
             }
             &.home-section-collection {
-                margin-left: $page-side-padding;
+                margin-left: 52px;
             }
 
             .section-connector {
@@ -281,8 +281,30 @@ export default {
                 background-color: $gray0;
                 flex-grow: 1;
                 margin: 0.75rem;
-                height: 120px;
-                min-width: 140px; 
+                height: 120px; 
+                min-width: 142px;
+                // max-width: 142px;
+
+                @media screen and (max-width: 580px) {
+                    max-width: calc(100% - 52px);
+                    min-width: calc(100% - 52px);
+                }
+                @media screen and (min-width: 581px) and (max-width: 767px) {
+                    min-width: calc(50% - 26px);
+                    max-width: calc(50% - 26px);
+                }
+                @media screen and (min-width: 768px) and (max-width: 1023px) {
+                    min-width: calc(33.33% - 26px);
+                    max-width: calc(33.33% - 26px);
+                }
+                @media screen and (min-width: 1024px) and (max-width: 1280px) {
+                    min-width: 30%;
+                    max-width: 30%;
+                }
+
+                &:hover {
+                    background-color: $gray2;
+                }
 
                 a { 
                     width: 100%;
@@ -292,6 +314,9 @@ export default {
                     flex-direction: column;
                     align-items: center;
                     justify-content: space-evenly;
+                }
+                .menu-text {
+                    text-align: center; 
                 }
             }
         }
