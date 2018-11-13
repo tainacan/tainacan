@@ -48,7 +48,7 @@ export const filter_type_mixin = {
             }
 
             if(isRepositoryLevel){
-                url = `/facets/${metadatumId}`;
+                url = `/facets/${metadatumId}?`;
             }
 
             if(search && offset != undefined && number != undefined){
