@@ -60,35 +60,35 @@ class Theme_Helper {
 		$this->register_view_mode('table', [
 			'label' => __('Table', 'tainacan'),
 			'dynamic_metadata' => true,
-			'icon' => '<span class="icon"><i class="mdi mdi-view-list mdi-24px"></i></span>',
+			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewtable tainacan-icon-20px"></i></span>',
 			'type' => 'component',
 		]);
 		$this->register_view_mode('cards', [
 			'label' => __('Cards', 'tainacan'),
 			'dynamic_metadata' => false,
 			'description' => 'A cards view, displaying title, description, author name and creation date.',
-			'icon' => '<span class="icon"><i class="mdi mdi-view-module mdi-24px"></i></span>',
+			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewcards tainacan-icon-20px"></i></span>',
 			'type' => 'component'
 		]);
 		$this->register_view_mode('records', [
 			'label' => __('Records', 'tainacan'),
 			'dynamic_metadata' => true,
 			'description' => 'A records view, similiar to cards, but flexible for metadata',
-			'icon' => '<span class="icon"><i class="mdi mdi-view-column mdi-24px"></i></span>',
+			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewrecords tainacan-icon-20px"></i></span>',
 			'type' => 'component'
 		]);
 		$this->register_view_mode('masonry', [
 			'label' => __('Masonry', 'tainacan'),
 			'dynamic_metadata' => false,
 			'description' => 'A masonry view, similar to pinterest, which will display images without cropping.',
-			'icon' => '<span class="icon"><i class="mdi mdi-view-dashboard mdi-24px"></i></span>',
+			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewmasonry tainacan-icon-20px"></i></span>',
 			'type' => 'component'
 		]);
 		$this->register_view_mode('slideshow', [
 			'label' => __('Slideshow', 'tainacan'),
 			'dynamic_metadata' => false,
 			'description' => 'A fullscreen slideshow view.',
-			'icon' => '<span class="icon"><i class="mdi mdi-fullscreen mdi-24px"></i></span>',
+			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-gallery tainacan-icon-20px"></i></span>',
 			'type' => 'component',
 			'show_pagination' => false,
 			'full_screen' => true

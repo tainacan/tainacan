@@ -81,6 +81,10 @@ export default {
         .dropdown-menu {
             display: block;
         }
+        .dropdown .dropdown-trigger .button .icon, 
+        .autocomplete .dropdown-trigger .button .icon {
+            align-items: center;
+        }
         .b-radio.radio {
 
             input[type="radio"] + .check {

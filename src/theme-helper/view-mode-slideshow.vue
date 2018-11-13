@@ -12,7 +12,7 @@
                 :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
                 @click="closeSlideViewMode()">
             <span class="icon">
-                <i class="tainacan-icon tainacan-icon-close"/>
+                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-close"/>
             </span>
         </button>
 
@@ -28,7 +28,7 @@
             <span class="icon">
                 <i 
                         :class="{ 'tainacan-icon-arrowright' : isMetadataCompressed, 'tainacan-icon-arrowleft' : !isMetadataCompressed }"
-                        class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                        class="tainacan-icon tainacan-icon-20px"/>
             </span>
         </button>
 
@@ -42,7 +42,7 @@
                         id="close-metadata-button"
                         @click="isMetadataCompressed = true">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-close"/>
+                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-close"/>
                     </span>
                 </button>
                 <hr>
@@ -58,7 +58,7 @@
                 <span class="icon">
                     <i 
                             :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll}"
-                            class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                            class="tainacan-icon tainacan-icon-20px"/>
                 </span>
             </a>
 
@@ -180,7 +180,7 @@
                             <span class="icon">
                                 <i 
                                         :class="{ 'tainacan-icon-pause' : isPlaying, 'tainacan-icon-playfill' : !isPlaying }"
-                                        class="has-text-secondary tainacan-icon"/>
+                                        class="has-text-secondary tainacan-icon tainacan-icon-30px"/>
                             </span>
                             <circular-counter 
                                     v-if="isPlaying"

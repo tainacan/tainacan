@@ -293,6 +293,9 @@
             border-radius: 100px;
             background: white;
             border: 3px solid $turquoise5;
+            i, i:before {
+                font-size: 36px;
+            }
         }
         &:focus, &:active {
             outline: 0;
@@ -300,8 +303,8 @@
         }
         .circular-counter {
             position: absolute;
-            right: calc(4.16667% + 1px);
-            top: -3px;
+            right: calc(4.16667% + -2px);
+            top: -6px;
         }
     }
 }

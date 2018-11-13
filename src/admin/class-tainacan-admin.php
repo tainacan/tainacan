@@ -67,7 +67,8 @@ class Admin {
 	function add_theme_files() {
 		global $TAINACAN_BASE_URL;
 		
-		wp_enqueue_style( 'style', $TAINACAN_BASE_URL . '/assets/css/fonts/materialdesignicons.css' );
+		// wp_enqueue_style( 'style', $TAINACAN_BASE_URL . '/assets/css/fonts/materialdesignicons.css' );
+		wp_enqueue_style( 'style', $TAINACAN_BASE_URL . '/assets/css/fonts/tainacanicons.css' );
 		wp_enqueue_script('underscore', includes_url('js') . '/underscore.min.js' );
 	}
 	

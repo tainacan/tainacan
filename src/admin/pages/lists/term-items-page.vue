@@ -1404,7 +1404,7 @@
         top: 120px;
         left: 0;
         max-width: 23px;
-        height: 21px;
+        height: 26px;
         width: 23px;
         border: none;
         background-color: $turquoise1;
@@ -1427,7 +1427,7 @@
             max-width: 100%;
             width: auto;
             padding: 3px 6px 3px 0px;
-            height: 24px;
+            height: 26px;
 
             .icon {
                 position: relative;
@@ -1472,7 +1472,8 @@
         }
 
         .button {
-            align-items: inherit;
+            display: flex;
+            align-items: center;
         }
         
         .field {
@@ -1509,7 +1510,7 @@
                     padding: 0.25rem 1.0rem 0.25rem 0.75rem;
                 }
                 .dropdown-item span{
-                    vertical-align: sub;
+                    vertical-align: middle;
                 }      
                 .dropdown-item-apply {
                     width: 100%;
