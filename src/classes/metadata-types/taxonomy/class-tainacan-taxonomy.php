@@ -180,4 +180,16 @@ class Taxonomy extends Metadata_Type {
 		
 	}
 	
+	public function _toArray() {
+		
+		$array = parent::_toArray();
+		
+		if ( isset($array['options']['taxonomy_id']) ) {
+			$array['options']['taxonomy'] = \Tainacan\Repositories\Taxonomies::get_instance()->get_db_identifier_by_id( $array['options']['taxonomy_id'] );
+		}
+		
+		return $array;
+		
+	}
+	
 }
