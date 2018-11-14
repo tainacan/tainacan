@@ -1489,7 +1489,7 @@
             }
             .text {
                 position: relative;
-                top: -6px;
+                top: -2px;
             }
         }
     }

@@ -678,6 +678,8 @@
                         ((filters.length >= 0 &&
                         isRepositoryLevel) || filters.length > 0)"
                         :filters="filters"
+                        :taxonomy-filters="taxonomyFilters"
+                        :taxonomy="taxonomy"
                         :collapsed="collapseAll"
                         :is-repository-level="isRepositoryLevel"/>
 
@@ -1458,7 +1460,7 @@
             }
             .text {
                 position: relative;
-                top: -6px;
+                top: -2px;
             }
         }
     }
