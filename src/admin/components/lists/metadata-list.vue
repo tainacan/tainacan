@@ -792,6 +792,10 @@ export default {
 
     @import "../../scss/_variables.scss";
 
+    .column:not(.available-metadata-area){
+        overflow: hidden;
+    }
+
     .page-title {
         border-bottom: 1px solid $secondary;
         h2 {
@@ -909,10 +913,6 @@ export default {
             &.not-sortable-item, &.not-sortable-item:hover {
                 cursor: default;
                 background-color: white !important;
-
-                // .handle .label-details, .handle .icon, {
-                //     color: $gray3 !important;
-                // }
             } 
             &.not-focusable-item, &.not-focusable-item:hover {
                 cursor: default;

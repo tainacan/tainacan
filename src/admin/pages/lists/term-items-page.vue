@@ -26,7 +26,7 @@
                 @click="isFiltersMenuCompressed = !isFiltersMenuCompressed">
             <span class="icon">
                 <i 
-                        :class="{ 'tainacan-icon-arrowleft' : isFiltersMenuCompressed, 'tainacan-icon-arrowright' : !isFiltersMenuCompressed }"
+                        :class="{ 'tainacan-icon-arrowleft' : !isFiltersMenuCompressed, 'tainacan-icon-arrowright' : isFiltersMenuCompressed }"
                         class="tainacan-icon tainacan-icon-20px"/>
             </span>
         </button>
@@ -39,7 +39,7 @@
                 @click="isFilterModalActive = !isFilterModalActive">
             <span class="icon">
                 <i 
-                        :class="{ 'tainacan-icon-arrowleft' : isFiltersMenuCompressed, 'tainacan-icon-arrowright' : !isFiltersMenuCompressed }"
+                        :class="{ 'tainacan-icon-arrowleft' : !isFiltersMenuCompressed, 'tainacan-icon-arrowright' : isFiltersMenuCompressed }"
                         class="tainacan-icon tainacan-icon-20px"/>
             </span>
             <span class="text">{{ $i18n.get('filters') }}</span>
