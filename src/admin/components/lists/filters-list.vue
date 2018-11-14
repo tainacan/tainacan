@@ -48,7 +48,7 @@
                             </span>
                             <span class="icon icon-level-identifier">
                                 <i 
-                                    :class="{ 'tainacan-icon-collection has-text-turquoise5': filter.collection_id == collectionId, 'tainacan-icon-repository has-text-blue5': filter.collection_id != collectionId }"
+                                    :class="{ 'tainacan-icon-collections has-text-turquoise5': filter.collection_id == collectionId, 'tainacan-icon-repository has-text-blue5': filter.collection_id != collectionId }"
                                     class="tainacan-icon" />
                             </span> 
                             <span 
@@ -166,7 +166,7 @@
                             </span>
                             <span class="icon icon-level-identifier">
                                 <i 
-                                    :class="{ 'tainacan-icon-collection has-text-turquoise5': metadatum.collection_id == collectionId, 'tainacan-icon-repository has-text-blue5': metadatum.collection_id != collectionId }"
+                                    :class="{ 'tainacan-icon-collections has-text-turquoise5': metadatum.collection_id == collectionId, 'tainacan-icon-repository has-text-blue5': metadatum.collection_id != collectionId }"
                                     class="tainacan-icon" />
                             </span>  
                             <span class="metadatum-name">{{ metadatum.name }}</span>
@@ -561,6 +561,7 @@ export default {
 
             .handle {
                 padding-right: 6em;
+                white-space: nowrap;
             }
             .grip-icon { 
                 color: $gray3;
@@ -677,7 +678,7 @@ export default {
     .available-metadata-area {
         padding: 10px 0px 10px 10px;
         margin: 0;
-        max-width: 280px;
+        max-width: 340px;
         font-size: 14px;
 
         @media screen and (max-width: 769px) {
@@ -718,7 +719,7 @@ export default {
             }
             .icon {
                 position: relative;
-                bottom: 3px;
+                bottom: 4px;
             }
             .metadatum-name {
                 text-overflow: ellipsis;
@@ -728,6 +729,7 @@ export default {
                 margin-left: 0.4em;
                 display: inline-block;
                 max-width: 180px;
+                width: 60%;
             }
             &:after,
             &:before {
