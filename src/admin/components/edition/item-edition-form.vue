@@ -37,7 +37,7 @@
         </div>
         <transition 
                 mode="out-in"
-                :name="isOnSequenceEdit && sequenceRightDirection != undefined ? (sequenceRightDirection ? 'page-right' : 'page-left') : ''">
+                :name="(isOnSequenceEdit && sequenceRightDirection != undefined) ? (sequenceRightDirection ? 'page-right' : 'page-left') : ''">
             <form
                     v-if="!isLoading"
                     class="tainacan-form"
@@ -508,6 +508,16 @@
                         <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
                     </span>
                 </button>
+                <button 
+                        v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count == itemPosition)"
+                        @click="$router.push($routerHelper.getCollectionPath(form.collectionId))"
+                        type="button"
+                        class="button sequence-button">
+                    <span class="icon is-large">
+                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approved"/>
+                    </span>
+                    <span>{{ $i18n.get('finish') }}</span>
+                </button>
             </div>
             <div 
                     class="form-submission-footer"
@@ -550,6 +560,16 @@
                         <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
                     </span>
                 </button>
+                <button 
+                        v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count == itemPosition)"
+                        @click="$router.push($routerHelper.getCollectionPath(form.collectionId))"
+                        type="button"
+                        class="button sequence-button">
+                    <span class="icon is-large">
+                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approved"/>
+                    </span>
+                    <span>{{ $i18n.get('finish') }}</span>
+                </button>
             </div>
             <div 
                     class="form-submission-footer"
@@ -586,6 +606,16 @@
                     <span class="icon is-large">
                         <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
                     </span>
+                </button>
+                <button 
+                        v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count == itemPosition)"
+                        @click="$router.push($routerHelper.getCollectionPath(form.collectionId))"
+                        type="button"
+                        class="button sequence-button">
+                    <span class="icon is-large">
+                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approved"/>
+                    </span>
+                    <span>{{ $i18n.get('finish') }}</span>
                 </button>
             </div>
         </footer>
@@ -680,9 +710,7 @@ export default {
     },
     watch: {
         '$route.params.itemPosition'(newItemPosition, oldItemPosition) {
-            if (oldItemPosition == undefined)
-                this.sequenceRightDirection; 
-            else if (oldItemPosition == newItemPosition)
+            if (oldItemPosition == undefined || oldItemPosition == newItemPosition)
                 this.sequenceRightDirection = undefined;     
             
             this.itemPosition = Number(newItemPosition);
@@ -747,6 +775,7 @@ export default {
         onSubmit(status) {
             // Puts loading on Item edition
             this.isLoading = true;
+            this.sequenceRightDirection = undefined; 
 
             let previousStatus = this.form.status;
             this.form.status = status;
@@ -1461,10 +1490,6 @@ export default {
             background-color: transparent;
             color: $turquoise5;
             border: none;
-
-            .icon {
-                margin-top: 0.3rem;
-            }
         }
     }
 
