@@ -67,7 +67,8 @@ class Admin {
 	function add_theme_files() {
 		global $TAINACAN_BASE_URL;
 		
-		wp_enqueue_style( 'style', $TAINACAN_BASE_URL . '/assets/css/fonts/materialdesignicons.css' );
+		// wp_enqueue_style( 'style', $TAINACAN_BASE_URL . '/assets/css/fonts/materialdesignicons.css' );
+		wp_enqueue_style( 'style', $TAINACAN_BASE_URL . '/assets/css/fonts/tainacanicons.css' );
 		wp_enqueue_script('underscore', includes_url('js') . '/underscore.min.js' );
 	}
 	
@@ -170,21 +171,22 @@ class Admin {
 		}
 
 		$settings = [
-			'root'                   => esc_url_raw( rest_url() ) . 'tainacan/v2',
-			'root_wp_api'            => esc_url_raw( rest_url() ) . 'wp/v2/',
-			'wp_ajax_url'            => admin_url( 'admin-ajax.php' ),
-			'nonce'                  => wp_create_nonce( 'wp_rest' ),
-			'components'             => $components,
-			'i18n'                   => $tainacan_admin_i18n,
-			'user_caps'              => $user_caps,
-			'user_prefs'             => $prefs,
-			'base_url'               => $TAINACAN_BASE_URL,
-			'admin_url'              => admin_url(),
-			'custom_header_support'  => get_theme_support('custom-header'),
-			'registered_view_modes'  => \Tainacan\Theme_Helper::get_instance()->get_registered_view_modes(),
-		    	'exposer_mapper_param'   => \Tainacan\Exposers\Exposers::MAPPER_PARAM,
-			'exposer_type_param'     => \Tainacan\Exposers\Exposers::TYPE_PARAM,
-			'repository_name'	 => get_bloginfo('name')
+			'root'                   	=> esc_url_raw( rest_url() ) . 'tainacan/v2',
+			'root_wp_api'            	=> esc_url_raw( rest_url() ) . 'wp/v2/',
+			'wp_ajax_url'            	=> admin_url( 'admin-ajax.php' ),
+			'nonce'                  	=> wp_create_nonce( 'wp_rest' ),
+			'components'             	=> $components,
+			'i18n'                   	=> $tainacan_admin_i18n,
+			'user_caps'              	=> $user_caps,
+			'user_prefs'             	=> $prefs,
+			'base_url'               	=> $TAINACAN_BASE_URL,
+			'admin_url'              	=> admin_url(),
+			'theme_collection_list_url' => get_post_type_archive_link( 'tainacan-collection' ),
+			'custom_header_support'  	=> get_theme_support('custom-header'),
+			'registered_view_modes'  	=> \Tainacan\Theme_Helper::get_instance()->get_registered_view_modes(),
+		    'exposer_mapper_param'   => \Tainacan\Exposers\Exposers::MAPPER_PARAM,
+			'exposer_type_param'     	=> \Tainacan\Exposers\Exposers::TYPE_PARAM,
+			'repository_name'	 		=> get_bloginfo('name')
 		];
 
 		$maps = [

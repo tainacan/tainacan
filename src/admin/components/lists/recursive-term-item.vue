@@ -12,15 +12,15 @@
         <span 
                 v-if="term.parent != 0 && index == 0"
                 class="icon children-icon">
-            <i class="mdi mdi-24px mdi-subdirectory-arrow-right"/>
+            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-nextlevel"/>
         </span> 
         <span class="children-dropdown icon">
             <i 
                     :class="{ 
-                        'mdi-menu-right': !showChildren,  
-                        'mdi-menu-down': showChildren,
+                        'tainacan-icon-arrowright': !showChildren,  
+                        'tainacan-icon-arrowdown': showChildren,
                         'is-disabled': isEditingTerm }"
-                    class="mdi mdi-36px"
+                    class="tainacan-icon tainacan-icon-36px"
                     v-if="term.total_children > 0"
                     @click.prevent="toggleShowChildren()"/>
         </span>
@@ -46,18 +46,18 @@
                 :class="{'is-disabled': isEditingTerm}">
             <a @click="addNewChildTerm(term, index)">
                 <span class="icon">
-                    <i class="mdi mdi-18px mdi-plus-circle"/>
+                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-add"/>
                 </span>
             </a>
             <a
                     @click.prevent="editTerm()">
                 <span class="icon">
-                    <i class="mdi mdi-18px mdi-pencil"/>
+                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
                 </span>
             </a>
             <a @click.prevent="tryToRemoveTerm()">
                 <span class="icon">
-                    <i class="mdi mdi-18px mdi-delete"/>
+                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
                 </span>
             </a>
         </span>
@@ -233,8 +233,11 @@ export default {
             });  
         },
         eventOnChildTermDeleted(parentTermId) {
-            if (this.term.id == parentTermId && this.totalTerms > 0)
+            if (this.term.id == parentTermId && this.totalTerms > 0) {
                 this.totalTerms--;
+                this.loadChildTerms(parentTermId);
+            }
+            
         },
         eventOnEditTerm() {
             this.isEditingTerm = true;
@@ -296,6 +299,8 @@ export default {
             color: $blue2;
             position: absolute;
             left: -21px;
+            top: 1px;
+            font-size: 24px;
         }
         .children-dropdown {
             color: $blue4;

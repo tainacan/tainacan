@@ -7,7 +7,11 @@
         <button 
                 id="metadata-column-compress-button"
                 @click="isMetadataColumnCompressed = !isMetadataColumnCompressed">
-            <b-icon :icon="isMetadataColumnCompressed ? 'menu-left' : 'menu-right'" />
+            <span class="icon">
+                <i 
+                        :class="{ 'tainacan-icon-arrowleft' : isMetadataColumnCompressed, 'tainacan-icon-arrowright' : !isMetadataColumnCompressed }"
+                        class="tainacan-icon tainacan-icon-20px"/>
+            </span>
         </button>
         <div class="tainacan-page-title">
             <h1 v-if="isCreatingNewItem">
@@ -74,9 +78,9 @@
                                                 id="button-edit-document"
                                                 :aria-label="$i18n.get('label_button_edit_document')"
                                                 @click.prevent="setFileDocument($event)">
-                                            <b-icon 
-                                                    size="is-small"
-                                                    icon="pencil" />
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-edit"/>
+                                            </span>
                                         </a>
                                         <a
                                                 class="button is-rounded is-secondary"
@@ -84,9 +88,9 @@
                                                 id="button-delete-document"
                                                 :aria-label="$i18n.get('label_button_delete_document')"
                                                 @click.prevent="removeDocument()">
-                                            <b-icon 
-                                                    size="is-small"
-                                                    icon="delete" />
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-delete"/>
+                                            </span>
                                         </a>
                                     </div>
                                 </div>
@@ -98,9 +102,9 @@
                                                 :aria-label="$i18n.get('label_button_edit_document')"
                                                 id="button-edit-document"
                                                 @click.prevent="setTextDocument()">
-                                            <b-icon 
-                                                    size="is-small"
-                                                    icon="pencil" />
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-edit"/>
+                                            </span>
                                         </a>
                                         <a
                                                 class="button is-rounded is-secondary"
@@ -108,9 +112,9 @@
                                                 :aria-label="$i18n.get('label_button_delete_document')"
                                                 id="button-delete-document"
                                                 @click.prevent="removeDocument()">
-                                            <b-icon 
-                                                    size="is-small"
-                                                    icon="delete" />
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-delete"/>
+                                            </span>
                                         </a>
                                     </div>
                                 </div>
@@ -123,9 +127,9 @@
                                                 :aria-label="$i18n.get('label_button_edit_document')"
                                                 id="button-edit-document"
                                                 @click.prevent="setURLDocument()">
-                                            <b-icon 
-                                                    size="is-small"
-                                                    icon="pencil" />
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-edit"/>
+                                            </span>
                                         </a>
                                         <a
                                                 class="button is-rounded is-secondary"
@@ -133,9 +137,9 @@
                                                 :aria-label="$i18n.get('label_button_delete_document')"
                                                 id="button-delete-document"
                                                 @click.prevent="removeDocument()">
-                                            <b-icon 
-                                                    size="is-small"
-                                                    icon="delete" />
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-delete"/>
+                                            </span>
                                         </a>
                                     </div>
                                 </div>
@@ -145,7 +149,9 @@
                                     <button 
                                             type="button"
                                             @click.prevent="setFileDocument($event)">
-                                        <b-icon icon="upload"/>
+                                        <span class="icon">
+                                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-upload"/>
+                                        </span>
                                     </button>
                                     <p>{{ $i18n.get('label_file') }}</p>
                                 </li>
@@ -153,7 +159,9 @@
                                     <button 
                                             type="button"
                                             @click.prevent="setTextDocument()">
-                                        <b-icon icon="format-text"/>
+                                        <span class="icon">
+                                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-text"/>
+                                        </span>
                                     </button>
                                     <p>{{ $i18n.get('label_text') }}</p>
                                 </li>
@@ -161,7 +169,9 @@
                                     <button 
                                             type="button"
                                             @click.prevent="setURLDocument()">
-                                        <b-icon icon="code-tags"/>
+                                        <span class="icon">
+                                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                                        </span>
                                     </button>
                                     <p>{{ $i18n.get('label_url') }}</p>
                                 </li>
@@ -269,9 +279,9 @@
                                             id="button-edit-thumbnail"
                                             :aria-label="$i18n.get('label_button_edit_thumb')"
                                             @click.prevent="thumbnailMediaFrame.openFrame($event)">
-                                        <b-icon 
-                                                size="is-small"
-                                                icon="pencil" />
+                                        <span class="icon">
+                                            <i class="tainacan-icon tainacan-icon-edit"/>
+                                        </span>
                                     </a>
                                     <a
                                             v-if="item.thumbnail.thumb != undefined && item.thumbnail.thumb != false"
@@ -279,9 +289,9 @@
                                             class="button is-rounded is-secondary"
                                             :aria-label="$i18n.get('label_button_delete_thumb')"
                                             @click="deleteThumbnail()">
-                                    <b-icon 
-                                            size="is-small"
-                                            icon="delete" />
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-delete"/>
+                                    </span>
                                     </a>
                                 </div>
                             </div>
@@ -368,16 +378,18 @@
                                         value="publish"
                                         native-value="publish">
                                     <span class="icon">
-                                        <i class="mdi mdi-earth"/>
-                                    </span> {{ $i18n.get('publish_visibility') }}
+                                        <i class="tainacan-icon tainacan-icon-public"/>
+                                    </span>
+                                    {{ $i18n.get('publish_visibility') }}
                                 </b-radio>
                                 <b-radio
                                         v-model="visibility"
                                         value="private"
                                         native-value="private">
                                     <span class="icon">
-                                        <i class="mdi mdi-lock"/>
-                                    </span>  {{ $i18n.get('private_visibility') }}
+                                        <i class="tainacan-icon tainacan-icon-private"/>
+                                    </span>
+                                    {{ $i18n.get('private_visibility') }}
                                 </b-radio>
                             </div>
                         </div>
@@ -403,7 +415,11 @@
                                 class="collapse-all"
                                 @click="toggleCollapseAll()">
                             {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                            <b-icon :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
+                            <span class="icon">
+                                <i 
+                                        :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
+                                        class="tainacan-icon tainacan-icon-20px"/>
+                            </span>
                         </a>
                         <tainacan-form-item
                                 v-for="(metadatum, index) of metadatumList"
@@ -450,7 +466,10 @@
                 <p 
                         class="update-warning"
                         v-if="isUpdatingValues">
-                    <b-icon icon="autorenew" />{{ $i18n.get('info_updating_metadata_values') }}
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-updating"/>
+                    </span>
+                    {{ $i18n.get('info_updating_metadata_values') }}
                     <span class="help is-danger">{{ formErrorMessage }}</span>
                 </p> 
             </div>  
@@ -463,7 +482,7 @@
                         type="button"
                         class="button sequence-button">
                     <span class="icon is-large">
-                        <i class="mdi mdi-24px mdi-chevron-left"/>
+                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-previous"/>
                     </span>
                     <span>{{ $i18n.get('previous') }}</span>
                 </button>
@@ -486,7 +505,7 @@
                         class="button sequence-button">
                     <span>{{ $i18n.get('next') }}</span>
                     <span class="icon is-large">
-                        <i class="mdi mdi-24px mdi-chevron-right"/>
+                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
                     </span>
                 </button>
             </div>
@@ -499,7 +518,7 @@
                         type="button"
                         class="button sequence-button">                    
                     <span class="icon is-large">
-                        <i class="mdi mdi-24px mdi-chevron-left"/>
+                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-previous"/>
                     </span>
                     <span>{{ $i18n.get('previous') }}</span>
                 </button>
@@ -528,7 +547,7 @@
                         class="button sequence-button">
                     <span>{{ $i18n.get('next') }}</span>
                     <span class="icon is-large">
-                        <i class="mdi mdi-24px mdi-chevron-right"/>
+                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
                     </span>
                 </button>
             </div>
@@ -541,7 +560,7 @@
                         type="button"
                         class="button sequence-button">
                     <span class="icon is-large">
-                        <i class="mdi mdi-24px mdi-chevron-left"/>
+                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-previous"/>
                     </span>
                     <span>{{ $i18n.get('previous') }}</span>
                 </button>
@@ -565,7 +584,7 @@
                         class="button sequence-button">
                     <span>{{ $i18n.get('next') }}</span>
                     <span class="icon is-large">
-                        <i class="mdi mdi-24px mdi-chevron-right"/>
+                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
                     </span>
                 </button>
             </div>
@@ -1216,17 +1235,17 @@ export default {
         }
 
         .column.is-5-5 {
-            width: 45.833333333%;
+            max-width: 55%; 
             padding-left: $page-side-padding;
             padding-right: $page-side-padding;
             transition: width 0.6s;
 
             @media screen and (max-width: 769px) {
-                width: 100%;
+                max-width: 100%;
             }
         }
         .column.is-4-5 {
-            width: 37.5%;
+            max-width: 45%;
             padding-left: $page-side-padding;
             padding-right: $page-side-padding;
             transition: all 0.6s;
@@ -1236,7 +1255,7 @@ export default {
             }
 
             @media screen and (max-width: 769px) {
-                width: 100%;
+                max-width: 100%;
             }
 
         }
@@ -1340,7 +1359,7 @@ export default {
             display: inherit;
             padding: 0;
             margin: 0;
-            margin-top: 1px;
+            margin-top: -2px;
             font-size: 18px;
         }
     }

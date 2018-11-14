@@ -112,10 +112,9 @@
                         class="button is-white is-pulled-right"
                         :aria-label="$i18n.getFrom('items','edit_item')"
                         @click.prevent="showEditMaxOptions = true">
-                    <b-icon
-                            size="is-small"
-                            type="is-secondary"
-                            icon="pencil"/>
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-edit has-text-secondary"/>
+                    </span>
                 </button>
             </div>
             <div
@@ -129,10 +128,9 @@
                 <button
                         @click.prevent="showEditMaxOptions = false"
                         class="button is-white is-pulled-right">
-                    <b-icon
-                            size="is-small"
-                            type="is-secondary"
-                            icon="close"/>
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-close has-text-secondary"/>
+                    </span>
                 </button>
             </div>
         </b-field>

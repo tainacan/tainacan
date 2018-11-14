@@ -18,7 +18,7 @@
                     class="has-text-danger is-italic is-size-7">{{ $i18n.get('info_error_invalid_date') }}</p>
             <!--<b-collapse-->
                     <!--position="is-bottom-right">-->
-                <!--<b-icon-->
+                <!--<span class="icon"-->
                         <!--icon="calendar-today"-->
                         <!--size="is-small"-->
                         <!--slot="trigger" />-->

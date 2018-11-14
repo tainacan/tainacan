@@ -2,15 +2,19 @@
     .dropdown-trigger{
         .button {
             border: none;
+            align-items: center;
             .icon {
                 color: $secondary;
-                align-items: start;
+                align-items: center;
             }
         }
         .button.is-primary, .button.is-secondary, .button.is-success {
             .icon {
                 color: $white;
             }
+        }
+        .dropdown.is-disabled {
+            cursor: default;
         }
     }
     .dropdown-menu {

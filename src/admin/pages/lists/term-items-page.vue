@@ -24,7 +24,11 @@
                 id="filter-menu-compress-button"
                 :style="{ top: !isOnTheme ? (isRepositoryLevel ? '172px' : '120px') : '76px' }"
                 @click="isFiltersMenuCompressed = !isFiltersMenuCompressed">
-            <b-icon :icon="isFiltersMenuCompressed ? 'menu-right' : 'menu-left'" />
+            <span class="icon">
+                <i 
+                        :class="{ 'tainacan-icon-arrowleft' : isFiltersMenuCompressed, 'tainacan-icon-arrowright' : !isFiltersMenuCompressed }"
+                        class="tainacan-icon tainacan-icon-20px"/>
+            </span>
         </button>
         <!-- Filters mobile modal button -->
         <button 
@@ -33,7 +37,11 @@
                 id="filter-menu-compress-button"
                 :style="{ top: !isOnTheme ? (isRepositoryLevel ? (searchControlHeight + 100) : (searchControlHeight + 70) + 'px') : (searchControlHeight - 25) + 'px' }"
                 @click="isFilterModalActive = !isFilterModalActive">
-            <b-icon :icon="isFiltersMenuCompressed ? 'menu-right' : 'menu-left'" />
+            <span class="icon">
+                <i 
+                        :class="{ 'tainacan-icon-arrowleft' : isFiltersMenuCompressed, 'tainacan-icon-arrowright' : !isFiltersMenuCompressed }"
+                        class="tainacan-icon tainacan-icon-20px"/>
+            </span>
             <span class="text">{{ $i18n.get('filters') }}</span>
         </button>
 
@@ -58,10 +66,10 @@
                             :value="searchQuery"
                             @input="futureSearchQuery = $event.target.value"
                             @keyup.enter="updateSearch()">
-                        <span
+                        <span 
                                 @click="updateSearch()"
                                 class="icon is-right">
-                            <i class="mdi mdi-magnify" />
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-search"/>
                         </span>
                 </div>
             </div>
@@ -77,9 +85,11 @@
                     class="collapse-all is-size-7"
                     @click="collapseAll = !collapseAll">
                 {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                <b-icon
-                        type="is-secondary"
-                        :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
+                <span class="icon">
+                    <i 
+                            :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
+                            class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                </span>
             </a>
 
             <br>
@@ -100,9 +110,9 @@
                     class="is-grouped-centered section">
                 <div class="content has-text-gray has-text-centered">
                     <p>
-                        <b-icon
-                                icon="filter"
-                                size="is-large"/>
+                        <span class="icon is-large">
+                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters" />
+                        </span>
                     </p>
                     <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
                     <router-link
@@ -151,7 +161,9 @@
                                 class="button is-secondary"
                                 slot="trigger">
                             <span>{{ $i18n.getFrom('items','add_new') }}</span>
-                            <b-icon icon="menu-down"/>
+                            <span class="icon">
+                                <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                            </span>
                         </button>
 
                         <b-dropdown-item>
@@ -194,7 +206,9 @@
                                 class="button is-white"
                                 slot="trigger">
                             <span>{{ $i18n.get('label_displayed_metadata') }}</span>
-                            <b-icon icon="menu-down"/>
+                            <span class="icon">
+                                <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                            </span>
                         </button>
                         <div class="metadata-options-container">
                         <b-dropdown-item
@@ -229,7 +243,9 @@
                                     class="button is-white"
                                     slot="trigger">
                                 <span>{{ $i18n.get('label_sorting') }}</span>
-                                <b-icon icon="menu-down"/>
+                                <span class="icon">
+                                    <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                                </span>
                             </button>
                             <b-dropdown-item
                                     :class="{ 'is-active': metadatum != undefined && orderBy == metadatum.slug }"
@@ -270,7 +286,7 @@
                                 :disabled="totalItems <= 0 || order == 'DESC'"
                                 @click="onChangeOrder()">
                             <span class="icon is-small gray-icon">
-                                <i class="mdi mdi-sort-ascending"/>
+                                <i class="tainacan-icon tainacan-icon-sortdescending"/>
                             </span>
                         </button>
                         <button
@@ -278,7 +294,7 @@
                                 class="button is-white is-small"
                                 @click="onChangeOrder()">
                             <span class="icon is-small gray-icon">
-                                <i class="mdi mdi-sort-descending"/>
+                                <i class="tainacan-icon tainacan-icon-sortdescending"/>
                             </span>
                         </button>
                     </b-field>
@@ -301,8 +317,10 @@
                                         class="gray-icon view-mode-icon"
                                         v-if="registeredViewModes[viewMode] != undefined"
                                         v-html="registeredViewModes[viewMode].icon"/>
-                                    <span class="is-hidden-touch">&nbsp;&nbsp;&nbsp;{{ $i18n.get('label_visualization') }}</span>
-                                <b-icon icon="menu-down" />
+                                <span class="is-hidden-touch">&nbsp;&nbsp;&nbsp;{{ $i18n.get('label_visualization') }}</span>
+                                <span class="icon">
+                                    <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                                </span>
                             </button>
                             <b-dropdown-item 
                                     :class="{ 'is-active': viewModeOption == viewMode }"
@@ -333,55 +351,57 @@
                                 <span>
                                         <span class="icon is-small gray-icon">
                                         <i 
-                                                :class="{'mdi-view-list' : ( adminViewMode == 'table' || adminViewMode == undefined),
-                                                        'mdi-view-module' : adminViewMode == 'cards',
-                                                        'mdi-apps' : adminViewMode == 'grid',
-                                                        'mdi-view-column' : adminViewMode == 'records',
-                                                        'mdi-view-dashboard' : adminViewMode == 'masonry'}"
-                                                class="mdi"/>
+                                                :class="{'tainacan-icon-viewtable' : ( adminViewMode == 'table' || adminViewMode == undefined),
+                                                        'tainacan-icon-viewcards' : adminViewMode == 'cards',
+                                                        'tainacan-icon-viewminiature' : adminViewMode == 'grid',
+                                                        'tainacan-icon-viewrecords' : adminViewMode == 'records',
+                                                        'tainacan-icon-viewmasonry' : adminViewMode == 'masonry'}"
+                                                class="tainacan-icon"/>
                                     </span>
                                 </span>
                                 &nbsp;&nbsp;&nbsp;{{ $i18n.get('label_visualization') }}
-                                <b-icon icon="menu-down" />
+                                <span class="icon">
+                                    <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                                </span>
                             </button>
                             <b-dropdown-item 
                                     :class="{ 'is-active': adminViewMode == 'table' }"
                                     :value="'table'">
-                                <b-icon 
-                                        class="gray-icon" 
-                                        icon="view-list"/>
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-viewtable"/>
+                                </span>
                                 {{ $i18n.get('label_table') }}
                             </b-dropdown-item>
                             <b-dropdown-item 
                                     :class="{ 'is-active': adminViewMode == 'cards' }"
                                     :value="'cards'">
-                                <b-icon 
-                                        class="gray-icon" 
-                                        icon="view-module"/>
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-viewcards"/>
+                                </span>
                                 {{ $i18n.get('label_cards') }}
                             </b-dropdown-item>
                             <b-dropdown-item 
                                     :class="{ 'is-active': adminViewMode == 'grid' }"
                                     :value="'grid'">
-                                <b-icon 
-                                        class="gray-icon" 
-                                        icon="apps"/>
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-viewminiature"/>
+                                </span>
                                 {{ $i18n.get('label_thumbnails') }}
                             </b-dropdown-item>
                             <b-dropdown-item 
                                     :class="{ 'is-active': adminViewMode == 'records' }"
                                     :value="'records'">
-                                <b-icon 
-                                        class="gray-icon" 
-                                        icon="view-column"/>
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-viewrecords"/>
+                                </span>
                                 {{ $i18n.get('label_records') }}
                             </b-dropdown-item>
                             <b-dropdown-item 
                                     :class="{ 'is-active': adminViewMode == 'masonry' }"
                                     :value="'masonry'">
-                                <b-icon 
-                                        class="gray-icon" 
-                                        icon="view-dashboard"/>
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-viewmasonry"/>
+                                </span>
                                 {{ $i18n.get('label_masonry') }}
                             </b-dropdown-item>
                         </b-dropdown>
@@ -418,10 +438,10 @@
                                     :value="searchQuery"
                                     @input="futureSearchQuery = $event.target.value"
                                     @keyup.enter="updateSearch()">
-                                <span
+                                <span 
                                         @click="updateSearch()"
                                         class="icon is-right">
-                                    <i class="mdi mdi-magnify" />
+                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-search"/>
                                 </span>
                         </div>
                         <a
@@ -593,7 +613,9 @@
                         class="section">
                     <div class="content has-text-grey has-text-centered">
                         <p>
-                            <b-icon icon="file-multiple"/>
+                            <span class="icon is-large">
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-items" />
+                            </span>
                         </p>
                         <p v-if="status == undefined || status == ''">{{ hasFiltered ? $i18n.get('info_no_item_found_filter') : $i18n.get('info_no_item_created') }}</p>
                         <p v-if="status == 'draft'">{{ $i18n.get('info_no_item_draft') }}</p>
@@ -641,10 +663,11 @@
                         class="collapse-all is-size-7"
                         @click="collapseAll = !collapseAll">
                     {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                    <b-icon
-                            type="is-secondary"
-                            size="is-small"
-                            :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
+                    <span class="icon">
+                        <i 
+                                :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
+                                class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                    </span>
                 </a>
 
                 <br>
@@ -663,9 +686,9 @@
                         class="is-grouped-centered section">
                     <div class="content has-text-gray has-text-centered">
                         <p>
-                            <b-icon
-                                    icon="filter"
-                                    size="is-large"/>
+                            <span class="icon is-large">
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters" />
+                            </span>
                         </p>
                         <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
                         <router-link
@@ -1404,7 +1427,7 @@
         top: 120px;
         left: 0;
         max-width: 23px;
-        height: 21px;
+        height: 26px;
         width: 23px;
         border: none;
         background-color: $turquoise1;
@@ -1427,7 +1450,7 @@
             max-width: 100%;
             width: auto;
             padding: 3px 6px 3px 0px;
-            height: 24px;
+            height: 26px;
 
             .icon {
                 position: relative;
@@ -1472,7 +1495,8 @@
         }
 
         .button {
-            align-items: flex-start;
+            display: flex;
+            align-items: center;
         }
         
         .field {
@@ -1483,8 +1507,11 @@
             color: $gray4 !important;
             padding-right: 10px;
         }
-        .gray-icon .icon i::before, .gray-icon i::before {
+        
+        .gray-icon .icon i::before, 
+        .gray-icon i::before {
             font-size: 1.3125rem !important;
+            max-width: 26px;
         }
         
         .view-mode-icon {
@@ -1506,7 +1533,7 @@
                     padding: 0.25rem 1.0rem 0.25rem 0.75rem;
                 }
                 .dropdown-item span{
-                    vertical-align: sub;
+                    vertical-align: middle;
                 }      
                 .dropdown-item-apply {
                     width: 100%;

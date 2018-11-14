@@ -106,4 +106,150 @@ class Taxonomies extends TAINACAN_UnitTestCase {
 		$this->assertEquals(1, sizeof($terms), 'you should be able to create a term even if the taxonomy is still auto-draft');
 		
 	}
+	
+	function test_term_exists() {
+		
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+        	'taxonomy',
+	        array(
+	        	'name'         => 'genero',
+		        'description'  => 'tipos de musica',
+		        'allow_insert' => 'yes',
+				'status'       => 'publish'
+	        ),
+	        true
+        );
+		
+		$Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+		$Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
+		
+		$term = $this->tainacan_entity_factory->create_entity(
+		    'term',
+		    array(
+			    'taxonomy' => $taxonomy->get_db_identifier(),
+			    'name'     => 'Rock',
+		    ),
+		    true
+	    );
+		
+		$parent = $this->tainacan_entity_factory->create_entity(
+		    'term',
+		    array(
+			    'taxonomy' => $taxonomy->get_db_identifier(),
+			    'name'     => 'Parent',
+		    ),
+		    true
+	    );
+		
+		$child = $this->tainacan_entity_factory->create_entity(
+		    'term',
+		    array(
+			    'taxonomy' => $taxonomy->get_db_identifier(),
+			    'name'     => 'Child',
+				'parent'   => $parent->get_id()
+		    ),
+		    true
+	    );
+		
+		$this->assertFalse( $Tainacan_Terms->term_exists('Reggae', $taxonomy->get_db_identifier()) );
+		$this->assertTrue( $Tainacan_Terms->term_exists('Rock', $taxonomy->get_db_identifier()) );
+		
+		//var_dump( $Tainacan_Terms->term_exists('Rock', $taxonomy->get_db_identifier(), 0, true) );
+		
+		// test extreme case 
+		
+		$term_2 = $this->tainacan_entity_factory->create_entity(
+		    'term',
+		    array(
+			    'taxonomy' => $taxonomy->get_db_identifier(),
+			    'name'     => 'test 123',
+				'parent'   => $term->get_id()
+		    ),
+		    true
+	    );
+		
+		$this->assertFalse( $Tainacan_Terms->term_exists('test 123', $taxonomy->get_db_identifier(), 0) ); // parent 0
+		$this->assertTrue( $Tainacan_Terms->term_exists('test    123', $taxonomy->get_db_identifier(), $term->get_id()) ); // spaces in between
+		
+		// testing passing taxonomy object 
+		$this->assertTrue( $Tainacan_Terms->term_exists('Rock', $taxonomy) );
+		
+		// testing passing ID
+		$this->assertTrue( $Tainacan_Terms->term_exists('Rock', $taxonomy->get_id()) );
+		
+		// testing via Taxonomy object
+		$this->assertTrue( $taxonomy->term_exists('Rock') );
+		
+		// testing retrieving the term 
+		$this->assertTrue( $taxonomy->term_exists('Rock', 0, true) instanceof \WP_Term );
+		$this->assertEquals( $term->get_id(), $taxonomy->term_exists('Rock', 0, true)->term_taxonomy_id );
+		
+		// test parent 
+		$this->assertTrue( $Tainacan_Terms->term_exists('Child', $taxonomy->get_db_identifier()) ); // parent null
+		$this->assertFalse( $Tainacan_Terms->term_exists('Child', $taxonomy->get_db_identifier(), 0) ); // parent 0
+		$this->assertTrue( $Tainacan_Terms->term_exists('Child', $taxonomy->get_db_identifier(), $parent->get_id()) ); // parent 
+		
+	}
+	
+	function test_term_validation() {
+		
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+        	'taxonomy',
+	        array(
+	        	'name'         => 'genero',
+		        'description'  => 'tipos de musica',
+		        'allow_insert' => 'yes',
+				'status'       => 'publish'
+	        ),
+	        true
+        );
+		
+		$Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+		$Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
+		
+		$term = $this->tainacan_entity_factory->create_entity(
+		    'term',
+		    array(
+			    'taxonomy' => $taxonomy->get_db_identifier(),
+			    'name'     => 'Rock',
+		    ),
+		    true
+	    );
+		
+		$parent = $this->tainacan_entity_factory->create_entity(
+		    'term',
+		    array(
+			    'taxonomy' => $taxonomy->get_db_identifier(),
+			    'name'     => 'Parent',
+		    ),
+		    true
+	    );
+		
+		$child = $this->tainacan_entity_factory->create_entity(
+		    'term',
+		    array(
+			    'taxonomy' => $taxonomy->get_db_identifier(),
+			    'name'     => 'Child',
+				'parent'   => $parent->get_id()
+		    ),
+		    true
+	    );
+		
+		$newTerm = new \Tainacan\Entities\Term();
+		$newTerm->set_name('Child');
+		$newTerm->set_taxonomy($taxonomy->get_db_identifier());
+		
+		$this->assertTrue( $newTerm->validate() );
+		
+		$newTerm->set_parent($parent->get_id());
+		
+		$this->assertFalse( $newTerm->validate(), 'term should not validate because it has a duplicate in the same level' );
+		
+		$child->set_description('changed');
+		
+		$this->assertTrue( $child->validate(), 'child should validate');
+		
+		
+		
+	}
 }

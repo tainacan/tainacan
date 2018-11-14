@@ -161,4 +161,139 @@ class Filters extends TAINACAN_UnitTestCase {
         $this->assertFalse($filter2->validate(), 'filter with a metadatum with unsupported primitive type should not validate');
 
     }
+	
+	/**
+     * test if parent metadatum are visible for children collection
+     */
+    function test_hierarchy_filters(){
+        $Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
+        $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+
+	    $meta_repo = $this->tainacan_entity_factory->create_entity(
+        	'metadatum',
+	        array(
+	        	'name'              => 'metadatum default',
+		        'collection_id'     => $Tainacan_Metadata->get_default_metadata_attribute(),
+		        'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+		        'status'            => 'publish'
+	        ),
+	        true
+        );
+		
+		$this->tainacan_entity_factory->create_entity(
+        	'filter',
+	        array(
+	        	'name'              => 'filter default',
+		        'collection_id'     => 'filter_in_repository',
+		        'filter_type'  => 'Tainacan\Filter_Types\Selectbox',
+				'metadatum'    => $meta_repo->get_id(),
+		        'status'            => 'publish'
+	        ),
+	        true
+        );
+
+        $collection_grandfather = $this->tainacan_entity_factory->create_entity(
+	        'collection',
+	        array(
+		        'name' => 'collection grandfather'
+	        ),
+	        true
+        );
+
+        $meta_grand = $this->tainacan_entity_factory->create_entity(
+        	'metadatum',
+	        array(
+	        	'name'              => 'metadatum grandfather',
+		        'collection_id'     => $collection_grandfather->get_id(),
+		        'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+		        'status'            => 'publish'
+	        ),
+	        true
+        );
+		$this->tainacan_entity_factory->create_entity(
+        	'filter',
+	        array(
+	        	'name'              => 'filter grandfather',
+		        'collection_id'     => $collection_grandfather->get_id(),
+		        'filter_type'  => 'Tainacan\Filter_Types\Selectbox',
+				'metadatum'    => $meta_grand->get_id(),
+		        'status'            => 'publish'
+	        ),
+	        true
+        );
+
+	    $collection_father = $this->tainacan_entity_factory->create_entity(
+		    'collection',
+		    array(
+			    'name'   => 'collection father',
+			    'parent' => $collection_grandfather->get_id()
+		    ),
+		    true
+	    );
+
+	    $meta_father = $this->tainacan_entity_factory->create_entity(
+		    'metadatum',
+		    array(
+			    'name'              => 'metadatum father',
+			    'collection_id'     => $collection_father->get_id(),
+			    'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+			    'status'            => 'publish'
+		    ),
+		    true
+	    );
+		$this->tainacan_entity_factory->create_entity(
+        	'filter',
+	        array(
+	        	'name'              => 'filter father',
+		        'collection_id'     => $collection_father->get_id(),
+		        'filter_type'  => 'Tainacan\Filter_Types\Selectbox',
+				'metadatum'    => $meta_father->get_id(),
+		        'status'            => 'publish'
+	        ),
+	        true
+        );
+
+	    $collection_son = $this->tainacan_entity_factory->create_entity(
+		    'collection',
+		    array(
+			    'name'   => 'collection son',
+			    'parent' => $collection_father->get_id()
+		    ),
+		    true
+	    );
+
+        $this->assertEquals( $collection_grandfather->get_id(), $collection_father->get_parent() );
+        $this->assertEquals( $collection_father->get_id(), $collection_son->get_parent() );
+
+	    $meta_son = $this->tainacan_entity_factory->create_entity(
+		    'metadatum',
+		    array(
+			    'name'              => 'metadatum son',
+			    'collection_id'     => $collection_son->get_id(),
+			    'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+			    'status'            => 'publish'
+		    ),
+		    true
+	    );
+		$this->tainacan_entity_factory->create_entity(
+        	'filter',
+	        array(
+	        	'name'              => 'filter son',
+		        'collection_id'     => $collection_son->get_id(),
+		        'filter_type'  => 'Tainacan\Filter_Types\Selectbox',
+				'metadatum'    => $meta_son->get_id(),
+		        'status'            => 'publish'
+	        ),
+	        true
+        );
+
+        $retrieve_filters =  $Tainacan_Filters->fetch_by_collection( $collection_son, [], 'OBJECT' );
+		
+		$retrieve_filters_ids =  $Tainacan_Filters->fetch_ids_by_collection( $collection_son, [] );
+
+        // should return 4
+        $this->assertEquals( 4, sizeof( $retrieve_filters ) );
+		$this->assertEquals( 4, sizeof( $retrieve_filters_ids ) );
+    }
+	
 }

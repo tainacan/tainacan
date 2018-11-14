@@ -14,9 +14,9 @@
                                 class="field is-grouped-centered section">
                             <div class="content has-text-gray has-text-centered">
                                 <p>
-                                    <b-icon
-                                            icon="format-list-bulleted-type"
-                                            size="is-large"/>
+                                    <span class="icon is-large">
+                                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
+                                    </span>
                                 </p>
                                 <p>{{ $i18n.get('info_there_is_no_metadatum' ) }}</p>
                                 <p>{{ $i18n.get('info_create_metadata' ) }}</p>
@@ -47,14 +47,16 @@
                                     v-for="(metadatum, index) in activeMetadatumList"
                                     :key="index">
                                 <div class="handle">
-                                    <grip-icon/>
+                                    <span class="icon grip-icon">
+                                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
+                                    </span>
                                     <span class="icon icon-level-identifier">
                                         <i 
                                             :class="{ 
-                                                'mdi-folder has-text-turquoise5': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
-                                                'mdi-folder-multiple has-text-blue5': (metadatum.collection_id == 'default') || isRepositoryLevel
+                                                'tainacan-icon-collection has-text-turquoise5': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
+                                                'tainacan-icon-repository has-text-blue5': (metadatum.collection_id == 'default') || isRepositoryLevel
                                             }"
-                                            class="mdi" />
+                                            class="tainacan-icon" />
                                     </span>  
                                     <span 
                                             class="metadatum-name"
@@ -102,9 +104,9 @@
                                                         ? 'hidden' : 'visible'
                                                     }" 
                                                 @click.prevent="editMetadatum(metadatum)">
-                                            <b-icon 
-                                                    type="is-gray" 
-                                                    icon="pencil"/>
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
+                                            </span>
                                         </a>
                                         <a 
                                                 :style="{ visibility: 
@@ -114,9 +116,9 @@
                                                         ? 'hidden' : 'visible'
                                                     }" 
                                                 @click.prevent="removeMetadatum(metadatum)">
-                                            <b-icon 
-                                                    type="is-gray" 
-                                                    icon="delete"/>
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
+                                            </span>
                                         </a>
                                     </span>
                                 </div>
@@ -153,7 +155,9 @@
                                         :class="{ 'hightlighted-metadatum' : hightlightedMetadatum == metadatum.name, 'inherited-metadatum': isRepositoryLevel }"
                                         v-for="(metadatum, index) in availableMetadatumList"
                                         :key="index">
-                                    <grip-icon/>
+                                    <span class="icon grip-icon">
+                                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
+                                    </span>
                                     <span class="metadatum-name">{{ metadatum.name }}</span>
                                     <span 
                                             class="loading-spinner" 
@@ -174,9 +178,9 @@
                             class="field is-grouped-centered section">
                         <div class="content has-text-gray has-text-centered">
                             <p>
-                                <b-icon
-                                        icon="format-list-bulleted-type"
-                                        size="is-large"/>
+                                <span class="icon is-large">
+                                    <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
+                                </span>
                             </p>
                             <p>{{ $i18n.get('info_there_is_no_metadatum') }}</p>  
                             <p>{{ $i18n.get('info_create_metadata') }}</p>
@@ -254,9 +258,9 @@
                                                         ? 'visible' : 'hidden'
                                                     }" 
                                                 @click.prevent="editMetadatumCustomMapper(props.row)">
-                                            <b-icon 
-                                                    type="is-gray" 
-                                                    icon="pencil"/>
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
+                                            </span>
                                         </a>
                                         <a 
                                                 :style="{ visibility: 
@@ -264,9 +268,9 @@
                                                         ? 'visible' : 'hidden'
                                                     }" 
                                                 @click.prevent="removeMetadatumCustomMapper(props.row)">
-                                            <b-icon 
-                                                    type="is-gray" 
-                                                    icon="delete"/>
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
+                                            </span>
                                         </a>
                                     </b-table-column>
                                 </template>
@@ -280,10 +284,9 @@
                                         v-if="collectionId != null && collectionId != undefined"
                                         class="is-inline is-pulled-left add-link"
                                         @click="onNewMetadataMapperMetadata()">
-                                    <b-icon
-                                            icon="plus-circle"
-                                            size="is-small"
-                                            type="is-secondary"/>
+                                    <span class="icon is-small">
+                                        <i class="tainacan-icon tainacan-icon-add"/>
+                                    </span>
                                     {{ $i18n.get('label_add_more_mapper_metadata') }}
                                 </a>
                             </div>
@@ -351,7 +354,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import GripIcon from '../other/grip-icon.vue';
 import MetadatumEditionForm from './../edition/metadatum-edition-form.vue';
 import CustomDialog from '../other/custom-dialog.vue';
 
@@ -383,8 +385,7 @@ export default {
         }
     },
     components: {
-        MetadatumEditionForm,
-        GripIcon
+        MetadatumEditionForm
     },
     computed: {
         availableMetadatumList: {
@@ -864,8 +865,7 @@ export default {
                 padding-right: 6em;
             }
             .grip-icon { 
-                fill: $gray3; 
-                top: 1px;
+                color: $gray3; 
                 position: relative;
             }
             .metadatum-name {
@@ -941,7 +941,7 @@ export default {
             }
 
             .grip-icon { 
-                fill: white; 
+                color: white; 
             }
 
             .switch.is-small {
@@ -969,7 +969,7 @@ export default {
             position: relative;
 
             .grip-icon { 
-                fill: white; 
+                color: white; 
             }
         }
     }
@@ -1011,8 +1011,8 @@ export default {
             transition: left 0.2s ease;
             
             .grip-icon { 
-                fill: $gray3;
-                top: -3px;
+                color: $gray3;
+                top: -4px;
                 position: relative;
                 display: inline-block;
             }
@@ -1084,10 +1084,10 @@ export default {
             }
         }
         @keyframes hightlighten-icon {
-            0%   { fill: #b1b1b1; }
-            25%  { fill: white; }
-            75%  { fill: white; }
-            100% { fill: #b1b1b1; }
+            0%   { color: #b1b1b1; }
+            25%  { color: white; }
+            75%  { color: white; }
+            100% { color: #b1b1b1; }
         }
         @keyframes hightlighten-arrow {
             0%   {
@@ -1146,7 +1146,7 @@ export default {
             }
           
             .grip-icon { 
-                fill: white;
+                color: white;
             }
             
         }

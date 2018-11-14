@@ -1,9 +1,10 @@
 <template>
     <span class="help-wrapper">
         <a class="help-button has-text-secondary">
-            <b-icon 
-                    size="is-small" 
-                    icon="help-circle-outline"/></a>
+            <span class="icon is-small">
+                <i class="tainacan-icon tainacan-icon-help" />
+            </span>
+        </a>
         <div class="help-tooltip">
             <div class="help-tooltip-header">
                 <h5>{{ title }}</h5>
@@ -31,7 +32,7 @@ export default {
 
     .help-wrapper {
         position: absolute;
-        margin-top: -2px;
+        margin-top: -4px;
         margin-left: 4px;
     }
 
@@ -81,16 +82,16 @@ export default {
             content: "";
             display: block;
             position: absolute;
-            left: 28px;
+            left: 30px;
             width: 0;
             height: 0;
             border-style: solid;
         }
         &:before {
             border-color: $turquoise2 transparent transparent transparent;
-            border-right-width: 18px;
+            border-right-width: 15px;
             border-top-width: 12px;
-            border-left-width: 18px;
+            border-left-width: 15px;
             bottom: -15px;
         }
     }

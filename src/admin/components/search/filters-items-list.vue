@@ -41,7 +41,8 @@
         </template>
 
     </div>
-</template>
+</template> 
+
 <script>
     import { mapGetters, mapActions } from 'vuex';
     import CollectionsFilter from '../repository/collection-filter/collection-filter.vue';

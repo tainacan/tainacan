@@ -8,9 +8,11 @@
                     class="label"
                     slot="trigger"
                     slot-scope="props">
-                <b-icon
-                        :icon="props.open ? 'menu-down' : 'menu-right'"
-                />
+                <span class="icon is-right">
+                    <i 
+                            :class="{ 'tainacan-icon-arrowdown': props.open, 'tainacan-icon-arrowright': !props.open }"
+                            class="tainacan-icon tainacan-icon-20px" />
+                </span>
                 {{ $i18n.get('collections') }}
             </label>
 

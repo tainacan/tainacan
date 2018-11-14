@@ -26,12 +26,12 @@
             <a
                     @click.prevent="editTerm()">
                 <span class="icon">
-                    <i class="mdi mdi-18px mdi-pencil"/>
+                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
                 </span>
             </a>
             <a @click.prevent="tryToRemoveTerm()">
                 <span class="icon">
-                    <i class="mdi mdi-18px mdi-delete"/>
+                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
                 </span>
             </a>
         </span>
