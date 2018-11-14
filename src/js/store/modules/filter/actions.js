@@ -165,8 +165,10 @@ export const fetchTaxonomyFilters = ({ dispatch, commit }, taxonomyId ) => {
 
                         axios.tainacan.get(endpoint)
                             .then((resp) => {
-                                let filters = resp.data;
-                                commit('setTaxonomyFiltersForCollection', { collectionName: collectionId, taxonomyFilters: filters });
+                                let repositoryFilters = resp.data.filter((filter) => filter.collection_id == 'default' || filter.collection_id == 'filter_in_repository');
+                                let collectionFilters = resp.data.filter((filter) => filter.collection_id != 'default' && filter.collection_id != 'filter_in_repository');
+                                commit('setTaxonomyFiltersForCollection', { collectionName: undefined, taxonomyFilters: repositoryFilters });
+                                commit('setTaxonomyFiltersForCollection', { collectionName: collectionId, taxonomyFilters: collectionFilters });
                                 amountOfCollectionsLoaded++;
 
                                 if (amountOfCollectionsLoaded == taxonomy.collections_ids.length) {

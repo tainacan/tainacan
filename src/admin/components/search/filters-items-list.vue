@@ -27,9 +27,9 @@
         </template>
         <template v-else>
              <collections-filter
-                :open="collapsed"
-                :query="getQuery"
-                v-if="isRepositoryLevel"/>
+                    :open="collapsed"
+                    :query="getQuery"
+                    v-if="isRepositoryLevel"/>
             <tainacan-filter-item
                     v-show="!isMenuCompressed"        
                     :query="getQuery"
@@ -62,12 +62,14 @@
         watch: {
             taxonomyFilters() {
                 if (this.taxonomyFilters != undefined) {
+                    this.$set(this.taxonomyFiltersCollectionNames, 'repository-filters', this.$i18n.get('title_repository_filters_page'));
                     for (let taxonomyFilter of Object.keys(this.taxonomyFilters)) {
-                        
-                        this.fetchCollectionName(taxonomyFilter)
-                            .then((collectionName) => {
-                                this.$set(this.taxonomyFiltersCollectionNames, taxonomyFilter, collectionName);
-                            });
+                        if (taxonomyFilter != 'repository-filters') {
+                            this.fetchCollectionName(taxonomyFilter)
+                                .then((collectionName) => {
+                                    this.$set(this.taxonomyFiltersCollectionNames, taxonomyFilter, collectionName);
+                                });
+                        }
                     }
                 }
             }
