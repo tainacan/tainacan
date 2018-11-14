@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="metadata-list-page">
         <b-loading :active.sync="isLoadingMetadatumTypes"/>
         <b-loading :active.sync="isLoadingMetadatumMappers"/>
         <tainacan-title v-if="!isRepositoryLevel"/>
@@ -792,397 +792,401 @@ export default {
 
     @import "../../scss/_variables.scss";
 
-    .column:not(.available-metadata-area){
-        overflow: hidden;
-    }
-
-    .page-title {
-        border-bottom: 1px solid $secondary;
-        h2 {
-            color: $blue5;
-            font-weight: 500;
-        }
-        margin: 1em 0em 2.0em 0em;
-    }
-
-    .w-100 {
-        width: 100%;
-        position: relative;
-        float: left;
-    }
-    
-    .modal-new-link {
-        padding: 0.5em 1em 3em 1em;
-    }
-
-    .loading-spinner {
-        animation: spinAround 500ms infinite linear;
-        border: 2px solid #dbdbdb;
-        border-radius: 290486px;
-        border-right-color: transparent;
-        border-top-color: transparent;
-        content: "";
-        display: inline-block;
-        height: 1em; 
-        width: 1em;
-    }
-
-    .active-metadata-area {
-        font-size: 14px;
-        margin-right: 0.8em;
-        margin-left: -0.8em;
-        padding-right: 6em;
-        min-height: 330px;
-
-        @media screen and (max-width: 769px) {
-            min-height: 45px;
-            margin: 0; 
-            padding-right: 0em;
-        }
-        @media screen and (max-width: 1216px) {
-            padding-right: 1em;
-        }
-
-        &.metadata-area-receive {
-            border: 1px dashed gray;
-        }
-
-        .collapse {
-            display: initial;
-        }
-
-        .active-metadatum-item {
-            background-color: white;
-            padding: 0.7em 0.9em;
-            margin: 4px;
-            min-height: 40px;
-            display: block; 
-            position: relative;
-            cursor: grab;
-            opacity: 1 !important;
+    .metadata-list-page {
                     
-            &>.field, form {
-                background-color: white !important;
-            }
-            
-            .handle {
-                padding-right: 6em;
-                white-space: nowrap;
-            }
-            .grip-icon { 
-                color: $gray3; 
-                position: relative;
-            }
-            .metadatum-name {
-                text-overflow: ellipsis;
-                overflow-x: hidden;
-                white-space: nowrap;
-                font-weight: bold;
-                margin-left: 0.4em;
-                margin-right: 0.4em;
+        .column:not(.available-metadata-area){
+            overflow: hidden;
+        }
 
-                &.is-danger {
-                    color: $danger !important;
+        .page-title {
+            border-bottom: 1px solid $secondary;
+            h2 {
+                color: $blue5;
+                font-weight: 500;
+            }
+            margin: 1em 0em 2.0em 0em;
+        }
+
+        .w-100 {
+            width: 100%;
+            position: relative;
+            float: left;
+        }
+        
+        .modal-new-link {
+            padding: 0.5em 1em 3em 1em;
+        }
+
+        .loading-spinner {
+            animation: spinAround 500ms infinite linear;
+            border: 2px solid #dbdbdb;
+            border-radius: 290486px;
+            border-right-color: transparent;
+            border-top-color: transparent;
+            content: "";
+            display: inline-block;
+            height: 1em; 
+            width: 1em;
+        }
+
+        .active-metadata-area {
+            font-size: 14px;
+            margin-right: 0.8em;
+            margin-left: -0.8em;
+            padding-right: 6em;
+            min-height: 330px;
+
+            @media screen and (max-width: 769px) {
+                min-height: 45px;
+                margin: 0; 
+                padding-right: 0em;
+            }
+            @media screen and (max-width: 1216px) {
+                padding-right: 1em;
+            }
+
+            &.metadata-area-receive {
+                border: 1px dashed gray;
+            }
+
+            .collapse {
+                display: initial;
+            }
+
+            .active-metadatum-item {
+                background-color: white;
+                padding: 0.7em 0.9em;
+                margin: 4px;
+                min-height: 40px;
+                display: block; 
+                position: relative;
+                cursor: grab;
+                opacity: 1 !important;
+                        
+                &>.field, form {
+                    background-color: white !important;
+                }
+                
+                .handle {
+                    padding-right: 6em;
+                    white-space: nowrap;
+                }
+                .grip-icon { 
+                    color: $gray3; 
+                    position: relative;
+                }
+                .metadatum-name {
+                    text-overflow: ellipsis;
+                    overflow-x: hidden;
+                    white-space: nowrap;
+                    font-weight: bold;
+                    margin-left: 0.4em;
+                    margin-right: 0.4em;
+
+                    &.is-danger {
+                        color: $danger !important;
+                    }
+                }
+                .label-details {
+                    font-weight: normal;
+                    color: $gray3;
+                }
+                .not-saved {
+                    font-style: italic;
+                    font-weight: bold;
+                    color: $danger;
+                    margin-left: 0.5rem;
+                }
+                .controls { 
+                    position: absolute;
+                    right: 5px;
+                    top: 10px;
+                    .switch {
+                        position: relative;
+                        bottom: 3px;
+                    }
+                    .icon {
+                        bottom: 1px;   
+                        position: relative;
+                        i, i:before { font-size: 20px; }
+                    }
+                }
+        
+                &.not-sortable-item, &.not-sortable-item:hover {
+                    cursor: default;
+                    background-color: white !important;
+                } 
+                &.not-focusable-item, &.not-focusable-item:hover {
+                    cursor: default;
+                
+                    .metadatum-name {
+                        color: $secondary;
+                    }
+                    .handle .label-details, .handle .icon {
+                        color: $gray3 !important;
+                    }
+                }
+                &.disabled-metadatum {
+                    color: $gray3;
+                }    
+            }
+            .active-metadatum-item:hover:not(.not-sortable-item) {
+                background-color: $secondary;
+                border-color: $secondary;
+                color: white !important;
+                        
+                &>.field, form {
+                    background-color: white !important;
+                }
+
+                .label-details, .icon, .not-saved, .icon-level-identifier>i {
+                    color: white !important;
+                }
+
+                .grip-icon { 
+                    color: white; 
+                }
+
+                .switch.is-small {
+                    input[type="checkbox"] + .check {
+                        background-color: $secondary !important;
+                        border: 1.5px solid white !important;
+                        &::before { background-color: white !important; }
+                    } 
+                    input[type="checkbox"]:checked + .check {
+                        border: 1.5px solid white !important;
+                        &::before { background-color: white !important; }
+                    }
+                    &:hover input[type="checkbox"] + .check {
+                        border: 1.5px solid white !important;
+                        background-color: $secondary !important;
+                    }
                 }
             }
-            .label-details {
-                font-weight: normal;
-                color: $gray3;
+            .sortable-ghost {
+                border: 1px dashed $gray2;
+                display: block;
+                padding: 0.7em 0.9em;
+                margin: 4px;
+                height: 40px;
+                position: relative;
+
+                .grip-icon { 
+                    color: white; 
+                }
             }
-            .not-saved {
-                font-style: italic;
-                font-weight: bold;
-                color: $danger;
-                margin-left: 0.5rem;
+        }
+
+        .available-metadata-area {
+            padding: 10px 0px 10px 10px;
+            margin: 0;
+            max-width: 340px;
+            font-size: 14px;
+
+            @media screen and (max-width: 769px) {
+                max-width: 100%;
+                padding: 10px;
+                h3 {
+                    margin: 1em 0em 1em 0em !important;
+                }
+                .available-metadatum-item::before,
+                .available-metadatum-item::after {
+                    display: none !important;
+                }
             }
-            .controls { 
-                position: absolute;
-                right: 5px;
-                top: 10px;
-                .switch {
+
+            h3 {
+                margin: 0.2em 0em 1em -1.2em;
+                font-weight: 500;
+            }
+
+            .available-metadatum-item {
+                padding: 0.7em;
+                margin: 4px;
+                background-color: white;
+                cursor: pointer;
+                left: 0;
+                line-height: 1.3em;
+                height: 40px;
+                position: relative;
+                border: 1px solid $gray2;
+                border-radius: 1px;
+                transition: left 0.2s ease;
+                
+                .grip-icon { 
+                    color: $gray3;
+                    top: -4px;
                     position: relative;
-                    bottom: 3px;
+                    display: inline-block;
                 }
                 .icon {
-                    bottom: 1px;   
                     position: relative;
-                    i, i:before { font-size: 20px; }
+                    bottom: 1px;
                 }
-            }
-    
-            &.not-sortable-item, &.not-sortable-item:hover {
-                cursor: default;
-                background-color: white !important;
-            } 
-            &.not-focusable-item, &.not-focusable-item:hover {
-                cursor: default;
-               
                 .metadatum-name {
-                    color: $secondary;
+                    text-overflow: ellipsis;
+                    overflow-x: hidden;
+                    white-space: nowrap;
+                    font-weight: bold;
+                    margin-left: 0.4em;
+                    display: inline-block;
+                    max-width: 180px;
+                    width: 60%;
                 }
-                .handle .label-details, .handle .icon {
-                    color: $gray3 !important;
+                &:after,
+                &:before {
+                    content: '';
+                    display: block;
+                    position: absolute;
+                    right: 100%;
+                    width: 0;
+                    height: 0;
+                    border-style: solid;
                 }
-            }
-            &.disabled-metadatum {
-                color: $gray3;
-            }    
-        }
-        .active-metadatum-item:hover:not(.not-sortable-item) {
-            background-color: $secondary;
-            border-color: $secondary;
-            color: white !important;
-                    
-            &>.field, form {
-                background-color: white !important;
-            }
-
-            .label-details, .icon, .not-saved, .icon-level-identifier>i {
-                color: white !important;
-            }
-
-            .grip-icon { 
-                color: white; 
-            }
-
-            .switch.is-small {
-                input[type="checkbox"] + .check {
-                    background-color: $secondary !important;
-                    border: 1.5px solid white !important;
-                    &::before { background-color: white !important; }
-                } 
-                input[type="checkbox"]:checked + .check {
-                    border: 1.5px solid white !important;
-                    &::before { background-color: white !important; }
+                &:after {
+                    top: -1px;
+                    border-color: transparent white transparent transparent;
+                    border-right-width: 16px;
+                    border-top-width: 20px;
+                    border-bottom-width: 20px;
+                    left: -19px;
                 }
-                &:hover input[type="checkbox"] + .check {
-                    border: 1.5px solid white !important;
-                    background-color: $secondary !important;
+                &:before {
+                    top: -1px;
+                    border-color: transparent $gray2 transparent transparent;
+                    border-right-width: 16px;
+                    border-top-width: 20px;
+                    border-bottom-width: 20px;
+                    left: -20px;
                 }
             }
-        }
-        .sortable-ghost {
-            border: 1px dashed $gray2;
-            display: block;
-            padding: 0.7em 0.9em;
-            margin: 4px;
-            height: 40px;
-            position: relative;
 
-            .grip-icon { 
-                color: white; 
+            .sortable-drag {
+                opacity: 1 !important;
             }
-        }
-    }
 
-    .available-metadata-area {
-        padding: 10px 0px 10px 10px;
-        margin: 0;
-        max-width: 340px;
-        font-size: 14px;
-
-        @media screen and (max-width: 769px) {
-            max-width: 100%;
-            padding: 10px;
-            h3 {
-                margin: 1em 0em 1em 0em !important;
+            @keyframes hightlighten {
+                0%   {
+                    color: #222;             
+                    background-color: white;
+                    border-color: white;
+                }
+                25%  {
+                    color: white;            
+                    background-color: #2cb4c1; 
+                    border-color: #2cb4c1;
+                }
+                75%  {
+                    color: white;            
+                    background-color: #2cb4c1; 
+                    border-color: #2cb4c1;
+                }
+                100% {
+                    color: #222;             
+                    background-color: white;
+                    border-color: white;
+                }
             }
-            .available-metadatum-item::before,
-            .available-metadatum-item::after {
-                display: none !important;
+            @keyframes hightlighten-icon {
+                0%   { color: #b1b1b1; }
+                25%  { color: white; }
+                75%  { color: white; }
+                100% { color: #b1b1b1; }
             }
-        }
-
-        h3 {
-            margin: 0.2em 0em 1em -1.2em;
-            font-weight: 500;
-        }
-
-        .available-metadatum-item {
-            padding: 0.7em;
-            margin: 4px;
-            background-color: white;
-            cursor: pointer;
-            left: 0;
-            line-height: 1.3em;
-            height: 40px;
-            position: relative;
-            border: 1px solid $gray2;
-            border-radius: 1px;
-            transition: left 0.2s ease;
-            
-            .grip-icon { 
-                color: $gray3;
-                top: -4px;
-                position: relative;
-                display: inline-block;
+            @keyframes hightlighten-arrow {
+                0%   {
+                    border-color: transparent white transparent transparent;
+                    border-color: transparent white transparent transparent; 
+                }
+                25%  {
+                    border-color: transparent #2cb4c1 transparent transparent;
+                    border-color: transparent #2cb4c1 transparent transparent; 
+                }
+                75%  {
+                    border-color: transparent #2cb4c1 transparent transparent;
+                    border-color: transparent #2cb4c1 transparent transparent; 
+                }
+                100% {
+                    border-color: transparent white transparent transparent;
+                    border-color: transparent white transparent transparent;  
+                }
             }
-            .icon {
-                position: relative;
-                bottom: 1px;
-            }
-            .metadatum-name {
-                text-overflow: ellipsis;
-                overflow-x: hidden;
-                white-space: nowrap;
-                font-weight: bold;
-                margin-left: 0.4em;
-                display: inline-block;
-                max-width: 180px;
-                width: 60%;
-            }
-            &:after,
-            &:before {
-                content: '';
-                display: block;
-                position: absolute;
-                right: 100%;
-                width: 0;
-                height: 0;
-                border-style: solid;
-            }
-            &:after {
-                top: -1px;
-                border-color: transparent white transparent transparent;
-                border-right-width: 16px;
-                border-top-width: 20px;
-                border-bottom-width: 20px;
-                left: -19px;
-            }
-            &:before {
-                top: -1px;
-                border-color: transparent $gray2 transparent transparent;
-                border-right-width: 16px;
-                border-top-width: 20px;
-                border-bottom-width: 20px;
-                left: -20px;
-            }
-        }
-
-        .sortable-drag {
-            opacity: 1 !important;
-        }
-
-        @keyframes hightlighten {
-            0%   {
-                color: #222;             
+            .hightlighted-metadatum {
                 background-color: white;
-                border-color: white;
-            }
-            25%  {
-                color: white;            
-                background-color: #2cb4c1; 
-                border-color: #2cb4c1;
-            }
-            75%  {
-                color: white;            
-                background-color: #2cb4c1; 
-                border-color: #2cb4c1;
-            }
-            100% {
-                color: #222;             
-                background-color: white;
-                border-color: white;
-            }
-        }
-        @keyframes hightlighten-icon {
-            0%   { color: #b1b1b1; }
-            25%  { color: white; }
-            75%  { color: white; }
-            100% { color: #b1b1b1; }
-        }
-        @keyframes hightlighten-arrow {
-            0%   {
-                border-color: transparent white transparent transparent;
-                border-color: transparent white transparent transparent; 
-            }
-            25%  {
-                border-color: transparent #2cb4c1 transparent transparent;
-                border-color: transparent #2cb4c1 transparent transparent; 
-            }
-            75%  {
-                border-color: transparent #2cb4c1 transparent transparent;
-                border-color: transparent #2cb4c1 transparent transparent; 
-            }
-            100% {
-                border-color: transparent white transparent transparent;
-                border-color: transparent white transparent transparent;  
-            }
-        }
-        .hightlighted-metadatum {
-            background-color: white;
-            position: relative;
-            left: 0px;
-            animation-name: hightlighten;
-            animation-duration: 1.0s;
-            animation-iteration-count: 2;
-            
-            .grip-icon{
-                animation-name: hightlighten-icon;
-                animation-duration: 1.0s;
-                animation-iteration-count: 2; 
-            }
-
-            &::before,
-            &::after {
-                animation-name: hightlighten-arrow;
+                position: relative;
+                left: 0px;
+                animation-name: hightlighten;
                 animation-duration: 1.0s;
                 animation-iteration-count: 2;
-            }
-        }
-        .available-metadatum-item:hover {
-            background-color: $secondary;
-            border-color: $secondary;
-            color: white;
-            position: relative;
-            left: -4px;
+                
+                .grip-icon{
+                    animation-name: hightlighten-icon;
+                    animation-duration: 1.0s;
+                    animation-iteration-count: 2; 
+                }
 
-            &:after {
-                border-color: transparent $secondary transparent transparent;
-            }
-            &:before {
-                border-color: transparent $secondary transparent transparent;
-            }
-            .icon {
-                color: white !important;
-            }
-          
-            .grip-icon { 
-                color: white;
-            }
-            
-        }
-    }
-    .inherited-metadatum {
-        &.active-metadatum-item:hover:not(.not-sortable-item) {
-            background-color: $blue5;
-            border-color: $blue5;
-            
-            .switch.is-small {
-                input[type="checkbox"] + .check {
-                    background-color: $blue5 !important;
-                } 
-                &:hover input[type="checkbox"] + .check {
-                    background-color: $blue5 !important;
+                &::before,
+                &::after {
+                    animation-name: hightlighten-arrow;
+                    animation-duration: 1.0s;
+                    animation-iteration-count: 2;
                 }
             }
-        }
-        &.available-metadatum-item:hover {
-            background-color: $blue5 !important;
-            border-color: $blue5 !important;
-        
-            &:after {
-                border-color: transparent $blue5 transparent transparent !important;
-            }
-            &:before {
-                border-color: transparent $blue5 transparent transparent !important;
-            }
+            .available-metadatum-item:hover {
+                background-color: $secondary;
+                border-color: $secondary;
+                color: white;
+                position: relative;
+                left: -4px;
 
+                &:after {
+                    border-color: transparent $secondary transparent transparent;
+                }
+                &:before {
+                    border-color: transparent $secondary transparent transparent;
+                }
+                .icon {
+                    color: white !important;
+                }
+            
+                .grip-icon { 
+                    color: white;
+                }
+                
+            }
         }
-    }
-    #mappers-options-dropdown {
-        background-color: transparent;
-        color: #fff;
+        .inherited-metadatum {
+            &.active-metadatum-item:hover:not(.not-sortable-item) {
+                background-color: $blue5;
+                border-color: $blue5;
+                
+                .switch.is-small {
+                    input[type="checkbox"] + .check {
+                        background-color: $blue5 !important;
+                    } 
+                    &:hover input[type="checkbox"] + .check {
+                        background-color: $blue5 !important;
+                    }
+                }
+            }
+            &.available-metadatum-item:hover {
+                background-color: $blue5 !important;
+                border-color: $blue5 !important;
+            
+                &:after {
+                    border-color: transparent $blue5 transparent transparent !important;
+                }
+                &:before {
+                    border-color: transparent $blue5 transparent transparent !important;
+                }
+
+            }
+        }
+        #mappers-options-dropdown {
+            background-color: transparent;
+            color: #fff;
+        }
+
     }
 
 </style>
