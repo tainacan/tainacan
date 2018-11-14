@@ -392,7 +392,7 @@ export default {
             content: "";
             display: block;
             position: absolute;
-            right: 47px;
+            right: 35px;
             width: 0;
             height: 0;
             border-style: solid;

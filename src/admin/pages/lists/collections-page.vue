@@ -86,14 +86,51 @@
                             <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_collection_created') }}</p>
                             <p v-if="status == 'draft'">{{ $i18n.get('info_no_collection_draft') }}</p>
                             <p v-if="status == 'trash'">{{ $i18n.get('info_no_collection_trash') }}</p>
-                            <router-link
-                                    v-if="status == undefined || status == ''"
-                                    id="button-create-collection"
-                                    tag="button"
-                                    class="button is-secondary"
-                                    :to="{ path: $routerHelper.getNewCollectionPath() }">
-                                {{ $i18n.getFrom('collections', 'new_item') }}
-                            </router-link>
+
+                            <div v-if="$userCaps.hasCapability('edit_tainacan-collections') && status == undefined || status == ''">
+                                <b-dropdown id="collection-creation-options-dropdown">
+                                    <button
+                                            class="button is-secondary"
+                                            slot="trigger">
+                                        <div>{{ $i18n.getFrom('collections', 'new_item') }}</div>
+                                        <span class="icon">
+                                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
+                                        </span>
+                                    </button>
+                                    <b-dropdown-item>
+                                        <router-link
+                                                id="a-create-collection"
+                                                tag="div"
+                                                :to="{ path: $routerHelper.getNewCollectionPath() }">
+                                            {{ $i18n.get('new_blank_collection') }}
+                                            <br>
+                                            <small class="is-small">{{ $i18n.get('info_choose_your_metadata') }}</small>
+                                        </router-link>
+                                    </b-dropdown-item>
+                                    <b-dropdown-item
+                                            :key="metadatum_mapper.slug"
+                                            v-for="metadatum_mapper in metadatum_mappers"
+                                            v-if="metadatum_mapper.metadata != false">
+                                        <router-link
+                                                :id="'a-create-collection-' + metadatum_mapper.slug"
+                                                tag="div"
+                                                :to="{ path: $routerHelper.getNewMappedCollectionPath(metadatum_mapper.slug) }">
+                                            {{ $i18n.get(metadatum_mapper.name) }}
+                                        </router-link>
+                                    </b-dropdown-item>
+                                    <b-dropdown-item>
+                                        <div
+                                                id="a-import-collection"
+                                                tag="div"
+                                                @click="onOpenImportersModal">
+                                            {{ $i18n.get('import') }}
+                                            <br>
+                                            <small class="is-small">{{ $i18n.get('info_import_collection') }}</small>
+                                        </div>
+                                    </b-dropdown-item>
+                                </b-dropdown>
+                            </div>
+                            
                         </div>
                     </section>
                 </div>  

@@ -50,7 +50,7 @@
                 </li>
             </ul>
         </template>
-        <template v-else>
+        <template v-if="collections.length > 0 && !isLoading">
             <masonry 
                     :cols="{ default: 5, 1919: 4, 1407: 3, 1215: 2, 1023: 2, 767: 1 }"
                     :gutter="25"
@@ -219,15 +219,7 @@
                     
                     <!-- Name -->
                     <div class="metadata-title">
-                        <p 
-                                v-tooltip="{
-                                    content: collection.name != undefined ? collection.name : '',
-                                    html: true,
-                                    autoHide: false,
-                                    placement: 'auto-start'
-                                }">
-                            {{ collection.name != undefined ? collection.name : '' }}
-                        </p>                            
+                        <p>{{ collection.name != undefined ? collection.name : '' }}</p>                            
                     </div>
                 </router-link>
             </masonry>
@@ -259,8 +251,12 @@ export default {
         display: flex;
         width: calc(100% + 1.25rem);
         justify-content: space-between;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         margin: 0 -0.75rem;
+
+        @media screen and (max-width: 768px) {
+            flex-wrap: wrap;
+        }
 
         li {
             padding: 0.75rem;
@@ -274,7 +270,6 @@ export default {
 
             &:first-of-type {
                 width: 56.7%;
-                max-width: 56.7%;
             }
 
             a { 

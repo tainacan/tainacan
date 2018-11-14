@@ -276,14 +276,14 @@ export default {
             margin: 0 -0.75rem;
 
             li {
-                padding: 0.75rem;
+                padding: 1rem;
                 display: flex;
-                background-color: $gray0;
+                background-color: $gray1;
                 flex-grow: 1;
                 margin: 0.75rem;
                 height: 120px; 
-                min-width: 142px;
-                // max-width: 142px;
+                min-width: 13%;
+                flex-basis: 13%;
 
                 @media screen and (max-width: 580px) {
                     max-width: calc(100% - 52px);

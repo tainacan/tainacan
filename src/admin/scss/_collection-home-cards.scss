@@ -11,10 +11,10 @@
     animation-duration: 0.5s;
 
     .tainacan-card {
-        background-color: $gray0;
+        background-color: $gray1;
         padding: 0px;
         margin-top: 0.75rem;
-        margin-bottom: 1.25rem;
+        margin-bottom: 1.6rem;
         flex-basis: 0;
         min-height: 125px;
         cursor: pointer;
@@ -73,6 +73,8 @@
         .metadata-title {
             overflow: hidden;
             padding: 0.75rem 1rem;
+            flex-basis: calc(100% - 96px);
+            
             p {
                 color: black !important;
                 font-size: 0.875rem !important; 

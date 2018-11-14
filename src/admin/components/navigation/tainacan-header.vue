@@ -180,7 +180,7 @@
                 font-size: 24px;
                 width: 50px;
                 height: $header-height;
-                background-color: $gray0;
+                background-color: $gray1;
                 padding-bottom: 0.4rem;
             }
             .logo-area {
