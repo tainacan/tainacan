@@ -10,14 +10,14 @@
                             autoHide: false,
                             placement: 'auto-start'
                         }" 
-                        v-if="taxonomyFiltersCollectionNames[key] != undefined != undefined && taxonomyFiltersCollectionNames[key] != undefined"
+                        v-if="taxonomyFiltersCollectionNames[key] != undefined && taxonomyFiltersCollectionNames[key] != undefined"
                         class="collection-name">
                     {{ $i18n.get('label_filters_from') + " " + taxonomyFiltersCollectionNames[key] + ": " }}
                 </div>
                 <tainacan-filter-item
                         v-show="!isMenuCompressed"        
                         :query="getQuery"
-                        v-for="(filter, filterIndex) in taxonomyFilter"
+                        v-for="(filter, filterIndex) in taxonomyFilter.filter((aFilter) => aFilter.metadatum.metadata_type_object.options.taxonomy_id != taxonomyId)"
                         :key="filterIndex"
                         :filter="filter"
                         :open="collapsed"
