@@ -41,10 +41,12 @@ class Filter extends Entity {
 	public function _toArray(){
 		$filter_array = parent::_toArray();
 		$metadatum_id = $filter_array['metadatum'];
+		$metadatum = $this->get_metadatum();
 
 		$filter_array['metadatum'] = [];
 		$filter_array['metadatum']['metadatum_id'] = $metadatum_id;
-		$filter_array['metadatum']['metadatum_name'] = $this->get_metadatum()->get_name();
+		$filter_array['metadatum']['metadatum_name'] = $metadatum->get_name();
+		$filter_array['metadatum']['metadata_type_object'] = $metadatum->get_metadata_type_object()->_toArray();
 
 		return $filter_array;
 	}
