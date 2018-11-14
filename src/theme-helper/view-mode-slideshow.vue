@@ -188,7 +188,7 @@
                                 @click.stop.prevent="isPlaying = !isPlaying">
                             <span class="icon">
                                 <i 
-                                        :class="{ 'tainacan-icon-pause' : isPlaying, 'tainacan-icon-playfill' : !isPlaying }"
+                                        :class="{ 'tainacan-icon-pausefill' : isPlaying, 'tainacan-icon-playfill' : !isPlaying }"
                                         class="has-text-secondary tainacan-icon tainacan-icon-30px"/>
                             </span>
                             <circular-counter 

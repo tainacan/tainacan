@@ -2,7 +2,7 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
 <metadata>
-Created by FontForge 20161003 at Mon Nov 12 12:19:24 2018
+Created by FontForge 20161003 at Wed Nov 14 11:54:32 2018
  By www-data
 </metadata>
 <defs>
@@ -222,6 +222,9 @@ d="M392 58l-192 192l192 192l-59 58l-250 -250l250 -250zM608 58l192 192l-192 192l5
 d="M793 125l-250 -250l-59 59l149 149h-465v499h84v-416h381l-149 149l59 59z" />
     <glyph glyph-name="showmore" unicode="showmore" 
 d="M243 371l256 -255l256 255l78 -78l-334 -334l-334 334z" />
+    <glyph glyph-name="pausefill" unicode="pausefill" 
+d="M908 353q12 -48 12 -100q0 -87 -33 -163.5t-90 -133.5t-133.5 -90t-163.5 -33t-163.5 33t-133.5 90t-90 133.5t-33 163.5q0 52 12 98v3q17 69 55.5 127t92.5 101t121 66.5t141 23.5q73 0 139 -24t119.5 -66t91.5 -99.5t55 -125.5q0 -1 0.5 -2t0.5 -2zM627 419l-84 1
+l-2 -336l84 -1zM459 420l-84 1l-2 -336l84 -1z" />
     <glyph glyph-name=".notdef" horiz-adv-x="500" 
  />
     <glyph glyph-name="uni0000" horiz-adv-x="0" 

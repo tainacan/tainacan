@@ -165,8 +165,8 @@
 .tainacan-icon-stop:before {
     content: "stop";
 }
-.tainacan-icon-pause:before {
-    content: "pause";
+.tainacan-icon-pausefill:before {
+    content: "pausefill";
 }
 .tainacan-icon-playfill:before {
     content: "playfill";
