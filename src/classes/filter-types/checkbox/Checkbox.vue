@@ -115,7 +115,7 @@
                     let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
                         this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
 
-                    promise = this.getValuesRelationship( collectionTarget, null, [], 0, this.filter.max_options, false, '1');
+                    promise = this.getValuesRelationship( collectionTarget, null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1');
                     promise.request
                         .then(() => {
                             if(this.options.length > this.filter.max_options){

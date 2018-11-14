@@ -30,7 +30,7 @@
                         :key="filterIndex"
                         :filter="filter"
                         :open="collapsed"
-                        :is-repository-level="isRepositoryLevel"/>
+                        :is-repository-level="false"/>
                 <p   
                         class="has-text-gray is-size-7"
                         v-if="taxonomyFilter.length <= 0">
