@@ -166,7 +166,7 @@
                             </span>
                             <span class="icon icon-level-identifier">
                                 <i 
-                                    :class="{ 'tainacan-icon-collections has-text-turquoise5': metadatum.collection_id == collectionId, 'tainacan-icon-repository has-text-blue5': metadatum.collection_id != collectionId }"
+                                    :class="{ 'tainacan-icon-collections has-text-turquoise5': metadatum.collection_id == collectionId && !isRepositoryLevel, 'tainacan-icon-repository has-text-blue5': isRepositoryLevel || metadatum.collection_id != collectionId }"
                                     class="tainacan-icon" />
                             </span>  
                             <span class="metadatum-name">{{ metadatum.name }}</span>
@@ -607,10 +607,6 @@ export default {
             &.not-sortable-item, &.not-sortable-item:hover {
                 cursor: default;
                 background-color: white !important;
-
-                .handle .label-details, .handle .icon {
-                    color: $gray3 !important;
-                }
             } 
             &.not-focusable-item, &.not-focusable-item:hover {
                 cursor: default;
