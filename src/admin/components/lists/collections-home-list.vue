@@ -114,9 +114,7 @@
                         </li>
                     </ul>
                 </router-link>
-                <router-link
-                        tag="a"
-                        :to="$routerHelper.getCollectionPath(collection.id)"
+                <div
                         v-if="collections.length > 0 && !isLoading" 
                         :key="index"
                         v-for="(collection, index) of collections"
@@ -124,7 +122,8 @@
                     <ul class="menu-list">
                         <li>
                             <a 
-                                    :href="collection.url" 
+                                    :href="collection.url"
+                                    target="_blank" 
                                     :aria-label="$i18n.get('label_view_collection')">
                                 <b-tooltip 
                                         :label="$i18n.get('label_view_collection')"
@@ -212,16 +211,20 @@
                             </router-link> 
                         </li>
                     </ul>
-                          
-                    <img 
+                    <router-link
+                            tag="a"
+                            :to="$routerHelper.getCollectionPath(collection.id)"
+                            class="card-body">
+                        <img 
                             v-if="collection.thumbnail != undefined"
                             :src="collection['thumbnail'].tainacan_medium ? collection['thumbnail'].tainacan_medium : (collection['thumbnail'].medium ? collection['thumbnail'].medium : thumbPlaceholderPath)">  
-                    
-                    <!-- Name -->
-                    <div class="metadata-title">
-                        <p>{{ collection.name != undefined ? collection.name : '' }}</p>                            
-                    </div>
-                </router-link>
+                        
+                        <!-- Name -->
+                        <div class="metadata-title">
+                            <p>{{ collection.name != undefined ? collection.name : '' }}</p>                            
+                        </div>
+                    </router-link>      
+                </div>
             </masonry>
         </template>
     </div>

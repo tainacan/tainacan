@@ -16,7 +16,7 @@
                     @click="isMenuCompressed = !isMenuCompressed">
                 <span class="icon">
                     <i 
-                            :class="{ 'tainacan-icon-arrowleft' : isMenuCompressed, 'tainacan-icon-arrowright' : !isMenuCompressed }"
+                            :class="{ 'tainacan-icon-arrowleft' : !isMenuCompressed, 'tainacan-icon-arrowright' : isMenuCompressed }"
                             class="tainacan-icon tainacan-icon-20px"/>
                 </span>
             </button>

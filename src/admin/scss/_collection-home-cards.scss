@@ -32,12 +32,6 @@
             a { background-color: $gray2; }
         }
 
-        img {
-            width: 96px;
-            height: 96px;
-            border-radius: 0px;
-        }
-
         &.new-card {
             .list-metadata { 
                 text-align: center;
@@ -69,21 +63,6 @@
                 align-items: center;
             }
         }
-
-        .metadata-title {
-            overflow: hidden;
-            padding: 0.75rem 1rem;
-            flex-basis: calc(100% - 96px);
-            
-            p {
-                color: black !important;
-                font-size: 0.875rem !important; 
-                margin-bottom: 0;
-            }
-        }
-        &:hover .metadata-title {
-            p { text-decoration: none !important; }
-        }
         
         .menu-list {
             width: 100%;
@@ -102,7 +81,31 @@
                 }
             }
         }
-    
+
+        .card-body {
+            width: 100%;
+            display: flex;
+            
+            img {
+                width: 96px;
+                height: 96px;
+                border-radius: 0px;
+            }
+            .metadata-title {
+                overflow: hidden;
+                padding: 0.75rem 1rem;
+                flex-basis: calc(100% - 96px);
+                
+                p {
+                    color: black !important;
+                    font-size: 0.875rem !important; 
+                    margin-bottom: 0;
+                }
+            }
+            &:hover .metadata-title {
+                p { text-decoration: none !important; }
+            }
+        }    
     }
 }
 
