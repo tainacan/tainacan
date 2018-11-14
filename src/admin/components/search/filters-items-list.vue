@@ -63,7 +63,7 @@
         watch: {
             taxonomyFilters() {
                 if (this.taxonomyFilters != undefined) {
-                    this.$set(this.taxonomyFiltersCollectionNames, 'repository-filters', this.$i18n.get('title_repository_filters_page'));
+                    this.$set(this.taxonomyFiltersCollectionNames, 'repository-filters', this.$i18n.get('repository'));
                     for (let taxonomyFilter of Object.keys(this.taxonomyFilters)) {
                         if (taxonomyFilter != 'repository-filters') {
                             this.fetchCollectionName(taxonomyFilter)
