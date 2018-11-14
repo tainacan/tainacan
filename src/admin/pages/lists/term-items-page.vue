@@ -100,6 +100,8 @@
                     ((filters.length >= 0 &&
                     isRepositoryLevel) || filters.length > 0)"
                     :filters="filters"
+                    :taxonomy-filters="taxonomyFilters"
+                    :taxonomy="taxonomy"
                     :collapsed="collapseAll"
                     :is-repository-level="isRepositoryLevel"/>
 
@@ -736,7 +738,8 @@
                 isDoSearch: false,
                 searchControlHeight: 0,
                 sortingMetadata: [],
-                isFilterModalActive: false
+                isFilterModalActive: false,
+                customFilters: []
             }
         },
         props: {
@@ -744,8 +747,7 @@
             termId: Number,
             taxonomy: String,
             defaultViewMode: String, // Used only on theme
-            enabledViewModes: Object, // Used only on theme,
-            customFilters: Array 
+            enabledViewModes: Object // Used only on theme,
         },
         computed: {
             items() {
@@ -759,6 +761,9 @@
             },
             filters() {
                 return this.getFilters();
+            },
+            taxonomyFilters() {
+                return this.getTaxonomyFilters();
             },
             metadata() {
                 return this.getMetadata();
@@ -812,10 +817,12 @@
                 'getMetadata'
             ]),
             ...mapActions('filter', [
-                'fetchFilters'
+                'fetchFilters',
+                'fetchTaxonomyFilters'
             ]),
             ...mapGetters('filter', [
-                'getFilters'
+                'getFilters',
+                'getTaxonomyFilters'
             ]),
             ...mapGetters('search', [
                 'getSearchQuery',
@@ -930,15 +937,24 @@
                 
                 this.isLoadingFilters = true;
 
-                this.fetchFilters({
-                    collectionId: this.collectionId,
-                    isRepositoryLevel: this.isRepositoryLevel,
-                    isContextEdit: !this.isOnTheme,
-                    includeDisabled: 'no',
-                    customFilters: this.customFilters
-                })
-                    .then(() => this.isLoadingFilters = false)
-                    .catch(() => this.isLoadingFilters = false);
+                // Normal filter loading, only collection ones
+                if (this.taxonomy == undefined) {
+                    this.fetchFilters({
+                        collectionId: this.collectionId,
+                        isRepositoryLevel: this.isRepositoryLevel,
+                        isContextEdit: !this.isOnTheme,
+                        includeDisabled: 'no',
+                    })
+                        .then(() => this.isLoadingFilters = false)
+                        .catch(() => this.isLoadingFilters = false);
+                
+                // Custom filter loading, get's from collections that have items with that taxonomy
+                } else {
+                    let taxonomyId = this.taxonomy.split("_");
+                    this.fetchTaxonomyFilters(taxonomyId[taxonomyId.length - 1])
+                        .catch(() => this.isLoadingFilters = false);
+                        
+                }
             },
             prepareMetadata() {
 
@@ -1168,10 +1184,12 @@
 
             this.isRepositoryLevel = (this.collectionId === undefined);
 
-            if(this.collectionId != undefined && this.customFilters != undefined)
+            if (this.collectionId != undefined)
                 this.$eventBusSearch.setCollectionId(this.collectionId);
 
-            this.$eventBusSearch.setTerm(this.termId, this.taxonomy);
+            if (this.termId != undefined && this.termId != null)
+                this.$eventBusSearch.setTerm(this.termId, this.taxonomy);
+            
             this.$eventBusSearch.updateStoreFromURL();
 
             this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {

@@ -329,6 +329,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_sequence_edit_items'	                     => __( 'Sequence edit items', 'tainacan'),
 	'label_documents_upload'	                     => __( 'Documents upload', 'tainacan'),
 	'label_added_items'			                     => __( 'Added items', 'tainacan'),
+	'label_filters_from'			                 => __( 'Filters from', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

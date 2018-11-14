@@ -9,6 +9,16 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
 
     return new Object({ 
         request: new Promise ((resolve, reject) => {
+
+            // Sets term query in case it's on a term items page
+            if (termId != undefined && taxonomy != undefined) {
+
+                dispatch('search/add_taxquery', {
+                    taxonomy: taxonomy,
+                    terms:[ termId ],
+                    compare: 'IN'
+                }, { root: true });
+            }
                 
             // Adds queries for filtering
             let postQueries = JSON.parse(JSON.stringify(rootGetters['search/getPostQuery']));
@@ -29,19 +39,6 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                     advancedSearchResults = postQueries.advancedSearch;
                 }
                 
-            }
-
-            // Sets term query in case it's on a term items page
-            if (termId != undefined && taxonomy != undefined) {
-
-                if (postQueries.taxquery == undefined || postQueries.taxquery.length == undefined) 
-                    postQueries.taxquery = new Array();
-
-                postQueries.taxquery.push({
-                    taxonomy: taxonomy,
-                    terms:[ termId ],
-                    compare: 'IN'
-                });
             }
             
             let query = qs.stringify(postQueries);

@@ -144,3 +144,50 @@ export const fetchFilterTypes = ({ commit} ) => {
 export const updateFilteTypes = ( { commit }, filterTypes) => {
     commit('setFilterTypes', filterTypes);
 };
+
+// TAXONOMY FILTERS - MULTIPLE COLLECTIONS ------------------------
+export const fetchTaxonomyFilters = ({ dispatch, commit }, taxonomyId ) => {
+    
+    commit('clearTaxonomyFilters');
+
+    return new Promise((resolve, reject) => {
+        dispatch('taxonomy/fetchTaxonomy', taxonomyId, { root: true })
+            .then((res) => {
+                let taxonomy = res.taxonomy;
+                if (taxonomy.collections_ids != undefined && taxonomy.collections_ids.length != undefined) {
+                    
+                    let amountOfCollectionsLoaded = 0;
+
+                    for (let collectionId of taxonomy.collections_ids ) {
+                
+                        let endpoint = '';
+                        endpoint = '/collection/' + collectionId + '/filters/?nopaging=1&include_disabled=no';
+
+                        axios.tainacan.get(endpoint)
+                            .then((resp) => {
+                                let repositoryFilters = resp.data.filter((filter) => { 
+                                    return (filter.collection_id == 'default' || filter.collection_id == 'filter_in_repository') && filter.metadatum.metadata_type_object.options.taxonomy_id != taxonomyId
+                                });
+                                let collectionFilters = resp.data.filter((filter) => {
+                                    return (filter.collection_id != 'default' && filter.collection_id != 'filter_in_repository') && filter.metadatum.metadata_type_object.options.taxonomy_id != taxonomyId
+                                });
+                                commit('setTaxonomyFiltersForCollection', { collectionName: collectionId, taxonomyFilters: collectionFilters });
+                                commit('setTaxonomyFiltersForCollection', { collectionName: undefined, taxonomyFilters: repositoryFilters });
+                                amountOfCollectionsLoaded++;
+
+                                if (amountOfCollectionsLoaded == taxonomy.collections_ids.length) {
+                                    resolve();
+                                }
+                            }) 
+                            .catch((error) => {
+                                console.log(error);
+                                reject(error);
+                            });    
+                    }
+                }
+            })
+            .error(() => {
+                reject();
+            });
+    });
+};

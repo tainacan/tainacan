@@ -9,7 +9,8 @@ const state = {
         taxquery: []
     },
     filters: [],
-    filterTypes: []
+    filterTypes: [],
+    taxonomyFilters: {}
 };
 
 export default {
