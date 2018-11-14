@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="filters-list-page">
         <b-loading :active.sync="isLoadingMetadatumTypes"/>
         <tainacan-title v-if="!isRepositoryLevel"/>
         <p v-if="isRepositoryLevel">{{ $i18n.get('info_repository_filters_inheritance') }}</p>
@@ -502,315 +502,321 @@ export default {
 
     @import "../../scss/_variables.scss";
 
-    .loading-spinner {
-        animation: spinAround 500ms infinite linear;
-        border: 2px solid #dbdbdb;
-        border-radius: 290486px;
-        border-right-color: transparent;
-        border-top-color: transparent;
-        content: "";
-        display: inline-block;
-        height: 1em; 
-        width: 1em;
-    }
-
-    .active-filters-area {
-        font-size: 14px;
-        margin-right: 0.8em;
-        margin-left: -0.8em;
-        padding-right: 6em;
-        min-height: 330px;
-
-        @media screen and (max-width: 769px) {
-            min-height: 45px;
-            margin: 0; 
-            padding-right: 0em;
-        }
-        @media screen and (max-width: 1216px) {
-            padding-right: 1em;
+    .filters-list-page {
+                    
+        .column:not(.available-metadata-area){
+            overflow: hidden;
         }
 
-        &.filters-area-receive {
-            border: 1px dashed gray;
+        .loading-spinner {
+            animation: spinAround 500ms infinite linear;
+            border: 2px solid #dbdbdb;
+            border-radius: 290486px;
+            border-right-color: transparent;
+            border-top-color: transparent;
+            content: "";
+            display: inline-block;
+            height: 1em; 
+            width: 1em;
         }
 
-        .collapse {
-            display: initial;
-        }
+        .active-filters-area {
+            font-size: 14px;
+            margin-right: 0.8em;
+            margin-left: -0.8em;
+            padding-right: 6em;
+            min-height: 330px;
 
-        .active-filter-item {
-            background-color: white;
-            padding: 0.7em 0.9em;
-            margin: 4px;
-            min-height: 40px;
-            position: relative;
-            display: block; 
-            transition: top 0.1s ease;
-            cursor: grab;
-
-            form.tainacan-form {
-                padding: 1.0em 2.0em;
-                margin-top: 1.0em;
-                border-top: 1px solid $gray2;
-                border-bottom: 1px solid $gray2;
+            @media screen and (max-width: 769px) {
+                min-height: 45px;
+                margin: 0; 
+                padding-right: 0em;
             }
-        
-            &>.field, form {
-                background-color: white !important;
+            @media screen and (max-width: 1216px) {
+                padding-right: 1em;
             }
 
-            .handle {
-                padding-right: 6em;
-                white-space: nowrap;
+            &.filters-area-receive {
+                border: 1px dashed gray;
             }
-            .grip-icon { 
-                color: $gray3;
+
+            .collapse {
+                display: initial;
+            }
+
+            .active-filter-item {
+                background-color: white;
+                padding: 0.7em 0.9em;
+                margin: 4px;
+                min-height: 40px;
                 position: relative;
-            }
-            .filter-name {
-                text-overflow: ellipsis;
-                overflow-x: hidden;
-                white-space: nowrap;
-                font-weight: bold;
-                margin-left: 0.4em;
-                margin-right: 0.4em;
+                display: block; 
+                transition: top 0.1s ease;
+                cursor: grab;
 
-                &.is-danger {
-                    color: $danger !important;
+                form.tainacan-form {
+                    padding: 1.0em 2.0em;
+                    margin-top: 1.0em;
+                    border-top: 1px solid $gray2;
+                    border-bottom: 1px solid $gray2;
                 }
-            }
-            .label-details {
-                font-weight: normal;
-                color: $gray3;
-            }
-            .not-saved {
-                font-style: italic;
-                font-weight: bold;
-                color: $danger;
-                margin-left: 0.5rem;
-            }
-            .controls { 
-                position: absolute;
-                right: 5px; 
-                top: 10px;
-                .switch {
-                    position: relative;
-                    bottom: 3px;
-                }
-                .icon {
-                    bottom: 1px;   
-                    position: relative;
-                    i, i:before { font-size: 20px; }
-                }
-            }
-
-            &.not-sortable-item, &.not-sortable-item:hover {
-                cursor: default;
-                background-color: white !important;
-            } 
-            &.not-focusable-item, &.not-focusable-item:hover {
-                cursor: default;
-               
-                .metadatum-name {
-                    color: $secondary;
-                }
-                .handle .label-details, .handle .icon {
-                    color: $gray3 !important;
-                }
-            }
-            &.disabled-metadatum {
-                color: $gray3;
-            }    
-        }
-        .active-filter-item:hover:not(.not-sortable-item) {
-            background-color: $secondary;
-            border-color: $secondary;
-            color: white !important;
-
-            &>.field, form {
-                background-color: white !important;
-            }
-
-            .grip-icon { 
-                color: $white;
-            }
-
-            .label-details, .icon, .icon-level-identifier>i {
-                color: white !important;
-            }
-
-            .switch.is-small {
-                input[type="checkbox"] + .check {
-                    background-color: $secondary !important;
-                    border: 1.5px solid white !important;
-                    &::before { background-color: white !important; }
-                } 
-                input[type="checkbox"]:checked + .check {
-                    border: 1.5px solid white !important;
-                    &::before { background-color: white !important; }
-                }
-                &:hover input[type="checkbox"] + .check {
-                    border: 1.5px solid white !important;
-                    background-color: $secondary !important;
-                }
-            }
-        }
-        .sortable-ghost {
-            border: 1px dashed $gray2;
-            display: block;
-            padding: 0.7em 0.9em;
-            margin: 4px;
-            height: 40px;
-            position: relative;
-
-            .grip-icon { 
-                color: $gray3;
-                top: 2px;
-                position: relative;
-            }
-        }
-    }
-
-    .available-metadata-area {
-        padding: 10px 0px 10px 10px;
-        margin: 0;
-        max-width: 340px;
-        font-size: 14px;
-
-        @media screen and (max-width: 769px) {
-            max-width: 100%;
-            padding: 10px;
-            h3 {
-                margin: 1em 0em 1em 0em !important;
-            }
-            .available-metadatum-item::before,
-            .available-metadatum-item::after {
-                display: none !important;
-            }
-        }
-
-        h3 {
-            margin: 0.2em 0em 1em -1.2em;
-            font-weight: 500;
-        }
-
-        .available-metadatum-item {
-            padding: 0.7em;
-            margin: 4px;
-            background-color: white;
-            cursor: pointer;
-            left: 0;
-            line-height: 1.3em;
-            height: 40px;
-            position: relative;
-            border: 1px solid $gray2;
-            border-radius: 1px;
-            transition: left 0.2s ease;
             
-            .grip-icon { 
-                color: $gray3;
-                top: -4px;
-                position: relative;
-                display: inline-block;
+                &>.field, form {
+                    background-color: white !important;
+                }
+
+                .handle {
+                    padding-right: 6em;
+                    white-space: nowrap;
+                }
+                .grip-icon { 
+                    color: $gray3;
+                    position: relative;
+                }
+                .filter-name {
+                    text-overflow: ellipsis;
+                    overflow-x: hidden;
+                    white-space: nowrap;
+                    font-weight: bold;
+                    margin-left: 0.4em;
+                    margin-right: 0.4em;
+
+                    &.is-danger {
+                        color: $danger !important;
+                    }
+                }
+                .label-details {
+                    font-weight: normal;
+                    color: $gray3;
+                }
+                .not-saved {
+                    font-style: italic;
+                    font-weight: bold;
+                    color: $danger;
+                    margin-left: 0.5rem;
+                }
+                .controls { 
+                    position: absolute;
+                    right: 5px; 
+                    top: 10px;
+                    .switch {
+                        position: relative;
+                        bottom: 3px;
+                    }
+                    .icon {
+                        bottom: 1px;   
+                        position: relative;
+                        i, i:before { font-size: 20px; }
+                    }
+                }
+
+                &.not-sortable-item, &.not-sortable-item:hover {
+                    cursor: default;
+                    background-color: white !important;
+                } 
+                &.not-focusable-item, &.not-focusable-item:hover {
+                    cursor: default;
+                
+                    .metadatum-name {
+                        color: $secondary;
+                    }
+                    .handle .label-details, .handle .icon {
+                        color: $gray3 !important;
+                    }
+                }
+                &.disabled-metadatum {
+                    color: $gray3;
+                }    
             }
-            .icon {
-                position: relative;
-                bottom: 4px;
-            }
-            .metadatum-name {
-                text-overflow: ellipsis;
-                overflow-x: hidden;
-                white-space: nowrap;
-                font-weight: bold;
-                margin-left: 0.4em;
-                display: inline-block;
-                max-width: 180px;
-                width: 60%;
-            }
-            &:after,
-            &:before {
-                content: '';
-                display: block;
-                position: absolute;
-                right: 100%;
-                width: 0;
-                height: 0;
-                border-style: solid;
-            }
-            &:after {
-                top: -1px;
-                border-color: transparent white transparent transparent;
-                border-right-width: 16px;
-                border-top-width: 20px;
-                border-bottom-width: 20px;
-                left: -19px;
-            }
-            &:before {
-                top: -1px;
-                border-color: transparent $gray2 transparent transparent;
-                border-right-width: 16px;
-                border-top-width: 20px;
-                border-bottom-width: 20px;
-                left: -20px;
-            }
-        }
-        .sortable-drag {
-            opacity: 1 !important;
-        }
-        .available-metadatum-item:not(.disabled-metadatum)  {
-            &:hover{
+            .active-filter-item:hover:not(.not-sortable-item) {
                 background-color: $secondary;
                 border-color: $secondary;
                 color: white !important;
-                position: relative;
-                left: -4px;
 
+                &>.field, form {
+                    background-color: white !important;
+                }
+
+                .grip-icon { 
+                    color: $white;
+                }
+
+                .label-details, .icon, .icon-level-identifier>i {
+                    color: white !important;
+                }
+
+                .switch.is-small {
+                    input[type="checkbox"] + .check {
+                        background-color: $secondary !important;
+                        border: 1.5px solid white !important;
+                        &::before { background-color: white !important; }
+                    } 
+                    input[type="checkbox"]:checked + .check {
+                        border: 1.5px solid white !important;
+                        &::before { background-color: white !important; }
+                    }
+                    &:hover input[type="checkbox"] + .check {
+                        border: 1.5px solid white !important;
+                        background-color: $secondary !important;
+                    }
+                }
+            }
+            .sortable-ghost {
+                border: 1px dashed $gray2;
+                display: block;
+                padding: 0.7em 0.9em;
+                margin: 4px;
+                height: 40px;
+                position: relative;
+
+                .grip-icon { 
+                    color: $gray3;
+                    top: 2px;
+                    position: relative;
+                }
+            }
+        }
+
+        .available-metadata-area {
+            padding: 10px 0px 10px 10px;
+            margin: 0;
+            max-width: 340px;
+            font-size: 14px;
+
+            @media screen and (max-width: 769px) {
+                max-width: 100%;
+                padding: 10px;
+                h3 {
+                    margin: 1em 0em 1em 0em !important;
+                }
+                .available-metadatum-item::before,
+                .available-metadatum-item::after {
+                    display: none !important;
+                }
+            }
+
+            h3 {
+                margin: 0.2em 0em 1em -1.2em;
+                font-weight: 500;
+            }
+
+            .available-metadatum-item {
+                padding: 0.7em;
+                margin: 4px;
+                background-color: white;
+                cursor: pointer;
+                left: 0;
+                line-height: 1.3em;
+                height: 40px;
+                position: relative;
+                border: 1px solid $gray2;
+                border-radius: 1px;
+                transition: left 0.2s ease;
+                
+                .grip-icon { 
+                    color: $gray3;
+                    top: -4px;
+                    position: relative;
+                    display: inline-block;
+                }
+                .icon {
+                    position: relative;
+                    bottom: 4px;
+                }
+                .metadatum-name {
+                    text-overflow: ellipsis;
+                    overflow-x: hidden;
+                    white-space: nowrap;
+                    font-weight: bold;
+                    margin-left: 0.4em;
+                    display: inline-block;
+                    max-width: 180px;
+                    width: 60%;
+                }
+                &:after,
+                &:before {
+                    content: '';
+                    display: block;
+                    position: absolute;
+                    right: 100%;
+                    width: 0;
+                    height: 0;
+                    border-style: solid;
+                }
                 &:after {
-                    border-color: transparent $secondary transparent transparent;
+                    top: -1px;
+                    border-color: transparent white transparent transparent;
+                    border-right-width: 16px;
+                    border-top-width: 20px;
+                    border-bottom-width: 20px;
+                    left: -19px;
                 }
                 &:before {
-                    border-color: transparent $secondary transparent transparent;
+                    top: -1px;
+                    border-color: transparent $gray2 transparent transparent;
+                    border-right-width: 16px;
+                    border-top-width: 20px;
+                    border-bottom-width: 20px;
+                    left: -20px;
                 }
-                .icon-level-identifier>i {
+            }
+            .sortable-drag {
+                opacity: 1 !important;
+            }
+            .available-metadatum-item:not(.disabled-metadatum)  {
+                &:hover{
+                    background-color: $secondary;
+                    border-color: $secondary;
                     color: white !important;
-                }
-                .grip-icon {
-                    color: white !important;
+                    position: relative;
+                    left: -4px;
+
+                    &:after {
+                        border-color: transparent $secondary transparent transparent;
+                    }
+                    &:before {
+                        border-color: transparent $secondary transparent transparent;
+                    }
+                    .icon-level-identifier>i {
+                        color: white !important;
+                    }
+                    .grip-icon {
+                        color: white !important;
+                    }
                 }
             }
         }
-    }
 
-   .inherited-filter {
-        &.active-filter-item:hover:not(.not-sortable-item) {
-            background-color: $blue5;
-            border-color: $blue5;
+    .inherited-filter {
+            &.active-filter-item:hover:not(.not-sortable-item) {
+                background-color: $blue5;
+                border-color: $blue5;
+                
+                .switch.is-small {
+                    input[type="checkbox"] + .check {
+                        background-color: $blue5 !important;
+                    } 
+                    &:hover input[type="checkbox"] + .check {
+                        background-color: $blue5 !important;
+                    }
+                }
+            }
+        }
+        .inherited-metadatum {
+
+            &.available-metadatum-item:hover {
+                background-color: $blue5 !important;
+                border-color: $blue5 !important;
             
-            .switch.is-small {
-                input[type="checkbox"] + .check {
-                    background-color: $blue5 !important;
-                } 
-                &:hover input[type="checkbox"] + .check {
-                    background-color: $blue5 !important;
+                &:after {
+                    border-color: transparent $blue5 transparent transparent !important;
                 }
+                &:before {
+                    border-color: transparent $blue5 transparent transparent !important;
+                }
+
             }
         }
     }
-    .inherited-metadatum {
-
-        &.available-metadatum-item:hover {
-            background-color: $blue5 !important;
-            border-color: $blue5 !important;
-        
-            &:after {
-                border-color: transparent $blue5 transparent transparent !important;
-            }
-            &:before {
-                border-color: transparent $blue5 transparent transparent !important;
-            }
-
-        }
-    }
-
 </style>
 
