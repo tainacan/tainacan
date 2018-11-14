@@ -2,6 +2,45 @@
     <div class="extra-margin">
         <template v-if="taxonomyFilters != undefined">
             <div 
+                    v-if="key == 'repository-filters'"
+                    :key="index"
+                    v-for="(taxonomyFilter, key, index) of taxonomyFilters">
+                <div 
+                        v-tooltip="{
+                            content: $i18n.get('label_filters_from') + ' ' + taxonomyFiltersCollectionNames[key] + ': ',
+                            autoHide: false,
+                            placement: 'auto-start'
+                        }" 
+                        v-if="taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined"
+                        class="collection-name">
+                    {{ $i18n.get('label_filters_from') + " " + taxonomyFiltersCollectionNames[key] + ": " }}
+                </div>
+                <div    
+                        v-else
+                        class="collection-name">
+                    <span 
+                            style="width: 100%; height: 54px;"
+                            class="icon has-text-centered loading-icon">
+                        <div class="control has-icons-right is-loading is-clearfix" />
+                    </span>
+                </div>
+                <tainacan-filter-item
+                        v-show="!isMenuCompressed"        
+                        :query="getQuery"
+                        v-for="(filter, filterIndex) in taxonomyFilter"
+                        :key="filterIndex"
+                        :filter="filter"
+                        :open="collapsed"
+                        :is-repository-level="key == 'repository-filters'"/>
+                <p   
+                        class="has-text-gray is-size-7"
+                        v-if="taxonomyFilter.length <= 0">
+                    {{ $i18n.get('info_there_is_no_filter') }}    
+                </p>
+                <hr>
+            </div>
+            <div 
+                    v-if="key != 'repository-filters'"
                     :key="index"
                     v-for="(taxonomyFilter, key, index) of taxonomyFilters">
                 <div 
