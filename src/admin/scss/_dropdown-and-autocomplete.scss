@@ -13,6 +13,9 @@
                 color: $white;
             }
         }
+        .dropdown.is-disabled {
+            cursor: default;
+        }
     }
     .dropdown-menu {
         padding: 0px;

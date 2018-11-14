@@ -478,7 +478,6 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_warning_selected_items_remove_from_trash'  => __( 'Do you really want to remove from trash the selected items?', 'tainacan'),
 	'info_no_options_avialable_filtering'  			 => __( 'No options for this filtering.', 'tainacan'),
 	'info_no_options_found'				  			 => __( 'No options found.', 'tainacan'),
-
 	'info_all_files_uploaded'  						 => __( 'All files uploaded.', 'tainacan'),
 	'info_there_are'  						 		 => __( 'There are', 'tainacan'),
 	'info_items_being_edited'				 		 => __( 'items being edited', 'tainacan'),
@@ -486,6 +485,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_item_being_edited'				 		 => __( 'item being edited', 'tainacan'),
 	'info_no_preview_found'				 		 	 => __( 'No preview was found.', 'tainacan'),
 	'info_leaving_bulk_edition'				 	 	 => __( 'You are leaving the bulk edition now.', 'tainacan'),
+	'info_leaving_bulk_edition'				 	 	 => __( 'You are leaving the bulk edition now.', 'tainacan'),
+	'info_current_view_mode_metadata_not_allowed'  	 => __( 'Current view mode does not allow displayed metadata selection.', 'tainacan'),
+	'info_cant_select_metadata_without_items'  		 => __( 'Can not select displayed metadata without items on list.', 'tainacan'),
 	
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),
