@@ -10,18 +10,32 @@
                             autoHide: false,
                             placement: 'auto-start'
                         }" 
-                        v-if="taxonomyFiltersCollectionNames[key] != undefined && taxonomyFiltersCollectionNames[key] != undefined"
+                        v-if="taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined"
                         class="collection-name">
                     {{ $i18n.get('label_filters_from') + " " + taxonomyFiltersCollectionNames[key] + ": " }}
+                </div>
+                <div    
+                        v-else
+                        class="collection-name">
+                    <span 
+                            style="width: 100%; height: 54px;"
+                            class="icon has-text-centered loading-icon">
+                        <div class="control has-icons-right is-loading is-clearfix" />
+                    </span>
                 </div>
                 <tainacan-filter-item
                         v-show="!isMenuCompressed"        
                         :query="getQuery"
-                        v-for="(filter, filterIndex) in taxonomyFilter.filter((aFilter) => aFilter.metadatum.metadata_type_object.options.taxonomy_id != taxonomyId)"
+                        v-for="(filter, filterIndex) in taxonomyFilter"
                         :key="filterIndex"
                         :filter="filter"
                         :open="collapsed"
                         :is-repository-level="isRepositoryLevel"/>
+                <p   
+                        class="has-text-gray is-size-7"
+                        v-if="taxonomyFilter.length <= 0">
+                    {{ $i18n.get('info_there_is_no_filter') }}    
+                </p>
                 <hr>
             </div>
         </template>
@@ -98,7 +112,7 @@
     }
 </script>
 
-<style>
+<style scoped>
     .extra-margin {
         margin-bottom: 40px;
     }
@@ -112,4 +126,10 @@
         overflow: hidden;
         width: 100%;
     }
+    .is-loading:after {
+        border: 2px solid white !important;
+        border-top-color: #dbdbdb !important;
+        border-right-color: #dbdbdb !important;
+    }
+
 </style>
