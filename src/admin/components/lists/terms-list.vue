@@ -357,8 +357,10 @@ export default {
                 });
         },
         eventOnChildTermDeleted(parentTermId) {
-            if ((parentTermId == 0 || parentTermId == undefined ) && this.totalTerms > 0)
+            if ((parentTermId == 0 || parentTermId == undefined ) && this.totalTerms > 0) {
                 this.totalTerms--;
+                this.loadTerms(parentTermId);
+            }
         },
         eventOnEditTerm(term) {
             // Position edit form in a visible area

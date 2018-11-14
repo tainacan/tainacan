@@ -12,7 +12,7 @@
         <span 
                 v-if="term.parent != 0 && index == 0"
                 class="icon children-icon">
-            <i class="tainacan-icon tainacan-icon-arrowright"/>
+            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-nextlevel"/>
         </span> 
         <span class="children-dropdown icon">
             <i 
@@ -233,8 +233,11 @@ export default {
             });  
         },
         eventOnChildTermDeleted(parentTermId) {
-            if (this.term.id == parentTermId && this.totalTerms > 0)
+            if (this.term.id == parentTermId && this.totalTerms > 0) {
                 this.totalTerms--;
+                this.loadChildTerms(parentTermId);
+            }
+            
         },
         eventOnEditTerm() {
             this.isEditingTerm = true;
@@ -296,6 +299,7 @@ export default {
             color: $blue2;
             position: absolute;
             left: -21px;
+            top: 1px;
             font-size: 24px;
         }
         .children-dropdown {
