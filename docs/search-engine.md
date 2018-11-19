@@ -1,6 +1,6 @@
 # Search engine
 
-In addition to the faceted search, which allows users to filter items by specific metadata, Tainacan also offers a free textual search.
+In addition to the [faceted search](faceted-search.md), which allows users to filter items by specific metadata, Tainacan also offers a free textual search.
 
 By default, when using this option to search, WordPress searches only inside the Title (post_title) and Description (post_content). This, of course, is very limited, and this article presents and discusses the approach Tainacan will take to face this issue.
 
@@ -8,18 +8,18 @@ There is'nt one silver bullet to solve this problem. In some cases, perhaps for 
 
 An intermediary approach could be creating index tables and tokenizing strings. This would allow even to order results based on relevance. (There is at least one paid WordPress plugin that does that)
 
-Considering all these options, our current approach was to filter the SQL query built by the WordPress WP_Query object and include all the joins and wheres needed to search also in metadata and taxonomies values. This approach is the same of the "Search Everything" plugin we mention below.
+Considering all these options, our current approach was to filter the SQL query built by the WordPress WP_Query object and include all the joins and wheres needed to search also in metadata and taxonomies values. This approach is the same of the "[Search Everything](https://wordpress.org/plugins/search-everything/)" plugin.
+
+This approach might slow down search queries, specially the open keyword search input.
 
 If you want to disable this change to the default WordPress behavior you can do this by adding the following line to you `wp-config.php`. You should do this if you are going to use another plugin for this purpose to avoid conflicts.
 
 ```
 define('TAINACAN_DISABLE_DEFAULT_SEARCH_ENGINE', true);
 ```
+Our efforts right now are to improve the compatibility with [ElasticPress](https://wordpress.org/plugins/elasticpress/) plugin. Its already working for searches and most parts of the plugin. We are now starting to make it work to build the facets.
 
-Eventually we will develop our own search engine plugins, to replace this initial approach, but for now we are investigating existing plugins that could work well with Tainacan. Since we made sure to build things in the "WordPress way", and since Tainacan search uses the native `WP_Query` class to make it queries, any plugin that filters its behavior might work with Tainacan.
 
-We are only starting this investigation, and we will keep this page updated with our findings. This is not (yet) a list of recommendation.
+Our understanding is that, if a reposiory gets too big, it might need a more robust infrastructure and Elastic Search is our call. Therefore we are working to better integrate it with the ElasticPress plugin.
 
-* [Search Everything](https://wordpress.org/plugins/search-everything/): Expands the native WordPress search to also search in taxonomies and metadata. It does so by joining tables in `WP_Query` and therefore might have performance issues for large repositories. Its core funcionality is already present in Tainacan, but it does work very well with our plugin.
-
-* [ElasticPress](https://wordpress.org/plugins/elasticpress/): integrates WordPress with an Elastic Search server. We are starting to test Tainacan with this plugin.
+However, since we made sure to build things in the "WordPress way", and since Tainacan search uses the native `WP_Query` class to make it queries, any plugin that filters its behavior might work with Tainacan. So feel free to try other search plugins for WordPress and please let us know how well they work!
