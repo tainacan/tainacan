@@ -11,12 +11,12 @@
                             autoHide: false,
                             placement: 'auto-start'
                         }" 
-                        v-if="taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined"
+                        v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined"
                         class="collection-name">
                     {{ $i18n.get('label_filters_from') + " " + taxonomyFiltersCollectionNames[key] + ": " }}
                 </div>
                 <div    
-                        v-else
+                        v-if="taxonomyFilter.length > 0 && !(taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined)"
                         class="collection-name">
                     <span 
                             style="width: 100%; height: 54px;"
@@ -31,13 +31,14 @@
                         :key="filterIndex"
                         :filter="filter"
                         :open="collapsed"
+                        v-if="taxonomyFilter.length > 0"
                         :is-repository-level="key == 'repository-filters'"/>
-                <p   
+                <!-- <p   
                         class="has-text-gray is-size-7"
                         v-if="taxonomyFilter.length <= 0">
                     {{ $i18n.get('info_there_is_no_filter') }}    
-                </p>
-                <hr>
+                </p> -->
+                <hr v-if="taxonomyFilter.length > 0">
             </div>
             <div 
                     v-if="key != 'repository-filters'"
@@ -49,12 +50,12 @@
                             autoHide: false,
                             placement: 'auto-start'
                         }" 
-                        v-if="taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined"
+                        v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined"
                         class="collection-name">
                     {{ $i18n.get('label_filters_from') + " " + taxonomyFiltersCollectionNames[key] + ": " }}
                 </div>
                 <div    
-                        v-else
+                        v-if="taxonomyFilter.length > 0 && !(taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined)"
                         class="collection-name">
                     <span 
                             style="width: 100%; height: 54px;"
@@ -69,13 +70,14 @@
                         :key="filterIndex"
                         :filter="filter"
                         :open="collapsed"
+                        v-if="taxonomyFilter.length > 0"
                         :is-repository-level="key == 'repository-filters'"/>
-                <p   
+                <!-- <p   
                         class="has-text-gray is-size-7"
                         v-if="taxonomyFilter.length <= 0">
                     {{ $i18n.get('info_there_is_no_filter') }}    
-                </p>
-                <hr>
+                </p> -->
+                <hr v-if="taxonomyFilter.length > 0">
             </div>
         </template>
         <template v-else>
