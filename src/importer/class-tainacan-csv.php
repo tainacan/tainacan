@@ -559,6 +559,11 @@ class CSV extends Importer {
         $item = new Entities\Item( ( $this->get_transient('item_id') ) ? $this->get_transient('item_id') : 0 );
         $itemMetadataArray = [];
 
+        if( $this->get_transient('item_id') && $item && is_numeric($item->get_id()) && $item->get_id() > 0 ){
+            $this->add_log('Repeated Item');
+            return $item;
+        }
+
         if( is_array( $processed_item ) ) {
             foreach ( $processed_item as $metadatum_source => $values ) {
                 $tainacan_metadatum_id = array_search( $metadatum_source, $collection_definition['mapping'] );
