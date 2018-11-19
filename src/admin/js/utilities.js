@@ -52,7 +52,7 @@ ConsolePlugin.install = function (Vue, options = { visual: false }) {
             }
         }
     }
-}
+};
 
 // I18N PLUGIN - Allows access to Wordpress translation file.
 export const I18NPlugin = {};
@@ -93,7 +93,7 @@ I18NPlugin.install = function (Vue, options = {}) {
         },
     }
 
-}
+};
 
 // USER PREFERENCES - Used to save key-value information for user settings of plugin
 export const UserPrefsPlugin = {};
@@ -161,7 +161,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
         }
     }
 
-}
+};
 
 // ROUTER HELPER PLUGIN - Allows easy access to URL paths for entities
 export const RouterHelperPlugin = {};
@@ -230,9 +230,6 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getTermPath(taxonomyId, termId) {
             return '/taxonomies/' + taxonomyId + '/terms/' + termId;
         },
-        getActivityPath(id) {
-            return '/activities/' + id;
-        },
         getImporterPath(importerType, sessionId) {
             return '/importers/' + importerType + '/' + sessionId;
         },
@@ -267,9 +264,6 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getNewTermPath(taxonomyId) {
             return '/taxonomies/' + taxonomyId + '/terms/new';
         },
-        getNewActivityPath() {
-            return '/activities/new';
-        },
         getNewItemBulkAddPath(collectionId) {
             return '/collections/' + collectionId + '/bulk-add';
         },
@@ -289,9 +283,6 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getTermEditPath(taxonomyId, termId) {
             return '/taxonomies/' + taxonomyId + '/terms/' + termId + '/edit';
         },
-        getActivityEditPath(id) {
-            return '/activities/' + id + '/edit';
-        },
         getImporterEditionPath(importerType) {
             return '/importers/' + importerType;
         },   
@@ -302,7 +293,7 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
             return '/collections/' + collectionId + '/bulk-add/' + groupId;
         },
     }
-}
+};
 
 // USER CAPABILITIES PLUGIN - Allows easy checking of user capabilities.
 export const UserCapabilitiesPlugin = {};
@@ -316,4 +307,4 @@ UserCapabilitiesPlugin.install = function (Vue, options = {}) {
             return false;
         }
     }
-}
+};

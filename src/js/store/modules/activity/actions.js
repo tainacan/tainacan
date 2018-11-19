@@ -67,7 +67,7 @@ export const fetchActivityTitle = ({ commit }, activityId) => {
 
 export const approve = ({commit}, activityId) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(`/logs/${activityId}/approve`)
+        axios.tainacan.post(`/logs/${activityId}/approve`)
             .then(res => {
                 let activity = res.data;
 

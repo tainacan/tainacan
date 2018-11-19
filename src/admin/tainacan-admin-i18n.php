@@ -75,6 +75,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'select_to_create'                               => __( 'select to create', 'tainacan' ),
 	'new_action'                                     => __( 'New action', 'tainacan' ),
 	'clear_radio'                                    => __( 'Clear selected radio', 'tainacan' ),
+	'undo'                                           => __( 'Undo', 'tainacan' ),
 
 	// Wordpress Status
 	'publish'                                        => __( 'Publish', 'tainacan' ),
@@ -324,6 +325,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_sequence_edit_items'                      => __( 'Sequence edit items', 'tainacan' ),
 	'label_documents_upload'                         => __( 'Documents upload', 'tainacan' ),
 	'label_added_items'                              => __( 'Added items', 'tainacan' ),
+	'label_activity_description'                     => __( 'Activity description', 'tainacan' ),
+	'label_activity_creation_date'                   => __( 'Activity creation date', 'tainacan' ),
+	'label_activity_author'                          => __( 'Activity author', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -422,8 +426,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_warning_terms_not_saved'                   => __( 'Are you sure? There are terms not saved, changes will be lost.', 'tainacan' ),
 	'info_warning_orphan_terms'                      => __( 'Are you sure? This term is parent of other terms. These will be converted to root terms.', 'tainacan' ),
 	'info_no_activities'                             => __( 'No activities', 'tainacan' ),
-	'info_logs_before'                               => __( 'Before updating', 'tainacan' ),
-	'info_logs_after'                                => __( 'What was updated', 'tainacan' ),
+	'info_logs_before'                               => __( 'Before', 'tainacan' ),
+	'info_logs_after'                                => __( 'After', 'tainacan' ),
 	'info_there_is_no_metadatum'                     => __( 'There is no metadata here yet.', 'tainacan' ),
 	'info_there_is_no_filter'                        => __( 'There is no filter here yet.', 'tainacan' ),
 	'info_changes'                                   => __( 'Changes', 'tainacan' ),
@@ -473,6 +477,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_warning_selected_items_remove_from_trash'  => __( 'Do you really want to remove from trash the selected items?', 'tainacan' ),
 	'info_no_options_avialable_filtering'            => __( 'No options for this filtering.', 'tainacan' ),
 	'info_no_options_found'                          => __( 'No options found.', 'tainacan' ),
+	'info_empty'                                     => __( 'Empty', 'tainacan' ),
 
 	'info_all_files_uploaded'            => __( 'All files uploaded.', 'tainacan' ),
 	'info_there_are'                     => __( 'There are', 'tainacan' ),

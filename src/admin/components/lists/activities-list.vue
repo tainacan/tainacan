@@ -17,9 +17,9 @@
                             <div class="th-wrap">{{ $i18n.get('label_activity_date') }}</div>
                         </th>
                         <!-- Status -->
-                        <!--<th>-->
-                            <!--<div class="th-wrap">{{ $i18n.get('label_status') }}</div>-->
-                        <!--</th>-->
+                        <th>
+                            <div class="th-wrap">{{ $i18n.get('label_status') }}</div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -29,7 +29,7 @@
                         <!-- Name -->
                         <td 
                                 class="column-default-width column-main-content"
-                                @click="goToActivityPage(activity.id)"
+                                @click="openActivityDetailsModal(activity)"
                                 :label="$i18n.get('label_activity_title')"
                                 :aria-label="$i18n.get('label_activity_title') + ': ' + activity.title">
                             <p
@@ -42,7 +42,7 @@
                         <!-- User -->
                         <td
                                 class="table-creation column-small-width" 
-                                @click="goToActivityPage(activity.id)"
+                                @click="openActivityDetailsModal(activity)"
                                 :label="$i18n.get('label_created_by')" 
                                 :aria-label="$i18n.get('label_created_by') + ': ' + activity.user_name">
                             <p 
@@ -56,7 +56,7 @@
                         <!-- Activity Date -->
                         <td
                                 class="table-creation column-small-width" 
-                                @click="goToActivityPage(activity.id)"
+                                @click="openActivityDetailsModal(activity)"
                                 :label="$i18n.get('label_activity_date')"
                                 :aria-label="$i18n.get('label_activity_date') + ': ' + activity.log_date">
                             <p 
@@ -68,31 +68,36 @@
                                     v-html="activity.log_date" />
                         </td>
                         <!-- Status -->
-                        <!--<td-->
-                                <!--@click="goToActivityPage(activity.id)"-->
-                                <!--class="status-cell" -->
-                                <!--:label="$i18n.get('label_status')" -->
-                                <!--:aria-label="$i18n.get('label_status') + ': ' + activity.status">-->
-                            <!--<p>-->
-                                <!--<a-->
-                                        <!--v-if="activity.status === 'pending'"-->
-                                        <!--id="button-approve"-->
-                                        <!--:aria-label="$i18n.get('approve_item')"-->
-                                        <!--@click.prevent.stop="approveActivity(activity.id)">-->
-                                    <!--<b-icon-->
-                                        <!--icon="check" />-->
-                                <!--</a>-->
+                        <td
+                                @click="openActivityDetailsModal(activity)"
+                                class="status-cell"
+                                :label="$i18n.get('label_status')"
+                                :aria-label="$i18n.get('label_status') + ': ' + activity.status">
+                            <p>
+                                <a
+                                        v-if="activity.status === 'pending'"
+                                        id="button-approve"
+                                        :aria-label="$i18n.get('approve_item')"
+                                        @click.prevent.stop="approveActivity(activity.id)">
+                                    <b-icon
+                                        icon="check" />
+                                </a>
 
-                                <!--<a-->
-                                        <!--v-if="activity.status === 'pending'"-->
-                                        <!--id="button-not-approve"-->
-                                        <!--class="delete"-->
-                                        <!--:aria-label="$i18n.get('not_approve_item')"-->
-                                        <!--@click.prevent.stop="notApproveActivity(activity.id)" />-->
+                                <a
+                                        v-if="activity.status === 'pending'"
+                                        id="button-not-approve"
+                                        class="delete"
+                                        :aria-label="$i18n.get('not_approve_item')"
+                                        @click.prevent.stop="notApproveActivity(activity.id)" />
 
-                                <!--<small v-if="activity.status !== 'pending'">{{ $i18n.get('label_approved') }}</small>-->
-                            <!--</p>-->
-                        <!--</td>-->
+                                <a v-if="activity.status !== 'pending'">
+                                    <b-icon
+                                            type="is-blue5"
+                                            custom-class="mdi-flip-h"
+                                            icon="share"/>
+                                </a>
+                            </p>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -114,6 +119,9 @@
 
 <script>
     import ActivitiesIcon from '../other/activities-icon.vue';
+    import { mapActions } from 'vuex';
+
+    import ActivityDetailsModal from '../other/activity/activity-details-modal.vue';
 
     export default {
         name: 'ActivitiesList',
@@ -133,22 +141,29 @@
             activities: Array
         },
         methods: {
-            // ...mapActions('activity', [
-            //     'approve',
-            //     'notApprove'
-            // ]),
-            // approveActivity(activityId){
-            //    this.approve(activityId);
-            // },
-            // notApproveActivity(activityId){
-            //     this.notApprove(activityId);
-            // },
-            goToActivityPage(activityId) {
-                if (this.$route.params.collectionId == undefined)
-                    this.$router.push(this.$routerHelper.getActivityPath(activityId));
-                else
-                    this.$router.push(this.$routerHelper.getCollectionActivityPath(this.$route.params.collectionId, activityId));
-            }
+            ...mapActions('activity', [
+                'approve',
+                'notApprove'
+            ]),
+            approveActivity(activityId){
+               this.approve(activityId);
+            },
+            notApproveActivity(activityId){
+                this.notApprove(activityId);
+            },
+            openActivityDetailsModal(activity){
+              this.$modal.open({
+                  parent: this,
+                  component: ActivityDetailsModal,
+                  props: {
+                      activity: activity,
+                  },
+                  events: {
+                      approveActivity: (activityId) => this.approveActivity(activityId),
+                      notApproveActivity: (activityId) => this.notApproveActivity(activityId)
+                  }
+              });
+            },
         }
     }
 </script>

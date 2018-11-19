@@ -257,7 +257,7 @@
                     });
             },
             getLastActivityNumber() {
-                let last = (Number(this.activitiesPerPage * (this.activityPage - 1)) + Number(this.activitiesPerPage));
+                let last = (Number(this.activitiesPerPage * (this.activitiesPage - 1)) + Number(this.activitiesPerPage));
                 return last > this.totalActivities ? this.totalActivities : last;
             },
             getLastProcessesNumber() {

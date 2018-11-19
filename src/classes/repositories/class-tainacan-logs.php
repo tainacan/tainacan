@@ -370,9 +370,9 @@ class Logs extends Repository {
 				$parent = '(on repository level)';
 			}
 
-			$description = sprintf( __( "The \"%s\" %s has been %s %s.", 'tainacan' ), $name, strtolower( $class_name ), $action_message, $parent );
+			$description = sprintf( __( "\"%s\" %s has been %s %s.", 'tainacan' ), $name, strtolower( $class_name ), $action_message, $parent );
 		} else {
-			$description = sprintf( __( "The \"%s\" %s has been %s.", 'tainacan' ), $name, strtolower( $class_name ), $action_message );
+			$description = sprintf( __( "\"%s\" %s has been %s.", 'tainacan' ), $name, strtolower( $class_name ), $action_message );
 		}
 
 		return $description;
