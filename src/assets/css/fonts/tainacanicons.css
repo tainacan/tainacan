@@ -1,12 +1,12 @@
 @font-face {
-    font-family: "Tainacan Icons";
-    src: url("../fonts/Tainacan Icons.eot");
-    src: url("../fonts/Tainacan Icons.eot#iefix") format("embedded-opentype"), 
-            url("../fonts/Tainacan Icons.woff2") format("woff2"), 
-            url("../fonts/Tainacan Icons.otf") format("otf"), 
-            url("../fonts/Tainacan Icons.woff") format("woff"), 
-            url("../fonts/Tainacan Icons.ttf") format("truetype"), 
-            url("../fonts/Tainacan Icons.svg") format("svg");
+    font-family: "TainacanIcons";
+    src: url("../fonts/TainacanIcons.eot");
+    src: url("../fonts/TainacanIcons.eot#iefix") format("embedded-opentype"), 
+            url("../fonts/TainacanIcons.woff2") format("woff2"), 
+            url("../fonts/TainacanIcons.otf") format("otf"), 
+            url("../fonts/TainacanIcons.woff") format("woff"), 
+            url("../fonts/TainacanIcons.ttf") format("truetype"), 
+            url("../fonts/TainacanIcons.svg") format("svg");
     font-weight: normal;
     font-style: normal;
     text-rendering: optimizeLegibility;

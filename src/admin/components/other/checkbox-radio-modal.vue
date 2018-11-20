@@ -14,7 +14,7 @@
                         @input="autoComplete"
                         class="input">
                 <span class="icon is-right">
-                    <i class="tainacan-icon tainacan-icon-search" />
+                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-search" />
                 </span>
             </div>
 
