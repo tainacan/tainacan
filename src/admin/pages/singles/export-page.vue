@@ -28,7 +28,7 @@ export default {
     created(){
         this.collectionId = parseInt(this.$route.params.collectionId);
         this.itemId = parseInt(this.$route.params.itemId);
-        this.selectedList = [],
+        this.selectedList = [];
         this.$eventBusSearch.setCollectionId(this.collectionId);
     }
 

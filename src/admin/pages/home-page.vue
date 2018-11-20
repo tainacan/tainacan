@@ -94,6 +94,16 @@
                             <span class="menu-text menu-text-import">{{ $i18n.get('importers') }}</span>
                         </router-link>
                     </li>
+                    <li>
+                        <router-link
+                                tag="a"
+                                to="/exporters">
+                            <span class="icon is-medium">
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-export"/>
+                            </span>
+                            <span class="menu-text">{{ $i18n.get('exporters') }}</span>
+                        </router-link>
+                    </li>
                 </ul>
             </nav>
         </section>
