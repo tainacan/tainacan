@@ -107,9 +107,9 @@
         <div v-if="(totalActivities <= 0 || !totalActivities) && !isLoading">
             <section class="section">
                 <div class="content has-text-grey has-text-centered">
-                    <p>
-                        <activities-icon />
-                    </p>
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-activities"/>
+                    </span>
                     <p>{{ $i18n.get('info_no_activities') }}</p>
                 </div>
             </section>
@@ -118,7 +118,6 @@
 </template>
 
 <script>
-    import ActivitiesIcon from '../other/activities-icon.vue';
     import { mapActions } from 'vuex';
 
     import ActivityDetailsModal from '../other/activity/activity-details-modal.vue';
@@ -129,9 +128,6 @@
             return {
                 selectedActivities: []
             }
-        },
-        components: {
-            ActivitiesIcon
         },
         props: {
             isLoading: false,
