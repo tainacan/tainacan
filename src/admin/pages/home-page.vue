@@ -155,7 +155,7 @@ export default {
         loadCollections() {
             this.cleanCollections();    
             this.isLoadingCollections = true;
-            this.fetchCollections({ 'page': 1, 'collectionsPerPage': 5, 'status': 'publish' })
+            this.fetchCollections({ 'page': 1, 'collectionsPerPage': 5 })
             .then(() => {
                 this.isLoadingCollections = false;
             }) 
