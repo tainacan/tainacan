@@ -14,8 +14,6 @@ Tainacan is a powerful and flexible repository platform for WordPress. Manage an
 
 Tainacan is a powerful and flexible repository platform for WordPress. Manage and publish you digital collections as easily as publishing a post to your blog, while having all the tools of a professional repository platform.
 
-Please note: This is an early release of this plugin, and we are working hard to release 1.0 soon, please refer to the [project's website](http://tainacan.org/) for more information and road map.
-
 = Features =
 
 * "Metadata and Filters": Use a metadata standard or choose whatever set of metadata you want to describe the items in your collections. Also, choose which metadata will be used as a filter when browsing the collection
