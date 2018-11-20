@@ -14,8 +14,7 @@
                         @input="autoComplete"
                         class="input">
                 <span class="icon is-right">
-                    <i
-                            class="mdi mdi-magnify"/>
+                    <i class="tainacan-icon tainacan-icon-search" />
                 </span>
             </div>
 
@@ -35,8 +34,9 @@
                                 role="button"
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="beforePage">
-                            <b-icon
-                                    icon="chevron-left"/>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-previous"/>
+                            </span>
                         </a>
                         <ul
                                 :class="{
@@ -71,8 +71,9 @@
                                 role="button"
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="nextPage">
-                            <b-icon
-                                    icon="chevron-right"/>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-next"/>
+                            </span>
                         </a>
                     </div>
 
@@ -123,10 +124,9 @@
                                 <a
                                         v-if="option.total_children > 0"
                                         @click="getOptionChildren(option, key, index)">
-                                    <b-icon
-                                            class="is-pulled-right"
-                                            icon="menu-right"
-                                    />
+                                    <span class="icon is-pulled-right">
+                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowright"/>
+                                    </span>
                                 </a>
                             </b-field>
                             <li v-if="finderColumn.length">
@@ -134,9 +134,9 @@
                                         v-if="finderColumn.length < totalRemaining[key].remaining"
                                         @click="getMoreOptions(finderColumn, key)"
                                         class="tainacan-show-more">
-                                    <b-icon
-                                            size="is-small"
-                                            icon="chevron-down"/>
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-showmore"/>
+                                    </span>
                                 </div>
                             </li>
                         </ul>
@@ -412,7 +412,7 @@
                     let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
                         this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
 
-                    promise = this.getValuesRelationship( collectionTarget, this.optionName, [], offset, this.maxNumOptionsCheckboxList, true);
+                    promise = this.getValuesRelationship( collectionTarget, this.optionName, this.isRepositoryLevel, [], offset, this.maxNumOptionsCheckboxList, true);
 
                     promise.request
                         .then(() => {
@@ -726,7 +726,7 @@
         cursor: pointer;
         border: 1px solid $gray1;
         margin-top: 10px;
-        margin-bottom: 0.2rem;
+        margin-bottom: -0.2rem;
 
         &:hover {
             background-color: $blue1;

@@ -43,7 +43,7 @@
         .actions-area {
             position: relative;
             float: right;
-            top: -5px;
+            top: -7px;
             padding-right: 12px;
             //width: 80px;
             display: flex;
@@ -51,6 +51,10 @@
             visibility: hidden;
             opacity: 0;
             transition: visibility 0.2s, opacity 0.2s;
+
+            a {
+                margin-left: 12px;
+            }
         }
         &:hover .actions-area {
             visibility: visible;

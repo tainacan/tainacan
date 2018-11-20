@@ -21,7 +21,9 @@
                             class="button is-white"
                             slot="trigger">
                         <span>{{ $i18n.get('label_bulk_actions') }}</span>
-                        <b-icon icon="menu-down"/>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                        </span>
                     </button> 
 
                     <b-dropdown-item
@@ -110,17 +112,19 @@
                                         id="button-edit" 
                                         :aria-label="$i18n.getFrom('taxonomies','edit_item')" 
                                         @click="onClickTaxonomy($event, taxonomy.id, index)">
-                                    <b-icon 
-                                            type="is-secondary" 
-                                            icon="pencil"/>
+                                    <span class="icon">
+                                        <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
+                                    </span>
                                 </a>
                                 <a 
                                         id="button-delete" 
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneTaxonomy(taxonomy.id)">
-                                    <b-icon 
-                                            type="is-secondary" 
-                                            :icon="!isOnTrash ? 'delete' : 'delete-forever'"/>
+                                    <span class="icon">
+                                        <i 
+                                                :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
+                                                class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                                    </span>
                                 </a>
                             </div>
                         </td>

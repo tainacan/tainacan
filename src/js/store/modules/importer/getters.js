@@ -13,3 +13,7 @@ export const getImporterSourceInfo = state => {
 export const getImporterFile = state => {
     return state.importer_file;
 }
+
+export const getImporterMapping = state => {
+    return state.importer_mapping
+}

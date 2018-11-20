@@ -41,14 +41,14 @@ export const filter_type_mixin = {
             }
             let query_items = { 'current_query': currentQuery };
 
-            let url = `/collection/${this.collection}/facets/${metadatumId}?getSelected=${getSelected}&`;
-
+            let url = '';
+            if (isRepositoryLevel)
+                url = `/facets/${metadatumId}?getSelected=${getSelected}&`;
+            else
+                url = `/collection/${this.collection}/facets/${metadatumId}?getSelected=${getSelected}&`;
+            
             if(offset != undefined && number != undefined){
                 url += `offset=${offset}&number=${number}&`;
-            }
-
-            if(isRepositoryLevel){
-                url = `/facets/${metadatumId}`;
             }
 
             if(search && offset != undefined && number != undefined){
@@ -139,7 +139,7 @@ export const filter_type_mixin = {
                 source: source
             });
         },
-        getValuesRelationship(collectionTarget, search, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0') {
+        getValuesRelationship(collectionTarget, search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0') {
             
             const source = axios.CancelToken.source();
 
@@ -151,8 +151,13 @@ export const filter_type_mixin = {
                 }
             }
             let query_items = { 'current_query': currentQuery };
-            let url = '/collection/' + this.filter.collection_id + '/facets/' + this.filter.metadatum.metadatum_id + `?getSelected=${getSelected}&`;
 
+            let url = '';
+            if (isRepositoryLevel)
+                url =  '/facets/' + this.filter.metadatum.metadatum_id + `?getSelected=${getSelected}&`; 
+            else
+                url =  '/collection/' + this.filter.collection_id + '/facets/' + this.filter.metadatum.metadatum_id + `?getSelected=${getSelected}&`;
+                
             if(offset != undefined && number != undefined){
                 url += `offset=${offset}&number=${number}`;
             } else {

@@ -8,7 +8,7 @@
                     @click="$router.go(-1)"
                     class="button is-turquoise4">
                 <span class="icon">
-                    <i class="mdi mdi-chevron-left"/>
+                    <i class="tainacan-icon tainacan-icon-previous"/>
                 </span>
             </button>
         </div>
@@ -19,7 +19,7 @@
                             @click="$router.go(-1)"
                             class="button is-turquoise4">
                         <span class="icon">
-                            <i class="mdi mdi-chevron-left"/>
+                            <i class="tainacan-icon tainacan-icon-previous"/>
                         </span>
                     </button>
                 </div>
@@ -63,7 +63,7 @@
                                 :label="$i18n.get('items')"
                                 position="is-bottom">
                             <span class="icon">
-                                <i class="mdi mdi-file-multiple"/>
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-items"/>
                             </span>
                         </b-tooltip>
                         <!-- <span class="menu-text">{{ $i18n.get('items') }}</span> -->
@@ -80,7 +80,7 @@
                                 :label="$i18n.get('label_settings')"
                                 position="is-bottom">
                             <span class="icon">
-                                <i class="mdi mdi-settings"/>
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-settings"/>
                             </span>
                         </b-tooltip>
                         <!-- <span class="menu-text">{{ $i18n.get('label_settings') }}</span> -->
@@ -97,7 +97,7 @@
                                 :label="$i18n.getFrom('metadata', 'name')"
                                 position="is-bottom">
                             <span class="icon">
-                                <i class="mdi mdi-format-list-bulleted-type"/>
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-metadata"/>
                             </span>
                         </b-tooltip>
                         <!-- <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span> -->
@@ -115,7 +115,7 @@
                                 :label="$i18n.getFrom('filters', 'name')"
                                 position="is-bottom">
                             <span class="icon">
-                                <i class="mdi mdi-filter"/>
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-filters"/>
                             </span>
                         </b-tooltip>
                         <!-- <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span> -->
@@ -131,7 +131,9 @@
                         <b-tooltip 
                                 :label="$i18n.get('activities')"
                                 position="is-bottom">
-                            <activities-icon />
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-activities"/>
+                            </span>
                         </b-tooltip>
                         <!-- <span class="menu-text">{{ $i18n.get('activities') }}</span> -->
                     </router-link>
@@ -145,7 +147,6 @@
 
 <script>
 import { mapActions } from 'vuex';
-import ActivitiesIcon from '../other/activities-icon.vue';
 
 export default {
     name: 'TainacanCollectionSubheader',
@@ -158,9 +159,6 @@ export default {
             collectionBreadCrumbItem: {},
             childrenBreadCrumbItems: []
         }
-    },
-    components: {
-        ActivitiesIcon
     },
     props: {
         id: Number,
@@ -272,8 +270,9 @@ export default {
                 color: $turquoise4;
                 background-color: transparent !important;
                 border: none;
-                .icon i {
-                    font-size: 34px;
+                .icon {
+                    margin-top: -2px;
+                    font-size: 24px;
                 }
             }
         }
@@ -305,11 +304,6 @@ export default {
             // overflow: hidden;
             // max-width: 50px;
 
-            svg.activities-icon {
-                top: 3px;
-                position: relative;
-            }
-
             &.is-active {
                 background-color: $turquoise4;
                 a { 
@@ -317,10 +311,6 @@ export default {
                     transition: color 0.2s ease;
                     color: white;
                     text-decoration: none;
-                }
-                svg.activities-icon {
-                    transition: fill 0.2s ease;
-                    fill: white !important;
                 }
             }
             &:hover:not(.is-active) {
@@ -331,9 +321,6 @@ export default {
                     background-color: transparent;
                     text-decoration: none; 
                     color: $turquoise5;
-                }
-                svg.activities-icon {
-                    fill: $turquoise5 !important;
                 }
                 // .menu-text {
                 //     opacity: 1.0;

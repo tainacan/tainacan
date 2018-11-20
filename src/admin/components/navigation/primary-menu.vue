@@ -14,9 +14,9 @@
                             tag="a"
                             to="/collections"
                             :class="activeRoute == 'CollectionsPage' || $route.params.collectionId != undefined ? 'is-active':''">
-                        <b-icon
-                                size="is-small"
-                                icon="folder-multiple"/>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-collections"/>
+                        </span>
                         <span class="menu-text">{{ $i18n.getFrom('collections', 'name') }}</span>
                     </router-link>
                 </li>
@@ -25,9 +25,9 @@
                             tag="a"
                             to="/items"
                             :class="activeRoute == 'ItemsPage' ? 'is-active':''">
-                        <b-icon
-                                size="is-small"
-                                icon="file-multiple"/>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-items"/>
+                        </span>
                         <span class="menu-text">{{ $i18n.getFrom('items', 'name') }}</span>
                     </router-link>
                 </li>
@@ -38,7 +38,7 @@
                             to="/metadata"
                             :class="activeRoute == 'MetadataPage' ? 'is-active':''">
                         <span class="icon">
-                            <i class="mdi mdi-format-list-bulleted-type"/>
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-metadata"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
                     </router-link>
@@ -49,7 +49,7 @@
                             to="/filters"
                             :class="activeRoute == 'FiltersPage' ? 'is-active':''">
                         <span class="icon">
-                            <i class="mdi mdi-filter"/>
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-filters"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                     </router-link>
@@ -59,7 +59,9 @@
                             tag="a"
                             to="/taxonomies"
                             :class="activeRoute == 'Page' ? 'is-active':''">
-                        <taxonomies-icon />
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-taxonomies"/>
+                        </span>
                         <span class="menu-text">{{ $i18n.getFrom('taxonomies', 'name') }}</span>
                     </router-link>
                 </li>
@@ -68,7 +70,10 @@
                             tag="a"
                             to="/activities"
                             :class="activeRoute == 'ActivitiesPage' ? 'is-active':''">
-                        <activities-icon /><span class="menu-text">{{ $i18n.get('activities') }}</span>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-activities"/>
+                        </span>
+                        <span class="menu-text">{{ $i18n.get('activities') }}</span>
                     </router-link>
                 </li>
                 <li>
@@ -81,7 +86,7 @@
                                 activeRoute == 'ImporterCreationForm' ||
                                 activeRoute == 'ImporterMappingForm' ) ? 'is-active':''">
                         <span class="icon">
-                            <i class="mdi mdi-24px mdi-import"/>
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-importers"/>
                         </span>
                         <span class="menu-text menu-text-import">{{ $i18n.get('importers') }}</span>
                     </router-link>
@@ -92,19 +97,12 @@
 </template>
 
 <script>
-import ActivitiesIcon from '../other/activities-icon.vue';
-import TaxonomiesIcon from '../other/taxonomies-icon.vue';
-
 export default {
     name: 'PrimaryMenu',
     props: {
         isMenuCompressed: false,
         activeRoute: '/collections'
-    },
-    components: {
-        ActivitiesIcon,
-        TaxonomiesIcon
-    },
+    }
 }
 </script>
 
@@ -157,25 +155,12 @@ export default {
                 -webkit-transition: padding 0.2s linear; /* Safari */
                 transition: padding 0.2s linear;
 
-                .activities-icon {
-                    fill: white;
-                    margin-bottom: -4px;
-                }
-                .taxonomies-icon {
-                    fill: white;
-                    margin-bottom: -2px;
-                }
-                .mdi-import::before {
-                    font-size: 22px !important;
-                    position: relative;
-                    left: -2px;
-                }
                 .icon {
                     height: auto;
                     width: auto;
-                    i {
-                        font-size: 18px !important;
-                    }
+                    // i, i::before {
+                    //     font-size: 18px !important;
+                    // }
                 }
             }
 

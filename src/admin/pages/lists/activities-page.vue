@@ -46,7 +46,9 @@
                     <section class="section">
                         <div class="content has-text-grey has-text-centered">
                             <p>
-                                <activities-icon />
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-activities"/>
+                                </span>
                             </p>
                             <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_process') }}</p>
                         </div>
@@ -136,7 +138,6 @@
 <script>
     import ActivitiesList from "../../components/lists/activities-list.vue";
     import ProcessesList from "../../components/lists/processes-list.vue";
-    import ActivitiesIcon from '../../components/other/activities-icon.vue';
     import { mapActions, mapGetters } from 'vuex';
     import moment from 'moment'
 
@@ -157,7 +158,6 @@
         components: {
             ActivitiesList,
             ProcessesList,
-            ActivitiesIcon
         },
         methods: {
             ...mapActions('activity', [
@@ -317,11 +317,6 @@
 
 <style lang="scss" scoped>
     @import '../../scss/_variables.scss';
-
-    .activities-icon {
-        height: 24px;
-        width: 24px;
-    }
 
     .sub-header {
         max-height: $header-height;

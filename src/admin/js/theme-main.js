@@ -127,8 +127,6 @@ export const ThemeItemsListing =  new Vue({
         if (this.$el.attributes['taxonomy'] != undefined)
             this.taxonomy = this.$el.attributes['taxonomy'].value;
 
-        if (this.$el.attributes['custom-filters'] != undefined)
-            this.customFilters = JSON.parse(this.$el.attributes['custom-filters'].value);
     }
     
 });

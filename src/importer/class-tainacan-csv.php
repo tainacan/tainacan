@@ -331,8 +331,8 @@ class CSV extends Importer {
 			There are two special columns you can use: <b>special_document</b>, which will set the Document of your item, and <b>special_attachments</b> to add one or many attachments.\n
 			The values for the special_document must be prepended with 'url:'', 'file:'' or 'text:'. This will indicate the Document Type.\n
 			The values for the special_attachments is just a list of files. If you want to add many attachments, use the separator you set in the Multivalued Delimiter option.\n
-			In either case, you can point to a file using a full URL, or just a file name. In this last case, you should set the option below to tell Tainacan where to find the files in your server. You can then upload them directly (via FTP for example) and Taincan will add them to your items.\n
-			", 'taincan')); ?>
+			In either case, you can point to a file using a full URL, or just a file name. In this last case, you should set the option below to tell Tainacan where to find the files in your server. You can then upload them directly (via FTP for example) and tainacan will add them to your items.\n
+			", 'tainacan')); ?>
 			</p>
 			<label class="label"><?php _e('Server path', 'tainacan'); ?></label>
 			<span class="help-wrapper">
@@ -559,6 +559,11 @@ class CSV extends Importer {
         $item = new Entities\Item( ( $this->get_transient('item_id') ) ? $this->get_transient('item_id') : 0 );
         $itemMetadataArray = [];
 
+        if( $this->get_transient('item_id') && $item && is_numeric($item->get_id()) && $item->get_id() > 0 ){
+            $this->add_log('Repeated Item');
+            return $item;
+        }
+
         if( is_array( $processed_item ) ) {
             foreach ( $processed_item as $metadatum_source => $values ) {
                 $tainacan_metadatum_id = array_search( $metadatum_source, $collection_definition['mapping'] );
@@ -663,9 +668,9 @@ class CSV extends Importer {
 					$this->add_error_log('Malformed term hierarchy for Item ' . $this->get_current_collection_item() . '. Term skipped. Value: ' . $values);
 					return false;
                 }
-                $exists = term_exists( $value ,$taxonomy->get_db_identifier(), $parent );
-                if (0 !== $exists && null !== $exists && isset($exists['term_id'])) {
-					$parent = $exists['term_id'];
+                $exists = $Tainacan_Terms->term_exists( $value ,$taxonomy->get_db_identifier(), $parent, true );
+                if (false !== $exists && isset($exists->term_taxonomy_id)) {
+					$parent = $exists->term_taxonomy_id;
                 } else {
 					$this->add_log('New term created: ' . $value . ' in tax_id: ' . $taxonomy->get_db_identifier() . '; parent: ' . $parent);
                     $term = new Entities\Term();

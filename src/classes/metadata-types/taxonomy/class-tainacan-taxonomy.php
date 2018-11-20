@@ -126,6 +126,7 @@ class Taxonomy extends Metadata_Type {
 					$term = $term->get_id();
 				}
 				
+				// TODO term_exists is not fully reliable. Use $terms_repository->term_exists. see issue #159
 				if (!term_exists($term)) {
 					$valid = false;
 					break;
@@ -176,6 +177,18 @@ class Taxonomy extends Metadata_Type {
 		}
 		
 		return $return;
+		
+	}
+	
+	public function _toArray() {
+		
+		$array = parent::_toArray();
+		
+		if ( isset($array['options']['taxonomy_id']) ) {
+			$array['options']['taxonomy'] = \Tainacan\Repositories\Taxonomies::get_instance()->get_db_identifier_by_id( $array['options']['taxonomy_id'] );
+		}
+		
+		return $array;
 		
 	}
 	

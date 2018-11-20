@@ -160,7 +160,7 @@ class Terms extends Repository {
 		}
 		
 		if ( is_wp_error($term_saved) ) {
-			throw new \Exception( 'Error adding term: ' . $term_saved->get_error_message() );
+			throw new \Exception( 'Error adding term ' . $term->get_name() . ' - ' . $term_saved->get_error_message() );
 		}
 
 		// Now run through properties stored as postmeta
@@ -264,6 +264,54 @@ class Terms extends Repository {
 		}
 
 		return $deleted;
+	}
+	
+	/**
+	* Check if a term already exists 
+	*
+	* @param string $term_name The term name 
+	* @param mixed $taxonomy The taxonomy ID, slug or Entity.
+	* @param int $parent The ID of the parent term to look for children or null to look for terms in any hierarchical position. Default is null 
+	* @param bool $return_term wether to return the term object if it exists. default is to false 
+	* 
+	* @return bool|WP_Term return boolean indicating if term exists. If $return_term is true and term exists, return WP_Term object 
+	*/
+	public function term_exists($name, $taxonomy, $parent = null, $return_term = false) {
+		
+		$Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+
+		if ( is_numeric( $taxonomy ) ) {
+			$taxonomy_slug = $Tainacan_Taxonomies->get_db_identifier_by_id( $taxonomy );
+		} elseif (is_string($taxonomy)) {
+			$taxonomy_slug = $taxonomy;
+		} elseif ( $taxonomy instanceof Entities\Taxonomy ) {
+			$taxonomy_slug = $taxonomy->get_db_identifier();
+		}
+		
+		$args = [
+			'name' => $name, 
+			'taxonomy' => $taxonomy_slug, 
+			'parent' => $parent, 
+			'hide_empty' => 0, 
+			'suppress_filter' => true
+		];
+		
+		if (is_null($parent)) {
+			unset($args['parent']);
+		}
+		
+		$terms = get_terms($args);
+		
+		if (empty($terms)) {
+			return false;
+		}
+		
+		if ($return_term) {
+			return $terms[0];
+		}
+		
+		return true;
+		
 	}
 
 	/**

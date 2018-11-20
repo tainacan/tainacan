@@ -13,11 +13,11 @@ class CSV extends Exporter {
 		//todo create list only slug
 	}
 
-	public function process_item( $processed_item ) {
+	public function process_item( $processed_item, $mapping ) {
 		if( $processed_item ) {
 			$csv_line = '';
-			foreach ($processed_item as $value) {
-				$csv_line .= $this->str_putcsv($value, ',', '"');
+			foreach ($processed_item as $key => $value) {
+				$csv_line .= $this->str_putcsv($value, $mapping, ',', '"');
 			}
 			$this->append_to_file('exporter', $csv_line."\n");
 		} else {
@@ -25,20 +25,33 @@ class CSV extends Exporter {
 		}
 	}
 
-	function str_putcsv($item, $delimiter = ',', $enclosure = '"') {
+	public function output_header($collection_definition) {
+		$columns = [];
+		foreach ($collection_definition['mapping'] as $key => $value) {
+			$columns[] = $value;
+		}
+		$this->append_to_file('exporter', \implode(",", $columns) . "\n");
+		return false;
+	}
+
+	function str_putcsv($item, $mapping, $delimiter = ',', $enclosure = '"') {
 		// Open a memory "file" for read/write...
 		$fp = fopen('php://temp', 'r+');
 		$out=[];
 		foreach ($item as $key => $value) {
-			if (is_array($value)) {
-				$out[] = implode("||", $value);
-			} else {
-				$out[] = $value;
+			if (array_key_exists($key, $mapping)) {
+				if (is_array($value)) {
+					$out[] = implode("||", $value);
+				} else {
+					$out[] = $value;
+				}
 			}
 		}
 		fputcsv($fp, $out, $delimiter, $enclosure);
 		rewind($fp);
-		$data = fread($fp, 1048576);
+		//Getting detailed stats to check filesize:
+		$fstats = fstat($fp);
+		$data = fread($fp, $fstats['size']);
 		fclose($fp);
 		return rtrim($data, "\n");
 	}

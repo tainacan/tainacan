@@ -22,9 +22,9 @@
                                             @click="comp = 'Split'"
                                             :class="{'is-selected': comp === 'Split', 'is-focused': comp === 'Split'}"
                                             class="button">
-                                        <b-icon
-                                                icon="pause"
-                                                size="is-small"/>
+                                        <span class="icon is-small">
+                                            <i class="tainacan-icon tainacan-icon-pause" />
+                                        </span>
                                         <span>{{ $i18n.get('split') }}</span>
                                     </a>
                                 </p>
@@ -33,9 +33,9 @@
                                             @click="comp = 'Unified'"
                                             :class="{'is-selected': comp === 'Unified', 'is-focused': comp === 'Unified'}"
                                             class="button">
-                                        <b-icon
-                                                icon="minus"
-                                                size="is-small"/>
+                                        <span class="icon is-small">
+                                            -
+                                        </span>
                                         <span>{{ $i18n.get('unified') }}</span>
                                     </a>
                                 </p>

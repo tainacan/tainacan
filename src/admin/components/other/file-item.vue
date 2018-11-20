@@ -18,10 +18,11 @@
                         :style="{ 'background-color': '#dbdbdb' }"
                         v-else 
                         class="file-placeholder">
-                    <b-icon
-                            :icon="getIconForMimeType(file.mime_type)"
-                            size="is-large"
-                            type="is-gray"/>
+                    <span class="icon is-large">
+                        <i 
+                                :class="'tainacan-icon-' + getIconForMimeType(file.mime_type)"
+                                class="has-text-gray tainacan-icon tainacan-icon-36px"/>
+                    </span>
                  </div>
             </div>
         </figure> 
@@ -66,7 +67,7 @@ export default {
             if (type[0] == 'application' && type[1] != undefined){
                 switch (type[1]) {
                     case 'pdf':
-                        return 'file-pdf';
+                        return 'pdf';
                     default:
                         return '';
                 }
@@ -75,9 +76,9 @@ export default {
                     case 'video':
                         return 'video';
                     case 'audio':
-                        return 'volume-high';
+                        return 'audio';
                     case 'text':
-                        return 'format-align-left';
+                        return 'text';
                     default:
                         return '';
                 }

@@ -26,6 +26,7 @@ $turquoise4-invert: findColorInvert($turquoise4);
 $turquoise5: #298596;
 $turquoise5-invert: findColorInvert($turquoise5);
 // Gray, used mostyl for information
+$gray0: #f6f6f6;
 $gray1: #f2f2f2;
 $gray1-invert: findColorInvert($gray1);
 $gray2: #dbdbdb;
@@ -150,7 +151,7 @@ $table-cell-padding: 1.0em 0.75em;
 // Roboto font
 $family-sans-serif: 'Roboto', sans-serif;
  
-// Bulma's modal (needs to be greather than taincan-admin-app)
+// Bulma's modal (needs to be greather than tainacan-admin-app)
 $modal-z: 9999999;
 
 // Animations for Slide Menu

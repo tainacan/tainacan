@@ -196,5 +196,19 @@ class Taxonomy extends Entity {
 		return parent::validate();
 
 	}
+	
+	/**
+	* Check if a term already exists 
+	*
+	* @param string $term_name The term name 
+	* @param int|null $parent The ID of the parent term to look for children or null to look for terms in any hierarchical position. Default is null 
+	* @param bool $return_term wether to return the term object if it exists. default is to false 
+	* 
+	* @return bool|WP_Term return boolean indicating if term exists. If $return_term is true and term exists, return WP_Term object 
+	*/
+	function term_exists($term_name, $parent = null, $return_term = false) {
+		$repo = $this->get_repository();
+		return $repo->term_exists($this, $term_name, $parent, $return_term);
+	}
 
 }
