@@ -506,6 +506,7 @@ export default {
                     
         .column:not(.available-metadata-area){
             overflow: hidden;
+            flex-grow: 2;
         }
 
         .loading-spinner {
@@ -568,6 +569,7 @@ export default {
                 .handle {
                     padding-right: 6em;
                     white-space: nowrap;
+                    display: flex;
                 }
                 .grip-icon { 
                     color: $gray3;
@@ -680,8 +682,9 @@ export default {
         .available-metadata-area {
             padding: 10px 0px 10px 10px;
             margin: 0;
-            max-width: 340px;
-            font-size: 14px;
+            max-width: 500px;
+            min-width: 20.8333333%;
+            font-size: 0.875rem;
 
             @media screen and (max-width: 769px) {
                 max-width: 100%;
