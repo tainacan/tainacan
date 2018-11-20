@@ -7,7 +7,6 @@
                     id="collection-page-container"
                     :collection-id="collectionId" 
                     class="page-container page-container-small"/>
-            
         </section>
     </div>
 </template>

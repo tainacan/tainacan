@@ -379,7 +379,7 @@ class Test_Importer extends Importer {
 			'name' => 'Selectbox type',
 			'type' => 'Tainacan\Metadata_Types\Selectbox',
 			'options' => [
-				'options' => implode('\\n', $this->selectbox_values)
+				'options' => implode("\n", $this->selectbox_values)
 			]
 		], $col1 );
 		

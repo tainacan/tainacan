@@ -685,8 +685,15 @@ class Old_Tainacan extends Importer{
             if( get_term_by( 'name', $term->name, $taxonomy_father->get_db_identifier()) ){
                 continue;
             }
-
-            $inserted_term = $this->term_repo->insert($new_term);
+            
+            if ($new_term->validate()) {
+                $inserted_term = $this->term_repo->insert($new_term);
+            } else {
+                $this->add_error_log( implode(',', $new_term->get_errors()) );
+                $this->abort();
+                return false;
+            }
+            
 
             if (is_wp_error($inserted_term)) {
 

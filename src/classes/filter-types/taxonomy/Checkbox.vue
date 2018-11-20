@@ -8,20 +8,36 @@
         </span>
         <div
                 v-for="(option, index) in options.slice(0, filter.max_options)"
+                v-if="!isLoading"
                 :key="index"
                 :value="index"
                 class="control">
-            <b-checkbox
-                    v-model="selected"
-                    :native-value="option.value"
+            <label 
                     v-if="!option.isChild"
-            >{{ option.label }}</b-checkbox>
+                    class="b-checkbox checkbox is-small">
+                <input 
+                        v-model="selected"
+                        :value="option.value"
+                        type="checkbox"> 
+                <span class="check" /> 
+                <span class="control-label">
+                    <span class="checkbox-label-text">{{ option.label }}</span> 
+                    <span 
+                            v-if="option.total_items != undefined"
+                            class="has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
+                </span>
+            </label>
             <div
                     class="see-more-container"
                     v-if="option.seeMoreLink && index == options.slice(0, filter.max_options).length - 1"
                     @click="openCheckboxModal(option.parent)"
                     v-html="option.seeMoreLink"/>
         </div>
+        <p 
+                v-if="!isLoading && options.length != undefined && options.length <= 0"
+                class="no-options-placeholder">
+            {{ $i18n.get('info_no_options_avialable_filtering') }}
+        </p>
     </div>
 </template>
 
@@ -38,7 +54,15 @@
             this.loadOptions();
 
             this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTag);
-        },
+        },    
+        mounted(){
+            // We listen to event, but reload event if hasFiltered is negative, as 
+            // an empty query also demands filters reloading.
+            this.$eventBusSearch.$on('hasFiltered', () => {
+                if (typeof this.loadOptions == "function")
+                    this.loadOptions(true);
+            });
+        },        
         data(){
             return {
                 isLoading: false,
@@ -70,15 +94,16 @@
             }
         },
         methods: {
-            loadOptions(){
+            loadOptions(skipSelected){
                 this.isLoading = true;
                 let query_items = { 'current_query': this.query };
 
-                let route = `/collection/${this.collection}/facets/${this.metadatum}?getSelected=1&hideempty=0&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
-
-                if(this.collection == 'filter_in_repository'){
-                    route = `/facets/${this.metadatum}?getSelected=1&hideempty=0&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
-                }
+                let route = '';
+                
+                if(this.collection == 'filter_in_repository')
+                    route = `/facets/${this.metadatum}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
+                else
+                    route = `/collection/${this.collection}/facets/${this.metadatum}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
 
                 this.options = [];
 
@@ -88,10 +113,15 @@
                         for (let item of res.data) {
                             this.taxonomy = item.taxonomy;
                             this.taxonomy_id = item.taxonomy_id;
-                            this.options.push(item);
+                            
+                            let existingOptionIndex = this.options.findIndex(anOption => anOption.value == item.value)
+                            if (existingOptionIndex < 0)
+                                this.options.push(item);  
+                            else  
+                                this.$set(this.options, item, existingOptionIndex); 
                         }
 
-                        if ( this.options ){
+                        if (this.options) {
                             let hasChildren = false;
 
                             for( let term of this.options ){
@@ -117,7 +147,9 @@
                         }
 
                         this.isLoading = false;
-                        this.selectedValues();
+                        if (skipSelected == undefined || skipSelected == false) {
+                            this.selectedValues();
+                        }
                     })
                     .catch(error => {
                         this.$console.log(error);
@@ -153,28 +185,45 @@
                     let valueIndex = this.options.findIndex(option => option.value == selected );
 
                     if (valueIndex >= 0) {
-                        onlyLabels.push(this.options[valueIndex].label)
+                        
+                        let existingLabelIndex = onlyLabels.findIndex(aLabel => aLabel == this.options[valueIndex].label)
+                        if (existingLabelIndex < 0)
+                            onlyLabels.push(this.options[valueIndex].label);
+                        else  
+                            this.$set(onlyLabels, onlyLabels.push(this.options[valueIndex].label), existingLabelIndex); 
+
                     } else {
 
-                        let route = '/collection/'+ this.collection +'/facets/' + this.metadatum +`?term_id=${selected}&fetch_only[0]=name&fetch_only[1]=id`;
-
-                        if(this.collection == 'filter_in_repository'){
-                            route = '/facets/' + this.metadatum +`?term_id=${selected}&fetch_only[0]=name&fetch_only[1]=id`
-                        }
-
+                        let route = '';
+                        
+                        if(this.collection == 'filter_in_repository')
+                            route = '/facets/' + this.metadatum +`?term_id=${selected}&fetch_only[0]=name&fetch_only[1]=id`;
+                        else
+                            route = '/collection/'+ this.collection +'/facets/' + this.metadatum +`?term_id=${selected}&fetch_only[0]=name&fetch_only[1]=id`;
+                        
                         axios.get(route)
                             .then( res => {
-                                
                                 if(!res || !res.data){
                                     return false;
                                 }
 
-                                onlyLabels.push(res.data[0].label);
-                                this.options.push({
-                                    isChild: true,
-                                    label: res.data[0].label,
-                                    value: res.data[0].value
-                                })
+                                let existingLabelIndex = onlyLabels.findIndex(aLabel => aLabel == res.data[0].label)
+                                if (existingLabelIndex < 0) {
+                                    onlyLabels.push(res.data[0].label);
+                                    this.options.push({
+                                        isChild: true,
+                                        label: res.data[0].label,
+                                        value: res.data[0].value
+                                    });
+                                } else {  
+                                    this.$set(onlyLabels, onlyLabels.push(res.data[0].label), existingLabelIndex);
+                                    this.$set(this.options, {
+                                            isChild: true,
+                                            label: res.data[0].label,
+                                            value: res.data[0].value
+                                        }
+                                    , existingLabelIndex); 
+                                }
                             })
                             .catch(error => {
                                 this.$console.log(error);
@@ -256,5 +305,22 @@
         border: 2px solid white !important;
         border-top-color: #dbdbdb !important;
         border-right-color: #dbdbdb !important;
+    }
+
+    .no-options-placeholder {
+        margin-left: 0.5rem;
+        font-size: 0.75rem;
+        color: #898d8f;
+    }
+
+    .b-checkbox .control-label {
+        display: flex;
+        flex-wrap: nowrap;
+        width: 100%;
+    }
+    .checkbox-label-text {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
 </style>

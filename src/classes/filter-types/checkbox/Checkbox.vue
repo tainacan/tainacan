@@ -1,27 +1,52 @@
 <template>
     <div class="block">
         <span 
-                v-if="isLoading"
-                style="width: 100%"
+                v-if="isLoadingOptions"
+                style="width: 100%; position: absolute;"
                 class="icon has-text-centered loading-icon">
             <div class="control has-icons-right is-loading is-clearfix" />
         </span>
+
         <div
                 v-for="(option, index) in options.slice(0, filter.max_options)"
+                v-if="!isLoadingOptions"
                 :key="index"
                 class="metadatum">
-            <b-checkbox
+            <label 
+                    v-if="index <= filter.max_options - 1"
+                    class="b-checkbox checkbox is-small">
+                <input 
+                        v-model="selected"
+                        :value="option.value"
+                        type="checkbox"> 
+                    <span class="check" /> 
+                    <span class="control-label">
+                        <span class="checkbox-label-text">{{ option.label }}</span> 
+                        <span 
+                                v-if="option.total_items != undefined"
+                                class="has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
+                    </span>
+            </label>
+            <!-- <b-checkbox
                     v-if="index <= filter.max_options - 1"
                     v-model="selected"
                     :native-value="option.value">
-                {{ option.label }}
-            </b-checkbox>
+                <span class="checkbox-label-text">{{ option.label }}</span> 
+                <span 
+                        v-if="option.total_items != undefined"
+                        class="has-text-gray">{{ "(" + option.total_items + ")" }}</span>
+            </b-checkbox> -->
             <div
                     class="view-all-button-container"
                     v-if="option.seeMoreLink && index == options.slice(0, filter.max_options).length - 1"
                     @click="openCheckboxModal()"
                     v-html="option.seeMoreLink"/>
         </div>
+        <p 
+                v-if="!isLoadingOptions && options.length != undefined && options.length <= 0"
+                class="no-options-placeholder">
+            {{ $i18n.get('info_no_options_avialable_filtering') }}
+        </p>
     </div>
 </template>
 
@@ -32,7 +57,6 @@
 
     export default {
         created(){
-
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
             this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id;
             const vm = this;
@@ -63,7 +87,6 @@
         },
         data(){
             return {
-                isLoading: false,
                 options: [],
                 type: '',
                 collection: '',
@@ -80,7 +103,8 @@
             }
         },
         methods: {
-            loadOptions(){
+            loadOptions(skipSelected){
+                
                 let promise = null;
                 
                 // Cancels previous Request
@@ -88,52 +112,43 @@
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
                 if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
-                    this.isLoading = true;
                     let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
                         this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
 
-                    promise = this.getValuesRelationship( collectionTarget, null, [], 0, this.filter.max_options, false, '1');
+                    promise = this.getValuesRelationship( collectionTarget, null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1');
                     promise.request
                         .then(() => {
-                            this.isLoading = false;
                             if(this.options.length > this.filter.max_options){
                                 this.options.splice(this.filter.max_options);
                             }
-                            this.selectedValues();
                         }).catch((error) => {
                             this.$console.error(error);
                     }) 
                 } else {
-                    this.isLoading = true;
                     promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1' );
                     promise.request
                         .then(() => {
 
-                            this.isLoading = false;
                             if(this.options.length > this.filter.max_options){
                                 this.options.splice(this.filter.max_options);
                             }
-                            this.selectedValues();
+                            
                         }).catch((error) => {
                             this.$console.error(error);
                         });
                 }
-
-                // promise.request
-                //     .then(() => {
-                //         this.isLoading = false;
-                        
-                //     })
-                //     .catch( error => {
-                //         this.$console.log('error select', error );
-                //         this.isLoading = false;
-                //     });
-
-                // Search Request Token for cancelling
-                this.getOptionsValuesCancel = promise.source;
-
+                if (skipSelected == undefined || skipSelected == false) {
+                    promise.request
+                        .then(() => {
+                            this.selectedValues()
+                        })
+                        .catch( error => {
+                            this.$console.log('error select', error );
+                        });
+                }
+                
             },
-            onSelect(){
+            onSelect() {
                 this.$emit('input', {
                     filter: 'checkbox',
                     compare: 'IN',
@@ -243,5 +258,22 @@
         border: 2px solid white !important;
         border-top-color: #dbdbdb !important;
         border-right-color: #dbdbdb !important;
+    }
+
+    .no-options-placeholder {
+        margin-left: 0.5rem;
+        font-size: 0.75rem;
+        color: #898d8f;
+    }
+
+    .b-checkbox .control-label {
+        display: flex;
+        flex-wrap: nowrap;
+        width: 100%;
+    }
+    .checkbox-label-text {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
 </style>

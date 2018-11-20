@@ -7,6 +7,7 @@
                 v-model="selected"
                 :data="options"
                 expanded
+                :loading="isLoadingOptions"
                 @input="search"
                 field="label"
                 @select="option => setResults(option) "
@@ -21,10 +22,14 @@
                                 :src="`${props.option.img}`">
                     </div>
                     <div class="media-content">
-                        {{ props.option.label }}
+                        <span class="ellipsed-text">{{ props.option.label }}</span>
+                        <span 
+                                v-if="props.option.total_items != undefined"
+                                class="has-text-gray">{{ "(" + props.option.total_items + ")" }}</span>
                     </div>
                 </div>
             </template>
+            <template slot="empty">{{ $i18n.get('info_no_options_found'	) }}</template>
         </b-autocomplete>
     </div>
 </template>
@@ -107,12 +112,12 @@
                     if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
                         let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
                             this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
-                        promise = this.getValuesRelationship( collectionTarget, query );
+                        promise = this.getValuesRelationship( collectionTarget, query, this.isRepositoryLevel );
 
                     } else {
                         promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel );
                     }
-
+                    
                     promise.request.catch( error => {
                         this.$console.log('error select', error );
                     });

@@ -1,7 +1,20 @@
 <template>
-    <div>
+    <div class="filters-list-page">
         <b-loading :active.sync="isLoadingMetadatumTypes"/>
-        <tainacan-title v-if="!isRepositoryLevel"/>
+        <div 
+                v-if="!isRepositoryLevel"
+                class="tainacan-page-title">
+            <h1>
+                {{ $i18n.get('title_collection_filters_edition') + ' ' }}
+                <span style="font-weight: 600;">{{ collectionName }}</span>
+            </h1>
+            <a 
+                    @click="$router.go(-1)"
+                    class="back-link has-text-secondary">
+                {{ $i18n.get('back') }}
+            </a>
+            <hr>
+        </div>
         <p v-if="isRepositoryLevel">{{ $i18n.get('info_repository_filters_inheritance') }}</p>
         <br>
         <div class="columns">
@@ -11,9 +24,9 @@
                         class="field is-grouped-centered section">
                     <div class="content has-text-gray has-text-centered">
                         <p>
-                            <b-icon
-                                    icon="filter"
-                                    size="is-large"/>
+                            <span class="icon is-large">
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters"/>
+                            </span>
                         </p>
                         <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>  
                         <p>{{ $i18n.get('info_create_filters' ) }}</p>
@@ -43,11 +56,13 @@
                             v-for="(filter, index) in activeFilterList" 
                             :key="index">
                         <div class="handle">
-                            <grip-icon/>
+                            <span class="icon grip-icon">
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
+                            </span>
                             <span class="icon icon-level-identifier">
                                 <i 
-                                    :class="{ 'mdi-folder has-text-turquoise5': filter.collection_id == collectionId, 'mdi-folder-multiple has-text-blue5': filter.collection_id != collectionId }"
-                                    class="mdi" />
+                                    :class="{ 'tainacan-icon-collections has-text-turquoise5': filter.collection_id == collectionId, 'tainacan-icon-repository has-text-blue5': filter.collection_id != collectionId }"
+                                    class="tainacan-icon" />
                             </span> 
                             <span 
                                     class="filter-name"
@@ -79,16 +94,16 @@
                                 <a 
                                         :style="{ visibility: filter.collection_id != collectionId && !isRepositoryLevel? 'hidden' : 'visible' }"
                                         @click.prevent="editFilter(filter)">
-                                    <b-icon 
-                                            type="is-gray" 
-                                            icon="pencil"/>
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
+                                    </span>
                                 </a>
                                 <a 
                                         :style="{ visibility: filter.collection_id != collectionId && !isRepositoryLevel ? 'hidden' : 'visible' }"
                                         @click.prevent="removeFilter(filter)">
-                                    <b-icon 
-                                            type="is-gray" 
-                                            icon="delete"/>
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
+                                    </span>
                                 </a>
                             </span>
                         </div>
@@ -159,11 +174,13 @@
                                 v-for="(metadatum, index) in availableMetadatumList"
                                 :key="index"
                                 @click.prevent="addMetadatumViaButton(metadatum, index)">
-                            <grip-icon/> 
+                            <span class="icon grip-icon">
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
+                            </span>
                             <span class="icon icon-level-identifier">
                                 <i 
-                                    :class="{ 'mdi-folder has-text-turquoise5': metadatum.collection_id == collectionId, 'mdi-folder-multiple has-text-blue5': metadatum.collection_id != collectionId }"
-                                    class="mdi" />
+                                    :class="{ 'tainacan-icon-collections has-text-turquoise5': metadatum.collection_id == collectionId && !isRepositoryLevel, 'tainacan-icon-repository has-text-blue5': isRepositoryLevel || metadatum.collection_id != collectionId }"
+                                    class="tainacan-icon" />
                             </span>  
                             <span class="metadatum-name">{{ metadatum.name }}</span>
                         </div>
@@ -174,9 +191,9 @@
                             class="field is-grouped-centered section">
                         <div class="content has-text-gray has-text-centered">
                             <p>
-                                <b-icon
-                                        icon="format-list-checks"
-                                        size="is-large"/>
+                                <span class="icon is-large">
+                                    <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
+                                </span>
                             </p>
                             <p>{{ $i18n.get('info_there_is_no_metadatum' ) }}</p>
                             <router-link
@@ -195,7 +212,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import GripIcon from '../other/grip-icon.vue';
 import FilterEditionForm from './../edition/filter-edition-form.vue';
 import CustomDialog from '../other/custom-dialog.vue';
 
@@ -204,6 +220,7 @@ export default {
     data(){           
         return {
             collectionId: '',
+            collectionName: '',
             isRepositoryLevel: false,
             isDraggingFromAvailable: false,
             isLoadingMetadatumTypes: true,
@@ -234,8 +251,7 @@ export default {
         }
     },
     components: {
-        FilterEditionForm,
-        GripIcon
+        FilterEditionForm
     },
     beforeRouteLeave ( to, from, next ) {
         let hasUnsavedForms = false;
@@ -281,6 +297,9 @@ export default {
         ]),
         ...mapGetters('metadata', [
             'getMetadata',
+        ]),
+        ...mapActions('collection', [
+            'fetchCollectionName'
         ]),
         handleChange($event) {     
             if ($event.added) {
@@ -492,6 +511,13 @@ export default {
             .catch(() => {
                 this.isLoadingFilters = false;
             });
+
+        
+        // Obtains collection name
+        this.fetchCollectionName(this.collectionId).then((collectionName) => {
+            this.collectionName = collectionName;
+        });
+        
     }
 }
 </script>
@@ -500,317 +526,353 @@ export default {
 
     @import "../../scss/_variables.scss";
 
-    .loading-spinner {
-        animation: spinAround 500ms infinite linear;
-        border: 2px solid #dbdbdb;
-        border-radius: 290486px;
-        border-right-color: transparent;
-        border-top-color: transparent;
-        content: "";
-        display: inline-block;
-        height: 1em; 
-        width: 1em;
-    }
+    .filters-list-page {
 
-    .active-filters-area {
-        font-size: 14px;
-        margin-right: 0.8em;
-        margin-left: -0.8em;
-        padding-right: 6em;
-        min-height: 330px;
+        .tainacan-page-title {
+            margin-bottom: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            justify-content: space-between;
 
-        @media screen and (max-width: 769px) {
-            min-height: 45px;
-            margin: 0; 
-            padding-right: 0em;
-        }
-        @media screen and (max-width: 1216px) {
-            padding-right: 1em;
-        }
-
-        &.filters-area-receive {
-            border: 1px dashed gray;
-        }
-
-        .collapse {
-            display: initial;
-        }
-
-        .active-filter-item {
-            background-color: white;
-            padding: 0.7em 0.9em;
-            margin: 4px;
-            min-height: 40px;
-            position: relative;
-            display: block; 
-            transition: top 0.1s ease;
-            cursor: grab;
-
-            form.tainacan-form {
-                padding: 1.0em 2.0em;
-                margin-top: 1.0em;
-                border-top: 1px solid $gray2;
-                border-bottom: 1px solid $gray2;
+            h1, h2 {
+                font-size: 20px;
+                font-weight: 500;
+                color: $gray5;
+                display: inline-block;
+                width: 80%;
+                flex-shrink: 1;
+                flex-grow: 1;
             }
-        
-            &>.field, form {
-                background-color: white !important;
+            a.back-link{
+                font-weight: 500;
+                float: right;
+                margin-top: 5px;
+            }
+            hr{
+                margin: 3px 0px 4px 0px; 
+                height: 1px;
+                background-color: $secondary;
+                width: 100%;
+            }
+        }
+                    
+        .column:not(.available-metadata-area){
+            overflow: hidden;
+            flex-grow: 2;
+        }
+
+        .loading-spinner {
+            animation: spinAround 500ms infinite linear;
+            border: 2px solid #dbdbdb;
+            border-radius: 290486px;
+            border-right-color: transparent;
+            border-top-color: transparent;
+            content: "";
+            display: inline-block;
+            height: 1em; 
+            width: 1em;
+        }
+
+        .active-filters-area {
+            font-size: 14px;
+            margin-right: 0.8em;
+            margin-left: -0.8em;
+            padding-right: 6em;
+            min-height: 330px;
+
+            @media screen and (max-width: 769px) {
+                min-height: 45px;
+                margin: 0; 
+                padding-right: 0em;
+            }
+            @media screen and (max-width: 1216px) {
+                padding-right: 1em;
             }
 
-            .handle {
-                padding-right: 6em;
+            &.filters-area-receive {
+                border: 1px dashed gray;
             }
-            .grip-icon { 
-                fill: $gray3;
-                top: 1px;
+
+            .collapse {
+                display: initial;
+            }
+
+            .active-filter-item {
+                background-color: white;
+                padding: 0.7em 0.9em;
+                margin: 4px;
+                min-height: 40px;
                 position: relative;
-            }
-            .filter-name {
-                text-overflow: ellipsis;
-                overflow-x: hidden;
-                white-space: nowrap;
-                font-weight: bold;
-                margin-left: 0.4em;
-                margin-right: 0.4em;
+                display: block; 
+                transition: top 0.1s ease;
+                cursor: grab;
 
-                &.is-danger {
-                    color: $danger !important;
+                form.tainacan-form {
+                    padding: 1.0em 2.0em;
+                    margin-top: 1.0em;
+                    border-top: 1px solid $gray2;
+                    border-bottom: 1px solid $gray2;
                 }
-            }
-            .label-details {
-                font-weight: normal;
-                color: $gray3;
-            }
-            .not-saved {
-                font-style: italic;
-                font-weight: bold;
-                color: $danger;
-            }
-            .controls { 
-                position: absolute;
-                right: 5px; 
-                top: 10px;
-                .switch {
-                    position: relative;
-                    bottom: 3px;
-                }
-                .icon {
-                    bottom: 1px;   
-                    position: relative;
-                    i, i:before { font-size: 20px; }
-                }
-            }
-
-            &.not-sortable-item, &.not-sortable-item:hover {
-                cursor: default;
-                background-color: white !important;
-
-                .handle .label-details, .handle .icon {
-                    color: $gray3 !important;
-                }
-            } 
-            &.not-focusable-item, &.not-focusable-item:hover {
-                cursor: default;
-               
-                .metadatum-name {
-                    color: $secondary;
-                }
-                .handle .label-details, .handle .icon {
-                    color: $gray3 !important;
-                }
-            }
-            &.disabled-metadatum {
-                color: $gray3;
-            }    
-        }
-        .active-filter-item:hover:not(.not-sortable-item) {
-            background-color: $secondary;
-            border-color: $secondary;
-            color: white !important;
-
-            &>.field, form {
-                background-color: white !important;
-            }
-
-            .grip-icon { 
-                fill: $white;
-            }
-
-            .label-details, .icon, .icon-level-identifier>i {
-                color: white !important;
-            }
-
-            .switch.is-small {
-                input[type="checkbox"] + .check {
-                    background-color: $secondary !important;
-                    border: 1.5px solid white !important;
-                    &::before { background-color: white !important; }
-                } 
-                input[type="checkbox"]:checked + .check {
-                    border: 1.5px solid white !important;
-                    &::before { background-color: white !important; }
-                }
-                &:hover input[type="checkbox"] + .check {
-                    border: 1.5px solid white !important;
-                    background-color: $secondary !important;
-                }
-            }
-        }
-        .sortable-ghost {
-            border: 1px dashed $gray2;
-            display: block;
-            padding: 0.7em 0.9em;
-            margin: 4px;
-            height: 40px;
-            position: relative;
-
-            .grip-icon { 
-                fill: $gray3;
-                top: 2px;
-                position: relative;
-            }
-        }
-    }
-
-    .available-metadata-area {
-        padding: 10px 0px 10px 10px;
-        margin: 0;
-        max-width: 280px;
-        font-size: 14px;
-
-        @media screen and (max-width: 769px) {
-            max-width: 100%;
-            padding: 10px;
-            h3 {
-                margin: 1em 0em 1em 0em !important;
-            }
-            .available-metadatum-item::before,
-            .available-metadatum-item::after {
-                display: none !important;
-            }
-        }
-
-        h3 {
-            margin: 0.2em 0em 1em -1.2em;
-            font-weight: 500;
-        }
-
-        .available-metadatum-item {
-            padding: 0.7em;
-            margin: 4px;
-            background-color: white;
-            cursor: pointer;
-            left: 0;
-            line-height: 1.3em;
-            height: 40px;
-            position: relative;
-            border: 1px solid $gray2;
-            border-radius: 1px;
-            transition: left 0.2s ease;
             
-            .grip-icon { 
-                fill: $gray3;
-                top: -3px;
-                position: relative;
-                display: inline-block;
+                &>.field, form {
+                    background-color: white !important;
+                }
+
+                .handle {
+                    padding-right: 6em;
+                    white-space: nowrap;
+                    display: flex;
+                }
+                .grip-icon { 
+                    color: $gray3;
+                    position: relative;
+                }
+                .filter-name {
+                    text-overflow: ellipsis;
+                    overflow-x: hidden;
+                    white-space: nowrap;
+                    font-weight: bold;
+                    margin-left: 0.4em;
+                    margin-right: 0.4em;
+
+                    &.is-danger {
+                        color: $danger !important;
+                    }
+                }
+                .label-details {
+                    font-weight: normal;
+                    color: $gray3;
+                }
+                .not-saved {
+                    font-style: italic;
+                    font-weight: bold;
+                    color: $danger;
+                    margin-left: 0.5rem;
+                }
+                .controls { 
+                    position: absolute;
+                    right: 5px; 
+                    top: 10px;
+                    .switch {
+                        position: relative;
+                        bottom: 3px;
+                    }
+                    .icon {
+                        bottom: 1px;   
+                        position: relative;
+                        i, i:before { font-size: 20px; }
+                    }
+                }
+
+                &.not-sortable-item, &.not-sortable-item:hover {
+                    cursor: default;
+                    background-color: white !important;
+                } 
+                &.not-focusable-item, &.not-focusable-item:hover {
+                    cursor: default;
+                
+                    .metadatum-name {
+                        color: $secondary;
+                    }
+                    .handle .label-details, .handle .icon {
+                        color: $gray3 !important;
+                    }
+                }
+                &.disabled-metadatum {
+                    color: $gray3;
+                }    
             }
-            .icon {
-                position: relative;
-                bottom: 3px;
-            }
-            .metadatum-name {
-                text-overflow: ellipsis;
-                overflow-x: hidden;
-                white-space: nowrap;
-                font-weight: bold;
-                margin-left: 0.4em;
-                display: inline-block;
-                max-width: 180px;
-            }
-            &:after,
-            &:before {
-                content: '';
-                display: block;
-                position: absolute;
-                right: 100%;
-                width: 0;
-                height: 0;
-                border-style: solid;
-            }
-            &:after {
-                top: -1px;
-                border-color: transparent white transparent transparent;
-                border-right-width: 16px;
-                border-top-width: 20px;
-                border-bottom-width: 20px;
-                left: -19px;
-            }
-            &:before {
-                top: -1px;
-                border-color: transparent $gray2 transparent transparent;
-                border-right-width: 16px;
-                border-top-width: 20px;
-                border-bottom-width: 20px;
-                left: -20px;
-            }
-        }
-        .sortable-drag {
-            opacity: 1 !important;
-        }
-        .available-metadatum-item:not(.disabled-metadatum)  {
-            &:hover{
+            .active-filter-item:hover:not(.not-sortable-item) {
                 background-color: $secondary;
                 border-color: $secondary;
                 color: white !important;
-                position: relative;
-                left: -4px;
 
-                &:after {
-                    border-color: transparent $secondary transparent transparent;
+                &>.field, form {
+                    background-color: white !important;
                 }
-                &:before {
-                    border-color: transparent $secondary transparent transparent;
+
+                .grip-icon { 
+                    color: $white;
                 }
-                .icon-level-identifier>i {
+
+                .label-details, .icon, .icon-level-identifier>i {
                     color: white !important;
                 }
-                .grip-icon {
-                    fill: white !important;
+
+                .switch.is-small {
+                    input[type="checkbox"] + .check {
+                        background-color: $secondary !important;
+                        border: 1.5px solid white !important;
+                        &::before { background-color: white !important; }
+                    } 
+                    input[type="checkbox"]:checked + .check {
+                        border: 1.5px solid white !important;
+                        &::before { background-color: white !important; }
+                    }
+                    &:hover input[type="checkbox"] + .check {
+                        border: 1.5px solid white !important;
+                        background-color: $secondary !important;
+                    }
+                }
+            }
+            .sortable-ghost {
+                border: 1px dashed $gray2;
+                display: block;
+                padding: 0.7em 0.9em;
+                margin: 4px;
+                height: 40px;
+                position: relative;
+
+                .grip-icon { 
+                    color: $gray3;
+                    top: 2px;
+                    position: relative;
                 }
             }
         }
-    }
 
-   .inherited-filter {
-        &.active-filter-item:hover:not(.not-sortable-item) {
-            background-color: $blue5;
-            border-color: $blue5;
+        .available-metadata-area {
+            padding: 10px 0px 10px 10px;
+            margin: 0;
+            max-width: 500px;
+            min-width: 20.8333333%;
+            font-size: 0.875rem;
+
+            @media screen and (max-width: 769px) {
+                max-width: 100%;
+                padding: 10px;
+                h3 {
+                    margin: 1em 0em 1em 0em !important;
+                }
+                .available-metadatum-item::before,
+                .available-metadatum-item::after {
+                    display: none !important;
+                }
+            }
+
+            h3 {
+                margin: 0.2em 0em 1em -1.2em;
+                font-weight: 500;
+            }
+
+            .available-metadatum-item {
+                padding: 0.7em;
+                margin: 4px;
+                background-color: white;
+                cursor: pointer;
+                left: 0;
+                line-height: 1.3em;
+                height: 40px;
+                position: relative;
+                border: 1px solid $gray2;
+                border-radius: 1px;
+                transition: left 0.2s ease;
+                
+                .grip-icon { 
+                    color: $gray3;
+                    top: -4px;
+                    position: relative;
+                    display: inline-block;
+                }
+                .icon {
+                    position: relative;
+                    bottom: 4px;
+                }
+                .metadatum-name {
+                    text-overflow: ellipsis;
+                    overflow-x: hidden;
+                    white-space: nowrap;
+                    font-weight: bold;
+                    margin-left: 0.4em;
+                    display: inline-block;
+                    max-width: 180px;
+                    width: 60%;
+                }
+                &:after,
+                &:before {
+                    content: '';
+                    display: block;
+                    position: absolute;
+                    right: 100%;
+                    width: 0;
+                    height: 0;
+                    border-style: solid;
+                }
+                &:after {
+                    top: -1px;
+                    border-color: transparent white transparent transparent;
+                    border-right-width: 16px;
+                    border-top-width: 20px;
+                    border-bottom-width: 20px;
+                    left: -19px;
+                }
+                &:before {
+                    top: -1px;
+                    border-color: transparent $gray2 transparent transparent;
+                    border-right-width: 16px;
+                    border-top-width: 20px;
+                    border-bottom-width: 20px;
+                    left: -20px;
+                }
+            }
+            .sortable-drag {
+                opacity: 1 !important;
+            }
+            .available-metadatum-item:not(.disabled-metadatum)  {
+                &:hover{
+                    background-color: $secondary;
+                    border-color: $secondary;
+                    color: white !important;
+                    position: relative;
+                    left: -4px;
+
+                    &:after {
+                        border-color: transparent $secondary transparent transparent;
+                    }
+                    &:before {
+                        border-color: transparent $secondary transparent transparent;
+                    }
+                    .icon-level-identifier>i {
+                        color: white !important;
+                    }
+                    .grip-icon {
+                        color: white !important;
+                    }
+                }
+            }
+        }
+
+    .inherited-filter {
+            &.active-filter-item:hover:not(.not-sortable-item) {
+                background-color: $blue5;
+                border-color: $blue5;
+                
+                .switch.is-small {
+                    input[type="checkbox"] + .check {
+                        background-color: $blue5 !important;
+                    } 
+                    &:hover input[type="checkbox"] + .check {
+                        background-color: $blue5 !important;
+                    }
+                }
+            }
+        }
+        .inherited-metadatum {
+
+            &.available-metadatum-item:hover {
+                background-color: $blue5 !important;
+                border-color: $blue5 !important;
             
-            .switch.is-small {
-                input[type="checkbox"] + .check {
-                    background-color: $blue5 !important;
-                } 
-                &:hover input[type="checkbox"] + .check {
-                    background-color: $blue5 !important;
+                &:after {
+                    border-color: transparent $blue5 transparent transparent !important;
                 }
+                &:before {
+                    border-color: transparent $blue5 transparent transparent !important;
+                }
+
             }
         }
     }
-    .inherited-metadatum {
-
-        &.available-metadatum-item:hover {
-            background-color: $blue5 !important;
-            border-color: $blue5 !important;
-        
-            &:after {
-                border-color: transparent $blue5 transparent transparent !important;
-            }
-            &:before {
-                border-color: transparent $blue5 transparent transparent !important;
-            }
-
-        }
-    }
-
 </style>
 

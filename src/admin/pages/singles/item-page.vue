@@ -6,10 +6,20 @@
         <button 
                 id="metadata-column-compress-button"
                 @click="isMetadataColumnCompressed = !isMetadataColumnCompressed">
-            <b-icon :icon="isMetadataColumnCompressed ? 'menu-left' : 'menu-right'" />
+            <span class="icon">
+                <i 
+                        :class="{ 'tainacan-icon-arrowleft' : isMetadataColumnCompressed, 'tainacan-icon-arrowright' : !isMetadataColumnCompressed }"
+                        class="tainacan-icon tainacan-icon-20px"/>
+            </span>
         </button>
         <div class="tainacan-page-title">
-            <h1>{{ $i18n.get('title_item_page') + ' ' }}<span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span></h1>
+            <h1>
+                {{ $i18n.get('title_item_page') + ' ' }}
+                <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
+                <span 
+                        v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
+                        class="status-tag">{{ $i18n.get(item.status) }}</span>
+            </h1>
             <a 
                     @click="$router.go(-1)"
                     class="back-link has-text-secondary">
@@ -126,10 +136,11 @@
                                         slot-scope="session_props">
                                     <label>
                                         {{ $i18n.get('label_exposer_urls') }}
-                                        <b-icon
-                                                type="is-secondary"
-                                                :icon="session_props.open ? 'menu-down' : 'menu-right'"
-                                        />
+                                        <span class="icon">
+                                            <i 
+                                                    :class="{ 'tainacan-icon-arrowdown' : session_props.open, 'tainacan-icon-arrowright' : !session_props.open }"
+                                                    class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                                        </span>
                                     </label>
                                 </div>
                                 <br>
@@ -137,9 +148,11 @@
                                         class="collapse-all"
                                         @click="urls_open = !urls_open">
                                     {{ urls_open ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                                    <b-icon
-                                            type="is-secondary"
-                                            :icon=" urls_open ? 'menu-down' : 'menu-right'"/>
+                                    <span class="icon">
+                                        <i 
+                                                :class="{ 'tainacan-icon-arrowdown' : urls_open, 'tainacan-icon-arrowright' : !urls_open }"
+                                                class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                                    </span>
                                 </a>
                                 <div>
                                     <div
@@ -151,10 +164,11 @@
                                                     class="label"
                                                     slot="trigger"
                                                     slot-scope="props">
-                                                <b-icon
-                                                        type="is-secondary"
-                                                        :icon="props.open ? 'menu-down' : 'menu-right'"
-                                                />
+                                                <span class="icon">
+                                                    <i 
+                                                            :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open }"
+                                                            class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                                                </span>
                                                 {{ index }}
                                             </label>
                                             <div
@@ -208,12 +222,12 @@
                         <div class="field has-addons">
                             <span v-if="item.status != 'private'">
                                 <span class="icon">
-                                    <i class="mdi mdi-earth"/>
+                                    <i class="tainacan-icon tainacan-icon-public"/>
                                 </span> {{ $i18n.get('publish_visibility') }}
                             </span>
                             <span v-if="item.status == 'private'">
                                 <span class="icon">
-                                    <i class="mdi mdi-lock"/>
+                                    <i class="tainacan-icon tainacan-icon-private"/>
                                 </span>  {{ $i18n.get('private_visibility') }}
                             </span>
                         </div>
@@ -241,9 +255,11 @@
                             class="collapse-all"
                             @click="open = !open">
                         {{ open ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                        <b-icon
-                                type="is-secondary"
-                                :icon=" open ? 'menu-down' : 'menu-right'"/>
+                        <span class="icon">
+                            <i 
+                                    :class="{ 'tainacan-icon-arrowdown' : open, 'tainacan-icon-arrowright' : !open }"
+                                    class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                        </span>
                     </a>
                     <div>
                         <div
@@ -255,10 +271,11 @@
                                         class="label"
                                         slot="trigger"
                                         slot-scope="props">
-                                    <b-icon
-                                            type="is-secondary"
-                                            :icon="props.open ? 'menu-down' : 'menu-right'"
-                                    />
+                                    <span class="icon">
+                                            <i 
+                                                    :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open }"
+                                                    class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                                        </span>
                                     {{ metadatum.metadatum.name }}
                                 </label>
                                 <div
@@ -321,7 +338,7 @@
                 isLoading: false,
                 isLoadingMetadatumMappers: false,
                 isMetadataColumnCompressed: false,
-                open: false,
+                open: true,
                 collectionName: '',
                 thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
                 urls_open: false,
@@ -488,6 +505,16 @@
                 width: 80%;
                 flex-shrink: 1;
                 flex-grow: 1;
+            }
+            .status-tag {
+                color: white;
+                background: $turquoise5;
+                padding: 0.15rem 0.5rem;
+                font-size: 0.75rem;
+                margin: 0 1rem;
+                font-weight: 600;
+                position: relative;
+                top: -2px;
             }
             a.back-link{
                 font-weight: 500;

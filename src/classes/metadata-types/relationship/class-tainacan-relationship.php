@@ -15,6 +15,8 @@ class Relationship extends Metadata_Type {
         $this->set_primitive_type('item');
         $this->set_component('tainacan-relationship');
         $this->set_form_component('tainacan-form-relationship');
+        $this->set_name( __('Relationship', 'tainacan') );
+        $this->set_description( __('A relationship with another item', 'tainacan') );
     }
 
     /**

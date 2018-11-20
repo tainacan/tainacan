@@ -9,6 +9,16 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
 
     return new Object({ 
         request: new Promise ((resolve, reject) => {
+
+            // Sets term query in case it's on a term items page
+            if (termId != undefined && taxonomy != undefined) {
+
+                dispatch('search/add_taxquery', {
+                    taxonomy: taxonomy,
+                    terms:[ termId ],
+                    compare: 'IN'
+                }, { root: true });
+            }
                 
             // Adds queries for filtering
             let postQueries = JSON.parse(JSON.stringify(rootGetters['search/getPostQuery']));
@@ -24,23 +34,11 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                     postQueries.taxquery.length > 0)) ) {
                 
                 hasFiltered = true;
-
+                        
                 if(postQueries.advancedSearch){
                     advancedSearchResults = postQueries.advancedSearch;
                 }
-            }
-            
-            // Sets term query in case it's on a term items page
-            if (termId != undefined && taxonomy != undefined) {
-
-                if (postQueries.taxquery == undefined) 
-                    postQueries.taxquery = [];
-
-                postQueries.taxquery.push({
-                    taxonomy: taxonomy,
-                    terms:[ termId ],
-                    compare: 'IN'
-                });
+                
             }
             
             let query = qs.stringify(postQueries);
@@ -70,7 +68,6 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                 if (postQueries.admin_view_mode != undefined)
                     postQueries.admin_view_mode = null;
             } 
-
             axios.tainacan.get(endpoint+query, {
                 cancelToken: source.token
             })
@@ -78,10 +75,14 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                     
                     let items = res.data;
                     let viewModeObject = tainacan_plugin.registered_view_modes[postQueries.view_mode];
-
+                    
                     if (isOnTheme && viewModeObject != undefined && viewModeObject.type == 'template') {
                         commit('setItemsListTemplate', items);
-                        resolve({'itemsListTemplate': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered, advancedSearchResults:  advancedSearchResults});
+                        resolve({
+                            'itemsListTemplate': items, 
+                            'total': res.headers['x-wp-total'], 
+                            hasFiltered: hasFiltered, 
+                            advancedSearchResults:  advancedSearchResults});
                     } else {
                         commit('setItems', items);
                         resolve({
@@ -89,7 +90,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                             'total': res.headers['x-wp-total'],
                             totalPages: res.headers['x-wp-totalpages'], 
                             hasFiltered: hasFiltered, 
-                            advancedSearchResults: advancedSearchResults });
+                            advancedSearchResults: advancedSearchResults });                            
                     }
                     dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
                     dispatch('search/setTotalPages', res.headers['x-wp-totalpages'], { root: true } );
@@ -153,6 +154,10 @@ export const fetchCollections = ({commit} , { page, collectionsPerPage, status, 
 
 export const cleanCollections = ({ commit }) => {
     commit('cleanCollections');
+};
+
+export const cleanItems = ({ commit }) => {
+    commit('cleanItems');
 };
 
 export const fetchCollection = ({ commit }, id) => {
@@ -423,4 +428,25 @@ export const fetchCollectionsForParent = ({ commit }) => {
             reject(error);
         })
     });
+};
+
+// Send Files to Item Bulk Addition
+export const sendFile = ( { commit }, file ) => {
+    return new Promise(( resolve, reject ) => {
+        axios.wp.post('/media/', file, {
+            headers: { 'Content-Type': 'multipart/form-data;', 'Content-Disposition': 'attachment; filename=' + file.name },
+        })
+            .then( res => {
+                let file = res.data;
+                commit('setSingleFile', file);
+                resolve( file );
+            })
+            .catch(error => {
+                reject( error.response );
+            });
+    });
+};
+
+export const cleanFiles = ({ commit }) => {
+    commit('cleanFiles');
 };

@@ -5,7 +5,9 @@ import * as getters from './getters.js'
 const state = {
     group: null,
     actionResult: null,
-    itemIdInSequence: null
+    itemIdInSequence: null,
+    lastUpdated: '',
+    bulkAddItems: []
 };
 
 export default {

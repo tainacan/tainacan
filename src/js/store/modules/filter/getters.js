@@ -18,3 +18,7 @@ export const getFilters = state => {
 export const getFilterTypes = state => {
     return state.filterTypes;
 }
+
+export const getTaxonomyFilters = state => {
+    return state.taxonomyFilters;
+}

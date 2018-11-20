@@ -6,7 +6,12 @@
             <div 
                     v-if="icon != undefined && icon != ''"
                     class="modal-custom-icon">
-                <component :is="icon + '-icon'"/>
+                <span class="icon is-large">
+                    <i 
+                            :style="{ color: icon == 'alert' ? '#a23939' : ( icon == 'approved' ? '#25a189' : 'inherit' ) }"
+                            :class="'tainacan-icon-' + icon"
+                            class="tainacan-icon"/>
+                </span>
             </div>
             <section 
                     class="modal-card-body">
@@ -33,10 +38,8 @@
         </div>
     </div>
 </template>
+
 <script>
-    import AlertIcon from './alert-icon.vue';
-    import CheckIcon from './check-icon.vue';
-    import QuestionIcon from './question-icon.vue';
 
     export default {
         name: 'CustomDialog',
@@ -48,11 +51,16 @@
                 type: Function,
                 default: () => {}
             }
-        },
-        components: {
-            AlertIcon,
-            CheckIcon,
-            QuestionIcon
         }
     }
 </script>
+
+<style scoped>
+   
+    i.tainacan-icon,
+    i.tainacan-icon::before {
+        font-size: 56px;
+    }
+
+</style>
+

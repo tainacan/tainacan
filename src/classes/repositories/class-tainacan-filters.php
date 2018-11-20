@@ -351,6 +351,25 @@ class Filters extends Repository {
 
 		return $supported_filter_types;
 	}
+	
+	/**
+	 * fetch filters IDs based on WP_Query args
+	 *
+	 * to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
+	 * You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
+	 * appropriate WP_Query argument
+	 *
+	 * @param array $args WP_Query args || int $args the item id
+	 *
+	 * @return Array array of IDs;
+	 * @throws \Exception
+	 */
+	public function fetch_ids( $args = [] ) {
+
+		$args['fields'] = 'ids';
+
+		return $this->fetch( $args )->get_posts();
+	}
 
 	/**
 	 * fetch filters by collection, searches all filters available
@@ -372,13 +391,17 @@ class Filters extends Repository {
 		$parents[] = $collection_id;
 
 		//search for default metadatum
-		//$parents[] = $this->get_default_metadata_attribute();
+		$parents[] = 'filter_in_repository';
 
 		$meta_query = array(
 			'key'     => 'collection_id',
 			'value'   => $parents,
 			'compare' => 'IN',
 		);
+		
+		$args = array_merge( [
+			'parent' => 0
+		], $args );
 
 		if ( isset( $args['meta_query'] ) ) {
 			$args['meta_query'][] = $meta_query;
@@ -391,6 +414,53 @@ class Filters extends Repository {
 			$collection,
 			isset( $args['include_disabled'] ) ? $args['include_disabled'] : false
 		);
+	}
+	
+	/**
+	 * fetch filters IDs by collection, considering inheritance
+	 *
+	 * @param Entities\Collection|int $collection object or ID
+	 * @param array $args WP_Query args plus disabled_metadata
+	 *
+	 * @return array List of metadata IDs
+	 * @throws \Exception
+	 */
+	public function fetch_ids_by_collection( $collection, $args = [] ) {
+
+		if ( $collection instanceof Entities\Collection ) {
+			$collection_id = $collection->get_id();
+		} elseif ( is_integer( $collection ) ) {
+			$collection_id = $collection;
+		} else {
+			throw new \InvalidArgumentException( 'fetch_ids_by_collection expects paramater 1 to be a integer or a \Tainacan\Entities\Collection object. ' . gettype( $collection ) . ' given' );
+		}
+
+		//get parent collections
+		$parents = get_post_ancestors( $collection_id );
+
+		//insert the actual collection
+		$parents[] = $collection_id;
+
+		//search for default metadatum
+		$parents[] = 'filter_in_repository';
+
+		$meta_query = array(
+			'key'     => 'collection_id',
+			'value'   => $parents,
+			'compare' => 'IN',
+		);
+
+		$args = array_merge( [
+			'parent' => 0
+		], $args );
+
+		if ( isset( $args['meta_query'] ) ) {
+			$args['meta_query'][] = $meta_query;
+		} elseif ( is_array( $args ) ) {
+			$args['meta_query'] = array( $meta_query );
+		}
+
+		return $this->fetch_ids( $args );
 	}
 
 	/**

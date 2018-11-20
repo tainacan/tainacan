@@ -26,6 +26,10 @@ export const getAttachments =  state => {
     return state.attachments;
 }
 
+export const getFiles =  state => {
+    return state.files;
+}
+
 export const getCollectionCommentStatus = state => {
     return state.collectionCommentStatus;
 }

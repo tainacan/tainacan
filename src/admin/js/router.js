@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import qs from 'qs';
 
 // Main Pages
+import HomePage from '../pages/home-page.vue'
 import CollectionsPage from '../pages/lists/collections-page.vue'
 import CollectionPage from '../pages/singles/collection-page.vue'
 import ItemsPage from '../pages/lists/items-page.vue'
@@ -10,7 +11,6 @@ import ItemPage from '../pages/singles/item-page.vue'
 import MetadataPage from '../pages/lists/metadata-page.vue'
 import FiltersPage from '../pages/lists/filters-page.vue'
 import Page from '../pages/lists/taxonomies-page.vue'
-import TaxonomyPage from '../pages/singles/taxonomy-page.vue'
 import EventsPage from '../pages/lists/events-page.vue'
 import EventPage from '../pages/singles/event-page.vue'
 import ExportPage from '../pages/singles/export-page.vue'
@@ -20,8 +20,10 @@ import CollectionEditionForm from '../components/edition/collection-edition-form
 import ImporterEditionForm from '../components/edition/importer-edition-form.vue'
 import ImporterMappingForm from '../components/edition/importer-mapping-form.vue'
 import ItemEditionForm from '../components/edition/item-edition-form.vue'
+import ItemBulkEditionForm from '../components/edition/item-bulk-edition-form.vue'
+import ItemMetadataBulkEditionForm from '../components/edition/item-metadata-bulk-edition-form.vue'
 import TaxonomyEditionForm from '../components/edition/taxonomy-edition-form.vue'
-import AvailableImportersPage from '../pages/lists/available-importers-page.vue';
+import AvailableImportersPage from '../pages/lists/available-importers-page.vue'
 
 // Listing components
 import FiltersList from '../components/lists/filters-list.vue'
@@ -35,7 +37,8 @@ const i18nGet = function (key) {
 };
 
 const routes = [                
-    { path: '/', redirect:'/collections' },
+    { path: '/', redirect:'/home' },
+    { path: '/home', name: 'HomePage', component: HomePage, meta: {title: 'Tainacan'} },
 
     { path: '/collections', name: 'CollectionsPage', component: CollectionsPage, meta: {title: i18nGet('title_repository_collections_page'), icon: 'folder-multiple'} },
     { path: '/collections/new', name: 'CollectionCreationForm', component: CollectionEditionForm, meta: {title: i18nGet('title_create_collection'), icon: 'folder-multiple'} },
@@ -48,6 +51,8 @@ const routes = [
         { path: 'items/:itemId/edit', name: 'ItemEditionForm', component: ItemEditionForm, meta: {title:  i18nGet('title_edit_item'), icon: 'folder-multiple'} },
         { path: 'items/new', name: 'CollectionItemCreatePage', component: ItemEditionForm, meta: {title: i18nGet('title_create_item_collection'), icon: 'folder-multiple'} },
         { path: 'items/:itemId', name: 'ItemPage', component: ItemPage, meta: {title: i18nGet('title_item_page'), icon: 'folder-multiple'} },   
+        { path: 'bulk-add', name: 'CollectionItemBulkAddPage', component: ItemBulkEditionForm, meta: {title: i18nGet('title_item_bulk_add'), icon: 'folder-multiple'} },
+        { path: 'bulk-add/:groupId', name: 'CollectionItemBulkAddMetadataPage', component: ItemMetadataBulkEditionForm, meta: {title: i18nGet('title_item_bulk_add'), icon: 'folder-multiple'} },
         { path: 'settings', component: CollectionEditionForm,  name: 'CollectionEditionForm', meta: {title: i18nGet('title_collection_settings'), icon: 'folder-multiple'} },
         { path: 'metadata', component: MetadataList, name: 'MetadataList', meta: {title: i18nGet('title_collection_metadata_edition'), icon: 'folder-multiple'} },
         { path: 'filters', component: FiltersList, name: 'FiltersList', meta: {title: i18nGet('title_collection_filters_edition'), icon: 'folder-multiple'} },

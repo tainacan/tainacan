@@ -17,6 +17,8 @@ class Date extends Metadata_Type {
         parent::__construct();
         $this->set_primitive_type('date');
         $this->set_component('tainacan-date');
+        $this->set_name( __('Date', 'tainacan') );
+        $this->set_description( __('Exact date type, with day, month and year.', 'tainacan') );
     }
 
     /**
@@ -33,15 +35,21 @@ class Date extends Metadata_Type {
 
 
     public function validate( Item_Metadata_Entity $item_metadata) {
-        
         $value = $item_metadata->get_value();
-
         $format = 'Y-m-d';
 
-        $d = \DateTime::createFromFormat($format, $value);
+        if (is_array($value)) {
+            foreach ($value as $date_value) {
+                $d = \DateTime::createFromFormat($format, $date_value);
+                if ( !($d && $d->format($format) === $date_value) ) {
+                    return false;
+                }
+            }
+            return True;
+        }
 
+        $d = \DateTime::createFromFormat($format, $value);
         return $d && $d->format($format) === $value;
-        
     }
 
 

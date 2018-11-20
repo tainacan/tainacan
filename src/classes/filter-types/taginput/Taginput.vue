@@ -7,11 +7,12 @@
                 :data="options"
                 autocomplete
                 expanded
+                :loading="isLoadingOptions"
                 :remove-on-keys="[]"
                 field="label"
                 attached
                 @typing="search"
-                :placeholder="(type == 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_add_items') : $i18n.get('info_type_to_add_metadata')">
+                :placeholder="(type == 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_add_metadata')">
             <template slot-scope="props">
                 <div class="media">
                     <div
@@ -22,10 +23,14 @@
                                 :src="`${props.option.img}`">
                     </div>
                     <div class="media-content">
-                        {{ props.option.label }}
+                        <span class="ellipsed-text">{{ props.option.label }}</span>
+                        <span 
+                                v-if="props.option.total_items != undefined"
+                                class="has-text-gray">{{ "(" + props.option.total_items + ")" }}</span>
                     </div>
                 </div>
             </template>
+            <template slot="empty">{{ $i18n.get('info_no_options_found'	) }}</template>
         </b-taginput>
     </div>
 </template>
@@ -119,7 +124,7 @@
                 if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
                     let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
                         this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
-                    promise = this.getValuesRelationship( collectionTarget, query, valuesToIgnore );
+                    promise = this.getValuesRelationship( collectionTarget, query, this.isRepositoryLevel, valuesToIgnore );
  
                 } else {
                     promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel, valuesToIgnore );

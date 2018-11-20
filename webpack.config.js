@@ -6,7 +6,9 @@ module.exports = {
     entry: {
         //dev_admin: './src/js/main.js',\
         user_search: './src/admin/js/theme-main.js',
-        user_admin: './src/admin/js/main.js'
+        user_admin: './src/admin/js/main.js',
+        //gutenberg_collections_carousel: './src/gutenberg-blocks/tainacan-collections/collections-carousel/index.js',
+        gutenberg_items_grid: './src/gutenberg-blocks/tainacan-items/items-grid/index.js',
     },
     output: {
         path: path.resolve(__dirname, './src/assets/'),
@@ -34,7 +36,7 @@ module.exports = {
                 exclude: /node_modules/,
             },
             {
-                test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
+                test: /\.(png|jpg|jpeg|gif|eot|ttf|otf|woff|woff2|svg|svgz)(\?.+)?$/,
                 loader: 'file-loader'
             },
             {
@@ -76,7 +78,7 @@ module.exports = {
 };
 
 // Change to true for production mode
-const production = true;
+const production = false;
 
 if (production === true) {
     const TerserPlugin = require('terser-webpack-plugin');

@@ -6,13 +6,26 @@
                 v-model="selected"
                 :data="options"
                 autocomplete
+                :loading="isLoading"
                 expanded
                 :remove-on-keys="[]"
                 field="label"
                 attached
                 :class="{'has-selected': selected != undefined && selected != []}"
                 @typing="search"
-                :placeholder="$i18n.get('info_type_to_add_terms')" />
+                :placeholder="$i18n.get('info_type_to_add_terms')">
+            <template slot-scope="props">
+                <div class="media">
+                    <div class="media-content">
+                        <span class="ellipsed-text">{{ props.option.label }}</span>
+                        <span 
+                                v-if="props.option.total_items != undefined"
+                                class="has-text-gray">{{ "(" + props.option.total_items + ")" }}</span>
+                    </div>
+                </div>
+            </template>
+            <template slot="empty">{{ $i18n.get('info_no_options_found'	) }}</template>
+        </b-taginput>
     </div>
 </template>
 
@@ -101,7 +114,7 @@
 
                 let endpoint = this.isRepositoryLevel ? '/facets/' + this.metadatum : '/collection/'+ this.collection +'/facets/' + this.metadatum;
 
-                endpoint += '?hideempty=0&order=asc&' + qs.stringify(query_items);
+                endpoint += '?order=asc&' + qs.stringify(query_items);
                 let valuesToIgnore = [];
                 for(let val of this.selected){
                     valuesToIgnore.push( val.value );
@@ -147,7 +160,7 @@
             },
             getTerm( taxonomy, id ){
                 //getting a specific value from api, does not need be in fecat api
-                return axios.get('/taxonomy/' + taxonomy + '/terms/' + id + '?order=asc&hideempty=0' )
+                return axios.get('/taxonomy/' + taxonomy + '/terms/' + id + '?order=asc' )
                 .then( res => {
                     this.selected.push({ label: res.data.name, value: res.data.id })
                 })

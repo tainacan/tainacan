@@ -4,6 +4,7 @@
       {
         "modules": false
       }
-    ]
+    ],
+    "@babel/react"
   ]
 }

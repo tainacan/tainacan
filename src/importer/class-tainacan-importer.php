@@ -907,13 +907,15 @@ abstract class Importer {
      * @return bool
      * @throws \Exception
      */
-    protected function create_metadata( $metadata_description, $collection_id){
+    public function create_new_metadata( $metadata_description, $collection_id){
         $taxonomy_repo = \Tainacan\Repositories\Taxonomies::get_instance();
         $metadata_repo = \Tainacan\Repositories\Metadata::get_instance();
 
         $properties =  array_filter( explode('|', $metadata_description) );
 
-        if( !$properties || count($properties) < 2 ){
+        if( is_array($properties) && count($properties) < 2 ){
+            $properties[1] = 'text';
+        } else if( !$properties ){
             return false;
         }
 
@@ -931,24 +933,48 @@ abstract class Importer {
         if( strcmp($type, "Taxonomy") === 0 ){
             $taxonomy = new Entities\Taxonomy();
             $taxonomy->set_name($name);
+            $taxonomy->set_status('publish');
             $taxonomy->set_allow_insert('yes');
 
             if($taxonomy->validate()){
                 $inserted_tax = $taxonomy_repo->insert( $taxonomy );
-                $newMetadatum->set_metadata_type_options(['taxonomy_id' => $inserted_tax->get_id()]);
+                $newMetadatum->set_metadata_type_options([
+                    'taxonomy_id' => $inserted_tax->get_id(),
+                    'allow_new_terms' => true,
+                    'input_type' => 'tainacan-taxonomy-checkbox'
+                ]);
             }
 
         }
 
         /*Properties of metadatum*/
-        if( isset($properties[2]) && $properties[2] === 'required'){
-            $newMetadatum->set_required(true);
+        if( is_array($properties) && in_array( 'required', $properties)){
+            $newMetadatum->set_required('yes');
         }
 
-        if( isset($properties[3]) && $properties[3] === 'multiple' ){
+        if(is_array($properties) && in_array( 'multiple', $properties) ){
             $newMetadatum->set_multiple('yes');
         }
 
+        if( is_array($properties) && in_array( 'display_yes', $properties) ){
+            $newMetadatum->set_display('yes');
+        } else if(is_array($properties) && in_array( 'display_no', $properties) ){
+            $newMetadatum->set_display('no');
+        }  else if(is_array($properties) && in_array( 'display_never', $properties) ){
+            $newMetadatum->set_display('never');
+        }
+
+        if( is_array($properties) && in_array( 'status_public', $properties) ){
+            $newMetadatum->set_status('publish');
+        } else if( is_array($properties) && in_array( 'status_private', $properties) ){
+            $newMetadatum->set_status('private');
+        }
+
+        if( is_array($properties) && in_array( 'collection_key_yes', $properties) ){
+            $newMetadatum->set_collection_key('yes');
+        } else if( is_array($properties) && in_array( 'collection_key_no', $properties) ){
+            $newMetadatum->set_collection_key('no');
+        }
 
         if($newMetadatum->validate()){
             $inserted_metadata = $metadata_repo->insert( $newMetadatum );
@@ -958,6 +984,7 @@ abstract class Importer {
         } else{
             $this->add_log('Error creating metadata ' . $name . ' in collection ' . $collection_id);
             $this->add_log($newMetadatum->get_errors());
+
             return false;
         }
     }

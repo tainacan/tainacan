@@ -338,6 +338,26 @@ class Taxonomies extends Repository {
 			}
 		}
 	}
+	
+	public function get_db_identifier_by_id($id) {
+		$prefix = Entities\Taxonomy::$db_identifier_prefix;
+		return $prefix . $id;
+	}
+	
+	/**
+	* Check if a term already exists 
+	*
+	* @param Entities\Taxonomy $taxonomy The taxonomy object where to look for terms
+	* @param string $term_name The term name 
+	* @param int|null $parent The ID of the parent term to look for children or null to look for terms in any hierarchical position. Default is null 
+	* @param bool $return_term wether to return the term object if it exists. default is to false 
+	* 
+	* @return bool|WP_Term return boolean indicating if term exists. If $return_term is true and term exists, return WP_Term object 
+	*/
+	public function term_exists(Entities\Taxonomy $taxonomy, $term_name, $parent = null, $return_term = false) {
+		$TermsRepo = Terms::get_instance();
+		return $TermsRepo->term_exists($term_name, $taxonomy, $parent, $return_term);
+	}
 
 
 }

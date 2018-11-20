@@ -2,15 +2,19 @@
     .dropdown-trigger{
         .button {
             border: none;
+            align-items: center;
             .icon {
                 color: $secondary;
-                align-items: start;
+                align-items: center;
             }
         }
         .button.is-primary, .button.is-secondary, .button.is-success {
             .icon {
                 color: $white;
             }
+        }
+        .dropdown.is-disabled {
+            cursor: default;
         }
     }
     .dropdown-menu {
@@ -33,11 +37,19 @@
                 .is-small { color: $gray4; }
                 &.is-active { background-color: $turquoise2; }
 
+                .media-left {
+                    margin-right: 0.5rem;
+                }
                 .media-content {
-                    overflow-x: hidden;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                    max-width: 150px;
+                    display: flex;
+                    width: 80%;
+
+                    .ellipsed-text {
+                        overflow-x: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        margin-right: 3px;
+                    }
                 }
             }
         } 

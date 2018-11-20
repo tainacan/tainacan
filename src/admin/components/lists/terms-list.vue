@@ -15,17 +15,17 @@
                     :disabled="localTerms.length <= 0 || isLoadingTerms || isEditingTerm || order == 'asc'"
                     class="button is-white is-small"
                     @click="onChangeOrder('asc')">
-                <b-icon 
-                        class="gray-icon"
-                        icon="sort-ascending"/>
+                <span class="icon gray-icon">
+                    <i class="tainacan-icon tainacan-icon-sortascending"/>
+                </span>
             </button>
             <button
                     :disabled="localTerms.length <= 0 || isLoadingTerms || isEditingTerm || order == 'desc'"
                     class="button is-white is-small"
                     @click="onChangeOrder('desc')">
-                <b-icon 
-                        class="gray-icon"
-                        icon="sort-descending"/>
+                <span class="icon gray-icon">
+                    <i class="tainacan-icon tainacan-icon-sortdescending"/>
+                </span>
             </button>
         </b-field>
         <div class="search-area is-hidden-mobile">
@@ -41,7 +41,7 @@
                     <span
                             @click="searchTerms(0)"
                             class="icon is-right">
-                        <i class="mdi mdi-magnify" />
+                        <i class="tainacan-icon tainacan-icon-search" />
                     </span>
             </div>
         </div>
@@ -113,7 +113,9 @@
         <section class="section">
             <div class="content has-text-grey has-text-centered">
                 <p>
-                    <taxonomies-icon class="taxonomies-term-icon"/>
+                    <span class="icon is-medium">
+                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-terms"/>
+                    </span>
                 </p>
                 <p>{{ $i18n.get('info_no_terms_created_on_taxonomy') }}</p>
                 <button
@@ -133,7 +135,6 @@ import { mapActions, mapGetters } from 'vuex';
 import TermEditionForm from '../edition/term-edition-form.vue';
 import RecursiveTermItem from './recursive-term-item.vue'
 import BasicTermItem from './basic-term-item.vue'
-import TaxonomiesIcon from '../other/taxonomies-icon.vue';
 import t from 't';
 
 export default {
@@ -175,13 +176,15 @@ export default {
         },
         taxonomyId() {
             this.loadTerms(0);
+        },
+        isEditingTerm(value) {
+            this.$emit('isEditingTermUpdate', value);
         }
     },
     components: {
         RecursiveTermItem,
         BasicTermItem,
-        TermEditionForm,
-        TaxonomiesIcon
+        TermEditionForm
     },
     methods: {
         ...mapActions('taxonomy', [
@@ -354,8 +357,10 @@ export default {
                 });
         },
         eventOnChildTermDeleted(parentTermId) {
-            if ((parentTermId == 0 || parentTermId == undefined ) && this.totalTerms > 0)
+            if ((parentTermId == 0 || parentTermId == undefined ) && this.totalTerms > 0) {
                 this.totalTerms--;
+                this.loadTerms(parentTermId);
+            }
         },
         eventOnEditTerm(term) {
             // Position edit form in a visible area
@@ -404,10 +409,6 @@ export default {
 </script>
 
 <style lang="scss">
-    .taxonomies-term-icon {
-        height: 24px;
-        width: 24px;
-    }
     @import "../../scss/_variables.scss";
 
     .columns {
@@ -424,11 +425,15 @@ export default {
             padding: 4px;
             margin-left: auto;
 
-            .gray-icon, .gray-icon .icon {
+            .gray-icon, 
+            .gray-icon .icon {
                 color: $gray4 !important;
             }
-            .gray-icon .icon i::before, .gray-icon i::before {
+            .gray-icon 
+            .icon i::before, 
+            .gray-icon i::before {
                 font-size: 21px !important;
+                width: 26px;
             }
         }
 

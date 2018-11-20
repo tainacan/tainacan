@@ -94,7 +94,6 @@ export const fetchTaxonomyName = ({ commit }, taxonomyId) => {
                 let name = res.data;
 
                 commit('setTaxonomyName');
-
                 resolve(name.name)
             })
             .catch(error => {

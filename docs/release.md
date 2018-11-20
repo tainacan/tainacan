@@ -21,7 +21,7 @@ git pull
 
 ### Edit version numbers
 
-Edit `src/readme.txt` and 'src/tainacan.php' and change the version numbers to `$NEW_VERSION`.
+Edit `src/readme.txt` and `src/tainacan.php` and change the version numbers to `$NEW_VERSION`.
 
 ### Set build to production mode
 
@@ -38,7 +38,7 @@ git commit -am "Releasing verion $NEW_VERSION"
 ```
 ./build.sh
 cd $BUILD_PATH
-rm admin/scss/.sass-cache
+rm -r admin/scss/.sass-cache
 ```
 
 ### Prepare SVN repo
@@ -106,6 +106,6 @@ git push --tags
 
 ### Set build back to development mode
 
-Once you go back to develop branch, remember editing `webpack.config.js` to set production mode.
+Once you go back to develop branch, remember editing `webpack.config.js` to set production mode to false.
 
 

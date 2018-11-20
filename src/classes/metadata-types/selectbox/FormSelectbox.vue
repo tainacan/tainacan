@@ -15,10 +15,9 @@
                     v-model="options"
                     @input="emitValues()"
                     @focus="clear()"
-                    icon="label"
                     attached
                     :class="{'has-selected': options != undefined && options != []}"
-                    :placeholder="$i18n.get('new')"/>
+                    :placeholder="$i18n.get('new') + ', ...'"/>
         </b-field>
     </section>
 </template>

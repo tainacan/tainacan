@@ -63,6 +63,16 @@ abstract class Metadata_Type  {
      * @var bool | string
      */
     private $form_component = false;
+
+    /**
+     * The Metadata type name. Metadata type classes must set an internationalized string for this property
+     */
+    private $name;
+
+    /**
+     * The Metadata type description. Metadata type classes must set an internationalized string for this property
+     */
+    private $description;
     
     abstract function render( $itemMetadata );
 
@@ -114,6 +124,22 @@ abstract class Metadata_Type  {
     	$this->form_component = $form_component;
     }
 
+    public function get_name(){
+        return $this->name;
+    }
+
+    public function set_name($name){
+        $this->name = $name;
+    }
+
+    public function get_description(){
+        return $this->description;
+    }
+
+    public function set_description($description){
+        $this->description = $description;
+    }
+
     /**
      * @param $options
      */
@@ -163,7 +189,9 @@ abstract class Metadata_Type  {
     public function _toArray(){
 	    $attributes = [];
 
-	    $attributes['errors']              = $this->get_errors();
+        $attributes['name']              = $this->get_name();
+        $attributes['description']              = $this->get_description();
+        $attributes['errors']              = $this->get_errors();
 	    $attributes['related_mapped_prop'] = $this->get_related_mapped_prop();
 	    $attributes['options']             = $this->get_options();
         $attributes['className']           = get_class($this);

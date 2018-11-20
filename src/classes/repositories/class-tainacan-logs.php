@@ -361,18 +361,23 @@ class Logs extends Repository {
 	 * @return string
 	 */
 	private function prepare_event_message( $object, $name, $class_name, $action_message ) {
+		
+		// translators: 1=Object name, 2=Object type, 3=Action. e.g. The "Subject" taxonomy has been created
+		$msg_format = __( 'The "%1$s" %2$s has been %3$s', 'tainacan' );
+		
 		if ( $object instanceof Entities\Metadatum || $object instanceof Entities\Item || $object instanceof Entities\Filter ) {
 			$collection = $object->get_collection();
 
 			if ( $collection ) {
-				$parent = '(parent: ' . $collection->get_name() . ')';
+				$parent = sprintf( __('(collection: %s)', 'tainacan'), $collection->get_name() );
 			} else {
-				$parent = '(on repository level)';
+				$parent = __('(on repository level)', 'tainacan');
 			}
-
-			$description = sprintf( __( "The \"%s\" %s has been %s %s.", 'tainacan' ), $name, strtolower( $class_name ), $action_message, $parent );
+			
+			$description = sprintf( $msg_format, $name, strtolower( $class_name ), $action_message );
+			$description .= ' ' . $parent . '.';
 		} else {
-			$description = sprintf( __( "The \"%s\" %s has been %s.", 'tainacan' ), $name, strtolower( $class_name ), $action_message );
+			$description = sprintf( $msg_format, $name, strtolower( $class_name ), $action_message ) . '.';
 		}
 
 		return $description;

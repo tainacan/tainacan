@@ -6,10 +6,20 @@
         <span   
                 class="collapse-handle"
                 @click="$emit('changeCollapse', metadatumTypeMessage != 'is-danger' ? !isCollapsed : true)">
-            <b-icon 
-                    type="is-secondary"
-                    :icon="isCollapsed || metadatumTypeMessage == 'is-danger' ? 'menu-down' : 'menu-right'" />
-            <label class="label">{{ metadatum.metadatum.name }}</label>
+            <span class="icon">
+                <i 
+                        :class="{ 'tainacan-icon-arrowdown' : isCollapsed || metadatumTypeMessage == 'is-danger', 'tainacan-icon-arrowright' : !(isCollapsed || metadatumTypeMessage == 'is-danger') }"
+                        class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+            </span>
+            <label 
+                    v-tooltip="{
+                        content: metadatum.metadatum.name,
+                        autoHide: false,
+                        placement: 'auto-end'
+                    }" 
+                    class="label">
+                {{ metadatum.metadatum.name }}
+            </label>
             <span
                     v-if="metadatum.metadatum.required == 'yes'"
                     class="required-metadatum-asterisk"
@@ -49,17 +59,16 @@
                                         icon="minus-circle"
                                         size="is-small"
                                         type="is-secondary"/>
-                                    {{ $i18n.get('label_remove_value') }}</a>
+                                &nbsp;{{ $i18n.get('label_remove_value') }}</a>
                     </div>
 
                     <a 
                             @click="addInput"
                             class="is-inline add-link">
-                        <b-icon
-                                icon="plus-circle"
-                                size="is-small"
-                                type="is-secondary"/>
-                            {{ $i18n.get('label_add_value') }}</a>
+                        <span class="icon is-small">
+                            <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                        </span>
+                        &nbsp;{{ $i18n.get('label_add_value') }}</a>
 
                 </div>
             </div>
@@ -230,12 +239,13 @@
             font-weight: 500;
             margin-left: 15px;
             margin-bottom: 0.5em;
+            max-width: 50%;
         }
         .metadata-type {
             font-size: 0.8125rem;
             font-weight: 400;
             color: $gray3;
-            top: -0.2em;
+            top: -0.4em;
             position: relative;
         }
         .help-wrapper {
@@ -245,6 +255,7 @@
             cursor: pointer;
             position: relative;
             margin-left: -42px;
+            white-space: nowrap;
         }
     }
 </style>

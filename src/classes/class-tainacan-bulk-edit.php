@@ -181,7 +181,8 @@ class Bulk_Edit  {
 			'posts_per_page' => 1,
 			'paged' => $index,
 			'orderby' => $options['orderby'],
-			'order' => $options['order']
+			'order' => $options['order'],
+			'post_status' => 'any'
 		];
 		
 		$object = new \WP_Query($query);
@@ -438,26 +439,32 @@ class Bulk_Edit  {
 	private function _add_value(Entities\Metadatum $metadatum, $value) {
 		global $wpdb;
 		$type = $metadatum->get_metadata_type_object();
+		$taxRepo = Repositories\Taxonomies::get_instance();
 
 		if ($type->get_primitive_type() == 'term') {
 
 			$options = $metadatum->get_metadata_type_options();
 			$taxonomy_id = $options['taxonomy_id'];
-			$tax = Repositories\Taxonomies::get_instance()->fetch($taxonomy_id);
+			$tax = $taxRepo->fetch($taxonomy_id);
 
 			if ($tax instanceof Entities\Taxonomy) {
 
-				$term = term_exists($value, $tax->get_db_identifier());
+				$term = $taxRepo->term_exists($tax, $value, 0, true);
+				$term_id = false;
 
-				if (!is_array($term)) {
+				if (false === $term) {
 					$term = wp_insert_term($value, $tax->get_db_identifier());
+					if (is_WP_Error($term) || !isset($term['term_taxonomy_id'])) {
+						return new \WP_Error( 'error', __( 'Error adding term', 'tainacan' ) );
+					}
+					$term_id = $term['term_taxonomy_id'];
+				} else {
+					$term_id = $term->term_taxonomy_id;
 				}
 
-				if (is_WP_Error($term) || !isset($term['term_taxonomy_id'])) {
-					return new \WP_Error( 'error', __( 'Error adding term', 'tainacan' ) );
-				}
+				
 
-				$insert_q = $this->_build_select( $wpdb->prepare("post_id, %d", $term['term_taxonomy_id']) );
+				$insert_q = $this->_build_select( $wpdb->prepare("post_id, %d", $term_id) );
 
 				$query = "INSERT IGNORE INTO $wpdb->term_relationships (object_id, term_taxonomy_id) $insert_q";
 
@@ -505,28 +512,29 @@ class Bulk_Edit  {
 	private function _remove_value(Entities\Metadatum $metadatum, $value) {
 		global $wpdb;
 		$type = $metadatum->get_metadata_type_object();
+		$taxRepo = Repositories\Taxonomies::get_instance();
 
 		if ($type->get_primitive_type() == 'term') {
 
 			$options = $metadatum->get_metadata_type_options();
 			$taxonomy_id = $options['taxonomy_id'];
-			$tax = Repositories\Taxonomies::get_instance()->fetch($taxonomy_id);
+			$tax = $taxRepo->fetch($taxonomy_id);
 
 			if ($tax instanceof Entities\Taxonomy) {
 
-				$term = term_exists($value, $tax->get_db_identifier());
+				$term = $taxRepo->term_exists($tax, $value, null, true);
 
 				if (!$term) {
 					return 0;
 				}
 
-				if (is_WP_Error($term) || !isset($term['term_taxonomy_id'])) {
+				if ( !isset($term->term_taxonomy_id) ) {
 					return new \WP_Error( 'error', __( 'Term not found', 'tainacan' ) );
 				}
 
 				$delete_q = $this->_build_select( "post_id" );
 
-				$query = $wpdb->prepare( "DELETE FROM $wpdb->term_relationships WHERE term_taxonomy_id = %d AND object_id IN ($delete_q)", $term['term_taxonomy_id'] );
+				$query = $wpdb->prepare( "DELETE FROM $wpdb->term_relationships WHERE term_taxonomy_id = %d AND object_id IN ($delete_q)", $term->term_taxonomy_id );
 
 				return $wpdb->query($query);
 
@@ -565,42 +573,48 @@ class Bulk_Edit  {
 			return new \WP_Error( 'error', __( 'New value and old value can not be the same', 'tainacan' ) );
 		}
 		
+		$taxRepo = Repositories\Taxonomies::get_instance();
 		$type = $metadatum->get_metadata_type_object();
 
 		if ($type->get_primitive_type() == 'term') {
 
 			$options = $metadatum->get_metadata_type_options();
 			$taxonomy_id = $options['taxonomy_id'];
-			$tax = Repositories\Taxonomies::get_instance()->fetch($taxonomy_id);
+			$tax = $taxRepo->fetch($taxonomy_id);
 
 			if ($tax instanceof Entities\Taxonomy) {
 
 				// check old term
-				$term = term_exists($value, $tax->get_db_identifier());
+				$term = $taxRepo->term_exists($tax, $value, null, true);
 
 				if (!$term) {
 					return 0;
 				}
 
-				if (is_WP_Error($term) || !isset($term['term_taxonomy_id'])) {
+				if (is_WP_Error($term) || !isset($term->term_taxonomy_id)) {
 					return new \WP_Error( 'error', __( 'Term not found', 'tainacan' ) );
 				}
 				
 				// check new term
-				$newterm = term_exists($newvalue, $tax->get_db_identifier());
+				$newterm = $taxRepo->term_exists($tax, $newvalue, 0, true);
+				
 
-				if (!is_array($newterm)) {
+				if (false === $newterm) {
 					$newterm = wp_insert_term($newvalue, $tax->get_db_identifier());
+					if (is_WP_Error($newterm) || !isset($newterm['term_taxonomy_id'])) {
+						return new \WP_Error( 'error', __( 'Error adding term', 'tainacan' ) );
+					}
+					$newtermid = $newterm['term_taxonomy_id'];
+				} else {
+					$newtermid = $newterm->term_taxonomy_id;
 				}
 
-				if (is_WP_Error($newterm) || !isset($newterm['term_taxonomy_id'])) {
-					return new \WP_Error( 'error', __( 'Error adding term', 'tainacan' ) );
-				}
+				
 
-				$insert_q = $this->_build_select( $wpdb->prepare("post_id, %d", $newterm['term_taxonomy_id']) );
+				$insert_q = $this->_build_select( $wpdb->prepare("post_id, %d", $newtermid) );
 				
 				// only where old_value is present (this is what this method have different from the _add_value())
-				$insert_q .= $wpdb->prepare( " AND post_id IN(SELECT object_id FROM $wpdb->term_relationships WHERE term_taxonomy_id = %d)", $term['term_taxonomy_id'] );
+				$insert_q .= $wpdb->prepare( " AND post_id IN(SELECT object_id FROM $wpdb->term_relationships WHERE term_taxonomy_id = %d)", $term->term_taxonomy_id );
 				
 				$query = "INSERT IGNORE INTO $wpdb->term_relationships (object_id, term_taxonomy_id) $insert_q ";
 				

@@ -20,7 +20,9 @@
                             class="button is-white"
                             slot="trigger">
                         <span>{{ $i18n.get('label_bulk_actions') }}</span>
-                        <b-icon icon="menu-down"/>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                        </span>
                     </button> 
 
                     <b-dropdown-item
@@ -171,7 +173,7 @@
                                         v-if="bgProcess.done <= 0"
                                         class="icon has-text-gray action-icon"
                                         @click="pauseProcess(index)">
-                                    <i class="mdi mdi-18px mdi-stop-circle"/>
+                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-stop"/>
                                 </span>
                                 <span 
                                         v-tooltip="{
@@ -181,7 +183,7 @@
                                         }"
                                         v-if="bgProcess.done > 0 && !bgProcess.error_log"
                                         class="icon has-text-success">
-                                    <i class="mdi mdi-18px mdi-checkbox-marked-circle"/>
+                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-finish"/>
                                 </span>
                                 <span 
                                         v-tooltip="{
@@ -191,7 +193,7 @@
                                         }"
                                         v-if="bgProcess.done > 0 && bgProcess.error_log"
                                         class="icon has-text-danger">
-                                    <i class="mdi mdi-18px mdi-sync-alert" />
+                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-processerror" />
                                 </span>
                             </div>
                         </td>

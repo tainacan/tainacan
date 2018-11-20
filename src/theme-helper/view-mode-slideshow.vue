@@ -11,7 +11,9 @@
                 id="close-fullscren-button"
                 :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
                 @click="closeSlideViewMode()">
-            <b-icon icon="close" />
+            <span class="icon">
+                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-close"/>
+            </span>
         </button>
 
         <!-- METADATA LIST -->
@@ -23,7 +25,11 @@
                 }"  
                 id="metadata-compress-button"
                 @click="isMetadataCompressed = !isMetadataCompressed">
-            <b-icon :icon="isMetadataCompressed ? 'menu-right' : 'menu-left'" />
+            <span class="icon">
+                <i 
+                        :class="{ 'tainacan-icon-arrowright' : isMetadataCompressed, 'tainacan-icon-arrowleft' : !isMetadataCompressed }"
+                        class="tainacan-icon tainacan-icon-20px"/>
+            </span>
         </button>
 
         <aside
@@ -35,7 +41,9 @@
                 <button
                         id="close-metadata-button"
                         @click="isMetadataCompressed = true">
-                    <b-icon icon="close" />
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-close"/>
+                    </span>
                 </button>
                 <hr>
             </div>
@@ -47,9 +55,11 @@
                     class="collapse-all is-size-7"
                     @click="collapseAll = !collapseAll">
                 {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                <b-icon
-                        type="is-secondary"
-                        :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
+                <span class="icon">
+                    <i 
+                            :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll}"
+                            class="tainacan-icon tainacan-icon-20px"/>
+                </span>
             </a>
 
             <span 
@@ -61,6 +71,7 @@
 
             <div
                     v-for="(metadatum, index) of item.metadata"
+                    v-if="metadatum.value_as_html != undefined && metadatum.value_as_html != ''"
                     :key="index"
                     class="field">
                 <b-collapse :open="!collapseAll">
@@ -68,16 +79,25 @@
                             class="label has-text-white"
                             slot="trigger"
                             slot-scope="props">
-                        <b-icon
-                                type="is-secondary"
-                                :icon="props.open ? 'menu-down' : 'menu-right'"
-                        />
-                        {{ metadatum.name }}
+                        <span class="icon">
+                            <i 
+                                    :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open}"
+                                    class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                        </span>
+                        <span 
+                                v-tooltip="{
+                                    content: metadatum.name,
+                                    autoHide: false,
+                                    placement: 'auto-start'
+                                }"  
+                                class="ellipsed-text">
+                            {{ metadatum.name }}
+                        </span>
                     </label>
                     <div class="content">
                         <p  
                             class="has-text-white"
-                            v-html="metadatum.value_as_html != '' ? metadatum.value_as_html : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                            v-html="metadatum.value_as_html"/>
                     </div>
                 </b-collapse>
 
@@ -102,7 +122,7 @@
                             :style="{ visibility: (page > 1 && slideIndex <= 0) || slideIndex > 0 ? 'visible' : 'hidden' }"
                             class="slide-control-arrow arrow-left">
                         <span class="icon is-large">
-                            <icon class="mdi mdi-48px mdi-chevron-left"/>
+                            <icon class="tainacan-icon tainacan-icon-48px tainacan-icon-previous"/>
                         </span> 
                     </button>
                     <div     
@@ -124,9 +144,9 @@
                                     class="section">
                                 <div class="content has-text-gray4 has-text-centered">
                                     <p>
-                                        <b-icon
-                                                icon="file-multiple"
-                                                size="is-large"/>
+                                        <span class="icon is-large">
+                                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-items" />
+                                        </span>
                                     </p> 
                                     <p>{{ $i18n.get('info_no_item_found') }}</p>
                                 </div>
@@ -149,7 +169,7 @@
                             :style="{ visibility: (slideIndex < slideItems.length - 1) || page < totalPages ? 'visible' : 'hidden' }"
                             class="slide-control-arrow arrow-right">
                         <span class="icon is-large has-text-turoquoise5">
-                            <icon class="mdi mdi-48px mdi-chevron-right"/>
+                            <icon class="tainacan-icon tainacan-icon-48px tainacan-icon-next"/>
                         </span>
                     </button>
                 </section>
@@ -166,10 +186,11 @@
                                 :disabled="(slideIndex == slideItems.length - 1 && page == totalPages)"
                                 class="play-button"
                                 @click.stop.prevent="isPlaying = !isPlaying">
-                            <b-icon
-                                    type="is-secondary" 
-                                    size="is-medium"
-                                    :icon="isPlaying ? 'pause-circle' : 'play-circle' "/>
+                            <span class="icon">
+                                <i 
+                                        :class="{ 'tainacan-icon-pausefill' : isPlaying, 'tainacan-icon-playfill' : !isPlaying }"
+                                        class="has-text-secondary tainacan-icon tainacan-icon-30px"/>
+                            </span>
                             <circular-counter 
                                     v-if="isPlaying"
                                     :time="this.slideTimeout/1000" />
@@ -215,7 +236,7 @@
                             :style="{ visibility: (page > 1 && slideIndex <= 0) || slideIndex > 0 ? 'visible' : 'hidden' }"
                             class="slide-control-arrow slide-group-arrow arrow-left">
                         <span class="icon is-medium has-text-white">
-                            <icon class="mdi mdi-24px mdi-chevron-left"/>
+                            <icon class="tainacan-icon tainacan-icon-20px tainacan-icon-previous"/>
                         </span>
                     </button>
                     <button 
@@ -223,7 +244,7 @@
                             :style="{ visibility: (slideIndex < slideItems.length - 1) || page < totalPages ? 'visible' : 'hidden' }"
                             class="slide-control-arrow slide-group-arrow arrow-right">
                         <span class="icon is-medium has-text-white">
-                            <icon class="mdi mdi-24px mdi-chevron-right"/>
+                            <icon class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
                         </span>
                     </button>
                 </div>
