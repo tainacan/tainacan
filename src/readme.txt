@@ -77,7 +77,7 @@ If you have Imagick installed in your server, Tainacan will be able to automatic
 
 == Screenshots ==
  
-1. Manage collections
+1. Manage your repository
 2. Set up your collection
 3. Choose the metadata and filters for your collection
 4. Add items described by your metadata
