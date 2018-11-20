@@ -12,7 +12,7 @@
                 field="label"
                 attached
                 @typing="search"
-                :placeholder="(type == 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_add_items') : $i18n.get('info_type_to_add_metadata')">
+                :placeholder="(type == 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_add_metadata')">
             <template slot-scope="props">
                 <div class="media">
                     <div

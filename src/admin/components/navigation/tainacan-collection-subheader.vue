@@ -260,7 +260,6 @@ export default {
             background-color: $gray1;
             color: $turquoise4;
             display: flex;
-            align-items: center;
 
             button, 
             button:hover, 
@@ -270,6 +269,7 @@ export default {
                 color: $turquoise4;
                 background-color: transparent !important;
                 border: none;
+                height: 42px !important;
                 .icon {
                     margin-top: -2px;
                     font-size: 24px;
