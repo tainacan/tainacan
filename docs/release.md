@@ -27,12 +27,6 @@ Edit `src/readme.txt` and `src/tainacan.php` and change the version numbers to `
 
 Edit `webpack.config.js` to set production mode.
 
-### Commit and create tag
-
-```
-git commit -am "Releasing verion $NEW_VERSION"
-```
-
 ### Build and cleanup 
 
 ```
@@ -73,7 +67,7 @@ cp $GIT_PATH/wp-repo-assets/* $SVN_PATH/assets/
 Go to the SVN folder
 
 ```
-cd $SVN_PATH/trunk
+cd $SVN_PATH
 ```
 
 `svn rm` all files that have been removed
@@ -94,9 +88,24 @@ Commit!
 svn ci
 ```
 
-### Create tag on git
+### Check
+
+In few minutes the new release should be available in the WordPress directory. 
+
+Check if everything is ok.
+
+### Commit and create tag on git
+
+Once the release is tested and confirmed, commit and create the tag on git.
+
+Don't forget to undo the changes to `webpack.config.js`, setting production mode to false again.
 
 ```
+cd $GIT_PATH
+
+git checkout webpack.config.js
+
+git commit -am "Releasing verion $NEW_VERSION"
 git tag $NEW_VERSION
 git checkout master
 git merge develop
@@ -104,8 +113,5 @@ git push --all
 git push --tags
 ```
 
-### Set build back to development mode
-
-Once you go back to develop branch, remember editing `webpack.config.js` to set production mode to false.
 
 
