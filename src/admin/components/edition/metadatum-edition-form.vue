@@ -4,228 +4,228 @@
             class="tainacan-form"
             :class="{ 'inCollapse': !isOnModal }"
             @submit.prevent="saveEdition(editForm)">
-
-        <b-field
-                :addons="false"
-                :type="formErrors['name'] != undefined ? 'is-danger' : ''"
-                :message="formErrors['name'] != undefined ? formErrors['name'] : ''">
-            <label class="label is-inline-block">
-                {{ $i18n.get('label_name') }}
-                <span
-                        class="required-metadatum-asterisk"
-                        :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span>
-                <help-button
-                        :title="$i18n.getHelperTitle('metadata', 'name')"
-                        :message="$i18n.getHelperMessage('metadata', 'name')"/>
-            </label>
-            <b-input
-                    v-model="editForm.name"
-                    name="name"
-                    @focus="clearErrors('name')"/>
-        </b-field>
-
-        <!-- Hook for extra Form options -->
-        <template 
-                v-if="formHooks != undefined && 
-                    formHooks['metadatum'] != undefined &&
-                    formHooks['metadatum']['begin-left'] != undefined">  
-            <form 
-                id="form-metadatum-begin-left"
-                v-html="formHooks['metadatum']['begin-left'].join('')"/>
-        </template>
-
-        <b-field
-                :addons="false"
-                :type="formErrors['description'] != undefined ? 'is-danger' : ''"
-                :message="formErrors['description'] != undefined ? formErrors['description'] : ''">
-            <label class="label is-inline-block">
-                {{ $i18n.get('label_description') }}
-                <help-button
-                        :title="$i18n.getHelperTitle('metadata', 'description')"
-                        :message="$i18n.getHelperMessage('metadata', 'description')"/>
-            </label>
-            <b-input
-                    type="textarea"
-                    name="description"
-                    v-model="editForm.description"
-                    @focus="clearErrors('description')"/>
-        </b-field>
-            
-        <b-field
-                :addons="false">
-            <label class="label is-inline-block">
-                {{ $i18n.get('label_semantic_uri') }}
-                <help-button
-                        :title="$i18n.getHelperTitle('metadata', 'semantic_uri')"
-                        :message="$i18n.getHelperMessage('metadata', 'semantic_uri')"/>
-            </label>
-            <b-input
-                    v-model="editForm.semantic_uri"
-                    name="semantic_uri"
-                    type="url"
-                    @focus="clearErrors('semantic_uri')"/>
-        </b-field>
-
-        <b-field
-                :addons="false"
-                :type="formErrors['status'] != undefined ? 'is-danger' : ''"
-                :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
-            <label class="label is-inline-block">
-                {{ $i18n.get('label_status') }}
-                <help-button
-                        :title="$i18n.getHelperTitle('metadata', 'status')"
-                        :message="$i18n.getHelperMessage('metadata', 'status')"/>
-            </label>
-            <b-field>
-                <b-radio
-                        size="is-small"
-                        @focus="clearErrors('label_status')"
-                        id="tainacan-select-status-publish"
-                        name="status"
-                        v-model="editForm.status"
-                        native-value="publish">
-                    {{ $i18n.get('publish_visibility') }}
-                </b-radio>
-            </b-field>
-            <b-field>
-                <b-radio
-                        size="is-small"
-                        @focus="clearErrors('label_status')"
-                        id="tainacan-select-status-private"
-                        name="status"
-                        v-model="editForm.status"
-                        native-value="private">
-                    {{ $i18n.get('private_visibility') }}
-                </b-radio>
-            </b-field>
-        </b-field>
-
-        <!-- Display on listing -->
-        <b-field
-                :type="formErrors['display'] != undefined ? 'is-danger' : ''"
-                :message="formErrors['display'] != undefined ? formErrors['display'] : ''" 
-                :addons="false">
-            <label class="label is-inline-block">
-                {{ $i18n.get('label_display') }}
-                <help-button
-                        :title="$i18n.getHelperTitle('metadata', 'display')"
-                        :message="$i18n.getHelperMessage('metadata', 'display')"/>
-
-            </label>
-
-            <b-field>
-                <b-radio
-                        size="is-small"
-                        @input="clearErrors('display')"
-                        v-model="editForm.display"
-                        native-value="yes"
-                        name="display">
-                    {{ $i18n.get('label_display_default') }}
-                </b-radio>
-            </b-field>
-
-            <b-field>
-                <b-radio
-                        size="is-small"
-                        @input="clearErrors('display')"
-                        v-model="editForm.display"
-                        native-value="no"
-                        name="display">
-                    {{ $i18n.get('label_not_display') }}
-                </b-radio>
-            </b-field>
-
-            <b-field>
-                <b-radio
-                        size="is-small"
-                        v-model="editForm.display"
-                        @input="clearErrors('display')"
-                        native-value="never"
-                        name="display">
-                    {{ $i18n.get('label_display_never') }}
-                </b-radio>
-            </b-field>
-
-        </b-field>
-
-        <b-field :addons="false">
-            <label class="label is-inline-block">{{ $i18n.get('label_options') }}</label>
+        <div class="options-columns">
             <b-field
-                    :type="formErrors['required'] != undefined ? 'is-danger' : ''"
-                    :message="formErrors['required'] != undefined ? formErrors['required'] : ''">
-                <b-checkbox
-                        size="is-small"
-                        @input="clearErrors('required')"
-                        v-model="editForm.required"
-                        true-value="yes"
-                        false-value="no"
-                        class="is-inline-block"
-                        name="required">
-                    {{ $i18n.get('label_required') }}
+                    :addons="false"
+                    :type="formErrors['name'] != undefined ? 'is-danger' : ''"
+                    :message="formErrors['name'] != undefined ? formErrors['name'] : ''">
+                <label class="label is-inline-block">
+                    {{ $i18n.get('label_name') }}
+                    <span
+                            class="required-metadatum-asterisk"
+                            :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span>
                     <help-button
-                            :title="$i18n.getHelperTitle('metadata', 'required')"
-                            :message="$i18n.getHelperMessage('metadata', 'required')"/>
-                </b-checkbox>
+                            :title="$i18n.getHelperTitle('metadata', 'name')"
+                            :message="$i18n.getHelperMessage('metadata', 'name')"/>
+                </label>
+                <b-input
+                        v-model="editForm.name"
+                        name="name"
+                        @focus="clearErrors('name')"/>
+            </b-field>
+
+            <!-- Hook for extra Form options -->
+            <template 
+                    v-if="formHooks != undefined && 
+                        formHooks['metadatum'] != undefined &&
+                        formHooks['metadatum']['begin-left'] != undefined">  
+                <form 
+                    id="form-metadatum-begin-left"
+                    v-html="formHooks['metadatum']['begin-left'].join('')"/>
+            </template>
+
+            <b-field
+                    :addons="false"
+                    :type="formErrors['description'] != undefined ? 'is-danger' : ''"
+                    :message="formErrors['description'] != undefined ? formErrors['description'] : ''">
+                <label class="label is-inline-block">
+                    {{ $i18n.get('label_description') }}
+                    <help-button
+                            :title="$i18n.getHelperTitle('metadata', 'description')"
+                            :message="$i18n.getHelperMessage('metadata', 'description')"/>
+                </label>
+                <b-input
+                        type="textarea"
+                        name="description"
+                        v-model="editForm.description"
+                        @focus="clearErrors('description')"/>
+            </b-field>
+                
+            <b-field
+                    :addons="false">
+                <label class="label is-inline-block">
+                    {{ $i18n.get('label_semantic_uri') }}
+                    <help-button
+                            :title="$i18n.getHelperTitle('metadata', 'semantic_uri')"
+                            :message="$i18n.getHelperMessage('metadata', 'semantic_uri')"/>
+                </label>
+                <b-input
+                        v-model="editForm.semantic_uri"
+                        name="semantic_uri"
+                        type="url"
+                        @focus="clearErrors('semantic_uri')"/>
             </b-field>
 
             <b-field
-                    v-if="!originalMetadatum.metadata_type_object.core"
-                    :type="formErrors['multiple'] != undefined ? 'is-danger' : ''"
-                    :message="formErrors['multiple'] != undefined ? formErrors['multiple'] : ''">
-                <b-checkbox
-                        size="is-small"
-                        @input="clearErrors('multiple')"
-                        v-model="editForm.multiple"
-                        true-value="yes"
-                        false-value="no"
-                        class="is-inline-block"
-                        name="multiple">
-                    {{ $i18n.get('label_allow_multiple') }}
+                    :addons="false"
+                    :type="formErrors['status'] != undefined ? 'is-danger' : ''"
+                    :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
+                <label class="label is-inline-block">
+                    {{ $i18n.get('label_status') }}
                     <help-button
-                            :title="$i18n.getHelperTitle('metadata', 'multiple')"
-                            :message="$i18n.getHelperMessage('metadata', 'multiple')"/>
-                </b-checkbox>    
+                            :title="$i18n.getHelperTitle('metadata', 'status')"
+                            :message="$i18n.getHelperMessage('metadata', 'status')"/>
+                </label>
+                <b-field>
+                    <b-radio
+                            size="is-small"
+                            @focus="clearErrors('label_status')"
+                            id="tainacan-select-status-publish"
+                            name="status"
+                            v-model="editForm.status"
+                            native-value="publish">
+                        {{ $i18n.get('publish_visibility') }}
+                    </b-radio>
+                </b-field>
+                <b-field>
+                    <b-radio
+                            size="is-small"
+                            @focus="clearErrors('label_status')"
+                            id="tainacan-select-status-private"
+                            name="status"
+                            v-model="editForm.status"
+                            native-value="private">
+                        {{ $i18n.get('private_visibility') }}
+                    </b-radio>
+                </b-field>
             </b-field>
 
+            <!-- Display on listing -->
             <b-field
-                    :type="formErrors['collection_key'] != undefined ? 'is-danger' : ''"
-                    :message="formErrors['collection_key'] != undefined ? formErrors['collection_key'] : ''">
-                <b-checkbox
-                        size="is-small"
-                        @input="clearErrors('collection_key')"
-                        v-model="editForm.collection_key"
-                        true-value="yes"
-                        false-value="no"
-                        class="is-inline-block"
-                        name="collecion_key">
-                    {{ $i18n.get('label_unique_value') }}
+                    :type="formErrors['display'] != undefined ? 'is-danger' : ''"
+                    :message="formErrors['display'] != undefined ? formErrors['display'] : ''" 
+                    :addons="false">
+                <label class="label is-inline-block">
+                    {{ $i18n.get('label_display') }}
                     <help-button
-                            :title="$i18n.getHelperTitle('metadata', 'collection_key')"
-                            :message="$i18n.getHelperMessage('metadata', 'collection_key')"/>
-                </b-checkbox>
+                            :title="$i18n.getHelperTitle('metadata', 'display')"
+                            :message="$i18n.getHelperMessage('metadata', 'display')"/>
+
+                </label>
+
+                <b-field>
+                    <b-radio
+                            size="is-small"
+                            @input="clearErrors('display')"
+                            v-model="editForm.display"
+                            native-value="yes"
+                            name="display">
+                        {{ $i18n.get('label_display_default') }}
+                    </b-radio>
+                </b-field>
+
+                <b-field>
+                    <b-radio
+                            size="is-small"
+                            @input="clearErrors('display')"
+                            v-model="editForm.display"
+                            native-value="no"
+                            name="display">
+                        {{ $i18n.get('label_not_display') }}
+                    </b-radio>
+                </b-field>
+
+                <b-field>
+                    <b-radio
+                            size="is-small"
+                            v-model="editForm.display"
+                            @input="clearErrors('display')"
+                            native-value="never"
+                            name="display">
+                        {{ $i18n.get('label_display_never') }}
+                    </b-radio>
+                </b-field>
+
             </b-field>
-        </b-field>
 
-        <component
-                :errors="formErrors['metadata_type_options']"
-                v-if="(editForm.metadata_type_object && editForm.metadata_type_object.form_component) || editForm.edit_form == ''"
-                :is="editForm.metadata_type_object.form_component"
-                :metadatum="editForm"
-                v-model="editForm.metadata_type_options"/>
-        <div
-                v-html="editForm.edit_form"
-                v-else/>
+            <b-field :addons="false">
+                <label class="label is-inline-block">{{ $i18n.get('label_options') }}</label>
+                <b-field
+                        :type="formErrors['required'] != undefined ? 'is-danger' : ''"
+                        :message="formErrors['required'] != undefined ? formErrors['required'] : ''">
+                    <b-checkbox
+                            size="is-small"
+                            @input="clearErrors('required')"
+                            v-model="editForm.required"
+                            true-value="yes"
+                            false-value="no"
+                            class="is-inline-block"
+                            name="required">
+                        {{ $i18n.get('label_required') }}
+                        <help-button
+                                :title="$i18n.getHelperTitle('metadata', 'required')"
+                                :message="$i18n.getHelperMessage('metadata', 'required')"/>
+                    </b-checkbox>
+                </b-field>
 
-        <!-- Hook for extra Form options -->
-        <template 
-                v-if="formHooks != undefined && 
-                    formHooks['metadatum'] != undefined &&
-                    formHooks['metadatum']['end-left'] != undefined">  
-            <form 
-                id="form-metadatum-end-left"
-                v-html="formHooks['metadatum']['end-left'].join('')"/>
-        </template>
+                <b-field
+                        v-if="!originalMetadatum.metadata_type_object.core"
+                        :type="formErrors['multiple'] != undefined ? 'is-danger' : ''"
+                        :message="formErrors['multiple'] != undefined ? formErrors['multiple'] : ''">
+                    <b-checkbox
+                            size="is-small"
+                            @input="clearErrors('multiple')"
+                            v-model="editForm.multiple"
+                            true-value="yes"
+                            false-value="no"
+                            class="is-inline-block"
+                            name="multiple">
+                        {{ $i18n.get('label_allow_multiple') }}
+                        <help-button
+                                :title="$i18n.getHelperTitle('metadata', 'multiple')"
+                                :message="$i18n.getHelperMessage('metadata', 'multiple')"/>
+                    </b-checkbox>    
+                </b-field>
 
+                <b-field
+                        :type="formErrors['collection_key'] != undefined ? 'is-danger' : ''"
+                        :message="formErrors['collection_key'] != undefined ? formErrors['collection_key'] : ''">
+                    <b-checkbox
+                            size="is-small"
+                            @input="clearErrors('collection_key')"
+                            v-model="editForm.collection_key"
+                            true-value="yes"
+                            false-value="no"
+                            class="is-inline-block"
+                            name="collecion_key">
+                        {{ $i18n.get('label_unique_value') }}
+                        <help-button
+                                :title="$i18n.getHelperTitle('metadata', 'collection_key')"
+                                :message="$i18n.getHelperMessage('metadata', 'collection_key')"/>
+                    </b-checkbox>
+                </b-field>
+            </b-field>
+
+            <component
+                    :errors="formErrors['metadata_type_options']"
+                    v-if="(editForm.metadata_type_object && editForm.metadata_type_object.form_component) || editForm.edit_form == ''"
+                    :is="editForm.metadata_type_object.form_component"
+                    :metadatum="editForm"
+                    v-model="editForm.metadata_type_options"/>
+            <div
+                    v-html="editForm.edit_form"
+                    v-else/>
+
+            <!-- Hook for extra Form options -->
+            <template 
+                    v-if="formHooks != undefined && 
+                        formHooks['metadatum'] != undefined &&
+                        formHooks['metadatum']['end-left'] != undefined">  
+                <form 
+                    id="form-metadatum-end-left"
+                    v-html="formHooks['metadatum']['end-left'].join('')"/>
+            </template>
+        </div>
         <div class="field is-grouped form-submit">
             <div class="control">
                 <button
@@ -387,11 +387,30 @@
 
     @import "../../scss/_variables.scss";
 
-    form.inCollapse {
-        padding: 1.0em 2.0em;
+    form#metadatumEditForm.inCollapse {
+        padding: 1.5rem $page-side-padding 0.5rem $page-side-padding;
         border-top: 1px solid $gray2;
         border-bottom: 1px solid $gray2;
         margin-top: 1.0em;
+
+        .options-columns {
+            -moz-column-count: 2;
+            -moz-column-gap: 0;
+            -moz-column-rule: none;
+            -webkit-column-count: 2;
+            -webkit-column-gap: 0;
+            -webkit-column-rule: none;
+            column-count: 2;
+            column-gap: 4rem;
+            column-rule: none;
+            padding-bottom: 1.5rem;
+
+            &>.field, &>section {
+                -webkit-column-break-inside: avoid;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+        }
     }
 
 </style>
