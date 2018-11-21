@@ -51,7 +51,7 @@
                                 <label class="b-checkbox checkbox is-small">
                                     <input 
                                             v-model="selected"
-                                            :value="option.value"
+                                            :value="parseInt(option.value)"
                                             type="checkbox"> 
                                     <span class="check" /> 
                                     <span class="control-label">
@@ -98,7 +98,7 @@
                                         class="b-checkbox checkbox is-small">
                                     <input 
                                             v-model="selected"
-                                            :value="option.value"
+                                            :value="parseInt(option.value)"
                                             type="checkbox"> 
                                     <span class="check" /> 
                                     <span class="control-label">
@@ -113,7 +113,7 @@
                                 <b-radio
                                         v-else
                                         v-model="selected"
-                                        :native-value="option.value">
+                                        :native-value="parseInt(option.value)">
                                     {{ `${option.label}` }}
                                     <span 
                                             v-if="isFilter && option.total_items != undefined"
@@ -213,7 +213,7 @@
                                 class="b-checkbox checkbox is-small">
                             <input                                     
                                     v-model="selected"
-                                    :value="option.id ? option.id : option.value"
+                                    :value="option.id ? parseInt(option.id) : parseInt(option.value)"
                                     type="checkbox"> 
                             <span class="check" /> 
                             <span class="control-label">
@@ -228,7 +228,7 @@
                         <b-radio
                                 v-else
                                 v-model="selected"
-                                :native-value="option.id ? option.id : option.value">
+                                :native-value="option.id ? parseInt(option.id) : parseInt(option.value)">
                             {{ `${ option.name ? limitChars(option.name) : limitChars(option.label) }` }}
                             <span 
                                     v-if="isFilter && option.total_items != undefined"
