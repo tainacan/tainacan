@@ -51,7 +51,7 @@
                                 <label class="b-checkbox checkbox is-small">
                                     <input 
                                             v-model="selected"
-                                            :value="parseInt(option.value)"
+                                            :value="option.value"
                                             type="checkbox"> 
                                     <span class="check" /> 
                                     <span class="control-label">
@@ -98,7 +98,7 @@
                                         class="b-checkbox checkbox is-small">
                                     <input 
                                             v-model="selected"
-                                            :value="parseInt(option.value)"
+                                            :value="(isNaN(Number(option.value)) ? option.value : Number(option.value))"
                                             type="checkbox"> 
                                     <span class="check" /> 
                                     <span class="control-label">
@@ -113,7 +113,7 @@
                                 <b-radio
                                         v-else
                                         v-model="selected"
-                                        :native-value="parseInt(option.value)">
+                                        :native-value="(isNaN(Number(option.value)) ? option.value : Number(option.value))">
                                     {{ `${option.label}` }}
                                     <span 
                                             v-if="isFilter && option.total_items != undefined"
@@ -213,7 +213,7 @@
                                 class="b-checkbox checkbox is-small">
                             <input                                     
                                     v-model="selected"
-                                    :value="option.id ? parseInt(option.id) : parseInt(option.value)"
+                                    :value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.id)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))"
                                     type="checkbox"> 
                             <span class="check" /> 
                             <span class="control-label">
@@ -228,7 +228,7 @@
                         <b-radio
                                 v-else
                                 v-model="selected"
-                                :native-value="option.id ? parseInt(option.id) : parseInt(option.value)">
+                                :native-value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.value)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))">
                             {{ `${ option.name ? limitChars(option.name) : limitChars(option.label) }` }}
                             <span 
                                     v-if="isFilter && option.total_items != undefined"
@@ -449,7 +449,7 @@
                     this.isSearchingLoading = true;
                     let query_items = { 'current_query': this.query };
 
-                    let query = `?order=asc&number=${this.maxNumSearchResultsShow}&search=${this.optionName}&` + qs.stringify(query_items);
+                    let query = `?order=asc&number=${this.maxNumSearchResultsShow}&searchterm=${this.optionName}&` + qs.stringify(query_items);
 
                     if (!this.isFilter)
                         query += '&hideempty=0';
