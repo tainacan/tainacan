@@ -541,9 +541,10 @@
                                 !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                         class="loading-container">
                     <b-loading 
-                            :is-full-page="!isOnTheme"
+                            :is-full-page="false"
                             :active="showLoading"/>
-                </div>
+                </div>  
+
                 <div
                         v-if="openAdvancedSearch && advancedSearchResults">
                     <div class="advanced-search-results-title">
@@ -851,7 +852,7 @@
                 'getOrder',
                 'getViewMode',
                 'getTotalItems',
-                'getAdminViewMode'
+                'getAdminViewMode',
             ]),
             onSwipeFiltersMenu($event) {
                 if (this.registeredViewModes[this.viewMode] == undefined || 

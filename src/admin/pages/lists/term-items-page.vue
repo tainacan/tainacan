@@ -521,7 +521,7 @@
                         v-show="isLoadingItems"
                         class="loading-container">
                     <b-loading 
-                            :is-full-page="!isOnTheme"
+                            :is-full-page="false"
                             :active="showLoading"/>
                 </div>
                 <div
