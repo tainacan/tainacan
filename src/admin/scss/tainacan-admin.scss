@@ -49,6 +49,16 @@ html {
     font-family: $family-sans-serif;
 }
 
+// Tainacan Loading
+.loading-overlay .loading-icon::after {
+    background-image: url('../../admin/images/tainacan_loading.gif');
+    border: none;
+    border-radius: 0;
+    animation: none;
+    height: 90px;
+    width: 90px;
+}
+
 // Link (hover is the same color as secondary
 a:hover {
     color: $secondary;

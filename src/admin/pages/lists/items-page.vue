@@ -53,9 +53,9 @@
                         !openAdvancedSearch && 
                         !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="filters-menu tainacan-form is-hidden-mobile">
-            <b-loading
+            <!-- <b-loading
                     :is-full-page="false"
-                    :active.sync="isLoadingFilters"/>
+                    :active.sync="isLoadingFilters"/> -->
 
             <div class="search-area is-hidden-mobile">
                 <div class="control has-icons-right  is-small is-clearfix">
@@ -148,9 +148,9 @@
                     ref="search-control"
                     v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                     class="search-control">
-                <b-loading
+                <!-- <b-loading
                         :is-full-page="false"
-                        :active.sync="isLoadingMetadata"/>
+                        :active.sync="isLoadingMetadata"/> -->
                 <!-- Item Creation Dropdown, only on Admin -->
                 <div 
                         class="search-control-item"
@@ -541,8 +541,8 @@
                                 !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                         class="loading-container">
                     <b-loading 
-                            :is-full-page="false"
-                            :active.sync="isLoadingItems"/>
+                            :is-full-page="!isOnTheme"
+                            :active="showLoading"/>
                 </div>
                 <div
                         v-if="openAdvancedSearch && advancedSearchResults">
@@ -804,6 +804,9 @@
             },
             order() {
                 return this.getOrder();
+            },
+            showLoading() {
+                return this.isLoadingItems || this.isLoadingFilters || this.isLoadingMetadata;
             }
         },
         components: {
@@ -1208,7 +1211,6 @@
 
             this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
                 this.isLoadingItems = isLoadingItems;
-
             });
 
             this.$eventBusSearch.$on('hasFiltered', hasFiltered => {

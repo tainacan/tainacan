@@ -283,7 +283,7 @@ export default {
             .catch(() => {
                 this.isLoadingMetadatumMappers = false;
             });
-    },
+    }, 
     mounted(){
         if (this.collectionsPerPage != this.$userPrefs.get('collections_per_page'))
             this.collectionsPerPage = this.$userPrefs.get('collections_per_page');
