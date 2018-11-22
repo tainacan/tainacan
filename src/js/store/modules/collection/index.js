@@ -13,7 +13,9 @@ const state = {
     attachments: [],
     collectionCommentStatus: '',
     collectionAllowComments: '',
-    files: []
+    files: [],
+    collectionTotalItems: {},
+    repositoryTotalCollections: '',
 };
 
 export default {

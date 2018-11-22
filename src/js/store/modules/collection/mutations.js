@@ -1,5 +1,13 @@
 import Vue from 'vue';
 
+export const setRepositoryTotalCollections = (state, repositoryTotalCollections) => {
+    state.repositoryTotalCollections = repositoryTotalCollections;
+}
+
+export const setCollectionTotalItems = (state, collectionTotalItems) => {
+    state.collectionTotalItems = collectionTotalItems;
+}
+
 export const setItems = ( state, items ) => {
     state.items = items;
 }

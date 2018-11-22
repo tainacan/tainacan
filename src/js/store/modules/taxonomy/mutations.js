@@ -1,6 +1,10 @@
 import Vue from 'vue';
 import t from 't';
 
+export const setRepositoryTotalTaxonomies = (state, repositoryTotalTaxonomies) => {
+    state.repositoryTotalTaxonomies = repositoryTotalTaxonomies;
+};
+
 // TAXONOMIES
 export const setTaxonomy = (state, taxonomy) => {
     state.taxonomy = taxonomy;

@@ -26,13 +26,19 @@
                     <ul>
                         <li 
                                 @click="onChangeTab('')"
-                                :class="{ 'is-active': status == undefined || status == ''}"><a>{{ $i18n.get('label_all_items') }}</a></li>
+                                :class="{ 'is-active': status == undefined || status == ''}">
+                            <a>{{ `${$i18n.get('label_all_taxonomies')}${` ${repositoryTotalTaxonomies ? `(${Number(repositoryTotalTaxonomies.private) + Number(repositoryTotalTaxonomies.publish)})` : '' }`}` }}</a>
+                        </li>
                         <li 
                                 @click="onChangeTab('draft')"
-                                :class="{ 'is-active': status == 'draft'}"><a>{{ $i18n.get('label_draft_items') }}</a></li>
+                                :class="{ 'is-active': status == 'draft'}">
+                            <a>{{ `${$i18n.get('label_draft_items')}${` ${repositoryTotalTaxonomies ? `(${repositoryTotalTaxonomies.draft})` : '' }`}` }}</a>
+                        </li>
                         <li 
                                 @click="onChangeTab('trash')"
-                                :class="{ 'is-active': status == 'trash'}"><a>{{ $i18n.get('label_trash_items') }}</a></li>
+                                :class="{ 'is-active': status == 'trash'}">
+                            <a>{{ `${$i18n.get('label_draft_items')}${` ${repositoryTotalTaxonomies ? `(${repositoryTotalTaxonomies.draft})` : '' }`}` }}</a>
+                        </li>
                     </ul>
                 </div>
                 <div>
@@ -133,7 +139,8 @@
                 'fetch',
             ]),
             ...mapGetters('taxonomy', [
-                'get'
+                'get',
+                'getRepositoryTotalTaxonomies'
             ]),
             onChangeTab(status) {
                 this.status = status;
@@ -177,6 +184,9 @@
         computed: {
             taxonomies(){
                 return this.get();
+            },
+            repositoryTotalTaxonomies(){
+                return this.getRepositoryTotalTaxonomies();
             }
         },
         created() {

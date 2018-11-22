@@ -229,6 +229,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_collapse_all'                             => __( 'Collapse all', 'tainacan' ),
 	'label_view_term'                                => __( 'View Term', 'tainacan' ),
 	'label_all_items'                                => __( 'All items', 'tainacan' ),
+	'label_all_collections'                          => __( 'All collections', 'tainacan' ),
+	'label_all_taxonomies'                           => __( 'All taxonomies', 'tainacan' ),
 	'label_draft_items'                              => __( 'Draft', 'tainacan' ),
 	'label_trash_items'                              => __( 'Trash', 'tainacan' ),
 	'label_bulk_actions'                             => __( 'Bulk actions', 'tainacan' ),

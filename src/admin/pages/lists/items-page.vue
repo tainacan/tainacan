@@ -522,14 +522,20 @@
                 <ul>
                     <li 
                             @click="onChangeTab('')"
-                            :class="{ 'is-active': status == undefined || status == ''}"><a>{{ $i18n.get('label_all_items') }}</a></li>
+                            :class="{ 'is-active': status == undefined || status == ''}">
+                        <a>{{ `${$i18n.get('label_all_items')}${collection ? ` (${Number(collection.total_items.private) + Number(collection.total_items.publish)})` : ` (${repositoryTotalItems ? repositoryTotalItems.private + repositoryTotalItems.publish : ''})`}` }}</a>
+                    </li>
                     <li 
                             @click="onChangeTab('draft')"
-                            :class="{ 'is-active': status == 'draft'}"><a>{{ $i18n.get('label_draft_items') }}</a></li>
+                            :class="{ 'is-active': status == 'draft'}">
+                        <a>{{ `${$i18n.get('label_draft_items')}${collection ? ` (${collection.total_items.draft})` : ` (${repositoryTotalItems ? repositoryTotalItems.draft : ''})`}` }}</a>
+                    </li>
                     <li
                             v-if="!isRepositoryLevel"
                             @click="onChangeTab('trash')"
-                            :class="{ 'is-active': status == 'trash'}"><a>{{ $i18n.get('label_trash_items') }}</a></li>
+                            :class="{ 'is-active': status == 'trash'}">
+                        <a>{{ `${$i18n.get('label_trash_items')}${collection ? ` (${collection.total_items.trash})` : ` (${repositoryTotalItems ? repositoryTotalItems.trash : ''})`}` }}</a>
+                    </li>
                 </ul>
             </div>
 
@@ -764,7 +770,8 @@
                 isDoSearch: false,
                 searchControlHeight: 0,
                 sortingMetadata: [],
-                isFilterModalActive: false
+                isFilterModalActive: false,
+                collection: undefined
             }
         },
         props: {
@@ -773,6 +780,25 @@
             enabledViewModes: Object // Used only on theme
         },
         computed: {
+            repositoryTotalItems(){
+                let collections = this.getCollections();
+
+                let total_items = {
+                    trash: 0,
+                    publish: 0,
+                    draft: 0,
+                    private: 0
+                };
+
+                for(let collection of collections){
+                    total_items.trash += Number(collection.total_items.trash);
+                    total_items.draft += Number(collection.total_items.draft);
+                    total_items.publish += Number(collection.total_items.publish);
+                    total_items.private += Number(collection.total_items.private);
+                }
+
+                return total_items;
+            },
             items() {
                 return this.getItems();
             },
@@ -829,9 +855,13 @@
             }
         },
         methods: {
+            ...mapActions('collection', [
+                'fetchCollectionTotalItems'
+            ]),
             ...mapGetters('collection', [
                 'getItems',
-                'getItemsListTemplate'
+                'getItemsListTemplate',
+                'getCollections'
             ]),
             ...mapActions('metadata', [
                 'fetchMetadata'
@@ -1202,7 +1232,14 @@
             }
         },
         created() {
-            
+
+            if(this.collectionId) {
+                this.fetchCollectionTotalItems(this.collectionId)
+                    .then((data) => {
+                        this.collection = data;
+                    })
+            }
+
             this.isOnTheme = (this.$route.name === null);
 
             this.isRepositoryLevel = (this.collectionId === undefined);

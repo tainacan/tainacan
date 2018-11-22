@@ -143,6 +143,14 @@ export const fetchCollections = ({commit} , { page, collectionsPerPage, status, 
         .then(res => {
             let collections = res.data;
             commit('setCollections', collections);
+
+            commit('setRepositoryTotalCollections', {
+                draft: res.headers['x-tainacan-total-collections-draft'],
+                trash: res.headers['x-tainacan-total-collections-trash'],
+                publish: res.headers['x-tainacan-total-collections-publish'],
+                private: res.headers['x-tainacan-total-collections-private'],
+            });
+
             resolve({'collections': collections, 'total': res.headers['x-wp-total'] });
         }) 
         .catch(error => {
@@ -187,6 +195,20 @@ export const fetchCollectionName = ({ commit }, id) => {
         .catch(error => {
             reject(error);
         })
+    });
+};
+
+export const fetchCollectionTotalItems = ({ commit }, id) => {
+
+    return new Promise ((resolve, reject) => {
+        axios.tainacan.get('/collections/' + id + '?fetch_only=name')
+            .then(res => {
+                commit('setCollectionTotalItems', res.data);
+                resolve( res.data );
+            })
+            .catch(error => {
+                reject(error);
+            })
     });
 };
 
