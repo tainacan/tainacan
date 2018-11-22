@@ -332,7 +332,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_documents_upload'                         => __( 'Documents upload', 'tainacan' ),
 	'label_added_items'                              => __( 'Added items', 'tainacan' ),
 	'label_filters_from'                             => __( 'Filters from', 'tainacan' ),
-	'label_available_exporters'                      => __( 'Available Exporters' ),
+	'label_available_exporters'                      => __( 'Available Exporters', 'tainacan' ),
+	'label_origin_collection'                        => __( 'Origin collection', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -365,11 +366,12 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_configure_new_metadatum'            => __( 'Configure new metadatum.', 'tainacan' ),
 	'instruction_insert_mapper_metadatum_info'       => __( 'Insert the new mapper\'s metadatum info', 'tainacan' ),
 	'instruction_select_max_options_to_show'         => __( 'Select max options to show', 'tainacan' ),
-	'instruction_select_collection_fetch_items'      => __( 'Select a collection to fecth items', 'tainacan' ),
+	'instruction_select_collection_fetch_items'      => __( 'Select a collection to fetch items', 'tainacan' ),
 	'instruction_select_a_action'                    => __( 'Select a action', 'tainacan' ),
 	'instruction_parent_term'                        => __( 'Type to search a Parent Term to choose.', 'tainacan' ),
 	'instruction_type_existing_term'                 => __( 'Type to add an existing term...', 'tainacan' ),
 	'instruction_select_an_exporter_type'            => __( 'Select an exporter type from the options above:', 'tainacan'),
+	'instruction_select_a_collection'                => __( 'Select a collection', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_error_invalid_date'                        => __( 'Invalid date', 'tainacan' ),

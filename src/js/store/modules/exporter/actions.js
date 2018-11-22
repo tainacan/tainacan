@@ -4,24 +4,22 @@ export const fetchAvailableExporters = ({commit}) => {
 
     return tainacan.get('/exporters/available')
         .then(response => {
-            console.info(response.data);
             return response.data;
         })
         .catch(error => {
-            console.error(error.response);
-            return error.response.data;
+            console.error(error.response.data);
         })
 };
 
-export const createExporterSession = ({commit}) => {
+export const createExporterSession = ({commit}, slug) => {
 
-    return tainacan.get()
+    return tainacan.post('/exporters/session', { exporter_slug: slug })
         .then(response => {
-            console.info(response.data);
+            commit('setExporterSession', response.data);
+
             return response.data;
         })
         .catch(error => {
-            console.error(error.response);
-            return error.response.data;
+            console.error(error.response.data);
         })
 };
