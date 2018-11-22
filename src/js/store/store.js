@@ -11,6 +11,7 @@ import event from './modules/event';
 import importer from './modules/importer';
 import bgprocess from './modules/bgprocess';
 import bulkedition from './modules/bulk-edition';
+import exporter from './modules/exporter';
 
 Vue.use(Vuex);
 
@@ -33,6 +34,7 @@ export default new Vuex.Store({
         event,
         importer,
         bgprocess,
-        bulkedition
+        bulkedition,
+        exporter
     }
 })

@@ -13,6 +13,8 @@ import FiltersPage from '../pages/lists/filters-page.vue'
 import Page from '../pages/lists/taxonomies-page.vue'
 import EventsPage from '../pages/lists/events-page.vue'
 import EventPage from '../pages/singles/event-page.vue'
+import AvailableExportersPage from '../pages/lists/available-exporters-page.vue'
+import AvailableImportersPage from '../pages/lists/available-importers-page.vue'
 import ExportPage from '../pages/singles/export-page.vue'
 
 // Edition Form Components
@@ -23,7 +25,7 @@ import ItemEditionForm from '../components/edition/item-edition-form.vue'
 import ItemBulkEditionForm from '../components/edition/item-bulk-edition-form.vue'
 import ItemMetadataBulkEditionForm from '../components/edition/item-metadata-bulk-edition-form.vue'
 import TaxonomyEditionForm from '../components/edition/taxonomy-edition-form.vue'
-import AvailableImportersPage from '../pages/lists/available-importers-page.vue'
+import ExporterEditionForm from '../components/edition/exporter-edition-form.vue'
 
 // Listing components
 import FiltersList from '../components/lists/filters-list.vue'
@@ -83,9 +85,11 @@ const routes = [
     { path: '/importers/:importerSlug/:sessionId', name: 'ImporterCreationForm', component: ImporterEditionForm, meta: { title: i18nGet('title_importer_page'), icon: 'import' } },
     { path: '/importers/:importerType/:sessionId/mapping/:collectionId', name: 'ImporterMappingForm', component: ImporterMappingForm, meta: {title: i18nGet('title_importer_mapping_page'), icon: 'import'} },
 
-    { path: '/export/collection/:collectionId', name: 'ExportCollection', component: ExportPage, meta: {title: i18nGet('title_export_collection_page'), icon: 'export'} },
-    { path: '/export/item/:itemId', name: 'ExportItem', component: ExportPage, meta: {title: i18nGet('title_export_item_page'), icon: 'export'} },
-    { path: '/export', name: 'Export', component: ExportPage, meta: {title: i18nGet('title_export_page'), icon: 'export'} },
+    { path: '/exporters/collection/:collectionId', name: 'ExportCollection', component: ExportPage, meta: {title: i18nGet('title_export_collection_page'), icon: 'export'} },
+    { path: '/exporters/item/:itemId', name: 'ExportItem', component: ExportPage, meta: {title: i18nGet('title_export_item_page'), icon: 'export'} },
+
+    { path: '/exporters', name: 'ExportersPage', component: AvailableExportersPage, meta: {title: i18nGet('title_exporters_page'), icon: 'export'} },
+    { path: '/exporters/:exporterSlug', name: 'ExporterEditionForm', component: ExporterEditionForm, meta: {title: i18nGet('title_exporter_page'), icon: 'export'}},
 
     { path: '*', redirect: '/'}
 ];
