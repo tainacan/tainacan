@@ -37,7 +37,7 @@
                         <li 
                                 @click="onChangeTab('trash')"
                                 :class="{ 'is-active': status == 'trash'}">
-                            <a>{{ `${$i18n.get('label_draft_items')}${` ${repositoryTotalTaxonomies ? `(${repositoryTotalTaxonomies.draft})` : '' }`}` }}</a>
+                            <a>{{ `${$i18n.get('label_trash_items')}${` ${repositoryTotalTaxonomies ? `(${repositoryTotalTaxonomies.trash})` : '' }`}` }}</a>
                         </li>
                     </ul>
                 </div>
