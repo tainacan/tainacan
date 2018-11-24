@@ -160,8 +160,9 @@ class Entity {
 
     	//prop is not set at object, try to get from database
     	$repository = $this->get_repository();
+		$value = $repository->get_mapped_property($this, $prop);
 
-        return $repository->get_mapped_property($this, $prop);
+        return apply_filters('tainacan-entity-get-property', $value, $prop, $this);
     }
     
     /**
@@ -175,6 +176,7 @@ class Entity {
      */
     protected function set_mapped_property($prop, $value) {
         $this->set_validated(false);
+		$value = apply_filters('tainacan-entity-set-property', $value, $prop, $this);
         $this->$prop = $value;
     }
 	
@@ -358,8 +360,10 @@ class Entity {
 	    foreach($map as $prop => $content) {
 		    $attributes[$prop] = $this->get_mapped_property($prop);
 	    }
-
-	    return $attributes;
+		
+		$hook_prefix = self::get_post_type();
+		
+		return apply_filters("{$hook_prefix}-to-array", $attributes, $this);
     }
 
 	public function  _toJson(){

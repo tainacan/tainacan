@@ -65,7 +65,7 @@ class Collection extends Entity {
 	static $db_identifier_sufix = '_item';
 
 	public function __toString() {
-		return 'Hello, my name is ' . $this->get_name();
+		return apply_filters("tainacan-collection-to-string", $this->get_name(), $this);
 	}
 
 	public function _toArray() {
@@ -78,7 +78,7 @@ class Collection extends Entity {
 		$array_collection['creation_date']     = $this->get_date_i18n( explode( ' ', $array_collection['creation_date'] )[0] );
 		$array_collection['modification_date'] = $this->get_date_i18n( explode( ' ', $array_collection['modification_date'] )[0] );
 
-		return $array_collection;
+		return apply_filters('tainacan-collection-to-array', $array_collection, $this);
 	}
 
 	/**
@@ -200,21 +200,22 @@ class Collection extends Entity {
 			}
 		}
 
-		return $attachments_prepared;
+		return apply_filters("tainacan-collection-get-attachments", $attachments_prepared, $exclude, $this);
 	}
 
     /**
 	 * @return string
 	 */
 	function get_author_name() {
-		return get_the_author_meta( 'display_name', $this->get_author_id() );
+		$name = get_the_author_meta( 'display_name', $this->get_author_id() );
+		return apply_filters("tainacan-collection-get-author-name", $name, $this);
 	}
 
 	/**
 	 * @return array
 	 */
 	function get_thumbnail() {
-		return array(
+		$thumbs = array(
 			'thumb'                => get_the_post_thumbnail_url( $this->get_id(), 'thumbnail' ),
 			'full'                 => get_the_post_thumbnail_url( $this->get_id(), 'full' ),
 			'medium'               => get_the_post_thumbnail_url( $this->get_id(), 'medium' ),
@@ -224,13 +225,15 @@ class Collection extends Entity {
 			'tainacan_medium'      => get_the_post_thumbnail_url( $this->get_id(), 'tainacan-medium' ),
 			'tainacan_medium_full' => get_the_post_thumbnail_url( $this->get_id(), 'tainacan-medium-full' ),
 		);
+		return apply_filters("tainacan-collection-get-thumbnail", $thumbs, $this);
 	}
 
 	/**
 	 * @return false|string
 	 */
 	function get_header_image(){
-		return wp_get_attachment_url( $this->get_header_image_id() );
+		$header_image = wp_get_attachment_url( $this->get_header_image_id() );
+		return apply_filters("tainacan-collection-get-header-image", $header_image, $this);
 	}
 
 	/**
