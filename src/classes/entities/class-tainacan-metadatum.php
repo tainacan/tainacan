@@ -48,7 +48,7 @@ class Metadatum extends Entity {
 	protected $repository = 'Metadata';
 	
 	public function  __toString(){
-		return 'Hello, my name is '. $this->get_name();
+		return apply_filters("tainacan-metadatum-to-string", $this->get_name(), $this);
 	}
 
 

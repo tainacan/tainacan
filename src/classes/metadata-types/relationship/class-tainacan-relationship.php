@@ -84,6 +84,9 @@ class Relationship extends Metadata_Type {
 			
 			$count = 1;
 			$total = sizeof($value);
+			$prefix = $item_metadata->get_multivalue_prefix();
+			$suffix = $item_metadata->get_multivalue_suffix();
+			$separator = $item_metadata->get_multivalue_separator();
 			
 			foreach ( $value as $item_id ) {
 				
@@ -91,15 +94,22 @@ class Relationship extends Metadata_Type {
 					
 					$item = new \Tainacan\Entities\Item($item_id);
 					
-					if ( $item instanceof \Tainacan\Entities\Item ) {
-						$return .= $item->_toHtml();
-					}
-					
 					$count ++;
 					
-					if ( $count <= $total ) {
-						$return .= ', ';
+					if ( $item instanceof \Tainacan\Entities\Item ) {
+						
+						$return .= $prefix;
+						
+						$return .= $item->_toHtml();
+						
+						$return .= $suffix;
+						
+						if ( $count <= $total ) {
+							$return .= $separator;
+						}
+						
 					}
+					
 					
 				} catch (Exception $e) {
 					// item not found 
