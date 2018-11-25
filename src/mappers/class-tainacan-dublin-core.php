@@ -1,6 +1,6 @@
 <?php
 
-namespace Tainacan\Exposers\Mappers;
+namespace Tainacan\Mappers;
 
 /**
  * Support Dublin Core Mapping 
@@ -13,69 +13,56 @@ class Dublin_Core extends Mapper {
 	public $allow_extra_metadata = true;
 	public $context_url = 'http://dublincore.org/documents/dcmi-terms/';
 	public $header = '<?xml version="1.0"?><!DOCTYPE rdf:RDF SYSTEM "http://dublincore.org/2000/12/01-dcmes-xml-dtd.dtd"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" ></rdf:RDF>';
-	public $prefix = 'dc:';
+	public $prefixes = [
+		'dc' => 'http://purl.org/dc/elements/1.1/'
+	];
 	public $metadata = [
-		'contributor' => [
-			'URI' => 'http://purl.org/dc/elements/1.1/contributor',
+		'dc:contributor' => [
 			'label' => 'Contributor'
 		],
-		'coverage' => [
-			'URI' => 'http://purl.org/dc/elements/1.1/coverage',
+		'dc:coverage' => [
 			'label' => 'Coverage'
 		],
-		'creator' => [
-			'URI' => 'http://purl.org/dc/elements/1.1/creator',
+		'dc:creator' => [
 			'label' => 'Creator'
 		],
-		'date' => [
-			'URI' => 'http://purl.org/dc/elements/1.1/date',
+		'dc:date' => [
 			'label' => 'Date',
             'metadata_type' => 'date'
 		],
-		'description' => [
-			'URI' => 'http://purl.org/dc/elements/1.1/description',
+		'dc:description' => [
 			'label' => 'Description',
 		    'core_metadatum' => 'description'
 		],
-		'format' => [
-			'URI' => 'http://purl.org/dc/elements/1.1/format',
+		'dc:format' => [
 			'label' => 'Format',
 		],
-		'identifier' => [
-			'URI' => 'http://purl.org/dc/elements/1.1/identifier',
+		'dc:identifier' => [
 			'label' => 'Identifier'
 		],
-		'language' => [
-			'URI' => 'http://purl.org/dc/elements/1.1/language',
+		'dc:language' => [
 			'label' => 'Language'
 		],
-		'publisher' => [
-			'URI' => 'http://purl.org/dc/elements/1.1/publisher',
+		'dc:publisher' => [
 			'label' => 'Publisher'
 		],
-		'relation' => [
-			'URI' => 'http://purl.org/dc/elements/1.1/relation',
+		'dc:relation' => [
 			'label' => 'Relation'
 		],
-		'rights' => [
-			'URI' => 'http://purl.org/dc/elements/1.1/rights',
+		'dc:rights' => [
 			'label' => 'Rights'
 		],
-		'source' => [
-			'URI' => 'http://purl.org/dc/elements/1.1/source',
+		'dc:source' => [
 			'label' => 'Source'
 		],
-		'subject' => [
-			'URI' => 'http://purl.org/dc/elements/1.1/subject',
+		'dc:subject' => [
 			'label' => 'Subject'
 		],
-		'title' => [
-			'URI' => 'http://purl.org/dc/elements/1.1/title',
+		'dc:title' => [
 			'label' => 'Title',
 		    'core_metadatum' => 'title'
 		],
-		'type' => [
-			'URI' => 'http://purl.org/dc/elements/1.1/type',
+		'dc:type' => [
 			'label' => 'Type'
 		]
 	];

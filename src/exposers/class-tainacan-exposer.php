@@ -1,12 +1,12 @@
 <?php
 
-namespace Tainacan\Exposers\Types;
+namespace Tainacan\Exposers;
 
 /**
  * abstract class for implement exposer types
  *
  */
-abstract class Type {
+abstract class Exposer {
 	
 	protected $mappers = true; // List of supported mapper, leave true for all
 	protected $extension = 'tnc'; // extension sufix for multi operation system compatibility

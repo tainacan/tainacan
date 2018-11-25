@@ -1,6 +1,6 @@
 <?php
 
-namespace Tainacan\Exposers\Mappers;
+namespace Tainacan\Mappers;
 
 abstract class Mapper {
 	public $slug = null; // Slug of Mapper, used as option on api call 
@@ -47,4 +47,23 @@ abstract class Mapper {
 			'header' => $this->header
 		];
 	}
+	
+	/**
+	 * Gets the semantic URL for a given metadatum of this mapper.
+	 * Basically it identifies the property prefix and replace it with the URL of that prefix
+	 * 
+	 * @param  string $meta_slug The slug of the metadata present in this mapper to get the URL from
+	 * @return string The semantic URL for this metadata. Empty string in case of failure
+	 */
+	public function get_url($meta_slug) {
+		$parts = explode(':', $meta_slug);
+		$url = '';
+		if (sizeof($parts) == 2) {
+			if (isset($this->prefixes[$parts[0]])) {
+				$url = trailingslashit( $this->prefixes[$parts[0]] ) . $parts[1];
+			} 
+		}
+		return $url;
+	}
+	
 }

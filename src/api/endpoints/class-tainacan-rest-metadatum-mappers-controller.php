@@ -65,9 +65,9 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$Tainacan_Exposers = \Tainacan\Exposers\Exposers::get_instance();
+		$Tainacan_Mappers = \Tainacan\Mappers_Handler::get_instance();
 
-		$metadatum_mappers = $Tainacan_Exposers->get_mappers( 'OBJECT' );
+		$metadatum_mappers = $Tainacan_Mappers->get_mappers( 'OBJECT' );
 
 		$prepared = [];
 		foreach ($metadatum_mappers as $metadatum_mapper){
@@ -101,7 +101,7 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 	           array_key_exists('metadata_mappers', $body) &&
 	           is_array($body['metadata_mappers']) &&
 	           count($body['metadata_mappers']) > 0 &&
-	           \Tainacan\Exposers\Exposers::request_has_mapper($request)
+	           \Tainacan\Mappers_Handler::request_has_mapper($request)
 	    ) {
 	        $metadatum_mapper = $body['metadata_mappers'][0];
 	        $metadatum = \Tainacan\Repositories\Repository::get_entity_by_post($metadatum_mapper['metadatum_id']);
@@ -118,10 +118,10 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function update_item( $request ) {
-	    $Tainacan_Exposers = \Tainacan\Exposers\Exposers::get_instance();
+	    $Tainacan_Mappers = \Tainacan\Mappers_Handler::get_instance();
 	    $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 	    $body = json_decode( $request->get_body(), true );
-	    if($mapper = $Tainacan_Exposers::request_has_mapper($request)) {
+	    if($mapper = $Tainacan_Mappers::request_has_mapper($request)) {
 	        if(count($body['metadata_mappers']) > 0) {
 	            $response = [];
 	            $saved = [];

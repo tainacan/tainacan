@@ -18,17 +18,15 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
             true
         );
         
-        $type = $this->tainacan_metadatum_factory->create_metadatum('text');
-        
         $metadatum = $this->tainacan_entity_factory->create_entity(
             'metadatum',
             array(
                 'name'              => 'test_MetadatumMappers',
                 'description'       => 'descricao',
                 'collection'        => $collection,
-                'metadata_type'		=> $type,
+                'metadata_type'		=> 'Tainacan\Metadata_Types\Text',
                 'exposer_mapping'	=> [
-                    'dublin-core' => 'language'
+                    'dublin-core' => 'dc:language'
                 ]
             ),
             true,
@@ -41,7 +39,22 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
                 'name'              => 'test_MetadatumMappers2',
                 'description'       => 'descricao2',
                 'collection'        => $collection,
-                'metadata_type'		=> $type
+                'metadata_type'		=> 'Tainacan\Metadata_Types\Text'
+            ),
+            true,
+            true
+        );
+		
+		$metadatum3 = $this->tainacan_entity_factory->create_entity(
+            'metadatum',
+            array(
+                'name'              => 'test_MetadatumMappers3',
+                'description'       => 'descricao3',
+                'collection'        => $collection,
+                'metadata_type'		=> 'Tainacan\Metadata_Types\Text',
+                'exposer_mapping'	=> [
+                    'dublin-core' => 'dc:creator'
+                ]
             ),
             true,
             true
@@ -60,6 +73,8 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
         $this->collection = $collection;
         $this->item = $item;
         $this->metadatum = $metadatum;
+        $this->metadatum2 = $metadatum2;
+        $this->metadatum3 = $metadatum3;
         return ['collection' => $collection, 'item' => $item, 'metadatum' => $metadatum, 'metadatum2' => $metadatum2];
     }
     
@@ -71,10 +86,10 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
 
 		$data = $metadatum_mapper_response->get_data();
 
-		$Tainacan_Metadata = \Tainacan\Exposers\Exposers::get_instance();
+		$Tainacan_Metadata = \Tainacan\Mappers_Handler::get_instance();
 
 		$metadatum_mappers = $Tainacan_Metadata->get_mappers("OBJECT");
-		/** @var \Tainacan\Exposers\Mappers\Mapper $metadatum_mapper **/
+		/** @var \Tainacan\Mappers\Mapper $metadatum_mapper **/
 		foreach ($metadatum_mappers as $k => $metadatum_mapper) {
 		    if(!$metadatum_mapper->show_ui) unset($metadatum_mappers[$k]);
 		}
@@ -96,7 +111,7 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
 	public function test_update_metadatum_mappers(){
 	    extract($this->create_meta_requirements());
 	    
-	    $dc = new \Tainacan\Exposers\Mappers\Dublin_Core();
+	    $dc = new \Tainacan\Mappers\Dublin_Core();
 	    
 	    $metadatum_mapper_request = new \WP_REST_Request('POST', $this->namespace . '/metadatum-mappers');
 	    $metadatum_mapper_json = json_encode([
@@ -104,7 +119,7 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
 	            ['metadatum_id' => $metadatum->get_id(), 'mapper_metadata' => 'contributor'],
 	            ['metadatum_id' => $metadatum2->get_id(), 'mapper_metadata' => 'coverage']
 	        ],
-	        \Tainacan\Exposers\Exposers::MAPPER_PARAM          => $dc->slug
+	        \Tainacan\Mappers_Handler::MAPPER_PARAM          => $dc->slug
 	    ]);
 	    $metadatum_mapper_request->set_body($metadatum_mapper_json);
 	    $metadatum_mapper_response = $this->server->dispatch($metadatum_mapper_request);
@@ -132,7 +147,7 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
 	public function test_update_metadatum_mappers_new_meta(){
 	    extract($this->create_meta_requirements());
 	    
-	    $dc = new \Tainacan\Exposers\Mappers\Dublin_Core();
+	    $dc = new \Tainacan\Mappers\Dublin_Core();
 	    
 	    $metadatum_mapper_request = new \WP_REST_Request('POST', $this->namespace . '/metadatum-mappers');
 	    $new_metadatum_mapper = new \stdClass();
@@ -144,7 +159,7 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
 	            ['metadatum_id' => $metadatum->get_id(), 'mapper_metadata' => 'contributor'],
 	            ['metadatum_id' => $metadatum2->get_id(), 'mapper_metadata' => $new_metadatum_mapper ]
 	        ],
-	        \Tainacan\Exposers\Exposers::MAPPER_PARAM          => $dc->slug
+	        \Tainacan\Mappers_Handler::MAPPER_PARAM          => $dc->slug
 	    ]);
 	    $metadatum_mapper_request->set_body($metadatum_mapper_json);
 	    $metadatum_mapper_response = $this->server->dispatch($metadatum_mapper_request);
@@ -167,22 +182,109 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
 	    
 	    $this->assertEquals(200, $response->get_status());
 	    
-	    $item_exposer_json = json_encode([
-	        \Tainacan\Exposers\Exposers::TYPE_PARAM       => 'OAI-PMH',
-	    ]);
-	    $request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $item->get_id() . '/metadata' );
-	    $request->set_body($item_exposer_json);
-	    $response = $this->server->dispatch($request);
-	    $this->assertEquals(200, $response->get_status());
-	    $data = $response->get_data();
+	    // $item_exposer_json = json_encode([
+	    //     \Tainacan\Exposers_Handler::TYPE_PARAM       => 'OAI-PMH',
+	    // ]);
+	    // $request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $item->get_id() . '/metadata' );
+	    // $request->set_body($item_exposer_json);
+	    // $response = $this->server->dispatch($request);
+	    // $this->assertEquals(200, $response->get_status());
+	    // $data = $response->get_data();
+	    // 
+	    // $xml = new \SimpleXMLElement($data);
+	    // $dc = $xml->children(\Tainacan\Exposers\Mappers\Dublin_Core::XML_DC_NAMESPACE);
+	    // $this->assertEquals('adasdasdsaadsf', $dc->description);
+	    // $this->assertEquals('item_teste_MetadatumMappers', $dc->title);
+	    // $this->assertEquals('', $dc->contributor);
+	    // $this->assertEquals('TestValues_exposersCustomMeta', $dc->TesteNewMeta);
 	    
-	    $xml = new \SimpleXMLElement($data);
-	    $dc = $xml->children(\Tainacan\Exposers\Mappers\Dublin_Core::XML_DC_NAMESPACE);
-	    $this->assertEquals('adasdasdsaadsf', $dc->description);
-	    $this->assertEquals('item_teste_MetadatumMappers', $dc->title);
-	    $this->assertEquals('', $dc->contributor);
-	    $this->assertEquals('TestValues_exposersCustomMeta', $dc->TesteNewMeta);
-	    
+	}
+	
+	function test_create_new_mapped_collection() {
+		
+		$dc = new \Tainacan\Mappers\Dublin_Core();
+		
+		$metadatum_mapper_request = new \WP_REST_Request('POST', $this->namespace . '/collections');
+	    $metadatum_mapper_request->set_body(json_encode([
+			\Tainacan\Mappers_Handler::MAPPER_PARAM => $dc->slug,
+			'name' => 'Test Collection'
+		]));
+	    $metadatum_mapper_response = $this->server->dispatch($metadatum_mapper_request);
+	    $this->assertEquals(201, $metadatum_mapper_response->get_status());
+	    $data = $metadatum_mapper_response->get_data();
+		
+		$collection = \Tainacan\Repositories\Collections::get_instance()->fetch( $data['id'] );
+		
+		$mapper_meta = $dc->metadata;
+		
+		$metadata = $collection->get_metadata();
+		
+		$this->assertEquals(sizeof($metadata), sizeof($mapper_meta));
+		
+		foreach ($metadata as $meta) {
+			
+			$map = $meta->get_exposer_mapping();
+			
+			if (isset($map[$dc->slug]) && isset($mapper_meta[$map[$dc->slug]])) {
+				unset($mapper_meta[$map[$dc->slug]]);
+			}
+			
+		}
+		
+		$this->assertEmpty($mapper_meta);
+		
+	}
+	
+	function test_api_get_items_from_mapped_collection() {
+		
+		$this->create_meta_requirements();
+		
+		$dc = new \Tainacan\Mappers\Dublin_Core();
+		
+		$itemMeta1 = $this->tainacan_item_metadata_factory->create_item_metadata(
+			$this->item, 
+			$this->metadatum,
+			'Value for meta 1');
+		
+		$itemMeta2 = $this->tainacan_item_metadata_factory->create_item_metadata(
+			$this->item, 
+			$this->metadatum2,
+			'Value for meta 2');
+		
+		$itemMeta3 = $this->tainacan_item_metadata_factory->create_item_metadata(
+			$this->item, 
+			$this->metadatum3,
+			'Value for meta 3');
+		
+		$item_request = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $this->collection->get_id() . '/items');
+		$item_request->set_body(json_encode([
+			\Tainacan\Mappers_Handler::MAPPER_PARAM => $dc->slug
+		]));
+		$response = $this->server->dispatch($item_request);
+		$this->assertEquals(200, $response->get_status());
+		$data = $response->get_data();
+		
+		$this->assertEquals(1, sizeof($data), 'Response should contain 1 item');
+		
+		$item = $data[0];
+		
+		$this->assertEquals(2, sizeof($item['metadata']), 'Item should contain only 2 mapped metadata');
+		//var_dump($item['metadata']);
+		$this->assertTrue( array_key_exists('dc:language', $item['metadata']), 'metadatum language should be present' );
+		$this->assertTrue( array_key_exists('dc:creator', $item['metadata']), 'metadatum creator should be present' );
+		
+		$this->assertEquals('Value for meta 1', $item['metadata']['dc:language']['value']);
+		$this->assertEquals('Value for meta 3', $item['metadata']['dc:creator']['value']);
+		
+		$this->assertEquals($dc->get_url('dc:language'), $item['metadata']['dc:language']['semantic_url']);
+		$this->assertEquals($dc->get_url('dc:creator'), $item['metadata']['dc:creator']['semantic_url']);
+		
+		$this->assertEquals($dc->metadata['dc:language']['label'], $item['metadata']['dc:language']['name']);
+		$this->assertEquals($dc->metadata['dc:creator']['label'], $item['metadata']['dc:creator']['name']);
+		
+		$this->assertEquals('dc:language', $item['metadata']['dc:language']['slug']);
+		$this->assertEquals('dc:creator', $item['metadata']['dc:creator']['slug']);
+		
 	}
 	
 }
