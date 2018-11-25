@@ -1,6 +1,6 @@
 <?php
 
-namespace Tainacan\Exposers\Mappers;
+namespace Tainacan\Mappers;
 
 /**
  *  Mapper class for export metadata in key => value format where key can be defined

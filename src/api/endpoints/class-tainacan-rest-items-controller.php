@@ -119,12 +119,13 @@ class REST_Items_Controller extends REST_Controller {
 			$item_array['metadata'][ $slug ]['name']            = $metadatum->get_name();
 			if($metadatum->get_metadata_type_object()->get_primitive_type() === 'date') {
 				$item_array['metadata'][ $slug ]['date_i18n'] = $item_metadata_array['date_i18n'];
-			} else {
-				$item_array['metadata'][ $slug ]['value']           = $item_metadata_array['value'];
-				$item_array['metadata'][ $slug ]['value_as_html']   = $item_metadata_array['value_as_html'];
-				$item_array['metadata'][ $slug ]['value_as_string'] = $item_metadata_array['value_as_string'];
 			}
+			$item_array['metadata'][ $slug ]['value']           = $item_metadata_array['value'];
+			$item_array['metadata'][ $slug ]['value_as_html']   = $item_metadata_array['value_as_html'];
+			$item_array['metadata'][ $slug ]['value_as_string'] = $item_metadata_array['value_as_string'];
+			
 			$item_array['metadata'][ $slug ]['multiple']        = $metadatum->get_multiple();
+			$item_array['metadata'][ $slug ]['mapping']        = $metadatum->get_exposer_mapping();
 		}
 
 		return $item_array;
@@ -169,37 +170,41 @@ class REST_Items_Controller extends REST_Controller {
 				}
 
 				$item_arr['document_as_html'] = $item->get_document_html($img_size);
-				$item_arr['exposer_urls'] = \Tainacan\Exposers\Exposers::get_exposer_urls(rest_url("{$this->namespace}/{$this->rest_base}/{$item->get_id()}/"));
-				return $this->add_metadata_to_item( $item, $item_arr );
-			}
-
-			$attributes_to_filter = $request['fetch_only'];
-
-			# Always returns id and collection id
-			if(is_array($attributes_to_filter)) {
-				$attributes_to_filter[] = 'id';
-				$attributes_to_filter[] = 'collection_id';
+				$item_arr['exposer_urls'] = \Tainacan\Exposers_Handler::get_exposer_urls(rest_url("{$this->namespace}/{$this->rest_base}/{$item->get_id()}/"));
+				$item_arr = $this->add_metadata_to_item( $item, $item_arr );
 			} else {
-				$attributes_to_filter = array($attributes_to_filter, 'id', 'collection_id');
+				
+				$attributes_to_filter = $request['fetch_only'];
+
+				# Always returns id and collection id
+				if(is_array($attributes_to_filter)) {
+					$attributes_to_filter[] = 'id';
+					$attributes_to_filter[] = 'collection_id';
+				} else {
+					$attributes_to_filter = array($attributes_to_filter, 'id', 'collection_id');
+				}
+
+				$item_arr = $this->filter_object_by_attributes($item, $attributes_to_filter);
+				
+				$item_arr = array_merge($extra_metadata_values, $item_arr);
+
+				if(is_array($attributes_to_filter) && array_key_exists('meta', $attributes_to_filter)){
+
+					$args = array('post__in' => $attributes_to_filter['meta']);
+
+					$item_arr = $this->add_metadata_to_item($item, $item_arr, $args);
+				}
+
+				if ( $request['context'] === 'edit' ) {
+					$item_arr['current_user_can_edit'] = $item->can_edit();
+				}
+
+				$item_arr['url'] = get_permalink( $item_arr['id'] );
+				$item_arr['exposer_urls'] = \Tainacan\Exposers_Handler::get_exposer_urls(get_rest_url(null, "{$this->namespace}/{$this->rest_base}/{$item->get_id()}/"));
+				
 			}
 
-			$item_arr = $this->filter_object_by_attributes($item, $attributes_to_filter);
-			
-			$item_arr = array_merge($extra_metadata_values, $item_arr);
-
-			if(is_array($attributes_to_filter) && array_key_exists('meta', $attributes_to_filter)){
-
-				$args = array('post__in' => $attributes_to_filter['meta']);
-
-				$item_arr = $this->add_metadata_to_item($item, $item_arr, $args);
-			}
-
-			if ( $request['context'] === 'edit' ) {
-				$item_arr['current_user_can_edit'] = $item->can_edit();
-			}
-
-			$item_arr['url'] = get_permalink( $item_arr['id'] );
-			$item_arr['exposer_urls'] = \Tainacan\Exposers\Exposers::get_exposer_urls(get_rest_url(null, "{$this->namespace}/{$this->rest_base}/{$item->get_id()}/"));
+			$item_arr = apply_filters('tainacan-api-items-prepare-for-response', $item_arr, $item, $request);
 			
 			return $item_arr;
 		}

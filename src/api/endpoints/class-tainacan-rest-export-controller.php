@@ -140,7 +140,7 @@ class REST_Export_Controller extends REST_Controller {
 	 */
 	public function export($request, $query, $args) {
 		
-		$type = \Tainacan\Exposers\Exposers::request_has_type($request);
+		$type = \Tainacan\Exposers_Handler::request_has_type($request);
 		$path = wp_upload_dir();
 		$path = $path['path'];
 		$filename = $path.date('YmdHis').'-tainacan-export.'.$type->get_extension();
@@ -170,8 +170,8 @@ class REST_Export_Controller extends REST_Controller {
 				[],
 				'error'
 			);
-			remove_filter( 'rest_request_after_callbacks', [\Tainacan\Exposers\Exposers::get_instance(), 'rest_request_after_callbacks'], 10, 3 ); //exposer mapping
-			remove_filter( 'tainacan-rest-response', [\Tainacan\Exposers\Exposers::get_instance(), 'rest_response'], 10, 2 ); // exposer types
+			remove_filter( 'rest_request_after_callbacks', [\Tainacan\Exposers_Handler::get_instance(), 'rest_request_after_callbacks'], 10, 3 ); //exposer mapping
+			remove_filter( 'tainacan-rest-response', [\Tainacan\Exposers_Handler::get_instance(), 'rest_response'], 10, 2 ); // exposer types
 			return $log;
 		} elseif ($pid) { // we are the parent or run at foreground
 			try {
@@ -265,8 +265,8 @@ class REST_Export_Controller extends REST_Controller {
 			}
 		} else { // we are the child
 
-			remove_filter( 'rest_request_after_callbacks', [\Tainacan\Exposers\Exposers::get_instance(), 'rest_request_after_callbacks'], 10, 3 ); //exposer mapping
-			remove_filter( 'tainacan-rest-response', [\Tainacan\Exposers\Exposers::get_instance(), 'rest_response'], 10, 2 ); // exposer types
+			remove_filter( 'rest_request_after_callbacks', [\Tainacan\Exposers_Handler::get_instance(), 'rest_request_after_callbacks'], 10, 3 ); //exposer mapping
+			remove_filter( 'tainacan-rest-response', [\Tainacan\Exposers_Handler::get_instance(), 'rest_response'], 10, 2 ); // exposer types
 			return $log;
 		}
 		

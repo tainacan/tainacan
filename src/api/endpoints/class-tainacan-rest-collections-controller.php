@@ -289,6 +289,8 @@ class REST_Collections_Controller extends REST_Controller {
 	        $collection = $this->collections_repository->insert( $prepared_post );
 
 	        $response = $this->prepare_item_for_response($collection, $request);
+			
+			do_action('tainacan-api-collection-created', $response, $request);
 
 	        return new \WP_REST_Response($response, 201);
         }

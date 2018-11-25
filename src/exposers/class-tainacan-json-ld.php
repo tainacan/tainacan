@@ -1,12 +1,12 @@
 <?php
 
-namespace Tainacan\Exposers\Types;
+namespace Tainacan\Exposers;
 
 /**
  * Generate a text formated response
  *
  */
-class JSON_LD extends Type {
+class JSON_LD extends Exposer {
 	
 	public $mappers = ['value', 'dublin-core'];
 	public $slug = 'json-ld'; // type slug for url safe
@@ -24,7 +24,7 @@ class JSON_LD extends Type {
 		    'Content-Type: application/json; charset=' . get_option( 'blog_charset' ),
 		    'Link: <'.get_bloginfo('url').'/item.jsonld>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"'
 		]);
-		$mapper = \Tainacan\Exposers\Exposers::request_has_mapper($request);
+		$mapper = \Tainacan\Exposers_Handler::request_has_mapper($request);
 		if(property_exists($mapper, 'XML_namespace') && !empty($mapper->XML_namespace)) {
 		    $namespace = $mapper->XML_namespace;
 		    $context_slug = str_replace(':', '', $mapper->prefix);
