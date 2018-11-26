@@ -42,7 +42,7 @@ export const filter_type_mixin = {
             let query_items = { 'current_query': currentQuery };
 
             let url = '';
-            if (isRepositoryLevel)
+            if (isRepositoryLevel  || this.filter.collection_id == 'filter_in_repository')
                 url = `/facets/${metadatumId}?getSelected=${getSelected}&`;
             else
                 url = `/collection/${this.collection}/facets/${metadatumId}?getSelected=${getSelected}&`;
@@ -153,7 +153,7 @@ export const filter_type_mixin = {
             let query_items = { 'current_query': currentQuery };
 
             let url = '';
-            if (isRepositoryLevel)
+            if (isRepositoryLevel  || this.filter.collection_id == 'filter_in_repository')
                 url =  '/facets/' + this.filter.metadatum.metadatum_id + `?getSelected=${getSelected}&`; 
             else
                 url =  '/collection/' + this.filter.collection_id + '/facets/' + this.filter.metadatum.metadatum_id + `?getSelected=${getSelected}&`;
