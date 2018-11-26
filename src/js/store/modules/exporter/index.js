@@ -3,7 +3,8 @@ import * as mutations from './mutations.js';
 import * as getters from './getters.js';
 
 const state = {
-    exporterSession: {}
+    exporterSession: {},
+    backGroundProcessID: ''
 };
 
 export default {
