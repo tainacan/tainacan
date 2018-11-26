@@ -24,7 +24,11 @@
                     </div>
                 </div>
             </template>
-            <template slot="empty">{{ $i18n.get('info_no_options_found'	) }}</template>
+            <template 
+                    v-if="!isLoading" 
+                    slot="empty">
+                {{ $i18n.get('info_no_options_found'	) }}
+            </template>
         </b-taginput>
     </div>
 </template>

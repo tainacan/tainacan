@@ -29,7 +29,11 @@
                     </div>
                 </div>
             </template>
-            <template slot="empty">{{ $i18n.get('info_no_options_found'	) }}</template>
+            <template 
+                    v-if="!isLoadingOptions" 
+                    slot="empty">
+                {{ $i18n.get('info_no_options_found'	) }}
+            </template>
         </b-autocomplete>
     </div>
 </template>
@@ -113,7 +117,6 @@
                         let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
                             this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
                         promise = this.getValuesRelationship( collectionTarget, query, this.isRepositoryLevel );
-
                     } else {
                         promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel );
                     }
