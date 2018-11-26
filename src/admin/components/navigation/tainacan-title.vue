@@ -95,7 +95,7 @@ export default {
         .breadcrumbs {
             font-size: 12px;
             width: 100%;
-            span {
+            a {
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 overflow: hidden;

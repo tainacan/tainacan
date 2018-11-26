@@ -281,7 +281,7 @@ export default {
             font-size: 12px;
             line-height: 12px;
             color: #1d1d1d;
-            span {
+            a {
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 overflow: hidden;
