@@ -96,7 +96,7 @@
                             <span>
                                 <img 
                                         class="table-thumb" 
-                                        :src="collection.thumbnail.thumb">
+                                        :src="collection.thumbnail != undefined ? collection.thumbnail.thumb : thumbPlaceholderPath">
                             </span>
                         </td>
                         <!-- Name -->
@@ -213,7 +213,8 @@ export default {
         return {
             selectedCollections: [],
             allCollectionsOnPageSelected: false,
-            isSelectingCollections: false
+            isSelectingCollections: false,
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png'
         }
     },
     props: {
