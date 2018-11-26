@@ -52,7 +52,7 @@
                 :active.sync="isLoadingTerms" 
                 :can-cancel="false"/>
         <div 
-                :class="{ 'is-12': !isEditingTerm, 'is-8': isEditingTerm }"
+                :class="{ 'is-12': !isEditingTerm, 'is-8-fullhd is-7-fullscreen is-6-desktop is-5-tablet': isEditingTerm }"
                 class="column">
             <br>
 
@@ -97,7 +97,7 @@
             </a>
         </div>
         <div 
-                class="column is-4 edit-forms-list"
+                class="column is-4-fullhd is-5-fullscreen is-6-desktop is-7-tablet edit-forms-list"
                 v-if="isEditingTerm">
             <term-edition-form 
                     :style="{ 'top': termEditionFormTop + 'px'}"
