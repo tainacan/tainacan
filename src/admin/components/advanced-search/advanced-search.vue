@@ -84,8 +84,8 @@
                                 v-else-if="advancedSearchQuery.taxquery[searchCriterion]"
                                 :data="terms"
                                 :value="advancedSearchQuery.taxquery[searchCriterion] &&
-                                 advancedSearchQuery.taxquery[searchCriterion].btags.length ?
-                                 Array.from(new Set(advancedSearchQuery.taxquery[searchCriterion].btags)) : []"
+                                        Array.isArray(advancedSearchQuery.taxquery[searchCriterion].btags) ?
+                                        Array.from(new Set(advancedSearchQuery.taxquery[searchCriterion].btags)) : []"
                                 autocomplete
                                 :loading="advancedSearchQuery.taxquery[searchCriterion].isFetching == true"
                                 attached
@@ -174,7 +174,7 @@
                                 attached 
                                 closable>
                                 {{ Array.isArray(advancedSearchQuery.taxquery[searchCriterion].terms) &&
-                                advancedSearchQuery.taxquery[searchCriterion].btags ?
+                                Array.isArray(advancedSearchQuery.taxquery[searchCriterion].btags) ?
                                  advancedSearchQuery.taxquery[searchCriterion].btags.toString() :
                                   advancedSearchQuery.taxquery[searchCriterion].btags }}
                         </b-tag>
