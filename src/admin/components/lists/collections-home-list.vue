@@ -54,7 +54,7 @@
             <masonry 
                     :cols="{ default: 5, 1919: 4, 1407: 3, 1215: 2, 1023: 2, 767: 1 }"
                     :gutter="25"
-                    style="width=100%;">
+                    style="width:100%;">
                 <router-link
                         tag="a" 
                         :to="$routerHelper.getNewCollectionPath()"
