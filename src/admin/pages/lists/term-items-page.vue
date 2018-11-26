@@ -1041,17 +1041,18 @@
                                             display = false;
                                     }
 
-                                    metadata.push(
-                                        {
+                                    metadata.push({
                                             name: metadatum.name,
                                             metadatum: metadatum.description,
                                             slug: metadatum.slug,
                                             metadata_type: metadatum.metadata_type,
                                             metadata_type_object: metadatum.metadata_type_object,
+                                            metadata_type_options: metadatum.metadata_type_options,
                                             id: metadatum.id,
-                                            display: display
-                                        }
-                                    );    
+                                            display: display,
+                                            collection_id: metadatum.collection_id,
+                                            multiple: metadatum.multiple,
+                                    });    
                                     if (display)
                                         fetchOnlyMetadatumIds.push(metadatum.id);                      
                                 }
@@ -1061,6 +1062,7 @@
                             let creationDateMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['1'] != null) : true;
                             let authorNameMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['2'] != null) : true;
 
+                            // Creation date and author name should appear only on admin.
                             if (!this.isOnTheme) {
                              
                                 metadata.push({

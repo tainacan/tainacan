@@ -158,7 +158,9 @@ export default {
                             this.$store.dispatch('search/set_postquery', this.$route.query);
                         }
                         
-                        this.loadItems(to);
+                        if (to.fullPath != from.fullPath) {
+                            this.loadItems(to);
+                        }
                     }                      
                 }
             },
