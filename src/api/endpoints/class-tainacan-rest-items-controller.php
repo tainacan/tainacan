@@ -241,6 +241,13 @@ class REST_Items_Controller extends REST_Controller {
 			$collection_id = $request['collection_id'];
 		}
 		
+		$max_items_per_page = defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? TAINACAN_API_MAX_ITEMS_PER_PAGE : 96;
+		if ( $max_items_per_page > -1 ) {
+			if ( isset($args['posts_per_page']) && (int) $args['posts_per_page'] > $max_items_per_page ) {
+				$args['posts_per_page'] = $max_items_per_page;
+			}
+		}
+		
 		$query_start = microtime(true);
 		
 		$items = $this->items_repository->fetch($args, $collection_id, 'WP_Query');
