@@ -57,17 +57,17 @@
                     <li 
                             @click="onChangeTab('')"
                             :class="{ 'is-active': status == undefined || status == ''}">
-                        <a>{{ `${$i18n.get('label_all_collections')}${` ${repositoryTotalCollections ? `(${Number(repositoryTotalCollections.private) + Number(repositoryTotalCollections.publish)})` : '' }`}` }}</a>
+                        <a>{{ `${$i18n.get('label_all_collections')}` }}<span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalCollections ? `(${Number(repositoryTotalCollections.private) + Number(repositoryTotalCollections.publish)})` : '' }`}` }}</span></a>
                     </li>
                     <li 
                             @click="onChangeTab('draft')"
                             :class="{ 'is-active': status == 'draft'}">
-                        <a>{{ `${$i18n.get('label_draft_items')}${` ${repositoryTotalCollections ? `(${repositoryTotalCollections.draft})` : '' }`}` }}</a>
+                        <a>{{ `${$i18n.get('label_draft_items')}` }}<span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalCollections ? `(${repositoryTotalCollections.draft})` : '' }`}` }}</span></a>
                     </li>
                     <li 
                             @click="onChangeTab('trash')"
                             :class="{ 'is-active': status == 'trash'}">
-                        <a>{{ `${$i18n.get('label_trash_items')}${` ${repositoryTotalCollections ? `(${repositoryTotalCollections.trash})` : '' }`}` }}</a>
+                        <a>{{ `${$i18n.get('label_trash_items')}` }}<span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalCollections ? `(${repositoryTotalCollections.trash})` : '' }`}` }}</span></a>
                     </li>
                 </ul>
             </div>
@@ -315,10 +315,8 @@ export default {
     .sub-header {
         min-height: $subheader-height;
         height: $header-height;
-        margin-left: -$page-side-padding;
-        margin-right: -$page-side-padding;
-        padding-left: $page-side-padding;
-        padding-right: $page-side-padding;
+        padding-left: 0;
+        padding-right: 0;
         border-bottom: 1px solid #ddd;
 
         .header-item {
@@ -330,7 +328,7 @@ export default {
             height: 60px;
             margin-top: -0.5em;
             padding-top: 0.9em;
-            
+        
             .header-item {
                 padding-right: 0.5em;
             }

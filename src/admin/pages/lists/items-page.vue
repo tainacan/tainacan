@@ -480,25 +480,11 @@
                             <div
                                     :style="{'margin-bottom': 'auto'}"
                                     class="field is-grouped">
-                                <p
-                                        v-if="advancedSearchResults"
-                                        class="control">
-                                    <button
-                                            @click="advancedSearchResults = !advancedSearchResults"
-                                            class="button is-small is-outlined">{{ $i18n.get('edit_search') }}</button>
-                                </p>
-                                <p
-                                        v-if="advancedSearchResults"
-                                        class="control">
-                                    <button
-                                            @click="isDoSearch = !isDoSearch"
-                                            class="button is-small is-secondary">{{ $i18n.get('search') }}</button>
-                                </p>
-                                <p class="control">
-                                    <a @click="openAdvancedSearch = false">
-                                        {{ $i18n.get('back') }}
-                                    </a>
-                                </p>
+                                <a 
+                                        class="back-link"
+                                        @click="openAdvancedSearch = false">
+                                    {{ $i18n.get('back') }}
+                                </a>
                             </div>
                         </div>
                         <hr>
@@ -511,6 +497,22 @@
                         :advanced-search-results="advancedSearchResults"
                         :open-form-advanced-search="openFormAdvancedSearch"
                         :is-do-search="isDoSearch"/>
+                <div class="advanced-searh-form-submit">
+                    <p
+                            v-if="advancedSearchResults"
+                            class="control">
+                        <button
+                                @click="advancedSearchResults = !advancedSearchResults"
+                                class="button is-outlined">{{ $i18n.get('edit_search') }}</button>
+                    </p>
+                    <p
+                            v-if="advancedSearchResults"
+                            class="control">
+                        <button
+                                @click="isDoSearch = !isDoSearch"
+                                class="button is-success">{{ $i18n.get('search') }}</button>
+                    </p>
+                </div>
             </div>
 
             <!-- --------------- -->
@@ -523,18 +525,18 @@
                     <li 
                             @click="onChangeTab('')"
                             :class="{ 'is-active': status == undefined || status == ''}">
-                        <a>{{ `${$i18n.get('label_all_items')}${collection ? ` (${Number(collection.total_items.private) + Number(collection.total_items.publish)})` : ` (${repositoryTotalItems ? repositoryTotalItems.private + repositoryTotalItems.publish : ''})`}` }}</a>
+                        <a>{{ `${$i18n.get('label_all_items')}` }}<span class="has-text-gray">&nbsp;{{ `${collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.publish)})` : ` (${repositoryTotalItems ? repositoryTotalItems.private + repositoryTotalItems.publish : ''})`}` }}</span></a>
                     </li>
                     <li 
                             @click="onChangeTab('draft')"
                             :class="{ 'is-active': status == 'draft'}">
-                        <a>{{ `${$i18n.get('label_draft_items')}${collection ? ` (${collection.total_items.draft})` : ` (${repositoryTotalItems ? repositoryTotalItems.draft : ''})`}` }}</a>
+                        <a>{{ `${$i18n.get('label_draft_items')}` }}<span class="has-text-gray">&nbsp;{{ `${collection && collection.total_items ? ` (${collection.total_items.draft})` : ` (${repositoryTotalItems ? repositoryTotalItems.draft : ''})`}` }}</span></a>
                     </li>
                     <li
                             v-if="!isRepositoryLevel"
                             @click="onChangeTab('trash')"
                             :class="{ 'is-active': status == 'trash'}">
-                        <a>{{ `${$i18n.get('label_trash_items')}${collection ? ` (${collection.total_items.trash})` : ` (${repositoryTotalItems ? repositoryTotalItems.trash : ''})`}` }}</a>
+                        <a>{{ `${$i18n.get('label_trash_items')}` }}<span class="has-text-gray">&nbsp;{{ `${collection && collection.total_items ? ` (${collection.total_items.trash})` : ` (${repositoryTotalItems ? repositoryTotalItems.trash : ''})`}` }}</span></a>
                     </li>
                 </ul>
             </div>
@@ -551,13 +553,13 @@
                             :active="showLoading"/>
                 </div>  
 
-                <div
+                <!-- <div
                         v-if="openAdvancedSearch && advancedSearchResults">
                     <div class="advanced-search-results-title">
                         <h1>{{ $i18n.get('info_search_results') }}</h1>
                         <hr>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- When advanced search -->
                 <items-list
@@ -1378,41 +1380,64 @@
     }
 
     .advanced-search-criteria-title {
-        padding: 0;
+        margin-bottom: 40px;
 
-        &>.is-flex {
-            justify-content: space-between;
-        }
-
-        h1 {
-            font-size: 1.25rem;
-            font-weight: normal;
-            color: $blue5;
+        h1, h2 {
+            font-size: 20px;
+            font-weight: 500;
+            color: $gray5;
             display: inline-block;
+            margin-bottom: 0;
         }
-
-        hr {
-            margin: 3px 0 4px 0;
+        .field.is-grouped {
+            margin-left: auto;
+        }
+        a.back-link{
+            font-weight: 500;
+            float: right;
+            margin-top: 5px;
+        }
+        hr{
+            margin: 3px 0px 4px 0px; 
             height: 1px;
             background-color: $secondary;
         }
     }
 
     .advanced-search-results-title {
-        padding: 0 $table-side-padding;
+        margin-bottom: 40px;
+        margin: 0 $page-side-padding 42px $page-side-padding;
 
-        h1 {
-            font-size: 1.25rem;
-            font-weight: normal;
-            color: $blue5;
+        h1, h2 {
+            font-size: 20px;
+            font-weight: 500;
+            color: $gray5;
             display: inline-block;
+            margin-bottom: 0;
         }
-
-        hr {
-            margin: 3px 0 4px 0;
+        .field.is-grouped {
+            margin-left: auto;
+        }
+        a.back-link{
+            font-weight: 500;
+            float: right;
+            margin-top: 5px;
+        }
+        hr{
+            margin: 3px 0px 4px 0px; 
             height: 1px;
             background-color: $secondary;
         }
+    }
+
+    .advanced-searh-form-submit {
+        display: flex;
+        justify-content: flex-end;
+        padding-right: $page-side-padding;
+        padding-left: $page-side-padding;
+        margin-bottom: 1rem;
+
+        p { margin-left: 0.75rem; }
     }
 
     .tnc-advanced-search-close {

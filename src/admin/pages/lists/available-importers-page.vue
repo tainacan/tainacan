@@ -64,13 +64,16 @@ export default {
 
     .importer-types-container {
         display: flex;
-        flex: wrap;
+        flex-wrap: wrap;
 
         .importer-type {
             border: 1px solid $gray2;
             padding: 15px;
             margin: 20px;
             cursor: pointer;
+            max-width: 20%;
+            flex-grow: 1;
+            flex-basis: 20%;
         }
     }
 

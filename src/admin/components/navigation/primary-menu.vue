@@ -185,14 +185,15 @@ export default {
             .menu-text {
                 padding-left: 0.7em;
                 opacity: 1;
+                top: 1px;
+                position: relative;
                 visibility: visible;
                 transition: opacity 0.2s linear, visibility 0.2s linear;
                 -webkit-transition: opacity 0.2s linear, visibility 0.2s linear;
             }
             .menu-text-import {
                 position: relative;
-                top: -3px;
-                left: -6px;
+                top: 1px;
             }
         }
 

@@ -2,14 +2,18 @@
 .tabs {
     a {
         font-size: 0.8125rem;
+        color: black !important;
         margin-bottom: -3px !important;
+        border-bottom: 5px solid transparent;
+        transition: border-bottom-color ease 0.3s;
+
         &:hover{
             border-bottom-color: transparent;
             text-decoration: none;
         }
     }
     li.is-active a {
-        border-bottom: 5px solid $turquoise5;
-        color: $turquoise5; 
+        border-bottom-color: $turquoise5;
+        color: black !important;
     }
 }
