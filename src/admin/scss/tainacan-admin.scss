@@ -56,8 +56,14 @@ html {
     border: none;
     border-radius: 0;
     animation: none;
-    height: 90px;
-    width: 90px;
+    height: 50px;
+    width: 50px;
+}
+.loading-overlay.is-full-page .loading-icon::after {
+    height: 50px;
+    width: 50px;
+    top: calc(50% - 25px);
+    left: calc(50% - 25px);
 }
 
 // Link (hover is the same color as secondary

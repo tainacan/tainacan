@@ -127,7 +127,7 @@
                     <div class="field">
                         <button
                                 @click="removeThis(searchCriterion)"
-                                :class="{'has-text-blue4': isHeader, 'has-text-turquoise5': !isHeader,}"
+                                :class="{'has-text-blue4': isHeader, 'has-text-secondary': !isHeader,}"
                                 class="button is-white is-pulled-right">
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-close"/>
