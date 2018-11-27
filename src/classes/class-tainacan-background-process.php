@@ -169,9 +169,12 @@ abstract class Background_Process extends \WP_Background_Process {
 
 		$wpdb->update(
 			$this->table, 
-			['done' => 1],
-			['ID' => $key],
-			['%d']
+			[
+			    'done' => 1,
+                'progress_label' => __('Process completed','tainacan'),
+                'progress_value' => 100
+            ],
+			['ID' => $key]
 		);
 
 		return $this;
