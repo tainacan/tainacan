@@ -173,7 +173,7 @@
                                         v-if="bgProcess.done <= 0"
                                         class="icon has-text-gray action-icon"
                                         @click="pauseProcess(index)">
-                                    <i class="tainacan tainacan-icon-20px tainacan-icon-stop"/>
+                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-stop"/>
                                 </span>
                                 <span 
                                         v-tooltip="{

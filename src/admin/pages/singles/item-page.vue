@@ -14,11 +14,11 @@
         </button>
         <div class="tainacan-page-title">
             <h1>
-                {{ $i18n.get('title_item_page') + ' ' }}
-                <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
                 <span 
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
                         class="status-tag">{{ $i18n.get(item.status) }}</span>
+                {{ $i18n.get('title_item_page') + ' ' }}
+                <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
             </h1>
             <a 
                     @click="$router.go(-1)"
@@ -29,7 +29,9 @@
         </div>
         <div class="tainacan-form">
             <div class="columns">
-                <div class="column is-5-5">
+                <div 
+                        :class="{ 'is-12': isMetadataColumnCompressed, 'is-5-5': !isMetadataColumnCompressed }"
+                        class="column">
 
                     <!-- Hook for extra Form options -->
                     <template 
@@ -505,13 +507,17 @@
                 width: 80%;
                 flex-shrink: 1;
                 flex-grow: 1;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+                max-width: 80%;
             }
             .status-tag {
                 color: white;
                 background: $turquoise5;
                 padding: 0.15rem 0.5rem;
                 font-size: 0.75rem;
-                margin: 0 1rem;
+                margin: 0 1rem 0 0;
                 font-weight: 600;
                 position: relative;
                 top: -2px;

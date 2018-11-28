@@ -46,7 +46,7 @@ class Item extends Entity {
 	}
 
 	public function __toString() {
-		return 'Hello, my name is ' . $this->get_title();
+		return apply_filters("tainacan-item-to-string", $this->get_title(), $this);
 	}
 
 	public function _toArray() {
@@ -59,7 +59,7 @@ class Item extends Entity {
 		$array_item['creation_date']     = $this->get_date_i18n( explode( ' ', $array_item['creation_date'] )[0] );
 		$array_item['modification_date'] = $this->get_date_i18n( explode( ' ', $array_item['modification_date'] )[0] );
 
-		return $array_item;
+		return apply_filters('tainacan-item-to-array', $array_item, $this);
 	}
 
 	/**
@@ -114,7 +114,7 @@ class Item extends Entity {
 			}
 		}
 
-		return $attachments_prepared;
+		return apply_filters("tainacan-item-get-attachments", $attachments_prepared, $exclude, $this);
 	}
 
 
@@ -122,14 +122,15 @@ class Item extends Entity {
 	 * @return string
 	 */
 	function get_author_name() {
-		return get_the_author_meta( 'display_name', $this->get_author_id() );
+		$name = get_the_author_meta( 'display_name', $this->get_author_id() );
+		return apply_filters("tainacan-item-get-author-name", $name, $this);
 	}
 
 	/**
 	 * @return array
 	 */
 	function get_thumbnail() {
-		return array(
+		$thumbs = array(
 			'thumb'                => get_the_post_thumbnail_url( $this->get_id(), 'thumbnail' ),
 			'full'                 => get_the_post_thumbnail_url( $this->get_id(), 'full' ),
 			'medium'               => get_the_post_thumbnail_url( $this->get_id(), 'medium' ),
@@ -139,6 +140,7 @@ class Item extends Entity {
 			'tainacan_medium'      => get_the_post_thumbnail_url( $this->get_id(), 'tainacan-medium' ),
 			'tainacan_medium_full' => get_the_post_thumbnail_url( $this->get_id(), 'tainacan-medium-full' ),
 		);
+		return apply_filters("tainacan-item-get-thumbnail", $thumbs, $this);
 	}
 
 	/**
@@ -661,9 +663,6 @@ class Item extends Entity {
 				$embed = $wp_embed->autoembed($url);
 				
 				if ( $embed == $url ) {
-					
-					// No embed handler found
-					// TODO: Add filter to allow customization
 					$output .= sprintf("<a href='%s' target='blank'>%s</a>", $url, $url);
 				} else {
 					$output .= $embed;
@@ -674,7 +673,7 @@ class Item extends Entity {
 			
 		}
 		
-		return $output;
+		return apply_filters("tainacan-item-get-document-html", $output, $img_size, $this);
 		
 	}
 	

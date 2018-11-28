@@ -26,13 +26,19 @@
                     <ul>
                         <li 
                                 @click="onChangeTab('')"
-                                :class="{ 'is-active': status == undefined || status == ''}"><a>{{ $i18n.get('label_all_items') }}</a></li>
+                                :class="{ 'is-active': status == undefined || status == ''}">
+                            <a>{{ `${$i18n.get('label_all_taxonomies')}` }}<span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalTaxonomies ? `(${Number(repositoryTotalTaxonomies.private) + Number(repositoryTotalTaxonomies.publish)})` : '' }`}` }}</span></a>
+                        </li>
                         <li 
                                 @click="onChangeTab('draft')"
-                                :class="{ 'is-active': status == 'draft'}"><a>{{ $i18n.get('label_draft_items') }}</a></li>
+                                :class="{ 'is-active': status == 'draft'}">
+                            <a>{{ `${$i18n.get('label_draft_items')}` }}<span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalTaxonomies ? `(${repositoryTotalTaxonomies.draft})` : '' }`}` }}</span></a>
+                        </li>
                         <li 
                                 @click="onChangeTab('trash')"
-                                :class="{ 'is-active': status == 'trash'}"><a>{{ $i18n.get('label_trash_items') }}</a></li>
+                                :class="{ 'is-active': status == 'trash'}">
+                            <a>{{ `${$i18n.get('label_trash_items')}` }}<span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalTaxonomies ? `(${repositoryTotalTaxonomies.trash})` : '' }`}` }}</span></a>
+                        </li>
                     </ul>
                 </div>
                 <div>
@@ -133,7 +139,8 @@
                 'fetch',
             ]),
             ...mapGetters('taxonomy', [
-                'get'
+                'get',
+                'getRepositoryTotalTaxonomies'
             ]),
             onChangeTab(status) {
                 this.status = status;
@@ -177,6 +184,9 @@
         computed: {
             taxonomies(){
                 return this.get();
+            },
+            repositoryTotalTaxonomies(){
+                return this.getRepositoryTotalTaxonomies();
             }
         },
         created() {
@@ -200,12 +210,10 @@
     @import '../../scss/_variables.scss';
 
     .sub-header {
-        max-height: $subheader-height;
+        min-height: $subheader-height;
         height: $header-height;
-        margin-left: -$page-side-padding;
-        margin-right: -$page-side-padding;
-        padding-left: $page-side-padding;
-        padding-right: $page-side-padding;
+        padding-left: 0;
+        padding-right: 0;
         border-bottom: 1px solid #ddd;
 
         .header-item {

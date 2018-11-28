@@ -248,6 +248,19 @@ class REST_Taxonomies_Controller extends REST_Controller {
 		$rest_response->header('X-WP-Total', $total_taxonomies);
 		$rest_response->header('X-WP-TotalPages', (int) $max_pages);
 
+		$total_taxonomies = wp_count_posts( 'tainacan-taxonomy', 'readable' );
+
+		if (isset($total_taxonomies->publish) ||
+		    isset($total_taxonomies->private) ||
+		    isset($total_taxonomies->trash) ||
+		    isset($total_taxonomies->draft)) {
+
+			$rest_response->header('X-Tainacan-total-taxonomies-trash', $total_taxonomies->trash);
+			$rest_response->header('X-Tainacan-total-taxonomies-publish', $total_taxonomies->publish);
+			$rest_response->header('X-Tainacan-total-taxonomies-draft', $total_taxonomies->draft);
+			$rest_response->header('X-Tainacan-total-taxonomies-private', $total_taxonomies->private);
+		}
+
 		return $rest_response;
 	}
 

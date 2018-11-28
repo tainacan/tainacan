@@ -38,7 +38,7 @@ class Log extends Entity {
 	}
 
 	public function __toString() {
-		return 'Hello, my title is ' . $this->get_title();
+		return apply_filters("tainacan-log-to-string", $this->get_title(), $this);
 	}
 
 	/**
@@ -49,7 +49,7 @@ class Log extends Entity {
 
 		$array_log['user_name']     = $this->get_user_name();
 
-		return $array_log;
+		return apply_filters('tainacan-log-to-array', $array_log, $this);
 	}
 
 

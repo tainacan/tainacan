@@ -1,0 +1,10 @@
+.upload-draggable {
+    transition: background ease 0.3s, color ease 0.3s;
+}
+
+.upload-draggable:hover.is-primary, 
+.upload .upload-draggable.is-hovered.is-primary {
+    border-color: $turquoise5 !important;
+    background: $turquoise4 !important;
+    color: white !important;
+}

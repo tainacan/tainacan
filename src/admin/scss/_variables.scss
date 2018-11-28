@@ -574,3 +574,36 @@ $modal-z: 9999999;
     animation-duration: 0.3s;
     animation-timing-function: ease;   
 }
+
+// SKELETON GRADIENT ANIMATIONS
+@-webkit-keyframes skeleton-animation {
+    0%{background-position:0% 94%}
+    50%{background-position:100% 7%}
+    100%{background-position:0% 94%}
+}
+@-moz-keyframes skeleton-animation {
+    0%{background-position:0% 94%}
+    50%{background-position:100% 7%}
+    100%{background-position:0% 94%}
+}
+@-o-keyframes skeleton-animation {
+    0%{background-position:0% 94%}
+    50%{background-position:100% 7%}
+    100%{background-position:0% 94%}
+}
+@keyframes skeleton-animation {
+    0%{background-position:0% 94%}
+    50%{background-position:100% 7%}
+    100%{background-position:0% 94%}
+}
+
+.skeleton {
+    border-radius: 6px;
+    background: linear-gradient(235deg, #fbfbfb, #ffffff, #eeeeee);
+    background-size: 600% 600%;
+
+    -webkit-animation: skeleton-animation 1s ease infinite;
+    -moz-animation: skeleton-animation 1s ease infinite;
+    -o-animation: skeleton-animation 1s ease infinite;
+    animation: skeleton-animation 1s ease infinite;
+}

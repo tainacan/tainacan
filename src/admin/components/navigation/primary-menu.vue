@@ -91,6 +91,18 @@
                         <span class="menu-text menu-text-import">{{ $i18n.get('importers') }}</span>
                     </router-link>
                 </li>
+                <!--<li>-->
+                    <!--<router-link-->
+                            <!--tag="a"-->
+                            <!--to="/exporters"-->
+                            <!--:class="(-->
+                                <!--activeRoute == 'ExportersPage' ) ? 'is-active':''">-->
+                        <!--<span class="icon">-->
+                            <!--<i class="tainacan-icon tainacan-icon-20px tainacan-icon-export"/>-->
+                        <!--</span>-->
+                        <!--<span class="menu-text">{{ $i18n.get('exporters') }}</span>-->
+                    <!--</router-link>-->
+                <!--</li>-->
             </ul>
         </aside>
     </nav>
@@ -173,14 +185,15 @@ export default {
             .menu-text {
                 padding-left: 0.7em;
                 opacity: 1;
+                top: 1px;
+                position: relative;
                 visibility: visible;
                 transition: opacity 0.2s linear, visibility 0.2s linear;
                 -webkit-transition: opacity 0.2s linear, visibility 0.2s linear;
             }
             .menu-text-import {
                 position: relative;
-                top: -3px;
-                left: -6px;
+                top: 1px;
             }
         }
 

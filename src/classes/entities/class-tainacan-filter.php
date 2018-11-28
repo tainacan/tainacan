@@ -31,7 +31,7 @@ class Filter extends Entity {
     protected $repository = 'Filters';
 
 	public function  __toString(){
-		return 'Hello, my name is '. $this->get_name();
+		return apply_filters("tainacan-filter-to-string", $this->get_name(), $this);
 	}
 
 	/**
@@ -51,8 +51,7 @@ class Filter extends Entity {
 			$filter_array['metadatum']['metadata_type_object'] = $meta_object->_toArray();
 		}
 		
-
-		return $filter_array;
+		return apply_filters('tainacan-filter-to-array', $filter_array, $this);
 	}
 
     /**

@@ -52,9 +52,9 @@
                         !openAdvancedSearch && 
                         !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="filters-menu tainacan-form is-hidden-mobile">
-            <b-loading
+            <!-- <b-loading
                     :is-full-page="false"
-                    :active.sync="isLoadingFilters"/>
+                    :active.sync="isLoadingFilters"/> -->
 
             <div class="search-area is-hidden-mobile">
                 <div class="control has-icons-right  is-small is-clearfix">
@@ -147,9 +147,9 @@
                     ref="search-control"
                     v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                     class="search-control">
-                <b-loading
+                <!-- <b-loading
                         :is-full-page="false"
-                        :active.sync="isLoadingMetadata"/>
+                        :active.sync="isLoadingMetadata"/> -->
                 <!-- Item Creation Dropdown, only on Admin -->
                 <div 
                         class="search-control-item"
@@ -461,25 +461,11 @@
                             <div
                                     :style="{'margin-bottom': 'auto'}"
                                     class="field is-grouped">
-                                <p
-                                        v-if="advancedSearchResults"
-                                        class="control">
-                                    <button
-                                            @click="advancedSearchResults = !advancedSearchResults"
-                                            class="button is-small is-outlined">{{ $i18n.get('edit_search') }}</button>
-                                </p>
-                                <p
-                                        v-if="advancedSearchResults"
-                                        class="control">
-                                    <button
-                                            @click="isDoSearch = !isDoSearch"
-                                            class="button is-small is-secondary">{{ $i18n.get('search') }}</button>
-                                </p>
-                                <p class="control">
-                                    <a @click="openAdvancedSearch = false">
-                                        {{ $i18n.get('back') }}
-                                    </a>
-                                </p>
+                                <a
+                                        class="back-link"
+                                        @click="openAdvancedSearch = false">
+                                    {{ $i18n.get('back') }}
+                                </a>
                             </div>
                         </div>
                         <hr>
@@ -493,6 +479,22 @@
                         :open-form-advanced-search="openFormAdvancedSearch"
                         :is-do-search="isDoSearch"
                         :metadata="metadata"/>
+                <div class="advanced-searh-form-submit">
+                    <p
+                            v-if="advancedSearchResults"
+                            class="control">
+                        <button
+                                @click="advancedSearchResults = !advancedSearchResults"
+                                class="button is-small is-outlined">{{ $i18n.get('edit_search') }}</button>
+                    </p>
+                    <p
+                            v-if="advancedSearchResults"
+                            class="control">
+                        <button
+                                @click="isDoSearch = !isDoSearch"
+                                class="button is-small is-secondary">{{ $i18n.get('search') }}</button>
+                    </p>
+                </div>
             </div>
 
             <!-- --------------- -->
@@ -522,15 +524,15 @@
                         class="loading-container">
                     <b-loading 
                             :is-full-page="false"
-                            :active.sync="isLoadingItems"/>
+                            :active="showLoading"/>
                 </div>
-                <div
+                <!-- <div
                         v-if="openAdvancedSearch && advancedSearchResults">
                     <div class="advanced-search-results-title">
                         <h1>{{ $i18n.get('info_search_results') }}</h1>
                         <hr>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- When advanced search -->
                 <items-list
@@ -787,6 +789,9 @@
             },
             order() {
                 return this.getOrder();
+            },
+            showLoading() {
+                return this.isLoadingItems || this.isLoadingFilters || this.isLoadingMetadata;
             }
         },
         components: {
@@ -1041,17 +1046,18 @@
                                             display = false;
                                     }
 
-                                    metadata.push(
-                                        {
+                                    metadata.push({
                                             name: metadatum.name,
                                             metadatum: metadatum.description,
                                             slug: metadatum.slug,
                                             metadata_type: metadatum.metadata_type,
                                             metadata_type_object: metadatum.metadata_type_object,
+                                            metadata_type_options: metadatum.metadata_type_options,
                                             id: metadatum.id,
-                                            display: display
-                                        }
-                                    );    
+                                            display: display,
+                                            collection_id: metadatum.collection_id,
+                                            multiple: metadatum.multiple,
+                                    });    
                                     if (display)
                                         fetchOnlyMetadatumIds.push(metadatum.id);                      
                                 }
@@ -1061,6 +1067,7 @@
                             let creationDateMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['1'] != null) : true;
                             let authorNameMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['2'] != null) : true;
 
+                            // Creation date and author name should appear only on admin.
                             if (!this.isOnTheme) {
                              
                                 metadata.push({
@@ -1309,38 +1316,51 @@
     }
 
     .advanced-search-criteria-title {
-        padding: 0;
+       margin-bottom: 40px;
 
-        &>.is-flex {
-            justify-content: space-between;
-        }
-
-        h1 {
-            font-size: 1.25rem;
-            font-weight: normal;
-            color: $blue5;
+        h1, h2 {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 0;
+            color: $gray5;
             display: inline-block;
         }
-
-        hr {
-            margin: 3px 0 4px 0;
+        .field.is-grouped {
+            margin-left: auto;
+        }
+        a.back-link{
+            font-weight: 500;
+            float: right;
+            margin-top: 5px;
+        }
+        hr{
+            margin: 3px 0px 4px 0px; 
             height: 1px;
             background-color: $secondary;
         }
     }
 
     .advanced-search-results-title {
-        padding: 0 $table-side-padding;
+       margin-bottom: 40px;
+        margin: 0 $page-side-padding 42px $page-side-padding;
 
-        h1 {
-            font-size: 1.25rem;
-            font-weight: normal;
-            color: $blue5;
+        h1, h2 {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 0;
+            color: $gray5;
             display: inline-block;
         }
-
-        hr {
-            margin: 3px 0 4px 0;
+        .field.is-grouped {
+            margin-left: auto;
+        }
+        a.back-link{
+            font-weight: 500;
+            float: right;
+            margin-top: 5px;
+        }
+        hr{
+            margin: 3px 0px 4px 0px; 
             height: 1px;
             background-color: $secondary;
         }

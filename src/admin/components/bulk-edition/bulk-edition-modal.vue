@@ -174,7 +174,7 @@
                                 @click="removeThis(criterion)"
                                 class="button is-white is-pulled-right">
                             <span class="icon">
-                                <i class="has-text-gray4 tainacan-icon tainacan-icon-cancel"/>
+                                <i class="has-text-gray4 tainacan-icon tainacan-icon-20px tainacan-icon-cancel"/>
                             </span>
                         </button>
 
@@ -192,7 +192,7 @@
                                     multilined
                                     :label="bulkEditionProcedures[criterion].actionResult.constructor.name !== 'Object' && bulkEditionProcedures[criterion].actionResult === 1 ? `${bulkEditionProcedures[criterion].actionResult} ${$i18n.get('info_item_affected')}` : `${bulkEditionProcedures[criterion].actionResult} ${$i18n.get('info_items_affected')}`">
                                 <span class="icon">
-                                    <i class="has-text-success tainacan-icon tainacan-icon-approvedcircle"/>
+                                    <i class="has-text-success tainacan-icon tainacan-icon-20px tainacan-icon-approvedcircle"/>
                                 </span>
                             </b-tooltip>
                         </div>
@@ -211,7 +211,7 @@
                                     multilined
                                     :label="bulkEditionProcedures[criterion].actionResult.constructor.name !== 'Object' && bulkEditionProcedures[criterion].actionResult === 1 ? `${bulkEditionProcedures[criterion].actionResult} ${$i18n.get('info_item_affected')}` : `${bulkEditionProcedures[criterion].actionResult} ${$i18n.get('info_items_affected')}`">
                                 <span class="icon">
-                                    <i class="has-text-yello2 tainacan-icon tainacan-icon-alertcircle"/>
+                                    <i class="has-text-yello2 tainacan-icon tainacan-icon-20px tainacan-icon-alertcircle"/>
                                 </span>
                             </b-tooltip>
                         </div>
@@ -234,7 +234,7 @@
                                     multilined
                                     :label="bulkEditionProcedures[criterion].actionResult.constructor.name === 'Object' ? (bulkEditionProcedures[criterion].actionResult.error_message ? bulkEditionProcedures[criterion].actionResult.error_message : bulkEditionProcedures[criterion].actionResult.message) : ''">
                                 <span class="icon">
-                                    <i class="has-text-danger tainacan-icon tainacan-icon-processerror"/>
+                                    <i class="has-text-danger tainacan-icon tainacan-icon-20px tainacan-icon-processerror"/>
                                 </span>
                             </b-tooltip>
                         </button>
@@ -249,7 +249,7 @@
                                 @click="executeBulkEditionProcedure(criterion)"
                                 class="button is-white is-pulled-right">
                             <span class="icon">
-                                <i class="has-text-gray4 tainacan-icon tainacan-icon-play"/>
+                                <i class="has-text-gray4 tainacan-icon tainacan-icon-20px tainacan-icon-play"/>
                             </span>
                         </button>
 

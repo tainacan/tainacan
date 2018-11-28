@@ -47,6 +47,36 @@ class Item_Metadata_Entity extends Entity {
     }
 	
 	/**
+	 * Gets the string used before each value when concatenating multiple values 
+	 * to display item metadata value as html or string 
+	 * 
+	 * @return string 
+	 */
+	public function get_multivalue_prefix() {
+		return apply_filters('tainacan-item-metadata-get-multivalue-prefix', '', $this);
+	}
+	
+	/**
+	 * Gets the string used after each value when concatenating multiple values 
+	 * to display item metadata value as html or string 
+	 * 
+	 * @return string 
+	 */
+	public function get_multivalue_suffix() {
+		return apply_filters('tainacan-item-metadata-get-multivalue-suffix', '', $this);
+	}
+	
+	/**
+	 * Gets the string used in between each value when concatenating multiple values 
+	 * to display item metadata value as html or string 
+	 * 
+	 * @return string 
+	 */
+	public function get_multivalue_separator() {
+		return apply_filters('tainacan-item-metadata-get-multivalue-separator', ', ', $this);
+	}
+	
+	/**
 	 * Get the value as a HTML string, with markup and links
 	 * @return string
 	 */
@@ -72,13 +102,21 @@ class Item_Metadata_Entity extends Entity {
 			
 			$total = sizeof($value);
 			$count = 0;
+			$prefix = $item_metadata->get_multivalue_prefix();
+			$suffix = $item_metadata->get_multivalue_suffix();
+			$separator = $item_metadata->get_multivalue_separator();
 			
 			foreach ($value as $v) {
+				
+				$return .= $prefix;
+				
 				$return .= (string) $v;
+				
+				$return .= $suffix;
 				
 				$count ++;
 				if ($count < $total)
-					$return .= ', ';
+					$return .= $separator;
 			}
 			
 		} else {
@@ -150,7 +188,7 @@ class Item_Metadata_Entity extends Entity {
 	    $as_array['item']  = $this->get_item()->_toArray();
 	    $as_array['metadatum'] = $this->get_metadatum()->_toArray();
 
-	    return $as_array;
+		return apply_filters('tainacan-item-metadata-to-array', $as_array, $this);
     }
     
     /**

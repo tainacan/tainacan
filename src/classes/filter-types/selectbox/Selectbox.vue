@@ -1,8 +1,10 @@
 <template>
-    <div class="block">
+    <div 
+            :class="{ 'skeleton': isLoadingOptions }"
+            class="block">
         <b-select
                 :id="id"
-                :loading="isLoadingOptions"
+                v-if="!isLoadingOptions"
                 :value="selected"
                 @input="onSelect($event)"
                 :placeholder="$i18n.get('label_selectbox_init')"
@@ -136,3 +138,9 @@
         }
     }
 </script>
+
+<style scoped>
+    .skeleton {
+        min-height: 36px;
+    }
+</style>

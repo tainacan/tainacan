@@ -559,7 +559,7 @@ class CSV extends Importer {
         $item = new Entities\Item( ( $this->get_transient('item_id') ) ? $this->get_transient('item_id') : 0 );
         $itemMetadataArray = [];
 
-        if( $this->get_transient('item_id') && $item && is_numeric($item->get_id()) && $item->get_id() > 0 ){
+        if( $this->get_transient('item_id') && $item && is_numeric($item->get_id()) && $item->get_id() > 0 && $this->get_transient('item_action') == 'ignore' ){
             $this->add_log('Repeated Item');
             return $item;
         }

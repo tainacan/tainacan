@@ -52,7 +52,7 @@ class Term extends Entity {
     }
 
 	public function  __toString(){
-		return 'Hello, my name is '. $this->get_name();
+		return apply_filters("tainacan-term-to-string", $this->get_name(), $this);
 	}
 
 	public function _toArray(){
@@ -67,7 +67,7 @@ class Term extends Entity {
 		$term_array['header_image'] = $this->get_header_image();
 		$term_array['url']          = get_term_link( $this->get_id() );
 
-		return $term_array;
+		return apply_filters('tainacan-term-to-array', $term_array, $this);
 	}
 
     // Getters

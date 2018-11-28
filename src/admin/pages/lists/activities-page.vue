@@ -319,12 +319,10 @@
     @import '../../scss/_variables.scss';
 
     .sub-header {
-        max-height: $header-height;
+        min-height: $header-height;
         height: $header-height;
-        margin-left: -$page-small-side-padding;
-        margin-right: -$page-small-side-padding;
-        padding-left: $page-small-side-padding;
-        padding-right: $page-small-side-padding;
+        padding-left: 0;
+        padding-right: 0;
         border-bottom: 1px solid #ddd;
 
         .header-item {

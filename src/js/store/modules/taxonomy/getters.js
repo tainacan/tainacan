@@ -13,3 +13,7 @@ export const getTaxonomyName = state => {
 export const getTerms = state => {
   return state.terms;
 };
+
+export const getRepositoryTotalTaxonomies = state => {
+  return state.repositoryTotalTaxonomies;
+};

@@ -154,18 +154,27 @@ class Taxonomy extends Metadata_Type {
 			
 			$count = 1;
 			$total = sizeof($value);
+			$prefix = $item_metadata->get_multivalue_prefix();
+			$suffix = $item_metadata->get_multivalue_suffix();
+			$separator = $item_metadata->get_multivalue_separator();
 			
 			foreach ( $value as $term ) {
-				if ( $term instanceof \Tainacan\Entities\Term ) {
-					$return .= $term->_toHtml();
-				}
 				
 				$count ++;
 				
-				if ( $count <= $total ) {
-					$return .= ', ';
+				if ( $term instanceof \Tainacan\Entities\Term ) {
+					$return .= $prefix;
+					
+					$return .= $term->_toHtml();
+					
+					$return .= $suffix;
+					
+					if ( $count <= $total ) {
+						$return .= $separator;
+					}
+					
 				}
-				
+
 			}
 			
 		} else {

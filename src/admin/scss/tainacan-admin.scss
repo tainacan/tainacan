@@ -15,6 +15,7 @@
 @import "../scss/_selects.scss";
 @import "../scss/_inputs.scss";
 @import "../scss/_checkboxes.scss";
+@import "../scss/_upload.scss";
 @import "../scss/_radios.scss";
 @import "../scss/_switches.scss";
 @import "../scss/_dropdown-and-autocomplete.scss";
@@ -47,6 +48,22 @@ html {
     overflow-y: auto;
     margin: 0px !important; 
     font-family: $family-sans-serif;
+}
+
+// Tainacan Loading
+.loading-overlay .loading-icon::after {
+    background-image: url('../../admin/images/tainacan_loading.gif');
+    border: none;
+    border-radius: 0;
+    animation: none;
+    height: 50px;
+    width: 50px;
+}
+.loading-overlay.is-full-page .loading-icon::after {
+    height: 50px;
+    width: 50px;
+    top: calc(50% - 25px);
+    left: calc(50% - 25px);
 }
 
 // Link (hover is the same color as secondary

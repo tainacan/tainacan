@@ -570,8 +570,8 @@ abstract class Importer {
 				$collections = $this->get_collections();
 
 				foreach ($collections as $i => $col) {
-					if ( isset($col['total_items']) && is_integer($col['total_items']) ) {
-						$totalItems += $col['total_items'];
+					if ( isset($col['total_items']) && is_numeric($col['total_items']) ) {
+						$totalItems += intval($col['total_items']);
 						if ($i < $current_collection) {
 							$currentItem += $col['total_items'];
 						}
@@ -585,7 +585,7 @@ abstract class Importer {
 
 			} else {
 
-				if ( isset($step['total']) && is_integer($step['total']) && $step['total'] > 0 ) {
+				if ( isset($step['total']) && is_numeric($step['total']) && $step['total'] > 0 ) {
 					$current = $this->get_in_step_count();
 					$value = round( ($current/$step['total']) * 100 );
 				}

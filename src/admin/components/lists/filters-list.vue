@@ -1,7 +1,20 @@
 <template>
     <div class="filters-list-page">
         <b-loading :active.sync="isLoadingMetadatumTypes"/>
-        <tainacan-title v-if="!isRepositoryLevel"/>
+        <div 
+                v-if="!isRepositoryLevel"
+                class="tainacan-page-title">
+            <h1>
+                {{ $i18n.get('title_collection_filters_edition') + ' ' }}
+                <span style="font-weight: 600;">{{ collectionName }}</span>
+            </h1>
+            <a 
+                    @click="$router.go(-1)"
+                    class="back-link has-text-secondary">
+                {{ $i18n.get('back') }}
+            </a>
+            <hr>
+        </div>
         <p v-if="isRepositoryLevel">{{ $i18n.get('info_repository_filters_inheritance') }}</p>
         <br>
         <div class="columns">
@@ -207,6 +220,7 @@ export default {
     data(){           
         return {
             collectionId: '',
+            collectionName: '',
             isRepositoryLevel: false,
             isDraggingFromAvailable: false,
             isLoadingMetadatumTypes: true,
@@ -283,6 +297,9 @@ export default {
         ]),
         ...mapGetters('metadata', [
             'getMetadata',
+        ]),
+        ...mapActions('collection', [
+            'fetchCollectionName'
         ]),
         handleChange($event) {     
             if ($event.added) {
@@ -494,6 +511,13 @@ export default {
             .catch(() => {
                 this.isLoadingFilters = false;
             });
+
+        
+        // Obtains collection name
+        this.fetchCollectionName(this.collectionId).then((collectionName) => {
+            this.collectionName = collectionName;
+        });
+        
     }
 }
 </script>
@@ -503,9 +527,39 @@ export default {
     @import "../../scss/_variables.scss";
 
     .filters-list-page {
+
+        .tainacan-page-title {
+            margin-bottom: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            justify-content: space-between;
+
+            h1, h2 {
+                font-size: 20px;
+                font-weight: 500;
+                color: $gray5;
+                display: inline-block;
+                width: 80%;
+                flex-shrink: 1;
+                flex-grow: 1;
+            }
+            a.back-link{
+                font-weight: 500;
+                float: right;
+                margin-top: 5px;
+            }
+            hr{
+                margin: 3px 0px 4px 0px; 
+                height: 1px;
+                background-color: $secondary;
+                width: 100%;
+            }
+        }
                     
         .column:not(.available-metadata-area){
             overflow: hidden;
+            flex-grow: 2;
         }
 
         .loading-spinner {
@@ -568,6 +622,7 @@ export default {
                 .handle {
                     padding-right: 6em;
                     white-space: nowrap;
+                    display: flex;
                 }
                 .grip-icon { 
                     color: $gray3;
@@ -680,8 +735,9 @@ export default {
         .available-metadata-area {
             padding: 10px 0px 10px 10px;
             margin: 0;
-            max-width: 340px;
-            font-size: 14px;
+            max-width: 500px;
+            min-width: 20.8333333%;
+            font-size: 0.875rem;
 
             @media screen and (max-width: 769px) {
                 max-width: 100%;

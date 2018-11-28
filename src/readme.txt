@@ -4,7 +4,7 @@ Tags: museums, libraries, archives, GLAM, collections, repository
 Requires at least: 4.8
 Tested up to: 4.9.8
 Requires PHP: 5.6
-Stable tag: 0.5
+Stable tag: 0.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -13,8 +13,6 @@ Tainacan is a powerful and flexible repository platform for WordPress. Manage an
 == Description ==
 
 Tainacan is a powerful and flexible repository platform for WordPress. Manage and publish you digital collections as easily as publishing a post to your blog, while having all the tools of a professional repository platform.
-
-Please note: This is an early release of this plugin, and we are working hard to release 1.0 soon, please refer to the [project's website](http://tainacan.org/) for more information and road map.
 
 = Features =
 
@@ -77,7 +75,7 @@ If you have Imagick installed in your server, Tainacan will be able to automatic
 
 == Screenshots ==
  
-1. Manage collections
+1. Manage your repository
 2. Set up your collection
 3. Choose the metadata and filters for your collection
 4. Add items described by your metadata

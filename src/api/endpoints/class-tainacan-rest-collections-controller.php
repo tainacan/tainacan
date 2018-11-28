@@ -113,6 +113,19 @@ class REST_Collections_Controller extends REST_Controller {
         $rest_response->header('X-WP-Total', (int) $total_collections);
         $rest_response->header('X-WP-TotalPages', (int) $max_pages);
 
+		$total_collections = wp_count_posts( 'tainacan-collection', 'readable' );
+
+		if (isset($total_collections->publish) ||
+		    isset($total_collections->private) ||
+		    isset($total_collections->trash) ||
+		    isset($total_collections->draft)) {
+
+			$rest_response->header('X-Tainacan-total-collections-trash', $total_collections->trash);
+			$rest_response->header('X-Tainacan-total-collections-publish', $total_collections->publish);
+			$rest_response->header('X-Tainacan-total-collections-draft', $total_collections->draft);
+			$rest_response->header('X-Tainacan-total-collections-private', $total_collections->private);
+		}
+
         return $rest_response;
     }
 

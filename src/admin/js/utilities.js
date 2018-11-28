@@ -292,6 +292,12 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getItemMetadataBulkAddPath(collectionId, groupId) {
             return '/collections/' + collectionId + '/bulk-add/' + groupId;
         },
+        getExporterEditionPath(exporterType) {
+            return '/exporters/' + exporterType;
+        },
+        getAvailableExportersPath(){
+            return '/exporters';
+        },
     }
 };
 

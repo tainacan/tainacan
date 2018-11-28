@@ -53,9 +53,9 @@
                         !openAdvancedSearch && 
                         !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="filters-menu tainacan-form is-hidden-mobile">
-            <b-loading
+            <!-- <b-loading
                     :is-full-page="false"
-                    :active.sync="isLoadingFilters"/>
+                    :active.sync="isLoadingFilters"/> -->
 
             <div class="search-area is-hidden-mobile">
                 <div class="control has-icons-right  is-small is-clearfix">
@@ -148,9 +148,9 @@
                     ref="search-control"
                     v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                     class="search-control">
-                <b-loading
+                <!-- <b-loading
                         :is-full-page="false"
-                        :active.sync="isLoadingMetadata"/>
+                        :active.sync="isLoadingMetadata"/> -->
                 <!-- Item Creation Dropdown, only on Admin -->
                 <div 
                         class="search-control-item"
@@ -480,25 +480,11 @@
                             <div
                                     :style="{'margin-bottom': 'auto'}"
                                     class="field is-grouped">
-                                <p
-                                        v-if="advancedSearchResults"
-                                        class="control">
-                                    <button
-                                            @click="advancedSearchResults = !advancedSearchResults"
-                                            class="button is-small is-outlined">{{ $i18n.get('edit_search') }}</button>
-                                </p>
-                                <p
-                                        v-if="advancedSearchResults"
-                                        class="control">
-                                    <button
-                                            @click="isDoSearch = !isDoSearch"
-                                            class="button is-small is-secondary">{{ $i18n.get('search') }}</button>
-                                </p>
-                                <p class="control">
-                                    <a @click="openAdvancedSearch = false">
-                                        {{ $i18n.get('back') }}
-                                    </a>
-                                </p>
+                                <a 
+                                        class="back-link"
+                                        @click="openAdvancedSearch = false">
+                                    {{ $i18n.get('back') }}
+                                </a>
                             </div>
                         </div>
                         <hr>
@@ -511,6 +497,22 @@
                         :advanced-search-results="advancedSearchResults"
                         :open-form-advanced-search="openFormAdvancedSearch"
                         :is-do-search="isDoSearch"/>
+                <div class="advanced-searh-form-submit">
+                    <p
+                            v-if="advancedSearchResults"
+                            class="control">
+                        <button
+                                @click="advancedSearchResults = !advancedSearchResults"
+                                class="button is-outlined">{{ $i18n.get('edit_search') }}</button>
+                    </p>
+                    <p
+                            v-if="advancedSearchResults"
+                            class="control">
+                        <button
+                                @click="isDoSearch = !isDoSearch"
+                                class="button is-success">{{ $i18n.get('search') }}</button>
+                    </p>
+                </div>
             </div>
 
             <!-- --------------- -->
@@ -522,14 +524,20 @@
                 <ul>
                     <li 
                             @click="onChangeTab('')"
-                            :class="{ 'is-active': status == undefined || status == ''}"><a>{{ $i18n.get('label_all_items') }}</a></li>
+                            :class="{ 'is-active': status == undefined || status == ''}">
+                        <a>{{ `${$i18n.get('label_all_items')}` }}<span class="has-text-gray">&nbsp;{{ `${collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.publish)})` : ` (${repositoryTotalItems ? repositoryTotalItems.private + repositoryTotalItems.publish : ''})`}` }}</span></a>
+                    </li>
                     <li 
                             @click="onChangeTab('draft')"
-                            :class="{ 'is-active': status == 'draft'}"><a>{{ $i18n.get('label_draft_items') }}</a></li>
+                            :class="{ 'is-active': status == 'draft'}">
+                        <a>{{ `${$i18n.get('label_draft_items')}` }}<span class="has-text-gray">&nbsp;{{ `${collection && collection.total_items ? ` (${collection.total_items.draft})` : ` (${repositoryTotalItems ? repositoryTotalItems.draft : ''})`}` }}</span></a>
+                    </li>
                     <li
                             v-if="!isRepositoryLevel"
                             @click="onChangeTab('trash')"
-                            :class="{ 'is-active': status == 'trash'}"><a>{{ $i18n.get('label_trash_items') }}</a></li>
+                            :class="{ 'is-active': status == 'trash'}">
+                        <a>{{ `${$i18n.get('label_trash_items')}` }}<span class="has-text-gray">&nbsp;{{ `${collection && collection.total_items ? ` (${collection.total_items.trash})` : ` (${repositoryTotalItems ? repositoryTotalItems.trash : ''})`}` }}</span></a>
+                    </li>
                 </ul>
             </div>
 
@@ -542,15 +550,16 @@
                         class="loading-container">
                     <b-loading 
                             :is-full-page="false"
-                            :active.sync="isLoadingItems"/>
-                </div>
-                <div
+                            :active="showLoading"/>
+                </div>  
+
+                <!-- <div
                         v-if="openAdvancedSearch && advancedSearchResults">
                     <div class="advanced-search-results-title">
                         <h1>{{ $i18n.get('info_search_results') }}</h1>
                         <hr>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- When advanced search -->
                 <items-list
@@ -763,7 +772,8 @@
                 isDoSearch: false,
                 searchControlHeight: 0,
                 sortingMetadata: [],
-                isFilterModalActive: false
+                isFilterModalActive: false,
+                collection: undefined
             }
         },
         props: {
@@ -772,6 +782,25 @@
             enabledViewModes: Object // Used only on theme
         },
         computed: {
+            repositoryTotalItems(){
+                let collections = this.getCollections();
+
+                let total_items = {
+                    trash: 0,
+                    publish: 0,
+                    draft: 0,
+                    private: 0
+                };
+
+                for(let collection of collections){
+                    total_items.trash += Number(collection.total_items.trash);
+                    total_items.draft += Number(collection.total_items.draft);
+                    total_items.publish += Number(collection.total_items.publish);
+                    total_items.private += Number(collection.total_items.private);
+                }
+
+                return total_items;
+            },
             items() {
                 return this.getItems();
             },
@@ -804,6 +833,9 @@
             },
             order() {
                 return this.getOrder();
+            },
+            showLoading() {
+                return this.isLoadingItems || this.isLoadingFilters || this.isLoadingMetadata;
             }
         },
         components: {
@@ -825,9 +857,13 @@
             }
         },
         methods: {
+            ...mapActions('collection', [
+                'fetchCollectionTotalItems'
+            ]),
             ...mapGetters('collection', [
                 'getItems',
-                'getItemsListTemplate'
+                'getItemsListTemplate',
+                'getCollections'
             ]),
             ...mapActions('metadata', [
                 'fetchMetadata'
@@ -848,7 +884,7 @@
                 'getOrder',
                 'getViewMode',
                 'getTotalItems',
-                'getAdminViewMode'
+                'getAdminViewMode',
             ]),
             onSwipeFiltersMenu($event) {
                 if (this.registeredViewModes[this.viewMode] == undefined || 
@@ -1198,7 +1234,14 @@
             }
         },
         created() {
-            
+
+            if(this.collectionId) {
+                this.fetchCollectionTotalItems(this.collectionId)
+                    .then((data) => {
+                        this.collection = data;
+                    })
+            }
+
             this.isOnTheme = (this.$route.name === null);
 
             this.isRepositoryLevel = (this.collectionId === undefined);
@@ -1208,7 +1251,6 @@
 
             this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
                 this.isLoadingItems = isLoadingItems;
-
             });
 
             this.$eventBusSearch.$on('hasFiltered', hasFiltered => {
@@ -1338,41 +1380,64 @@
     }
 
     .advanced-search-criteria-title {
-        padding: 0;
+        margin-bottom: 40px;
 
-        &>.is-flex {
-            justify-content: space-between;
-        }
-
-        h1 {
-            font-size: 1.25rem;
-            font-weight: normal;
-            color: $blue5;
+        h1, h2 {
+            font-size: 20px;
+            font-weight: 500;
+            color: $gray5;
             display: inline-block;
+            margin-bottom: 0;
         }
-
-        hr {
-            margin: 3px 0 4px 0;
+        .field.is-grouped {
+            margin-left: auto;
+        }
+        a.back-link{
+            font-weight: 500;
+            float: right;
+            margin-top: 5px;
+        }
+        hr{
+            margin: 3px 0px 4px 0px; 
             height: 1px;
             background-color: $secondary;
         }
     }
 
     .advanced-search-results-title {
-        padding: 0 $table-side-padding;
+        margin-bottom: 40px;
+        margin: 0 $page-side-padding 42px $page-side-padding;
 
-        h1 {
-            font-size: 1.25rem;
-            font-weight: normal;
-            color: $blue5;
+        h1, h2 {
+            font-size: 20px;
+            font-weight: 500;
+            color: $gray5;
             display: inline-block;
+            margin-bottom: 0;
         }
-
-        hr {
-            margin: 3px 0 4px 0;
+        .field.is-grouped {
+            margin-left: auto;
+        }
+        a.back-link{
+            font-weight: 500;
+            float: right;
+            margin-top: 5px;
+        }
+        hr{
+            margin: 3px 0px 4px 0px; 
             height: 1px;
             background-color: $secondary;
         }
+    }
+
+    .advanced-searh-form-submit {
+        display: flex;
+        justify-content: flex-end;
+        padding-right: $page-side-padding;
+        padding-left: $page-side-padding;
+        margin-bottom: 1rem;
+
+        p { margin-left: 0.75rem; }
     }
 
     .tnc-advanced-search-close {

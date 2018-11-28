@@ -1,11 +1,14 @@
 <template>
-    <div class="block">
-        <span 
+    <div 
+            :style="{ 'height': isLoadingOptions ? (options.length*28) + 'px' : 'auto' }"
+            :class="{ 'skeleton': isLoadingOptions }"
+            class="block">
+        <!-- <span 
                 v-if="isLoadingOptions"
                 style="width: 100%; position: absolute;"
                 class="icon has-text-centered loading-icon">
             <div class="control has-icons-right is-loading is-clearfix" />
-        </span>
+        </span> -->
 
         <div
                 v-for="(option, index) in options.slice(0, filter.max_options)"
@@ -249,6 +252,7 @@
 </script>
 
 <style lang="scss" scoped>
+
     .view-all-button-container {
         display: flex;
         padding-left: 18px;

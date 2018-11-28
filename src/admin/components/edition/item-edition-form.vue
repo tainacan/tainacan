@@ -15,24 +15,24 @@
         </button>
         <div class="tainacan-page-title">
             <h1 v-if="isCreatingNewItem">
-                {{ $i18n.get('title_create_item_collection') + ' ' }}
-                <span style="font-weight: 600;">{{ collectionName }}</span>
                 <span 
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
                         class="status-tag">{{ $i18n.get(item.status) }}</span>
+                {{ $i18n.get('title_create_item_collection') + ' ' }}
+                <span style="font-weight: 600;">{{ collectionName }}</span>
             </h1>
             <h1 v-else>
-                {{ $i18n.get('title_edit_item') + ' ' }}
-                <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
                 <span 
                         v-if="(item != null && item != undefined)"
                         class="status-tag">{{ $i18n.get(item.status) }}</span>
-                <a 
-                        @click="$router.go(-1)"
-                        class="back-link has-text-secondary">
-                    {{ $i18n.get('back') }}
-                </a>
+                {{ $i18n.get('title_edit_item') + ' ' }}
+                <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
             </h1>
+            <a 
+                    @click="$router.go(-1)"
+                    class="back-link has-text-secondary">
+                {{ $i18n.get('back') }}
+            </a>
             <hr>
         </div>
         <transition 
@@ -43,7 +43,9 @@
                     class="tainacan-form"
                     label-width="120px">
                 <div class="columns">
-                    <div class="column is-5-5">
+                    <div 
+                            :class="{ 'is-12': isMetadataColumnCompressed, 'is-5-5': !isMetadataColumnCompressed }"
+                            class="column">
 
                         <!-- Hook for extra Form options -->
                         <template 
@@ -1239,13 +1241,17 @@ export default {
                 width: 80%;
                 flex-shrink: 1;
                 flex-grow: 1;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+                max-width: 80%;
             }
             .status-tag {
                 color: white;
                 background: $turquoise5;
                 padding: 0.15rem 0.5rem;
                 font-size: 0.75rem;
-                margin: 0 1rem;
+                margin: 0 1rem 0 0;
                 font-weight: 600;
                 position: relative;
                 top: -2px;
@@ -1379,8 +1385,11 @@ export default {
     #button-delete-document {
 
         border-radius: 100px !important;
-        height: 30px !important;
-        width: 30px !important;
+        max-height: 30px !important;
+        max-width: 30px !important;
+        min-height: 30px !important;
+        min-width: 30px !important;
+        padding: 0 !important;
         z-index: 99;
         margin-left: 10px !important;
         

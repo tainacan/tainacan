@@ -45,7 +45,7 @@ class Taxonomy extends Entity {
 	static $db_identifier_prefix = 'tnc_tax_';
 	
 	public function  __toString(){
-		return 'Hello, my name is '. $this->get_name();
+		return apply_filters("tainacan-taxonomy-to-string", $this->get_name(), $this);
 	}
 
 	/**

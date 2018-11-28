@@ -1,6 +1,6 @@
 <template>
-    <div 
-            class="tainacan-page-title">
+    <div class="tainacan-page-title">
+    
         <h1>{{ pageTitle }} <span class="is-italic has-text-weight-semibold">{{ isRepositoryLevel ? '' : entityName }}</span></h1>
         <a 
                 @click="$router.go(-1)"
@@ -8,6 +8,7 @@
             {{ $i18n.get('back') }}
         </a>
         <hr>
+
         <nav 
                 v-show="isRepositoryLevel"
                 class="breadcrumbs">
@@ -33,7 +34,7 @@
 <script>
 export default {
     name: 'TainacanTitle',
-    data(){
+    data() {
         return {
             isRepositoryLevel: true,
             pageTitle: '',
@@ -95,7 +96,7 @@ export default {
         .breadcrumbs {
             font-size: 12px;
             width: 100%;
-            span {
+            a {
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 overflow: hidden;

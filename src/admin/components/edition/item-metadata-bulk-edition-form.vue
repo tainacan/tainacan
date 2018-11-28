@@ -5,7 +5,7 @@
                 :active.sync="isLoadingMetadata"
                 :can-cancel="false"/>
         <div class="tainacan-page-title">
-            <h1>{{ $i18n.get('label_bulk_edit_items') }}<span class="status-tag">{{ $i18n.get(status) }}</span></h1>
+            <h1><span class="status-tag">{{ $i18n.get(status) }}</span>{{ $i18n.get('label_bulk_edit_items') }}</h1>
             <a 
                     @click="$router.go(-1)"
                     class="back-link has-text-secondary">
@@ -488,7 +488,7 @@ export default {
                 background: $turquoise5;
                 padding: 0.15rem 0.5rem;
                 font-size: 0.75rem;
-                margin: 0 1rem;
+                margin: 0 1rem 0 0;
                 font-weight: 600;
                 position: relative;
                 top: -2px;

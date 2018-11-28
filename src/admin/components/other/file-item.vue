@@ -5,7 +5,7 @@
                 @click="isPreviewModalActive = true">
             <figcaption 
                     :style="{ 'max-width': size != undefined ? size + 'px' : '112px' }"
-                    v-if="showName">{{ file.title.rendered }}</figcaption>
+                    v-if="showName && file.title != undefined">{{ file.title.rendered }}</figcaption>
             <div 
                     :class="{ 'rounded': showName }"
                     :style="{ 'width': size != undefined ? size + 'px' : '112px', 'height': size != undefined ? size + 'px' : '112px' }"
@@ -15,7 +15,7 @@
                         class="image"
                         :style="{ 'background-image': 'url(' + file.guid.rendered + ')' }"/>
                  <div
-                        :style="{ 'background-color': '#dbdbdb' }"
+                        :style="{ 'background-color': '#f2f2f2' }"
                         v-else 
                         class="file-placeholder">
                     <span class="icon is-large">
@@ -26,7 +26,7 @@
                  </div>
             </div>
         </figure> 
-
+    
         <!-- Preview Modal ----------------- -->
         <b-modal
                 :can-cancel="false"
@@ -35,7 +35,7 @@
                 scroll="keep">
             <div class="tainacan-modal-content">
                 <div class="tainacan-modal-title">
-                    <h2>{{ file.title.rendered }}</h2>
+                    <h2 v-if="file.title != undefined">{{ file.title.rendered }}</h2>
                     <a 
                             @click="isPreviewModalActive = false"
                             class="back-link">{{ $i18n.get('exit') }}</a>
@@ -138,7 +138,7 @@ export default {
         }
 
         figcaption {
-            background-color: $gray2;
+            background-color: $gray1;
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
             padding: 8px 15px;

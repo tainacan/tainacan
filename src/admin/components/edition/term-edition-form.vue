@@ -444,8 +444,11 @@
             #button-edit-header {
 
                 border-radius: 100px !important;
-                height: 30px !important;
-                width: 30px !important;
+                max-height: 30px !important;
+                max-width: 30px !important;
+                min-height: 30px !important;
+                min-width: 30px !important;
+                padding: 0 !important;
                 z-index: 99;
                 margin-left: 10px !important;
                 

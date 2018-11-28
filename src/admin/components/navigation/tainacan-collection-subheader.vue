@@ -260,7 +260,6 @@ export default {
             background-color: $gray1;
             color: $turquoise4;
             display: flex;
-            align-items: center;
 
             button, 
             button:hover, 
@@ -270,6 +269,7 @@ export default {
                 color: $turquoise4;
                 background-color: transparent !important;
                 border: none;
+                height: 42px !important;
                 .icon {
                     margin-top: -2px;
                     font-size: 24px;
@@ -281,7 +281,7 @@ export default {
             font-size: 12px;
             line-height: 12px;
             color: #1d1d1d;
-            span {
+            a {
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 overflow: hidden;

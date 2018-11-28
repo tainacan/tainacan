@@ -1,7 +1,7 @@
 <template>
 <div>
     <div 
-            v-if="termsList.length > 0 && !isLoadingTerms"
+            v-if="(termsList.length > 0 || searchQuery != '') && !isLoadingTerms"
             class="terms-list-header">
         <button
                 class="button is-secondary"
@@ -52,7 +52,7 @@
                 :active.sync="isLoadingTerms" 
                 :can-cancel="false"/>
         <div 
-                :class="{ 'is-12': !isEditingTerm, 'is-8': isEditingTerm }"
+                :class="{ 'is-12': !isEditingTerm, 'is-8-fullhd is-7-fullscreen is-6-desktop is-5-tablet': isEditingTerm }"
                 class="column">
             <br>
 
@@ -97,7 +97,7 @@
             </a>
         </div>
         <div 
-                class="column is-4 edit-forms-list"
+                class="column is-4-fullhd is-5-fullscreen is-6-desktop is-7-tablet edit-forms-list"
                 v-if="isEditingTerm">
             <term-edition-form 
                     :style="{ 'top': termEditionFormTop + 'px'}"
@@ -117,12 +117,20 @@
                         <i class="tainacan-icon tainacan-icon-36px tainacan-icon-terms"/>
                     </span>
                 </p>
-                <p>{{ $i18n.get('info_no_terms_created_on_taxonomy') }}</p>
+                <p>{{ searchQuery != '' ? $i18n.get('info_no_terms_found') : $i18n.get('info_no_terms_created_on_taxonomy') }}</p>
                 <button
+                        v-if="searchQuery == ''"
                         id="button-create-term"
                         class="button is-secondary"
                         @click="addNewTerm(0)">
                     {{ $i18n.get('label_new_term') }}
+                </button>
+                <button
+                        v-if="searchQuery != ''"
+                        id="button-clear-search"
+                        class="button is-outlined"
+                        @click="searchQuery = ''; searchTerms(0);">
+                    {{ $i18n.get('clear_search') }}
                 </button>
             </div>
         </section>
