@@ -1,6 +1,6 @@
 <template>
     <div 
-            :style="{ 'height': isLoadingOptions ? (options.length*28) + 'px' : 'auto' }"
+            :style="{ 'height': isLoadingOptions ? (Number(filter.max_options)*28) + 'px' : 'auto' }"
             :class="{ 'skeleton': isLoadingOptions }"
             class="block">
         <!-- <span 
