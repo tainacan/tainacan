@@ -67,13 +67,6 @@
         </div>
 
         <div class="table-wrapper">
-            <div
-                    v-show="isLoading"
-                    class="loading-container">
-                <b-loading
-                        :is-full-page="false"
-                        :active.sync="isLoading"/>
-            </div>
             
             <!-- GRID (THUMBNAILS) VIEW MODE -->
             <div
@@ -168,7 +161,9 @@
                 <div
                         :key="index"
                         v-for="(item, index) of items"
-                        :class="{ 'selected-masonry-item': selectedItems[index] }"
+                        :class="{
+                            'selected-masonry-item': selectedItems[index], 
+                        }"
                         class="tainacan-masonry-item">
 
                     <!-- Checkbox -->
@@ -711,15 +706,13 @@ export default {
                     this.queryAllItemsSelected = {};
                 } else if(item === true) {
                     isSelecting = true;
-
                     this.selectedItemsIDs.splice(index, 1, this.items[index].id);
                 }
             });
 
-            if(!allSelected) {
+            if (!allSelected)
                 this.isAllItemsSelected = allSelected;
-            }
-
+            
             this.allItemsOnPageSelected = allSelected;
             this.isSelectingItems = isSelecting;
         },
@@ -930,6 +923,16 @@ export default {
         getLimitedDescription(description) {
             let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 100 : 210;
             return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
+        },
+        randomHeightForMasonryItem() {
+            let min = 255;
+            let max = 255;
+
+                min = 140;
+                max = 420;
+            
+
+            return Math.floor(Math.random()*(max-min+1)+min);
         }
     }
 }
@@ -938,9 +941,9 @@ export default {
 <style lang="scss" scoped>
 
     @import "../../scss/_variables.scss";
+    @import "../../scss/_view-mode-cards.scss";
     @import "../../scss/_view-mode-masonry.scss";
     @import "../../scss/_view-mode-grid.scss";
-    @import "../../scss/_view-mode-cards.scss";
     @import "../../scss/_view-mode-records.scss";
 
     .selection-control {

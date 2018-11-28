@@ -597,13 +597,19 @@ $modal-z: 9999999;
     100%{background-position:0% 94%}
 }
 
+// .skeleton:nth-child(even) {
+//     background: linear-gradient(105deg, #f0f0f0, #fbfbfb, #eeeeee);
+// }
+// .skeleton:nth-child(odd) {
+//     background: linear-gradient(235deg, #f0f0f0, #fbfbfb, #eeeeee);   
+// }
 .skeleton {
-    border-radius: 6px;
-    background: linear-gradient(235deg, #fbfbfb, #ffffff, #eeeeee);
+    border-radius: 4px;
+    background: linear-gradient(235deg, #f0f0f0, #fbfbfb, #eeeeee);   
     background-size: 600% 600%;
 
-    -webkit-animation: skeleton-animation 1s ease infinite;
-    -moz-animation: skeleton-animation 1s ease infinite;
-    -o-animation: skeleton-animation 1s ease infinite;
-    animation: skeleton-animation 1s ease infinite;
+    -webkit-animation: skeleton-animation 1.5s ease infinite;
+    -moz-animation: skeleton-animation 1.5s ease infinite;
+    -o-animation: skeleton-animation 1.5s ease infinite;
+    animation: skeleton-animation 1.5s ease infinite;
 }
