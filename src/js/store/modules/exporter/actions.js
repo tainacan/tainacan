@@ -25,8 +25,10 @@ export const createExporterSession = ({commit}, slug) => {
 };
 
 export const updateExporterSession = ({commit}, exporterSessionUpdated) => {
-    return tainacan.patch(`/exporters/session/${exporterSessionUpdated.id}`, exporterSessionUpdated)
+
+    return tainacan.patch(`/exporters/session/${exporterSessionUpdated.id}`, exporterSessionUpdated.body)
         .then(response => {
+            console.info(response.data);
             commit('setExporterSession');
 
             return response.data;
@@ -37,6 +39,7 @@ export const updateExporterSession = ({commit}, exporterSessionUpdated) => {
 };
 
 export const runExporterSession = ({commit}, exporterSessionID) => {
+
     return tainacan.post(`/exporters/session/${exporterSessionID}/run`)
         .then(response => {
             commit('setBackGroundProcessID', response.data);

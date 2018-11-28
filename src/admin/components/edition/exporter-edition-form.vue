@@ -131,8 +131,10 @@
             updateExporter(attributeName){
                 if(attributeName === 'collection.id'){
                     let exporterSessionUpdated = {
-                        collection: {
-                            id: this.selectedCollection,
+                        body: {
+                            collection: {
+                                id: this.selectedCollection,
+                            },
                         },
                         id: this.exporterSession.id,
                     };
@@ -142,7 +144,9 @@
 
                 } else if (attributeName === 'mapping_selected'){
                     let exporterSessionUpdate = {
-                        mapping_selected: this.selectedMappings,
+                        body: {
+                            mapping_selected: this.selectedMappings.length <= 1 ? this.selectedMappings.toString() : this.selectedMappings,
+                        },
                         id: this.exporterSession.id,
                     };
 
@@ -154,7 +158,9 @@
                     this.$refs.sendEmailREF.checkHtml5Validity()){
 
                     let exporterSessionUpdate = {
-                        send_email: this.sendEmail,
+                        body: {
+                            send_email: this.sendEmail,
+                        },
                         id: this.exporterSession.id,
                     };
 
@@ -176,7 +182,7 @@
 
             this.createExporterSession(this.exporterType).then(exporterSession => {
                 console.info(exporterSession);
-                this.exporterSession = exporterSession;
+                this.exporterSession = exporterSession ? exporterSession : {};
                 this.selectedMappings.push(this.exporterSession.mapping_selected);
             });
 
