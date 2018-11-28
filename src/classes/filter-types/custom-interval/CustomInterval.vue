@@ -192,7 +192,7 @@
             },
             cleanSearchFromTags(filterTag) {
                 if (filterTag.filterId == this.filter.id)
-                    this.cleanSearch();
+                    this.clearSearch();
             },
             clearSearch(){
 
