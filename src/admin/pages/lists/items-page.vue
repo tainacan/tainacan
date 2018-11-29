@@ -548,14 +548,10 @@
                         v-show="(isLoadingItems && 
                                 !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen))"
                         class="loading-container">
-                    <b-loading 
+                    <!--<b-loading 
                             :is-full-page="false"
-                            :active="showLoading"/>
-
-                    <skeleton-items-list 
-                            v-if="!isOnTheme"
-                            :view-mode.sync="adminViewMode"/>
-                            
+                            :active="showLoading"/>-->
+                    <skeleton-items-list v-if="!isOnTheme"/>         
                 </div>  
 
                 <!-- <div

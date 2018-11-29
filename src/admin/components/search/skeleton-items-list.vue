@@ -65,7 +65,7 @@
             <div 
                     :key="item"
                     v-for="item in itemsPerPage"
-                    :style="{'min-height': randomHeightForMasonryItem() + 'px'}"
+                    :style="{'min-height': randomHeightForMasonryItem() + 'px' }"
                     class="skeleton" 
                     :class="{
                         'tainacan-masonry-item': viewMode == 'masonry',
@@ -81,17 +81,18 @@ import { mapGetters } from 'vuex';
 
 export default {
     name: 'SkeletonItemsList',
-    props: {
-        viewMode: String
-    },
     computed: {
         itemsPerPage(){
             return this.getItemsPerPage();
-        }
+        },
+        viewMode() {
+            return this.getAdminViewMode();
+        },
     },
     methods: {
         ...mapGetters('search', [
-            'getItemsPerPage'
+            'getItemsPerPage',
+            'getAdminViewMode',
         ]),
         getMasonryColsSettings() {
             if (this.viewMode == 'masonry')
