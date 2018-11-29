@@ -71,7 +71,7 @@ export const approve = ({commit}, activityId) => {
             .then(res => {
                 let activity = res.data;
 
-                this.$console.log(activity);
+                resolve(activity);
             })
             .catch(error => reject(error))
     });

@@ -284,4 +284,8 @@
         min-height: 600px;
         border-radius: 10px;
     }
+
+    .modal-card-body {
+        min-height: 400px;
+    }
 </style>

@@ -503,6 +503,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_current_view_mode_metadata_not_allowed'    => __( 'Current view mode does not allow displayed metadata selection.', 'tainacan' ),
 	'info_cant_select_metadata_without_items'        => __( 'Can not select displayed metadata without items on list.', 'tainacan' ),
 	'info_available_exporters_helper'                => __( '?', 'tainacan' ),
+	'info_empty'                                     => __( 'empty', 'tainacan' ),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),
