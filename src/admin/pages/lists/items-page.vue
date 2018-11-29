@@ -100,14 +100,14 @@
 
             <filters-items-list
                     v-if="!isLoadingFilters &&
-                    ((filters.length >= 0 &&
-                    isRepositoryLevel) || filters.length > 0)"
+                        ((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
                     :filters="filters"
                     :collapsed="collapseAll"
                     :is-repository-level="isRepositoryLevel"/>
 
             <section
-                    v-else
+                    v-if="!isLoadingFilters &&
+                        !((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
                     class="is-grouped-centered section">
                 <div class="content has-text-gray has-text-centered">
                     <p>
@@ -545,12 +545,17 @@
             <div class="above-search-control">
 
                 <div 
-                        v-show="isLoadingItems && 
-                                !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
+                        v-show="(isLoadingItems && 
+                                !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen))"
                         class="loading-container">
                     <b-loading 
                             :is-full-page="false"
                             :active="showLoading"/>
+
+                    <skeleton-items-list 
+                            v-if="!isOnTheme"
+                            :view-mode.sync="adminViewMode"/>
+                            
                 </div>  
 
                 <!-- <div
@@ -560,7 +565,6 @@
                         <hr>
                     </div>
                 </div> -->
-
                 <!-- When advanced search -->
                 <items-list
                         v-if="!isOnTheme &&
@@ -579,11 +583,11 @@
 
                 <!-- Admin View Modes-->
                 <items-list
-                        v-else-if="!isOnTheme &&
-                              !isLoadingItems && 
+                        v-else-if="!isOnTheme && 
+                              !isLoadingItems &&
                               totalItems > 0 &&
                               !openAdvancedSearch"
-
+    
                         :collection-id="collectionId"
                         :table-metadata="displayedMetadata"
                         :items="items"
@@ -708,14 +712,14 @@
 
                 <filters-items-list
                         v-if="!isLoadingFilters &&
-                        ((filters.length >= 0 &&
-                        isRepositoryLevel) || filters.length > 0)"
+                            ((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
                         :filters="filters"
                         :collapsed="collapseAll"
                         :is-repository-level="isRepositoryLevel"/>
 
                 <section
-                        v-else
+                        v-if="!isLoadingFilters &&
+                            !((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
                         class="is-grouped-centered section">
                     <div class="content has-text-gray has-text-centered">
                         <p>
@@ -744,6 +748,7 @@
     import FiltersTagsList from '../../components/search/filters-tags-list.vue';
     import FiltersItemsList from '../../components/search/filters-items-list.vue';
     import Pagination from '../../components/search/pagination.vue'
+    import SkeletonItemsList from '../../components/search/skeleton-items-list.vue'
     import AdvancedSearch from '../../components/advanced-search/advanced-search.vue';
     import AvailableImportersModal from '../../components/other/available-importers-modal.vue';
     import CollectionsModal from '../../components/other/collections-modal.vue';
@@ -842,6 +847,7 @@
             ItemsList,
             FiltersTagsList,
             FiltersItemsList,
+            SkeletonItemsList,
             Pagination,
             AdvancedSearch,
         },
