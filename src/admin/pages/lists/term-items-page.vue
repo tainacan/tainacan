@@ -470,8 +470,8 @@
                         </div>
                         <hr>
                     </div>
-
                 </div>
+
                 <advanced-search
                         :is-repository-level="isRepositoryLevel"
                         :collection-id="collectionId"
@@ -479,6 +479,7 @@
                         :open-form-advanced-search="openFormAdvancedSearch"
                         :is-do-search="isDoSearch"
                         :metadata="metadata"/>
+
                 <div class="advanced-searh-form-submit">
                     <p
                             v-if="advancedSearchResults"
@@ -520,7 +521,8 @@
             <div class="above-search-control">
 
                 <div 
-                        v-show="isLoadingItems"
+                        v-show="(isLoadingItems && 
+                                !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen))"
                         class="loading-container">
                     <b-loading 
                             :is-full-page="false"
@@ -896,7 +898,8 @@
 
                 // Updates searchControlHeight before in case we need to adjust filters position on mobile
                 setTimeout(() => {
-                    this.searchControlHeight = this.$refs['search-control'].clientHeight;
+                    if (this.$refs['search-control'] != undefined)
+                        this.searchControlHeight = this.$refs['search-control'].clientHeight;
                 }, 500);
             },
             onChangeAdminViewMode(adminViewMode) {
