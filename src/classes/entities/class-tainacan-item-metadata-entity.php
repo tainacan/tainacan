@@ -102,9 +102,9 @@ class Item_Metadata_Entity extends Entity {
 			
 			$total = sizeof($value);
 			$count = 0;
-			$prefix = $item_metadata->get_multivalue_prefix();
-			$suffix = $item_metadata->get_multivalue_suffix();
-			$separator = $item_metadata->get_multivalue_separator();
+			$prefix = $this->get_multivalue_prefix();
+			$suffix = $this->get_multivalue_suffix();
+			$separator = $this->get_multivalue_separator();
 			
 			foreach ($value as $v) {
 				
