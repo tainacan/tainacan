@@ -64,6 +64,7 @@ export const setPage = ({ commit },  page ) => {
 
 export const setItemsPerPage = ({ commit }, page ) => {
     commit('setPostQueryAttribute', {  attr: 'perpage', value: page } );
+    commit('setItemsPerPage', page );
 };
 
 export const setStatus= ({ commit }, status ) => {

@@ -127,6 +127,10 @@ export const setTotalPages = ( state, totalPages ) => {
     state.totalPages = totalPages;
 };
 
+export const setItemsPerPage = ( state, itemsPerPage ) => {
+    state.itemsPerPage = itemsPerPage;
+};
+
 export const setSearchQuery = ( state, searchQuery ) => {
     
     if (searchQuery != '') {
