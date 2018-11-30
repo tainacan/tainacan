@@ -90,9 +90,18 @@
 <style lang="scss">
     .radio-wrapper {
         display: flex;
+        border: solid 0.5px lightgray;
+        border-radius: 50px;
+        height: 20.49px;
+        width: 57.5px;
+        justify-content: center;
 
         label.is-small {
-            height: 19px !important;
+            height: 18px !important;
+            border: none;
+            border-radius: 50px !important;
+            width: 18px;
+            padding: 0 !important;
         }
     }
 

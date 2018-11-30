@@ -78,21 +78,6 @@
                                     :other-prop="activity"
                                     :parent="getThis()"
                                     :events="stateEvents"/>
-                            <!--<a-->
-                            <!--v-if="activity.status === 'pending'"-->
-                            <!--id="button-approve"-->
-                            <!--:aria-label="$i18n.get('approve_item')"-->
-                            <!--@click.prevent.stop="approveActivity(activity.id)">-->
-                            <!--<b-icon-->
-                            <!--icon="check" />-->
-                            <!--</a>-->
-
-                            <!--<a-->
-                            <!--v-if="activity.status === 'pending'"-->
-                            <!--id="button-not-approve"-->
-                            <!--class="delete"-->
-                            <!--:aria-label="$i18n.get('not_approve_item')"-->
-                            <!--@click.prevent.stop="notApproveActivity(activity.id)" />-->
 
                             <a v-if="activity.status !== 'pending'">
                                 <b-icon
