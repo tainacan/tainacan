@@ -26,6 +26,7 @@
                         :is-full-page="false"
                         :active.sync="isLoading" 
                         :can-cancel="false"/>
+
                 <activities-list
                         v-if="tab != 'processes'"
                         :is-loading="isLoading"
@@ -33,6 +34,7 @@
                         :page="activitiesPage"
                         :activities-per-page="activitiesPerPage"
                         :activities="activities"/>
+
                 <processes-list
                         v-if="tab == 'processes'"
                         :is-loading="isLoading"

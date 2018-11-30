@@ -12,7 +12,6 @@ import MetadataPage from '../pages/lists/metadata-page.vue'
 import FiltersPage from '../pages/lists/filters-page.vue'
 import Page from '../pages/lists/taxonomies-page.vue'
 import ActivitiesPage from '../pages/lists/activities-page.vue'
-import ActivityPage from '../pages/singles/activity-page.vue'
 import AvailableExportersPage from '../pages/lists/available-exporters-page.vue'
 import AvailableImportersPage from '../pages/lists/available-importers-page.vue'
 import ExportPage from '../pages/singles/export-page.vue'
@@ -59,7 +58,6 @@ const routes = [
         { path: 'metadata', component: MetadataList, name: 'MetadataList', meta: {title: i18nGet('title_collection_metadata_edition'), icon: 'folder-multiple'} },
         { path: 'filters', component: FiltersList, name: 'FiltersList', meta: {title: i18nGet('title_collection_filters_edition'), icon: 'folder-multiple'} },
         { path: 'activities', component: ActivitiesPage, name: 'CollectionActivitiesPage', meta: {title: i18nGet('title_collection_activities'), icon: 'flash'} },
-        { path: 'activities/:activityId', name: 'CollectionActivityPage', component: ActivityPage, meta: {title: i18nGet('title_activity_page'), icon: 'flash'} },
         { path: 'sequence/:sequenceId', name: 'SavedSequenceEditionForm', component: ItemEditionForm, meta: {title:  i18nGet('title_edit_item'), icon: 'folder-multiple'} },
         { path: 'sequence/:sequenceId/:itemPosition', name: 'SequenceEditionForm', component: ItemEditionForm, meta: {title:  i18nGet('title_edit_item'), icon: 'folder-multiple'} },
     ]
@@ -78,7 +76,6 @@ const routes = [
     { path: '/taxonomies/:taxonomyId', redirect: '/taxonomies/:taxonomyId/edit' },
 
     { path: '/activities',  name: 'ActivitiesPage', component: ActivitiesPage, meta: {title: i18nGet('title_repository_activities_page'), icon: 'flash'} },
-    { path: '/activities/:activityId', name: 'ActivityPage', component: ActivityPage, meta: {title: i18nGet('title_activity_page'), icon: 'flash'} },
 
     { path: '/importers/', name: 'AvailableImportersPage', component: AvailableImportersPage, meta: {title: i18nGet('title_importers_page'), icon: 'import'} },
     { path: '/importers/:importerSlug', name: 'ImporterEditionForm', component: ImporterEditionForm, meta: {title: i18nGet('title_importer_page'), icon: 'import'} },
