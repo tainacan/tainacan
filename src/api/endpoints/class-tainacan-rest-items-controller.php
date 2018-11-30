@@ -234,6 +234,10 @@ class REST_Items_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function get_items( $request ) {
+		
+		// Free php session early so simultaneous requests dont get queued
+		session_write_close();
+		
 		$args = $this->prepare_filters($request);
 
 		$collection_id = [];
