@@ -45,7 +45,6 @@ class Background_Importer extends Background_Process {
 			
 			if (true === $object->get_abort()) {
                 $this->set_finish_status(3);
-                $this->close($key);
 				throw new \Exception('Process aborted by Importer');
 			}
 			
@@ -78,31 +77,56 @@ class Background_Importer extends Background_Process {
 
         switch ($this->finish_status){
             case 1:
-                $label = __('Process completed','tainacan');
+                $wpdb->update(
+                    $this->table,
+                    [
+                        'done' => 1,
+                        'progress_label' => __('Process completed','tainacan'),
+                        'progress_value' => 100,
+                        'status' => 'finished'
+                    ],
+                    ['ID' => $key]
+                );
                 break;
 
             case 2:
-                $label = __('Process completed with errors','tainacan');
+                $wpdb->update(
+                    $this->table,
+                    [
+                        'done' => 1,
+                        'progress_label' => __('Process completed with errors','tainacan'),
+                        'progress_value' => 100,
+                        'status' => 'finished-errors'
+                    ],
+                    ['ID' => $key]
+                );
                 break;
 
             case 3:
-                $label = __('Process aborted by Importer','tainacan');
+                $wpdb->update(
+                    $this->table,
+                    [
+                        'done' => 1,
+                        'progress_label' => __('Process aborted by Importer','tainacan'),
+                        'status' => 'errored'
+                    ],
+                    ['ID' => $key]
+                );
                 break;
 
             default:
-                $label = __('Process completed','tainacan');
+                $wpdb->update(
+                    $this->table,
+                    [
+                        'done' => 1,
+                        'progress_label' => __('Process completed','tainacan'),
+                        'progress_value' => 100,
+                        'status' => 'finished'
+                    ],
+                    ['ID' => $key]
+                );
                 break;
         }
-
-        $wpdb->update(
-            $this->table,
-            [
-                'done' => 1,
-                'progress_label' => $label,
-                'progress_value' => 100
-            ],
-            ['ID' => $key]
-        );
 
         return $this;
     }

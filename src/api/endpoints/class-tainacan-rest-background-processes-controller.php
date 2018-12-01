@@ -222,7 +222,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
             $status_q = "done = 0";
         }
         if ( $body['status'] == 'closed' ) {
-            $status_q = "done = 1";
+            $status_q = "done = 1, status = 'cancelled'";
         }
 
         $id_q = $wpdb->prepare("AND ID = %d", $id);
