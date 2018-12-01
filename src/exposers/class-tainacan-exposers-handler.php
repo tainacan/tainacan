@@ -37,7 +37,6 @@ class Exposers_Handler {
 		do_action('tainacan-register-exposer', $this);
 		
 		add_filter( 'rest_request_after_callbacks', [$this, 'rest_request_after_callbacks'], 10, 3 ); //exposer types
-		// add_filter( 'tainacan-rest-response', [$this, 'rest_response'], 10, 2 ); // exposer mapper
 		
 	}
 	
@@ -99,32 +98,6 @@ class Exposers_Handler {
 		
 		return ($root ? '\\' : '').$class;
 	}
-	
-	/**
-	 * Check if rest response need mapper
-	 * @param array $item_arr
-	 * @param \WP_REST_Request $request
-	 * @return array
-	 */
-	public function rest_response($item_arr, $request) {
-		if($request->get_method() == 'GET' && $this->is_tainacan_request($request)) {
-			if($exposer = $this->request_has_mapper($request)) {
-				if(substr($request->get_route(), 0, strlen('/tainacan/v2/items')) == '/tainacan/v2/items') { //TODO do it at rest not here
-					$repos_items = \Tainacan\Repositories\Items::get_instance();
-					$item = $repos_items->fetch($item_arr['id']);
-					$items_metadata = $item->get_metadata();
-					$prepared_item = [];
-					foreach ($items_metadata as $item_metadata){
-						array_push($prepared_item, $item_metadata->_toArray());
-					}
-					$item_arr = $prepared_item;
-				}
-				return $this->map($item_arr, $exposer, $request); //TODO request -> args
-			}
-		}
-		return $item_arr;
-	}
-	
 	
 	
 	/**

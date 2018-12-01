@@ -17,6 +17,7 @@ $rest_importers_controller    = new \Tainacan\API\EndPoints\REST_Importers_Contr
 $rest_exporters_controller    = new \Tainacan\API\EndPoints\REST_Exporters_Controller();
 $rest_background_processes_controller    = new \Tainacan\API\EndPoints\REST_Background_Processes_Controller();
 $rest_bulkedit_controller    = new \Tainacan\API\EndPoints\REST_Bulkedit_Controller();
+$rest_exposers_controller    = new \Tainacan\API\EndPoints\REST_Exposers_Controller();
 new \Tainacan\API\EndPoints\REST_Export_Controller();
 new \Tainacan\API\EndPoints\REST_Metadatum_Mappers_Controller();
 $rest_facets_controller         = new \Tainacan\API\EndPoints\REST_Facets_Controller();

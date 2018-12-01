@@ -23,7 +23,7 @@ class Mappers_Handler {
 	    self::$instance = $this;
 
 		$this->register_mapper('Tainacan\Mappers\Dublin_Core');
-		$this->register_mapper('Tainacan\Mappers\Value');
+		//$this->register_mapper('Tainacan\Mappers\Value');
 		do_action('tainacan-register-mappers', $this);
 		
 		add_filter( 'tainacan-admin-i18n', [$this, 'mappers_i18n']);

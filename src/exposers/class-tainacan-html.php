@@ -8,9 +8,13 @@ namespace Tainacan\Exposers;
  */
 class Html extends Exposer {
 	
-	public $mappers = ['Value'];
 	public $slug = 'html'; // type slug for url safe
 	public $name = 'HyperText Markup Language';
+	
+	function __construct() {
+		$this->set_name( 'HTML' );
+		$this->set_description( __('A simple HTML table', 'tainacan') );
+	}
 	
 	/**
 	 * 
