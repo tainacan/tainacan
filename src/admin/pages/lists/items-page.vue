@@ -445,6 +445,18 @@
                     </button>
                 </div>
 
+                <!-- Exposers or alternativa links modal button -->
+                <div class="search-control-item">
+                    <button 
+                            class="button is-white"
+                            @click="openExposersModal()">
+                        <span class="gray-icon">
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                        </span>
+                        <span class="is-hidden-touch">{{ $i18n.get('label_exposer_urls') }}</span>
+                    </button>
+                </div>
+
                 <!-- Text simple search (used on mobile, instead of the one from filter list)-->
                 <div class="is-hidden-tablet search-control-item">
                     <div class="search-area">
@@ -747,6 +759,7 @@
     import SkeletonItemsList from '../../components/search/skeleton-items-list.vue'
     import AdvancedSearch from '../../components/advanced-search/advanced-search.vue';
     import AvailableImportersModal from '../../components/other/available-importers-modal.vue';
+    import ExposersModal from '../../components/other/exposers-modal.vue';
     import CollectionsModal from '../../components/other/collections-modal.vue';
     import { mapActions, mapGetters } from 'vuex';
 
@@ -846,6 +859,7 @@
             SkeletonItemsList,
             Pagination,
             AdvancedSearch,
+            ExposersModal
         },
         watch: {
             displayedMetadata() {
@@ -916,6 +930,16 @@
                         hideWhenManualCollection: true
                     }
                 });
+            },
+            openExposersModal() {
+                this.$modal.open({
+                    parent: this,
+                    component: ExposersModal,
+                    hasModalCard: true,
+                    props: { 
+                        collectionId: this.collectionId
+                    }
+                })
             },
             onOpenCollectionsModal() {
                 this.$modal.open({
