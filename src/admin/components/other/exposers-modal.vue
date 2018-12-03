@@ -32,19 +32,28 @@
                                     class="label">
                                 {{ exposerType.name }}
                             </label>
+                            <span class="has-text-gray">{{ exposerType.description }}</span>
                         </span>
                         <transition name="filter-item">
                             <div v-show="!exposerType.collapsed">    
-                                <p>{{ exposerType.description }}</p>      
                                 <div class="exposer-item">
                                     <span>{{ $i18n.get('label_exposer') + ": " + exposerType.name }}</span>
                                     <span class="exposer-item-actions">
-                                        <a :href="exposerBaseURL + '&exposer=' + exposerType.slug">
+                                        <a 
+                                                target="_blank"
+                                                :href="exposerBaseURL + '&exposer=' + exposerType.slug">
                                             <span class="gray-icon">
                                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
                                             </span>
                                         </a>
-                                    </span>   
+                                        <a 
+                                                :href="exposerBaseURL + '&exposer=' + exposerType.slug + '&mapper=' + exposerMapper" 
+                                                download>
+                                            <span class="gray-icon">
+                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-download"/>
+                                            </span>
+                                        </a>
+                                    </span> 
                                 </div> 
                                 <div 
                                         v-for="(exposerMapper, index) of exposerType.mappers"
@@ -52,9 +61,18 @@
                                         class="exposer-item">
                                     <span>{{ $i18n.get('label_exposer') + ": " + exposerType.name + ", " + $i18n.get('label_mapper') + ": " + exposerMapper }}</span>
                                     <span class="exposer-item-actions">
-                                        <a :href="exposerBaseURL + '&exposer=' + exposerType.slug + '&mapper=' + exposerMapper">
+                                        <a 
+                                                target="_blank"
+                                                :href="exposerBaseURL + '&exposer=' + exposerType.slug + '&mapper=' + exposerMapper">
                                             <span class="gray-icon">
                                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                                            </span>
+                                        </a>
+                                        <a 
+                                                :href="exposerBaseURL + '&exposer=' + exposerType.slug + '&mapper=' + exposerMapper" 
+                                                download>
+                                            <span class="gray-icon">
+                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-download"/>
                                             </span>
                                         </a>
                                     </span>  
@@ -102,6 +120,7 @@ export default {
         exposerBaseURL() {
             let baseURL = this.collectionId != undefined ? '/collection/' + this.collectionId + '/items/' : 'items';
             let currentParams = this.$route.query;
+
             return tainacan_plugin.root + baseURL + '?' + qs.stringify(currentParams);
         }
     },
@@ -145,7 +164,6 @@ export default {
             border-bottom: 1px solid $gray2;
             padding: 0.75rem $page-side-padding;
             margin: 0;
-            cursor: pointer;
         
             &:first-child {
                 margin-top: 0.75rem;
@@ -154,7 +172,22 @@ export default {
                 border-bottom: none;
             }
             .collapse-handler:hover {
+                cursor: pointer;
                 background-color: $gray1;
+            }
+            .collapse-handle {
+                .label {
+                    margin: 3px 0.75rem 0 0;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
+                }
+                .has-text-gray {
+                    font-size: 0.75rem;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
+                }
             }
 
             p {
@@ -179,6 +212,10 @@ export default {
                     .exposer-item-actions {
                         background-color: $gray2;
                     }
+                }
+                .exposer-item-actions a {
+                    cursor: pointer;
+                    margin: 0 0.5rem;
                 }
             }
         }
