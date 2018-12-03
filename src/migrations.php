@@ -71,6 +71,10 @@ class Migrations {
 	        ADD name text NOT NULL
 	        ");
 		}
+	}
+
+	static function create_importer_status_column(){
+        global $wpdb;
 
         $column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$wpdb->prefix}tnc_bg_process' AND column_name = 'status'"  );
 
@@ -80,8 +84,8 @@ class Migrations {
 	        ADD status ENUM('waiting','running','paused','cancelled','errored','finished','finished-errors')
 	        ");
         }
-		
-	}
+
+    }
 
 	static function init_capabilites() {
 		$Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();

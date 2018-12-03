@@ -499,6 +499,12 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_current_view_mode_metadata_not_allowed'    => __( 'Current view mode does not allow displayed metadata selection.', 'tainacan' ),
 	'info_cant_select_metadata_without_items'        => __( 'Can not select displayed metadata without items on list.', 'tainacan' ),
 	'info_available_exporters_helper'                => __( '?', 'tainacan' ),
+	'info_process_status_finished' 					 => __('Finished', 'tainacan'),
+	'info_process_status_finished_errors' 			 => __('Finished with errors', 'tainacan'),
+	'info_process_status_errored' 					 => __('Error', 'tainacan'),
+	'info_process_status_cancelled' 				 => __('Cancelled', 'tainacan'),
+	'info_process_status_paused' 				 	 => __('Paused', 'tainacan'),
+	'info_process_status_running' 				 	 => __('Running', 'tainacan'),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),

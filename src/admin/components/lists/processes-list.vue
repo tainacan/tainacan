@@ -159,6 +159,7 @@
                                 class="actions-cell column-small-width" 
                                 :label="$i18n.get('label_status')">
                             <div class="actions-container">
+                                <span class="label-status">{{ getStatusLabel(bgProcess.status) }}</span>
                                 <span 
                                         v-if="bgProcess.done <= 0"
                                         class="icon has-text-success loading-icon">
@@ -341,6 +342,31 @@
             },
             pauseProcess(index) {
                 this.updateProcess({ id: this.processes[index].ID, status: 'closed' });
+            },
+            getStatusLabel(status) {
+
+                switch(status) {
+                    case 'finished':
+                        return this.$i18n.get('info_process_status_finished');
+
+                    case 'finished-errors':
+                        return this.$i18n.get('info_process_status_finished_errors');
+
+                    case 'errored':
+                        return this.$i18n.get('info_process_status_errored');
+
+                    case 'cancelled':
+                        return this.$i18n.get('info_process_status_cancelled');
+
+                    case 'paused':
+                        return this.$i18n.get('info_process_status_paused');
+
+                    case 'running':
+                        return this.$i18n.get('info_process_status_running');
+
+                    default:
+                        return this.$i18n.get('info_process_status_finished');
+                }
             }
         },
         mounted() {
@@ -375,6 +401,11 @@
                 color: $gray4;
             }
         }
+    }
+
+    .label-status {
+        font-size: 9pt;
+        margin-right: 3px;
     }
 
     .loading-icon .control.is-loading::after {
