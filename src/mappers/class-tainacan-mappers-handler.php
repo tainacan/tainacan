@@ -90,6 +90,25 @@ class Mappers_Handler {
 		}
 		return $ret;
 	}
+
+	/**
+	 * Get a mapper object by its slug
+	 * @param false|\Tainacan\Mappers\Mapper False or Object 
+	 */
+	public function get_mapper($slug) {
+		
+		if ( $this->mapper_exists($slug) ) {
+
+			$mappers = $this->get_mappers();
+
+			$className = $mappers[$slug];
+
+			return new $className();
+
+		}
+
+		return false;
+	}
 	
 	/**
 	 * Add mappers data to translations
