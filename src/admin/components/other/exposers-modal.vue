@@ -120,7 +120,8 @@ export default {
         exposerBaseURL() {
             let baseURL = this.collectionId != undefined ? '/collection/' + this.collectionId + '/items/' : 'items';
             let currentParams = this.$route.query;
-
+            if (currentParams.fetch_only != undefined)
+                delete currentParams.fetch_only;
             return tainacan_plugin.root + baseURL + '?' + qs.stringify(currentParams);
         }
     },
