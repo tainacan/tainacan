@@ -10,6 +10,8 @@ class Html extends Exposer {
 	
 	public $slug = 'html'; // type slug for url safe
 	public $name = 'HyperText Markup Language';
+	protected $mappers = true;
+	public $accept_no_mapper = true;
 	
 	function __construct() {
 		$this->set_name( 'HTML' );

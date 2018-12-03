@@ -80,6 +80,7 @@ abstract class Exposer {
 	
 	/**
 	 * Return list of supported mappers for this type 
+	 * @return array List of mappers
 	 */
 	public function get_mappers() {
 		$mappers = apply_filters('tainacan-exporser-type-mappers', $this->mappers, $this);
@@ -90,7 +91,7 @@ abstract class Exposer {
 		} elseif (is_array($mappers)) {
 			return $mappers;
 		}
-		return null;
+		return [];
 	}
 
 }
