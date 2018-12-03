@@ -9,10 +9,10 @@
             </header>
             <section class="tainacan-form">
                  <p>{{ $i18n.get('instruction_select_an_importer_type') }}</p>
-                <div class="importer-types-container">
+                <div class="exposer-types-container">
                     <b-field 
                             :addons="false"
-                            class="importer-type"
+                            class="exposer-type"
                             v-for="(exposerType, index) in availableExposers"
                             :key="index">
                         <span 
@@ -20,7 +20,7 @@
                                 class="collapse-handle">
                             <span class="icon">
                                 <i 
-                                        :class="{ 'tainacan-icon-arrowdown' : exposerType.collapsed, 'tainacan-icon-arrowright' : !exposerType.collapsed }"
+                                        :class="{ 'tainacan-icon-arrowdown' : !exposerType.collapsed, 'tainacan-icon-arrowright' : exposerType.collapsed }"
                                         class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
                             </span>
                             <label 
@@ -35,7 +35,30 @@
                         </span>
                         <transition name="filter-item">
                             <div v-show="!exposerType.collapsed">    
-                                <p>{{ exposerType.description }}</p>            
+                                <p>{{ exposerType.description }}</p>      
+                                <div class="exposer-item">
+                                    <span>{{ $i18n.get('label_exposer') + ": " + exposerType.name }}</span>
+                                    <span class="exposer-item-actions">
+                                        <a :href="exposerBaseURL + '&exposer=' + exposerType.slug">
+                                            <span class="gray-icon">
+                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                                            </span>
+                                        </a>
+                                    </span>   
+                                </div> 
+                                <div 
+                                        v-for="(exposerMapper, index) of exposerType.mappers"
+                                        :key="index"
+                                        class="exposer-item">
+                                    <span>{{ $i18n.get('label_exposer') + ": " + exposerType.name + ", " + $i18n.get('label_mapper') + ": " + exposerMapper }}</span>
+                                    <span class="exposer-item-actions">
+                                        <a :href="exposerBaseURL + '&exposer=' + exposerType.slug + '&mapper=' + exposerMapper">
+                                            <span class="gray-icon">
+                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                                            </span>
+                                        </a>
+                                    </span>  
+                                </div>      
                             </div>
                         </transition>
                     </b-field>
@@ -62,6 +85,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import qs from 'qs';
 
 export default {
     name: 'ExposersModal',
@@ -72,6 +96,13 @@ export default {
         return {
             isLoading: false,
             availableExposers: []
+        }
+    },
+    computed: {
+        exposerBaseURL() {
+            let baseURL = this.collectionId != undefined ? '/collection/' + this.collectionId + '/items/' : 'items';
+            let currentParams = this.$route.query;
+            return tainacan_plugin.root + baseURL + '?' + qs.stringify(currentParams);
         }
     },
     methods: {
@@ -108,21 +139,47 @@ export default {
 
     @import "../../scss/_variables.scss";
 
-    .importer-types-container {
+    .exposer-types-container {
 
-        .importer-type {
+        .exposer-type {
             border-bottom: 1px solid $gray2;
-            padding: 15px 8.3333333%;
+            padding: 0.75rem $page-side-padding;
+            margin: 0;
             cursor: pointer;
         
             &:first-child {
-                margin-top: 15px;
+                margin-top: 0.75rem;
             }
             &:last-child {
                 border-bottom: none;
             }
-            &:hover {
-                background-color: $gray2;
+            .collapse-handler:hover {
+                background-color: $gray1;
+            }
+
+            p {
+                padding: 0.5rem 0.75rem;
+            }
+
+            .exposer-item {
+                margin: 0; 
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                &:first-of-type {
+                    margin-top: 0.5rem;
+                }
+                &>span {
+                    padding: 0.5rem 0.75rem;
+                    font-size: 0.75rem;
+                }
+                &:hover {
+                    background-color: $gray1;
+                    .exposer-item-actions {
+                        background-color: $gray2;
+                    }
+                }
             }
         }
     }
