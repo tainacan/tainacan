@@ -8,13 +8,12 @@ namespace Tainacan\Exposers;
  */
 class Csv extends Exposer {
 	
-	/**
-	 * List of supported mappers
-	 * @var array
-	 */
-	public $mappers = ['Value'];
 	public $slug = 'csv'; // type slug for url safe
-	public $name = 'Comma-separated values';
+
+	function __construct() {
+		$this->set_name( __('CSV', 'tainacan') );
+		$this->set_description( __('Comma-separated values', 'tainacan') );
+	}
 	
 	/**
 	 * 

@@ -23,7 +23,7 @@ class Mappers_Handler {
 	    self::$instance = $this;
 
 		$this->register_mapper('Tainacan\Mappers\Dublin_Core');
-		$this->register_mapper('Tainacan\Mappers\Value');
+		
 		do_action('tainacan-register-mappers', $this);
 		
 		add_filter( 'tainacan-admin-i18n', [$this, 'mappers_i18n']);
@@ -90,6 +90,25 @@ class Mappers_Handler {
 		}
 		return $ret;
 	}
+
+	/**
+	 * Get a mapper object by its slug
+	 * @param false|\Tainacan\Mappers\Mapper False or Object 
+	 */
+	public function get_mapper($slug) {
+		
+		if ( $this->mapper_exists($slug) ) {
+
+			$mappers = $this->get_mappers();
+
+			$className = $mappers[$slug];
+
+			return new $className();
+
+		}
+
+		return false;
+	}
 	
 	/**
 	 * Add mappers data to translations
@@ -110,25 +129,27 @@ class Mappers_Handler {
 	 * @param \WP_REST_Request $request
 	 * @return Mappers\Mapper|boolean false
 	 */
-	public static function request_has_mapper($request) {
+	public static function get_mapper_from_request($request) {
 		$body = json_decode( $request->get_body(), true );
 		$Tainacan_Mappers = self::get_instance();
 		$query_url_params = $request->get_query_params();
 		
+		$return_mapper = false;
+
 		if( // There is a defined mapper
 			is_array($body) && array_key_exists(self::MAPPER_PARAM, $body) &&
 			$Tainacan_Mappers->mapper_exists($body[self::MAPPER_PARAM])
 		) {
 			$mapper = $Tainacan_Mappers->check_class_name($body[self::MAPPER_PARAM], true, self::MAPPER_CLASS_PREFIX);
-			return new $mapper;
+			$return_mapper = new $mapper;
 		} elseif(
 		    is_array($query_url_params) && array_key_exists(self::MAPPER_PARAM, $query_url_params) &&
 		    $Tainacan_Mappers->mapper_exists($query_url_params[self::MAPPER_PARAM])
 		) {
 			$mapper = $Tainacan_Mappers->check_class_name($query_url_params[self::MAPPER_PARAM], true, self::MAPPER_CLASS_PREFIX);
-			return new $mapper;
+			$return_mapper = new $mapper;
 		} 
-		return false; // No mapper need, using Tainacan defautls
+		return apply_filters('tainacan-get-mapper-from-request', $return_mapper, $request); 
 	}
 	
 	/**
@@ -224,7 +245,7 @@ class Mappers_Handler {
 	public function create_mapped_collection( $collection, $request ) {
 	    
 		
-		if ($mapper = $this->request_has_mapper($request)) {
+		if ($mapper = $this->get_mapper_from_request($request)) {
 			
 			$mapper_metadata = $mapper->metadata;
 			if(is_array($mapper_metadata) ) {
@@ -276,7 +297,7 @@ class Mappers_Handler {
 	
 	function filter_item_api_response($item_arr, $item, $request) {
 		
-		$mapper = $this->request_has_mapper($request);
+		$mapper = $this->get_mapper_from_request($request);
 		
 		if (!$mapper) {
 			return $item_arr;

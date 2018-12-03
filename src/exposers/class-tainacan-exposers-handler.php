@@ -1,6 +1,7 @@
 <?php
 namespace Tainacan;
 
+use Tainacan\Mappers_Hanlder;
 use Tainacan\Mappers\Mapper;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
@@ -37,7 +38,8 @@ class Exposers_Handler {
 		do_action('tainacan-register-exposer', $this);
 		
 		add_filter( 'rest_request_after_callbacks', [$this, 'rest_request_after_callbacks'], 10, 3 ); //exposer types
-		// add_filter( 'tainacan-rest-response', [$this, 'rest_response'], 10, 2 ); // exposer mapper
+
+		add_filter( 'tainacan-api-get-items-alternate', [$this, 'filter_check_items_request'], 10, 2 );
 		
 	}
 	
@@ -99,32 +101,6 @@ class Exposers_Handler {
 		
 		return ($root ? '\\' : '').$class;
 	}
-	
-	/**
-	 * Check if rest response need mapper
-	 * @param array $item_arr
-	 * @param \WP_REST_Request $request
-	 * @return array
-	 */
-	public function rest_response($item_arr, $request) {
-		if($request->get_method() == 'GET' && $this->is_tainacan_request($request)) {
-			if($exposer = $this->request_has_mapper($request)) {
-				if(substr($request->get_route(), 0, strlen('/tainacan/v2/items')) == '/tainacan/v2/items') { //TODO do it at rest not here
-					$repos_items = \Tainacan\Repositories\Items::get_instance();
-					$item = $repos_items->fetch($item_arr['id']);
-					$items_metadata = $item->get_metadata();
-					$prepared_item = [];
-					foreach ($items_metadata as $item_metadata){
-						array_push($prepared_item, $item_metadata->_toArray());
-					}
-					$item_arr = $prepared_item;
-				}
-				return $this->map($item_arr, $exposer, $request); //TODO request -> args
-			}
-		}
-		return $item_arr;
-	}
-	
 	
 	
 	/**
@@ -232,8 +208,65 @@ class Exposers_Handler {
 	    }
 	    return $ret;
 	}
-	
-	
+
+	/**
+	 * Filters Items request
+	 * and checks if current exposer (if any) supports this mapper.
+	 * 
+	 * If it does not, return 404
+	 */
+	public function filter_check_items_request($response, $request) {
+		$exposer = $this->request_has_exposer($request);
+		$mapper = Mappers_Handler::get_instance()->get_mapper_from_request($request);
+		if ( false === $exposer ) {
+			return $response;
+		}
+
+		$accpeted_mappers = $exposer->get_mappers();
+
+		if ( $exposer->accept_no_mapper ) {
+			// translators: To be displayed in a list of supported mappers of a exposer. Example: Supported mappers: No mapper, Dublin Core
+			array_unshift($accpeted_mappers, __('No mapper', 'tainacan'));
+		}
+
+		$accpeted_mappers_string = implode(', ', $accpeted_mappers);
+
+		$return404 = false;
+
+		if ( $mapper == false ) {
+			
+			if ( $exposer->accept_no_mapper ) {
+				return $response;
+			} else {
+				$return404 = true;
+				// translators: 1: Exposer name, 2: List of accepted mappers. example: CSV exposer requires one of the following mappers: dublin-core, other-mapper
+				$error_message = sprintf( __('%1$s exposer requires one of the following mappers: %2$s', 'tainacan'), $exposer->get_name(), $accpeted_mappers_string);
+			}
+		} else {
+			
+			if ( in_array($mapper->slug, $accpeted_mappers) ) {
+				return $response;
+			} else {
+				$return404 = true;
+				// translators: 1: Exposer name. 2: List of accpeted mappers. example: CSV exposer does not support current mapper. Supported mappers are: dublin-core, other-mapper
+				$error_message = sprintf( __('%1$s exposer does not support current mapper. Supported mappers are: %2$s', 'tainacan'), $exposer->get_name(), $accpeted_mappers_string);
+			}
+
+		}
+		
+		if ( $return404 ) {
+			$response = new \WP_REST_Response([
+				'error_message' => $error_message,
+			], 404);
+			remove_filter( 'rest_request_after_callbacks', [$this, 'rest_request_after_callbacks']);
+		}
+
+		return $response;
+
+
+
+	}
+
 	
 	/**
 	 * 

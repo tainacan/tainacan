@@ -24,7 +24,7 @@ class JSON_LD extends Exposer {
 		    'Content-Type: application/json; charset=' . get_option( 'blog_charset' ),
 		    'Link: <'.get_bloginfo('url').'/item.jsonld>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"'
 		]);
-		$mapper = \Tainacan\Exposers_Handler::request_has_mapper($request);
+		$mapper = \Tainacan\Exposers_Handler::get_mapper_from_request($request);
 		if(property_exists($mapper, 'XML_namespace') && !empty($mapper->XML_namespace)) {
 		    $namespace = $mapper->XML_namespace;
 		    $context_slug = str_replace(':', '', $mapper->prefix);

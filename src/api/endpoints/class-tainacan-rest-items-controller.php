@@ -240,6 +240,16 @@ class REST_Items_Controller extends REST_Controller {
 		
 		$args = $this->prepare_filters($request);
 
+		/**
+		 * allow plugins to hijack the process.
+		 * 
+		 * If it returns a \WP_REST_Response, the method will return it and ignore the rest of the script
+		 */
+		$alternate_response = apply_filters('tainacan-api-get-items-alternate', false, $request);
+		if ( $alternate_response instanceof \WP_REST_Response ) {
+			return $alternate_response;
+		}
+		
 		$collection_id = [];
 		if($request['collection_id']) {
 			$collection_id = $request['collection_id'];
