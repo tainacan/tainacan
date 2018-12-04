@@ -185,6 +185,7 @@ export default {
                 this.fallbackCopyTextToClipboard(text);
                 return;
             }
+            
             navigator.clipboard.writeText(text)
                 .then(() => {
                     this.$console.log('Async: Copying to clipboard was successful!');
