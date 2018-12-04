@@ -134,7 +134,7 @@ class Admin {
 	 * Also used by DevInterface
 	 */
 	function get_admin_js_localization_params() {
-		global $TAINACAN_BASE_URL;
+		global $TAINACAN_BASE_URL, $TAINACAN_API_MAX_ITEMS_PER_PAGE;
 		
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 		$Tainacan_Metadata      = \Tainacan\Repositories\Metadata::get_instance();
@@ -186,7 +186,8 @@ class Admin {
 			'registered_view_modes'  	=> \Tainacan\Theme_Helper::get_instance()->get_registered_view_modes(),
 		    'exposer_mapper_param'   => \Tainacan\Mappers_Handler::MAPPER_PARAM,
 			'exposer_type_param'     	=> \Tainacan\Exposers_Handler::TYPE_PARAM,
-			'repository_name'	 		=> get_bloginfo('name')
+			'repository_name'	 		=> get_bloginfo('name'),
+			'api_max_items_per_page'    => $TAINACAN_API_MAX_ITEMS_PER_PAGE,
 		];
 
 		$maps = [
