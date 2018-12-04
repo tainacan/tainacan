@@ -31,7 +31,7 @@ export const updateExporterSession = ({commit}, exporterSessionUpdated) => {
             console.info(response.data);
             commit('setExporterSession');
 
-            return response.data;
+            return response;
         })
         .catch(error => {
             console.error(error.response.data);

@@ -336,7 +336,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_added_items'                              => __( 'Added items', 'tainacan' ),
 	'label_filters_from'                             => __( 'Filters from', 'tainacan' ),
 	'label_available_exporters'                      => __( 'Available Exporters', 'tainacan' ),
-	'label_origin_collection'                        => __( 'Origin collection', 'tainacan'),
+	'label_source_collection'                        => __( 'Origin collection', 'tainacan'),
 	'label_send_email'                               => __( 'Send a email after exportation completed', 'tainacan' ),
 	'label_urls'                 					 => __( 'URLs', 'tainacan' ),
 	'label_page'                 					 => __( 'Page', 'tainacan' ),
