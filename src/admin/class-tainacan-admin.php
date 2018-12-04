@@ -134,7 +134,7 @@ class Admin {
 	 * Also used by DevInterface
 	 */
 	function get_admin_js_localization_params() {
-		global $TAINACAN_BASE_URL;
+		global $TAINACAN_BASE_URL, $TAINACAN_API_MAX_ITEMS_PER_PAGE;
 		
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 		$Tainacan_Metadata      = \Tainacan\Repositories\Metadata::get_instance();
@@ -171,8 +171,8 @@ class Admin {
 		}
 
 		$settings = [
-			'root'                   	=> esc_url_raw( rest_url() ) . 'tainacan/v2',
-			'root_wp_api'            	=> esc_url_raw( rest_url() ) . 'wp/v2/',
+			'tainacan_api_url'         	=> esc_url_raw( rest_url() ) . 'tainacan/v2',
+			'wp_api_url'            	=> esc_url_raw( rest_url() ) . 'wp/v2/',
 			'wp_ajax_url'            	=> admin_url( 'admin-ajax.php' ),
 			'nonce'                  	=> wp_create_nonce( 'wp_rest' ),
 			'components'             	=> $components,
@@ -184,9 +184,10 @@ class Admin {
 			'theme_collection_list_url' => get_post_type_archive_link( 'tainacan-collection' ),
 			'custom_header_support'  	=> get_theme_support('custom-header'),
 			'registered_view_modes'  	=> \Tainacan\Theme_Helper::get_instance()->get_registered_view_modes(),
-		    'exposer_mapper_param'   => \Tainacan\Exposers\Exposers::MAPPER_PARAM,
-			'exposer_type_param'     	=> \Tainacan\Exposers\Exposers::TYPE_PARAM,
-			'repository_name'	 		=> get_bloginfo('name')
+		    'exposer_mapper_param'   => \Tainacan\Mappers_Handler::MAPPER_PARAM,
+			'exposer_type_param'     	=> \Tainacan\Exposers_Handler::TYPE_PARAM,
+			'repository_name'	 		=> get_bloginfo('name'),
+			'api_max_items_per_page'    => $TAINACAN_API_MAX_ITEMS_PER_PAGE,
 		];
 
 		$maps = [

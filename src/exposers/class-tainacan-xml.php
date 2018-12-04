@@ -1,12 +1,12 @@
 <?php
 
-namespace Tainacan\Exposers\Types;
+namespace Tainacan\Exposers;
 
 /**
  * Generate a Csv formated response
  *
  */
-class Xml extends Type {
+class Xml extends Exposer {
 	/**
 	 * {@inheritdoc}
 	 * @see \Tainacan\Exposers\Types\Type::extension
@@ -23,7 +23,7 @@ class Xml extends Type {
 	 */
 	public function rest_request_after_callbacks( $response, $handler, $request ) {
 		$response->set_headers( ['Content-Type: application/xml; charset=' . get_option( 'blog_charset' )] );
-		$mapper = \Tainacan\Exposers\Exposers::request_has_mapper($request);
+		$mapper = \Tainacan\Exposers_Handler::get_mapper_from_request($request);
 		$xml = new \SimpleXMLElement( '<?xml version="1.0"?><data></data>' );
 		$namespace = null;
 		$xml_root = $xml;

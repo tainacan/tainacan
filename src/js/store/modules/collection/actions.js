@@ -82,7 +82,8 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                             'itemsListTemplate': items, 
                             'total': res.headers['x-wp-total'], 
                             hasFiltered: hasFiltered, 
-                            advancedSearchResults:  advancedSearchResults});
+                            advancedSearchResults:  advancedSearchResults,
+                            itemsPerPage: res.headers['x-wp-itemperpage']});
                     } else {
                         commit('setItems', items);
                         resolve({
@@ -90,10 +91,12 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                             'total': res.headers['x-wp-total'],
                             totalPages: res.headers['x-wp-totalpages'], 
                             hasFiltered: hasFiltered, 
-                            advancedSearchResults: advancedSearchResults });                            
+                            advancedSearchResults: advancedSearchResults ,
+                            itemsPerPage: res.headers['x-wp-itemperpage'] });                            
                     }
                     dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
                     dispatch('search/setTotalPages', res.headers['x-wp-totalpages'], { root: true } );
+                    dispatch('search/setItemsPerPage', res.headers['x-wp-itemsperpage'], { root: true } );
                 })
                 .catch((thrown) => {
                     if (axios.isCancel(thrown)) {

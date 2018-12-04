@@ -1,12 +1,12 @@
 <?php
 
-namespace Tainacan\Exposers\Types;
+namespace Tainacan\Exposers;
 
 /**
  * Generate a OAI_PMH/oai_dc formated response
  *
  */
-class OAI_PMH extends Xml {
+class OAI_PMH extends Exposer {
 	
 	public $mappers = ['Dublin Core'];
 	public $slug = 'oai-pmh'; // type slug for url safe

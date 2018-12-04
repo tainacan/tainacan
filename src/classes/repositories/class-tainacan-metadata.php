@@ -677,9 +677,6 @@ class Metadata extends Repository {
 				'collection_id'   => $collection->get_id(),
 				'metadata_type'   => 'Tainacan\Metadata_Types\Core_Description',
 				'status'          => 'publish',
-				'exposer_mapping' => [
-					'dublin-core' => 'description'
-				]
 			],
 			'core_title'       => [
 				'name'            => 'Title',
@@ -688,9 +685,6 @@ class Metadata extends Repository {
 				'metadata_type'   => 'Tainacan\Metadata_Types\Core_Title',
 				'status'          => 'publish',
 				'display'		  => 'yes',
-				'exposer_mapping' => [
-					'dublin-core' => 'title'
-				]
 			]
 		];
 

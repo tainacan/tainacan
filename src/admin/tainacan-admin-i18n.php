@@ -338,6 +338,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_available_exporters'                      => __( 'Available Exporters', 'tainacan' ),
 	'label_origin_collection'                        => __( 'Origin collection', 'tainacan'),
 	'label_send_email'                               => __( 'Send a email after exportation completed', 'tainacan' ),
+	'label_urls'                 					 => __( 'URLs', 'tainacan' ),
+	'label_page'                 					 => __( 'Page', 'tainacan' ),
 	'label_activity_description'                     => __( 'Activity description', 'tainacan' ),
 	'label_activity_creation_date'                   => __( 'Activity creation date', 'tainacan' ),
 	'label_activity_author'                          => __( 'Activity author', 'tainacan' ),

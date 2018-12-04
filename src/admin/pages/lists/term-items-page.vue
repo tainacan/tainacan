@@ -73,10 +73,10 @@
                         </span>
                 </div>
             </div>
-            <a
+            <!-- <a
                     @click="openAdvancedSearch = !openAdvancedSearch"
                     class="is-size-7 is-pulled-right is-hidden-mobile">{{ $i18n.get('advanced_search') }}</a>
-            
+             -->
             <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
             <a
                     v-if="!isLoadingFilters &&
@@ -444,9 +444,9 @@
                                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-search"/>
                                 </span>
                         </div>
-                        <a
+                        <!-- <a
                                 @click="openAdvancedSearch = !openAdvancedSearch"
-                                class="is-size-7 has-text-secondary is-pulled-right">{{ $i18n.get('advanced_search') }}</a>
+                                class="is-size-7 has-text-secondary is-pulled-right">{{ $i18n.get('advanced_search') }}</a> -->
                     </div>
                 </div>
             </div>
@@ -470,8 +470,8 @@
                         </div>
                         <hr>
                     </div>
-
                 </div>
+
                 <advanced-search
                         :is-repository-level="isRepositoryLevel"
                         :collection-id="collectionId"
@@ -479,6 +479,7 @@
                         :open-form-advanced-search="openFormAdvancedSearch"
                         :is-do-search="isDoSearch"
                         :metadata="metadata"/>
+
                 <div class="advanced-searh-form-submit">
                     <p
                             v-if="advancedSearchResults"
@@ -520,7 +521,8 @@
             <div class="above-search-control">
 
                 <div 
-                        v-show="isLoadingItems"
+                        v-show="(isLoadingItems && 
+                                !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen))"
                         class="loading-container">
                     <b-loading 
                             :is-full-page="false"
@@ -896,7 +898,8 @@
 
                 // Updates searchControlHeight before in case we need to adjust filters position on mobile
                 setTimeout(() => {
-                    this.searchControlHeight = this.$refs['search-control'].clientHeight;
+                    if (this.$refs['search-control'] != undefined)
+                        this.searchControlHeight = this.$refs['search-control'].clientHeight;
                 }, 500);
             },
             onChangeAdminViewMode(adminViewMode) {

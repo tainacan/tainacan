@@ -35,17 +35,19 @@
                             Object.keys(exporterSession.mapping_accept).length &&
                              exporterSession.mapping_accept.any"
                             :label="$i18n.get('mapping')">
-                        <div
-                                v-for="(mapping, key) in exporterSession.mapping_list"
-                                :key="key">
-                            <b-checkbox
+
+                            <b-select
                                     @input="updateExporter('mapping_selected')"
-                                    class="is-capitalized"
-                                    :native-value="key"
-                                    v-model="selectedMappings">
-                                {{ key.replace(/-/, ' ') }}
-                            </b-checkbox>
-                        </div>
+                                    v-model="selectedMappings"
+                                    >
+                                <option
+                                        v-for="(mapping, key) in exporterSession.mapping_list"
+                                        :value="key"
+                                        :key="key">
+                                    {{ key.replace(/-/, ' ') }}
+                                </option>
+                            </b-select>
+
                     </b-field>
 
                     <b-field :label="$i18n.get('label_send_email')">

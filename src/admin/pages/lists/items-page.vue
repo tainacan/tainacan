@@ -100,14 +100,14 @@
 
             <filters-items-list
                     v-if="!isLoadingFilters &&
-                    ((filters.length >= 0 &&
-                    isRepositoryLevel) || filters.length > 0)"
+                        ((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
                     :filters="filters"
                     :collapsed="collapseAll"
                     :is-repository-level="isRepositoryLevel"/>
 
             <section
-                    v-else
+                    v-if="!isLoadingFilters &&
+                        !((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
                     class="is-grouped-centered section">
                 <div class="content has-text-gray has-text-centered">
                     <p>
@@ -445,6 +445,20 @@
                     </button>
                 </div>
 
+                <!-- Exposers or alternativa links modal button -->
+                <div 
+                        v-if="isOnTheme"
+                        class="search-control-item">
+                    <button 
+                            class="button is-white"
+                            @click="openExposersModal()">
+                        <span class="gray-icon">
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                        </span>
+                        <span class="is-hidden-touch">{{ $i18n.get('label_urls') }}</span>
+                    </button>
+                </div>
+
                 <!-- Text simple search (used on mobile, instead of the one from filter list)-->
                 <div class="is-hidden-tablet search-control-item">
                     <div class="search-area">
@@ -545,12 +559,13 @@
             <div class="above-search-control">
 
                 <div 
-                        v-show="isLoadingItems && 
-                                !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
+                        v-show="(isLoadingItems && 
+                                !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen))"
                         class="loading-container">
-                    <b-loading 
+                    <!--<b-loading 
                             :is-full-page="false"
-                            :active="showLoading"/>
+                            :active="showLoading"/>-->
+                    <skeleton-items-list v-if="!isOnTheme"/>         
                 </div>  
 
                 <!-- <div
@@ -560,7 +575,6 @@
                         <hr>
                     </div>
                 </div> -->
-
                 <!-- When advanced search -->
                 <items-list
                         v-if="!isOnTheme &&
@@ -579,11 +593,11 @@
 
                 <!-- Admin View Modes-->
                 <items-list
-                        v-else-if="!isOnTheme &&
-                              !isLoadingItems && 
+                        v-else-if="!isOnTheme && 
+                              !isLoadingItems &&
                               totalItems > 0 &&
                               !openAdvancedSearch"
-
+    
                         :collection-id="collectionId"
                         :table-metadata="displayedMetadata"
                         :items="items"
@@ -708,14 +722,14 @@
 
                 <filters-items-list
                         v-if="!isLoadingFilters &&
-                        ((filters.length >= 0 &&
-                        isRepositoryLevel) || filters.length > 0)"
+                            ((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
                         :filters="filters"
                         :collapsed="collapseAll"
                         :is-repository-level="isRepositoryLevel"/>
 
                 <section
-                        v-else
+                        v-if="!isLoadingFilters &&
+                            !((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
                         class="is-grouped-centered section">
                     <div class="content has-text-gray has-text-centered">
                         <p>
@@ -744,8 +758,10 @@
     import FiltersTagsList from '../../components/search/filters-tags-list.vue';
     import FiltersItemsList from '../../components/search/filters-items-list.vue';
     import Pagination from '../../components/search/pagination.vue'
+    import SkeletonItemsList from '../../components/search/skeleton-items-list.vue'
     import AdvancedSearch from '../../components/advanced-search/advanced-search.vue';
     import AvailableImportersModal from '../../components/other/available-importers-modal.vue';
+    import ExposersModal from '../../components/other/exposers-modal.vue';
     import CollectionsModal from '../../components/other/collections-modal.vue';
     import { mapActions, mapGetters } from 'vuex';
 
@@ -842,8 +858,10 @@
             ItemsList,
             FiltersTagsList,
             FiltersItemsList,
+            SkeletonItemsList,
             Pagination,
             AdvancedSearch,
+            ExposersModal
         },
         watch: {
             displayedMetadata() {
@@ -914,6 +932,17 @@
                         hideWhenManualCollection: true
                     }
                 });
+            },
+            openExposersModal() {
+                this.$modal.open({
+                    parent: this,
+                    component: ExposersModal,
+                    hasModalCard: true,
+                    props: { 
+                        collectionId: this.collectionId,
+                        totalItems: this.totalItems
+                    }
+                })
             },
             onOpenCollectionsModal() {
                 this.$modal.open({

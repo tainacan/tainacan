@@ -1,16 +1,22 @@
 <?php
 
-namespace Tainacan\Exposers\Types;
+namespace Tainacan\Exposers;
 
 /**
  * Generate a Html formated response
  *
  */
-class Html extends Type {
+class Html extends Exposer {
 	
-	public $mappers = ['Value'];
 	public $slug = 'html'; // type slug for url safe
 	public $name = 'HyperText Markup Language';
+	protected $mappers = true;
+	public $accept_no_mapper = true;
+	
+	function __construct() {
+		$this->set_name( 'HTML' );
+		$this->set_description( __('A simple HTML table', 'tainacan') );
+	}
 	
 	/**
 	 * 
@@ -19,14 +25,55 @@ class Html extends Type {
 	 */
 	public function rest_request_after_callbacks( $response, $handler, $request ) {
 		$response->set_headers( ['Content-Type: text/html; charset=' . get_option( 'blog_charset' )] );
+		
+		$items = $response->get_data();
+		
 		$html = '
 			<!DOCTYPE html>
 			<html>
 				<body>
-					<table>
+					<table border="1">
 		';
-						$html .= $this->array_to_html($response->get_data());
-						$html .= '
+		
+		if (sizeof($items) > 0) {
+			
+			$headers = array_map(function($a) {
+				return $a['name'];
+			}, $items[0]['metadata']);
+			
+			$html .= '<thead><tr>';
+			
+			foreach ( $items[0]['metadata'] as $slug => $meta ) {
+				$html .= '<th>' . $meta['name'] . '</th>';
+			}
+			
+			$html .= '</tr></thead>' . "\n";
+			
+			$html .= '<tbody>';
+			
+			foreach ($items as $item) {
+				$values = array_map(function($a) {
+					return $a['value_as_string'];
+				}, $item['metadata']);
+				
+				$html .= '<tr>';
+				
+				foreach ( $item['metadata'] as $slug => $meta ) {
+					$html .= '<td>' . $meta['value_as_html'] . '</td>';
+				}
+				
+				$html .= '</tr>' . "\n";
+				
+				
+			}
+			
+			$html .= '</tbody>' . "\n";
+			
+			
+		}
+		
+		
+		$html .= '
 					</table>
 				</body>
 			</html>

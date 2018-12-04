@@ -1,6 +1,6 @@
 <template>
     <div 
-            :style="{ 'height': isLoading ? (options.length*28) + 'px' : 'auto' }"
+            :style="{ 'height': isLoading ? (Number(filter.max_options)*28) + 'px' : 'auto' }"
             :class="{ 'skeleton': isLoading }"
             class="block">
         <!-- <span 
@@ -68,7 +68,7 @@
         },        
         data(){
             return {
-                isLoading: false,
+                isLoading: true,
                 options: [],
                 type: '',
                 collection: '',

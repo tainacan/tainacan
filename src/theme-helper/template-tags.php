@@ -179,7 +179,7 @@ function tainacan_the_faceted_search() {
 	$props = ' ';
 	
 	$default_view_mode = apply_filters( 'tainacan-default-view-mode-for-themes', 'masonry' );
-	$enabled_view_modes = apply_filters( 'tainacan-enabled-view-modes-for-themes', ['table', 'cards', 'masonry'] );
+	$enabled_view_modes = apply_filters( 'tainacan-enabled-view-modes-for-themes', ['table', 'cards', 'masonry', 'slideshow'] );
 	
 	// if in a collection page
 	$collection_id = tainacan_get_collection_id();

@@ -91,6 +91,7 @@ abstract class CommunImportExport {
 		if (isset($collection['id'])) {
 			$this->remove_collection($collection['id']);
 			$this->collections[] = $collection;
+			$this->collections = array_values($this->collections);
 		}
 	}
 
@@ -532,26 +533,49 @@ class Exporter extends CommunImportExport {
 
 	public function add_collection(array $collection) {
 		parent::add_collection($collection);
-		$this->update_collection_mapping($collection['id']);
+		$this->update_collections_mapping();
 	}
 
-	private function update_collection_mapping($collection_id) {
+	private function update_collections_mapping() {
+		$mapper_handler = Tainacan\Mappers_Handler::get_instance();
 		$collection_repo = Tainacan\Repositories\Collections::get_instance();
-		$collection = $collection_repo->fetch((int)$collection_id);
-		$metas = $collection->get_metadata();
 		
-		$mapping = [];
-		foreach ($metas as $key => $value) {
-			$mapper = $this->mapping_list[$this->mapping_selected];
-			$instance_mapper = new $mapper();
-			$metadatum_mapping = $value->get_exposer_mapping();
-			if(array_key_exists($instance_mapper->slug, $metadatum_mapping)) {
-				$mapping[$value->get_name()] = $metadatum_mapping[$instance_mapper->slug];
-			} else if ($instance_mapper->slug == 'value'){
-				$mapping[$value->get_name()] = $value->get_name();
+		foreach ($this->get_collections() as $index => $col) {
+			
+			$collection_id = $col['id'];
+
+			$collection = $collection_repo->fetch((int)$collection_id);
+
+			if ( ! $collection instanceof \Tainacan\Entities\Collection ) {
+				continue;
 			}
+
+			$metas = $collection->get_metadata();
+			
+			$mapping = [];
+			$current_mapping = isset($col['mapping']) ? $col['mapping'] : [];
+
+			if ( $mapper = $mapper_handler->get_mapper($this->mapping_selected) ) {
+				
+				foreach ($metas as $meta) {
+				
+					$metadatum_mapping = $meta->get_exposer_mapping();
+					//var_dump($metadatum_mapping);
+
+					if(array_key_exists($mapper->slug, $metadatum_mapping)) {
+						$mapping[$meta->get_name()] = $metadatum_mapping[$mapper->slug];
+					} 
+				}
+				
+			}
+
+			$col['mapping'] = $mapping;
+			if ($col['mapping'] !== $current_mapping) {
+				$this->add_collection($col);
+			}
+
 		}
-		$this->collections[$collection_id]['mapping'] = $mapping;
+		
 	}
 
 	/**
@@ -733,7 +757,7 @@ class Exporter extends CommunImportExport {
 			}
 			$this->mapping_accept[$method] = true;
 			if($method == 'any') {
-				$Tainacan_Exposers = \Tainacan\Exposers\Exposers::get_instance();
+				$Tainacan_Exposers = \Tainacan\Mappers_Handler::get_instance();
 				$metadatum_mappers = $Tainacan_Exposers->get_mappers();
 				$this->mapping_list = $metadatum_mappers;
 			} else if(!empty($list)) {
@@ -747,6 +771,7 @@ class Exporter extends CommunImportExport {
 
 	public function set_mapping_selected($mapping_selected) {
 		$this->mapping_selected = $mapping_selected;
+		$this->update_collections_mapping();
 	}
 
 	public function set_send_email($email) {

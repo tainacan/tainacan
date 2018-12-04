@@ -379,7 +379,8 @@ export default {
                             this.slideIndex = updatedSlideIndex;
                                                 
                             // console.log("Após: " + this.slideIndex + " " + this.$refs.mySwiper.swiper.activeIndex);
-                        }  
+                        }
+                    
                     }
 
                 }
@@ -413,9 +414,9 @@ export default {
                             this.$refs.mySwiper.swiper.activeIndex = this.slideIndex + 0;
 
                         } else if (this.slideItems.length > 0) {
-                            if (this.$refs.mySwiper.swiper.activeIndex == this.slideItems.length - 1 && this.page < this.totalPages)
+                            if (this.$refs.mySwiper.swiper.activeIndex == this.slideItems.length - 1 && this.page < this.totalPages) { 
                                 oldVal == undefined ? this.$eventBusSearch.setPage(this.page + 1) : this.$eventBusSearch.setPage(this.maxPage + 1);
-                            else if (this.$refs.mySwiper.swiper.activeIndex == 0 && this.page > 1 && this.slideItems.length < this.totalItems) {
+                            } else if (this.$refs.mySwiper.swiper.activeIndex == 0 && this.page > 1 && this.slideItems.length < this.totalItems) {
                                 oldVal == undefined ? this.$eventBusSearch.setPage(this.page - 1) : this.$eventBusSearch.setPage(this.minPage - 1);
                             }
                         }
@@ -478,18 +479,14 @@ export default {
 
             this.$nextTick(() => {
                 if (this.readjustedSlideIndex != undefined) {
-                    this.slideIndex = this.readjustedSlideIndex;
-                    // if (this.slideIndex != undefined && this.$refs.mySwiper.swiper.slides[this.slideIndex] != undefined) 
-                    //     this.$refs.mySwiper.swiper.slides[this.slideIndex].click();
-                    this.$refs.mySwiper.swiper.activeIndex = this.slideIndex + 0;
+
+                    if (this.slideIndex != undefined && this.$refs.mySwiper.swiper.slides[this.readjustedSlideIndex] != undefined) 
+                        this.$refs.mySwiper.swiper.slides[this.readjustedSlideIndex].click();
+
                     this.readjustedSlideIndex = undefined;
-
-                    if (this.slideIndex != undefined && this.$refs.mySwiper.swiper.slides[this.slideIndex] != undefined) 
-                        this.$refs.mySwiper.swiper.slides[this.slideIndex].click();
-
                 }
             });
-            
+     
         },
         nextSlide() { 
             if (this.$refs.mySwiper.swiper != undefined)
@@ -536,7 +533,6 @@ export default {
             } 
         },
         loadCurrentItem() {
-
             if ((this.slideItems && this.slideItems[this.slideIndex] && this.slideItems[this.slideIndex].id != undefined)) {
 
                 this.isLoadingItem = true;

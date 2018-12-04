@@ -6,7 +6,7 @@
     grid-template-columns: repeat(auto-fill, 455px);
     grid-gap: 0px;
     justify-content: space-evenly;
-    animation-name: item-appear;
+    animation-name: appear;
     animation-duration: 0.5s;
 
     @media screen and (max-width: 480px) {    

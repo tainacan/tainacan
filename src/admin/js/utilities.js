@@ -2,7 +2,7 @@ import qs from 'qs';
 import axios from 'axios';
 
 const wpApi = axios.create({
-    baseURL: tainacan_plugin.root_wp_api
+    baseURL: tainacan_plugin.wp_api_url
 });
 
 wpApi.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;

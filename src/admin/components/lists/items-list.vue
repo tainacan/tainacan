@@ -25,7 +25,7 @@
                 </span>
             </div>
 
-            <div class="field is-pulled-right">
+            <div class="field">
                 <b-dropdown
                         :mobile-modal="true"
                         position="is-bottom-left"
@@ -64,16 +64,21 @@
                     </b-dropdown-item>
                 </b-dropdown>
             </div>
+
+            <!-- Exposers or alternativa links modal button -->
+            <div class="field">
+                <button 
+                        class="button is-white"
+                        @click="openExposersModal()">
+                    <span class="gray-icon">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                    </span>
+                    <span class="is-hidden-touch">{{ $i18n.get('label_urls') }}</span>
+                </button>
+            </div>
         </div>
 
         <div class="table-wrapper">
-            <div
-                    v-show="isLoading"
-                    class="loading-container">
-                <b-loading
-                        :is-full-page="false"
-                        :active.sync="isLoading"/>
-            </div>
             
             <!-- GRID (THUMBNAILS) VIEW MODE -->
             <div
@@ -168,7 +173,9 @@
                 <div
                         :key="index"
                         v-for="(item, index) of items"
-                        :class="{ 'selected-masonry-item': selectedItems[index] }"
+                        :class="{
+                            'selected-masonry-item': selectedItems[index], 
+                        }"
                         class="tainacan-masonry-item">
 
                     <!-- Checkbox -->
@@ -666,6 +673,7 @@
 import { mapActions, mapGetters } from 'vuex';
 import CustomDialog from '../other/custom-dialog.vue';
 import BulkEditionModal from '../bulk-edition/bulk-edition-modal.vue';
+import ExposersModal from '../other/exposers-modal.vue';
 
 export default {
     name: 'ItemsList',
@@ -711,15 +719,13 @@ export default {
                     this.queryAllItemsSelected = {};
                 } else if(item === true) {
                     isSelecting = true;
-
                     this.selectedItemsIDs.splice(index, 1, this.items[index].id);
                 }
             });
 
-            if(!allSelected) {
+            if (!allSelected)
                 this.isAllItemsSelected = allSelected;
-            }
-
+            
             this.allItemsOnPageSelected = allSelected;
             this.isSelectingItems = isSelecting;
         },
@@ -930,7 +936,18 @@ export default {
         getLimitedDescription(description) {
             let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 100 : 210;
             return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
-        }
+        },
+        openExposersModal() {
+            this.$modal.open({
+                parent: this,
+                component: ExposersModal,
+                hasModalCard: true,
+                props: { 
+                    collectionId: this.collectionId,
+                    totalItems: this.totalItems
+                }
+            })
+        },
     }
 }
 </script>
@@ -938,9 +955,9 @@ export default {
 <style lang="scss" scoped>
 
     @import "../../scss/_variables.scss";
+    @import "../../scss/_view-mode-cards.scss";
     @import "../../scss/_view-mode-masonry.scss";
     @import "../../scss/_view-mode-grid.scss";
-    @import "../../scss/_view-mode-cards.scss";
     @import "../../scss/_view-mode-records.scss";
 
     .selection-control {
@@ -948,10 +965,13 @@ export default {
         padding: 6px 0px 0px 12px;
         background: white;
         height: 40px;
+        display: flex;
 
         .select-all {
             color: $gray4;
             font-size: 0.875rem;
+            margin-right: auto;
+
             &:hover {
                 color: $gray4;
             }

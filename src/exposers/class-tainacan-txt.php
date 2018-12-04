@@ -1,12 +1,12 @@
 <?php
 
-namespace Tainacan\Exposers\Types;
+namespace Tainacan\Exposers;
 
 /**
  * Generate a text formated response
  *
  */
-class Txt extends Type {
+class Txt extends Exposer {
 	
 	public $mappers = ['Value'];
 	public $slug = 'txt'; // type slug for url safe

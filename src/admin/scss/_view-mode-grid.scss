@@ -6,7 +6,7 @@
     grid-template-columns: repeat(auto-fill, 285px);
     grid-gap: 0px;
     justify-content: space-evenly;
-    animation-name: item-appear;
+    animation-name: appear;
     animation-duration: 0.5s;
 
     .selected-grid-item {
@@ -15,6 +15,7 @@
 
     .tainacan-grid-item {
         max-width: 255px;
+        min-height: 300px;
         flex-basis: 0;
         margin: 15px;
         text-align: center;

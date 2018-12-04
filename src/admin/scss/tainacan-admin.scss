@@ -51,6 +51,9 @@ html {
 }
 
 // Tainacan Loading
+.loading-overlay {
+    z-index: 9999999999;
+}
 .loading-overlay .loading-icon::after {
     background-image: url('../../admin/images/tainacan_loading.gif');
     border: none;
