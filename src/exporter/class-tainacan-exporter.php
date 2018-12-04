@@ -750,7 +750,7 @@ class Exporter extends CommunImportExport {
 		}
 	}
 
-	public function set_mapping_method($method, $default_mapping = 'value', $list = []) {
+	public function set_mapping_method($method, $default_mapping = '', $list = []) {
 		if ( array_key_exists($method, $this->mapping_accept) ) {
 			foreach ($this->mapping_accept as &$value) {
 				$value = false;

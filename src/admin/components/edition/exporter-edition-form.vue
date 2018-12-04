@@ -71,13 +71,13 @@
                     </b-field>
 
                     <b-field :label="$i18n.get('label_send_email')">
-                        <b-input
-                                ref="sendEmailREF"
-                                :loading="emailLoading"
-                                @input="updateEmail()"
-                                type="email"
-                                placeholder="my@email.com"
-                                v-model="sendEmail"/>
+                        <b-checkbox
+                                @input="updateExporter('send_email')"
+                                true-value="1"
+                                false-value="0"
+                                v-model="sendEmail">
+                            {{ $i18n.get('label_yes') }}
+                        </b-checkbox>
                     </b-field>
                 </div>
             </div>
@@ -118,7 +118,7 @@
                 isFetchingCollections: false,
                 selectedMapping: undefined,
                 selectedCollection: undefined,
-                sendEmail: '',
+                sendEmail: '0',
                 emailLoading: false,
                 runButtonLoading: false,
                 exporterSession: {},
@@ -174,17 +174,14 @@
             formIsValid(){
                 return (
                     this.selectedCollection &&
-                    this.selectedMapping &&
                     !this.formErrorMessage
                 );
             },
-            updateEmail: _.debounce(function () {
-                this.updateExporter('send_email');
-            }, 500),
             verifyError(response){
                 console.log(response);
                 if(response.constructor.name === 'Object' &&
-                    (response.data && response.data.status && response.data.status.toString().split('')[0] != 2) || response.error_message) {
+                    (response.data && response.data.status &&
+                        response.data.status.toString().split('')[0] != 2) || response.error_message) {
                     this.formErrorMessage = response.data.error_message;
                 } else {
                     this.exporterSession = response.data;
@@ -215,9 +212,7 @@
                     this.updateExporterSession(exporterSessionUpdate)
                         .then(exporterSessionUpdated => this.verifyError(exporterSessionUpdated));
 
-                } else if (attributeName === 'send_email' &&
-                    this.$refs.sendEmailREF &&
-                    this.$refs.sendEmailREF.checkHtml5Validity()){
+                } else if (attributeName === 'send_email'){
 
                     let exporterSessionUpdate = {
                         body: {
