@@ -4,7 +4,7 @@
                 class="tainacan-modal-content" 
                 style="width: auto">
             <header class="tainacan-modal-title">
-                <h2>{{ this.$i18n.get('label_alternative_exposer_urls') }}</h2>
+                <h2>{{ this.$i18n.get('label_urls') }}</h2>
                 <hr>
             </header>
             <section class="tainacan-form">
@@ -46,13 +46,6 @@
                                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
                                             </span>
                                         </a>
-                                        <a 
-                                                :href="exposerBaseURL + '&exposer=' + exposerType.slug + '&mapper=' + exposerMapper" 
-                                                download>
-                                            <span class="gray-icon">
-                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-download"/>
-                                            </span>
-                                        </a>
                                     </span> 
                                 </div> 
                                 <div 
@@ -66,13 +59,6 @@
                                                 :href="exposerBaseURL + '&exposer=' + exposerType.slug + '&mapper=' + exposerMapper">
                                             <span class="gray-icon">
                                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
-                                            </span>
-                                        </a>
-                                        <a 
-                                                :href="exposerBaseURL + '&exposer=' + exposerType.slug + '&mapper=' + exposerMapper" 
-                                                download>
-                                            <span class="gray-icon">
-                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-download"/>
                                             </span>
                                         </a>
                                     </span>  
@@ -120,9 +106,17 @@ export default {
         exposerBaseURL() {
             let baseURL = this.collectionId != undefined ? '/collection/' + this.collectionId + '/items/' : 'items';
             let currentParams = this.$route.query;
+
+            // Removes Fetch Only
             if (currentParams.fetch_only != undefined)
                 delete currentParams.fetch_only;
-            return tainacan_plugin.root + baseURL + '?' + qs.stringify(currentParams);
+            
+            // Handles pagination of this link
+            if (currentParams.paged != 1)
+                currentParams.paged = 1;
+            currentParams.perpage = 100;
+
+            return tainacan_plugin.tainacan_api_url + baseURL + '?' + qs.stringify(currentParams);
         }
     },
     methods: {

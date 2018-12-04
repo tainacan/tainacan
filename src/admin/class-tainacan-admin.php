@@ -171,8 +171,8 @@ class Admin {
 		}
 
 		$settings = [
-			'root'                   	=> esc_url_raw( rest_url() ) . 'tainacan/v2',
-			'root_wp_api'            	=> esc_url_raw( rest_url() ) . 'wp/v2/',
+			'tainacan_api_url'         	=> esc_url_raw( rest_url() ) . 'tainacan/v2',
+			'wp_api_url'            	=> esc_url_raw( rest_url() ) . 'wp/v2/',
 			'wp_ajax_url'            	=> admin_url( 'admin-ajax.php' ),
 			'nonce'                  	=> wp_create_nonce( 'wp_rest' ),
 			'components'             	=> $components,

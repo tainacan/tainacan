@@ -446,14 +446,16 @@
                 </div>
 
                 <!-- Exposers or alternativa links modal button -->
-                <div class="search-control-item">
+                <div 
+                        v-if="isOnTheme"
+                        class="search-control-item">
                     <button 
                             class="button is-white"
                             @click="openExposersModal()">
                         <span class="gray-icon">
                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
                         </span>
-                        <span class="is-hidden-touch">{{ $i18n.get('label_exposer_urls') }}</span>
+                        <span class="is-hidden-touch">{{ $i18n.get('label_urls') }}</span>
                     </button>
                 </div>
 
