@@ -338,6 +338,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_origin_collection'                        => __( 'Origin collection', 'tainacan'),
 	'label_send_email'                               => __( 'Send a email after exportation completed', 'tainacan' ),
 	'label_urls'                 					 => __( 'URLs', 'tainacan' ),
+	'label_page'                 					 => __( 'Page', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

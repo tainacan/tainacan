@@ -36,32 +36,43 @@
                         </span>
                         <transition name="filter-item">
                             <div v-show="!exposerType.collapsed">    
-                                <div class="exposer-item">
-                                    <span>{{ $i18n.get('label_exposer') + ": " + exposerType.name }}</span>
-                                    <span class="exposer-item-actions">
-                                        <a 
-                                                target="_blank"
-                                                :href="exposerBaseURL + '&exposer=' + exposerType.slug">
-                                            <span class="gray-icon">
-                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
-                                            </span>
-                                        </a>
-                                    </span> 
+                                <div>
+                                    <div
+                                            :key="pagedLink"
+                                            v-for="pagedLink in totalPages"
+                                            class="exposer-item">
+                                        <span>{{ $i18n.get('label_exposer') + ": " + exposerType.name + ", " + $i18n.get('label_page') + " " + pagedLink }}</span>
+                                        <span class="exposer-item-actions">
+                                            <a 
+                                                    target="_blank"
+                                                    :href="exposerBaseURL + '&exposer=' + exposerType.slug + '&paged=' + pagedLink">
+                                                <span class="gray-icon">
+                                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                                                </span>
+                                            </a>
+                                        </span> 
+                                    </div>
                                 </div> 
                                 <div 
                                         v-for="(exposerMapper, index) of exposerType.mappers"
-                                        :key="index"
-                                        class="exposer-item">
-                                    <span>{{ $i18n.get('label_exposer') + ": " + exposerType.name + ", " + $i18n.get('label_mapper') + ": " + exposerMapper }}</span>
-                                    <span class="exposer-item-actions">
-                                        <a 
-                                                target="_blank"
-                                                :href="exposerBaseURL + '&exposer=' + exposerType.slug + '&mapper=' + exposerMapper">
-                                            <span class="gray-icon">
-                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
-                                            </span>
-                                        </a>
-                                    </span>  
+                                        :key="index">
+                                    <div
+                                            :key="pagedLink"
+                                            v-for="pagedLink in totalPages"
+                                            class="exposer-item">
+                                        <span>{{ $i18n.get('label_exposer') + ": " + 
+                                                exposerType.name + ", " + $i18n.get('label_mapper') + ": " + 
+                                                exposerMapper + ", " + $i18n.get('label_page') + " " + pagedLink }}</span>
+                                        <span class="exposer-item-actions">
+                                            <a 
+                                                    target="_blank"
+                                                    :href="exposerBaseURL + '&exposer=' + exposerType.slug + '&mapper=' + exposerMapper + '&paged=' + pagedLink">
+                                                <span class="gray-icon">
+                                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                                                </span>
+                                            </a>
+                                        </span>  
+                                    </div>
                                 </div>      
                             </div>
                         </transition>
@@ -94,15 +105,20 @@ import qs from 'qs';
 export default {
     name: 'ExposersModal',
     props: {
-        collectionId: Number
+        collectionId: Number,
+        totalItems: Number
     },
     data(){
         return {
             isLoading: false,
-            availableExposers: []
+            availableExposers: [],
+            maxItemsPerPage: tainacan_plugin.api_max_items_per_page
         }
     },
     computed: {
+        totalPages() {
+            return Math.ceil(Number(this.totalItems)/Number(this.maxItemsPerPage));    
+        },
         exposerBaseURL() {
             let baseURL = this.collectionId != undefined ? '/collection/' + this.collectionId + '/items/' : 'items';
             let currentParams = this.$route.query;
@@ -112,9 +128,8 @@ export default {
                 delete currentParams.fetch_only;
             
             // Handles pagination of this link
-            if (currentParams.paged != 1)
-                currentParams.paged = 1;
-            currentParams.perpage = 100;
+            delete currentParams.paged;
+            currentParams.perpage = this.maxItemsPerPage;
 
             return tainacan_plugin.tainacan_api_url + baseURL + '?' + qs.stringify(currentParams);
         }

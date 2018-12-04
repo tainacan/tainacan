@@ -939,7 +939,8 @@
                     component: ExposersModal,
                     hasModalCard: true,
                     props: { 
-                        collectionId: this.collectionId
+                        collectionId: this.collectionId,
+                        totalItems: this.totalItems
                     }
                 })
             },
