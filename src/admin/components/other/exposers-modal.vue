@@ -4,7 +4,7 @@
                 class="tainacan-modal-content" 
                 style="width: auto">
             <header class="tainacan-modal-title">
-                <h2>{{ this.$i18n.get('label_alternative_exposer_urls') }}</h2>
+                <h2>{{ this.$i18n.get('label_urls_for_items_list') }}</h2>
                 <hr>
             </header>
             <section class="tainacan-form">
@@ -36,53 +36,58 @@
                         </span>
                         <transition name="filter-item">
                             <div v-show="!exposerType.collapsed">    
-                                <div class="exposer-item">
-                                    <span>{{ $i18n.get('label_exposer') + ": " + exposerType.name }}</span>
-                                    <span class="exposer-item-actions">
-                                        <a 
-                                                target="_blank"
-                                                :href="exposerBaseURL + '&exposer=' + exposerType.slug">
-                                            <span class="gray-icon">
-                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
-                                            </span>
-                                        </a>
-                                        <a 
-                                                :href="exposerBaseURL + '&exposer=' + exposerType.slug + '&mapper=' + exposerMapper" 
-                                                download>
-                                            <span class="gray-icon">
-                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-download"/>
-                                            </span>
-                                        </a>
-                                    </span> 
+                                <div>
+                                    <div
+                                            :key="pagedLink"
+                                            v-for="pagedLink in totalPages"
+                                            class="exposer-item">
+                                        <span>
+                                            <a 
+                                                    target="_blank"
+                                                    :href="exposerBaseURL + '&exposer=' + exposerType.slug + '&paged=' + pagedLink">
+                                                {{ $i18n.get('label_exposer') + ": " + exposerType.name + ", " + $i18n.get('label_page') + " " + pagedLink }}
+                                            </a>
+                                        </span>
+                                        <span class="exposer-item-actions">
+                                            <a @click="copyTextToClipboard(exposerBaseURL + '&exposer=' + exposerType.slug + '&paged=' + pagedLink)">
+                                                <span class="gray-icon">
+                                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                                                </span>
+                                            </a>
+                                        </span> 
+                                    </div>
                                 </div> 
                                 <div 
                                         v-for="(exposerMapper, index) of exposerType.mappers"
-                                        :key="index"
-                                        class="exposer-item">
-                                    <span>{{ $i18n.get('label_exposer') + ": " + exposerType.name + ", " + $i18n.get('label_mapper') + ": " + exposerMapper }}</span>
-                                    <span class="exposer-item-actions">
-                                        <a 
-                                                target="_blank"
-                                                :href="exposerBaseURL + '&exposer=' + exposerType.slug + '&mapper=' + exposerMapper">
-                                            <span class="gray-icon">
-                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
-                                            </span>
-                                        </a>
-                                        <a 
-                                                :href="exposerBaseURL + '&exposer=' + exposerType.slug + '&mapper=' + exposerMapper" 
-                                                download>
-                                            <span class="gray-icon">
-                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-download"/>
-                                            </span>
-                                        </a>
-                                    </span>  
+                                        :key="index">
+                                    <div
+                                            :key="pagedLink"
+                                            v-for="pagedLink in totalPages"
+                                            class="exposer-item">
+                                        <span>
+                                            <a 
+                                                    target="_blank"
+                                                    :href="exposerBaseURL + '&exposer=' + exposerType.slug + '&mapper=' + exposerMapper + '&paged=' + pagedLink">
+                                                {{ $i18n.get('label_exposer') + ": " + 
+                                                    exposerType.name + ", " + $i18n.get('label_mapper') + ": " + 
+                                                    exposerMapper + ", " + $i18n.get('label_page') + " " + pagedLink }}
+                                            </a>
+                                        </span>
+                                        <span class="exposer-item-actions">
+                                            <a @click="copyTextToClipboard(exposerBaseURL + '&exposer=' + exposerType.slug + '&mapper=' + exposerMapper + '&paged=' + pagedLink)">
+                                                <span class="gray-icon">
+                                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                                                </span>
+                                            </a>
+                                        </span>  
+                                    </div>
                                 </div>      
                             </div>
                         </transition>
                     </b-field>
                 </div>
-                
                 <b-loading 
+                        :is-full-page="false"
                         :active.sync="isLoading" 
                         :can-cancel="false"/>
                <!-- <footer class="field is-grouped form-submit">
@@ -108,21 +113,33 @@ import qs from 'qs';
 export default {
     name: 'ExposersModal',
     props: {
-        collectionId: Number
+        collectionId: Number,
+        totalItems: Number
     },
     data(){
         return {
             isLoading: false,
-            availableExposers: []
+            availableExposers: [],
+            maxItemsPerPage: tainacan_plugin.api_max_items_per_page
         }
     },
     computed: {
+        totalPages() {
+            return Math.ceil(Number(this.totalItems)/Number(this.maxItemsPerPage));    
+        },
         exposerBaseURL() {
             let baseURL = this.collectionId != undefined ? '/collection/' + this.collectionId + '/items/' : 'items';
             let currentParams = this.$route.query;
+
+            // Removes Fetch Only
             if (currentParams.fetch_only != undefined)
                 delete currentParams.fetch_only;
-            return tainacan_plugin.root + baseURL + '?' + qs.stringify(currentParams);
+            
+            // Handles pagination of this link
+            delete currentParams.paged;
+            currentParams.perpage = this.maxItemsPerPage;
+
+            return tainacan_plugin.tainacan_api_url + baseURL + '?' + qs.stringify(currentParams);
         }
     },
     methods: {
@@ -136,6 +153,53 @@ export default {
             let exposer = this.availableExposers[index];
             this.$set(exposer, 'collapsed', !exposer.collapsed);
             this.$set(this.availableExposers, index, exposer);
+        },
+        fallbackCopyTextToClipboard(text) {
+            let textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                let successful = document.execCommand('copy');
+                let msg = successful ? 'successful' : 'unsuccessful';
+                this.$console.log('Fallback: Copying text command was ' + msg);
+                if (msg == 'sucessful') {
+                    this.$toast.open({
+                        duration: 3000,
+                        message: this.$i18n.get('info_url_copied_successfuly'),
+                        position: 'is-bottom',
+                        type: 'is-secondary',
+                        queue: true
+                    });
+                }
+            } catch (err) {
+                this.$console.error('Fallback: Oops, unable to copy', err);
+            }
+
+            document.body.removeChild(textArea);
+        },
+        copyTextToClipboard(text) {
+            if (!navigator.clipboard) {
+                this.fallbackCopyTextToClipboard(text);
+                return;
+            }
+            
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    this.$console.log('Async: Copying to clipboard was successful!');
+                    this.$toast.open({
+                        duration: 3000,
+                        message: this.$i18n.get('info_url_copied_successfuly'),
+                        position: 'is-bottom',
+                        type: 'is-secondary',
+                        queue: true
+                    });
+                }, 
+                (err) => {
+                    this.$console.error('Async: Could not copy text: ', err);
+                });
         }
     },
     mounted() {

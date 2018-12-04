@@ -37,19 +37,18 @@ class Item_Metadata extends Repository {
 			// TODO: Throw Warning saying you must validate object before insert()
 		}
 
-		$is_update = false;
-		$diffs     = [];
-		if ( $item_metadata->get_id() ) {
+		$is_update = true;
+		$old = get_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), true );
+		$new = $item_metadata->get_value();
 
-			if ( $item_metadata->get_status() === 'auto-draft' ) {
-				$is_update = false;
-			} else {
-				$is_update = true;
-			}
-
-			$old = $item_metadata->get_repository()->fetch( $item_metadata->get_id() );
-
-			$diffs = $this->diff( $old, $item_metadata );
+		if($old != $new) {
+			$diffs['value'] = [
+				'new'             => $new,
+				'old'             => $old,
+				'diff_with_index' => [],
+			];
+		} else {
+			$diffs['value'] = [];
 		}
 
 		$unique = ! $item_metadata->is_multiple();
@@ -174,12 +173,26 @@ class Item_Metadata extends Repository {
 			$taxonomy  = new Entities\Taxonomy( $metadata_type->get_option( 'taxonomy_id' ) );
 
 			if ( $taxonomy ) {
-				$old = $item_metadata;
+				$old = wp_get_object_terms(  $item_metadata->get_item()->get_id(), $taxonomy->get_db_identifier(), [
+					'fields' => 'names'
+				] );
 
 				$success = wp_set_object_terms( $item_metadata->get_item()->get_id(), $new_terms, $taxonomy->get_db_identifier() );
 
 				if ( ! $success instanceof \WP_Error ) {
-					$diffs = $this->diff( $old, $item_metadata );
+
+					$new = get_terms(array(
+						'taxonomy'   => $taxonomy->get_db_identifier(),
+						'hide_empty' => false,
+						'object_ids' => $item_metadata->get_item()->get_id(),
+						'fields'     => 'names',
+					));
+
+					$diffs[ 'value' ] = [
+						'new'             => $new,
+						'old'             => $old,
+						'diff_with_index' => []
+					];
 
 					$this->logs_repository->insert_log( $item_metadata, $diffs, true );
 					//do_action( 'tainacan-insert', $item_metadata, $diffs, true );

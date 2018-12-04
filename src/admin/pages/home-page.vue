@@ -77,11 +77,11 @@
                     <li>
                         <router-link
                                 tag="a"
-                                to="/events">
+                                to="/activities">
                             <span class="icon is-medium">
                                 <i class="tainacan-icon tainacan-icon-36px tainacan-icon-activities"/>
                             </span>
-                            <span class="menu-text">{{ $i18n.get('title_repository_events_page') }}</span>
+                            <span class="menu-text">{{ $i18n.get('title_repository_activities_page') }}</span>
                         </router-link>
                     </li>
                     <li>

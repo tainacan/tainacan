@@ -5,17 +5,35 @@
                     { path: $routerHelper.getAvailableExportersPath(), label: $i18n.get('exporters') },
                     { path: '', label: exporterType != undefined ? exporterType : $i18n.get('title_exporter_page') }
                 ]"/>
-
-        <form class="tainacan-form">
+        <b-loading
+                :active.sync="isLoading"
+                :can-cancel="false"/>
+        <form
+                @click="formErrorMessage = ''"
+                label-width="120px"
+                v-if="exporterSession"
+                class="tainacan-form">
             <div class="columns">
-                <div class="column">
-                    <div v-html="exporterSession.options_form" />
+
+                <div class="column is-6">
+                    <form id="exporterOptionsForm">
+                        <div v-html="exporterSession.options_form" />
+                    </form>
                 </div>
-                <div class="column">
+                <div
+                        style="max-width: 40px;"
+                        class="column"/>
+                <div class="column is-5">
                     <b-field
                             v-if="exporterSession.manual_collection"
-                            :label="$i18n.get('label_origin_collection')">
+                            :addons="false"
+                            :label="$i18n.get('label_source_collection')">
+                        <help-button
+                                :title="$i18n.get('label_source_collection')"
+                                :message="$i18n.get('info_source_collection_helper')"/>
+                        <br>
                         <b-select
+                                expanded
                                 @input="updateExporter('collection.id')"
                                 v-model="selectedCollection"
                                 :loading="isFetchingCollections"
@@ -37,9 +55,11 @@
                             :label="$i18n.get('mapping')">
 
                             <b-select
+                                    expanded
                                     @input="updateExporter('mapping_selected')"
-                                    v-model="selectedMappings"
-                                    >
+                                    v-model="selectedMapping"
+                                    :placeholder="$i18n.get('instruction_select_a_mapper')">
+                                <option :value="''">-</option>
                                 <option
                                         v-for="(mapping, key) in exporterSession.mapping_list"
                                         :value="key"
@@ -51,20 +71,23 @@
                     </b-field>
 
                     <b-field :label="$i18n.get('label_send_email')">
-                        <b-input
-                                ref="sendEmailREF"
-                                :loading="emailLoading"
-                                @input="updateEmail()"
-                                type="email"
-                                v-model="sendEmail"/>
+                        <b-checkbox
+                                @input="updateExporter('send_email')"
+                                true-value="1"
+                                false-value="0"
+                                v-model="sendEmail">
+                            {{ $i18n.get('label_yes') }}
+                        </b-checkbox>
                     </b-field>
                 </div>
             </div>
             <div class="columns">
+                <span class="help is-danger">{{ formErrorMessage }}</span>
+
                 <div class="column">
                     <button
                             @click.prevent="$router.go(-1)"
-                            class="button is-outlined">
+                            class="button is-pulled-left is-outlined">
                         {{ $i18n.get('cancel') }}
                     </button>
                 </div>
@@ -93,12 +116,14 @@
                 exporterType: '',
                 collections: [],
                 isFetchingCollections: false,
-                selectedMappings: [],
+                selectedMapping: undefined,
                 selectedCollection: undefined,
-                sendEmail: '',
+                sendEmail: '0',
                 emailLoading: false,
                 runButtonLoading: false,
-                exporterSession: {}
+                exporterSession: {},
+                formErrorMessage: '',
+                isLoading: false,
             }
         },
         methods: {
@@ -108,28 +133,60 @@
                 'runExporterSession'
             ]),
             ...mapActions('collection', [
-                'fetchCollectionsForParent'
+                'fetchCollections'
             ]),
+            updateExporterOptions(){
+                let formElement = document.getElementById('exporterOptionsForm');
+                let formData = new FormData(formElement);
+
+                let options = {};
+
+                for (let [key, value] of formData.entries())
+                    options[key] = value;
+
+                let exporterSessionUpdated = {
+                    body: {
+                        options: options,
+                    },
+                    id: this.exporterSession.id,
+                };
+
+                return this.updateExporterSession(exporterSessionUpdated)
+                    .then(exporterSessionUpdated => this.verifyError(exporterSessionUpdated));
+            },
             runExporter(){
                 this.runButtonLoading = true;
-                this.runExporterSession(this.exporterSession.id)
-                    .then((bgp) => {
-                        this.runButtonLoading = false;
-                        this.$router.push(this.$routerHelper.getProcessesPage(bgp.bg_process_id));
-                    })
-                    .catch(() => {
-                        this.runButtonLoading = false;
-                    });
+
+                this.updateExporterOptions().then(() => {
+
+                    if(!this.formErrorMessage) {
+                        this.runExporterSession(this.exporterSession.id)
+                            .then((bgp) => {
+                                this.runButtonLoading = false;
+                                this.$router.push(this.$routerHelper.getProcessesPage(bgp.bg_process_id));
+                            })
+                            .catch(() => {
+                                this.runButtonLoading = false;
+                            });
+                    }
+                });
             },
             formIsValid(){
                 return (
                     this.selectedCollection &&
-                    this.selectedMappings.length
+                    !this.formErrorMessage
                 );
             },
-            updateEmail: _.debounce(function () {
-                this.updateExporter('send_email');
-            }, 500),
+            verifyError(response){
+                console.log(response);
+                if(response.constructor.name === 'Object' &&
+                    (response.data && response.data.status &&
+                        response.data.status.toString().split('')[0] != 2) || response.error_message) {
+                    this.formErrorMessage = response.data.error_message;
+                } else {
+                    this.exporterSession = response.data;
+                }
+            },
             updateExporter(attributeName){
                 if(attributeName === 'collection.id'){
                     let exporterSessionUpdated = {
@@ -142,22 +199,20 @@
                     };
 
                     this.updateExporterSession(exporterSessionUpdated)
-                        .then(exporterSessionUpdated => this.exporterSession = exporterSessionUpdated);
+                        .then(exporterSessionUpdated => this.verifyError(exporterSessionUpdated));
 
                 } else if (attributeName === 'mapping_selected'){
                     let exporterSessionUpdate = {
                         body: {
-                            mapping_selected: this.selectedMappings.length <= 1 ? this.selectedMappings.toString() : this.selectedMappings,
+                            mapping_selected: this.selectedMapping ? this.selectedMapping : this.selectedMapping,
                         },
                         id: this.exporterSession.id,
                     };
 
                     this.updateExporterSession(exporterSessionUpdate)
-                        .then(exporterSessionUpdated => this.exporterSession = exporterSessionUpdated);
+                        .then(exporterSessionUpdated => this.verifyError(exporterSessionUpdated));
 
-                } else if (attributeName === 'send_email' &&
-                    this.$refs.sendEmailREF &&
-                    this.$refs.sendEmailREF.checkHtml5Validity()){
+                } else if (attributeName === 'send_email'){
 
                     let exporterSessionUpdate = {
                         body: {
@@ -170,7 +225,7 @@
 
                     this.updateExporterSession(exporterSessionUpdate)
                         .then(exporterSessionUpdated => {
-                            this.exporterSession = exporterSessionUpdated;
+                            this.verifyError(exporterSessionUpdated);
                             this.emailLoading = false;
                         })
                         .catch(() => {
@@ -182,22 +237,23 @@
         created(){
             this.exporterType = this.$route.params.exporterSlug;
 
+            this.isLoading = true;
             this.createExporterSession(this.exporterType).then(exporterSession => {
-                console.info(exporterSession);
                 this.exporterSession = exporterSession ? exporterSession : {};
-                this.selectedMappings.push(this.exporterSession.mapping_selected);
+                this.selectedMapping = this.exporterSession.mapping_selected;
+                this.isLoading = false;
             });
 
             this.isFetchingCollections = true;
 
-            this.fetchCollectionsForParent()
-                .then(collections => {
-                    this.collections = collections;
+            this.fetchCollections({ page: 1, collectionsPerPage: -1})
+                .then(response => {
+                    this.collections = response.collections;
                     this.isFetchingCollections = false;
                 })
                 .catch(error => {
                     this.isFetchingCollections = false;
-                    console.error(error);
+                    this.$console.error(error);
                 });
         }
     }

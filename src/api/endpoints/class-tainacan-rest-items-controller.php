@@ -235,6 +235,8 @@ class REST_Items_Controller extends REST_Controller {
 	 */
 	public function get_items( $request ) {
 		
+		global $TAINACAN_API_MAX_ITEMS_PER_PAGE;
+
 		// Free php session early so simultaneous requests dont get queued
 		session_write_close();
 		
@@ -255,7 +257,7 @@ class REST_Items_Controller extends REST_Controller {
 			$collection_id = $request['collection_id'];
 		}
 		
-		$max_items_per_page = defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? TAINACAN_API_MAX_ITEMS_PER_PAGE : 96;
+		$max_items_per_page = $TAINACAN_API_MAX_ITEMS_PER_PAGE;
 		if ( $max_items_per_page > -1 ) {
 			if ( isset($args['posts_per_page']) && (int) $args['posts_per_page'] > $max_items_per_page ) {
 				$args['posts_per_page'] = $max_items_per_page;

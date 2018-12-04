@@ -1,13 +1,13 @@
 import axios from 'axios';
 
 export const tainacan = axios.create({
-    baseURL: tainacan_plugin.root
+    baseURL: tainacan_plugin.tainacan_api_url
 });
 
 tainacan.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
 
 export const wp = axios.create({
-    baseURL: tainacan_plugin.root_wp_api
+    baseURL: tainacan_plugin.wp_api_url
 });
 
 wp.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;

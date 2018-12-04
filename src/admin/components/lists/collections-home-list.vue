@@ -198,16 +198,16 @@
                         <li>
                             <router-link 
                                     tag="a" 
-                                    :to="{ path: $routerHelper.getCollectionEventsPath(collection.id) }" 
-                                    :aria-label="$i18n.get('label_collection_events')">
+                                    :to="{ path: $routerHelper.getCollectionActivitiesPath(collection.id) }"
+                                    :aria-label="$i18n.get('label_collection_activities')">
                                 <b-tooltip 
-                                        :label="$i18n.get('events')"
+                                        :label="$i18n.get('activities')"
                                         position="is-bottom">
                                     <span class="icon">
                                         <i class="tainacan-icon tainacan-icon-20px tainacan-icon-activities"/>
                                     </span>
                                 </b-tooltip>
-                                <!-- <span class="menu-text">{{ $i18n.get('events') }}</span> -->
+                                <!-- <span class="menu-text">{{ $i18n.get('activities') }}</span> -->
                             </router-link> 
                         </li>
                     </ul>

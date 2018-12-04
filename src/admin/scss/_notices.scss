@@ -1,18 +1,22 @@
-.notices .toast {
-    font-size: 0.75rem;
-    border-radius: 8px;
-    box-shadow: none;
+.notices {
+    z-index: 99999999;    
 
-    &.is-dark {
-        background-color: $gray2;
-        color: $gray4;
-    }
-    &.is-warning {
-        background-color: #e7dede;
-        color: $danger;
-    }
-    &.is-success {
-        background-color: #d6feed;
-        color: $success;
+    .toast {
+        font-size: 0.75rem;
+        border-radius: 8px;
+        box-shadow: none;
+
+        &.is-dark {
+            background-color: $gray2;
+            color: $gray4;
+        }
+        &.is-warning {
+            background-color: #e7dede;
+            color: $danger;
+        }
+        &.is-success {
+            background-color: #d6feed;
+            color: $success;
+        }
     }
 }

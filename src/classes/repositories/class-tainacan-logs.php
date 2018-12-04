@@ -115,6 +115,11 @@ class Logs extends Repository {
 				'title'       => __( 'Log collection relationship', 'tainacan' ),
 				'description' => __( 'The ID of the collection that this log is related to', 'tainacan' )
 			],
+			'item_id' => [
+				'map'         => 'meta',
+				'title'       => __( 'Log item relationship', 'tainacan' ),
+				'description' => __( 'The id of the item that this log is related to', 'tainacan' ),
+			]
 		] );
 	}
 
@@ -271,7 +276,7 @@ class Logs extends Repository {
 	/**
 	 * Insert a log when a new entity is inserted
 	 *
-	 * @param Entity $new_value
+	 * @param Entity $value
 	 * @param array $diffs
 	 * @param bool $is_update
 	 *
@@ -280,77 +285,67 @@ class Logs extends Repository {
 	 *
 	 * @return Entities\Log|bool new created log
 	 */
-	public function insert_log( $new_value, $diffs = [], $is_update = false, $is_delete = false, $is_trash = false ) {
-		$msn         = null;
+	public function insert_log( $value, $diffs = [], $is_update = false, $is_delete = false, $is_trash = false ) {
+		$title       = null;
 		$description = null;
 
-		if ( is_object( $new_value ) ) {
+		if ( is_object( $value ) ) {
 			// do not log a log
-			if ( ( method_exists( $new_value, 'get_post_type' ) && $new_value->get_post_type() === 'tainacan-log' ) || $new_value->get_status() === 'auto-draft' ) {
+			if ( ( method_exists( $value, 'get_post_type' ) && $value->get_post_type() === 'tainacan-log' ) || $value->get_status() === 'auto-draft' ) {
 				return false;
 			}
 
-			if ( $new_value instanceof Entities\Metadatum ) {
-				$type = $new_value->get_metadata_type();
+			if ( $value instanceof Entities\Metadatum ) {
+				$type = $value->get_metadata_type();
 
 				if ( $type === 'Tainacan\Metadata_Types\Core_Title' || $type === 'Tainacan\Metadata_Types\Core_Description' ) {
 					return false;
 				}
 			}
 
-			$type       = get_class( $new_value );
+			$type       = get_class( $value );
 			$class_name = explode( '\\', $type )[2];
 
-			$name = method_exists( $new_value, 'get_name' ) ? $new_value->get_name() :
-				( method_exists( $new_value, 'get_title' ) ? $new_value->get_title() : $new_value->get_metadatum()->get_name() );
+			$name = method_exists( $value, 'get_name' ) ? $value->get_name() :
+				( method_exists( $value, 'get_title' ) ? $value->get_title() : $value->get_metadatum()->get_name() );
 
 			if ( ! $name ) {
-				$name = $new_value->get_status();
+				$name = $value->get_status();
 			}
 
 			if ( $is_update ) {
-				$msn         = $this->prepare_event_message( $new_value, $name, $class_name, 'updated' );
-				$description = $msn;
+				// entity was delete
+				$title         = $this->prepare_event_title( $value, $name, $class_name, 'updated' );
+
+				$description = $title;
 			} elseif ( $is_delete ) {
-				// was deleted
-				$msn         = $this->prepare_event_message( $new_value, $name, $class_name, 'deleted' );
-				$description = $msn;
+				// entity was deleted
+				$title         = $this->prepare_event_title( $value, $name, $class_name, 'deleted' );
+
+				$description = $title;
 			} elseif ( ! empty( $diffs ) ) {
-				// was created
-				$msn         = $this->prepare_event_message( $new_value, $name, $class_name, 'created' );
-				$description = $msn;
+				// entity was created
+				$title         = $this->prepare_event_title( $value, $name, $class_name, 'created' );
+
+				$description = $title;
 			} elseif ( $is_trash ) {
-				// was trashed
-				$msn         = $this->prepare_event_message( $new_value, $name, $class_name, 'trashed' );
-				$description = $msn;
+				// entity was trashed
+				$title         = $this->prepare_event_title( $value, $name, $class_name, 'trashed' );
+
+				$description = $title;
 			}
 
-			$msn         = apply_filters( 'tainacan-insert-log-message-title', $msn, $type, $new_value );
-			$description = apply_filters( 'tainacan-insert-log-description', $description, $type, $new_value );
+			$title       = apply_filters( 'tainacan-insert-log-message-title', $title, $type, $value );
+			$description = apply_filters( 'tainacan-insert-log-description', $description, $type, $value );
 		}
 
-
-		if ( ! empty( $diffs ) || $is_delete || $is_trash ) {
-			return Entities\Log::create( $msn, $description, $new_value, $diffs );
+		if ( !empty( $diffs ) || $is_delete || $is_trash) {
+			return Entities\Log::create( $title, $description, $value, $diffs );
 		}
 	}
 
-//	private function prepare_event_message($class_name, $action_message){
-//		$articleA  = 'A';
-//		$articleAn = 'An';
-//		$vowels    = 'aeiou';
-//
-//		if ( substr_count( $vowels, strtolower( substr( $class_name, 0, 1 ) ) ) > 0 ) {
-//			$msn = sprintf( __( '%s %s has been %s.', 'tainacan' ), $articleAn, $class_name, $action_message );
-//		} else {
-//			$msn = sprintf( __( '%s %s has been %s.', 'tainacan' ), $articleA, $class_name, $action_message );
-//		}
-//
-//		return $msn;
-//	}
-
 	/**
-	 * This will prepare the event description for objects
+	 * This will prepare the event title for objects
 	 *
 	 * @param $object
 	 * @param $name
@@ -360,11 +355,11 @@ class Logs extends Repository {
 	 *
 	 * @return string
 	 */
-	private function prepare_event_message( $object, $name, $class_name, $action_message ) {
-		
+	private function prepare_event_title( $object, $name, $class_name, $action_message ) {
+
 		// translators: 1=Object name, 2=Object type, 3=Action. e.g. The "Subject" taxonomy has been created
-		$msg_format = __( 'The "%1$s" %2$s has been %3$s', 'tainacan' );
-		
+		$title_format = __( '"%1$s" %2$s has been %3$s', 'tainacan' );
+
 		if ( $object instanceof Entities\Metadatum || $object instanceof Entities\Item || $object instanceof Entities\Filter ) {
 			$collection = $object->get_collection();
 
@@ -373,14 +368,21 @@ class Logs extends Repository {
 			} else {
 				$parent = __('(on repository level)', 'tainacan');
 			}
-			
-			$description = sprintf( $msg_format, $name, strtolower( $class_name ), $action_message );
-			$description .= ' ' . $parent . '.';
+
+			$title = sprintf( $title_format, $name, strtolower( $class_name ), $action_message );
+			$title .= ' ' . $parent . '.';
+		} elseif($object instanceof Entities\Item_Metadata_Entity) {
+			$title = sprintf(
+				$title_format,
+				$name,
+				__('item metadatum', 'tainacan'),
+				$action_message
+			               ) . ' ' . sprintf( __('(item: %s)', 'tainacan'), $object->get_item()->get_title() ) . '.';
 		} else {
-			$description = sprintf( $msg_format, $name, strtolower( $class_name ), $action_message ) . '.';
+			$title = sprintf( $title_format, $name, strtolower( $class_name ), $action_message ) . '.';
 		}
 
-		return $description;
+		return $title;
 	}
 
 	/**

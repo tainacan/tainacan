@@ -68,12 +68,12 @@
                 <li>
                     <router-link
                             tag="a"
-                            to="/events"
-                            :class="activeRoute == 'EventsPage' ? 'is-active':''">
+                            to="/activities"
+                            :class="activeRoute == 'ActivitiesPage' ? 'is-active':''">
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-activities"/>
                         </span>
-                        <span class="menu-text">{{ $i18n.get('events') }}</span>
+                        <span class="menu-text">{{ $i18n.get('activities') }}</span>
                     </router-link>
                 </li>
                 <li>

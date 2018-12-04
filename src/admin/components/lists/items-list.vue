@@ -25,7 +25,7 @@
                 </span>
             </div>
 
-            <div class="field is-pulled-right">
+            <div class="field">
                 <b-dropdown
                         :mobile-modal="true"
                         position="is-bottom-left"
@@ -63,6 +63,18 @@
                         {{ $i18n.get('label_untrash_selected_items') }}
                     </b-dropdown-item>
                 </b-dropdown>
+            </div>
+
+            <!-- Exposers or alternativa links modal button -->
+            <div class="field">
+                <button 
+                        class="button is-white"
+                        @click="openExposersModal()">
+                    <span class="gray-icon">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                    </span>
+                    <span class="is-hidden-touch">{{ $i18n.get('label_urls') }}</span>
+                </button>
             </div>
         </div>
 
@@ -661,6 +673,7 @@
 import { mapActions, mapGetters } from 'vuex';
 import CustomDialog from '../other/custom-dialog.vue';
 import BulkEditionModal from '../bulk-edition/bulk-edition-modal.vue';
+import ExposersModal from '../other/exposers-modal.vue';
 
 export default {
     name: 'ItemsList',
@@ -924,16 +937,17 @@ export default {
             let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 100 : 210;
             return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
         },
-        randomHeightForMasonryItem() {
-            let min = 255;
-            let max = 255;
-
-                min = 140;
-                max = 420;
-            
-
-            return Math.floor(Math.random()*(max-min+1)+min);
-        }
+        openExposersModal() {
+            this.$modal.open({
+                parent: this,
+                component: ExposersModal,
+                hasModalCard: true,
+                props: { 
+                    collectionId: this.collectionId,
+                    totalItems: this.totalItems
+                }
+            })
+        },
     }
 }
 </script>
@@ -951,10 +965,13 @@ export default {
         padding: 6px 0px 0px 12px;
         background: white;
         height: 40px;
+        display: flex;
 
         .select-all {
             color: $gray4;
             font-size: 0.875rem;
+            margin-right: auto;
+
             &:hover {
                 color: $gray4;
             }

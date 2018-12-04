@@ -103,6 +103,48 @@ class REST_Logs_Controller extends REST_Controller {
 
 		$args = $this->prepare_filters( $request );
 
+
+		if ($request['item_id']){
+			$item_id = $request['item_id'];
+
+			$item_repository = Repositories\Items::get_instance();
+
+			$item = $item_repository->fetch($item_id);
+
+			if(!$item){
+				return new \WP_REST_Response([
+					'error_message' => __('A collection with this ID does not exist', 'tainacan'),
+					'collection_id' => $item
+				], 400);
+			}
+
+			if($args &&
+			   array_key_exists('meta_query', $args) &&
+			   array_key_exists('relation', $args['meta_query'])){
+
+				$metaq = $args['meta_query'];
+
+				unset($args['meta_query']);
+
+				$args['meta_query'][] = $metaq;
+				$args['meta_query']['relation'] = 'AND';
+
+			} elseif($args &&
+			         array_key_exists('meta_query', $args)){
+				$args['meta_query']['relation'] = 'AND';
+			}
+
+			$args = array_merge_recursive(array(
+				'meta_query' => array(
+					'item_clause' => array(
+						'key'     => 'item_id',
+						'value'   => $item_id,
+						'compare' => '='
+					)
+				)
+			), $args);
+		}
+
 		if($request['collection_id']){
 			$collection_id = $request['collection_id'];
 

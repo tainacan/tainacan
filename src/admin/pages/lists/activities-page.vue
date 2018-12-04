@@ -6,7 +6,7 @@
                     'page-container': isRepositoryLevel
                 }">
             <tainacan-title 
-                :bread-crumb-items="[{ path: '', label: this.$i18n.get('events') }]"/>
+                :bread-crumb-items="[{ path: '', label: this.$i18n.get('activities') }]"/>
             <div :class="{ 'above-subheader': isRepositoryLevel }">
 
                 <div 
@@ -15,7 +15,7 @@
                     <ul>
                         <li 
                                 @click="onChangeTab('')"
-                                :class="{ 'is-active': tab == undefined || tab == ''}"><a>{{ $i18n.get('events') }}</a></li>
+                                :class="{ 'is-active': tab == undefined || tab == ''}"><a>{{ $i18n.get('activities') }}</a></li>
                         <li 
                                 @click="onChangeTab('processes')"
                                 :class="{ 'is-active': tab == 'processes'}"><a>{{ $i18n.get('processes') }}</a></li>
@@ -26,13 +26,15 @@
                         :is-full-page="false"
                         :active.sync="isLoading" 
                         :can-cancel="false"/>
-                <events-list
+
+                <activities-list
                         v-if="tab != 'processes'"
                         :is-loading="isLoading"
-                        :total-events="totalEvents"
-                        :page="eventsPage"
-                        :events-per-page="eventsPerPage"
-                        :events="events"/>
+                        :total-activities="totalActivities"
+                        :page="activitiesPage"
+                        :activities-per-page="activitiesPerPage"
+                        :activities="activities"/>
+
                 <processes-list
                         v-if="tab == 'processes'"
                         :is-loading="isLoading"
@@ -58,24 +60,24 @@
                 <!-- Footer -->
                 <div
                         class="pagination-area"
-                        v-if="tab != 'processes' && totalEvents > 0">
+                        v-if="tab != 'processes' && totalActivities > 0">
                     <div class="shown-items">
                         {{
-                            $i18n.get('info_showing_events') +
-                            (eventsPerPage * (eventsPage - 1) + 1) +
+                            $i18n.get('info_showing_activities') +
+                            (activitiesPerPage * (activitiesPage - 1) + 1) +
                             $i18n.get('info_to') +
-                            getLastEventNumber() +
-                            $i18n.get('info_of') + totalEvents + '.'
+                            getLastActivityNumber() +
+                            $i18n.get('info_of') + totalActivities + '.'
                         }}
                     </div>
                     <div class="items-per-page">
                         <b-field
                                 horizontal
-                                :label="$i18n.get('label_events_per_page')">
+                                :label="$i18n.get('label_activities_per_page')">
                             <b-select
-                                    :value="eventsPerPage"
-                                    @input="onChangeEventsPerPage"
-                                    :disabled="events.length <= 0">
+                                    :value="activitiesPerPage"
+                                    @input="onChangeActivitiesPerPage"
+                                    :disabled="activities.length <= 0">
                                 <option value="12">12</option>
                                 <option value="24">24</option>
                                 <option value="48">48</option>
@@ -86,11 +88,11 @@
                     <div class="pagination">
                         <b-pagination
                                 @change="onPageChange"
-                                :total="totalEvents"
-                                :current.sync="eventsPage"
+                                :total="totalActivities"
+                                :current.sync="activitiesPage"
                                 order="is-centered"
                                 size="is-small"
-                                :per-page="eventsPerPage"/>
+                                :per-page="activitiesPerPage"/>
                     </div>
                 </div>
                 <div 
@@ -136,36 +138,37 @@
 </template>
 
 <script>
-    import EventsList from "../../components/lists/events-list.vue";
+    import ActivitiesList from "../../components/lists/activities-list.vue";
     import ProcessesList from "../../components/lists/processes-list.vue";
     import { mapActions, mapGetters } from 'vuex';
     import moment from 'moment'
 
     export default {
-        name: 'EventsPage',
+        name: 'ActivitiesPage',
         data(){
             return {
                 isLoading: false,
-                totalEvents: 0,
-                eventsPage: 1,
+                totalActivities: 0,
+                activitiesPage: 1,
                 processesPage: 1,
-                eventsPerPage: 12,
+                activitiesPerPage: 12,
                 processesPerPage: 12,
                 isRepositoryLevel: false,
-                tab: ''
+                tab: '',
+                isItemLevel: false,
             }
         },
         components: {
-            EventsList,
-            ProcessesList
+            ActivitiesList,
+            ProcessesList,
         },
         methods: {
-            ...mapActions('event', [
-                'fetchEvents',
-                'fetchCollectionEvents',
+            ...mapActions('activity', [
+                'fetchActivities',
+                'fetchCollectionActivities',
             ]),
-            ...mapGetters('event', [
-                'getEvents'
+            ...mapGetters('activity', [
+                'getActivities'
             ]),
             ...mapActions('bgprocess', [
                 'fetchProcesses',
@@ -179,23 +182,23 @@
                     this.loadProcesses();
                     this.$router.push({query: {tab: 'processes'}});
                 } else {
-                    this.loadEvents();
+                    this.loadActivities();
                     this.$router.push({query: {}});
                 }
             },
-            onChangeEventsPerPage(value) {
+            onChangeActivitiesPerPage(value) {
                 
-                if (value != this.eventsPerPage) {
-                    this.$userPrefs.set('events_per_page', value)
+                if (value != this.activitiesPerPage) {
+                    this.$userPrefs.set('activities_per_page', value)
                         .then((newValue) => {
-                            this.eventsPerPage = newValue;
+                            this.activitiesPerPage = newValue;
                         })
                         .catch(() => {
-                            this.$console.log("Error settings user prefs for events per page")
+                            this.$console.log("Error settings user prefs for activities per page")
                         });
                 }
-                this.eventsPerPage = value;
-                this.loadEvents();
+                this.activitiesPerPage = value;
+                this.loadActivities();
             },
             onChangeProcessesPerPage(value) {
                 
@@ -217,37 +220,49 @@
                     this.processesPage = page;
                     this.loadProcesses();
                 } else {
-                    this.eventsPage = page;
-                    this.loadEvents();
+                    this.activitiesPage = page;
+                    this.loadActivities();
                 }
             },
-            loadEvents() {
+            loadActivities() {
                 this.isLoading = true;
 
                 if(this.isRepositoryLevel) {
-                    this.fetchEvents({'page': this.eventsPage, 'eventsPerPage': this.eventsPerPage})
+                    this.fetchActivities({
+                        'page': this.activitiesPage,
+                        'activitiesPerPage': this.activitiesPerPage
+                    })
                         .then((res) => {
                             this.isLoading = false;
-                            this.totalEvents = res.total;
+                            this.totalActivities = res.total;
+                        })
+                        .catch(() => {
+                            this.isLoading = false;
+                        });
+                } else if (!this.isRepositoryLevel && !this.isItemLevel) {
+                    this.fetchCollectionActivities({
+                        'page': this.activitiesPage,
+                        'activitiesPerPage': this.activitiesPerPage,
+                        'collectionId': this.$route.params.collectionId
+                    })
+                        .then((res) => {
+                            this.isLoading = false;
+                            this.totalActivities = res.total;
                         })
                         .catch(() => {
                             this.isLoading = false;
                         });
                 } else {
-                    this.fetchCollectionEvents({'page': this.eventsPage, 'eventsPerPage': this.eventsPerPage, 'collectionId': this.$route.params.collectionId})
-                        .then((res) => {
-                            this.isLoading = false;
-                            this.totalEvents = res.total;
-                        })
-                        .catch(() => {
-                            this.isLoading = false;
-                        });
+                    this.$console.log('');
                 }
             },
             loadProcesses() {
                 this.isLoading = true;
 
-                this.fetchProcesses({ 'page': this.processesPage, 'processesPerPage': this.processesPerPage })
+                this.fetchProcesses({
+                    'page': this.processesPage,
+                    'processesPerPage': this.processesPerPage
+                })
                     .then((res) => {
                         this.isLoading = false;
                         this.total = res.total;
@@ -256,9 +271,9 @@
                         this.isLoading = false;
                     });
             },
-            getLastEventNumber() {
-                let last = (Number(this.eventsPerPage * (this.eventPage - 1)) + Number(this.eventsPerPage));
-                return last > this.totalEvents ? this.totalEvents : last;
+            getLastActivityNumber() {
+                let last = (Number(this.activitiesPerPage * (this.activitiesPage - 1)) + Number(this.activitiesPerPage));
+                return last > this.totalActivities ? this.totalActivities : last;
             },
             getLastProcessesNumber() {
                 let last = (Number(this.processesPerPage * (this.processesPage - 1)) + Number(this.processesPerPage));
@@ -266,41 +281,42 @@
             }
         },
         computed: {
-            events(){
-                let eventsList = this.getEvents();
+            activities(){
+                let activitiesList = this.getActivities();
 
-                for (let event of eventsList)
-                    event['by'] = this.$i18n.get('info_by') +
-                        event['user_name'] + '<br>' + this.$i18n.get('info_date') +
-                        moment(event['log_date'], 'YYYY-MM-DD h:mm:ss').format('DD/MM/YYYY, hh:mm:ss');
+                for (let activity of activitiesList)
+                    activity['by'] = this.$i18n.get('info_by') +
+                        activity['user_name'] + '<br>' + this.$i18n.get('info_date') +
+                        moment(activity['log_date'], 'YYYY-MM-DD h:mm:ss').format('DD/MM/YYYY, hh:mm:ss');
 
-                return eventsList;
+                return activitiesList;
             },
             processes(){
                 return this.getProcesses();
             }
         },
         created() {
-            this.eventsPerPage = this.$userPrefs.get('events_per_page');
+            this.activitiesPerPage = this.$userPrefs.get('activities_per_page');
             this.processesPerPage = this.$userPrefs.get('processes_per_page');
             this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
+            this.isItemLevel = (!this.isRepositoryLevel && this.$route.params.itemId);
         },
         mounted(){
             if (!this.isRepositoryLevel)
-                this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('events') }]);
+                this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('activities') }]);
 
             if (this.$route.query.tab == 'processes' && this.isRepositoryLevel)
                 this.tab = 'processes';
 
             if (this.tab != 'processes') {
-                if (this.eventsPerPage != this.$userPrefs.get('events_per_page'))
-                    this.eventsPerPage = this.$userPrefs.get('events_per_page');
+                if (this.activitiesPerPage != this.$userPrefs.get('activities_per_page'))
+                    this.activitiesPerPage = this.$userPrefs.get('activities_per_page');
 
-                if (!this.eventsPerPage) {
-                    this.eventsPerPage = 12;
-                    this.$userPrefs.set('events_per_page', 12);
+                if (!this.activitiesPerPage) {
+                    this.activitiesPerPage = 12;
+                    this.$userPrefs.set('activities_per_page', 12);
                 }
-                this.loadEvents();
+                this.loadActivities();
             } else {
                 if (this.processesPerPage != this.$userPrefs.get('processes_per_page'))
                     this.processesPerPage = this.$userPrefs.get('processes_per_page');
