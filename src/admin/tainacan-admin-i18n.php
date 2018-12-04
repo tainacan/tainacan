@@ -341,6 +341,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_activity_description'                     => __( 'Activity description', 'tainacan' ),
 	'label_activity_creation_date'                   => __( 'Activity creation date', 'tainacan' ),
 	'label_activity_author'                          => __( 'Activity author', 'tainacan' ),
+	'label_approbation'                              => __( 'Approbation', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

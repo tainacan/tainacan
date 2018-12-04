@@ -154,7 +154,8 @@
                 activitiesPerPage: 12,
                 processesPerPage: 12,
                 isRepositoryLevel: false,
-                tab: ''
+                tab: '',
+                isItemLevel: false,
             }
         },
         components: {
@@ -227,7 +228,23 @@
                 this.isLoading = true;
 
                 if(this.isRepositoryLevel) {
-                    this.fetchActivities({'page': this.activitiesPage, 'activitiesPerPage': this.activitiesPerPage})
+                    this.fetchActivities({
+                        'page': this.activitiesPage,
+                        'activitiesPerPage': this.activitiesPerPage
+                    })
+                        .then((res) => {
+                            this.isLoading = false;
+                            this.totalActivities = res.total;
+                        })
+                        .catch(() => {
+                            this.isLoading = false;
+                        });
+                } else if (!this.isRepositoryLevel && !this.isItemLevel) {
+                    this.fetchCollectionActivities({
+                        'page': this.activitiesPage,
+                        'activitiesPerPage': this.activitiesPerPage,
+                        'collectionId': this.$route.params.collectionId
+                    })
                         .then((res) => {
                             this.isLoading = false;
                             this.totalActivities = res.total;
@@ -236,20 +253,16 @@
                             this.isLoading = false;
                         });
                 } else {
-                    this.fetchCollectionActivities({'page': this.activitiesPage, 'activitiesPerPage': this.activitiesPerPage, 'collectionId': this.$route.params.collectionId})
-                        .then((res) => {
-                            this.isLoading = false;
-                            this.totalActivities = res.total;
-                        })
-                        .catch(() => {
-                            this.isLoading = false;
-                        });
+                    this.$console.log('');
                 }
             },
             loadProcesses() {
                 this.isLoading = true;
 
-                this.fetchProcesses({ 'page': this.processesPage, 'processesPerPage': this.processesPerPage })
+                this.fetchProcesses({
+                    'page': this.processesPage,
+                    'processesPerPage': this.processesPerPage
+                })
                     .then((res) => {
                         this.isLoading = false;
                         this.total = res.total;
@@ -286,6 +299,7 @@
             this.activitiesPerPage = this.$userPrefs.get('activities_per_page');
             this.processesPerPage = this.$userPrefs.get('processes_per_page');
             this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
+            this.isItemLevel = (!this.isRepositoryLevel && this.$route.params.itemId);
         },
         mounted(){
             if (!this.isRepositoryLevel)

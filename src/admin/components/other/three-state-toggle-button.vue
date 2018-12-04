@@ -1,34 +1,36 @@
 <template>
-    <div class="radio-wrapper">
-        <b-radio-button
-                size="is-small"
-                v-model="state"
-                :native-value="eventsName[1]"
-                type="is-danger">
-            <b-icon
+    <b-field>
+        <div class="radio-wrapper">
+            <b-radio-button
                     size="is-small"
-                    icon="close"/>
-        </b-radio-button>
+                    v-model="state"
+                    :native-value="eventsName[1]"
+                    type="is-danger">
+                <b-icon
+                        size="is-small"
+                        icon="close"/>
+            </b-radio-button>
 
-        <b-radio-button
-                size="is-small"
-                v-model="state"
-                :native-value="eventsName[2]">
-            <b-icon
+            <b-radio-button
                     size="is-small"
-                    icon="exclamation"/>
-        </b-radio-button>
+                    v-model="state"
+                    :native-value="eventsName[2]">
+                <b-icon
+                        size="is-small"
+                        icon="exclamation"/>
+            </b-radio-button>
 
-        <b-radio-button
-                size="is-small"
-                v-model="state"
-                :native-value="eventsName[0]"
-                type="is-success">
-            <b-icon
+            <b-radio-button
                     size="is-small"
-                    icon="check"/>
-        </b-radio-button>
-    </div>
+                    v-model="state"
+                    :native-value="eventsName[0]"
+                    type="is-success">
+                <b-icon
+                        size="is-small"
+                        icon="check"/>
+            </b-radio-button>
+        </div>
+    </b-field>
 </template>
 
 <script>
@@ -46,7 +48,11 @@
             otherProp: {
                 type: Object,
                 default: new Object({})
-            }
+            },
+            state: {
+                type: String,
+                default: 'neutral_3tgbtn'
+            },
         },
         methods: {
             yes_3tgbtn() {
@@ -61,13 +67,11 @@
         },
         data() {
             return {
-                state: 'neutral_3tgbtn',
                 eventsName: ['yes_3tgbtn', 'no_3tgbtn', 'neutral_3tgbtn'],
             }
         },
         watch: {
             state(functionName) {
-                console.info(functionName);
                 this[`${functionName}`]();
             }
         },

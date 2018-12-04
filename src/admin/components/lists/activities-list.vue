@@ -16,10 +16,10 @@
                     <th>
                         <div class="th-wrap">{{ $i18n.get('label_activity_date') }}</div>
                     </th>
-                    <!-- Status -->
-                    <th>
-                        <div class="th-wrap">{{ $i18n.get('label_status') }}</div>
-                    </th>
+                    <!--&lt;!&ndash; Approbation &ndash;&gt;-->
+                    <!--<th>-->
+                        <!--<div class="th-wrap">{{ $i18n.get('label_approbation') }}</div>-->
+                    <!--</th>-->
                 </tr>
                 </thead>
                 <tbody>
@@ -67,26 +67,27 @@
                                     }"
                                 v-html="activity.log_date"/>
                     </td>
-                    <!-- Status -->
-                    <td
-                            class="status-cell"
-                            :label="$i18n.get('label_status')"
-                            :aria-label="$i18n.get('label_status') + ': ' + activity.status">
-                        <p>
-                            <three-state-toggle-button
-                                    v-if="activity.status === 'pending'"
-                                    :other-prop="activity"
-                                    :parent="getThis()"
-                                    :events="stateEvents"/>
+                    <!-- Approbation -->
+                    <!--<td-->
+                            <!--class="status-cell"-->
+                            <!--:label="$i18n.get('label_approbation')"-->
+                            <!--:aria-label="$i18n.get('label_approbation') + ': ' + activity.status">-->
+                        <!--<p>-->
+                            <!--<three-state-toggle-button-->
+                                    <!--:other-prop="activity"-->
+                                    <!--:parent="getThis()"-->
+                                    <!--:events="stateEvents"-->
+                                    <!--:state=" activity.status === 'publish' ?-->
+                                     <!--'yes_3tgbtn' : (activity.status === 'pending' ? 'neutral_3tgbtn' : 'no_3tgbtn')"/>-->
 
-                            <a v-if="activity.status !== 'pending'">
-                                <b-icon
-                                        type="is-blue5"
-                                        custom-class="mdi-flip-h"
-                                        icon="share"/>
-                            </a>
-                        </p>
-                    </td>
+                            <!--&lt;!&ndash;<a v-if="activity.status !== 'pending'">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<b-icon&ndash;&gt;-->
+                                        <!--&lt;!&ndash;type="is-blue5"&ndash;&gt;-->
+                                        <!--&lt;!&ndash;custom-class="mdi-flip-h"&ndash;&gt;-->
+                                        <!--&lt;!&ndash;icon="share"/>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</a>&ndash;&gt;-->
+                        <!--</p>-->
+                    <!--</td>-->
                 </tr>
                 </tbody>
             </table>
@@ -140,14 +141,13 @@
                 return this;
             },
             approveActivity(activity) {
-                console.info('approve');
                 this.approve(activity.id)
                     .then(data => {
-                        console.info('opa!', data);
-                    });
+                        this.$console.info('approved!', data);
+                    })
+                    .catch(error => this.$console.error(error));
             },
             notApproveActivity(activity) {
-                console.info('not approve');
                 this.notApprove(activity.id);
             },
             openActivityDetailsModal(activity) {
