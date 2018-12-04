@@ -4,7 +4,7 @@
                 class="tainacan-modal-content" 
                 style="width: auto">
             <header class="tainacan-modal-title">
-                <h2>{{ this.$i18n.get('label_urls') }}</h2>
+                <h2>{{ this.$i18n.get('label_urls_for_items_list') }}</h2>
                 <hr>
             </header>
             <section class="tainacan-form">
@@ -41,11 +41,15 @@
                                             :key="pagedLink"
                                             v-for="pagedLink in totalPages"
                                             class="exposer-item">
-                                        <span>{{ $i18n.get('label_exposer') + ": " + exposerType.name + ", " + $i18n.get('label_page') + " " + pagedLink }}</span>
-                                        <span class="exposer-item-actions">
+                                        <span>
                                             <a 
                                                     target="_blank"
                                                     :href="exposerBaseURL + '&exposer=' + exposerType.slug + '&paged=' + pagedLink">
+                                                {{ $i18n.get('label_exposer') + ": " + exposerType.name + ", " + $i18n.get('label_page') + " " + pagedLink }}
+                                            </a>
+                                        </span>
+                                        <span class="exposer-item-actions">
+                                            <a @click="copyTextToClipboard(exposerBaseURL + '&exposer=' + exposerType.slug + '&paged=' + pagedLink)">
                                                 <span class="gray-icon">
                                                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
                                                 </span>
@@ -60,13 +64,17 @@
                                             :key="pagedLink"
                                             v-for="pagedLink in totalPages"
                                             class="exposer-item">
-                                        <span>{{ $i18n.get('label_exposer') + ": " + 
-                                                exposerType.name + ", " + $i18n.get('label_mapper') + ": " + 
-                                                exposerMapper + ", " + $i18n.get('label_page') + " " + pagedLink }}</span>
-                                        <span class="exposer-item-actions">
+                                        <span>
                                             <a 
                                                     target="_blank"
                                                     :href="exposerBaseURL + '&exposer=' + exposerType.slug + '&mapper=' + exposerMapper + '&paged=' + pagedLink">
+                                                {{ $i18n.get('label_exposer') + ": " + 
+                                                    exposerType.name + ", " + $i18n.get('label_mapper') + ": " + 
+                                                    exposerMapper + ", " + $i18n.get('label_page') + " " + pagedLink }}
+                                            </a>
+                                        </span>
+                                        <span class="exposer-item-actions">
+                                            <a @click="copyTextToClipboard(exposerBaseURL + '&exposer=' + exposerType.slug + '&mapper=' + exposerMapper + '&paged=' + pagedLink)">
                                                 <span class="gray-icon">
                                                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
                                                 </span>
@@ -78,8 +86,8 @@
                         </transition>
                     </b-field>
                 </div>
-                
                 <b-loading 
+                        :is-full-page="false"
                         :active.sync="isLoading" 
                         :can-cancel="false"/>
                <!-- <footer class="field is-grouped form-submit">
@@ -145,6 +153,52 @@ export default {
             let exposer = this.availableExposers[index];
             this.$set(exposer, 'collapsed', !exposer.collapsed);
             this.$set(this.availableExposers, index, exposer);
+        },
+        fallbackCopyTextToClipboard(text) {
+            let textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                let successful = document.execCommand('copy');
+                let msg = successful ? 'successful' : 'unsuccessful';
+                this.$console.log('Fallback: Copying text command was ' + msg);
+                if (msg == 'sucessful') {
+                    this.$toast.open({
+                        duration: 3000,
+                        message: this.$i18n.get('info_url_copied_successfuly'),
+                        position: 'is-bottom',
+                        type: 'is-secondary',
+                        queue: true
+                    });
+                }
+            } catch (err) {
+                this.$console.error('Fallback: Oops, unable to copy', err);
+            }
+
+            document.body.removeChild(textArea);
+        },
+        copyTextToClipboard(text) {
+            if (!navigator.clipboard) {
+                this.fallbackCopyTextToClipboard(text);
+                return;
+            }
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    this.$console.log('Async: Copying to clipboard was successful!');
+                    this.$toast.open({
+                        duration: 3000,
+                        message: this.$i18n.get('info_url_copied_successfuly'),
+                        position: 'is-bottom',
+                        type: 'is-secondary',
+                        queue: true
+                    });
+                }, 
+                (err) => {
+                    this.$console.error('Async: Could not copy text: ', err);
+                });
         }
     },
     mounted() {
