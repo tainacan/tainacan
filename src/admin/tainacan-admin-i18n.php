@@ -344,6 +344,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_activity_creation_date'                   => __( 'Activity creation date', 'tainacan' ),
 	'label_activity_author'                          => __( 'Activity author', 'tainacan' ),
 	'label_approbation'                              => __( 'Approbation', 'tainacan'),
+	'label_urls_for_items_list'                 	 => __( 'URLs for Items List', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -507,6 +508,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_cant_select_metadata_without_items'        => __( 'Can not select displayed metadata without items on list.', 'tainacan' ),
 	'info_available_exporters_helper'                => __( '?', 'tainacan' ),
 	'info_empty'                                     => __( 'empty', 'tainacan' ),
+	'info_url_copied_successfuly'	                 => __( 'URL link copied with success.', 'tainacan' ),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),
