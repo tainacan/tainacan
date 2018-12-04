@@ -49,7 +49,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
             }
                     
             if (qs.stringify(postQueries.fetch_only['meta']) == ''){
-                dispatch('search/add_fetchonly_meta', 0, { root: true });
+                dispatch('search/add_fetchonly_meta', null, { root: true });
             }
 
             // Differentiates between repository level and collection level queries
