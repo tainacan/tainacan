@@ -15,7 +15,9 @@
                 </div>
             </section>
             <!-- CARDS VIEW MODE -->
-            <div class="tainacan-cards-container">
+            <div 
+                    v-if="!isLoading && items.length > 0"
+                    class="tainacan-cards-container">
                 <!-- <div> -->
                 <a
                         :key="index"

@@ -15,7 +15,7 @@
                 </div>
             </section>
             <table 
-                    v-show="items.length > 0"
+                    v-if="!isLoading && items.length > 0"
                     class="tainacan-table">
                 <thead>
                     <tr>
