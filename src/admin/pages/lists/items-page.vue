@@ -560,12 +560,12 @@
 
                 <div 
                         v-show="(isLoadingItems && 
-                                !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen))"
+                                !(registeredViewModes[viewMode] != undefined && (registeredViewModes[viewMode].full_screen == true || registeredViewModes[viewMode].implements_skeleton == true)))"
                         class="loading-container">
-                    <!--<b-loading 
+                    <b-loading 
                             :is-full-page="false"
-                            :active="showLoading"/>-->
-                    <skeleton-items-list v-if="!isOnTheme"/>         
+                            :active="showLoading"/>
+                    <!-- <skeleton-items-list v-if="!isOnTheme"/>          -->
                 </div>  
 
                 <!-- <div
@@ -610,7 +610,6 @@
                 <!-- Theme View Modes -->
                 <div 
                         v-if="isOnTheme &&
-                              !isLoadingItems &&
                               openAdvancedSearch &&
                               advancedSearchResults &&
                               registeredViewModes[viewMode] != undefined &&
@@ -619,7 +618,6 @@
 
                 <component
                         v-if="isOnTheme && 
-                              !isLoadingItems && 
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'component' &&
                               openAdvancedSearch &&
@@ -627,6 +625,7 @@
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata"
                         :items="items"
+                        :items-per-page="itemsPerPage"
                         :total-items="totalItems"
                         :is-loading="isLoadingItems"
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/> 
@@ -635,7 +634,6 @@
                 <!-- Theme View Modes -->
                 <div 
                         v-if="isOnTheme &&
-                              !isLoadingItems &&
                               !openAdvancedSearch &&
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'template'"
@@ -645,11 +643,11 @@
                         v-else-if="isOnTheme && 
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'component' &&
-                              (!isLoadingItems || !registeredViewModes[viewMode].show_pagination) && 
                               !openAdvancedSearch"
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata"
                         :items="items"
+                        :items-per-page="itemsPerPage"
                         :total-items="totalItems"
                         :is-loading="isLoadingItems"
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>     
@@ -1241,13 +1239,13 @@
                         this.isLoadingMetadata = false;
                     });
             },
-            adjustSearchControlHeight() {
+            adjustSearchControlHeight: _.debounce( function() {
                 this.$nextTick(() => {
                     if (this.$refs['search-control'] != undefined)
                         this.searchControlHeight = this.$refs['search-control'] ? this.$refs['search-control'].clientHeight + this.$refs['search-control'].offsetTop : 0;
                     this.isFiltersMenuCompressed = jQuery(window).width() <= 768;
                 });
-            },
+            }, 500),
             removeEventListeners() {
                 // Component
                 this.$off();

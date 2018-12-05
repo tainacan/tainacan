@@ -1170,12 +1170,12 @@
                         this.isLoadingMetadata = false;
                     });
             },
-            adjustSearchControlHeight() {
+            adjustSearchControlHeight: _.debounce( function() {
                 this.$nextTick(() => {
                     this.searchControlHeight = this.$refs['search-control'] ? this.$refs['search-control'].clientHeight : 0;
                     this.isFiltersMenuCompressed = jQuery(window).width() <= 768;
                 });
-            }
+            }, 500)
         },
         removeEventListeners() {
             // Component

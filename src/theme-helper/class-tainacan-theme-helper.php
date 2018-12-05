@@ -82,7 +82,8 @@ class Theme_Helper {
 			'dynamic_metadata' => false,
 			'description' => 'A masonry view, similar to pinterest, which will display images without cropping.',
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewmasonry tainacan-icon-20px"></i></span>',
-			'type' => 'component'
+			'type' => 'component',
+			'implements_skeleton' => true
 		]);
 		$this->register_view_mode('slideshow', [
 			'label' => __('Slideshow', 'tainacan'),

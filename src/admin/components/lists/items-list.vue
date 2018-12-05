@@ -123,7 +123,7 @@
                     <a
                             v-if="item.thumbnail != undefined"
                             @click="onClickItem($event, item, index)">
-                        <img :src="item['thumbnail'].tainacan_medium ? item['thumbnail'].tainacan_medium : (item['thumbnail'].medium ? item['thumbnail'].medium : thumbPlaceholderPath)">
+                        <img :src="item['thumbnail'].tainacan_medium ? item['thumbnail'].tainacan_medium[0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)">
                     </a>
 
                     <!-- Actions -->
@@ -210,8 +210,8 @@
                             @click="onClickItem($event, item, index)"
                             v-if="item.thumbnail != undefined"
                             class="thumbnail"
-                            :style="{ backgroundImage: 'url(' + (item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)) + ')' }">
-                        <img :src="item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)">
+                            :style="{ backgroundImage: 'url(' + (item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full[0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)) + ')' }">
+                        <img :src="item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full[0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)">
                     </div>
                     
                     <!-- Actions -->
@@ -329,7 +329,7 @@
                       
                         <img 
                                 v-if="item.thumbnail != undefined"
-                                :src="item['thumbnail'].tainacan_medium ? item['thumbnail'].tainacan_medium : (item['thumbnail'].medium ? item['thumbnail'].medium : thumbPlaceholderPath)">
+                                :src="item['thumbnail'].tainacan_medium ? item['thumbnail'].tainacan_medium[0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)">
                     
                         <div class="list-metadata media-body">
                             <!-- Description -->
@@ -471,7 +471,7 @@
                             <div class="thumbnail">
                                 <img 
                                         v-if="item.thumbnail != undefined"
-                                        :src="item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)"> 
+                                        :src="item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full[0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)"> 
                             </div>
                             <span 
                                     v-for="(column, index) in tableMetadata"
@@ -611,7 +611,7 @@
                             <span v-if="column.metadatum == 'row_thumbnail'">
                                 <img 
                                         class="table-thumb" 
-                                        :src="item['thumbnail'].tainacan_small ? item['thumbnail'].tainacan_small : (item['thumbnail'].thumb ? item['thumbnail'].thumb : thumbPlaceholderPath)">
+                                        :src="item['thumbnail'].tainacan_small ? item['thumbnail'].tainacan_small[0] : (item['thumbnail'].thumbnail ? item['thumbnail'].thumbnail[0] : thumbPlaceholderPath)">
                             </span> 
                             <p 
                                     v-tooltip="{

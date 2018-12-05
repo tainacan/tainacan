@@ -49,9 +49,9 @@
                                     :size="178"
                                     :file="{ 
                                         media_type: 'image', 
-                                        guid: { rendered: collection.thumbnail.tainacan_medium ? collection.thumbnail.tainacan_medium : collection.thumbnail.medium },
+                                        guid: { rendered: collection.thumbnail.tainacan_medium ? collection.thumbnail.tainacan_medium[0] : collection.thumbnail.medium[0] },
                                         title: { rendered: $i18n.get('label_thumbnail')},
-                                        description: { rendered: `<img alt='Thumbnail' src='` + collection.thumbnail.full + `'/>` }}"/>
+                                        description: { rendered: `<img alt='Thumbnail' src='` + collection.thumbnail.full[0] + `'/>` }}"/>
                           <figure 
                                     v-if="collection.thumbnail == undefined || ((collection.thumbnail.medium == undefined || collection.thumbnail.medium == false) && (collection.thumbnail.tainacan_medium == undefined || collection.thumbnail.tainacan_medium == false))"
                                     class="image">

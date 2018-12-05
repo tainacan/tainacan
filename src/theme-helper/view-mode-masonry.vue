@@ -1,6 +1,9 @@
 <template>
     <div class="table-container">
-        <div class="table-wrapper">
+        <div 
+                ref="masonryWrapper"
+                class="table-wrapper">
+
             <!-- Empty result placeholder -->
             <section
                     v-if="!isLoading && items.length <= 0"
@@ -14,15 +17,30 @@
                     <p>{{ $i18n.get('info_no_item_found') }}</p>
                 </div>
             </section>
+
+            <!-- SKELETON LOADING -->
+            <masonry
+                    v-if="isLoading"
+                    :cols="{default: 7, 1919: 6, 1407: 5, 1215: 4, 1023: 3, 767: 2, 343: 1}"
+                    :gutter="25"                    
+                    class="tainacan-masonry-container">
+                <div 
+                        :key="item"
+                        v-for="item in 12"
+                        :style="{'min-height': randomHeightForMasonryItem() + 'px' }"
+                        class="skeleton tainacan-masonry-item" />
+            </masonry>
+
             <!-- MASONRY VIEW MODE -->
-            <masonry 
+            <masonry
+                    v-if="!isLoading && items.length > 0" 
                     :cols="{default: 7, 1919: 6, 1407: 5, 1215: 4, 1023: 3, 767: 2, 343: 1}"
                     :gutter="25"
                     class="tainacan-masonry-container">
                 <a 
                         :key="index"
                         v-for="(item, index) of items"
-                        class="tainacan-masonry-item"
+                        class="tainacan-masonry-item" 
                         :href="item.url">
 
                     <!-- Title -->
@@ -34,8 +52,11 @@
                     <div 
                             v-if="item.thumbnail != undefined"
                             class="thumbnail"
-                            :style="{ backgroundImage: 'url(' + (item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)) + ')' }">  
-                        <img :src="item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)">  
+                            :style="{ backgroundImage: 'url(' + (item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full[0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)) + ')' }">  
+                        <img 
+                                :style="{ minHeight: getItemHeight(item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full[1] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[1] : 120), item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full[2] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[2] : 120)) + 'px'}"
+                                class="skeleton"
+                                :src="item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full[0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)" >  
                     </div>
                 </a>
             </masonry>
@@ -44,6 +65,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'ViewModeMasonry',
@@ -51,14 +73,21 @@ export default {
         collectionId: Number,
         displayedMetadata: Array,
         items: Array,
-        isLoading: false
+        isLoading: false,
+        itemsPerPage: Number,
+        containerWidth: Number,
+        windowWidth: Number
     },
     data () {
         return {
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png'
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
+            isMounted: false
         }
     },
     methods: {
+        ...mapGetters('search', [
+            'getItemsPerPage',
+        ]),
         goToItemPage(item) {
             window.location.href = item.url;   
         },
@@ -73,7 +102,54 @@ export default {
             } else {
                 return metadata.value_as_html;
             }
-        }
+        },
+        randomHeightForMasonryItem() {
+            let min = 120;
+            let max = 380;
+
+            return Math.floor(Math.random()*(max-min+1)+min);
+        },
+        getItemHeight(imageWidth, imageHeight) {  
+            
+            let columnsCount;
+            if (this.$refs.masonryWrapper.clientWidth != this.containerWidth)
+                this.containerWidth = this.$refs.masonryWrapper.clientWidth;
+
+            if (this.windowWidth > 1919)
+                columnsCount = 7;
+            else if (this.windowWidth <= 1919 && this.windowWidth > 1407)
+                columnsCount = 6;
+            else if (this.windowWidth <= 1407 && this.windowWidth > 1215)
+                columnsCount = 5;
+            else if (this.windowWidth <= 1215 && this.windowWidth > 1023)
+                columnsCount = 4;
+            else if (this.windowWidth <= 1023 && this.windowWidth > 767)
+                columnsCount = 3;
+            else if (this.windowWidth <= 767 && this.windowWidth > 343)
+                columnsCount = 2;
+            else if (this.windowWidth <= 343)
+                columnsCount = 1;
+            else
+                columnsCount = 7;
+            
+            let itemWidth = (this.containerWidth/columnsCount) - 22;
+
+            return (imageHeight*itemWidth)/imageWidth;
+        },
+        recalculateItemsHeight: _.debounce( function() {
+            this.windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+            this.$forceUpdate();
+        }, 800)
+    },
+    mounted() {
+        this.containerWidth = this.$refs.masonryWrapper.clientWidth;
+    },
+    created() {
+        this.windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        window.addEventListener('resize', this.recalculateItemsHeight);  
+    },
+    beforeDestroy() {
+        window.removeEventListener('resize', this.recalculateItemsHeight);
     }
 }
 </script>

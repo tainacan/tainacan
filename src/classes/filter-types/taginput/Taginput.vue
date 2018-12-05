@@ -161,7 +161,7 @@
                         axios.get('/collection/' + collectionTarget + '/items?' + query)
                             .then( res => {
                                 for (let item of res.data) {
-                                    instance.selected.push({ label: item.title, value: item.id, img: item.thumbnail.thumb });
+                                    instance.selected.push({ label: item.title, value: item.id, img: item.thumbnail.thumbnail[0] });
                                 }
                             })
                             .catch(error => {

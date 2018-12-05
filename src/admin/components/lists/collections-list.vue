@@ -96,7 +96,7 @@
                             <span>
                                 <img 
                                         class="table-thumb" 
-                                        :src="collection.thumbnail != undefined ? collection.thumbnail.thumb : thumbPlaceholderPath">
+                                        :src="(collection.thumbnail && collection.thumbnail.thumbnail ) ? collection.thumbnail.thumbnail[0] : thumbPlaceholderPath">
                             </span>
                         </td>
                         <!-- Name -->

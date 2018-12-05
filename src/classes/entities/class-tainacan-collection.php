@@ -215,16 +215,15 @@ class Collection extends Entity {
 	 * @return array
 	 */
 	function get_thumbnail() {
-		$thumbs = array(
-			'thumb'                => get_the_post_thumbnail_url( $this->get_id(), 'thumbnail' ),
-			'full'                 => get_the_post_thumbnail_url( $this->get_id(), 'full' ),
-			'medium'               => get_the_post_thumbnail_url( $this->get_id(), 'medium' ),
-			'medium_large'         => get_the_post_thumbnail_url( $this->get_id(), 'medium_large' ),
-			'large'                => get_the_post_thumbnail_url( $this->get_id(), 'large' ),
-			'tainacan_small'       => get_the_post_thumbnail_url( $this->get_id(), 'tainacan-small' ),
-			'tainacan_medium'      => get_the_post_thumbnail_url( $this->get_id(), 'tainacan-medium' ),
-			'tainacan_medium_full' => get_the_post_thumbnail_url( $this->get_id(), 'tainacan-medium-full' ),
-		);
+
+		$sizes = get_intermediate_image_sizes();
+
+        array_unshift($sizes, 'full');
+        
+        foreach ( $sizes as $size ) {
+            $thumbs[$size] = wp_get_attachment_image_src( $this->get__thumbnail_id(), $size );
+        }
+
 		return apply_filters("tainacan-collection-get-thumbnail", $thumbs, $this);
 	}
 

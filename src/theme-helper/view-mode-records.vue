@@ -57,7 +57,7 @@
                                 <div 
                                         class="thumbnail"
                                         v-if="item.thumbnail != undefined">
-                                    <img :src="item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)">  
+                                    <img :src="item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full[0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)">  
                                 </div>
                                 <span 
                                         v-for="(column, index) in tableMetadata"

@@ -126,22 +126,26 @@ class Item extends Entity {
 		return apply_filters("tainacan-item-get-author-name", $name, $this);
 	}
 
-	/**
-	 * @return array
-	 */
-	function get_thumbnail() {
-		$thumbs = array(
-			'thumb'                => get_the_post_thumbnail_url( $this->get_id(), 'thumbnail' ),
-			'full'                 => get_the_post_thumbnail_url( $this->get_id(), 'full' ),
-			'medium'               => get_the_post_thumbnail_url( $this->get_id(), 'medium' ),
-			'medium_large'         => get_the_post_thumbnail_url( $this->get_id(), 'medium_large' ),
-			'large'                => get_the_post_thumbnail_url( $this->get_id(), 'large' ),
-			'tainacan_small'       => get_the_post_thumbnail_url( $this->get_id(), 'tainacan-small' ),
-			'tainacan_medium'      => get_the_post_thumbnail_url( $this->get_id(), 'tainacan-medium' ),
-			'tainacan_medium_full' => get_the_post_thumbnail_url( $this->get_id(), 'tainacan-medium-full' ),
-		);
-		return apply_filters("tainacan-item-get-thumbnail", $thumbs, $this);
-	}
+    /**
+     * Gets the thumbnail list of files
+     *
+     * Each size is represented as an array in the format returned by
+     * @see https://developer.wordpress.org/reference/functions/wp_get_attachment_image_src/
+     *
+     * @return array
+     */
+    function get_thumbnail() {
+        
+        $sizes = get_intermediate_image_sizes();
+
+        array_unshift($sizes, 'full');
+        
+        foreach ( $sizes as $size ) {
+            $thumbs[$size] = wp_get_attachment_image_src( $this->get__thumbnail_id(), $size );
+        }
+
+        return apply_filters("tainacan-item-get-thumbnail", $thumbs, $this);
+    }
 
 	/**
 	 * @param $id
