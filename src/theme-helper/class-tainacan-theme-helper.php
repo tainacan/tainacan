@@ -68,14 +68,16 @@ class Theme_Helper {
 			'dynamic_metadata' => false,
 			'description' => 'A cards view, displaying title, description, author name and creation date.',
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewcards tainacan-icon-20px"></i></span>',
-			'type' => 'component'
+			'type' => 'component',
+			'implements_skeleton' => true
 		]);
 		$this->register_view_mode('records', [
 			'label' => __('Records', 'tainacan'),
 			'dynamic_metadata' => true,
 			'description' => 'A records view, similiar to cards, but flexible for metadata',
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewrecords tainacan-icon-20px"></i></span>',
-			'type' => 'component'
+			'type' => 'component',
+			'implements_skeleton' => true
 		]);
 		$this->register_view_mode('masonry', [
 			'label' => __('Masonry', 'tainacan'),

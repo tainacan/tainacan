@@ -54,7 +54,7 @@
                             class="thumbnail"
                             :style="{ backgroundImage: 'url(' + (item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full[0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)) + ')' }">  
                         <img 
-                                :style="{ minHeight: getItemHeight(item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full[1] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[1] : 120), item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full[2] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[2] : 120)) + 'px'}"
+                                :style="{ minHeight: getItemImageHeight(item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full[1] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[1] : 120), item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full[2] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[2] : 120)) + 'px'}"
                                 class="skeleton"
                                 :src="item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full[0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)" >  
                     </div>
@@ -114,7 +114,7 @@ export default {
 
             return Math.floor(Math.random()*(max-min+1)+min);
         },
-        getItemHeight(imageWidth, imageHeight) {  
+        getItemImageHeight(imageWidth, imageHeight) {  
             
             if (this.$refs.masonryWrapper.clientWidth != this.containerWidth)
                 this.containerWidth = this.$refs.masonryWrapper.clientWidth;

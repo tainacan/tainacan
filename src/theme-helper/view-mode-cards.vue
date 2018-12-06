@@ -1,6 +1,7 @@
 <template>
     <div class="table-container">
         <div class="table-wrapper">
+
             <!-- Empty result placeholder -->
             <section
                     v-if="!isLoading && items.length <= 0"
@@ -14,6 +15,17 @@
                     <p>{{ $i18n.get('info_no_item_found') }}</p>
                 </div>
             </section>
+
+            <!-- SKELETON LOADING -->
+            <div
+                    v-if="isLoading"
+                    class="tainacan-cards-container">
+                <div 
+                        :key="item"
+                        v-for="item in 12"
+                        class="skeleton tainacan-card" />
+            </div>
+
             <!-- CARDS VIEW MODE -->
             <div 
                     v-if="!isLoading && items.length > 0"
@@ -42,6 +54,7 @@
                         <img 
                                 v-if="item.thumbnail != undefined"
                                 :src="item['thumbnail'].tainacan_medium ? item['thumbnail'].tainacan_medium[0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)">  
+                        <div class="skeleton"/>
 
                         <div class="list-metadata media-body">
                            <!-- Description -->
