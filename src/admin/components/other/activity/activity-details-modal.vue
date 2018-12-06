@@ -34,6 +34,48 @@
                                     </picture>
                                 </div>
                             </div>
+
+                            <div
+                                    v-if="attributeName == 'attachments'"
+                                    class="content">
+                                <p class="is-capitalized has-text-blue5">
+                                    {{ attributeName }}
+                                    <small class="has-text-gray4"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
+                                </p>
+                                <div
+                                        class="tainacan-attachments-in-modal"
+                                        v-if="diff.old.length">
+                                    <template v-for="attachment in diff.old">
+                                        <div
+                                                class="box"
+                                                v-if="attachment.mime_type.includes('image')">
+                                            <p>{{ `${$i18n.get('label_title')}: ${attachment.title}` }}</p>
+                                            <figure
+                                                    style="height: 150px; width: 150px;"
+                                                    class="image">
+                                                <img
+                                                        width="100%"
+                                                        style="height: 100% !important;"
+                                                        :src="attachment.url"
+                                                        :alt="attributeName">
+                                            </figure>
+                                        </div>
+                                        <div
+                                                class="box"
+                                                v-else-if="['pdf', 'audio', 'video'].includes(attachment.mime_type.split('/')[1])">
+                                            <p>{{ `${$i18n.get('label_title')}: ${attachment.title}` }}</p>
+                                            <object
+                                                    width="100%"
+                                                    :data="attachment.url"
+                                                    :type="attachment.mime_type"/>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div v-else>
+                                    <p>{{ infoEmpty }}</p>
+                                </div>
+                            </div>
+
                             <div
                                     class="content"
                                     v-else>
@@ -108,6 +150,48 @@
                                     </picture>
                                 </div>
                             </div>
+
+                            <div
+                                    v-if="attributeName == 'attachments'"
+                                    class="content">
+                                <p class="is-capitalized has-text-blue5">
+                                    {{ attributeName }}
+                                    <small class="has-text-gray4"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
+                                </p>
+                                <div
+                                        class="tainacan-attachments-in-modal"
+                                        v-if="diff.new.length">
+                                    <template v-for="attachment in diff.new">
+                                        <div
+                                                class="box"
+                                                v-if="attachment.mime_type.includes('image')">
+                                            <p>{{ `${$i18n.get('label_title')}: ${attachment.title}` }}</p>
+                                            <figure
+                                                    style="height: 150px; width: 150px;"
+                                                    class="image">
+                                                <img
+                                                        width="100%"
+                                                        style="height: 100% !important;"
+                                                        :src="attachment.url"
+                                                        :alt="attributeName">
+                                            </figure>
+                                        </div>
+                                        <div
+                                                class="box"
+                                                v-else-if="['pdf', 'audio', 'video'].includes(attachment.mime_type.split('/')[1])">
+                                            <p>{{ `${$i18n.get('label_title')}: ${attachment.title}` }}</p>
+                                            <object
+                                                    width="100%"
+                                                    :data="attachment.url"
+                                                    :type="attachment.mime_type"/>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div v-else>
+                                    <p>{{ infoEmpty }}</p>
+                                </div>
+                            </div>
+
                             <div
                                     class="content"
                                     v-else>
@@ -287,5 +371,12 @@
 
     .modal-card-body {
         min-height: 400px;
+    }
+
+    .tainacan-attachments-in-modal {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        justify-content: space-between;
     }
 </style>
