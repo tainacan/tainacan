@@ -75,8 +75,13 @@ export default {
         items: Array,
         isLoading: false,
         itemsPerPage: Number,
-        containerWidth: Number,
-        windowWidth: Number
+        columnsCount: Number,
+        isFiltersMenuCompressed: Boolean
+    },
+    watch: {
+        isFiltersMenuCompressed() {
+            this.$forceUpdate();
+        }
     },
     data () {
         return {
@@ -111,41 +116,25 @@ export default {
         },
         getItemHeight(imageWidth, imageHeight) {  
             
-            let columnsCount;
             if (this.$refs.masonryWrapper.clientWidth != this.containerWidth)
                 this.containerWidth = this.$refs.masonryWrapper.clientWidth;
 
-            if (this.windowWidth > 1919)
-                columnsCount = 7;
-            else if (this.windowWidth <= 1919 && this.windowWidth > 1407)
-                columnsCount = 6;
-            else if (this.windowWidth <= 1407 && this.windowWidth > 1215)
-                columnsCount = 5;
-            else if (this.windowWidth <= 1215 && this.windowWidth > 1023)
-                columnsCount = 4;
-            else if (this.windowWidth <= 1023 && this.windowWidth > 767)
-                columnsCount = 3;
-            else if (this.windowWidth <= 767 && this.windowWidth > 343)
-                columnsCount = 2;
-            else if (this.windowWidth <= 343)
-                columnsCount = 1;
-            else
-                columnsCount = 7;
+            if (this.$refs.masonryWrapper.children[0].childElementCount != this.columnsCount)
+                this.columnsCount = this.$refs.masonryWrapper.children[0].childElementCount;
             
-            let itemWidth = (this.containerWidth/columnsCount) - 22;
+            let itemWidth = (this.containerWidth/this.columnsCount) - 22;
 
             return (imageHeight*itemWidth)/imageWidth;
         },
         recalculateItemsHeight: _.debounce( function() {
-            this.windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
             this.$forceUpdate();
         }, 800)
     },
     mounted() {
         this.containerWidth = this.$refs.masonryWrapper.clientWidth;
+        this.columnsCount = this.$refs.masonryWrapper.children[0].childElementCount;
     },
     created() {
-        this.windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
         window.addEventListener('resize', this.recalculateItemsHeight);  
     },
     beforeDestroy() {

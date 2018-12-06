@@ -625,7 +625,7 @@
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata"
                         :items="items"
-                        :items-per-page="itemsPerPage"
+                        :is-filters-menu-compressed="isFiltersMenuCompressed"
                         :total-items="totalItems"
                         :is-loading="isLoadingItems"
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/> 
@@ -647,7 +647,7 @@
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata"
                         :items="items"
-                        :items-per-page="itemsPerPage"
+                        :is-filters-menu-compressed="isFiltersMenuCompressed"
                         :total-items="totalItems"
                         :is-loading="isLoadingItems"
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>     
@@ -1495,7 +1495,6 @@
         overflow-x: hidden;
         visibility: visible;
         display: block;
-        transition: visibility ease 0.5s, display ease 0.5s;
 
         @media screen and (max-width: 768px) {
             width: 100%;
@@ -1718,7 +1717,6 @@
 
     .items-list-area {
         margin-left: 0;
-        transition: margin-left ease 0.5s;
         height: 100%;
         overflow: auto;
         position: relative;
