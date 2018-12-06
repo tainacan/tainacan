@@ -610,6 +610,7 @@
                 <!-- Theme View Modes -->
                 <div 
                         v-if="isOnTheme &&
+                              !isLoadingItems &&
                               openAdvancedSearch &&
                               advancedSearchResults &&
                               registeredViewModes[viewMode] != undefined &&
@@ -634,6 +635,7 @@
                 <!-- Theme View Modes -->
                 <div 
                         v-if="isOnTheme &&
+                              !isLoadingItems &&
                               !openAdvancedSearch &&
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'template'"

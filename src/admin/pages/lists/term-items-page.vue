@@ -578,7 +578,6 @@
 
                 <component
                         v-if="isOnTheme && 
-                              !isLoadingItems && 
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'component' &&
                               openAdvancedSearch &&
@@ -602,7 +601,6 @@
 
                 <component
                         v-else-if="isOnTheme && 
-                              !isLoadingItems && 
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'component' &&
                               !openAdvancedSearch"
