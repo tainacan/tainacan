@@ -14,6 +14,45 @@
                     <p>{{ $i18n.get('info_no_item_found') }}</p>
                 </div>
             </section>
+    
+            <!-- SKELETON LOADING -->
+            <table 
+                    v-if="isLoading"
+                    class="tainacan-table tainacan-table-skeleton">
+                <thead>
+                    <th 
+                            v-for="(column, index) in displayedMetadata"
+                            :key="index"
+                            v-if="column.display"
+                            class="column-default-width"
+                            :class="{
+                                    'thumbnail-cell': column.metadatum == 'row_thumbnail',
+                                    'column-small-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'date' || 
+                                                                                                        column.metadata_type_object.primitive_type == 'float' ||
+                                                                                                        column.metadata_type_object.primitive_type == 'int') : false,
+                                    'column-medium-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'term' || 
+                                                                                                        column.metadata_type_object.primitive_type == 'item' || 
+                                                                                                        column.metadata_type_object.primitive_type == 'compound') : false,
+                                    'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' || column.metadata_type_object.related_mapped_prop == 'description') : false,
+                            }"
+                            :custom-key="column.slug">
+                        <div class="th-wrap">{{ column.name }}</div>
+                    </th>
+                </thead>
+                <tbody>
+                    <tr   
+                            :key="item"
+                            v-for="item in 12">
+                        <td 
+                                v-for="(column, index) in displayedMetadata"
+                                :key="index"
+                                v-if="column.display"
+                                class="column-default-width skeleton"/>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- TABLE VIEW MODE -->
             <table 
                     v-if="!isLoading && items.length > 0"
                     class="tainacan-table">
@@ -106,6 +145,7 @@
                                 <img 
                                         class="table-thumb" 
                                         :src="item['thumbnail'].tainacan_small ? item['thumbnail'].tainacan_small[0] : (item['thumbnail'].thumbnail ? item['thumbnail'].thumbnail[0] : thumbPlaceholderPath)">
+                                <div class="skeleton"/>
                             </span> 
                         </a>
                         </td>
@@ -150,11 +190,4 @@ export default {
     }
 }
 </script>
-
-<style>
-    td>a:hover {
-        text-decoration: none !important;
-    }
-</style>
-
 

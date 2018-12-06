@@ -13,6 +13,17 @@
         overflow-y: hidden;
         margin-bottom: 0px !important;
 
+        table.tainacan-table-skeleton {
+            tbody  {
+                td.skeleton {
+                    height: 52px;
+                    border-radius: 0;
+                    background-color: #eee !important;
+                    border-top: 5px solid white !important;
+                }
+            }
+        }
+
         table.tainacan-table {
             animation-name: appear;
             animation-duration: 0.5s;
@@ -151,6 +162,17 @@
                         vertical-align: middle;
                         line-height: 0.75rem;
                         border: none !important;
+
+                        &.thumbnail-cell .skeleton {
+                            height: 38px;
+                            width: 38px;
+                            margin-top: -38px;
+                            margin-left: auto;
+                            margin-right: auto;
+                            position: relative;
+                            z-index: -1;
+                        }
+
                         p { 
                             font-size: 0.875rem;
                             margin: 0px; 
@@ -159,9 +181,13 @@
                             white-space: nowrap;
                             max-height: 1.25rem;
                         }
+                        a:hover {
+                            text-decoration: none !important;
+                        }    
                     }
                     img.table-thumb {
                         max-height: 38px !important;
+                        max-width: 38px;
                         border-radius: 0px;
                     }
                     td.actions-cell {

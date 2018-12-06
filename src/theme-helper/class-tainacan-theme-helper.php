@@ -62,6 +62,7 @@ class Theme_Helper {
 			'dynamic_metadata' => true,
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewtable tainacan-icon-20px"></i></span>',
 			'type' => 'component',
+			'implements_skeleton' => true
 		]);
 		$this->register_view_mode('cards', [
 			'label' => __('Cards', 'tainacan'),
