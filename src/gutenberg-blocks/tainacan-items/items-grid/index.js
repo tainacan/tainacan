@@ -70,10 +70,12 @@ registerBlockType('tainacan/items-grid', {
             default: {}
         },
         URLCollectionID: {
-            type: String
+            type: String,
+            default: ''
         },
         tainacanURL: {
             type: String,
+            default: ''
         },
         showTitle: {
             type: Boolean,
@@ -187,6 +189,14 @@ registerBlockType('tainacan/items-grid', {
             setAttributes({tainacanURL: tainacanURLP});
 
             if (!tainacanURLP || !tainacanURLP.includes('tainacan_admin')){
+                setAttributes({query: ''});
+                setAttributes({URLCollectionID: ''});
+                setAttributes({itemsPerPage: 0});
+                setAttributes({items: []});
+                setAttributes({items2: []});
+
+                setContent([]);
+
                 return true;
             }
 
@@ -204,17 +214,17 @@ registerBlockType('tainacan/items-grid', {
             let URLCollID = rawURL.match(/\/(\d+)\/?/);
             URLCollectionID = URLCollID != undefined ? URLCollID[1]: URLCollID;
 
-            setAttributes({query: parsedQuery});
-            setAttributes({URLCollectionID: URLCollectionID});
-            setAttributes({itemsPerPage: Number(parsedQuery.perpage)});
-
-            getItems(URLCollectionID, qs.stringify(query)).then(data => {
+            getItems(URLCollectionID, qs.stringify(parsedQuery)).then(data => {
                 items = [];
+                setAttributes({items: items});
 
                 data.map((item) => {
                     items.push(prepareItem(item));
                 });
 
+                setAttributes({query: parsedQuery});
+                setAttributes({URLCollectionID: URLCollectionID});
+                setAttributes({itemsPerPage: Number(parsedQuery.perpage)});
                 setAttributes({items: items});
                 setAttributes({items2: data});
                 setContent(items);
@@ -294,6 +304,7 @@ registerBlockType('tainacan/items-grid', {
                                 label={__(`Paste a Tainacan sharing URL for get items`, 'tainacan')}
                                 type="url"
                                 value={tainacanURL}
+                                rows={8}
                                 onChange={ (tainacanURL) => parseURL( tainacanURL ) }
                             />
                         </div>
