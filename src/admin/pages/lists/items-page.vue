@@ -566,34 +566,12 @@
                     <!-- <skeleton-items-list v-if="!isOnTheme"/>          -->
                 </div>  
 
-                <!-- <div
-                        v-if="openAdvancedSearch && advancedSearchResults">
-                    <div class="advanced-search-results-title">
-                        <h1>{{ $i18n.get('info_search_results') }}</h1>
-                        <hr>
-                    </div>
-                </div> -->
-
-                <items-list
-                        v-if="!isOnTheme &&
-                              !isLoadingItems &&
-                              totalItems > 0 &&
-                              openAdvancedSearch &&
-                              advancedSearchResults"
-                        :collection-id="collectionId"
-                        :table-metadata="displayedMetadata"
-                        :items="items"
-                        :total-items="totalItems"
-                        :is-loading="isLoadingItems"
-                        :is-on-trash="status == 'trash'"
-                        :view-mode="adminViewMode"/>
-
                 <!-- Admin View Modes-->
                 <items-list
-                        v-else-if="!isOnTheme && 
+                        v-if="!isOnTheme && 
                               !isLoadingItems &&
                               totalItems > 0 &&
-                              !openAdvancedSearch"
+                              ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
                         :collection-id="collectionId"
                         :table-metadata="displayedMetadata"
                         :items="items"
@@ -602,7 +580,6 @@
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"/>
                 
-                <!-- When advanced search -->
                 <!-- Theme View Modes -->
                 <div 
                         v-if="isOnTheme &&
@@ -651,7 +628,6 @@
                 </section>
 
                 <!-- Pagination -->
-                <!-- When advanced search -->
                 <pagination
                         v-if="totalItems > 0 &&
                          (!isOnTheme || (registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].show_pagination)) &&

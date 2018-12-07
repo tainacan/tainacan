@@ -15,11 +15,24 @@
 
         table.tainacan-table-skeleton {
             tbody  {
-                td.skeleton {
-                    height: 52px;
+                td.skeleton.thumbnail-cell {
+                    max-height: 52px;
+                    max-width: 34px;
                     border-radius: 0;
                     background-color: #eee !important;
-                    border-top: 5px solid white !important;
+                    border-top: 8px solid white !important;
+                    border-bottom: 8px solid white !important;
+                    border-left: 18px solid white !important;
+                    border-right: 18px solid white !important;
+                }
+                td.skeleton:not(.thumbnail-cell) {
+                    max-height: 52px;
+                    border-radius: 0;
+                    background-color: #eee !important;
+                    border-top: 18px solid white !important;
+                    border-bottom: 18px solid white !important;
+                    border-left: 8px solid white !important;
+                    border-right:8px solid white !important;
                 }
             }
         }
@@ -166,6 +179,7 @@
                         &.thumbnail-cell .skeleton {
                             height: 38px;
                             width: 38px;
+                            border-radius: 0;
                             margin-top: -38px;
                             margin-left: auto;
                             margin-right: auto;
@@ -187,6 +201,7 @@
                     }
                     img.table-thumb {
                         max-height: 38px !important;
+                        min-height: 38px;
                         max-width: 38px;
                         border-radius: 0px;
                     }

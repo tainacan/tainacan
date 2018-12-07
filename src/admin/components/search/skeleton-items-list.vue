@@ -6,7 +6,6 @@
                 <b-checkbox disabled>{{ $i18n.get('label_select_all_items_page') }}</b-checkbox>
             </span>
         </div>
-
         <div class="field is-pulled-right">
             <b-dropdown
                     position="is-bottom-left"

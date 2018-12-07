@@ -47,6 +47,7 @@
                                 v-for="(column, index) in displayedMetadata"
                                 :key="index"
                                 v-if="column.display"
+                                :class="{ 'thumbnail-cell': index == 0 }"
                                 class="column-default-width skeleton"/>
                     </tr>
                 </tbody>

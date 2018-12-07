@@ -61,7 +61,13 @@
                             </span>
                             <span class="icon icon-level-identifier">
                                 <i 
-                                    :class="{ 'tainacan-icon-collections has-text-turquoise5': filter.collection_id == collectionId, 'tainacan-icon-repository has-text-blue5': filter.collection_id != collectionId }"
+                                    :class="{ 
+                                              'tainacan-icon-collections': filter.collection_id == collectionId, 
+                                              'tainacan-icon-repository': filter.collection_id != collectionId,
+                                              'has-text-turquoise5': filter.enabled && filter.collection_id == collectionId, 
+                                              'has-text-blue5': filter.enabled && filter.collection_id != collectionId,
+                                              'has-text-gray': !filter.enabled  
+                                            }"
                                     class="tainacan-icon" />
                             </span> 
                             <span 

@@ -578,22 +578,22 @@ $modal-z: 9999999;
 // SKELETON GRADIENT ANIMATIONS
 @-webkit-keyframes skeleton-animation {
     0%{opacity: 1.0}
-    50%{opacity: 0.0}
+    50%{opacity: 0.1}
     100%{opacity: 1.0}
 }
 @-moz-keyframes skeleton-animation {
     0%{opacity: 1.0}
-    50%{opacity: 0.0}
+    50%{opacity: 0.1}
     100%{opacity: 1.0}
 }
 @-o-keyframes skeleton-animation {
     0%{opacity: 1.0}
-    50%{opacity: 0.0}
+    50%{opacity: 0.1}
     100%{opacity: 1.0}
 }
 @keyframes skeleton-animation {
     0%{opacity: 1.0}
-    50%{opacity: 0.0}
+    50%{opacity: 0.1}
     100%{opacity: 1.0}
 }
 
