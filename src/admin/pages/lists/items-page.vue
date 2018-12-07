@@ -589,11 +589,12 @@
                         :is-loading="isLoadingItems"
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"/>
-                
+
                 <!-- Theme View Modes -->
                 <div 
                         v-if="isOnTheme &&
                               ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch) &&
+                              !isLoadingItems &&
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'template'"
                         v-html="itemsListTemplate"/>
