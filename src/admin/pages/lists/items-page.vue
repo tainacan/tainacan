@@ -135,14 +135,6 @@
                 class="items-list-area"
                 :class="{ 'spaced-to-right': !isFiltersMenuCompressed && !openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)}">
 
-            <!-- FILTERS TAG LIST-->
-            <filters-tags-list 
-                    class="filter-tags-list"
-                    :filters="filters"
-                    v-if="hasFiltered && 
-                        !openAdvancedSearch &&
-                        !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)" />
-
             <!-- SEARCH CONTROL ------------------------- -->
             <div
                     ref="search-control"
@@ -529,8 +521,6 @@
                 </div>
             </div>
 
-            <!-- --------------- -->
-
             <!-- STATUS TABS, only on Admin -------- -->
             <div 
                     v-if="!isOnTheme && !openAdvancedSearch"
@@ -554,6 +544,14 @@
                     </li>
                 </ul>
             </div>
+
+            <!-- FILTERS TAG LIST-->
+            <filters-tags-list 
+                    class="filter-tags-list"
+                    :filters="filters"
+                    v-if="hasFiltered && 
+                        !openAdvancedSearch &&
+                        !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)" />
 
             <!-- ITEMS LISTING RESULTS ------------------------- -->
             <div class="above-search-control">
@@ -580,8 +578,8 @@
                         v-if="!isOnTheme &&
                               !isLoadingItems &&
                               totalItems > 0 &&
-                              ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
-
+                              openAdvancedSearch &&
+                              advancedSearchResults"
                         :collection-id="collectionId"
                         :table-metadata="displayedMetadata"
                         :items="items"
@@ -590,6 +588,21 @@
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"/>
 
+                <!-- Admin View Modes-->
+                <items-list
+                        v-else-if="!isOnTheme && 
+                              !isLoadingItems &&
+                              totalItems > 0 &&
+                              !openAdvancedSearch"
+                        :collection-id="collectionId"
+                        :table-metadata="displayedMetadata"
+                        :items="items"
+                        :total-items="totalItems"
+                        :is-loading="isLoadingItems"
+                        :is-on-trash="status == 'trash'"
+                        :view-mode="adminViewMode"/>
+                
+                <!-- When advanced search -->
                 <!-- Theme View Modes -->
                 <div 
                         v-if="isOnTheme &&
@@ -1663,7 +1676,7 @@
     }
 
     .tabs {
-        padding-top: 12px;
+        padding-top: 6px;
         margin-bottom: 20px;
         padding-left: $page-side-padding;
         padding-right: $page-side-padding;
