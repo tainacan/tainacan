@@ -575,29 +575,13 @@
                         <hr>
                     </div>
                 </div> -->
-                <!-- When advanced search -->
+
                 <items-list
                         v-if="!isOnTheme &&
                               !isLoadingItems &&
                               totalItems > 0 &&
-                              openAdvancedSearch &&
-                              advancedSearchResults"
+                              ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
 
-                        :collection-id="collectionId"
-                        :table-metadata="displayedMetadata"
-                        :items="items"
-                        :total-items="totalItems"
-                        :is-loading="isLoadingItems"
-                        :is-on-trash="status == 'trash'"
-                        :view-mode="adminViewMode"/>
-
-                <!-- Admin View Modes-->
-                <items-list
-                        v-else-if="!isOnTheme && 
-                              !isLoadingItems &&
-                              totalItems > 0 &&
-                              !openAdvancedSearch"
-    
                         :collection-id="collectionId"
                         :table-metadata="displayedMetadata"
                         :items="items"
@@ -606,12 +590,10 @@
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"/>
                 
-                <!-- When advanced search -->
                 <!-- Theme View Modes -->
                 <div 
                         v-if="isOnTheme &&
-                              openAdvancedSearch &&
-                              advancedSearchResults &&
+                              ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch) &&
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'template'"
                         v-html="itemsListTemplate"/>
@@ -620,37 +602,14 @@
                         v-if="isOnTheme && 
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'component' &&
-                              openAdvancedSearch &&
-                              advancedSearchResults"
+                              ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata"
                         :items="items"
                         :is-filters-menu-compressed="isFiltersMenuCompressed"
                         :total-items="totalItems"
                         :is-loading="isLoadingItems"
-                        :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/> 
-                
-                <!-- Regular -->
-                <!-- Theme View Modes -->
-                <div 
-                        v-if="isOnTheme &&
-                              !openAdvancedSearch &&
-                              registeredViewModes[viewMode] != undefined &&
-                              registeredViewModes[viewMode].type == 'template'"
-                        v-html="itemsListTemplate"/>
-
-                <component
-                        v-else-if="isOnTheme && 
-                              registeredViewModes[viewMode] != undefined &&
-                              registeredViewModes[viewMode].type == 'component' &&
-                              !openAdvancedSearch"
-                        :collection-id="collectionId"
-                        :displayed-metadata="displayedMetadata"
-                        :items="items"
-                        :is-filters-menu-compressed="isFiltersMenuCompressed"
-                        :total-items="totalItems"
-                        :is-loading="isLoadingItems"
-                        :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>     
+                        :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>
 
                 <!-- Empty Placeholder (only used in Admin) -->
                 <section
@@ -682,13 +641,7 @@
                 <pagination
                         v-if="totalItems > 0 &&
                          (!isOnTheme || (registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].show_pagination)) &&
-                          advancedSearchResults"/>
-
-                <!-- Regular -->
-                <pagination
-                        v-else-if="totalItems > 0 &&
-                         (!isOnTheme || (registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].show_pagination)) &&
-                          !openAdvancedSearch"/>
+                          (advancedSearchResults || !openAdvancedSearch)"/>
             </div>
         </div>
        
