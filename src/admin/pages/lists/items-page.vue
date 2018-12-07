@@ -1002,6 +1002,7 @@
                             shouldLoadMeta  = this.adminViewMode == 'table' || this.adminViewMode == 'records' || this.adminViewMode == undefined;
                     
                         if (shouldLoadMeta) {
+
                             // Loads user prefs object as we'll need to check if there's something configured by user 
                             let prefsFetchOnly = !this.isRepositoryLevel ? 'fetch_only_' + this.collectionId : 'fetch_only';
                             let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly); 

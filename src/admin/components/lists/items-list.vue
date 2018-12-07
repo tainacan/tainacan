@@ -582,7 +582,7 @@
                                     v-if="collectionId == undefined &&
                                           column.metadata_type_object != undefined && 
                                           column.metadata_type_object.related_mapped_prop == 'title'"
-                                    v-html="item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                    v-html="(item.title != undefined && item.title != '') ? item.title : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
                             <p
                                     v-tooltip="{
                                         content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
@@ -593,7 +593,7 @@
                                     v-if="collectionId == undefined &&
                                           column.metadata_type_object != undefined && 
                                           column.metadata_type_object.related_mapped_prop == 'description'"
-                                    v-html="item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                    v-html="(item.description != undefined && item.description) != '' ? item.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
                             <p
                                     v-tooltip="{
                                         content: renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
@@ -605,7 +605,9 @@
                                           column.metadatum !== 'row_thumbnail' &&
                                           column.metadatum !== 'row_actions' &&
                                           column.metadatum !== 'row_creation' &&
-                                          column.metadatum !== 'row_author'"
+                                          column.metadatum !== 'row_author' &&
+                                          column.metadatum !== 'row_title' &&
+                                          column.metadatum !== 'row_description'"
                                     v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column, column.metadata_type_object.component) : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
 
                             <span v-if="column.metadatum == 'row_thumbnail'">

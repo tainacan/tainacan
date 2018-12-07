@@ -139,7 +139,9 @@
                                           column.metadatum !== 'row_thumbnail' &&
                                           column.metadatum !== 'row_actions' &&
                                           column.metadatum !== 'row_creation' &&
-                                          column.metadatum !== 'row_author'"
+                                          column.metadatum !== 'row_author' &&
+                                          column.metadatum !== 'row_title' &&
+                                          column.metadatum !== 'row_description'"
                                     v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column, column.metadata_type_object.component) : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
 
                             <span v-if="column.metadatum == 'row_thumbnail'">
