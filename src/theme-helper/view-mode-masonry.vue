@@ -75,7 +75,7 @@ export default {
         items: Array,
         isLoading: false,
         itemsPerPage: Number,
-        columnsCount: Number,
+        itemColumnWidth: Number,
         isFiltersMenuCompressed: Boolean
     },
     watch: {
@@ -116,23 +116,26 @@ export default {
         },
         getItemImageHeight(imageWidth, imageHeight) {  
             
-            if (this.$refs.masonryWrapper.clientWidth != this.containerWidth)
-                this.containerWidth = this.$refs.masonryWrapper.clientWidth;
+            if (this.$refs.masonryWrapper != undefined && 
+                this.$refs.masonryWrapper.children[0] != undefined && 
+                this.$refs.masonryWrapper.children[0].children[0] != undefined && 
+                this.$refs.masonryWrapper.children[0].children[0].clientWidth != undefined)
+                this.itemColumnWidth = this.$refs.masonryWrapper.children[0].children[0].clientWidth;
 
-            if (this.$refs.masonryWrapper.children[0].childElementCount != this.columnsCount)
-                this.columnsCount = this.$refs.masonryWrapper.children[0].childElementCount;
-            
-            let itemWidth = (this.containerWidth/this.columnsCount) - 22;
-
-            return (imageHeight*itemWidth)/imageWidth;
+            return (imageHeight*this.itemColumnWidth)/imageWidth;
         },
         recalculateItemsHeight: _.debounce( function() {
             this.$forceUpdate();
-        }, 800)
+        }, 500)
     },
     mounted() {
-        this.containerWidth = this.$refs.masonryWrapper.clientWidth;
-        this.columnsCount = this.$refs.masonryWrapper.children[0].childElementCount;
+        if (this.$refs.masonryWrapper != undefined && 
+            this.$refs.masonryWrapper.children[0] != undefined && 
+            this.$refs.masonryWrapper.children[0].children[0] != undefined && 
+            this.$refs.masonryWrapper.children[0].children[0].clientWidth != undefined)
+                this.itemColumnWidth = this.$refs.masonryWrapper.children[0].children[0].clientWidth;
+        else
+                this.itemColumnWidth = 202;
     },
     created() {
         window.addEventListener('resize', this.recalculateItemsHeight);  

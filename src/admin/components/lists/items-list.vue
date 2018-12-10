@@ -119,10 +119,13 @@
                             {{ item.title != undefined ? item.title : '' }}
                         </p>                            
                     </div>
+                    
                     <!-- Thumbnail -->
                     <a
                             v-if="item.thumbnail != undefined"
-                            @click="onClickItem($event, item, index)">
+                            @click="onClickItem($event, item, index)"
+                            class="grid-item-thumbnail"
+                            :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)) + ')' }">
                         <img :src="item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)">
                     </a>
 
@@ -326,11 +329,14 @@
                     <div    
                             class="media"
                             @click="onClickItem($event, item, index)">
-                      
-                        <img 
-                                v-if="item.thumbnail != undefined"
-                                :src="item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)">
-                    
+                        <div 
+                                :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)) + ')' }"
+                                class="card-thumbnail">
+                            <img 
+                                    v-if="item.thumbnail != undefined"
+                                    :src="item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)">
+                        </div>
+
                         <div class="list-metadata media-body">
                             <!-- Description -->
                             <p 

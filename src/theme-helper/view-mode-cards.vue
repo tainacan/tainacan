@@ -50,10 +50,13 @@
                     </div>
                     <!-- Remaining metadata -->  
                     <div class="media">
-
-                        <img 
-                                v-if="item.thumbnail != undefined"
-                                :src="item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)">  
+                        <div 
+                                :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)) + ')' }"
+                                class="card-thumbnail">
+                            <img 
+                                    v-if="item.thumbnail != undefined"
+                                    :src="item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)">  
+                        </div>
                         <div class="skeleton"/>
                         
                         <div class="list-metadata media-body">

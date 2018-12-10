@@ -73,8 +73,10 @@
             img {
                 width: 100%;
                 height: auto;    
-                // visibility: hidden;
                 transition: height 0.2s ease;
+            }
+            img:not(.skeleton) {
+                visibility: hidden;
             }
 
             // Masonry skeleton is white due to 
