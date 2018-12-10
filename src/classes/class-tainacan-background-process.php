@@ -266,7 +266,29 @@ abstract class Background_Process extends \WP_Background_Process {
 			$newRequest = false;
 		}
 		
-		// TODO: find a way to catch and log PHP errors as
+		register_shutdown_function(function() use($batch) {
+			$error = error_get_last();
+			
+			if ( is_null($error) || 
+				! is_array($error) || 
+				! isset($error['type']) || 
+				$error['type'] !== 1 ) {
+				return;
+			}
+			
+			$this->debug('Shutdown with Fatal error captured');
+			
+			$error_str = $error['message'] . ' - ' . $error['file'] . ' - Line: ' . $error['line'].  
+			
+			$this->debug($error_str);
+			
+			$this->write_error_log($batch->key, ['Fatal Error: ' . $error_str]);
+			$this->write_error_log($batch->key, ['Process aborted']);
+			
+			$this->close( $batch->key );
+			$this->debug('Batch closed due to captured error');
+			
+		});
 
 		$task = $batch;
 
