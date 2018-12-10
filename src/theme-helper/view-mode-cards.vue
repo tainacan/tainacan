@@ -53,7 +53,7 @@
 
                         <img 
                                 v-if="item.thumbnail != undefined"
-                                :src="item['thumbnail'].tainacan_medium ? item['thumbnail'].tainacan_medium[0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)">  
+                                :src="item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)">  
                         <div class="skeleton"/>
                         
                         <div class="list-metadata media-body">

@@ -217,7 +217,7 @@
                             class="card-body">
                         <img 
                             v-if="collection.thumbnail != undefined"
-                            :src="collection['thumbnail'].tainacan_medium ? collection['thumbnail'].tainacan_medium[0] : (collection['thumbnail'].medium ? collection['thumbnail'].medium[0] : thumbPlaceholderPath)">  
+                            :src="collection['thumbnail']['tainacan-medium'] ? collection['thumbnail']['tainacan-medium'][0] : (collection['thumbnail'].medium ? collection['thumbnail'].medium[0] : thumbPlaceholderPath)">  
                         
                         <!-- Name -->
                         <div class="metadata-title">

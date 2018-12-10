@@ -72,11 +72,11 @@
                                 <div 
                                         class="thumbnail"
                                         v-if="item.thumbnail != undefined">
-                                    <img :src="item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full[0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)">  
+                                    <img :src="item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)">  
                                     <div 
                                             :style="{ 
-                                                minHeight: getItemImageHeight(item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full[1] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[1] : 120), item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full[2] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[2] : 120)) + 'px',
-                                                marginTop: '-' + getItemImageHeight(item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full[1] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[1] : 120), item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full[2] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[2] : 120)) + 'px'
+                                                minHeight: getItemImageHeight(item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][1] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[1] : 120), item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][2] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[2] : 120)) + 'px',
+                                                marginTop: '-' + getItemImageHeight(item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][1] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[1] : 120), item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][2] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[2] : 120)) + 'px'
                                             }"
                                             class="skeleton"/>
                                 </div>

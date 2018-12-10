@@ -44,16 +44,16 @@
                         <label class="label">{{ $i18n.get('label_thumbnail') }}</label>
                         <div class="thumbnail-field">
                             <file-item
-                                    v-if="collection.thumbnail != undefined && ((collection.thumbnail.tainacan_medium != undefined && collection.thumbnail.tainacan_medium != false) || (collection.thumbnail.medium != undefined && collection.thumbnail.medium != false))"
+                                    v-if="collection.thumbnail != undefined && ((collection.thumbnail['tainacan-medium'] != undefined && collection.thumbnail['tainacan-medium'] != false) || (collection.thumbnail.medium != undefined && collection.thumbnail.medium != false))"
                                     :show-name="false"
                                     :size="178"
                                     :file="{ 
                                         media_type: 'image', 
-                                        guid: { rendered: collection.thumbnail.tainacan_medium ? collection.thumbnail.tainacan_medium[0] : collection.thumbnail.medium[0] },
+                                        guid: { rendered: collection.thumbnail['tainacan-medium'] ? collection.thumbnail['tainacan-medium'][0] : collection.thumbnail.medium[0] },
                                         title: { rendered: $i18n.get('label_thumbnail')},
                                         description: { rendered: `<img alt='Thumbnail' src='` + collection.thumbnail.full[0] + `'/>` }}"/>
                           <figure 
-                                    v-if="collection.thumbnail == undefined || ((collection.thumbnail.medium == undefined || collection.thumbnail.medium == false) && (collection.thumbnail.tainacan_medium == undefined || collection.thumbnail.tainacan_medium == false))"
+                                    v-if="collection.thumbnail == undefined || ((collection.thumbnail.medium == undefined || collection.thumbnail.medium == false) && (collection.thumbnail['tainacan-medium'] == undefined || collection.thumbnail['tainacan-medium'] == false))"
                                     class="image">
                                 <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
                                 <img  
