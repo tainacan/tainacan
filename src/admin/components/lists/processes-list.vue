@@ -341,7 +341,21 @@
                 }
             },
             pauseProcess(index) {
-                this.updateProcess({ id: this.processes[index].ID, status: 'closed' });
+
+                this.$modal.open({
+                    parent: this,
+                    component: CustomDialog,
+                    props: {
+                        icon: 'alert',
+                        title: this.$i18n.get('label_warning'),
+                        message: this.$i18n.get('info_warning_process_cancelled'),
+                        onConfirm: () => {
+                            this.updateProcess({ id: this.processes[index].ID, status: 'closed' });
+                        },
+                    }
+                });
+
+
             },
             getStatusLabel(status) {
 

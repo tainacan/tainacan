@@ -510,9 +510,10 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_process_status_finished' 					 => __('Finished', 'tainacan'),
 	'info_process_status_finished_errors' 			 => __('Finished with errors', 'tainacan'),
 	'info_process_status_errored' 					 => __('Error', 'tainacan'),
-	'info_process_status_cancelled' 				 => __('Cancelled', 'tainacan'),
+	'info_process_status_cancelled' 				 => __('Cancelled by User', 'tainacan'),
 	'info_process_status_paused' 				 	 => __('Paused', 'tainacan'),
 	'info_process_status_running' 				 	 => __('Running', 'tainacan'),
+    'info_warning_process_cancelled'                => __( 'Are you sure? This process will be cancelled', 'tainacan' ),
 	'info_empty'                                     => __( 'empty', 'tainacan' ),
 	'info_url_copied_successfuly'	                 => __( 'URL link copied with success.', 'tainacan' ),
 
