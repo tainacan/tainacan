@@ -519,13 +519,24 @@
             <div class="above-search-control">
 
                 <div 
-                        v-show="(isLoadingItems && 
+                        v-show="(showLoading && 
                                 !(registeredViewModes[viewMode] != undefined && (registeredViewModes[viewMode].full_screen == true || registeredViewModes[viewMode].implements_skeleton == true)))"
                         class="loading-container">
-                    <b-loading 
+
+                    <!--  Default loading, to be used view modes without any skeleton-->
+                    <b-loading
+                            v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)" 
                             :is-full-page="false"
                             :active="showLoading"/>
-                </div>
+
+                    <!-- Custom skeleton templates used by some view modes -->
+                    <div
+                            v-if="(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)"
+                            v-html="registeredViewModes[viewMode].skeleton_template"/>
+                            
+                    <!-- Admin view modes skeleton -->
+                    <!-- <skeleton-items-list v-if="!isOnTheme"/>          -->
+                </div>  
                 
                 <!-- Admin View Modes-->
                 <items-list
