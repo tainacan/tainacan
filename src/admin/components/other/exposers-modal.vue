@@ -112,7 +112,9 @@
                             </label>
                         </span>
                         <transition name="filter-item">
-                            <div v-show="!exposerMapper.collapsed">    
+                            <div 
+                                    class="exposer-item-links-list"
+                                    v-show="!exposerMapper.collapsed">    
                                 <div
                                         :key="pagedLink"
                                         v-for="pagedLink in totalPages"
@@ -161,7 +163,7 @@
                                                     :value="exposerBaseURL + '&exposer=' + selectedExposer.slug + '&mapper=' + exposerMapper.name + '&paged=' + pagedLink">
                                         </div>
                                         <a 
-                                                :download="collectionName + ' ' + $i18n.get('items') + ' ' + $i18n.get('label_page') + ' ' + pagedLink"
+                                                :download="(collectionId != undefined ? collectionName : $i18n.get('repository')) + ' ' + $i18n.get('items') + ' ' + $i18n.get('label_page') + ' ' + pagedLink"
                                                 v-tooltip="{
                                                     content: $i18n.get('label_open_externally'),
                                                     autoHide: false,
@@ -221,7 +223,7 @@ export default {
             return Math.ceil(Number(this.totalItems)/Number(this.maxItemsPerPage));    
         },
         exposerBaseURL() {
-            let baseURL = this.collectionId != undefined ? '/collection/' + this.collectionId + '/items/' : 'items';
+            let baseURL = this.collectionId != undefined ? '/collection/' + this.collectionId + '/items/' : '/items/';
             let currentParams = this.$route.query;
 
             // Removes Fetch Only
@@ -238,7 +240,10 @@ export default {
             return this.getCollectionName();
         },
         collectionURL() {
-            return this.getCollectionURL();
+            if (this.collectionId != undefined)
+                return this.getCollectionURL();
+            else    
+                return tainacan_plugin.theme_items_list_url;
         },
         availableExposers() {
             return this.getAvailableExposers();
@@ -449,6 +454,11 @@ export default {
             p {
                 padding: 0.5rem 0.75rem;
             }
+
+            // .exposer-item-links-list {
+            //     max-height: 50vh;
+            //     overflow: auto;
+            // }
         }
     }
 

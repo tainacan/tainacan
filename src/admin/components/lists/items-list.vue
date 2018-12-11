@@ -12,7 +12,7 @@
                             :value="allItemsOnPageSelected">
                         {{ $i18n.get('label_select_all_items_page') }}
                     </b-checkbox>
-                </span>
+                </span> 
 
                 <span
                         style="margin-left: 10px"
@@ -63,18 +63,6 @@
                         {{ $i18n.get('label_untrash_selected_items') }}
                     </b-dropdown-item>
                 </b-dropdown>
-            </div>
-
-            <!-- Exposers or alternativa links modal button -->
-            <div class="field">
-                <button 
-                        class="button is-white"
-                        @click="openExposersModal()">
-                    <span class="gray-icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
-                    </span>
-                    <span class="is-hidden-touch">{{ $i18n.get('label_urls') }}</span>
-                </button>
             </div>
         </div>
 
@@ -681,7 +669,6 @@
 import { mapActions, mapGetters } from 'vuex';
 import CustomDialog from '../other/custom-dialog.vue';
 import BulkEditionModal from '../bulk-edition/bulk-edition-modal.vue';
-import ExposersModal from '../other/exposers-modal.vue';
 
 export default {
     name: 'ItemsList',
@@ -944,18 +931,7 @@ export default {
         getLimitedDescription(description) {
             let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 100 : 210;
             return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
-        },
-        openExposersModal() {
-            this.$modal.open({
-                parent: this,
-                component: ExposersModal,
-                hasModalCard: true,
-                props: { 
-                    collectionId: this.collectionId,
-                    totalItems: this.totalItems
-                }
-            })
-        },
+        }
     }
 }
 </script>

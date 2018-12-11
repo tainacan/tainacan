@@ -437,10 +437,8 @@
                     </button>
                 </div>
 
-                <!-- Exposers or alternativa links modal button -->
-                <div 
-                        v-if="isOnTheme"
-                        class="search-control-item">
+                <!-- Exposers or alternative links modal button -->
+                <div class="search-control-item">
                     <button 
                             class="button is-white"
                             :disabled="this.totalItems == undefined || this.totalItems <= 0"

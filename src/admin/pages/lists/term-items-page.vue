@@ -418,6 +418,19 @@
                     </button>
                 </div>
 
+                <!-- Exposers or alternative links modal button -->
+                <div class="search-control-item">
+                    <button 
+                            class="button is-white"
+                            :disabled="this.totalItems == undefined || this.totalItems <= 0"
+                            @click="openExposersModal()">
+                        <span class="gray-icon">
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                        </span>
+                        <span class="is-hidden-touch">{{ $i18n.get('label_urls') }}</span>
+                    </button>
+                </div>
+
                 <!-- Text simple search (used on mobile, instead of the one from filter list)-->
                 <div class="is-hidden-tablet search-control-item">
                     <div class="search-area">
@@ -674,6 +687,7 @@
     import FiltersItemsList from '../../components/search/filters-items-list.vue';
     import Pagination from '../../components/search/pagination.vue'
     import AdvancedSearch from '../../components/advanced-search/advanced-search.vue';
+    import ExposersModal from '../../components/other/exposers-modal.vue';
     import AvailableImportersModal from '../../components/other/available-importers-modal.vue';
     import { mapActions, mapGetters } from 'vuex';
 
@@ -758,6 +772,7 @@
             FiltersItemsList,
             Pagination,
             AdvancedSearch,
+            ExposersModal
         },
         watch: {
             displayedMetadata() {
@@ -826,6 +841,17 @@
                         hideWhenManualCollection: true
                     }
                 });
+            },
+            openExposersModal() {
+                this.$modal.open({
+                    parent: this,
+                    component: ExposersModal,
+                    hasModalCard: true,
+                    props: { 
+                        collectionId: this.collectionId,
+                        totalItems: this.totalItems
+                    }
+                })
             },
             updateSearch() {
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
