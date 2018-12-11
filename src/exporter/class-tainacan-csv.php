@@ -8,46 +8,76 @@ class CSV extends Exporter {
 
 	public function __construct($attributes = array()) {
 		parent::__construct($attributes);
-		$this->set_mapping_method('any'); // set all method to mapping
-		//$this->set_mapping_method('list', [ "dublin-core" => "Tainacan\\Exposers\\Mappers\\Dublin_Core" ]); // set specific list of methods to mapping
+		$this->set_accepted_mapping_methods('any'); // set all method to mapping
+		//$this->set_accepted_mapping_methods('list', [ "dublin-core" => "Tainacan\\Exposers\\Mappers\\Dublin_Core" ]); // set specific list of methods to mapping
 		//todo create list only slug
 	}
 
-	public function process_item( $processed_item, $mapping ) {
-		if( $processed_item ) {
-			$csv_line = '';
-			foreach ($processed_item as $key => $value) {
-				$csv_line .= $this->str_putcsv($value, $mapping, ',', '"');
+	public function process_item( $processed_item ) {
+		
+		
+		$mapper = $this->get_current_mapper();
+		error_log(json_encode($mapper));
+		$line = [];
+		
+		foreach ($processed_item as $meta_key => $meta) {
+			
+			if (!$meta) {
+				$line[] = '';
+				continue;
 			}
-			$this->append_to_file('exporter', $csv_line."\n");
-		} else {
-			$this->add_error_log('failed on item '. $this->get_current_collection() );
+			
+			$line[] = $meta->get_value_as_string();
+			
 		}
+		
+		$line_string = $this->str_putcsv($line, ',', '"');
+		
+		
+		$this->append_to_file('exporter', $line_string."\n");
+		
+		
 	}
 
-	public function output_header($collection_definition) {
-		$columns = [];
-		foreach ($collection_definition['mapping'] as $key => $value) {
-			$columns[] = $value;
+	public function output_header() {
+		
+		$mapper = $this->get_current_mapper();
+		
+		$line = [];
+		
+		if ($mapper) {
+			
+			foreach ($mapper->metadata as $meta_slug => $meta) {
+				$line[] = $meta_slug;
+			}
+			
+		} else {
+			if ( $collection = $this->get_current_collection_object() ) {
+				
+				$metadata = $collection->get_metadata();
+				foreach ($metadata as $meta) {
+					$line[] = $meta->get_name();
+				}
+				
+				
+			}
 		}
-		$this->append_to_file('exporter', \implode(",", $columns) . "\n");
+		
+		$line_string = $this->str_putcsv($line, ',', '"');
+		
+		$this->append_to_file('exporter', $line_string."\n");
+		
+	}
+	
+	public function output_footer() {
 		return false;
 	}
 
-	function str_putcsv($item, $mapping, $delimiter = ',', $enclosure = '"') {
+	function str_putcsv($item, $delimiter = ',', $enclosure = '"') {
 		// Open a memory "file" for read/write...
 		$fp = fopen('php://temp', 'r+');
-		$out=[];
-		foreach ($item as $key => $value) {
-			if (array_key_exists($key, $mapping)) {
-				if (is_array($value)) {
-					$out[] = implode("||", $value);
-				} else {
-					$out[] = $value;
-				}
-			}
-		}
-		fputcsv($fp, $out, $delimiter, $enclosure);
+		
+		fputcsv($fp, $item, $delimiter, $enclosure);
 		rewind($fp);
 		//Getting detailed stats to check filesize:
 		$fstats = fstat($fp);
