@@ -190,8 +190,10 @@ class REST_Collections_Controller extends REST_Controller {
 		        # Always returns id
 		        if(is_array($attributes_to_filter)) {
 					$attributes_to_filter[] = 'id';
-		        } else {
+		        } elseif(!strstr($attributes_to_filter, ',')){
 			        $attributes_to_filter = array($attributes_to_filter, 'id');
+		        } else {
+		        	$attributes_to_filter .= ',id';
 		        }
 
 		        $item_arr = $this->filter_object_by_attributes($item, $attributes_to_filter);

@@ -175,22 +175,31 @@ class REST_Items_Controller extends REST_Controller {
 			} else {
 				
 				$attributes_to_filter = $request['fetch_only'];
+				$meta_to_filter = $request['fetch_only_meta'];
 
 				# Always returns id and collection id
 				if(is_array($attributes_to_filter)) {
 					$attributes_to_filter[] = 'id';
 					$attributes_to_filter[] = 'collection_id';
-				} else {
+				} elseif (!strstr($attributes_to_filter, ',')){
 					$attributes_to_filter = array($attributes_to_filter, 'id', 'collection_id');
+				} else {
+					$attributes_to_filter .= ',id,collection_id';
 				}
 
 				$item_arr = $this->filter_object_by_attributes($item, $attributes_to_filter);
-				
+
 				$item_arr = array_merge($extra_metadata_values, $item_arr);
 
 				if(is_array($attributes_to_filter) && array_key_exists('meta', $attributes_to_filter)){
 
 					$args = array('post__in' => $attributes_to_filter['meta']);
+
+					$item_arr = $this->add_metadata_to_item($item, $item_arr, $args);
+				} elseif ($meta_to_filter){
+					$meta_to_filter = explode(',', $meta_to_filter);
+
+					$args = array('post__in' => $meta_to_filter);
 
 					$item_arr = $this->add_metadata_to_item($item, $item_arr, $args);
 				}
@@ -293,8 +302,18 @@ class REST_Items_Controller extends REST_Controller {
 			global $wp_query, $view_mode_displayed_metadata;
 			$wp_query = $items;
 
+			$meta = [];
 			$view_mode_displayed_metadata = $request['fetch_only'];
-			$view_mode_displayed_metadata['meta'] = array_map(function($el) { return (int) $el; }, array_key_exists('meta', $request['fetch_only']) ? $request['fetch_only']['meta'] : array());
+
+			if($request['fetch_only_meta']){
+				$meta = explode(',', $request['fetch_only_meta']);
+			} else {
+				$view_mode_displayed_metadata['meta'] = array_key_exists( 'meta', $request['fetch_only'] ) ? $request['fetch_only']['meta'] : array();
+			}
+
+			$view_mode_displayed_metadata['meta'] = array_map( function ( $el ) {
+				return (int) $el;
+			}, $meta);
 			
 			include $view_mode['template'];
 			
