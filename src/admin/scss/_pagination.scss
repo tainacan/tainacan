@@ -18,11 +18,11 @@
     }
 
     .shown-items { 
-        flex-grow: 1; 
+        // flex-grow: 1; 
     }
 
     .items-per-page { 
-        flex-grow: 5;
+        flex-grow: 1;
         margin-top: 0.35em;
 
         @media screen and (max-width: 768px) {
@@ -50,7 +50,7 @@
     }
 
     .pagination { 
-        flex-grow: 1; 
+        // flex-grow: 1; 
 
         ul {
             margin-bottom: 0px;

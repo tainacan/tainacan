@@ -215,26 +215,6 @@ export default {
 <style lang="scss">
     @import "../../scss/_variables.scss";
 
-    @keyframes appear-from-top {
-        from { 
-            top: 24px;
-            opacity: 0; 
-        }
-        to { 
-            top: 48px;
-            opacity: 1; 
-        }
-    }
-
-    @keyframes expand {
-        from { 
-            max-height: 0; 
-        }
-        to { 
-            max-height: 222px; 
-        }
-    }
-
     .control.is-loading::after {
         border: 2px solid $success;
         border-right-color: $gray2;
@@ -396,8 +376,6 @@ export default {
             width: 0;
             height: 0;
             border-style: solid;
-        }
-        &:before {
             border-color: transparent transparent $blue2 transparent;
             border-right-width: 8px;
             border-bottom-width: 8px;

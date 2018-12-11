@@ -227,6 +227,26 @@ $modal-z: 9999999;
     } 
 }
 
+// Animations for background processes popup and url copy popup
+@keyframes appear-from-top {
+    from { 
+        top: 24px;
+        opacity: 0; 
+    }
+    to { 
+        top: 48px;
+        opacity: 1; 
+    }
+}
+@keyframes expand {
+    from { 
+        max-height: 0; 
+    }
+    to { 
+        max-height: 222px; 
+    }
+}
+
 // Animations for Item Appear in Items List
 @keyframes item-appear {
     from {

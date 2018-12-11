@@ -16,10 +16,10 @@
                 <b-select 
                         :value="itemsPerPage"
                         @input="onChangeItemsPerPage">
-                    <option value="12">12</option>
-                    <option value="24">24</option>
-                    <option value="48">48</option>
-                    <option value="96">96</option>
+                    <option value="12">12 &nbsp;</option>
+                    <option value="24">24 &nbsp;</option>
+                    <option value="48">48 &nbsp;</option>
+                    <option value="96">96 &nbsp;</option>
                 </b-select>
             </b-field>
         </div>
@@ -92,7 +92,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-
-</style>
