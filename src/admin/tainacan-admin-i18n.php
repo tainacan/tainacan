@@ -163,6 +163,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_activities_per_page'                      => __( 'Activities per Page:', 'tainacan' ),
 	'label_items_per_page'                           => __( 'Items per Page:', 'tainacan' ),
 	'label_processes_per_page'                       => __( 'Processes per Page:', 'tainacan' ),
+	'label_go_to_page'                          	 => __( 'Go to Page:', 'tainacan' ),
 	'label_active_metadata'                          => __( 'Active Metadata', 'tainacan' ),
 	'label_available_metadata'                       => __( 'Available Metadata', 'tainacan' ),
 	'label_available_metadata_types'                 => __( 'Available Metadata Types', 'tainacan' ),

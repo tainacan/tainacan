@@ -23,6 +23,31 @@
                 </b-select>
             </b-field>
         </div>
+        <div class="go-to-page items-per-page">
+            <b-field 
+                    horizontal 
+                    :label="$i18n.get('label_go_to_page')"> 
+                <b-dropdown 
+                        position="is-top-right"
+                        @change="onPageChange">
+                    <button
+                            class="button is-white"
+                            slot="trigger">
+                        <span>{{ page }}</span>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                        </span>
+                    </button>
+                    <b-dropdown-item 
+                            :key="pageNumber"
+                            v-for="pageNumber in totalPages"
+                            :value="Number(pageNumber)">
+                        {{ pageNumber }}
+                    </b-dropdown-item>
+                </b-dropdown>
+            </b-field>
+        </div>
+        
         <div class="pagination"> 
             <b-pagination
                     @change="onPageChange"
@@ -53,6 +78,9 @@ export default {
         },
         itemsPerPage(){
             return this.getItemsPerPage();
+        },
+        totalPages(){
+            return Math.ceil(Number(this.totalItems)/Number(this.itemsPerPage));    
         }
     },
     watch: {

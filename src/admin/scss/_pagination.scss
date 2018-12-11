@@ -18,9 +18,19 @@
     }
 
     .shown-items { 
-        // flex-grow: 1; 
+        flex-grow: 1; 
     }
 
+    .go-to-page .dropdown-menu {
+        min-width: 3.5rem;
+
+        .dropdown-content{
+            max-height: 160px;
+            overflow: scroll;
+            padding: 0;
+        }
+    }
+    
     .items-per-page { 
         flex-grow: 1;
         margin-top: 0.35em;

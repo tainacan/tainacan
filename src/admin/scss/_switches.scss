@@ -1,14 +1,14 @@
 
 .switch {
     input[type="checkbox"] + .check {
-        background-color: $gray4;
+        background-color: white;
         border: 2px solid $gray4;
         width: 2.7em;
         height: 1.7em;
         transition: none;
 
         &::before {
-            background-color: white;
+            background-color: $gray4;
             box-shadow: none;
         }
     } 
@@ -26,7 +26,8 @@
         }
     }
     &:hover input[type="checkbox"] + .check {
-        background-color: $gray4;
+        // background-color: $gray4;
+        background-color: white;
     }
 
     &:focus input[type="checkbox"] + .check,
