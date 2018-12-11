@@ -443,6 +443,7 @@
                         class="search-control-item">
                     <button 
                             class="button is-white"
+                            :disabled="this.totalItems == undefined || this.totalItems <= 0"
                             @click="openExposersModal()">
                         <span class="gray-icon">
                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>

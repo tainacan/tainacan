@@ -16,13 +16,38 @@
                 <b-select 
                         :value="itemsPerPage"
                         @input="onChangeItemsPerPage">
-                    <option value="12">12</option>
-                    <option value="24">24</option>
-                    <option value="48">48</option>
-                    <option value="96">96</option>
+                    <option value="12">12 &nbsp;</option>
+                    <option value="24">24 &nbsp;</option>
+                    <option value="48">48 &nbsp;</option>
+                    <option value="96">96 &nbsp;</option>
                 </b-select>
             </b-field>
         </div>
+        <div class="go-to-page items-per-page">
+            <b-field 
+                    horizontal 
+                    :label="$i18n.get('label_go_to_page')"> 
+                <b-dropdown 
+                        position="is-top-right"
+                        @change="onPageChange">
+                    <button
+                            class="button is-white"
+                            slot="trigger">
+                        <span>{{ page }}</span>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                        </span>
+                    </button>
+                    <b-dropdown-item 
+                            :key="pageNumber"
+                            v-for="pageNumber in totalPages"
+                            :value="Number(pageNumber)">
+                        {{ pageNumber }}
+                    </b-dropdown-item>
+                </b-dropdown>
+            </b-field>
+        </div>
+        
         <div class="pagination"> 
             <b-pagination
                     @change="onPageChange"
@@ -53,6 +78,9 @@ export default {
         },
         itemsPerPage(){
             return this.getItemsPerPage();
+        },
+        totalPages(){
+            return Math.ceil(Number(this.totalItems)/Number(this.itemsPerPage));    
         }
     },
     watch: {
@@ -92,7 +120,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-
-</style>

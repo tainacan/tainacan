@@ -163,6 +163,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_activities_per_page'                      => __( 'Activities per Page:', 'tainacan' ),
 	'label_items_per_page'                           => __( 'Items per Page:', 'tainacan' ),
 	'label_processes_per_page'                       => __( 'Processes per Page:', 'tainacan' ),
+	'label_go_to_page'                          	 => __( 'Go to Page:', 'tainacan' ),
 	'label_active_metadata'                          => __( 'Active Metadata', 'tainacan' ),
 	'label_available_metadata'                       => __( 'Available Metadata', 'tainacan' ),
 	'label_available_metadata_types'                 => __( 'Available Metadata Types', 'tainacan' ),
@@ -345,6 +346,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_activity_author'                          => __( 'Activity author', 'tainacan' ),
 	'label_approbation'                              => __( 'Approbation', 'tainacan'),
 	'label_urls_for_items_list'                 	 => __( 'URLs for Items List', 'tainacan' ),
+	'label_items_list_on_website'                 	 => __( 'Items list on website', 'tainacan' ),
+	'label_copy_link_url'		                 	 => __( 'Copy link URL', 'tainacan' ),
+	'label_open_externally'		                 	 => __( 'Open externally', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -508,7 +512,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_cant_select_metadata_without_items'        => __( 'Can not select displayed metadata without items on list.', 'tainacan' ),
 	'info_available_exporters_helper'                => __( '?', 'tainacan' ),
 	'info_empty'                                     => __( 'empty', 'tainacan' ),
-	'info_url_copied_successfuly'	                 => __( 'URL link copied with success.', 'tainacan' ),
+	'info_url_copied'	         	    	    	 => __( 'URL link copied', 'tainacan' ),
+	'info_other_item_listing_options'				 => __('Other items listing options: ', 'tainacan'),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),
