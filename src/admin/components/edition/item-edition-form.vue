@@ -1399,7 +1399,7 @@ export default {
         min-width: 30px !important;
         padding: 0 !important;
         z-index: 99;
-        margin-left: 10px !important;
+        margin-left: 12px !important;
         
         .icon {
             display: inherit;

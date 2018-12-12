@@ -121,7 +121,7 @@
                                 disabled/>
                     </b-field>
                     <!-- Exposers --------------------------------------------- -->
-                    <div>
+                    <!-- <div>
                         <b-loading :active.sync="isLoadingMetadatumMappers"/>
                         <div v-if="!isLoadingMetadatumMappers">
                             <b-collapse :open="false">
@@ -183,7 +183,7 @@
                                 </div>
                             </b-collapse>
                         </div>
-                    </div>
+                    </div> -->
 
                     <!-- Hook for extra Form options -->
                     <template
