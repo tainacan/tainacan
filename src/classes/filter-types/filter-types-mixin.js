@@ -34,10 +34,11 @@ export const filter_type_mixin = {
 
             let currentQuery  = JSON.parse(JSON.stringify(this.query));
             if (currentQuery.fetch_only != undefined) {
-                for (let key of Object.keys(currentQuery.fetch_only)) {
-                    if (currentQuery.fetch_only[key] == null)
-                        delete currentQuery.fetch_only[key];
-                }
+                delete currentQuery.fetch_only;
+                // for (let key of Object.keys(currentQuery.fetch_only)) {
+                //     if (currentQuery.fetch_only[key] == null)
+                //         delete currentQuery.fetch_only[key];
+                // }
             }
             let query_items = { 'current_query': currentQuery };
 
@@ -145,10 +146,11 @@ export const filter_type_mixin = {
 
             let currentQuery  = JSON.parse(JSON.stringify(this.query));
                 if (currentQuery.fetch_only != undefined) {
-                    for (let key of Object.keys(currentQuery.fetch_only)) {
-                    if (currentQuery.fetch_only[key] == null)
-                        delete currentQuery.fetch_only[key];
-                }
+                    delete currentQuery.fetch_only;
+                //     for (let key of Object.keys(currentQuery.fetch_only)) {
+                //     if (currentQuery.fetch_only[key] == null)
+                //         delete currentQuery.fetch_only[key];
+                // }
             }
             let query_items = { 'current_query': currentQuery };
 
@@ -172,7 +174,7 @@ export const filter_type_mixin = {
 
             return new Object ({
                 request:
-                    axios.tainacan.get(url + '&fetch_only[0]=thumbnail&fetch_only[1]=title&fetch_only[2]=id&' + qs.stringify(query_items))
+                    axios.tainacan.get(url + '&fetch_only=thumbnail,title,id&' + qs.stringify(query_items))
                         .then(res => {
                             this.isLoadingOptions = false;
 

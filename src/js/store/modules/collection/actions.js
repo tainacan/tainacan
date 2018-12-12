@@ -44,11 +44,11 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
             let query = qs.stringify(postQueries);
 
             // Guarantees at least empty fetch_only are passed in case none is found
-            if (qs.stringify(postQueries.fetch_only) == ''){
+            if (postQueries.fetch_only == ''){
                 dispatch('search/add_fetchonly', {}, { root: true });
             }
                     
-            if (qs.stringify(postQueries.fetch_only['meta']) == ''){
+            if (postQueries.fetch_only_meta == ''){
                 dispatch('search/add_fetchonly_meta', null, { root: true });
             }
 
@@ -250,7 +250,7 @@ export const fetchCollectionNameAndURL = ({ commit }, id) => {
         request: new Promise ((resolve, reject) => {
 
             axios.tainacan.get(
-                '/collections/' + id + '?fetch_only[0]=name&fetch_only[1]=url', 
+                '/collections/' + id + '?fetch_only=name,url',
                 { cancelToken: source.token })
             .then(res => {
                 let collection = res.data;
@@ -444,7 +444,7 @@ export const fetchUsers = ({ commit }, { search, exceptions }) => {
 // Fetch Collections for choosing Parent Collection
 export const fetchCollectionsForParent = ({ commit }) => {
     return new Promise((resolve, reject) => { 
-        axios.tainacan.get('/collections/?fetch_only[0]=name&fetch_only[1]=id')
+        axios.tainacan.get('/collections/?fetch_only=name,id')
         .then(res => {
             let collections = res.data;
             resolve( collections );

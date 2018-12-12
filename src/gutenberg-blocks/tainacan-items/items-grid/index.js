@@ -207,8 +207,8 @@ registerBlockType('tainacan/items-grid', {
 
             let parsedQuery = qs.parse(rawQuery);
 
-            if(parsedQuery.fetch_only && !Object.values(parsedQuery.fetch_only).some(value => value == 'title')){
-                parsedQuery.fetch_only[Object.keys(parsedQuery.fetch_only).length] = 'title';
+            if(parsedQuery.fetch_only && !parsedQuery.fetch_only.includes('title')){
+                parsedQuery.fetch_only += ',title';
             }
 
             let URLCollID = rawURL.match(/\/(\d+)\/?/);

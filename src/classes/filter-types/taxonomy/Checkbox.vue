@@ -200,9 +200,9 @@
                         let route = '';
                         
                         if(this.collection == 'filter_in_repository')
-                            route = '/facets/' + this.metadatum +`?term_id=${selected}&fetch_only[0]=name&fetch_only[1]=id`;
+                            route = '/facets/' + this.metadatum +`?term_id=${selected}&fetch_only=name,id`;
                         else
-                            route = '/collection/'+ this.collection +'/facets/' + this.metadatum +`?term_id=${selected}&fetch_only[0]=name&fetch_only[1]=id`;
+                            route = '/collection/'+ this.collection +'/facets/' + this.metadatum +`?term_id=${selected}&fetch_only=name,id`;
                         
                         axios.get(route)
                             .then( res => {

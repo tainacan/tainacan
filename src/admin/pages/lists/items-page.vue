@@ -962,14 +962,15 @@
                 let descriptionMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.metadata_type_object != undefined ? metadatum.metadata_type_object.related_mapped_prop == 'description' : false);
               
                 // Updates Search
-                this.$eventBusSearch.addFetchOnly({
-                    '0': thumbnailMetadatum != undefined && thumbnailMetadatum.display ? 'thumbnail' : null,
-                    'meta': fetchOnlyMetadatumIds,
-                    '1': creationDateMetadatum != undefined && creationDateMetadatum.display ? 'creation_date' : null,
-                    '2': authorNameMetadatum != undefined && authorNameMetadatum.display ? 'author_name': null,
-                    '3': (this.isRepositoryLevel ? 'title' : null),
-                    '4': (this.isRepositoryLevel && descriptionMetadatum.display ? 'description' : null),
-                });
+                this.$eventBusSearch.addFetchOnly(
+                    thumbnailMetadatum != undefined && thumbnailMetadatum.display ? 'thumbnail' : null +','+
+                    creationDateMetadatum != undefined && creationDateMetadatum.display ? 'creation_date' : null +','+
+                    authorNameMetadatum != undefined && authorNameMetadatum.display ? 'author_name': null +','+
+                    (this.isRepositoryLevel ? 'title' : null) +','+
+                    (this.isRepositoryLevel && descriptionMetadatum.display ? 'description' : null)
+                );
+
+                this.$eventBusSearch.addFetchOnlyMeta(fetchOnlyMetadatumIds.toString());
 
                 // Closes dropdown
                 this.$refs.displayedMetadataDropdown.toggle();
@@ -1114,14 +1115,15 @@
                                 });
                             }
                         
-                            this.$eventBusSearch.addFetchOnly({
-                                '0': (thumbnailMetadatumDisplay ? 'thumbnail' : null),
-                                'meta': fetchOnlyMetadatumIds,
-                                '1': (creationDateMetadatumDisplay ? 'creation_date' : null),
-                                '2': (authorNameMetadatumDisplay ? 'author_name' : null),
-                                '3': (this.isRepositoryLevel ? 'title' : null),
-                                '4': (this.isRepositoryLevel ? 'description' : null),
-                            });
+                            this.$eventBusSearch.addFetchOnly(
+                                (thumbnailMetadatumDisplay ? 'thumbnail' : null) +','+
+                                (creationDateMetadatumDisplay ? 'creation_date' : null) +','+
+                                (authorNameMetadatumDisplay ? 'author_name' : null) +','+
+                                (this.isRepositoryLevel ? 'title' : null) +','+
+                                (this.isRepositoryLevel ? 'description' : null)
+                            );
+
+                            this.$eventBusSearch.addFetchOnlyMeta(fetchOnlyMetadatumIds.toString());
                             
                             // Sorting metadata
                             if (this.isRepositoryLevel) {
@@ -1156,14 +1158,8 @@
                         // Loads only basic attributes necessary to view modes that do not allow custom meta
                         } else {
                        
-                            this.$eventBusSearch.addFetchOnly({
-                                '0': 'thumbnail',
-                                'meta': [],
-                                '1': 'creation_date',
-                                '2': 'author_name',
-                                '3': 'title',
-                                '4': 'description'
-                            }, true);
+                            this.$eventBusSearch.addFetchOnly('thumbnail,creation_date,author_name,title,description', true);
+                            this.$eventBusSearch.addFetchOnlyMeta('');
                             
                             this.sortingMetadata.push({
                                 name: this.$i18n.get('label_title'),
@@ -1173,7 +1169,8 @@
                                 slug: 'title',
                                 id: undefined,
                                 display: true
-                            })
+                            });
+
                             this.sortingMetadata.push({
                                 name: this.$i18n.get('label_creation_date'),
                                 metadatum: 'row_creation',
