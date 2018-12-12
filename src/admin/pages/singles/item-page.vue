@@ -5,336 +5,314 @@
                 :active.sync="isLoading"
                 :can-cancel="false"/>
 
-        <!--<b-tabs v-model="activeTab">-->
-            <!--<b-tab-item-->
-                    <!--style="margin: 0 -1rem 0 -1rem !important;"-->
-                    <!--:label="$i18n.get('title_item_page')">-->
-                <button
-                        id="metadata-column-compress-button"
-                        @click="isMetadataColumnCompressed = !isMetadataColumnCompressed">
-                <span class="icon">
-                    <i
-                            :class="{ 'tainacan-icon-arrowleft' : isMetadataColumnCompressed, 'tainacan-icon-arrowright' : !isMetadataColumnCompressed }"
-                            class="tainacan-icon tainacan-icon-20px"/>
-                </span>
-                </button>
-                <div class="tainacan-page-title">
-                    <h1>
-                <span
-                        v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
-                        class="status-tag">{{ $i18n.get(item.status) }}</span>
-                        {{ $i18n.get('title_item_page') + ' ' }}
-                        <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
-                    </h1>
-                    <a
-                            @click="$router.go(-1)"
-                            class="back-link has-text-secondary">
-                        {{ $i18n.get('back') }}
-                    </a>
-                    <hr>
-                </div>
-                <div class="tainacan-form">
-                    <div class="columns">
+        <div class="tainacan-page-title">
+            <h1>
+        <span
+                v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
+                class="status-tag">{{ $i18n.get(item.status) }}</span>
+                {{ $i18n.get('title_item_page') + ' ' }}
+                <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
+            </h1>
+            <a
+                    @click="$router.go(-1)"
+                    class="back-link has-text-secondary">
+                {{ $i18n.get('back') }}
+            </a>
+            <hr>
+        </div>
+        <div class="tainacan-form">
+            <div class="columns">
+                <div class="column is-5">
+
+                    <!-- Hook for extra Form options -->
+                    <template
+                            v-if="formHooks != undefined &&
+                        formHooks['view-item'] != undefined &&
+                        formHooks['view-item']['begin-left'] != undefined">
                         <div
-                                :class="{ 'is-12': isMetadataColumnCompressed, 'is-5-5': !isMetadataColumnCompressed }"
-                                class="column">
+                                id="view-item-begin-left"
+                                v-html="formHooks['view-item']['begin-left'].join('')"/>
+                    </template>
 
-                            <!-- Hook for extra Form options -->
-                            <template
-                                    v-if="formHooks != undefined &&
-                                formHooks['view-item'] != undefined &&
-                                formHooks['view-item']['begin-left'] != undefined">
-                                <div
-                                        id="view-item-begin-left"
-                                        v-html="formHooks['view-item']['begin-left'].join('')"/>
-                            </template>
+                    <!-- Document -------------------------------- -->
+                    <div class="section-label">
+                        <label>{{ item.document !== undefined && item.document !== null && item.document !== ''
+                            ?
+                            $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
+                    </div>
+                    <div class="section-box">
+                        <div
+                                v-if="item.document !== undefined && item.document !== null &&
+                                item.document_type !== undefined && item.document_type !== null &&
+                                item.document !== '' && item.document_type !== 'empty'">
 
-                            <!-- Document -------------------------------- -->
-                            <div class="section-label">
-                                <label>{{ item.document !== undefined && item.document !== null && item.document !== ''
-                                    ?
-                                    $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
-                            </div>
-                            <div class="section-box">
-                                <div
-                                        v-if="item.document !== undefined && item.document !== null &&
-                                        item.document_type !== undefined && item.document_type !== null &&
-                                        item.document !== '' && item.document_type !== 'empty'">
-
-                                    <div v-if="item.document_type === 'attachment'">
-                                        <!-- <div v-html="item.document_as_html"/> -->
-                                        <document-item :document-html="item.document_as_html"/>
-                                    </div>
-
-                                    <div v-else-if="item.document_type === 'text'">
-                                        <div v-html="item.document_as_html"/>
-                                    </div>
-
-                                    <div v-else-if="item.document_type === 'url'">
-                                        <div v-html="item.document_as_html"/>
-                                    </div>
-                                </div>
-                                <div v-else>
-                                    <p>{{ $i18n.get('info_no_document_to_item') }}</p>
-                                </div>
+                            <div v-if="item.document_type === 'attachment'">
+                                <!-- <div v-html="item.document_as_html"/> -->
+                                <document-item :document-html="item.document_as_html"/>
                             </div>
 
-                            <!-- Thumbnail -------------------------------- -->
-                            <div class="section-label">
-                                <label>{{ $i18n.get('label_thumbnail') }}</label>
-                            </div>
-                            <div class="section-box section-thumbnail">
-                                <div class="thumbnail-field">
-                                    <file-item
-                                            v-if="item.thumbnail != undefined && ((item.thumbnail['tainacan-medium'] != undefined && item.thumbnail['tainacan-medium'] != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
-                                            :show-name="false"
-                                            :size="178"
-                                            :file="{
-                                        media_type: 'image',
-                                        guid: { rendered: item.thumbnail['tainacan-medium'] ? item.thumbnail['tainacan-medium'][0] : item.thumbnail.medium[0] },
-                                        title: { rendered: $i18n.get('label_thumbnail')},
-                                        description: { rendered: `<img alt='Thumbnail' src='` + item.thumbnail.full[0] + `'/>` }}"/>
-                                    <figure
-                                            v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
-                                            class="image">
-                                        <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
-                                        <img
-                                                :alt="$i18n.get('label_thumbnail')"
-                                                :src="thumbPlaceholderPath">
-                                    </figure>
-                                </div>
+                            <div v-else-if="item.document_type === 'text'">
+                                <div v-html="item.document_as_html"/>
                             </div>
 
-                            <!-- Attachments ------------------------------------------ -->
-                            <div class="section-label">
-                                <label>{{ $i18n.get('label_attachments') }}</label>
+                            <div v-else-if="item.document_type === 'url'">
+                                <div v-html="item.document_as_html"/>
                             </div>
-                            <div class="section-box section-attachments">
-                                <div class="uploaded-files">
-                                    <file-item
-                                            :style="{ margin: 15 + 'px'}"
-                                            v-if="attachmentsList.length > 0"
-                                            v-for="(attachment, index) in attachmentsList"
-                                            :key="index"
-                                            :show-name="true"
-                                            :file="attachment"/>
-                                    <p v-if="attachmentsList.length <= 0"><br>{{
-                                        $i18n.get('info_no_attachments_on_item_yet') }}</p>
-                                </div>
-                            </div>
-                            <!-- Comment Status ------------------------ -->
-                            <b-field
-                                    :addons="false"
-                                    :label="$i18n.get('label_comment_status')"
-                                    v-if="collectionAllowComments == 'open'">
-                                <b-switch
-                                        id="tainacan-checkbox-comment-status"
-                                        size="is-small"
-                                        true-value="open"
-                                        false-value="closed"
-                                        v-model="item.comment_status"
-                                        disabled/>
-                            </b-field>
-                            <!-- Exposers --------------------------------------------- -->
-                            <div>
-                                <b-loading :active.sync="isLoadingMetadatumMappers"/>
-                                <div v-if="!isLoadingMetadatumMappers">
-                                    <b-collapse :open="false">
-                                        <div
-                                                class="section-label"
-                                                slot="trigger"
-                                                slot-scope="session_props">
-                                            <label>
-                                                {{ $i18n.get('label_exposer_urls') }}
-                                                <span class="icon">
-                                            <i
-                                                    :class="{ 'tainacan-icon-arrowdown' : session_props.open, 'tainacan-icon-arrowright' : !session_props.open }"
-                                                    class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
-                                        </span>
-                                            </label>
-                                        </div>
-                                        <br>
-                                        <a
-                                                class="collapse-all"
-                                                @click="urls_open = !urls_open">
-                                            {{ urls_open ? $i18n.get('label_collapse_all') :
-                                            $i18n.get('label_expand_all') }}
-                                            <span class="icon">
-                                        <i
-                                                :class="{ 'tainacan-icon-arrowdown' : urls_open, 'tainacan-icon-arrowright' : !urls_open }"
-                                                class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
-                                    </span>
-                                        </a>
-                                        <div>
-                                            <div
-                                                    v-for="(exposer, index) of item.exposer_urls"
-                                                    :key="index"
-                                                    class="field">
-                                                <b-collapse :open="urls_open">
-                                                    <label
-                                                            class="label"
-                                                            slot="trigger"
-                                                            slot-scope="props">
-                                                <span class="icon">
-                                                    <i
-                                                            :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open }"
-                                                            class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
-                                                </span>
-                                                        {{ index }}
-                                                    </label>
-                                                    <div
-                                                            v-for="(url, index2) of exposer"
-                                                            :key="index2">
-                                                        <div>
-                                                            <a
-                                                                    :href="url"
-                                                                    target="_blank">
-                                                                {{ extractExposerLabel(url, index) }}
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </b-collapse>
-                                            </div>
-                                        </div>
-                                    </b-collapse>
-                                </div>
-                            </div>
-
-                            <!-- Hook for extra Form options -->
-                            <template
-                                    v-if="formHooks != undefined &&
-                                formHooks['view-item'] != undefined &&
-                                formHooks['view-item']['end-left'] != undefined">
-                                <div
-                                        id="view-item-end-left"
-                                        v-html="formHooks['view-item']['end-left'].join('')"/>
-                            </template>
-
                         </div>
-                        <div
-                                v-show="!isMetadataColumnCompressed"
-                                class="column is-4-5">
+                        <div v-else>
+                            <p>{{ $i18n.get('info_no_document_to_item') }}</p>
+                        </div>
+                    </div>
 
-                            <!-- Hook for extra Form options -->
-                            <template
-                                    v-if="formHooks != undefined &&
-                                formHooks['view-item'] != undefined &&
-                                formHooks['view-item']['begin-right'] != undefined">
+                    <!-- Thumbnail -------------------------------- -->
+                    <div class="section-label">
+                        <label>{{ $i18n.get('label_thumbnail') }}</label>
+                    </div>
+                    <div class="section-box section-thumbnail">
+                        <div class="thumbnail-field">
+                            <file-item
+                                    v-if="item.thumbnail != undefined && ((item.thumbnail['tainacan-medium'] != undefined && item.thumbnail['tainacan-medium'] != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
+                                    :show-name="false"
+                                    :size="178"
+                                    :file="{
+                                media_type: 'image',
+                                guid: { rendered: item.thumbnail['tainacan-medium'] ? item.thumbnail['tainacan-medium'][0] : item.thumbnail.medium[0] },
+                                title: { rendered: $i18n.get('label_thumbnail')},
+                                description: { rendered: `<img alt='Thumbnail' src='` + item.thumbnail.full[0] + `'/>` }}"/>
+                            <figure
+                                    v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
+                                    class="image">
+                                <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
+                                <img
+                                        :alt="$i18n.get('label_thumbnail')"
+                                        :src="thumbPlaceholderPath">
+                            </figure>
+                        </div>
+                    </div>
+
+                    <!-- Attachments ------------------------------------------ -->
+                    <div class="section-label">
+                        <label>{{ $i18n.get('label_attachments') }}</label>
+                    </div>
+                    <div class="section-box section-attachments">
+                        <div class="uploaded-files">
+                            <file-item
+                                    :style="{ margin: 15 + 'px'}"
+                                    v-if="attachmentsList.length > 0"
+                                    v-for="(attachment, index) in attachmentsList"
+                                    :key="index"
+                                    :show-name="true"
+                                    :file="attachment"/>
+                            <p v-if="attachmentsList.length <= 0"><br>{{
+                                $i18n.get('info_no_attachments_on_item_yet') }}</p>
+                        </div>
+                    </div>
+                    <!-- Comment Status ------------------------ -->
+                    <b-field
+                            :addons="false"
+                            :label="$i18n.get('label_comment_status')"
+                            v-if="collectionAllowComments == 'open'">
+                        <b-switch
+                                id="tainacan-checkbox-comment-status"
+                                size="is-small"
+                                true-value="open"
+                                false-value="closed"
+                                v-model="item.comment_status"
+                                disabled/>
+                    </b-field>
+                    <!-- Exposers --------------------------------------------- -->
+                    <div>
+                        <b-loading :active.sync="isLoadingMetadatumMappers"/>
+                        <div v-if="!isLoadingMetadatumMappers">
+                            <b-collapse :open="false">
                                 <div
-                                        id="view-item-begin-right"
-                                        v-html="formHooks['view-item']['begin-right'].join('')"/>
-                            </template>
-
-                            <!-- Visibility (status public or private) -------------------------------- -->
-                            <div class="section-label">
-                                <label>{{ $i18n.get('label_visibility') }}</label>
-                            </div>
-                            <div class="section-status">
-                                <div class="field has-addons">
-                            <span v-if="item.status != 'private'">
-                                <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-public"/>
-                                </span> {{ $i18n.get('publish_visibility') }}
-                            </span>
-                                    <span v-if="item.status == 'private'">
-                                <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-private"/>
-                                </span>  {{ $i18n.get('private_visibility') }}
-                            </span>
+                                        class="section-label"
+                                        slot="trigger"
+                                        slot-scope="session_props">
+                                    <label>
+                                        {{ $i18n.get('label_exposer_urls') }}
+                                        <span class="icon">
+                                    <i
+                                            :class="{ 'tainacan-icon-arrowdown' : session_props.open, 'tainacan-icon-arrowright' : !session_props.open }"
+                                            class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                                </span>
+                                    </label>
                                 </div>
-                            </div>
-
-                            <!-- Collection -------------------------------- -->
-                            <div class="section-label">
-                                <label>{{ $i18n.get('collection') }}</label>
-                            </div>
-                            <div class="section-status">
-                                <div class="field has-addons">
-                            <span>
-                                {{ collectionName }}
-                            </span>
-                                </div>
-                            </div>
-
-
-                            <!-- Metadata -------------------------------- -->
-                            <div class="section-label">
-                                <label>{{ $i18n.get('metadata') }}</label>
-                            </div>
-                            <br>
-                            <a
-                                    class="collapse-all"
-                                    @click="open = !open">
-                                {{ open ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                                <span class="icon">
-                            <i
-                                    :class="{ 'tainacan-icon-arrowdown' : open, 'tainacan-icon-arrowright' : !open }"
-                                    class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
-                        </span>
-                            </a>
-                            <div>
-                                <div
-                                        v-for="(metadatum, index) of metadatumList"
-                                        :key="index"
-                                        class="field">
-                                    <b-collapse :open="open">
-                                        <label
-                                                class="label"
-                                                slot="trigger"
-                                                slot-scope="props">
+                                <br>
+                                <a
+                                        class="collapse-all"
+                                        @click="urls_open = !urls_open">
+                                    {{ urls_open ? $i18n.get('label_collapse_all') :
+                                    $i18n.get('label_expand_all') }}
                                     <span class="icon">
+                                <i
+                                        :class="{ 'tainacan-icon-arrowdown' : urls_open, 'tainacan-icon-arrowright' : !urls_open }"
+                                        class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                            </span>
+                                </a>
+                                <div>
+                                    <div
+                                            v-for="(exposer, index) of item.exposer_urls"
+                                            :key="index"
+                                            class="field">
+                                        <b-collapse :open="urls_open">
+                                            <label
+                                                    class="label"
+                                                    slot="trigger"
+                                                    slot-scope="props">
+                                        <span class="icon">
                                             <i
                                                     :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open }"
                                                     class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
                                         </span>
-                                            {{ metadatum.metadatum.name }}
-                                        </label>
-                                        <div
-                                                v-if="metadatum.date_i18n"
-                                                class="content">
-                                            <p v-html="metadatum.date_i18n != '' ? metadatum.date_i18n : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
-                                        </div>
-                                        <div
-                                                v-else
-                                                class="content">
-                                            <p v-html="metadatum.value_as_html != '' ? metadatum.value_as_html : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
-                                        </div>
-                                    </b-collapse>
+                                                {{ index }}
+                                            </label>
+                                            <div
+                                                    v-for="(url, index2) of exposer"
+                                                    :key="index2">
+                                                <div>
+                                                    <a
+                                                            :href="url"
+                                                            target="_blank">
+                                                        {{ extractExposerLabel(url, index) }}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </b-collapse>
+                                    </div>
                                 </div>
-                            </div>
+                            </b-collapse>
+                        </div>
+                    </div>
 
-                            <!-- Hook for extra Form options -->
-                            <template
-                                    v-if="formHooks != undefined &&
-                                formHooks['view-item'] != undefined &&
-                                formHooks['view-item']['end-right'] != undefined">
-                                <div
-                                        id="view-item-end-right"
-                                        v-html="formHooks['view-item']['end-right'].join('')"/>
-                            </template>
-                        </div>
-                    </div>
-                    <div class="footer">
-                        <div class="form-submission-footer">
-                            <router-link
-                                    class="button is-secondary"
-                                    :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
-                                {{ $i18n.getFrom('items','edit_item') }}
-                            </router-link>
-                            <a
-                                    target="_blank"
-                                    class="button is-success is-pulled-right"
-                                    :href="item.url">
-                                {{ $i18n.getFrom('items', 'view_item') }}
-                            </a>
-                        </div>
-                    </div>
+                    <!-- Hook for extra Form options -->
+                    <template
+                            v-if="formHooks != undefined &&
+                        formHooks['view-item'] != undefined &&
+                        formHooks['view-item']['end-left'] != undefined">
+                        <div
+                                id="view-item-end-left"
+                                v-html="formHooks['view-item']['end-left'].join('')"/>
+                    </template>
+
                 </div>
-            <!--</b-tab-item>-->
-            <!--<b-tab-item :label="$i18n.get('activities')">-->
-                <!--<activites-page />-->
-            <!--</b-tab-item>-->
-        <!--</b-tabs>-->
+                <div class="column is-7">
+
+                    <!-- Hook for extra Form options -->
+                    <template
+                            v-if="formHooks != undefined &&
+                        formHooks['view-item'] != undefined &&
+                        formHooks['view-item']['begin-right'] != undefined">
+                        <div
+                                id="view-item-begin-right"
+                                v-html="formHooks['view-item']['begin-right'].join('')"/>
+                    </template>
+
+                    <!-- Visibility (status public or private) -------------------------------- -->
+                    <div class="section-label">
+                        <label>{{ $i18n.get('label_visibility') }}</label>
+                    </div>
+                    <div class="section-status">
+                        <div class="field has-addons">
+                    <span v-if="item.status != 'private'">
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-public"/>
+                        </span> {{ $i18n.get('publish_visibility') }}
+                    </span>
+                            <span v-if="item.status == 'private'">
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-private"/>
+                        </span>  {{ $i18n.get('private_visibility') }}
+                    </span>
+                        </div>
+                    </div>
+
+                    <!-- Collection -------------------------------- -->
+                    <div class="section-label">
+                        <label>{{ $i18n.get('collection') }}</label>
+                    </div>
+                    <div class="section-status">
+                        <div class="field has-addons">
+                    <span>
+                        {{ collectionName }}
+                    </span>
+                        </div>
+                    </div>
+
+
+                    <!-- Metadata -------------------------------- -->
+                    <div class="section-label">
+                        <label>{{ $i18n.get('metadata') }}</label>
+                    </div>
+                    <br>
+                    <a
+                            class="collapse-all"
+                            @click="open = !open">
+                        {{ open ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
+                        <span class="icon">
+                    <i
+                            :class="{ 'tainacan-icon-arrowdown' : open, 'tainacan-icon-arrowright' : !open }"
+                            class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                </span>
+                    </a>
+                    <div>
+                        <div
+                                v-for="(metadatum, index) of metadatumList"
+                                :key="index"
+                                class="field">
+                            <b-collapse :open="open">
+                                <label
+                                        class="label"
+                                        slot="trigger"
+                                        slot-scope="props">
+                            <span class="icon">
+                                    <i
+                                            :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open }"
+                                            class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                                </span>
+                                    {{ metadatum.metadatum.name }}
+                                </label>
+                                <div
+                                        v-if="metadatum.date_i18n"
+                                        class="content">
+                                    <p v-html="metadatum.date_i18n != '' ? metadatum.date_i18n : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                </div>
+                                <div
+                                        v-else
+                                        class="content">
+                                    <p v-html="metadatum.value_as_html != '' ? metadatum.value_as_html : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                </div>
+                            </b-collapse>
+                        </div>
+                    </div>
+
+                    <!-- Hook for extra Form options -->
+                    <template
+                            v-if="formHooks != undefined &&
+                        formHooks['view-item'] != undefined &&
+                        formHooks['view-item']['end-right'] != undefined">
+                        <div
+                                id="view-item-end-right"
+                                v-html="formHooks['view-item']['end-right'].join('')"/>
+                    </template>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="form-submission-footer">
+                    <router-link
+                            class="button is-secondary"
+                            :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
+                        {{ $i18n.getFrom('items','edit_item') }}
+                    </router-link>
+                    <a
+                            target="_blank"
+                            class="button is-success is-pulled-right"
+                            :href="item.url">
+                        {{ $i18n.getFrom('items', 'view_item') }}
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -354,7 +332,6 @@
                 itemId: Number,
                 isLoading: false,
                 isLoadingMetadatumMappers: false,
-                isMetadataColumnCompressed: false,
                 open: true,
                 collectionName: '',
                 thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
@@ -479,28 +456,6 @@
 
     @import '../../scss/_variables.scss';
 
-    #metadata-column-compress-button {
-        position: absolute;
-        z-index: 99;
-        right: 0;
-        top: 148px;
-        max-width: 36px;
-        height: 36px;
-        width: 36px;
-        border: none;
-        background-color: $gray2;
-        color: $secondary;
-        padding: 0;
-        border-top-left-radius: 2px;
-        border-bottom-left-radius: 2px;
-        cursor: pointer;
-
-        .icon {
-            margin-top: 2px;
-            margin-right: 8px;
-        }
-    }
-
     .page-container {
         padding: 25px 0;
 
@@ -556,28 +511,24 @@
             margin-bottom: 70px;
         }
 
-        .column.is-5-5 {
-            width: 45.833333333%;
+        .column.is-5 {
             padding-left: $page-side-padding;
             padding-right: $page-side-padding;
-            transition: width 0.6s;
 
             @media screen and (max-width: 769px) {
                 width: 100%;
             }
         }
-        .column.is-4-5 {
-            width: 37.5%;
-            padding-left: $page-side-padding;
+        .column.is-7 {
+            padding-left: 0;
             padding-right: $page-side-padding;
-            transition: all 0.6s;
 
             .field {
                 padding: 10px 0 10px 30px;
-
             }
 
             @media screen and (max-width: 769px) {
+                padding-left: $page-side-padding;
                 width: 100%;
             }
         }

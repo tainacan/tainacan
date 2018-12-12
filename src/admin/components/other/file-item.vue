@@ -7,7 +7,6 @@
                     :style="{ 'max-width': size != undefined ? size + 'px' : '112px' }"
                     v-if="showName && file.title != undefined">{{ file.title.rendered }}</figcaption>
             <div 
-                    :class="{ 'rounded': showName }"
                     :style="{ 'width': size != undefined ? size + 'px' : '112px', 'height': size != undefined ? size + 'px' : '112px' }"
                     class="image-wrapper">
                 <div
@@ -100,16 +99,14 @@ export default {
             .image, .file-placeholder {
                 transform: scale(1.05);
             }
+            figcaption {
+                background-color: $gray1;
+            }
         }
         .image-wrapper {
             overflow: hidden;
             position: relative;
             display: inline-block;
-
-            &.rounded {
-                border-bottom-left-radius: 5px;
-                border-bottom-right-radius: 5px;
-            }
 
             .image {
                 height: 100%;
@@ -138,9 +135,7 @@ export default {
         }
 
         figcaption {
-            background-color: $gray1;
-            border-top-left-radius: 5px;
-            border-top-right-radius: 5px;
+            background-color: white;
             padding: 8px 15px;
             font-size: 9px;
             width: 100%;

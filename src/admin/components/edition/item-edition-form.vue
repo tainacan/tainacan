@@ -4,15 +4,7 @@
                 :is-full-page="false"
                 :active.sync="isLoading"
                 :can-cancel="false"/>
-        <button 
-                id="metadata-column-compress-button"
-                @click="isMetadataColumnCompressed = !isMetadataColumnCompressed">
-            <span class="icon">
-                <i 
-                        :class="{ 'tainacan-icon-arrowleft' : isMetadataColumnCompressed, 'tainacan-icon-arrowright' : !isMetadataColumnCompressed }"
-                        class="tainacan-icon tainacan-icon-20px"/>
-            </span>
-        </button>
+
         <div class="tainacan-page-title">
             <h1 v-if="isCreatingNewItem">
                 <span 
@@ -43,9 +35,7 @@
                     class="tainacan-form"
                     label-width="120px">
                 <div class="columns">
-                    <div 
-                            :class="{ 'is-12': isMetadataColumnCompressed, 'is-5-5': !isMetadataColumnCompressed }"
-                            class="column">
+                    <div class="column is-5">
 
                         <!-- Hook for extra Form options -->
                         <template 
@@ -360,9 +350,7 @@
                         </template>
 
                     </div> 
-                    <div 
-                            class="column is-4-5"
-                            v-show="!isMetadataColumnCompressed">
+                    <div class="column is-7">
 
                         <!-- Hook for extra Form options -->
                         <template 
@@ -658,7 +646,6 @@ export default {
             isOnSequenceEdit: false,
             sequenceRightDirection: false,
             isLoading: false,
-            isMetadataColumnCompressed: false,
             metadatumCollapses: [],
             collapseAll: true,
             visibility: 'publish',
@@ -810,7 +797,7 @@ export default {
 
                 this.isLoading = false;
 
-                if (!this.isOnSequenceEdit) {
+                if (!this.isOnSequenceEdit) {                    
                     if (this.form.status != 'trash') 
                         this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
                     else
@@ -958,11 +945,8 @@ export default {
                 });
         },
         deleteAttachment(attachment) {
-            console.log(attachment)
             this.removeAttachmentFromItem(attachment.id)
-                .then(() => {
-                    console.log(this.attachmentsList)
-                })
+                .then(() => { })
                 .catch((error) => {
                     this.$console.error(error);
                 });
@@ -1217,28 +1201,6 @@ export default {
 
     @import '../../scss/_variables.scss';
 
-    #metadata-column-compress-button {
-        position: absolute;
-        z-index: 99;
-        right: 0;
-        top: 148px;
-        max-width: 36px;
-        height: 36px;
-        width: 36px;
-        border: none;
-        background-color: $gray2;
-        color: $secondary;
-        padding: 0px;
-        border-top-left-radius: 2px;
-        border-bottom-left-radius: 2px;
-        cursor: pointer;
-
-        .icon {
-            margin-top: 2px;
-            margin-right: 8px;
-        }
-    }
-
     .page-container {
         padding: 25px 0px;
 
@@ -1290,32 +1252,24 @@ export default {
             }
         }
 
-        .column.is-12 {
+        .column.is-5 {
             padding-left: $page-side-padding;
             padding-right: $page-side-padding;
-        }
-
-        .column.is-5-5 {
-            max-width: 55%; 
-            padding-left: $page-side-padding;
-            padding-right: $page-side-padding;
-            transition: width 0.6s;
 
             @media screen and (max-width: 769px) {
                 max-width: 100%;
             }
         }
-        .column.is-4-5 {
-            max-width: 45%;
-            padding-left: $page-side-padding;
+        .column.is-7 {
+            padding-left: 0;
             padding-right: $page-side-padding;
-            transition: all 0.6s;
 
             .field {
                 padding: 10px 0px 10px 60px;
             }
 
             @media screen and (max-width: 769px) {
+                padding-left: $page-side-padding;
                 max-width: 100%;
             }
 
@@ -1406,14 +1360,12 @@ export default {
 
             .file-item-control {
                 position: absolute;
-                background-color: $gray2;
+                background-color: $gray1;
                 width: 112px;
                 margin: 15px;
                 bottom: 0px;
                 padding: 2px 8px 4px 8px;
                 text-align: right;
-                border-bottom-right-radius: 5px;
-                border-bottom-left-radius: 5px;
                 display: none;
                 visibility: hidden;
                 opacity: 0;
