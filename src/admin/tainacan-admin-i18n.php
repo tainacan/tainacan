@@ -377,7 +377,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_search_in_repository'               => __( 'Search in repository', 'tainacan' ),
 	'instruction_select_a_target_collection'         => __( 'Select a target collection', 'tainacan' ),
 	'instruction_select_a_mapper'                    => __( 'Select a mapper', 'tainacan' ),
-	'instruction_select_an_importer_type'            => __( 'Select an importer type from the options above:', 'tainacan' ),
+	'instruction_select_an_importer_type'            => __( 'Select an importer from the options below:', 'tainacan' ),
 	'instruction_drop_file_or_click_to_upload'       => __( 'Drop your source file or click here to upload.', 'tainacan' ),
 	'instruction_select_metadatum_type'              => __( 'Select a metadatum type', 'tainacan' ),
 	'instruction_configure_new_metadatum'            => __( 'Configure new metadatum.', 'tainacan' ),
@@ -387,7 +387,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_select_a_action'                    => __( 'Select a action', 'tainacan' ),
 	'instruction_parent_term'                        => __( 'Type to search a Parent Term to choose.', 'tainacan' ),
 	'instruction_type_existing_term'                 => __( 'Type to add an existing term...', 'tainacan' ),
-	'instruction_select_an_exporter_type'            => __( 'Select an exporter type from the options above:', 'tainacan'),
+	'instruction_select_an_exporter_type'            => __( 'Select an exporter from the options below:', 'tainacan'),
 	'instruction_select_a_collection'                => __( 'Select a collection', 'tainacan' ),
 
 	// Info. Other feedback to user.
