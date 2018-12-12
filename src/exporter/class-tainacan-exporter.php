@@ -695,22 +695,28 @@ class Exporter extends CommunImportExport {
 	}
 
 	public function add_new_file($key) {
-		$upload_dir = wp_upload_dir();
-		$upload_dir = trailingslashit( $upload_dir['basedir'] );
-		$exporter_folder = $upload_dir . 'tainacan/exporter';
+		$upload_dir_info = wp_upload_dir();
+		$prefix = $this->get_id();
+		$upload_dir = trailingslashit( $upload_dir_info['basedir'] );
+		$upload_url = trailingslashit( $upload_dir_info['baseurl'] );
+		$exporter_folder = 'tainacan/exporter';
 
-		if (!is_dir($exporter_folder)) {
-			if (!mkdir($exporter_folder)) {
+		if (!is_dir($upload_dir . $exporter_folder)) {
+			if (!mkdir($upload_dir . $exporter_folder)) {
 				return false;
 			}
 		}
-		$file_name = "$exporter_folder/file_".date('m-d-Y_hia');
-		$this->output_files[$key] = $file_name;
+		$file_name = "$upload_dir$exporter_folder/$prefix$key";
+		$file_url = "$upload_url$exporter_folder/$prefix$key";
+		$this->output_files[$key] = [
+			'filename' => $file_name,
+			'url' => $file_url
+		];
 	}
 
 	public function	append_to_file($key, $data) {
 		if ( array_key_exists ( $key , $this->output_files ) ) {
-			$fp = fopen($this->output_files[$key], 'a');
+			$fp = fopen($this->output_files[$key]['filename'], 'a');
 			fwrite($fp, $data);
 			fclose($fp);
 		} else { // será?
@@ -759,13 +765,19 @@ class Exporter extends CommunImportExport {
 	public function get_send_email() {
 		return $this->send_email;
 	}
+	
+	// Exporters should override
+	public function get_output() {
+		return '';
+	}
 
 	public function finished() {
+		error_log(json_encode($this->get_send_email()));
 		if($this->get_send_email() == 1) {
 			$author = $this->get_transient('author');
 			$user = get_userdata( (int) $author );
 			if ($user instanceof \WP_User) {
-				$msg = __('export completed successfully', 'tainacan');
+				$msg = $this->get_output();
 				$this->add_log('Sending email to ' . $user->user_email);
 				wp_mail($user->user_email, __('Finished export.', 'tainacan'), $msg);
 			}
@@ -784,7 +796,7 @@ class Exporter extends CommunImportExport {
 	private function set_output_files($output_files) {
 		$this->output_files = $output_files;
 	}
-	private function get_output_files() {
+	protected function get_output_files() {
 		return $this->output_files;
 	}
 	/**
@@ -816,6 +828,11 @@ class Exporter extends CommunImportExport {
 			$this->set_in_step_count($result);
 			$return = $result;
 		}
+		
+		if (false === $return) {
+			$this->finished();
+		}
+		
 		return $return;
 	}
 }

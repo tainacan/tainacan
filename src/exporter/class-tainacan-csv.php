@@ -45,7 +45,7 @@ class CSV extends Exporter {
 		$line_string = $this->str_putcsv($line, $this->get_option('delimiter'), $this->get_option('enclosure'));
 		
 		
-		$this->append_to_file('exporter', $line_string."\n");
+		$this->append_to_file('csvexporter.csv', $line_string."\n");
 		
 	}
 
@@ -75,12 +75,32 @@ class CSV extends Exporter {
 		
 		$line_string = $this->str_putcsv($line, $this->get_option('delimiter'), $this->get_option('enclosure'));
 		
-		$this->append_to_file('exporter', $line_string."\n");
+		$this->append_to_file('csvexporter.csv', $line_string."\n");
 		
 	}
 	
 	public function output_footer() {
 		return false;
+	}
+	
+	/** 
+	* When exporter is finished, gets the final output 
+	*/
+	public function get_output() {
+		$files = $this->get_output_files();
+		
+		if ( is_array($files) && isset($files['csvexporter.csv'])) {
+			$file = $files['csvexporter.csv'];
+			
+			$message = __('Your CSV file is ready! Access it in the link below:', 'tainacan');
+			$message .= '<br/><br/>';
+			$message .= '<a href="' . $file['url'] . '">Download</a>';
+			
+			return $message;
+			
+		} else {
+			$this->add_error_log('Output file not found! Maybe you need to correct the permissions of your upload folder');
+		}
 	}
 
 	function str_putcsv($item, $delimiter = ',', $enclosure = '"') {

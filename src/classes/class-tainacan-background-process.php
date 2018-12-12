@@ -147,7 +147,8 @@ abstract class Background_Process extends \WP_Background_Process {
 					'data' => maybe_serialize($data),
 					'processed_last' => date('Y-m-d H:i:s'),
 					'progress_label' => $batch->progress_label,
-					'progress_value' => $batch->progress_value
+					'progress_value' => $batch->progress_value,
+					'output' => $batch->output
 				],
 				['ID' => $key]
 			);
