@@ -53,6 +53,10 @@
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_progress') }}</div>
                         </th>
+                        <!-- Output -->
+                        <th>
+                            <div class="th-wrap">{{ $i18n.get('label_output') }}</div>
+                        </th>
                         <!-- Queued on -->
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_queued_on') }}</div>
@@ -111,6 +115,20 @@
                                 <span :class="{'occluding-content': bgProcess.progress_value }">{{ bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process') }}</span>
                                 <span>{{ bgProcess.progress_value &lt;&equals; 0 ? `(0%)` : ' ('+ bgProcess.progress_value +'%)' }}</span>
                             </p>
+                        </td>
+                        <!-- Output -->
+                        <td 
+                                class="column-default-width"
+                                :label="$i18n.get('label_output')" 
+                                :aria-label="$i18n.get('label_output') + ': ' + (bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info'))">
+                            <p
+                                    v-tooltip="{
+                                        html: true,
+                                        content: bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info'),
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }"
+                                    v-html="bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info')"/>
                         </td>
                         <!-- Queued on -->
                         <td 
