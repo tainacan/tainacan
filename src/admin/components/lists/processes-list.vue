@@ -402,7 +402,7 @@
     }
 
     .occluding-content {
-        width: calc(100% - 40px);
+        width: calc(100% - 48px);
         display: inline-block;
         overflow: hidden;
         text-overflow: ellipsis;

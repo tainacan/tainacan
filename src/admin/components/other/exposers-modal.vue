@@ -229,6 +229,10 @@ export default {
             // Removes Fetch Only
             if (currentParams.fetch_only != undefined)
                 delete currentParams.fetch_only;
+
+            // Removes View Mode
+            if (currentParams.view_mode != undefined)
+                delete currentParams.view_mode;
             
             // Handles pagination of this link
             delete currentParams.paged;
