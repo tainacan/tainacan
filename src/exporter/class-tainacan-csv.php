@@ -9,16 +9,25 @@ class CSV extends Exporter {
 	public function __construct($attributes = array()) {
 		parent::__construct($attributes);
 		$this->set_accepted_mapping_methods('any'); // set all method to mapping
-		//$this->set_accepted_mapping_methods('list', [ "dublin-core" => "Tainacan\\Exposers\\Mappers\\Dublin_Core" ]); // set specific list of methods to mapping
-		//todo create list only slug
+		$this->accept_no_mapping = true;
+		//$this->set_accepted_mapping_methods('list', [ "dublin-core" ]); // set specific list of methods to mapping
+		$this->set_default_options([
+            'delimiter' => ',',
+            'multivalued_delimiter' => '||',
+            'enclosure' => '"'
+        ]);
+	}
+	
+	public function filter_multivalue_separator($separator) {
+		return $this->get_option('multivalued_delimiter');
 	}
 
 	public function process_item( $processed_item ) {
 		
-		
 		$mapper = $this->get_current_mapper();
-		error_log(json_encode($mapper));
 		$line = [];
+		
+		add_filter('tainacan-item-metadata-get-multivalue-separator', [$this, 'filter_multivalue_separator']);
 		
 		foreach ($processed_item as $meta_key => $meta) {
 			
@@ -31,11 +40,12 @@ class CSV extends Exporter {
 			
 		}
 		
-		$line_string = $this->str_putcsv($line, ',', '"');
+		remove_filter('tainacan-item-metadata-get-multivalue-separator', [$this, 'filter_multivalue_separator']);
+		
+		$line_string = $this->str_putcsv($line, $this->get_option('delimiter'), $this->get_option('enclosure'));
 		
 		
 		$this->append_to_file('exporter', $line_string."\n");
-		
 		
 	}
 
@@ -63,7 +73,7 @@ class CSV extends Exporter {
 			}
 		}
 		
-		$line_string = $this->str_putcsv($line, ',', '"');
+		$line_string = $this->str_putcsv($line, $this->get_option('delimiter'), $this->get_option('enclosure'));
 		
 		$this->append_to_file('exporter', $line_string."\n");
 		
@@ -107,7 +117,7 @@ class CSV extends Exporter {
 					</div> 
 			</span>
 			<div class="control is-clearfix">
-				<input class="input" type="text" name="delimiter" value="<?php echo $this->get_option('delimiter'); ?>">
+				<input class="input" type="text" name="delimiter" maxlength="1" value="<?php echo $this->get_option('delimiter'); ?>">
 			</div>
 		</div>
 		
@@ -151,36 +161,11 @@ class CSV extends Exporter {
 					</div> 
 			</span>
 			<div class="control is-clearfix">
-				<input class="input" type="text" name="enclosure" value="<?php echo $this->get_option('enclosure'); ?>">
+				<input class="input" type="text" name="enclosure" value="<?php echo esc_attr($this->get_option('enclosure')); ?>">
 			</div>
 		</div>
 		
-		<div class="field">
-			<label class="label"><?php _e('File Encoding', 'tainacan'); ?></label>
-			<span class="help-wrapper">
-					<a class="help-button has-text-secondary">
-						<span class="icon is-small">
-							 <i class="mdi mdi-help-circle-outline" ></i>
-						 </span>
-					</a>
-					<div class="help-tooltip">
-						<div class="help-tooltip-header">
-							<h5><?php _e('File Encoding', 'tainacan'); ?></h5>
-						</div>
-						<div class="help-tooltip-body">
-							<p><?php _e('The encoding of the CSV file.', 'tainacan'); ?></p>
-						</div>
-					</div> 
-			</span>
-			<div class="control is-clearfix">
-				<div class="select">
-					<select name="encode">
-						<option value="utf8" <?php selected($this->get_option('encode'), 'utf8'); ?> >UTF-8</option>
-						<option value="iso88591" <?php selected($this->get_option('encode'), 'iso88591'); ?> >ISO-88591</option>
-					</select>
-				</div>
-			</div>
-		</div>
+		
 	   
 	   <?php 
 	   

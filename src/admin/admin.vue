@@ -103,6 +103,7 @@
         margin: 94px auto 0 auto;
         position: relative;
         overflow-y: hidden;
+        overflow-x: hidden;
         height: calc(100% - 94px);
 
         @media screen and (max-width: 769px) {
