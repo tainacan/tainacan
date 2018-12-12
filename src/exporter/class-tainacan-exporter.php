@@ -72,12 +72,7 @@ abstract class CommunImportExport {
 	 * Example of the structure of this propery for one collection:
 	 * 0 => [
 	 * 	'id' => 12,
-	 * 	'mapping' => [
-	 * 	  30 => 'column1'
-	 * 	  31 => 'column2'
-	 * 	],
 	 * 	'total_items' => 1234,
-	 * 	'source_id' => 55
 	 * ],
 	 *
 	 * use add_collection() and remove_collection() to interact with thiis array.
@@ -102,6 +97,16 @@ abstract class CommunImportExport {
 				break;
 			}
 		}
+	}
+	
+	public function update_collection($index, $collection_definition) {
+		if (isset($this->collections[$index]))
+			$this->collections[$index] = $collection_definition;
+	}
+	
+	public function update_current_collection($collection_definition) {
+		$current_collection = $this->get_current_collection();
+		return $this->update_collection($current_collection, $collection_definition);
 	}
 
 	public function next_item() {
@@ -484,6 +489,7 @@ class Exporter extends CommunImportExport {
 	private $send_email = null;
 	protected $mapping_list = [];
 	public $mapping_selected = "";
+	protected $accept_no_mapping = true;
 
 	protected $steps = [
 		[
@@ -502,7 +508,13 @@ class Exporter extends CommunImportExport {
 	];
 
 	public function __construct($attributess = array()) {
-		$this->array_attributes = array_merge($this->array_attributes, ['current_collection_item', 'current_collection']);
+		$this->array_attributes = array_merge($this->array_attributes, [
+			'mapping_selected', 
+			'current_collection_item', 
+			'current_collection',
+			'output_files',
+			'send_email'
+		]);
 		parent::__construct();
 		$_SESSION['tainacan_exporter'][$this->get_id()] = $this;
 		if (!empty($attributess)) {
@@ -526,14 +538,11 @@ class Exporter extends CommunImportExport {
 		global $Tainacan_Exporter_Handler;
 		$exporter_definition = $Tainacan_Exporter_Handler->get_exporter_by_object($this);
 
-		$return['mapping_selected'] 	= $this->get_mapping_selected();
-		$return['output_files'] 		= $this->output_files;
-		$return['send_email']			= $this->send_email;
-
 		if ($short === false) {
 			$return['manual_collection']	= $exporter_definition['manual_collection'];
 			$return['mapping_accept']		= $this->mapping_accept;
 			$return['mapping_list'] 		= $this->mapping_list;
+			$return['accept_no_mapping'] 	= $this->accept_no_mapping;
 			$return['options_form'] 		= $this->options_form();
 		}
 
@@ -541,60 +550,20 @@ class Exporter extends CommunImportExport {
 	}
 
 	public function add_collection(array $collection) {
-		if (!isset($collection['total_items'])) {
-			$collection['total_items'] = 10;
-		}
-		parent::add_collection($collection);
-		
-		$this->update_collections_mapping();
+		// if (!isset($collection['total_items'])) {
+		// 	$collection['total_items'] = 10;
+		// }
+		parent::add_collection($collection); 
 	}
 	
+	/**
+	* Gets the current mapper object, if one was chosen by the user, false Otherwise
+	*/
 	public function get_current_mapper() {
 		return \Tainacan\Mappers_Handler::get_instance()->get_mapper($this->get_mapping_selected());
 	}
 	
-	private function update_collections_mapping() {
-		$mapper_handler = Tainacan\Mappers_Handler::get_instance();
-		$collection_repo = Tainacan\Repositories\Collections::get_instance();
-		
-		foreach ($this->get_collections() as $index => $col) {
-			
-			$collection_id = $col['id'];
-
-			$collection = $collection_repo->fetch((int)$collection_id);
-
-			if ( ! $collection instanceof \Tainacan\Entities\Collection ) {
-				continue;
-			}
-
-			$metas = $collection->get_metadata();
-			
-			$mapping = [];
-			$current_mapping = isset($col['mapping']) ? $col['mapping'] : [];
-
-			if ( $mapper = $mapper_handler->get_mapper($this->get_mapping_selected()) ) {
-				
-				foreach ($metas as $meta) {
-				
-					$metadatum_mapping = $meta->get_exposer_mapping();
-					//var_dump($metadatum_mapping);
-
-					if(array_key_exists($mapper->slug, $metadatum_mapping)) {
-						$mapping[$meta->get_name()] = $metadatum_mapping[$mapper->slug];
-					} 
-				}
-				
-			}
-
-			$col['mapping'] = $mapping;
-			if ($col['mapping'] !== $current_mapping) {
-				$this->add_collection($col);
-			}
-
-		}
-		
-	}
-
+	
 	/**
 	 * Method implemented by child importer/exporter to return the HTML of the Options Form to be rendered in the Importer page
 	 */
@@ -665,6 +634,13 @@ class Exporter extends CommunImportExport {
 
 		$this->add_log('Proccessing item index ' . $index . ' in collection ' . $collection_definition['id'] );
 		$items = $tainacan_items->fetch($filters, $collection_id, 'WP_Query');
+		
+		if ( !isset($collection_definition['total_items']) ) {
+			$collection_definition['total_items'] = $items->found_posts;
+			$this->update_current_collection($collection_definition);
+		}
+		
+		
 		$data = [];
 		while ($items->have_posts()) {
 			$items->the_post();
@@ -681,6 +657,12 @@ class Exporter extends CommunImportExport {
 		return $data;
 	}
 	
+	/**
+	* Gets an Item as input and return an array of ItemMetadataObjects
+	* If a mapper is selected, the array keys will be the slugs of the metadata 
+	* declared by the mapper, in the same order. 
+	* Note that if one of the metadata is not mapped, this array item will be null 
+	*/
 	private function map_item_metadata(\Tainacan\Entities\Item $item) {
 		
 		$mapper = $this->get_current_mapper();
@@ -765,7 +747,6 @@ class Exporter extends CommunImportExport {
 
 	public function set_mapping_selected($mapping_selected) {
 		$this->mapping_selected = $mapping_selected;
-		$this->update_collections_mapping();
 	}
 	
 	public function get_mapping_selected() {
@@ -775,11 +756,20 @@ class Exporter extends CommunImportExport {
 	public function set_send_email($email) {
 		$this->send_email = $email;
 	}
+	public function get_send_email() {
+		return $this->send_email;
+	}
 
 	public function finished() {
-		if($this->send_email != null) {
-			$msg = 'export completed successfully';
-			wp_mail($this->send_email, __('Finished export.', 'tainacan'), __($msg, 'tainacan'));
+		if($this->get_send_email() == 1) {
+			$author = $this->get_transient('author');
+			$user = get_userdata( (int) $author );
+			if ($user instanceof \WP_User) {
+				$msg = __('export completed successfully', 'tainacan');
+				$this->add_log('Sending email to ' . $user->user_email);
+				wp_mail($user->user_email, __('Finished export.', 'tainacan'), $msg);
+			}
+			
 		}
 	}
 
@@ -793,6 +783,9 @@ class Exporter extends CommunImportExport {
 
 	private function set_output_files($output_files) {
 		$this->output_files = $output_files;
+	}
+	private function get_output_files() {
+		return $this->output_files;
 	}
 	/**
 	 * runs one iteration

@@ -222,7 +222,7 @@ class CSV extends Importer {
 					</div> 
 			</span>
 			<div class="control is-clearfix">
-				<input class="input" type="text" name="delimiter" value="<?php echo $this->get_option('delimiter'); ?>">
+				<input class="input" type="text" name="delimiter" value="<?php echo esc_attr($this->get_option('delimiter')); ?>">
 			</div>
 		</div>
 		
