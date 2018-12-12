@@ -39,6 +39,11 @@ class Background_Importer extends Background_Process {
 			$this->write_log($key, $object->get_log());
 			$this->write_error_log($key, $object->get_error_log());
 
+            $batch->progress_label = $object->get_progress_label();
+            $batch->progress_value = $object->get_progress_value();
+
+            $batch->data = $object->_to_Array(true);
+
 			if( count($object->get_error_log()) > 0 ){
 			    $this->set_finish_status(2);
             }
@@ -49,13 +54,11 @@ class Background_Importer extends Background_Process {
 			}
 			
 			if (false === $runned) {
+                $this->update($key, $batch);
 				return false;
 			}
 			
-			$batch->progress_label = $object->get_progress_label();
-			$batch->progress_value = $object->get_progress_value();
-			
-			$batch->data = $object->_to_Array(true);
+
 			
 			return $batch;
 		}
