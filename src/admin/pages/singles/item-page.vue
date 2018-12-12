@@ -320,12 +320,12 @@
     import {mapActions, mapGetters} from 'vuex';
     import FileItem from '../../components/other/file-item.vue';
     import DocumentItem from '../../components/other/document-item.vue';
-    import { formHooks } from '../../js/mixins';
+    import {formHooks} from '../../js/mixins';
     import ActivitiesPage from '../lists/activities-page.vue';
 
     export default {
         name: 'ItemPage',
-        mixins: [ formHooks ],
+        mixins: [formHooks],
         data() {
             return {
                 collectionId: Number,
@@ -360,7 +360,7 @@
                 'getMetadata',
                 'getAttachments'
             ]),
-            ...mapGetters('metadata',[
+            ...mapGetters('metadata', [
                 'getMetadatumMappers'
             ]),
             ...mapActions('metadata', [
@@ -375,21 +375,21 @@
             extractExposerLabel(urlString, typeSlug) {
                 let url = new URL(urlString);
                 let mapperParam = url.searchParams.get(tainacan_plugin.exposer_mapper_param);
-                if(mapperParam != 'undefined' && mapperParam != null) {
+                if (mapperParam != 'undefined' && mapperParam != null) {
                     let mapper = this.metadatum_mappers.find(obj => {
                         return obj.slug === mapperParam;
                     });
-                    if(mapper != 'undefined' && mapper != null) {
-                        return this.$i18n.get('label_exposer')+": "+typeSlug+', '+this.$i18n.get('label_mapper')+": "+mapper.name;
+                    if (mapper != 'undefined' && mapper != null) {
+                        return this.$i18n.get('label_exposer') + ": " + typeSlug + ', ' + this.$i18n.get('label_mapper') + ": " + mapper.name;
                     } else {
-                        if(mapperParam == 'value') {
-                            return this.$i18n.get('label_exposer')+": "+typeSlug+', '+this.$i18n.get('label_exposer_mapper_values');
+                        if (mapperParam == 'value') {
+                            return this.$i18n.get('label_exposer') + ": " + typeSlug + ', ' + this.$i18n.get('label_exposer_mapper_values');
                         }
                     }
                 }
-                return this.$i18n.get('label_exposer')+": "+typeSlug;
+                return this.$i18n.get('label_exposer') + ": " + typeSlug;
             },
-            
+
         },
         computed: {
             item() {
@@ -420,18 +420,18 @@
 
             this.isLoadingMetadatumMappers = true;
             this.fetchMetadatumMappers()
-            .then(() => {
-                this.isLoadingMetadatumMappers = false;
-            })
-            .catch(() => {
-                this.isLoadingMetadatumMappers = false;
-            });
-            
+                .then(() => {
+                    this.isLoadingMetadatumMappers = false;
+                })
+                .catch(() => {
+                    this.isLoadingMetadatumMappers = false;
+                });
+
             // Obtains Item
             this.fetchItem(this.itemId).then((item) => {
                 this.$root.$emit('onCollectionBreadCrumbUpdate', [
-                    { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
-                    { path: '', label: item.title}
+                    {path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items')},
+                    {path: '', label: item.title}
                 ]);
                 this.loadMetadata();
             });
@@ -443,12 +443,12 @@
 
             // Get attachments
             this.fetchAttachments(this.itemId);
-            
+
             // Obtains collection Comment Status
             this.fetchCollectionAllowComments(this.collectionId).then((collectionAllowComments) => {
                 this.collectionAllowComments = collectionAllowComments;
             });
-        } 
+        }
     }
 </script>
 
@@ -459,7 +459,7 @@
     .page-container {
         padding: 25px 0;
 
-        &>.tainacan-form {
+        & > .tainacan-form {
             margin-bottom: 110px;
         }
 
@@ -494,20 +494,20 @@
                 position: relative;
                 top: -2px;
             }
-            a.back-link{
+            a.back-link {
                 font-weight: 500;
                 float: right;
                 margin-top: 5px;
             }
-            hr{
-                margin: 3px 0px 4px 0px; 
+            hr {
+                margin: 3px 0px 4px 0px;
                 height: 1px;
                 background-color: $secondary;
                 width: 100%;
             }
         }
 
-        .tainacan-form>.columns {
+        .tainacan-form > .columns {
             margin-bottom: 70px;
         }
 
@@ -533,7 +533,7 @@
             }
         }
         .collapse .collapse-content {
-            margin-left: 30px; 
+            margin-left: 30px;
         }
     }
 
@@ -575,7 +575,7 @@
     }
 
     .section-box {
-        
+
         background-color: white;
         padding: 26px;
         margin-top: 16px;
@@ -605,19 +605,21 @@
             }
         }
     }
-    .section-status{
-        padding-bottom: 16px;    
-        font-size: 0.75rem; 
+
+    .section-status {
+        padding-bottom: 16px;
+        font-size: 0.75rem;
 
         .field {
             border-bottom: none;
 
-            .icon  {
-                font-size: 18px !important; 
+            .icon {
+                font-size: 18px !important;
                 color: $gray3;
             }
         }
     }
+
     .section-attachments {
         border: 1px solid $gray2;
         height: 250px;
@@ -625,7 +627,9 @@
         resize: vertical;
         overflow: auto;
 
-        p { margin: 4px 15px }
+        p {
+            margin: 4px 15px
+        }
     }
 
     .uploaded-files {
@@ -635,7 +639,7 @@
         margin-right: -15px;
     }
 
-     .thumbnail-field {
+    .thumbnail-field {
 
         .content {
             padding: 10px;
@@ -665,10 +669,10 @@
         bottom: 0;
         z-index: 999999;
         background-color: $gray1;
-        width: 100%;    
+        width: 100%;
         height: 65px;
 
-        .form-submission-footer {    
+        .form-submission-footer {
             width: 100%;
             display: flex;
             justify-content: flex-end;
