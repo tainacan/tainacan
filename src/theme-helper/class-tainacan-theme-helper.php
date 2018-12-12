@@ -350,10 +350,14 @@ class Theme_Helper {
 
 	}
 	
+	function get_items_list_slug() {
+		/* Translators: The Items slug - will be the URL for the repository archive */
+		return sanitize_title(_x('items', 'Slug: the string that will be used to build the URL to list all items of the repository', 'tainacan'));
+	}
+	
 	function rewrite_rules( &$wp_rewrite ) {
         
-        /* Translators: The Items slug - will be the URL for the repository archive */
-		$items_base = sanitize_title(_x('items', 'Slug: the string that will be used to build the URL to list all items of the repository', 'tainacan'));
+		$items_base = $this->get_items_list_slug();
 		
 		$new_rules = array(
             $items_base . "/?$"               => "index.php?tainacan_repository_archive=1",
