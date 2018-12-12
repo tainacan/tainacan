@@ -73,6 +73,19 @@ class Migrations {
 	    
 		
 	}
+	
+	static function add_output_column_to_bg_process() {
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'tnc_bg_process';
+		$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$wpdb->prefix}tnc_bg_process' AND column_name = 'output'"  );
+
+	    if(empty($column_exists)) {
+			$wpdb->query("
+	        ALTER TABLE $table_name
+	        ADD output longtext
+	        ");
+		}
+	}
 
 	static function init_capabilites() {
 		$Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();
