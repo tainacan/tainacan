@@ -364,7 +364,7 @@
                         return this.$i18n.get('info_process_status_finished');
 
                     case 'finished-errors':
-                        return this.$i18n.get('info_process_status_finished_errors');
+                        return this.$i18n.get('info_process_status_finished');
 
                     case 'errored':
                         return this.$i18n.get('info_process_status_errored');

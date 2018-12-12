@@ -96,7 +96,7 @@ class Background_Importer extends Background_Process {
                         'done' => 1,
                         'progress_label' => __('Process completed with errors','tainacan'),
                         'progress_value' => 100,
-                        'status' => 'finished-errors'
+                        'status' => 'finished'
                     ],
                     ['ID' => $key]
                 );
@@ -120,7 +120,6 @@ class Background_Importer extends Background_Process {
                     [
                         'done' => 1,
                         'progress_label' => __('Process completed','tainacan'),
-                        'progress_value' => 100,
                         'status' => 'finished'
                     ],
                     ['ID' => $key]

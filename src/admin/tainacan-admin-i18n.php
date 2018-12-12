@@ -509,7 +509,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_available_exporters_helper'                => __( '?', 'tainacan' ),
 	'info_process_status_finished' 					 => __('Finished', 'tainacan'),
 	'info_process_status_finished_errors' 			 => __('Finished with errors', 'tainacan'),
-	'info_process_status_errored' 					 => __('Error', 'tainacan'),
+	'info_process_status_errored' 					 => __('Failed', 'tainacan'),
 	'info_process_status_cancelled' 				 => __('Cancelled by User', 'tainacan'),
 	'info_process_status_paused' 				 	 => __('Paused', 'tainacan'),
 	'info_process_status_running' 				 	 => __('Running', 'tainacan'),
