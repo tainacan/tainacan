@@ -161,6 +161,24 @@ export const sendAttachment = ( { commit }, { item_id, file }) => {
     });
 };
 
+export const removeAttachmentFromItem = ( { commit }, attachmentId) => {
+    commit('cleanAttachment');
+    return new Promise(( resolve, reject ) => {
+        axios.wp.patch('/media/' + attachmentId, {
+            post: null
+        })
+            .then( res => {
+                let attachment = res.data;
+                commit('removeAttatchmentFromItem', attachmentId);
+                commit('setLastUpdated');
+                resolve( attachment );
+            })
+            .catch(error => {
+                reject( error.response );
+            });
+    });
+};
+
 export const fetchAttachments = ({ commit }, item_id) => {
     commit('cleanAttachments');
     return new Promise((resolve, reject) => {

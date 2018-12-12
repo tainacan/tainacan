@@ -23,7 +23,7 @@
             </h1>
             <h1 v-else>
                 <span 
-                        v-if="(item != null && item != undefined)"
+                        v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
                         class="status-tag">{{ $i18n.get(item.status) }}</span>
                 {{ $i18n.get('title_edit_item') + ' ' }}
                 <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
@@ -328,13 +328,23 @@
                             </button>
 
                             <div class="uploaded-files">
-                                <file-item
-                                        :style="{ margin: 15 + 'px'}"
-                                        v-if="attachmentsList.length > 0" 
+                                <div
+                                        class="file-item-container"
                                         v-for="(attachment, index) in attachmentsList"
-                                        :key="index"
-                                        :show-name="true"
-                                        :file="attachment"/>
+                                        :key="index">
+                                    <file-item
+                                            :style="{ margin: 15 + 'px'}"
+                                            v-if="attachmentsList.length > 0"     
+                                            :show-name="true"
+                                            :file="attachment"/>
+                                    <span class="file-item-control">
+                                        <a 
+                                                @click="deleteAttachment(attachment)"
+                                                class="icon">
+                                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
+                                        </a>
+                                    </span>
+                                </div>
                                 <p v-if="attachmentsList.length <= 0"><br>{{ $i18n.get('info_no_attachments_on_item_yet') }}</p>
                             </div>
                         </div>
@@ -755,6 +765,7 @@ export default {
             'fetchAttachments',
             'cleanLastUpdated',
             'setLastUpdated',
+            'removeAttachmentFromItem'
         ]),
         ...mapGetters('item',[
             'getMetadata',
@@ -939,12 +950,22 @@ export default {
         },
         deleteThumbnail() {
             this.updateThumbnail({itemId: this.itemId, thumbnailId: 0})
-            .then(() => {
-                this.item.thumbnail = false;
-            })
-            .catch((error) => {
-                this.$console.error(error);
-            });
+                .then(() => {
+                    this.item.thumbnail = false;
+                })
+                .catch((error) => {
+                    this.$console.error(error);
+                });
+        },
+        deleteAttachment(attachment) {
+            console.log(attachment)
+            this.removeAttachmentFromItem(attachment.id)
+                .then(() => {
+                    console.log(this.attachmentsList)
+                })
+                .catch((error) => {
+                    this.$console.error(error);
+                });
         },
         initializeMediaFrames() {
 
@@ -1269,6 +1290,11 @@ export default {
             }
         }
 
+        .column.is-12 {
+            padding-left: $page-side-padding;
+            padding-right: $page-side-padding;
+        }
+
         .column.is-5-5 {
             max-width: 55%; 
             padding-left: $page-side-padding;
@@ -1368,6 +1394,36 @@ export default {
         flex-flow: wrap;
         margin-left: -15px;
         margin-right: -15px;
+
+        .file-item-container {
+            position: relative;
+
+            &:hover .file-item-control {
+                display: block;
+                visibility: visible;
+                opacity: 1;
+            }
+
+            .file-item-control {
+                position: absolute;
+                background-color: $gray2;
+                width: 112px;
+                margin: 15px;
+                bottom: 0px;
+                padding: 2px 8px 4px 8px;
+                text-align: right;
+                border-bottom-right-radius: 5px;
+                border-bottom-left-radius: 5px;
+                display: none;
+                visibility: hidden;
+                opacity: 0;
+                transition: opacity ease 0.2s, visibility ease 0.2s, display ease 0.2s;
+
+                .icon {
+                    cursor: pointer;
+                }
+            }
+        }
     }
 
     .document-field {  

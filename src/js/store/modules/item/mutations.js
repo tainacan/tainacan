@@ -26,6 +26,14 @@ export const setAttachments = ( state, attachments ) => {
     state.attachments = attachments;
 }
 
+export const  removeAttatchmentFromItem = (state, attachmentId) => {
+    let indexOfRemoved = state.attachments.findIndex((anAttachment) => anAttachment.id == attachmentId);
+
+    if (indexOfRemoved >= 0)
+        state.attachments.splice(indexOfRemoved, 1);
+}
+
+
 export const cleanAttachment = (state) => {
     state.attachment = {};
 }
