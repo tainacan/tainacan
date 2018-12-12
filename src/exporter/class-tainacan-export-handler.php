@@ -14,8 +14,8 @@ class Export_Handler {
 	public function init() {
 
 		$this->register_exporter([
-			'name' => 'CSV collections',
-			'description' => __('Exporter', 'tainacan'),
+			'name' => 'CSV',
+			'description' => __('Allows you to export one collection to a CSV file', 'tainacan'),
 			'slug' => 'csv',
 			'class_name' => '\Tainacan\Exporter\CSV'
 		]);
