@@ -165,7 +165,7 @@ export const removeAttachmentFromItem = ( { commit }, attachmentId) => {
     commit('cleanAttachment');
     return new Promise(( resolve, reject ) => {
         axios.wp.patch('/media/' + attachmentId, {
-            post: null
+            post: 0
         })
             .then( res => {
                 let attachment = res.data;
