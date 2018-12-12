@@ -303,12 +303,17 @@ class REST_Items_Controller extends REST_Controller {
 			$wp_query = $items;
 
 			$meta = [];
-			$view_mode_displayed_metadata = $request['fetch_only'];
+			$view_mode_displayed_metadata = [];
+
+			if(is_string($request['fetch_only'])){
+				$view_mode_displayed_metadata = explode(',', $request['fetch_only']);
+			}
 
 			if($request['fetch_only_meta']){
 				$meta = explode(',', $request['fetch_only_meta']);
-			} else {
-				$view_mode_displayed_metadata['meta'] = array_key_exists( 'meta', $request['fetch_only'] ) ? $request['fetch_only']['meta'] : array();
+			} elseif(is_array($request['fetch_only'])){
+				$view_mode_displayed_metadata = $request['fetch_only'];
+				$meta = array_key_exists( 'meta', $request['fetch_only'] ) ? $request['fetch_only']['meta'] : array();
 			}
 
 			$view_mode_displayed_metadata['meta'] = array_map( function ( $el ) {
