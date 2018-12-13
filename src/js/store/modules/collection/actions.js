@@ -52,6 +52,8 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                 dispatch('search/add_fetchonly_meta', null, { root: true });
             }
 
+            console.info('Post', postQueries.fetch_only_meta);
+
             // Differentiates between repository level and collection level queries
             let endpoint = '/collection/'+ collectionId +'/items?';
 

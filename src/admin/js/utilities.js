@@ -138,7 +138,9 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
         },
         set(key, value) {
             this.tainacanPrefs[key] = value;
+
             let data = {'meta': {'tainacan_prefs': JSON.stringify(this.tainacanPrefs)} };
+
             return new Promise(( resolve, reject ) => {
                 wpApi.post('/users/me/', qs.stringify(data))
                 .then( res => {

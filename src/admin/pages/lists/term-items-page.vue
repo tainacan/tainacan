@@ -919,9 +919,7 @@
                     authorNameMetadatum != undefined && authorNameMetadatum.display ? 'author_name': null +','+
                     (this.isRepositoryLevel ? 'title' : null) +','+
                     (this.isRepositoryLevel && descriptionMetadatum.display ? 'description' : null)
-                );
-
-                this.$eventBusSearch.addFetchOnlyMeta(fetchOnlyMetadatumIds.toString());
+                , false, fetchOnlyMetadatumIds.toString());
 
                 // Closes dropdown
                 this.$refs.displayedMetadataDropdown.toggle();
@@ -1080,9 +1078,7 @@
                                 (authorNameMetadatumDisplay ? 'author_name' : null) +','+
                                 (this.isRepositoryLevel ? 'title' : null) +','+
                                 (this.isRepositoryLevel ? 'description' : null)
-                            );
-
-                            this.$eventBusSearch.addFetchOnlyMeta(fetchOnlyMetadatumIds.toString());
+                            , false, fetchOnlyMetadatumIds.toString());
 
                             // Sorting metadata
                             if (this.isRepositoryLevel) {
@@ -1117,9 +1113,8 @@
                         // Loads only basic attributes necessay to view modes that do not allow custom meta
                         } else {
                        
-                            this.$eventBusSearch.addFetchOnly('thumbnail,creation_date,author_name,title,description', true);
-                            this.$eventBusSearch.addFetchOnlyMeta('');
-                            
+                            this.$eventBusSearch.addFetchOnly('thumbnail,creation_date,author_name,title,description', true, '');
+
                             this.sortingMetadata.push({
                                 name: this.$i18n.get('label_title'),
                                 metadatum: 'row_title',

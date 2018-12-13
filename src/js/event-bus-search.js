@@ -157,7 +157,9 @@ export default {
                         } else {
                             this.$store.dispatch('search/set_postquery', this.$route.query);
                         }
-                        
+
+                        console.log(to);
+
                         if (to.fullPath != from.fullPath) {
                             this.loadItems(to);
                         }
@@ -188,17 +190,15 @@ export default {
                         this.$store.dispatch('search/add_taxquery', data );
                     }
                 },
-                addFetchOnlyMeta( metadatum ){
-                    this.$store.dispatch('search/add_fetchonly_meta', metadatum );
-                    this.updateURLQueries();             
-                },
-                addFetchOnly( metadatum, ignorePrefs ){
+                addFetchOnly( metadatum, ignorePrefs, metadatumIDs ){
                     this.$store.dispatch('search/add_fetchonly', metadatum );
+                    this.$store.dispatch('search/add_fetchonly_meta', metadatumIDs);
                     this.updateURLQueries();  
                     
                     if (!ignorePrefs) {
                         let prefsFetchOnly = this.collectionId != undefined ? 'fetch_only_' + this.collectionId : 'fetch_only';
-                        if (JSON.stringify(this.$userPrefs.get(prefsFetchOnly)) != JSON.stringify(metadatum)) {
+
+                        if (this.$userPrefs.get(prefsFetchOnly) != metadatum) {
                             this.$userPrefs.set(prefsFetchOnly, metadatum)
                                 .catch(() => { this.$console.log("Error setting user prefs for fetch_only"); });
                         }

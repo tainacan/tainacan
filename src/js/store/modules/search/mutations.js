@@ -61,24 +61,10 @@ export const addTaxQuery = ( state, filter ) => {
 };
 
 export const addFetchOnly = ( state, metadatum ) => {
-    state.postquery.fetch_only = ! state.postquery.fetch_only ? 'thumbnail,creation_date,author_name'  : state.postquery.fetch_only;
-
-    state.postquery.fetch_only += `,${metadatum.replace(/,null/g, '')}` ;
-
-    state.postquery.fetch_only = Array.from(new Set(state.postquery.fetch_only.split(','))).toString()
+    state.postquery.fetch_only = metadatum.replace(/,null/g, '');
 };
 export const addFetchOnlyMeta = ( state, metadatum ) => {
-    state.postquery.fetch_only_meta = ( ! state.postquery.fetch_only_meta ) ? '' : state.postquery.fetch_only_meta;
-
-    if (metadatum) {
-        if (!state.postquery.fetch_only_meta) {
-            state.postquery.fetch_only_meta = `${metadatum}`;
-        } else {
-            state.postquery.fetch_only_meta += `,${metadatum}`;
-        }
-
-        state.postquery.fetch_only_meta = Array.from(new Set(state.postquery.fetch_only_meta.split(','))).toString()
-    }
+    state.postquery.fetch_only_meta = metadatum;
 };
 
 export const removeFetchOnly = ( state, metadatum ) => {
