@@ -45,14 +45,12 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
 
             // Guarantees at least empty fetch_only are passed in case none is found
             if (postQueries.fetch_only == ''){
-                dispatch('search/add_fetchonly', {}, { root: true });
+                dispatch('search/add_fetch_only', '', { root: true });
             }
                     
             if (postQueries.fetch_only_meta == ''){
-                dispatch('search/add_fetchonly_meta', null, { root: true });
+                dispatch('search/add_fetch_only_meta', '', { root: true });
             }
-
-            console.info('Post', postQueries.fetch_only_meta);
 
             // Differentiates between repository level and collection level queries
             let endpoint = '/collection/'+ collectionId +'/items?';

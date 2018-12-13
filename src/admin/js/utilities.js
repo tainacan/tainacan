@@ -113,21 +113,18 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
             },
             'view_mode': undefined,
             'admin_view_mode': 'cards',
-            'fetch_only': {
-                0: 'thumbnail',
-                1: 'creation_date',
-                2: 'author_name',
-                meta: []
-            }
+            'fetch_only': 'thumbnail,creation_date,author_name',
+            'fetch_only_meta': ''
         },
         init() {
             if (tainacan_plugin.user_prefs == undefined || tainacan_plugin.user_prefs == '') {
                 let data = {'meta': {'tainacan_prefs': JSON.stringify(this.tainacanPrefs)} };
+
                 wpApi.post('/users/me/', qs.stringify(data))
-                .then( updatedRes => {
-                    let prefs = JSON.parse(updatedRes.data.meta['tainacan_prefs']);
-                    this.tainacanPrefs = prefs;
-                });
+                    .then( updatedRes => {
+                        let prefs = JSON.parse(updatedRes.data.meta['tainacan_prefs']);
+                        this.tainacanPrefs = prefs;
+                    });
             } else {
                 let prefs = JSON.parse(tainacan_plugin.user_prefs);
                 this.tainacanPrefs = prefs;
@@ -143,18 +140,18 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
 
             return new Promise(( resolve, reject ) => {
                 wpApi.post('/users/me/', qs.stringify(data))
-                .then( res => {
-                    let prefs = JSON.parse(res.data.meta['tainacan_prefs']);
-                    this.tainacanPrefs[key] = prefs[key];
-                    if (prefs[key]) { 
-                        resolve( prefs[key] );  
-                    } else {
-                        this.tainacanPrefs[key] = value;
-                    }
-                })
-                .catch(error => {
-                    reject( error );
-                });
+                    .then( res => {
+                        let prefs = JSON.parse(res.data.meta['tainacan_prefs']);
+                        this.tainacanPrefs[key] = prefs[key];
+                        if (prefs[key]) {
+                            resolve( prefs[key] );
+                        } else {
+                            this.tainacanPrefs[key] = value;
+                        }
+                    })
+                    .catch(error => {
+                        reject( error );
+                    });
             }); 
         },
         clean() {

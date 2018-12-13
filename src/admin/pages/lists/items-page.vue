@@ -1010,10 +1010,15 @@
                     
                         if (shouldLoadMeta) {
 
+
                             // Loads user prefs object as we'll need to check if there's something configured by user 
-                            let prefsFetchOnly = !this.isRepositoryLevel ? 'fetch_only_' + this.collectionId : 'fetch_only';
-                            let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly); 
-                            let thumbnailMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['0'] != null) : true;
+                            let prefsFetchOnly = !this.isRepositoryLevel ? `fetch_only_${this.collectionId}` : 'fetch_only';
+                            let prefsFetchOnlyMeta = !this.isRepositoryLevel ? `fetch_only_meta_${this.collectionId}` : 'fetch_only_meta';
+
+                            let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly) ? this.$userPrefs.get(prefsFetchOnly).replace(/,null/g, '').split(',') : [];
+                            let prefsFetchOnlyMetaObject = this.$userPrefs.get(prefsFetchOnlyMeta) ? this.$userPrefs.get(prefsFetchOnlyMeta).split(',') : [];
+
+                            let thumbnailMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[0] != null) : true;
 
                             metadata.push({
                                 name: this.$i18n.get('label_thumbnail'),
@@ -1060,13 +1065,10 @@
                                         display = true;
 
                                     // Deciding display based on user prefs
-                                    if (prefsFetchOnlyObject != undefined && 
-                                        prefsFetchOnlyObject.meta != undefined) {
-                                        let index = prefsFetchOnlyObject.meta.findIndex(metadatumId => metadatumId == metadatum.id);
-                                        if (index >= 0)
-                                            display = true;
-                                        else
-                                            display = false;
+                                    if (prefsFetchOnlyMetaObject.length) {
+                                        let index = prefsFetchOnlyMetaObject.findIndex(metadatumId => metadatumId == metadatum.id);
+
+                                        display = index >= 0;
                                     }
 
                                     metadata.push({
@@ -1088,8 +1090,8 @@
                                 this.sortingMetadata.push(metadatum);
                             }
 
-                            let creationDateMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['1'] != null) : true;
-                            let authorNameMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['2'] != null) : true;
+                            let creationDateMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[1] != null) : true;
+                            let authorNameMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[2] != null) : true;
 
                             // Creation date and author name should appear only on admin.
                             if (!this.isOnTheme) {

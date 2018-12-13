@@ -158,8 +158,6 @@ export default {
                             this.$store.dispatch('search/set_postquery', this.$route.query);
                         }
 
-                        console.log(to);
-
                         if (to.fullPath != from.fullPath) {
                             this.loadItems(to);
                         }
@@ -191,16 +189,22 @@ export default {
                     }
                 },
                 addFetchOnly( metadatum, ignorePrefs, metadatumIDs ){
-                    this.$store.dispatch('search/add_fetchonly', metadatum );
-                    this.$store.dispatch('search/add_fetchonly_meta', metadatumIDs);
+                    this.$store.dispatch('search/add_fetch_only', metadatum );
+                    this.$store.dispatch('search/add_fetch_only_meta', metadatumIDs);
                     this.updateURLQueries();  
                     
                     if (!ignorePrefs) {
-                        let prefsFetchOnly = this.collectionId != undefined ? 'fetch_only_' + this.collectionId : 'fetch_only';
+                        let prefsFetchOnly = this.collectionId ? `fetch_only_${this.collectionId}` : 'fetch_only';
+                        let prefsFetchOnlyMeta = this.collectionId ? `fetch_only_meta_${this.collectionId}` : 'fetch_only_meta';
 
                         if (this.$userPrefs.get(prefsFetchOnly) != metadatum) {
                             this.$userPrefs.set(prefsFetchOnly, metadatum)
-                                .catch(() => { this.$console.log("Error setting user prefs for fetch_only"); });
+                                .catch(() => this.$console.error("Error setting user preferences for fetch_only"));
+                        }
+
+                        if(this.$userPrefs.get(prefsFetchOnlyMeta) != metadatumIDs) {
+                            this.$userPrefs.set(prefsFetchOnlyMeta, metadatumIDs)
+                                .catch(() => this.$console.error("Error setting user preferences for fetch_only_meta"))
                         }
                     }
                 },
@@ -208,7 +212,7 @@ export default {
                     this.$store.dispatch('search/cleanFetchOnly');
                 },
                 removeFetchOnlyMeta( metadatum ){
-                    this.$store.dispatch('search/remove_fetchonly_meta', metadatum );
+                    this.$store.dispatch('search/remove_fetch_only_meta', metadatum );
                     this.updateURLQueries();             
                 },
                 getErrors( filter_id ){
