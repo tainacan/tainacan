@@ -742,7 +742,7 @@ class Exporter extends CommunImportExport {
 			if($method == 'any') {
 				$Tainacan_Exposers = \Tainacan\Mappers_Handler::get_instance();
 				$metadatum_mappers = $Tainacan_Exposers->get_mappers();
-				$this->mapping_list = $metadatum_mappers;
+				$this->mapping_list = array_keys($metadatum_mappers);
 			} else if(!empty($list)) {
 				$this->mapping_list = $list;
 			}
