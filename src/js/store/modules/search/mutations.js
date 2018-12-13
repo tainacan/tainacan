@@ -71,17 +71,19 @@ export const addFetchOnly = ( state, metadatum ) => {
 export const addFetchOnlyMeta = ( state, metadatum ) => {
     state.postquery.fetch_only = ( ! state.postquery.fetch_only ) ? { '0': 'thumbnail', 'meta': [], '1': 'creation_date', '2': 'author_name' } : state.postquery.fetch_only;
     // console.log(state.postquery.fetch_only);
-    //console.log(state.postquery.fetch_only['meta']);
+    // console.log(state.postquery.fetch_only['meta']);
     state.postquery.fetch_only['meta'] = ( ! state.postquery.fetch_only['meta'] ) ? [] : state.postquery.fetch_only['meta'];
 
-    let index = state.postquery.fetch_only['meta'].findIndex( item => item == metadatum);
+    if (metadatum != null && metadatum != undefined) {
+        let index = state.postquery.fetch_only['meta'].findIndex( item => item == metadatum);
 
-    if ( index >= 0 ){
-        state.postquery.fetch_only['meta'][index] = metadatum;
-    } else {
-        state.postquery.fetch_only['meta'].push(metadatum);
+        if ( index >= 0){
+            state.postquery.fetch_only['meta'][index] = metadatum;
+        } else {
+            state.postquery.fetch_only['meta'].push(metadatum);
+        }
     }
-    //console.log(state.postquery.fetch_only['meta']);
+    // console.log(state.postquery.fetch_only['meta']);
     //console.log("----------------------------");
 };
 

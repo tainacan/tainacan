@@ -246,16 +246,8 @@ class Logs extends Repository {
 				// get all attachments except the new
 				$old_attachments = $tainacan_post->get_attachments( $post_ID );
 
-				foreach ( $old_attachments as $index => $a ) {
-					unset( $old_attachments[ $index ]['id'] );
-				}
-
-				$new_attachments[] = [
-					'title'       => $attachment->post_title,
-					'description' => $attachment->post_content,
-					'mime_type'   => $attachment->post_mime_type,
-					'url'         => $attachment->guid,
-				];
+				// get all attachments
+				$new_attachments = $tainacan_post->get_attachments();
 
 				$array_diff_with_index = array_map( 'unserialize',
 					array_diff_assoc( array_map( 'serialize', $new_attachments ), array_map( 'serialize', $old_attachments ) ) );

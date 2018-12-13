@@ -71,7 +71,7 @@
 
     .filter-tags-list {
         width: 100%;
-        padding: 1.5rem $page-side-padding 0px $page-side-padding;
+        padding: 0 $page-side-padding 1.5rem $page-side-padding;
         font-size: 0.75rem;
         margin-bottom: -0.375rem;
 

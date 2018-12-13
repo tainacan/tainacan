@@ -210,7 +210,7 @@
                             <img 
                                     :alt="item.title"
                                     class="thumnail" 
-                                    :src="item['thumbnail']['tainacan_small'] ? item['thumbnail']['tainacan_small'] : (item['thumbnail'].thumb ? item['thumbnail'].thumb : thumbPlaceholderPath)">  
+                                    :src="item['thumbnail']['tainacan-small'] ? item['thumbnail']['tainacan-small'][0] : (item['thumbnail'].thumbnail ? item['thumbnail'].thumbnail[0] : thumbPlaceholderPath)">  
                             
                         </swiper-slide>
                         <!-- Swiper buttons are hidden as they actually swipe from slide to slide -->

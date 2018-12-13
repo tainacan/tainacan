@@ -45,7 +45,7 @@
                                     v-if="item.document!= undefined && item.document != '' && item.document_type != 'empty'"
                                 class="document-thumb"
                                 :alt="item.title"
-                                :src="item.thumbnail.tainacan_small ? item.thumbnail.tainacan_small : (item.thumbnail.thumb ? item.thumbnail.thumb : thumbPlaceholderPath)" > 
+                                :src="item.thumbnail['tainacan-small'] ? item.thumbnail['tainacan-small'][0] : (item.thumbnail.thumbnail ? item.thumbnail.thumbnail[0] : thumbPlaceholderPath)" > 
                             <span 
                                 class="document-name"
                                 v-html="item.title" />                            

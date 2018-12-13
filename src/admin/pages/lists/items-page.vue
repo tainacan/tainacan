@@ -135,14 +135,6 @@
                 class="items-list-area"
                 :class="{ 'spaced-to-right': !isFiltersMenuCompressed && !openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)}">
 
-            <!-- FILTERS TAG LIST-->
-            <filters-tags-list 
-                    class="filter-tags-list"
-                    :filters="filters"
-                    v-if="hasFiltered && 
-                        !openAdvancedSearch &&
-                        !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)" />
-
             <!-- SEARCH CONTROL ------------------------- -->
             <div
                     ref="search-control"
@@ -529,8 +521,6 @@
                 </div>
             </div>
 
-            <!-- --------------- -->
-
             <!-- STATUS TABS, only on Admin -------- -->
             <div 
                     v-if="!isOnTheme && !openAdvancedSearch"
@@ -555,49 +545,33 @@
                 </ul>
             </div>
 
+            <!-- FILTERS TAG LIST-->
+            <filters-tags-list 
+                    class="filter-tags-list"
+                    :filters="filters"
+                    v-if="hasFiltered && 
+                        !openAdvancedSearch &&
+                        !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)" />
+
             <!-- ITEMS LISTING RESULTS ------------------------- -->
             <div class="above-search-control">
 
                 <div 
                         v-show="(isLoadingItems && 
-                                !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen))"
+                                !(registeredViewModes[viewMode] != undefined && (registeredViewModes[viewMode].full_screen == true || registeredViewModes[viewMode].implements_skeleton == true)))"
                         class="loading-container">
-                    <!--<b-loading 
+                    <b-loading 
                             :is-full-page="false"
-                            :active="showLoading"/>-->
-                    <skeleton-items-list v-if="!isOnTheme"/>         
+                            :active="showLoading"/>
+                    <!-- <skeleton-items-list v-if="!isOnTheme"/>          -->
                 </div>  
-
-                <!-- <div
-                        v-if="openAdvancedSearch && advancedSearchResults">
-                    <div class="advanced-search-results-title">
-                        <h1>{{ $i18n.get('info_search_results') }}</h1>
-                        <hr>
-                    </div>
-                </div> -->
-                <!-- When advanced search -->
-                <items-list
-                        v-if="!isOnTheme &&
-                              !isLoadingItems &&
-                              totalItems > 0 &&
-                              openAdvancedSearch &&
-                              advancedSearchResults"
-
-                        :collection-id="collectionId"
-                        :table-metadata="displayedMetadata"
-                        :items="items"
-                        :total-items="totalItems"
-                        :is-loading="isLoadingItems"
-                        :is-on-trash="status == 'trash'"
-                        :view-mode="adminViewMode"/>
 
                 <!-- Admin View Modes-->
                 <items-list
-                        v-else-if="!isOnTheme && 
+                        v-if="!isOnTheme && 
                               !isLoadingItems &&
                               totalItems > 0 &&
-                              !openAdvancedSearch"
-    
+                              ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
                         :collection-id="collectionId"
                         :table-metadata="displayedMetadata"
                         :items="items"
@@ -606,53 +580,27 @@
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"/>
                 
-                <!-- When advanced search -->
                 <!-- Theme View Modes -->
                 <div 
                         v-if="isOnTheme &&
+                              ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch) &&
                               !isLoadingItems &&
-                              openAdvancedSearch &&
-                              advancedSearchResults &&
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'template'"
                         v-html="itemsListTemplate"/>
 
                 <component
                         v-if="isOnTheme && 
-                              !isLoadingItems && 
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'component' &&
-                              openAdvancedSearch &&
-                              advancedSearchResults"
+                              ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata"
                         :items="items"
+                        :is-filters-menu-compressed="isFiltersMenuCompressed"
                         :total-items="totalItems"
                         :is-loading="isLoadingItems"
-                        :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/> 
-                
-                <!-- Regular -->
-                <!-- Theme View Modes -->
-                <div 
-                        v-if="isOnTheme &&
-                              !isLoadingItems &&
-                              !openAdvancedSearch &&
-                              registeredViewModes[viewMode] != undefined &&
-                              registeredViewModes[viewMode].type == 'template'"
-                        v-html="itemsListTemplate"/>
-
-                <component
-                        v-else-if="isOnTheme && 
-                              registeredViewModes[viewMode] != undefined &&
-                              registeredViewModes[viewMode].type == 'component' &&
-                              (!isLoadingItems || !registeredViewModes[viewMode].show_pagination) && 
-                              !openAdvancedSearch"
-                        :collection-id="collectionId"
-                        :displayed-metadata="displayedMetadata"
-                        :items="items"
-                        :total-items="totalItems"
-                        :is-loading="isLoadingItems"
-                        :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>     
+                        :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>
 
                 <!-- Empty Placeholder (only used in Admin) -->
                 <section
@@ -680,17 +628,10 @@
                 </section>
 
                 <!-- Pagination -->
-                <!-- When advanced search -->
                 <pagination
                         v-if="totalItems > 0 &&
                          (!isOnTheme || (registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].show_pagination)) &&
-                          advancedSearchResults"/>
-
-                <!-- Regular -->
-                <pagination
-                        v-else-if="totalItems > 0 &&
-                         (!isOnTheme || (registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].show_pagination)) &&
-                          !openAdvancedSearch"/>
+                          (advancedSearchResults || !openAdvancedSearch)"/>
             </div>
         </div>
        
@@ -1061,6 +1002,7 @@
                             shouldLoadMeta  = this.adminViewMode == 'table' || this.adminViewMode == 'records' || this.adminViewMode == undefined;
                     
                         if (shouldLoadMeta) {
+
                             // Loads user prefs object as we'll need to check if there's something configured by user 
                             let prefsFetchOnly = !this.isRepositoryLevel ? 'fetch_only_' + this.collectionId : 'fetch_only';
                             let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly); 
@@ -1241,13 +1183,13 @@
                         this.isLoadingMetadata = false;
                     });
             },
-            adjustSearchControlHeight() {
+            adjustSearchControlHeight: _.debounce( function() {
                 this.$nextTick(() => {
                     if (this.$refs['search-control'] != undefined)
                         this.searchControlHeight = this.$refs['search-control'] ? this.$refs['search-control'].clientHeight + this.$refs['search-control'].offsetTop : 0;
                     this.isFiltersMenuCompressed = jQuery(window).width() <= 768;
                 });
-            },
+            }, 500),
             removeEventListeners() {
                 // Component
                 this.$off();
@@ -1497,7 +1439,6 @@
         overflow-x: hidden;
         visibility: visible;
         display: block;
-        transition: visibility ease 0.5s, display ease 0.5s;
 
         @media screen and (max-width: 768px) {
             width: 100%;
@@ -1712,7 +1653,7 @@
     }
 
     .tabs {
-        padding-top: 12px;
+        padding-top: 6px;
         margin-bottom: 20px;
         padding-left: $page-side-padding;
         padding-right: $page-side-padding;
@@ -1720,7 +1661,6 @@
 
     .items-list-area {
         margin-left: 0;
-        transition: margin-left ease 0.5s;
         height: 100%;
         overflow: auto;
         position: relative;

@@ -577,24 +577,24 @@ $modal-z: 9999999;
 
 // SKELETON GRADIENT ANIMATIONS
 @-webkit-keyframes skeleton-animation {
-    0%{background-position:0% 94%}
-    50%{background-position:100% 7%}
-    100%{background-position:0% 94%}
+    0%{opacity: 1.0}
+    50%{opacity: 0.1}
+    100%{opacity: 1.0}
 }
 @-moz-keyframes skeleton-animation {
-    0%{background-position:0% 94%}
-    50%{background-position:100% 7%}
-    100%{background-position:0% 94%}
+    0%{opacity: 1.0}
+    50%{opacity: 0.1}
+    100%{opacity: 1.0}
 }
 @-o-keyframes skeleton-animation {
-    0%{background-position:0% 94%}
-    50%{background-position:100% 7%}
-    100%{background-position:0% 94%}
+    0%{opacity: 1.0}
+    50%{opacity: 0.1}
+    100%{opacity: 1.0}
 }
 @keyframes skeleton-animation {
-    0%{background-position:0% 94%}
-    50%{background-position:100% 7%}
-    100%{background-position:0% 94%}
+    0%{opacity: 1.0}
+    50%{opacity: 0.1}
+    100%{opacity: 1.0}
 }
 
 // .skeleton:nth-child(even) {
@@ -605,8 +605,7 @@ $modal-z: 9999999;
 // }
 .skeleton {
     border-radius: 4px;
-    background: linear-gradient(235deg, #f0f0f0, #fbfbfb, #eeeeee);   
-    background-size: 600% 600%;
+    background: #eeeeee;
 
     -webkit-animation: skeleton-animation 1.5s ease infinite;
     -moz-animation: skeleton-animation 1.5s ease infinite;

@@ -77,6 +77,11 @@
             width: 120px;
             height: auto;
             border-radius: 0px;
+            position: relative;
+            z-index: 1;
+        }
+        .skeleton {
+            width: 120px;
         }
         .metadata-title {
             flex-shrink: 0;

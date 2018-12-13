@@ -34,9 +34,49 @@
                                     </picture>
                                 </div>
                             </div>
+
+                            <div
+                                    v-if="attributeName == 'attachments'"
+                                    class="content">
+                                <p class="is-capitalized has-text-blue5">
+                                    {{ attributeName }}
+                                    <small class="has-text-gray4"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
+                                </p>
+                                <div
+                                        class="tainacan-attachments-in-modal"
+                                        v-if="diff.old.length">
+                                    <template v-for="attachment in diff.old">
+                                        <div
+                                                class="box"
+                                                v-if="attachment.mime_type.includes('image')">
+                                            <p class="tainacan-p-overflow">{{ `${$i18n.get('label_title')}: ${attachment.title}` }}</p>
+                                            <figure class="image tainacan-figure">
+                                                <img
+                                                        width="100%"
+                                                        style="height: 100% !important;"
+                                                        :src="attachment.url"
+                                                        :alt="attributeName">
+                                            </figure>
+                                        </div>
+                                        <div
+                                                class="box"
+                                                v-else-if="['pdf', 'audio', 'video'].includes(attachment.mime_type.split('/')[1])">
+                                            <p class="tainacan-p-overflow">{{ `${$i18n.get('label_title')}: ${attachment.title}` }}</p>
+                                            <object
+                                                    width="100%"
+                                                    :data="attachment.url"
+                                                    :type="attachment.mime_type"/>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div v-else>
+                                    <p>{{ infoEmpty }}</p>
+                                </div>
+                            </div>
+
                             <div
                                     class="content"
-                                    v-else>
+                                    v-if="!['thumbnail', 'attachments'].includes(attributeName)">
                                 <p class="is-capitalized has-text-blue5">
                                     {{ attributeName.replace(/_/g, ' ') }}
                                     <small class="has-text-gray4"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
@@ -44,6 +84,7 @@
 
                                 <!-- Is array with length 1 -->
                                 <p
+                                        class="tainacan-p-break"
                                         v-if="(diff.old instanceof Array) &&
                                          (diff.old.length == 1) &&
                                           !(diff.old[0] instanceof Object)">
@@ -54,6 +95,7 @@
                                         v-else-if="attributeName == 'metadata_order'"
                                         class="content">
                                     <p
+                                            class="tainacan-p-break"
                                             v-for="(diffContent, diffTitle) in diff.old"
                                             :key="diffTitle">
                                         {{ diff.old ? `ID: ${diffContent.id} | Enabled: ${diffContent.enabled}` : infoEmpty }}
@@ -64,6 +106,7 @@
                                         v-else-if="attributeName == 'filters_order'"
                                         class="content">
                                     <p
+                                            class="tainacan-p-break"
                                             v-for="(diffContent, diffTitle) in diff.old"
                                             :key="diffTitle">
                                         {{ diff.old ? `ID: ${diffContent.id} | Enabled: ${diffContent.enabled}` : infoEmpty }}
@@ -73,15 +116,18 @@
                                 <div
                                         v-else-if="attributeName == 'metadata_type_options'"
                                         class="content">
-                                    <p>
-                                        {{ diff.old ? `Taxonomy ID: ${diff.old.taxonomy_id};
+                                    <p class="tainacan-p-break">
+                                        {{ diff.old ?
+                                        `Taxonomy ID: ${diff.old.taxonomy_id};
                                         Input type: ${diff.old.input_type};
                                         Allow new terms: ${diff.old.allow_new_terms}` : infoEmpty }}
                                     </p>
                                 </div>
 
                                 <!--  -->
-                                <p v-else>
+                                <p
+                                        class="tainacan-p-break"
+                                        v-else>
                                     {{ diff.old ? (diff.old instanceof Array && !diff.old.length) ? infoEmpty : diff.old.toString().replace(/,/g, ' ') : infoEmpty }}
                                 </p>
 
@@ -108,9 +154,49 @@
                                     </picture>
                                 </div>
                             </div>
+
+                            <div
+                                    v-if="attributeName == 'attachments'"
+                                    class="content">
+                                <p class="is-capitalized has-text-blue5">
+                                    {{ attributeName }}
+                                    <small class="has-text-gray4"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
+                                </p>
+                                <div
+                                        class="tainacan-attachments-in-modal"
+                                        v-if="diff.new.length">
+                                    <template v-for="attachment in diff.new">
+                                        <div
+                                                class="box"
+                                                v-if="attachment.mime_type.includes('image')">
+                                            <p class="tainacan-p-overflow">{{ `${$i18n.get('label_title')}: ${attachment.title}` }}</p>
+                                            <figure class="image tainacan-figure">
+                                                <img
+                                                        width="100%"
+                                                        style="height: 100% !important;"
+                                                        :src="attachment.url"
+                                                        :alt="attributeName">
+                                            </figure>
+                                        </div>
+                                        <div
+                                                class="box"
+                                                v-else-if="['pdf', 'audio', 'video'].includes(attachment.mime_type.split('/')[1])">
+                                            <p class="tainacan-p-overflow">{{ `${$i18n.get('label_title')}: ${attachment.title}` }}</p>
+                                            <object
+                                                    width="100%"
+                                                    :data="attachment.url"
+                                                    :type="attachment.mime_type"/>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div v-else>
+                                    <p>{{ infoEmpty }}</p>
+                                </div>
+                            </div>
+
                             <div
                                     class="content"
-                                    v-else>
+                                    v-if="!['thumbnail', 'attachments'].includes(attributeName)">
                                 <p class="is-capitalized has-text-blue5">
                                     {{ attributeName.replace(/_/g, ' ') }}
                                     <small class="has-text-gray4"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
@@ -118,6 +204,7 @@
 
                                 <!-- Is array with length 1 -->
                                 <p
+                                        class="tainacan-p-break"
                                         v-if="(diff.new instanceof Array) &&
                                          (diff.new.length == 1) &&
                                           !(diff.new[0] instanceof Object)">
@@ -129,6 +216,7 @@
                                         v-else-if="attributeName == 'metadata_order'"
                                         class="content">
                                     <p
+                                            class="tainacan-p-break"
                                             v-for="(diffContent, diffTitle) in diff.new"
                                             :key="diffTitle">
                                         {{ `ID: ${diffContent.id} | Enabled: ${diffContent.enabled}` }}
@@ -139,6 +227,7 @@
                                         v-else-if="attributeName == 'filters_order'"
                                         class="content">
                                     <p
+                                            class="tainacan-p-break"
                                             v-for="(diffContent, diffTitle) in diff.new"
                                             :key="diffTitle">
                                         {{ `ID: ${diffContent.id} | Enabled: ${diffContent.enabled}` }}
@@ -148,7 +237,7 @@
                                 <div
                                         v-else-if="attributeName == 'metadata_type_options'"
                                         class="content">
-                                    <p>
+                                    <p class="tainacan-p-break">
                                         {{ `Taxonomy ID: ${diff.new.taxonomy_id};
                                             Input type: ${diff.new.input_type};
                                             Allow new terms: ${diff.new.allow_new_terms}` }}
@@ -156,7 +245,9 @@
                                 </div>
 
                                 <!-- -->
-                                <p v-else>
+                                <p
+                                        class="tainacan-p-break"
+                                        v-else>
                                     {{ diff.new ? (diff.new instanceof Array && !diff.new.length) ? infoEmpty : diff.new.toString().replace(/,/g, ' ') : infoEmpty }}
                                 </p>
 
@@ -287,5 +378,29 @@
 
     .modal-card-body {
         min-height: 400px;
+    }
+
+    .tainacan-attachments-in-modal {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .tainacan-p-overflow {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 150px;
+        overflow: hidden;
+    }
+
+    .tainacan-p-break {
+        word-break: break-word;
+    }
+
+    .tainacan-figure {
+        width: 150px;
+        height: 150px;
+        overflow: auto;
     }
 </style>

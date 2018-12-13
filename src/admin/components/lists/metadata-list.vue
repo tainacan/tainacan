@@ -66,8 +66,11 @@
                                     <span class="icon icon-level-identifier">
                                         <i 
                                             :class="{ 
-                                                'tainacan-icon-collections has-text-turquoise5': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
-                                                'tainacan-icon-repository has-text-blue5': (metadatum.collection_id == 'default') || isRepositoryLevel
+                                                'tainacan-icon-collections': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
+                                                'tainacan-icon-repository': (metadatum.collection_id == 'default') || isRepositoryLevel,
+                                                'has-text-turquoise5': metadatum.enabled && (metadatum.collection_id != 'default' && !isRepositoryLevel), 
+                                                'has-text-blue5': metadatum.enabled && (metadatum.collection_id == 'default' || isRepositoryLevel),
+                                                'has-text-gray': !metadatum.enabled
                                             }"
                                             class="tainacan-icon" />
                                     </span>  

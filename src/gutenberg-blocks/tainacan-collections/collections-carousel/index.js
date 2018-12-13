@@ -108,8 +108,8 @@ registerBlockType('tainacan/collections-carousel', {
                     style={style}>
                     <img
                         src={
-                            (item.thumbnail && item.thumbnail.thumb) ?
-                                item.thumbnail.thumb :
+                            (item.thumbnail && item.thumbnail.thumbnail) ?
+                                item.thumbnail.thumbnail[0] :
                                 ( (item.img && item.img[0].src) ?
                                     item.img[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
                         }
