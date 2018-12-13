@@ -905,24 +905,24 @@ export default {
             this.form.document_type = 'url';
             this.form.document = this.urlLink;
             this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
-            .then(item => {
-                this.item.document_as_html = item.document_as_html;
-                this.isLoading = false;
+                .then(item => {
+                    this.item.document_as_html = item.document_as_html;
+                    this.isLoading = false;
 
-                let oldThumbnail = this.item.thumbnail;
-                if (item.document_type == 'url' && oldThumbnail != item.thumbnail )
-                    this.item.thumbnail = item.thumbnail;
-            })
-            .catch((errors) => {
-                for (let error of errors.errors) {
-                    for (let metadatum of Object.keys(error)){
-                       eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                    let oldThumbnail = this.item.thumbnail;
+                    if (item.document_type == 'url' && oldThumbnail != item.thumbnail )
+                        this.item.thumbnail = item.thumbnail;
+                })
+                .catch((errors) => {
+                    for (let error of errors.errors) {
+                        for (let metadatum of Object.keys(error)){
+                        eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                        }
                     }
-                }
-                this.formErrorMessage = errors.error_message;
+                    this.formErrorMessage = errors.error_message;
 
-                this.isLoading = false;
-            });
+                    this.isLoading = false;
+                });
         },
         cancelURLSelection() {
             this.isURLModalActive = false;
@@ -945,11 +945,24 @@ export default {
                 });
         },
         deleteAttachment(attachment) {
-            this.removeAttachmentFromItem(attachment.id)
-                .then(() => { })
-                .catch((error) => {
-                    this.$console.error(error);
-                });
+
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_attachment_delete'),
+                    onConfirm: () => {
+                        this.removeAttachmentFromItem(attachment.id)
+                            .then(() => { })
+                            .catch((error) => {
+                                this.$console.error(error);
+                            });
+                    }
+                } 
+            });
+
         },
         initializeMediaFrames() {
 

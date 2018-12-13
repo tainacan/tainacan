@@ -11,8 +11,10 @@
                 <p><strong>{{ $i18n.get('label_activity_author') }}:</strong> {{ activity.user_name }}</p>
             </div>
             <div>
-                <template v-for="(diff, attributeName) in activity.log_diffs">
-                    <div class="columns">
+                <template v-for="(diff, attributeName, index) in activity.log_diffs">
+                    <div 
+                            :key="index"
+                            class="columns">
 
                         <!-- OLD -->
                         <div class="column is-6">
@@ -45,8 +47,9 @@
                                 <div
                                         class="tainacan-attachments-in-modal"
                                         v-if="diff.old.length">
-                                    <template v-for="attachment in diff.old">
+                                    <template v-for="(attachment, anotherIndex ) in diff.old">
                                         <div
+                                                :key="anotherIndex"
                                                 class="box"
                                                 v-if="attachment.mime_type.includes('image')">
                                             <p class="tainacan-p-overflow">{{ `${$i18n.get('label_title')}: ${attachment.title}` }}</p>
@@ -59,6 +62,7 @@
                                             </figure>
                                         </div>
                                         <div
+                                                :key="anotherIndex"
                                                 class="box"
                                                 v-else-if="['pdf', 'audio', 'video'].includes(attachment.mime_type.split('/')[1])">
                                             <p class="tainacan-p-overflow">{{ `${$i18n.get('label_title')}: ${attachment.title}` }}</p>
@@ -165,8 +169,9 @@
                                 <div
                                         class="tainacan-attachments-in-modal"
                                         v-if="diff.new.length">
-                                    <template v-for="attachment in diff.new">
+                                    <template v-for="(attachment, index) in diff.new">
                                         <div
+                                                :key="index"
                                                 class="box"
                                                 v-if="attachment.mime_type.includes('image')">
                                             <p class="tainacan-p-overflow">{{ `${$i18n.get('label_title')}: ${attachment.title}` }}</p>
@@ -179,6 +184,7 @@
                                             </figure>
                                         </div>
                                         <div
+                                                :key="index"
                                                 class="box"
                                                 v-else-if="['pdf', 'audio', 'video'].includes(attachment.mime_type.split('/')[1])">
                                             <p class="tainacan-p-overflow">{{ `${$i18n.get('label_title')}: ${attachment.title}` }}</p>
@@ -373,7 +379,6 @@
     .tainacan-modal-content {
         width: auto;
         min-height: 600px;
-        border-radius: 10px;
     }
 
     .modal-card-body {

@@ -698,7 +698,6 @@
     .tainacan-modal-content {
         width: auto;
         min-height: 600px;
-        border-radius: 10px;
     }
 
     .tainacan-modal-title {
