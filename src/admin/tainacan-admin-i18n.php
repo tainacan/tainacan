@@ -417,6 +417,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_collection_deleted'                        => __( 'Collection deleted.', 'tainacan' ),
 	'info_item_deleted'                              => __( 'Item deleted.', 'tainacan' ),
 	'info_taxonomy_deleted'                          => __( 'Taxonomy deleted', 'tainacan' ),
+	'info_warning_attachment_delete'                 => __( 'Do you really want to delete this attachment?', 'tainacan' ),
 	'info_warning_collection_delete'                 => __( 'Do you really want to permanently delete this collection?', 'tainacan' ),
 	'info_warning_collection_trash'                  => __( 'Do you really want to trash this collection?', 'tainacan' ),
 	'info_warning_item_delete'                       => __( 'Do you really want to permanently delete this item?', 'tainacan' ),
