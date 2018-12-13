@@ -14,7 +14,6 @@ import Page from '../pages/lists/taxonomies-page.vue'
 import ActivitiesPage from '../pages/lists/activities-page.vue'
 import AvailableExportersPage from '../pages/lists/available-exporters-page.vue'
 import AvailableImportersPage from '../pages/lists/available-importers-page.vue'
-import ExportPage from '../pages/singles/export-page.vue'
 
 // Edition Form Components
 import CollectionEditionForm from '../components/edition/collection-edition-form.vue'
@@ -81,9 +80,6 @@ const routes = [
     { path: '/importers/:importerSlug', name: 'ImporterEditionForm', component: ImporterEditionForm, meta: {title: i18nGet('title_importer_page'), icon: 'import'} },
     { path: '/importers/:importerSlug/:sessionId', name: 'ImporterCreationForm', component: ImporterEditionForm, meta: { title: i18nGet('title_importer_page'), icon: 'import' } },
     { path: '/importers/:importerType/:sessionId/mapping/:collectionId', name: 'ImporterMappingForm', component: ImporterMappingForm, meta: {title: i18nGet('title_importer_mapping_page'), icon: 'import'} },
-
-    { path: '/exporters/collection/:collectionId', name: 'ExportCollection', component: ExportPage, meta: {title: i18nGet('title_export_collection_page'), icon: 'export'} },
-    { path: '/exporters/item/:itemId', name: 'ExportItem', component: ExportPage, meta: {title: i18nGet('title_export_item_page'), icon: 'export'} },
 
     { path: '/exporters', name: 'ExportersPage', component: AvailableExportersPage, meta: {title: i18nGet('title_exporters_page'), icon: 'export'} },
     { path: '/exporters/:exporterSlug', name: 'ExporterEditionForm', component: ExporterEditionForm, meta: {title: i18nGet('title_exporter_page'), icon: 'export'}},

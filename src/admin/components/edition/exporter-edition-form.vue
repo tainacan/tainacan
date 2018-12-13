@@ -51,7 +51,7 @@
                             class="is-block"
                             v-if="Object.keys(exporterSession).length &&
                             Object.keys(exporterSession.mapping_accept).length &&
-                             exporterSession.mapping_accept.any"
+                             exporterSession.mapping_list.length"
                             :label="$i18n.get('mapping')">
 
                             <b-select
@@ -61,10 +61,10 @@
                                     :placeholder="$i18n.get('instruction_select_a_mapper')">
                                 <option :value="''">-</option>
                                 <option
-                                        v-for="(mapping, key) in exporterSession.mapping_list"
-                                        :value="key"
-                                        :key="key">
-                                    {{ key.replace(/-/, ' ') }}
+                                        v-for="(mapping) in exporterSession.mapping_list"
+                                        :value="mapping"
+                                        :key="mapping">
+                                    {{ mapping.replace(/-/, ' ') }}
                                 </option>
                             </b-select>
 
@@ -102,6 +102,9 @@
                 </div>
             </div>
         </form>
+        <pre>
+            {{ exporterSession }}
+        </pre>
     </div>
 </template>
 
@@ -174,11 +177,12 @@
             formIsValid(){
                 return (
                     this.selectedCollection &&
+                    ((!this.exporterSession.accept_no_mapping && this.selectedMapping) ||
+                        this.exporterSession.accept_no_mapping) &&
                     !this.formErrorMessage
                 );
             },
             verifyError(response){
-                console.log(response);
                 if(response.constructor.name === 'Object' &&
                     (response.data && response.data.status &&
                         response.data.status.toString().split('')[0] != 2) || response.error_message) {
