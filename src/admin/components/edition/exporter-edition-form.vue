@@ -210,13 +210,20 @@
         },
         created(){
             this.selectedCollection = this.$route.query.sourceCollection;
+
             this.exporterType = this.$route.params.exporterSlug;
 
             this.isLoading = true;
             this.createExporterSession(this.exporterType).then(exporterSession => {
                 this.exporterSession = exporterSession ? exporterSession : {};
                 this.selectedMapping = this.exporterSession.mapping_selected;
-                this.isLoading = false;
+
+                if(this.selectedCollection){
+                    this.updateExporter('collection.id');
+                    this.isLoading = false;
+                } else {
+                    this.isLoading = false;
+                }
             });
 
             this.isFetchingCollections = true;
