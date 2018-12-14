@@ -182,9 +182,19 @@
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
-                                        v-if="bgProcess.done > 0 && !bgProcess.error_log"
+                                        v-if=" bgProcess.status === 'finished' "
                                         class="icon has-text-success">
                                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-finish"/>
+                                </span>
+                                <span
+                                        v-tooltip="{
+                                            content: $i18n.get('label_process_completed_with_errors'),
+                                            autoHide: false,
+                                            placement: 'auto-start'
+                                        }"
+                                        v-if=" bgProcess.status === 'finished-errors' "
+                                        class="icon has-text-success">
+                                    ! <i class="tainacan-icon tainacan-icon-20px tainacan-icon-finish"/>
                                 </span>
                                 <span 
                                         v-tooltip="{
@@ -192,7 +202,7 @@
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
-                                        v-if="bgProcess.done > 0 && bgProcess.error_log"
+                                        v-if="bgProcess.status === 'errored'"
                                         class="icon has-text-danger">
                                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-processerror" />
                                 </span>
