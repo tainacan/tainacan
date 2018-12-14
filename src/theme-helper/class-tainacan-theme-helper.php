@@ -171,7 +171,7 @@ class Theme_Helper {
 	/**
      * Filters the permalink for posts to:
      *
-     * * Replace Collectino single permalink with the link to the post type archive for items of that collection
+     * * Replace Collection single permalink with the link to the post type archive for items of that collection
      * 
      * @return string new permalink
      */
@@ -192,7 +192,7 @@ class Theme_Helper {
             $post_type_object = get_post_type_object($items_post_type);
             
             if (isset($post_type_object->rewrite) && is_array($post_type_object->rewrite) && isset($post_type_object->rewrite['slug']))
-                return site_url($post_type_object->rewrite['slug']);
+                return get_post_type_archive_link($items_post_type);
                 
         }
         
