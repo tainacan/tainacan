@@ -251,6 +251,7 @@
                                 <file-item
                                         v-if="item.thumbnail != undefined && ((item.thumbnail['tainacan-medium'] != undefined && item.thumbnail['tainacan-medium'] != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
                                         :show-name="false"
+                                        :modal-on-click="false"
                                         :size="178"
                                         :file="{ 
                                             media_type: 'image', 
@@ -324,7 +325,8 @@
                                         :key="index">
                                     <file-item
                                             :style="{ margin: 15 + 'px'}"
-                                            v-if="attachmentsList.length > 0"     
+                                            v-if="attachmentsList.length > 0"   
+                                            :modal-on-click="true"  
                                             :show-name="true"
                                             :file="attachment"/>
                                     <span class="file-item-control">

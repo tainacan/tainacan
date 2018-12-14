@@ -46,6 +46,7 @@
                             <file-item
                                     v-if="collection.thumbnail != undefined && ((collection.thumbnail['tainacan-medium'] != undefined && collection.thumbnail['tainacan-medium'] != false) || (collection.thumbnail.medium != undefined && collection.thumbnail.medium != false))"
                                     :show-name="false"
+                                    :modal-on-click="false"
                                     :size="178"
                                     :file="{ 
                                         media_type: 'image', 
