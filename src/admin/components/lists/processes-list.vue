@@ -171,7 +171,7 @@
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
-                                        v-if="bgProcess.done <= 0"
+                                        v-if=" bgProcess.status === 'running' "
                                         class="icon has-text-gray action-icon"
                                         @click="pauseProcess(index)">
                                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-stop"/>
@@ -182,7 +182,7 @@
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
-                                        v-if=" bgProcess.status === 'finished' "
+                                        v-if=" bgProcess.status === 'finished' || bgProcess.status === null"
                                         class="icon has-text-success">
                                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-finish"/>
                                 </span>
@@ -195,6 +195,26 @@
                                         v-if=" bgProcess.status === 'finished-errors' "
                                         class="icon has-text-success">
                                     ! <i class="tainacan-icon tainacan-icon-20px tainacan-icon-finish"/>
+                                </span>
+                                <span
+                                        v-tooltip="{
+                                            content: $i18n.get('label_process_cancelled'),
+                                            autoHide: false,
+                                            placement: 'auto-start'
+                                        }"
+                                        v-if=" bgProcess.status === 'cancelled' "
+                                        class="icon has-text-success">
+                                    <i class="tainacan-icon has-text-danger tainacan-icon-20px tainacan-icon-cancel"/>
+                                </span>
+                                <span
+                                        v-tooltip="{
+                                            content: $i18n.get('label_process_paused'),
+                                            autoHide: false,
+                                            placement: 'auto-start'
+                                        }"
+                                        v-if=" bgProcess.status === 'paused' "
+                                        class="icon has-text-success">
+                                    <i class="tainacan-icon has-text-danger tainacan-icon-20px tainacan-icon-pause"/>
                                 </span>
                                 <span 
                                         v-tooltip="{
