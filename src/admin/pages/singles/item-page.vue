@@ -73,6 +73,7 @@
                             <file-item
                                     v-if="item.thumbnail != undefined && ((item.thumbnail['tainacan-medium'] != undefined && item.thumbnail['tainacan-medium'] != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
                                     :show-name="false"
+                                    :modal-on-click="false"
                                     :size="178"
                                     :file="{
                                 media_type: 'image',
@@ -102,6 +103,7 @@
                                     v-for="(attachment, index) in attachmentsList"
                                     :key="index"
                                     :show-name="true"
+                                    :modal-on-click="true"
                                     :file="attachment"/>
                             <p v-if="attachmentsList.length <= 0"><br>{{
                                 $i18n.get('info_no_attachments_on_item_yet') }}</p>

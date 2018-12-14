@@ -28,7 +28,6 @@ export const updateExporterSession = ({commit}, exporterSessionUpdated) => {
 
     return tainacan.patch(`/exporters/session/${exporterSessionUpdated.id}`, exporterSessionUpdated.body)
         .then(response => {
-            console.info(response.data);
             commit('setExporterSession');
 
             return response;

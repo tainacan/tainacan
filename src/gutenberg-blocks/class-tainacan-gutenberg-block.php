@@ -73,10 +73,12 @@ class GutenbergBlock {
 			array('wp-edit-blocks')
 		);
 
-		register_block_type('tainacan/items-grid', array(
-			'editor_script' => 'items-grid',
-			'style'         => 'items-grid'
-		));
+		if(function_exists('register_block_type')) {
+			register_block_type( 'tainacan/items-grid', array(
+				'editor_script' => 'items-grid',
+				'style'         => 'items-grid'
+			) );
+		}
 	}
 
 	public function register_tainacan_collections_carousel(){
@@ -94,10 +96,12 @@ class GutenbergBlock {
 			array('wp-edit-blocks')
 		);
 
-		register_block_type('tainacan/collections-carousel', array(
-			'editor_script' => 'collections-carousel',
-			'style'         => 'collections-carousel'
-		));
+		if(function_exists('register_block_type')) {
+			register_block_type( 'tainacan/collections-carousel', array(
+				'editor_script' => 'collections-carousel',
+				'style'         => 'collections-carousel'
+			) );
+		}
 	}
 
 	public function get_plugin_js_settings(){

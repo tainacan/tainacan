@@ -2,7 +2,8 @@
     <div>
         <figure 
                 class="file-item"
-                @click="isPreviewModalActive = true">
+                :class="{'shows-modal-on-click' : modalOnClick}"
+                @click="modalOnClick? isPreviewModalActive = true : null">
             <figcaption 
                     :style="{ 'max-width': size != undefined ? size + 'px' : '112px' }"
                     v-if="showName && file.title != undefined">{{ file.title.rendered }}</figcaption>
@@ -13,7 +14,7 @@
                         v-if="file.media_type == 'image'" 
                         class="image"
                         :style="{ 'background-image': 'url(' + file.guid.rendered + ')' }"/>
-                 <div
+                <div
                         :style="{ 'background-color': '#f2f2f2' }"
                         v-else 
                         class="file-placeholder">
@@ -22,41 +23,47 @@
                                 :class="'tainacan-icon-' + getIconForMimeType(file.mime_type)"
                                 class="has-text-gray tainacan-icon tainacan-icon-36px"/>
                     </span>
-                 </div>
+                </div>
             </div>
         </figure> 
     
         <!-- Preview Modal ----------------- -->
-        <b-modal
-                :can-cancel="false"
-                :active.sync="isPreviewModalActive"
-                :width="640"
-                scroll="keep">
-            <div class="tainacan-modal-content">
-                <div class="tainacan-modal-title">
-                    <h2 v-if="file.title != undefined">{{ file.title.rendered }}</h2>
-                    <a 
-                            @click="isPreviewModalActive = false"
-                            class="back-link">{{ $i18n.get('exit') }}</a>
-                    <hr>
+        <template v-if="modalOnClick">
+            <b-modal
+                    :active.sync="isPreviewModalActive"
+                    :width="640"
+                    scroll="keep">
+                <div class="tainacan-modal-content">
+                    <div class="tainacan-modal-title">
+                        <h2 v-if="file.title != undefined">{{ file.title.rendered }}</h2>
+                        <a 
+                                @click="isPreviewModalActive = false"
+                                class="back-link">{{ $i18n.get('exit') }}</a>
+                        <hr>
+                    </div>
+                    <div    
+                            class="is-flex rendered-content"
+                            v-html="file.description.rendered" />
                 </div>
-                <div    
-                        class="is-flex rendered-content"
-                        v-html="file.description.rendered" />
-            </div>
-        </b-modal>
+            </b-modal>
+        </template>
     </div>
 </template>
 
 <script>
 export default {
     name: 'FileItem',
+    data() {
+        return {
+            isPreviewModalActive: false
+        }
+    },
     props: {
         file: Object,
         size: 112,
         showName: false,
         isSelected: false,
-        isPreviewModalActive: false
+        modalOnClick: true
     },
     methods: {
         getIconForMimeType(mimeType) {
@@ -94,11 +101,13 @@ export default {
     .file-item {
         display: inline-block;
 
-        &:hover {
+        &.shows-modal-on-click:hover {
             cursor: pointer;
             .image, .file-placeholder {
                 transform: scale(1.05);
             }
+        }
+        &:hover {
             figcaption {
                 background-color: $gray1;
             }

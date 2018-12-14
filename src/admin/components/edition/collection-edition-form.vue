@@ -46,6 +46,7 @@
                             <file-item
                                     v-if="collection.thumbnail != undefined && ((collection.thumbnail['tainacan-medium'] != undefined && collection.thumbnail['tainacan-medium'] != false) || (collection.thumbnail.medium != undefined && collection.thumbnail.medium != false))"
                                     :show-name="false"
+                                    :modal-on-click="false"
                                     :size="178"
                                     :file="{ 
                                         media_type: 'image', 
@@ -797,6 +798,7 @@ export default {
                 'my-thumbnail-media-frame', {
                     button_labels: {
                         frame_title: this.$i18n.get('instruction_select_collection_thumbnail'),
+                        frame_button: this.$i18n.get('label_select_file'),
                     },
                     relatedPostId: this.collectionId,
                     onSave: (mediaId) => {
@@ -813,6 +815,7 @@ export default {
                 'my-header-image-media-frame', {
                     button_labels: {
                         frame_title: this.$i18n.get('instruction_select_collection_header_image'),
+                        frame_button: this.$i18n.get('label_select_file'),
                     },
                     relatedPostId: this.collectionId,
                     onSave: (media) => {

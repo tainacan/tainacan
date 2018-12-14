@@ -47,30 +47,17 @@
                                 <div
                                         class="tainacan-attachments-in-modal"
                                         v-if="diff.old.length">
-                                    <template v-for="(attachment, anotherIndex ) in diff.old">
-                                        <div
+                                    <template v-for="(attachment, anotherIndex) in diff.old">
+                                        <file-item 
                                                 :key="anotherIndex"
-                                                class="box"
-                                                v-if="attachment.mime_type.includes('image')">
-                                            <p class="tainacan-p-overflow">{{ `${$i18n.get('label_title')}: ${attachment.title}` }}</p>
-                                            <figure class="image tainacan-figure">
-                                                <img
-                                                        width="100%"
-                                                        style="height: 100% !important;"
-                                                        :src="attachment.url"
-                                                        :alt="attributeName">
-                                            </figure>
-                                        </div>
-                                        <div
-                                                :key="anotherIndex"
-                                                class="box"
-                                                v-else-if="['pdf', 'audio', 'video'].includes(attachment.mime_type.split('/')[1])">
-                                            <p class="tainacan-p-overflow">{{ `${$i18n.get('label_title')}: ${attachment.title}` }}</p>
-                                            <object
-                                                    width="100%"
-                                                    :data="attachment.url"
-                                                    :type="attachment.mime_type"/>
-                                        </div>
+                                                :modal-on-click="false"
+                                                :show-name="true"
+                                                :file="{ 
+                                                    title: { rendered: attachment.title },
+                                                    guid: { rendered: attachment.url }, 
+                                                    mime_type: attachment.mime_type,
+                                                    media_type: attachment.mime_type.includes('image') ? 'image' : 'other'
+                                                }"/>
                                     </template>
                                 </div>
                                 <div v-else>
@@ -170,29 +157,16 @@
                                         class="tainacan-attachments-in-modal"
                                         v-if="diff.new.length">
                                     <template v-for="(attachment, index) in diff.new">
-                                        <div
+                                        <file-item 
                                                 :key="index"
-                                                class="box"
-                                                v-if="attachment.mime_type.includes('image')">
-                                            <p class="tainacan-p-overflow">{{ `${$i18n.get('label_title')}: ${attachment.title}` }}</p>
-                                            <figure class="image tainacan-figure">
-                                                <img
-                                                        width="100%"
-                                                        style="height: 100% !important;"
-                                                        :src="attachment.url"
-                                                        :alt="attributeName">
-                                            </figure>
-                                        </div>
-                                        <div
-                                                :key="index"
-                                                class="box"
-                                                v-else-if="['pdf', 'audio', 'video'].includes(attachment.mime_type.split('/')[1])">
-                                            <p class="tainacan-p-overflow">{{ `${$i18n.get('label_title')}: ${attachment.title}` }}</p>
-                                            <object
-                                                    width="100%"
-                                                    :data="attachment.url"
-                                                    :type="attachment.mime_type"/>
-                                        </div>
+                                                :modal-on-click="false"
+                                                :show-name="true"
+                                                :file="{ 
+                                                    title: { rendered: attachment.title },
+                                                    guid: { rendered: attachment.url }, 
+                                                    mime_type: attachment.mime_type,
+                                                    media_type: attachment.mime_type.includes('image') ? 'image' : 'other'
+                                                }"/>
                                     </template>
                                 </div>
                                 <div v-else>
@@ -306,13 +280,13 @@
                         <!--<span>{{ $i18n.get('undo') }}</span>-->
                     <!--</button>-->
 
-                    <button
+                    <!-- <button
                             v-if="activity.status == 'publish'"
                             @click="$parent.close()"
                             type="button"
                             class="button is-secondary">
                         <span>OK</span>
-                    </button>
+                    </button> -->
                 </div>
             </div>
         </footer>
@@ -321,6 +295,7 @@
 
 <script>
     import moment from 'moment';
+    import FileItem from '../file-item.vue';
 
     export default {
         name: "ActivityDetailsModal",
@@ -334,6 +309,9 @@
                 activityCreationDate: '',
                 placeholderSquareImage: `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`,
             }
+        },
+        components: {
+            FileItem
         },
         created() {
 
@@ -368,7 +346,10 @@
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
+    @import "../../scss/_variables.scss";
+
     .tainacan-modal-title {
         align-self: baseline;
         display: flex;
@@ -389,7 +370,16 @@
         display: flex;
         flex-wrap: wrap;
         flex-direction: row;
-        justify-content: space-between;
+        align-content: baseline;
+        resize: vertical;
+        overflow-y: auto;
+        overflow-x: hidden;
+        height: 200px;
+        border: 1px solid $gray3;
+
+        &>div {
+            margin: 0.5rem;
+        }
     }
 
     .tainacan-p-overflow {

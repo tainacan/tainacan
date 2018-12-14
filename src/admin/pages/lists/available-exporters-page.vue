@@ -4,7 +4,6 @@
                 :bread-crumb-items="[{ path: '', label: $i18n.get('exporters') }]" />
 
         <h3>{{ $i18n.get('label_available_exporters') }}</h3>
-        <p>{{ $i18n.get('info_available_exporters_helper') }}</p>
         <p>{{ $i18n.get('instruction_select_an_exporter_type') }}</p>
         <div class="exporter-types-container">
             <div
