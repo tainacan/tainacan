@@ -5,22 +5,37 @@
             :class="{'is-menu-compressed': isMenuCompressed, 'is-repository-level' : isRepositoryLevel}">
         <h1 v-if="isRepositoryLevel">{{ repositoryName }}</h1>
         <h1 v-else>{{ $i18n.get('collection') + '' }} <span class="has-text-weight-bold">{{ collectionName }}</span></h1>
-        <a
-                :href="collectionURL"
-                target="_blank"
-                v-if="!isRepositoryLevel"
-                class="button"
-                id="view-collection-button">
+
+        <div>
+            <a
+                    @click="openAvailableExportersModal"
+                    class="button"
+                    id="exporter-collection-button"
+                    v-if="!isRepositoryLevel">
+            <span class="icon">
+                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-export"/>
+            </span>
+            </a>
+            <a
+                    :href="collectionURL"
+                    target="_blank"
+                    v-if="!isRepositoryLevel"
+                    class="button"
+                    id="view-collection-button">
             <span class="icon">
                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
             </span>
-             {{ $i18n.get('label_view_collection') }}
-        </a>
+                {{ $i18n.get('label_view_collection') }}
+            </a>
+        </div>
+
+
     </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import AvailableExportersModal from '../other/available-exporters-modal.vue';
 
 export default {
     name: 'TainacanRepositorySubheader',
@@ -49,7 +64,18 @@ export default {
         ...mapGetters('collection', [
             'getCollectionName',
             'getCollectionURL'
-        ])
+        ]),
+        openAvailableExportersModal(){
+            this.$modal.open({
+                parent: this,
+                component: AvailableExportersModal,
+                hasModalCard: true,
+                props: {
+                    sourceCollection: this.collectionId,
+                    hideWhenManualCollection: true
+                }
+            });
+        }
     },
     mounted() {
         if (!this.isRepositoryLevel) {
@@ -117,6 +143,16 @@ export default {
             .icon {
                 margin-right: 0.75rem;
             }
+        }
+
+        #exporter-collection-button {
+            border: none;
+            border-radius: 0px !important;
+            height: 42px !important;
+            right: 0;
+            position: relative;
+            background-color: $turquoise4;
+            color: white;
         }
 
         @media screen and (max-width: 769px) {

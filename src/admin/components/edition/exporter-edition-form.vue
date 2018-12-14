@@ -102,9 +102,6 @@
                 </div>
             </div>
         </form>
-        <pre>
-            {{ exporterSession }}
-        </pre>
     </div>
 </template>
 
@@ -122,7 +119,6 @@
                 selectedMapping: undefined,
                 selectedCollection: undefined,
                 sendEmail: '0',
-                emailLoading: false,
                 runButtonLoading: false,
                 exporterSession: {},
                 formErrorMessage: '',
@@ -192,53 +188,28 @@
                 }
             },
             updateExporter(attributeName){
+                let exporterSessionUpdated = {
+                    body: {},
+                    id: this.exporterSession.id,
+                };
+
                 if(attributeName === 'collection.id'){
-                    let exporterSessionUpdated = {
-                        body: {
-                            collection: {
-                                id: this.selectedCollection,
-                            },
-                        },
-                        id: this.exporterSession.id,
-                    };
+                    let collection = attributeName.split('.');
 
-                    this.updateExporterSession(exporterSessionUpdated)
-                        .then(exporterSessionUpdated => this.verifyError(exporterSessionUpdated));
-
+                    exporterSessionUpdated.body[`${collection[0]}`] = {};
+                    exporterSessionUpdated.body[`${collection[0]}`][`${collection[1]}`] = this.selectedCollection;
                 } else if (attributeName === 'mapping_selected'){
-                    let exporterSessionUpdate = {
-                        body: {
-                            mapping_selected: this.selectedMapping ? this.selectedMapping : this.selectedMapping,
-                        },
-                        id: this.exporterSession.id,
-                    };
-
-                    this.updateExporterSession(exporterSessionUpdate)
-                        .then(exporterSessionUpdated => this.verifyError(exporterSessionUpdated));
-
+                    exporterSessionUpdated.body[`${attributeName}`] = this.selectedMapping ? this.selectedMapping : this.selectedMapping;
                 } else if (attributeName === 'send_email'){
-
-                    let exporterSessionUpdate = {
-                        body: {
-                            send_email: this.sendEmail,
-                        },
-                        id: this.exporterSession.id,
-                    };
-
-                    this.emailLoading = true;
-
-                    this.updateExporterSession(exporterSessionUpdate)
-                        .then(exporterSessionUpdated => {
-                            this.verifyError(exporterSessionUpdated);
-                            this.emailLoading = false;
-                        })
-                        .catch(() => {
-                            this.emailLoading = false;
-                        });
+                    exporterSessionUpdated.body[`${attributeName}`] = this.sendEmail;
                 }
+
+                this.updateExporterSession(exporterSessionUpdated)
+                    .then(exporterSessionUpdated => this.verifyError(exporterSessionUpdated));
             }
         },
         created(){
+            this.selectedCollection = this.$route.query.sourceCollection;
             this.exporterType = this.$route.params.exporterSlug;
 
             this.isLoading = true;
