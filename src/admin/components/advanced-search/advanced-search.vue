@@ -714,7 +714,6 @@
 
     .advanced-search-header-dropdown {
         height: 27px !important;
-        padding-bottom: 2rem;
 
         a, .has-text-secondary {
             color: $blue4 !important;

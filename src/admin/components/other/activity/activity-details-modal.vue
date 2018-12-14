@@ -280,13 +280,13 @@
                         <!--<span>{{ $i18n.get('undo') }}</span>-->
                     <!--</button>-->
 
-                    <button
+                    <!-- <button
                             v-if="activity.status == 'publish'"
                             @click="$parent.close()"
                             type="button"
                             class="button is-secondary">
                         <span>OK</span>
-                    </button>
+                    </button> -->
                 </div>
             </div>
         </footer>

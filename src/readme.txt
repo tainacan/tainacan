@@ -16,8 +16,9 @@ Tainacan is a powerful and flexible repository platform for WordPress. Manage an
 
 = Features =
 
-* "Metadata and Filters": Use a metadata standard or choose whatever set of metadata you want to describe the items in your collections. Also, choose which metadata will be used as a filter when browsing the collection
-Faceted Search. Browse your collection (and let the public browse it) using a faceted search interface with the filters you have chosen.
+* "Metadata and Filters": Use a metadata standard or choose whatever set of metadata you want to describe the items in your collections. Also, choose which metadata will be used as a filter when browsing the collection.
+
+* "Faceted Search". Browse your collection (and let the public browse it) using a faceted search interface with the filters you have chosen.
 
 * "Manage Taxonomies": Manage vocabularies that can be used accross all your collections.
 
