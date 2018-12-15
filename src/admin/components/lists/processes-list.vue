@@ -184,7 +184,7 @@
                                         }"
                                         v-if=" bgProcess.status === 'finished' || bgProcess.status === null"
                                         class="icon has-text-success">
-                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-finish"/>
+                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approvedcircle"/>
                                 </span>
                                 <span
                                         v-tooltip="{
@@ -194,7 +194,10 @@
                                         }"
                                         v-if=" bgProcess.status === 'finished-errors' "
                                         class="icon has-text-success">
-                                    ! <i class="tainacan-icon tainacan-icon-20px tainacan-icon-finish"/>
+                                    <i
+                                        style="margin-right: -5px;"
+                                        class="tainacan-icon tainacan-icon-20px tainacan-icon-alert"/>
+                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approvedcircle"/>
                                 </span>
                                 <span
                                         v-tooltip="{
@@ -204,7 +207,7 @@
                                         }"
                                         v-if=" bgProcess.status === 'cancelled' "
                                         class="icon has-text-success">
-                                    <i class="tainacan-icon has-text-danger tainacan-icon-20px tainacan-icon-cancel"/>
+                                    <i class="tainacan-icon has-text-danger tainacan-icon-20px tainacan-icon-repprovedcircle"/>
                                 </span>
                                 <span
                                         v-tooltip="{
