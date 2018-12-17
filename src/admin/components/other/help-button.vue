@@ -10,7 +10,7 @@
                 <h5>{{ title }}</h5>
             </div>
             <div class="help-tooltip-body">
-                <p>{{ (message != '' && message != undefined) ? message : $i18n.get('info_no_description_provided') }}</p>
+                <p v-html="(message != '' && message != undefined) ? message : $i18n.get('info_no_description_provided')"/>
             </div>
         </div> 
     </span>

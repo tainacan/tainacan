@@ -70,7 +70,12 @@
                         </b-select>
                     </b-field>
 
-                    <b-field :label="$i18n.get('label_send_email')">
+                    <b-field 
+                            :addons="false"
+                            :label="$i18n.get('label_send_email')">
+                        <help-button
+                                :title="$i18n.get('label_send_email')"
+                                :message="'<span>' + $i18n.get('info_send_email') + `&nbsp;<a href='` + adminFullURL + $routerHelper.getProcessesPage() + `'>` + $i18n.get('activities') + ` ` + $i18n.get('label_page') + '</a></span>'"/>
                         <b-checkbox
                                 true-value="1"
                                 false-value="0"
@@ -115,6 +120,7 @@
             return {
                 exporterType: '',
                 collections: [],
+                adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#', 
                 isFetchingCollections: false,
                 selectedMapping: undefined,
                 selectedCollection: undefined,

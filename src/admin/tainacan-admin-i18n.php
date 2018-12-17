@@ -341,7 +341,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_filters_from'                             => __( 'Filters from', 'tainacan' ),
 	'label_available_exporters'                      => __( 'Available Exporters', 'tainacan' ),
 	'label_source_collection'                        => __( 'Origin collection', 'tainacan'),
-	'label_send_email'                               => __( 'Send a email after exportation completed', 'tainacan' ),
+	'label_send_email'                               => __( 'Send me an e-mail when done.', 'tainacan' ),
 	'label_urls'                 					 => __( 'URLs', 'tainacan' ),
 	'label_page'                 					 => __( 'Page', 'tainacan' ),
 	'label_activity_description'                     => __( 'Activity description', 'tainacan' ),
@@ -523,10 +523,11 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_process_status_cancelled' 				 => __('Cancelled', 'tainacan'),
 	'info_process_status_paused' 				 	 => __('Paused', 'tainacan'),
 	'info_process_status_running' 				 	 => __('Running', 'tainacan'),
-    'info_warning_process_cancelled'                => __( 'Are you sure? This process will be cancelled', 'tainacan' ),
+    'info_warning_process_cancelled'                 => __( 'Are you sure? This process will be cancelled', 'tainacan' ),
 	'info_empty'                                     => __( 'empty', 'tainacan' ),
 	'info_url_copied'	         	    	    	 => __( 'URL link copied', 'tainacan' ),
 	'info_other_item_listing_options'				 => __('Other items listing options: ', 'tainacan'),
+	'info_send_email'				 				 => __('The exporter may take a while depending on the size of your collection. Check this option to receive an e-mail when the process is done. You can also check the process status visiting the', 'tainacan'),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),
