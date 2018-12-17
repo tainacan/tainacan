@@ -58,20 +58,38 @@
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-play-circle"/>
                         </span> -->
                         <span 
-                                v-if="bgProcess.done <= 0"
+                                v-if="bgProcess.status === 'running'"
                                 class="icon has-text-gray action-icon"
                                 @click="pauseProcess(index)">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-stop"/>
                         </span>
                         <span 
-                                v-if="bgProcess.done > 0 && !bgProcess.error_log"
+                                v-if="bgProcess.status === 'finished-errors'"
                                 class="icon has-text-success">
-                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-finish"/>
+                            <i
+                                style="margin-right: -5px;"
+                                class="tainacan-icon tainacan-icon-20px tainacan-icon-alert has-text-yellow2"/>
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-approvedcircle"/>
                         </span>
                         <span 
-                                v-if="bgProcess.done > 0 && bgProcess.error_log"
+                                v-if="bgProcess.status === 'finished' || bgProcess.status === null"
+                                class="icon has-text-success">
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-approvedcircle"/>
+                        </span>
+                        <span 
+                                v-if="bgProcess.status === 'errored'"
                                 class="icon has-text-danger">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-processerror" />
+                        </span>
+                        <span 
+                                v-if="bgProcess.status === 'cancelled'"
+                                class="icon has-text-danger">
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-repprovedcircle" />
+                        </span>
+                        <span 
+                                v-if="bgProcess.status === 'paused'"
+                                class="icon has-text-gray">
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-pause" />
                         </span>
                         <span 
                                 v-if="bgProcess.done <= 0"
@@ -332,7 +350,7 @@ export default {
                     p {
                         display: inline-block;
                         position: relative;
-                        top: -2px;
+                        top: 1px;
                     }
                     
                     .tainacan-arrowleft, .tainacan-arrowright {

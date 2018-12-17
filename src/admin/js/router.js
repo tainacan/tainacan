@@ -81,7 +81,7 @@ const routes = [
     { path: '/importers/:importerSlug/:sessionId', name: 'ImporterCreationForm', component: ImporterEditionForm, meta: { title: i18nGet('title_importer_page'), icon: 'import' } },
     { path: '/importers/:importerType/:sessionId/mapping/:collectionId', name: 'ImporterMappingForm', component: ImporterMappingForm, meta: {title: i18nGet('title_importer_mapping_page'), icon: 'import'} },
 
-    { path: '/exporters', name: 'ExportersPage', component: AvailableExportersPage, meta: {title: i18nGet('title_exporters_page'), icon: 'export'} },
+    { path: '/exporters/', name: 'ExportersPage', component: AvailableExportersPage, meta: {title: i18nGet('title_exporters_page'), icon: 'export'} },
     { path: '/exporters/:exporterSlug', name: 'ExporterEditionForm', component: ExporterEditionForm, meta: {title: i18nGet('title_exporter_page'), icon: 'export'}},
 
     { path: '*', redirect: '/'}

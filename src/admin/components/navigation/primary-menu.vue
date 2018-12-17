@@ -96,7 +96,8 @@
                             tag="a"
                             to="/exporters"
                             :class="(
-                                activeRoute == 'ExportersPage' ) ? 'is-active':''">
+                                activeRoute == 'ExportersPage' ||
+                                activeRoute == 'ExporterEditionForm') ? 'is-active':''">
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-export"/>
                         </span>

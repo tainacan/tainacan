@@ -177,7 +177,7 @@
                                 class="actions-cell column-small-width" 
                                 :label="$i18n.get('label_status')">
                             <div class="actions-container">
-                                <span class="label-status">{{ getStatusLabel(bgProcess.status) }}</span>
+                                <!-- <span class="label-status">{{ getStatusLabel(bgProcess.status) }}</span> -->
                                 <span 
                                         v-if="bgProcess.done <= 0"
                                         class="icon has-text-success loading-icon">
@@ -214,7 +214,7 @@
                                         class="icon has-text-success">
                                     <i
                                         style="margin-right: -5px;"
-                                        class="tainacan-icon tainacan-icon-20px tainacan-icon-alert"/>
+                                        class="tainacan-icon tainacan-icon-20px tainacan-icon-alert has-text-yellow2"/>
                                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approvedcircle"/>
                                 </span>
                                 <span
