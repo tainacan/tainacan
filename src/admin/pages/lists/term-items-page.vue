@@ -975,7 +975,7 @@
                             let prefsFetchOnly = !this.isRepositoryLevel ? `fetch_only_${this.collectionId}` : 'fetch_only';
                             let prefsFetchOnlyMeta = !this.isRepositoryLevel ? `fetch_only_meta_${this.collectionId}` : 'fetch_only_meta';
 
-                            let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly) ? this.$userPrefs.get(prefsFetchOnly).replace(/,null/g, '').split(',') : [];
+                            let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly) ? typeof this.$userPrefs.get(prefsFetchOnly) != 'string' ? this.$userPrefs.get(prefsFetchOnly) : this.$userPrefs.get(prefsFetchOnly).replace(/,null/g, '').split(',') : [];
                             let prefsFetchOnlyMetaObject = this.$userPrefs.get(prefsFetchOnlyMeta) ? this.$userPrefs.get(prefsFetchOnlyMeta).split(',') : [];
 
                             let thumbnailMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[0] != null) : true;
@@ -1197,7 +1197,7 @@
                  * at collection level to items page at repository level
                  */
 
-                if (this.isOnTheme || this.collectionId === to.params.collectionId) {
+                if (this.isOnTheme || this.collectionId == to.params.collectionId) {
                     this.prepareMetadata();
                     this.prepareFilters();
                 }

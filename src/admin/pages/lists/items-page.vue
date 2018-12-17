@@ -1007,19 +1007,18 @@
                             shouldLoadMeta = this.registeredViewModes[this.viewMode].dynamic_metadata;
                         else
                             shouldLoadMeta  = this.adminViewMode == 'table' || this.adminViewMode == 'records' || this.adminViewMode == undefined;
-                    
+                        
                         if (shouldLoadMeta) {
-
-
+                            
                             // Loads user prefs object as we'll need to check if there's something configured by user 
                             let prefsFetchOnly = !this.isRepositoryLevel ? `fetch_only_${this.collectionId}` : 'fetch_only';
                             let prefsFetchOnlyMeta = !this.isRepositoryLevel ? `fetch_only_meta_${this.collectionId}` : 'fetch_only_meta';
 
-                            let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly) ? this.$userPrefs.get(prefsFetchOnly).replace(/,null/g, '').split(',') : [];
+                            let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly) ? typeof this.$userPrefs.get(prefsFetchOnly) != 'string' ? this.$userPrefs.get(prefsFetchOnly) : this.$userPrefs.get(prefsFetchOnly).replace(/,null/g, '').split(',') : [];
                             let prefsFetchOnlyMetaObject = this.$userPrefs.get(prefsFetchOnlyMeta) ? this.$userPrefs.get(prefsFetchOnlyMeta).split(',') : [];
 
                             let thumbnailMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[0] != null) : true;
-
+                            
                             metadata.push({
                                 name: this.$i18n.get('label_thumbnail'),
                                 metadatum: 'row_thumbnail',
@@ -1113,7 +1112,7 @@
                                     display: authorNameMetadatumDisplay
                                 });
                             }
-                        
+                            
                             this.$eventBusSearch.addFetchOnly(
                                 (thumbnailMetadatumDisplay ? 'thumbnail' : null) +','+
                                 (creationDateMetadatumDisplay ? 'creation_date' : null) +','+
@@ -1239,8 +1238,8 @@
                 /* This condition is to prevent a incorrect fetch by filter or metadata when we coming from items
                  * at collection level to items page at repository level
                  */
-
-                if (this.isOnTheme || this.collectionId === to.params.collectionId || to.query.fromBreadcrumb) {
+                
+                if (this.isOnTheme || this.collectionId == to.params.collectionId || to.query.fromBreadcrumb) {
                     this.prepareMetadata();
                     this.prepareFilters();
                 }
