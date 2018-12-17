@@ -34,7 +34,6 @@
                         <br>
                         <b-select
                                 expanded
-                                @input="updateExporter('collection.id')"
                                 v-model="selectedCollection"
                                 :loading="isFetchingCollections"
                                 :placeholder="$i18n.get('instruction_select_a_collection')">
@@ -56,7 +55,6 @@
 
                             <b-select
                                     expanded
-                                    @input="updateExporter('mapping_selected')"
                                     v-model="selectedMapping"
                                     :placeholder="$i18n.get('instruction_select_a_mapper')">
                                 <option :value="''">-</option>
@@ -72,7 +70,6 @@
 
                     <b-field :label="$i18n.get('label_send_email')">
                         <b-checkbox
-                                @input="updateExporter('send_email')"
                                 true-value="1"
                                 false-value="0"
                                 v-model="sendEmail">
@@ -156,19 +153,35 @@
             runExporter(){
                 this.runButtonLoading = true;
 
-                this.updateExporterOptions().then(() => {
+                let exporterSessionUpdated = {
+                    body: {
+                        collection: {
+                            id: this.selectedCollection
+                        },
+                        mapping_selected: this.selectedMapping ? this.selectedMapping : this.selectedMapping,
+                        send_email: this.sendEmail
+                    },
+                    id: this.exporterSession.id,
+                };
 
-                    if(!this.formErrorMessage) {
-                        this.runExporterSession(this.exporterSession.id)
-                            .then((bgp) => {
-                                this.runButtonLoading = false;
-                                this.$router.push(this.$routerHelper.getProcessesPage(bgp.bg_process_id));
-                            })
-                            .catch(() => {
-                                this.runButtonLoading = false;
-                            });
-                    }
-                });
+                this.updateExporterSession(exporterSessionUpdated)
+                    .then(exporterSessionUpdated => {
+                        this.verifyError(exporterSessionUpdated);
+
+                        this.updateExporterOptions().then(() => {
+                            if(!this.formErrorMessage) {
+                                this.runExporterSession(this.exporterSession.id)
+                                    .then((bgp) => {
+                                        this.runButtonLoading = false;
+                                        this.$router.push(this.$routerHelper.getProcessesPage(bgp.bg_process_id));
+                                    })
+                                    .catch(() => {
+                                        this.runButtonLoading = false;
+                                    });
+                            }
+                        });
+                    })
+                    .catch(() => this.runButtonLoading = false); 
             },
             formIsValid(){
                 return (
@@ -186,26 +199,6 @@
                 } else {
                     this.exporterSession = response.data;
                 }
-            },
-            updateExporter(attributeName){
-                let exporterSessionUpdated = {
-                    body: {},
-                    id: this.exporterSession.id,
-                };
-
-                if(attributeName === 'collection.id'){
-                    let collection = attributeName.split('.');
-
-                    exporterSessionUpdated.body[`${collection[0]}`] = {};
-                    exporterSessionUpdated.body[`${collection[0]}`][`${collection[1]}`] = this.selectedCollection;
-                } else if (attributeName === 'mapping_selected'){
-                    exporterSessionUpdated.body[`${attributeName}`] = this.selectedMapping ? this.selectedMapping : this.selectedMapping;
-                } else if (attributeName === 'send_email'){
-                    exporterSessionUpdated.body[`${attributeName}`] = this.sendEmail;
-                }
-
-                this.updateExporterSession(exporterSessionUpdated)
-                    .then(exporterSessionUpdated => this.verifyError(exporterSessionUpdated));
             }
         },
         created(){
@@ -214,17 +207,13 @@
             this.exporterType = this.$route.params.exporterSlug;
 
             this.isLoading = true;
-            this.createExporterSession(this.exporterType).then(exporterSession => {
-                this.exporterSession = exporterSession ? exporterSession : {};
-                this.selectedMapping = this.exporterSession.mapping_selected;
+            this.createExporterSession(this.exporterType)
+                .then(exporterSession => {
+                    this.exporterSession = exporterSession ? exporterSession : {};
+                    this.selectedMapping = this.exporterSession.mapping_selected;
 
-                if(this.selectedCollection){
-                    this.updateExporter('collection.id');
                     this.isLoading = false;
-                } else {
-                    this.isLoading = false;
-                }
-            });
+                });
 
             this.isFetchingCollections = true;
 

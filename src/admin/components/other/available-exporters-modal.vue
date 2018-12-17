@@ -35,7 +35,7 @@
     export default {
         name: 'AvailableExportersModal',
         props: {
-            sourceCollection: Number,
+            sourceCollection: String,
             hideWhenManualCollection: false
         },
         data(){
