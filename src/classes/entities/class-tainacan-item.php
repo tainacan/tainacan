@@ -681,4 +681,13 @@ class Item extends Entity {
 		
 	}
 	
+	/**
+	* Gets the url to the edit page for this item 
+	*/
+	public function get_edit_url() {
+		$collection_id = $this->get_collection_id();
+		$id = $this->get_id();
+		return admin_url("?page=tainacan_admin#/collections/$collection_id/items/$id/edit");
+	}
+	
 }
