@@ -120,7 +120,8 @@ abstract class Background_Process extends \WP_Background_Process {
 					'priority' => $priority,
 					'action' => $this->action,
 					'name' => $this->get_name(),
-					'queued_on' => date('Y-m-d H:i:s')
+					'queued_on' => date('Y-m-d H:i:s'),
+                    'status' => 'running'
 				]
 			);
 			$this->ID = $wpdb->insert_id;
@@ -173,7 +174,8 @@ abstract class Background_Process extends \WP_Background_Process {
 			[
 			    'done' => 1,
                 'progress_label' => __('Process completed','tainacan'),
-                'progress_value' => 100
+                'progress_value' => 100,
+                'status' => 'finished'
             ],
 			['ID' => $key]
 		);

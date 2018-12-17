@@ -177,6 +177,7 @@
                                 class="actions-cell column-small-width" 
                                 :label="$i18n.get('label_status')">
                             <div class="actions-container">
+                                <span class="label-status">{{ getStatusLabel(bgProcess.status) }}</span>
                                 <span 
                                         v-if="bgProcess.done <= 0"
                                         class="icon has-text-success loading-icon">
@@ -188,7 +189,7 @@
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
-                                        v-if="bgProcess.done <= 0"
+                                        v-if=" bgProcess.status === 'running' "
                                         class="icon has-text-gray action-icon"
                                         @click="pauseProcess(index)">
                                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-stop"/>
@@ -199,9 +200,42 @@
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
-                                        v-if="bgProcess.done > 0 && !bgProcess.error_log"
+                                        v-if=" bgProcess.status === 'finished' || bgProcess.status === null"
                                         class="icon has-text-success">
-                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-finish"/>
+                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approvedcircle"/>
+                                </span>
+                                <span
+                                        v-tooltip="{
+                                            content: $i18n.get('label_process_completed_with_errors'),
+                                            autoHide: false,
+                                            placement: 'auto-start'
+                                        }"
+                                        v-if=" bgProcess.status === 'finished-errors' "
+                                        class="icon has-text-success">
+                                    <i
+                                        style="margin-right: -5px;"
+                                        class="tainacan-icon tainacan-icon-20px tainacan-icon-alert"/>
+                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approvedcircle"/>
+                                </span>
+                                <span
+                                        v-tooltip="{
+                                            content: $i18n.get('label_process_cancelled'),
+                                            autoHide: false,
+                                            placement: 'auto-start'
+                                        }"
+                                        v-if=" bgProcess.status === 'cancelled' "
+                                        class="icon has-text-success">
+                                    <i class="tainacan-icon has-text-danger tainacan-icon-20px tainacan-icon-repprovedcircle"/>
+                                </span>
+                                <span
+                                        v-tooltip="{
+                                            content: $i18n.get('label_process_paused'),
+                                            autoHide: false,
+                                            placement: 'auto-start'
+                                        }"
+                                        v-if=" bgProcess.status === 'paused' "
+                                        class="icon has-text-success">
+                                    <i class="tainacan-icon has-text-danger tainacan-icon-20px tainacan-icon-pause"/>
                                 </span>
                                 <span 
                                         v-tooltip="{
@@ -209,7 +243,7 @@
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
-                                        v-if="bgProcess.done > 0 && bgProcess.error_log"
+                                        v-if="bgProcess.status === 'errored'"
                                         class="icon has-text-danger">
                                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-processerror" />
                                 </span>
@@ -358,7 +392,46 @@
                 }
             },
             pauseProcess(index) {
-                this.updateProcess({ id: this.processes[index].ID, status: 'closed' });
+
+                this.$modal.open({
+                    parent: this,
+                    component: CustomDialog,
+                    props: {
+                        icon: 'alert',
+                        title: this.$i18n.get('label_warning'),
+                        message: this.$i18n.get('info_warning_process_cancelled'),
+                        onConfirm: () => {
+                            this.updateProcess({ id: this.processes[index].ID, status: 'closed' });
+                        },
+                    }
+                });
+
+
+            },
+            getStatusLabel(status) {
+
+                switch(status) {
+                    case 'finished':
+                        return this.$i18n.get('info_process_status_finished');
+
+                    case 'finished-errors':
+                        return this.$i18n.get('info_process_status_finished');
+
+                    case 'errored':
+                        return this.$i18n.get('info_process_status_errored');
+
+                    case 'cancelled':
+                        return this.$i18n.get('info_process_status_cancelled');
+
+                    case 'paused':
+                        return this.$i18n.get('info_process_status_paused');
+
+                    case 'running':
+                        return this.$i18n.get('info_process_status_running');
+
+                    default:
+                        return this.$i18n.get('info_process_status_finished');
+                }
             }
         },
         mounted() {
@@ -393,6 +466,11 @@
                 color: $gray4;
             }
         }
+    }
+
+    .label-status {
+        font-size: 9pt;
+        margin-right: 3px;
     }
 
     .loading-icon .control.is-loading::after {
