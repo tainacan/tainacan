@@ -589,15 +589,15 @@ class Exporter extends CommunImportExport {
 
 		$processed_items = $this->get_items($current_collection_item, $collection_definition);
 		foreach ($processed_items as $processed_item) {
-			$this->process_item( $processed_item );
+			$this->process_item( $processed_item['item'], $processed_item['metadata'] );
 		}
 
 		$this->process_footer($current_collection_item, $collection_definition);
 		return $this->next_item();
 	}
 
-	public function process_item( $processed_item ) {
-		$this->append_to_file('exporter', "[--process item--]\n");
+	public function process_item( $item, $metadata ) {
+		
 	}
 
 	private function process_header($current_collection_item, $collection_definition) {
@@ -647,7 +647,10 @@ class Exporter extends CommunImportExport {
 			$item = new Entities\Item($items->post);
 			
 			if ($item instanceof \Tainacan\Entities\Item ) {
-				$data[] = $this->map_item_metadata($item);
+				$data[] = [
+					'metadata' =>$this->map_item_metadata($item),
+					'item' => $item
+				];
 			} else {
 				$this->add_error_log( __('Error processing item', 'tainacan') );
 			}
@@ -772,7 +775,6 @@ class Exporter extends CommunImportExport {
 	}
 
 	public function finished() {
-		error_log(json_encode($this->get_send_email()));
 		if($this->get_send_email() == 1) {
 			$author = $this->get_transient('author');
 			$user = get_userdata( (int) $author );

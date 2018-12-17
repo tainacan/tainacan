@@ -22,14 +22,16 @@ class CSV extends Exporter {
 		return $this->get_option('multivalued_delimiter');
 	}
 
-	public function process_item( $processed_item ) {
+	public function process_item( $item, $metadata ) {
 		
 		$mapper = $this->get_current_mapper();
 		$line = [];
 		
+		$line[] = $item->get_id();
+		
 		add_filter('tainacan-item-metadata-get-multivalue-separator', [$this, 'filter_multivalue_separator']);
 		
-		foreach ($processed_item as $meta_key => $meta) {
+		foreach ($metadata as $meta_key => $meta) {
 			
 			if (!$meta) {
 				$line[] = '';
@@ -42,18 +44,50 @@ class CSV extends Exporter {
 		
 		remove_filter('tainacan-item-metadata-get-multivalue-separator', [$this, 'filter_multivalue_separator']);
 		
+		
+		$line[] = $item->get_status();
+		
+		$line[] = $this->get_document_cell($item);
+		
+		$line[] = $this->get_attachments_cell($item);
+		
 		$line_string = $this->str_putcsv($line, $this->get_option('delimiter'), $this->get_option('enclosure'));
 		
 		
 		$this->append_to_file('csvexporter.csv', $line_string."\n");
 		
 	}
+	
+	function get_document_cell($item) {
+		$type = $item->get_document_type();
+		if ($type == 'attachment') $type = 'file';
+		
+		$document = $item->get_document();
+		
+		if ($type == 'file') {
+			$url = wp_get_attachment_url($document);
+			if ($url) $document = $url;
+		}
+		
+		return $type . ':' . $document;
+		
+	}
+	
+	function get_attachments_cell($item) {
+		$attachments = $item->get_attachments();
+		
+		$attachments_urls = array_map(function($a) {
+			if (isset($a['url'])) return $a['url'];
+		}, $attachments);
+		
+		return implode( $this->get_option('multivalued_delimiter'), $attachments_urls );
+	}
 
 	public function output_header() {
 		
 		$mapper = $this->get_current_mapper();
 		
-		$line = [];
+		$line = ['special_item_id'];
 		
 		if ($mapper) {
 			
@@ -72,6 +106,10 @@ class CSV extends Exporter {
 				
 			}
 		}
+		
+		$line[] = 'special_item_status';
+		$line[] = 'special_document';
+		$line[] = 'special_attachments';
 		
 		$line_string = $this->str_putcsv($line, $this->get_option('delimiter'), $this->get_option('enclosure'));
 		
