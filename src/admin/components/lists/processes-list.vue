@@ -95,6 +95,10 @@
                                 :aria-label="$i18n.get('label_name') + ': ' + bgProcess.name">
                             <p
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: bgProcess.name ? bgProcess.name : $i18n.get('label_unamed_process'),
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -108,6 +112,10 @@
                                 :aria-label="$i18n.get('label_progress') + ': ' + bgProcess.progress_label ? bgProcess.progress_label + (bgProcess.progress_value ? ' (' + bgProcess.progress_value + '%)' : '') : $i18n.get('label_no_details_of_process')">
                             <p
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process'),
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -123,6 +131,10 @@
                                 :aria-label="$i18n.get('label_output') + ': ' + (bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info'))">
                             <p
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         html: true,
                                         content: bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info'),
                                         autoHide: false,
@@ -137,6 +149,10 @@
                                 :aria-label="$i18n.get('label_queued_on') + ' ' + getDate(bgProcess.queued_on)">
                             <p
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: getDate(bgProcess.queued_on),
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -150,6 +166,10 @@
                                 :aria-label="$i18n.get('label_last_processed_on') + ' ' + getDate(bgProcess.processed_last)">
                             <p
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: getDate(bgProcess.processed_last),
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -185,6 +205,10 @@
                                 </span>
                                 <span 
                                         v-tooltip="{
+                                            delay: {
+                                                show: 500,
+                                                hide: 300,
+                                            },
                                             content: $i18n.get('label_stop_process'),
                                             autoHide: false,
                                             placement: 'auto-start'
@@ -196,6 +220,10 @@
                                 </span>
                                 <span 
                                         v-tooltip="{
+                                            delay: {
+                                                show: 500,
+                                                hide: 300,
+                                            },
                                             content: $i18n.get('label_process_completed'),
                                             autoHide: false,
                                             placement: 'auto-start'
@@ -206,6 +234,10 @@
                                 </span>
                                 <span
                                         v-tooltip="{
+                                            delay: {
+                                                show: 500,
+                                                hide: 300,
+                                            },
                                             content: $i18n.get('label_process_completed_with_errors'),
                                             autoHide: false,
                                             placement: 'auto-start'
@@ -219,6 +251,10 @@
                                 </span>
                                 <span
                                         v-tooltip="{
+                                            delay: {
+                                                show: 500,
+                                                hide: 300,
+                                            },
                                             content: $i18n.get('label_process_cancelled'),
                                             autoHide: false,
                                             placement: 'auto-start'
@@ -229,6 +265,10 @@
                                 </span>
                                 <span
                                         v-tooltip="{
+                                            delay: {
+                                                show: 500,
+                                                hide: 300,
+                                            },
                                             content: $i18n.get('label_process_paused'),
                                             autoHide: false,
                                             placement: 'auto-start'
@@ -239,6 +279,10 @@
                                 </span>
                                 <span 
                                         v-tooltip="{
+                                            delay: {
+                                                show: 500,
+                                                hide: 300,
+                                            },
                                             content: $i18n.get('label_process_failed'),
                                             autoHide: false,
                                             placement: 'auto-start'

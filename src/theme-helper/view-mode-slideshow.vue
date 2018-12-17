@@ -4,6 +4,10 @@
         <!-- CLOSE BUTTON -->
         <button
                 v-tooltip="{
+                    delay: {
+                        show: 500,
+                        hide: 300,
+                    },
                     content: $i18n.get('close'),
                     autoHide: false,
                     placement: 'auto-start'
@@ -19,6 +23,10 @@
         <!-- METADATA LIST -->
         <button
                 v-tooltip="{
+                    delay: {
+                        show: 500,
+                        hide: 300,
+                    },
                     content: isMetadataCompressed ? $i18n.get('label_show_metadata') : $i18n.get('label_hide_metadata'),
                     autoHide: false,
                     placement: 'auto-start'
@@ -86,6 +94,10 @@
                         </span>
                         <span 
                                 v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
                                     content: metadatum.name,
                                     autoHide: false,
                                     placement: 'auto-start'

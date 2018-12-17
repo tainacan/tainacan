@@ -107,6 +107,10 @@
                                 :aria-label="$i18n.get('label_name') + ': ' + collection.name">
                             <p
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: collection.name,
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -121,6 +125,10 @@
                                 :aria-label="$i18n.get('label_description') + ': ' + (collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`">
                             <p
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: (collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`,
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -135,6 +143,10 @@
                                 :aria-label="$i18n.get('label_creation_date') + ': ' + collection.creation_date">
                             <p
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: collection.creation_date,
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -149,6 +161,10 @@
                                 :aria-label="$i18n.get('label_created_by') + ': ' + collection.author_name">
                             <p
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: collection.author_name,
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -164,6 +180,10 @@
                                 :aria-label="$i18n.get('label_total_items') + ': ' + getTotalItems(collection.total_items)">
                             <p
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: getTotalItems(collection.total_items),
                                         autoHide: false,
                                         placement: 'auto-start'

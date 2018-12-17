@@ -15,15 +15,15 @@
                 class="tainacan-form">
             <div class="columns">
 
-                <div class="column is-6">
+                <div class="column is-gapless">
                     <form id="exporterOptionsForm">
                         <div v-html="exporterSession.options_form" />
                     </form>
                 </div>
                 <div
-                        style="max-width: 40px;"
-                        class="column"/>
-                <div class="column is-5">
+                        style="max-width: 4.6666667%;"
+                        class="column is-gapless"/>
+                <div class="column is-gapless">
                     <b-field
                             v-if="exporterSession.manual_collection"
                             :addons="false"
@@ -33,6 +33,7 @@
                                 :message="$i18n.get('info_source_collection_helper')"/>
                         <br>
                         <b-select
+                                @input="formErrorMessage = null"
                                 expanded
                                 v-model="selectedCollection"
                                 :loading="isFetchingCollections"
@@ -49,30 +50,32 @@
                     <b-field
                             class="is-block"
                             v-if="Object.keys(exporterSession).length &&
-                            Object.keys(exporterSession.mapping_accept).length &&
-                             exporterSession.mapping_list.length"
+                                Object.keys(exporterSession.mapping_accept).length &&
+                                exporterSession.mapping_list.length"
                             :label="$i18n.get('mapping')">
-
-                            <b-select
-                                    expanded
-                                    v-model="selectedMapping"
-                                    :placeholder="$i18n.get('instruction_select_a_mapper')">
-                                <option :value="''">-</option>
-                                <option
-                                        v-for="(mapping) in exporterSession.mapping_list"
-                                        :value="mapping"
-                                        :key="mapping">
-                                    {{ mapping.replace(/-/, ' ') }}
-                                </option>
-                            </b-select>
-
+                        <b-select
+                                @input="formErrorMessage = null"
+                                expanded
+                                v-model="selectedMapping"
+                                :placeholder="$i18n.get('instruction_select_a_mapper')">
+                            <option 
+                                    v-if="exporterSession.accept_no_mapping"
+                                    :value="''">{{ $i18n.get('label_no_mapping') }}</option>
+                            <option
+                                    v-for="(mapping) in exporterSession.mapping_list"
+                                    :value="mapping"
+                                    :key="mapping">
+                                {{ mapping.replace(/-/, ' ') }}
+                            </option>
+                        </b-select>
                     </b-field>
 
                     <b-field :label="$i18n.get('label_send_email')">
                         <b-checkbox
                                 true-value="1"
                                 false-value="0"
-                                v-model="sendEmail">
+                                v-model="sendEmail"
+                                @input="formErrorMessage = null">
                             {{ $i18n.get('label_yes') }}
                         </b-checkbox>
                     </b-field>
@@ -211,7 +214,7 @@
                 .then(exporterSession => {
                     this.exporterSession = exporterSession ? exporterSession : {};
                     this.selectedMapping = this.exporterSession.mapping_selected;
-
+                    
                     this.isLoading = false;
                 });
 
@@ -231,5 +234,9 @@
 </script>
 
 <style scoped>
+
+    .tainacan-form>.columns {
+        padding: 0 4.6666667%;
+    }
 
 </style>

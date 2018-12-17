@@ -44,6 +44,10 @@
                         <!-- Title -->           
                         <p 
                                 v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
                                     content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
                                     html: true,
                                     autoHide: false,
@@ -56,6 +60,10 @@
                                 v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                             
                         <p 
                                 v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
                                     content: item.title != undefined ? item.title : '',
                                     html: true,
                                     autoHide: false,

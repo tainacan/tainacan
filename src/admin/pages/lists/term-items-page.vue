@@ -15,6 +15,10 @@
         <!-- Filter menu compress button -->
         <button
                 v-tooltip="{
+                    delay: {
+                        show: 500,
+                        hide: 300,
+                    },
                     content: isFiltersMenuCompressed ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters'),
                     autoHide: false,
                     placement: 'auto-start'

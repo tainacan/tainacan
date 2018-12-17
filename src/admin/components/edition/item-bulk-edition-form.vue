@@ -115,6 +115,10 @@
                                 class="document-actions">
                             <span 
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: $i18n.get('label_button_delete_document'),
                                         autoHide: false,
                                         placement: 'auto-start'

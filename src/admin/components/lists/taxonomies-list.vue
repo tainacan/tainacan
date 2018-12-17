@@ -82,6 +82,10 @@
                                 :aria-label="$i18n.get('label_name') + ': ' + taxonomy.name">
                             <p
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: taxonomy.name,
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -96,6 +100,10 @@
                                 :aria-label="$i18n.get('label_description') + ': ' + taxonomy.description != undefined && taxonomy.description != '' ? taxonomy.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`">
                             <p
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: taxonomy.description != undefined && taxonomy.description != '' ? taxonomy.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`,
                                         autoHide: false,
                                         placement: 'auto-start'

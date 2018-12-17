@@ -34,11 +34,17 @@
                             :aria-label="$i18n.get('label_activity_title') + ': ' + activity.title">
                         <p
                                 v-tooltip="{
-                                        content: activity.title,
-                                        autoHide: false,
-                                        placement: 'auto-start'
-                                    }">{{ activity.title }}</p>
-                    </td>
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
+                                    content: activity.title,
+                                    autoHide: false,
+                                    placement: 'auto-start'
+                                }">
+                            {{ activity.title }}
+                        </p>
+                </td>
                     <!-- User -->
                     <td
                             class="table-creation column-small-width"
@@ -47,10 +53,14 @@
                             :aria-label="$i18n.get('label_created_by') + ': ' + activity.user_name">
                         <p
                                 v-tooltip="{
-                                        content: activity.user_name,
-                                        autoHide: false,
-                                        placement: 'auto-start'
-                                    }"
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
+                                    content: activity.user_name,
+                                    autoHide: false,
+                                    placement: 'auto-start'
+                                }"
                                 v-html="activity.user_name"/>
                     </td>
                     <!-- Activity Date -->
@@ -61,10 +71,14 @@
                             :aria-label="$i18n.get('label_activity_date') + ': ' + activity.log_date">
                         <p
                                 v-tooltip="{
-                                        content: activity.log_date,
-                                        autoHide: false,
-                                        placement: 'auto-start'
-                                    }"
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
+                                    content: activity.log_date,
+                                    autoHide: false,
+                                    placement: 'auto-start'
+                                }"
                                 v-html="activity.log_date"/>
                     </td>
                     <!-- Approbation -->

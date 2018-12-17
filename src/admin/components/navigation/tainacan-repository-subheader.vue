@@ -9,6 +9,10 @@
         <ul class="repository-subheader-icons">
             <li
                     v-tooltip="{
+                            delay: {
+                                show: 500,
+                                hide: 300,
+                            },
                             content: $i18n.get('exporters'),
                             autoHide: false,
                             placement: 'bottom-start',
@@ -26,6 +30,10 @@
             </li>
             <li     
                     v-tooltip="{
+                            delay: {
+                                show: 500,
+                                hide: 300,
+                            },
                             content: $i18n.get('label_view_collection'),
                             autoHide: false,
                             placement: 'bottom-end',

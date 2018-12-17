@@ -9,11 +9,15 @@
                 animation="filter-item">
             <label
                     v-tooltip="{
-                                    content: filter.name,
-                                    html: false,
-                                    autoHide: false,
-                                    placement: 'top-start'
-                                }"
+                        delay: {
+                            show: 500,
+                            hide: 300,
+                        },
+                        content: filter.name,
+                        html: false,
+                        autoHide: false,
+                        placement: 'top-start'
+                    }"
                     class="label"
                     slot="trigger"
                     slot-scope="props">

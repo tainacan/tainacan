@@ -40,6 +40,10 @@
                     <div class="metadata-title">
                         <p 
                                 v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
                                     content: item.title != undefined ? item.title : '',
                                     html: true,
                                     autoHide: false,
@@ -63,6 +67,10 @@
                            <!-- Description -->
                             <p 
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`,
                                         html: true,
                                         autoHide: false,
@@ -74,6 +82,10 @@
                             <!-- Author and Creation Date-->
 <!--                            <p 
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: column.metadatum == 'row_author' || column.metadatum == 'row_creation',
                                         html: false,
                                         autoHide: false,

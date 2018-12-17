@@ -15,6 +15,10 @@
         <!-- Filter menu compress button -->
         <button
                 v-tooltip="{
+                    delay: {
+                        show: 500,
+                        hide: 300,
+                    },
                     content: isFiltersMenuCompressed ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters'),
                     autoHide: false,
                     placement: 'auto-start'
@@ -204,6 +208,10 @@
                         class="search-control-item">
                     <b-dropdown
                             v-tooltip="{
+                                delay: {
+                                    show: 500,
+                                    hide: 300,
+                                },
                                 content: (totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry') ? (adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry') ? $i18n.get('info_current_view_mode_metadata_not_allowed') : $i18n.get('info_cant_select_metadata_without_items') : '',
                                 autoHide: false,
                                 placement: 'auto-start'

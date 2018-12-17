@@ -7,6 +7,10 @@
                     v-for="(taxonomyFilter, key, index) of taxonomyFilters">
                 <div 
                         v-tooltip="{
+                            delay: {
+                                show: 500,
+                                hide: 300,
+                            },
                             content: $i18n.get('label_filters_from') + ' ' + taxonomyFiltersCollectionNames[key] + ': ',
                             autoHide: false,
                             placement: 'auto-start'
@@ -46,6 +50,10 @@
                     v-for="(taxonomyFilter, key, index) of taxonomyFilters">
                 <div 
                         v-tooltip="{
+                            delay: {
+                                show: 500,
+                                hide: 300,
+                            },
                             content: $i18n.get('label_filters_from') + ' ' + taxonomyFiltersCollectionNames[key] + ': ',
                             autoHide: false,
                             placement: 'auto-start'

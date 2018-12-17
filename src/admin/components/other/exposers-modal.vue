@@ -31,6 +31,10 @@
                         <span class="exposer-item-actions">
                             <a 
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: $i18n.get('label_copy_link_url'),
                                         autoHide: false,
                                         placement: 'bottom'
@@ -60,6 +64,10 @@
                             </div>
                             <a 
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: $i18n.get('label_open_externally'),
                                         autoHide: false,
                                         placement: 'bottom'
@@ -103,6 +111,10 @@
                             </span>
                             <label 
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: selectedExposer.name + (exposerMapper.name != undefined ? ': ' + exposerMapper.name + ' ' + $i18n.get('label_mapper') : ''),
                                         autoHide: false,
                                         placement: 'auto-end'
@@ -136,6 +148,10 @@
                                         
                                         <a 
                                                 v-tooltip="{
+                                                    delay: {
+                                                        show: 500,
+                                                        hide: 300,
+                                                    },
                                                     content: $i18n.get('label_copy_link_url'),
                                                     autoHide: false,
                                                     placement: 'bottom'
@@ -165,6 +181,10 @@
                                         <a 
                                                 :download="(collectionId != undefined ? collectionName : $i18n.get('repository')) + ' ' + $i18n.get('items') + ' ' + $i18n.get('label_page') + ' ' + pagedLink"
                                                 v-tooltip="{
+                                                    delay: {
+                                                        show: 500,
+                                                        hide: 300,
+                                                    },
                                                     content: $i18n.get('label_open_externally'),
                                                     autoHide: false,
                                                     placement: 'bottom'

@@ -13,6 +13,10 @@
             </span>
             <label 
                     v-tooltip="{
+                        delay: {
+                            show: 500,
+                            hide: 300,
+                        },
                         content: metadatum.metadatum.name,
                         autoHide: false,
                         placement: 'auto-end'
