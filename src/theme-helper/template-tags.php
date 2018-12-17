@@ -330,6 +330,40 @@ function tainacan_current_view_displays($property) {
 }
 
 /**
+ *
+ * Displays the link to the edit page of an item, if current user have permission 
+ * 
+ * Can be used outside The Lopp if an ID is provided.
+ * 
+ * The same as edit_post_link() (@see https://developer.wordpress.org/reference/functions/edit_post_link/) but for 
+ * Tainacan Items
+ *
+ * @param string $text 	(optional) Anchor text. If null, default is 'Edit this item'. 
+ * @param string $before 	(optional) Display before edit link 
+ * @param string $afer 	(optional) Display after edit link 
+ * @param int|WP_Post $id 	(optional) Post ID or post object. Default is the global $post.
+ * @param string $class 	(optional) Add custom class to link
+ * 
+ */
+function tainacan_the_item_edit_link( $text = null, $before = '', $after = '', $id = 0, $class = 'post-edit-link' ) {
+	if ( ! $item = tainacan_get_item( $id ) ) {
+		return;
+	}
+	
+	if ( ! $item->can_edit() || ! $url = $item->get_edit_url() ) {
+		return;
+	}
+	
+	if ( null === $text ) {
+		$text = __( 'Edit this item', 'tainacan' );
+	}
+	
+	$link = '<a class="' . esc_attr( $class ) . '" href="' . esc_url( $url ) . '">' . $text . '</a>';
+	
+	echo $before . $link . $after;
+}
+
+/**
  * Gets the initials from a name.
  * 
  * By default, returns 2 uppercase letters representing the name. The first letter from the first name and the first letter from the last.
