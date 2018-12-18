@@ -122,8 +122,8 @@ class Background_Importer extends Background_Process {
                     $this->table,
                     [
                         'done' => 1,
-                        'progress_label' => __('Process completed','tainacan'),
-                        'status' => 'finished'
+                        'progress_label' => __('Process aborted by Importer','tainacan'),
+                        'status' => 'errored'
                     ],
                     ['ID' => $key]
                 );
