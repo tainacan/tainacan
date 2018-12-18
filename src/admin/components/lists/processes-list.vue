@@ -54,7 +54,7 @@
                     <span class="icon">
                         <i 
                                 :class="{ 'tainacan-icon-arrowdown' : collapses[index], 'tainacan-icon-arrowright' : !collapses[index] }"
-                                class="tainacan-icon tainacan-icon-20px"/>
+                                class="tainacan-icon tainacan-icon-20px has-text-blue4"/>
                     </span>
                     <!-- Checking list -->
                     <!-- <span 
@@ -123,7 +123,6 @@
                             class="actions-cell" 
                             :label="$i18n.get('label_status')">
                         <div class="actions-container">
-                            <!-- <span class="label-status">{{ getStatusLabel(bgProcess.status) }}</span> -->
                             <span 
                                     v-if="bgProcess.done <= 0"
                                     class="icon has-text-success loading-icon">
@@ -226,15 +225,24 @@
                     <div 
                             v-if="collapses[index]"
                             class="process-collapse">
+                        <!-- Output -->
+                        <span 
+                                class="process-output"
+                                :label="$i18n.get('label_output')" 
+                                :aria-label="$i18n.get('label_output') + ': ' + (bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info'))">
+                            <p v-html="bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info')"/>
+                        </span>
+
                         <!-- Logs -->
                         <span 
+                                class="process-logs"
                                 :label="$i18n.get('label_log_file')" 
                                 :aria-label="$i18n.get('label_log_gile')">
                             <p>
                                 <a 
                                         v-if="bgProcess.log"
                                         :href="bgProcess.log">
-                                    <span class="icon">
+                                    <span class="icon is-small">
                                         <i class="mdi mdi-18px mdi-open-in-new"/>
                                     </span>
                                     {{ $i18n.get('label_log_file') }}
@@ -244,30 +252,12 @@
                                         v-if="bgProcess.error_log"
                                         class="has-text-danger"
                                         :href="bgProcess.error_log">
-                                    <span class="icon">
+                                    <span class="icon is-small">
                                         <i class="mdi mdi-18px mdi-open-in-new"/>
                                     </span>
                                     {{ $i18n.get('label_error_log_file') }}
                                 </a>
                             </p>
-                        </span>
-                        <!-- Output -->
-                        <span 
-                                :label="$i18n.get('label_output')" 
-                                :aria-label="$i18n.get('label_output') + ': ' + (bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info'))">
-                            <p
-                                    class=""
-                                    v-tooltip="{
-                                        delay: {
-                                            show: 500,
-                                            hide: 300,
-                                        },
-                                        html: true,
-                                        content: bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info'),
-                                        autoHide: false,
-                                        placement: 'auto-start'
-                                    }"
-                                    v-html="bgProcess.output ? (`<span class='has-text-weight-bold'>` + $i18n.get('label_output') + `: </span>` + bgProcess.output) : (`<span class='has-text-weight-bold'>` + $i18n.get('label_output') + `: </span>` + $i18n.get('label_no_output_info'))"/>
                         </span>
 
                         <!-- Last processed on -->
@@ -511,11 +501,6 @@
         }
     }
 
-    .label-status {
-        font-size: 9pt;
-        margin-right: 3px;
-    }
-
     .loading-icon .control.is-loading::after {
         position: relative !important;
         right: 0;
@@ -542,7 +527,7 @@
 
     .processes-list-item {
         &.opened-process {
-            background-color: $gray1;
+            background-color: $gray0;
         }
 
         &>.process-handler {
@@ -557,10 +542,14 @@
             }
             &>span:not(:first-of-type) {
                 margin: 0 0.75rem;
-                color: $gray5;
+                color: $gray4;
                 white-space: nowrap;
                 text-overflow: ellipsis;
                 overflow: hidden;
+
+                .has-text-weight-bold {
+                    color: $gray5 !important;
+                }
 
                 p {
                     white-space: nowrap;
@@ -570,12 +559,18 @@
             }
 
             .process-title {
-                color: black !important;
+                p {
+                    color: black !important;
+                    font-size: 0.875rem !important;
+                }
                 width: 20.833333%;
+                margin-right: $page-side-padding !important;
             }
             .process-progress {
                 width: auto;
-                
+                margin-right: $page-side-padding !important;
+                flex-grow: 2;
+
                 .occluding-content {
                     overflow: hidden;
                     text-overflow: ellipsis;
@@ -583,10 +578,14 @@
                 }
             }
             .actions-cell {
-                width: 36px;
+                width: 46px;
             }
+            .actions-container {
+                text-align: center;
+            }
+            
             .process-queued-on {
-                margin-left: auto !important;
+                width: 16.6666667%;
                 margin-right: $page-side-padding !important;
             }
         }
@@ -594,16 +593,35 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            padding: 0.5rem 1.25rem;
+            padding: 0.5rem 1.25rem 1rem 1.25rem;
 
             &>span {
                 margin: 0 0.75rem;
-                color: $gray5;
+                color: $gray4;
+
+                .has-text-weight-bold {
+                    color: $gray5 !important;
+                }
+            }
+
+            .process-output {
+                margin-left: 1.75rem !important;
+                margin-right: $page-side-padding !important;
+                width: 20.83%;
+            }
+
+            .process-logs a{
+                display: flex;
+                align-items: center;
+
+                .icon {
+                    margin: 0 0.5rem;
+                } 
             }
 
             .process-last-processed-on {
                 margin-left: auto !important;
-                margin-right: 62px !important;
+                margin-right: calc(4.6666667% + 72px) !important;
             }
         }
     }
