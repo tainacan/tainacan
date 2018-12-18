@@ -34,7 +34,7 @@
                             <span class="menu-text">{{ $i18n.getFrom('collections', 'name') }}</span>
                         </router-link>
                     </li> -->
-                    <li>
+                    <!-- <li>
                         <router-link
                                 tag="a"
                                 to="/items">
@@ -43,7 +43,7 @@
                             </span>
                             <span class="menu-text">{{ $i18n.get('label_all_items') }}</span>
                         </router-link>
-                    </li>
+                    </li> -->
                     <li>
                         <router-link
                                 tag="a"

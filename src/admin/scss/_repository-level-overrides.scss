@@ -21,8 +21,10 @@
     .has-text-primary, .has-text-primary:hover, .is-has-text-primary:focus {
         color: $blue4 !important;
     }
-    a, a:hover,
-    .has-text-secondary, .has-text-secondary:hover, .is-has-text-secondary:focus {
+    a:not(.has-text-danger), a:hover:not(.has-text-danger),
+    .has-text-secondary, 
+    .has-text-secondary:hover, 
+    .is-has-text-secondary:focus {
         color: $blue3 !important;
     }
     .tainacan-page-title hr{

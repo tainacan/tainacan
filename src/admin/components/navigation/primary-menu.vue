@@ -40,7 +40,7 @@
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-metadata"/>
                         </span>
-                        <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
+                        <span class="menu-text">{{ $i18n.get('metadata') }}</span>
                     </router-link>
                 </li>
                 <li>

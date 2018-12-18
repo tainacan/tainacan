@@ -583,7 +583,7 @@
             .actions-container {
                 text-align: center;
             }
-            
+
             .process-queued-on {
                 width: 16.6666667%;
                 margin-right: $page-side-padding !important;
@@ -608,6 +608,13 @@
                 margin-left: 1.75rem !important;
                 margin-right: $page-side-padding !important;
                 width: 20.83%;
+
+                ul {
+                    column-count: 2;
+                    column-gap: 4rem;
+                    column-rule: none;
+                    padding: 0 0.75rem;
+                }
             }
 
             .process-logs a{

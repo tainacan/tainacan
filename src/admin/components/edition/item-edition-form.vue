@@ -292,9 +292,9 @@
 
                         <!-- Comment Status ------------------------ --> 
                         <b-field
-                                :addons="false" 
-                                :label="$i18n.get('label_comment_status')"
+                                :addons="false"
                                 v-if="collectionAllowComments == 'open'">
+                            <label class="label">{{ $i18n.get('label_comment_status') }}</label>
                             <b-switch
                                     id="tainacan-checkbox-comment-status" 
                                     size="is-small"
@@ -305,6 +305,7 @@
                                     :title="$i18n.getHelperTitle('items', 'comment_status')" 
                                     :message="$i18n.getHelperMessage('items', 'comment_status')"/>
                         </b-field>
+                        <br>
 
                         <!-- Attachments ------------------------------------------ -->
                         <div class="section-label">
@@ -1221,6 +1222,10 @@ export default {
 
         &>.tainacan-form {
             margin-bottom: 110px;
+
+            .field:not(:last-child) {
+                margin-bottom: 0.5rem;
+            }
         }
 
         .tainacan-page-title {
@@ -1280,7 +1285,7 @@ export default {
             padding-right: $page-side-padding;
 
             .field {
-                padding: 10px 0px 10px 60px;
+                padding: 10px 0px 14px 60px;
             }
 
             @media screen and (max-width: 769px) {

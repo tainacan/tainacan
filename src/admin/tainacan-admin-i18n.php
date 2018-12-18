@@ -323,6 +323,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_save_goto_metadata'                       => __( 'Save and Go to Metadata', 'tainacan' ),
 	'label_save_goto_filter'                         => __( 'Save and Go to Filters', 'tainacan' ),
 	'label_view_all_collections'                     => __( 'View all Collections', 'tainacan' ),
+	'label_view_repository'                     	 => __( 'View Repository', 'tainacan' ),
 	'label_view_on_theme'                            => __( 'View on Theme', 'tainacan' ),
 	'label_create_collection'                        => __( 'Create Collection', 'tainacan' ),
 	'label_hide_metadata'                            => __( 'Hide metadata', 'tainacan' ),

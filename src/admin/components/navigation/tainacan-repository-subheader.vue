@@ -51,6 +51,29 @@
                     <!-- {{ $i18n.get('label_view_collection') }} -->
                 </a>
             </li>
+            <li     
+                    v-tooltip="{
+                            delay: {
+                                show: 500,
+                                hide: 300,
+                            },
+                            content: $i18n.get('label_view_repository'),
+                            autoHide: false,
+                            placement: 'bottom-end',
+                            classes: ['header-tooltips']
+                        }">
+                <a
+                        :href="repositoryURL"
+                        target="_blank"
+                        v-if="isRepositoryLevel"
+                        class="button"
+                        id="view-repository-button">
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+                </span>
+                    <!-- {{ $i18n.get('label_view_collection') }} -->
+                </a>
+            </li>
         </ul>
 
 
@@ -66,6 +89,7 @@ export default {
     data() {
         return {
             repositoryName: tainacan_plugin.repository_name,
+            repositoryURL: tainacan_plugin.theme_collection_list_url,
             collectionId: ''
         }
     },
@@ -145,6 +169,8 @@ export default {
         &.is-repository-level {
             background-color: $blue5;
             padding-right: $page-side-padding;
+
+            .repository-subheader-icons { margin-right: -1rem !important; }
         }
 
         &.is-menu-compressed {     
@@ -167,12 +193,13 @@ export default {
             flex-wrap: nowrap;
             margin-right: calc(4.6666667% - 2.083333333px);
 
+            #view-repository-button,
             #view-collection-button,
             #exporter-collection-button {
                 border: none;
                 border-radius: 0px !important;
                 height: 42px !important;
-                background-color: $turquoise5;
+                background-color: transparent;
                 color: white;
                 width: 48px;
             }

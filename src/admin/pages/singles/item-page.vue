@@ -91,6 +91,22 @@
                         </div>
                     </div>
 
+                    <!-- Comment Status ------------------------ -->
+                    <b-field
+                            :addons="true"
+                            :label="$i18n.get('label_comment_status') + ': '"
+                            v-if="collectionAllowComments == 'open'">
+                        <!-- <b-switch
+                                id="tainacan-checkbox-comment-status"
+                                size="is-small"
+                                true-value="open"
+                                false-value="closed"
+                                v-model="item.comment_status"
+                                disabled/> -->
+                        <span style="font-size: 0.875rem; top: -0.15rem; position: relative;">{{ item.comment_status == 'open' ? $i18n.get('label_yes') : $i18n.get('label_no') }}</span>
+                    </b-field>
+                    <br>
+
                     <!-- Attachments ------------------------------------------ -->
                     <div class="section-label">
                         <label>{{ $i18n.get('label_attachments') }}</label>
@@ -109,19 +125,6 @@
                                 $i18n.get('info_no_attachments_on_item_yet') }}</p>
                         </div>
                     </div>
-                    <!-- Comment Status ------------------------ -->
-                    <b-field
-                            :addons="false"
-                            :label="$i18n.get('label_comment_status')"
-                            v-if="collectionAllowComments == 'open'">
-                        <b-switch
-                                id="tainacan-checkbox-comment-status"
-                                size="is-small"
-                                true-value="open"
-                                false-value="closed"
-                                v-model="item.comment_status"
-                                disabled/>
-                    </b-field>
                     <!-- Exposers --------------------------------------------- -->
                     <!-- <div>
                         <b-loading :active.sync="isLoadingMetadatumMappers"/>
@@ -270,12 +273,14 @@
                                             class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
                                 </span>
                             </a>
-                            <div>
+                            <div class="metadata-area">
                                 <div
                                         v-for="(metadatum, index) of metadatumList"
                                         :key="index"
                                         class="field">
-                                    <b-collapse :open="open">
+                                    <b-collapse 
+                                            animation="filter-item"
+                                            :open="open">
                                         <label
                                                 class="label"
                                                 slot="trigger"
@@ -311,6 +316,7 @@
                                         v-html="formHooks['view-item']['end-right'].join('')"/>
                             </template>
                         </b-tab-item>
+
                         <b-tab-item>
                             <template slot="header">
                                 <span class="icon has-text-gray4">
@@ -493,6 +499,10 @@
 
         & > .tainacan-form {
             margin-bottom: 110px;
+
+            .field:not(:last-child) {
+                margin-bottom: 0.5rem;
+            }
         }
 
         .tainacan-page-title {
@@ -556,7 +566,7 @@
             padding-right: $page-side-padding;
 
             .field {
-                padding: 10px 0 10px 30px;
+                padding: 10px 0 14px 30px;
             }
 
             @media screen and (max-width: 769px) {
@@ -569,19 +579,21 @@
         }
     }
 
-    .field {
-        border-bottom: 1px solid $gray2;
-        padding: 10px 25px;
+    .metadata-area {
+        .field {
+            border-bottom: 1px solid $gray2;
+            padding: 10px 25px;
 
-        .label {
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 0.5em;
-            display: inline-flex;
-            align-items: center;
+            .label {
+                font-size: 14px;
+                font-weight: 500;
+                margin-bottom: 0.5em;
+                display: inline-flex;
+                align-items: center;
 
-            span {
-                margin-right: 18px;
+                span {
+                    margin-right: 18px;
+                }
             }
         }
     }
