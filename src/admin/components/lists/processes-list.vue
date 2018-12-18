@@ -39,7 +39,11 @@
     
         <div class="processes-list">
             <div     
-                    :class="{ 'selected-row': selected[index], 'highlighted-process': highlightedProcess == bgProcess.ID }"
+                    :class="{ 
+                        'opened-process': collapses[index],
+                        'selected-row': selected[index], 
+                        'highlighted-process': highlightedProcess == bgProcess.ID 
+                    }"
                     class="processes-list-item"
                     :key="index"
                     v-for="(bgProcess, index) of processes">
@@ -97,6 +101,7 @@
                     </span>
                     <!-- Queued on -->
                     <span 
+                            class="process-queued-on"
                             :label="$i18n.get('label_queued_on')" 
                             :aria-label="$i18n.get('label_queued_on') + ' ' + getDate(bgProcess.queued_on)">
                         <p
@@ -220,65 +225,67 @@
                     <div 
                             v-if="collapses[index]"
                             class="process-collapse">
-                            <!-- Output -->
-                            <span 
-                                    :label="$i18n.get('label_output')" 
-                                    :aria-label="$i18n.get('label_output') + ': ' + (bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info'))">
-                                <p
-                                        v-tooltip="{
-                                            delay: {
-                                                show: 500,
-                                                hide: 300,
-                                            },
-                                            html: true,
-                                            content: bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info'),
-                                            autoHide: false,
-                                            placement: 'auto-start'
-                                        }"
-                                        v-html="bgProcess.output ? (`<span class='has-text-weight-bold'>` + $i18n.get('label_output') + ` </span>` + bgProcess.output) : (`<span class='has-text-weight-bold'>` + $i18n.get('label_output') + ` </span>` + $i18n.get('label_no_output_info'))"/>
-                            </span>
+                        <!-- Logs -->
+                        <span 
+                                :label="$i18n.get('label_log_file')" 
+                                :aria-label="$i18n.get('label_log_gile')">
+                            <p>
+                                <a 
+                                        v-if="bgProcess.log"
+                                        :href="bgProcess.log">
+                                    <span class="icon">
+                                        <i class="mdi mdi-18px mdi-open-in-new"/>
+                                    </span>
+                                    {{ $i18n.get('label_log_file') }}
+                                </a>
+                                <br>
+                                <a 
+                                        v-if="bgProcess.error_log"
+                                        class="has-text-danger"
+                                        :href="bgProcess.error_log">
+                                    <span class="icon">
+                                        <i class="mdi mdi-18px mdi-open-in-new"/>
+                                    </span>
+                                    {{ $i18n.get('label_error_log_file') }}
+                                </a>
+                            </p>
+                        </span>
+                        <!-- Output -->
+                        <span 
+                                :label="$i18n.get('label_output')" 
+                                :aria-label="$i18n.get('label_output') + ': ' + (bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info'))">
+                            <p
+                                    class=""
+                                    v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
+                                        html: true,
+                                        content: bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info'),
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }"
+                                    v-html="bgProcess.output ? (`<span class='has-text-weight-bold'>` + $i18n.get('label_output') + `: </span>` + bgProcess.output) : (`<span class='has-text-weight-bold'>` + $i18n.get('label_output') + `: </span>` + $i18n.get('label_no_output_info'))"/>
+                        </span>
 
-                            <!-- Last processed on -->
-                            <span 
-                                    :label="$i18n.get('label_last_processed_on')" 
-                                    :aria-label="$i18n.get('label_last_processed_on') + ' ' + getDate(bgProcess.processed_last)">
-                                <p
-                                        v-tooltip="{
-                                            delay: {
-                                                show: 500,
-                                                hide: 300,
-                                            },
-                                            content: getDate(bgProcess.processed_last),
-                                            autoHide: false,
-                                            placement: 'auto-start'
-                                        }">
-                                    <span class="has-text-weight-bold">{{ $i18n.get('label_last_processed_on') + " " }}</span>{{ getDate(bgProcess.processed_last) }}</p>
-                            </span>
-                            <!-- Logs -->
-                            <span 
-                                    :label="$i18n.get('label_log_file')" 
-                                    :aria-label="$i18n.get('label_log_gile')">
-                                <p>
-                                    <a 
-                                            v-if="bgProcess.log"
-                                            :href="bgProcess.log">
-                                        <span class="icon">
-                                            <i class="mdi mdi-18px mdi-open-in-new"/>
-                                        </span>
-                                        {{ $i18n.get('label_log_file') }}
-                                    </a>
-                                    <br>
-                                    <a 
-                                            v-if="bgProcess.error_log"
-                                            class="has-text-danger"
-                                            :href="bgProcess.error_log">
-                                        <span class="icon">
-                                            <i class="mdi mdi-18px mdi-open-in-new"/>
-                                        </span>
-                                        {{ $i18n.get('label_error_log_file') }}
-                                    </a>
-                                </p>
-                            </span>
+                        <!-- Last processed on -->
+                        <span 
+                                class="process-last-processed-on"
+                                :label="$i18n.get('label_last_processed_on')" 
+                                :aria-label="$i18n.get('label_last_processed_on') + ' ' + getDate(bgProcess.processed_last)">
+                            <p
+                                    v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
+                                        content: getDate(bgProcess.processed_last),
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }">
+                                <span class="has-text-weight-bold">{{ $i18n.get('label_last_processed_on') + " " }}</span>{{ getDate(bgProcess.processed_last) }}</p>
+                        </span>
                     </div>
                 </transition>
             </div>        
@@ -532,17 +539,11 @@
         }
     }
 
-    .occluding-content {
-        width: calc(100% - 48px);
-        display: inline-block;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        top: 4px;
-        position: relative;
-        white-space: nowrap;
-    }
-
     .processes-list-item {
+        &.opened-process {
+            background-color: $gray1;
+        }
+
         &>.process-handler {
             cursor: pointer;
             display: flex;
@@ -555,20 +556,44 @@
             }
             &>span:not(:first-of-type) {
                 margin: 0 0.75rem;
+                color: $gray5;
+            }
+
+            .occluding-content {
+                width: calc(100% - 48px);
+                display: inline-block;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                top: 4px;
+                position: relative;
+                white-space: nowrap;
             }
 
             .process-title {
-                color: black;
+                color: black !important;
             }
             .actions-cell {
-                margin-left: auto;
+                width: 36px;
+            }
+            .process-queued-on {
+                margin-left: auto !important;
             }
         }
         &>.process-collapse {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             padding: 0.5rem 1.25rem;
+
+            &>span {
+                margin: 0 0.75rem;
+                color: $gray5;
+            }
+
+            .process-last-processed-on {
+                margin-left: auto !important;
+                margin-right: 62px !important;
+            }
         }
     }
 

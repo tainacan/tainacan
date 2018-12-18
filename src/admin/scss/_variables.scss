@@ -598,22 +598,22 @@ $modal-z: 9999999;
 // SKELETON GRADIENT ANIMATIONS
 @-webkit-keyframes skeleton-animation {
     0%{opacity: 1.0}
-    50%{opacity: 0.15}
+    50%{opacity: 0.2}
     100%{opacity: 1.0}
 }
 @-moz-keyframes skeleton-animation {
     0%{opacity: 1.0}
-    50%{opacity: 0.15}
+    50%{opacity: 0.2}
     100%{opacity: 1.0}
 }
 @-o-keyframes skeleton-animation {
     0%{opacity: 1.0}
-    50%{opacity: 0.15}
+    50%{opacity: 0.2}
     100%{opacity: 1.0}
 }
 @keyframes skeleton-animation {
     0%{opacity: 1.0}
-    50%{opacity: 0.15}
+    50%{opacity: 0.2}
     100%{opacity: 1.0}
 }
 
@@ -627,8 +627,8 @@ $modal-z: 9999999;
     border-radius: 2px;
     background: $gray1;
 
-    -webkit-animation: skeleton-animation 1.5s ease infinite;
-    -moz-animation: skeleton-animation 1.5s ease infinite;
-    -o-animation: skeleton-animation 1.5s ease infinite;
-    animation: skeleton-animation 1.5s ease infinite;
+    -webkit-animation: skeleton-animation 1.8s ease infinite;
+    -moz-animation: skeleton-animation 1.8s ease infinite;
+    -o-animation: skeleton-animation 1.8s ease infinite;
+    animation: skeleton-animation 1.8s ease infinite;
 }
