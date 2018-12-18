@@ -200,103 +200,111 @@
                 </div>
                 <div class="column is-7">
 
-                    <!-- Hook for extra Form options -->
-                    <template
-                            v-if="formHooks != undefined &&
-                        formHooks['view-item'] != undefined &&
-                        formHooks['view-item']['begin-right'] != undefined">
-                        <div
-                                id="view-item-begin-right"
-                                v-html="formHooks['view-item']['begin-right'].join('')"/>
-                    </template>
+                    <b-tabs v-model="activeTab">
+                        <b-tab-item :label="$i18n.get('metadata')">
 
-                    <!-- Visibility (status public or private) -------------------------------- -->
-                    <div class="section-label">
-                        <label>{{ $i18n.get('label_visibility') }}</label>
-                    </div>
-                    <div class="section-status">
-                        <div class="field has-addons">
-                    <span v-if="item.status != 'private'">
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-public"/>
-                        </span> {{ $i18n.get('publish_visibility') }}
-                    </span>
-                            <span v-if="item.status == 'private'">
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-private"/>
-                        </span>  {{ $i18n.get('private_visibility') }}
-                    </span>
-                        </div>
-                    </div>
+                            <!-- Hook for extra Form options -->
+                            <template
+                                    v-if="formHooks != undefined &&
+                                formHooks['view-item'] != undefined &&
+                                formHooks['view-item']['begin-right'] != undefined">
+                                <div
+                                        id="view-item-begin-right"
+                                        v-html="formHooks['view-item']['begin-right'].join('')"/>
+                            </template>
 
-                    <!-- Collection -------------------------------- -->
-                    <div class="section-label">
-                        <label>{{ $i18n.get('collection') }}</label>
-                    </div>
-                    <div class="section-status">
-                        <div class="field has-addons">
-                    <span>
-                        {{ collectionName }}
-                    </span>
-                        </div>
-                    </div>
+                            <!-- Visibility (status public or private) -------------------------------- -->
+                            <div class="section-label">
+                                <label>{{ $i18n.get('label_visibility') }}</label>
+                            </div>
+                            <div class="section-status">
+                                <div class="field has-addons">
+                            <span v-if="item.status != 'private'">
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-public"/>
+                                </span> {{ $i18n.get('publish_visibility') }}
+                            </span>
+                                    <span v-if="item.status == 'private'">
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-private"/>
+                                </span>  {{ $i18n.get('private_visibility') }}
+                            </span>
+                                </div>
+                            </div>
 
-
-                    <!-- Metadata -------------------------------- -->
-                    <div class="section-label">
-                        <label>{{ $i18n.get('metadata') }}</label>
-                    </div>
-                    <br>
-                    <a
-                            class="collapse-all"
-                            @click="open = !open">
-                        {{ open ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                        <span class="icon">
-                    <i
-                            :class="{ 'tainacan-icon-arrowdown' : open, 'tainacan-icon-arrowright' : !open }"
-                            class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
-                </span>
-                    </a>
-                    <div>
-                        <div
-                                v-for="(metadatum, index) of metadatumList"
-                                :key="index"
-                                class="field">
-                            <b-collapse :open="open">
-                                <label
-                                        class="label"
-                                        slot="trigger"
-                                        slot-scope="props">
-                            <span class="icon">
+                            <!-- Collection -------------------------------- -->
+                            <div class="section-label">
+                                <label>{{ $i18n.get('collection') }}</label>
+                            </div>
+                            <div class="section-status">
+                                <div class="field has-addons">
+                            <span>
+                                {{ collectionName }}
+                            </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Metadata -------------------------------- -->
+                            <div class="section-label">
+                                <label>{{ $i18n.get('metadata') }}</label>
+                            </div>
+                            <br>
+                            <a
+                                    class="collapse-all"
+                                    @click="open = !open">
+                                {{ open ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
+                                <span class="icon">
                                     <i
-                                            :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open }"
+                                            :class="{ 'tainacan-icon-arrowdown' : open, 'tainacan-icon-arrowright' : !open }"
                                             class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
                                 </span>
-                                    {{ metadatum.metadatum.name }}
-                                </label>
+                            </a>
+                            <div>
                                 <div
-                                        v-if="metadatum.date_i18n"
-                                        class="content">
-                                    <p v-html="metadatum.date_i18n != '' ? metadatum.date_i18n : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                        v-for="(metadatum, index) of metadatumList"
+                                        :key="index"
+                                        class="field">
+                                    <b-collapse :open="open">
+                                        <label
+                                                class="label"
+                                                slot="trigger"
+                                                slot-scope="props">
+                                    <span class="icon">
+                                            <i
+                                                    :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open }"
+                                                    class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                                        </span>
+                                            {{ metadatum.metadatum.name }}
+                                        </label>
+                                        <div
+                                                v-if="metadatum.date_i18n"
+                                                class="content">
+                                            <p v-html="metadatum.date_i18n != '' ? metadatum.date_i18n : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                        </div>
+                                        <div
+                                                v-else
+                                                class="content">
+                                            <p v-html="metadatum.value_as_html != '' ? metadatum.value_as_html : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                        </div>
+                                    </b-collapse>
                                 </div>
-                                <div
-                                        v-else
-                                        class="content">
-                                    <p v-html="metadatum.value_as_html != '' ? metadatum.value_as_html : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
-                                </div>
-                            </b-collapse>
-                        </div>
-                    </div>
+                            </div>
 
-                    <!-- Hook for extra Form options -->
-                    <template
-                            v-if="formHooks != undefined &&
-                        formHooks['view-item'] != undefined &&
-                        formHooks['view-item']['end-right'] != undefined">
-                        <div
-                                id="view-item-end-right"
-                                v-html="formHooks['view-item']['end-right'].join('')"/>
-                    </template>
+                            <!-- Hook for extra Form options -->
+                            <template
+                                    v-if="formHooks != undefined &&
+                                formHooks['view-item'] != undefined &&
+                                formHooks['view-item']['end-right'] != undefined">
+                                <div
+                                        id="view-item-end-right"
+                                        v-html="formHooks['view-item']['end-right'].join('')"/>
+                            </template>
+                        </b-tab-item>
+                        <b-tab-item :label="$i18n.get('activities')">
+                            <activities-page />
+                        </b-tab-item>
+
+                    </b-tabs>
                 </div>
             </div>
             <div class="footer">

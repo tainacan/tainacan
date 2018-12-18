@@ -6,7 +6,8 @@
                     'page-container': isRepositoryLevel
                 }">
             <tainacan-title 
-                :bread-crumb-items="[{ path: '', label: this.$i18n.get('activities') }]"/>
+                    v-if="!isItemLevel"
+                    :bread-crumb-items="[{ path: '', label: this.$i18n.get('activities') }]"/>
             <div :class="{ 'above-subheader': isRepositoryLevel }">
 
                 <div 
@@ -166,6 +167,7 @@
             ...mapActions('activity', [
                 'fetchActivities',
                 'fetchCollectionActivities',
+                'fetchItemActivities'
             ]),
             ...mapGetters('activity', [
                 'getActivities'
@@ -253,7 +255,18 @@
                             this.isLoading = false;
                         });
                 } else {
-                    this.$console.log('');
+                    this.fetchItemActivities({
+                        'page': this.activitiesPage,
+                        'activitiesPerPage': this.activitiesPerPage,
+                        'itemId': this.$route.params.itemId
+                    })
+                        .then((res) => {
+                            this.isLoading = false;
+                            this.totalActivities = res.total;
+                        })
+                        .catch(() => {
+                            this.isLoading = false;
+                        });
                 }
             },
             loadProcesses() {

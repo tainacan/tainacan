@@ -83,6 +83,7 @@
                     </span>
                     <!-- Progress -->
                     <span 
+                            class="process-progress"
                             :label="$i18n.get('label_progress')" 
                             :aria-label="$i18n.get('label_progress') + ': ' + bgProcess.progress_label ? bgProcess.progress_label + (bgProcess.progress_value ? ' (' + bgProcess.progress_value + '%)' : '') : $i18n.get('label_no_details_of_process')">
                         <p
@@ -557,26 +558,36 @@
             &>span:not(:first-of-type) {
                 margin: 0 0.75rem;
                 color: $gray5;
-            }
-
-            .occluding-content {
-                width: calc(100% - 48px);
-                display: inline-block;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                top: 4px;
-                position: relative;
                 white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+
+                p {
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                }
             }
 
             .process-title {
                 color: black !important;
+                width: 20.833333%;
+            }
+            .process-progress {
+                width: auto;
+                
+                .occluding-content {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
             }
             .actions-cell {
                 width: 36px;
             }
             .process-queued-on {
                 margin-left: auto !important;
+                margin-right: $page-side-padding !important;
             }
         }
         &>.process-collapse {
