@@ -173,6 +173,7 @@
                                                 </span>
                                             </a>
                                             <input 
+                                                    v-focus
                                                     readonly
                                                     autofocus
                                                     type="text"
@@ -228,6 +229,15 @@ export default {
     props: {
         collectionId: Number,
         totalItems: Number
+    },
+    directives: {
+        focus: {
+            inserted(el) {
+                el.focus();
+                if (el.value != undefined)
+                    el.setSelectionRange(0,el.value.length)
+            }
+        }
     },
     data(){
         return {
