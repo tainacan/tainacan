@@ -200,50 +200,61 @@
                 </div>
                 <div class="column is-7">
 
-                    <b-tabs v-model="activeTab">
-                        <b-tab-item :label="$i18n.get('metadata')">
+                    <!-- Hook for extra Form options -->
+                    <template
+                            v-if="formHooks != undefined &&
+                        formHooks['view-item'] != undefined &&
+                        formHooks['view-item']['begin-right'] != undefined">
+                        <div
+                                id="view-item-begin-right"
+                                v-html="formHooks['view-item']['begin-right'].join('')"/>
+                    </template>
 
-                            <!-- Hook for extra Form options -->
-                            <template
-                                    v-if="formHooks != undefined &&
-                                formHooks['view-item'] != undefined &&
-                                formHooks['view-item']['begin-right'] != undefined">
-                                <div
-                                        id="view-item-begin-right"
-                                        v-html="formHooks['view-item']['begin-right'].join('')"/>
-                            </template>
-
+                    <div class="columns">
+                        <div class="column">
                             <!-- Visibility (status public or private) -------------------------------- -->
                             <div class="section-label">
                                 <label>{{ $i18n.get('label_visibility') }}</label>
                             </div>
                             <div class="section-status">
                                 <div class="field has-addons">
-                            <span v-if="item.status != 'private'">
-                                <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-public"/>
-                                </span> {{ $i18n.get('publish_visibility') }}
-                            </span>
+                                    <span v-if="item.status != 'private'">
+                                        <span class="icon">
+                                            <i class="tainacan-icon tainacan-icon-public"/>
+                                        </span> {{ $i18n.get('publish_visibility') }}
+                                    </span>
                                     <span v-if="item.status == 'private'">
-                                <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-private"/>
-                                </span>  {{ $i18n.get('private_visibility') }}
-                            </span>
+                                        <span class="icon">
+                                            <i class="tainacan-icon tainacan-icon-private"/>
+                                        </span>  {{ $i18n.get('private_visibility') }}
+                                    </span>
                                 </div>
                             </div>
-
-                            <!-- Collection -------------------------------- -->
+                        </div>
+                        <div class="column">
+                                <!-- Collection -------------------------------- -->
                             <div class="section-label">
                                 <label>{{ $i18n.get('collection') }}</label>
                             </div>
                             <div class="section-status">
                                 <div class="field has-addons">
-                            <span>
-                                {{ collectionName }}
-                            </span>
+                                    <span>
+                                        {{ collectionName }}
+                                    </span>
                                 </div>
                             </div>
-                            
+                        </div>
+                    </div>
+
+                    <b-tabs v-model="activeTab">
+                        <b-tab-item>
+                            <template slot="header">
+                                <span class="icon has-text-gray4">
+                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata"/>
+                                </span>
+                                <span>{{ $i18n.get('metadata') }}</span>
+                            </template>
+
                             <!-- Metadata -------------------------------- -->
                             <div class="section-label">
                                 <label>{{ $i18n.get('metadata') }}</label>
@@ -300,7 +311,18 @@
                                         v-html="formHooks['view-item']['end-right'].join('')"/>
                             </template>
                         </b-tab-item>
-                        <b-tab-item :label="$i18n.get('activities')">
+                        <b-tab-item>
+                            <template slot="header">
+                                <span class="icon has-text-gray4">
+                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-activities"/>
+                                </span>
+                                <span>{{ $i18n.get('activities') }}</span>
+                            </template>
+                            
+                            <div class="section-label">
+                                <label>{{ $i18n.get('activities') }}</label>
+                            </div>
+                            <br>
                             <activities-page />
                         </b-tab-item>
 
