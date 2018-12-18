@@ -35,6 +35,23 @@ export const fetchCollectionActivities = ({ commit }, { page, activitiesPerPage,
     });
 };
 
+export const fetchItemActivities = ({ commit }, { page, activitiesPerPage, itemId }) => {
+    return new Promise((resolve, reject) => {
+        axios.tainacan.get(`/item/${itemId}/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit`)
+            .then(res => {
+                let activities = res.data;
+
+                commit('setActivities', activities);
+
+                resolve({
+                    activities: activities,
+                    total: res.headers['x-wp-total']
+                });
+            })
+            .catch(error => reject(error));
+    });
+};
+
 export const fetchActivity = ({ commit }, activityId) => {
     return new Promise((resolve, reject) => {
        axios.tainacan.get(`/logs/${activityId}?context=edit`)

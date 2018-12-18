@@ -65,6 +65,16 @@ class REST_Logs_Controller extends REST_Controller {
 				)
 			)
 		);
+		register_rest_route($this->namespace, '/item/(?P<item_id>[\d]+)/' . $this->rest_base,
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_items'),
+					'permission_callback' => array($this, 'get_items_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
+				)
+			)
+		);
 	}
 
 	/**
@@ -113,8 +123,8 @@ class REST_Logs_Controller extends REST_Controller {
 
 			if(!$item){
 				return new \WP_REST_Response([
-					'error_message' => __('A collection with this ID does not exist', 'tainacan'),
-					'collection_id' => $item
+					'error_message' => __('An item with this ID does not exist', 'tainacan'),
+					'item_id' => $item
 				], 400);
 			}
 
