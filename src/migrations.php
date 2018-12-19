@@ -45,7 +45,7 @@ class Migrations {
 		  done boolean not null default 0,
 		  progress_label text,
 		  progress_value int,
-		  status ENUM('waiting','running','paused','cancelled','errored','finished','finished-errors')
+		  status ENUM('waiting','running','paused','cancelled','errored','finished','finished-errors'),
 		  PRIMARY KEY (ID),
 		  KEY user_id (user_id),
 		  KEY action (action($max_index_length))
