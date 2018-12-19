@@ -515,12 +515,12 @@
     }
 
     .highlighted-process {
-        span, .checkbox-cell .checkbox, .actions-cell .actions-container { 
+        &>.process-handler {
             transition: background-color 0.5s; 
             animation-name: highlight;
             animation-duration: 1s;
-            animation-iteration-count: 2;
-        }
+            animation-iteration-count: 2; 
+        }  
     }
 
     .processes-list-item {
