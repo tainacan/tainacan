@@ -44,12 +44,7 @@ class Background_Importer extends Background_Process {
 
             $batch->data = $object->_to_Array(true);
 
-			if( count($object->get_error_log()) > 0 ){
-			    $this->set_finish_status(2);
-            }
-			
 			if (true === $object->get_abort()) {
-                $this->set_finish_status(3);
 				throw new \Exception('Process aborted by Importer');
 			}
 			
@@ -65,72 +60,6 @@ class Background_Importer extends Background_Process {
 		
 	}
 
-    /**
-     * Mark a process as done
-     *
-     * @param string $key Key.
-     * @param array  $data Data.
-     *
-     * @return $this
-     */
-    public function close( $key ) {
-        global $wpdb;
-
-        switch ($this->finish_status){
-            case 1:
-                $wpdb->update(
-                    $this->table,
-                    [
-                        'done' => 1,
-                        'progress_label' => __('Process completed','tainacan'),
-                        'progress_value' => 100,
-                        'status' => 'finished'
-                    ],
-                    ['ID' => $key]
-                );
-                break;
-
-            case 2:
-                $wpdb->update(
-                    $this->table,
-                    [
-                        'done' => 1,
-                        'progress_label' => __('Process completed with errors','tainacan'),
-                        'progress_value' => 100,
-                        'status' => 'finished'
-                    ],
-                    ['ID' => $key]
-                );
-                break;
-
-            case 3:
-                $wpdb->update(
-                    $this->table,
-                    [
-                        'done' => 1,
-                        'progress_label' => __('Process aborted by Importer','tainacan'),
-                        'status' => 'errored'
-                    ],
-                    ['ID' => $key]
-                );
-                break;
-
-            default:
-                $wpdb->update(
-                    $this->table,
-                    [
-                        'done' => 1,
-                        'progress_label' => __('Process aborted by Importer','tainacan'),
-                        'status' => 'errored'
-                    ],
-                    ['ID' => $key]
-                );
-                break;
-        }
-
-        return $this;
-    }
-	
 	
 }
 

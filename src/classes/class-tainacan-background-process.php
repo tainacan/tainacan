@@ -121,7 +121,7 @@ abstract class Background_Process extends \WP_Background_Process {
 					'action' => $this->action,
 					'name' => $this->get_name(),
 					'queued_on' => date('Y-m-d H:i:s'),
-                    'status' => 'running'
+                    'status' => 'waiting'
 				]
 			);
 			$this->ID = $wpdb->insert_id;
@@ -159,6 +159,26 @@ abstract class Background_Process extends \WP_Background_Process {
 	}
 	
 	/**
+	 * Set batch as running
+	 *
+	 * @param string $key Key.
+	 *
+	 * @return $this
+	 */
+	public function open( $key ) {
+		global $wpdb;
+		$wpdb->update(
+			$this->table, 
+			[
+				'status' => 'running'
+			],
+			['ID' => $key]
+		);
+
+		return $this;
+	}
+	
+	/**
 	 * Mark a process as done
 	 *
 	 * @param string $key Key.
@@ -166,17 +186,19 @@ abstract class Background_Process extends \WP_Background_Process {
 	 *
 	 * @return $this
 	 */
-	public function close( $key ) {
+	public function close( $key, $status = 'finished' ) {
 		global $wpdb;
-
+		$params = [
+			'done' => 1,
+			'status' => $status
+		];
+		if ($status == 'finished') {
+			$params['progress_label'] = __('Process completed','tainacan');
+			$params['progress_value'] = 100;
+		}
 		$wpdb->update(
 			$this->table, 
-			[
-			    'done' => 1,
-                'progress_label' => __('Process completed','tainacan'),
-                'progress_value' => 100,
-                'status' => 'finished'
-            ],
+			$params,
 			['ID' => $key]
 		);
 
@@ -241,7 +263,11 @@ abstract class Background_Process extends \WP_Background_Process {
 		$batch       = new \stdClass();
 		$batch->key  = $query->ID;
 		$batch->data = maybe_unserialize( $query->data );
-
+		
+		if ($batch->status != 'running') {
+			$this->open($batch->key);
+		}
+		
 		return $batch;
 	}
 
@@ -286,12 +312,13 @@ abstract class Background_Process extends \WP_Background_Process {
 			$this->write_error_log($batch->key, ['Fatal Error: ' . $error_str]);
 			$this->write_error_log($batch->key, ['Process aborted']);
 			
-			$this->close( $batch->key );
+			$this->close( $batch->key, 'errored' );
 			$this->debug('Batch closed due to captured error');
 			
 		});
 
 		$task = $batch;
+		$close_status = 'finished';
 
 		do {
 			try {
@@ -301,6 +328,7 @@ abstract class Background_Process extends \WP_Background_Process {
 				$this->write_error_log($batch->key, ['Fatal Error: ' . $e->getMessage()]);
 				$this->write_error_log($batch->key, ['Process aborted']);
 				$task = false;
+				$close_status = 'errored';
 			}
 		} while ( false !== $task && ! $this->time_exceeded() && ! $this->memory_exceeded() );
 
@@ -310,7 +338,10 @@ abstract class Background_Process extends \WP_Background_Process {
 			$this->update( $batch->key, $task );
 			$this->debug('Batch updated');
 		} else {
-			$this->close( $batch->key );
+			if ($this->has_errors( $batch->key ) && $close_status == 'finished') {
+				$close_status = 'finished-errors';
+			}
+			$this->close( $batch->key, $close_status );
 			$this->debug('Batch closed');
 		}
 
@@ -423,6 +454,18 @@ abstract class Background_Process extends \WP_Background_Process {
 		
 		return $return;
 		
+	}
+	
+	private function has_errors($key) {
+		$upload_dir = wp_upload_dir();
+		$upload_dir = trailingslashit( $upload_dir['basedir'] );
+		$logs_folder = $upload_dir . 'tainacan';
+		
+		$filename = 'bg-' . $this->action . '-' . $key . '-error' . '.log';
+		
+		$filepath = $logs_folder . '/' . $filename;
+		
+		return file_exists($filepath);
 	}
 
 }
