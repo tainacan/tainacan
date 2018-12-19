@@ -199,7 +199,21 @@
                                         placement: 'auto-start'
                                     }"
                                     v-if=" bgProcess.status === 'paused' "
-                                    class="icon has-text-success">
+                                    class="icon has-text-gray">
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-pause"/>
+                            </span>
+                            <span
+                                    v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
+                                        content: $i18n.get('label_process_waiting'),
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }"
+                                    v-if=" bgProcess.status === 'waiting' "
+                                    class="icon has-text-gray">
                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-pause"/>
                             </span>
                             <span 
@@ -581,7 +595,7 @@
             .actions-container {
                 align-items: center;
                 display: flex;
-                justify-content: center;
+                justify-content: flex-end;
             }
 
             .process-queued-on {

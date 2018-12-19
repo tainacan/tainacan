@@ -303,6 +303,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_process_completed_with_errors'            => __( 'Process completed with errors', 'tainacan' ),
 	'label_process_cancelled'            			 => __( 'Process cancelled by user', 'tainacan' ),
 	'label_process_paused'            			     => __( 'Process paused', 'tainacan' ),
+	'label_process_waiting'            			     => __( 'Process waiting', 'tainacan' ),
+	'label_stop_process'                             => __( 'Stop process', 'tainacan' ),
 	'label_stop_process'                             => __( 'Stop process', 'tainacan' ),
 	'label_process_failed'                           => __( 'Process failed', 'tainacan' ),
 	'label_max_options_to_show'                      => __( 'Max options to show', 'tainacan' ),
