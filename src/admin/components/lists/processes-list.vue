@@ -140,7 +140,7 @@
                                     }"
                                     v-if=" bgProcess.status === 'running' "
                                     class="icon has-text-gray action-icon"
-                                    @click="pauseProcess(index)">
+                                    @click.prevent.stop="pauseProcess(index)">
                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-stop"/>
                             </span>
                             <span 
@@ -200,7 +200,7 @@
                                     }"
                                     v-if=" bgProcess.status === 'paused' "
                                     class="icon has-text-success">
-                                <i class="tainacan-icon has-text-danger tainacan-icon-20px tainacan-icon-pause"/>
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-pause"/>
                             </span>
                             <span 
                                     v-tooltip="{
@@ -438,8 +438,6 @@
                         },
                     }
                 });
-
-
             },
             getStatusLabel(status) {
 
@@ -581,7 +579,9 @@
                 width: 46px;
             }
             .actions-container {
-                text-align: center;
+                align-items: center;
+                display: flex;
+                justify-content: center;
             }
 
             .process-queued-on {

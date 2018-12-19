@@ -28,9 +28,9 @@ export const updateProcess = ({ commit }, { id, status }) => {
             status: status,
         })
             .then( res => {
-                let process = res.data;
-                commit('setProcess', process);
-                resolve(process)
+                let aProcess = res.data;
+                commit('setProcess', aProcess);
+                resolve(aProcess)
             })
             .catch( error => {
                 reject(error);
@@ -42,9 +42,9 @@ export const fetchProcess = ({ commit }, id) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.get(`/bg-processes/${id}/`)
         .then( res => {
-            let process = res.data;
-            commit('setProcess', process);
-            resolve(process)
+            let aProcess = res.data;
+            commit('setProcess', aProcess);
+            resolve(aProcess)
         })
         .catch( error => {
             reject(error);
