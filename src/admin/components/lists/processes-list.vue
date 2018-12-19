@@ -124,7 +124,7 @@
                             :label="$i18n.get('label_status')">
                         <div class="actions-container">
                             <span 
-                                    v-if="bgProcess.done <= 0"
+                                    v-if="bgProcess.done <= 0 && bgProcess.status !== 'paused'"
                                     class="icon has-text-success loading-icon">
                                 <div class="control has-icons-right is-loading is-clearfix" />
                             </span>
@@ -153,7 +153,7 @@
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }"
-                                    v-if=" bgProcess.status === 'finished' || bgProcess.status === null"
+                                    v-if=" ( bgProcess.status === 'finished' && !bgProcess.error_log ) || bgProcess.status === null"
                                     class="icon has-text-success">
                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approvedcircle"/>
                             </span>
@@ -167,7 +167,7 @@
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }"
-                                    v-if=" bgProcess.status === 'finished-errors' "
+                                    v-if=" bgProcess.status === 'finished-errors' || ( bgProcess.done > 0 && bgProcess.error_log && bgProcess.status === 'finished' ) "
                                     class="icon has-text-success">
                                 <i
                                     style="margin-right: -5px;"

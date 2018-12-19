@@ -201,6 +201,25 @@ class REST_Background_Processes_Controller extends REST_Controller {
     }
 
     public function prepare_item_for_response($item, $request) {
+	    if( $item->done == 0 ){
+            global $wpdb;
+
+            $table = $wpdb->prefix . 'tnc_bg_process';
+
+            $query = $wpdb->get_row( $wpdb->prepare( "
+                SELECT *
+                FROM {$table}
+                WHERE action = %s
+                AND done = FALSE
+                ORDER BY priority DESC, queued_on ASC
+                LIMIT 1
+            ", $item->action ) );
+
+            if( isset($query->ID) && $item->ID != $query->ID){
+                $item->status = 'paused';
+            }
+        }
+
         $item->log = $this->get_log_url($item->ID, $item->action);
         $item->error_log = $this->get_log_url($item->ID, $item->action, 'error');
         return $item;

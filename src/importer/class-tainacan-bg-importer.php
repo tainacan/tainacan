@@ -58,8 +58,6 @@ class Background_Importer extends Background_Process {
 				return false;
 			}
 			
-
-			
 			return $batch;
 		}
 		return false;
