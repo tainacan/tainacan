@@ -124,7 +124,7 @@
                             :label="$i18n.get('label_status')">
                         <div class="actions-container">
                             <span 
-                                    v-if="bgProcess.done <= 0 && bgProcess.status !== 'paused'"
+                                    v-if="bgProcess.status == 'running'"
                                     class="icon has-text-success loading-icon">
                                 <div class="control has-icons-right is-loading is-clearfix" />
                             </span>
@@ -214,7 +214,7 @@
                                     }"
                                     v-if=" bgProcess.status === 'waiting' "
                                     class="icon has-text-gray">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-pause"/>
+                                <i class="mdi mdi-clock"/>
                             </span>
                             <span 
                                     v-tooltip="{
@@ -596,6 +596,10 @@
                 align-items: center;
                 display: flex;
                 justify-content: flex-end;
+
+                .mdi-clock {
+                    font-size: 20px;
+                }
             }
 
             .process-queued-on {
