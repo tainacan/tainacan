@@ -49,7 +49,8 @@ class Background_Importer extends Background_Process {
 			}
 			
 			if (false === $runned) {
-                $this->update($key, $batch);
+				$batch->output = $object->get_output();
+				$this->update($key, $batch);
 				return false;
 			}
 			

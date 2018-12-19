@@ -262,6 +262,34 @@ Example of the structure of this propery for one collection:
 ]
 ```
 
+#### Using transients
+
+Since Importers are handled as background processes, they will run accross multiple requests. For that reason, you can not simply add properties to your class and trust their values will be kept during all the time the process is running.
+
+If you want a value to persist so you can use it accross all methods of your importer, at any time, you should use `transients` to store them in the database.
+
+This is as simple as calling `set_transient()` and `get_transient()`. See the example below:
+
+
+```
+
+function callback_for_step_1() {
+	
+	
+	$this->add_transient('time_step_1', time());
+	
+}
+
+// ...
+
+function callback_for_step_5() {
+	
+	$time_step_1 = get_transient('time_step_1');
+	
+}
+
+```
+
 
 #### Handling user feedback
 
@@ -274,6 +302,20 @@ The `progress value` is a number between 0 and 100 that indicates the progress o
 Remember the `finish_processing` dummy callback we saw in the Test Importer. You might have also noticed that when we registered the step, we informed a `total` attribute to this step with the value of 5. This will tell Tainacan that the total number iterations this step need to complete is 5 and allow it to calculate the progress.
 
 If it is no possible to know `total` of a step beforehand, you can set it at any time, even inside the step callback itself, using the `set_current_step_total($value)` or `set_step_total($step, $value)` methods.
+
+
+##### Final output 
+
+When the process finishes, Background processes define an "output", which is a final report to the user of what happened.
+
+This could be simply a message saying "All good", or could be a report with the names and links to the collections created. HTML is welcome.
+
+Remember that for a more detailed and technical report, you should use Logs (see Logs below). This output is meant as a short but descriptive user friendly message.
+
+In order to achieve this, Importers must implement a method called `get_output()` that returns a string.
+
+This method will be called only once, when the importer ends, so you might need to save information using `transients` during the process and use them in `get_output()` to compose your message.
+
 
 #### Logs
 

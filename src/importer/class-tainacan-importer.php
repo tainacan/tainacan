@@ -670,7 +670,15 @@ abstract class Importer {
 	 */
 	public function options_form() {}
 	
-	
+	/**
+	* Called when the process is finished. returns the final message to the user with a 
+	* short description of what happened. May contain HTML code and links
+	*
+	* @return string 
+	*/
+	public function get_output() {
+		return '';
+	}
 	
 	////////////////////////////////////////
 	// Core methods
