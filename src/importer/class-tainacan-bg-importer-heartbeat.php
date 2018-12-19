@@ -7,7 +7,7 @@ class Background_Importer_Heartbeat {
     public function __construct() {
         global $wpdb;
         $this->table = $wpdb->prefix . 'tnc_bg_process';
-        add_filter( 'heartbeat_no_priv_received', array( &$this, 'bg_process_feedback' ), 10, 2 );
+        add_filter( 'heartbeat_send', array( &$this, 'bg_process_feedback' ), 10, 2 );
     }
 
     /**

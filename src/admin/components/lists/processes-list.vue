@@ -490,6 +490,14 @@
             if (this.$route.query.highlight) {
                 this.highlightedProcess = this.$route.query.highlight;
             }
+        },
+        created(){
+            // TODO: get data from wp heartbeat
+            // this.$console.log(window.wp);
+            // this.$console.log(this.$root.$el);
+            // this.$root.$on( 'heartbeat-tick',  () => {
+            //     this.$console.log('event');
+            // });
         }
     }
 </script>
