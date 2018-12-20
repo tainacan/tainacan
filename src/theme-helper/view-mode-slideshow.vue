@@ -220,7 +220,7 @@
                                 class="tainacan-slide-item"
                                 :class="{'active-item': slideIndex == index}">
                             <img 
-                                    :alt="item.title"
+                                    :alt="$i18n.get('label_thumbnail') + ': ' + item.title"
                                     class="thumnail" 
                                     :src="item['thumbnail']['tainacan-small'] ? item['thumbnail']['tainacan-small'][0] : (item['thumbnail'].thumbnail ? item['thumbnail'].thumbnail[0] : thumbPlaceholderPath)">  
                             

@@ -358,6 +358,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_no_output_info'			                 => __( 'No output info', 'tainacan' ),
 	'label_output'			                 	 	 => __( 'Output', 'tainacan' ),
 	'label_no_mapping'			                 	 => __( 'No mapping', 'tainacan' ),
+	'label_sort_descending'		                 	 => __( 'Sort descending', 'tainacan' ),
+	'label_sort_ascending'			                 => __( 'Sort ascending', 'tainacan' ),
+	'label_slideshow'			                 	 => __( 'Slideshow', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

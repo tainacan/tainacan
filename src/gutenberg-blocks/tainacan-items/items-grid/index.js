@@ -286,7 +286,7 @@ registerBlockType('tainacan/items-grid', {
                             <img
                                 width={96}
                                 src={`${tainacan_plugin.base_url}/admin/images/tainacan_logo_header.svg`}
-                                alt="Tainacan"/>
+                                alt="Tainacan Logo"/>
                         )}
                     />) : null
                 }

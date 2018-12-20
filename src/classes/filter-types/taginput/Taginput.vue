@@ -12,6 +12,7 @@
                 field="label"
                 attached
                 @typing="search"
+                :aria-labelledby="labelId"
                 :placeholder="(type == 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_add_metadata')">
             <template slot-scope="props">
                 <div class="media">
@@ -19,6 +20,7 @@
                             class="media-left"
                             v-if="props.option.img">
                         <img
+                                :alt="$i18n.get('label_thumbnail')"
                                 width="24"
                                 :src="`${props.option.img}`">
                     </div>
@@ -83,7 +85,8 @@
             }
         },
         props: {
-            isRepositoryLevel: Boolean
+            isRepositoryLevel: Boolean,
+            labelId: String
         },
         mixins: [filter_type_mixin],
         watch: {

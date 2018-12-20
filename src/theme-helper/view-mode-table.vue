@@ -158,6 +158,7 @@
 
                             <span v-if="column.metadatum == 'row_thumbnail'">
                                 <img 
+                                        :alt="$i18n.get('label_thumbnail')"
                                         class="table-thumb" 
                                         :src="item['thumbnail']['tainacan-small'] ? item['thumbnail']['tainacan-small'][0] : (item['thumbnail'].thumbnail ? item['thumbnail'].thumbnail[0] : thumbPlaceholderPath)">
                                 <div class="skeleton"/>

@@ -3,9 +3,9 @@
             :class="{ 'skeleton': isLoadingOptions }"
             class="block">
         <b-select
-                :id="id"
                 v-if="!isLoadingOptions"
                 :value="selected"
+                :aria-labelledby="labelId"
                 @input="onSelect($event)"
                 :placeholder="$i18n.get('label_selectbox_init')"
                 expanded>
@@ -57,6 +57,7 @@
         },
         props: {
             isRepositoryLevel: Boolean,
+            labelId: String
         },
         data(){
             return {

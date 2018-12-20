@@ -38,7 +38,7 @@
         <button 
                 v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="is-hidden-tablet"
-                id="filter-menu-compress-button"
+                id="filter-menu-compress-button-mobile"
                 :style="{ top: !isOnTheme ? (isRepositoryLevel ? (searchControlHeight + 100) : (searchControlHeight + 70) + 'px') : (searchControlHeight - 25) + 'px' }"
                 @click="isFilterModalActive = !isFilterModalActive">
             <span class="icon">
@@ -68,6 +68,7 @@
                             :placeholder="$i18n.get('instruction_search')"
                             type="search"
                             autocomplete="on"
+                            :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
                             :value="searchQuery"
                             @input="futureSearchQuery = $event.target.value"
                             @keyup.enter="updateSearch()">
@@ -221,6 +222,7 @@
                             :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry'"
                             class="show">
                         <button
+                                :aria-label="$i18n.get('label_displayed_metadata')"
                                 class="button is-white"
                                 slot="trigger">
                             <span>{{ $i18n.get('label_displayed_metadata') }}</span>
@@ -259,6 +261,7 @@
                                 :disabled="totalItems <= 0"
                                 @input="onChangeOrderBy($event)">
                             <button
+                                    :aria-label="$i18n.get('label_sorting')"
                                     class="button is-white"
                                     slot="trigger">
                                 <span>{{ $i18n.get('label_sorting') }}</span>
@@ -302,6 +305,7 @@
                         <!-- Order ASC vs DESC buttons -->
                         <button
                                 class="button is-white is-small"
+                                :aria-label="$i18n.get('label_sort_ascending')"
                                 :disabled="totalItems <= 0 || order == 'DESC'"
                                 @click="onChangeOrder()">
                             <span class="icon is-small gray-icon">
@@ -310,6 +314,7 @@
                         </button>
                         <button
                                 :disabled="totalItems <= 0 || order == 'ASC'"
+                                :aria-label="$i18n.get('label_sort_descending')"
                                 class="button is-white is-small"
                                 @click="onChangeOrder()">
                             <span class="icon is-small gray-icon">
@@ -330,6 +335,7 @@
                                 position="is-bottom-left"
                                 :aria-label="$i18n.get('label_view_mode')">
                             <button 
+                                    :aria-label="$i18n.get('label_view_mode')"
                                     class="button is-white" 
                                     slot="trigger">
                                 <span 
@@ -365,6 +371,7 @@
                                 position="is-bottom-left"
                                 :aria-label="$i18n.get('label_view_mode')">
                             <button
+                                    :aria-label="$i18n.get('label_view_mode')"
                                     class="button is-white"
                                     slot="trigger">
                                 <span>
@@ -433,6 +440,7 @@
                         class="search-control-item">
                     <button 
                             class="button is-white"
+                            :aria-label="$i18n.get('label_slideshow')"
                             @click="onChangeViewMode(viewModeOption)"
                             v-for="(viewModeOption, index) of enabledViewModes"
                             :key="index"
@@ -449,6 +457,7 @@
                 <div class="search-control-item">
                     <button 
                             class="button is-white"
+                            :aria-label="$i18n.get('label_urls')"
                             :disabled="this.totalItems == undefined || this.totalItems <= 0"
                             @click="openExposersModal()">
                         <span class="gray-icon">
@@ -467,6 +476,7 @@
                                     :placeholder="$i18n.get('instruction_search')"
                                     type="search"
                                     autocomplete="on"
+                                    :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
                                     :value="searchQuery"
                                     @input="futureSearchQuery = $event.target.value"
                                     @keyup.enter="updateSearch()">
@@ -1496,7 +1506,8 @@
         }
 
     }
-    #filter-menu-compress-button {
+    #filter-menu-compress-button
+    #filter-menu-compress-button-mobile {
         position: absolute;
         z-index: 99;
         top: 120px;

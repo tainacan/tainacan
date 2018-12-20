@@ -604,6 +604,7 @@
                 align-items: center;
                 display: flex;
                 justify-content: flex-end;
+                padding: 0 0.5rem;
 
                 .mdi-clock {
                     font-size: 20px;

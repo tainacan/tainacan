@@ -18,6 +18,8 @@
                         autoHide: false,
                         placement: 'top-start'
                     }"
+                    :id="'filter-label-id-' + filter.id"
+                    :aria-label="filter.name"
                     class="label"
                     slot="trigger"
                     slot-scope="props">
@@ -31,7 +33,7 @@
 
             <div>
                 <component
-                        :id="filter.filter_type_object.component + '-' + filter.slug"
+                        :label-id="'filter-label-id-' + filter.id"
                         :is="filter.filter_type_object.component"
                         :filter="filter"
                         :query="query"

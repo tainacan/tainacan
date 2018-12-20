@@ -216,6 +216,7 @@
                             :to="$routerHelper.getCollectionPath(collection.id)"
                             class="card-body">
                         <img 
+                            :alt="$i18n.get('label_thumbnail')"
                             v-if="collection.thumbnail != undefined"
                             :src="collection['thumbnail']['tainacan-medium'] ? collection['thumbnail']['tainacan-medium'][0] : (collection['thumbnail'].medium ? collection['thumbnail'].medium[0] : thumbPlaceholderPath)">  
                         

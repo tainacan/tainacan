@@ -10,6 +10,7 @@
                 <input
                         autocomplete="on"
                         :placeholder="$i18n.get('instruction_search')"
+                        :aria-label="$i18n.get('instruction_search')"
                         v-model="optionName"
                         @input="autoComplete"
                         class="input">

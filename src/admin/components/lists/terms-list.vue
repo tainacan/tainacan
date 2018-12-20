@@ -34,6 +34,7 @@
                         class="input is-small"
                         :placeholder="$i18n.get('instruction_search')"
                         type="search"
+                        :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('terms')"
                         autocomplete="on"
                         :value="searchQuery"
                         @keyup.enter="searchQuery = $event.target.value;searchTerms(0)"

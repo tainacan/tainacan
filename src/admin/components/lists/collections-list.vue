@@ -95,6 +95,7 @@
                                 :aria-label="$i18n.get('label_thumbnail')">
                             <span>
                                 <img 
+                                        :alt="$i18n.get('label_thumbnail')"
                                         class="table-thumb" 
                                         :src="(collection.thumbnail && collection.thumbnail.thumbnail ) ? collection.thumbnail.thumbnail[0] : thumbPlaceholderPath">
                             </span>

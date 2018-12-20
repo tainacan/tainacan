@@ -13,10 +13,12 @@
         </div> 
         <div class="items-per-page">
             <b-field 
+                    id="items-per-page-select"
                     horizontal 
                     :label="$i18n.get('label_items_per_page')"> 
                 <b-select 
                         :value="itemsPerPage"
+                        aria-labelledby="items-per-page-select"
                         @input="onChangeItemsPerPage">
                     <option value="12">12 &nbsp;</option>
                     <option value="24">24 &nbsp;</option>

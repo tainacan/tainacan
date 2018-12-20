@@ -257,7 +257,7 @@
                                             media_type: 'image', 
                                             guid: { rendered: item.thumbnail['tainacan-medium'] ? item.thumbnail['tainacan-medium'][0] : item.thumbnail.medium[0] },
                                             title: { rendered: $i18n.get('label_thumbnail')},
-                                            description: { rendered: `<img alt='Thumbnail' src='` + item.thumbnail.full[0] + `'/>` }}"/>
+                                            description: { rendered: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + item.thumbnail.full[0] + `'/>` }}"/>
                                 <figure 
                                         v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
                                         class="image">

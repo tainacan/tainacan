@@ -37,6 +37,7 @@
                 <div class="control has-icons-right is-small is-clearfix">
                     <input
                             autocomplete="on"
+                            :aria-label="$i18n.get('instruction_search_in_repository')"
                             :placeholder="$i18n.get('instruction_search_in_repository')"
                             class="input is-small search-header"
                             type="search"

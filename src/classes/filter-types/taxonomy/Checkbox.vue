@@ -85,7 +85,7 @@
             metadatum_id: [Number], // not required, but overrides the filter metadatum id if is set
             collection_id: [Number], // not required, but overrides the filter metadatum id if is set
             filter_type: [String],  // not required, but overrides the filter metadatum type if is set
-            id: '',
+            labelId: '',
             query: {
                 type: Object // concentrate all attributes metadatum id and type
             }

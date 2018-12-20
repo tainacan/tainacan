@@ -11,6 +11,7 @@
                 :remove-on-keys="[]"
                 field="label"
                 attached
+                :aria-labelledby="labelId"
                 :class="{'has-selected': selected != undefined && selected != []}"
                 @typing="search"
                 :placeholder="$i18n.get('info_type_to_add_terms')">
@@ -76,7 +77,7 @@
             metadatum_id: [Number], // not required, but overrides the filter metadatum id if is set
             collection_id: [Number], // not required, but overrides the filter metadatum id if is set
             filter_type: [String],  // not required, but overrides the filter metadatum type if is set
-            id: '',
+            labelId: '',
             query: {
                 type: Object // concentrate all attributes metadatum id and type
             },
