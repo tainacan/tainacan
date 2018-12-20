@@ -26,6 +26,7 @@
                 v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="is-hidden-mobile"
                 id="filter-menu-compress-button"
+                :aria-label="isFiltersMenuCompressed ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
                 :style="{ top: !isOnTheme ? (isRepositoryLevel ? '172px' : '120px') : '76px' }"
                 @click="isFiltersMenuCompressed = !isFiltersMenuCompressed">
             <span class="icon">
@@ -39,6 +40,7 @@
                 v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="is-hidden-tablet"
                 id="filter-menu-compress-button-mobile"
+                :aria-label="isFiltersMenuCompressed ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
                 :style="{ top: !isOnTheme ? (isRepositoryLevel ? (searchControlHeight + 100) : (searchControlHeight + 70) + 'px') : (searchControlHeight - 25) + 'px' }"
                 @click="isFilterModalActive = !isFilterModalActive">
             <span class="icon">
@@ -66,7 +68,6 @@
                             class="input is-small"
                             :placeholder="$i18n.get('instruction_search')"
                             type="search"
-                            autocomplete="on"
                             :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
                             :value="searchQuery"
                             @input="futureSearchQuery = $event.target.value"
@@ -452,7 +453,6 @@
                                     class="input is-small"
                                     :placeholder="$i18n.get('instruction_search')"
                                     type="search"
-                                    autocomplete="on"
                                     :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
                                     :value="searchQuery"
                                     @input="futureSearchQuery = $event.target.value"

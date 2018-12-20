@@ -27,6 +27,7 @@
                 class="is-hidden-mobile"
                 id="filter-menu-compress-button"
                 :style="{ top: !isOnTheme ? (isRepositoryLevel ? '172px' : '120px') : '76px' }"
+                :aria-label="isFiltersMenuCompressed ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
                 @click="isFiltersMenuCompressed = !isFiltersMenuCompressed">
             <span class="icon">
                 <i 
@@ -40,6 +41,7 @@
                 class="is-hidden-tablet"
                 id="filter-menu-compress-button-mobile"
                 :style="{ top: !isOnTheme ? (isRepositoryLevel ? (searchControlHeight + 100) : (searchControlHeight + 70) + 'px') : (searchControlHeight - 25) + 'px' }"
+                :aria-label="isFiltersMenuCompressed ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
                 @click="isFilterModalActive = !isFilterModalActive">
             <span class="icon">
                 <i 
@@ -67,7 +69,6 @@
                             class="input is-small"
                             :placeholder="$i18n.get('instruction_search')"
                             type="search"
-                            autocomplete="on"
                             :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
                             :value="searchQuery"
                             @input="futureSearchQuery = $event.target.value"
@@ -475,7 +476,6 @@
                                     class="input is-small"
                                     :placeholder="$i18n.get('instruction_search')"
                                     type="search"
-                                    autocomplete="on"
                                     :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
                                     :value="searchQuery"
                                     @input="futureSearchQuery = $event.target.value"
