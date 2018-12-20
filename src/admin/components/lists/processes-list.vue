@@ -214,7 +214,7 @@
                                     }"
                                     v-if=" bgProcess.status === 'waiting' "
                                     class="icon has-text-gray">
-                                <i class="mdi mdi-clock"/>
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-waiting"/>
                             </span>
                             <span 
                                     v-tooltip="{
@@ -257,7 +257,7 @@
                                         v-if="bgProcess.log"
                                         :href="bgProcess.log">
                                     <span class="icon is-small">
-                                        <i class="mdi mdi-18px mdi-open-in-new"/>
+                                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>
                                     </span>
                                     {{ $i18n.get('label_log_file') }}
                                 </a>
@@ -267,7 +267,7 @@
                                         class="has-text-danger"
                                         :href="bgProcess.error_log">
                                     <span class="icon is-small">
-                                        <i class="mdi mdi-18px mdi-open-in-new"/>
+                                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>
                                     </span>
                                     {{ $i18n.get('label_error_log_file') }}
                                 </a>
@@ -606,7 +606,7 @@
                 justify-content: flex-end;
                 padding: 0 0.5rem;
 
-                .mdi-clock {
+                .tainacan-icon-openurl {
                     font-size: 20px;
                 }
             }

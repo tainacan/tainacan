@@ -1506,7 +1506,7 @@
         }
 
     }
-    #filter-menu-compress-button
+    #filter-menu-compress-button,
     #filter-menu-compress-button-mobile {
         position: absolute;
         z-index: 99;

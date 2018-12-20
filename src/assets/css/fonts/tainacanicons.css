@@ -57,6 +57,12 @@
 .tainacan-icon-heartoutline:before {
     content: "heartoutline";
 }
+.tainacan-icon-openurl:before {
+    content: "openurl";
+}
+.tainacan-icon-attachments:before {
+    content: "attachments";
+}
 .tainacan-icon-wordpress:before {
     content: "wordpress";
 }
@@ -155,6 +161,9 @@
 }
 .tainacan-icon-nextlevel:before {
     content: "nextlevel";
+}
+.tainacan-icon-waiting:before {
+    content: "waiting";
 }
 .tainacan-icon-pause:before {
     content: "pause";

@@ -75,7 +75,7 @@
                                     value="publish"
                                     native-value="publish">
                                 <span class="icon">
-                                    <i class="mdi mdi-earth"/>
+                                    <i class="tainacan-icon tainacan-icon-public"/>
                                 </span> {{ $i18n.get('publish_visibility') }}
                             </b-radio>
                             <b-radio
@@ -84,7 +84,7 @@
                                     value="private"
                                     native-value="private">
                                 <span class="icon">
-                                    <i class="mdi mdi-lock"/>
+                                    <i class="tainacan-icon tainacan-icon-private"/>
                                 </span>  {{ $i18n.get('private_visibility') }}
                             </b-radio>
                             <b-radio
@@ -93,7 +93,7 @@
                                     value="draft"
                                     native-value="draft">
                                 <span class="icon">
-                                    <i class="mdi mdi-file"/>
+                                    <i class="tainacan-icon tainacan-icon-draft"/>
                                 </span>  {{ $i18n.get('draft') }}
                             </b-radio>
                         </div>

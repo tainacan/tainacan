@@ -48,13 +48,13 @@
                 <div class="sequence-progress-info">
                     <p v-if="uploadedItems.length > 0 && uploadedItems.length != amountFinished">
                         <span class="icon is-small has-text-secondary">
-                            <i class="mdi mdi-18px mdi-autorenew"/>
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-updating"/>
                         </span>
                         {{ $i18n.get('label_upload_file_prepare_items') }}
                     </p>
                     <p v-if="uploadedItems.length > 0 && uploadedItems.length == amountFinished">
                         <span class="icon is-small has-text-success">
-                            <i class="mdi mdi-18px mdi-checkbox-marked-circle"/>
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-approvedcircle"/>
                         </span>
                         {{ $i18n.get('label_process_completed') }}
                     </p>
@@ -107,7 +107,7 @@
                             <span 
                                     v-if="item.document != '' && item.document_type != 'empty'"
                                     class="icon has-text-success">
-                                <i class="mdi mdi-24px mdi-checkbox-marked-circle" />
+                                <i class="tainacan-icon tainacan-icon-24px tainacan-icon-approvedcircle" />
                             </span>  
                         </div>   
                         <div 
@@ -125,7 +125,7 @@
                                     }"
                                     class="icon has-text-secondary action-icon"
                                     @click="deleteOneItem(item.id, index)">
-                                <i class="mdi mdi-18px mdi-delete"/>
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-delete"/>
                             </span>
                         </div>                 
                     </div>

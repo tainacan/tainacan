@@ -75,7 +75,7 @@
                                     target="_blank"
                                     :href="collectionURL">
                                 <span class="icon">
-                                    <i class="mdi mdi-18px mdi-open-in-new"/>
+                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>
                                 </span>
                             </a>
                         </span>
@@ -192,7 +192,7 @@
                                                 }" 
                                                 :href="exposerBaseURL + '&exposer=' + selectedExposer.slug + '&mapper=' + exposerMapper.name + '&paged=' + pagedLink">
                                             <span class="icon">
-                                                <i class="mdi mdi-18px mdi-open-in-new"/>
+                                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>
                                             </span>
                                         </a>
                                     </span>  

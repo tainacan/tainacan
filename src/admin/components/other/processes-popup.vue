@@ -94,7 +94,7 @@
                         <span 
                                 v-if="bgProcess.status === 'waiting'"
                                 class="icon has-text-gray">
-                            <i class="mdi mdi-18px mdi-clock" />
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-waiting" />
                         </span>
                         <span 
                                 v-if="bgProcess.status === 'running'"

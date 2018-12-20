@@ -209,7 +209,7 @@ class CSV extends Importer {
 			<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
-							 <i class="mdi mdi-help-circle-outline" ></i>
+							 <i class="tainacan-icon tainacan-icon-help" ></i>
 						 </span>
 					</a>
 					<div class="help-tooltip">
@@ -231,7 +231,7 @@ class CSV extends Importer {
 			<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
-							 <i class="mdi mdi-help-circle-outline" ></i>
+							 <i class="tainacan-icon tainacan-icon-help" ></i>
 						 </span>
 					</a>
 					<div class="help-tooltip">
@@ -253,7 +253,7 @@ class CSV extends Importer {
 			<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
-							 <i class="mdi mdi-help-circle-outline" ></i>
+							 <i class="tainacan-icon tainacan-icon-help" ></i>
 						 </span>
 					</a>
 					<div class="help-tooltip">
@@ -275,7 +275,7 @@ class CSV extends Importer {
 			<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
-							 <i class="mdi mdi-help-circle-outline" ></i>
+							 <i class="tainacan-icon tainacan-icon-help" ></i>
 						 </span>
 					</a>
 					<div class="help-tooltip">
@@ -302,7 +302,7 @@ class CSV extends Importer {
 			<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
-							 <i class="mdi mdi-help-circle-outline" ></i>
+							 <i class="tainacan-icon tainacan-icon-help" ></i>
 						 </span>
 					</a>
 					<div class="help-tooltip">
@@ -338,7 +338,7 @@ class CSV extends Importer {
 			<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
-							 <i class="mdi mdi-help-circle-outline" ></i>
+							 <i class="tainacan-icon tainacan-icon-help" ></i>
 						 </span>
 					</a>
 					<div class="help-tooltip">

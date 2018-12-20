@@ -2,8 +2,8 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
 <metadata>
-Created by FontForge 20161003 at Wed Nov 14 11:54:32 2018
- By www-data
+Created by FontForge 20170910 at Thu Dec 20 15:06:27 2018
+ By Jimmy Wärting
 </metadata>
 <defs>
 <font id="TainacanIcons" horiz-adv-x="1000" >
@@ -225,6 +225,14 @@ d="M243 371l256 -255l256 255l78 -78l-334 -334l-334 334z" />
     <glyph glyph-name="pausefill" unicode="pausefill" 
 d="M908 353q12 -48 12 -100q0 -87 -33 -163.5t-90 -133.5t-133.5 -90t-163.5 -33t-163.5 33t-133.5 90t-90 133.5t-33 163.5q0 52 12 98v3q17 69 55.5 127t92.5 101t121 66.5t141 23.5q73 0 139 -24t119.5 -66t91.5 -99.5t55 -125.5q0 -1 0.5 -2t0.5 -2zM627 419l-84 1
 l-2 -336l84 -1zM459 420l-84 1l-2 -336l84 -1z" />
+    <glyph glyph-name="attachments" unicode="attachments" 
+d="M83 229q0 48 18 89.5t49 72.5t73 49t89 18h438q35 0 65 -13t53 -35.5t36 -52.5t13 -65t-13 -65.5t-36 -53t-53 -35.5t-65 -13h-354q-44 0 -74 30t-30 74t30 74t74 30h313v-83h-317q-9 0 -13 -6.5t-4 -14.5t4 -14.5t13 -6.5h358q35 0 59.5 24.5t24.5 59.5q0 34 -24.5 58.5
+t-59.5 24.5h-438q-30 0 -56.5 -11.5t-46.5 -31.5t-31.5 -46.5t-11.5 -56.5t11.5 -56.5t31.5 -46.5t46.5 -31.5t56.5 -11.5h397v-83h-397q-47 0 -89 18t-73 49t-49 72.5t-18 89.5z" />
+    <glyph glyph-name="openurl" unicode="openurl" 
+d="M792 250h83v-292q0 -35 -24 -59t-59 -24h-584q-35 0 -59 24t-24 59v584q0 34 24 58.5t59 24.5h292v-83h-292v-584h584v292zM875 625v-292h-83v150l-410 -410l-59 59l410 410h-150v83h292z" />
+    <glyph glyph-name="waiting" unicode="waiting" 
+d="M500 667q86 0 162 -33t132.5 -89.5t89.5 -132.5t33 -162t-33 -162t-89.5 -132.5t-132.5 -89.5t-162 -33q-87 0 -163 33t-132.5 89.5t-89 132.5t-32.5 162t32.5 162t89 132.5t132.5 89.5t163 33zM500 -84q69 0 130 26.5t106 71.5t71.5 106t26.5 130t-26.5 130t-71.5 106
+t-106 71.5t-130 26.5t-130 -26.5t-106 -71.5t-71.5 -106t-26.5 -130t26.5 -130t71.5 -106t106 -71.5t130 -26.5zM521 240l188 -112l-32 -51l-219 131v250h63v-218z" />
     <glyph glyph-name=".notdef" horiz-adv-x="500" 
  />
     <glyph glyph-name="uni0000" horiz-adv-x="0" 
