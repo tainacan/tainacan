@@ -14,6 +14,8 @@
         <!-- SEARCH AND FILTERS --------------------- -->
         <!-- Filter menu compress button -->
         <button
+                aria-controls="filters-desktop-aside"
+                :aria-expanded="!isFiltersMenuCompressed"
                 v-tooltip="{
                     delay: {
                         show: 500,
@@ -37,6 +39,8 @@
         </button>
         <!-- Filters mobile modal button -->
         <button 
+                aria-controls="filters-mobile-modal"
+                :aria-expanded="!isFiltersMenuCompressed"
                 v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="is-hidden-tablet"
                 id="filter-menu-compress-button-mobile"
@@ -53,6 +57,9 @@
 
         <!-- Side bar with search and filters -->
         <aside
+                id="filters-desktop-aside"
+                role="region"
+                aria-labelledby="filters-label-landmark"
                 :style="{ top: searchControlHeight + 'px' }"
                 v-show="!isFiltersMenuCompressed && 
                         !openAdvancedSearch && 
@@ -142,6 +149,8 @@
 
             <!-- SEARCH CONTROL ------------------------- -->
             <div
+                    :aria-label="$i18n.get('label_sort_visualization')"
+                    role="region"
                     ref="search-control"
                     v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                     class="search-control">
@@ -447,7 +456,9 @@
 
                 <!-- Text simple search (used on mobile, instead of the one from filter list)-->
                 <div class="is-hidden-tablet search-control-item">
-                    <div class="search-area">
+                    <div 
+                            role="search" 
+                            class="search-area">
                         <div class="control has-icons-right  is-small is-clearfix">
                             <input
                                     class="input is-small"
@@ -471,7 +482,9 @@
             </div>
 
             <!-- ADVANCED SEARCH -->
-            <div v-if="openAdvancedSearch">
+            <div 
+                    role="search"
+                    v-if="openAdvancedSearch">
 
                 <div class="tnc-advanced-search-close"> 
                     <div class="advanced-search-criteria-title">
@@ -543,7 +556,16 @@
                         !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)" />
 
             <!-- ITEMS LISTING RESULTS ------------------------- -->
-            <div class="above-search-control">
+            <div 
+                    aria-labelledby="items-list-landmark"
+                    role="region"
+                    class="above-search-control">
+                
+                <h3 
+                        id="items-list-landmark"
+                        class="is-hidden">
+                    {{ $i18n.get('label_items_list') }}
+                </h3>
 
                 <div 
                         v-show="(showLoading && 
@@ -635,6 +657,8 @@
         </div>
        
         <b-modal
+                role="region"
+                aria-labelledby="filters-label-landmark-modal"
                 id="filters-mobile-modal"
                 ref="filters-mobile-modal"
                 class="tainacan-form is-hidden-tablet"                
@@ -642,8 +666,14 @@
                 :width="736"
                 animation="slide-menu">
             <div class="modal-inner-content">
-                <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
+                <h3 
+                        id="filters-label-landmark-modal"
+                        class="has-text-weight-semibold">
+                    {{ $i18n.get('filters') }}
+                </h3>
                 <a
+                        aria-controls="filters-items-list"
+                        :aria-expanded="!collapseAll"
                         v-if="!isLoadingFilters &&
                         ((filters.length >= 0 &&
                         isRepositoryLevel) || filters.length > 0)"
@@ -661,6 +691,7 @@
                 <br>
 
                 <filters-items-list
+                        id="filters-items-list"
                         v-if="!isLoadingFilters &&
                         ((filters.length >= 0 &&
                         isRepositoryLevel) || filters.length > 0)"

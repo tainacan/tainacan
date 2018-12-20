@@ -1,5 +1,8 @@
 <template>
-    <div class="pagination-area">
+    <div 
+            role="navigation"
+            :aria-label="$i18n.get('label_list_pagination')"
+            class="pagination-area">
         <div 
                 style="flex-grow: 1;"
                 class="shown-items is-hidden-mobile">

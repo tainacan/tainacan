@@ -7,7 +7,10 @@
                 class="show" 
                 :open.sync="open"
                 animation="filter-item">
-            <label
+            <button
+                    :for="'filter-input-id-' + filter.id"
+                    :aria-controls="'filter-input-id-' + filter.id"
+                    :aria-expanded="open"
                     v-tooltip="{
                         delay: {
                             show: 500,
@@ -29,9 +32,10 @@
                             class="tainacan-icon tainacan-icon-20px"/>
                 </span>
                 <span class="collapse-label">{{ filter.name }}</span>
-            </label>
+            </button>
 
-            <div>
+            <div
+                    :id="'filter-input-id-' + filter.id">
                 <component
                         :label-id="'filter-label-id-' + filter.id"
                         :is="filter.filter_type_object.component"
@@ -198,6 +202,12 @@
             .label {
                 display: inline-flex;
                 align-items: center;
+                border: none;
+                background-color: transparent;
+                text-align: left;
+                cursor: pointer;
+                outline: none;
+                padding: 0 !important;
             }
         }
 

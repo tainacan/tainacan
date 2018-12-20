@@ -361,6 +361,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_sort_descending'		                 	 => __( 'Sort descending', 'tainacan' ),
 	'label_sort_ascending'			                 => __( 'Sort ascending', 'tainacan' ),
 	'label_slideshow'			                 	 => __( 'Slideshow', 'tainacan' ),
+	'label_items_list'			                 	 => __( 'Items List', 'tainacan' ),
+	'label_list_pagination'			                 => __( 'List pagination', 'tainacan' ),
+	'label_sort_visualization'		                 => __( 'Sorting and visualization control', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
