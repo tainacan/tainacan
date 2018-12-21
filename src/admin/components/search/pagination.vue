@@ -33,11 +33,13 @@
         <div class="go-to-page items-per-page">
             <b-field 
                     horizontal 
+                    id="go-to-page-dropdown"
                     :label="$i18n.get('label_go_to_page')"> 
                 <b-dropdown 
                         position="is-top-right"
                         @change="onPageChange">
                     <button
+                            aria-labelledby="go-to-page-dropdown"
                             class="button is-white"
                             slot="trigger">
                         <span>{{ page }}</span>

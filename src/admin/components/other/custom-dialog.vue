@@ -1,5 +1,9 @@
 <template>
-    <div class="tainacan-form dialog">
+    <div 
+            aria-labelledby="alert-dialog-title"
+            aria-modal="true"
+            role="alertdialog"
+            class="tainacan-form dialog">
         <div    
                 class="modal-card" 
                 style="width: auto">
@@ -14,10 +18,15 @@
                 </span>
             </div>
             <section 
+                    tabindex="1"
                     class="modal-card-body">
                 <header 
                         class="modal-card-head">
-                    <h1 class="modal-card-title">{{ title }}</h1>
+                    <h1 
+                            id="alert-dialog-title"
+                            class="modal-card-title">
+                        {{ title }}
+                    </h1>
                 </header>
                 {{ message }}
             </section>

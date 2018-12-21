@@ -1,3 +1,19 @@
+button.link-style,
+button.link-style:focus
+button.link-style:active {
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: inherit;
+    color: $secondary;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
 .button {
     border-radius: 6px !important;
     font-weight: normal;

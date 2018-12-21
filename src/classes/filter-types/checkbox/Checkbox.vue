@@ -39,11 +39,12 @@
                         v-if="option.total_items != undefined"
                         class="has-text-gray">{{ "(" + option.total_items + ")" }}</span>
             </b-checkbox> -->
-            <div
-                    class="view-all-button-container"
-                    v-if="option.seeMoreLink && index == options.slice(0, filter.max_options).length - 1"
-                    @click="openCheckboxModal()"
-                    v-html="option.seeMoreLink"/>
+            <button
+                    class="view-all-button link-style"
+                    v-if="option.showViewAllButton && index == options.slice(0, filter.max_options).length - 1"
+                    @click="openCheckboxModal(option.parent)"> 
+                {{ $i18n.get('label_view_all') }}
+            </button>
         </div>
         <p 
                 v-if="!isLoadingOptions && options.length != undefined && options.length <= 0"
@@ -253,9 +254,10 @@
 
 <style lang="scss" scoped>
 
-    .view-all-button-container {
-        display: flex;
-        padding-left: 18px;
+    
+    .view-all-button {
+        font-size: 0.75rem;
+        padding: 0.1rem 1rem;
     }
 
     .is-loading:after {

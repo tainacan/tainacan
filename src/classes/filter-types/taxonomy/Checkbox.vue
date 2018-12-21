@@ -30,11 +30,12 @@
                             class="has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
                 </span>
             </label>
-            <div
-                    class="see-more-container"
-                    v-if="option.seeMoreLink && index == options.slice(0, filter.max_options).length - 1"
-                    @click="openCheckboxModal(option.parent)"
-                    v-html="option.seeMoreLink"/>
+            <button
+                    class="view-all-button link-style"
+                    v-if="option.showViewAllButton && index == options.slice(0, filter.max_options).length - 1"
+                    @click="openCheckboxModal(option.parent)"> 
+                {{ $i18n.get('label_view_all') }}
+            </button>
         </div>
         <p 
                 v-if="!isLoading && options.length != undefined && options.length <= 0"
@@ -139,12 +140,12 @@
                                     this.options.splice(this.filter.max_options);
                                 }
 
-                                let seeMoreLink = `<a style="font-size: 0.75rem;"> ${ this.$i18n.get('label_view_all') } </a>`;
+                                let showViewAllButton = true;
 
                                 if(this.options.length === this.filter.max_options){
-                                    this.options[this.filter.max_options-1].seeMoreLink = seeMoreLink;
+                                    this.options[this.filter.max_options-1].showViewAllButton = showViewAllButton;
                                 } else {
-                                    this.options[this.options.length-1].seeMoreLink = seeMoreLink;
+                                    this.options[this.options.length-1].showViewAllButton = showViewAllButton;
                                 }
                             }
                         }
@@ -300,9 +301,9 @@
 
 <style lang="scss" scoped>
 
-    .see-more-container {
-        display: flex;
-        padding-left: 18px;
+    .view-all-button {
+        font-size: 0.75rem;
+        padding: 0.1rem 1rem;
     }
 
     .is-loading:after {

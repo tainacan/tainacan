@@ -1,223 +1,228 @@
 <template>
-    <div>
-        <div 
-                class="tainacan-modal-content" 
-                style="width: auto">
-            <header class="tainacan-modal-title">
-                <h2 v-if="selectedExposer == undefined">
-                    {{ this.$i18n.get('label_urls_for_items_list') }}
-                </h2>
-                <h2 v-if="selectedExposer != undefined">
-                    {{ this.$i18n.get('label_urls_for_items_list') + " - " + selectedExposer.name }}
-                </h2>
-                <a 
-                        @click="selectedExposerMappers = []; selectedExposer = undefined;"
-                        v-if="selectedExposer != undefined"
-                        class="back-link">
-                    {{ $i18n.get('back') }}
-                </a>
-                <hr>
-            </header>
-            <section class="tainacan-form">
-                <div 
-                         v-if="selectedExposer == undefined"
-                        class="exposer-types-container">
-                    <div class="exposer-item-link">
-                        <span>
-                            <p>
-                                {{ $i18n.get('label_items_list_on_website') }}
-                            </p>
-                        </span>
-                        <span class="exposer-item-actions">
-                            <a 
-                                    v-tooltip="{
-                                        delay: {
-                                            show: 500,
-                                            hide: 300,
-                                        },
-                                        content: $i18n.get('label_copy_link_url'),
-                                        autoHide: false,
-                                        placement: 'bottom'
-                                    }" 
-                                    target="_blank"
-                                    @click="siteLinkCopied = true; copyTextToClipboard(collectionURL)">
-                                <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
-                                </span>
-                            </a>
-                            <div 
-                                    v-if="siteLinkCopied == true"
-                                    class="exposer-copy-popup">
-                                <p>{{ $i18n.get('info_url_copied') }}</p>
-                                <a 
-                                        class="exposer-copy-popup-close"
-                                        @click="siteLinkCopied = false">
-                                    <span class="icon has-text-secondary">
-                                        <i class="tainacan-icon tainacan-icon-close" />
-                                    </span>
-                                </a>
-                                <input 
-                                        readonly
-                                        autofocus
-                                        type="text"
-                                        :value="collectionURL">
-                            </div>
-                            <a 
-                                    v-tooltip="{
-                                        delay: {
-                                            show: 500,
-                                            hide: 300,
-                                        },
-                                        content: $i18n.get('label_open_externally'),
-                                        autoHide: false,
-                                        placement: 'bottom'
-                                    }" 
-                                    target="_blank"
-                                    :href="collectionURL">
-                                <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>
-                                </span>
-                            </a>
-                        </span>
-                    </div>
-                    <p>{{ $i18n.get('info_other_item_listing_options') }}</p>
-                    <div class="exposer-types-list">
-                        <div
-                                class="exposer-type"
-                                v-for="(exposerType, index ) in availableExposers"
-                                :key="index"
-                                @click="siteLinkCopied = false; selectExposer(exposerType)">
-                            <h4>{{ exposerType.name }}</h4>
-                            <p>{{ exposerType.description }}</p>            
-                        </div>
-                    </div>
-                </div>
-               
-                <div 
-                        v-if="selectedExposer != undefined"
-                        class="exposer-item-container">
-                    <b-field 
-                            :addons="false"
-                            class="exposer-item"
-                            v-for="(exposerMapper, index) in selectedExposerMappers"
-                            :key="index">
-                        <span 
-                                @click="collapse(index)"
-                                class="collapse-handle">
+    <div 
+            aria-labelledby="exposers-modal-title"
+            role="dialog"
+            aria-modal="true"
+            class="tainacan-modal-content" 
+            style="width: auto">
+        <header class="tainacan-modal-title">
+            <h2 
+                    id="exposers-modal-title"
+                    v-if="selectedExposer == undefined">
+                {{ this.$i18n.get('label_urls_for_items_list') }}
+            </h2>
+            <h2 
+                    id="exposers-modal-title"
+                    v-if="selectedExposer != undefined">
+                {{ this.$i18n.get('label_urls_for_items_list') + " - " + selectedExposer.name }}
+            </h2>
+            <a 
+                    @click="selectedExposerMappers = []; selectedExposer = undefined;"
+                    v-if="selectedExposer != undefined"
+                    class="back-link">
+                {{ $i18n.get('back') }}
+            </a>
+            <hr>
+        </header>
+        <section class="tainacan-form">
+            <div 
+                    v-if="selectedExposer == undefined"
+                    class="exposer-types-container">
+                <div class="exposer-item-link">
+                    <span>
+                        <p>
+                            {{ $i18n.get('label_items_list_on_website') }}
+                        </p>
+                    </span>
+                    <span class="exposer-item-actions">
+                        <a 
+                                v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
+                                    content: $i18n.get('label_copy_link_url'),
+                                    autoHide: false,
+                                    placement: 'bottom'
+                                }" 
+                                target="_blank"
+                                @click="siteLinkCopied = true; copyTextToClipboard(collectionURL)">
                             <span class="icon">
-                                <i 
-                                        :class="{ 'tainacan-icon-arrowdown' : !exposerMapper.collapsed, 'tainacan-icon-arrowright' : exposerMapper.collapsed }"
-                                        class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
                             </span>
-                            <label 
-                                    v-tooltip="{
-                                        delay: {
-                                            show: 500,
-                                            hide: 300,
-                                        },
-                                        content: selectedExposer.name + (exposerMapper.name != undefined ? ': ' + exposerMapper.name + ' ' + $i18n.get('label_mapper') : ''),
-                                        autoHide: false,
-                                        placement: 'auto-end'
-                                    }" 
-                                    class="label">
-                                {{ selectedExposer.name + (exposerMapper.name != undefined ? ": " + exposerMapper.name + " " + $i18n.get('label_mapper') : '') }}
-                            </label>
-                        </span>
-                        <transition name="filter-item">
-                            <div 
-                                    class="exposer-item-links-list"
-                                    v-show="!exposerMapper.collapsed">    
-                                <div
-                                        :key="pagedLink"
-                                        v-for="pagedLink in totalPages"
-                                        class="exposer-item-link">
-                                    <span>
-                                        <p>
-                                            {{ $i18n.get('label_page') + " " + 
-                                                pagedLink + " (" + 
-                                                $i18n.get('items') + " " + 
-                                                getFirstItemNumber(pagedLink) + " " +
-                                                $i18n.get('info_to') + " " + 
-                                                getLastItemNumber(pagedLink) + " " + 
-                                                $i18n.get('info_of') + " " + 
-                                                totalItems + ")" 
-                                            }}
-                                        </p>
-                                    </span>
-                                    <span class="exposer-item-actions">
-                                        
-                                        <a 
-                                                v-tooltip="{
-                                                    delay: {
-                                                        show: 500,
-                                                        hide: 300,
-                                                    },
-                                                    content: $i18n.get('label_copy_link_url'),
-                                                    autoHide: false,
-                                                    placement: 'bottom'
-                                                }"
-                                                @click="exposerMapper.linkCopied = pagedLink; copyTextToClipboard(exposerBaseURL + '&exposer=' + selectedExposer.slug + '&mapper=' + exposerMapper.name + '&paged=' + pagedLink)">
-                                            <span class="icon">
-                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
-                                            </span>
-                                        </a>
-                                        <div 
-                                                v-if="exposerMapper.linkCopied == pagedLink"
-                                                class="exposer-copy-popup">
-                                            <p>{{ $i18n.get('info_url_copied') }}</p>
-                                            <a 
-                                                    class="exposer-copy-popup-close"
-                                                    @click="exposerMapper.linkCopied = undefined">
-                                                <span class="icon has-text-secondary">
-                                                    <i class="tainacan-icon tainacan-icon-close" />
-                                                </span>
-                                            </a>
-                                            <input 
-                                                    v-focus
-                                                    readonly
-                                                    autofocus
-                                                    type="text"
-                                                    :value="exposerBaseURL + '&exposer=' + selectedExposer.slug + '&mapper=' + exposerMapper.name + '&paged=' + pagedLink">
-                                        </div>
-                                        <a 
-                                                :download="(collectionId != undefined ? collectionName : $i18n.get('repository')) + ' ' + $i18n.get('items') + ' ' + $i18n.get('label_page') + ' ' + pagedLink"
-                                                v-tooltip="{
-                                                    delay: {
-                                                        show: 500,
-                                                        hide: 300,
-                                                    },
-                                                    content: $i18n.get('label_open_externally'),
-                                                    autoHide: false,
-                                                    placement: 'bottom'
-                                                }" 
-                                                :href="exposerBaseURL + '&exposer=' + selectedExposer.slug + '&mapper=' + exposerMapper.name + '&paged=' + pagedLink">
-                                            <span class="icon">
-                                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>
-                                            </span>
-                                        </a>
-                                    </span>  
-                                </div>
-                            </div>      
-                        </transition>
-                    </b-field>
+                        </a>
+                        <div 
+                                v-if="siteLinkCopied == true"
+                                class="exposer-copy-popup">
+                            <p>{{ $i18n.get('info_url_copied') }}</p>
+                            <a 
+                                    class="exposer-copy-popup-close"
+                                    @click="siteLinkCopied = false">
+                                <span class="icon has-text-secondary">
+                                    <i class="tainacan-icon tainacan-icon-close" />
+                                </span>
+                            </a>
+                            <input 
+                                    readonly
+                                    autofocus
+                                    type="text"
+                                    :value="collectionURL">
+                        </div>
+                        <a 
+                                v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
+                                    content: $i18n.get('label_open_externally'),
+                                    autoHide: false,
+                                    placement: 'bottom'
+                                }" 
+                                target="_blank"
+                                :href="collectionURL">
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>
+                            </span>
+                        </a>
+                    </span>
                 </div>
-
-                <b-loading 
-                        :is-full-page="false"
-                        :active.sync="isLoading" 
-                        :can-cancel="false"/>
-
-               <footer class="field is-grouped form-submit">
-                    <div class="control">
-                        <button 
-                                class="button is-outlined" 
-                                type="button" 
-                                @click="$parent.close()">Close</button>
+                <p>{{ $i18n.get('info_other_item_listing_options') }}</p>
+                <div class="exposer-types-list">
+                    <div
+                            class="exposer-type"
+                            v-for="(exposerType, index ) in availableExposers"
+                            :key="index"
+                            @click="siteLinkCopied = false; selectExposer(exposerType)">
+                        <h4>{{ exposerType.name }}</h4>
+                        <p>{{ exposerType.description }}</p>            
                     </div>
-                </footer>
-            </section>
-        </div>
-    </div>     
+                </div>
+            </div>
+            
+            <div 
+                    v-if="selectedExposer != undefined"
+                    class="exposer-item-container">
+                <b-field 
+                        :addons="false"
+                        class="exposer-item"
+                        v-for="(exposerMapper, index) in selectedExposerMappers"
+                        :key="index">
+                    <span 
+                            @click="collapse(index)"
+                            class="collapse-handle">
+                        <span class="icon">
+                            <i 
+                                    :class="{ 'tainacan-icon-arrowdown' : !exposerMapper.collapsed, 'tainacan-icon-arrowright' : exposerMapper.collapsed }"
+                                    class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                        </span>
+                        <label 
+                                v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
+                                    content: selectedExposer.name + (exposerMapper.name != undefined ? ': ' + exposerMapper.name + ' ' + $i18n.get('label_mapper') : ''),
+                                    autoHide: false,
+                                    placement: 'auto-end'
+                                }" 
+                                class="label">
+                            {{ selectedExposer.name + (exposerMapper.name != undefined ? ": " + exposerMapper.name + " " + $i18n.get('label_mapper') : '') }}
+                        </label>
+                    </span>
+                    <transition name="filter-item">
+                        <div 
+                                class="exposer-item-links-list"
+                                v-show="!exposerMapper.collapsed">    
+                            <div
+                                    :key="pagedLink"
+                                    v-for="pagedLink in totalPages"
+                                    class="exposer-item-link">
+                                <span>
+                                    <p>
+                                        {{ $i18n.get('label_page') + " " + 
+                                            pagedLink + " (" + 
+                                            $i18n.get('items') + " " + 
+                                            getFirstItemNumber(pagedLink) + " " +
+                                            $i18n.get('info_to') + " " + 
+                                            getLastItemNumber(pagedLink) + " " + 
+                                            $i18n.get('info_of') + " " + 
+                                            totalItems + ")" 
+                                        }}
+                                    </p>
+                                </span>
+                                <span class="exposer-item-actions">
+                                    
+                                    <a 
+                                            v-tooltip="{
+                                                delay: {
+                                                    show: 500,
+                                                    hide: 300,
+                                                },
+                                                content: $i18n.get('label_copy_link_url'),
+                                                autoHide: false,
+                                                placement: 'bottom'
+                                            }"
+                                            @click="exposerMapper.linkCopied = pagedLink; copyTextToClipboard(exposerBaseURL + '&exposer=' + selectedExposer.slug + '&mapper=' + exposerMapper.name + '&paged=' + pagedLink)">
+                                        <span class="icon">
+                                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                                        </span>
+                                    </a>
+                                    <div 
+                                            v-if="exposerMapper.linkCopied == pagedLink"
+                                            class="exposer-copy-popup">
+                                        <p>{{ $i18n.get('info_url_copied') }}</p>
+                                        <a 
+                                                class="exposer-copy-popup-close"
+                                                @click="exposerMapper.linkCopied = undefined">
+                                            <span class="icon has-text-secondary">
+                                                <i class="tainacan-icon tainacan-icon-close" />
+                                            </span>
+                                        </a>
+                                        <input 
+                                                v-focus
+                                                readonly
+                                                autofocus
+                                                type="text"
+                                                :value="exposerBaseURL + '&exposer=' + selectedExposer.slug + '&mapper=' + exposerMapper.name + '&paged=' + pagedLink">
+                                    </div>
+                                    <a 
+                                            :download="(collectionId != undefined ? collectionName : $i18n.get('repository')) + ' ' + $i18n.get('items') + ' ' + $i18n.get('label_page') + ' ' + pagedLink"
+                                            v-tooltip="{
+                                                delay: {
+                                                    show: 500,
+                                                    hide: 300,
+                                                },
+                                                content: $i18n.get('label_open_externally'),
+                                                autoHide: false,
+                                                placement: 'bottom'
+                                            }" 
+                                            :href="exposerBaseURL + '&exposer=' + selectedExposer.slug + '&mapper=' + exposerMapper.name + '&paged=' + pagedLink">
+                                        <span class="icon">
+                                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>
+                                        </span>
+                                    </a>
+                                </span>  
+                            </div>
+                        </div>      
+                    </transition>
+                </b-field>
+            </div>
+
+            <b-loading 
+                    :is-full-page="false"
+                    :active.sync="isLoading" 
+                    :can-cancel="false"/>
+
+            <footer class="field is-grouped form-submit">
+                <div class="control">
+                    <button 
+                            class="button is-outlined" 
+                            type="button" 
+                            @click="$parent.close()">Close</button>
+                </div>
+            </footer>
+        </section>
+    </div>
 </template>
 
 <script>
@@ -234,6 +239,7 @@ export default {
         focus: {
             inserted(el) {
                 el.focus();
+       
                 if (el.value != undefined)
                     el.setSelectionRange(0,el.value.length)
             }

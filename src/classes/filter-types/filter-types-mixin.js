@@ -119,12 +119,12 @@ export const filter_type_mixin = {
                             }
 
                             if (this.filter.max_options && this.options.length >= this.filter.max_options) {
-                                let seeMoreLink = `<a style="font-size: 0.75rem;"> ${ this.$i18n.get('label_view_all') } </a>`;
+                                let showViewAllButton = true;
 
                                 if(this.options.length === this.filter.max_options){
-                                    this.options[this.filter.max_options-1].seeMoreLink = seeMoreLink;
+                                    this.options[this.filter.max_options-1].showViewAllButton = showViewAllButton;
                                 } else {
-                                    this.options[this.options.length-1].seeMoreLink = seeMoreLink;
+                                    this.options[this.options.length-1].showViewAllButton = showViewAllButton;
                                 }
                             }
 
@@ -233,12 +233,12 @@ export const filter_type_mixin = {
                             }
 
                             if (this.filter.max_options && this.options.length >= this.filter.max_options) {
-                                let seeMoreLink = `<a style="font-size: 0.75rem;"> ${ this.$i18n.get('label_view_all') } </a>`;
+                                let showViewAllButton = true;
 
                                 if(this.options.length === this.filter.max_options){
-                                    this.options[this.filter.max_options-1].seeMoreLink = seeMoreLink;
+                                    this.options[this.filter.max_options-1].showViewAllButton = showViewAllButton;
                                 } else {
-                                    this.options[this.options.length-1].seeMoreLink = seeMoreLink;
+                                    this.options[this.options.length-1].showViewAllButton = showViewAllButton;
                                 }
                             }
 

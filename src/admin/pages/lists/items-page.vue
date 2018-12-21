@@ -89,20 +89,24 @@
                         </span>
                 </div>
             </div>
-            <a
+            <button
                     @click="openAdvancedSearch = !openAdvancedSearch"
-                    class="is-size-7 is-pulled-right is-hidden-mobile">{{ $i18n.get('advanced_search') }}</a>
+                    arial-controls="advanced-search-container"
+                    :aria-expanded="openAdvancedSearch"
+                    class="link-style is-size-7 is-pulled-right is-hidden-mobile">
+                {{ $i18n.get('advanced_search') }}
+            </button>
             
             <h3 
                     id="filters-label-landmark"
                     class="has-text-weight-semibold">
                 {{ $i18n.get('filters') }}
             </h3>
-            <a
+            <button
                     v-if="!isLoadingFilters &&
                     ((filters.length >= 0 &&
                     isRepositoryLevel) || filters.length > 0)"
-                    class="collapse-all is-size-7"
+                    class="link-style collapse-all"
                     @click="collapseAll = !collapseAll">
                 {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
                 <span class="icon">
@@ -110,7 +114,7 @@
                             :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
                             class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
                 </span>
-            </a>
+            </button>
 
             <br>
             <br>
@@ -510,6 +514,7 @@
 
             <!-- ADVANCED SEARCH -->
             <div
+                    id="advanced-search-container"
                     role="search"
                     v-if="openAdvancedSearch">
 
@@ -704,14 +709,13 @@
                         class="has-text-weight-semibold">
                     {{ $i18n.get('filters') }}
                 </h3>
-                <a
+                <button
                         aria-controls="filters-items-list"
                         :aria-expanded="!collapseAll"
-                        role="button"
                         v-if="!isLoadingFilters &&
                         ((filters.length >= 0 &&
                         isRepositoryLevel) || filters.length > 0)"
-                        class="collapse-all is-size-7"
+                        class="link-style collapse-all"
                         @click="collapseAll = !collapseAll">
                     {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
                     <span class="icon">
@@ -719,7 +723,7 @@
                                 :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
                                 class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
                     </span>
-                </a>
+                </button>
 
                 <br>
                 <br>
@@ -1404,6 +1408,7 @@
     .collapse-all {
         display: inline-flex;
         align-items: center;
+        font-size: 0.75rem !important;
     }
 
     .advanced-search-criteria-title {
