@@ -46,7 +46,7 @@
                     }"
                     class="processes-list-item"
                     :key="index"
-                    v-for="(bgProcess, index) of processes">
+                    v-for="(bgProcess, index) of getProcesses()">
                 <div 
                         @click="$set(collapses, index, !collapses[index])"
                         class="process-handler">
@@ -313,6 +313,7 @@
                 isSelecting: false,
                 highlightedProcess: '',
                 dateFormat: '',
+                allProcesses: []
             }
         },
         props: {
@@ -453,31 +454,13 @@
                     }
                 });
             },
-            getStatusLabel(status) {
-
-                switch(status) {
-                    case 'finished':
-                        return this.$i18n.get('info_process_status_finished');
-
-                    case 'finished-errors':
-                        return this.$i18n.get('info_process_status_finished');
-
-                    case 'errored':
-                        return this.$i18n.get('info_process_status_errored');
-
-                    case 'cancelled':
-                        return this.$i18n.get('info_process_status_cancelled');
-
-                    case 'paused':
-                        return this.$i18n.get('info_process_status_paused');
-
-                    case 'running':
-                        return this.$i18n.get('info_process_status_running');
-
-                    default:
-                        return this.$i18n.get('info_process_status_finished');
-                }
+            setProcesses(processes) {
+                this.allProcesses = processes;
+            },
+            getProcesses(){
+                return ( this.allProcesses.length === 0 ) ? this.processes : this.allProcesses;
             }
+
         },
         mounted() {
             let locale = navigator.language;
@@ -492,12 +475,9 @@
             }
         },
         created(){
-            // TODO: get data from wp heartbeat
-            // this.$console.log(window.wp);
-            // this.$console.log(this.$root.$el);
-            // this.$root.$on( 'heartbeat-tick',  () => {
-            //     this.$console.log('event');
-            // });
+            jQuery( document ).on( 'heartbeat-tick',  ( event, data ) => {
+                this.setProcesses(data.bg_process_feedback);
+            });
         }
     }
 </script>
