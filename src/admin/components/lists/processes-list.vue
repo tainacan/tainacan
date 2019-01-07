@@ -478,6 +478,9 @@
             jQuery( document ).on( 'heartbeat-tick',  ( event, data ) => {
                 this.setProcesses(data.bg_process_feedback);
             });
+        },
+        beforeDestroy() {
+            jQuery( document ).off( 'heartbeat-tick')
         }
     }
 </script>

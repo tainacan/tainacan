@@ -39,7 +39,7 @@
                 </li>
                 <li     
                         :key="index"
-                        v-for="(bgProcess, index) of bgProcesses">
+                        v-for="(bgProcess, index) of getAllProcesses">
                     <div class="process-item">
                         <div 
                                 @click="toggleDetails(index)"
@@ -157,6 +157,7 @@ export default {
     data() {
         return {
             showProcessesList: false,
+            allProcesses: [],
             processesCollapses: [],
             hasAnyProcessExecuting: false,
             dateFormat: '',
@@ -171,6 +172,9 @@ export default {
     computed: {
         bgProcesses() {
             return this.getProcesses();
+        },
+        getAllProcesses(){
+            return ( this.allProcesses.length === 0 ) ? this.bgProcesses : this.allProcesses.slice(0,12);
         }
     },
     methods: {
@@ -207,6 +211,9 @@ export default {
         pauseProcess(index) {
             this.updateProcess({ id: this.bgProcesses[index].ID, status: 'closed' });
         },
+        setProcesses(processes) {
+            this.allProcesses = processes;
+        }
     },
     created() {
         let locale = navigator.language;
@@ -228,9 +235,14 @@ export default {
         }, 20000);
 
         this.showProcessesList = false;
+
+        jQuery( document ).on( 'heartbeat-tick',  ( event, data ) => {
+            this.setProcesses(data.bg_process_feedback);
+        });
     },
     beforeDestroy() {
         clearInterval(this.intervalID);
+        jQuery( document ).off( 'heartbeat-tick')
     }
 }
 </script>
