@@ -162,7 +162,7 @@
                                                 autoHide: false,
                                                 placement: 'bottom'
                                             }"
-                                            @click="exposerMapper.linkCopied = pagedLink; copyTextToClipboard(exposerBaseURL + '&exposer=' + selectedExposer.slug + '&mapper=' + exposerMapper.name + '&paged=' + pagedLink)">
+                                            @click="exposerMapper.linkCopied = pagedLink; copyTextToClipboard(selectedExposer.slug != 'tainacan-api' ? (exposerBaseURL + '&exposer=' + selectedExposer.slug + '&mapper=' + exposerMapper.name + '&paged=' + pagedLink) : exposerBaseURL + '&paged=' + pagedLink)">
                                         <span class="icon">
                                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
                                         </span>
@@ -183,7 +183,7 @@
                                                 readonly
                                                 autofocus
                                                 type="text"
-                                                :value="exposerBaseURL + '&exposer=' + selectedExposer.slug + '&mapper=' + exposerMapper.name + '&paged=' + pagedLink">
+                                                :value="selectedExposer.slug != 'tainacan-api' ? (exposerBaseURL + '&exposer=' + selectedExposer.slug + '&mapper=' + exposerMapper.name + '&paged=' + pagedLink) : exposerBaseURL + '&paged=' + pagedLink">
                                     </div>
                                     <a 
                                             :download="(collectionId != undefined ? collectionName : $i18n.get('repository')) + ' ' + $i18n.get('items') + ' ' + $i18n.get('label_page') + ' ' + pagedLink"
@@ -196,7 +196,7 @@
                                                 autoHide: false,
                                                 placement: 'bottom'
                                             }" 
-                                            :href="exposerBaseURL + '&exposer=' + selectedExposer.slug + '&mapper=' + exposerMapper.name + '&paged=' + pagedLink">
+                                            :href="selectedExposer.slug != 'tainacan-api' ? (exposerBaseURL + '&exposer=' + selectedExposer.slug + '&mapper=' + exposerMapper.name + '&paged=' + pagedLink) : exposerBaseURL + '&paged=' + pagedLink">
                                         <span class="icon">
                                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>
                                         </span>
@@ -269,6 +269,10 @@ export default {
             // Removes View Mode
             if (currentParams.view_mode != undefined)
                 delete currentParams.view_mode;
+
+            // Removes Admin View Mode
+            if (currentParams.admin_view_mode != undefined)
+                delete currentParams.admin_view_mode;
             
             // Handles pagination of this link
             delete currentParams.paged;
@@ -286,7 +290,17 @@ export default {
                 return tainacan_plugin.theme_items_list_url;
         },
         availableExposers() {
-            return this.getAvailableExposers();
+            let exposers = this.getAvailableExposers();
+
+            exposers.unshift({
+                accept_no_mapper: true,
+                class_name: 'API',
+                mappers: [],
+                name: this.$i18n.get('label_tainacan_api'),
+                description: this.$i18n.get('info_tainacan_api'),
+                slug: 'tainacan-api'   
+            });
+            return exposers;
         }
     },
     methods: {

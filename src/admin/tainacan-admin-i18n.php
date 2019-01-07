@@ -364,6 +364,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_items_list'			                 	 => __( 'Items List', 'tainacan' ),
 	'label_list_pagination'			                 => __( 'List pagination', 'tainacan' ),
 	'label_sort_visualization'		                 => __( 'Sorting and visualization control', 'tainacan' ),
+	'label_tainacan_api'			                 => __( 'Tainacan API', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -537,6 +538,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_url_copied'	         	    	    	 => __( 'URL link copied', 'tainacan' ),
 	'info_other_item_listing_options'				 => __('Other items listing options: ', 'tainacan'),
 	'info_send_email'				 				 => __('The exporter may take a while depending on the size of your collection. Check this option to receive an e-mail when the process is done. You can also check the process status visiting the', 'tainacan'),
+	'info_tainacan_api'				 				 => __('Tainacan API on JSON format.', 'tainacan'),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),
