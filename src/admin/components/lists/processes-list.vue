@@ -458,7 +458,20 @@
                 this.allProcesses = processes;
             },
             getProcesses(){
-                return ( this.allProcesses.length === 0 ) ? this.processes : this.allProcesses;
+                if( this.allProcesses.length === 0 ){
+                    return this.processes;
+                } else if(this.allProcesses.length > this.processesPerPage ) {
+                    const start = ( this.page * this.processesPerPage ) - this.processesPerPage;
+                    const end = ( this.page * this.processesPerPage ) - 1;
+
+                    if(!this.allProcesses[end]) {
+                        return this.allProcesses.slice(start);
+                    }
+
+                    return this.allProcesses.slice(start, end);
+                } else {
+                    return this.allProcesses;
+                }
             }
 
         },
