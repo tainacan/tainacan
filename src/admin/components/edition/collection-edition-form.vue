@@ -453,14 +453,14 @@
                             v-if="isNewCollection"
                             id="button-submit-goto-metadata"
                             @click.prevent="onSubmit('metadata')"
-                            class="button is-turquoise5">{{ $i18n.get('label_save_goto_metadata') }}</button>
+                            class="button is-secondary">{{ $i18n.get('label_save_goto_metadata') }}</button>
                 </div>
                  <div class="control">
                     <button
                             v-if="isNewCollection"
                             id="button-submit-goto-filter"
                             @click.prevent="onSubmit('filters')"
-                            class="button is-turquoise5">{{ $i18n.get('label_save_goto_filter') }}</button>
+                            class="button is-secondary">{{ $i18n.get('label_save_goto_filter') }}</button>
                 </div>
                 <div class="control">
                     <button
@@ -951,7 +951,6 @@ export default {
     #button-edit-header-image,
     #button-delete-thumbnail, 
     #button-delete-header-image {
-
         border-radius: 100px !important;
         max-height: 30px !important;
         max-width: 30px !important;
@@ -967,6 +966,7 @@ export default {
             margin: 0;
             margin-top: -2px;
             font-size: 18px;
+            color: white !important;
         }
     }
     .header-field {  

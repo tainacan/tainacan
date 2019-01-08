@@ -21,7 +21,8 @@
     .has-text-primary, .has-text-primary:hover, .is-has-text-primary:focus {
         color: $blue4 !important;
     }
-    a:not(.has-text-danger), a:hover:not(.has-text-danger),
+    a:not(.has-text-danger):not(.disabled), 
+    a:hover:not(.has-text-danger):not(.disabled),
     .has-text-secondary, 
     .has-text-secondary:hover, 
     .is-has-text-secondary:focus {

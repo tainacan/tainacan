@@ -154,13 +154,13 @@
                 </button>
             </div>
             <div class="control">
-                <a
+                <button
                         type="button"
                         v-if="editForm.url != undefined && editForm.url!= ''"
                         class="button is-secondary"
                         :href="editForm.url">
                     {{ $i18n.get('see') + ' ' + $i18n.get('term') }}
-                </a>
+                </button>
             </div>
             <div class="control">
                 <button
@@ -453,6 +453,7 @@
                 margin-left: 10px !important;
                 
                 .icon {
+                    color: white !important;
                     display: inherit;
                     padding: 0;
                     margin: 0;
