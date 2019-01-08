@@ -59,7 +59,7 @@
         <!-- Side bar with search and filters -->
         <!-- <transition name="filters-menu"> -->
         <aside
-                :aria-busy="!isLoadingFilters"
+                :aria-busy="isLoadingFilters"
                 id="filters-desktop-aside"
                 role="region"
                 aria-labelledby="filters-label-landmark"
@@ -265,6 +265,7 @@
                         </div>
                         <div class="dropdown-item-apply">
                             <button 
+                                    aria-controls="items-list-results"
                                     @click="onChangeDisplayedMetadata()"
                                     class="button is-success">
                                 {{ $i18n.get('label_apply_changes') }}
@@ -290,6 +291,8 @@
                                 </span>
                             </button>
                             <b-dropdown-item
+                                    aria-controls="items-list-results"
+                                    role="button"
                                     :class="{ 'is-active': metadatum != undefined && orderBy == metadatum.slug }"
                                     v-for="metadatum of sortingMetadata"
                                     v-if="
@@ -324,6 +327,7 @@
                         </b-dropdown>
                         <!-- Order ASC vs DESC buttons -->
                         <button
+                                aria-controls="items-list-results"
                                 class="button is-white is-small"
                                 :aria-label="$i18n.get('label_sort_ascending')"
                                 :disabled="totalItems <= 0 || order == 'DESC'"
@@ -333,6 +337,7 @@
                             </span>
                         </button>
                         <button
+                                aria-controls="items-list-results"
                                 :disabled="totalItems <= 0 || order == 'ASC'"
                                 :aria-label="$i18n.get('label_sort_descending')"
                                 class="button is-white is-small"
@@ -368,6 +373,8 @@
                                 </span>
                             </button>
                             <b-dropdown-item 
+                                    aria-controls="items-list-results"
+                                    role="button"
                                     :class="{ 'is-active': viewModeOption == viewMode }"
                                     v-for="(viewModeOption, index) of enabledViewModes"
                                     :key="index"
@@ -411,6 +418,8 @@
                                 </span>
                             </button>
                             <b-dropdown-item 
+                                    aria-controls="items-list-results"
+                                    role="button"
                                     :class="{ 'is-active': adminViewMode == 'table' }"
                                     :value="'table'">
                                 <span class="icon gray-icon">
@@ -419,6 +428,8 @@
                                 <span>{{ $i18n.get('label_table') }}</span>
                             </b-dropdown-item>
                             <b-dropdown-item 
+                                    aria-controls="items-list-results"
+                                    role="button"
                                     :class="{ 'is-active': adminViewMode == 'cards' }"
                                     :value="'cards'">
                                 <span class="icon gray-icon">
@@ -427,6 +438,8 @@
                                 <span>{{ $i18n.get('label_cards') }}</span>
                             </b-dropdown-item>
                             <b-dropdown-item 
+                                    aria-controls="items-list-results"
+                                    role="button"
                                     :class="{ 'is-active': adminViewMode == 'grid' }"
                                     :value="'grid'">
                                 <span class="icon gray-icon">
@@ -435,6 +448,8 @@
                                 <span>{{ $i18n.get('label_thumbnails') }}</span>
                             </b-dropdown-item>
                             <b-dropdown-item 
+                                    aria-controls="items-list-results"
+                                    role="button"
                                     :class="{ 'is-active': adminViewMode == 'records' }"
                                     :value="'records'">
                                 <span class="icon gray-icon">
@@ -443,6 +458,8 @@
                                 <span>{{ $i18n.get('label_records') }}</span>
                             </b-dropdown-item>
                             <b-dropdown-item 
+                                    aria-controls="items-list-results"
+                                    role="button"
                                     :class="{ 'is-active': adminViewMode == 'masonry' }"
                                     :value="'masonry'">
                                 <span class="icon gray-icon">
@@ -501,11 +518,12 @@
                                     :value="searchQuery"
                                     @input="futureSearchQuery = $event.target.value"
                                     @keyup.enter="updateSearch()">
-                                <span 
-                                        @click="updateSearch()"
-                                        class="icon is-right">
-                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-search"/>
-                                </span>
+                            <span 
+                                    aria-controls="items-list-results"
+                                    @click="updateSearch()"
+                                    class="icon is-right">
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-search"/>
+                            </span>
                         </div>
                         <a
                                 @click="openAdvancedSearch = !openAdvancedSearch"
@@ -544,11 +562,13 @@
                         :advanced-search-results="advancedSearchResults"
                         :open-form-advanced-search="openFormAdvancedSearch"
                         :is-do-search="isDoSearch"/>
+
                 <div class="advanced-searh-form-submit">
                     <p
                             v-if="advancedSearchResults"
                             class="control">
                         <button
+                                aria-controls="items-list-results"
                                 @click="advancedSearchResults = !advancedSearchResults"
                                 class="button is-outlined">{{ $i18n.get('edit_search') }}</button>
                     </p>
@@ -556,6 +576,7 @@
                             v-if="advancedSearchResults"
                             class="control">
                         <button
+                                aria-controls="items-list-results"
                                 @click="isDoSearch = !isDoSearch"
                                 class="button is-success">{{ $i18n.get('search') }}</button>
                     </p>
@@ -597,6 +618,7 @@
             
             <!-- ITEMS LISTING RESULTS ------------------------- -->
             <div 
+                    id="items-list-results"
                     :aria-busy="isLoadingItems"
                     aria-labelledby="items-list-landmark"
                     role="region"

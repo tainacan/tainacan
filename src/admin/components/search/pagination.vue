@@ -21,6 +21,7 @@
                     :label="$i18n.get('label_items_per_page')"> 
                 <b-select 
                         :value="itemsPerPage"
+                        aria-controls="items-list-results"
                         aria-labelledby="items-per-page-select"
                         @input="onChangeItemsPerPage">
                     <option value="12">12 &nbsp;</option>
@@ -47,7 +48,9 @@
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
                         </span>
                     </button>
-                    <b-dropdown-item 
+                    <b-dropdown-item
+                            aria-controls="items-list-results"
+                            role="button" 
                             :key="pageNumber"
                             v-for="pageNumber in totalPages"
                             :value="Number(pageNumber)">
@@ -59,6 +62,7 @@
         
         <div class="pagination"> 
             <b-pagination
+                    aria-controls="items-list-results"
                     @change="onPageChange"
                     :total="totalItems"
                     :current.sync="page"
