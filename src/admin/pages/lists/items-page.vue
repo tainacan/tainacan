@@ -9,7 +9,8 @@
             :class="{
                     'repository-level-page': isRepositoryLevel,
                     'is-fullscreen': registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen
-            }">
+            }"
+            aria-live="polite">
 
         <!-- SEARCH AND FILTERS --------------------- -->
         <!-- Filter menu compress button -->
@@ -58,6 +59,7 @@
         <!-- Side bar with search and filters -->
         <!-- <transition name="filters-menu"> -->
         <aside
+                :aria-busy="!isLoadingFilters"
                 id="filters-desktop-aside"
                 role="region"
                 aria-labelledby="filters-label-landmark"
@@ -595,6 +597,7 @@
             
             <!-- ITEMS LISTING RESULTS ------------------------- -->
             <div 
+                    :aria-busy="isLoadingItems"
                     aria-labelledby="items-list-landmark"
                     role="region"
                     class="above-search-control">

@@ -31,11 +31,13 @@
             
             <!-- RECORDS VIEW MODE -->
             <masonry 
+                    role="list"
                     v-if="!isLoading && items.length > 0"
                     :cols="{default: 4, 1919: 3, 1407: 2, 1215: 2, 1023: 1, 767: 1, 343: 1}"
                     :gutter="30"
                     class="tainacan-records-container">
                 <a 
+                        role="listitem"
                         :href="item.url"
                         :key="index"
                         v-for="(item, index) of items"

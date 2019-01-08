@@ -28,10 +28,12 @@
 
             <!-- CARDS VIEW MODE -->
             <div 
+                    role="list"
                     v-if="!isLoading && items.length > 0"
                     class="tainacan-cards-container">
                 <!-- <div> -->
                 <a
+                        role="listitem"
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-card"

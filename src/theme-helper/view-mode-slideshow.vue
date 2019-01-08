@@ -209,11 +209,13 @@
                         </button>
                     </section>
                     <swiper 
+                            role="list"
                             @slideChange="onSlideChange()"
                             ref="mySwiper"
                             :options="swiperOption"
                             id="tainacan-slide-container">
                         <swiper-slide 
+                                role="listitem"
                                 :ref="'thumb-' + item.id"
                                 :key="index"
                                 v-for="(item, index) of slideItems"

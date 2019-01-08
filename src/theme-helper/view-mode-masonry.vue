@@ -33,11 +33,13 @@
 
             <!-- MASONRY VIEW MODE -->
             <masonry
+                    role="list"
                     v-if="!isLoading && items.length > 0" 
                     :cols="{default: 7, 1919: 6, 1407: 5, 1215: 4, 1023: 3, 767: 2, 343: 1}"
                     :gutter="25"
                     class="tainacan-masonry-container">
                 <a 
+                        role="listitem"
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-masonry-item" 
