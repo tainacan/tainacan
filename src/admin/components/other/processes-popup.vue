@@ -149,7 +149,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapActions } from 'vuex';
 import moment from 'moment';
 
 export default {
@@ -158,10 +158,10 @@ export default {
         return {
             showProcessesList: false,
             allProcesses: [],
+            bgProcesses: [],
             processesCollapses: [],
             hasAnyProcessExecuting: false,
-            dateFormat: '',
-            intervalID: null,
+            dateFormat: ''
         }
     },
     watch: {
@@ -170,9 +170,6 @@ export default {
         }
     },
     computed: {
-        bgProcesses() {
-            return this.getProcesses();
-        },
         getAllProcesses(){
             return ( this.allProcesses.length === 0 ) ? this.bgProcesses : this.allProcesses.slice(0,12);
         }
@@ -181,9 +178,6 @@ export default {
         ...mapActions('bgprocess', [
             'fetchProcesses',
             'updateProcess'
-        ]),
-        ...mapGetters('bgprocess', [
-            'getProcesses',
         ]),
         toggleDetails(index) {
             this.$set(this.processesCollapses, index, !this.processesCollapses[index]);
@@ -223,16 +217,12 @@ export default {
         let localeData = moment.localeData();
         this.dateFormat = localeData.longDateFormat('lll');
 
-        this.intervalID = setInterval(() => {
-            this.fetchProcesses({
-                page: 1,
-                processesPerPage: 12
-            }).then(() => {
-                if (this.getUnfinishedProcesses() > 0) {
-                    clearInterval(this.intervalID);
-                }
-            });
-        }, 20000);
+        this.fetchProcesses({
+            page: 1,
+            processesPerPage: 12
+        }).then((response) => {
+            this.bgProcesses = response.processes;
+        });
 
         this.showProcessesList = false;
 
@@ -241,7 +231,6 @@ export default {
         });
     },
     beforeDestroy() {
-        clearInterval(this.intervalID);
         jQuery( document ).off( 'heartbeat-tick')
     }
 }
