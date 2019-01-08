@@ -9,8 +9,11 @@
             </header>
             <section class="tainacan-form">
                  <p>{{ $i18n.get('instruction_select_an_importer_type') }}</p>
-                <div class="importer-types-container">
+                <div 
+                        role="list"
+                        class="importer-types-container">
                     <div
+                            role="listitem"
                             class="importer-type"
                             v-for="importerType in availableImporters"
                             :key="importerType.slug"
