@@ -46,7 +46,7 @@
                     }"
                     class="processes-list-item"
                     :key="index"
-                    v-for="(bgProcess, index) of getProcesses()">
+                    v-for="(bgProcess, index) of processes">
                 <div 
                         @click="$set(collapses, index, !collapses[index])"
                         class="process-handler">
@@ -312,8 +312,7 @@
                 allOnPageSelected: false,
                 isSelecting: false,
                 highlightedProcess: '',
-                dateFormat: '',
-                allProcesses: []
+                dateFormat: ''
             }
         },
         props: {
@@ -350,7 +349,8 @@
         methods: {
             ...mapActions('bgprocess', [
                 'deleteProcess',
-                'updateProcess'
+                'updateProcess',
+                'heartBitUpdateProcess'
             ]),
             selectAllOnPage() {
                 for (let i = 0; i < this.selected.length; i++) 
@@ -453,27 +453,7 @@
                         },
                     }
                 });
-            },
-            setProcesses(processes) {
-                this.allProcesses = processes;
-            },
-            getProcesses(){
-                if( this.allProcesses.length === 0 ){
-                    return this.processes;
-                } else if(this.allProcesses.length > this.processesPerPage ) {
-                    const start = ( this.page * this.processesPerPage ) - this.processesPerPage;
-                    const end = ( this.page * this.processesPerPage ) - 1;
-
-                    if(!this.allProcesses[end]) {
-                        return this.allProcesses.slice(start);
-                    }
-
-                    return this.allProcesses.slice(start, end);
-                } else {
-                    return this.allProcesses;
-                }
             }
-
         },
         mounted() {
             let locale = navigator.language;
@@ -489,7 +469,14 @@
         },
         created(){
             jQuery( document ).on( 'heartbeat-tick',  ( event, data ) => {
-                this.setProcesses(data.bg_process_feedback);
+                let updatedProcesses = data.bg_process_feedback;
+
+                for (let updatedProcess of updatedProcesses) {
+                    let updatedProcessIndex = this.processes((aProcess) => aProcess.ID == updatedProcess.ID);
+                    if (updatedProcessIndex >= 0) {
+                        this.heartBitUpdateProcess(updatedProcess);
+                    }
+                }
             });
         },
         beforeDestroy() {

@@ -38,6 +38,10 @@ export const updateProcess = ({ commit }, { id, status }) => {
     });
 };
 
+export const heartBitUpdateProcess = ({ commit }, { aProcess }) => {
+    commit('setProcess', aProcess);
+};
+
 export const fetchProcess = ({ commit }, id) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.get(`/bg-processes/${id}/`)
