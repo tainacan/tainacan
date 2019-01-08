@@ -273,8 +273,9 @@
                 this.isLoading = true;
 
                 this.fetchProcesses({
-                    'page': this.processesPage,
-                    'processesPerPage': this.processesPerPage
+                    page: this.processesPage,
+                    processesPerPage: this.processesPerPage,
+                    shouldUpdateStore: true
                 })
                     .then((res) => {
                         this.isLoading = false;

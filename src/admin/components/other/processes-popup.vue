@@ -157,7 +157,7 @@ export default {
     data() {
         return {
             showProcessesList: false,
-            allProcesses: [],
+            updatedProcesses: [],
             bgProcesses: [],
             processesCollapses: [],
             hasAnyProcessExecuting: false,
@@ -171,7 +171,16 @@ export default {
     },
     computed: {
         getAllProcesses(){
-            return ( this.allProcesses.length === 0 ) ? this.bgProcesses : this.allProcesses.slice(0,12);
+            if (this.updatedProcesses.length !== 0) {
+                for (let updatedProcess of this.updatedProcesses) {
+                    let updatedProcessIndex = this.bgProcesses.findIndex((aProcess) => aProcess.ID == updatedProcess.ID);
+                    if (updatedProcessIndex >= 0) {
+                        this.$set(this.bgProcesses, updatedProcessIndex, updatedProcess);
+                    }
+                }
+            }
+
+            return this.bgProcesses;
         }
     },
     methods: {
@@ -206,7 +215,7 @@ export default {
             this.updateProcess({ id: this.bgProcesses[index].ID, status: 'closed' });
         },
         setProcesses(processes) {
-            this.allProcesses = processes;
+            this.updatedProcesses = processes;
         }
     },
     created() {
@@ -219,9 +228,10 @@ export default {
 
         this.fetchProcesses({
             page: 1,
-            processesPerPage: 12
+            processesPerPage: 12,
+            shouldUpdateStore: false
         }).then((response) => {
-            this.bgProcesses = response.processes;
+            this.bgProcesses = JSON.parse(JSON.stringify(response.processes));
         });
 
         this.showProcessesList = false;

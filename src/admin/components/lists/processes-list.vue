@@ -472,7 +472,7 @@
                 let updatedProcesses = data.bg_process_feedback;
 
                 for (let updatedProcess of updatedProcesses) {
-                    let updatedProcessIndex = this.processes((aProcess) => aProcess.ID == updatedProcess.ID);
+                    let updatedProcessIndex = this.processes.findIndex((aProcess) => aProcess.ID == updatedProcess.ID);
                     if (updatedProcessIndex >= 0) {
                         this.heartBitUpdateProcess(updatedProcess);
                     }
