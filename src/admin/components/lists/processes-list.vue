@@ -468,7 +468,7 @@
             }
         },
         created(){
-            jQuery( document ).on( 'heartbeat-tick',  ( event, data ) => {
+            jQuery( document ).on( 'heartbeat-tick-list',  ( event, data ) => {
                 let updatedProcesses = data.bg_process_feedback;
 
                 for (let updatedProcess of updatedProcesses) {
@@ -478,9 +478,13 @@
                     }
                 }
             });
+
+            jQuery( document ).on( 'heartbeat-tick',  ( event, data ) => {
+                jQuery( document ).trigger('heartbeat-tick-list', data);
+            });
         },
         beforeDestroy() {
-            jQuery( document ).off( 'heartbeat-tick')
+            jQuery( document ).unbind( 'heartbeat-tick-list')
         }
     }
 </script>

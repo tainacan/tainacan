@@ -236,12 +236,18 @@ export default {
 
         this.showProcessesList = false;
 
-        jQuery( document ).on( 'heartbeat-tick',  ( event, data ) => {
+        jQuery( document ).on( 'heartbeat-tick-popup',  ( event, data ) => {
             this.setProcesses(data.bg_process_feedback);
         });
+
+        jQuery( document ).on( 'heartbeat-tick',  ( event, data ) => {
+            jQuery( document ).trigger('heartbeat-tick-popup',data);
+        });
+
+
     },
     beforeDestroy() {
-        jQuery( document ).off( 'heartbeat-tick')
+        jQuery( document ).unbind( 'heartbeat-tick-popup')
     }
 }
 </script>
