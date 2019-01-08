@@ -162,8 +162,8 @@ $Tainacan_Gutenberg_Block = \Tainacan\GutenbergBlock::get_instance();
 $Tainacan_Search_Engine = new \Tainacan\Search_Engine();
 $Tainacan_Elastic_press = new \Tainacan\Elastic_Press();
 
-require_once(__DIR__ . '/../importer/class-tainacan-bg-importer-heartbeat.php');
-$Tainacan_Importer_Heartbeat = new \Tainacan\Importer\Background_Importer_Heartbeat();
+require_once(__DIR__ . '/class-tainacan-background-process-heartbeat.php');
+$Tainacan_Importer_Heartbeat = new \Tainacan\Background_Importer_Heartbeat();
 
 $Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();
 

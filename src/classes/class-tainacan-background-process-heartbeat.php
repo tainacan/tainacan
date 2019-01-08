@@ -1,17 +1,16 @@
 <?php
-namespace Tainacan\Importer;
-use Tainacan;
+namespace Tainacan;
 
 class Background_Importer_Heartbeat {
 
     public function __construct() {
-        global $wpdb;
-        $this->table = $wpdb->prefix . 'tnc_bg_process';
+		global $wpdb;
+		$this->table = $wpdb->prefix . 'tnc_bg_process';
         add_filter( 'heartbeat_send', array( &$this, 'bg_process_feedback' ), 10, 2 );
     }
 
     /**
-     * Receive Heartbeat data and respond.
+     * Receive Heartbeat data and response.
      *
      * Processes data received via a Heartbeat request, and returns additional data to pass back to the front end.
      *
@@ -24,7 +23,7 @@ class Background_Importer_Heartbeat {
         $user_q = $wpdb->prepare("AND user_id = %d", get_current_user_id());
         $status_q = "";
 
-        $base_query = "FROM $this->table WHERE 1=1 $status_q $user_q ORDER BY priority DESC, queued_on DESC";
+        $base_query = "FROM $this->table WHERE processed_last >= NOW() - INTERVAL 10 MINUTE";
 
         $query = "SELECT * $base_query";
         $result = $wpdb->get_results($query);
