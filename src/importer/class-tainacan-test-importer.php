@@ -612,7 +612,9 @@ class Test_Importer extends Importer {
 	}
 	
 	public function process_item($index, $collection_definition) {
-		
+		$x = implode(123, true);
+		$y = 123/0;
+		$x = aalksjdlaskdj(true);
 		$method = 'get_' . $collection_definition['source_id'] . '_item';
 		$item = $this->$method($index);
 		return $item;
