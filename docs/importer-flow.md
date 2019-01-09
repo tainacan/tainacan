@@ -40,7 +40,7 @@ When the user starts a new import process, he/she first choose which import to u
 Once the Importer is chosen, the first thing that happens is the creation of a new instance of the chosen Importer. This fires the `__construct()` method.
 
 
-## Choose a collection (if manual_mapping is true)
+## Choose a collection (if `manual_collection` is true)
 
 After choosing the importer, user will be given the choice to choose the destination collection.
 
@@ -131,15 +131,15 @@ public function get_source_metadata(){
 
 An Importer may have several steps, that will handle different parts of the process. Each step will be handled by a different callback in the Importer class.
 
-First, lets have a look at a simple CSV importer, that only have one steps, in which it imports the items from the source into a chosen collection. After that we will have a look on how to create custom steps.
+First, lets have a look at a simple CSV importer, that only have one step, in which it imports the items from the source into a chosen collection. After that we will have a look on how to create custom steps.
 
 ### Simple Importer - One step that imports items
 
-By default, the only method an Importer class must implement to functino is the `process_item()` class.
+By default, the only method an Importer class must implement to function is the `process_item()` class.
 
 This method gets two parameters, the `$index` of the item to be inserted, and the `$collection_definition`, with information on the target collection.
 
-Inside this metho you must fetch the item from the source and format it according to the `mapping` definition of the collection.
+Inside this method you must fetch the item from the source and format it according to the `mapping` definition of the collection.
 
 The `mapping` defines how the item metadata from the source should be mapped to the metadata present in the target collection. It was created either manually, by the user, or programatically by the importer in an earlier step (see advanced importers below). This is an array where the keys are the `metadata IDs` and the values are the `identifers` found in source.
 
@@ -159,7 +159,7 @@ By default, Tainacan Importer super class is registering one single step to the 
 ]
 ```
 
-This step will lopp though all the collections added to the importer (manuall or programatically) and add the items to it.
+This step will lopp through all the collections added to the importer (manuall or programatically) and add the items to it.
 
 You may register as many steps and callbacks as you want in your importer, but you should consider keeping this default step at some point to handle the items insertion. For example, see how the Test Importer adds other steps before and after but keeps this default step in the middle:
 
@@ -208,7 +208,7 @@ class Test_Importer extends Importer {
 
 Each step has its own callback. The callback may do anything necessary, just keep in mind that you should allow the importer to break very long processes into several requests.
 
-In order to that, your step callback might be called several times, and each time run a part of the process and returnt its current status, until its done.
+In order to that, your step callback might be called several times, and each time run a part of the process and return its current status, until its done.
 
 When you run the importer, Tainacan will automatically iterate over your steps. If a step callback returns `false`, it assumes the step is over and it will pass to the next step in the next iteration. If the step callback returns an integer, it will keep the pointer in this step and call the same step again in the next iteration. The current position, which is the integer returned the last time the callback was invoked, will be accessible via the `$this->get_in_step_count()` method.
 
