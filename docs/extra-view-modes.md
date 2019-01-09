@@ -6,17 +6,17 @@ Extra View Modes are a way of creating your own templates for items list visuali
 - Cards
 - Records
 - Masonry
-- Grid
+- Thumbnails
 - Slideshow
 
 Each has it's specificities, but in case you're not satisfied with them, a developer can easily create a plugin to offer a custom way of displaying items list.
 
 ## Creating your extra view mode
 
-As shown in [our post for extra view modes](http://tainacan.org/2018/06/13/custom-view-modes-how-will-the-world-see-your-collection/), we created [a sample plugin](https://github.com/tainacan/tainacan-extra-viewmodes) with some inspirational ideas for custom view modes. We here describe the process to create such plugin. You will basically need three files:
+As shown in [our post for extra view modes](http://tainacan.org/2018/06/13/custom-view-modes-how-will-the-world-see-your-collection/), we've created [a sample plugin](https://github.com/tainacan/tainacan-extra-viewmodes) with some inspirational ideas for custom view modes. We here describe the process to create such plugin. You will basically need three files:
 
 1. The .php file for registering the plugin and view mode;
-2. The .php file with them items list template;
+2. The .php file with the items list template;
 3. The .css file with the styling for your template;
 
 ### Registering your plugin
@@ -43,7 +43,7 @@ Only Plugin Name is obligatory. Save the file with a name unique to your plugin,
 
 The rest of the file will contain the register function for your view mode. We discuss it in details ahead:
 
-```
+```php
 add_action( 'after_setup_theme', function() {
 
 	tainacan_register_view_mode('MyViewMode', [
@@ -59,7 +59,7 @@ add_action( 'after_setup_theme', function() {
 ?> /* End of file */
 ```
 
-The function `tainacan_register_view_mode` is part of Tainacan's plugin. It's first paramether is a unique slug that will be used to identify your view-mode. Then follows and array paramethers:
+The function `tainacan_register_view_mode` is part of Tainacan's plugin. It's first paramether is a unique slug that will be used to identify your view-mode. Then follows an array of paramethers:
 
 | Type   | Name             | Description | Default                                   |
 |--------|------------------|-------------|-------------------------------------------|
@@ -84,7 +84,7 @@ View modes as Cards and Grid do not allow users to choose which metadata should 
 
 The file indicated on the register above should point to the .php file where your template lives. It will probably have some structure similar to the following sample:
 
-```
+```php
 <?php if ( have_posts() ) : ?>
 
 	<div class="my-view-mode-container">
