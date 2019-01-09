@@ -2,7 +2,7 @@ import qs from 'qs';
 import axios from 'axios';
 
 const wpApi = axios.create({
-    baseURL: tainacan_plugin.root_wp_api
+    baseURL: tainacan_plugin.wp_api_url
 });
 
 wpApi.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
@@ -52,7 +52,7 @@ ConsolePlugin.install = function (Vue, options = { visual: false }) {
             }
         }
     }
-}
+};
 
 // I18N PLUGIN - Allows access to Wordpress translation file.
 export const I18NPlugin = {};
@@ -93,7 +93,7 @@ I18NPlugin.install = function (Vue, options = {}) {
         },
     }
 
-}
+};
 
 // USER PREFERENCES - Used to save key-value information for user settings of plugin
 export const UserPrefsPlugin = {};
@@ -105,7 +105,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
             'items_per_page': 12,
             'collections_per_page': 12,
             'taxonomies_per_page': 12,
-            'events_per_page': 12,
+            'activities_per_page': 12,
             'order': 'DESC',
             'order_by': { 
                 slug: 'creation_date',
@@ -113,21 +113,18 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
             },
             'view_mode': undefined,
             'admin_view_mode': 'cards',
-            'fetch_only': {
-                0: 'thumbnail',
-                1: 'creation_date',
-                2: 'author_name',
-                meta: []
-            }
+            'fetch_only': 'thumbnail,creation_date,author_name',
+            'fetch_only_meta': ''
         },
         init() {
             if (tainacan_plugin.user_prefs == undefined || tainacan_plugin.user_prefs == '') {
                 let data = {'meta': {'tainacan_prefs': JSON.stringify(this.tainacanPrefs)} };
+
                 wpApi.post('/users/me/', qs.stringify(data))
-                .then( updatedRes => {
-                    let prefs = JSON.parse(updatedRes.data.meta['tainacan_prefs']);
-                    this.tainacanPrefs = prefs;
-                });
+                    .then( updatedRes => {
+                        let prefs = JSON.parse(updatedRes.data.meta['tainacan_prefs']);
+                        this.tainacanPrefs = prefs;
+                    });
             } else {
                 let prefs = JSON.parse(tainacan_plugin.user_prefs);
                 this.tainacanPrefs = prefs;
@@ -138,21 +135,23 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
         },
         set(key, value) {
             this.tainacanPrefs[key] = value;
+
             let data = {'meta': {'tainacan_prefs': JSON.stringify(this.tainacanPrefs)} };
+
             return new Promise(( resolve, reject ) => {
                 wpApi.post('/users/me/', qs.stringify(data))
-                .then( res => {
-                    let prefs = JSON.parse(res.data.meta['tainacan_prefs']);
-                    this.tainacanPrefs[key] = prefs[key];
-                    if (prefs[key]) { 
-                        resolve( prefs[key] );  
-                    } else {
-                        this.tainacanPrefs[key] = value;
-                    }
-                })
-                .catch(error => {
-                    reject( error );
-                });
+                    .then( res => {
+                        let prefs = JSON.parse(res.data.meta['tainacan_prefs']);
+                        this.tainacanPrefs[key] = prefs[key];
+                        if (prefs[key]) {
+                            resolve( prefs[key] );
+                        } else {
+                            this.tainacanPrefs[key] = value;
+                        }
+                    })
+                    .catch(error => {
+                        reject( error );
+                    });
             }); 
         },
         clean() {
@@ -161,7 +160,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
         }
     }
 
-}
+};
 
 // ROUTER HELPER PLUGIN - Allows easy access to URL paths for entities
 export const RouterHelperPlugin = {};
@@ -184,8 +183,8 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getCollectionFiltersPath(collectionId) {
             return '/collections/'+ collectionId + '/filters/';
         },
-        getCollectionEventsPath(collectionId) {
-            return '/collections/'+ collectionId + '/events/';
+        getCollectionActivitiesPath(collectionId) {
+            return '/collections/'+ collectionId + '/activities/';
         },
         getItemsPath(query) {
             return '/items/?' + qs.stringify(query);
@@ -202,17 +201,17 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getMetadataPath(query) {
             return '/metadata/?' + qs.stringify(query);
         },
-        getEventsPath(query) {
-            return '/events/?' + qs.stringify(query);
+        getActivitiesPath(query) {
+            return '/activities/?' + qs.stringify(query);
         },
         getAvailableImportersPath() {
             return '/importers';
         },
         getProcessesPage(highlightedProcess) {
             if (highlightedProcess)
-                return '/events?tab=processes&highlight=' + highlightedProcess;
+                return '/activities?tab=processes&highlight=' + highlightedProcess;
             else 
-                return '/events?tab=processes';
+                return '/activities?tab=processes';
         },
         // Singles
         getCollectionPath(id) {
@@ -230,14 +229,11 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getTermPath(taxonomyId, termId) {
             return '/taxonomies/' + taxonomyId + '/terms/' + termId;
         },
-        getEventPath(id) {
-            return '/events/' + id;
-        },
         getImporterPath(importerType, sessionId) {
             return '/importers/' + importerType + '/' + sessionId;
         },
-        getCollectionEventPath(collectionId, eventId) {
-            return '/collections/' + collectionId + '/events/' + eventId;
+        getCollectionActivityPath(collectionId, activityId) {
+            return '/collections/' + collectionId + '/activities/' + activityId;
         },
         // New
         getNewCollectionPath() {
@@ -267,9 +263,6 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getNewTermPath(taxonomyId) {
             return '/taxonomies/' + taxonomyId + '/terms/new';
         },
-        getNewEventPath() {
-            return '/events/new';
-        },
         getNewItemBulkAddPath(collectionId) {
             return '/collections/' + collectionId + '/bulk-add';
         },
@@ -289,9 +282,6 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getTermEditPath(taxonomyId, termId) {
             return '/taxonomies/' + taxonomyId + '/terms/' + termId + '/edit';
         },
-        getEventEditPath(id) {
-            return '/events/' + id + '/edit';
-        },
         getImporterEditionPath(importerType) {
             return '/importers/' + importerType;
         },   
@@ -301,8 +291,14 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getItemMetadataBulkAddPath(collectionId, groupId) {
             return '/collections/' + collectionId + '/bulk-add/' + groupId;
         },
+        getExporterEditionPath(exporterType) {
+            return '/exporters/' + exporterType;
+        },
+        getAvailableExportersPath(){
+            return '/exporters';
+        },
     }
-}
+};
 
 // USER CAPABILITIES PLUGIN - Allows easy checking of user capabilities.
 export const UserCapabilitiesPlugin = {};
@@ -316,4 +312,4 @@ UserCapabilitiesPlugin.install = function (Vue, options = {}) {
             return false;
         }
     }
-}
+};

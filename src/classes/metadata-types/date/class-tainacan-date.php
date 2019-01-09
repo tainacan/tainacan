@@ -51,6 +51,35 @@ class Date extends Metadata_Type {
         $d = \DateTime::createFromFormat($format, $value);
         return $d && $d->format($format) === $value;
     }
+	
+	/**
+	 * Get the value as a HTML string with proper date format set in admin
+	 * @return string
+	 */
+	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
+		
+		$value = $item_metadata->get_value();
+		$return = '';
+		if ( $item_metadata->is_multiple() ) {
+			$total = sizeof($value);
+			$count = 0;
+			$prefix = $item_metadata->get_multivalue_prefix();
+			$suffix = $item_metadata->get_multivalue_suffix();
+			$separator = $item_metadata->get_multivalue_separator();
+			foreach ( $value as $el ) {
+				$return .= $prefix;
+				$return .= date(get_option('date_format'), strtotime($el));
+				$return .= $suffix;
+				$count ++;
+				if ($count < $total)
+					$return .= $separator;
+			}
+		} else {
+			$return = date(get_option('date_format'), strtotime($value));
+		}
+		return $return;
+		
+	}
 
 
 }

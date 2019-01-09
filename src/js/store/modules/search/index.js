@@ -13,18 +13,15 @@ const state = {
         post_type: [],
         metaquery: [],
         taxquery: [],
-        fetch_only: {
-            '0': 'thumbnail',
-            'meta': [],
-            '1': 'creation_date',
-            '2': 'author_name' 
-        },
+        fetch_only: 'thumbnail,creation_date,author_name',
+        fetch_only_meta: '',
         view_mode: 'table',
         admin_view_mode: 'table'
     },
     filter_tags: [],
     totalItems: 0,
-    totalPages: 0
+    totalPages: 0,
+    itemsPerPage: 12 // Not the same as postquery.perpage as API may have limited it's value
 };
 
 export default {

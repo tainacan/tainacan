@@ -13,6 +13,10 @@
             </span>
             <label 
                     v-tooltip="{
+                        delay: {
+                            show: 500,
+                            hide: 300,
+                        },
                         content: metadatum.metadatum.name,
                         autoHide: false,
                         placement: 'auto-end'
@@ -238,7 +242,8 @@
             font-size: 0.875rem;
             font-weight: 500;
             margin-left: 15px;
-            margin-bottom: 0.5em;
+            margin-bottom: 0;
+            margin-top: 0.15rem;
             max-width: 50%;
         }
         .metadata-type {
@@ -255,6 +260,7 @@
             cursor: pointer;
             position: relative;
             margin-left: -42px;
+            bottom: 0.1rem;
             white-space: nowrap;
         }
     }

@@ -18,7 +18,8 @@ class Log extends Entity {
 		$user_id,
 		$log_date,
 		$user_name,
-		$collection_id;
+		$collection_id,
+		$item_id;
 
 	static $post_type = 'tainacan-log';
 	/**
@@ -269,37 +270,44 @@ class Log extends Entity {
 
 	/**
 	 *
-	 * @param boolean|string $msn
+	 * @param bool $message
 	 * @param string $desc
-	 * @param mixed $new_value
+	 * @param null $value
 	 * @param array $diffs
 	 * @param string $status 'publish', 'private', 'pending', 'processing' or 'error'
 	 * @param int $parent
 	 *
-	 * @return \Tainacan\Entities\Log
+	 * @return \Tainacan\Entities\Log | bool
 	 * @throws \Exception
 	 */
-	public static function create( $msn = false, $desc = '', $new_value = null, $diffs = [], $status = 'publish', $parent = 0 ) {
+	public static function create( $message = false, $desc = '', $value = null, $diffs = [], $status = 'publish', $parent = 0 ) {
 
 		$log = new Log();
-		$log->set_title( $msn );
+
+		$log->set_title( $message );
 		$log->set_description( $desc );
 		$log->set_status( $status );
 		$log->set_log_diffs( $diffs );
-		if($parent > 0) $log->set_parent($parent);
 
-		if(is_object($new_value) || is_string($new_value)) {
-			if(array_search( 'Tainacan\Traits\Entity_Collection_Relation', class_uses($new_value))) {
-				$log->set_collection_id( $new_value->get_collection_id() );
-			} elseif($new_value instanceof Collection){
-				$log->set_collection_id( $new_value->get_id());
+		if($parent > 0) {
+			$log->set_parent($parent);
+		}
+
+		if(is_object($value) || is_string($value)) {
+			if(array_search( 'Tainacan\Traits\Entity_Collection_Relation', class_uses($value))) {
+				$log->set_collection_id( $value->get_collection_id() );
+			} elseif($value instanceof Collection){
+				$log->set_collection_id( $value->get_id());
+			} elseif($value instanceof Item_Metadata_Entity){
+				$log->set_item_id($value->get_item()->get_id());
+				$log->set_collection_id($value->get_item()->get_collection_id());
 			}
 		}
 
-		if ( ! is_null( $new_value ) ) {
-			$log->set_value( $new_value );
-		} elseif ( $msn === false ) {
-			throw new \Exception( 'msn or new_value is need to log' );
+		if ( ! is_null( $value ) ) {
+			$log->set_value( $value );
+		} elseif ( $message === false ) {
+			throw new \Exception( 'Message or value is needed to log' );
 		}
 
 		$Tainacan_Logs = \Tainacan\Repositories\Logs::get_instance();
@@ -309,7 +317,20 @@ class Log extends Entity {
 		} else {
 			throw new \Exception( 'Invalid log' );
 		}
+	}
 
+	/**
+	 * @param $item_id
+	 */
+	public function set_item_id($item_id){
+		$this->set_mapped_property('item_id', $item_id);
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function get_item_id(){
+		return $this->get_mapped_property('item_id');
 	}
 
 	/**

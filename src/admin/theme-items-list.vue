@@ -44,15 +44,17 @@ export default {
     @import "../../node_modules/buefy/src/scss/components/_loading.scss";
     @import "../../node_modules/buefy/src/scss/components/_dropdown.scss";
     @import "../../node_modules/buefy/src/scss/components/_modal.scss";
+    @import "../../node_modules/buefy/src/scss/components/_notices.scss";
 
     // Tainacan imports
     @import "../admin/scss/_tables.scss";
     @import "../admin/scss/_modals.scss";
-    @import "../admin/scss/_buttons.scss";
+    @import "../admin/scss/_buttons.scss"; 
     @import "../admin/scss/_inputs.scss";
     @import "../admin/scss/_checkboxes.scss";
     @import "../admin/scss/_pagination.scss";
     @import "../admin/scss/_tags.scss";
+    @import "../admin/scss/_notices.scss";
     // @import "../admin/scss/_tabs.scss";
     @import "../admin/scss/_selects.scss";
     @import "../admin/scss/_dropdown-and-autocomplete.scss";

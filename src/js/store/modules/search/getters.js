@@ -30,10 +30,11 @@ export const getPage = state => {
 };
 
 export const getItemsPerPage = state => {
-    if (state.postquery.paged == undefined)
+    if (state.itemsPerPage == undefined)
         return 12;
-    else
-        return Number(state.postquery.perpage);
+    else {
+        return Number(state.itemsPerPage);
+    }
 };
 
 export const getOrder = state => {
@@ -64,7 +65,7 @@ export const getFetchOnly = state => {
 };
 
 export const getFetchOnlyMeta = state => {
-    return ( ! state.postquery.fetch_only['meta'] ) ? [] : state.postquery.fetch_only['meta'];
+    return ( ! state.postquery.fetch_only_meta ) ? '' : state.postquery.fetch_only_meta;
 };
 
 export const getFilterTags = state => {

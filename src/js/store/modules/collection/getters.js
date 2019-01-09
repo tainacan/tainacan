@@ -37,3 +37,11 @@ export const getCollectionCommentStatus = state => {
 export const getCollectionAllowComments = state => {
     return state.collectionAllowComments;
 }
+
+export const getCollectionTotalItems = state => {
+    return state.collectionTotalItems;
+}
+
+export const getRepositoryTotalCollections = (state) => {
+    return state.repositoryTotalCollections;
+}

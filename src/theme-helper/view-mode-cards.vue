@@ -1,6 +1,7 @@
 <template>
     <div class="table-container">
         <div class="table-wrapper">
+
             <!-- Empty result placeholder -->
             <section
                     v-if="!isLoading && items.length <= 0"
@@ -14,10 +15,25 @@
                     <p>{{ $i18n.get('info_no_item_found') }}</p>
                 </div>
             </section>
+
+            <!-- SKELETON LOADING -->
+            <div
+                    v-if="isLoading"
+                    class="tainacan-cards-container">
+                <div 
+                        :key="item"
+                        v-for="item in 12"
+                        class="skeleton tainacan-card" />
+            </div>
+
             <!-- CARDS VIEW MODE -->
-            <div class="tainacan-cards-container">
+            <div 
+                    role="list"
+                    v-if="!isLoading && items.length > 0"
+                    class="tainacan-cards-container">
                 <!-- <div> -->
                 <a
+                        role="listitem"
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-card"
@@ -26,6 +42,10 @@
                     <div class="metadata-title">
                         <p 
                                 v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
                                     content: item.title != undefined ? item.title : '',
                                     html: true,
                                     autoHide: false,
@@ -36,15 +56,24 @@
                     </div>
                     <!-- Remaining metadata -->  
                     <div class="media">
-
-                        <img 
-                                v-if="item.thumbnail != undefined"
-                                :src="item['thumbnail'].tainacan_medium ? item['thumbnail'].tainacan_medium : (item['thumbnail'].medium ? item['thumbnail'].medium : thumbPlaceholderPath)">  
-
+                        <div 
+                                :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)) + ')' }"
+                                class="card-thumbnail">
+                            <img 
+                                    :alt="$i18n.get('label_thumbnail')"
+                                    v-if="item.thumbnail != undefined"
+                                    :src="item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)">  
+                        </div>
+                        <div class="skeleton"/>
+                        
                         <div class="list-metadata media-body">
                            <!-- Description -->
                             <p 
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`,
                                         html: true,
                                         autoHide: false,
@@ -56,6 +85,10 @@
                             <!-- Author and Creation Date-->
 <!--                            <p 
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: column.metadatum == 'row_author' || column.metadatum == 'row_creation',
                                         html: false,
                                         autoHide: false,

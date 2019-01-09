@@ -1,10 +1,10 @@
 === Tainacan ===
-Contributors: andrebenedito, daltonmartins, fabianobn, jacsonp, leogermani, weryques, wetah
+Contributors: andrebenedito, daltonmartins, fabianobn, jacsonp, leogermani, weryques, wetah, eduardohumberto
 Tags: museums, libraries, archives, GLAM, collections, repository
 Requires at least: 4.8
-Tested up to: 4.9.8
+Tested up to: 5.0.2
 Requires PHP: 5.6
-Stable tag: 0.6.1
+Stable tag: 0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -16,8 +16,9 @@ Tainacan is a powerful and flexible repository platform for WordPress. Manage an
 
 = Features =
 
-* "Metadata and Filters": Use a metadata standard or choose whatever set of metadata you want to describe the items in your collections. Also, choose which metadata will be used as a filter when browsing the collection
-Faceted Search. Browse your collection (and let the public browse it) using a faceted search interface with the filters you have chosen.
+* "Metadata and Filters": Use a metadata standard or choose whatever set of metadata you want to describe the items in your collections. Also, choose which metadata will be used as a filter when browsing the collection.
+
+* "Faceted Search". Browse your collection (and let the public browse it) using a faceted search interface with the filters you have chosen.
 
 * "Manage Taxonomies": Manage vocabularies that can be used accross all your collections.
 

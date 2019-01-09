@@ -22,18 +22,18 @@ export const add_metaquery = ( { commit }, filter  ) => {
 };
 
 // Fetch Only for item attributes limiting on results
-export const add_fetchonly = ( { commit }, metadatum ) => {
+export const add_fetch_only = ( { commit }, metadatum ) => {
     commit('addFetchOnly', metadatum );
 };
-export const remove_fetchonly = ( { commit }, metadatum ) => {
+export const remove_fetch_only = ( { commit }, metadatum ) => {
     commit('removeFetchOnly', metadatum );
 };
 
 // Fetch Only for metadata limiting on results
-export const add_fetchonly_meta = ( { commit }, metadatum ) => {
+export const add_fetch_only_meta = ( { commit }, metadatum ) => {
     commit('addFetchOnlyMeta', metadatum );
 };
-export const remove_fetchonly_meta = ( { commit }, metadatum ) => {
+export const remove_fetch_only_meta = ( { commit }, metadatum ) => {
     commit('removeFetchOnlyMeta', metadatum );
 };
 
@@ -64,6 +64,7 @@ export const setPage = ({ commit },  page ) => {
 
 export const setItemsPerPage = ({ commit }, page ) => {
     commit('setPostQueryAttribute', {  attr: 'perpage', value: page } );
+    commit('setItemsPerPage', page );
 };
 
 export const setStatus= ({ commit }, status ) => {

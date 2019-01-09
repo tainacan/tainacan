@@ -1,11 +1,14 @@
 <template>
-    <div class="block">
-        <span 
+    <div 
+            :style="{ 'height': isLoading ? (Number(filter.max_options)*28) + 'px' : 'auto' }"
+            :class="{ 'skeleton': isLoading }"
+            class="block">
+        <!-- <span 
                 v-if="isLoading"
                 style="width: 100%"
                 class="icon has-text-centered loading-icon">
             <div class="control has-icons-right is-loading is-clearfix" />
-        </span>
+        </span> -->
         <div
                 v-for="(option, index) in options.slice(0, filter.max_options)"
                 v-if="!isLoading"
@@ -27,11 +30,12 @@
                             class="has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
                 </span>
             </label>
-            <div
-                    class="see-more-container"
-                    v-if="option.seeMoreLink && index == options.slice(0, filter.max_options).length - 1"
-                    @click="openCheckboxModal(option.parent)"
-                    v-html="option.seeMoreLink"/>
+            <button
+                    class="view-all-button link-style"
+                    v-if="option.showViewAllButton && index == options.slice(0, filter.max_options).length - 1"
+                    @click="openCheckboxModal(option.parent)"> 
+                {{ $i18n.get('label_view_all') }}
+            </button>
         </div>
         <p 
                 v-if="!isLoading && options.length != undefined && options.length <= 0"
@@ -65,7 +69,7 @@
         },        
         data(){
             return {
-                isLoading: false,
+                isLoading: true,
                 options: [],
                 type: '',
                 collection: '',
@@ -82,7 +86,7 @@
             metadatum_id: [Number], // not required, but overrides the filter metadatum id if is set
             collection_id: [Number], // not required, but overrides the filter metadatum id if is set
             filter_type: [String],  // not required, but overrides the filter metadatum type if is set
-            id: '',
+            labelId: '',
             query: {
                 type: Object // concentrate all attributes metadatum id and type
             }
@@ -136,12 +140,12 @@
                                     this.options.splice(this.filter.max_options);
                                 }
 
-                                let seeMoreLink = `<a style="font-size: 0.75rem;"> ${ this.$i18n.get('label_view_all') } </a>`;
+                                let showViewAllButton = true;
 
                                 if(this.options.length === this.filter.max_options){
-                                    this.options[this.filter.max_options-1].seeMoreLink = seeMoreLink;
+                                    this.options[this.filter.max_options-1].showViewAllButton = showViewAllButton;
                                 } else {
-                                    this.options[this.options.length-1].seeMoreLink = seeMoreLink;
+                                    this.options[this.options.length-1].showViewAllButton = showViewAllButton;
                                 }
                             }
                         }
@@ -197,9 +201,9 @@
                         let route = '';
                         
                         if(this.collection == 'filter_in_repository')
-                            route = '/facets/' + this.metadatum +`?term_id=${selected}&fetch_only[0]=name&fetch_only[1]=id`;
+                            route = '/facets/' + this.metadatum +`?term_id=${selected}&fetch_only=name,id`;
                         else
-                            route = '/collection/'+ this.collection +'/facets/' + this.metadatum +`?term_id=${selected}&fetch_only[0]=name&fetch_only[1]=id`;
+                            route = '/collection/'+ this.collection +'/facets/' + this.metadatum +`?term_id=${selected}&fetch_only=name,id`;
                         
                         axios.get(route)
                             .then( res => {
@@ -296,9 +300,10 @@
 </script>
 
 <style lang="scss" scoped>
-    .see-more-container {
-        display: flex;
-        padding-left: 18px;
+
+    .view-all-button {
+        font-size: 0.75rem;
+        padding: 0.1rem 1rem;
     }
 
     .is-loading:after {

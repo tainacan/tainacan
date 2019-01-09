@@ -4,15 +4,7 @@
                 :is-full-page="false"
                 :active.sync="isLoading"
                 :can-cancel="false"/>
-        <button 
-                id="metadata-column-compress-button"
-                @click="isMetadataColumnCompressed = !isMetadataColumnCompressed">
-            <span class="icon">
-                <i 
-                        :class="{ 'tainacan-icon-arrowleft' : isMetadataColumnCompressed, 'tainacan-icon-arrowright' : !isMetadataColumnCompressed }"
-                        class="tainacan-icon tainacan-icon-20px"/>
-            </span>
-        </button>
+
         <div class="tainacan-page-title">
             <h1 v-if="isCreatingNewItem">
                 <span 
@@ -23,7 +15,7 @@
             </h1>
             <h1 v-else>
                 <span 
-                        v-if="(item != null && item != undefined)"
+                        v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
                         class="status-tag">{{ $i18n.get(item.status) }}</span>
                 {{ $i18n.get('title_edit_item') + ' ' }}
                 <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
@@ -43,9 +35,7 @@
                     class="tainacan-form"
                     label-width="120px">
                 <div class="columns">
-                    <div 
-                            :class="{ 'is-12': isMetadataColumnCompressed, 'is-5-5': !isMetadataColumnCompressed }"
-                            class="column">
+                    <div class="column is-5">
 
                         <!-- Hook for extra Form options -->
                         <template 
@@ -259,16 +249,17 @@
                         <div class="section-box section-thumbnail">
                             <div class="thumbnail-field">
                                 <file-item
-                                        v-if="item.thumbnail != undefined && ((item.thumbnail.tainacan_medium != undefined && item.thumbnail.tainacan_medium != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
+                                        v-if="item.thumbnail != undefined && ((item.thumbnail['tainacan-medium'] != undefined && item.thumbnail['tainacan-medium'] != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
                                         :show-name="false"
+                                        :modal-on-click="false"
                                         :size="178"
                                         :file="{ 
                                             media_type: 'image', 
-                                            guid: { rendered: item.thumbnail.tainacan_medium ? item.thumbnail.tainacan_medium : item.thumbnail.medium },
+                                            guid: { rendered: item.thumbnail['tainacan-medium'] ? item.thumbnail['tainacan-medium'][0] : item.thumbnail.medium[0] },
                                             title: { rendered: $i18n.get('label_thumbnail')},
-                                            description: { rendered: `<img alt='Thumbnail' src='` + item.thumbnail.full + `'/>` }}"/>
+                                            description: { rendered: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + item.thumbnail.full[0] + `'/>` }}"/>
                                 <figure 
-                                        v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail.tainacan_medium == undefined || item.thumbnail.tainacan_medium == false))"
+                                        v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
                                         class="image">
                                     <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
                                     <img
@@ -286,7 +277,7 @@
                                         </span>
                                     </a>
                                     <a
-                                            v-if="item.thumbnail.thumb != undefined && item.thumbnail.thumb != false"
+                                            v-if="item.thumbnail.thumbnail != undefined && item.thumbnail.thumbnail != false"
                                             id="button-delete-thumbnail"
                                             class="button is-rounded is-secondary"
                                             :aria-label="$i18n.get('label_button_delete_thumb')"
@@ -301,9 +292,9 @@
 
                         <!-- Comment Status ------------------------ --> 
                         <b-field
-                                :addons="false" 
-                                :label="$i18n.get('label_comment_status')"
+                                :addons="false"
                                 v-if="collectionAllowComments == 'open'">
+                            <label class="label">{{ $i18n.get('label_comment_status') }}</label>
                             <b-switch
                                     id="tainacan-checkbox-comment-status" 
                                     size="is-small"
@@ -314,6 +305,7 @@
                                     :title="$i18n.getHelperTitle('items', 'comment_status')" 
                                     :message="$i18n.getHelperMessage('items', 'comment_status')"/>
                         </b-field>
+                        <br>
 
                         <!-- Attachments ------------------------------------------ -->
                         <div class="section-label">
@@ -328,13 +320,24 @@
                             </button>
 
                             <div class="uploaded-files">
-                                <file-item
-                                        :style="{ margin: 15 + 'px'}"
-                                        v-if="attachmentsList.length > 0" 
+                                <div
+                                        class="file-item-container"
                                         v-for="(attachment, index) in attachmentsList"
-                                        :key="index"
-                                        :show-name="true"
-                                        :file="attachment"/>
+                                        :key="index">
+                                    <file-item
+                                            :style="{ margin: 15 + 'px'}"
+                                            v-if="attachmentsList.length > 0"   
+                                            :modal-on-click="true"  
+                                            :show-name="true"
+                                            :file="attachment"/>
+                                    <span class="file-item-control">
+                                        <a 
+                                                @click="deleteAttachment(attachment)"
+                                                class="icon">
+                                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
+                                        </a>
+                                    </span>
+                                </div>
                                 <p v-if="attachmentsList.length <= 0"><br>{{ $i18n.get('info_no_attachments_on_item_yet') }}</p>
                             </div>
                         </div>
@@ -350,9 +353,7 @@
                         </template>
 
                     </div> 
-                    <div 
-                            class="column is-4-5"
-                            v-show="!isMetadataColumnCompressed">
+                    <div class="column is-7">
 
                         <!-- Hook for extra Form options -->
                         <template 
@@ -648,7 +649,6 @@ export default {
             isOnSequenceEdit: false,
             sequenceRightDirection: false,
             isLoading: false,
-            isMetadataColumnCompressed: false,
             metadatumCollapses: [],
             collapseAll: true,
             visibility: 'publish',
@@ -755,6 +755,7 @@ export default {
             'fetchAttachments',
             'cleanLastUpdated',
             'setLastUpdated',
+            'removeAttachmentFromItem'
         ]),
         ...mapGetters('item',[
             'getMetadata',
@@ -799,7 +800,7 @@ export default {
 
                 this.isLoading = false;
 
-                if (!this.isOnSequenceEdit) {
+                if (!this.isOnSequenceEdit) {                    
                     if (this.form.status != 'trash') 
                         this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
                     else
@@ -907,24 +908,24 @@ export default {
             this.form.document_type = 'url';
             this.form.document = this.urlLink;
             this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
-            .then(item => {
-                this.item.document_as_html = item.document_as_html;
-                this.isLoading = false;
+                .then(item => {
+                    this.item.document_as_html = item.document_as_html;
+                    this.isLoading = false;
 
-                let oldThumbnail = this.item.thumbnail;
-                if (item.document_type == 'url' && oldThumbnail != item.thumbnail )
-                    this.item.thumbnail = item.thumbnail;
-            })
-            .catch((errors) => {
-                for (let error of errors.errors) {
-                    for (let metadatum of Object.keys(error)){
-                       eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                    let oldThumbnail = this.item.thumbnail;
+                    if (item.document_type == 'url' && oldThumbnail != item.thumbnail )
+                        this.item.thumbnail = item.thumbnail;
+                })
+                .catch((errors) => {
+                    for (let error of errors.errors) {
+                        for (let metadatum of Object.keys(error)){
+                        eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                        }
                     }
-                }
-                this.formErrorMessage = errors.error_message;
+                    this.formErrorMessage = errors.error_message;
 
-                this.isLoading = false;
-            });
+                    this.isLoading = false;
+                });
         },
         cancelURLSelection() {
             this.isURLModalActive = false;
@@ -939,12 +940,32 @@ export default {
         },
         deleteThumbnail() {
             this.updateThumbnail({itemId: this.itemId, thumbnailId: 0})
-            .then(() => {
-                this.item.thumbnail = false;
-            })
-            .catch((error) => {
-                this.$console.error(error);
+                .then(() => {
+                    this.item.thumbnail = false;
+                })
+                .catch((error) => {
+                    this.$console.error(error);
+                });
+        },
+        deleteAttachment(attachment) {
+
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_attachment_delete'),
+                    onConfirm: () => {
+                        this.removeAttachmentFromItem(attachment.id)
+                            .then(() => { })
+                            .catch((error) => {
+                                this.$console.error(error);
+                            });
+                    }
+                } 
             });
+
         },
         initializeMediaFrames() {
 
@@ -1196,33 +1217,15 @@ export default {
 
     @import '../../scss/_variables.scss';
 
-    #metadata-column-compress-button {
-        position: absolute;
-        z-index: 99;
-        right: 0;
-        top: 148px;
-        max-width: 36px;
-        height: 36px;
-        width: 36px;
-        border: none;
-        background-color: $gray2;
-        color: $secondary;
-        padding: 0px;
-        border-top-left-radius: 2px;
-        border-bottom-left-radius: 2px;
-        cursor: pointer;
-
-        .icon {
-            margin-top: 2px;
-            margin-right: 8px;
-        }
-    }
-
     .page-container {
         padding: 25px 0px;
 
         &>.tainacan-form {
             margin-bottom: 110px;
+
+            .field:not(:last-child) {
+                margin-bottom: 0.5rem;
+            }
         }
 
         .tainacan-page-title {
@@ -1269,27 +1272,24 @@ export default {
             }
         }
 
-        .column.is-5-5 {
-            max-width: 55%; 
+        .column.is-5 {
             padding-left: $page-side-padding;
             padding-right: $page-side-padding;
-            transition: width 0.6s;
 
             @media screen and (max-width: 769px) {
                 max-width: 100%;
             }
         }
-        .column.is-4-5 {
-            max-width: 45%;
-            padding-left: $page-side-padding;
+        .column.is-7 {
+            padding-left: 0;
             padding-right: $page-side-padding;
-            transition: all 0.6s;
 
             .field {
-                padding: 10px 0px 10px 60px;
+                padding: 10px 0px 14px 60px;
             }
 
             @media screen and (max-width: 769px) {
+                padding-left: $page-side-padding;
                 max-width: 100%;
             }
 
@@ -1368,6 +1368,34 @@ export default {
         flex-flow: wrap;
         margin-left: -15px;
         margin-right: -15px;
+
+        .file-item-container {
+            position: relative;
+
+            &:hover .file-item-control {
+                display: block;
+                visibility: visible;
+                opacity: 1;
+            }
+
+            .file-item-control {
+                position: absolute;
+                background-color: $gray1;
+                width: 112px;
+                margin: 15px;
+                bottom: 0px;
+                padding: 2px 8px 4px 8px;
+                text-align: right;
+                display: none;
+                visibility: hidden;
+                opacity: 0;
+                transition: opacity ease 0.2s, visibility ease 0.2s, display ease 0.2s;
+
+                .icon {
+                    cursor: pointer;
+                }
+            }
+        }
     }
 
     .document-field {  
@@ -1391,7 +1419,7 @@ export default {
         min-width: 30px !important;
         padding: 0 !important;
         z-index: 99;
-        margin-left: 10px !important;
+        margin-left: 12px !important;
         
         .icon {
             display: inherit;

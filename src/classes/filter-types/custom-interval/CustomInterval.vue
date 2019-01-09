@@ -3,6 +3,7 @@
         <!-- Date -->
         <div v-if="type === 'date'">
             <b-datepicker
+                    :aria-labelledby="labelId"
                     :placeholder="$i18n.get('label_selectbox_init')"
                     v-model="date_init"
                     size="is-small"
@@ -11,6 +12,7 @@
                     icon="calendar-today"/>
             <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
             <b-datepicker
+                    :aria-labelledby="labelId"
                     :placeholder="$i18n.get('label_selectbox_init')"
                     v-model="date_end"
                     size="is-small"
@@ -22,16 +24,20 @@
         <!-- Numeric -->
         <div v-else>
             <b-input
+                    :aria-labelledby="labelId"
                     size="is-small"
                     type="number"
                     step="any"
+                    autocomplete="off"
                     @input="validate_values()"
                     v-model="value_init"/>
             <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
             <b-input
+                    :aria-labelledby="labelId"
                     size="is-small"
                     type="number"
                     step="any"
+                    autocomplete="off"
                     @input="validate_values()"
                     @focus="isTouched = true"
                     v-model="value_end"/>
@@ -92,7 +98,7 @@
             },
             metadatum_id: [Number], // not required, but overrides the filter metadatum id if is set
             collection_id: [Number], // not required, but overrides the filter metadatum id if is set
-            id: '',
+            labelId: '',
             query: Object,
             isRepositoryLevel: Boolean,
         },
@@ -192,7 +198,7 @@
             },
             cleanSearchFromTags(filterTag) {
                 if (filterTag.filterId == this.filter.id)
-                    this.cleanSearch();
+                    this.clearSearch();
             },
             clearSearch(){
 

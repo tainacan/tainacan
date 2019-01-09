@@ -120,7 +120,8 @@ abstract class Background_Process extends \WP_Background_Process {
 					'priority' => $priority,
 					'action' => $this->action,
 					'name' => $this->get_name(),
-					'queued_on' => date('Y-m-d H:i:s')
+					'queued_on' => date('Y-m-d H:i:s'),
+                    'status' => 'waiting'
 				]
 			);
 			$this->ID = $wpdb->insert_id;
@@ -147,11 +148,32 @@ abstract class Background_Process extends \WP_Background_Process {
 					'data' => maybe_serialize($data),
 					'processed_last' => date('Y-m-d H:i:s'),
 					'progress_label' => $batch->progress_label,
-					'progress_value' => $batch->progress_value
+					'progress_value' => $batch->progress_value,
+					'output' => $batch->output
 				],
 				['ID' => $key]
 			);
 		}
+
+		return $this;
+	}
+	
+	/**
+	 * Set batch as running
+	 *
+	 * @param string $key Key.
+	 *
+	 * @return $this
+	 */
+	public function open( $key ) {
+		global $wpdb;
+		$wpdb->update(
+			$this->table, 
+			[
+				'status' => 'running'
+			],
+			['ID' => $key]
+		);
 
 		return $this;
 	}
@@ -164,14 +186,20 @@ abstract class Background_Process extends \WP_Background_Process {
 	 *
 	 * @return $this
 	 */
-	public function close( $key ) {
+	public function close( $key, $status = 'finished' ) {
 		global $wpdb;
-
+		$params = [
+			'done' => 1,
+			'status' => $status
+		];
+		if ($status == 'finished') {
+			$params['progress_label'] = __('Process completed','tainacan');
+			$params['progress_value'] = 100;
+		}
 		$wpdb->update(
 			$this->table, 
-			['done' => 1],
-			['ID' => $key],
-			['%d']
+			$params,
+			['ID' => $key]
 		);
 
 		return $this;
@@ -235,7 +263,11 @@ abstract class Background_Process extends \WP_Background_Process {
 		$batch       = new \stdClass();
 		$batch->key  = $query->ID;
 		$batch->data = maybe_unserialize( $query->data );
-
+		
+		if ($batch->status != 'running') {
+			$this->open($batch->key);
+		}
+		
 		return $batch;
 	}
 
@@ -261,9 +293,32 @@ abstract class Background_Process extends \WP_Background_Process {
 			$newRequest = false;
 		}
 		
-		// TODO: find a way to catch and log PHP errors as
+		register_shutdown_function(function() use($batch) {
+			$error = error_get_last();
+			
+			if ( is_null($error) || 
+				! is_array($error) || 
+				! isset($error['type']) || 
+				$error['type'] !== 1 ) {
+				return;
+			}
+			
+			$this->debug('Shutdown with Fatal error captured');
+			
+			$error_str = $error['message'] . ' - ' . $error['file'] . ' - Line: ' . $error['line'].  
+			
+			$this->debug($error_str);
+			
+			$this->write_error_log($batch->key, ['Fatal Error: ' . $error_str]);
+			$this->write_error_log($batch->key, ['Process aborted']);
+			
+			$this->close( $batch->key, 'errored' );
+			$this->debug('Batch closed due to captured error');
+			
+		});
 
 		$task = $batch;
+		$close_status = 'finished';
 
 		do {
 			try {
@@ -273,6 +328,7 @@ abstract class Background_Process extends \WP_Background_Process {
 				$this->write_error_log($batch->key, ['Fatal Error: ' . $e->getMessage()]);
 				$this->write_error_log($batch->key, ['Process aborted']);
 				$task = false;
+				$close_status = 'errored';
 			}
 		} while ( false !== $task && ! $this->time_exceeded() && ! $this->memory_exceeded() );
 
@@ -282,7 +338,10 @@ abstract class Background_Process extends \WP_Background_Process {
 			$this->update( $batch->key, $task );
 			$this->debug('Batch updated');
 		} else {
-			$this->close( $batch->key );
+			if ($this->has_errors( $batch->key ) && $close_status == 'finished') {
+				$close_status = 'finished-errors';
+			}
+			$this->close( $batch->key, $close_status );
 			$this->debug('Batch closed');
 		}
 
@@ -395,6 +454,18 @@ abstract class Background_Process extends \WP_Background_Process {
 		
 		return $return;
 		
+	}
+	
+	private function has_errors($key) {
+		$upload_dir = wp_upload_dir();
+		$upload_dir = trailingslashit( $upload_dir['basedir'] );
+		$logs_folder = $upload_dir . 'tainacan';
+		
+		$filename = 'bg-' . $this->action . '-' . $key . '-error' . '.log';
+		
+		$filepath = $logs_folder . '/' . $filename;
+		
+		return file_exists($filepath);
 	}
 
 }

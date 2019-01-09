@@ -113,6 +113,19 @@ class REST_Collections_Controller extends REST_Controller {
         $rest_response->header('X-WP-Total', (int) $total_collections);
         $rest_response->header('X-WP-TotalPages', (int) $max_pages);
 
+		$total_collections = wp_count_posts( 'tainacan-collection', 'readable' );
+
+		if (isset($total_collections->publish) ||
+		    isset($total_collections->private) ||
+		    isset($total_collections->trash) ||
+		    isset($total_collections->draft)) {
+
+			$rest_response->header('X-Tainacan-total-collections-trash', $total_collections->trash);
+			$rest_response->header('X-Tainacan-total-collections-publish', $total_collections->publish);
+			$rest_response->header('X-Tainacan-total-collections-draft', $total_collections->draft);
+			$rest_response->header('X-Tainacan-total-collections-private', $total_collections->private);
+		}
+
         return $rest_response;
     }
 
@@ -177,8 +190,10 @@ class REST_Collections_Controller extends REST_Controller {
 		        # Always returns id
 		        if(is_array($attributes_to_filter)) {
 					$attributes_to_filter[] = 'id';
-		        } else {
+		        } elseif(!strstr($attributes_to_filter, ',')){
 			        $attributes_to_filter = array($attributes_to_filter, 'id');
+		        } else {
+		        	$attributes_to_filter .= ',id';
 		        }
 
 		        $item_arr = $this->filter_object_by_attributes($item, $attributes_to_filter);
@@ -289,6 +304,8 @@ class REST_Collections_Controller extends REST_Controller {
 	        $collection = $this->collections_repository->insert( $prepared_post );
 
 	        $response = $this->prepare_item_for_response($collection, $request);
+			
+			do_action('tainacan-api-collection-created', $response, $request);
 
 	        return new \WP_REST_Response($response, 201);
         }

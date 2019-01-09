@@ -70,10 +70,12 @@ registerBlockType('tainacan/items-grid', {
             default: {}
         },
         URLCollectionID: {
-            type: String
+            type: String,
+            default: ''
         },
         tainacanURL: {
             type: String,
+            default: ''
         },
         showTitle: {
             type: Boolean,
@@ -107,8 +109,8 @@ registerBlockType('tainacan/items-grid', {
                         }}
 
                         src={
-                            (item.thumbnail && item.thumbnail.thumb) ?
-                                item.thumbnail.thumb :
+                            (item.thumbnail && item.thumbnail.thumbnail) ?
+                                item.thumbnail.thumbnail[0] :
                                 ((item && item.img && item.img[0].src) ?
                                     item.img[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
                         }
@@ -187,6 +189,14 @@ registerBlockType('tainacan/items-grid', {
             setAttributes({tainacanURL: tainacanURLP});
 
             if (!tainacanURLP || !tainacanURLP.includes('tainacan_admin')){
+                setAttributes({query: ''});
+                setAttributes({URLCollectionID: ''});
+                setAttributes({itemsPerPage: 0});
+                setAttributes({items: []});
+                setAttributes({items2: []});
+
+                setContent([]);
+
                 return true;
             }
 
@@ -197,24 +207,24 @@ registerBlockType('tainacan/items-grid', {
 
             let parsedQuery = qs.parse(rawQuery);
 
-            if(parsedQuery.fetch_only && !Object.values(parsedQuery.fetch_only).some(value => value == 'title')){
-                parsedQuery.fetch_only[Object.keys(parsedQuery.fetch_only).length] = 'title';
+            if(parsedQuery.fetch_only && !parsedQuery.fetch_only.includes('title')){
+                parsedQuery.fetch_only += ',title';
             }
 
             let URLCollID = rawURL.match(/\/(\d+)\/?/);
             URLCollectionID = URLCollID != undefined ? URLCollID[1]: URLCollID;
 
-            setAttributes({query: parsedQuery});
-            setAttributes({URLCollectionID: URLCollectionID});
-            setAttributes({itemsPerPage: Number(parsedQuery.perpage)});
-
-            getItems(URLCollectionID, qs.stringify(query)).then(data => {
+            getItems(URLCollectionID, qs.stringify(parsedQuery)).then(data => {
                 items = [];
+                setAttributes({items: items});
 
                 data.map((item) => {
                     items.push(prepareItem(item));
                 });
 
+                setAttributes({query: parsedQuery});
+                setAttributes({URLCollectionID: URLCollectionID});
+                setAttributes({itemsPerPage: Number(parsedQuery.perpage)});
                 setAttributes({items: items});
                 setAttributes({items2: data});
                 setContent(items);
@@ -276,7 +286,7 @@ registerBlockType('tainacan/items-grid', {
                             <img
                                 width={96}
                                 src={`${tainacan_plugin.base_url}/admin/images/tainacan_logo_header.svg`}
-                                alt="Tainacan"/>
+                                alt="Tainacan Logo"/>
                         )}
                     />) : null
                 }
@@ -294,6 +304,7 @@ registerBlockType('tainacan/items-grid', {
                                 label={__(`Paste a Tainacan sharing URL for get items`, 'tainacan')}
                                 type="url"
                                 value={tainacanURL}
+                                rows={8}
                                 onChange={ (tainacanURL) => parseURL( tainacanURL ) }
                             />
                         </div>

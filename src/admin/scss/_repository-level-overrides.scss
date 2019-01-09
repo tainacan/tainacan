@@ -21,12 +21,15 @@
     .has-text-primary, .has-text-primary:hover, .is-has-text-primary:focus {
         color: $blue4 !important;
     }
-    a, a:hover,
-    .has-text-secondary, .has-text-secondary:hover, .is-has-text-secondary:focus {
+    a:not(.has-text-danger):not(.disabled), 
+    a:hover:not(.has-text-danger):not(.disabled),
+    .has-text-secondary, 
+    .has-text-secondary:hover, 
+    .is-has-text-secondary:focus {
         color: $blue3 !important;
     }
     .tainacan-page-title hr{
-        background-color: $blue3;
+        background-color: $blue3 !important;
     }
     .button[disabled]:not(.is-white), .button:hover[disabled]:not(.is-white) {
         border: none !important;
@@ -39,12 +42,14 @@
     }
     .tabs {
         li.is-active a {
-            border-bottom: 5px solid $blue5;
-            color: $blue5; 
+            border-bottom-color: $blue5;
+        }
+        a {
+            color: black !important;
         }
     }
     .select:not(.is-multiple)::after {
-        color: $blue5;
+        color: $blue3 !important;
 
         option:checked, option:hover {
             background-color: $gray2 !important;
@@ -87,5 +92,8 @@
     #filter-menu-compress-button {
         background-color: $blue1 !important;
         color: $blue5 !important;
+    }
+    .active-metadatum-item.not-focusable-item>.handle>.metadatum-name {
+        color: $blue3 !important;
     }
 }

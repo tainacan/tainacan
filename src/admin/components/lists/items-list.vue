@@ -12,7 +12,7 @@
                             :value="allItemsOnPageSelected">
                         {{ $i18n.get('label_select_all_items_page') }}
                     </b-checkbox>
-                </span>
+                </span> 
 
                 <span
                         style="margin-left: 10px"
@@ -25,7 +25,7 @@
                 </span>
             </div>
 
-            <div class="field is-pulled-right">
+            <div class="field">
                 <b-dropdown
                         :mobile-modal="true"
                         position="is-bottom-left"
@@ -67,19 +67,14 @@
         </div>
 
         <div class="table-wrapper">
-            <div
-                    v-show="isLoading"
-                    class="loading-container">
-                <b-loading
-                        :is-full-page="false"
-                        :active.sync="isLoading"/>
-            </div>
             
             <!-- GRID (THUMBNAILS) VIEW MODE -->
             <div
+                    role="list"
                     class="tainacan-grid-container"
                     v-if="viewMode == 'grid'">
                 <div 
+                        role="listitem"
                         :key="index"
                         v-for="(item, index) of items"
                         :class="{ 'selected-grid-item': selectedItems[index] }"
@@ -105,6 +100,10 @@
                             class="metadata-title">
                         <p 
                                 v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
                                     content: item.title != undefined ? item.title : '',
                                     html: true,
                                     autoHide: false,
@@ -114,11 +113,16 @@
                             {{ item.title != undefined ? item.title : '' }}
                         </p>                            
                     </div>
+                    
                     <!-- Thumbnail -->
                     <a
                             v-if="item.thumbnail != undefined"
-                            @click="onClickItem($event, item, index)">
-                        <img :src="item['thumbnail'].tainacan_medium ? item['thumbnail'].tainacan_medium : (item['thumbnail'].medium ? item['thumbnail'].medium : thumbPlaceholderPath)">
+                            @click="onClickItem($event, item, index)"
+                            class="grid-item-thumbnail"
+                            :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)) + ')' }">
+                        <img 
+                                :alt="$i18n.get('label_thumbnail')"
+                                :src="item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)">
                     </a>
 
                     <!-- Actions -->
@@ -161,14 +165,18 @@
 
             <!-- MASONRY VIEW MODE -->
             <masonry 
+                    role="list"
                     v-if="viewMode == 'masonry'"
                     :cols="{default: 7, 1919: 6, 1407: 5, 1215: 4, 1023: 3, 767: 2, 343: 1}"
                     :gutter="25"
                     class="tainacan-masonry-container">
                 <div
+                        role="listitem"
                         :key="index"
                         v-for="(item, index) of items"
-                        :class="{ 'selected-masonry-item': selectedItems[index] }"
+                        :class="{
+                            'selected-masonry-item': selectedItems[index], 
+                        }"
                         class="tainacan-masonry-item">
 
                     <!-- Checkbox -->
@@ -203,8 +211,10 @@
                             @click="onClickItem($event, item, index)"
                             v-if="item.thumbnail != undefined"
                             class="thumbnail"
-                            :style="{ backgroundImage: 'url(' + (item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)) + ')' }">
-                        <img :src="item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)">
+                            :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)) + ')' }">
+                        <img 
+                                :alt="$i18n.get('label_thumbnail')"
+                                :src="item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)">
                     </div>
                     
                     <!-- Actions -->
@@ -246,9 +256,11 @@
 
             <!-- CARDS VIEW MODE -->
             <div
+                    role="list"
                     class="tainacan-cards-container"
                     v-if="viewMode == 'cards'">
                 <div 
+                        role="listitem"
                         :key="index"
                         v-for="(item, index) of items"
                         :class="{ 'selected-card': selectedItems[index] }"
@@ -271,6 +283,10 @@
                             class="metadata-title">
                         <p 
                                 v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
                                     content: item.title != undefined ? item.title : '',
                                     html: true,
                                     autoHide: false,
@@ -319,15 +335,23 @@
                     <div    
                             class="media"
                             @click="onClickItem($event, item, index)">
-                      
-                        <img 
-                                v-if="item.thumbnail != undefined"
-                                :src="item['thumbnail'].tainacan_medium ? item['thumbnail'].tainacan_medium : (item['thumbnail'].medium ? item['thumbnail'].medium : thumbPlaceholderPath)">
-                    
+                        <div 
+                                :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)) + ')' }"
+                                class="card-thumbnail">
+                            <img 
+                                    :alt="$i18n.get('label_thumbnail')"
+                                    v-if="item.thumbnail != undefined"
+                                    :src="item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)">
+                        </div>
+
                         <div class="list-metadata media-body">
                             <!-- Description -->
                             <p 
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`,
                                         html: true,
                                         autoHide: false,
@@ -338,6 +362,10 @@
                             <!-- Author-->
                             <p 
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: item.author_name != undefined ? item.author_name : '',
                                         html: false,
                                         autoHide: false,
@@ -349,6 +377,10 @@
                             <!-- Creation Date-->
                             <p 
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: item.creation_date != undefined ? item.creation_date : '',
                                         html: false,
                                         autoHide: false,
@@ -365,11 +397,13 @@
 
             <!-- RECORDS VIEW MODE -->
             <masonry
+                    role="list"
                     :cols="{default: 4, 1919: 3, 1407: 2, 1215: 2, 1023: 1, 767: 1, 343: 1}"
                     :gutter="30" 
                     class="tainacan-records-container"
                     v-if="viewMode == 'records'">
                 <div 
+                        role="listitem"
                         :key="index"
                         v-for="(item, index) of items"
                         :class="{ 'selected-record': selectedItems[index] }"
@@ -398,6 +432,10 @@
                             :style="{ 'padding-left': !collectionId ? '1.5rem !important' : '2.75rem' }">
                         <p 
                                 v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
                                     content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
                                     html: true,
                                     autoHide: false,
@@ -410,6 +448,10 @@
                                 v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />  
                         <p 
                                 v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
                                     content: item.title != undefined ? item.title : '',
                                     html: true,
                                     autoHide: false,
@@ -463,8 +505,9 @@
                         <div class="list-metadata media-body">
                             <div class="thumbnail">
                                 <img 
+                                        :alt="$i18n.get('label_thumbnail')"
                                         v-if="item.thumbnail != undefined"
-                                        :src="item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)"> 
+                                        :src="item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)"> 
                             </div>
                             <span 
                                     v-for="(column, index) in tableMetadata"
@@ -567,6 +610,10 @@
 
                             <p
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
                                         html: true,
                                         autoHide: false,
@@ -575,9 +622,13 @@
                                     v-if="collectionId == undefined &&
                                           column.metadata_type_object != undefined && 
                                           column.metadata_type_object.related_mapped_prop == 'title'"
-                                    v-html="item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                    v-html="(item.title != undefined && item.title != '') ? item.title : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
                             <p
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
                                         html: true,
                                         autoHide: false,
@@ -586,9 +637,13 @@
                                     v-if="collectionId == undefined &&
                                           column.metadata_type_object != undefined && 
                                           column.metadata_type_object.related_mapped_prop == 'description'"
-                                    v-html="item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                    v-html="(item.description != undefined && item.description) != '' ? item.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
                             <p
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
                                         html: true,
                                         autoHide: false,
@@ -598,16 +653,23 @@
                                           column.metadatum !== 'row_thumbnail' &&
                                           column.metadatum !== 'row_actions' &&
                                           column.metadatum !== 'row_creation' &&
-                                          column.metadatum !== 'row_author'"
+                                          column.metadatum !== 'row_author' &&
+                                          column.metadatum !== 'row_title' &&
+                                          column.metadatum !== 'row_description'"
                                     v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column, column.metadata_type_object.component) : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
 
                             <span v-if="column.metadatum == 'row_thumbnail'">
                                 <img 
+                                        :alt="$i18n.get('label_thumbnail')"
                                         class="table-thumb" 
-                                        :src="item['thumbnail'].tainacan_small ? item['thumbnail'].tainacan_small : (item['thumbnail'].thumb ? item['thumbnail'].thumb : thumbPlaceholderPath)">
+                                        :src="item['thumbnail']['tainacan-small'] ? item['thumbnail']['tainacan-small'][0] : (item['thumbnail'].thumbnail ? item['thumbnail'].thumbnail[0] : thumbPlaceholderPath)">
                             </span> 
                             <p 
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: item[column.slug],
                                         html: true,
                                         autoHide: false,
@@ -711,15 +773,13 @@ export default {
                     this.queryAllItemsSelected = {};
                 } else if(item === true) {
                     isSelecting = true;
-
                     this.selectedItemsIDs.splice(index, 1, this.items[index].id);
                 }
             });
 
-            if(!allSelected) {
+            if (!allSelected)
                 this.isAllItemsSelected = allSelected;
-            }
-
+            
             this.allItemsOnPageSelected = allSelected;
             this.isSelectingItems = isSelecting;
         },
@@ -938,9 +998,9 @@ export default {
 <style lang="scss" scoped>
 
     @import "../../scss/_variables.scss";
+    @import "../../scss/_view-mode-cards.scss";
     @import "../../scss/_view-mode-masonry.scss";
     @import "../../scss/_view-mode-grid.scss";
-    @import "../../scss/_view-mode-cards.scss";
     @import "../../scss/_view-mode-records.scss";
 
     .selection-control {
@@ -948,10 +1008,13 @@ export default {
         padding: 6px 0px 0px 12px;
         background: white;
         height: 40px;
+        display: flex;
 
         .select-all {
             color: $gray4;
             font-size: 0.875rem;
+            margin-right: auto;
+
             &:hover {
                 color: $gray4;
             }

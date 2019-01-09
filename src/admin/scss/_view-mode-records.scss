@@ -6,7 +6,7 @@
     flex-grow: 1;
     flex-shrink: 1;
     justify-content: space-evenly;
-    animation-name: item-appear;
+    animation-name: appear;
     animation-duration: 0.5s;
 
     .selected-record {
@@ -77,6 +77,11 @@
             width: 120px;
             height: auto;
             border-radius: 0px;
+            position: relative;
+            z-index: 1;
+        }
+        .skeleton {
+            width: 120px;
         }
         .metadata-title {
             flex-shrink: 0;

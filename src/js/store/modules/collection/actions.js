@@ -44,12 +44,12 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
             let query = qs.stringify(postQueries);
 
             // Guarantees at least empty fetch_only are passed in case none is found
-            if (qs.stringify(postQueries.fetch_only) == ''){
-                dispatch('search/add_fetchonly', {}, { root: true });
+            if (postQueries.fetch_only == ''){
+                dispatch('search/add_fetch_only', '', { root: true });
             }
                     
-            if (qs.stringify(postQueries.fetch_only['meta']) == ''){
-                dispatch('search/add_fetchonly_meta', 0, { root: true });
+            if (postQueries.fetch_only_meta == ''){
+                dispatch('search/add_fetch_only_meta', '', { root: true });
             }
 
             // Differentiates between repository level and collection level queries
@@ -82,7 +82,8 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                             'itemsListTemplate': items, 
                             'total': res.headers['x-wp-total'], 
                             hasFiltered: hasFiltered, 
-                            advancedSearchResults:  advancedSearchResults});
+                            advancedSearchResults:  advancedSearchResults,
+                            itemsPerPage: res.headers['x-wp-itemperpage']});
                     } else {
                         commit('setItems', items);
                         resolve({
@@ -90,10 +91,12 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                             'total': res.headers['x-wp-total'],
                             totalPages: res.headers['x-wp-totalpages'], 
                             hasFiltered: hasFiltered, 
-                            advancedSearchResults: advancedSearchResults });                            
+                            advancedSearchResults: advancedSearchResults ,
+                            itemsPerPage: res.headers['x-wp-itemperpage'] });                            
                     }
                     dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
                     dispatch('search/setTotalPages', res.headers['x-wp-totalpages'], { root: true } );
+                    dispatch('search/setItemsPerPage', res.headers['x-wp-itemsperpage'], { root: true } );
                 })
                 .catch((thrown) => {
                     if (axios.isCancel(thrown)) {
@@ -143,6 +146,14 @@ export const fetchCollections = ({commit} , { page, collectionsPerPage, status, 
         .then(res => {
             let collections = res.data;
             commit('setCollections', collections);
+
+            commit('setRepositoryTotalCollections', {
+                draft: res.headers['x-tainacan-total-collections-draft'],
+                trash: res.headers['x-tainacan-total-collections-trash'],
+                publish: res.headers['x-tainacan-total-collections-publish'],
+                private: res.headers['x-tainacan-total-collections-private'],
+            });
+
             resolve({'collections': collections, 'total': res.headers['x-wp-total'] });
         }) 
         .catch(error => {
@@ -190,6 +201,20 @@ export const fetchCollectionName = ({ commit }, id) => {
     });
 };
 
+export const fetchCollectionTotalItems = ({ commit }, id) => {
+
+    return new Promise ((resolve, reject) => {
+        axios.tainacan.get('/collections/' + id + '?fetch_only=name')
+            .then(res => {
+                commit('setCollectionTotalItems', res.data);
+                resolve( res.data );
+            })
+            .catch(error => {
+                reject(error);
+            })
+    });
+};
+
 export const fetchCollectionCommentStatus = ({ commit }, id) => {
     return new Promise((resolve, reject) =>{ 
         axios.tainacan.get('/collections/' + id + '?fetch_only=comment_status')
@@ -225,7 +250,7 @@ export const fetchCollectionNameAndURL = ({ commit }, id) => {
         request: new Promise ((resolve, reject) => {
 
             axios.tainacan.get(
-                '/collections/' + id + '?fetch_only[0]=name&fetch_only[1]=url', 
+                '/collections/' + id + '?fetch_only=name,url',
                 { cancelToken: source.token })
             .then(res => {
                 let collection = res.data;
@@ -419,7 +444,7 @@ export const fetchUsers = ({ commit }, { search, exceptions }) => {
 // Fetch Collections for choosing Parent Collection
 export const fetchCollectionsForParent = ({ commit }) => {
     return new Promise((resolve, reject) => { 
-        axios.tainacan.get('/collections/?fetch_only[0]=name&fetch_only[1]=id')
+        axios.tainacan.get('/collections/?fetch_only=name,id')
         .then(res => {
             let collections = res.data;
             resolve( collections );

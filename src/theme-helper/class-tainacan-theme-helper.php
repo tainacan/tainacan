@@ -62,27 +62,31 @@ class Theme_Helper {
 			'dynamic_metadata' => true,
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewtable tainacan-icon-20px"></i></span>',
 			'type' => 'component',
+			'implements_skeleton' => true
 		]);
 		$this->register_view_mode('cards', [
 			'label' => __('Cards', 'tainacan'),
 			'dynamic_metadata' => false,
 			'description' => 'A cards view, displaying title, description, author name and creation date.',
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewcards tainacan-icon-20px"></i></span>',
-			'type' => 'component'
+			'type' => 'component',
+			'implements_skeleton' => true
 		]);
 		$this->register_view_mode('records', [
 			'label' => __('Records', 'tainacan'),
 			'dynamic_metadata' => true,
 			'description' => 'A records view, similiar to cards, but flexible for metadata',
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewrecords tainacan-icon-20px"></i></span>',
-			'type' => 'component'
+			'type' => 'component',
+			'implements_skeleton' => true
 		]);
 		$this->register_view_mode('masonry', [
 			'label' => __('Masonry', 'tainacan'),
 			'dynamic_metadata' => false,
 			'description' => 'A masonry view, similar to pinterest, which will display images without cropping.',
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewmasonry tainacan-icon-20px"></i></span>',
-			'type' => 'component'
+			'type' => 'component',
+			'implements_skeleton' => true
 		]);
 		$this->register_view_mode('slideshow', [
 			'label' => __('Slideshow', 'tainacan'),
@@ -167,7 +171,7 @@ class Theme_Helper {
 	/**
      * Filters the permalink for posts to:
      *
-     * * Replace Collectino single permalink with the link to the post type archive for items of that collection
+     * * Replace Collection single permalink with the link to the post type archive for items of that collection
      * 
      * @return string new permalink
      */
@@ -188,7 +192,7 @@ class Theme_Helper {
             $post_type_object = get_post_type_object($items_post_type);
             
             if (isset($post_type_object->rewrite) && is_array($post_type_object->rewrite) && isset($post_type_object->rewrite['slug']))
-                return site_url($post_type_object->rewrite['slug']);
+                return get_post_type_archive_link($items_post_type);
                 
         }
         
@@ -346,10 +350,14 @@ class Theme_Helper {
 
 	}
 	
+	function get_items_list_slug() {
+		/* Translators: The Items slug - will be the URL for the repository archive */
+		return sanitize_title(_x('items', 'Slug: the string that will be used to build the URL to list all items of the repository', 'tainacan'));
+	}
+	
 	function rewrite_rules( &$wp_rewrite ) {
         
-        /* Translators: The Items slug - will be the URL for the repository archive */
-		$items_base = sanitize_title(_x('items', 'Slug: the string that will be used to build the URL to list all items of the repository', 'tainacan'));
+		$items_base = $this->get_items_list_slug();
 		
 		$new_rules = array(
             $items_base . "/?$"               => "index.php?tainacan_repository_archive=1",

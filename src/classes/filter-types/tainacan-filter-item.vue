@@ -7,13 +7,22 @@
                 class="show" 
                 :open.sync="open"
                 animation="filter-item">
-            <label
+            <button
+                    :for="'filter-input-id-' + filter.id"
+                    :aria-controls="'filter-input-id-' + filter.id"
+                    :aria-expanded="open"
                     v-tooltip="{
-                                    content: filter.name,
-                                    html: false,
-                                    autoHide: false,
-                                    placement: 'top-start'
-                                }"
+                        delay: {
+                            show: 500,
+                            hide: 300,
+                        },
+                        content: filter.name,
+                        html: false,
+                        autoHide: false,
+                        placement: 'top-start'
+                    }"
+                    :id="'filter-label-id-' + filter.id"
+                    :aria-label="filter.name"
                     class="label"
                     slot="trigger"
                     slot-scope="props">
@@ -23,11 +32,12 @@
                             class="tainacan-icon tainacan-icon-20px"/>
                 </span>
                 <span class="collapse-label">{{ filter.name }}</span>
-            </label>
+            </button>
 
-            <div>
+            <div
+                    :id="'filter-input-id-' + filter.id">
                 <component
-                        :id="filter.filter_type_object.component + '-' + filter.slug"
+                        :label-id="'filter-label-id-' + filter.id"
                         :is="filter.filter_type_object.component"
                         :filter="filter"
                         :query="query"
@@ -192,6 +202,12 @@
             .label {
                 display: inline-flex;
                 align-items: center;
+                border: none;
+                background-color: transparent;
+                text-align: left;
+                cursor: pointer;
+                outline: none;
+                padding: 0 !important;
             }
         }
 

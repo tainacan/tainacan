@@ -6,7 +6,7 @@
     grid-template-columns: repeat(auto-fill, 285px);
     grid-gap: 0px;
     justify-content: space-evenly;
-    animation-name: item-appear;
+    animation-name: appear;
     animation-duration: 0.5s;
 
     .selected-grid-item {
@@ -15,6 +15,7 @@
 
     .tainacan-grid-item {
         max-width: 255px;
+        min-height: 300px;
         flex-basis: 0;
         margin: 15px;
         text-align: center;
@@ -39,7 +40,7 @@
             opacity: 0;
             padding: 3px 8px;
             transition: visibility 0.2s, opacity 0.2s;
-            margin-top: -31px;
+            margin-top: -29px;
             background-color: $gray2;
 
             a {
@@ -52,14 +53,35 @@
             background-color: $gray2 !important;
         }
 
-        img {
-            max-width: 255px;
-            max-height: 255px;
-            height: auto;
-            border-radius: 0px;
-            margin-bottom: -5px;
-        }
+        .grid-item-thumbnail {
+            width: 255px;
+            height: 255px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0;
+            display: block;
+            position: relative;
 
+            .skeleton {
+                width: 255px;
+                height: 255px;
+                position: absolute;
+                z-index: -1;
+                background-color: #e0e0e0;
+                bottom: 0;
+            }
+            
+            img {
+                width: 255px;
+                height: 255px;
+                height: auto;
+                border-radius: 0px;
+                margin-bottom: -5px;
+                visibility: hidden;
+            }
+        }
+        
         .metadata-title {
             flex-shrink: 0;
             margin-bottom: 6px;

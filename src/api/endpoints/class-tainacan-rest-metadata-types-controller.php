@@ -51,7 +51,10 @@ class REST_Metadata_Types_Controller extends REST_Controller {
 								],
 								'form_component'      => [
 									'type' => 'boolean'
-								]
+								],
+								'preview_template'    => [
+									'type' => 'string'
+								],
 							]
 						]
 					]

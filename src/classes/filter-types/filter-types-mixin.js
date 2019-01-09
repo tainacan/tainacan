@@ -34,10 +34,11 @@ export const filter_type_mixin = {
 
             let currentQuery  = JSON.parse(JSON.stringify(this.query));
             if (currentQuery.fetch_only != undefined) {
-                for (let key of Object.keys(currentQuery.fetch_only)) {
-                    if (currentQuery.fetch_only[key] == null)
-                        delete currentQuery.fetch_only[key];
-                }
+                delete currentQuery.fetch_only;
+                // for (let key of Object.keys(currentQuery.fetch_only)) {
+                //     if (currentQuery.fetch_only[key] == null)
+                //         delete currentQuery.fetch_only[key];
+                // }
             }
             let query_items = { 'current_query': currentQuery };
 
@@ -118,12 +119,12 @@ export const filter_type_mixin = {
                             }
 
                             if (this.filter.max_options && this.options.length >= this.filter.max_options) {
-                                let seeMoreLink = `<a style="font-size: 0.75rem;"> ${ this.$i18n.get('label_view_all') } </a>`;
+                                let showViewAllButton = true;
 
                                 if(this.options.length === this.filter.max_options){
-                                    this.options[this.filter.max_options-1].seeMoreLink = seeMoreLink;
+                                    this.options[this.filter.max_options-1].showViewAllButton = showViewAllButton;
                                 } else {
-                                    this.options[this.options.length-1].seeMoreLink = seeMoreLink;
+                                    this.options[this.options.length-1].showViewAllButton = showViewAllButton;
                                 }
                             }
 
@@ -145,10 +146,11 @@ export const filter_type_mixin = {
 
             let currentQuery  = JSON.parse(JSON.stringify(this.query));
                 if (currentQuery.fetch_only != undefined) {
-                    for (let key of Object.keys(currentQuery.fetch_only)) {
-                    if (currentQuery.fetch_only[key] == null)
-                        delete currentQuery.fetch_only[key];
-                }
+                    delete currentQuery.fetch_only;
+                //     for (let key of Object.keys(currentQuery.fetch_only)) {
+                //     if (currentQuery.fetch_only[key] == null)
+                //         delete currentQuery.fetch_only[key];
+                // }
             }
             let query_items = { 'current_query': currentQuery };
 
@@ -172,7 +174,7 @@ export const filter_type_mixin = {
 
             return new Object ({
                 request:
-                    axios.tainacan.get(url + '&fetch_only[0]=thumbnail&fetch_only[1]=title&fetch_only[2]=id&' + qs.stringify(query_items))
+                    axios.tainacan.get(url + '&fetch_only=thumbnail,title,id&' + qs.stringify(query_items))
                         .then(res => {
                             this.isLoadingOptions = false;
 
@@ -231,12 +233,12 @@ export const filter_type_mixin = {
                             }
 
                             if (this.filter.max_options && this.options.length >= this.filter.max_options) {
-                                let seeMoreLink = `<a style="font-size: 0.75rem;"> ${ this.$i18n.get('label_view_all') } </a>`;
+                                let showViewAllButton = true;
 
                                 if(this.options.length === this.filter.max_options){
-                                    this.options[this.filter.max_options-1].seeMoreLink = seeMoreLink;
+                                    this.options[this.filter.max_options-1].showViewAllButton = showViewAllButton;
                                 } else {
-                                    this.options[this.options.length-1].seeMoreLink = seeMoreLink;
+                                    this.options[this.options.length-1].showViewAllButton = showViewAllButton;
                                 }
                             }
 

@@ -22,7 +22,7 @@
         </section>
         <div
                 v-else
-                :style="advancedSearchResults ? { 'padding-top': '0' } : { 'padding-top': '47px' }"
+                :style="advancedSearchResults ? { 'padding-top': '0' } : { 'padding-top': '1.25rem' }"
                 :class="{ 'padding-in-header': isHeader, 'padding-regular': !isHeader }"
                 class="tnc-advanced-search-container">
 
@@ -127,6 +127,7 @@
                     <div class="field">
                         <button
                                 @click="removeThis(searchCriterion)"
+                                :class="{'has-text-blue4': isHeader, 'has-text-secondary': !isHeader,}"
                                 class="button is-white is-pulled-right">
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-close"/>
@@ -193,9 +194,7 @@
             </div>
 
             <!-- Clear and search button -->
-            <div
-                    v-show="!advancedSearchResults"
-                    class="column">
+            <div v-show="!advancedSearchResults">
                 <div class="field is-grouped is-pulled-right">
                     <p
                             v-if="Object.keys(this.advancedSearchQuery.taxquery).length > 0 ||
@@ -208,7 +207,7 @@
                     <p class="control">
                         <button
                                 @click="searchAdvanced"
-                                class="button is-secondary">{{ $i18n.get('search') }}</button>
+                                class="button is-success">{{ $i18n.get('search') }}</button>
                     </p>
                 </div>
             </div>
@@ -652,8 +651,7 @@
     }
 
     .padding-in-header {
-        padding-right: 3.3%;
-        padding-left: 3.7%;
+        padding: 1.5rem;
     }
 
     .padding-regular {
@@ -662,7 +660,6 @@
     }
 
     .tnc-advanced-search-container {
-        padding-bottom: 47px;
 
         .column {
             padding: 0 0.5rem 0.75rem !important;
@@ -718,8 +715,28 @@
     .advanced-search-header-dropdown {
         height: 27px !important;
 
+        a, .has-text-secondary {
+            color: $blue4 !important;
+        }
+
+        .select:not(.is-multiple)::after {
+            color: $blue3 !important;
+
+            option:checked, option:hover {
+                background-color: $gray2 !important;
+            }
+        }
+
         .dropdown-content {
             width: 800px !important;
+            padding-bottom: 1.25em !important;
+        }
+
+        .field.is-grouped .field.column {
+            margin-bottom: 0;
+        }
+        .field.is-grouped .field + .field {
+            margin-left: 0.25rem;
         }
 
         .autocomplete {
@@ -732,14 +749,16 @@
                 }
             }
         }
-
+        .dropdown-item {
+            padding: 0.375rem 1.5rem !important;
+        }
         .dropdown-item:hover {
             background-color: unset !important;
         }
 
         @media screen and (min-width: 1087px) {
             .dropdown-menu {
-                top: 0 !important;
+                top: -2px !important;
             }
         }
 
@@ -752,20 +771,21 @@
         .advanced-search-text {
             margin: 0 12px;
             font-size: 0.75rem;
-            color: $blue5;
+            color: $gray5;
         }
 
         .advanced-search-text-di {
             font-size: 0.875rem;
             font-weight: 500;
-            color: #01295c;
-            margin-top: 4px;
+            color: $gray5;
+            margin-top: 3px;
         }
 
         .advanced-search-hr {
             height: 1px;
-            margin: 8px 0;
-            background-color: #298596;
+            margin: 4px 0;
+            background-color: $blue3;
+            width: 100%;
         }
     }
 

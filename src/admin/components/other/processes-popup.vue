@@ -39,7 +39,7 @@
                 </li>
                 <li     
                         :key="index"
-                        v-for="(bgProcess, index) of bgProcesses">
+                        v-for="(bgProcess, index) of getAllProcesses">
                     <div class="process-item">
                         <div 
                                 @click="toggleDetails(index)"
@@ -58,23 +58,46 @@
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-play-circle"/>
                         </span> -->
                         <span 
-                                v-if="bgProcess.done <= 0"
+                                v-if="bgProcess.status === 'running'"
                                 class="icon has-text-gray action-icon"
                                 @click="pauseProcess(index)">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-stop"/>
                         </span>
                         <span 
-                                v-if="bgProcess.done > 0 && !bgProcess.error_log"
+                                v-if="bgProcess.status === 'finished-errors'"
                                 class="icon has-text-success">
-                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-finish"/>
+                            <i
+                                style="margin-right: -5px;"
+                                class="tainacan-icon tainacan-icon-20px tainacan-icon-alert has-text-yellow2"/>
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-approvedcircle"/>
                         </span>
                         <span 
-                                v-if="bgProcess.done > 0 && bgProcess.error_log"
+                                v-if="bgProcess.status === 'finished' || bgProcess.status === null"
+                                class="icon has-text-success">
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-approvedcircle"/>
+                        </span>
+                        <span 
+                                v-if="bgProcess.status === 'errored'"
                                 class="icon has-text-danger">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-processerror" />
                         </span>
                         <span 
-                                v-if="bgProcess.done <= 0"
+                                v-if="bgProcess.status === 'cancelled'"
+                                class="icon has-text-danger">
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-repprovedcircle" />
+                        </span>
+                        <span 
+                                v-if="bgProcess.status === 'paused'"
+                                class="icon has-text-gray">
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-pause" />
+                        </span>
+                        <span 
+                                v-if="bgProcess.status === 'waiting'"
+                                class="icon has-text-gray">
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-waiting" />
+                        </span>
+                        <span 
+                                v-if="bgProcess.status === 'running'"
                                 class="icon has-text-success loading-icon">
                             <!--<progress-->
                                     <!--:value="bgProcess.progress_value > 0 ? bgProcess.progress_value : 0"-->
@@ -126,7 +149,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapActions } from 'vuex';
 import moment from 'moment';
 
 export default {
@@ -134,10 +157,11 @@ export default {
     data() {
         return {
             showProcessesList: false,
+            updatedProcesses: [],
+            bgProcesses: [],
             processesCollapses: [],
             hasAnyProcessExecuting: false,
-            dateFormat: '',
-            intervalID: null,
+            dateFormat: ''
         }
     },
     watch: {
@@ -146,17 +170,23 @@ export default {
         }
     },
     computed: {
-        bgProcesses() {
-            return this.getProcesses();
+        getAllProcesses(){
+            if (this.updatedProcesses.length !== 0) {
+                for (let updatedProcess of this.updatedProcesses) {
+                    let updatedProcessIndex = this.bgProcesses.findIndex((aProcess) => aProcess.ID == updatedProcess.ID);
+                    if (updatedProcessIndex >= 0) {
+                        this.$set(this.bgProcesses, updatedProcessIndex, updatedProcess);
+                    }
+                }
+            }
+
+            return this.bgProcesses;
         }
     },
     methods: {
         ...mapActions('bgprocess', [
             'fetchProcesses',
             'updateProcess'
-        ]),
-        ...mapGetters('bgprocess', [
-            'getProcesses',
         ]),
         toggleDetails(index) {
             this.$set(this.processesCollapses, index, !this.processesCollapses[index]);
@@ -184,6 +214,9 @@ export default {
         pauseProcess(index) {
             this.updateProcess({ id: this.bgProcesses[index].ID, status: 'closed' });
         },
+        setProcesses(processes) {
+            this.updatedProcesses = processes;
+        }
     },
     created() {
         let locale = navigator.language;
@@ -193,47 +226,34 @@ export default {
         let localeData = moment.localeData();
         this.dateFormat = localeData.longDateFormat('lll');
 
-        this.intervalID = setInterval(() => {
-            this.fetchProcesses({
-                page: 1,
-                processesPerPage: 12
-            }).then(() => {
-                if (this.getUnfinishedProcesses() > 0) {
-                    clearInterval(this.intervalID);
-                }
-            });
-        }, 20000);
+        this.fetchProcesses({
+            page: 1,
+            processesPerPage: 12,
+            shouldUpdateStore: false
+        }).then((response) => {
+            this.bgProcesses = JSON.parse(JSON.stringify(response.processes));
+        });
 
         this.showProcessesList = false;
+
+        jQuery( document ).on( 'heartbeat-tick-popup',  ( event, data ) => {
+            this.setProcesses(data.bg_process_feedback);
+        });
+
+        jQuery( document ).on( 'heartbeat-tick',  ( event, data ) => {
+            jQuery( document ).trigger('heartbeat-tick-popup',data);
+        });
+
+
     },
     beforeDestroy() {
-        clearInterval(this.intervalID);
+        jQuery( document ).unbind( 'heartbeat-tick-popup')
     }
 }
 </script>
 
 <style lang="scss">
     @import "../../scss/_variables.scss";
-
-    @keyframes appear-from-top {
-        from { 
-            top: 24px;
-            opacity: 0; 
-        }
-        to { 
-            top: 48px;
-            opacity: 1; 
-        }
-    }
-
-    @keyframes expand {
-        from { 
-            max-height: 0; 
-        }
-        to { 
-            max-height: 222px; 
-        }
-    }
 
     .control.is-loading::after {
         border: 2px solid $success;
@@ -352,7 +372,7 @@ export default {
                     p {
                         display: inline-block;
                         position: relative;
-                        top: -2px;
+                        top: 1px;
                     }
                     
                     .tainacan-arrowleft, .tainacan-arrowright {
@@ -396,8 +416,6 @@ export default {
             width: 0;
             height: 0;
             border-style: solid;
-        }
-        &:before {
             border-color: transparent transparent $blue2 transparent;
             border-right-width: 8px;
             border-bottom-width: 8px;

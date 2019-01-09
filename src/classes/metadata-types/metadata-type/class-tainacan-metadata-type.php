@@ -73,6 +73,12 @@ abstract class Metadata_Type  {
      * The Metadata type description. Metadata type classes must set an internationalized string for this property
      */
     private $description;
+
+    /**
+     * The html template featuring a preview of how this metadata type componenet
+     * @var string
+     */
+    private $preview_template;
     
     abstract function render( $itemMetadata );
 
@@ -122,6 +128,14 @@ abstract class Metadata_Type  {
 
     public function set_form_component($form_component){
     	$this->form_component = $form_component;
+    }
+
+    public function get_preview_template() {
+        return $this->preview_template;
+    }
+
+    public function set_preview_template($preview_template){
+    	$this->preview_template = $preview_template;
     }
 
     public function get_name(){
@@ -189,8 +203,8 @@ abstract class Metadata_Type  {
     public function _toArray(){
 	    $attributes = [];
 
-        $attributes['name']              = $this->get_name();
-        $attributes['description']              = $this->get_description();
+        $attributes['name']                = $this->get_name();
+        $attributes['description']         = $this->get_description();
         $attributes['errors']              = $this->get_errors();
 	    $attributes['related_mapped_prop'] = $this->get_related_mapped_prop();
 	    $attributes['options']             = $this->get_options();
@@ -199,6 +213,7 @@ abstract class Metadata_Type  {
         $attributes['component']           = $this->get_component();
         $attributes['primitive_type']      = $this->get_primitive_type();
         $attributes['form_component']      = $this->get_form_component();
+        $attributes['preview_template']    = $this->get_preview_template();
 
         return $attributes;
         

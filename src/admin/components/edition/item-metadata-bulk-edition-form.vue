@@ -42,10 +42,10 @@
                                 v-for="(item, index) of items"
                                 :key="index">
                             <img 
-                                    v-if="item.document!= undefined && item.document != '' && item.document_type != 'empty'"
+                                v-if="item.document!= undefined && item.document != '' && item.document_type != 'empty'"
                                 class="document-thumb"
-                                :alt="item.title"
-                                :src="item.thumbnail.tainacan_small ? item.thumbnail.tainacan_small : (item.thumbnail.thumb ? item.thumbnail.thumb : thumbPlaceholderPath)" > 
+                                :alt="$i18n.get('label_thumbnail') + ': ' + item.title"
+                                :src="item.thumbnail['tainacan-small'] ? item.thumbnail['tainacan-small'][0] : (item.thumbnail.thumbnail ? item.thumbnail.thumbnail[0] : thumbPlaceholderPath)" > 
                             <span 
                                 class="document-name"
                                 v-html="item.title" />                            
@@ -75,7 +75,7 @@
                                     value="publish"
                                     native-value="publish">
                                 <span class="icon">
-                                    <i class="mdi mdi-earth"/>
+                                    <i class="tainacan-icon tainacan-icon-public"/>
                                 </span> {{ $i18n.get('publish_visibility') }}
                             </b-radio>
                             <b-radio
@@ -84,7 +84,7 @@
                                     value="private"
                                     native-value="private">
                                 <span class="icon">
-                                    <i class="mdi mdi-lock"/>
+                                    <i class="tainacan-icon tainacan-icon-private"/>
                                 </span>  {{ $i18n.get('private_visibility') }}
                             </b-radio>
                             <b-radio
@@ -93,7 +93,7 @@
                                     value="draft"
                                     native-value="draft">
                                 <span class="icon">
-                                    <i class="mdi mdi-file"/>
+                                    <i class="tainacan-icon tainacan-icon-draft"/>
                                 </span>  {{ $i18n.get('draft') }}
                             </b-radio>
                         </div>

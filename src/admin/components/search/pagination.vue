@@ -1,6 +1,11 @@
 <template>
-    <div class="pagination-area">
-        <div class="shown-items is-hidden-mobile">
+    <div 
+            role="navigation"
+            :aria-label="$i18n.get('label_list_pagination')"
+            class="pagination-area">
+        <div 
+                style="flex-grow: 1;"
+                class="shown-items is-hidden-mobile">
             {{ 
                 $i18n.get('info_showing_items') +
                 getFirstItem() +
@@ -11,20 +16,53 @@
         </div> 
         <div class="items-per-page">
             <b-field 
+                    id="items-per-page-select"
                     horizontal 
                     :label="$i18n.get('label_items_per_page')"> 
                 <b-select 
                         :value="itemsPerPage"
+                        aria-controls="items-list-results"
+                        aria-labelledby="items-per-page-select"
                         @input="onChangeItemsPerPage">
-                    <option value="12">12</option>
-                    <option value="24">24</option>
-                    <option value="48">48</option>
-                    <option value="96">96</option>
+                    <option value="12">12 &nbsp;</option>
+                    <option value="24">24 &nbsp;</option>
+                    <option value="48">48 &nbsp;</option>
+                    <option value="96">96 &nbsp;</option>
                 </b-select>
             </b-field>
         </div>
+        <div class="go-to-page items-per-page">
+            <b-field 
+                    horizontal 
+                    id="go-to-page-dropdown"
+                    :label="$i18n.get('label_go_to_page')"> 
+                <b-dropdown 
+                        position="is-top-right"
+                        @change="onPageChange">
+                    <button
+                            aria-labelledby="go-to-page-dropdown"
+                            class="button is-white"
+                            slot="trigger">
+                        <span>{{ page }}</span>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                        </span>
+                    </button>
+                    <b-dropdown-item
+                            aria-controls="items-list-results"
+                            role="button" 
+                            :key="pageNumber"
+                            v-for="pageNumber in totalPages"
+                            :value="Number(pageNumber)">
+                        {{ pageNumber }}
+                    </b-dropdown-item>
+                </b-dropdown>
+            </b-field>
+        </div>
+        
         <div class="pagination"> 
             <b-pagination
+                    aria-controls="items-list-results"
                     @change="onPageChange"
                     :total="totalItems"
                     :current.sync="page"
@@ -53,6 +91,9 @@ export default {
         },
         itemsPerPage(){
             return this.getItemsPerPage();
+        },
+        totalPages(){
+            return Math.ceil(Number(this.totalItems)/Number(this.itemsPerPage));    
         }
     },
     watch: {
@@ -92,7 +133,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-
-</style>

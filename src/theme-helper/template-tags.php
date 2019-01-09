@@ -179,7 +179,7 @@ function tainacan_the_faceted_search() {
 	$props = ' ';
 	
 	$default_view_mode = apply_filters( 'tainacan-default-view-mode-for-themes', 'masonry' );
-	$enabled_view_modes = apply_filters( 'tainacan-enabled-view-modes-for-themes', ['table', 'cards', 'masonry'] );
+	$enabled_view_modes = apply_filters( 'tainacan-enabled-view-modes-for-themes', ['table', 'cards', 'masonry', 'slideshow'] );
 	
 	// if in a collection page
 	$collection_id = tainacan_get_collection_id();
@@ -327,6 +327,40 @@ function tainacan_current_view_displays($property) {
 		return in_array($property, $view_mode_displayed_metadata['meta']);
 	}
 	return false;
+}
+
+/**
+ *
+ * Displays the link to the edit page of an item, if current user have permission 
+ * 
+ * Can be used outside The Lopp if an ID is provided.
+ * 
+ * The same as edit_post_link() (@see https://developer.wordpress.org/reference/functions/edit_post_link/) but for 
+ * Tainacan Items
+ *
+ * @param string $text 	(optional) Anchor text. If null, default is 'Edit this item'. 
+ * @param string $before 	(optional) Display before edit link 
+ * @param string $afer 	(optional) Display after edit link 
+ * @param int|WP_Post $id 	(optional) Post ID or post object. Default is the global $post.
+ * @param string $class 	(optional) Add custom class to link
+ * 
+ */
+function tainacan_the_item_edit_link( $text = null, $before = '', $after = '', $id = 0, $class = 'post-edit-link' ) {
+	if ( ! $item = tainacan_get_item( $id ) ) {
+		return;
+	}
+	
+	if ( ! $item->can_edit() || ! $url = $item->get_edit_url() ) {
+		return;
+	}
+	
+	if ( null === $text ) {
+		$text = __( 'Edit this item', 'tainacan' );
+	}
+	
+	$link = '<a class="' . esc_attr( $class ) . '" href="' . esc_url( $url ) . '">' . $text . '</a>';
+	
+	echo $before . $link . $after;
 }
 
 /**

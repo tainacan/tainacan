@@ -127,10 +127,18 @@ export default {
 			wp.media.view.settings.post = {
                 id: null
 			}
-			this.params.flex_width = tainacan_plugin.custom_header_support[0].flex_width ? 1 : 0;
-			this.params.flex_height = tainacan_plugin.custom_header_support[0].flex_height ? 1 : 0;
-			this.params.width = tainacan_plugin.custom_header_support[0].width;
-			this.params.height = tainacan_plugin.custom_header_support[0].height;
+			
+			if (tainacan_plugin.custom_header_support[0] != undefined) {
+				this.params.flex_width = tainacan_plugin.custom_header_support[0].flex_width ? 1 : 0;
+				this.params.flex_height = tainacan_plugin.custom_header_support[0].flex_height ? 1 : 0;
+				this.params.width = tainacan_plugin.custom_header_support[0].width;
+				this.params.height = tainacan_plugin.custom_header_support[0].height;
+			} else {
+				this.params.flex_width = true;
+				this.params.flex_height = true;
+				this.params.width = 2000;
+				this.params.height = 280;
+			}
 
 			this.frame = wp.media({
 				frame: 'select',

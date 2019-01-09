@@ -48,13 +48,13 @@
                 <div class="sequence-progress-info">
                     <p v-if="uploadedItems.length > 0 && uploadedItems.length != amountFinished">
                         <span class="icon is-small has-text-secondary">
-                            <i class="mdi mdi-18px mdi-autorenew"/>
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-updating"/>
                         </span>
                         {{ $i18n.get('label_upload_file_prepare_items') }}
                     </p>
                     <p v-if="uploadedItems.length > 0 && uploadedItems.length == amountFinished">
                         <span class="icon is-small has-text-success">
-                            <i class="mdi mdi-18px mdi-checkbox-marked-circle"/>
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-approvedcircle"/>
                         </span>
                         {{ $i18n.get('label_process_completed') }}
                     </p>
@@ -88,8 +88,8 @@
                         <img 
                                 v-if="item.document!= undefined && item.document != '' && item.document_type != 'empty'"
                                 class="document-thumb"
-                                :alt="item.title"
-                                :src="item.thumbnail.tainacan_small ? item.thumbnail.tainacan_small : (item.thumbnail.thumb ? item.thumbnail.thumb : thumbPlaceholderPath)" > 
+                                :alt="$i18n.get('label_thumbnail') + ': ' + item.title"
+                                :src="item.thumbnail['tainacan-small'] ? item.thumbnail['tainacan-small'][0] : (item.thumbnail.thumbnail ? item.thumbnail.thumbnail[0] : thumbPlaceholderPath)" > 
                         <span 
                             class="document-name"
                             v-html="item.title" />                            
@@ -107,7 +107,7 @@
                             <span 
                                     v-if="item.document != '' && item.document_type != 'empty'"
                                     class="icon has-text-success">
-                                <i class="mdi mdi-24px mdi-checkbox-marked-circle" />
+                                <i class="tainacan-icon tainacan-icon-24px tainacan-icon-approvedcircle" />
                             </span>  
                         </div>   
                         <div 
@@ -115,13 +115,17 @@
                                 class="document-actions">
                             <span 
                                     v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
                                         content: $i18n.get('label_button_delete_document'),
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }"
                                     class="icon has-text-secondary action-icon"
                                     @click="deleteOneItem(item.id, index)">
-                                <i class="mdi mdi-18px mdi-delete"/>
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-delete"/>
                             </span>
                         </div>                 
                     </div>

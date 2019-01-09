@@ -34,7 +34,7 @@
                             <span class="menu-text">{{ $i18n.getFrom('collections', 'name') }}</span>
                         </router-link>
                     </li> -->
-                    <li>
+                    <!-- <li>
                         <router-link
                                 tag="a"
                                 to="/items">
@@ -43,7 +43,7 @@
                             </span>
                             <span class="menu-text">{{ $i18n.get('label_all_items') }}</span>
                         </router-link>
-                    </li>
+                    </li> -->
                     <li>
                         <router-link
                                 tag="a"
@@ -77,11 +77,11 @@
                     <li>
                         <router-link
                                 tag="a"
-                                to="/events">
+                                to="/activities">
                             <span class="icon is-medium">
                                 <i class="tainacan-icon tainacan-icon-36px tainacan-icon-activities"/>
                             </span>
-                            <span class="menu-text">{{ $i18n.get('title_repository_events_page') }}</span>
+                            <span class="menu-text">{{ $i18n.get('title_repository_activities_page') }}</span>
                         </router-link>
                     </li>
                     <li>
@@ -92,6 +92,16 @@
                                 <i class="tainacan-icon tainacan-icon-36px tainacan-icon-importers"/>
                             </span>
                             <span class="menu-text menu-text-import">{{ $i18n.get('importers') }}</span>
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link
+                                tag="a"
+                                to="/exporters">
+                            <span class="icon is-medium">
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-export"/>
+                            </span>
+                            <span class="menu-text">{{ $i18n.get('exporters') }}</span>
                         </router-link>
                     </li>
                 </ul>
@@ -284,6 +294,7 @@ export default {
                 height: 120px; 
                 min-width: 13%;
                 flex-basis: 13%;
+                max-width: 15%;
 
                 @media screen and (max-width: 580px) {
                     max-width: calc(100% - 52px);

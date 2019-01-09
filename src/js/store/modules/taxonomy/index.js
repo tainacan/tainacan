@@ -6,7 +6,8 @@ const state = {
     taxonomies: [],
     taxonomy: {},
     taxonomyName: String,
-    terms: []
+    terms: [],
+    repositoryTotalTaxonomies: ''
 };
 
 export default {

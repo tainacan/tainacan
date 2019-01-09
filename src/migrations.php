@@ -45,6 +45,7 @@ class Migrations {
 		  done boolean not null default 0,
 		  progress_label text,
 		  progress_value int,
+		  status ENUM('waiting','running','paused','cancelled','errored','finished','finished-errors'),
 		  PRIMARY KEY (ID),
 		  KEY user_id (user_id),
 		  KEY action (action($max_index_length))
@@ -70,9 +71,34 @@ class Migrations {
 	        ADD name text NOT NULL
 	        ");
 		}
-	    
-		
 	}
+	
+	static function add_output_column_to_bg_process() {
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'tnc_bg_process';
+		$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$wpdb->prefix}tnc_bg_process' AND column_name = 'output'"  );
+
+	    if(empty($column_exists)) {
+			$wpdb->query("
+	        ALTER TABLE $table_name
+	        ADD output longtext
+	        ");
+		}
+	}
+
+	static function create_importer_status_column(){
+        global $wpdb;
+
+        $column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$wpdb->prefix}tnc_bg_process' AND column_name = 'status'"  );
+
+        if(empty($column_exists)) {
+            $wpdb->query("
+	        ALTER TABLE {$wpdb->prefix}tnc_bg_process
+	        ADD status ENUM('waiting','running','paused','cancelled','errored','finished','finished-errors')
+	        ");
+        }
+
+    }
 
 	static function init_capabilites() {
 		$Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();

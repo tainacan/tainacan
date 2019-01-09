@@ -3,7 +3,7 @@
         <b-autocomplete
                 icon="magnify"
                 size="is-small"
-                :id="id"
+                :aria-labelledby="labelId"
                 v-model="selected"
                 :data="options"
                 expanded
@@ -18,6 +18,7 @@
                             class="media-left"
                             v-if="props.option.img">
                         <img
+                                :alt="$i18n.get('label_thumbnail')"
                                 width="24"
                                 :src="`${props.option.img}`">
                     </div>
@@ -84,6 +85,7 @@
         },
         props: {
             isRepositoryLevel: Boolean,
+            labelId: String
         },
         mixins: [filter_type_mixin],
         methods: {

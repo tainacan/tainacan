@@ -6,7 +6,7 @@
     flex-grow: 1;
     flex-shrink: 1;
     justify-content: space-evenly;
-    animation-name: item-appear;   
+    animation-name: appear;   
     animation-duration: 0.5s;
 
     .selected-masonry-item {
@@ -73,7 +73,16 @@
             img {
                 width: 100%;
                 height: auto;    
+                transition: height 0.2s ease;
+            }
+            img:not(.skeleton) {
                 visibility: hidden;
+            }
+
+            // Masonry skeleton is white due to 
+            // background-blend-mode
+            .skeleton {
+                background: #fff;
             }
         }
 

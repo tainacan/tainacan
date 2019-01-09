@@ -227,6 +227,26 @@ $modal-z: 9999999;
     } 
 }
 
+// Animations for background processes popup and url copy popup
+@keyframes appear-from-top {
+    from { 
+        top: 24px;
+        opacity: 0; 
+    }
+    to { 
+        top: 48px;
+        opacity: 1; 
+    }
+}
+@keyframes expand {
+    from { 
+        max-height: 0; 
+    }
+    to { 
+        max-height: 222px; 
+    }
+}
+
 // Animations for Item Appear in Items List
 @keyframes item-appear {
     from {
@@ -573,4 +593,42 @@ $modal-z: 9999999;
     animation-name: page-right-out;
     animation-duration: 0.3s;
     animation-timing-function: ease;   
+}
+
+// SKELETON GRADIENT ANIMATIONS
+@-webkit-keyframes skeleton-animation {
+    0%{opacity: 1.0}
+    50%{opacity: 0.2}
+    100%{opacity: 1.0}
+}
+@-moz-keyframes skeleton-animation {
+    0%{opacity: 1.0}
+    50%{opacity: 0.2}
+    100%{opacity: 1.0}
+}
+@-o-keyframes skeleton-animation {
+    0%{opacity: 1.0}
+    50%{opacity: 0.2}
+    100%{opacity: 1.0}
+}
+@keyframes skeleton-animation {
+    0%{opacity: 1.0}
+    50%{opacity: 0.2}
+    100%{opacity: 1.0}
+}
+
+// .skeleton:nth-child(even) {
+//     background: linear-gradient(105deg, #f0f0f0, #fbfbfb, #eeeeee);
+// }
+// .skeleton:nth-child(odd) {
+//     background: linear-gradient(235deg, #f0f0f0, #fbfbfb, #eeeeee);   
+// }
+.skeleton {
+    border-radius: 2px;
+    background: $gray1;
+
+    -webkit-animation: skeleton-animation 1.8s ease infinite;
+    -moz-animation: skeleton-animation 1.8s ease infinite;
+    -o-animation: skeleton-animation 1.8s ease infinite;
+    animation: skeleton-animation 1.8s ease infinite;
 }

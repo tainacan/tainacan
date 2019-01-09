@@ -1,9 +1,11 @@
 <template>
-    <div class="block">
+    <div 
+            :class="{ 'skeleton': isLoadingOptions }"
+            class="block">
         <b-select
-                :id="id"
-                :loading="isLoadingOptions"
+                v-if="!isLoadingOptions"
                 :value="selected"
+                :aria-labelledby="labelId"
                 @input="onSelect($event)"
                 :placeholder="$i18n.get('label_selectbox_init')"
                 expanded>
@@ -55,6 +57,7 @@
         },
         props: {
             isRepositoryLevel: Boolean,
+            labelId: String
         },
         data(){
             return {
@@ -136,3 +139,9 @@
         }
     }
 </script>
+
+<style scoped>
+    .skeleton {
+        min-height: 36px;
+    }
+</style>

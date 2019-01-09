@@ -9,12 +9,19 @@
             :class="{
                 'repository-level-page': isRepositoryLevel,
                 'is-fullscreen': registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen
-            }">
+            }"
+            aria-live="polite">
 
         <!-- SEARCH AND FILTERS --------------------- -->
         <!-- Filter menu compress button -->
         <button
+                aria-controls="filters-desktop-aside"
+                :aria-expanded="!isFiltersMenuCompressed"
                 v-tooltip="{
+                    delay: {
+                        show: 500,
+                        hide: 300,
+                    },
                     content: isFiltersMenuCompressed ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters'),
                     autoHide: false,
                     placement: 'auto-start'
@@ -22,6 +29,7 @@
                 v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="is-hidden-mobile"
                 id="filter-menu-compress-button"
+                :aria-label="isFiltersMenuCompressed ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
                 :style="{ top: !isOnTheme ? (isRepositoryLevel ? '172px' : '120px') : '76px' }"
                 @click="isFiltersMenuCompressed = !isFiltersMenuCompressed">
             <span class="icon">
@@ -32,9 +40,12 @@
         </button>
         <!-- Filters mobile modal button -->
         <button 
+                aria-controls="filters-mobile-modal"
+                :aria-expanded="!isFiltersMenuCompressed"
                 v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="is-hidden-tablet"
-                id="filter-menu-compress-button"
+                id="filter-menu-compress-button-mobile"
+                :aria-label="isFiltersMenuCompressed ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
                 :style="{ top: !isOnTheme ? (isRepositoryLevel ? (searchControlHeight + 100) : (searchControlHeight + 70) + 'px') : (searchControlHeight - 25) + 'px' }"
                 @click="isFilterModalActive = !isFilterModalActive">
             <span class="icon">
@@ -47,14 +58,18 @@
 
         <!-- Side bar with search and filters -->
         <aside
+                :aria-busy="isLoadingFilters"
+                id="filters-desktop-aside"
+                role="region"
+                aria-labelledby="filters-label-landmark"
                 :style="{ top: searchControlHeight + 'px' }"
                 v-show="!isFiltersMenuCompressed && 
                         !openAdvancedSearch && 
                         !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="filters-menu tainacan-form is-hidden-mobile">
-            <b-loading
+            <!-- <b-loading
                     :is-full-page="false"
-                    :active.sync="isLoadingFilters"/>
+                    :active.sync="isLoadingFilters"/> -->
 
             <div class="search-area is-hidden-mobile">
                 <div class="control has-icons-right  is-small is-clearfix">
@@ -62,7 +77,7 @@
                             class="input is-small"
                             :placeholder="$i18n.get('instruction_search')"
                             type="search"
-                            autocomplete="on"
+                            :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
                             :value="searchQuery"
                             @input="futureSearchQuery = $event.target.value"
                             @keyup.enter="updateSearch()">
@@ -73,16 +88,20 @@
                         </span>
                 </div>
             </div>
-            <!-- <a
+            <!-- <button
                     @click="openAdvancedSearch = !openAdvancedSearch"
-                    class="is-size-7 is-pulled-right is-hidden-mobile">{{ $i18n.get('advanced_search') }}</a>
-             -->
+                    arial-controls="advanced-search-container"
+                    :aria-expanded="openAdvancedSearch"
+                    class="link-style is-size-7 is-pulled-right is-hidden-mobile">
+                {{ $i18n.get('advanced_search') }}
+            </button> -->
+
             <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
-            <a
+            <button
                     v-if="!isLoadingFilters &&
-                    ((filters.length >= 0 &&
-                    isRepositoryLevel) || filters.length > 0)"
-                    class="collapse-all is-size-7"
+                        ((filters.length >= 0 &&
+                        isRepositoryLevel) || filters.length > 0)"
+                    class="link-style collapse-all"
                     @click="collapseAll = !collapseAll">
                 {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
                 <span class="icon">
@@ -90,7 +109,7 @@
                             :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
                             class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
                 </span>
-            </a>
+            </button>
 
             <br>
             <br>
@@ -134,22 +153,16 @@
                 class="items-list-area"
                 :class="{ 'spaced-to-right': !isFiltersMenuCompressed && !openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)}">
 
-            <!-- FILTERS TAG LIST-->
-            <filters-tags-list 
-                    class="filter-tags-list"
-                    :filters="filters"
-                    v-if="hasFiltered && 
-                        !openAdvancedSearch &&
-                        !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)" />
-
             <!-- SEARCH CONTROL ------------------------- -->
             <div
+                    :aria-label="$i18n.get('label_sort_visualization')"
+                    role="region"
                     ref="search-control"
                     v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                     class="search-control">
-                <b-loading
+                <!-- <b-loading
                         :is-full-page="false"
-                        :active.sync="isLoadingMetadata"/>
+                        :active.sync="isLoadingMetadata"/> -->
                 <!-- Item Creation Dropdown, only on Admin -->
                 <div 
                         class="search-control-item"
@@ -204,6 +217,7 @@
                             class="show">
                         <button
                                 class="button is-white"
+                                :aria-label="$i18n.get('label_displayed_metadata')"
                                 slot="trigger">
                             <span>{{ $i18n.get('label_displayed_metadata') }}</span>
                             <span class="icon">
@@ -225,6 +239,7 @@
                         </div>
                         <div class="dropdown-item-apply">
                             <button 
+                                    aria-controls="items-list-results"
                                     @click="onChangeDisplayedMetadata()"
                                     class="button is-success">
                                 {{ $i18n.get('label_apply_changes') }}
@@ -240,6 +255,7 @@
                                 :disabled="totalItems <= 0"
                                 @input="onChangeOrderBy($event)">
                             <button
+                                    :aria-label="$i18n.get('label_sorting')"
                                     class="button is-white"
                                     slot="trigger">
                                 <span>{{ $i18n.get('label_sorting') }}</span>
@@ -248,6 +264,8 @@
                                 </span>
                             </button>
                             <b-dropdown-item
+                                    aria-controls="items-list-results"
+                                    role="button"
                                     :class="{ 'is-active': metadatum != undefined && orderBy == metadatum.slug }"
                                     v-for="metadatum of sortingMetadata"
                                     v-if="
@@ -282,7 +300,9 @@
                         </b-dropdown>
                         <!-- Order ASC vs DESC buttons -->
                         <button
+                                aria-controls="items-list-results"
                                 class="button is-white is-small"
+                                :aria-label="$i18n.get('label_sort_descending')"
                                 :disabled="totalItems <= 0 || order == 'DESC'"
                                 @click="onChangeOrder()">
                             <span class="icon is-small gray-icon">
@@ -290,11 +310,13 @@
                             </span>
                         </button>
                         <button
+                                aria-controls="items-list-results"
                                 :disabled="totalItems <= 0 || order == 'ASC'"
+                                :aria-label="$i18n.get('label_sort_ascending')"
                                 class="button is-white is-small"
                                 @click="onChangeOrder()">
                             <span class="icon is-small gray-icon">
-                                <i class="tainacan-icon tainacan-icon-sortdescending"/>
+                                <i class="tainacan-icon tainacan-icon-sortascending"/>
                             </span>
                         </button>
                     </b-field>
@@ -312,6 +334,7 @@
                                 :aria-label="$i18n.get('label_view_mode')">
                             <button 
                                     class="button is-white" 
+                                    :aria-label="$i18n.get('label_view_mode')"
                                     slot="trigger">
                                 <span 
                                         class="gray-icon view-mode-icon"
@@ -323,6 +346,8 @@
                                 </span>
                             </button>
                             <b-dropdown-item 
+                                    aria-controls="items-list-results"
+                                    role="button"
                                     :class="{ 'is-active': viewModeOption == viewMode }"
                                     v-for="(viewModeOption, index) of enabledViewModes"
                                     :key="index"
@@ -347,6 +372,7 @@
                                 :aria-label="$i18n.get('label_view_mode')">
                             <button
                                     class="button is-white"
+                                    :aria-label="$i18n.get('label_view_mode')"
                                     slot="trigger">
                                 <span>
                                         <span class="icon is-small gray-icon">
@@ -365,6 +391,8 @@
                                 </span>
                             </button>
                             <b-dropdown-item 
+                                    aria-controls="items-list-results"
+                                    role="button"
                                     :class="{ 'is-active': adminViewMode == 'table' }"
                                     :value="'table'">
                                 <span class="icon gray-icon">
@@ -373,6 +401,8 @@
                                 {{ $i18n.get('label_table') }}
                             </b-dropdown-item>
                             <b-dropdown-item 
+                                    aria-controls="items-list-results"
+                                    role="button"
                                     :class="{ 'is-active': adminViewMode == 'cards' }"
                                     :value="'cards'">
                                 <span class="icon gray-icon">
@@ -381,6 +411,8 @@
                                 {{ $i18n.get('label_cards') }}
                             </b-dropdown-item>
                             <b-dropdown-item 
+                                    aria-controls="items-list-results"
+                                    role="button"
                                     :class="{ 'is-active': adminViewMode == 'grid' }"
                                     :value="'grid'">
                                 <span class="icon gray-icon">
@@ -389,6 +421,8 @@
                                 {{ $i18n.get('label_thumbnails') }}
                             </b-dropdown-item>
                             <b-dropdown-item 
+                                    aria-controls="items-list-results"
+                                    role="button"
                                     :class="{ 'is-active': adminViewMode == 'records' }"
                                     :value="'records'">
                                 <span class="icon gray-icon">
@@ -397,6 +431,8 @@
                                 {{ $i18n.get('label_records') }}
                             </b-dropdown-item>
                             <b-dropdown-item 
+                                    aria-controls="items-list-results"
+                                    role="button"
                                     :class="{ 'is-active': adminViewMode == 'masonry' }"
                                     :value="'masonry'">
                                 <span class="icon gray-icon">
@@ -414,6 +450,7 @@
                         class="search-control-item">
                     <button 
                             class="button is-white"
+                            :aria-label="$i18n.get('label_slideshow')"
                             @click="onChangeViewMode(viewModeOption)"
                             v-for="(viewModeOption, index) of enabledViewModes"
                             :key="index"
@@ -426,19 +463,36 @@
                     </button>
                 </div>
 
+                <!-- Exposers or alternative links modal button -->
+                <div class="search-control-item">
+                    <button 
+                            class="button is-white"
+                            :aria-label="$i18n.get('label_urls')"
+                            :disabled="this.totalItems == undefined || this.totalItems <= 0"
+                            @click="openExposersModal()">
+                        <span class="gray-icon">
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                        </span>
+                        <span class="is-hidden-touch">{{ $i18n.get('label_urls') }}</span>
+                    </button>
+                </div>
+
                 <!-- Text simple search (used on mobile, instead of the one from filter list)-->
                 <div class="is-hidden-tablet search-control-item">
-                    <div class="search-area">
+                    <div 
+                            role="search" 
+                            class="search-area">
                         <div class="control has-icons-right  is-small is-clearfix">
                             <input
                                     class="input is-small"
                                     :placeholder="$i18n.get('instruction_search')"
                                     type="search"
-                                    autocomplete="on"
+                                    :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
                                     :value="searchQuery"
                                     @input="futureSearchQuery = $event.target.value"
                                     @keyup.enter="updateSearch()">
                                 <span 
+                                        aria-controls="items-list-results"
                                         @click="updateSearch()"
                                         class="icon is-right">
                                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-search"/>
@@ -452,7 +506,10 @@
             </div>
 
             <!-- ADVANCED SEARCH -->
-            <div v-if="openAdvancedSearch">
+            <div 
+                    id="advanced-search-container"
+                    role="search"
+                    v-if="openAdvancedSearch">
 
                 <div class="tnc-advanced-search-close"> 
                     <div class="advanced-search-criteria-title">
@@ -461,31 +518,17 @@
                             <div
                                     :style="{'margin-bottom': 'auto'}"
                                     class="field is-grouped">
-                                <p
-                                        v-if="advancedSearchResults"
-                                        class="control">
-                                    <button
-                                            @click="advancedSearchResults = !advancedSearchResults"
-                                            class="button is-small is-outlined">{{ $i18n.get('edit_search') }}</button>
-                                </p>
-                                <p
-                                        v-if="advancedSearchResults"
-                                        class="control">
-                                    <button
-                                            @click="isDoSearch = !isDoSearch"
-                                            class="button is-small is-secondary">{{ $i18n.get('search') }}</button>
-                                </p>
-                                <p class="control">
-                                    <a @click="openAdvancedSearch = false">
-                                        {{ $i18n.get('back') }}
-                                    </a>
-                                </p>
+                                <a
+                                        class="back-link"
+                                        @click="openAdvancedSearch = false">
+                                    {{ $i18n.get('back') }}
+                                </a>
                             </div>
                         </div>
                         <hr>
                     </div>
-
                 </div>
+
                 <advanced-search
                         :is-repository-level="isRepositoryLevel"
                         :collection-id="collectionId"
@@ -493,9 +536,26 @@
                         :open-form-advanced-search="openFormAdvancedSearch"
                         :is-do-search="isDoSearch"
                         :metadata="metadata"/>
-            </div>
 
-            <!-- --------------- -->
+                <div class="advanced-searh-form-submit">
+                    <p
+                            v-if="advancedSearchResults"
+                            class="control">
+                        <button
+                                aria-controls="items-list-results"
+                                @click="advancedSearchResults = !advancedSearchResults"
+                                class="button is-small is-outlined">{{ $i18n.get('edit_search') }}</button>
+                    </p>
+                    <p
+                            v-if="advancedSearchResults"
+                            class="control">
+                        <button
+                                aria-controls="items-list-results"
+                                @click="isDoSearch = !isDoSearch"
+                                class="button is-small is-secondary">{{ $i18n.get('search') }}</button>
+                    </p>
+                </div>
+            </div>
 
             <!-- STATUS TABS, only on Admin -------- -->
             <div 
@@ -514,96 +574,81 @@
                 </ul>
             </div>
 
+            <!-- FILTERS TAG LIST-->
+            <filters-tags-list 
+                    class="filter-tags-list"
+                    :filters="filters"
+                    v-if="hasFiltered && 
+                        !openAdvancedSearch &&
+                        !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)" />
+
             <!-- ITEMS LISTING RESULTS ------------------------- -->
-            <div class="above-search-control">
+            <div 
+                    id="items-list-results"
+                    :aria-busy="isLoadingItems"
+                    aria-labelledby="items-list-landmark"
+                    role="region"
+                    class="above-search-control">
+                
+                <h3 
+                        id="items-list-landmark"
+                        class="is-hidden">
+                    {{ $i18n.get('label_items_list') }}
+                </h3>
 
                 <div 
-                        v-show="isLoadingItems"
+                        v-show="(showLoading && 
+                                !(registeredViewModes[viewMode] != undefined && (registeredViewModes[viewMode].full_screen == true || registeredViewModes[viewMode].implements_skeleton == true)))"
                         class="loading-container">
-                    <b-loading 
+
+                    <!--  Default loading, to be used view modes without any skeleton-->
+                    <b-loading
+                            v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)" 
                             :is-full-page="false"
-                            :active.sync="isLoadingItems"/>
-                </div>
-                <div
-                        v-if="openAdvancedSearch && advancedSearchResults">
-                    <div class="advanced-search-results-title">
-                        <h1>{{ $i18n.get('info_search_results') }}</h1>
-                        <hr>
-                    </div>
-                </div>
+                            :active="showLoading"/>
 
-                <!-- When advanced search -->
-                <items-list
-                        v-if="!isOnTheme &&
-                              !isLoadingItems &&
-                              totalItems > 0 &&
-                              openAdvancedSearch &&
-                              advancedSearchResults"
-
-                        :collection-id="collectionId"
-                        :table-metadata="displayedMetadata"
-                        :items="items"
-                        :is-loading="isLoadingItems"
-                        :is-on-trash="status == 'trash'"
-                        :view-mode="adminViewMode"/>
-
+                    <!-- Custom skeleton templates used by some view modes -->
+                    <div
+                            v-if="(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)"
+                            v-html="registeredViewModes[viewMode].skeleton_template"/>
+                            
+                    <!-- Admin view modes skeleton -->
+                    <!-- <skeleton-items-list v-if="!isOnTheme"/>          -->
+                </div>  
+                
                 <!-- Admin View Modes-->
                 <items-list
-                        v-else-if="!isOnTheme &&
-                              !isLoadingItems && 
+                        v-if="!isOnTheme && 
+                              !isLoadingItems &&
                               totalItems > 0 &&
-                              !openAdvancedSearch"
-
+                              ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
                         :collection-id="collectionId"
                         :table-metadata="displayedMetadata"
                         :items="items"
+                        :total-items="totalItems"
                         :is-loading="isLoadingItems"
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"/>
                 
-                <!-- When advanced search -->
                 <!-- Theme View Modes -->
                 <div 
                         v-if="isOnTheme &&
+                              ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch) &&
                               !isLoadingItems &&
-                              openAdvancedSearch &&
-                              advancedSearchResults &&
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'template'"
                         v-html="itemsListTemplate"/>
 
                 <component
                         v-if="isOnTheme && 
-                              !isLoadingItems && 
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'component' &&
-                              openAdvancedSearch &&
-                              advancedSearchResults"
+                              ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
                         :collection-id="collectionId"
-                        :displayed-metadata="displayedMetadata"
+                        :displayed-metadata="displayedMetadata" 
                         :items="items"
-                        :is-loading="isLoadingItems"
-                        :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/> 
-                
-                <!-- Regular -->
-                <!-- Theme View Modes -->
-                <div 
-                        v-if="isOnTheme &&
-                              !isLoadingItems &&
-                              !openAdvancedSearch &&
-                              registeredViewModes[viewMode] != undefined &&
-                              registeredViewModes[viewMode].type == 'template'"
-                        v-html="itemsListTemplate"/>
-
-                <component
-                        v-else-if="isOnTheme && 
-                              !isLoadingItems && 
-                              registeredViewModes[viewMode] != undefined &&
-                              registeredViewModes[viewMode].type == 'component' &&
-                              !openAdvancedSearch"
-                        :collection-id="collectionId"
-                        :displayed-metadata="displayedMetadata"
-                        :items="items"
+                        :is-filters-menu-compressed="isFiltersMenuCompressed"
+                        :total-items="totalItems"
                         :is-loading="isLoadingItems"
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>     
 
@@ -631,23 +676,18 @@
                         </router-link>
                     </div>
                 </section>
-
+        
                 <!-- Pagination -->
-                <!-- When advanced search -->
                 <pagination
                         v-if="totalItems > 0 &&
                          (!isOnTheme || (registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].show_pagination)) &&
-                          advancedSearchResults"/>
-
-                <!-- Regular -->
-                <pagination
-                        v-else-if="totalItems > 0 &&
-                         (!isOnTheme || (registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].show_pagination)) &&
-                          !openAdvancedSearch"/>
+                          (advancedSearchResults || !openAdvancedSearch)"/>
             </div>
         </div>
        
         <b-modal
+                role="region"
+                aria-labelledby="filters-label-landmark-modal"
                 id="filters-mobile-modal"
                 ref="filters-mobile-modal"
                 class="tainacan-form is-hidden-tablet"                
@@ -655,12 +695,18 @@
                 :width="736"
                 animation="slide-menu">
             <div class="modal-inner-content">
-                <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
-                <a
+                <h3 
+                        id="filters-label-landmark-modal"
+                        class="has-text-weight-semibold">
+                    {{ $i18n.get('filters') }}
+                </h3>
+                <button
+                        aria-controls="filters-items-list"
+                        :aria-expanded="!collapseAll"
                         v-if="!isLoadingFilters &&
-                        ((filters.length >= 0 &&
-                        isRepositoryLevel) || filters.length > 0)"
-                        class="collapse-all is-size-7"
+                            ((filters.length >= 0 &&
+                            isRepositoryLevel) || filters.length > 0)"
+                        class="link-style collapse-all"
                         @click="collapseAll = !collapseAll">
                     {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
                     <span class="icon">
@@ -668,12 +714,13 @@
                                 :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
                                 class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
                     </span>
-                </a>
+                </button>
 
                 <br>
                 <br>
 
                 <filters-items-list
+                        id="filters-items-list"
                         v-if="!isLoadingFilters &&
                         ((filters.length >= 0 &&
                         isRepositoryLevel) || filters.length > 0)"
@@ -714,6 +761,7 @@
     import FiltersItemsList from '../../components/search/filters-items-list.vue';
     import Pagination from '../../components/search/pagination.vue'
     import AdvancedSearch from '../../components/advanced-search/advanced-search.vue';
+    import ExposersModal from '../../components/other/exposers-modal.vue';
     import AvailableImportersModal from '../../components/other/available-importers-modal.vue';
     import { mapActions, mapGetters } from 'vuex';
 
@@ -787,6 +835,9 @@
             },
             order() {
                 return this.getOrder();
+            },
+            showLoading() {
+                return this.isLoadingItems || this.isLoadingFilters || this.isLoadingMetadata;
             }
         },
         components: {
@@ -795,6 +846,7 @@
             FiltersItemsList,
             Pagination,
             AdvancedSearch,
+            ExposersModal
         },
         watch: {
             displayedMetadata() {
@@ -864,6 +916,17 @@
                     }
                 });
             },
+            openExposersModal() {
+                this.$modal.open({
+                    parent: this,
+                    component: ExposersModal,
+                    hasModalCard: true,
+                    props: { 
+                        collectionId: this.collectionId,
+                        totalItems: this.totalItems
+                    }
+                })
+            },
             updateSearch() {
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
             },  
@@ -891,7 +954,8 @@
 
                 // Updates searchControlHeight before in case we need to adjust filters position on mobile
                 setTimeout(() => {
-                    this.searchControlHeight = this.$refs['search-control'].clientHeight;
+                    if (this.$refs['search-control'] != undefined)
+                        this.searchControlHeight = this.$refs['search-control'].clientHeight;
                 }, 500);
             },
             onChangeAdminViewMode(adminViewMode) {
@@ -923,14 +987,13 @@
                 let descriptionMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.metadata_type_object != undefined ? metadatum.metadata_type_object.related_mapped_prop == 'description' : false);
               
                 // Updates Search
-                this.$eventBusSearch.addFetchOnly({
-                    '0': thumbnailMetadatum != undefined && thumbnailMetadatum.display ? 'thumbnail' : null,
-                    'meta': fetchOnlyMetadatumIds,
-                    '1': creationDateMetadatum != undefined && creationDateMetadatum.display ? 'creation_date' : null,
-                    '2': authorNameMetadatum != undefined && authorNameMetadatum.display ? 'author_name': null,
-                    '3': (this.isRepositoryLevel ? 'title' : null),
-                    '4': (this.isRepositoryLevel && descriptionMetadatum.display ? 'description' : null),
-                });
+                this.$eventBusSearch.addFetchOnly(
+                    thumbnailMetadatum != undefined && thumbnailMetadatum.display ? 'thumbnail' : null +','+
+                    creationDateMetadatum != undefined && creationDateMetadatum.display ? 'creation_date' : null +','+
+                    authorNameMetadatum != undefined && authorNameMetadatum.display ? 'author_name': null +','+
+                    (this.isRepositoryLevel ? 'title' : null) +','+
+                    (this.isRepositoryLevel && descriptionMetadatum.display ? 'description' : null)
+                , false, fetchOnlyMetadatumIds.toString());
 
                 // Closes dropdown
                 this.$refs.displayedMetadataDropdown.toggle();
@@ -983,9 +1046,13 @@
                     
                         if (shouldLoadMeta) {
                             // Loads user prefs object as we'll need to check if there's something configured by user 
-                            let prefsFetchOnly = !this.isRepositoryLevel ? 'fetch_only_' + this.collectionId : 'fetch_only';
-                            let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly); 
-                            let thumbnailMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['0'] != null) : true;
+                            let prefsFetchOnly = !this.isRepositoryLevel ? `fetch_only_${this.collectionId}` : 'fetch_only';
+                            let prefsFetchOnlyMeta = !this.isRepositoryLevel ? `fetch_only_meta_${this.collectionId}` : 'fetch_only_meta';
+
+                            let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly) ? typeof this.$userPrefs.get(prefsFetchOnly) != 'string' ? this.$userPrefs.get(prefsFetchOnly) : this.$userPrefs.get(prefsFetchOnly).replace(/,null/g, '').split(',') : [];
+                            let prefsFetchOnlyMetaObject = this.$userPrefs.get(prefsFetchOnlyMeta) ? this.$userPrefs.get(prefsFetchOnlyMeta).split(',') : [];
+
+                            let thumbnailMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[0] != null) : true;
 
                             metadata.push({
                                 name: this.$i18n.get('label_thumbnail'),
@@ -1032,13 +1099,10 @@
                                         display = true;
 
                                     // Deciding display based on user prefs
-                                    if (prefsFetchOnlyObject != undefined && 
-                                        prefsFetchOnlyObject.meta != undefined) {
-                                        let index = prefsFetchOnlyObject.meta.findIndex(metadatumId => metadatumId == metadatum.id);
-                                        if (index >= 0)
-                                            display = true;
-                                        else
-                                            display = false;
+                                    if (prefsFetchOnlyMetaObject.length) {
+                                        let index = prefsFetchOnlyMetaObject.findIndex(metadatumId => metadatumId == metadatum.id);
+
+                                        display = index >= 0;
                                     }
 
                                     metadata.push({
@@ -1052,15 +1116,16 @@
                                             display: display,
                                             collection_id: metadatum.collection_id,
                                             multiple: metadatum.multiple,
-                                    });    
+                                    });
+
                                     if (display)
                                         fetchOnlyMetadatumIds.push(metadatum.id);                      
                                 }
                                 this.sortingMetadata.push(metadatum);
                             }
 
-                            let creationDateMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['1'] != null) : true;
-                            let authorNameMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['2'] != null) : true;
+                            let creationDateMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[1] != null) : true;
+                            let authorNameMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[2] != null) : true;
 
                             // Creation date and author name should appear only on admin.
                             if (!this.isOnTheme) {
@@ -1083,15 +1148,13 @@
                                 });
                             }
                         
-                            this.$eventBusSearch.addFetchOnly({
-                                '0': (thumbnailMetadatumDisplay ? 'thumbnail' : null),
-                                'meta': fetchOnlyMetadatumIds,
-                                '1': (creationDateMetadatumDisplay ? 'creation_date' : null),
-                                '2': (authorNameMetadatumDisplay ? 'author_name' : null),
-                                '3': (this.isRepositoryLevel ? 'title' : null),
-                                '4': (this.isRepositoryLevel ? 'description' : null),
-
-                            });
+                            this.$eventBusSearch.addFetchOnly(
+                                (thumbnailMetadatumDisplay ? 'thumbnail' : null) +','+
+                                (creationDateMetadatumDisplay ? 'creation_date' : null) +','+
+                                (authorNameMetadatumDisplay ? 'author_name' : null) +','+
+                                (this.isRepositoryLevel ? 'title' : null) +','+
+                                (this.isRepositoryLevel ? 'description' : null)
+                            , false, fetchOnlyMetadatumIds.toString());
 
                             // Sorting metadata
                             if (this.isRepositoryLevel) {
@@ -1126,15 +1189,8 @@
                         // Loads only basic attributes necessay to view modes that do not allow custom meta
                         } else {
                        
-                            this.$eventBusSearch.addFetchOnly({
-                                '0': 'thumbnail',
-                                'meta': [],
-                                '1': 'creation_date',
-                                '2': 'author_name',
-                                '3': 'title',
-                                '4': 'description'
-                            }, true);
-                            
+                            this.$eventBusSearch.addFetchOnly('thumbnail,creation_date,author_name,title,description', true, '');
+
                             this.sortingMetadata.push({
                                 name: this.$i18n.get('label_title'),
                                 metadatum: 'row_title',
@@ -1143,7 +1199,8 @@
                                 slug: 'title',
                                 id: undefined,
                                 display: true
-                            })
+                            });
+
                             this.sortingMetadata.push({
                                 name: this.$i18n.get('label_creation_date'),
                                 metadatum: 'row_creation',
@@ -1162,12 +1219,12 @@
                         this.isLoadingMetadata = false;
                     });
             },
-            adjustSearchControlHeight() {
+            adjustSearchControlHeight: _.debounce( function() {
                 this.$nextTick(() => {
                     this.searchControlHeight = this.$refs['search-control'] ? this.$refs['search-control'].clientHeight : 0;
                     this.isFiltersMenuCompressed = jQuery(window).width() <= 768;
                 });
-            }
+            }, 500)
         },
         removeEventListeners() {
             // Component
@@ -1214,7 +1271,7 @@
                  * at collection level to items page at repository level
                  */
 
-                if (this.isOnTheme || this.collectionId === to.params.collectionId) {
+                if (this.isOnTheme || this.collectionId == to.params.collectionId) {
                     this.prepareMetadata();
                     this.prepareFilters();
                 }
@@ -1308,41 +1365,55 @@
     .collapse-all {
         display: inline-flex;
         align-items: center;
+        font-size: 0.75rem !important;
     }
 
     .advanced-search-criteria-title {
-        padding: 0;
+       margin-bottom: 40px;
 
-        &>.is-flex {
-            justify-content: space-between;
-        }
-
-        h1 {
-            font-size: 1.25rem;
-            font-weight: normal;
-            color: $blue5;
+        h1, h2 {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 0;
+            color: $gray5;
             display: inline-block;
         }
-
-        hr {
-            margin: 3px 0 4px 0;
+        .field.is-grouped {
+            margin-left: auto;
+        }
+        a.back-link{
+            font-weight: 500;
+            float: right;
+            margin-top: 5px;
+        }
+        hr{
+            margin: 3px 0px 4px 0px; 
             height: 1px;
             background-color: $secondary;
         }
     }
 
     .advanced-search-results-title {
-        padding: 0 $table-side-padding;
+       margin-bottom: 40px;
+        margin: 0 $page-side-padding 42px $page-side-padding;
 
-        h1 {
-            font-size: 1.25rem;
-            font-weight: normal;
-            color: $blue5;
+        h1, h2 {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 0;
+            color: $gray5;
             display: inline-block;
         }
-
-        hr {
-            margin: 3px 0 4px 0;
+        .field.is-grouped {
+            margin-left: auto;
+        }
+        a.back-link{
+            font-weight: 500;
+            float: right;
+            margin-top: 5px;
+        }
+        hr{
+            margin: 3px 0px 4px 0px; 
             height: 1px;
             background-color: $secondary;
         }
@@ -1376,7 +1447,6 @@
         overflow-x: hidden;
         visibility: visible;
         display: block;
-        transition: visibility ease 0.5s, display ease 0.5s;
 
         @media screen and (max-width: 768px) {
             width: 100%;
@@ -1425,7 +1495,8 @@
         }
 
     }
-    #filter-menu-compress-button {
+    #filter-menu-compress-button,
+    #filter-menu-compress-button-mobile {
         position: absolute;
         z-index: 99;
         top: 120px;
@@ -1592,7 +1663,7 @@
     }
 
     .tabs {
-        padding-top: 12px;
+        padding-top: 6px;
         margin-bottom: 20px;
         padding-left: $page-side-padding;
         padding-right: $page-side-padding;
@@ -1600,7 +1671,6 @@
 
     .items-list-area {
         margin-left: 0;
-        transition: margin-left ease 0.5s;
         height: 100%;
         overflow: auto;
         position: relative;

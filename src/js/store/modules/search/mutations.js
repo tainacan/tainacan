@@ -61,43 +61,34 @@ export const addTaxQuery = ( state, filter ) => {
 };
 
 export const addFetchOnly = ( state, metadatum ) => {
-    state.postquery.fetch_only = ( ! state.postquery.fetch_only ) ? { '0': 'thumbnail', 'meta': [], '1': 'creation_date', '2': 'author_name' } : state.postquery.fetch_only;
-
-    for (let key in metadatum) {
-        Vue.set(state.postquery.fetch_only, `${key}`, metadatum[key]);
-    }
-
+    state.postquery.fetch_only = metadatum.replace(/,null/g, '');
 };
 export const addFetchOnlyMeta = ( state, metadatum ) => {
-    state.postquery.fetch_only = ( ! state.postquery.fetch_only ) ? { '0': 'thumbnail', 'meta': [], '1': 'creation_date', '2': 'author_name' } : state.postquery.fetch_only;
-    // console.log(state.postquery.fetch_only);
-    //console.log(state.postquery.fetch_only['meta']);
-    state.postquery.fetch_only['meta'] = ( ! state.postquery.fetch_only['meta'] ) ? [] : state.postquery.fetch_only['meta'];
-
-    let index = state.postquery.fetch_only['meta'].findIndex( item => item == metadatum);
-
-    if ( index >= 0 ){
-        state.postquery.fetch_only['meta'][index] = metadatum;
-    } else {
-        state.postquery.fetch_only['meta'].push(metadatum);
-    }
-    //console.log(state.postquery.fetch_only['meta']);
-    //console.log("----------------------------");
+    state.postquery.fetch_only_meta = metadatum;
 };
 
 export const removeFetchOnly = ( state, metadatum ) => {
+
+    let fetch = state.postquery.fetch_only.split(',');
+
     for (let key in metadatum) {
-        delete state.postquery.fetch_only[key];
+        fetch.splice(key, 1);
     }
+
+    state.postquery.fetch_only = fetch.toString();
 };
 
 export const removeFetchOnlyMeta = ( state, metadatum ) => {
-    if(state.postquery.fetch_only['meta'] != undefined) {
-        let index = state.postquery.fetch_only['meta'].findIndex( item => item == metadatum);
+    if(state.postquery.fetch_only_meta != undefined) {
+        let fetch_meta = state.postquery.fetch_only_meta.split(',');
 
-        if (index >= 0) {
-            state.postquery.fetch_only['meta'].splice(index, 1);
-        }
+        let index = fetch_meta.findIndex((item) => item == metadatum);
+
+        fetch_meta.splice(index, 1);
+
+        state.postquery.fetch_only_meta = fetch_meta.toString();
+
+        console.info(state.postquery.fetch_only_meta);
     }
 };
 
@@ -125,6 +116,10 @@ export const setTotalItems = ( state, total ) => {
 
 export const setTotalPages = ( state, totalPages ) => {
     state.totalPages = totalPages;
+};
+
+export const setItemsPerPage = ( state, itemsPerPage ) => {
+    state.itemsPerPage = itemsPerPage;
 };
 
 export const setSearchQuery = ( state, searchQuery ) => {

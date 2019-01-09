@@ -4,7 +4,6 @@
                 :bread-crumb-items="[{ path: '', label: $i18n.get('importers') }]" />
 
         <h3>{{ $i18n.get('label_available_importers') }}</h3>
-        <p>{{ $i18n.get('info_available_importers_helper') }}</p>
         <p>{{ $i18n.get('instruction_select_an_importer_type') }}</p>
         <div class="importer-types-container">
             <div
@@ -64,13 +63,16 @@ export default {
 
     .importer-types-container {
         display: flex;
-        flex: wrap;
+        flex-wrap: wrap;
 
         .importer-type {
             border: 1px solid $gray2;
             padding: 15px;
             margin: 20px;
             cursor: pointer;
+            max-width: 20%;
+            flex-grow: 1;
+            flex-basis: 20%;
         }
     }
 

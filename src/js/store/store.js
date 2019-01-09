@@ -7,10 +7,12 @@ import metadata from './modules/metadata/';
 import filter from './modules/filter/';
 import search from './modules/search/';
 import taxonomy from './modules/taxonomy/';
-import event from './modules/event';
+import activity from './modules/activity';
 import importer from './modules/importer';
 import bgprocess from './modules/bgprocess';
 import bulkedition from './modules/bulk-edition';
+import exporter from './modules/exporter';
+import exposer from './modules/exposer';
 
 Vue.use(Vuex);
 
@@ -30,9 +32,11 @@ export default new Vuex.Store({
         filter,
         search,
         taxonomy,
-        event,
+        activity,
         importer,
         bgprocess,
-        bulkedition
+        bulkedition,
+        exporter,
+        exposer
     }
 })

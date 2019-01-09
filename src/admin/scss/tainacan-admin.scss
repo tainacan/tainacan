@@ -50,6 +50,25 @@ html {
     font-family: $family-sans-serif;
 }
 
+// Tainacan Loading
+.loading-overlay {
+    z-index: 9999999999;
+}
+.loading-overlay .loading-icon::after {
+    background-image: url('../../admin/images/tainacan_loading.gif');
+    border: none;
+    border-radius: 0;
+    animation: none;
+    height: 50px;
+    width: 50px;
+}
+.loading-overlay.is-full-page .loading-icon::after {
+    height: 50px;
+    width: 50px;
+    top: calc(50% - 25px);
+    left: calc(50% - 25px);
+}
+
 // Link (hover is the same color as secondary
 a:hover {
     color: $secondary;

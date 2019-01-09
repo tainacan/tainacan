@@ -37,6 +37,7 @@
                 <div class="control has-icons-right is-small is-clearfix">
                     <input
                             autocomplete="on"
+                            :aria-label="$i18n.get('instruction_search_in_repository')"
                             :placeholder="$i18n.get('instruction_search_in_repository')"
                             class="input is-small search-header"
                             type="search"
@@ -62,7 +63,7 @@
                         <div :style="{'height': '25px'}">
                             <p class="is-pulled-left advanced-search-text-di">{{ $i18n.get('advanced_search') }}</p>
                             <span 
-                                    style="margin-top: 10px;"
+                                    style="margin-top: 5px; margin-right: -2px;"
                                     class="icon is-pulled-right">
                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowup has-text-secondary"/>
                             </span>

@@ -6,7 +6,7 @@
     grid-template-columns: repeat(auto-fill, 455px);
     grid-gap: 0px;
     justify-content: space-evenly;
-    animation-name: item-appear;
+    animation-name: appear;
     animation-duration: 0.5s;
 
     @media screen and (max-width: 480px) {    
@@ -20,7 +20,6 @@
             background-color: $turquoise2;
         }
     }
-
     .tainacan-card {
         padding: 0px;
         flex-basis: 0;
@@ -39,6 +38,14 @@
             max-height: 171px;
 
             img {
+                width: 130px !important;
+                height: 130px !important;
+            }
+            .skeleton {
+                width: 130px !important;
+                height: 130px !important;
+            }
+            .card-thumbnail {
                 width: 130px !important;
                 height: 130px !important;
             }
@@ -82,6 +89,22 @@
             width: 170px;
             height: 170px;
             border-radius: 0px;
+            visibility: hidden;
+        }
+        .card-thumbnail {
+            width: 170px;
+            height: 170px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0;
+        }
+        .skeleton {
+            width: 170px;
+            height: 170px;
+            position: absolute;
+            z-index: -1;
+            background-color: #e0e0e0;
         }
         .metadata-title {
             flex-shrink: 0;

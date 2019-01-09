@@ -1,6 +1,7 @@
 <template>
     <div class="table-container">
         <div class="table-wrapper">
+
             <!-- Empty result placeholder -->
             <section
                     v-if="!isLoading && items.length <= 0"
@@ -14,12 +15,29 @@
                     <p>{{ $i18n.get('info_no_item_found') }}</p>
                 </div>
             </section>
+
+            <!-- SKELETON LOADING -->
+            <masonry
+                    v-if="isLoading"
+                    :cols="{default: 4, 1919: 3, 1407: 2, 1215: 2, 1023: 1, 767: 1, 343: 1}"
+                    :gutter="30"                    
+                    class="tainacan-records-container">
+                <div 
+                        :key="item"
+                        v-for="item in 12"
+                        :style="{'min-height': randomHeightForRecordsItem() + 'px' }"
+                        class="skeleton tainacan-record" />
+            </masonry>
+            
             <!-- RECORDS VIEW MODE -->
             <masonry 
+                    role="list"
+                    v-if="!isLoading && items.length > 0"
                     :cols="{default: 4, 1919: 3, 1407: 2, 1215: 2, 1023: 1, 767: 1, 343: 1}"
                     :gutter="30"
                     class="tainacan-records-container">
                 <a 
+                        role="listitem"
                         :href="item.url"
                         :key="index"
                         v-for="(item, index) of items"
@@ -28,6 +46,10 @@
                         <!-- Title -->           
                         <p 
                                 v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
                                     content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
                                     html: true,
                                     autoHide: false,
@@ -40,6 +62,10 @@
                                 v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                             
                         <p 
                                 v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
                                     content: item.title != undefined ? item.title : '',
                                     html: true,
                                     autoHide: false,
@@ -52,12 +78,19 @@
 
                         <!-- Remaining metadata -->  
                         <div class="media">
-
                             <div class="list-metadata media-body">
                                 <div 
                                         class="thumbnail"
                                         v-if="item.thumbnail != undefined">
-                                    <img :src="item['thumbnail'].tainacan_medium_full ? item['thumbnail'].tainacan_medium_full : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath)">  
+                                    <img 
+                                            :alt="$i18n.get('label_thumbnail')"
+                                            :src="item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)">  
+                                    <div 
+                                            :style="{ 
+                                                minHeight: getItemImageHeight(item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][1] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[1] : 120), item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][2] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[2] : 120)) + 'px',
+                                                marginTop: '-' + getItemImageHeight(item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][1] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[1] : 120), item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][2] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[2] : 120)) + 'px'
+                                            }"
+                                            class="skeleton"/>
                                 </div>
                                 <span 
                                         v-for="(column, index) in tableMetadata"
@@ -96,6 +129,11 @@ export default {
         items: Array,
         isLoading: false
     },
+    computed: {
+        amountOfDisplayedMetadata() {
+            return this.displayedMetadata.filter((metadata) => metadata.display).length;
+        }
+    },
     data () {
         return {
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png'
@@ -116,7 +154,16 @@ export default {
             } else {
                 return metadata.value_as_html;
             }
-        }
+        },
+        randomHeightForRecordsItem() {
+            let min = (70*this.amountOfDisplayedMetadata)*0.8;
+            let max = (70*this.amountOfDisplayedMetadata)*1.2;
+            return Math.floor(Math.random()*(max-min+1)+min);
+        },
+        getItemImageHeight(imageWidth, imageHeight) {  
+            let itemWidth = 120;
+            return (imageHeight*itemWidth)/imageWidth;
+        },
     }
 }
 </script>

@@ -94,10 +94,8 @@ class Old_Tainacan extends Importer{
                 }
 
             } else {
-                $this->add_error_log('Error creating taxonomy ' . $taxonomy->name );
-                $this->add_error_log($tax->get_errors());
-                $this->abort();
-                return false;
+                $this->add_log('Error creating taxonomy ' . $taxonomy->name );
+                $this->add_log($tax->get_errors());
                 
             }
 
@@ -164,12 +162,14 @@ class Old_Tainacan extends Importer{
 
                 }
 
-                $this->add_collection([
-                    'id' => $collection_id,
-                    'mapping' => $map,
-                    'total_items' => intval( $this->get_total_items_from_source( $collection->ID ) ),
-                    'source_id' => $collection->ID
-                ]);
+                if( isset($collection->ID) ) {
+                    $this->add_collection([
+                        'id' => $collection_id,
+                        'mapping' => $map,
+                        'total_items' => intval($this->get_total_items_from_source($collection->ID)),
+                        'source_id' => $collection->ID
+                    ]);
+                }
             }
 
         }
@@ -255,6 +255,7 @@ class Old_Tainacan extends Importer{
             }
 
             $this->add_error_log('Error in fetch remote (' . $url_to_fetch . ')');
+            $this->add_error_log(serialize($collection_id));
             $this->abort();
             return false;
         }
@@ -689,17 +690,14 @@ class Old_Tainacan extends Importer{
             if ($new_term->validate()) {
                 $inserted_term = $this->term_repo->insert($new_term);
             } else {
-                $this->add_error_log( implode(',', $new_term->get_errors()) );
-                $this->abort();
+                $this->add_log( implode(',', $new_term->get_errors()) );
                 return false;
             }
             
 
             if (is_wp_error($inserted_term)) {
 
-                $this->add_error_log($inserted_term->get_error_message());
-                $this->abort();
-                return false;
+                $this->add_log($inserted_term->get_error_message());
     
             } else {
                 $this->add_log('Added term: ' . $inserted_term->get_name() . ' in tax: ' . $taxonomy_father->get_name());

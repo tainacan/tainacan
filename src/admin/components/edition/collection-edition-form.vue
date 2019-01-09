@@ -44,16 +44,17 @@
                         <label class="label">{{ $i18n.get('label_thumbnail') }}</label>
                         <div class="thumbnail-field">
                             <file-item
-                                    v-if="collection.thumbnail != undefined && ((collection.thumbnail.tainacan_medium != undefined && collection.thumbnail.tainacan_medium != false) || (collection.thumbnail.medium != undefined && collection.thumbnail.medium != false))"
+                                    v-if="collection.thumbnail != undefined && ((collection.thumbnail['tainacan-medium'] != undefined && collection.thumbnail['tainacan-medium'] != false) || (collection.thumbnail.medium != undefined && collection.thumbnail.medium != false))"
                                     :show-name="false"
+                                    :modal-on-click="false"
                                     :size="178"
                                     :file="{ 
                                         media_type: 'image', 
-                                        guid: { rendered: collection.thumbnail.tainacan_medium ? collection.thumbnail.tainacan_medium : collection.thumbnail.medium },
+                                        guid: { rendered: collection.thumbnail['tainacan-medium'] ? collection.thumbnail['tainacan-medium'][0] : collection.thumbnail.medium[0] },
                                         title: { rendered: $i18n.get('label_thumbnail')},
-                                        description: { rendered: `<img alt='Thumbnail' src='` + collection.thumbnail.full + `'/>` }}"/>
+                                        description: { rendered: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + collection.thumbnail.full[0] + `'/>` }}"/>
                           <figure 
-                                    v-if="collection.thumbnail == undefined || ((collection.thumbnail.medium == undefined || collection.thumbnail.medium == false) && (collection.thumbnail.tainacan_medium == undefined || collection.thumbnail.tainacan_medium == false))"
+                                    v-if="collection.thumbnail == undefined || ((collection.thumbnail.medium == undefined || collection.thumbnail.medium == false) && (collection.thumbnail['tainacan-medium'] == undefined || collection.thumbnail['tainacan-medium'] == false))"
                                     class="image">
                                 <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
                                 <img  
@@ -452,14 +453,14 @@
                             v-if="isNewCollection"
                             id="button-submit-goto-metadata"
                             @click.prevent="onSubmit('metadata')"
-                            class="button is-turquoise5">{{ $i18n.get('label_save_goto_metadata') }}</button>
+                            class="button is-secondary">{{ $i18n.get('label_save_goto_metadata') }}</button>
                 </div>
                  <div class="control">
                     <button
                             v-if="isNewCollection"
                             id="button-submit-goto-filter"
                             @click.prevent="onSubmit('filters')"
-                            class="button is-turquoise5">{{ $i18n.get('label_save_goto_filter') }}</button>
+                            class="button is-secondary">{{ $i18n.get('label_save_goto_filter') }}</button>
                 </div>
                 <div class="control">
                     <button
@@ -797,6 +798,7 @@ export default {
                 'my-thumbnail-media-frame', {
                     button_labels: {
                         frame_title: this.$i18n.get('instruction_select_collection_thumbnail'),
+                        frame_button: this.$i18n.get('label_select_file'),
                     },
                     relatedPostId: this.collectionId,
                     onSave: (mediaId) => {
@@ -813,6 +815,7 @@ export default {
                 'my-header-image-media-frame', {
                     button_labels: {
                         frame_title: this.$i18n.get('instruction_select_collection_header_image'),
+                        frame_button: this.$i18n.get('label_select_file'),
                     },
                     relatedPostId: this.collectionId,
                     onSave: (media) => {
@@ -948,7 +951,6 @@ export default {
     #button-edit-header-image,
     #button-delete-thumbnail, 
     #button-delete-header-image {
-
         border-radius: 100px !important;
         max-height: 30px !important;
         max-width: 30px !important;
@@ -964,6 +966,7 @@ export default {
             margin: 0;
             margin-top: -2px;
             font-size: 18px;
+            color: white !important;
         }
     }
     .header-field {  

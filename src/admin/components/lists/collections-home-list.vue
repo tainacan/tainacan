@@ -198,16 +198,16 @@
                         <li>
                             <router-link 
                                     tag="a" 
-                                    :to="{ path: $routerHelper.getCollectionEventsPath(collection.id) }" 
-                                    :aria-label="$i18n.get('label_collection_events')">
+                                    :to="{ path: $routerHelper.getCollectionActivitiesPath(collection.id) }"
+                                    :aria-label="$i18n.get('label_collection_activities')">
                                 <b-tooltip 
-                                        :label="$i18n.get('events')"
+                                        :label="$i18n.get('activities')"
                                         position="is-bottom">
                                     <span class="icon">
                                         <i class="tainacan-icon tainacan-icon-20px tainacan-icon-activities"/>
                                     </span>
                                 </b-tooltip>
-                                <!-- <span class="menu-text">{{ $i18n.get('events') }}</span> -->
+                                <!-- <span class="menu-text">{{ $i18n.get('activities') }}</span> -->
                             </router-link> 
                         </li>
                     </ul>
@@ -216,8 +216,9 @@
                             :to="$routerHelper.getCollectionPath(collection.id)"
                             class="card-body">
                         <img 
+                            :alt="$i18n.get('label_thumbnail')"
                             v-if="collection.thumbnail != undefined"
-                            :src="collection['thumbnail'].tainacan_medium ? collection['thumbnail'].tainacan_medium : (collection['thumbnail'].medium ? collection['thumbnail'].medium : thumbPlaceholderPath)">  
+                            :src="collection['thumbnail']['tainacan-medium'] ? collection['thumbnail']['tainacan-medium'][0] : (collection['thumbnail'].medium ? collection['thumbnail'].medium[0] : thumbPlaceholderPath)">  
                         
                         <!-- Name -->
                         <div class="metadata-title">

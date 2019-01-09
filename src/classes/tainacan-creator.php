@@ -11,6 +11,7 @@ const TAINACAN_ENDPOINTS_DIR    = __DIR__ . '/../api/endpoints/';
 const TAINACAN_IMPORTER_DIR      = __DIR__ . '/../importer/';
 const TAINACAN_EXPORTER_DIR     = __DIR__ . '/../exporter/';
 const TAINACAN_EXPOSERS_DIR		= __DIR__ . '/../exposers/';
+const TAINACAN_MAPPERS_DIR		= __DIR__ . '/../mappers/';
 
 const DIRS = [
     TAINACAN_CLASSES_DIR,
@@ -23,7 +24,8 @@ const DIRS = [
 	TAINACAN_ENDPOINTS_DIR,
     TAINACAN_IMPORTER_DIR,
     TAINACAN_EXPORTER_DIR,
-	TAINACAN_EXPOSERS_DIR
+	TAINACAN_EXPOSERS_DIR,
+	TAINACAN_MAPPERS_DIR
 ];
 
 require_once('libs/wp-async-request.php');
@@ -35,7 +37,8 @@ require_once(TAINACAN_IMPORTER_DIR . 'class-tainacan-bg-importer.php');
 require_once(TAINACAN_VENDOR_DIR . 'autoload.php');
 require_once(TAINACAN_IMPORTER_DIR . 'class-tainacan-importer.php');
 require_once(TAINACAN_IMPORTER_DIR . 'class-tainacan-importer-handler.php');
-require_once(TAINACAN_EXPOSERS_DIR . 'class-tainacan-exposers.php');
+require_once(TAINACAN_EXPOSERS_DIR . 'class-tainacan-exposers-handler.php');
+require_once(TAINACAN_MAPPERS_DIR . 'class-tainacan-mappers-handler.php');
 
 require_once(TAINACAN_EXPORTER_DIR . 'class-tainacan-bg-exporter.php');
 require_once(TAINACAN_EXPORTER_DIR . 'class-tainacan-export-handler.php');
@@ -67,6 +70,9 @@ function tainacan_autoload($class_name){
 			$dir = TAINACAN_EXPORTER_DIR;
 		} else if( isset( $class_path[1] ) && $class_path[1] === 'Exposers' ){
 			$dir = TAINACAN_EXPOSERS_DIR;
+			if(count($class_path) > 3) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
+		} else if( isset( $class_path[1] ) && $class_path[1] === 'Mappers' ){
+			$dir = TAINACAN_MAPPERS_DIR;
 			if(count($class_path) > 3) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
 		} else if( isset( $class_path[1] ) && $class_path[1] === 'API' ){
 			$dir = TAINACAN_TAPI_DIR;
@@ -133,7 +139,9 @@ $Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
 
 $Tainacan_Logs = \Tainacan\Repositories\Logs::get_instance();
 
-$Tainacan_Exposers = \Tainacan\Exposers\Exposers::get_instance();
+$Tainacan_Exposers = \Tainacan\Exposers_Handler::get_instance();
+
+$Tainacan_Mappers = \Tainacan\Mappers_Handler::get_instance();
 
 $Tainacan_Embed = \Tainacan\Embed::get_instance();
 
@@ -153,6 +161,9 @@ $Tainacan_Gutenberg_Block = \Tainacan\GutenbergBlock::get_instance();
 
 $Tainacan_Search_Engine = new \Tainacan\Search_Engine();
 $Tainacan_Elastic_press = new \Tainacan\Elastic_Press();
+
+require_once(__DIR__ . '/class-tainacan-background-process-heartbeat.php');
+$Tainacan_Importer_Heartbeat = new \Tainacan\Background_Importer_Heartbeat();
 
 $Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();
 

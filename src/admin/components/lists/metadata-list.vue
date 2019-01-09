@@ -66,8 +66,11 @@
                                     <span class="icon icon-level-identifier">
                                         <i 
                                             :class="{ 
-                                                'tainacan-icon-collections has-text-turquoise5': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
-                                                'tainacan-icon-repository has-text-blue5': (metadatum.collection_id == 'default') || isRepositoryLevel
+                                                'tainacan-icon-collections': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
+                                                'tainacan-icon-repository': (metadatum.collection_id == 'default') || isRepositoryLevel,
+                                                'has-text-turquoise5': metadatum.enabled && (metadatum.collection_id != 'default' && !isRepositoryLevel), 
+                                                'has-text-blue5': metadatum.enabled && (metadatum.collection_id == 'default' || isRepositoryLevel),
+                                                'has-text-gray': !metadatum.enabled
                                             }"
                                             class="tainacan-icon" />
                                     </span>  
@@ -168,6 +171,21 @@
                                         :class="{ 'hightlighted-metadatum' : hightlightedMetadatum == metadatum.name, 'inherited-metadatum': isRepositoryLevel }"
                                         v-for="(metadatum, index) in availableMetadatumList"
                                         :key="index">
+                                    <div 
+                                            v-if="metadatum.preview_template"
+                                            class="metadata-type-preview tainacan-form">
+                                        <div class="field">
+                                            <span class="collapse-handle">
+                                                <span class="icon">
+                                                    <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                                                </span> 
+                                                <label class="label has-tooltip">
+                                                    {{ metadatum.name }}
+                                                </label>
+                                            </span>
+                                            <div v-html="metadatum.preview_template"/>
+                                        </div>
+                                    </div>
                                     <span class="icon grip-icon">
                                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
                                     </span>
@@ -1086,8 +1104,8 @@ export default {
                     max-width: 180px;
                     width: 60%;
                 }
-                &:after,
-                &:before {
+                &::after,
+                &::before {
                     content: '';
                     display: block;
                     position: absolute;
@@ -1096,7 +1114,7 @@ export default {
                     height: 0;
                     border-style: solid;
                 }
-                &:after {
+                &::after {
                     top: -1px;
                     border-color: transparent white transparent transparent;
                     border-right-width: 16px;
@@ -1104,13 +1122,49 @@ export default {
                     border-bottom-width: 20px;
                     left: -19px;
                 }
-                &:before {
+                &::before {
                     top: -1px;
                     border-color: transparent $gray2 transparent transparent;
                     border-right-width: 16px;
                     border-top-width: 20px;
                     border-bottom-width: 20px;
                     left: -20px;
+                }
+                &:hover {
+                    .metadata-type-preview {
+                        visibility: visible;
+                        opacity: 1;
+                        left: -210px;
+                        transition-delay: 1s;
+
+                        &::before {
+                            border-color: transparent $gray1 transparent transparent;
+                            border-left-width: 16px;
+                            border-top-width: 20px;
+                            border-bottom-width: 20px;
+                            right: -19px;
+                        }
+                    }
+                }
+
+                .metadata-type-preview {
+                    position: absolute;
+                    background: $gray1;
+                    padding: 12px;
+                    border-radius: 3px;
+                    z-index: 9999999999999;
+                    width: 180px;
+                    height: 120px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    left: -180px;
+                    top: -40px;
+                    visibility: hidden;
+                    opacity: 0;
+                    transition: opacity ease 0.3s, visibility ease 0.3s, left ease 0.3s;
+                    transition-delay: 0.1s;
+
                 }
             }
 

@@ -1,7 +1,7 @@
 import axios from '../../../axios/axios';
 
 // Actions related to background processes
-export const fetchProcesses = ({ commit }, {page, processesPerPage}) => {
+export const fetchProcesses = ({ commit }, {page, processesPerPage, shouldUpdateStore}) => {
     return new Promise((resolve, reject) => {
         let endpoint = '/bg-processes?all_users=1';
 
@@ -13,7 +13,8 @@ export const fetchProcesses = ({ commit }, {page, processesPerPage}) => {
         axios.tainacan.get(endpoint)
         .then( res => {
             let processes = res.data;
-            commit('setProcesses', processes);
+            if (shouldUpdateStore)
+                commit('setProcesses', processes);
             resolve({ 'processes': processes, 'total': res.headers['x-wp-total'] });
         })
         .catch( error => {
@@ -28,9 +29,9 @@ export const updateProcess = ({ commit }, { id, status }) => {
             status: status,
         })
             .then( res => {
-                let process = res.data;
-                commit('setProcess', process);
-                resolve(process)
+                let aProcess = res.data;
+                commit('setProcess', aProcess);
+                resolve(aProcess)
             })
             .catch( error => {
                 reject(error);
@@ -38,13 +39,18 @@ export const updateProcess = ({ commit }, { id, status }) => {
     });
 };
 
+export const heartBitUpdateProcess = ({ commit }, aProcess) => {
+    commit('setProcess', aProcess);
+};
+
 export const fetchProcess = ({ commit }, id) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.get(`/bg-processes/${id}/`)
         .then( res => {
-            let process = res.data;
-            commit('setProcess', process);
-            resolve(process)
+            let aProcess = res.data;
+            commit('setProcess', aProcess);
+            
+            resolve(aProcess)
         })
         .catch( error => {
             reject(error);

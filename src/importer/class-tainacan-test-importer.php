@@ -35,18 +35,20 @@ class Test_Importer extends Importer {
 		[
 			'name' => 'Link relationship',
 			'progress_label' => 'Link relationship',
-			'callback' => 'link_relationship'
+			'callback' => 'link_relationship',
+            'total' => 1
 		],
 		[
 			'name' => 'Post-configure taxonomies',
 			'progress_label' => 'post processing taxonomies',
-			'callback' => 'close_taxonomies'
+			'callback' => 'close_taxonomies',
+            'total' => 1
 		],
 		[
 			'name' => 'Finalize',
 			'progress_label' => 'Finalizing',
 			'callback' => 'finish_processing',
-			'total' => 6
+			'total' => 1
 		]
 		
 	];
@@ -108,7 +110,7 @@ class Test_Importer extends Importer {
 			<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
-							 <i class="mdi mdi-help-circle-outline" ></i>
+							 <i class="tainacan-icon tainacan-icon-help" ></i>
 						 </span>
 					</a>
 					<div class="help-tooltip">
@@ -130,7 +132,7 @@ class Test_Importer extends Importer {
 			<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
-							 <i class="mdi mdi-help-circle-outline" ></i>
+							 <i class="tainacan-icon tainacan-icon-help" ></i>
 						 </span>
 					</a>
 					<div class="help-tooltip">
@@ -152,7 +154,7 @@ class Test_Importer extends Importer {
 			<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
-							 <i class="mdi mdi-help-circle-outline" ></i>
+							 <i class="tainacan-icon tainacan-icon-help" ></i>
 						 </span>
 					</a>
 					<div class="help-tooltip">
@@ -181,7 +183,7 @@ class Test_Importer extends Importer {
 			<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
-							 <i class="mdi mdi-help-circle-outline" ></i>
+							 <i class="tainacan-icon tainacan-icon-help" ></i>
 						 </span>
 					</a>
 					<div class="help-tooltip">
@@ -206,7 +208,7 @@ class Test_Importer extends Importer {
 			<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
-							 <i class="mdi mdi-help-circle-outline" ></i>
+							 <i class="tainacan-icon tainacan-icon-help" ></i>
 						 </span>
 					</a>
 					<div class="help-tooltip">
@@ -235,7 +237,7 @@ class Test_Importer extends Importer {
 			<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
-							 <i class="mdi mdi-help-circle-outline" ></i>
+							 <i class="tainacan-icon tainacan-icon-help" ></i>
 						 </span>
 					</a>
 					<div class="help-tooltip">
@@ -257,7 +259,7 @@ class Test_Importer extends Importer {
 			<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
-							 <i class="mdi mdi-help-circle-outline" ></i>
+							 <i class="tainacan-icon tainacan-icon-help" ></i>
 						 </span>
 					</a>
 					<div class="help-tooltip">
@@ -279,7 +281,7 @@ class Test_Importer extends Importer {
 			<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
-							 <i class="mdi mdi-help-circle-outline" ></i>
+							 <i class="tainacan-icon tainacan-icon-help" ></i>
 						 </span>
 					</a>
 					<div class="help-tooltip">
@@ -555,6 +557,7 @@ class Test_Importer extends Importer {
 			}
 		}
 
+		$this->set_in_step_count(1);
 		return false;
 	}
 	
@@ -591,6 +594,7 @@ class Test_Importer extends Importer {
 			}
 		}
 
+        $this->set_in_step_count(1);
 		return false;
 		
 	}
@@ -603,25 +607,11 @@ class Test_Importer extends Importer {
 		
 		$this->add_log('finish_processing');
 		// Lets just pretend we are doing something really important
-		$important_stuff = 5;
-		$current = $this->get_in_step_count();
-		$this->add_log('current step ' . $current);
-
-		if ($current <= $important_stuff) {
-			// This is very important
-
-			$this->add_log('going to sleep');
-			sleep(5);
-			$current ++;
-			return $current;
-		} else {
-			return false;
-		}
-		
+        $this->set_in_step_count(1);
+		return false;
 	}
 	
 	public function process_item($index, $collection_definition) {
-		
 		$method = 'get_' . $collection_definition['source_id'] . '_item';
 		$item = $this->$method($index);
 		return $item;

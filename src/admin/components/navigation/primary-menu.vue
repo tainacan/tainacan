@@ -40,7 +40,7 @@
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-metadata"/>
                         </span>
-                        <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
+                        <span class="menu-text">{{ $i18n.get('metadata') }}</span>
                     </router-link>
                 </li>
                 <li>
@@ -68,12 +68,12 @@
                 <li>
                     <router-link
                             tag="a"
-                            to="/events"
-                            :class="activeRoute == 'EventsPage' ? 'is-active':''">
+                            to="/activities"
+                            :class="activeRoute == 'ActivitiesPage' ? 'is-active':''">
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-activities"/>
                         </span>
-                        <span class="menu-text">{{ $i18n.get('events') }}</span>
+                        <span class="menu-text">{{ $i18n.get('activities') }}</span>
                     </router-link>
                 </li>
                 <li>
@@ -89,6 +89,19 @@
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-importers"/>
                         </span>
                         <span class="menu-text menu-text-import">{{ $i18n.get('importers') }}</span>
+                    </router-link>
+                </li>
+                <li>
+                    <router-link
+                            tag="a"
+                            to="/exporters"
+                            :class="(
+                                activeRoute == 'ExportersPage' ||
+                                activeRoute == 'ExporterEditionForm') ? 'is-active':''">
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-export"/>
+                        </span>
+                        <span class="menu-text">{{ $i18n.get('exporters') }}</span>
                     </router-link>
                 </li>
             </ul>
@@ -173,14 +186,15 @@ export default {
             .menu-text {
                 padding-left: 0.7em;
                 opacity: 1;
+                top: 1px;
+                position: relative;
                 visibility: visible;
                 transition: opacity 0.2s linear, visibility 0.2s linear;
                 -webkit-transition: opacity 0.2s linear, visibility 0.2s linear;
             }
             .menu-text-import {
                 position: relative;
-                top: -3px;
-                left: -6px;
+                top: 1px;
             }
         }
 

@@ -54,6 +54,9 @@ class REST_Facets_Controller extends REST_Controller {
 	 */
 	public function get_items( $request ) {
 		
+		// Free php session early so simultaneous requests dont get queued
+		session_write_close();
+		
 		$metadatum_id = $request['metadatum_id'];
 		
 		if( !empty($metadatum_id) ) {

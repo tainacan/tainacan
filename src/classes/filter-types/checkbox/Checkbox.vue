@@ -1,11 +1,14 @@
 <template>
-    <div class="block">
-        <span 
+    <div 
+            :style="{ 'height': isLoadingOptions ? (Number(filter.max_options)*28) + 'px' : 'auto' }"
+            :class="{ 'skeleton': isLoadingOptions }"
+            class="block">
+        <!-- <span 
                 v-if="isLoadingOptions"
                 style="width: 100%; position: absolute;"
                 class="icon has-text-centered loading-icon">
             <div class="control has-icons-right is-loading is-clearfix" />
-        </span>
+        </span> -->
 
         <div
                 v-for="(option, index) in options.slice(0, filter.max_options)"
@@ -36,11 +39,12 @@
                         v-if="option.total_items != undefined"
                         class="has-text-gray">{{ "(" + option.total_items + ")" }}</span>
             </b-checkbox> -->
-            <div
-                    class="view-all-button-container"
-                    v-if="option.seeMoreLink && index == options.slice(0, filter.max_options).length - 1"
-                    @click="openCheckboxModal()"
-                    v-html="option.seeMoreLink"/>
+            <button
+                    class="view-all-button link-style"
+                    v-if="option.showViewAllButton && index == options.slice(0, filter.max_options).length - 1"
+                    @click="openCheckboxModal(option.parent)"> 
+                {{ $i18n.get('label_view_all') }}
+            </button>
         </div>
         <p 
                 v-if="!isLoadingOptions && options.length != undefined && options.length <= 0"
@@ -249,9 +253,11 @@
 </script>
 
 <style lang="scss" scoped>
-    .view-all-button-container {
-        display: flex;
-        padding-left: 18px;
+
+    
+    .view-all-button {
+        font-size: 0.75rem;
+        padding: 0.1rem 1rem;
     }
 
     .is-loading:after {

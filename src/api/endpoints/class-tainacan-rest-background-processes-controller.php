@@ -56,6 +56,10 @@ class REST_Background_Processes_Controller extends REST_Controller {
                         'type'        => 'integer',
                         'description' => __( 'Page to retrieve. Default 1', 'tainacan' ),
                     ],
+					'recent' => [
+                        'type'        => 'bool',
+                        'description' => __( 'Return only processes created or updated recently', 'tainacan' ),
+                    ],
                 ],
 	        ),
         ));
@@ -150,8 +154,13 @@ class REST_Background_Processes_Controller extends REST_Controller {
                 $status_q = "AND done = 1";
             }
         }
+		
+		$recent_q = '';
+		if ( isset($request['recent']) && $request['recent'] !== false ) {
+            $recent_q = "AND (processed_last >= NOW() - INTERVAL 10 MINUTE OR queued_on >= NOW() - INTERVAL 10 MINUTE)";
+        }
 
-        $base_query = "FROM $this->table WHERE 1=1 $status_q $user_q ORDER BY priority DESC, queued_on DESC";
+        $base_query = "FROM $this->table WHERE 1=1 $status_q $user_q $recent_q ORDER BY priority DESC, queued_on DESC";
 
         $query = "SELECT * $base_query $limit_q";
         $count_query = "SELECT COUNT(ID) $base_query";
@@ -221,8 +230,37 @@ class REST_Background_Processes_Controller extends REST_Controller {
         if ( $body['status'] == 'open' ) {
             $status_q = "done = 0";
         }
+
         if ( $body['status'] == 'closed' ) {
-            $status_q = "done = 1";
+            $status_q = "done = 1, status = 'cancelled'";
+        }
+
+        if ( $body['status'] == 'waiting' ) {
+            $status_q = "done = 1, status = 'waiting'";
+        }
+
+        if ( $body['status'] == 'running' ) {
+            $status_q = "done = 1, status = 'running'";
+        }
+
+        if ( $body['status'] == 'paused' ) {
+            $status_q = "done = 1, status = 'paused'";
+        }
+
+        if ( $body['status'] == 'cancelled' ) {
+            $status_q = "done = 1, status = 'cancelled'";
+        }
+
+        if ( $body['status'] == 'errored' ) {
+            $status_q = "done = 1, status = 'errored'";
+        }
+
+        if ( $body['status'] == 'finished' ) {
+            $status_q = "done = 1, status = 'finished'";
+        }
+
+        if ( $body['status'] == 'finished-errors' ) {
+            $status_q = "done = 1, status = 'finished-errors'";
         }
 
         $id_q = $wpdb->prepare("AND ID = %d", $id);

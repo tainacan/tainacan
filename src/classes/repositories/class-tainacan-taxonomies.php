@@ -135,7 +135,9 @@ class Taxonomies extends Repository {
 
 		$new_taxonomy = parent::insert( $taxonomy );
 		$new_taxonomy->tainacan_register_taxonomy();
-
+		
+		flush_rewrite_rules( false ); // needed to activate taxonomy archive url
+		
 		// return a brand new object
 		return $new_taxonomy;
 	}

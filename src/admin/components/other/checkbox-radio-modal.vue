@@ -10,6 +10,7 @@
                 <input
                         autocomplete="on"
                         :placeholder="$i18n.get('instruction_search')"
+                        :aria-label="$i18n.get('instruction_search')"
                         v-model="optionName"
                         @input="autoComplete"
                         class="input">
@@ -55,7 +56,7 @@
                                             type="checkbox"> 
                                     <span class="check" /> 
                                     <span class="control-label">
-                                        <span class="checkbox-label-text">{{ `${ limitChars(option.label) }` }}</span> 
+                                        <span class="checkbox-label-text">{{ `${ (option.label? limitChars(option.label) : '') }` }}</span> 
                                         <span 
                                             v-if="isFilter && option.total_items != undefined"
                                             class="has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
@@ -217,7 +218,7 @@
                                     type="checkbox"> 
                             <span class="check" /> 
                             <span class="control-label">
-                                <span class="checkbox-label-text">{{ `${ option.name ? limitChars(option.name) : limitChars(option.label) }` }}</span> 
+                                <span class="checkbox-label-text">{{ `${ option.name ? limitChars(option.name) : (option.label ? limitChars(option.label) : '') }` }}</span> 
                                 <span 
                                         v-if="isFilter && option.total_items != undefined"
                                         class="has-text-gray">
@@ -229,7 +230,7 @@
                                 v-else
                                 v-model="selected"
                                 :native-value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.value)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))">
-                            {{ `${ option.name ? limitChars(option.name) : limitChars(option.label) }` }}
+                            {{ `${ option.name ? limitChars(option.name) : (option.label ? limitChars(option.label) : '') }` }}
                             <span 
                                     v-if="isFilter && option.total_items != undefined"
                                     class="has-text-gray">
@@ -369,10 +370,9 @@
                 }
             },
             limitChars(label){
-                if(label.length > this.maxTextToShow){
+                if (label.length > this.maxTextToShow){
                     return label.slice(0, this.maxTextToShow)+'...';
                 }
-
                 return label;
             },
             beforePage(){
@@ -699,7 +699,6 @@
     .tainacan-modal-content {
         width: auto;
         min-height: 600px;
-        border-radius: 10px;
     }
 
     .tainacan-modal-title {

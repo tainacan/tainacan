@@ -30,7 +30,13 @@ class REST_Controller extends \WP_REST_Controller {
 				}
 			}
 		} else {
-			$object_filtered[ $attributes ] = $object->get( $attributes );
+			if(strstr($attributes, ',')){
+				$attributes = explode(',', $attributes);
+
+				return $this->filter_object_by_attributes($object, $attributes);
+			} else {
+				$object_filtered[ $attributes ] = $object->get( $attributes );
+			}
 		}
 
 		return $object_filtered;
