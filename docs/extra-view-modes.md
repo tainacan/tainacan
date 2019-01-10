@@ -142,3 +142,11 @@ The file path indicated on the register above should point to the .php file wher
 ```
 
 The classes `my-view-mode-container` and `my-view-mode-item`, and so forth should be implemented by you on your style file. Other classes as the `skeleton`, `section` are part of Tainacan's plugin CSS, and can be used if you wish to keep a standard.
+
+Thumbnail is obtained via the function `the_post_thumbnail()`, which accepts as first parameter any of the following:
+
+ - 'tainacan-small' (40px width, 40px height, cropped);
+ - 'tainacan-medium' (275px width, 275 height, cropped);
+ - 'tainacan-medium-full', (max. 205px width, max. 1500px height, not cropped );
+
+You can see that this view mode displays the array of metadata obtained from `tainacan_the_metadata()` function. 
