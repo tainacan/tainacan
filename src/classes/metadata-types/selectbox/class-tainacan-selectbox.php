@@ -17,6 +17,17 @@ class Selectbox extends Metadata_Type {
         $this->set_form_component('tainacan-form-selectbox');
         $this->set_name( __('Selectbox', 'tainacan') );
         $this->set_description( __('A selectbox with a fixed list of value to choose one from', 'tainacan') );
+        $this->set_preview_template('
+            <div>
+                <div class="control is-expanded">
+                    <span class="select is-fullwidth">
+                        <select>
+                            <option value="someValue">' . __('Select here...') . '</option> 
+                        </select>
+                    </span>
+                </div>
+            </div>
+        ');
     }
 
     /**

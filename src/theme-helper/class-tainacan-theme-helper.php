@@ -444,7 +444,9 @@ class Theme_Helper {
 			'show_pagination' => true,
 			'full_screen' => false,
 			'dynamic_metadata' => false,
-			
+			'implements_skeleton' => false,
+			'skeleton_template' => ''
+
 		);
 		$args = wp_parse_args($args, $defaults);
 

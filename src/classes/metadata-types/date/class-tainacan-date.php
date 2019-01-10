@@ -19,6 +19,13 @@ class Date extends Metadata_Type {
         $this->set_component('tainacan-date');
         $this->set_name( __('Date', 'tainacan') );
         $this->set_description( __('Exact date type, with day, month and year.', 'tainacan') );
+        $this->set_preview_template('
+            <div>
+                <div class="control is-inline">
+                    <input type="text" placeholder="' . __('mm/dd/yyyy') . '" class="input"></input>
+                </div>
+            </div>
+        ');
     }
 
     /**

@@ -172,6 +172,7 @@
                                         v-for="(metadatum, index) in availableMetadatumList"
                                         :key="index">
                                     <div 
+                                            aria-hidden="true"
                                             v-if="metadatum.preview_template"
                                             class="metadata-type-preview tainacan-form">
                                         <div class="field">
@@ -861,7 +862,12 @@ export default {
                 width: 100%;
             }
         }
-                    
+                  
+        .b-tabs .tab-content {
+            overflow-y: visible;
+            min-height: 500px;
+        }
+                  
         .column:not(.available-metadata-area){
             overflow: hidden;
             flex-grow: 2;
@@ -869,11 +875,11 @@ export default {
 
         .page-title {
             border-bottom: 1px solid $secondary;
+            margin: 1em 0em 2.0em 0em;
             h2 {
                 color: $blue5;
                 font-weight: 500;
             }
-            margin: 1em 0em 2.0em 0em;
         }
 
         .w-100 {
@@ -1134,42 +1140,75 @@ export default {
                     .metadata-type-preview {
                         visibility: visible;
                         opacity: 1;
-                        left: -210px;
+                        left: -250px;
                         transition-delay: 1s;
-
-                        &::before {
-                            border-color: transparent $gray1 transparent transparent;
-                            border-left-width: 16px;
-                            border-top-width: 20px;
-                            border-bottom-width: 20px;
-                            right: -19px;
-                        }
                     }
                 }
 
                 .metadata-type-preview {
                     position: absolute;
                     background: $gray1;
-                    padding: 12px;
+                    padding: 12px 16px;
                     border-radius: 3px;
                     z-index: 9999999999999;
-                    width: 180px;
-                    height: 120px;
+                    width: 218px;
+                    min-height: 120px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    left: -180px;
-                    top: -40px;
+                    left: -220px;
+                    top: -42px;
                     visibility: hidden;
                     opacity: 0;
                     transition: opacity ease 0.3s, visibility ease 0.3s, left ease 0.3s;
                     transition-delay: 0.1s;
+                    pointer-events: none;
+                    cursor: none;
 
+                    input, select, textarea {
+                        pointer-events: none;
+                        cursor: none;
+                    }
+                    textarea {
+                        min-height: 70px;
+                    }
+                    .field {
+                        width: 100%;
+                    }
+                    .tags {
+                        background: white;
+                    }
+                    .add-new-term {
+                        font-size: 0.75rem;
+                        text-decoration: underline;
+                        margin: 0.875rem 1.5rem;
+                    }
+
+                    &::before {
+                        content: '';
+                        display: block;
+                        position: absolute;
+                        width: 0;
+                        height: 0;
+                        border-style: solid;
+                        top: 48px;
+                        border-color: transparent transparent transparent $gray1;
+                        border-left-width: 10px;
+                        border-top-width: 10px;
+                        border-bottom-width: 10px;
+                        right: -13px;
+                    }
                 }
             }
 
             .sortable-drag {
                 opacity: 1 !important;
+            }
+
+            .sortable-chosen {
+                .metadata-type-preview {
+                    display: none;
+                }
             }
 
             @keyframes hightlighten {
