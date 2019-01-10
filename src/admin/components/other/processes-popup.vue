@@ -340,7 +340,7 @@ export default {
             }
 
             li:hover {
-                background-color: $gray1;
+                background-color: $gray0;
 
                 .action-icon{
                     visibility: visible;

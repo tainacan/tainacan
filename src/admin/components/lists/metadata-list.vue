@@ -70,7 +70,7 @@
                                                 'tainacan-icon-repository': (metadatum.collection_id == 'default') || isRepositoryLevel,
                                                 'has-text-turquoise5': metadatum.enabled && (metadatum.collection_id != 'default' && !isRepositoryLevel), 
                                                 'has-text-blue5': metadatum.enabled && (metadatum.collection_id == 'default' || isRepositoryLevel),
-                                                'has-text-gray': !metadatum.enabled
+                                                'has-text-gray3': !metadatum.enabled
                                             }"
                                             class="tainacan-icon" />
                                     </span>  

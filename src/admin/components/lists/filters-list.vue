@@ -66,7 +66,7 @@
                                               'tainacan-icon-repository': filter.collection_id != collectionId,
                                               'has-text-turquoise5': filter.enabled && filter.collection_id == collectionId, 
                                               'has-text-blue5': filter.enabled && filter.collection_id != collectionId,
-                                              'has-text-gray': !filter.enabled  
+                                              'has-text-gray3': !filter.enabled  
                                             }"
                                     class="tainacan-icon" />
                             </span> 

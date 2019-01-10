@@ -111,12 +111,15 @@
         <section class="home-section home-section-collection">
             <div class="home-section-header collections-section-header">
                 <div class="home-section-icon">
-                    <span class="icon">
+                    <router-link
+                        tag="span"
+                        class="icon"
+                        to="/collections">
                         <i class="tainacan-icon tainacan-icon-collections"/>
-                    </span>
+                    </router-link>
                 </div>
                 <h1>{{ $i18n.get('collections') }}</h1>
-                 <router-link
+                <router-link
                         tag="a"
                         to="/collections">
                     <span class="icon">
@@ -232,6 +235,10 @@ export default {
                     display: flex;
                     align-items: center;
                     justify-content: center;
+
+                    .icon:hover {
+                        cursor: pointer;
+                    }
                 }
 
                 h1 {

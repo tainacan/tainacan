@@ -269,7 +269,7 @@
     .no-options-placeholder {
         margin-left: 0.5rem;
         font-size: 0.75rem;
-        color: #898d8f;
+        color: #555758;
     }
 
     .b-checkbox .control-label {

@@ -41,7 +41,8 @@
                         :disabled="isEditingTerm">
                     <span
                             @click="searchTerms(0)"
-                            class="icon is-right">
+                            class="icon is-right"
+                            :class="{ 'has-text-gray3': isEditingTerm }">
                         <i class="tainacan-icon tainacan-icon-search" />
                     </span>
             </div>
