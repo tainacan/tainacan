@@ -10,6 +10,7 @@ abstract class Filter_Type {
     private $supported_types = [];
     private $options = [];
     private $component;
+    private $preview_template = '';
 
     public function __construct(){
         add_action('register_filter_types', array(&$this, 'register_filter_type'));
@@ -48,6 +49,23 @@ abstract class Filter_Type {
     }
 
     /**
+     * specifies the preview template for the filter type
+     *
+     * @param string $preview_template for the filter type
+     */
+    public function set_preview_template($preview_template){
+        $this->preview_template = $preview_template;
+    }
+
+    /**
+     * @return string
+     */
+    public function get_preview_template() {
+        return $this->preview_template;
+    }
+
+
+    /**
      * @return array
      */
     public function _toArray(){
@@ -56,6 +74,7 @@ abstract class Filter_Type {
         $attributes['className'] = get_class($this);
         $attributes['component'] = $this->get_component();
         $attributes['supported_types'] = $this->get_supported_types();
+        $attributes['preview_template'] = $this->get_preview_template();
 
         return $attributes;
     }

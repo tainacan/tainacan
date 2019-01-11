@@ -19,7 +19,7 @@ class Numeric extends Metadata_Type {
         $this->set_preview_template('
             <div>
                 <div class="control is-clearfix">
-                    <input type="number" placeholder="' . __('3,1415') . '" class="input"> 
+                    <input type="number" placeholder="3,1415" class="input"> 
                 </div>
             </div>
         ');

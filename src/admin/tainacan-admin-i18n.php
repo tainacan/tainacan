@@ -375,7 +375,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_image_upload_box'                   => __( 'Drop an image here or click to upload.', 'tainacan' ),
 	'instruction_select_a_status'                    => __( 'Select a status:', 'tainacan' ),
 	'instruction_select_a_status2'                   => __( 'Select a status', 'tainacan' ),
-	'instruction_select_a_filter_type'               => __( 'Select a filter type:', 'tainacan' ),
+	'instruction_click_to_select_a_filter_type'               => __( 'Click to select a filter type:', 'tainacan' ),
 	'instruction_select_a_parent_term'               => __( 'Select a parent term:', 'tainacan' ),
 	'instruction_select_a_metadatum'                 => __( 'Select a metadatum', 'tainacan' ),
 	'instruction_cover_page'                         => __( 'Type to search a Page to choose.', 'tainacan' ),
@@ -405,6 +405,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_type_existing_term'                 => __( 'Type to add an existing term...', 'tainacan' ),
 	'instruction_select_an_exporter_type'            => __( 'Select an exporter from the options below:', 'tainacan'),
 	'instruction_select_a_collection'                => __( 'Select a collection', 'tainacan' ),
+	'instruction_hover_a_filter_type_to_preview'     => __( 'Hover a filter type to preview', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_error_invalid_date'                        => __( 'Invalid date', 'tainacan' ),
