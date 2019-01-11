@@ -366,6 +366,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_list_pagination'			                 => __( 'List pagination', 'tainacan' ),
 	'label_sort_visualization'		                 => __( 'Sorting and visualization control', 'tainacan' ),
 	'label_tainacan_api'			                 => __( 'Tainacan API', 'tainacan' ),
+	'label_preview'				                 	 => __( 'Preview', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

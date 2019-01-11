@@ -175,6 +175,7 @@
                                             aria-hidden="true"
                                             v-if="metadatum.preview_template"
                                             class="metadata-type-preview tainacan-form">
+                                        <span class="metadata-type-label">{{ $i18n.get('label_preview') }}</span>
                                         <div class="field">
                                             <span class="collapse-handle">
                                                 <span class="icon">
@@ -1164,6 +1165,15 @@ export default {
                     transition-delay: 0.1s;
                     pointer-events: none;
                     cursor: none;
+                    flex-wrap: wrap;
+
+                    .metadata-type-label {
+                        font-weight: 600;
+                        color: $gray4;
+                        width: 100%;
+                        font-size: 1rem;
+                        margin-bottom: 6px;
+                    }
 
                     input, select, textarea {
                         pointer-events: none;
