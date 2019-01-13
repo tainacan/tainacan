@@ -139,7 +139,7 @@ class Term_Exporter extends Exporter {
     }
 
     /**
-     * @return bool
+     * 
      */
     public function exporting_terms(){
 
@@ -153,5 +153,15 @@ class Term_Exporter extends Exporter {
         $term_repo = Repositories\Terms::get_instance();
 
         //TODO: Retrieve all terms from hierarchy
+    }
+
+    /**
+     * @param $taxonomy the taxonomy to fetch the terms
+     * @param $parent int the id of term father
+     *
+     * @return string
+     */
+    public function get_terms_recursively( $taxonomy, $parent = 0){
+        return "";
     }
 }
