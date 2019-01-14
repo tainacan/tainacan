@@ -152,7 +152,7 @@ class Term_Exporter extends Exporter {
         $tax = new Entities\Taxonomy($this->get_option('select_taxonomy'));
         $term_repo = Repositories\Terms::get_instance();
 
-        //TODO: Retrieve all terms from hierarchy
+        $this->get_terms_recursively( $term_repo, $tax );
     }
 
     /**
@@ -161,7 +161,24 @@ class Term_Exporter extends Exporter {
      *
      * @return string
      */
-    public function get_terms_recursively( $taxonomy, $parent = 0){
-        return "";
+    public function get_terms_recursively( $term_repo, $taxonomy, $parent = 0, $level = 0 ){
+        $terms = $term_repo->fetch([ 'parent' => $parent ], $taxonomy->get_id());
+
+        if( $terms && sizeof($terms) > 0 ){
+            $level++;
+
+            foreach ( $terms as $term ) {
+                $line = [ $term->get_name(), $term->get_description() ];
+
+               for ($i =0; $i < $level; $i++){
+                   array_unshift($line, "" );
+               }
+
+                $line_string = $this->str_putcsv($line, $this->get_option('delimiter'), $this->get_option('enclosure'));
+                $this->append_to_file('csvvocabularyexporter.csv', $line_string."\n");
+
+                $this->get_terms_recursively($term_repo, $taxonomy, $term->get_id(), $level);
+            }
+        }
     }
 }
