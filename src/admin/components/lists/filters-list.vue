@@ -217,7 +217,7 @@
                                 <div 
                                         :style="{ 'min-height': getProperPreviewMinHeight() + 'px'}"
                                         class="filter-type-preview">
-                                    <span class="filter-type-label">{{ $i18n.get('label_preview') }}</span>
+                                    <span class="filter-type-label">{{ $i18n.get('label_filter_type_preview') }}</span>
                                     <div 
                                             v-if="currentFilterTypePreview != undefined && currentFilterTypePreview.template != ''"
                                             class="field">
@@ -551,7 +551,7 @@ export default {
                     filterType.component == 'tainacan-filter-checkbox' || 
                     filterType.component == 'tainacan-filter-taxonomy-taginput' || 
                     filterType.component == 'tainacan-filter-taxonomy-checkbox') {
-                    return 290;
+                    return 330;
                 }
             }
             return 190;
@@ -991,9 +991,9 @@ export default {
             }
 
             .filter-type-preview {
-                background: $gray1;
+                background: $turquoise1;
                 margin: 12px;
-                padding: 12px 16px;
+                padding: 12px 30px;
                 border-radius: 3px;
                 z-index: 9999999999999;
                 width: 218px;
@@ -1003,6 +1003,7 @@ export default {
                 pointer-events: none;
                 cursor: none;
                 flex-wrap: wrap;
+                max-width: 280px;
                 width: 100%;
                 height: 100%;
                 min-height: 290px;
@@ -1010,14 +1011,26 @@ export default {
 
                 .filter-type-label {
                     font-weight: 600;
-                    color: $gray4;
+                    color: $turquoise4;
                     width: 100%;
                     font-size: 1rem;
+                    margin-left: -16px;
                 }
 
-                input, select, textarea {
+                input, select, textarea, 
+                .input, .tags, .tag  {
                     pointer-events: none;
                     cursor: none;
+                    background-color: rgba(255,255,255,0.70) !important;
+                }
+                .autocomplete>.control, .autocomplete>.control>input, .dropdown-content {
+                    background-color: #f7fcfd !important;
+                }
+                .taginput {
+                    margin-bottom: 80px;
+                }
+                input[type="checkbox"]:checked + .check {
+                    background: rgba(255,255,255,0.70) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3Cpath style='fill:rgb(69,70,71)' d='M 0.04038059,0.6267767 0.14644661,0.52071068 0.42928932,0.80355339 0.3232233,0.90961941 z M 0.21715729,0.80355339 0.85355339,0.16715729 0.95961941,0.2732233 0.3232233,0.90961941 z'%3E%3C/path%3E%3C/svg%3E") no-repeat center center !important
                 }
                 textarea {
                     min-height: 70px;
@@ -1026,12 +1039,9 @@ export default {
                     width: 100%;
                     margin: 16px;
                     .label { 
-                        color: black;
+                        color: $gray5;
                         font-weight: normal;
                     }
-                }
-                .tags {
-                    background: white;
                 }
                 .add-new-term {
                     font-size: 0.75rem;

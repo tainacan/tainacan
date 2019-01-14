@@ -175,7 +175,7 @@
                                             aria-hidden="true"
                                             v-if="metadatum.preview_template"
                                             class="metadata-type-preview tainacan-form">
-                                        <span class="metadata-type-label">{{ $i18n.get('label_preview') }}</span>
+                                        <span class="metadata-type-label">{{ $i18n.get('label_metadatum_type_preview') }}</span>
                                         <div class="field">
                                             <span class="collapse-handle">
                                                 <span class="icon">
@@ -1141,24 +1141,24 @@ export default {
                     .metadata-type-preview {
                         visibility: visible;
                         opacity: 1;
-                        left: -250px;
+                        left: -270px;
                         transition-delay: 1s;
                     }
                 }
 
                 .metadata-type-preview {
                     position: absolute;
-                    background: $gray1;
-                    padding: 12px 16px;
+                    background: $turquoise1;
+                    padding: 12px 30px;
                     border-radius: 3px;
                     z-index: 9999999999999;
-                    width: 218px;
+                    width: 240px;
                     min-height: 120px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    left: -220px;
-                    top: -42px;
+                    left: -248px;
+                    top: -39px;
                     visibility: hidden;
                     opacity: 0;
                     transition: opacity ease 0.3s, visibility ease 0.3s, left ease 0.3s;
@@ -1169,24 +1169,33 @@ export default {
 
                     .metadata-type-label {
                         font-weight: 600;
-                        color: $gray4;
+                        color: $turquoise4;
                         width: 100%;
                         font-size: 1rem;
-                        margin-bottom: 6px;
+                        margin-bottom: 10px;
+                        margin-left: -18px;
                     }
 
-                    input, select, textarea {
+                    input, select, textarea, 
+                    .input, .tags, .tag  {
                         pointer-events: none;
                         cursor: none;
+                        background-color: rgba(255,255,255,0.70) !important;
+                    }
+                    .autocomplete>.control, .autocomplete>.control>input, .dropdown-content {
+                        background-color: #f7fcfd !important;
+                    }
+                    input[type="checkbox"]:checked + .check  {
+                        background: rgba(255,255,255,0.70) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3Cpath style='fill:rgb(69,70,71)' d='M 0.04038059,0.6267767 0.14644661,0.52071068 0.42928932,0.80355339 0.3232233,0.90961941 z M 0.21715729,0.80355339 0.85355339,0.16715729 0.95961941,0.2732233 0.3232233,0.90961941 z'%3E%3C/path%3E%3C/svg%3E") no-repeat center center !important
                     }
                     textarea {
                         min-height: 70px;
                     }
                     .field {
                         width: 100%;
-                    }
-                    .tags {
-                        background: white;
+                        .label { 
+                            color: $gray4;
+                        }
                     }
                     .add-new-term {
                         font-size: 0.75rem;
@@ -1202,7 +1211,7 @@ export default {
                         height: 0;
                         border-style: solid;
                         top: 48px;
-                        border-color: transparent transparent transparent $gray1;
+                        border-color: transparent transparent transparent $turquoise1;
                         border-left-width: 10px;
                         border-top-width: 10px;
                         border-bottom-width: 10px;
