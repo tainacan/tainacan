@@ -40,8 +40,8 @@ class Term_Exporter extends Exporter {
     public function get_output() {
         $files = $this->get_output_files();
 
-        if ( is_array($files) && isset($files['termcsvexporter.csv'])) {
-            $file = $files['termcsvexporter.csv'];
+        if ( is_array($files) && isset($files['csvvocabularyexporter.csv'])) {
+            $file = $files['csvvocabularyexporter.csv'];
 
             $message = __('Your CSV file is ready! Access it in the link below:', 'tainacan');
             $message .= '<br/><br/>';
@@ -156,8 +156,10 @@ class Term_Exporter extends Exporter {
     }
 
     /**
-     * @param $taxonomy the taxonomy to fetch the terms
+     * @param $term_repo Repositories\Terms the terms repository
+     * @param $taxonomy Entities\Taxonomy the taxonomy to fetch the terms
      * @param $parent int the id of term father
+     * @param $level int the level to create the csv line
      *
      * @return string
      */
@@ -174,7 +176,7 @@ class Term_Exporter extends Exporter {
                    array_unshift($line, "" );
                }
 
-                $line_string = $this->str_putcsv($line, $this->get_option('delimiter'), $this->get_option('enclosure'));
+                $line_string = $this->str_putcsv($line, $this->get_option('delimiter'));
                 $this->append_to_file('csvvocabularyexporter.csv', $line_string."\n");
 
                 $this->get_terms_recursively($term_repo, $taxonomy, $term->get_id(), $level);
