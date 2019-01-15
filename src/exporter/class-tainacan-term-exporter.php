@@ -25,8 +25,6 @@ class Term_Exporter extends Exporter {
 
     public function __construct($attributes = array()){
         parent::__construct($attributes);
-        $this->set_accepted_mapping_methods('any'); // set all method to mapping
-        $this->accept_no_mapping = true;
 
         $this->set_default_options([
             'delimiter' => ',',
@@ -65,6 +63,14 @@ class Term_Exporter extends Exporter {
         $data = fread($fp, $fstats['size']);
         fclose($fp);
         return rtrim($data, "\n");
+    }
+
+    public function output_header() {
+        return false;
+    }
+
+    public function output_footer() {
+        return false;
     }
 
     public function options_form() {
@@ -165,7 +171,7 @@ class Term_Exporter extends Exporter {
      */
     public function get_terms_recursively( $term_repo, $taxonomy, $parent = 0, $level = 0 ){
         $terms = $term_repo->fetch([ 'parent' => $parent ], $taxonomy->get_id());
-
+        $this->add_log(sizeof($terms));
         if( $terms && sizeof($terms) > 0 ){
             $level++;
 
