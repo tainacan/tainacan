@@ -160,7 +160,7 @@ require_once(__DIR__ . '/../gutenberg-blocks/class-tainacan-gutenberg-block.php'
 $Tainacan_Gutenberg_Block = \Tainacan\GutenbergBlock::get_instance();
 
 $Tainacan_Search_Engine = new \Tainacan\Search_Engine();
-$Tainacan_Elastic_press = new \Tainacan\Elastic_Press();
+$Tainacan_Elastic_press = \Tainacan\Elastic_Press::get_instance();
 
 require_once(__DIR__ . '/class-tainacan-background-process-heartbeat.php');
 $Tainacan_Importer_Heartbeat = new \Tainacan\Background_Importer_Heartbeat();

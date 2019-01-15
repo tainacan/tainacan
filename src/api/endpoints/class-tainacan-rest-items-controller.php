@@ -273,13 +273,18 @@ class REST_Items_Controller extends REST_Controller {
 			}
 		}
 		
+		$response = [];
+
 		$query_start = microtime(true);
 		
 		$items = $this->items_repository->fetch($args, $collection_id, 'WP_Query');
 		
+		$items_aggregations = \Tainacan\Elastic_Press::get_instance()->last_aggregations; //if elasticPress active
+		$response['facets'] = $items_aggregations;
+		$response['items'] = [];
+		
 		$query_end = microtime(true);
 		
-		$response = [];
 
 		$return_template = false;
 
@@ -334,7 +339,7 @@ class REST_Items_Controller extends REST_Controller {
 	
 					$prepared_item = $this->prepare_item_for_response($item, $request);
 	
-					array_push($response, $prepared_item);
+					array_push($response['items'], $prepared_item);
 				}
 	
 				wp_reset_postdata();

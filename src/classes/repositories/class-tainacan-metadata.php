@@ -911,6 +911,11 @@ class Metadata extends Repository {
 		);
 		$args = wp_parse_args($args, $defaults);
 		
+		$filter = apply_filters('tainacan-fetch-all-metadatum-values', null, $metadatum_id, $args);
+		if ($filer !== null) {
+			return $filter;
+		}
+
 		global $wpdb;
 
 		$itemsRepo = Items::get_instance();
@@ -938,6 +943,7 @@ class Metadata extends Repository {
 			unset($args['items_filter']['offset']);
 			unset($args['items_filter']['perpage']);
 			$args['items_filter']['nopaging'] = 1;
+			$args['items_filter']['ep_integrate'] = false;
 			
 			// When filtering the items, we should consider only other metadata, and ignore current metadatum 
 			// This is because the relation between values from the same metadatum when filtering item is OR, 
