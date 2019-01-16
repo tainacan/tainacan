@@ -12,6 +12,7 @@ namespace Tainacan;
 
 class Elastic_Press {
 	public $last_aggregations;
+	public $facets;
 	
 	private static $instance = null;
 	public static function get_instance() {
@@ -36,6 +37,10 @@ class Elastic_Press {
 		add_action('ep_retrieve_aggregations', function ( array $aggregations, $scope, $args ) {
 			$this->last_aggregations = $aggregations;
 		}, 10, 3);
+
+		add_action('ep_add_query_log', function($query) {
+			//error_log($query["args"]["body"]);
+		});
 		
 	}
 	
@@ -95,11 +100,7 @@ class Elastic_Press {
 		}
 		
 		if ( is_array($args['post_type']) ) {
-			$args['aggs'] = array (
-				'use-filter' => true,
-				'name'       => 'aggs',
-				'aggs'       => array( )
-		 );
+			$this->facets = [];
 			foreach ( $args['post_type'] as $cpt ) {
 				$col = $Tainacan_Collections->fetch_by_db_identifier($cpt);
 				$_filters = $Tainacan_Filters->fetch_by_collection($col, ['posts_per_page' => -1], 'OBJECT');
@@ -108,89 +109,58 @@ class Elastic_Press {
 						$metadatum_options = $filter->get_metadatum()->get_metadata_type_options();
 						$taxonomy_id = $metadatum_options['taxonomy_id'];
 						$taxonomy_slug = Repositories\Taxonomies::get_instance()->get_db_identifier_by_id($taxonomy_id);
-						$args['aggs']['aggs'][$taxonomy_slug] = array(
-																				"terms" => array( 
-																					"size" => 10000, 
-																					"field" => "terms.$taxonomy_slug.slug")
-																			);
+						$id = $taxonomy_slug;
+						$key = "terms.$taxonomy_slug.term_id";
+						$field = "terms.$taxonomy_slug.slug";
 					} else {
 						$metadatum_id = $filter->get_metadatum()->get_ID();
-						$args['aggs']['aggs'][$metadatum_id] = array(
-							"terms" => array( 
-								"size" => 10000, 
-								"field" => "meta.$metadatum_id.raw")
-						);
+						$id = $metadatum_id;
+						$key = "meta.$metadatum_id.raw";
+						$field = "meta.$metadatum_id.raw";
 					}
+					$this->facets[$id] = ["key" => $key, "field" => $field];
 				}
 			}
 		}
-		
+
+		add_filter('ep_formatted_args', array($this, "add_aggs"));
 		return $args;
-
-		// $metadatum_options = $metadatum->get_metadata_type_options();
-		// $taxonomy_id = $metadatum_options['taxonomy_id'];
-		// $taxonomy_slug = Repositories\Taxonomies::get_instance()->get_db_identifier_by_id($taxonomy_id);
-		//'Tainacan\Metadata_Types\Compound'
-
-		//'Tainacan\Metadata_Types\Taxonomy'
-
-		//error_log(\json_encode($filters));
-		//error_log(\json_encode($args['aggs']));
-
-		// $args['aggs'] = array (
-		//  	'name'       => 'facets',
-		//  	'use-filter' => true, 
-		//  	'aggs'       => array( 
-		// 			"tnc_tax_5" => array(
-		// 				"terms" => array(
-		// 					"size" => 10000,
-		// 					"field" => "terms.tnc_tax_5.slug"
-		// 				)
-		// 			),
-		// 			"teste_meta" => array(
-		// 				"terms" => array (
-		// 					"size" => 10000,
-		// 					"field" => "meta.11.raw"
-		// 				)
-		// 			)
-		//  	)
-		// );
-	
-
-		// {"name":"terms",
-		//  "use-filter":true,
-		//  "aggs": { 
-		// 	 "category": { 
-		// 			"terms": {
-		// 				"size":10000,
-		// 				"field":"terms.category.slug"
-		// 			}
-		// 		},
-		// 		"post_tag":{
-		// 			"terms":{
-		// 				"size":10000,
-		// 				"field":"terms.post_tag.slug"
-		// 			}
-		// 		},
-		// 		"post_format":{
-		// 			"terms":{
-		// 				"size":10000,
-		// 				"field":"terms.post_format.slug"
-		// 			}
-		// 		},
-		// 		"tnc_tax_5":{
-		// 			"terms":{
-		// 				"size":10000,
-		// 				"field":"terms.tnc_tax_5.slug"
-		// 			}
-		// 		}
-		// 	}
-		// }
-		
-
-		
 	}
 
-
-
+	public function add_aggs($formatted_args) {
+		$default_filters = $formatted_args['post_filter'];
+		$aggs = [];
+		
+		foreach($this->facets as $id => $filter) {
+			
+			$custom_filter = $default_filters;
+			$temp = [];
+			foreach ($custom_filter['bool']['must'] as $item) {
+				if ( isset($item['bool'])) {
+					foreach ($item['bool']["must"] as $item_filter) {
+						if ( !isset( $item_filter["terms"][$filter['key']] ) ) {
+						 	$temp[] = $item;
+						}
+					}
+				} elseif ( isset($item['term'])) {
+					$temp[] = $item;
+				}
+			}
+			$custom_filter['bool']['must'] = $temp;
+			
+			$aggs[$filter['key']] = [
+					"filter" => $custom_filter,
+					"aggs"	=> array(
+						$id => array(
+							"terms"=>array(
+								"size"=>10000, // size of elements returns
+								"field"=>$filter['field']
+							)
+						)
+					)
+				];
+		}
+		$formatted_args['aggs'] = $aggs;
+		return $formatted_args;
+	}
 } // END
