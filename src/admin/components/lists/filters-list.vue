@@ -56,7 +56,9 @@
                             v-for="(filter, index) in activeFilterList" 
                             :key="index">
                         <div class="handle">
-                            <span class="icon grip-icon">
+                            <span 
+                                    v-if="!(isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || isRepositoryLevel)"
+                                    class="icon grip-icon">
                                 <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
                             </span>
                             <span class="icon icon-level-identifier">

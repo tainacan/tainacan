@@ -60,7 +60,9 @@
                                     v-for="(metadatum, index) in activeMetadatumList"
                                     :key="index">
                                 <div class="handle">
-                                    <span class="icon grip-icon">
+                                    <span 
+                                            v-if="!(isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder)"
+                                            class="icon grip-icon">
                                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
                                     </span>
                                     <span class="icon icon-level-identifier">
