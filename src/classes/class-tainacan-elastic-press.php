@@ -38,10 +38,9 @@ class Elastic_Press {
 			$this->last_aggregations = $aggregations;
 		}, 10, 3);
 
-		add_action('ep_add_query_log', function($query) {
+		//add_action('ep_add_query_log', function($query) { //using to DEBUG
 			//error_log($query["args"]["body"]);
-		});
-		
+		//});
 	}
 	
 	function filter_args($args, $type) {
@@ -118,7 +117,7 @@ class Elastic_Press {
 						$key = "meta.$metadatum_id.raw";
 						$field = "meta.$metadatum_id.raw";
 					}
-					$this->facets[$id] = ["key" => $key, "field" => $field];
+					$this->facets[$id] = ["key" => $key, "field" => $field, "max_options" => $filter->get_max_options()];
 				}
 			}
 		}
@@ -153,8 +152,8 @@ class Elastic_Press {
 					"aggs"	=> array(
 						$id => array(
 							"terms"=>array(
-								"size"=>10000, // size of elements returns
-								"field"=>$filter['field']
+								"size" => $filter['max_options'],
+								"field"=> $filter['field']
 							)
 						)
 					)
