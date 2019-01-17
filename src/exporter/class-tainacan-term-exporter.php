@@ -155,10 +155,12 @@ class Term_Exporter extends Exporter {
             return false;
         }
 
-        $tax = new Entities\Taxonomy($this->get_option('select_taxonomy'));
+        $id = str_replace('tnc_tax_', '', $this->get_option('select_taxonomy'));
+        $tax = new Entities\Taxonomy($id);
         $term_repo = Repositories\Terms::get_instance();
 
         $this->get_terms_recursively( $term_repo, $tax );
+        return true;
     }
 
     /**
@@ -170,8 +172,10 @@ class Term_Exporter extends Exporter {
      * @return string
      */
     public function get_terms_recursively( $term_repo, $taxonomy, $parent = 0, $level = 0 ){
-        $terms = $term_repo->fetch([ 'parent' => $parent ], $taxonomy->get_id());
+        $terms = $term_repo->fetch([ 'parent' => $parent ], [$taxonomy->get_id()]);
         $this->add_log(sizeof($terms));
+        $message = 'BG_PROCESS: ' . $taxonomy->get_name();
+        error_log($message);
         if( $terms && sizeof($terms) > 0 ){
             $level++;
 
@@ -185,7 +189,7 @@ class Term_Exporter extends Exporter {
                 $line_string = $this->str_putcsv($line, $this->get_option('delimiter'));
                 $this->append_to_file('csvvocabularyexporter.csv', $line_string."\n");
 
-                $this->get_terms_recursively($term_repo, $taxonomy, $term->get_id(), $level);
+                //$this->get_terms_recursively($term_repo, $taxonomy, $term->get_id(), $level);
             }
         }
     }
