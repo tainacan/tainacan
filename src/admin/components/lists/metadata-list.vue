@@ -173,27 +173,21 @@
                                         :class="{ 'hightlighted-metadatum' : hightlightedMetadatum == metadatum.name, 'inherited-metadatum': isRepositoryLevel }"
                                         v-for="(metadatum, index) in availableMetadatumList"
                                         :key="index">
-                                    <div 
-                                            aria-hidden="true"
-                                            v-if="metadatum.preview_template"
-                                            class="metadata-type-preview tainacan-form">
-                                        <span class="metadata-type-label">{{ $i18n.get('label_metadatum_type_preview') }}</span>
-                                        <div class="field">
-                                            <span class="collapse-handle">
-                                                <span class="icon">
-                                                    <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
-                                                </span> 
-                                                <label class="label has-tooltip">
-                                                    {{ metadatum.name }}
-                                                </label>
-                                            </span>
-                                            <div v-html="metadatum.preview_template"/>
-                                        </div>
-                                    </div>
                                     <span class="icon grip-icon">
                                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
                                     </span>
-                                    <span class="metadatum-name">{{ metadatum.name }}</span>
+                                    <span class="metadatum-name">
+                                        {{ metadatum.name }}
+                                        <span 
+                                                v-tooltip.top="{
+                                                    classes: ['metadata-type-preview-tooltip'],
+                                                    content: getPreviewTemplateContent(metadatum),
+                                                    html: true
+                                                }"
+                                                class="icon preview-help-icon has-text-secondary">
+                                            <i class="tainacan-icon tainacan-icon-help"/>
+                                        </span>
+                                    </span>
                                     <span 
                                             class="loading-spinner" 
                                             v-if="hightlightedMetadatum == metadatum.name"/>
@@ -203,7 +197,8 @@
                     </div> 
                 </div>
             </b-tab-item>
-            <!-- Exposer -->
+
+            <!-- Exposer --------------- -->
             <b-tab-item
                     :label="$i18n.get('mapping')"
                     v-model="activeMetadatumList">
@@ -796,6 +791,22 @@ export default {
                 .catch(() => {
                     this.isLoadingMetadata = false;
                 });
+        },
+        getPreviewTemplateContent(metadatum) {
+            return `<div class="metadata-type-preview tainacan-form">
+                        <span class="metadata-type-label">` + this.$i18n.get('label_metadatum_type_preview') + `</span>
+                        <div class="field">
+                            <span class="collapse-handle">
+                                <span class="icon">
+                                    <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"></i>
+                                </span> 
+                                <label class="label has-tooltip">`
+                                    + metadatum.name +
+                                `</label>
+                            </span>
+                            <div>` + metadatum.preview_template + `</div>
+                        </div>
+                    </div>`;
         }
     },
     mounted() {
@@ -867,7 +878,7 @@ export default {
         }
                   
         .b-tabs .tab-content {
-            overflow-y: visible;
+            overflow: visible;
             min-height: 500px;
         }
                   
@@ -1100,6 +1111,10 @@ export default {
                     position: relative;
                     bottom: 1px;
                 }
+                .preview-help-icon {
+                    position: absolute;
+                    top: 6px;
+                }
                 .metadatum-name {
                     text-overflow: ellipsis;
                     overflow-x: hidden;
@@ -1135,87 +1150,6 @@ export default {
                     border-top-width: 20px;
                     border-bottom-width: 20px;
                     left: -20px;
-                }
-                &:hover {
-                    .metadata-type-preview {
-                        visibility: visible;
-                        opacity: 1;
-                        left: -270px;
-                        transition-delay: 1s;
-                    }
-                }
-
-                .metadata-type-preview {
-                    position: absolute;
-                    background: $turquoise1;
-                    padding: 12px 30px;
-                    border-radius: 3px;
-                    z-index: 9999999999999;
-                    width: 240px;
-                    min-height: 120px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    left: -248px;
-                    top: -39px;
-                    visibility: hidden;
-                    opacity: 0;
-                    transition: opacity ease 0.3s, visibility ease 0.3s, left ease 0.3s;
-                    transition-delay: 0.1s;
-                    pointer-events: none;
-                    cursor: none;
-                    flex-wrap: wrap;
-
-                    .metadata-type-label {
-                        font-weight: 600;
-                        color: $turquoise4;
-                        width: 100%;
-                        font-size: 1rem;
-                        margin-bottom: 10px;
-                        margin-left: -18px;
-                    }
-
-                    input, select, textarea, 
-                    .input, .tags, .tag  {
-                        pointer-events: none;
-                        cursor: none;
-                        background-color: rgba(255,255,255,0.70) !important;
-                    }
-                    .autocomplete>.control, .autocomplete>.control>input, .dropdown-content {
-                        background-color: #f7fcfd !important;
-                    }
-                    input[type="checkbox"]:checked + .check  {
-                        background: rgba(255,255,255,0.70) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3Cpath style='fill:rgb(69,70,71)' d='M 0.04038059,0.6267767 0.14644661,0.52071068 0.42928932,0.80355339 0.3232233,0.90961941 z M 0.21715729,0.80355339 0.85355339,0.16715729 0.95961941,0.2732233 0.3232233,0.90961941 z'%3E%3C/path%3E%3C/svg%3E") no-repeat center center !important
-                    }
-                    textarea {
-                        min-height: 70px;
-                    }
-                    .field {
-                        width: 100%;
-                        .label { 
-                            color: $gray4;
-                        }
-                    }
-                    .add-new-term {
-                        font-size: 0.75rem;
-                        text-decoration: underline;
-                        margin: 0.875rem 1.5rem;
-                    }
-
-                    &::before {
-                        content: '';
-                        display: block;
-                        position: absolute;
-                        width: 0;
-                        height: 0;
-                        border-style: solid;
-                        top: 48px;
-                        border-color: transparent transparent transparent $turquoise1;
-                        border-left-width: 10px;
-                        border-top-width: 10px;
-                        border-bottom-width: 10px;
-                        right: -13px;
-                    }
                 }
             }
 
