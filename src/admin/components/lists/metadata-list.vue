@@ -1001,9 +1001,6 @@ export default {
                     .metadatum-name {
                         color: $secondary;
                     }
-                    .handle .label-details, .handle .icon {
-                        color: $gray3 !important;
-                    }
                 }
                 &.disabled-metadatum {
                     color: $gray3;

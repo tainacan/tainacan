@@ -1,5 +1,8 @@
 // These tooltips are customized versions of V-Tooltip 
 // Tooltips:
+.b-tooltip::after {
+    box-shadow: none;
+}
 .tooltip {
     z-index: 999999999;
     display: block !important;

@@ -185,6 +185,7 @@
             </div>
         </div>
         <b-modal 
+                ref="filterTypeModal"
                 :width="680"
                 :active.sync="isSelectingFilterType">
             <div 
@@ -605,6 +606,11 @@ export default {
         this.fetchCollectionName(this.collectionId).then((collectionName) => {
             this.collectionName = collectionName;
         });
+
+        // Sets modal callback function
+        this.$refs.filterTypeModal.onCancel = () => {
+            this.onCancelFilterTypeSelection();
+        }
         
     }
 }
@@ -762,9 +768,6 @@ export default {
                 
                     .metadatum-name {
                         color: $secondary;
-                    }
-                    .handle .label-details, .handle .icon {
-                        color: $gray3 !important;
                     }
                 }
                 &.disabled-metadatum {
@@ -993,8 +996,8 @@ export default {
             }
 
             .filter-type-preview {
-                background: $turquoise1;
-                margin: 12px;
+                background: $gray1;
+                margin: 12px auto;
                 padding: 12px 30px;
                 border-radius: 3px;
                 z-index: 9999999999999;
@@ -1005,15 +1008,19 @@ export default {
                 pointer-events: none;
                 cursor: none;
                 flex-wrap: wrap;
-                max-width: 280px;
+                max-width: 260px;
                 width: 100%;
                 height: 100%;
                 min-height: 290px;
                 align-items: normal;
 
+                @media screen and (max-width: 769px) {
+                    max-width: 100%;
+                }
+
                 .filter-type-label {
                     font-weight: 600;
-                    color: $turquoise4;
+                    color: $gray4;
                     width: 100%;
                     font-size: 1rem;
                     margin-left: -16px;
@@ -1023,16 +1030,16 @@ export default {
                 .input, .tags, .tag  {
                     pointer-events: none;
                     cursor: none;
-                    background-color: rgba(255,255,255,0.70) !important;
+                    background-color: rgba(255,255,255,0.60) !important;
                 }
                 .autocomplete>.control, .autocomplete>.control>input, .dropdown-content {
-                    background-color: #f7fcfd !important;
+                    background-color: $gray0 !important;
                 }
                 .taginput {
                     margin-bottom: 80px;
                 }
                 input[type="checkbox"]:checked + .check {
-                    background: rgba(255,255,255,0.70) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3Cpath style='fill:rgb(69,70,71)' d='M 0.04038059,0.6267767 0.14644661,0.52071068 0.42928932,0.80355339 0.3232233,0.90961941 z M 0.21715729,0.80355339 0.85355339,0.16715729 0.95961941,0.2732233 0.3232233,0.90961941 z'%3E%3C/path%3E%3C/svg%3E") no-repeat center center !important
+                    background: rgba(255,255,255,0.60) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3Cpath style='fill:rgb(69,70,71)' d='M 0.04038059,0.6267767 0.14644661,0.52071068 0.42928932,0.80355339 0.3232233,0.90961941 z M 0.21715729,0.80355339 0.85355339,0.16715729 0.95961941,0.2732233 0.3232233,0.90961941 z'%3E%3C/path%3E%3C/svg%3E") no-repeat center center !important
                 }
                 textarea {
                     min-height: 70px;

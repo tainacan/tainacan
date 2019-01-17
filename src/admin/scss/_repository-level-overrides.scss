@@ -108,13 +108,4 @@
             border-color: transparent transparent transparent $blue1 !important;
         }
     }
-    .filter-type-preview {
-        background: $blue1 !important;
-        .filter-type-label {
-            color: $blue4 !important;
-        }
-        .autocomplete>.control, .autocomplete>.control>input, .dropdown-content {
-            background-color: #f7fbff !important;
-        }
-    }
 }
