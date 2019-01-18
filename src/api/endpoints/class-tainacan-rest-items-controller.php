@@ -279,6 +279,7 @@ class REST_Items_Controller extends REST_Controller {
 		
 		$items = $this->items_repository->fetch($args, $collection_id, 'WP_Query');
 		
+		//mas e se não estiver usando o plugin? vai voltar "null"
 		$items_aggregations = \Tainacan\Elastic_Press::get_instance()->last_aggregations; //if elasticPress active
 		$response['facets'] = $items_aggregations;
 		$response['items'] = [];

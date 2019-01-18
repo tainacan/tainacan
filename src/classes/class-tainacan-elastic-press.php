@@ -38,9 +38,10 @@ class Elastic_Press {
 			$this->last_aggregations = $aggregations;
 		}, 10, 3);
 
-		//add_action('ep_add_query_log', function($query) { //using to DEBUG
-			//error_log($query["args"]["body"]);
-		//});
+		// add_action('ep_add_query_log', function($query) { //using to DEBUG
+		// 	error_log("DEGUG:");
+		// 	error_log($query["args"]["body"]);
+		// });
 	}
 	
 	function filter_args($args, $type) {
@@ -137,7 +138,7 @@ class Elastic_Press {
 			foreach ($custom_filter['bool']['must'] as $item) {
 				if ( isset($item['bool'])) {
 					foreach ($item['bool']["must"] as $item_filter) {
-						if ( !isset( $item_filter["terms"][$filter['key']] ) ) {
+						if ( !isset( $item_filter["terms"][$filter['key']] ) ) { //do use array_filter ?
 						 	$temp[] = $item;
 						}
 					}
