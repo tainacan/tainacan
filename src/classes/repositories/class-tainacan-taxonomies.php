@@ -65,6 +65,15 @@ class Taxonomies extends Repository {
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 				'default'     => 'yes'
 			],
+			'enabled_post_types'    => [
+				'map'         => 'meta_multi',
+				'title'       => __( 'Enabled for post types', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'Also enable this taxonomy for other WordPress post types', 'tainacan' ),
+				'on_error'    => __( 'Error enabling this taxonomy for post types', 'tainacan' ),
+				'validation'  => '',
+				'default'	  => []
+			],
 			'collections_ids' => [
 				'map'         => 'meta_multi',
 				'title'       => __( 'Collections', 'tainacan' ),

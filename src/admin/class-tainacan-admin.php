@@ -213,6 +213,20 @@ class Admin {
 		
 		$settings['form_hooks'] = Admin_Hooks::get_instance()->get_registered_hooks();
 		
+		$wp_post_types = get_post_types(['show_ui' => true], 'objects');
+		if (isset($wp_post_types['attachment'])) {
+			unset($wp_post_types['attachment']);
+		}
+		
+		$wp_post_types = array_map(function($i) {
+			return [
+				'slug' => $i->name,
+				'label' => $i->label
+			];
+		}, $wp_post_types);
+		
+		$settings['wp_post_types'] = $wp_post_types;
+		
 		return $settings;
 		
 	}

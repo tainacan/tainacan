@@ -112,6 +112,29 @@
                                         :message="$i18n.getHelperMessage('taxonomies', 'allow_insert')"/>
                                 </label>
                         </b-field>
+                        
+                        <!-- Activate for other post types -->
+                        <b-field
+                                :addons="false"
+                                :label="$i18n.getHelperTitle('taxonomies', 'post_types_enabled')"
+                                :type="editFormErrors['post_types_enabled'] != undefined ? 'is-danger' : ''"
+                                :message="editFormErrors['post_types_enabled'] != undefined ? editFormErrors['post_types_enabled'] : ''">
+
+                                <b-checkbox
+                                    v-for="wpPostType in wpPostTypes"
+                                    :key="wpPostType.slug"
+                                    native-value="wpPostType.slug"
+                                    true-value="wpPostType.slug"
+                                    false-value=""
+                                    v-model="form.enabledPostTypes"
+                                    name="enabled_post_types" >
+                                    {{ wpPostType.label }}  
+                                </b-checkbox>
+                                <help-button 
+                                    :title="$i18n.getHelperTitle('taxonomies', 'post_types_enabled')" 
+                                    :message="$i18n.getHelperMessage('taxonomies', 'post_types_enabled')"/>
+
+                        </b-field>
 
                         <!-- Hook for extra Form options -->
                         <template 
@@ -180,7 +203,8 @@
                     status: String,
                     description: String,
                     slug: String,
-                    allowInsert: String
+                    allowInsert: String,
+                    enabledPostTypes: Array
                 },
                 statusOptions: [{
                     value: 'publish',
@@ -195,6 +219,7 @@
                     value: 'trash',
                     label: this.$i18n.get('trash')
                 }],
+                wpPostTypes: tainacan_plugin.wp_post_types,
                 editFormErrors: {},
                 formErrorMessage: '',
                 entityName: 'taxonomy'
@@ -215,6 +240,8 @@
             if (this.taxonomy.allow_insert != this.form.allowInsert)
                 formNotSaved = true;
             if (this.taxonomy.status != this.form.status)
+                formNotSaved = true;
+            if (this.taxonomy.enabled_post_types != this.form.enabledPostTypes)
                 formNotSaved = true;
 
             if (formNotSaved) {
@@ -275,7 +302,8 @@
                     description: this.form.description,
                     slug: this.form.slug ? this.form.slug : '',
                     status: this.form.status,
-                    allow_insert: this.form.allowInsert
+                    allow_insert: this.form.allowInsert,
+                    enabled_post_types: this.form.enabledPostTypes
                 };
                 this.fillExtraFormData(data);
                 this.updateTaxonomy(data)
@@ -292,6 +320,7 @@
                         this.form.description = this.taxonomy.description;
                         this.form.status = this.taxonomy.status;
                         this.form.allowInsert = this.taxonomy.allow_insert;
+                        this.form.enabledPostTypes = this.taxonomy.enabled_post_types;
 
                         this.isLoadingTaxonomy = false;
                         this.formErrorMessage = '';
@@ -408,6 +437,7 @@
                     this.form.slug = this.taxonomy.slug;
                     this.form.status = this.taxonomy.status;
                     this.form.allowInsert = this.taxonomy.allow_insert;
+                    this.form.enabledPostTypes = this.taxonomy.enabled_post_types;
 
                     this.isLoadingTaxonomy = false;
                 });
@@ -416,5 +446,4 @@
     }
 </script>
 <style>
-
 
