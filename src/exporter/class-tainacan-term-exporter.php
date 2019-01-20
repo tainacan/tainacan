@@ -173,15 +173,12 @@ class Term_Exporter extends Exporter {
      */
     public function get_terms_recursively( $term_repo, $taxonomy, $parent = 0, $level = 0 ){
         $terms = $term_repo->fetch([ 'parent' => $parent, 'hide_empty' => false ], $taxonomy->get_id());
-        $this->add_log(sizeof($terms));
-        $message = 'BG_PROCESS: ' . sizeof($terms);
-        error_log($message);
         if( $terms && sizeof($terms) > 0 ){
-            $level++;
             $line = [];
 
             foreach ( $terms as $term ) {
                 $line[] = $term->get_name();
+                $line[] = $term->get_description();
 
                for ($i =0; $i < $level; $i++){
                    array_unshift($line, "" );
@@ -190,7 +187,8 @@ class Term_Exporter extends Exporter {
                 $line_string = $this->str_putcsv($line);
                 $this->append_to_file('csvvocabularyexporter.csv', $line_string."\n");
 
-                $this->get_terms_recursively($term_repo, $taxonomy, $term->get_id(), $level);
+                $this->get_terms_recursively($term_repo, $taxonomy, $term->get_id(), $level + 1);
+                $line = array();
             }
         }
     }
