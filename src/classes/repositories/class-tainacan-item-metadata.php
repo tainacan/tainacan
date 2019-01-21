@@ -40,7 +40,9 @@ class Item_Metadata extends Repository {
 		$is_update = true;
 		
 		$new = $item_metadata->get_value();
-		
+
+		$diffs = [];
+
 		if ($this->use_logs) {
 			$old = get_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), true );
 			if($old != $new) {
@@ -108,7 +110,7 @@ class Item_Metadata extends Repository {
 				$this->logs_repository->insert_log( $item_metadata, $diffs, $is_update );
 			}
 
-			do_action( 'tainacan-insert', $item_metadata, $this->use_logs ? $diffs : null, $is_update );
+			do_action( 'tainacan-insert', $item_metadata, $diffs, $is_update );
 			do_action( 'tainacan-insert-Item_Metadata_Entity', $item_metadata );
 		}
 
