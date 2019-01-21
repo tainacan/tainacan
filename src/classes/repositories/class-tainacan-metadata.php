@@ -552,7 +552,7 @@ class Metadata extends Repository {
 	public function delete( $metadatum_id ) {
 		$deleted = new Entities\Metadatum( wp_delete_post( $metadatum_id, true ) );
 
-		if ( $deleted ) {
+		if ( $deleted && $this->use_logs) {
 			$this->logs_repository->insert_log( $deleted, [], false, true );
 
 			do_action( 'tainacan-deleted', $deleted );
@@ -572,7 +572,7 @@ class Metadata extends Repository {
 
 		$trashed = new Entities\Metadatum( wp_trash_post( $metadatum_id ) );
 
-		if ( $trashed ) {
+		if ( $trashed && $this->use_logs) {
 			$this->logs_repository->insert_log( $trashed, [], false, false, true );
 
 			do_action( 'tainacan-trashed', $trashed );

@@ -195,7 +195,7 @@ class Filters extends Repository {
 	public function delete( $filter_id ) {
 		$deleted = new Entities\Filter( wp_delete_post( $filter_id, true ) );
 
-		if ( $deleted ) {
+		if ( $deleted && $this->use_logs) {
 			$this->logs_repository->insert_log( $deleted, [], false, true );
 
 			do_action( 'tainacan-deleted', $deleted );
@@ -212,7 +212,7 @@ class Filters extends Repository {
 	public function trash( $filter_id ) {
 		$trashed = new Entities\Filter( wp_trash_post( $filter_id ) );
 
-		if ( $trashed ) {
+		if ( $trashed && $this->use_logs) {
 			$this->logs_repository->insert_log( $trashed, [], false, false, true );
 
 			do_action( 'tainacan-trashed', $trashed );
