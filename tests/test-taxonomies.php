@@ -252,4 +252,28 @@ class Taxonomies extends TAINACAN_UnitTestCase {
 		
 		
 	}
+    
+    /**
+    * @group enabled 
+    */
+    function test_enabled_post_types(){
+        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+        $Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
+
+	    $taxonomy = $this->tainacan_entity_factory->create_entity(
+		    'taxonomy',
+		    array(
+			    'name' => 'genero',
+                'enabled_post_types' => ['post']
+		    ),
+		    true
+	    );
+
+        $taxonomy = $Tainacan_Taxonomies->insert($taxonomy);
+        
+	    $pto = get_object_taxonomies('post');
+	    $pages = get_object_taxonomies('page');
+        $this->assertContains($taxonomy->get_db_identifier(), $pto);
+        $this->assertNotContains($taxonomy->get_db_identifier(), $pages);
+    }
 }

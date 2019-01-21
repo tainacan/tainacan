@@ -71,8 +71,8 @@ class Taxonomy extends Entity {
         $args = array(
             'hierarchical'      => true,
             'labels'            => $labels,
-            'show_ui'           => tnc_enable_dev_wp_interface(),
-            'show_admin_column' => tnc_enable_dev_wp_interface(),
+            'show_ui'           => true,
+            'show_admin_column' => false,
             'rewrite'           => [
                 'slug' => $this->get_slug()
             ],
@@ -82,9 +82,12 @@ class Taxonomy extends Entity {
             unregister_taxonomy($this->get_db_identifier());
         }
         
+        $enabled_post_types = $this->get_enabled_post_types();
+        $enabled_post_types = sizeof($enabled_post_types) ? $enabled_post_types : null;
+        
         register_taxonomy( 
             $this->get_db_identifier(), 
-            null, 
+            $enabled_post_types, 
             $args 
         );
         
@@ -127,6 +130,15 @@ class Taxonomy extends Entity {
 	 */
 	function get_slug() {
         return $this->get_mapped_property('slug');
+    }
+    
+    /**
+	 * Return the enabled post types
+	 *
+	 * @return array
+	 */
+	function get_enabled_post_types() {
+        return $this->get_mapped_property('enabled_post_types');
     }
     
     // special Getters
@@ -178,6 +190,15 @@ class Taxonomy extends Entity {
 	function set_allow_insert($value) {
         $this->set_mapped_property('allow_insert', $value);
     }
+    
+    /**
+	 * Sets enabled post types
+	 *
+	 * @param array $value array of post types slugs
+	 */
+	function set_enabled_post_types($value) {
+		$this->set_mapped_property('enabled_post_types', $value);
+	}
 
 	/**
 	 * Validate Taxonomy
