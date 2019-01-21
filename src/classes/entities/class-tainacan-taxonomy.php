@@ -71,8 +71,8 @@ class Taxonomy extends Entity {
         $args = array(
             'hierarchical'      => true,
             'labels'            => $labels,
-            'show_ui'           => tnc_enable_dev_wp_interface(),
-            'show_admin_column' => tnc_enable_dev_wp_interface(),
+            'show_ui'           => true,
+            'show_admin_column' => false,
             'rewrite'           => [
                 'slug' => $this->get_slug()
             ],
