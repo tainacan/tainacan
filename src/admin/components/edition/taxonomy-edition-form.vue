@@ -116,12 +116,12 @@
                         <!-- Activate for other post types -->
                         <b-field
                                 :addons="false"
-                                :label="$i18n.getHelperTitle('taxonomies', 'post_types_enabled')"
-                                :type="editFormErrors['post_types_enabled'] != undefined ? 'is-danger' : ''"
-                                :message="editFormErrors['post_types_enabled'] != undefined ? editFormErrors['post_types_enabled'] : ''">
+                                :label="$i18n.getHelperTitle('taxonomies', 'enabled_post_types')"
+                                :type="editFormErrors['enabled_post_types'] != undefined ? 'is-danger' : ''"
+                                :message="editFormErrors['enabled_post_types'] != undefined ? editFormErrors['enabled_post_types'] : ''">
                             <help-button 
-                                :title="$i18n.getHelperTitle('taxonomies', 'post_types_enabled')" 
-                                :message="$i18n.getHelperMessage('taxonomies', 'post_types_enabled')"/>
+                                :title="$i18n.getHelperTitle('taxonomies', 'enabled_post_types')" 
+                                :message="$i18n.getHelperMessage('taxonomies', 'enabled_post_types')"/>
 
                             <div 
                                     v-for="wpPostType in wpPostTypes"
