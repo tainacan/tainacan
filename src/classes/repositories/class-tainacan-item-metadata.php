@@ -201,8 +201,10 @@ class Item_Metadata extends Repository {
 						'diff_with_index' => []
 					];
 
-					$this->logs_repository->insert_log( $item_metadata, $diffs, true );
-					//do_action( 'tainacan-insert', $item_metadata, $diffs, true );
+					if($this->use_logs){
+						$this->logs_repository->insert_log( $item_metadata, $diffs, true );
+						//do_action( 'tainacan-insert', $item_metadata, $diffs, true );
+					}
 				}
 			}
 		}

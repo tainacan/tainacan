@@ -251,7 +251,9 @@ class Taxonomies extends Repository {
 			return $deleted;
 		}
 
-		$this->logs_repository->insert_log( $deleted, [], false, true );
+		if($this->use_logs){
+			$this->logs_repository->insert_log( $deleted, [], false, true );
+		}
 
 		do_action( 'tainacan-deleted', $deleted );
 
@@ -270,7 +272,9 @@ class Taxonomies extends Repository {
 			return $trashed;
 		}
 
-		$this->logs_repository->insert_log( $trashed, [], false, false, true );
+		if($this->use_logs){
+			$this->logs_repository->insert_log( $trashed, [], false, false, true );
+		}
 
 		do_action( 'tainacan-trashed', $trashed );
 
