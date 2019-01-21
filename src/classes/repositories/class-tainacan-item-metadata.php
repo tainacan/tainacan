@@ -108,7 +108,7 @@ class Item_Metadata extends Repository {
 				$this->logs_repository->insert_log( $item_metadata, $diffs, $is_update );
 			}
 
-			do_action( 'tainacan-insert', $item_metadata, $diffs, $is_update );
+			do_action( 'tainacan-insert', $item_metadata, $this->use_logs ? $diffs : null, $is_update );
 			do_action( 'tainacan-insert-Item_Metadata_Entity', $item_metadata );
 		}
 
