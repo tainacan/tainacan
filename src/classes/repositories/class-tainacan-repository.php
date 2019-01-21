@@ -20,7 +20,7 @@ abstract class Repository {
 	 *
 	 * @var bool
 	 */
-	private $use_logs = true;
+	protected $use_logs = true;
 
 	/**
 	 * Instance of Repository Logs
