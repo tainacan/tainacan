@@ -158,7 +158,7 @@
                 this.taxonomyMessage = message;
             },
             fetchTaxonomies(){
-                return axios.get('/taxonomies?nopaging=1')
+                return axios.get('/taxonomies?nopaging=1&order=asc&orderby=title')
                     .then(res => {
                         let taxonomies = res.data;
                         this.loading = false;
