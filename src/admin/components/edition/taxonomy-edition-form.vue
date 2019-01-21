@@ -119,21 +119,23 @@
                                 :label="$i18n.getHelperTitle('taxonomies', 'post_types_enabled')"
                                 :type="editFormErrors['post_types_enabled'] != undefined ? 'is-danger' : ''"
                                 :message="editFormErrors['post_types_enabled'] != undefined ? editFormErrors['post_types_enabled'] : ''">
+                            <help-button 
+                                :title="$i18n.getHelperTitle('taxonomies', 'post_types_enabled')" 
+                                :message="$i18n.getHelperMessage('taxonomies', 'post_types_enabled')"/>
 
-                                <b-checkbox
+                            <div 
                                     v-for="wpPostType in wpPostTypes"
                                     :key="wpPostType.slug"
-                                    native-value="wpPostType.slug"
-                                    true-value="wpPostType.slug"
+                                    class="field">
+                                <b-checkbox
+                                    :native-value="wpPostType.slug"
+                                    :true-value="wpPostType.slug"
                                     false-value=""
                                     v-model="form.enabledPostTypes"
                                     name="enabled_post_types" >
                                     {{ wpPostType.label }}  
                                 </b-checkbox>
-                                <help-button 
-                                    :title="$i18n.getHelperTitle('taxonomies', 'post_types_enabled')" 
-                                    :message="$i18n.getHelperMessage('taxonomies', 'post_types_enabled')"/>
-
+                            </div>    
                         </b-field>
 
                         <!-- Hook for extra Form options -->
