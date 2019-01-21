@@ -967,6 +967,49 @@ class Metadata extends Repository {
 		//// end filtering query ////////
 		////////////////////////////////////////////
 		////////////////////////////////////////////
+
+		// TODO refactor, put elsewhere:
+		// if (class_exists('EP_API')) {
+		// 	$args['items_filter']['ep_integrate'] = true;
+		// 	$items = $itemsRepo->fetch($args['items_filter'], $args['collection_id'], 'WP_Query');
+		// 	$items_aggregations = \Tainacan\Elastic_Press::get_instance()->last_aggregations; //if elasticPress active
+		// 	//error_log(\json_encode($items_aggregations));
+		// 	if( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ) {
+		// 		//eita...
+		// 	} elseif ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ) {
+		// 		if ( isset( $items_aggregations["terms.$taxonomy_slug.term_id"] ) ) {
+		// 			$buckets = $items_aggregations["terms.$taxonomy_slug.term_id"][$taxonomy_slug]['buckets'];
+		// 			foreach ($buckets as $bucket) {
+		// 				$values[] = [
+		// 					'value' => $r->term_taxonomy_id,
+		// 					'label' => $label,
+		// 					//'total_children' => $total_children,
+		// 					'taxonomy' => $taxonomy_slug,
+		// 					'taxonomy_id' => $taxonomy_id,
+		// 					//'parent' => $r->parent,
+		// 					'total_items' => ['doc_count'],
+		// 					'type' => 'Taxonomy'
+		// 				];
+		// 			}
+		// 			return [
+		// 				'total' => $total,
+		// 				'pages' => $pages,
+		// 				'values' => $values
+		// 			];
+		// 		}
+		// 	} else {
+		// 		if ( isset( $items_aggregations["meta.$metadatum_id.raw"] ) ) {
+		// 			$values = $items_aggregations["meta.$metadatum_id.raw"][$metadatum_id]["buckets"];
+		// 			return [
+		// 				'total' => $total,
+		// 				'pages' => $pages,
+		// 				'values' => $values
+		// 			];
+		// 		}
+		// 	}
+		// 	//return $items_aggregations;
+		// }
+		//////////////////////////////////////////////////////
 		
 		$pagination = '';
 		if ( $args['offset'] >= 0 && $args['number'] >= 1 ) {

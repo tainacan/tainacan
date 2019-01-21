@@ -33,6 +33,7 @@ class Elastic_Press {
 			return; // ElasticPress not active
 		}
 		add_filter('tainacan_fetch_args', [$this, 'filter_args'], 10, 2);
+		//add_filter('tainacan-api-get-items-alternate', [$this, 'filter_get_metadatum_values'], 10, 2);
 		
 		add_action('ep_retrieve_aggregations', function ( array $aggregations, $scope, $args ) {
 			$this->last_aggregations = $aggregations;
@@ -162,5 +163,10 @@ class Elastic_Press {
 		}
 		$formatted_args['aggs'] = $aggs;
 		return $formatted_args;
+	}
+
+	function filter_get_metadatum_values($metadatum_id, $args) {
+		error_log("FILTER-----");
+		return $metadatum_id;
 	}
 } // END
