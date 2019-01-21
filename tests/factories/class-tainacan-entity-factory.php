@@ -37,6 +37,8 @@ class Entity_Factory {
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
         
 		try {
+			$type = trim($type);
+
 			if(empty($type)){
 				throw new \InvalidArgumentException('The type can\'t be empty');
 			} elseif(!strrchr($type, '_')){
@@ -68,7 +70,7 @@ class Entity_Factory {
 
 			if (!empty($args) && $is_validated_and_in_db) {
 				foreach ($args as $attribute => $content) {
-					$set_ = 'set_' . $attribute;
+					$set_ = 'set_' . trim($attribute);
 					$this->entity->$set_( $content );
 				}
 
@@ -80,7 +82,7 @@ class Entity_Factory {
 
 			} elseif (!empty($args) && !$is_validated_and_in_db){
 				foreach ($args as $attribute => $content) {
-					$set_ = 'set_' . $attribute;
+					$set_ = 'set_' . trim($attribute);
 					$this->entity->$set_( $content );
 				}
 

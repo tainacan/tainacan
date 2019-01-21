@@ -264,13 +264,11 @@ class Taxonomies extends TAINACAN_UnitTestCase {
 		    'taxonomy',
 		    array(
 			    'name' => 'genero',
-                //'enabled_post_types ' => ['post']
+                'enabled_post_types' => ['post']
 		    ),
 		    true
 	    );
-        
-        $taxonomy->set('enabled_post_types', ['post']);
-        
+
         $taxonomy = $Tainacan_Taxonomies->insert($taxonomy);
         
 	    $pto = get_object_taxonomies('post');
