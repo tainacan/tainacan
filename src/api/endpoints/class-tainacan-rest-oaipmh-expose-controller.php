@@ -2,8 +2,7 @@
 
 namespace Tainacan\API\EndPoints;
 
-use Tainacan\Exposers_Handler;
-use Tainacan\Mappers_Handler;
+use Tainacan\OAIPMHExpose;
 use \Tainacan\API\REST_Controller;
 
 class REST_Oaipmh_Expose_Controller extends REST_Controller {
@@ -21,7 +20,7 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
      * Initialize objects after post_type register
      */
     public function init_objects() {
-
+        $this->controller_oai = new \Tainacan\OAIPMHExpose\OAIPMH_Expose();
     }
 
     public function register_routes() {
@@ -50,6 +49,15 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
      * @throws \Exception
      */
     public function get_verb( $request ){
+        $verb = ( isset($request['verb']) ) ? $request['verb'] : false;
 
+        switch ($verb){
+
+            default:
+                $this->controller_oai->config();
+                $this->controller_oai->errors[] = $this->controller_oai->oai_error('badArgument', $verb);
+                $this->controller_oai->oai_exit( [], $this->controller_oai->errors);
+                break;
+        }
     }
 }

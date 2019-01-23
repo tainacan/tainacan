@@ -7,7 +7,7 @@ namespace Tainacan\OAIPMHExpose;
  * http://purl.org/dc/elements/1.1/
  *
  */
-class OAIPMHExpose {
+class OAIPMH_Expose {
     var $identifyResponse = array();
     var $deletedRecord = '';
     var $adminEmail = '';
@@ -26,7 +26,7 @@ class OAIPMHExpose {
     var $code;
     /**
      * @signature - config
-     * @return Seta os valores iniciais da variaveis da classe
+     * @return begin the class
      * @author: Eduardo
      */
     public function config() {
@@ -37,11 +37,14 @@ class OAIPMHExpose {
         $this->identifyResponse["earliestDatestamp"] = '2006-06-01';
         $this->identifyResponse["deletedRecord"] = 'no';
         $this->identifyResponse["granularity"] = 'YYYY-MM-DDThh:mm:ssZ';
+
         //$this->deletedRecord = $identifyResponse["deletedRecord"]; // a shorthand for checking the configuration of Deleted Records
         if (strcmp($this->identifyResponse["granularity"], 'YYYY-MM-DDThh:mm:ssZ') == 0) {
             $this->identifyResponse["earliestDatestamp"] = $this->identifyResponse["earliestDatestamp"] . 'T00:00:00Z';
         }
+
         $this->adminEmail = get_bloginfo( 'admin_email');
+
         /** Compression methods supported. Optional (multiple). Default: null.
          *
          * Currently only gzip is supported (you need output buffering turned on,
@@ -50,19 +53,23 @@ class OAIPMHExpose {
          */
         $this->compression = null;
         $url = array_reverse(explode('/', str_replace('http://', '', get_bloginfo( 'url'))));
+
         if(is_array($url)&& count($url)>1){
             $this->repositoryIdentifier = implode('.', $url);
         }else{
             $this->repositoryIdentifier = $url[0];
         }
+
         define('REG_OBJ_GROUP', 'Something agreed on');
         $this->show_identifier = false;
+
         /** Maximum mumber of the records to deliver
          * (verb is ListRecords)
          * If there are more records to deliver
          * a ResumptionToken will be generated.
          */
         $this->MAXRECORDS = 100;
+
         /** Maximum mumber of identifiers to deliver
          * (verb is ListIdentifiers)
          * If there are more identifiers to deliver
@@ -73,15 +80,18 @@ class OAIPMHExpose {
         define('TOKEN_VALID', 24 * 3600);
         define('MY_URI',  get_bloginfo( 'url' ));
         $this->expirationdatetime = gmstrftime('%Y-%m-%dT%TZ', time() + TOKEN_VALID);
+
         /** Where token is saved and path is included */
-        if(!is_dir(dirname(__FILE__).'/../../data/tokens/')){
-            mkdir(dirname(__FILE__).'/../../data/socialdb_tokens/');
-        }
-        define('TOKEN_PREFIX', dirname(__FILE__).'/../../data/tokens/');
+        //if(!is_dir(dirname(__FILE__).'/../../data/tokens/')){
+          //  mkdir(dirname(__FILE__).'/../../data/socialdb_tokens/');
+        //}
+        //define('TOKEN_PREFIX', dirname(__FILE__).'/../../data/tokens/');
+
         $this->SETS = array(
             array('setSpec' => 'class:activity', 'setName' => 'Activities'),
             array('setSpec' => 'class:collection', 'setName' => 'Collections'),
             array('setSpec' => 'class:party', 'setName' => 'Parties'));
+
         $this->METADATAFORMATS = array(
             'oai_dc' => array('metadataPrefix' => 'oai_dc',
                 'schema' => 'http://www.openarchives.org/OAI/2.0/oai_dc.xsd',
