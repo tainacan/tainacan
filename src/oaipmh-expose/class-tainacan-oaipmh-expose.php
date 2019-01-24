@@ -82,10 +82,10 @@ class OAIPMH_Expose {
         $this->expirationdatetime = gmstrftime('%Y-%m-%dT%TZ', time() + TOKEN_VALID);
 
         /** Where token is saved and path is included */
-        //if(!is_dir(dirname(__FILE__).'/../../data/tokens/')){
-          //  mkdir(dirname(__FILE__).'/../../data/socialdb_tokens/');
-        //}
-        //define('TOKEN_PREFIX', dirname(__FILE__).'/../../data/tokens/');
+        $token_path = $this->create_token_dir();
+        if($token_path){
+            define('TOKEN_PREFIX', $token_path);
+        }
 
         $this->SETS = array(
             array('setSpec' => 'class:activity', 'setName' => 'Activities'),
@@ -213,6 +213,7 @@ class OAIPMH_Expose {
             }
         }
     }
+
     /** Validates an identifier. The pattern is: '/^[-a-z\.0-9]+$/i' which means
      * it accepts -, letters and numbers.
      * Used only by function <B>oai_error</B> code idDoesNotExist.
@@ -221,6 +222,7 @@ class OAIPMH_Expose {
     function is_valid_uri($url) {
         return((bool) preg_match('/^[-a-z\.0-9]+$/i', $url));
     }
+
     /** Validates attributes come with the query.
      * It accepts letters, numbers, ':', '_', '.' and -.
      * Here there are few more match patterns than is_valid_uri(): ':_'.
@@ -229,12 +231,14 @@ class OAIPMH_Expose {
     function is_valid_attrb($attrb) {
         return preg_match("/^[_a-zA-Z0-9\-\:\.]+$/", $attrb);
     }
+
     /** All datestamps used in this system are GMT even
      * return value from database has no TZ information
      */
     function formatDatestamp($datestamp) {
         return date("Y-m-d\TH:i:s\Z", strtotime($datestamp));
     }
+
     /** The database uses datastamp without time-zone information.
      * It needs to clean all time-zone informaion from time string and reformat it
      */
@@ -264,18 +268,37 @@ class OAIPMH_Expose {
     /** Finish a request when there is an error: send back errors. */
     function oai_exit($args,$errors) {
         header($this->CONTENT_TYPE);
-        $e = new ANDS_Error_XML($args, $errors);
+        $e = new XML_Error($args, $errors);
         $e->display();
         exit();
     }
 
+    /**
+     * LOG
+     */
+    protected function create_token_dir() {
+        $upload_dir = wp_upload_dir();
+        $upload_dir = trailingslashit( $upload_dir['basedir'] );
+        $logs_folder = $upload_dir . 'tainacan/tokens';
+
+        if (!is_dir($logs_folder)) {
+            if (!mkdir($logs_folder)) {
+                return false;
+            }
+        }
+
+        return $logs_folder;
+    }
 
     /** Generate a string based on the current Unix timestamp in microseconds for creating resumToken file name. */
     function get_token() {
         list($usec, $sec) = explode(" ", microtime());
         return ((int) ($usec * 1000) + (int) ($sec * 1000));
     }
-    /** Create a token file.
+
+    /**
+     *
+     * Create a token file.
      * It has three parts which is separated by '#': cursor, extension of query, metadataPrefix.
      * Called by listrecords.php.
      */
@@ -293,6 +316,7 @@ class OAIPMH_Expose {
         fclose($fp);
         return $token;
     }
+
     /** Read a saved ResumToken */
     function readResumToken($resumptionToken) {
         $rtVal = false;

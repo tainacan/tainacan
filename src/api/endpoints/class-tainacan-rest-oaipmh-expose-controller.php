@@ -55,8 +55,8 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
 
             default:
                 $this->controller_oai->config();
-                $this->controller_oai->errors[] = $this->controller_oai->oai_error('badArgument', $verb);
-                $this->controller_oai->oai_exit( [], $this->controller_oai->errors);
+                $this->controller_oai->errors[] = $this->controller_oai->oai_error('noVerb');
+                $this->controller_oai->oai_exit( $request, $this->controller_oai->errors);
                 break;
         }
     }
