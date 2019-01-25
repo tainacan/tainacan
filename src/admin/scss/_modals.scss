@@ -13,6 +13,7 @@
     h1, h2 {
         font-size: 1.25rem;
         font-weight: normal;
+        font-weight: 500;
         color: $gray5;
         display: inline-block;
         width: 90%;
@@ -38,7 +39,8 @@
     position: relative;
     max-height: 100vh;
     overflow-y: auto;
-
+    overflow-x: hidden;
+    
     figure {
         margin: 0;
         text-align: center;

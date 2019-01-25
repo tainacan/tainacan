@@ -36,14 +36,21 @@
                 <div class="tainacan-modal-content">
                     <div class="tainacan-modal-title">
                         <h2 v-if="file.title != undefined">{{ file.title.rendered }}</h2>
-                        <a 
-                                @click="isPreviewModalActive = false"
-                                class="back-link">{{ $i18n.get('exit') }}</a>
-                        <hr>
                     </div>
                     <div    
                             class="is-flex rendered-content"
                             v-html="file.description.rendered" />
+
+                    <div class="field is-grouped form-submit">
+                        <div class="control">
+                            <button
+                                    id="button-cancel-importer-edition"
+                                    class="button is-outlined"
+                                    type="button"
+                                    @click="isPreviewModalActive = false">
+                                {{ $i18n.get('exit') }}</button>
+                        </div>
+                    </div>
                 </div>
             </b-modal>
         </template>
@@ -69,7 +76,7 @@ export default {
         getIconForMimeType(mimeType) {
 
             let type = mimeType.split('/');
-
+            
             if (type[0] == 'application' && type[1] != undefined){
                 switch (type[1]) {
                     case 'pdf':

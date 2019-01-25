@@ -23,6 +23,16 @@
                         <p>{{ exporterType.description }}</p>
                     </div>
                 </div>
+                <footer class="field is-grouped form-submit">
+                    <div class="control">
+                        <button
+                                id="button-cancel-exporter-selection"
+                                class="button is-outlined"
+                                type="button"
+                                @click="$parent.close();">
+                            {{ $i18n.get('cancel') }}</button>
+                    </div>
+                </footer>
 
                 <b-loading
                         :active.sync="isLoading"

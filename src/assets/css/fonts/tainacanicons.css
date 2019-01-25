@@ -90,6 +90,9 @@
 .tainacan-icon-audio:before {
     content: "audio";
 }
+.tainacan-icon-video:before {
+    content: "video";
+}
 .tainacan-icon-close:before {
     content: "close";
 }

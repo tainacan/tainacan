@@ -20,11 +20,21 @@
                         <h4>{{ collection.name }}</h4>
                         <p>{{ collection.length > 200 ? (collection.description.substring(0,197) + '...') : collection.description }}</p>            
                     </div>
-                </div>
-                
-                <b-loading 
+
+                     <b-loading 
+                        :is-full-page="false"
                         :active.sync="isLoading" 
                         :can-cancel="false"/>
+                </div>
+                
+                 <footer class="field is-grouped form-submit">
+                    <div class="control">
+                        <button 
+                                class="button is-outlined" 
+                                type="button" 
+                                @click="$parent.close()">Close</button>
+                    </div>
+                </footer>
             </section>
         </div>
     </form>     
@@ -73,6 +83,7 @@ export default {
     @import "../../scss/_variables.scss";
 
     .collection-types-container {
+        position: relative;
 
         .collection-type {
             border-bottom: 1px solid $gray2;
