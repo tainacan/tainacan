@@ -21,6 +21,7 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
      */
     public function init_objects() {
         $this->controller_oai = new \Tainacan\OAIPMHExpose\OAIPMH_Expose();
+        $this->list_sets = new \Tainacan\OAIPMHExpose\OAIPMH_List_Sets();
     }
 
     public function register_routes() {
@@ -52,6 +53,18 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
         $verb = ( isset($request['verb']) ) ? $request['verb'] : false;
 
         switch ($verb){
+
+            case 'ListSets':
+                $allowed_arguments = array('verb','resumptionToken');
+                foreach ($request as $key => $value) {
+                    if(!in_array($key, $allowed_arguments)){
+                        $this->list_sets->config();
+                        $this->list_sets->errors[] =  $this->list_sets->oai_error('badArgument');
+                        $this->list_sets->oai_exit($request, $this->list_sets->errors);
+                    }
+                }
+                $this->list_sets->list_sets($request);
+                break;
 
             default:
                 $this->controller_oai->config();

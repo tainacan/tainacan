@@ -149,6 +149,7 @@ class OAIPMH_Expose {
             return;
         echo $msg, "\n";
     }
+
     /** Check if provided correct arguments for a request.
      *
      * Only number of parameters is checked.
@@ -159,12 +160,12 @@ class OAIPMH_Expose {
      * is needed.
      */
     function checkArgs($args, $checkList) {
-//	global $errors, $TOKEN_VALID, $METADATAFORMATS;
+
         global $errors, $METADATAFORMATS;
-//	$verb = $args['verb'];
         unset($args["verb"]);
         debug_print_r('checkList', $checkList);
         debug_print_r('args', $args);
+
         // "verb" has been checked before, no further check is needed
         if (isset($checkList['required'])) {
             for ($i = 0; $i < count($checkList["required"]); $i++) {
@@ -187,8 +188,10 @@ class OAIPMH_Expose {
                 }
             }
         }
+
         debug_message('Before return');
         debug_print_r('errors', $errors);
+
         if (!empty($errors))
             return;
         // check to see if there is unwanted
