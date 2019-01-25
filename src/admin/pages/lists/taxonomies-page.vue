@@ -7,7 +7,7 @@
                     class="sub-header" 
                     v-if="$userCaps.hasCapability('edit_tainacan-taxonomies')">
 
-                <!-- New Taxonomiy Button ----  -->
+                <!-- New Taxonomy Button ----  -->
                 <div class="header-item">
                     <router-link
                             id="button-create-taxonomy" 

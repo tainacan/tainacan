@@ -626,7 +626,7 @@
 
                 <h3 
                         id="items-list-landmark"
-                        class="is-hidden">
+                        class="sr-only">
                     {{ $i18n.get('label_items_list') }}
                 </h3>
 
