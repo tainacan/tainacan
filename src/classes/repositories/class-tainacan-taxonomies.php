@@ -359,6 +359,18 @@ class Taxonomies extends Repository {
 		return $prefix . $id;
 	}
 	
+	public function get_id_by_db_identifier( $db_identifier ) {
+		$prefix = \Tainacan\Entities\Taxonomy::$db_identifier_prefix;
+		//$sufix  = \Tainacan\Entities\Taxonomy::$db_identifier_sufix;
+		$id     = str_replace( $prefix, '', $db_identifier );
+		//$id     = str_replace( $sufix, '', $id );
+		if ( is_numeric( $id ) ) {
+			return (int) $id;
+		}
+
+		return false;
+	}
+	
 	/**
 	* Check if a term already exists 
 	*

@@ -208,9 +208,22 @@ class Theme_Helper {
 		$term = get_queried_object();
 		
 		if ($term instanceof \WP_Term && $this->is_term_a_tainacan_term($term)) {
-			// TODO: Why post_type = any does not work? 
-			// ANSWER because post types are registered with exclude_from_search. Should we change it?
-			$wp_query->set( 'post_type', \Tainacan\Repositories\Repository::get_collections_db_identifiers() );
+			
+			$tax_id = \Tainacan\Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($term->taxonomy);
+			$tax = \Tainacan\Repositories\Taxonomies::get_instance()->fetch($tax_id);
+			
+			if ( $tax ) {
+				$post_types = $tax->get_enabled_post_types();
+
+				// TODO: Why post_type = any does not work? 
+				// ANSWER because post types are registered with exclude_from_search. Should we change it?
+				// TODO adding all post types to the list is something we need to discuss 
+				$post_types = array_merge($post_types, \Tainacan\Repositories\Repository::get_collections_db_identifiers());
+				$wp_query->set( 'post_type',  $post_types);
+				
+			}
+			
+			
 		}
 		
 	}
@@ -285,6 +298,18 @@ class Theme_Helper {
 			$term = get_queried_object();
 			
 			if ( isset($term->taxonomy) && $this->is_taxonomy_a_tainacan_tax($term->taxonomy)) {
+				$tax_id = \Tainacan\Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($term->taxonomy);
+				$tax = \Tainacan\Repositories\Taxonomies::get_instance()->fetch($tax_id);
+				
+				if ( $tax ) {
+					$post_types = $tax->get_enabled_post_types();
+					if (sizeof($post_types)) {
+						// if taxonomy is enabled for other post types, we disable 
+						// custom template ans use default list
+						// TODO: This needs discussion
+						return $templates;
+					}
+				}
 				
 				$last_template = array_pop($templates);
 				
