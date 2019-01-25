@@ -67,11 +67,16 @@ class Taxonomy extends Entity {
             'new_item_name'     => __( 'New Genre term', 'tainacan' ),
             'menu_name'         => $this->get_name(),
         );
+		
+		$enabled_post_types = $this->get_enabled_post_types();
+        $enabled_post_types = sizeof($enabled_post_types) ? $enabled_post_types : null;
+		$show_ui = is_array($enabled_post_types) ? true : false;
 
         $args = array(
             'hierarchical'      => true,
             'labels'            => $labels,
-            'show_ui'           => true,
+            'show_ui'           => $show_ui,
+            'show_in_rest'      => $show_ui,
             'show_admin_column' => false,
             'rewrite'           => [
                 'slug' => $this->get_slug()
@@ -82,8 +87,7 @@ class Taxonomy extends Entity {
             unregister_taxonomy($this->get_db_identifier());
         }
         
-        $enabled_post_types = $this->get_enabled_post_types();
-        $enabled_post_types = sizeof($enabled_post_types) ? $enabled_post_types : null;
+        
         
         register_taxonomy( 
             $this->get_db_identifier(), 
