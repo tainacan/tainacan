@@ -22,6 +22,7 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
     public function init_objects() {
         $this->controller_oai = new \Tainacan\OAIPMHExpose\OAIPMH_Expose();
         $this->list_sets = new \Tainacan\OAIPMHExpose\OAIPMH_List_Sets();
+        $this->list_metadata_formats = new \Tainacan\OAIPMHExpose\OAIPMH_List_Metadata_Formats();
     }
 
     public function register_routes() {
@@ -66,11 +67,17 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
                 $this->list_sets->list_sets($request);
                 break;
 
+            case 'ListMetadataFormats':
+                $this->list_metadata_formats->list_metadata_formats($request);
+                break;
+
             default:
                 $this->controller_oai->config();
                 $this->controller_oai->errors[] = $this->controller_oai->oai_error('noVerb');
                 $this->controller_oai->oai_exit( $request, $this->controller_oai->errors);
                 break;
         }
+
+        die;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Tainacan\OAIPMHExpose;
 
+use Tainacan;
+
 /**
  * Support Dublin Core Mapping
  * http://purl.org/dc/elements/1.1/
@@ -442,13 +444,21 @@ class OAIPMH_Expose {
     }
 
     /**
-     * function get_metadata_formats($collection_id)
-     * @param int $object_id
+     * function get_metadata_formats
+     * @param int $item_id
      * @return boolean
      * @description metodo responsavel em verificar os tipos de metadados
      * @author: Eduardo Humberto
      */
-    public function get_metadata_formats($object_id) {
+    public function get_metadata_formats( $item_id = null ) {
+        $types = [
+            'oai_dc'
+        ];
 
+        $Tainacan_Exposers = \Tainacan\Mappers_Handler::get_instance();
+        $metadatum_mappers = $Tainacan_Exposers->get_mappers();
+        $types = array_keys($metadatum_mappers);
+
+        return $types;
     }
 }

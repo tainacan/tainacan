@@ -43,7 +43,6 @@ class OAIPMH_List_Sets extends OAIPMH_Expose {
                 $collections->the_post();
 
                 $collection = new Entities\Collection($collections->post);
-
                 array_push($response, $collection);
             }
 
@@ -93,6 +92,7 @@ class OAIPMH_List_Sets extends OAIPMH_Expose {
         $this->xml_creater = new Xml_Response($data);
 
         foreach ($collections as $collection) {
+
             $setNode =  $this->xml_creater->add2_verbNode("set");
             $this->xml_creater->addChild($setNode,'setSpec',$collection->get_id());
             $this->xml_creater->addChild($setNode,'setName',$collection->get_name());
@@ -103,9 +103,9 @@ class OAIPMH_List_Sets extends OAIPMH_Expose {
             $this->working_node->setAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
             $this->working_node->setAttribute('xsi:schemaLocation', 'http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd');
             $this->xml_creater->addChild($this->working_node, 'dc:description',htmlspecialchars($collection->get_description()));
-            // $this->insert_xml($object);
         }
-        //resumptionToken
+
+
         $this->add_resumption_token_xml($numRows);
         header($this->CONTENT_TYPE);
         if (isset($this->xml_creater)) {
@@ -119,8 +119,9 @@ class OAIPMH_List_Sets extends OAIPMH_Expose {
      * @param $data
      */
     public function initiate_variables($data) {
-        $query = '';
+
         if (isset($data['resumptionToken'])) {
+
             if (!file_exists(TOKEN_PREFIX . $data['resumptionToken'])) {
                 $this->errors[] = $this->oai_error('badResumptionToken', '', $data['resumptionToken']);
             } else {
@@ -131,7 +132,7 @@ class OAIPMH_List_Sets extends OAIPMH_Expose {
                     list($this->deliveredrecords, $this->from, $this->until, $this->sets, $this->metadataPrefix) = $readings;
                 }
             }
-            //
+
         } else {
             $this->deliveredrecords = 0;
             $this->sets = '-';
