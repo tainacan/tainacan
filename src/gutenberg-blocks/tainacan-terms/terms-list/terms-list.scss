@@ -1,3 +1,46 @@
 .wp-block-tainacan-terms-list {
+     
+    margin: 1rem 0px;
 
+    ul.terms-list {
+        -moz-column-count: 4;
+        -moz-column-gap: 7rem;
+        -moz-column-rule: none;
+        -webkit-column-ount: 4;
+        -webkit-column-gap: 7rem;
+        -webkit-column-rule: none;
+        column-count: 4;
+        column-gap: 7rem;
+        column-rule: none;
+    }
+
+    @media only screen and (max-width: 768px) { 
+        
+        ul.terms-list {
+            -moz-column-count: 3;
+            -moz-column-gap: 0;
+            -moz-column-rule: none;
+            -webkit-column-count: 3;
+            -webkit-column-gap: 0;
+            -webkit-column-rule: none;
+            column-count: 3;
+            column-gap: 4rem;
+            column-rule: none;
+        }
+    }
+
+    @media only screen and (max-width: 490px) { 
+        
+        ul.terms-list {
+            -moz-column-count: 2;
+            -moz-column-gap: 0;
+            -moz-column-rule: none;
+            -webkit-column-count: 2;
+            -webkit-column-gap: 0;
+            -webkit-column-rule: none;
+            column-count: 2;
+            column-gap: 2rem;
+            column-rule: none;
+        }
+    }
 }
