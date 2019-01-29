@@ -1,14 +1,9 @@
 <?php
 
 namespace Tainacan\OAIPMHExpose;
-use Tainacan\Repositories;
-use Tainacan\Entities;
 
 class OAIPMH_List_Metadata_Formats extends OAIPMH_Expose {
 
-    /** \var $working_node
-     * O noh que esta sendo utilizado atualmente
-     */
     protected $working_node;
     public $errors;
     public $xml_creater;
@@ -23,8 +18,8 @@ class OAIPMH_List_Metadata_Formats extends OAIPMH_Expose {
     public $metadataPrefix;
 
     /**
-     * @signature - list_metadata_formats
-     * @author: Eduardo
+     * @param $data
+     * @throws \Exception
      */
     public function list_metadata_formats( $data ) {
         session_write_close();
