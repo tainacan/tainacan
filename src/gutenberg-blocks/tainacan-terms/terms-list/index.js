@@ -216,7 +216,7 @@ registerBlockType('tainacan/terms-list', {
                         icon={(
                             <img
                                 width={148}
-                                src={`${tainacan_plugin.base_url}/admin/images/tainacan_logo_header.svg`}
+                                src={ `${tainacan_plugin.base_url}/admin/images/tainacan_logo_header.svg` }
                                 alt="Tainacan Logo"/>
                         )}
                     />) : null
@@ -236,7 +236,7 @@ registerBlockType('tainacan/terms-list', {
                     ) }
                 </Autocomplete> */}
 
-                <ul class="terms-list">{ terms }</ul>
+                <ul class="terms-list-edit">{ terms }</ul>
             </div>
         );
     },
