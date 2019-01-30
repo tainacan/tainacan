@@ -53,7 +53,7 @@
             </div>
 
             <!-- Sorting options ----  -->
-            <!-- <b-field class="header-item">
+            <b-field class="header-item">
                 <b-select
                         class="sorting-select"
                         :disabled="collections.length <= 0"
@@ -83,7 +83,7 @@
                         <i class="tainacan-icon tainacan-icon-sortdescending tainacan-icon-20px"/>
                     </span>
                 </button>
-            </b-field> -->
+            </b-field>
         </div>
 
         <div class="above-subheader">
@@ -236,7 +236,7 @@ export default {
             collectionsPerPage: 12,
             isLoadingMetadatumMappers: true,
             status: '',
-            order: 'asc',
+            order: 'desc',
             ordeBy: 'date',
             sortingOptions: [
                 { label: this.$i18n.get('label_title'), value: 'title' },
