@@ -100,7 +100,7 @@ registerBlockType('tainacan/terms-list', {
         function setContent(terms){
             setAttributes({
                 content: (
-                    <ul class="terms-list">{ terms }</ul>
+                    <ul className="terms-list">{ terms }</ul>
                 )
             });
         }
@@ -236,7 +236,7 @@ registerBlockType('tainacan/terms-list', {
                     ) }
                 </Autocomplete> */}
 
-                <ul class="terms-list-edit">{ terms }</ul>
+                <ul className="terms-list-edit">{ terms }</ul>
             </div>
         );
     },
