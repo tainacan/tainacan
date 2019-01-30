@@ -54,7 +54,8 @@ class OAIPMH_Expose {
          * The client MUST send "Accept-Encoding: gzip" to actually receive
          */
         $this->compression = null;
-        $url = array_reverse(explode('/', str_replace('http://', '', get_bloginfo( 'url'))));
+        $url = str_replace('https://', '', get_bloginfo( 'url'));
+        $url = array_reverse(explode('/', str_replace('http://', '', $url)));
 
         if(is_array($url)&& count($url)>1){
             $this->repositoryIdentifier = implode('.', $url);
@@ -88,11 +89,6 @@ class OAIPMH_Expose {
         if($token_path){
             define('TOKEN_PREFIX', $token_path);
         }
-
-        $this->SETS = array(
-            array('setSpec' => 'class:activity', 'setName' => 'Activities'),
-            array('setSpec' => 'class:collection', 'setName' => 'Collections'),
-            array('setSpec' => 'class:party', 'setName' => 'Parties'));
 
         $this->METADATAFORMATS = array(
             'oai_dc' => array('metadataPrefix' => 'oai_dc',
@@ -451,10 +447,6 @@ class OAIPMH_Expose {
      * @author: Eduardo Humberto
      */
     public function get_metadata_formats( $item_id = null ) {
-        $types = [
-            'oai_dc'
-        ];
-
         $Tainacan_Exposers = \Tainacan\Mappers_Handler::get_instance();
         $metadatum_mappers = $Tainacan_Exposers->get_mappers();
         $types = array_keys($metadatum_mappers);

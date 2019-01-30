@@ -81,7 +81,6 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
                     $item->collection = $collection;
                     $items[] = $item;
                 }
-                $items = array_merge($items, $result);
             }
 
         }
@@ -92,9 +91,10 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
     public function limit_items_without_set($items){
         $conter = 0;
         $result = array();
+
         foreach ($items as $item) {
-            if( $conter >= $this->deliveredrecords && ($this->deliveredrecords+$this->MAXRECORDS) > $conter ){
-                $result_objects[] = $item;
+            if( $conter >= $this->deliveredrecords && ( $this->deliveredrecords + $this->MAXRECORDS ) > $conter ){
+                $result[] = $item;
             }
             $conter++;
         }
@@ -134,7 +134,7 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
             $cur_record = $this->xml_creater->create_record();
             $cur_header = $this->xml_creater->create_header($identifier, $datestamp, $setspec,$cur_record);
             $this->working_node = $this->xml_creater->create_metadata($cur_record);
-            //$this->create_metadata_node($object,$collection,$cur_record);
+            $this->create_metadata_node( $item, $collection, $cur_record);
             // $this->insert_xml($object);
         }
 
@@ -166,36 +166,76 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
     }
 
     /**
+     * Gets the current mapper object, if one was chosen by the user, false Otherwise
+     */
+    public function get_current_mapper() {
+        $prefix = ($this->metadataPrefix === 'oai_dc') ? 'dublin-core' : $this->metadataPrefix;
+
+        return \Tainacan\Mappers_Handler::get_instance()->get_mapper($prefix);
+    }
+
+    /**
      * @signature - create_metadata_node
-     * @param  wp_post $object O objeto do tipo post
+     * @param  \Tainacan\Entities\Item $item
      * @param  wp_post $collection O objeto da colecao
      * @return Adciona no  noh <metadata> os valores necessarios
      * @description - Metodo responsavel realizar o povoamento no noh metadata
      * @author: Eduardo
      */
-    protected function create_metadata_node($object,$collection,$record_node = null) {
+    protected function create_metadata_node( $item, $collection,$record_node = null) {
         $this->working_node = $this->xml_creater->addChild($this->working_node, 'oai_dc:dc');
         $this->working_node->setAttribute('xmlns:oai_dc', "http://www.openarchives.org/OAI/2.0/oai_dc/");
         $this->working_node->setAttribute('xmlns:dc', "http://purl.org/dc/elements/1.1/");
         $this->working_node->setAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
         $this->working_node->setAttribute('xsi:schemaLocation', 'http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd');
-        $maps = $this->get_mapping_value($object,$collection);
+        $maps = $this->map_item_metadata($item);
 
         try{
-            if ($maps['metadata']) {
-                foreach ($maps['metadata'] as $map) {
-                    if (isset($map['attribute_value'])) {
-                        $node = $this->xml_creater->addChild($this->working_node, 'dc:' . $map['tag'], $map['value']);
-                        $node->setAttribute($map['attribute_name'], $map['attribute_value']);
-                        //$this->add_value_metadata($map['tag'], $map['value'], $map['attribute_value'], $map['attribute_name']);
-                    } else {
-                        $this->xml_creater->addChild($this->working_node, 'dc:' . $map['tag'], html_entity_decode($map['value']));
-                    }
+            if ($maps) {
+                foreach ($maps as $key => $val) {
+                    $this->xml_creater->addChild($this->working_node, $key, html_entity_decode($val));
                 }
             }
         }catch(Exception $e){
             var_dump($e,$this->working_node,'dc:' . $map['tag']);
         }
+    }
+
+    /**
+     * Gets an Item as input and return an array of ItemMetadataObjects
+     * If a mapper is selected, the array keys will be the slugs of the metadata
+     * declared by the mapper, in the same order.
+     * Note that if one of the metadata is not mapped, this array item will be null
+     */
+    private function map_item_metadata(\Tainacan\Entities\Item $item) {
+        $prefix = ($this->metadataPrefix === 'oai_dc') ? 'dublin-core' : $this->metadataPrefix;
+        $mapper = $this->get_current_mapper();
+        $metadata = $item->get_metadata();
+        if (!$mapper) {
+            return $metadata;
+        }
+        $pre = [];
+        foreach ($metadata as $item_metadata) {
+            $metadatum = $item_metadata->get_metadatum();
+            $meta_mappings = $metadatum->get_exposer_mapping();
+            if ( array_key_exists($prefix, $meta_mappings) ) {
+
+                $pre[ $meta_mappings[$prefix] ] = $item_metadata;
+            }
+        }
+
+        // reorder
+        $return = [];
+        foreach ( $mapper->metadata as $meta_slug => $meta ) {
+            if ( array_key_exists($meta_slug, $pre) ) {
+                $return[$meta_slug] = $pre[$meta_slug];
+            } else {
+                $return[$meta_slug] = null;
+            }
+        }
+
+        return $return;
+
     }
 
     /**
