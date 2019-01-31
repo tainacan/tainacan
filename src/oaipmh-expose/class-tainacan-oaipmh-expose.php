@@ -280,7 +280,7 @@ class OAIPMH_Expose {
     protected function create_token_dir() {
         $upload_dir = wp_upload_dir();
         $upload_dir = trailingslashit( $upload_dir['basedir'] );
-        $logs_folder = $upload_dir . 'tainacan/tokens';
+        $logs_folder = $upload_dir . 'tainacan/tokens/';
 
         if (!is_dir($logs_folder)) {
             if (!mkdir($logs_folder)) {

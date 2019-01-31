@@ -54,52 +54,48 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
     }
 
     /**
+     * main method return the items, filtered or not filtered
+     *
      * @return array
      */
     public function get_items() {
-        $collections = $this->list_collections();
+
         $items = array();
-        $args = [];
+        $args = [
+            'posts_per_page' => $this->MAXRECORDS,
+            'paged' => $this->deliveredrecords == 0 ? 1 : ( $this->deliveredrecords / 100 ) + 1,
+            'order' => 'DESC',
+            'orderby' => 'ID'
+        ];
 
-        foreach ($collections as $collection) {
+        if( !empty($this->sets) ){
+            $collections = $this->list_collections();
+            $collections_list = [];
 
-            if( !empty($this->sets) && !in_array($collection->get_id(), $this->sets)){
-                continue;
-            }
-
-            if( $this->from !== '-' ){
-                $args['date_query']['after'] = strtotime( $this->checkDateFormat($this->from));
-            }
-            if( $this->until !== '-' ){
-                $args['date_query']['before'] = strtotime( $this->checkDateFormat($this->until));
-            }
-
-            $result = $this->item_repository->fetch($args, [$collection], 'OBJECT');
-
-            if($result){
-                foreach ($result as $item) {
-                    $item->collection = $collection;
-                    $items[] = $item;
+            foreach ( $collections as $collection ) {
+                if( !empty($this->sets) && !in_array($collection->get_id(), $this->sets)){
+                    continue;
                 }
+
+                $collections_list[] = $collection;
             }
 
+            $result = $this->item_repository->fetch($args, $collections_list, 'OBJECT');
+        } else {
+            $result = $this->item_repository->fetch($args, [], 'OBJECT');
+        }
+
+        if($result){
+            foreach ($result as $item) {
+                $item->collection = $item->get_collection();
+                $items[] = $item;
+            }
         }
 
         return $items;
     }
 
-    public function limit_items_without_set($items){
-        $conter = 0;
-        $result = array();
 
-        foreach ($items as $item) {
-            if( $conter >= $this->deliveredrecords && ( $this->deliveredrecords + $this->MAXRECORDS ) > $conter ){
-                $result[] = $item;
-            }
-            $conter++;
-        }
-        return $result;
-    }
     /**
      * @signature - list_records
      * @param  array $param Os argumentos vindos da url (verb,until,from,set,metadataprefix,resumptioToken)
@@ -114,14 +110,13 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
         $this->config();
         $this->initiate_variables($data);
 
-        $objects = $this->get_items();
-        $numRows = count($objects);
-        if($numRows==0){
+        $items = $this->get_items();
+        $numRows = count($items);
+        if($numRows == 0){
             $this->errors[] = $this->oai_error('noRecordsMatch');
             $this->oai_exit($data,$this->errors);
         }
 
-        $items = $this->limit_items_without_set($objects);
         $this->verify_resumption_token($numRows);
 
         $this->xml_creater = new Xml_Response($data);
@@ -135,34 +130,20 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
             $cur_header = $this->xml_creater->create_header($identifier, $datestamp, $setspec,$cur_record);
             $this->working_node = $this->xml_creater->create_metadata($cur_record);
             $this->create_metadata_node( $item, $collection, $cur_record);
-            // $this->insert_xml($object);
         }
 
         //resumptionToken
         $this->add_resumption_token_xml($numRows);
         ob_start('ob_gzhandler');
         header($this->CONTENT_TYPE);
+        
         if (isset($this->xml_creater)) {
             $this->xml_creater->display();
         } else {
             exit("There is a bug in codes");
         }
+
         ob_end_flush();
-    }
-
-    /**
-     * @signature - get_mapping_value
-     * @param  wp_post $object O objeto do tipo post
-     * @param  wp_post $collection O objeto da colecao
-     * @return array Com o mapeamento com seu valor respectivo
-     * @description - Metodo responsavel em buscar o mapeamento especifico do objeto com seu valor
-     * @author: Eduardo
-     */
-    public function get_mapping_value($object,$collection) {
-        $maps = [];
-        $files = [];
-
-        return $result;
     }
 
     /**
@@ -197,7 +178,7 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
                 }
             }
         }catch(Exception $e){
-            var_dump($e,$this->working_node,'dc:' . $map['tag']);
+            var_dump($e,$this->working_node,'dc:' . $key);
         }
     }
 
@@ -295,7 +276,8 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
     }
 
     public function verify_resumption_token($numRows) {
-        if ( $numRows - $this->deliveredrecords > $this->MAXRECORDS ) {
+
+        if ( $numRows === $this->MAXRECORDS ) {
             if( implode(',',$this->sets) ==  ''){
                 $this->sets = '-';
             }else{
@@ -303,13 +285,13 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
             }
             $this->cursor = (int) $this->deliveredrecords + $this->MAXRECORDS;
             $this->restoken = $this->createResumToken($this->cursor, $this->from,$this->until,$this->sets, $this->metadataPrefix);
-            $this->expirationdatetime = date("Y-m-d\TH:i:s\Z", time() + TOKEN_VALID);
+            $this->expirationdatetime = date("Y-m-d\TH:i:s\Z", time() * TOKEN_VALID);
         }
     }
 
     public function add_resumption_token_xml($numRows) {
         // ResumptionToken
-        if ($this->restoken!='-') {
+        if ( $this->restoken != '-') {
             if ($this->expirationdatetime) {
                 $this->xml_creater->create_resumpToken($this->restoken, $this->expirationdatetime, $numRows, $this->cursor);
             } else {
