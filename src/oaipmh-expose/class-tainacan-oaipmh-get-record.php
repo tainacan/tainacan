@@ -5,7 +5,7 @@ namespace Tainacan\OAIPMHExpose;
 use Tainacan\Repositories;
 use Tainacan\Entities;
 
-class OAIPMH_List_Records extends OAIPMH_Expose {
+class OAIPMH_Get_Record extends OAIPMH_Expose {
 
     protected $working_node;
     public $errors;
@@ -32,113 +32,64 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
     }
 
     /**
-     * @return array
+     * @param $params
+     * @return bool|Entities\Item
      * @throws \Exception
      */
-    public function list_collections() {
-        $collections = $this->collection_repository->fetch([]);
+    public function get_item( $params ) {
 
-        $response = [];
-        if($collections->have_posts()){
-            while ($collections->have_posts()){
-                $collections->the_post();
+        $id = str_replace('oai:'.$this->repositoryIdentifier.':','', $params['identifier']);
+        $item = new Entities\Item( $id );
 
-                $collection = new Entities\Collection($collections->post);
-                array_push($response, $collection);
-            }
-
-            wp_reset_postdata();
+        if( !$item->get_id() ){
+            return false;
         }
 
-        return $response;
-    }
-
-    /**
-     * main method return the items, filtered or not filtered
-     *
-     * @return array
-     */
-    public function get_items() {
-
-        $items = array();
-        $args = [
-            'posts_per_page' => $this->MAXRECORDS,
-            'paged' => $this->deliveredrecords == 0 ? 1 : ( $this->deliveredrecords / 100 ) + 1,
-            'order' => 'DESC',
-            'orderby' => 'ID',
-            'post_status' => array( 'trash', 'publish' )
-        ];
-
-        if( !empty($this->sets) ){
-            $collections = $this->list_collections();
-            $collections_list = [];
-
-            foreach ( $collections as $collection ) {
-                if( !empty($this->sets) && !in_array($collection->get_id(), $this->sets)){
-                    continue;
-                }
-
-                $collections_list[] = $collection;
-            }
-
-            $result = $this->item_repository->fetch($args, $collections_list, 'OBJECT');
-        } else {
-            $result = $this->item_repository->fetch($args, [], 'OBJECT');
-        }
-
-        if($result){
-            foreach ($result as $item) {
-                $item->collection = $item->get_collection();
-                $items[] = $item;
-            }
-        }
-
-        return $items;
+        $item->collection = $item->get_collection();
+        return $item;
     }
 
 
     /**
-     * @signature - list_records
-     * @param  array $param Os argumentos vindos da url (verb,until,from,set,metadataprefix,resumptioToken)
-     * @return mostra o xml do list record desejado
-     * @description - Metodo responsavel em mostrar o xml do list records, o metodo executado no controller
-     * ele chama os demais metodos que fazem as verificacoes de erros
-     * @author: Eduardo
+     * @param $data
+     * @throws \Exception
      */
-    public function list_records($data) {
+    public function get_record( $data ) {
         session_write_close();
 
         $this->config();
-        $this->initiate_variables($data);
+        $this->initiate_variables( $data );
 
-        $items = $this->get_items();
-        $numRows = count($items);
-        if($numRows == 0){
-            $this->errors[] = $this->oai_error('noRecordsMatch');
-            $this->oai_exit($data,$this->errors);
+        $item = $this->get_item( $data );
+
+        if( $item ){
+            $formats = $this->get_metadata_formats();
+            $prefix = ( $data['metadataPrefix'] === 'oai_dc') ? 'dublin-core' : $data['metadataPrefix'];
+
+            if( empty($formats) || !in_array($prefix, $formats) ){
+                $this->errors[] = $this->oai_error('cannotDisseminateFormat');
+                $this->oai_exit($data,$this->errors);
+            }
+        }else{
+            $this->errors[] = $this->oai_error('idDoesNotExist');
+            $this->oai_exit( $data, $this->errors);
         }
-
-        $this->verify_resumption_token($numRows);
 
         $this->xml_creater = new Xml_Response($data);
 
-        foreach ( $items as $item ) {
-            $collection = $item->collection;
-            $identifier = 'oai:'.$this->repositoryIdentifier.':'. $item->get_id();
-            $datestamp = $this->formatDatestamp($item->get_creation_date());
-            $setspec = $collection->get_id();
-            $cur_record = $this->xml_creater->create_record();
-            $cur_header = $this->xml_creater->create_header($identifier, $datestamp, $setspec,$cur_record, ( $item->get_status() === 'trash' ) ? true : false );
+        $collection = $item->collection;
+        $identifier = 'oai:'.$this->repositoryIdentifier.':'. $item->get_id();
+        $datestamp = $this->formatDatestamp($item->get_creation_date());
+        $setspec = $collection->get_id();
+        $cur_record = $this->xml_creater->create_record();
 
-            if( $item->get_status() !== 'trash' ){
-                $this->working_node = $this->xml_creater->create_metadata($cur_record);
-                $this->create_metadata_node( $item, $collection, $cur_record);
-            }
+        $this->xml_creater->create_header($identifier, $datestamp, $setspec,$cur_record, ( $item->get_status() === 'trash' ) ? true : false );
 
+        if( $item->get_status() !== 'trash' ){
+            $this->working_node = $this->xml_creater->create_metadata($cur_record);
+            $this->create_metadata_node( $item, $collection, $cur_record);
         }
 
-        //resumptionToken
-        $this->add_resumption_token_xml($numRows);
         ob_start('ob_gzhandler');
         header($this->CONTENT_TYPE);
         
@@ -277,31 +228,6 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
 
         if(is_array($this->errors)&&count($this->errors)>0){
             $this->oai_exit($data,$this->errors);
-        }
-    }
-
-    public function verify_resumption_token($numRows) {
-
-        if ( $numRows === $this->MAXRECORDS ) {
-            if( implode(',',$this->sets) ==  ''){
-                $this->sets = '-';
-            }else{
-                $this->sets = implode(',',$this->sets);
-            }
-            $this->cursor = (int) $this->deliveredrecords + $this->MAXRECORDS;
-            $this->restoken = $this->createResumToken($this->cursor, $this->from,$this->until,$this->sets, $this->metadataPrefix);
-            $this->expirationdatetime = date("Y-m-d\TH:i:s\Z", time() * TOKEN_VALID);
-        }
-    }
-
-    public function add_resumption_token_xml($numRows) {
-        // ResumptionToken
-        if ( $this->restoken != '-') {
-            if ($this->expirationdatetime) {
-                $this->xml_creater->create_resumpToken($this->restoken, $this->expirationdatetime, $numRows, $this->cursor);
-            } else {
-                $this->xml_creater->create_resumpToken('', null, $numRows, $this->deliveredrecords);
-            }
         }
     }
 }

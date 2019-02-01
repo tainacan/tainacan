@@ -24,6 +24,8 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
         $this->list_sets = new \Tainacan\OAIPMHExpose\OAIPMH_List_Sets();
         $this->list_metadata_formats = new \Tainacan\OAIPMHExpose\OAIPMH_List_Metadata_Formats();
         $this->list_records = new \Tainacan\OAIPMHExpose\OAIPMH_List_Records();
+        $this->get_record = new \Tainacan\OAIPMHExpose\OAIPMH_Get_Record();
+        $this->identify = new \Tainacan\OAIPMHExpose\OAIPMH_Identify();
     }
 
     public function register_routes() {
@@ -77,8 +79,30 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
                 $this->list_records->list_records($request);
                 break;
 
+            case 'GetRecord':
+
+                if ( !isset($request['metadataPrefix']) ) {
+                    $this->get_record->config();
+                    $this->get_record->errors[] = $this->get_record->oai_error('missingArgument','metadataPrefix');
+                    $this->get_record->oai_exit( $request, $this->get_record->errors );
+                }
+
+                if( !isset($request['identifier']) ){
+                    $this->get_record->config();
+                    $this->get_record->errors[] = $this->get_record->oai_error('missingArgument','identifier');
+                    $this->get_record->oai_exit( $request, $this->get_record->errors );
+                }
+
+                $this->get_record->get_record( $request );
+
+                break;
+
             case 'ListMetadataFormats':
                 $this->list_metadata_formats->list_metadata_formats($request);
+                break;
+
+            case 'Identify':
+                $this->identify->identify($request);
                 break;
 
             default:

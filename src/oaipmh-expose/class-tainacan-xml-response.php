@@ -45,12 +45,17 @@ class Xml_Response extends Xml_Create {
      * In normal cases, $add_to_node is the \<record\> node created previously. When it is null, the newly created header node is attatched to $this->verbNode.
      * Otherwise it will be attatched to the desired node defined in $add_to_node.
      */
-    public function create_header($identifier, $timestamp, $ands_class, $add_to_node = null) {
+    public function create_header($identifier, $timestamp, $ands_class, $add_to_node = null, $is_deleted = false) {
         if (is_null($add_to_node)) {
             $header_node = $this->add2_verbNode("header");
         } else {
             $header_node = $this->addChild($add_to_node, "header");
         }
+
+        if( $is_deleted ){
+            $header_node->setAttribute('status', "deleted");
+        }
+
         $this->addChild($header_node, "identifier", $identifier);
         $this->addChild($header_node, "datestamp", $timestamp);
         if (is_array($ands_class)) {

@@ -26,21 +26,19 @@ class OAIPMH_Expose {
     var $xmlescaped;
     var $text;
     var $code;
+
     /**
-     * @signature - config
-     * @return begin the class
-     * @author: Eduardo
+     *
      */
     public function config() {
         $this->CONTENT_TYPE = 'Content-Type: text/xml';
         $this->identifyResponse["repositoryName"] = get_bloginfo( 'name');
         $this->identifyResponse['protocolVersion'] = '2.0';
-        $this->identifyResponse['baseURL'] = get_bloginfo( 'url').'/oai/socialdb-oai/';
+        $this->identifyResponse['baseURL'] = get_bloginfo( 'url').'wp-json/tainacan/v2/oai/';
         $this->identifyResponse["earliestDatestamp"] = '2006-06-01';
-        $this->identifyResponse["deletedRecord"] = 'no';
+        $this->identifyResponse["deletedRecord"] = 'transient';
         $this->identifyResponse["granularity"] = 'YYYY-MM-DDThh:mm:ssZ';
 
-        //$this->deletedRecord = $identifyResponse["deletedRecord"]; // a shorthand for checking the configuration of Deleted Records
         if (strcmp($this->identifyResponse["granularity"], 'YYYY-MM-DDThh:mm:ssZ') == 0) {
             $this->identifyResponse["earliestDatestamp"] = $this->identifyResponse["earliestDatestamp"] . 'T00:00:00Z';
         }
@@ -82,6 +80,7 @@ class OAIPMH_Expose {
         /** After 24 hours resumptionTokens become invalid. Unit is second. */
         define('TOKEN_VALID', 24 * 3600);
         define('MY_URI',  get_bloginfo( 'url' ));
+
         $this->expirationdatetime = gmstrftime('%Y-%m-%dT%TZ', time() + TOKEN_VALID);
 
         /** Where token is saved and path is included */
@@ -108,44 +107,6 @@ class OAIPMH_Expose {
         define('XMLSCHEMA', 'http://www.w3.org/2001/XMLSchema-instance');
         $this->charset = "iso8859-1";
         $this->xmlescaped = false;
-    }
-
-    /** Dump information of a varible for debugging,
-     * only works when SHOW_QUERY_ERROR is true.
-     * \param $var_name Type: string Name of variable is being debugded
-     * \param $var Type: mix Any type of varibles used in PHP
-     * \see SHOW_QUERY_ERROR in oaidp-config.php
-     */
-    function debug_var_dump($var_name, $var) {
-        if (SHOW_QUERY_ERROR) {
-            echo "Dumping \${$var_name}: \n";
-            var_dump($var) . "\n";
-        }
-    }
-
-    /** Prints human-readable information about a variable for debugging,
-     * only works when SHOW_QUERY_ERROR is true.
-     * \param $var_name Type: string Name of variable is being debugded
-     * \param $var Type: mix Any type of varibles used in PHP
-     * \see SHOW_QUERY_ERROR in oaidp-config.php
-     */
-    function debug_print_r($var_name, $var) {
-        if (SHOW_QUERY_ERROR) {
-            echo "Printing \${$var_name}: \n";
-            print_r($var) . "\n";
-        }
-    }
-
-    /** Prints a message for debugging,
-     * only works when SHOW_QUERY_ERROR is true.
-     * PHP function print_r can be used to construct message with <i>return</i> parameter sets to true.
-     * \param $msg Type: string Message needs to be shown
-     * \see SHOW_QUERY_ERROR in oaidp-config.php
-     */
-    function debug_message($msg) {
-        if (!SHOW_QUERY_ERROR)
-            return;
-        echo $msg, "\n";
     }
 
     /** Check if provided correct arguments for a request.
@@ -254,6 +215,7 @@ class OAIPMH_Expose {
             return date("Y-m-d", $time_val);
         }
     }
+
     /** Retrieve all defined 'setSpec' from configuraiton of $SETS.
      * It is used by ANDS_TPA::create_obj_node();
      */
@@ -266,6 +228,7 @@ class OAIPMH_Expose {
         }
         return $a;
     }
+
     /** Finish a request when there is an error: send back errors. */
     function oai_exit($args,$errors) {
         header($this->CONTENT_TYPE);
@@ -330,43 +293,6 @@ class OAIPMH_Expose {
             $rtVal = array((int) $textparts[0], $textparts[1], $textparts[2],$textparts[3],$textparts[4]);
         }
         return $rtVal;
-    }
-
-    /**
-     * function has_mapping($collection_id)
-     * @param int $collection_id
-     * @return boolean
-     * @author: Eduardo Humberto
-     */
-    public function has_mapping($collection_id) {
-
-    }
-
-    /**
-     * function get_mapping_harvested($collection_id)
-     * @param int $collection_id
-     * @return boolean
-     * @author: Eduardo Humberto
-     */
-    public function get_mapping_harvested($collection_id) {
-
-    }
-
-    /**
-     * function list_collections_mapped()
-     * @author: Eduardo Humberto
-     */
-    public function get_harvesting_mappings() {
-
-    }
-
-    /**
-     * function list_collections_mapped()
-     * @description metodo em retornar apenas as colecoes mapeadas
-     * @author: Eduardo Humberto
-     */
-    public function list_collections_mapped() {
-
     }
 
     /** utility funciton to mapping error codes to readable messages */
