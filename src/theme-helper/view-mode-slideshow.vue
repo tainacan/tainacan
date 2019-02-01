@@ -585,8 +585,6 @@ export default {
 
             if (!metadata) {
                 return '';
-            } else if (metadata.date_i18n) {
-                return metadata.date_i18n;
             } else {
                 return metadata.value_as_html;
             }
