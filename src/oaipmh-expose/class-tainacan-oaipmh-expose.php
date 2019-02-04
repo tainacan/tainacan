@@ -35,7 +35,7 @@ class OAIPMH_Expose {
         $this->identifyResponse["repositoryName"] = get_bloginfo( 'name');
         $this->identifyResponse['protocolVersion'] = '2.0';
         $this->identifyResponse['baseURL'] = get_bloginfo( 'url').'wp-json/tainacan/v2/oai/';
-        $this->identifyResponse["earliestDatestamp"] = '2006-06-01';
+        $this->identifyResponse["earliestDatestamp"] = '2000-01-01';
         $this->identifyResponse["deletedRecord"] = 'transient';
         $this->identifyResponse["granularity"] = 'YYYY-MM-DDThh:mm:ssZ';
 
@@ -61,7 +61,6 @@ class OAIPMH_Expose {
             $this->repositoryIdentifier = $url[0];
         }
 
-        define('REG_OBJ_GROUP', 'Something agreed on');
         $this->show_identifier = false;
 
         /** Maximum mumber of the records to deliver
@@ -76,7 +75,8 @@ class OAIPMH_Expose {
          * If there are more identifiers to deliver
          * a ResumptionToken will be generated.
          */
-        define('MAXIDS', 40);
+        define('MAXIDS', 100);
+
         /** After 24 hours resumptionTokens become invalid. Unit is second. */
         define('TOKEN_VALID', 24 * 3600);
         define('MY_URI',  get_bloginfo( 'url' ));
@@ -98,111 +98,44 @@ class OAIPMH_Expose {
                 'record_namespace' => 'http://purl.org/dc/elements/1.1/'
             )
         );
-
         $this->supported_formats = array('oai_dc');
 
         if (!is_array($this->METADATAFORMATS)) {
             exit("Configuration of METADATAFORMAT has been wrongly set. Correct your " . __FILE__);
         }
+
         define('XMLSCHEMA', 'http://www.w3.org/2001/XMLSchema-instance');
         $this->charset = "iso8859-1";
         $this->xmlescaped = false;
     }
 
-    /** Check if provided correct arguments for a request.
-     *
-     * Only number of parameters is checked.
-     * metadataPrefix has to be checked before it is used.
-     * set has to be checked before it is used.
-     * resumptionToken has to be checked before it is used.
-     * from and until can easily checked here because no extra information
-     * is needed.
+    /**
+     * @param $url
+     * @return bool
      */
-    function checkArgs($args, $checkList) {
-
-        global $errors, $METADATAFORMATS;
-        unset($args["verb"]);
-        debug_print_r('checkList', $checkList);
-        debug_print_r('args', $args);
-
-        // "verb" has been checked before, no further check is needed
-        if (isset($checkList['required'])) {
-            for ($i = 0; $i < count($checkList["required"]); $i++) {
-                debug_message("Checking: par$i: " . $checkList['required'][$i] . " in ");
-                debug_var_dump("isset(\$args[\$checkList['required'][\$i]])", isset($args[$checkList['required'][$i]]));
-                // echo "key exists". array_key_exists($checkList["required"][$i],$args)."\n";
-                if (isset($args[$checkList['required'][$i]]) == false) {
-                    // echo "caught\n";
-                    $errors[] = oai_error('missingArgument', $checkList["required"][$i]);
-                } else {
-                    // if metadataPrefix is set, it is in required section
-                    if (isset($args['metadataPrefix'])) {
-                        $metadataPrefix = $args['metadataPrefix'];
-                        // Check if the format is supported, it has enough infor (an array), last if a handle has been defined.
-                        if (!array_key_exists($metadataPrefix, $METADATAFORMATS) || !(is_array($METADATAFORMATS[$metadataPrefix]) || !isset($METADATAFORMATS[$metadataPrefix]['myhandler']))) {
-                            $errors[] = oai_error('cannotDisseminateFormat', 'metadataPrefix', $metadataPrefix);
-                        }
-                    }
-                    unset($args[$checkList["required"][$i]]);
-                }
-            }
-        }
-
-        debug_message('Before return');
-        debug_print_r('errors', $errors);
-
-        if (!empty($errors))
-            return;
-        // check to see if there is unwanted
-        foreach ($args as $key => $val) {
-            debug_message("checkArgs: $key");
-            if (!in_array($key, $checkList["ops"])) {
-                debug_message("Wrong\n" . print_r($checkList['ops'], true));
-                $errors[] = oai_error('badArgument', $key, $val);
-            }
-            switch ($key) {
-                case 'from':
-                case 'until':
-                    if (!checkDateFormat($val)) {
-                        $errors[] = oai_error('badGranularity', $key, $val);
-                    }
-                    break;
-                case 'resumptionToken':
-                    // only check for expairation
-                    if ((int) $val + TOKEN_VALID < time())
-                        $errors[] = oai_error('badResumptionToken');
-                    break;
-            }
-        }
+    function is_valid_uri( $url ) {
+        return ((bool) preg_match('/^[-a-z\.0-9]+$/i', $url));
     }
 
-    /** Validates an identifier. The pattern is: '/^[-a-z\.0-9]+$/i' which means
-     * it accepts -, letters and numbers.
-     * Used only by function <B>oai_error</B> code idDoesNotExist.
-     * \param $url Type: string
-     */
-    function is_valid_uri($url) {
-        return((bool) preg_match('/^[-a-z\.0-9]+$/i', $url));
-    }
-
-    /** Validates attributes come with the query.
-     * It accepts letters, numbers, ':', '_', '.' and -.
-     * Here there are few more match patterns than is_valid_uri(): ':_'.
-     * \param $attrb Type: string
+    /**
+     * @param $attrb
+     * @return false|int
      */
     function is_valid_attrb($attrb) {
         return preg_match("/^[_a-zA-Z0-9\-\:\.]+$/", $attrb);
     }
 
-    /** All datestamps used in this system are GMT even
-     * return value from database has no TZ information
+    /**
+     * @param $datestamp
+     * @return false|string
      */
     function formatDatestamp($datestamp) {
         return date("Y-m-d\TH:i:s\Z", strtotime($datestamp));
     }
 
-    /** The database uses datastamp without time-zone information.
-     * It needs to clean all time-zone informaion from time string and reformat it
+    /**
+     * @param $date
+     * @return bool|false|string
      */
     function checkDateFormat($date) {
         $date = str_replace(array("T", "Z"), " ", $date);
@@ -216,8 +149,8 @@ class OAIPMH_Expose {
         }
     }
 
-    /** Retrieve all defined 'setSpec' from configuraiton of $SETS.
-     * It is used by ANDS_TPA::create_obj_node();
+    /**
+     * @return array
      */
     function prepare_set_names() {
         global $SETS;
@@ -229,7 +162,10 @@ class OAIPMH_Expose {
         return $a;
     }
 
-    /** Finish a request when there is an error: send back errors. */
+    /**
+     * @param $args
+     * @param $errors
+     */
     function oai_exit($args,$errors) {
         header($this->CONTENT_TYPE);
         $e = new XML_Error($args, $errors);
@@ -238,7 +174,7 @@ class OAIPMH_Expose {
     }
 
     /**
-     * LOG
+     * @return bool|string
      */
     protected function create_token_dir() {
         $upload_dir = wp_upload_dir();
@@ -254,7 +190,9 @@ class OAIPMH_Expose {
         return $logs_folder;
     }
 
-    /** Generate a string based on the current Unix timestamp in microseconds for creating resumToken file name. */
+    /**
+     * Generate a string based on the current Unix timestamp in microseconds for creating resumToken file name.
+     */
     function get_token() {
         list($usec, $sec) = explode(" ", microtime());
         return ((int) ($usec * 1000) + (int) ($sec * 1000));
@@ -281,7 +219,9 @@ class OAIPMH_Expose {
         return $token;
     }
 
-    /** Read a saved ResumToken */
+    /**
+     * Read a saved ResumToken
+     */
     function readResumToken($resumptionToken) {
         $rtVal = false;
         $fp = fopen($resumptionToken, 'r');
@@ -295,7 +235,9 @@ class OAIPMH_Expose {
         return $rtVal;
     }
 
-    /** utility funciton to mapping error codes to readable messages */
+    /**
+     * utility funciton to mapping error codes to readable messages
+     */
     function oai_error($code, $argument = '', $value = '') {
         switch ($code) {
             case 'badArgument' :
@@ -369,8 +311,6 @@ class OAIPMH_Expose {
      * function get_metadata_formats
      * @param int $item_id
      * @return boolean
-     * @description metodo responsavel em verificar os tipos de metadados
-     * @author: Eduardo Humberto
      */
     public function get_metadata_formats( $item_id = null ) {
         $Tainacan_Exposers = \Tainacan\Mappers_Handler::get_instance();
