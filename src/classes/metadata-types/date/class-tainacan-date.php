@@ -75,14 +75,14 @@ class Date extends Metadata_Type {
 			$separator = $item_metadata->get_multivalue_separator();
 			foreach ( $value as $el ) {
 				$return .= $prefix;
-				$return .= date(get_option('date_format'), strtotime($el));
+				$return .= mysql2date(get_option('date_format'), ($el));
 				$return .= $suffix;
 				$count ++;
 				if ($count < $total)
 					$return .= $separator;
 			}
 		} else {
-			$return = date(get_option('date_format'), strtotime($value));
+			$return = mysql2date(get_option('date_format'), ($value));
 		}
 		return $return;
 		

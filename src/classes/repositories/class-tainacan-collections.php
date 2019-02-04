@@ -69,7 +69,7 @@ class Collections extends Repository {
 				'description' => __( 'The collection modification date', 'tainacan' )
 			],
 			'order'                      => [
-				'map'         => 'menu_order',
+				'map'         => 'order',
 				'title'       => __( 'Order', 'tainacan' ),
 				'type'        => 'string',
 				'description' => __( 'Collection order. This metadata is used if collections are manually ordered.', 'tainacan' ),

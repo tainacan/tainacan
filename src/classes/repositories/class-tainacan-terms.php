@@ -292,14 +292,24 @@ class Terms extends Repository {
 		} elseif ( $taxonomy instanceof Entities\Taxonomy ) {
 			$taxonomy_slug = $taxonomy->get_db_identifier();
 		}
-		
-		$args = [
-			'name' => $name, 
-			'taxonomy' => $taxonomy_slug, 
-			'parent' => $parent, 
-			'hide_empty' => 0, 
-			'suppress_filter' => true
-		];
+
+		if(is_numeric($name)){
+			$args = [
+				'id'              => (int) $name,
+				'taxonomy'        => $taxonomy_slug,
+				'parent'          => $parent,
+				'hide_empty'      => 0,
+				'suppress_filter' => true
+			];
+		} else {
+			$args = [
+				'name'            => $name,
+				'taxonomy'        => $taxonomy_slug,
+				'parent'          => $parent,
+				'hide_empty'      => 0,
+				'suppress_filter' => true
+			];
+		}
 		
 		if (is_null($parent)) {
 			unset($args['parent']);

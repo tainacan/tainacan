@@ -154,6 +154,18 @@ $family-sans-serif: 'Roboto', sans-serif;
 // Bulma's modal (needs to be greather than tainacan-admin-app)
 $modal-z: 9999999;
 
+// A copy of bootstrap's screen reader only class to be used for accessibility.
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+}
+
 // Animations for Slide Menu
 @keyframes slide-menu-in {
     from {

@@ -613,6 +613,7 @@ class Old_Tainacan extends Importer{
         $args = array(
             'timeout'     => 60,
             'redirection' => 30,
+            'sslverify'   => false
         );
 
         $this->add_log('fetching init  ' . $link );
@@ -643,6 +644,7 @@ class Old_Tainacan extends Importer{
             $args = array(
                 'timeout'     => 60,
                 'redirection' => 30,
+                'sslverify'   => false
             );
     
             $result = wp_remote_get($link, $args);

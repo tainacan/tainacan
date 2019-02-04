@@ -22,22 +22,24 @@
                         <h4>{{ importerType.name }}</h4>
                         <p>{{ importerType.description }}</p>            
                     </div>
-                </div>
-                
-                <b-loading 
+
+                    <b-loading 
+                        :is-full-page="false"
                         :active.sync="isLoading" 
                         :can-cancel="false"/>
-               <!-- <footer class="field is-grouped form-submit">
+                </div>
+                
+               <footer class="field is-grouped form-submit">
                     <div class="control">
                         <button 
                                 class="button is-outlined" 
                                 type="button" 
                                 @click="$parent.close()">Close</button>
                     </div>
-                    <div class="control">
+                    <!-- <div class="control">
                         <button class="button is-success">Confirm</button>
-                    </div>
-                </footer> -->
+                    </div> -->
+                </footer>
             </section>
         </div>
     </form>     
@@ -86,6 +88,7 @@ export default {
     @import "../../scss/_variables.scss";
 
     .importer-types-container {
+        position: relative;
 
         .importer-type {
             border-bottom: 1px solid $gray2;

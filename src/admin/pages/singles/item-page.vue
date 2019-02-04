@@ -292,14 +292,7 @@
                                         </span>
                                             {{ metadatum.metadatum.name }}
                                         </label>
-                                        <div
-                                                v-if="metadatum.date_i18n"
-                                                class="content">
-                                            <p v-html="metadatum.date_i18n != '' ? metadatum.date_i18n : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
-                                        </div>
-                                        <div
-                                                v-else
-                                                class="content">
+                                        <div class="content">
                                             <p v-html="metadatum.value_as_html != '' ? metadatum.value_as_html : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
                                         </div>
                                     </b-collapse>

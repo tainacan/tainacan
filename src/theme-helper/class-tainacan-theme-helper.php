@@ -56,7 +56,9 @@ class Theme_Helper {
 		add_action( 'pre_get_posts', array($this, 'archive_repository_pre_get_posts'));
 		// TODO: fix the WP Title 
 		// add_filter( 'wp_title', array($this, 'archive_repository_wp_title'), 10, 3);
-
+		
+		add_action( 'wp_head', array($this, 'add_social_meta'), 5 );
+		
 		$this->register_view_mode('table', [
 			'label' => __('Table', 'tainacan'),
 			'dynamic_metadata' => true,
@@ -208,9 +210,22 @@ class Theme_Helper {
 		$term = get_queried_object();
 		
 		if ($term instanceof \WP_Term && $this->is_term_a_tainacan_term($term)) {
-			// TODO: Why post_type = any does not work? 
-			// ANSWER because post types are registered with exclude_from_search. Should we change it?
-			$wp_query->set( 'post_type', \Tainacan\Repositories\Repository::get_collections_db_identifiers() );
+			
+			$tax_id = \Tainacan\Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($term->taxonomy);
+			$tax = \Tainacan\Repositories\Taxonomies::get_instance()->fetch($tax_id);
+			
+			if ( $tax ) {
+				$post_types = $tax->get_enabled_post_types();
+
+				// TODO: Why post_type = any does not work? 
+				// ANSWER because post types are registered with exclude_from_search. Should we change it?
+				// TODO adding all post types to the list is something we need to discuss 
+				$post_types = array_merge($post_types, \Tainacan\Repositories\Repository::get_collections_db_identifiers());
+				$wp_query->set( 'post_type',  $post_types);
+				
+			}
+			
+			
 		}
 		
 	}
@@ -285,6 +300,18 @@ class Theme_Helper {
 			$term = get_queried_object();
 			
 			if ( isset($term->taxonomy) && $this->is_taxonomy_a_tainacan_tax($term->taxonomy)) {
+				$tax_id = \Tainacan\Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($term->taxonomy);
+				$tax = \Tainacan\Repositories\Taxonomies::get_instance()->fetch($tax_id);
+				
+				if ( $tax ) {
+					$post_types = $tax->get_enabled_post_types();
+					if (sizeof($post_types)) {
+						// if taxonomy is enabled for other post types, we disable 
+						// custom template ans use default list
+						// TODO: This needs discussion
+						return $templates;
+					}
+				}
 				
 				$last_template = array_pop($templates);
 				
@@ -472,6 +499,92 @@ class Theme_Helper {
 	 */
 	public function get_view_mode($slug) {
 		return isset($this->registered_view_modes[$slug]) ? $this->registered_view_modes[$slug] : false;
+	}
+	
+	/**
+	 * Adds meta tags to the header to improve social sharing 
+	 */
+	public function add_social_meta() {
+
+		if ( is_single() || is_tax() || is_archive() ) {
+
+			$logo = get_template_directory_uri() . '/assets/images/social-logo.png';
+			$excerpt = get_bloginfo( 'description' );
+			$url_src = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+			global $wp;
+				
+			if ( is_post_type_archive() ) {
+				$collection_id = tainacan_get_collection_id();
+				if ($collection_id) {
+					$title = tainacan_get_the_collection_name();
+					$img_info = ( has_post_thumbnail( tainacan_get_collection_id() ) ) ? wp_get_attachment_image_src( get_post_thumbnail_id( tainacan_get_collection_id() ), 'full' ) : $logo;
+					$url_src = home_url( $wp->request );
+					$excerpt = tainacan_get_the_collection_description();
+				}
+			} elseif ( is_singular() ) {
+				global $post;
+
+				if ( !is_object($post) ) { return; }
+
+				$title = get_the_title();
+				$img_info = ( has_post_thumbnail( $post->ID ) ) ? wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'full' ) : $logo;
+				$url_src = get_permalink();
+				$content = wp_trim_words( $post->post_content, 28, '[...]' );
+				if ( $content ) {
+					$excerpt = strip_tags( $content );
+					$excerpt = str_replace( '', "'", $excerpt );
+				} 
+			} elseif ( is_tax() ) {
+				$term = get_queried_object();
+				$tainacan_term = tainacan_get_term();
+				
+				$title = $term->name;
+				$excerpt = $term->description;
+				
+				$url_src = get_term_link($term->term_id, $term->taxonomy);
+
+				if ($tainacan_term) {
+					$_term = new \Tainacan\Entities\Term( $tainacan_term );
+					$img_id = $_term->get_header_image_id();
+					if ($img_id) {
+						$img_info = wp_get_attachment_image_src( $img_id, 'full' );
+					}
+				}
+				
+			} else {
+				
+				if ( is_day() ) :
+					$title =  sprintf( __( 'Daily Archives: %s', 'tainacan-interface' ), get_the_date() );
+				elseif ( is_month() ) :
+					$title =  sprintf( __( 'Monthly Archives: %s', 'tainacan-interface' ), get_the_date( _x( 'F Y', 'monthly archives date format', 'tainacan-interface' ) ) );
+				elseif ( is_year() ) :
+					$title =  sprintf( __( 'Yearly Archives: %s', 'tainacan-interface' ), get_the_date( _x( 'Y', 'yearly archives date format', 'tainacan-interface' ) ) );
+				elseif ( is_author() ) :
+					$title = get_the_author();
+				else :
+					$title = get_the_archive_title();
+				endif;
+				
+			}
+
+			$image = array(
+			   'url' => ( ! empty( $img_info[0] ) && $img_info[1] >= 200 && $img_info[2] >= 200 ) ? $img_info[0] : $logo,
+			   'width' => ( ! empty( $img_info[1] ) && $img_info[1] >= 200 && $img_info[2] >= 200 ) ? $img_info[1] : 200,
+			   'height' => ( ! empty( $img_info[2] ) && $img_info[1] >= 200 && $img_info[2] >= 200 ) ? $img_info[2] : 200,
+			);
+
+			?>
+			<meta property="og:type" content="article"/>
+			<meta property="og:title" content="<?php echo $title; ?>"/>
+			<meta property="og:site_name" content="<?php echo get_bloginfo(); ?>"/>
+			<meta property="og:description" content="<?php echo $excerpt; ?>"/>
+			<meta property="og:url" content="<?php echo $url_src; ?>"/>
+			<meta property="og:image" content="<?php echo $image['url']; ?>"/>
+			<meta property="og:image:width" content="<?php echo $image['width']; ?>"/>
+			<meta property="og:image:height" content="<?php echo $image['height']; ?>"/>
+
+
+		<?php } else { return; } // End if().
 	}
 	
 }

@@ -115,8 +115,10 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
             'admin_view_mode': 'cards',
             'fetch_only': 'thumbnail,creation_date,author_name',
             'fetch_only_meta': '',
-            'taxonomies_order': 'asc',
-            'taxonomies_order_by': 'date'
+            'taxonomies_order': 'desc',
+            'taxonomies_order_by': 'date',
+            'collections_order': 'desc',
+            'collections_order_by': 'date'
         },
         init() {
             if (tainacan_plugin.user_prefs == undefined || tainacan_plugin.user_prefs == '') {

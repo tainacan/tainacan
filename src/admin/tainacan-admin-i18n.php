@@ -397,7 +397,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_select_an_importer_type'            => __( 'Select an importer from the options below:', 'tainacan' ),
 	'instruction_drop_file_or_click_to_upload'       => __( 'Drop your source file or click here to upload.', 'tainacan' ),
 	'instruction_select_metadatum_type'              => __( 'Select a metadatum type', 'tainacan' ),
-	'instruction_configure_new_metadatum'            => __( 'Configure new metadatum.', 'tainacan' ),
+	'instruction_configure_new_metadatum'            => __( 'Configure new metadatum', 'tainacan' ),
 	'instruction_insert_mapper_metadatum_info'       => __( 'Insert the new mapper\'s metadatum info', 'tainacan' ),
 	'instruction_select_max_options_to_show'         => __( 'Select max options to show', 'tainacan' ),
 	'instruction_select_collection_fetch_items'      => __( 'Select a collection to fetch items', 'tainacan' ),

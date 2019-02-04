@@ -194,8 +194,6 @@ export default {
 
             if (!metadata) {
                 return '';
-            } else if (metadata.date_i18n) {
-                return metadata.date_i18n;
             } else {
                 if (component != undefined && component == 'tainacan-textarea')
                     return metadata.value_as_string;
