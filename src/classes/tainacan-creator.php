@@ -12,6 +12,7 @@ const TAINACAN_IMPORTER_DIR      = __DIR__ . '/../importer/';
 const TAINACAN_EXPORTER_DIR     = __DIR__ . '/../exporter/';
 const TAINACAN_EXPOSERS_DIR		= __DIR__ . '/../exposers/';
 const TAINACAN_MAPPERS_DIR		= __DIR__ . '/../mappers/';
+const TAINACAN_OAIPMH_DIR		= __DIR__ . '/../oaipmh-expose/';
 
 const DIRS = [
     TAINACAN_CLASSES_DIR,
@@ -25,7 +26,8 @@ const DIRS = [
     TAINACAN_IMPORTER_DIR,
     TAINACAN_EXPORTER_DIR,
 	TAINACAN_EXPOSERS_DIR,
-	TAINACAN_MAPPERS_DIR
+	TAINACAN_MAPPERS_DIR,
+    TAINACAN_OAIPMH_DIR
 ];
 
 require_once('libs/wp-async-request.php');
@@ -77,7 +79,10 @@ function tainacan_autoload($class_name){
 		} else if( isset( $class_path[1] ) && $class_path[1] === 'API' ){
 			$dir = TAINACAN_TAPI_DIR;
 			if(count($class_path) > 3) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
-		} else if($sliced) {
+		} else if( isset( $class_path[1] ) && $class_path[1] === 'OAIPMHExpose' ){
+            $dir = TAINACAN_OAIPMH_DIR;
+            if(count($class_path) > 3) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
+        }  else if($sliced) {
 			$lower     = $sliced[0];
 			$sliced[0] = strtolower( $lower );
 

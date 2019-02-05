@@ -21,6 +21,7 @@ $rest_exposers_controller    = new \Tainacan\API\EndPoints\REST_Exposers_Control
 new \Tainacan\API\EndPoints\REST_Export_Controller();
 new \Tainacan\API\EndPoints\REST_Metadatum_Mappers_Controller();
 $rest_facets_controller         = new \Tainacan\API\EndPoints\REST_Facets_Controller();
+$rest_oaipmh_expose_controller = new \Tainacan\API\EndPoints\REST_Oaipmh_Expose_Controller();
 // Add here other endpoints imports
 
 ?>

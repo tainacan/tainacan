@@ -692,14 +692,15 @@ class Metadata extends Repository {
 
 	/**
 	 * @param Entities\Collection $collection
+	 * @param bool $force if true will register core metadata even if collection is auto draft
 	 *
 	 * @return bool
 	 * @throws \ErrorException
 	 * @throws \Exception
 	 */
-	public function register_core_metadata( Entities\Collection $collection ) {
+	public function register_core_metadata( Entities\Collection $collection, $force = false ) {
 
-		if ( $collection->get_status() == 'auto-draft' ) {
+		if ( $force !== true && $collection->get_status() == 'auto-draft' ) {
 			return;
 		}
 
