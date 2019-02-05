@@ -5,7 +5,7 @@ namespace Tainacan\OAIPMHExpose;
 use Tainacan\Repositories;
 use Tainacan\Entities;
 
-class OAIPMH_List_Records extends OAIPMH_Expose {
+class OAIPMH_List_Identifiers extends OAIPMH_Expose {
 
     protected $working_node;
     public $errors;
@@ -98,14 +98,14 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
 
 
     /**
-     * @signature - list_records
+     * @signature - list_identifiers
      * @param  array $param Os argumentos vindos da url (verb,until,from,set,metadataprefix,resumptioToken)
      * @return mostra o xml do list record desejado
      * @description - Metodo responsavel em mostrar o xml do list records, o metodo executado no controller
      * ele chama os demais metodos que fazem as verificacoes de erros
      * @author: Eduardo
      */
-    public function list_records($data) {
+    public function list_identifiers($data) {
         session_write_close();
 
         $this->config();
@@ -130,11 +130,6 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
             $cur_record = $this->xml_creater->create_record();
             $cur_header = $this->xml_creater->create_header($identifier, $datestamp, $setspec,$cur_record, ( $item->get_status() === 'trash' ) ? true : false );
 
-            if( $item->get_status() !== 'trash' ){
-                $this->working_node = $this->xml_creater->create_metadata($cur_record);
-                $this->create_metadata_node( $item, $collection, $cur_record);
-            }
-
         }
 
         //resumptionToken
@@ -149,79 +144,6 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
         }
 
         ob_end_flush();
-    }
-
-    /**
-     * Gets the current mapper object, if one was chosen by the user, false Otherwise
-     */
-    public function get_current_mapper() {
-        $prefix = ($this->metadataPrefix === 'oai_dc') ? 'dublin-core' : $this->metadataPrefix;
-
-        return \Tainacan\Mappers_Handler::get_instance()->get_mapper($prefix);
-    }
-
-    /**
-     * @signature - create_metadata_node
-     * @param  \Tainacan\Entities\Item $item
-     * @param  wp_post $collection O objeto da colecao
-     * @return Adciona no  noh <metadata> os valores necessarios
-     * @description - Metodo responsavel realizar o povoamento no noh metadata
-     * @author: Eduardo
-     */
-    protected function create_metadata_node( $item, $collection,$record_node = null) {
-        $this->working_node = $this->xml_creater->addChild($this->working_node, 'oai_dc:dc');
-        $this->working_node->setAttribute('xmlns:oai_dc', "http://www.openarchives.org/OAI/2.0/oai_dc/");
-        $this->working_node->setAttribute('xmlns:dc', "http://purl.org/dc/elements/1.1/");
-        $this->working_node->setAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
-        $this->working_node->setAttribute('xsi:schemaLocation', 'http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd');
-        $maps = $this->map_item_metadata($item);
-
-        try{
-            if ($maps) {
-                foreach ($maps as $key => $val) {
-                    $this->xml_creater->addChild($this->working_node, $key, html_entity_decode($val->get_value()));
-                }
-            }
-        }catch(Exception $e){
-            var_dump($e,$this->working_node,'dc:' . $key);
-        }
-    }
-
-    /**
-     * Gets an Item as input and return an array of ItemMetadataObjects
-     * If a mapper is selected, the array keys will be the slugs of the metadata
-     * declared by the mapper, in the same order.
-     * Note that if one of the metadata is not mapped, this array item will be null
-     */
-    private function map_item_metadata(\Tainacan\Entities\Item $item) {
-        $prefix = ($this->metadataPrefix === 'oai_dc') ? 'dublin-core' : $this->metadataPrefix;
-        $mapper = $this->get_current_mapper();
-        $metadata = $item->get_metadata();
-        if (!$mapper) {
-            return $metadata;
-        }
-        $pre = [];
-        foreach ($metadata as $item_metadata) {
-            $metadatum = $item_metadata->get_metadatum();
-            $meta_mappings = $metadatum->get_exposer_mapping();
-            if ( array_key_exists($prefix, $meta_mappings) ) {
-
-                $pre[ $meta_mappings[$prefix] ] = $item_metadata;
-            }
-        }
-
-        // reorder
-        $return = [];
-        foreach ( $mapper->metadata as $meta_slug => $meta ) {
-            if ( array_key_exists($meta_slug, $pre) ) {
-                $return[$meta_slug] = $pre[$meta_slug];
-            } else {
-                $return[$meta_slug] = null;
-            }
-        }
-
-        return $return;
-
     }
 
     /**

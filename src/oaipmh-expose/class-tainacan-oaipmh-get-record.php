@@ -130,7 +130,7 @@ class OAIPMH_Get_Record extends OAIPMH_Expose {
         try{
             if ($maps) {
                 foreach ($maps as $key => $val) {
-                    $this->xml_creater->addChild($this->working_node, $key, html_entity_decode($val));
+                    $this->xml_creater->addChild($this->working_node, $key, html_entity_decode($val->get_value()));
                 }
             }
         }catch(Exception $e){

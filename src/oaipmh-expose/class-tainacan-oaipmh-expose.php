@@ -182,6 +182,11 @@ class OAIPMH_Expose {
         $logs_folder = $upload_dir . 'tainacan/tokens/';
 
         if (!is_dir($logs_folder)) {
+
+            if( !is_dir($upload_dir . 'tainacan') && !mkdir($upload_dir . 'tainacan')){
+                return false;
+            }
+
             if (!mkdir($logs_folder)) {
                 return false;
             }
