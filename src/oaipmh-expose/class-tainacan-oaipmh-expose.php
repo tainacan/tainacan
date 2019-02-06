@@ -26,6 +26,8 @@ class OAIPMH_Expose {
     var $xmlescaped;
     var $text;
     var $code;
+    var $token_valid;
+    var $token_prefix;
 
     /**
      *
@@ -68,25 +70,21 @@ class OAIPMH_Expose {
          * If there are more records to deliver
          * a ResumptionToken will be generated.
          */
-        $this->MAXRECORDS = 100;
-
-        /** Maximum mumber of identifiers to deliver
-         * (verb is ListIdentifiers)
-         * If there are more identifiers to deliver
-         * a ResumptionToken will be generated.
-         */
-        define('MAXIDS', 100);
+        $this->MAXRECORDS = has_filter( 'tainacan-oai-maxrecords' ) ?  apply_filters('tainacan-oai-maxrecords', 100) : 100;
 
         /** After 24 hours resumptionTokens become invalid. Unit is second. */
-        define('TOKEN_VALID', 24 * 3600);
-        define('MY_URI',  get_bloginfo( 'url' ));
+        $this->token_valid = has_filter( 'tainacan-oai-token-valid' ) ?  apply_filters('tainacan-oai-token-valid', 24 * 3600) : 24 * 3600;
 
-        $this->expirationdatetime = gmstrftime('%Y-%m-%dT%TZ', time() + TOKEN_VALID);
+        if ( !defined('TAINACAN_OAI_REPOSITORY_URL') ) {
+            define('TAINACAN_OAI_REPOSITORY_URL', get_bloginfo( 'url' ));
+        }
+
+        $this->expirationdatetime = gmstrftime('%Y-%m-%dT%TZ', time() + $this->token_valid);
 
         /** Where token is saved and path is included */
         $token_path = $this->create_token_dir();
         if($token_path){
-            define('TOKEN_PREFIX', $token_path);
+            $this->token_prefix = $token_path;
         }
 
         $this->METADATAFORMATS = array(
@@ -98,13 +96,11 @@ class OAIPMH_Expose {
                 'record_namespace' => 'http://purl.org/dc/elements/1.1/'
             )
         );
-        $this->supported_formats = array('oai_dc');
 
         if (!is_array($this->METADATAFORMATS)) {
             exit("Configuration of METADATAFORMAT has been wrongly set. Correct your " . __FILE__);
         }
 
-        define('XMLSCHEMA', 'http://www.w3.org/2001/XMLSchema-instance');
         $this->charset = "iso8859-1";
         $this->xmlescaped = false;
     }
@@ -211,7 +207,7 @@ class OAIPMH_Expose {
      */
     function createResumToken($cursor, $from,$until,$sets, $metadataPrefix) {
         $token = $this->get_token();
-        $fp = fopen(TOKEN_PREFIX . $token, 'w');
+        $fp = fopen($this->token_prefix . $token, 'w');
         if ($fp == false) {
             exit("Cannot write. Writer permission needs to be changed.");
         }

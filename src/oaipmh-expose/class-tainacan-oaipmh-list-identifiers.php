@@ -153,10 +153,10 @@ class OAIPMH_List_Identifiers extends OAIPMH_Expose {
 
         if ( isset($data['resumptionToken']) ) {
 
-            if ( !file_exists(TOKEN_PREFIX . $data['resumptionToken']) ) {
+            if ( !file_exists($this->token_prefix . $data['resumptionToken']) ) {
                 $this->errors[] = $this->oai_error('badResumptionToken', '', $data['resumptionToken']);
             } else {
-                $readings = $this->readResumToken(TOKEN_PREFIX . $data['resumptionToken']);
+                $readings = $this->readResumToken($this->token_prefix . $data['resumptionToken']);
                 if ($readings == false) {
                     $this->errors[] = $this->oai_error('badResumptionToken', '', $data['resumptionToken']);
                 } else {
@@ -212,7 +212,7 @@ class OAIPMH_List_Identifiers extends OAIPMH_Expose {
             }
             $this->cursor = (int) $this->deliveredrecords + $this->MAXRECORDS;
             $this->restoken = $this->createResumToken($this->cursor, $this->from,$this->until,$this->sets, $this->metadataPrefix);
-            $this->expirationdatetime = date("Y-m-d\TH:i:s\Z", time() * TOKEN_VALID);
+            $this->expirationdatetime = date("Y-m-d\TH:i:s\Z", time() * $this->token_valid);
         }
     }
 

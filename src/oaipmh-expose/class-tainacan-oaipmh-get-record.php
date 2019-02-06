@@ -182,10 +182,10 @@ class OAIPMH_Get_Record extends OAIPMH_Expose {
 
         if ( isset($data['resumptionToken']) ) {
 
-            if ( !file_exists(TOKEN_PREFIX . $data['resumptionToken']) ) {
+            if ( !file_exists($this->token_prefix . $data['resumptionToken']) ) {
                 $this->errors[] = $this->oai_error('badResumptionToken', '', $data['resumptionToken']);
             } else {
-                $readings = $this->readResumToken(TOKEN_PREFIX . $data['resumptionToken']);
+                $readings = $this->readResumToken($this->token_prefix . $data['resumptionToken']);
                 if ($readings == false) {
                     $this->errors[] = $this->oai_error('badResumptionToken', '', $data['resumptionToken']);
                 } else {
