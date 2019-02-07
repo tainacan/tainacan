@@ -42,6 +42,15 @@ class Admin {
 			array( &$this, 'admin_page' ),
 			plugin_dir_url( __FILE__ ) . 'images/tainacan_logo_symbol.svg'
 		);
+		
+		add_submenu_page( 
+			$this->menu_slug, 
+			__('System check', 'tainacan'), 
+			__('System check', 'tainacan'), 
+			'manage_options', 
+			'tainacan_systemcheck', 
+			array( &$this, 'systemcheck_page' ) 
+		);
 
 		add_action( 'load-' . $page_suffix, array( &$this, 'load_admin_page' ) );
 	}
@@ -322,6 +331,10 @@ class Admin {
 		echo json_encode($permalink);
 
 		wp_die();
+	}
+	
+	public function systemcheck_page() {
+		echo 'asdasd';
 	}
 
 }
