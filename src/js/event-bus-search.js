@@ -91,23 +91,23 @@ export default {
                             let orderBy = this.$userPrefs.get(orderByKey);
 
                             if (orderBy) {
-                                // if (orderBy.slug == 'creation_date') {
-                                //     this.$route.query.orderby = 'date';
-                                // } else if (orderBy.slug == 'author_name') {
-                                //     this.$route.query.orderby = 'author_name';
-                                // } else if (orderBy.metadata_type_object.primitive_type == 'float' || orderBy.metadata_type_object.primitive_type == 'int') {
-                                //     this.$route.query.orderby = 'meta_value_num';
-                                //     this.$route.query.meta_key = orderBy.id;
-                                // } else if (orderBy.metadata_type_object.primitive_type == 'date') {
-                                //     this.$route.query.orderby = 'meta_value';
-                                //     this.$route.query.meta_key = orderBy.id;
-                                //     this.$route.query.meta_type = 'DATETIME';
-                                // } else if (orderBy.metadata_type_object.core) {
-                                //     this.$route.query.orderby =  orderBy.metadata_type_object.related_mapped_prop;
-                                // } else {
-                                //     this.$route.query.orderby = 'meta_value';
-                                //     this.$route.query.meta_key = orderBy.id;
-                                // }
+                                if (orderBy.slug == 'creation_date') {
+                                 this.$route.query.orderby = 'date';
+                                } else if (orderBy.slug == 'author_name') {
+                                 this.$route.query.orderby = 'author_name';
+                                } else if (orderBy.metadata_type_object.primitive_type == 'float' || orderBy.metadata_type_object.primitive_type == 'int') {
+                                 this.$route.query.orderby = 'meta_value_num';
+                                 this.$route.query.meta_key = orderBy.id;
+                                } else if (orderBy.metadata_type_object.primitive_type == 'date') {
+                                 this.$route.query.orderby = 'meta_value';
+                                 this.$route.query.meta_key = orderBy.id;
+                                 this.$route.query.meta_type = 'DATETIME';
+                                } else if (orderBy.metadata_type_object.core) {
+                                 this.$route.query.orderby =  orderBy.metadata_type_object.related_mapped_prop;
+                                } else {
+                                 this.$route.query.orderby = 'meta_value';
+                                 this.$route.query.meta_key = orderBy.id;
+                                }
                                 this.$route.query.orderby = orderBy.slug;
 
                             } else {

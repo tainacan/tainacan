@@ -297,11 +297,8 @@
                                     v-for="metadatum of sortingMetadata"
                                     v-if="
                                         totalItems > 0 &&
-                                        metadatum != undefined &&
-                                        metadatum.slug === 'creation_date' || (
-                                        metadatum.metadata_type_object && 
-                                        metadatum.metadata_type_object.related_mapped_prop == 'title'
-                                    )"
+                                        metadatum != undefined 
+                                    "
                                     :value="metadatum"
                                     :key="metadatum.slug">
                                 {{ metadatum.name }}
@@ -1169,8 +1166,17 @@
                                     if (display) {
                                         fetchOnlyMetadatumIds.push(metadatum.id);
                                     }
+                                    
+                                    if (
+                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
+                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Taxonomy' &&
+                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Relationship'
+                                    ) {
+                                        this.sortingMetadata.push(metadatum);
+                                    }
+                                    
                                 }
-                                this.sortingMetadata.push(metadatum);
+                                
                             }
 
                             let creationDateMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[1] != null) : true;
