@@ -281,11 +281,10 @@ class REST_Items_Controller extends REST_Controller {
 		
 		//mas e se não estiver usando o plugin? vai voltar "null"
 		$items_aggregations = \Tainacan\Elastic_Press::get_instance()->last_aggregations; //if elasticPress active
-		$response['facets'] = $items_aggregations;
+		$response['filters'] = $items_aggregations;
 		$response['items'] = [];
 		
 		$query_end = microtime(true);
-		
 
 		$return_template = false;
 

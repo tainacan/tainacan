@@ -32,17 +32,23 @@ class Elastic_Press {
 		if (!class_exists('EP_API')) {
 			return; // ElasticPress not active
 		}
+		
+		//activates the inclusion of the complete hierarchy of terms.
+		add_filter('ep_sync_terms_allow_hierarchy', '__return_true');
+
 		add_filter('tainacan_fetch_args', [$this, 'filter_args'], 10, 2);
-		//add_filter('tainacan-api-get-items-alternate', [$this, 'filter_get_metadatum_values'], 10, 2);
 		
 		add_action('ep_retrieve_aggregations', function ( array $aggregations, $scope, $args ) {
 			$this->last_aggregations = $aggregations;
 		}, 10, 3);
 
-		// add_action('ep_add_query_log', function($query) { //using to DEBUG
-		// 	error_log("DEGUG:");
-		// 	error_log($query["args"]["body"]);
-		// });
+		//format args to include aggregations for filters
+		//add_filter('ep_formatted_args', array($this, "add_aggs"));
+
+		add_action('ep_add_query_log', function($query) { //using to DEBUG
+			error_log("DEGUG:");
+			error_log($query["args"]["body"]);
+		});
 	}
 	
 	function filter_args($args, $type) {
@@ -106,20 +112,22 @@ class Elastic_Press {
 				$col = $Tainacan_Collections->fetch_by_db_identifier($cpt);
 				$_filters = $Tainacan_Filters->fetch_by_collection($col, ['posts_per_page' => -1], 'OBJECT');
 				foreach ($_filters as $filter) {
-					if ($filter->get_metadatum()->get_metadata_type() == 'Tainacan\Metadata_Types\Taxonomy') {
+					$metadata_type = $filter->get_metadatum()->get_metadata_type();
+					if ($metadata_type == 'Tainacan\Metadata_Types\Taxonomy') {
 						$metadatum_options = $filter->get_metadatum()->get_metadata_type_options();
 						$taxonomy_id = $metadatum_options['taxonomy_id'];
 						$taxonomy_slug = Repositories\Taxonomies::get_instance()->get_db_identifier_by_id($taxonomy_id);
 						$id = $taxonomy_slug;
 						$key = "terms.$taxonomy_slug.term_id";
-						$field = "terms.$taxonomy_slug.slug";
+						//$field = "terms.$taxonomy_slug.slug";
+						$field = "terms.$taxonomy_slug";
 					} else {
 						$metadatum_id = $filter->get_metadatum()->get_ID();
 						$id = $metadatum_id;
 						$key = "meta.$metadatum_id.raw";
 						$field = "meta.$metadatum_id.raw";
 					}
-					$this->facets[$id] = ["key" => $key, "field" => $field, "max_options" => $filter->get_max_options()];
+					$this->facets[$id] = ["key" => $key, "field" => $field, "max_options" => $filter->get_max_options(), "metadata_type" => $metadata_type];
 				}
 			}
 		}
@@ -148,8 +156,26 @@ class Elastic_Press {
 				}
 			}
 			$custom_filter['bool']['must'] = $temp;
-			
-			$aggs[$filter['key']] = [
+
+			$parent = 0;
+			if ($filter['metadata_type'] == 'Tainacan\Metadata_Types\Taxonomy') {
+				$field = $filter['field'];
+				$aggs[$filter['key']] = [
+					"filter" => $custom_filter,
+					"aggs"	=> array(
+						$id => array(
+							"terms"=>array(
+								"size" => $filter['max_options'],
+								"script" => [
+									"lang" 	=> "painless",
+									"source"=> "def c= ['']; for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.slug); }} return c;"
+								]
+							)
+						)
+					)
+				];
+			} else {
+				$aggs[$filter['key']] = [
 					"filter" => $custom_filter,
 					"aggs"	=> array(
 						$id => array(
@@ -160,13 +186,11 @@ class Elastic_Press {
 						)
 					)
 				];
+			}
+			
 		}
 		$formatted_args['aggs'] = $aggs;
 		return $formatted_args;
 	}
 
-	function filter_get_metadatum_values($metadatum_id, $args) {
-		error_log("FILTER-----");
-		return $metadatum_id;
-	}
 } // END
