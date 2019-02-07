@@ -6,6 +6,8 @@ const { Autocomplete, SelectControl, Spinner, QueryControls, Placeholder } = wp.
 
 const { InspectorControls } = wp.editor;
 
+import SimpleAutocomplete from './simple-autocomplete.js';
+
 import tainacan from '../../api-client/axios.js';
 import qs from 'qs';
 
@@ -63,6 +65,7 @@ registerBlockType('tainacan/terms-list', {
     },
     edit({ attributes, setAttributes, className, isSelected }){
         let { terms, content, termsPerPage, query, URLTaxonomyID, isLoadingTaxonomies, taxonomies } =  attributes;
+        
         console.log("Editando...");
 
         function prepareTerm(term) {
@@ -202,11 +205,18 @@ registerBlockType('tainacan/terms-list', {
                         <Spinner />
                         :
                         (
-                            <SelectControl 
+                            // <SelectControl 
+                            //     label={__('Select a taxonomy', 'tainacan')}
+                            //     value={ URLTaxonomyID }
+                            //     options={ taxonomies.map((taxonomy) => ({ label: taxonomy.name, value: taxonomy.id })) }
+                            //     onChange={ ( selectedTaxonomyID ) => { setTaxonomyID( { selectedTaxonomyID } ) } }/>
+                            <SimpleAutocomplete
+                                id="teste123"
                                 label={__('Select a taxonomy', 'tainacan')}
                                 value={ URLTaxonomyID }
                                 options={ taxonomies.map((taxonomy) => ({ label: taxonomy.name, value: taxonomy.id })) }
                                 onChange={ ( selectedTaxonomyID ) => { setTaxonomyID( { selectedTaxonomyID } ) } }/>
+
                         )
                     ) : null
                 }

@@ -1044,13 +1044,13 @@
                 let authorNameMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'author_name');
                 
                 let descriptionMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.metadata_type_object != undefined ? metadatum.metadata_type_object.related_mapped_prop == 'description' : false);
-              
+
                 // Updates Search
                 this.$eventBusSearch.addFetchOnly(
-                    thumbnailMetadatum != undefined && thumbnailMetadatum.display ? 'thumbnail' : null +','+
-                    creationDateMetadatum != undefined && creationDateMetadatum.display ? 'creation_date' : null +','+
-                    authorNameMetadatum != undefined && authorNameMetadatum.display ? 'author_name': null +','+
-                    (this.isRepositoryLevel ? 'title' : null) +','+
+                    ((thumbnailMetadatum != undefined && thumbnailMetadatum.display) ? 'thumbnail' : null) + ',' +
+                    ((creationDateMetadatum != undefined && creationDateMetadatum.display) ? 'creation_date' : null) + ',' +
+                    ((authorNameMetadatum != undefined && authorNameMetadatum.display) ? 'author_name': null) + ',' +
+                    (this.isRepositoryLevel ? 'title' : null) + ',' +
                     (this.isRepositoryLevel && descriptionMetadatum.display ? 'description' : null), false, fetchOnlyMetadatumIds.toString());
 
                 // Closes dropdown

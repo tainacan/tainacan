@@ -259,6 +259,10 @@ class Mappers_Handler {
 						$method = 'get_core_' . $mapper_metadatum['core_metadatum'] . '_metadatum';
 						if (method_exists($collection_object, $method)) {
 							$core_meta = $collection_object->$method();
+							if ( ! $core_meta ) {
+								$Tainacan_Metadata->register_core_metadata( $collection_object, true );
+								$core_meta = $collection_object->$method();
+							}
 							$_meta_mapping = $core_meta->get_exposer_mapping();
 							$_meta_mapping[$mapper->slug] = $slug;
 							$core_meta->set_exposer_mapping($_meta_mapping);
