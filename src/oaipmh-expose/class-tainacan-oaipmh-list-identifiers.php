@@ -127,8 +127,7 @@ class OAIPMH_List_Identifiers extends OAIPMH_Expose {
             $identifier = 'oai:'.$this->repositoryIdentifier.':'. $item->get_id();
             $datestamp = $this->formatDatestamp($item->get_creation_date());
             $setspec = $collection->get_id();
-            $cur_record = $this->xml_creater->create_record();
-            $cur_header = $this->xml_creater->create_header($identifier, $datestamp, $setspec,$cur_record, ( $item->get_status() === 'trash' ) ? true : false );
+            $cur_header = $this->xml_creater->create_header($identifier, $datestamp, $setspec, null, ( $item->get_status() === 'trash' ) ? true : false );
 
         }
 
