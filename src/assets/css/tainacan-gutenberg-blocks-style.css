@@ -59,6 +59,24 @@
     column-count: 3;
     column-gap: 4rem;
     column-rule: none; }
+    .wp-block-tainacan-terms-list ul.terms-list-edit li.term-list-item {
+      display: flex;
+      align-items: flex-start;
+      line-height: 22px;
+      justify-content: space-between;
+      margin-bottom: 12px; }
+      .wp-block-tainacan-terms-list ul.terms-list-edit li.term-list-item button {
+        padding: 2px;
+        margin-left: 5px;
+        visibility: hidden;
+        position: relative;
+        opacity: 0;
+        left: -24px; }
+      .wp-block-tainacan-terms-list ul.terms-list-edit li.term-list-item:hover button {
+        visibility: visible;
+        opacity: 1;
+        left: 0px;
+        transition: opacity linear 0.2s, left linear 0.2s; }
   @media only screen and (max-width: 1024px) {
     .wp-block-tainacan-terms-list ul.terms-list {
       -moz-column-count: 3;

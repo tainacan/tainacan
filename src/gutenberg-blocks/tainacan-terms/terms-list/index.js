@@ -84,21 +84,17 @@ registerBlockType('tainacan/terms-list', {
         
         console.log("Editando...");
 
-        function prepareTerm(term) {
+        function prepareTerm(term, index) {
             return (
-                <li style={{ 
-                        listStyle: 'none',
-                        display: 'list-item' 
-                    }}>
-                    <a
-                            style={{
-                                // TODO
-                            }}
-                            href={ term.url } target="_blank">
+                <li 
+                    key={term.id}
+                    className="term-list-item">
+                    <a href={ term.url } target="_blank">
                         { term.name ? term.name : '' }
                     </a>
                     <IconButton
-                        icon="dashicons-no-alt"
+                        onClick={ removeTermAtIndex(index) }
+                        icon="no-alt"
                         label={__('Remove', 'tainacan')}/>
                 </li>
             );
@@ -112,31 +108,11 @@ registerBlockType('tainacan/terms-list', {
             });
         }
 
-        function selectTerm(term) {
-            
-            let existingTermIndex = selectedTerms.findIndex((existingTerm) => existingTerm.id == term.id);
-            if (existingTermIndex < 0)  
-                selectedTerms.push(prepareTerm(term));
-
-            setAttributes({ 
-                selectedTerms: selectedTerms
-            });
-        }
-
-        function removeTermAtIndex(index) {
-            
-            selectedTerms.splice(index, 1);
-
-            setAttributes({ 
-                selectedTerms: selectedTerms
-            });
-        }
-
         function mountBlock(termsFromHTML) {
             let termsOnComponent = [];
 
-            for (const term of termsFromHTML){
-                termsOnComponent.push(prepareTerm(term));
+            for (let i = 0; i < termsFromHTML.length; i++){
+                termsOnComponent.push(prepareTerm(termsFromHTML[i], i));
             }
 
             selectedTerms = termsOnComponent;
@@ -190,7 +166,7 @@ registerBlockType('tainacan/terms-list', {
 
             tainacan.get(endpoint)
                 .then(response => {
-                    terms = response.data.map((term) => ({ name: term.name, value: term.id + "" }));
+                    terms = response.data.map((term) => ({ name: term.name, value: term.id + "", id: term.id }));
                     isLoadingTerms = false; 
 
                     setAttributes({ 
@@ -215,15 +191,28 @@ registerBlockType('tainacan/terms-list', {
                 });
         }
 
-        // const completers = [{
-        //     name: 'taxonomy-list-autocomplete',
-        //     triggerPrefix: '/',
-        //     options: query => fetchTaxonomies(query),
-        //     getOptionLabel: option => (
-        //         <span>{ option }</span>
-        //     )
-        // }]
+        function selectTerm(term) {
+            let existingTermIndex = selectedTerms.findIndex((existingTerm) => existingTerm.key == term.id);
+            if (existingTermIndex < 0)  
+                selectedTerms.push(prepareTerm(term, selectedTerms.length));
 
+            setAttributes({ 
+                selectedTerms: selectedTerms
+            });
+            setContent(selectedTerms);
+        }
+
+        function removeTermAtIndex(index) {
+            
+            selectedTerms.splice(index, 1);
+
+            setAttributes({ 
+                selectedTerms: selectedTerms
+            });
+            setContent(selectedTerms);
+        }
+        
+        // Executed every time Edit function runs
         if (taxonomyId != null && taxonomyId != '')
             fetchTaxonomy();
 
@@ -236,9 +225,9 @@ registerBlockType('tainacan/terms-list', {
                 { isSelected ? 
                     
                         (<div>
+                            { isLoadingTaxonomies ? <Spinner /> : null }
+
                             <div class="block-control">
-                                
-                                { isLoadingTaxonomies ? <Spinner /> : null }
                                 
                                 <div class="block-control-item">
                                     <label 
