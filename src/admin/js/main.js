@@ -103,3 +103,22 @@ new Vue({
     router,
     render: h => h(AdminPage)
 });
+
+// Display Icons only once everything is loaded 
+function listen(evnt, elem, func) {
+    if (elem.addEventListener)  // W3C DOM
+        elem.addEventListener(evnt,func,false);
+    else if (elem.attachEvent) { // IE DOM
+         var r = elem.attachEvent("on"+evnt, func);
+         return r;
+    }
+    else {
+        jQuery('head').append('<style>.tainacan-icon{ opacity: 1 !important; }</style>');
+    }
+}
+listen("load", window, function() {
+    var iconsStyle = document.createElement("style");
+    iconsStyle.setAttribute('type', 'text/css');
+    iconsStyle.innerText = '.tainacan-icon{ opacity: 1 !important; }';
+    document.head.appendChild(iconsStyle);
+});

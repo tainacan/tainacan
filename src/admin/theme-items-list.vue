@@ -67,6 +67,10 @@ export default {
         display: flex;
         -webkit-overflow-scrolling: touch;
 
+        .tainacan-icon {
+            opacity: 0; // Will make it 1 once window.load is done; 
+        }
+
         a, a:not([href]){ color: $secondary }
         a:hover, a:hover:not([href]) {
             cursor: pointer;
