@@ -2,11 +2,11 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { Autocomplete, SelectControl, Spinner, QueryControls, Placeholder } = wp.components;
+const { IconButton, Spinner, QueryControls, Placeholder } = wp.components;
 
 const { InspectorControls } = wp.editor;
 
-import SimpleAutocomplete from './simple-autocomplete.js';
+import Autocomplete from 'react-autocomplete';
 
 import tainacan from '../../api-client/axios.js';
 import qs from 'qs';
@@ -17,7 +17,7 @@ registerBlockType('tainacan/terms-list', {
     category: 'tainacan-blocks',
     keywords: [ __( 'Tainacan', 'tainacan' ), __( 'terms', 'tainacan' ), __( 'taxonomy', 'tainacan' ) ],
     attributes: {
-        terms: {
+        selectedTerms: {
             type: 'array',
             source: 'query',
             selector: 'li>a',
@@ -47,7 +47,11 @@ registerBlockType('tainacan/terms-list', {
             type: Object,
             default: {}
         },
-        URLTaxonomyID: {
+        taxonomyId: {
+            type: String,
+            default: ''
+        },
+        taxonomyName: {
             type: String,
             default: ''
         },
@@ -55,16 +59,28 @@ registerBlockType('tainacan/terms-list', {
             type: Boolean,
             default: false
         },
+        isLoadingTerms: {
+            type: Boolean,
+            default: false
+        },
         taxonomies: {
             type: Array,
-            default: null
+            default: []
+        },
+        terms: {
+            type: Array,
+            default: []
+        },
+        currentTermName: {
+            type: String,
+            default: ''
         }
     },
     supports: {
         html: false
     },
     edit({ attributes, setAttributes, className, isSelected }){
-        let { terms, content, termsPerPage, query, URLTaxonomyID, isLoadingTaxonomies, taxonomies } =  attributes;
+        let { selectedTerms, terms, content, currentTermName, taxonomyId, taxonomyName, isLoadingTerms, isLoadingTaxonomies, taxonomies } =  attributes;
         
         console.log("Editando...");
 
@@ -81,48 +97,38 @@ registerBlockType('tainacan/terms-list', {
                             href={ term.url } target="_blank">
                         { term.name ? term.name : '' }
                     </a>
+                    <IconButton
+                        icon="dashicons-no-alt"
+                        label={__('Remove', 'tainacan')}/>
                 </li>
             );
         }
 
-        function getTerms(taxonomyID, query) {
-            if(taxonomyID) {
-                return tainacan.get(`/taxonomy/${taxonomyID}/terms?${query}`)
-                    .then(response => {
-                        return response.data;
-                    })
-                    .catch(error => {
-                        console.error(error);
-                        return [];
-                    });
-            } else {
-                return [];
-            }
-        }
-
-        function setContent(terms){
+        function setContent(selectedTerms){
             setAttributes({
                 content: (
-                    <ul className="terms-list">{ terms }</ul>
+                    <ul className="terms-list">{ selectedTerms }</ul>
                 )
             });
         }
-        
-        function updateTermsQuery(query) {
-            let queryString = qs.stringify(query);
 
-            getTerms(URLTaxonomyID, queryString).then(data => {
-                terms = [];
+        function selectTerm(term) {
+            
+            let existingTermIndex = selectedTerms.findIndex((existingTerm) => existingTerm.id == term.id);
+            if (existingTermIndex < 0)  
+                selectedTerms.push(prepareTerm(term));
 
-                data.map((term) => {
-                    terms.push(prepareTerm(term));
-                });
+            setAttributes({ 
+                selectedTerms: selectedTerms
+            });
+        }
 
-                setAttributes({ 
-                    terms: terms, 
-                    URLTaxonomyID: URLTaxonomyID
-                });
-                setContent(terms);
+        function removeTermAtIndex(index) {
+            
+            selectedTerms.splice(index, 1);
+
+            setAttributes({ 
+                selectedTerms: selectedTerms
             });
         }
 
@@ -133,33 +139,80 @@ registerBlockType('tainacan/terms-list', {
                 termsOnComponent.push(prepareTerm(term));
             }
 
-            terms = termsOnComponent;
-            setAttributes({ terms: termsOnComponent });
+            selectedTerms = termsOnComponent;
+            setAttributes({ selectedTerms: termsOnComponent });
             setContent(termsOnComponent);
         }
 
-        function fetchTaxonomies() {
+        function fetchTaxonomies(name) {
             isLoadingTaxonomies = true;
             taxonomies = [];
 
-            tainacan.get(`/taxonomies/?nopaging=1`)
-                .then(response => {
-                    setAttributes({ 
-                        isLoadingTaxonomies: false, 
-                        taxonomies: response.data
-                    });
+            setAttributes({ 
+                isLoadingTaxonomies: isLoadingTaxonomies, 
+                taxonomies: taxonomies
+            });
 
-                    return response.data;
+            let endpoint = '/taxonomies/?perpage=12';
+            if (name != undefined && name != '')
+                endpoint += '&search=' + name;
+
+            tainacan.get(endpoint)
+                .then(response => {
+                    taxonomies = response.data.map((taxonomy) => ({ name: taxonomy.name, value: taxonomy.id + "" }));
+                    isLoadingTaxonomies = false; 
+
+                    setAttributes({ 
+                        isLoadingTaxonomies: isLoadingTaxonomies, 
+                        taxonomies: taxonomies
+                    });
+                    
+                    return taxonomies;
                 })
                 .catch(error => {
-                    console.error(error);
+                    console.log('Error trying to fetch taxonomies: ' + error);
                 });
         }
 
-        function setTaxonomyID( { selectedTaxonomyID } ) {
-            URLTaxonomyID = selectedTaxonomyID;
-            query.number = !termsPerPage ? 1 : termsPerPage;
-            updateTermsQuery(query);
+        function fetchTerms(name) {
+            isLoadingTerms = true;
+            terms = [];
+
+            setAttributes({ 
+                isLoadingTerms: isLoadingTerms, 
+                terms: terms
+            });
+
+            let endpoint = '/taxonomy/'+ taxonomyId + '/terms/?number=12';
+
+            if (name != undefined && name != '')
+                endpoint += '&searchterm=' + name;
+
+            tainacan.get(endpoint)
+                .then(response => {
+                    terms = response.data.map((term) => ({ name: term.name, value: term.id + "" }));
+                    isLoadingTerms = false; 
+
+                    setAttributes({ 
+                        isLoadingTerms: isLoadingTerms, 
+                        terms: terms
+                    });
+                    
+                    return terms;
+                })
+                .catch(error => {
+                    console.log('Error trying to fetch terms: ' + error);
+                });
+        }
+
+        function fetchTaxonomy() {
+            tainacan.get('/taxonomies/' + taxonomyId)
+                .then((response) => {
+                    taxonomyName = response.data.name;
+                    setAttributes({ taxonomyName: taxonomyName });
+                }).catch(error => {
+                    console.log('Error trying to fetch taxonomy: ' + error);
+                });
         }
 
         // const completers = [{
@@ -171,57 +224,114 @@ registerBlockType('tainacan/terms-list', {
         //     )
         // }]
 
-        if (taxonomies == null) 
-            fetchTaxonomies();
+        if (taxonomyId != null && taxonomyId != '')
+            fetchTaxonomy();
 
         if(content && content.length && content[0].type)
-            mountBlock(terms);
+            mountBlock(selectedTerms);
         
         return (
             <div className={className}>
 
-                <div>
-                    <InspectorControls>
-                        <div style={{marginTop: '20px'}}>
-                            <QueryControls
-                                    numberOfItems={ termsPerPage }
-                                    onNumberOfItemsChange={
-                                        (numberOfItems) => {
-                                            query.number = !numberOfItems ? 1 : numberOfItems;
-                                            termsPerPage = query.number;
-
-                                            setAttributes({ termsPerPage: termsPerPage });
-
-                                            _.debounce(updateTermsQuery(query), 300);
-                                        }
-                                    }
-                                />
-                        </div>
-                    </InspectorControls>
-                </div>
-
                 { isSelected ? 
-                    ( isLoadingTaxonomies == true ? 
-                        <Spinner />
-                        :
-                        (
-                            // <SelectControl 
-                            //     label={__('Select a taxonomy', 'tainacan')}
-                            //     value={ URLTaxonomyID }
-                            //     options={ taxonomies.map((taxonomy) => ({ label: taxonomy.name, value: taxonomy.id })) }
-                            //     onChange={ ( selectedTaxonomyID ) => { setTaxonomyID( { selectedTaxonomyID } ) } }/>
-                            <SimpleAutocomplete
-                                id="teste123"
-                                label={__('Select a taxonomy', 'tainacan')}
-                                value={ URLTaxonomyID }
-                                options={ taxonomies.map((taxonomy) => ({ label: taxonomy.name, value: taxonomy.id })) }
-                                onChange={ ( selectedTaxonomyID ) => { setTaxonomyID( { selectedTaxonomyID } ) } }/>
+                    
+                        (<div>
+                            <div class="block-control">
+                                
+                                { isLoadingTaxonomies ? <Spinner /> : null }
+                                
+                                <div class="block-control-item">
+                                    <label 
+                                        className="autocomplete-label"
+                                        htmlFor="taxonomy-autocomplete">
+                                        {__('Select a taxonomy', 'tainacan')}
+                                    </label>
+                                    
+                                    <Autocomplete
+                                        inputProps={{ id: 'taxonomy-autocomplete' }}
+                                        wrapperProps={{ className: 'react-autocomplete' }}
+                                        value={ taxonomyName }
+                                        items={ taxonomies }
+                                        onSelect={(value, item) => {
+                                                taxonomyId = value;
+                                                taxonomyName = item.name;
+                                                setAttributes({ taxonomyId: taxonomyId, taxonomyName: taxonomyName, taxonomies: [ item ] });
+                                            }
+                                        }
+                                        getItemValue={(taxonomy) => taxonomy.value }
+                                        onChange={(event, value) => {
+                                                taxonomyId = null;
+                                                taxonomyName = value;
+                                                setAttributes({ taxonomyId: taxonomyId, taxonomyName: taxonomyName });    
+                                                fetchTaxonomies(value);
+                                            }
+                                        }
+                                        renderMenu={ children => (
+                                            children.length > 0 ? (
+                                            <div className="menu">
+                                                { children }
+                                            </div>
+                                            ) : <span></span>
+                                        )}
+                                        renderItem={(item, isHighlighted) => (
+                                            <div
+                                                className={`item ${isHighlighted ? 'item-highlighted' : ''}`}
+                                                key={item.value}>
+                                                {item.name}
+                                            </div>
+                                        )}/>
+                                    </div>   
+                                    <div className={'block-control-item' + (taxonomyId == null || taxonomyId == undefined ? ' disabled' : '')}>
 
-                        )
-                    ) : null
+                                        <label
+                                            className="autocomplete-label"
+                                            htmlFor="taxonomy-autocomplete">
+                                            {__('Select a term to add', 'tainacan')}
+                                        </label>
+                                        
+                                        <Autocomplete
+                                            inputProps={{ 
+                                                id: 'term-autocomplete', 
+                                                disabled: taxonomyId == null || taxonomyId == undefined
+                                            }}
+                                            wrapperProps={{ className: 'react-autocomplete' }}
+                                            value={ currentTermName }
+                                            items={ terms }
+                                            onSelect={(value, item) => {
+                                                    currentTermName = '';
+                                                    setAttributes({ currentTermName: currentTermName });
+                                                    selectTerm(item);
+                                                }
+                                            }
+                                            getItemValue={(term) => term.value }
+                                            onChange={(event, value) => {   
+                                                    currentTermName = value;
+                                                    setAttributes({ currentTermName: currentTermName });
+                                                    fetchTerms(value);
+                                                }
+                                            }
+                                            renderMenu={ children => (
+                                                children.length > 0 ? (
+                                                <div className="menu">
+                                                    { children }
+                                                </div>
+                                                ) : <span></span>
+                                            )}
+                                            renderItem={(item, isHighlighted) => (
+                                                <div
+                                                    className={`item ${isHighlighted ? 'item-highlighted' : ''}`}
+                                                    key={item.id}>
+                                                    {item.name}
+                                                </div>
+                                            )}/>
+                                    </div>       
+                            </div>
+                            <hr/>
+                        </div>
+                        ) : null
                 }
 
-                { !terms.length ? (
+                { !selectedTerms.length ? (
                     <Placeholder
                         icon={(
                             <img
@@ -246,7 +356,7 @@ registerBlockType('tainacan/terms-list', {
                     ) }
                 </Autocomplete> */}
 
-                <ul className="terms-list-edit">{ terms }</ul>
+                <ul className="terms-list-edit">{ selectedTerms }</ul>
             </div>
         );
     },
