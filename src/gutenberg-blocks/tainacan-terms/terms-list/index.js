@@ -20,7 +20,7 @@ registerBlockType('tainacan/terms-list', {
         selectedTerms: {
             type: 'array',
             source: 'query',
-            selector: 'li>a',
+            selector: 'a',
             query: {
                 url: {
                     type: 'string',
@@ -77,12 +77,16 @@ registerBlockType('tainacan/terms-list', {
         }
     },
     supports: {
-        html: false
+        html: false,
     },
     edit({ attributes, setAttributes, className, isSelected }){
         let { selectedTerms, terms, content, currentTermName, taxonomyId, taxonomyName, isLoadingTerms, isLoadingTaxonomies, taxonomies } =  attributes;
         
         console.log("Editando...");
+        console.log(terms);
+        console.log(selectedTerms);
+        console.log(taxonomyId);
+        console.log(content);
 
         function prepareTerm(term, index) {
             return (
@@ -95,7 +99,7 @@ registerBlockType('tainacan/terms-list', {
                     <IconButton
                         onClick={ () => removeTermAtIndex(index) }
                         icon="no-alt"
-                        label={__('Remove', 'tainacan')}/>
+                        label={__('Remove', 'tainacan')}/>         
                 </li>
             );
         }
@@ -168,7 +172,7 @@ registerBlockType('tainacan/terms-list', {
                 .then(response => {
                     terms = response.data.map((term) => ({ 
                         name: term.name, 
-                        value: term.id + "", // same as id, because autocomplete expects value
+                        value: term.id + "", // same as string version of id, because autocomplete expects value
                         id: term.id,
                         url: term.url
                     }));
@@ -231,9 +235,9 @@ registerBlockType('tainacan/terms-list', {
                         (<div>
                             { isLoadingTaxonomies ? <Spinner /> : null }
 
-                            <div class="block-control">
+                            <div className="block-control">
                                 
-                                <div class="block-control-item">
+                                <div className="block-control-item">
                                     <label 
                                         className="autocomplete-label"
                                         htmlFor="taxonomy-autocomplete">
