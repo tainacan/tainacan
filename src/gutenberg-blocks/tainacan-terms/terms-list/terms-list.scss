@@ -70,6 +70,7 @@
         column-count: 4;
         column-gap: 7rem;
         column-rule: none;
+        list-style-type: none;
     }
 
     ul.terms-list-edit {
@@ -82,6 +83,7 @@
         column-count: 3;
         column-gap: 4rem;
         column-rule: none;
+        list-style-type: none;
 
         li.term-list-item {
             display: flex;
@@ -96,14 +98,15 @@
                 visibility: hidden;
                 position: relative;
                 opacity: 0;
-                left: -24px;
+                right: -12px;
+                justify-content: center;
             }
     
             &:hover button {
                 visibility: visible;
                 opacity: 1;
-                left: 0px;
-                transition: opacity linear 0.2s, left linear 0.2s;
+                right: 0px;
+                transition: opacity linear 0.15s, right linear 0.15s;
             }
         }   
     }

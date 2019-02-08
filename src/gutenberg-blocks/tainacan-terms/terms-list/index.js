@@ -93,7 +93,7 @@ registerBlockType('tainacan/terms-list', {
                         { term.name ? term.name : '' }
                     </a>
                     <IconButton
-                        onClick={ removeTermAtIndex(index) }
+                        onClick={ () => removeTermAtIndex(index) }
                         icon="no-alt"
                         label={__('Remove', 'tainacan')}/>
                 </li>
@@ -166,7 +166,12 @@ registerBlockType('tainacan/terms-list', {
 
             tainacan.get(endpoint)
                 .then(response => {
-                    terms = response.data.map((term) => ({ name: term.name, value: term.id + "", id: term.id }));
+                    terms = response.data.map((term) => ({ 
+                        name: term.name, 
+                        value: term.id + "", // same as id, because autocomplete expects value
+                        id: term.id,
+                        url: term.url
+                    }));
                     isLoadingTerms = false; 
 
                     setAttributes({ 
@@ -203,7 +208,6 @@ registerBlockType('tainacan/terms-list', {
         }
 
         function removeTermAtIndex(index) {
-            
             selectedTerms.splice(index, 1);
 
             setAttributes({ 
