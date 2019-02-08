@@ -117,4 +117,9 @@
         border-color: $gray2;
         padding: 1.25rem;
     }
+    .autocomplete {
+        .dropdown-item {
+            white-space: initial !important;
+        }
+    }
 }
