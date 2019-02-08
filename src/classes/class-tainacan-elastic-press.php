@@ -39,16 +39,16 @@ class Elastic_Press {
 		add_filter('tainacan_fetch_args', [$this, 'filter_args'], 10, 2);
 		
 		add_action('ep_retrieve_aggregations', function ( array $aggregations, $scope, $args ) {
-			$this->last_aggregations = $aggregations;
+			$this->last_aggregations = $this->format_aggregations($aggregations);
 		}, 10, 3);
 
 		//format args to include aggregations for filters
 		//add_filter('ep_formatted_args', array($this, "add_aggs"));
 
-		add_action('ep_add_query_log', function($query) { //using to DEBUG
-			error_log("DEGUG:");
-			error_log($query["args"]["body"]);
-		});
+		// add_action('ep_add_query_log', function($query) { //using to DEBUG
+		// 	error_log("DEGUG:");
+		// 	error_log($query["args"]["body"]);
+		// });
 	}
 	
 	function filter_args($args, $type) {
@@ -112,18 +112,18 @@ class Elastic_Press {
 				$col = $Tainacan_Collections->fetch_by_db_identifier($cpt);
 				$_filters = $Tainacan_Filters->fetch_by_collection($col, ['posts_per_page' => -1], 'OBJECT');
 				foreach ($_filters as $filter) {
+					$filter_id = $filter->get_id();
 					$metadata_type = $filter->get_metadatum()->get_metadata_type();
 					if ($metadata_type == 'Tainacan\Metadata_Types\Taxonomy') {
 						$metadatum_options = $filter->get_metadatum()->get_metadata_type_options();
 						$taxonomy_id = $metadatum_options['taxonomy_id'];
 						$taxonomy_slug = Repositories\Taxonomies::get_instance()->get_db_identifier_by_id($taxonomy_id);
-						$id = $taxonomy_slug;
+						$id = "$filter_id.taxonomy.$taxonomy_slug";
 						$key = "terms.$taxonomy_slug.term_id";
-						//$field = "terms.$taxonomy_slug.slug";
 						$field = "terms.$taxonomy_slug";
 					} else {
 						$metadatum_id = $filter->get_metadatum()->get_ID();
-						$id = $metadatum_id;
+						$id = "$filter_id.meta.$metadatum_id";
 						$key = "meta.$metadatum_id.raw";
 						$field = "meta.$metadatum_id.raw";
 					}
@@ -160,7 +160,7 @@ class Elastic_Press {
 			$parent = 0;
 			if ($filter['metadata_type'] == 'Tainacan\Metadata_Types\Taxonomy') {
 				$field = $filter['field'];
-				$aggs[$filter['key']] = [
+				$aggs[$id] = [
 					"filter" => $custom_filter,
 					"aggs"	=> array(
 						$id => array(
@@ -168,14 +168,14 @@ class Elastic_Press {
 								"size" => $filter['max_options'],
 								"script" => [
 									"lang" 	=> "painless",
-									"source"=> "def c= ['']; for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.slug); }} return c;"
+									"source"=> "def c= ['']; for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }} return c;"
 								]
 							)
 						)
 					)
 				];
 			} else {
-				$aggs[$filter['key']] = [
+				$aggs[$id] = [
 					"filter" => $custom_filter,
 					"aggs"	=> array(
 						$id => array(
@@ -191,6 +191,47 @@ class Elastic_Press {
 		}
 		$formatted_args['aggs'] = $aggs;
 		return $formatted_args;
+	}
+
+	public function format_aggregations($aggregations) {
+		global $wpdb;
+		$formated_aggs = [];
+		foreach($aggregations as $key => $aggregation) {
+			$metadata_type = \explode(".", $key);
+			$filter_id = $metadata_type[0];
+			if($metadata_type[1] == 'taxonomy') {
+				$taxonomy_slug = $metadata_type[2];
+				$formated_aggs[$filter_id] = [];
+				foreach ($aggregation[$key]['buckets'] as $term) {
+					$term_id = $term['key'];
+					$term_object = \Tainacan\Repositories\Terms::get_instance()->fetch($term_id, $taxonomy_slug);
+					$count_query = $wpdb->prepare("SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", $term_id);
+					$total_children = $wpdb->get_var($count_query);
+					$formated_aggs[$filter_id][] = [
+						"type" 						=> "Taxonomy",
+						"value" 					=> $term['key'],
+						"taxonomy" 				=> $taxonomy_slug,
+						"taxonomy_id"			=> $taxonomy_slug,
+						"total_children"	=> $total_children,
+						"total_items"			=> $term['doc_count'],
+						"label" 					=> $term_object->get('name'),
+						"parent"					=> $term_object->get('parent')
+					];
+				}
+			} else {
+				$metada_label = $metadata_type[1];
+				$formated_aggs[$filter_id] = [];
+				foreach ($aggregation[$key]['buckets'] as $term) {
+					$formated_aggs[$filter_id][] = [
+						"type" 				=> "Text",
+						"label" 			=> $term['key'],
+						"value" 			=> $term['key'],
+						"total_items" => $term['doc_count']
+					];
+				}
+			}
+		}
+		return $formated_aggs;
 	}
 
 } // END
