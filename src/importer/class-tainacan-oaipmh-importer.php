@@ -3,7 +3,7 @@ namespace Tainacan\Importer;
 use Tainacan;
 use Tainacan\Entities;
 
-class Oaipmh extends Importer {
+class Oaipmh_Importer extends Importer {
 
     protected $steps = [
         [
@@ -15,7 +15,7 @@ class Oaipmh extends Importer {
             'name' => 'Import Items',
             'progress_label' => 'Import Items',
             'callback' => 'process_collections'
-        ],
+        ]
 
     ];
 
@@ -48,6 +48,27 @@ class Oaipmh extends Importer {
     }
 
     //private functions
+
+    /**
+     * decode request from wp_remote
+     * @return array/bool
+     */
+    protected function decode_request($result, $url){
+        if (is_wp_error($result)) {
+
+            $this->add_error_log($result->get_error_message());
+            $this->add_error_log('Error in fetch remote' . $url);
+            $this->abort();
+            return false;
+
+        } else if (isset($result['body'])){
+            // TODO: parse body
+        }
+
+        $this->add_error_log('Error in fetch remote');
+        $this->abort();
+        return false;
+    }
 
     /**
      * executes the request
