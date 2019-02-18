@@ -45,10 +45,10 @@ class Elastic_Press {
 		//format args to include aggregations for filters
 		//add_filter('ep_formatted_args', array($this, "add_aggs"));
 
-		// add_action('ep_add_query_log', function($query) { //using to DEBUG
-		// 	error_log("DEGUG:");
-		// 	error_log($query["args"]["body"]);
-		// });
+		add_action('ep_add_query_log', function($query) { //using to DEBUG
+			error_log("DEGUG:");
+			error_log($query["args"]["body"]);
+		});
 	}
 	
 	function filter_args($args, $type) {
@@ -121,13 +121,22 @@ class Elastic_Press {
 						$id = "$filter_id.taxonomy.$taxonomy_slug";
 						$key = "terms.$taxonomy_slug.term_id";
 						$field = "terms.$taxonomy_slug";
+						$data_id = $taxonomy_slug;
 					} else {
 						$metadatum_id = $filter->get_metadatum()->get_ID();
 						$id = "$filter_id.meta.$metadatum_id";
 						$key = "meta.$metadatum_id.raw";
 						$field = "meta.$metadatum_id.raw";
+						$data_id = $metadatum_id;
 					}
-					$this->facets[$id] = ["key" => $key, "field" => $field, "max_options" => $filter->get_max_options(), "metadata_type" => $metadata_type];
+
+					if (isset($args['facet_metadatum_id']) && ($args['facet_metadatum_id'] == $data_id)) {
+						$this->facets = [];
+						$this->facets[$id] = ["key" => $key, "field" => $field, "max_options" => $filter->get_max_options(), "metadata_type" => $metadata_type, "single" => true];
+						break;
+					} else {
+						$this->facets[$id] = ["key" => $key, "field" => $field, "max_options" => $filter->get_max_options(), "metadata_type" => $metadata_type, "single" => false];
+					}
 				}
 			}
 		}
@@ -221,6 +230,7 @@ class Elastic_Press {
 			} else {
 				$metada_label = $metadata_type[1];
 				$formated_aggs[$filter_id] = [];
+				if (isset($aggregation[$key]['buckets']))
 				foreach ($aggregation[$key]['buckets'] as $term) {
 					$formated_aggs[$filter_id][] = [
 						"type" 				=> "Text",
