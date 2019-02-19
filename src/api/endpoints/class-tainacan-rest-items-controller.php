@@ -274,15 +274,15 @@ class REST_Items_Controller extends REST_Controller {
 		}
 		
 		$response = [];
-
+		$response['items'] = [];
+		$response['template'] = '';
+		
 		$query_start = microtime(true);
 		
 		$items = $this->items_repository->fetch($args, $collection_id, 'WP_Query');
 		
-		//mas e se não estiver usando o plugin? vai voltar "null"
-		$items_aggregations = \Tainacan\Elastic_Press::get_instance()->last_aggregations; //if elasticPress active
-		$response['filters'] = $items_aggregations;
-		$response['items'] = [];
+		// Filter right after the ->fetch() method. Elastic Search integration relies on this on its 'last_aggregations' hook
+		$response['filters'] = apply_filters('tainacan-api-items-filters-response', [], $request);
 		
 		$query_end = microtime(true);
 
@@ -300,7 +300,7 @@ class REST_Items_Controller extends REST_Controller {
 
 		}
 		
-		if ( $return_template ) { // como é que isso aqui funciona!?
+		if ( $return_template ) { 
 			
 			ob_start();
 
@@ -327,7 +327,7 @@ class REST_Items_Controller extends REST_Controller {
 			
 			include $view_mode['template'];
 			
-			$response = ob_get_clean();
+			$response['template'] = ob_get_clean();
 
 		} else {
 
@@ -346,6 +346,8 @@ class REST_Items_Controller extends REST_Controller {
 			}
 			
 		}
+		
+		$response = apply_filters('tainacan-api-items-response', $response, $request);
 		
 		$total_items  = $items->found_posts;
 		$max_pages = ceil($total_items / (int) $items->query_vars['posts_per_page']);

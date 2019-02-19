@@ -912,11 +912,6 @@ class Metadata extends Repository {
 		);
 		$args = wp_parse_args($args, $defaults);
 		
-		$filter = apply_filters('tainacan-fetch-all-metadatum-values', null, $metadatum_id, $args);
-		if ($filer !== null) {
-			return $filter;
-		}
-
 		global $wpdb;
 
 		$itemsRepo = Items::get_instance();
@@ -932,19 +927,15 @@ class Metadata extends Repository {
 		}
 		
 		
-		//////////////////////////////////////////
-		// Get the query for current items
-		// this avoids wp_query to run the query. We just want to build the query
+		
 		$items_query = false;
 		if ( false !== $args['items_filter'] && is_array($args['items_filter']) ) {
-			add_filter('posts_pre_query', '__return_empty_array');
 			
 			$args['items_filter']['fields'] = 'ids';
 			unset($args['items_filter']['paged']);
 			unset($args['items_filter']['offset']);
 			unset($args['items_filter']['perpage']);
 			$args['items_filter']['nopaging'] = 1;
-			$args['items_filter']['ep_integrate'] = false;
 			
 			// When filtering the items, we should consider only other metadata, and ignore current metadatum 
 			// This is because the relation between values from the same metadatum when filtering item is OR, 
@@ -959,35 +950,27 @@ class Metadata extends Repository {
 				$args['items_filter']['meta_query'] = array_filter($args['items_filter']['meta_query'], function($t) use ($metadatum_id) { return $t['key'] != $metadatum_id; });
 				//var_dump($args['items_filter']['meta_query']);
 			}
-			
+
+		}
+		
+		$filter = apply_filters('tainacan-fetch-all-metadatum-values', null, $metadatum, $args);
+		if ($filter !== null) {
+			return $filter;
+		}
+		
+		//////////////////////////////////////////
+		// Get the query for current items
+		// this avoids wp_query to run the query. We just want to build the query
+		if ( false !== $args['items_filter'] && is_array($args['items_filter']) ) {
+			add_filter('posts_pre_query', '__return_empty_array');
 			$items_query = $itemsRepo->fetch($args['items_filter'], $args['collection_id']);
 			$items_query = $items_query->request;
-			
 			remove_filter('posts_pre_query', '__return_empty_array');
 		}
 		//// end filtering query ////////
 		////////////////////////////////////////////
 		////////////////////////////////////////////
 
-		// TODO refactor, put elsewhere:
-		if (class_exists('EP_API')) {
-			$args['items_filter']['ep_integrate'] = true;
-			//$args['items_filter']['posts_per_page'] = 1;
-			$args['items_filter']['parent_id'] = $args['parent_id'];
-			if ( $metadatum_type == 'Tainacan\Metadata_Types\Taxonomy') {
-				$args['items_filter']['facet_metadatum_id'] = $taxonomy_slug;
-			} elseif ( $metadatum_type != 'Tainacan\Metadata_Types\Taxonomy') {
-				$args['items_filter']['facet_metadatum_id'] = $metadatum_id;
-			}
-		 	$items = $itemsRepo->fetch($args['items_filter'], $args['collection_id'], 'WP_Query');
-			$items_aggregations = \Tainacan\Elastic_Press::get_instance()->last_aggregations; //if elasticPress active
-			return [
-				'total' => count($items_aggregations), //'total' => count($items_aggregations),
-				'pages' => '0', //total de paginas? vish...
-				'values' => ['filters' => $items_aggregations]
-			];
-		}
-		//////////////////////////////////////////////////////
 		
 		$pagination = '';
 		if ( $args['offset'] >= 0 && $args['number'] >= 1 ) {
