@@ -300,7 +300,7 @@ class REST_Items_Controller extends REST_Controller {
 
 		}
 		
-		if ( $return_template ) {
+		if ( $return_template ) { // como é que isso aqui funciona!?
 			
 			ob_start();
 

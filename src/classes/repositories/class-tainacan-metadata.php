@@ -971,7 +971,8 @@ class Metadata extends Repository {
 		// TODO refactor, put elsewhere:
 		if (class_exists('EP_API')) {
 			$args['items_filter']['ep_integrate'] = true;
-			$args['items_filter']['posts_per_page'] = 1;
+			//$args['items_filter']['posts_per_page'] = 1;
+			$args['items_filter']['parent_id'] = $args['parent_id'];
 			if ( $metadatum_type == 'Tainacan\Metadata_Types\Taxonomy') {
 				$args['items_filter']['facet_metadatum_id'] = $taxonomy_slug;
 			} elseif ( $metadatum_type != 'Tainacan\Metadata_Types\Taxonomy') {
@@ -980,8 +981,8 @@ class Metadata extends Repository {
 		 	$items = $itemsRepo->fetch($args['items_filter'], $args['collection_id'], 'WP_Query');
 			$items_aggregations = \Tainacan\Elastic_Press::get_instance()->last_aggregations; //if elasticPress active
 			return [
-				'total' => count($items_aggregations),
-				'pages' => '0',
+				'total' => count($items_aggregations), //'total' => count($items_aggregations),
+				'pages' => '0', //total de paginas? vish...
 				'values' => ['filters' => $items_aggregations]
 			];
 		}

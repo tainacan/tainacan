@@ -13,7 +13,8 @@ namespace Tainacan;
 class Elastic_Press {
 	public $last_aggregations;
 	public $facets;
-	
+
+	private $aggregation_type = 'items';
 	private static $instance = null;
 	public static function get_instance() {
 		if ( ! isset( self::$instance ) ) {
@@ -25,7 +26,6 @@ class Elastic_Press {
 
 	protected function __construct($ajax_query=false) {
 		add_action('init', [$this, 'init']);
-		
 	}
 	
 	function init() {
@@ -42,12 +42,9 @@ class Elastic_Press {
 			$this->last_aggregations = $this->format_aggregations($aggregations);
 		}, 10, 3);
 
-		//format args to include aggregations for filters
-		//add_filter('ep_formatted_args', array($this, "add_aggs"));
-
 		add_action('ep_add_query_log', function($query) { //using to DEBUG
-			error_log("DEGUG:");
-			error_log($query["args"]["body"]);
+			// error_log("DEGUG:");
+			// error_log($query["args"]["body"]);
 		});
 	}
 	
@@ -131,21 +128,83 @@ class Elastic_Press {
 					}
 
 					if (isset($args['facet_metadatum_id']) && ($args['facet_metadatum_id'] == $data_id)) {
+						$this->$aggregation_type = 'facets';
 						$this->facets = [];
-						$this->facets[$id] = ["key" => $key, "field" => $field, "max_options" => $filter->get_max_options(), "metadata_type" => $metadata_type, "single" => true];
+						$this->facets[$id] = ["key" => $key, "field" => $field, "max_options" => $filter->get_max_options(), "metadata_type" => $metadata_type, "last_facet" => "", "parent" => $args['parent_id']];
 						break;
 					} else {
-						$this->facets[$id] = ["key" => $key, "field" => $field, "max_options" => $filter->get_max_options(), "metadata_type" => $metadata_type, "single" => false];
+						$this->$aggregation_type = 'items';
+						$this->facets[$id] = ["key" => $key, "field" => $field, "max_options" => $filter->get_max_options(), "metadata_type" => $metadata_type];
 					}
 				}
 			}
 		}
 
-		add_filter('ep_formatted_args', array($this, "add_aggs"));
+		add_filter('ep_formatted_args', array($this, "mount_aggregations")); //filtro para os argumentos já no formato a ser enviado para o elasticpress.
 		return $args;
 	}
 
-	public function add_aggs($formatted_args) {
+	/**
+	 * 
+	 * JSON exemple:
+	 * 
+	 * {
+	 *   "from" : 0,
+	 *   "size" : 12,
+	 *   "sort" : [ { "post_date" : { "order" : "desc" } } ],
+	 *   "query" : { "match_all":{ "boost":1 } },
+	 *   "post_filter" : {
+	 *     "bool" : {
+	 *       "must" : [
+	 *          { "term" : { "post_type.raw" : "tnc_col_6_item" } },
+	 *          { "term" : { "post_status":"publish" } }
+	 *       ]
+	 *     }
+	 *   },
+	 *   "aggs" : {
+	 *     "872.taxonomy.tnc_tax_5" : {
+	 *       "filter" : {
+	 *          "bool" : {
+	 *             "must" : [
+	 *                { "term" : { "post_type.raw":"tnc_col_6_item" } },
+	 *                { "term" : { "post_status":"publish" } }
+	 *             ]
+	 *          }
+	 *       },
+	 *       "aggs":{
+	 *          "872.taxonomy.tnc_tax_5":{
+	 *             "terms":{
+	 *                "size":"4",
+	 *                "script":{
+	 *                   "lang":"painless",
+	 *                   "source":"def c= ['']; for(term in params._source.terms.tnc_tax_5) { if(term.parent==0) { c.add(term.term_id); }} return c;"
+	 *                }
+	 *             }
+	 *          }
+	 *       }
+	 *     },
+	 *     "1026.meta.14" : {
+	 *       "filter":{
+	 *          "bool":{
+	 *             "must":[
+	 *                { "term" : { "post_type.raw":"tnc_col_6_item" } },
+	 *                { "term" : { "post_status":"publish" } }
+	 *             ]
+	 *          }
+	 *       },
+	 *       "aggs":{
+	 *          "1026.meta.14":{
+	 *             "terms":{
+	 *               "size":"4",
+	 *               "field":"meta.14.raw"
+	 *             }
+	 *          }
+	 *       }
+	 *     }
+	 *   }
+	 * }
+	 */
+	private function mount_aggregations_items(&$formatted_args) {
 		$default_filters = $formatted_args['post_filter'];
 		$aggs = [];
 		
@@ -198,11 +257,107 @@ class Elastic_Press {
 			}
 			
 		}
+		return $aggs;
+	}
+
+	/**
+	 * 
+	 * JSON exemple:
+	 * 
+	 * {
+	 *   "from":0,
+	 *   "size":0,
+	 *   "sort":[{"post_date":{"order":"desc"}}],
+	 *   "query":{
+	 *     "bool":{
+	 *       "must":[
+	 *         {"term":{"post_type.raw":"tnc_col_6_item"}},
+	 *         {"term":{"post_status":"publish"}}
+	 *       ]
+	 *     }
+	 *   },
+	 *   "aggs":{
+	 *     "872.taxonomy.tnc_tax_5":{
+	 *       "composite" : {
+	 *         "size": 2,
+	 *         "after" : { "tnc_tax_5" : "2" },
+	 *         "sources" : [
+	 *           { "tnc_tax_5": {
+	 *             "terms": {
+	 *               "script":{
+	 *                  "lang":"painless",
+	 *                  "source":"def c= ['']; for(term in params._source.terms.tnc_tax_5) { if(term.parent==0) { c.add(term.term_id); }} return c;"
+	 *               }
+	 *             }
+	 *           } }
+	 *         ]
+	 *       }
+	 *     }
+	 *   }
+	 * }
+	 */
+	private function mount_aggregations_facets(&$formatted_args) {
+		$facets_per_page = 10;
+		$formatted_args['size'] 	= 0;
+		$formatted_args['query'] 	= $formatted_args['post_filter'];
+		unset($formatted_args['post_filter']);
+		foreach($this->facets as $id => $filter) {
+			if ($filter['metadata_type'] == 'Tainacan\Metadata_Types\Taxonomy') {
+				$field = $filter['field'];
+				$parent = $filter['parent'];
+				$aggs[$id] = [
+					"composite"	=> array(
+						"size" => $facets_per_page,
+						"sources" => [
+							$id => [
+								"terms" => [
+									"script" => [
+										"lang"		=> "painless",
+										"source"	=> "def c= ['']; for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }} return c;"
+									]
+								]
+							]
+						]
+					)
+				];
+			} else {
+				$aggs[$id] = [
+					"composite"	=> array(
+						"size" => $facets_per_page,
+						"sources" => [ $id => [ "terms" => [ "field" => $filter['field'] ] ] ]
+					)
+				];
+			}
+
+			if($filter['last_facet'] != '') {
+				$aggs[$id]['composite']['after'] = ['$id' => $filter['last_facet'] ];
+			}
+		}
+		return $aggs;
+	}
+
+	/**
+	 * Create a formatted array of args to send to elasticpress containing the aggregations for items or for facets according to request
+	 * 
+	 * @param \Array $formatted_args initial array generated by plugin elasticpress
+	 *
+	 * @return \Array with formatted array of args.
+	 */
+	public function mount_aggregations($formatted_args) {
+		switch ($this->$aggregation_type) {
+			case 'items':
+				$aggs = $this->mount_aggregations_items($formatted_args);
+				break;
+			case 'facets':
+				$aggs = $this->mount_aggregations_facets($formatted_args);
+				break;
+		}
 		$formatted_args['aggs'] = $aggs;
 		return $formatted_args;
 	}
 
-	public function format_aggregations($aggregations) {
+
+	private function format_aggregations_items(&$aggregations) {
 		global $wpdb;
 		$formated_aggs = [];
 		foreach($aggregations as $key => $aggregation) {
@@ -242,6 +397,60 @@ class Elastic_Press {
 			}
 		}
 		return $formated_aggs;
+	}
+
+	private function format_aggregations_facets(&$aggregations) {
+		global $wpdb;
+		$formated_aggs = [];
+		foreach($aggregations as $key => $aggregation) {
+			$metadata_type = \explode(".", $key);
+			$filter_id = $metadata_type[0];
+			if($metadata_type[1] == 'taxonomy') {
+				$taxonomy_slug = $metadata_type[2];
+				$formated_aggs[$filter_id] = [];
+				foreach ($aggregation['buckets'] as $term) {
+					$term_id = $term['key'][$key];
+					if ($term_id == '') continue;
+
+					$term_object = \Tainacan\Repositories\Terms::get_instance()->fetch($term_id, $taxonomy_slug);
+					$count_query = $wpdb->prepare("SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", $term_id);
+					$total_children = $wpdb->get_var($count_query);
+					$formated_aggs[$filter_id][] = [
+						"type" 						=> "Taxonomy",
+						"value" 					=> $term_id,
+						"taxonomy" 				=> $taxonomy_slug,
+						"taxonomy_id"			=> $taxonomy_slug,
+						"total_children"	=> $total_children,
+						"total_items"			=> $term['doc_count'],
+						"label" 					=> $term_object->get('name'),
+						"parent"					=> $term_object->get('parent')
+					];
+				}
+			} else {
+				$metada_label = $metadata_type[1];
+				$formated_aggs[$filter_id] = [];
+				if (isset($aggregation['buckets']))
+				foreach ($aggregation['buckets'] as $term) {
+					if ($term['key'][$key] == '') continue;
+					$formated_aggs[$filter_id][] = [
+						"type" 				=> "Text",
+						"label" 			=> $term['key'][$key],
+						"value" 			=> $term['key'][$key],
+						"total_items" => $term['doc_count']
+					];
+				}
+			}
+		}
+		return $formated_aggs;
+	}
+
+	public function format_aggregations($aggregations) {
+		switch ($this->$aggregation_type) {
+			case 'items':
+				return $this->format_aggregations_items($aggregations);
+			case 'facets':
+				return  $this->format_aggregations_facets($aggregations);
+		}
 	}
 
 } // END
