@@ -34,8 +34,7 @@ class Oaipmh_Importer extends Importer {
 
         $this->remove_import_method('file');
         $this->add_import_method('url');
-        $this->tainacan_api_address = "/wp-json/tainacan/v1";
-        $this->wordpress_api_address = "/wp-json/wp/v2";
+        $this->tainacan_api_address = "/wp-json/tainacan/v1/oai";
 
     }
 
@@ -47,7 +46,82 @@ class Oaipmh_Importer extends Importer {
 
     }
 
+    /**
+     * create all collections and its metadata
+     *
+     */
+    public function create_collections(){
+
+        $this->add_log('Creating collections');
+        $collection_xml = $this->fetch_collections();
+
+        if( isset($collection_xml->ListSets) ){
+            foreach ($collection_xml->ListSets->set as $set) {
+
+                $setSpec = $set->setSpec;
+                $setName = $set->setName;
+            }
+        }
+
+        //TODO: CREATE COLLECTION
+
+        foreach ($this->fetch_collections() as $collection) {
+            $map = [];
+            $this->add_log(memory_get_usage());
+
+            if ( isset($collection->post_title) && $collection->post_status === 'publish') {
+
+                $collection_id = $this->create_collection( $collection );
+                foreach( $this->get_collection_metadata( $collection->ID ) as $metadatum_old ) {
+
+                    if (isset($metadatum_old->slug) && strpos($metadatum_old->slug, 'socialdb_property_fixed') === false) {
+                        $metadatum_id = $this->create_metadata( $metadatum_old, $collection_id );
+
+                        if( $metadatum_id ){
+                            $map[$metadatum_id] = $metadatum_old->id;
+                        }
+
+                    } else if( isset($metadatum_old->slug) && strpos($metadatum_old->slug, 'socialdb_property_fixed_tags') !== false
+                        && isset($metadatum_old->type) && strpos($metadatum_old->type, 'checkbox') !== false
+                    ){
+                        $metadatum_id = $this->create_metadata( $metadatum_old, $collection_id );
+                        $this->add_log('Creating tag');
+                        if( $metadatum_id ){
+                            $map[$metadatum_id] = $metadatum_old->id;
+                        }
+                    }
+
+                }
+
+                if( isset($collection->ID) ) {
+                    $this->add_collection([
+                        'id' => $collection_id,
+                        'mapping' => $map,
+                        'total_items' => intval($this->get_total_items_from_source($collection->ID)),
+                        'source_id' => $collection->ID
+                    ]);
+                }
+            }
+
+        }
+
+        return false;
+    }
+
     //private functions
+
+    /**
+     * return all taxonomies from tainacan old
+     * @return array
+     */
+    protected function fetch_collections(){
+
+        $collections_link = $this->get_url() . $this->tainacan_api_address . "?verb=ListSets";
+        $collections = $this->requester($collections_link);
+        $collections_array = $this->decode_request($collections, $collections_link);
+
+        return ($collections_array) ? $collections_array : [];
+    }
 
     /**
      * decode request from wp_remote
@@ -62,7 +136,13 @@ class Oaipmh_Importer extends Importer {
             return false;
 
         } else if (isset($result['body'])){
-            // TODO: parse body
+
+            try {
+                $xml = new \SimpleXMLElement($result['body']);
+                return $xml;
+            } catch (Exception $e) {
+                return false;
+            }
         }
 
         $this->add_error_log('Error in fetch remote');
