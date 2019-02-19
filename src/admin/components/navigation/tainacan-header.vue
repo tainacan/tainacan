@@ -94,7 +94,7 @@
                     class="level-item"
                     :href="wordpressAdmin">
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-wordpress"/>
+                    <i class="tainacan-icon tainacan-icon-wordpress"/>
                 </span>
             </a>
         </div>
@@ -207,6 +207,10 @@
             }
             .button:hover, .button:active, .button:focus {
                 background-color: white !important;
+            }
+
+            .tainacan-icon-wordpress {
+                font-size: 26px;
             }
             
             .search-area {

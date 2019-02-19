@@ -88,9 +88,6 @@
                                 class="tainacan-modal-content">
                             <div class="tainacan-modal-title">
                                 <h2>{{ $i18n.get('instruction_select_metadatum_type') }}</h2>
-                                <a 
-                                        class="back-link"
-                                        @click="onMetadatumEditionCanceled(); isNewMetadatumModalActive = false">{{ $i18n.get('exit') }}</a>
                                 <hr>
                             </div>
                             <section class="tainacan-form">
@@ -103,6 +100,16 @@
                                         <h4>{{ metadatumType.name }}</h4>           
                                     </div>
                                 </div>
+                                <div class="field is-grouped form-submit">
+                                    <div class="control">
+                                        <button
+                                                id="button-cancel-importer-edition"
+                                                class="button is-outlined"
+                                                type="button"
+                                                @click="onMetadatumEditionCanceled(); isNewMetadatumModalActive = false">
+                                            {{ $i18n.get('cancel') }}</button>
+                                    </div>
+                                </div>
                             </section>
                         </div>
                         <div 
@@ -110,6 +117,11 @@
                                 class="tainacan-modal-content">
                             <div class="tainacan-modal-title">
                                 <h2>{{ $i18n.get('instruction_configure_new_metadatum') }}</h2>
+                                <a 
+                                        class="back-link" 
+                                        @click="isEditingMetadatum = false">
+                                    {{ $i18n.get('back') }}
+                                </a>
                                 <hr>
                             </div>
                             <metadatum-edition-form

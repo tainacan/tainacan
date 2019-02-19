@@ -366,6 +366,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_list_pagination'			                 => __( 'List pagination', 'tainacan' ),
 	'label_sort_visualization'		                 => __( 'Sorting and visualization control', 'tainacan' ),
 	'label_tainacan_api'			                 => __( 'Tainacan API', 'tainacan' ),
+	'label_filter_type_preview'				         => __( 'Filter type preview', 'tainacan' ),
+	'label_metadatum_type_preview'				     => __( 'Metadatum type preview', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -374,7 +376,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_image_upload_box'                   => __( 'Drop an image here or click to upload.', 'tainacan' ),
 	'instruction_select_a_status'                    => __( 'Select a status:', 'tainacan' ),
 	'instruction_select_a_status2'                   => __( 'Select a status', 'tainacan' ),
-	'instruction_select_a_filter_type'               => __( 'Select a filter type:', 'tainacan' ),
+	'instruction_click_to_select_a_filter_type'               => __( 'Click to select a filter type:', 'tainacan' ),
 	'instruction_select_a_parent_term'               => __( 'Select a parent term:', 'tainacan' ),
 	'instruction_select_a_metadatum'                 => __( 'Select a metadatum', 'tainacan' ),
 	'instruction_cover_page'                         => __( 'Type to search a Page to choose.', 'tainacan' ),
@@ -395,7 +397,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_select_an_importer_type'            => __( 'Select an importer from the options below:', 'tainacan' ),
 	'instruction_drop_file_or_click_to_upload'       => __( 'Drop your source file or click here to upload.', 'tainacan' ),
 	'instruction_select_metadatum_type'              => __( 'Select a metadatum type', 'tainacan' ),
-	'instruction_configure_new_metadatum'            => __( 'Configure new metadatum.', 'tainacan' ),
+	'instruction_configure_new_metadatum'            => __( 'Configure new metadatum', 'tainacan' ),
 	'instruction_insert_mapper_metadatum_info'       => __( 'Insert the new mapper\'s metadatum info', 'tainacan' ),
 	'instruction_select_max_options_to_show'         => __( 'Select max options to show', 'tainacan' ),
 	'instruction_select_collection_fetch_items'      => __( 'Select a collection to fetch items', 'tainacan' ),
@@ -404,6 +406,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_type_existing_term'                 => __( 'Type to add an existing term...', 'tainacan' ),
 	'instruction_select_an_exporter_type'            => __( 'Select an exporter from the options below:', 'tainacan'),
 	'instruction_select_a_collection'                => __( 'Select a collection', 'tainacan' ),
+	'instruction_hover_a_filter_type_to_preview'     => __( 'Hover a filter type to preview', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_error_invalid_date'                        => __( 'Invalid date', 'tainacan' ),

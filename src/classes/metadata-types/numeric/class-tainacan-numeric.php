@@ -16,6 +16,13 @@ class Numeric extends Metadata_Type {
         $this->set_component('tainacan-numeric');
         $this->set_name( __('Numeric', 'tainacan') );
         $this->set_description( __('A numeric value, integer or float', 'tainacan') );
+        $this->set_preview_template('
+            <div>
+                <div class="control is-clearfix">
+                    <input type="number" placeholder="3,1415" class="input"> 
+                </div>
+            </div>
+        ');
     }
 
     /**

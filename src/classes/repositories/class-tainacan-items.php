@@ -313,7 +313,7 @@ class Items extends Repository {
 	public function delete( $item_id ) {
 		$deleted = new Entities\Item( wp_delete_post( $item_id, true ) );
 
-		if ( $deleted ) {
+		if ( $deleted && $this->use_logs) {
 			$this->logs_repository->insert_log( $deleted, [], false, true );
 
 			do_action( 'tainacan-deleted', $deleted );
@@ -330,7 +330,7 @@ class Items extends Repository {
 	public function trash( $item_id ) {
 		$trashed = new Entities\Item( wp_trash_post( $item_id ) );
 
-		if ( $trashed ) {
+		if ( $trashed && $this->use_logs) {
 			$this->logs_repository->insert_log( $trashed, [], false, false, true );
 
 			do_action( 'tainacan-trashed', $trashed );

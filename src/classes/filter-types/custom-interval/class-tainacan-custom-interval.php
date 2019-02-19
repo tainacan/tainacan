@@ -12,6 +12,17 @@ class Custom_Interval extends Filter_Type {
     function __construct(){
         $this->set_supported_types(['float','date']);
         $this->set_component('tainacan-filter-custom-interval');
+        $this->set_preview_template('
+            <div>
+                <div class="control is-small is-clearfix">
+                    <input type="number" step="any" value="6" class="input is-small"> 
+                </div> 
+                <p class="is-size-7 has-text-centered is-marginless">until</p> 
+                <div class="control is-small is-clearfix">
+                    <input type="number" step="any" value="10" class="input is-small"> 
+                </div>
+            </div>
+        ');
     }
 
     /**

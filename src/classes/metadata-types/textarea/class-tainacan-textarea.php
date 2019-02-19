@@ -16,8 +16,16 @@ class Textarea extends Metadata_Type {
         $this->set_primitive_type('long_string');
 		$this->set_component('tainacan-textarea');
 		$this->set_name( __('Textarea', 'tainacan') );
-        $this->set_description( __('A textarea with multiple lines', 'tainacan') );
-    }
+		$this->set_description( __('A textarea with multiple lines', 'tainacan') );
+		$this->set_preview_template('
+			<div>
+				<div class="control is-clearfix">
+					<textarea rows="3" placeholder="' . __('Type some long text here...') . '" class="input"></textarea> 
+				</div>
+			</div>
+		');
+	
+	}
 
     /**
      * @param $itemMetadata \Tainacan\Entities\Item_Metadata_Entity The instace of the entity itemMetadata

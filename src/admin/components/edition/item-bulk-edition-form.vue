@@ -107,7 +107,7 @@
                             <span 
                                     v-if="item.document != '' && item.document_type != 'empty'"
                                     class="icon has-text-success">
-                                <i class="tainacan-icon tainacan-icon-24px tainacan-icon-approvedcircle" />
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approvedcircle" />
                             </span>  
                         </div>   
                         <div 

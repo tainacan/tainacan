@@ -60,7 +60,9 @@
                                     v-for="(metadatum, index) in activeMetadatumList"
                                     :key="index">
                                 <div class="handle">
-                                    <span class="icon grip-icon">
+                                    <span 
+                                            v-if="!(isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder)"
+                                            class="icon grip-icon">
                                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
                                     </span>
                                     <span class="icon icon-level-identifier">
@@ -70,7 +72,7 @@
                                                 'tainacan-icon-repository': (metadatum.collection_id == 'default') || isRepositoryLevel,
                                                 'has-text-turquoise5': metadatum.enabled && (metadatum.collection_id != 'default' && !isRepositoryLevel), 
                                                 'has-text-blue5': metadatum.enabled && (metadatum.collection_id == 'default' || isRepositoryLevel),
-                                                'has-text-gray': !metadatum.enabled
+                                                'has-text-gray3': !metadatum.enabled
                                             }"
                                             class="tainacan-icon" />
                                     </span>  
@@ -171,25 +173,21 @@
                                         :class="{ 'hightlighted-metadatum' : hightlightedMetadatum == metadatum.name, 'inherited-metadatum': isRepositoryLevel }"
                                         v-for="(metadatum, index) in availableMetadatumList"
                                         :key="index">
-                                    <div 
-                                            v-if="metadatum.preview_template"
-                                            class="metadata-type-preview tainacan-form">
-                                        <div class="field">
-                                            <span class="collapse-handle">
-                                                <span class="icon">
-                                                    <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
-                                                </span> 
-                                                <label class="label has-tooltip">
-                                                    {{ metadatum.name }}
-                                                </label>
-                                            </span>
-                                            <div v-html="metadatum.preview_template"/>
-                                        </div>
-                                    </div>
                                     <span class="icon grip-icon">
                                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
                                     </span>
-                                    <span class="metadatum-name">{{ metadatum.name }}</span>
+                                    <span class="metadatum-name">
+                                        {{ metadatum.name }}
+                                        <span 
+                                                v-tooltip.top="{
+                                                    classes: ['metadata-type-preview-tooltip'],
+                                                    content: getPreviewTemplateContent(metadatum),
+                                                    html: true
+                                                }"
+                                                class="icon preview-help-icon has-text-secondary">
+                                            <i class="tainacan-icon tainacan-icon-help"/>
+                                        </span>
+                                    </span>
                                     <span 
                                             class="loading-spinner" 
                                             v-if="hightlightedMetadatum == metadatum.name"/>
@@ -199,7 +197,8 @@
                     </div> 
                 </div>
             </b-tab-item>
-            <!-- Exposer -->
+
+            <!-- Exposer --------------- -->
             <b-tab-item
                     :label="$i18n.get('mapping')"
                     v-model="activeMetadatumList">
@@ -792,6 +791,22 @@ export default {
                 .catch(() => {
                     this.isLoadingMetadata = false;
                 });
+        },
+        getPreviewTemplateContent(metadatum) {
+            return `<div class="metadata-type-preview tainacan-form">
+                        <span class="metadata-type-label">` + this.$i18n.get('label_metadatum_type_preview') + `</span>
+                        <div class="field">
+                            <span class="collapse-handle">
+                                <span class="icon">
+                                    <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"></i>
+                                </span> 
+                                <label class="label has-tooltip">`
+                                    + metadatum.name +
+                                `</label>
+                            </span>
+                            <div>` + metadatum.preview_template + `</div>
+                        </div>
+                    </div>`;
         }
     },
     mounted() {
@@ -861,7 +876,12 @@ export default {
                 width: 100%;
             }
         }
-                    
+                  
+        .b-tabs .tab-content {
+            overflow: visible;
+            min-height: 500px;
+        }
+                  
         .column:not(.available-metadata-area){
             overflow: hidden;
             flex-grow: 2;
@@ -869,11 +889,11 @@ export default {
 
         .page-title {
             border-bottom: 1px solid $secondary;
+            margin: 1em 0em 2.0em 0em;
             h2 {
                 color: $blue5;
                 font-weight: 500;
             }
-            margin: 1em 0em 2.0em 0em;
         }
 
         .w-100 {
@@ -992,9 +1012,6 @@ export default {
                     .metadatum-name {
                         color: $secondary;
                     }
-                    .handle .label-details, .handle .icon {
-                        color: $gray3 !important;
-                    }
                 }
                 &.disabled-metadatum {
                     color: $gray3;
@@ -1094,6 +1111,10 @@ export default {
                     position: relative;
                     bottom: 1px;
                 }
+                .preview-help-icon {
+                    position: absolute;
+                    top: 6px;
+                }
                 .metadatum-name {
                     text-overflow: ellipsis;
                     overflow-x: hidden;
@@ -1130,46 +1151,16 @@ export default {
                     border-bottom-width: 20px;
                     left: -20px;
                 }
-                &:hover {
-                    .metadata-type-preview {
-                        visibility: visible;
-                        opacity: 1;
-                        left: -210px;
-                        transition-delay: 1s;
-
-                        &::before {
-                            border-color: transparent $gray1 transparent transparent;
-                            border-left-width: 16px;
-                            border-top-width: 20px;
-                            border-bottom-width: 20px;
-                            right: -19px;
-                        }
-                    }
-                }
-
-                .metadata-type-preview {
-                    position: absolute;
-                    background: $gray1;
-                    padding: 12px;
-                    border-radius: 3px;
-                    z-index: 9999999999999;
-                    width: 180px;
-                    height: 120px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    left: -180px;
-                    top: -40px;
-                    visibility: hidden;
-                    opacity: 0;
-                    transition: opacity ease 0.3s, visibility ease 0.3s, left ease 0.3s;
-                    transition-delay: 0.1s;
-
-                }
             }
 
             .sortable-drag {
                 opacity: 1 !important;
+            }
+
+            .sortable-chosen {
+                .metadata-type-preview {
+                    display: none;
+                }
             }
 
             @keyframes hightlighten {

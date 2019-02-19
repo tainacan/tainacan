@@ -96,4 +96,16 @@
     .active-metadatum-item.not-focusable-item>.handle>.metadatum-name {
         color: $blue3 !important;
     }
+    .metadata-type-preview {
+        background-color: $blue1 !important;
+        .metadata-type-label {
+            color: $blue4 !important;
+        }
+        .autocomplete>.control, .autocomplete>.control>input, .dropdown-content {
+            background-color: #f9fcff !important;
+        }
+        &::before {
+            border-color: transparent transparent transparent $blue1 !important;
+        }
+    }
 }

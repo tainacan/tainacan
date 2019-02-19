@@ -297,11 +297,8 @@
                                     v-for="metadatum of sortingMetadata"
                                     v-if="
                                         totalItems > 0 &&
-                                        metadatum != undefined &&
-                                        metadatum.slug === 'creation_date' || (
-                                        metadatum.metadata_type_object && 
-                                        metadatum.metadata_type_object.related_mapped_prop == 'title'
-                                    )"
+                                        metadatum != undefined 
+                                    "
                                     :value="metadatum"
                                     :key="metadatum.slug">
                                 {{ metadatum.name }}
@@ -626,7 +623,7 @@
 
                 <h3 
                         id="items-list-landmark"
-                        class="is-hidden">
+                        class="sr-only">
                     {{ $i18n.get('label_items_list') }}
                 </h3>
 
@@ -1044,13 +1041,13 @@
                 let authorNameMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'author_name');
                 
                 let descriptionMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.metadata_type_object != undefined ? metadatum.metadata_type_object.related_mapped_prop == 'description' : false);
-              
+
                 // Updates Search
                 this.$eventBusSearch.addFetchOnly(
-                    thumbnailMetadatum != undefined && thumbnailMetadatum.display ? 'thumbnail' : null +','+
-                    creationDateMetadatum != undefined && creationDateMetadatum.display ? 'creation_date' : null +','+
-                    authorNameMetadatum != undefined && authorNameMetadatum.display ? 'author_name': null +','+
-                    (this.isRepositoryLevel ? 'title' : null) +','+
+                    ((thumbnailMetadatum != undefined && thumbnailMetadatum.display) ? 'thumbnail' : null) + ',' +
+                    ((creationDateMetadatum != undefined && creationDateMetadatum.display) ? 'creation_date' : null) + ',' +
+                    ((authorNameMetadatum != undefined && authorNameMetadatum.display) ? 'author_name': null) + ',' +
+                    (this.isRepositoryLevel ? 'title' : null) + ',' +
                     (this.isRepositoryLevel && descriptionMetadatum.display ? 'description' : null), false, fetchOnlyMetadatumIds.toString());
 
                 // Closes dropdown
@@ -1169,8 +1166,17 @@
                                     if (display) {
                                         fetchOnlyMetadatumIds.push(metadatum.id);
                                     }
+                                    
+                                    if (
+                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
+                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Taxonomy' &&
+                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Relationship'
+                                    ) {
+                                        this.sortingMetadata.push(metadatum);
+                                    }
+                                    
                                 }
-                                this.sortingMetadata.push(metadatum);
+                                
                             }
 
                             let creationDateMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[1] != null) : true;

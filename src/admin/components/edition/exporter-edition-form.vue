@@ -164,14 +164,17 @@
 
                 let exporterSessionUpdated = {
                     body: {
-                        collection: {
-                            id: this.selectedCollection
-                        },
                         mapping_selected: this.selectedMapping ? this.selectedMapping : this.selectedMapping,
                         send_email: this.sendEmail
                     },
                     id: this.exporterSession.id,
                 };
+
+                if (this.exporterSession.manual_collection) {
+                    exporterSessionUpdated['body']['collection'] = {
+                        id: this.selectedCollection
+                    };
+                }                
 
                 this.updateExporterSession(exporterSessionUpdated)
                     .then(exporterSessionUpdated => {
@@ -194,7 +197,7 @@
             },
             formIsValid(){
                 return (
-                    this.selectedCollection &&
+                    ((this.exporterSession.manual_collection && this.selectedCollection) || !this.exporterSession.manual_collection) &&
                     ((!this.exporterSession.accept_no_mapping && this.selectedMapping) ||
                         this.exporterSession.accept_no_mapping) &&
                     !this.formErrorMessage

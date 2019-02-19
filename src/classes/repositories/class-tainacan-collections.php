@@ -69,7 +69,7 @@ class Collections extends Repository {
 				'description' => __( 'The collection modification date', 'tainacan' )
 			],
 			'order'                      => [
-				'map'         => 'menu_order',
+				'map'         => 'order',
 				'title'       => __( 'Order', 'tainacan' ),
 				'type'        => 'string',
 				'description' => __( 'Collection order. This metadata is used if collections are manually ordered.', 'tainacan' ),
@@ -302,7 +302,7 @@ class Collections extends Repository {
 	public function delete( $collection_id ) {
 		$deleted = new Entities\Collection( wp_delete_post( $collection_id, true ) );
 
-		if ( $deleted ) {
+		if ( $deleted && $this->use_logs) {
 			$this->logs_repository->insert_log( $deleted, [], false, true );
 
 			do_action( 'tainacan-deleted', $deleted );
@@ -319,7 +319,7 @@ class Collections extends Repository {
 	public function trash( $collection_id ) {
 		$trashed = new Entities\Collection( wp_trash_post( $collection_id ) );
 
-		if ( $trashed ) {
+		if ( $trashed && $this->use_logs) {
 			$this->logs_repository->insert_log( $trashed, [], false, false, true );
 
 			do_action( 'tainacan-trashed', $trashed );

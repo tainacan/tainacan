@@ -9,8 +9,11 @@
             </header>
             <section class="tainacan-form">
                 <p>{{ $i18n.get('instruction_select_an_exporter_type') }}</p>
-                <div class="exporter-types-container">
+                <div 
+                        role="list"
+                        class="exporter-types-container">
                     <div
+                            role="listitem"
                             class="exporter-type"
                             v-for="exporterType in availableExporters"
                             :key="exporterType.slug"
@@ -20,6 +23,16 @@
                         <p>{{ exporterType.description }}</p>
                     </div>
                 </div>
+                <footer class="field is-grouped form-submit">
+                    <div class="control">
+                        <button
+                                id="button-cancel-exporter-selection"
+                                class="button is-outlined"
+                                type="button"
+                                @click="$parent.close();">
+                            {{ $i18n.get('cancel') }}</button>
+                    </div>
+                </footer>
 
                 <b-loading
                         :active.sync="isLoading"

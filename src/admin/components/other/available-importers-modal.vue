@@ -9,8 +9,11 @@
             </header>
             <section class="tainacan-form">
                  <p>{{ $i18n.get('instruction_select_an_importer_type') }}</p>
-                <div class="importer-types-container">
+                <div 
+                        role="list"
+                        class="importer-types-container">
                     <div
+                            role="listitem"
                             class="importer-type"
                             v-for="importerType in availableImporters"
                             :key="importerType.slug"
@@ -19,22 +22,24 @@
                         <h4>{{ importerType.name }}</h4>
                         <p>{{ importerType.description }}</p>            
                     </div>
-                </div>
-                
-                <b-loading 
+
+                    <b-loading 
+                        :is-full-page="false"
                         :active.sync="isLoading" 
                         :can-cancel="false"/>
-               <!-- <footer class="field is-grouped form-submit">
+                </div>
+                
+               <footer class="field is-grouped form-submit">
                     <div class="control">
                         <button 
                                 class="button is-outlined" 
                                 type="button" 
                                 @click="$parent.close()">Close</button>
                     </div>
-                    <div class="control">
+                    <!-- <div class="control">
                         <button class="button is-success">Confirm</button>
-                    </div>
-                </footer> -->
+                    </div> -->
+                </footer>
             </section>
         </div>
     </form>     
@@ -83,6 +88,7 @@ export default {
     @import "../../scss/_variables.scss";
 
     .importer-types-container {
+        position: relative;
 
         .importer-type {
             border-bottom: 1px solid $gray2;

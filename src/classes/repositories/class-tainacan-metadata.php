@@ -552,7 +552,7 @@ class Metadata extends Repository {
 	public function delete( $metadatum_id ) {
 		$deleted = new Entities\Metadatum( wp_delete_post( $metadatum_id, true ) );
 
-		if ( $deleted ) {
+		if ( $deleted && $this->use_logs) {
 			$this->logs_repository->insert_log( $deleted, [], false, true );
 
 			do_action( 'tainacan-deleted', $deleted );
@@ -572,7 +572,7 @@ class Metadata extends Repository {
 
 		$trashed = new Entities\Metadatum( wp_trash_post( $metadatum_id ) );
 
-		if ( $trashed ) {
+		if ( $trashed && $this->use_logs) {
 			$this->logs_repository->insert_log( $trashed, [], false, false, true );
 
 			do_action( 'tainacan-trashed', $trashed );
@@ -692,14 +692,15 @@ class Metadata extends Repository {
 
 	/**
 	 * @param Entities\Collection $collection
+	 * @param bool $force if true will register core metadata even if collection is auto draft
 	 *
 	 * @return bool
 	 * @throws \ErrorException
 	 * @throws \Exception
 	 */
-	public function register_core_metadata( Entities\Collection $collection ) {
+	public function register_core_metadata( Entities\Collection $collection, $force = false ) {
 
-		if ( $collection->get_status() == 'auto-draft' ) {
+		if ( $force !== true && $collection->get_status() == 'auto-draft' ) {
 			return;
 		}
 

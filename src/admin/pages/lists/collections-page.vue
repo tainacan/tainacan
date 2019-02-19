@@ -1,11 +1,13 @@
 <template>
     <div class="repository-level-page page-container">
-        <b-loading :active.sync="isLoadingMetadatumMappers"/>
+        <b-loading :active.sync="isLoading"/>
         <tainacan-title 
                 :bread-crumb-items="[{ path: '', label: this.$i18n.get('collections') }]"/>
         <div
                 class="sub-header"
                 v-if="$userCaps.hasCapability('edit_tainacan-collections')">
+            
+            <!-- New Collection button -->
             <div class="header-item">
                 <b-dropdown id="collection-creation-options-dropdown">
                     <button
@@ -49,6 +51,39 @@
                     </b-dropdown-item>
                 </b-dropdown>
             </div>
+
+            <!-- Sorting options ----  -->
+            <b-field class="header-item">
+                <b-select
+                        class="sorting-select"
+                        :disabled="collections.length <= 0"
+                        @input="onChangeOrderBy($event)"
+                        :value="orderBy"
+                        :label="$i18n.get('label_sorting')">
+                    <option
+                            v-for="(option, index) in sortingOptions"
+                            :value="option.value"
+                            :key="index">
+                        {{ option.label }}
+                    </option>
+                </b-select>
+                <button
+                        :disabled="collections.length <= 0 || isLoading || order == 'asc'"
+                        class="button is-white is-small"
+                        @click="onChangeOrder('asc')">
+                    <span class="icon gray-icon is-small">
+                        <i class="tainacan-icon tainacan-icon-sortascending tainacan-icon-20px"/>
+                    </span>
+                </button>
+                <button
+                        :disabled="collections.length <= 0 || isLoading || order == 'desc'"
+                        class="button is-white is-small"
+                        @click="onChangeOrder('desc')">
+                    <span class="icon gray-icon is-small">
+                        <i class="tainacan-icon tainacan-icon-sortdescending tainacan-icon-20px"/>
+                    </span>
+                </button>
+            </b-field>
         </div>
 
         <div class="above-subheader">
@@ -94,7 +129,9 @@
                             <p v-if="status == 'trash'">{{ $i18n.get('info_no_collection_trash') }}</p>
 
                             <div v-if="$userCaps.hasCapability('edit_tainacan-collections') && status == undefined || status == ''">
-                                <b-dropdown id="collection-creation-options-dropdown">
+                                <b-dropdown 
+                                        :disabled="isLoadingMetadatumMappers"
+                                        id="collection-creation-options-dropdown">
                                     <button
                                             class="button is-secondary"
                                             slot="trigger">
@@ -198,7 +235,13 @@ export default {
             page: 1,
             collectionsPerPage: 12,
             isLoadingMetadatumMappers: true,
-            status: ''
+            status: '',
+            order: 'desc',
+            ordeBy: 'date',
+            sortingOptions: [
+                { label: this.$i18n.get('label_title'), value: 'title' },
+                { label: this.$i18n.get('label_creation_date'), value: 'date' },
+            ]
         }
     },
     components: {
@@ -236,6 +279,33 @@ export default {
             this.status = status;
             this.loadCollections();
         },
+        onChangeOrder(newOrder) {
+            if (newOrder != this.order) { 
+                this.$userPrefs.set('collections_order', newOrder)
+                    .then((newOrder) => {
+                        this.order = newOrder;
+                    })
+                    .catch(() => {
+                        this.$console.log("Error settings user prefs for collections order")
+                    });
+
+            }
+            this.order = newOrder;
+            this.loadCollections()
+        },
+        onChangeOrderBy(newOrderBy) {
+            if (newOrderBy != this.orderBy) { 
+                this.$userPrefs.set('collections_order_by', newOrderBy)
+                    .then((newOrderBy) => {
+                        this.orderBy = newOrderBy;
+                    })
+                    .catch(() => {
+                        this.$console.log("Error settings user prefs for collections orderby")
+                    });
+            }
+            this.orderBy = newOrderBy;
+            this.loadCollections();
+        },
         onChangeCollectionsPerPage(value) {
             
             if (value != this.collectionsPerPage) {
@@ -258,10 +328,13 @@ export default {
             this.cleanCollections();    
             this.isLoading = true;
             this.fetchCollections({ 
-                'page': this.page, 
-                'collectionsPerPage': this.collectionsPerPage,
-                'status': this.status,
-                'contextEdit': true })
+                page: this.page, 
+                collectionsPerPage: this.collectionsPerPage,
+                status: this.status,
+                contextEdit: true, 
+                order: this.order,
+                orderby: this.orderBy
+            })
             .then((res) => {
                 this.isLoading = false;
                 this.totalCollections = res.total;
@@ -297,10 +370,24 @@ export default {
     mounted(){
         if (this.collectionsPerPage != this.$userPrefs.get('collections_per_page'))
             this.collectionsPerPage = this.$userPrefs.get('collections_per_page');
-
         if (!this.collectionsPerPage) {
             this.collectionsPerPage = 12;
             this.$userPrefs.set('collections_per_page', 12);
+        }
+
+        if (this.order != this.$userPrefs.get('collections_order'))
+            this.order = this.$userPrefs.get('collections_order');
+        if (!this.order) {
+            this.order = 'asc';
+            this.$userPrefs.set('collections_order', 'asc');
+        }
+
+
+        if (this.orderBy != this.$userPrefs.get('collections_order_by'))
+            this.orderBy = this.$userPrefs.get('collections_order_by');
+        if (!this.orderBy) {
+            this.orderBy = 'date';
+            this.$userPrefs.set('collections_order_by', 'date');
         }
 
         this.loadCollections();
@@ -318,10 +405,17 @@ export default {
         padding-left: 0;
         padding-right: 0;
         border-bottom: 1px solid #ddd;
+        display: inline-flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
 
-        .header-item {
-            display: inline-block;
-            padding-right: 8em;
+        .header-item:not(:last-child) {
+            padding-right: 0.5em;
+        }
+
+        .header-item .button .icon i{
+            width: 100%;
         }
 
         @media screen and (max-width: 769px) {
@@ -330,7 +424,7 @@ export default {
             padding-top: 0.9em;
         
             .header-item {
-                padding-right: 0.5em;
+                padding-right: 0.2em;
             }
         }
     }

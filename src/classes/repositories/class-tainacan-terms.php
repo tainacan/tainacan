@@ -119,7 +119,7 @@ class Terms extends Repository {
 		
 		$is_update = false;
 		$diffs     = [];
-		if ( $term->get_id() ) {
+		if ( $term->get_id() && $this->use_logs) {
 			$is_update = true;
 
 			$old = $this->fetch( $term->get_id(), $term->get_taxonomy() );
@@ -170,8 +170,11 @@ class Terms extends Repository {
 			}
 		}
 
-		// TODO: Log header image updates
-		$this->logs_repository->insert_log( $term, $diffs, $is_update );
+		if($this->use_logs){
+			// TODO: Log header image updates
+			$this->logs_repository->insert_log( $term, $diffs, $is_update );
+		}
+
 
 		do_action( 'tainacan-insert', $term, $diffs, $is_update );
 		do_action( 'tainacan-insert-Term', $term );
@@ -258,7 +261,9 @@ class Terms extends Repository {
 		if ( $deleted ) {
 			$deleted_term_tainacan = new Entities\Term( $delete_args['term_id'], $delete_args['taxonomy'] );
 
-			$this->logs_repository->insert_log( $deleted_term_tainacan, [], false, true );
+			if($this->use_logs){
+				$this->logs_repository->insert_log( $deleted_term_tainacan, [], false, true );
+			}
 
 			do_action( 'tainacan-deleted', $deleted_term_tainacan );
 		}
@@ -287,14 +292,24 @@ class Terms extends Repository {
 		} elseif ( $taxonomy instanceof Entities\Taxonomy ) {
 			$taxonomy_slug = $taxonomy->get_db_identifier();
 		}
-		
-		$args = [
-			'name' => $name, 
-			'taxonomy' => $taxonomy_slug, 
-			'parent' => $parent, 
-			'hide_empty' => 0, 
-			'suppress_filter' => true
-		];
+
+		if(is_numeric($name)){
+			$args = [
+				'id'              => (int) $name,
+				'taxonomy'        => $taxonomy_slug,
+				'parent'          => $parent,
+				'hide_empty'      => 0,
+				'suppress_filter' => true
+			];
+		} else {
+			$args = [
+				'name'            => $name,
+				'taxonomy'        => $taxonomy_slug,
+				'parent'          => $parent,
+				'hide_empty'      => 0,
+				'suppress_filter' => true
+			];
+		}
 		
 		if (is_null($parent)) {
 			unset($args['parent']);

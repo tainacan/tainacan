@@ -26,7 +26,51 @@ class Taxonomy extends Metadata_Type {
 		$this->set_component('tainacan-taxonomy');
 		$this->set_name( __('Taxonomy', 'tainacan') );
         $this->set_description( __('A metadatum to use a taxonomy in this collection', 'tainacan') );
-    }
+		$this->set_preview_template('
+			<div>
+				<div>
+					<p class="has-text-gray">'. __('Selected terms') . ': </p> 
+					<div class="field selected-tags is-grouped-multiline is-grouped">
+						<div>
+							<div class="tags has-addons">
+								<span class="tag"><span>'. __('Term') . ' 2</span></span> 
+								<a class="tag is-delete"></a>
+							</div>
+						</div>
+						<div>
+							<div class="tags has-addons">
+								<span class="tag"><span>'. __('Term') . ' 3</span></span> 
+								<a class="tag is-delete"></a>
+							</div>
+						</div>
+					</div> 
+					<div>
+						<label class="b-checkbox checkbox" border="" style="padding-left: 8px;">
+							<input type="checkbox" value="option1">
+							<span class="check"></span>
+							<span class="control-label">'. __('Term') . ' 1</span>
+						</label> 
+						<br>
+					</div>
+					<div>
+						<label class="b-checkbox checkbox" border="" style="padding-left: 8px;">
+							<input type="checkbox" checked value="option2">
+							<span class="check"></span> 
+							<span class="control-label">'. __('Term') . ' 2</span>
+						</label> 
+					</div>
+					<div>
+						<label class="b-checkbox checkbox" border="" style="padding-left: 8px;">
+							<input type="checkbox" checked value="option3">
+							<span class="check"></span> 
+							<span class="control-label">'. __('Term') . ' 3</span>
+						</label> 
+					</div>
+				</div> 
+				<a class="add-new-term">'. __('View all') . '</a>
+			</div>
+		');
+	}
 
     /**
      * @inheritdoc

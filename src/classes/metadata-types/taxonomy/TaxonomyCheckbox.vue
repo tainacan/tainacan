@@ -134,7 +134,7 @@
         margin-top: -0.4rem;
     }
     .selected-tags .is-loading::after {
-        border: 2px solid #898d8f !important;
+        border: 2px solid #555758 !important;
         border-right-color: #dbdbdb !important;
         border-top-color: #dbdbdb !important;
     } 

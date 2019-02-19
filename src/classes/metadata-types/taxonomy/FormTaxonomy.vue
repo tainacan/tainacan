@@ -56,7 +56,6 @@
                     v-model="input_type"
                     @input="emitValues()"
                     v-else>
-
                 <option
                         v-for="(option, index) in multiple_types"
                         :value="index"
@@ -96,11 +95,11 @@
             errors: [ String, Object, Array ]
         },
         created(){
-            this.fetchTaxonomies().then(() => {
-                if ( this.value ) {
-                    this.taxonomy_id = this.value.taxonomy_id;
-                }
-            });
+            this.fetchTaxonomies();
+
+            if ( this.value ) {
+                this.taxonomy_id = this.value.taxonomy_id;
+            }
 
             if( this.value ) {
                 this.allow_new_terms = ( this.value.allow_new_terms ) ? this.value.allow_new_terms : 'no';
@@ -111,6 +110,13 @@
             this.multiple_types['tainacan-taxonomy-checkbox'] = 'Checkbox';
 
             this.isReady = true;
+        },
+        watch: {
+            input_type(val, oldValue) {
+                if (val != oldValue) {
+                    this.emitValues();
+                }
+            }
         },
         computed: {
             listInputType(){
@@ -158,7 +164,8 @@
                 this.taxonomyMessage = message;
             },
             fetchTaxonomies(){
-                return axios.get('/taxonomies?nopaging=1')
+
+                return axios.get('/taxonomies?nopaging=1&order=asc&orderby=title')
                     .then(res => {
                         let taxonomies = res.data;
                         this.loading = false;
