@@ -16,10 +16,10 @@ class OAIPMH_Identify extends OAIPMH_Expose {
         $this->xml_creater->add2_verbNode('repositoryName',$this->identifyResponse["repositoryName"]);
         $this->xml_creater->add2_verbNode('baseURL',$this->identifyResponse["baseURL"]);
         $this->xml_creater->add2_verbNode('protocolVersion',$this->identifyResponse["protocolVersion"]);
+        $this->xml_creater->add2_verbNode('adminEmail',$this->adminEmail);
         $this->xml_creater->add2_verbNode('earliestDatestamp',$this->identifyResponse["earliestDatestamp"]);
         $this->xml_creater->add2_verbNode('deletedRecord',$this->identifyResponse["deletedRecord"]);
         $this->xml_creater->add2_verbNode('granularity',$this->identifyResponse["granularity"]);
-        $this->xml_creater->add2_verbNode('adminEmail',$this->adminEmail);
 
         $description_node = $this->xml_creater->add2_verbNode('description');
         $this->working_node = $this->xml_creater->addChild($description_node, 'oai-identifier');

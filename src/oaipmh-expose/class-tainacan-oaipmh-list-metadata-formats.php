@@ -50,8 +50,8 @@ class OAIPMH_List_Metadata_Formats extends OAIPMH_Expose {
             }
             $description_node = $this->xml_creater->add2_verbNode('metadataFormat');
             $this->xml_creater->addChild($description_node, 'metadataPrefix', $metadata_format);
-            //$this->xml_creater->addChild($description_node, 'schema', $metadata_format['schema']);
-            //$this->xml_creater->addChild($description_node, 'metadataNamespace', $metadata_format['metadataNamespace']);
+            $this->xml_creater->addChild($description_node, 'schema', 'http://www.openarchives.org/OAI/2.0/oai_dc.xsd');
+            $this->xml_creater->addChild($description_node, 'metadataNamespace', 'http://www.openarchives.org/OAI/2.0/oai_dc/');
         }
 
         header($this->CONTENT_TYPE);

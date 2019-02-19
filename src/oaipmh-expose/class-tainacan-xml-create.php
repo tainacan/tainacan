@@ -94,7 +94,7 @@ class Xml_Create {
      * Keys of the array define attributes, and values are their content.
      */
     function create_request($par_array) {
-        $request = $this->addChild($this->doc->documentElement, "request", MY_URI);
+        $request = $this->addChild($this->doc->documentElement, "request", TAINACAN_OAI_REPOSITORY_URL);
         foreach ($par_array as $key => $value) {
             $request->setAttribute($key, $value);
         }

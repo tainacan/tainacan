@@ -462,7 +462,7 @@ export const fetchCollectionsForParent = ({ commit }) => {
 export const sendFile = ( { commit }, file ) => {
     return new Promise(( resolve, reject ) => {
         axios.wp.post('/media/', file, {
-            headers: { 'Content-Type': 'multipart/form-data;', 'Content-Disposition': 'attachment; filename=' + file.name },
+            headers: { 'Content-Disposition': 'attachment; filename=' + file.name },
         })
             .then( res => {
                 let file = res.data;
