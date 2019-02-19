@@ -2,6 +2,8 @@
      
     margin: 1rem 0px;
 
+
+    // Control region ----------------------------------------------------
     .block-control {
         display: flex;
         flex-direction: row;
@@ -21,6 +23,7 @@
         }
     }
 
+    // Autocomplete ----------------------------------------------------
     label.autocomplete-label {
         display: block;
         font-weight: 600;
@@ -60,124 +63,167 @@
         }
     }
 
-    ul.terms-list {
-        -moz-column-count: 4;
-        -moz-column-gap: 7rem;
-        -moz-column-rule: none;
-        -webkit-column-ount: 4;
-        -webkit-column-gap: 7rem;
-        -webkit-column-rule: none;
-        column-count: 4;
-        column-gap: 7rem;
-        column-rule: none;
-        list-style-type: none;
-    }
-
-    ul.terms-list-edit {
-        -moz-column-count: 3;
-        -moz-column-gap: 4rem;
-        -moz-column-rule: none;
-        -webkit-column-ount: 3;
-        -webkit-column-gap: 4rem;
-        -webkit-column-rule: none;
-        column-count: 3;
-        column-gap: 4rem;
-        column-rule: none;
+    // Grid View Mode ----------------------------------------------------
+    ul.terms-list.terms-layout-grid,
+    ul.terms-list-edit.terms-layout-grid {
+        padding: 0;
+        display: -ms-grid;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 220px);
+        grid-gap: 0px;
+        justify-content: space-evenly;
         list-style-type: none;
 
         li.term-list-item {
-            display: flex;
-            align-items: flex-start;
-            line-height: 22px;
-            justify-content: space-between;
+            position: relative;
+            display: block;
+            margin: 12px 12px 24px 12px;
             margin-bottom: 12px;
+            width: 185px;
 
-            button {
-                padding: 2px;
-                margin-left: 5px;
-                visibility: hidden;
-                position: relative;
-                opacity: 0;
-                right: -12px;
-                justify-content: center;
+            a { 
+                color: #454647; 
+                font-weight: bold;
             }
-    
-            &:hover button {
-                visibility: visible;
-                opacity: 1;
-                right: 0px;
-                transition: opacity linear 0.15s, right linear 0.15s;
+
+            img {
+                height: auto;
+                width: 185px;
+                min-width: 185px;
+                padding: 0px;
+                margin-bottom: 10px;
             }
-        }   
-    }
 
-    @media only screen and (max-width: 1024px) { 
-        
-        ul.terms-list {
-            -moz-column-count: 3;
-            -moz-column-gap: 4rem;
-            -moz-column-rule: none;
-            -webkit-column-count: 3;
-            -webkit-column-gap: 4rem;
-            -webkit-column-rule: none;
-            column-count: 3;
-            column-gap: 4rem;
-            column-rule: none;
-        }
-
-        ul.terms-list-edit {
-            -moz-column-count: 2;
-            -moz-column-gap: 2rem;
-            -moz-column-rule: none;
-            -webkit-column-count: 2;
-            -webkit-column-gap: 2rem;
-            -webkit-column-rule: none;
-            column-count: 2;
-            column-gap: 2rem;
-            column-rule: none;
+            &:hover a { 
+                color: #454647; 
+                text-decoration: none;
+            }
         }
     }
+    ul.terms-list-edit li.term-list-item {
+        display: flex;
+        align-items: flex-start;
 
-    @media only screen and (max-width: 768px) { 
-        
-        ul.terms-list {
-            -moz-column-count: 2;
-            -moz-column-gap: 2rem;
-            -moz-column-rule: none;
-            -webkit-column-count: 2;
-            -webkit-column-gap: 2rem;
-            -webkit-column-rule: none;
-            column-count: 2;
-            column-gap: 2rem;
-            column-rule: none;
+        button {
+            position: absolute !important;
+            background-color: rgba(255, 255, 255, 0.75);
+            color: #454647;
+            padding: 2px;
+            margin-left: 5px;
+            min-width: 14px;
+            visibility: hidden;
+            position: relative;
+            opacity: 0;
+            right: -12px;
+            justify-content: center;
         }
 
-        ul.terms-list-edit {
-            -moz-column-count: 1;
-            -moz-column-gap: 1rem;
-            -moz-column-rule: none;
-            -webkit-column-count: 1;
-            -webkit-column-gap: 1rem;
-            -webkit-column-rule: none;
-            column-count: 1;
-            column-gap: 1rem;
-            column-rule: none;
+        &:hover button {
+            visibility: visible;
+            opacity: 1;
+            right: 0px;
+            transition: opacity linear 0.15s, right linear 0.15s;
         }
+    }
+    @media only screen and (max-width: 498px) { 
         
+        ul.terms-list.terms-layout-grid,
+        ul.terms-list-edit.terms-layout-grid {
+            grid-template-columns: repeat(auto-fill, 100%);
+
+            li.term-list-item { 
+                width: 100%;
+                img { width: 100%; }
+            }
+        }
     }
 
-    @media only screen and (max-width: 490px) { 
-        
-        ul.terms-list {
-            -moz-column-count: 1;
-            -moz-column-gap: 1rem;
-            -moz-column-rule: none;
-            -webkit-column-count: 1;
-            -webkit-column-gap: 1rem;
-            -webkit-column-rule: none;
-            column-count: 1;
-            column-gap: 1rem;
-            column-rule: none;
+    // List View Mode ----------------------------------------------------
+    ul.terms-list.terms-layout-list,
+    ul.terms-list-edit.terms-layout-list {
+        padding: 0;
+        display: block;
+        list-style-type: none;
+
+        li.term-list-item {
+            position: relative;
+            display: inline-block;
+            margin: 12px 12px 24px 12px;
+            margin-bottom: 12px;
+            min-height: 54px;
+            min-width: 22%;
+            width: 22%;
+
+            a { 
+                color: #454647; 
+                // overflow: hidden;
+                // text-overflow: ellipsis;
+                // white-space: nowrap;
+                display: flex;
+                align-items: center;
+                height: 54px;
+            }
+
+            img {
+                height: auto;
+                width: 54px;
+                min-width: 54px;
+                padding: 0px;
+                margin-right: 20px;
+            }
+
+            &:hover a { 
+                color: #454647; 
+                text-decoration: none;
+            }
+        }
+    }
+    ul.terms-list-edit li.term-list-item {
+
+        button {
+            position: absolute !important;
+            background-color: rgba(255, 255, 255, 0.75);
+            color: #454647;
+            padding: 2px;
+            margin-left: 5px;
+            min-width: 14px;
+            visibility: hidden;
+            position: relative;
+            opacity: 0;
+            right: -12px;
+            justify-content: center;
+        }
+
+        &:hover button {
+            visibility: visible;
+            opacity: 1;
+            right: 0px;
+            transition: opacity linear 0.15s, right linear 0.15s;
+        }
+    }
+
+
+    @media only screen and (max-width: 1600px) {  
+        ul.terms-list.terms-layout-list li.term-list-item,
+        ul.terms-list-edit.terms-layout-list li.term-list-item  {        
+            min-width: 30%;
+            width: 30%;
+        }
+    }
+
+    @media only screen and (max-width: 1024px) {  
+        ul.terms-list.terms-layout-list li.term-list-item,
+        ul.terms-list-edit.terms-layout-list li.term-list-item  {        
+            min-width: 45%;
+            width: 45%;
+        }
+    }
+
+    @media only screen and (max-width: 768px) {  
+        ul.terms-list.terms-layout-list li.term-list-item,
+        ul.terms-list-edit.terms-layout-list li.term-list-item {       
+            min-width: 100%;
+            width: 100%;
         }
     }
 

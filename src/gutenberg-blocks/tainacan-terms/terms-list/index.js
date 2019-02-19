@@ -2,9 +2,9 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { IconButton, Spinner, QueryControls, Placeholder } = wp.components;
+const { IconButton, Spinner, ToggleControl, Placeholder, Toolbar } = wp.components;
 
-const { InspectorControls } = wp.editor;
+const { InspectorControls, BlockControls } = wp.editor;
 
 import Autocomplete from 'react-autocomplete';
 
@@ -17,7 +17,7 @@ registerBlockType('tainacan/terms-list', {
     category: 'tainacan-blocks',
     keywords: [ __( 'Tainacan', 'tainacan' ), __( 'terms', 'tainacan' ), __( 'taxonomy', 'tainacan' ) ],
     attributes: {
-        selectedTerms: {
+        selectedTermsObject: {
             type: 'array',
             source: 'query',
             selector: 'a',
@@ -30,6 +30,20 @@ registerBlockType('tainacan/terms-list', {
                 name: {
                     type: 'string',
                     source: 'text'
+                },
+                header_image: {
+                    source: 'query',
+                    selector: 'img',
+                    query: {
+                        src: {
+                            source: 'attribute',
+                            attribute: 'src'
+                        },
+                        alt: {
+                            source: 'attribute',
+                            attribute: 'alt'
+                        },
+                    }
                 }, 
             },
             default: []
@@ -71,57 +85,96 @@ registerBlockType('tainacan/terms-list', {
             type: Array,
             default: []
         },
+        selectedTermsHTML: {
+            type: Array,
+            default: []
+        },
         currentTermName: {
             type: String,
             default: ''
-        }
+        },
+        showImage: {
+            type: Boolean,
+            default: true
+        },
+        layout: {
+            type: String,
+            default: 'grid'
+        },
     },
     supports: {
+        align: ['full', 'left', 'right', 'wide'],
         html: false,
     },
     edit({ attributes, setAttributes, className, isSelected }){
-        let { selectedTerms, terms, content, currentTermName, taxonomyId, taxonomyName, isLoadingTerms, isLoadingTaxonomies, taxonomies } =  attributes;
+        let { 
+            selectedTermsObject, 
+            selectedTermsHTML, 
+            terms, 
+            content, 
+            currentTermName, 
+            taxonomyId, 
+            taxonomyName, 
+            isLoadingTerms, 
+            isLoadingTaxonomies, 
+            taxonomies, 
+            showImage,
+            layout 
+        } = attributes;
         
         console.log("Editando...");
-        console.log(terms);
-        console.log(selectedTerms);
-        console.log(taxonomyId);
-        console.log(content);
+        // console.log(selectedTerms);
+        // console.log(selectedTerms);
+        // console.log(content);
 
         function prepareTerm(term, index) {
             return (
                 <li 
-                    key={term.id}
+                    key={term.url}
                     className="term-list-item">
-                    <a href={ term.url } target="_blank">
-                        { term.name ? term.name : '' }
-                    </a>
                     <IconButton
                         onClick={ () => removeTermAtIndex(index) }
                         icon="no-alt"
                         label={__('Remove', 'tainacan')}/>         
+                    <a href={ term.url } target="_blank">
+                        { term.header_image && showImage ?
+                        <img
+                            src={ term.header_image && term.header_image[0] && term.header_image[0].src ? term.header_image[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
+                            alt={ term.header_image && term.header_image[0] ? term.header_image[0].alt : term.name }/>
+                        : null
+                        }
+                        { term.name ? term.name : '' }
+                    </a>
                 </li>
             );
         }
 
-        function setContent(selectedTerms){
+        function setContent(selectedTermsHTML){
             setAttributes({
                 content: (
-                    <ul className="terms-list">{ selectedTerms }</ul>
+                    <ul className={'terms-list  terms-layout-' + layout}>{ selectedTermsHTML }</ul>
                 )
             });
         }
 
         function mountBlock(termsFromHTML) {
-            let termsOnComponent = [];
+
+            let termsOnObject = [];
+            let termsOnHTML = [];
 
             for (let i = 0; i < termsFromHTML.length; i++){
-                termsOnComponent.push(prepareTerm(termsFromHTML[i], i));
+                termsOnHTML.push(prepareTerm(termsFromHTML[i], i));
+                termsOnObject.push(termsFromHTML[i]);
             }
 
-            selectedTerms = termsOnComponent;
-            setAttributes({ selectedTerms: termsOnComponent });
-            setContent(termsOnComponent);
+            selectedTermsHTML = termsOnHTML;
+            selectedTermsObject = termsOnObject;
+
+            setAttributes({ 
+                selectedTermsHTML: termsOnHTML, 
+                selectedTermsObject: termsOnObject
+            });
+            setContent(selectedTermsHTML);
         }
 
         function fetchTaxonomies(name) {
@@ -174,7 +227,11 @@ registerBlockType('tainacan/terms-list', {
                         name: term.name, 
                         value: term.id + "", // same as string version of id, because autocomplete expects value
                         id: term.id,
-                        url: term.url
+                        url: term.url,
+                        header_image: [{
+                            src: term.header_image,
+                            alt: term.name
+                        }]
                     }));
                     isLoadingTerms = false; 
 
@@ -201,23 +258,46 @@ registerBlockType('tainacan/terms-list', {
         }
 
         function selectTerm(term) {
-            let existingTermIndex = selectedTerms.findIndex((existingTerm) => existingTerm.key == term.id);
-            if (existingTermIndex < 0)  
-                selectedTerms.push(prepareTerm(term, selectedTerms.length));
+            let existingTermIndex = selectedTermsObject.findIndex((existingTerm) => existingTerm.key == term.id);
+            if (existingTermIndex < 0) {
+                selectedTermsObject.push(term);
+                selectedTermsHTML.push(prepareTerm(term, selectedTermsHTML.length));
+            }
 
             setAttributes({ 
-                selectedTerms: selectedTerms
+                selectedTermsObject: selectedTermsObject,
+                selectedTermsHTML: selectedTermsHTML
             });
-            setContent(selectedTerms);
+            setContent(selectedTermsHTML);
         }
 
         function removeTermAtIndex(index) {
-            selectedTerms.splice(index, 1);
+            selectedTermsHTML.splice(index, 1);
+            selectedTermsObject.splice(index, 1);
 
             setAttributes({ 
-                selectedTerms: selectedTerms
+                selectedTermsObject: selectedTermsObject,
+                selectedTermsHTML: selectedTermsHTML
             });
-            setContent(selectedTerms);
+            setContent(selectedTermsHTML);
+        }
+
+        function updateTermsList() {
+
+            let currentSelectedTermsObject = [];
+            let currentSelectedTermsHTML = [];
+
+            for (let term of selectedTermsObject) {
+                currentSelectedTermsObject.push(term);
+                currentSelectedTermsHTML.push(prepareTerm(term, selectedTermsHTML.length));
+            }
+
+            setAttributes({ 
+                selectedTermsObject: currentSelectedTermsObject,
+                selectedTermsHTML: currentSelectedTermsHTML,
+                showImage: showImage
+            });
+            setContent(currentSelectedTermsHTML);
         }
         
         // Executed every time Edit function runs
@@ -225,10 +305,55 @@ registerBlockType('tainacan/terms-list', {
             fetchTaxonomy();
 
         if(content && content.length && content[0].type)
-            mountBlock(selectedTerms);
+            mountBlock(selectedTermsObject);
+
+        const layoutControls = [
+            {
+                icon: 'grid-view',
+                title: __( 'Grid View' ),
+                onClick: () => setAttributes( { layout: 'grid' } ),
+                isActive: layout === 'grid',
+            },
+            {
+                icon: 'list-view',
+                title: __( 'List View' ),
+                onClick: () => setAttributes( { layout: 'list' } ),
+                isActive: layout === 'list',
+            },            
+            {
+                icon: 'exerpt-view',
+                title: __( 'Card View' ),
+                onClick: () => setAttributes( { layout: 'card' } ),
+                isActive: layout === 'card',
+            },
+        ];
         
         return (
             <div className={className}>
+
+                <div>
+                    <BlockControls>
+                        <Toolbar controls={ layoutControls } />
+                    </BlockControls>
+                </div>
+
+                <div>
+                    <InspectorControls>
+                        <div style={{ marginTop: '20px' }}>
+                            <ToggleControl
+                                label={__('Image', 'tainacan')}
+                                help={ showImage ? __('Toggle to show term\'s image', 'tainacan') : __('Do not show term\'s image', 'tainacan')}
+                                checked={ showImage }
+                                onChange={ ( isChecked ) => {
+                                        showImage = isChecked;
+
+                                        updateTermsList();
+                                    } 
+                                }
+                            />
+                        </div>
+                    </InspectorControls>
+                </div>
 
                 { isSelected ? 
                     
@@ -260,7 +385,7 @@ registerBlockType('tainacan/terms-list', {
                                                 taxonomyId = null;
                                                 taxonomyName = value;
                                                 setAttributes({ taxonomyId: taxonomyId, taxonomyName: taxonomyName });    
-                                                fetchTaxonomies(value);
+                                               _.debounce(fetchTaxonomies(value), 300);
                                             }
                                         }
                                         renderMenu={ children => (
@@ -304,12 +429,13 @@ registerBlockType('tainacan/terms-list', {
                                             onChange={(event, value) => {   
                                                     currentTermName = value;
                                                     setAttributes({ currentTermName: currentTermName });
-                                                    fetchTerms(value);
+                                                    _.debounce(fetchTerms(value), 300);
                                                 }
                                             }
                                             renderMenu={ children => (
                                                 children.length > 0 ? (
-                                                <div className="menu">
+                                                <div 
+                                                    className="menu">
                                                     { children }
                                                 </div>
                                                 ) : <span></span>
@@ -328,7 +454,7 @@ registerBlockType('tainacan/terms-list', {
                         ) : null
                 }
 
-                { !selectedTerms.length ? (
+                { !selectedTermsObject.length ? (
                     <Placeholder
                         icon={(
                             <img
@@ -338,28 +464,13 @@ registerBlockType('tainacan/terms-list', {
                         )}
                     />) : null
                 }
-                
-                {/* <Autocomplete completers={ completers }>
-                    { ( { isExpanded, listBoxId, activeId } ) => (
-                        <div
-                            contentEditable
-                            suppressContentEditableWarning
-                            aria-autocomplete="list"
-                            aria-expanded={ isExpanded }
-                            aria-owns={ listBoxId }
-                            aria-activedescendant={ activeId }
-                        >
-                        </div>
-                    ) }
-                </Autocomplete> */}
 
-                <ul className="terms-list-edit">{ selectedTerms }</ul>
+                <ul className={'terms-list-edit terms-layout-' + layout}>{ selectedTermsHTML }</ul>
             </div>
         );
     },
     save({ attributes }){
         const { content } = attributes;
-        console.log("Salvando...")
         return <div>{ content }</div>
     }
 });
