@@ -55,9 +55,9 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
      * @throws \Exception
      */
     public function get_verb( $request ){
-        $verb = ( isset($request['verb']) ) ? $request['verb'] : false;
-
-        switch ($verb){
+        $request['verb'] = ( isset($request['verb']) ) ? $request['verb'] : 'Identify';
+        
+        switch ($request['verb']){
 
             case 'ListSets':
                 $allowed_arguments = array('verb','resumptionToken');
