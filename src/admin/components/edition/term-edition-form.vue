@@ -279,13 +279,15 @@
                 );
             },
             initializeMediaFrames() {
-                this.headerImageMediaFrame = new wpMediaFrames.headerImageControl(
-                    'my-header-image-media-frame', {
+                this.headerImageMediaFrame = new wpMediaFrames.thumbnailControl(
+                    'my-thumbnail-image-media-frame', {
                         button_labels: {
                             frame_title: this.$i18n.get('instruction_select_term_header_image'),
+                            frame_button: this.$i18n.get('label_select_file')
                         },
                         relatedPostId: this.editForm.id,
                         onSave: (croppedImage) => {
+
                            this.editForm = Object.assign({},
                                 this.editForm,
                                 {

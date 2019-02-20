@@ -1009,8 +1009,8 @@ export default {
                         frame_title: this.$i18n.get('instruction_select_item_thumbnail'),
                     },
                     relatedPostId: this.itemId,
-                    onSave: (mediaId) => {
-                        this.updateThumbnail({itemId: this.itemId, thumbnailId: mediaId})
+                    onSave: (media) => {
+                        this.updateThumbnail({itemId: this.itemId, thumbnailId: media.id})
                         .then((res) => {
                             this.item.thumbnail = res.thumbnail;
                         })
