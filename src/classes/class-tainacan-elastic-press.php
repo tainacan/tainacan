@@ -141,7 +141,8 @@ class Elastic_Press {
 							"metadata_type" => $metadata_type, 
 							"last_term" => $args['facet_last_term'], 
 							"parent" => $args['facet_term_parent_id'],
-							"pagesize" => empty($args['facet_pagesize']) ? 10 : $args['facet_pagesize'],
+							"pagesize" => !isset($args['facet_pagesize']) && empty($args['facet_pagesize']) ? 10 : $args['facet_pagesize'],
+							"search" => !isset($args['facet_search']) && empty($args['facet_search']) ? '' : $args['facet_search'],
 						];
 						break;
 					} else {
@@ -195,11 +196,10 @@ class Elastic_Press {
 		$metadatum_options = $metadatum->get_metadata_type_options();
 
 		$args['items_filter']['ep_integrate'] = true;
-		//$args['items_filter']['posts_per_page'] = 1;
 		$args['items_filter']['facet_term_parent_id'] = $args['parent_id'];
 		$args['items_filter']['facet_pagesize'] = $args['number'];
 		$args['items_filter']['facet_last_term'] = $args['last_term'];
-		
+		$args['items_filter']['facet_search'] = $args['search'];
 		
 		if ( $metadatum_type == 'Tainacan\Metadata_Types\Taxonomy') {
 			$taxonomy_id = $metadatum_options['taxonomy_id'];
@@ -213,8 +213,8 @@ class Elastic_Press {
 		$items_aggregations = $this->last_aggregations; //if elasticPress active
 		
 		return [
-			'total' => count($items_aggregations), //'total' => count($items_aggregations),
-			'pages' => '0', //total de paginas? vish...
+			'total' => count($items_aggregations),
+			'pages' => '0',
 			'values' => ['filters' => $items_aggregations]
 		];
 	}
@@ -381,8 +381,9 @@ class Elastic_Press {
 		$formatted_args['query'] 	= $formatted_args['post_filter'];
 		unset($formatted_args['post_filter']);
 		foreach($this->facets as $id => $filter) {
+			$search = $filter['search'];
+			$field = $filter['field'];
 			if ($filter['metadata_type'] == 'Tainacan\Metadata_Types\Taxonomy') {
-				$field = $filter['field'];
 				$parent = $filter['parent'];
 				$aggs[$id] = [
 					"composite"	=> array(
@@ -399,13 +400,19 @@ class Elastic_Press {
 						]
 					)
 				];
+				if($search != '') {
+					$formatted_args['query']['bool']['must'][] = ["wildcard"=>["$field.name.raw" => "*$search*"]];
+				}
 			} else {
 				$aggs[$id] = [
 					"composite"	=> array(
-						"size" => $facets_per_page,
-						"sources" => [ $id => [ "terms" => [ "field" => $filter['field'] ] ] ]
+						"size" => $filter['pagesize'],
+						"sources" => [ $id => [ "terms" => [ "field" => $field ] ] ]
 					)
 				];
+				if($search != '') {
+					$formatted_args['query']['bool']['must'][] = ["wildcard"=>["$field" => "*$search*"]];
+				}
 			}
 
 			$aggs[$id]['composite']['after'] = [$id => $filter['last_term'] ];

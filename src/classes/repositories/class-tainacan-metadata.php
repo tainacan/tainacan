@@ -892,7 +892,9 @@ class Metadata extends Repository {
 	  *
 	  *     @type array		 $parent_id					Used by taxonomy metadata. The ID of the parent term to retrieve terms from. Default 0 
 	  *
-	  * 	@type bool		 $count_items				Include the count of items that can be found in each value (uses $items_filter as well). Default false
+		*     @type bool		 $count_items				Include the count of items that can be found in each value (uses $items_filter as well). Default false
+		*
+		*     @type string   $facet_last_term				The last term returned when using a elasticsearch for calculates the facet.
 	  * 
 	  * }
 	  * 
