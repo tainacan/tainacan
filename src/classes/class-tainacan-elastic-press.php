@@ -414,12 +414,10 @@ class Elastic_Press {
 		return $formatted_args;
 	}
 
-	
-
 	/**
 	* Format ES aggregation response for items request
 	*/
-	private function format_aggregations_items(&$aggregations) {
+	private function format_aggregations_items($aggregations) {
 		global $wpdb;
 		$formated_aggs = [];
 		foreach($aggregations as $key => $aggregation) {
@@ -510,7 +508,5 @@ class Elastic_Press {
 		}
 		return $formated_aggs;
 	}
-
-	
 
 } // END
