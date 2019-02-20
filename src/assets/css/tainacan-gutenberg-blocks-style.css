@@ -1,5 +1,8 @@
 .wp-block-tainacan-terms-list {
   margin: 1rem 0px; }
+  .wp-block-tainacan-terms-list .components-spinner {
+    position: absolute;
+    right: 0; }
   .wp-block-tainacan-terms-list .block-control {
     display: flex;
     flex-direction: row; }
@@ -22,7 +25,8 @@
     .wp-block-tainacan-terms-list .react-autocomplete input {
       margin: 4px 12px 0px 0px;
       border: 1px solid #dbdbdb;
-      padding: 4px 10px; }
+      padding: 4px 10px;
+      width: 100%; }
       .wp-block-tainacan-terms-list .react-autocomplete input:focus, .wp-block-tainacan-terms-list .react-autocomplete input:active {
         border: 1px solid #555758; }
     .wp-block-tainacan-terms-list .react-autocomplete .menu {
