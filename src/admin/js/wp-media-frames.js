@@ -113,11 +113,11 @@ export default {
 				id: this.params.relatedPostId
 			}
 			this.params.attachment = attachment;
-			this.params.onSave(attachment.id);
+			this.params.onSave(attachment);
 		}
 
 	}),
-	// CroppedImageControl, with presets for thumbnail dimensions
+	// CroppedImageControl, with presets for header dimensions
 	headerImageControl: wp.customize.CroppedImageControl.extend({
 		
 		initFrame: function() {

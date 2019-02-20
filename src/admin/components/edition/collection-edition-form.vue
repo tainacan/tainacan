@@ -801,12 +801,14 @@ export default {
                         frame_button: this.$i18n.get('label_select_file'),
                     },
                     relatedPostId: this.collectionId,
-                    onSave: (mediaId) => {
-                        this.updateThumbnail({collectionId: this.collectionId, thumbnailId: mediaId})
-                        .then((res) => {
-                            this.collection.thumbnail = res.thumbnail;
+                    onSave: (media) => {
+                        this.updateThumbnail({
+                            collectionId: this.collectionId, thumbnailId: media.id
                         })
-                        .catch(error => this.$console.error(error));
+                            .then((res) => {
+                                this.collection.thumbnail = res.thumbnail;
+                            })
+                            .catch(error => this.$console.error(error));
                     }
                 }
             );
