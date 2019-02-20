@@ -1,7 +1,11 @@
 .wp-block-tainacan-terms-list {
-     
     margin: 1rem 0px;
 
+    // Spinner
+    .components-spinner {
+        position: absolute;
+        right: 0;
+    }
 
     // Control region ----------------------------------------------------
     .block-control {
@@ -39,6 +43,8 @@
             margin: 4px 12px 0px 0px;
             border: 1px solid #dbdbdb;
             padding: 4px 10px;
+            width: 100%;
+
             &:focus, &:active {
                 border: 1px solid #555758;
             }
