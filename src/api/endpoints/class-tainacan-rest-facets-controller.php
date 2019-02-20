@@ -68,6 +68,7 @@ class REST_Facets_Controller extends REST_Controller {
 			$number = null;
 			$_search = null;
 			$collection_id = ( isset($request['collection_id']) ) ? $request['collection_id'] : null;
+			$last_term = ( isset($request['last_term']) ) ? $request['last_term'] : '';
 			
 			$query_args = defined('TAINACAN_FACETS_DISABLE_FILTER_ITEMS') && true === TAINACAN_FACETS_DISABLE_FILTER_ITEMS ? [] : $request['current_query'];
 			$query_args = $this->prepare_filters($query_args);
@@ -123,7 +124,8 @@ class REST_Facets_Controller extends REST_Controller {
 				'items_filter' => $query_args,
 				'include' => $include,
 				'parent_id' => $parent_id,
-				'count_items' => defined('TAINACAN_FACETS_DISABLE_COUNT_ITEMS') && true === TAINACAN_FACETS_DISABLE_COUNT_ITEMS ? false : true
+				'count_items' => defined('TAINACAN_FACETS_DISABLE_COUNT_ITEMS') && true === TAINACAN_FACETS_DISABLE_COUNT_ITEMS ? false : true,
+				'last_term' => $last_term
 			];
 			
 			$response = $this->metadatum_repository->fetch_all_metadatum_values( $metadatum_id, $args );

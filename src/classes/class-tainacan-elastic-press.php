@@ -46,10 +46,10 @@ class Elastic_Press {
 		
 		add_filter('tainacan-fetch-all-metadatum-values', [$this, 'fetch_all_metadatum_values'], 10, 3);
 
-		add_action('ep_add_query_log', function($query) { //using to DEBUG
-			// error_log("DEGUG:");
-			// error_log($query["args"]["body"]);
-		});
+		// add_action('ep_add_query_log', function($query) { //using to DEBUG
+		// 	error_log("DEGUG:");
+		// 	error_log($query["args"]["body"]);
+		// });
 	}
 	
 	function filter_args($args, $type) {
@@ -139,7 +139,7 @@ class Elastic_Press {
 							"field" => $field, 
 							"max_options" => $filter->get_max_options(), 
 							"metadata_type" => $metadata_type, 
-							"last_facet" => "", 
+							"last_term" => $args['facet_last_term'], 
 							"parent" => $args['facet_term_parent_id'],
 							"pagesize" => empty($args['facet_pagesize']) ? 10 : $args['facet_pagesize'],
 						];
@@ -198,6 +198,7 @@ class Elastic_Press {
 		//$args['items_filter']['posts_per_page'] = 1;
 		$args['items_filter']['facet_term_parent_id'] = $args['parent_id'];
 		$args['items_filter']['facet_pagesize'] = $args['number'];
+		$args['items_filter']['facet_last_term'] = $args['last_term'];
 		
 		
 		if ( $metadatum_type == 'Tainacan\Metadata_Types\Taxonomy') {
@@ -407,9 +408,7 @@ class Elastic_Press {
 				];
 			}
 
-			if($filter['last_facet'] != '') {
-				$aggs[$id]['composite']['after'] = ['$id' => $filter['last_facet'] ];
-			}
+			$aggs[$id]['composite']['after'] = [$id => $filter['last_term'] ];
 		}
 		$formatted_args['aggs'] = $aggs;
 		return $formatted_args;
@@ -465,10 +464,11 @@ class Elastic_Press {
 	/**
 	* Format ES aggregation response for one facet request
 	*/
-	private function format_aggregations_facet(&$aggregations) {
+	private function format_aggregations_facet($aggregations) {
 		global $wpdb;
 		$formated_aggs = [];
 		foreach($aggregations as $key => $aggregation) {
+			$after_key = $aggregation['after_key'];
 			$metadata_type = \explode(".", $key);
 			$filter_id = $metadata_type[0];
 			if($metadata_type[1] == 'taxonomy') {
@@ -481,7 +481,7 @@ class Elastic_Press {
 					$term_object = \Tainacan\Repositories\Terms::get_instance()->fetch($term_id, $taxonomy_slug);
 					$count_query = $wpdb->prepare("SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", $term_id);
 					$total_children = $wpdb->get_var($count_query);
-					$formated_aggs[$filter_id][] = [
+					$formated_aggs[$filter_id]['values'][] = [
 						"type" 						=> "Taxonomy",
 						"value" 					=> $term_id,
 						"taxonomy" 				=> $taxonomy_slug,
@@ -498,7 +498,7 @@ class Elastic_Press {
 				if (isset($aggregation['buckets']))
 				foreach ($aggregation['buckets'] as $term) {
 					if ($term['key'][$key] == '') continue;
-					$formated_aggs[$filter_id][] = [
+					$formated_aggs[$filter_id]['values'][] = [
 						"type" 				=> "Text",
 						"label" 			=> $term['key'][$key],
 						"value" 			=> $term['key'][$key],
@@ -506,6 +506,7 @@ class Elastic_Press {
 					];
 				}
 			}
+			$formated_aggs[$filter_id]['last_term'] = $after_key[$key];
 		}
 		return $formated_aggs;
 	}
