@@ -893,12 +893,15 @@
                 if (this.getOrderByName() != null && this.getOrderByName() != undefined && this.getOrderByName() != '') {
                     return this.getOrderByName();
                 } else {
+
                     for (let metadatum of this.sortingMetadata) {
+
                         if (
-                            ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug == 'creation_date') && this.orderBy == 'date') ||
-                            ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug != 'creation_date') && this.orderBy == metadatum.slug) ||
+                            ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug == 'creation_date' && !metadatum.metadata_type_object.core) && this.orderBy == 'date') ||
+                            ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug != 'creation_date' && metadatum.metadata_type_object.core) && this.orderBy == metadatum.metadata_type_object.related_mapped_prop) ||
+                            ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug != 'creation_date' && !metadatum.metadata_type_object.core) && this.orderBy == metadatum.slug) ||
                             ((this.orderBy == 'meta_value' || this.orderBy == 'meta_value_num') && this.getMetaKey() == metadatum.id)
-                           )
+                           )     
                             return metadatum.name;
                     }
                 }
@@ -1679,6 +1682,7 @@
             font-weight: normal;
             margin-top: 3px;
             margin-bottom: 2px;
+            cursor: default;
         }
 
         .button {
