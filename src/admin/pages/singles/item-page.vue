@@ -467,10 +467,12 @@
                 this.loadMetadata();
             });
 
-            // Obtains collection name
+        // Obtains collection name
+        if (!this.isRepositoryLevel) {
             this.fetchCollectionName(this.collectionId).then((collectionName) => {
                 this.collectionName = collectionName;
             });
+        }
 
             // Get attachments
             this.fetchAttachments(this.itemId);

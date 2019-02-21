@@ -84,7 +84,9 @@
                         <span 
                                 @click="updateSearch()"
                                 class="icon is-right">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-search"/>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-search"/>
+                            </span>
                         </span>
                 </div>
             </div>
@@ -96,7 +98,11 @@
                 {{ $i18n.get('advanced_search') }}
             </button> -->
 
-            <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
+            <h3 
+                    id="filters-label-landmark"
+                    class="has-text-weight-semibold">
+                {{ $i18n.get('filters') }}
+            </h3>
             <button
                     v-if="!isLoadingFilters &&
                         ((filters.length >= 0 &&
@@ -211,17 +217,26 @@
                         v-if="!isOnTheme || (registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].dynamic_metadata)"
                         class="search-control-item">
                     <b-dropdown
+                            v-tooltip="{
+                                delay: {
+                                    show: 500,
+                                    hide: 300,
+                                },
+                                content: (totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry') ? (adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry') ? $i18n.get('info_current_view_mode_metadata_not_allowed') : $i18n.get('info_cant_select_metadata_without_items') : '',
+                                autoHide: false,
+                                placement: 'auto-start'
+                            }" 
                             ref="displayedMetadataDropdown"
                             :mobile-modal="true"
                             :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry'"
-                            class="show">
+                            class="show metadata-options-dropdown">
                         <button
-                                class="button is-white"
                                 :aria-label="$i18n.get('label_displayed_metadata')"
+                                class="button is-white"
                                 slot="trigger">
                             <span>{{ $i18n.get('label_displayed_metadata') }}</span>
                             <span class="icon">
-                                <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
                             </span>
                         </button>
                         <div class="metadata-options-container">
@@ -251,30 +266,25 @@
                 <!-- Change OrderBy Select and Order Button-->
                 <div class="search-control-item">
                     <b-field>
+                        <label class="label is-hidden-mobile">{{ $i18n.get('label_sorting') + ':' }}</label>
                         <b-dropdown
-                                :disabled="totalItems <= 0"
+                                :mobile-modal="true"
                                 @input="onChangeOrderBy($event)">
                             <button
                                     :aria-label="$i18n.get('label_sorting')"
                                     class="button is-white"
                                     slot="trigger">
-                                <span>{{ $i18n.get('label_sorting') }}</span>
+                                <span>{{ orderByName }}</span>
                                 <span class="icon">
-                                    <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown "/>
                                 </span>
                             </button>
                             <b-dropdown-item
                                     aria-controls="items-list-results"
                                     role="button"
-                                    :class="{ 'is-active': metadatum != undefined && orderBy == metadatum.slug }"
+                                    :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && orderBy == metadatum.slug) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
                                     v-for="metadatum of sortingMetadata"
-                                    v-if="
-                                        totalItems > 0 &&
-                                        metadatum != undefined &&
-                                        metadatum.slug === 'creation_date' || (
-                                        metadatum.metadata_type_object && 
-                                        metadatum.metadata_type_object.related_mapped_prop == 'title'
-                                    )"
+                                    v-if="metadatum != undefined"
                                     :value="metadatum"
                                     :key="metadatum.slug">
                                 {{ metadatum.name }}
@@ -327,6 +337,7 @@
                         v-if="isOnTheme"
                         class="search-control-item">
                     <b-field>
+                        <label class="label is-hidden-mobile">{{ $i18n.get('label_visualization') + ':&nbsp; ' }}</label>
                         <b-dropdown
                                 @change="onChangeViewMode($event)"
                                 :mobile-modal="true"
@@ -334,15 +345,15 @@
                                 :aria-label="$i18n.get('label_view_mode')">
                             <button 
                                     class="button is-white" 
-                                    :aria-label="$i18n.get('label_view_mode')"
+                                    :aria-label="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : $i18n.get('label_visualization')"
                                     slot="trigger">
                                 <span 
                                         class="gray-icon view-mode-icon"
                                         v-if="registeredViewModes[viewMode] != undefined"
                                         v-html="registeredViewModes[viewMode].icon"/>
-                                <span class="is-hidden-touch">&nbsp;&nbsp;&nbsp;{{ $i18n.get('label_visualization') }}</span>
+                                <span class="is-hidden-touch">&nbsp;&nbsp;&nbsp;{{ registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : $i18n.get('label_visualization') }}</span>
                                 <span class="icon">
-                                    <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
                                 </span>
                             </button>
                             <b-dropdown-item 
@@ -356,7 +367,7 @@
                                 <span 
                                         class="gray-icon"
                                         v-html="registeredViewModes[viewModeOption].icon"/>
-                                {{ registeredViewModes[viewModeOption].label }}
+                                <span>{{ registeredViewModes[viewModeOption].label }}</span>
                             </b-dropdown-item>
                         </b-dropdown>
                     </b-field>
@@ -365,6 +376,7 @@
                         v-if="!isOnTheme"
                         class="search-control-item">
                     <b-field>
+                        <label class="label is-hidden-mobile">{{ $i18n.get('label_visualization') + ':' }}</label>
                         <b-dropdown
                                 @change="onChangeAdminViewMode($event)"
                                 :mobile-modal="true"
@@ -375,7 +387,7 @@
                                     :aria-label="$i18n.get('label_view_mode')"
                                     slot="trigger">
                                 <span>
-                                        <span class="icon is-small gray-icon">
+                                        <span class="view-mode-icon icon is-small gray-icon">
                                         <i 
                                                 :class="{'tainacan-icon-viewtable' : ( adminViewMode == 'table' || adminViewMode == undefined),
                                                         'tainacan-icon-viewcards' : adminViewMode == 'cards',
@@ -385,9 +397,9 @@
                                                 class="tainacan-icon"/>
                                     </span>
                                 </span>
-                                &nbsp;&nbsp;&nbsp;{{ $i18n.get('label_visualization') }}
+                                &nbsp;&nbsp;&nbsp;{{ adminViewMode != undefined ? $i18n.get('label_' + adminViewMode) : $i18n.get('label_table') }}
                                 <span class="icon">
-                                    <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
                                 </span>
                             </button>
                             <b-dropdown-item 
@@ -398,7 +410,7 @@
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-viewtable"/>
                                 </span>
-                                {{ $i18n.get('label_table') }}
+                                <span>{{ $i18n.get('label_table') }}</span>
                             </b-dropdown-item>
                             <b-dropdown-item 
                                     aria-controls="items-list-results"
@@ -408,7 +420,7 @@
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-viewcards"/>
                                 </span>
-                                {{ $i18n.get('label_cards') }}
+                                <span>{{ $i18n.get('label_cards') }}</span>
                             </b-dropdown-item>
                             <b-dropdown-item 
                                     aria-controls="items-list-results"
@@ -418,7 +430,7 @@
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-viewminiature"/>
                                 </span>
-                                {{ $i18n.get('label_thumbnails') }}
+                                <span>{{ $i18n.get('label_thumbnails') }}</span>
                             </b-dropdown-item>
                             <b-dropdown-item 
                                     aria-controls="items-list-results"
@@ -428,7 +440,7 @@
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-viewrecords"/>
                                 </span>
-                                {{ $i18n.get('label_records') }}
+                                <span>{{ $i18n.get('label_records') }}</span>
                             </b-dropdown-item>
                             <b-dropdown-item 
                                     aria-controls="items-list-results"
@@ -438,7 +450,7 @@
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-viewmasonry"/>
                                 </span>
-                                {{ $i18n.get('label_masonry') }}
+                                <span>{{ $i18n.get('label_masonry') }}</span>
                             </b-dropdown-item>
                         </b-dropdown>
                     </b-field>
@@ -544,7 +556,7 @@
                         <button
                                 aria-controls="items-list-results"
                                 @click="advancedSearchResults = !advancedSearchResults"
-                                class="button is-small is-outlined">{{ $i18n.get('edit_search') }}</button>
+                                class="button is-outlined">{{ $i18n.get('edit_search') }}</button>
                     </p>
                     <p
                             v-if="advancedSearchResults"
@@ -552,7 +564,7 @@
                         <button
                                 aria-controls="items-list-results"
                                 @click="isDoSearch = !isDoSearch"
-                                class="button is-small is-secondary">{{ $i18n.get('search') }}</button>
+                                class="button is-success">{{ $i18n.get('search') }}</button>
                     </p>
                 </div>
             </div>
@@ -592,7 +604,7 @@
                 
                 <h3 
                         id="items-list-landmark"
-                        class="is-hidden">
+                        class="sr-only">
                     {{ $i18n.get('label_items_list') }}
                 </h3>
 
@@ -838,6 +850,24 @@
             },
             showLoading() {
                 return this.isLoadingItems || this.isLoadingFilters || this.isLoadingMetadata;
+            },
+            metaKey() {
+                return this.getMetaKey();
+            },
+            orderByName() {
+
+                if (this.getOrderByName() != null && this.getOrderByName() != undefined && this.getOrderByName() != '') {
+                    return this.getOrderByName();
+                } else {
+                    for (let metadatum of this.sortingMetadata) {
+                        if (
+                            ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num') && this.orderBy == metadatum.slug) ||
+                            ((this.orderBy == 'meta_value' || this.orderBy == 'meta_value_num') && this.getMetaKey() == metadatum.id)
+                           )
+                            return metadatum.name;
+
+                    }
+                }
             }
         },
         components: {
@@ -882,10 +912,12 @@
                 'getSearchQuery',
                 'getStatus',
                 'getOrderBy',
+                'getOrderByName',
                 'getOrder',
                 'getViewMode',
                 'getTotalItems',
-                'getAdminViewMode'
+                'getAdminViewMode',
+                'getMetaKey'
             ]),
             onSwipeFiltersMenu($event) {
                 if (this.registeredViewModes[this.viewMode] == undefined || 
@@ -965,7 +997,8 @@
 
                 // Updates searchControlHeight before in case we need to adjust filters position on mobile
                 setTimeout(() => {
-                    this.searchControlHeight = this.$refs['search-control'].clientHeight;
+                    if (this.$refs['search-control'] != undefined)
+                        this.searchControlHeight = this.$refs['search-control'].clientHeight;
                 }, 500);
             },
             onChangeDisplayedMetadata() {
@@ -988,12 +1021,11 @@
               
                 // Updates Search
                 this.$eventBusSearch.addFetchOnly(
-                    thumbnailMetadatum != undefined && thumbnailMetadatum.display ? 'thumbnail' : null +','+
-                    creationDateMetadatum != undefined && creationDateMetadatum.display ? 'creation_date' : null +','+
-                    authorNameMetadatum != undefined && authorNameMetadatum.display ? 'author_name': null +','+
-                    (this.isRepositoryLevel ? 'title' : null) +','+
-                    (this.isRepositoryLevel && descriptionMetadatum.display ? 'description' : null)
-                , false, fetchOnlyMetadatumIds.toString());
+                    ((thumbnailMetadatum != undefined && thumbnailMetadatum.display) ? 'thumbnail' : null) + ',' +
+                    ((creationDateMetadatum != undefined && creationDateMetadatum.display) ? 'creation_date' : null) + ',' +
+                    ((authorNameMetadatum != undefined && authorNameMetadatum.display) ? 'author_name': null) + ',' +
+                    (this.isRepositoryLevel ? 'title' : null) + ',' +
+                    (this.isRepositoryLevel && descriptionMetadatum.display ? 'description' : null), false, fetchOnlyMetadatumIds.toString());
 
                 // Closes dropdown
                 this.$refs.displayedMetadataDropdown.toggle();
@@ -1118,10 +1150,20 @@
                                             multiple: metadatum.multiple,
                                     });
 
-                                    if (display)
-                                        fetchOnlyMetadatumIds.push(metadatum.id);                      
+                                    if (display) {
+                                        fetchOnlyMetadatumIds.push(metadatum.id);     
+                                    }
+
+                                    if (
+                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
+                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Taxonomy' &&
+                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Relationship'
+                                    ) {
+                                        this.sortingMetadata.push(metadatum);
+                                    }
+
                                 }
-                                this.sortingMetadata.push(metadatum);
+                                
                             }
 
                             let creationDateMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[1] != null) : true;
@@ -1186,7 +1228,7 @@
                                     display: authorNameMetadatumDisplay
                                 });
                             }
-                        // Loads only basic attributes necessay to view modes that do not allow custom meta
+                        // Loads only basic attributes necessary to view modes that do not allow custom meta
                         } else {
                        
                             this.$eventBusSearch.addFetchOnly('thumbnail,creation_date,author_name,title,description', true, '');
@@ -1219,13 +1261,14 @@
                         this.isLoadingMetadata = false;
                     });
             },
-            adjustSearchControlHeight: _.debounce( function() {
-                this.$nextTick(() => {
-                    this.searchControlHeight = this.$refs['search-control'] ? this.$refs['search-control'].clientHeight : 0;
-                    this.isFiltersMenuCompressed = jQuery(window).width() <= 768;
-                });
-            }, 500)
         },
+        adjustSearchControlHeight: _.debounce( function() {
+            this.$nextTick(() => {
+                    if (this.$refs['search-control'] != undefined)
+                    this.searchControlHeight = this.$refs['search-control'] ? this.$refs['search-control'].clientHeight + this.$refs['search-control'].offsetTop : 0;
+                this.isFiltersMenuCompressed = jQuery(window).width() <= 768;
+            });
+        }, 500),
         removeEventListeners() {
             // Component
             this.$off();
@@ -1238,6 +1281,7 @@
             this.$eventBusSearch.$off('hasFiltered');
             this.$eventBusSearch.$off('advancedSearchResults');
             this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
+
         },
         created() {
 
@@ -1316,7 +1360,7 @@
             } else {
                 let prefsAdminViewMode = !this.isRepositoryLevel ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
                 if (this.$userPrefs.get(prefsAdminViewMode) == undefined)
-                    this.$eventBusSearch.setInitialAdminViewMode('cards');
+                    this.$eventBusSearch.setInitialAdminViewMode('table');
                 else {
                     let existingViewMode = this.$userPrefs.get(prefsAdminViewMode);
                     if (existingViewMode == 'cards' || 
@@ -1326,7 +1370,7 @@
                         existingViewMode == 'masonry')
                         this.$eventBusSearch.setInitialAdminViewMode(this.$userPrefs.get(prefsAdminViewMode));
                     else
-                        this.$eventBusSearch.setInitialAdminViewMode('cards');
+                        this.$eventBusSearch.setInitialAdminViewMode('table');
                 }
             }
 
@@ -1340,6 +1384,7 @@
             // Cancels previous Request
             if (this.$eventBusSearch.searchCancel != undefined)
                 this.$eventBusSearch.searchCancel.cancel('Item search Canceled.');
+
         }
     }
 </script>
@@ -1348,6 +1393,16 @@
 
     @import '../../scss/_variables.scss';
 
+    @keyframes open-full-screen {
+        from {
+            opacity: 0;
+            transform: scale(0.6);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1.0);
+        }
+    }
 
     .is-fullscreen {
         position: absolute;
@@ -1359,7 +1414,8 @@
         height: 100vh;
         z-index: 999999999;
         background-color: black;
-        transition: all 0.3s ease;
+        transition: background-color 0.3s ease, width 0.3s ease, height 0.3s ease;
+        animation: open-full-screen 0.4s ease;
     }
 
     .collapse-all {
@@ -1374,9 +1430,9 @@
         h1, h2 {
             font-size: 20px;
             font-weight: 500;
-            margin-bottom: 0;
             color: $gray5;
             display: inline-block;
+            margin-bottom: 0;
         }
         .field.is-grouped {
             margin-left: auto;
@@ -1400,9 +1456,9 @@
         h1, h2 {
             font-size: 20px;
             font-weight: 500;
-            margin-bottom: 0;
             color: $gray5;
             display: inline-block;
+            margin-bottom: 0;
         }
         .field.is-grouped {
             margin-left: auto;
@@ -1569,6 +1625,13 @@
             flex-basis: 100%;
         }
 
+        .label {
+            font-size: 0.875rem;
+            font-weight: normal;
+            margin-top: 3px;
+            margin-bottom: 2px;
+        }
+
         .button {
             display: flex;
             align-items: center;
@@ -1582,7 +1645,6 @@
             color: $gray4 !important;
             padding-right: 10px;
         }
-        
         .gray-icon .icon i::before, 
         .gray-icon i::before {
             font-size: 1.3125rem !important;
@@ -1590,8 +1652,9 @@
         }
         
         .view-mode-icon {
-            margin-right: 4px !important;
+            margin-right: 3px !important;
             margin-top: 1px;
+            margin-left: 6px !important;
         }
 
         .dropdown-menu {
@@ -1601,7 +1664,7 @@
                 padding: 0;
 
                 .metadata-options-container {
-                    max-height: 240px;
+                    max-height: 288px;
                     overflow: auto;
                 }
                 .dropdown-item {
@@ -1613,7 +1676,7 @@
                 .dropdown-item-apply {
                     width: 100%;
                     border-top: 1px solid #efefef;
-                    padding: 8px 12px 2px 12px; 
+                    padding: 8px 12px; 
                     text-align: right;
                 }
                 .dropdown-item-apply .button {

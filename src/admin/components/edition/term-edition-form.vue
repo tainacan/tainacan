@@ -154,13 +154,14 @@
                 </button>
             </div>
             <div class="control">
-                <button
+                <a
                         type="button"
                         v-if="editForm.url != undefined && editForm.url!= ''"
                         class="button is-secondary"
+                        target="_blank"
                         :href="editForm.url">
-                    {{ $i18n.get('see') + ' ' + $i18n.get('term') }}
-                </button>
+                    {{ $i18n.get('label_view_term') }}
+                </a>
             </div>
             <div class="control">
                 <button

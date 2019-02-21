@@ -21,7 +21,8 @@ const state = {
     filter_tags: [],
     totalItems: 0,
     totalPages: 0,
-    itemsPerPage: 12 // Not the same as postquery.perpage as API may have limited it's value
+    itemsPerPage: 12, // Not the same as postquery.perpage as API may have limited it's value
+    orderByName: ''
 };
 
 export default {

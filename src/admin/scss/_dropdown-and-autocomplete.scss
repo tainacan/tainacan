@@ -21,9 +21,13 @@
         padding: 0px;
         border-radius: 0px;
         min-width: 6rem;
+        
         .dropdown-content {
-            padding: 6px 0px;
+            padding: 0px;
             border-radius: 0px !important;
+            max-height: 240px;
+            overflow-y: auto;
+
             .dropdown-item {
                 display: block;
                 text-decoration: none;
@@ -64,6 +68,13 @@
                 }
             }  
         }
+    }
+}
+
+// This dropdown has a particular way of dealing with scroll
+.metadata-options-dropdown {
+    .dropdown-content {
+        max-height: unset !important;
     }
 }
 

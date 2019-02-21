@@ -19,7 +19,9 @@
                 </div>
 
                 <!-- Sorting options ----  -->
-                <b-field class="header-item">
+                <b-field 
+                        :label="$i18n.get('label_sorting') + ':'"
+                        class="header-item">
                     <b-select
                             class="sorting-select"
                             :disabled="taxonomies.length <= 0"
@@ -315,6 +317,11 @@
         .header-item .button .icon i{
             width: 100%;
         } 
+        .header-item .label{
+            font-weight: normal;
+            font-size: 0.875rem;
+            margin-top: 3px;
+        }
 
         @media screen and (max-width: 769px) {
             height: 60px;
