@@ -300,6 +300,9 @@ class Metadata extends Repository {
 	 * You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
 	 * appropriate WP_Query argument
 	 *
+	 * If a number is passed to $args, it will return a \Tainacan\Entities\Metadatum object.  But if the post is not found or
+	 * does not match the entity post type, it will return an empty array
+	 *
 	 * @param array $args WP_Query args || int $args the metadatum id
 	 * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
 	 *
@@ -311,7 +314,11 @@ class Metadata extends Repository {
 		if ( is_numeric( $args ) ) {
 			$existing_post = get_post( $args );
 			if ( $existing_post instanceof \WP_Post ) {
-				return new Entities\Metadatum( $existing_post );
+				try {
+					return new Entities\Metadatum( $existing_post );
+				} catch (\Exception $e) {
+					return [];
+				}
 			} else {
 				return [];
 			}
@@ -736,6 +743,11 @@ class Metadata extends Repository {
 	 * @throws \Exception
 	 */
 	public function disable_delete_core_metadata( $before, $post ) {
+		
+		if ( Entities\Metadatum::get_post_type() != $post->post_type ) {
+			return null;
+		}
+		
 		$metadatum = $this->fetch( $post->ID );
 
 		if ( $metadatum && in_array( $metadatum->get_metadata_type(), $this->core_metadata ) && is_numeric( $metadatum->get_collection_id() ) ) {
@@ -755,6 +767,11 @@ class Metadata extends Repository {
 	 * @internal param The $post_id post ID which is deleting
 	 */
 	public function force_delete_core_metadata( $before, $post, $force_delete ) {
+		
+		if ( Entities\Metadatum::get_post_type() != $post->post_type ) {
+			return null;
+		}
+		
 		$metadatum = $this->fetch( $post->ID );
 
 		if ( $metadatum && in_array( $metadatum->get_metadata_type(), $this->core_metadata ) && is_numeric( $metadatum->get_collection_id() ) ) {

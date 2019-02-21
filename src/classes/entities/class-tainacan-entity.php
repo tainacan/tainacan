@@ -70,8 +70,12 @@ class Entity {
     public $cap;
 
 	/**
-	 * Create an instance of Entity and get post data from database or create a new StdClass if $which is 0
+	 * Create an instance of Entity 
 	 *
+	 * If ID or WP Post is passed, it retrieves the object from the database 
+	 * 
+	 * Attention: If the ID or Post provided do not match the Entity post type, an Exception will be thrown
+	 * 
 	 * @param integer|\WP_Post optional $which Entity ID or a WP_Post object for existing Entities. Leave empty to create a new Entity.
 	 *
 	 * @throws \Exception
@@ -79,10 +83,11 @@ class Entity {
     function __construct($which = 0) {
     	if (is_numeric($which) && $which > 0) {
     		$post = get_post($which);
-    		
-    		if ($post instanceof \WP_Post) {
+			if ($post instanceof \WP_Post) {
     			$this->WP_Post = get_post($which);
-    		}
+    		} else {
+				throw new \Exception( 'No entity was found with ID ' . $which );
+			}
     		
     	} elseif ($which instanceof \WP_Post) {
     		$this->WP_Post = $which;
@@ -98,18 +103,21 @@ class Entity {
     	} else {
     		$this->WP_Post = new \StdClass();
     	}
+		
+		$collection_pt_pattern = '/' . Collection::$db_identifier_prefix . '\d+' . Collection::$db_identifier_sufix . '/';
+		
     	if(
-    		is_int($which) &&
             $this->WP_Post instanceof \WP_Post &&
-    		$which != 0 &&
+    		isset( $this->WP_Post->ID ) &&
     		( 
     			( $this->get_post_type() !== false && $this->WP_Post->post_type != $this->get_post_type() ) ||
     			// Lets check if it is a collection and have rigth post_type
-    			( $this->get_post_type() === false && $this->WP_Post->post_type != Collection::$db_identifier_prefix.$this->get_db_identifier().Collection::$db_identifier_sufix ) // TODO check if we can use only get_db_identifier for this
+    			( $this->get_post_type() === false && $this->WP_Post->post_type && ! preg_match($collection_pt_pattern, $this->WP_Post->post_type) ) 
     		)
     	) {
     		if($this->get_post_type() === false) {
-    			throw new \Exception('the returned post is not the same type of the entity! expected: '.Collection::$db_identifier_prefix.$this->get_db_identifier().Collection::$db_identifier_sufix.' and actual: '.$this->WP_Post->post_type );
+    			
+				throw new \Exception('the returned post is not the same type of the entity! expected: '.Collection::$db_identifier_prefix.$this->get_db_identifier().Collection::$db_identifier_sufix.' and actual: '.$this->WP_Post->post_type );
     		}
     		else {
     			throw new \Exception('the returned post is not the same type of the entity! expected: '.$this->get_post_type().' and actual: '.$this->WP_Post->post_type );
