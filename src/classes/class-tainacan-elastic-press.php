@@ -32,7 +32,7 @@ class Elastic_Press {
 		if (!class_exists('EP_API')) {
 			return; // ElasticPress not active
 		}
-		
+		$this->last_aggregations = [];
 		//activates the inclusion of the complete hierarchy of terms.
 		add_filter('ep_sync_terms_allow_hierarchy', '__return_true');
 
@@ -109,50 +109,88 @@ class Elastic_Press {
 		
 		if ( is_array($args['post_type']) ) {
 			$this->facets = [];
-			foreach ( $args['post_type'] as $cpt ) {
-				$col = $Tainacan_Collections->fetch_by_db_identifier($cpt);
-				$_filters = $Tainacan_Filters->fetch_by_collection($col, ['posts_per_page' => -1], 'OBJECT');
-				foreach ($_filters as $filter) {
-					$filter_id = $filter->get_id();
-					$metadata_type = $filter->get_metadatum()->get_metadata_type();
-					if ($metadata_type == 'Tainacan\Metadata_Types\Taxonomy') {
-						$metadatum_options = $filter->get_metadatum()->get_metadata_type_options();
-						$taxonomy_id = $metadatum_options['taxonomy_id'];
-						$taxonomy_slug = Repositories\Taxonomies::get_instance()->get_db_identifier_by_id($taxonomy_id);
-						$id = "$filter_id.taxonomy.$taxonomy_slug";
-						$key = "terms.$taxonomy_slug.term_id";
-						$field = "terms.$taxonomy_slug";
-						$data_id = $taxonomy_slug;
-					} else {
-						$metadatum_id = $filter->get_metadatum()->get_ID();
-						$id = "$filter_id.meta.$metadatum_id";
-						$key = "meta.$metadatum_id.raw";
-						$field = "meta.$metadatum_id.raw";
-						$data_id = $metadatum_id;
-					}
-					
-					if (isset($args['facet_metadatum_id']) && ($args['facet_metadatum_id'] == $data_id)) {
-						$this->$aggregation_type = 'facets';
-						$this->facets = [];
+			
+			if ( isset($args['facet_metadatum_id']) ) {
+				$this->$aggregation_type = 'facets';				
+				$metadatum = Repositories\Metadata::get_instance()->fetch($args['facet_metadatum_id']);
+				$metadatum_options = $metadatum->get_metadata_type_options();
+				$metadata_type = $metadatum->get_metadata_type();
+				if ($metadata_type == 'Tainacan\Metadata_Types\Taxonomy') {
+					$taxonomy_id = $metadatum_options['taxonomy_id'];
+					$taxonomy_slug = Repositories\Taxonomies::get_instance()->get_db_identifier_by_id($taxonomy_id);
+					$id = "taxonomy.$taxonomy_slug";
+					$key = "terms.$taxonomy_slug.term_id";
+					$field = "terms.$taxonomy_slug";
+				} else {
+					$metadatum_id = $args['facet_metadatum_id'];
+					$id = "meta.$metadatum_id";
+					$key = "meta.$metadatum_id.raw";
+					$field = "meta.$metadatum_id.raw";
+				}
+				$this->facets[$id] = [
+					"key" => $key, 
+					"field" => $field,
+					"metadata_type" => $metadata_type, 
+					"last_term" => $args['facet_last_term'], 
+					"parent" => $args['facet_term_parent_id'],
+					"pagesize" => !isset($args['facet_pagesize']) && empty($args['facet_pagesize']) ? 10 : $args['facet_pagesize'],
+					"search" => !isset($args['facet_search']) && empty($args['facet_search']) ? '' : $args['facet_search'],
+					"include" => $args['facet_include'],
+				];
+			} else {
+				
+				foreach ( $args['post_type'] as $cpt ) {
+					$col = $Tainacan_Collections->fetch_by_db_identifier($cpt);
+					$_filters = $Tainacan_Filters->fetch_by_collection($col, ['posts_per_page' => -1], 'OBJECT');
+					foreach ($_filters as $filter) {
+						$include = [];
+						$filter_id = $filter->get_id();
+						$metadata_type = $filter->get_metadatum()->get_metadata_type();
+						if ($metadata_type == 'Tainacan\Metadata_Types\Taxonomy') {
+							$metadatum_options = $filter->get_metadatum()->get_metadata_type_options();
+							$taxonomy_id = $metadatum_options['taxonomy_id'];
+							$taxonomy_slug = Repositories\Taxonomies::get_instance()->get_db_identifier_by_id($taxonomy_id);
+							$id = "$filter_id.taxonomy.$taxonomy_slug";
+							$key = "terms.$taxonomy_slug.term_id";
+							$field = "terms.$taxonomy_slug";
+							
+							if( isset($args['taxquery']) ){
+								foreach( $args['taxquery'] as $taxquery ){
+									if( $taxquery['taxonomy'] === $taxonomy_slug ){
+										$include[] = $taxquery['terms']; 
+									}
+								}
+							}
+							
+						} else {
+							$metadatum_id = $filter->get_metadatum()->get_ID();
+							$id = "$filter_id.meta.$metadatum_id";
+							$key = "meta.$metadatum_id.raw";
+							$field = "meta.$metadatum_id.raw";
+							
+							if( isset($args['metaquery']) ){
+								foreach( $args['metaquery'] as $metaquery ){
+									if( $metaquery['key'] == $metadatum_id ){
+										$include[] = $metaquery['value'];
+									}
+								}
+							}
+							
+						}
+						$this->$aggregation_type = 'items';
 						$this->facets[$id] = [
 							"key" => $key, 
 							"field" => $field, 
 							"max_options" => $filter->get_max_options(), 
-							"metadata_type" => $metadata_type, 
-							"last_term" => $args['facet_last_term'], 
-							"parent" => $args['facet_term_parent_id'],
-							"pagesize" => !isset($args['facet_pagesize']) && empty($args['facet_pagesize']) ? 10 : $args['facet_pagesize'],
-							"search" => !isset($args['facet_search']) && empty($args['facet_search']) ? '' : $args['facet_search'],
+							"metadata_type" => $metadata_type,
+							"include" => $include
+							
 						];
-						break;
-					} else {
-						$this->$aggregation_type = 'items';
-						$this->facets[$id] = ["key" => $key, "field" => $field, "max_options" => $filter->get_max_options(), "metadata_type" => $metadata_type];
 					}
 				}
 			}
 		}
-
+		
 		add_filter('ep_formatted_args', array($this, "prepare_request")); //filtro para os argumentos já no formato a ser enviado para o elasticpress.
 		return $args;
 	}
@@ -200,22 +238,18 @@ class Elastic_Press {
 		$args['items_filter']['facet_pagesize'] = $args['number'];
 		$args['items_filter']['facet_last_term'] = $args['last_term'];
 		$args['items_filter']['facet_search'] = $args['search'];
+		$args['items_filter']['facet_metadatum_id'] = $metadatum_id;
+		$args['items_filter']['facet_include'] = $args['include'];
 		
-		if ( $metadatum_type == 'Tainacan\Metadata_Types\Taxonomy') {
-			$taxonomy_id = $metadatum_options['taxonomy_id'];
-			$taxonomy_slug = Repositories\Taxonomies::get_instance()->get_db_identifier_by_id($taxonomy_id);
-			$args['items_filter']['facet_metadatum_id'] = $taxonomy_slug;
-		} elseif ( $metadatum_type != 'Tainacan\Metadata_Types\Taxonomy') {
-			$args['items_filter']['facet_metadatum_id'] = $metadatum_id;
-		}
 		$itemsRepo = \Tainacan\Repositories\Items::get_instance();
 		$items = $itemsRepo->fetch($args['items_filter'], $args['collection_id'], 'WP_Query');
 		$items_aggregations = $this->last_aggregations; //if elasticPress active
 		
 		return [
-			'total' => count($items_aggregations),
-			'pages' => '0',
-			'values' => ['filters' => $items_aggregations]
+			// 'total' => count($items_aggregations),
+			// 'pages' => '0', //TODO get a total of pages
+			'values' => $items_aggregations['values'],
+			'last_term' => $items_aggregations['last_term']
 		];
 	}
 
@@ -475,10 +509,10 @@ class Elastic_Press {
 		foreach($aggregations as $key => $aggregation) {
 			$after_key = $aggregation['after_key'];
 			$metadata_type = \explode(".", $key);
-			$filter_id = $metadata_type[0];
-			if($metadata_type[1] == 'taxonomy') {
-				$taxonomy_slug = $metadata_type[2];
-				$formated_aggs[$filter_id] = [];
+			//$filter_id = $metadata_type[0];
+			if($metadata_type[0] == 'taxonomy') {
+				$taxonomy_slug = $metadata_type[1];
+				$formated_aggs = [];
 				foreach ($aggregation['buckets'] as $term) {
 					$term_id = $term['key'][$key];
 					if ($term_id == '') continue;
@@ -486,7 +520,7 @@ class Elastic_Press {
 					$term_object = \Tainacan\Repositories\Terms::get_instance()->fetch($term_id, $taxonomy_slug);
 					$count_query = $wpdb->prepare("SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", $term_id);
 					$total_children = $wpdb->get_var($count_query);
-					$formated_aggs[$filter_id]['values'][] = [
+					$formated_aggs['values'][] = [
 						"type" 						=> "Taxonomy",
 						"value" 					=> $term_id,
 						"taxonomy" 				=> $taxonomy_slug,
@@ -499,11 +533,10 @@ class Elastic_Press {
 				}
 			} else {
 				$metada_label = $metadata_type[1];
-				$formated_aggs[$filter_id] = [];
 				if (isset($aggregation['buckets']))
 				foreach ($aggregation['buckets'] as $term) {
 					if ($term['key'][$key] == '') continue;
-					$formated_aggs[$filter_id]['values'][] = [
+					$formated_aggs['values'][] = [
 						"type" 				=> "Text",
 						"label" 			=> $term['key'][$key],
 						"value" 			=> $term['key'][$key],
@@ -511,7 +544,7 @@ class Elastic_Press {
 					];
 				}
 			}
-			$formated_aggs[$filter_id]['last_term'] = $after_key[$key];
+			$formated_aggs['last_term'] = $after_key[$key];
 		}
 		return $formated_aggs;
 	}

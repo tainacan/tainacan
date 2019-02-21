@@ -911,7 +911,7 @@ class Metadata extends Repository {
 	  *
 		*     @type bool		 $count_items				Include the count of items that can be found in each value (uses $items_filter as well). Default false
 		*
-		*     @type string   $facet_last_term				The last term returned when using a elasticsearch for calculates the facet.
+		*     @type string   $last_term				The last term returned when using a elasticsearch for calculates the facet.
 	  * 
 	  * }
 	  * 
@@ -927,7 +927,8 @@ class Metadata extends Repository {
 			'include' => [],
 			'items_filter' => [],
 			'parent_id' => 0,
-			'count_items' => false
+			'count_items' => false,
+			'last_term' => ''
 		);
 		$args = wp_parse_args($args, $defaults);
 		
@@ -1189,9 +1190,10 @@ class Metadata extends Repository {
 		}
 		
 		return [
-			'total' => $total,
-			'pages' => $pages,
-			'values' => $values
+			// 'total' => $total,
+			// 'pages' => $pages,
+			'values' => $values,
+			'last_term' => $args['last_term']
 		];
 		
 	}

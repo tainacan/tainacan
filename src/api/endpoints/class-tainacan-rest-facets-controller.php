@@ -128,12 +128,17 @@ class REST_Facets_Controller extends REST_Controller {
 				'last_term' => $last_term
 			];
 			
-			$response = $this->metadatum_repository->fetch_all_metadatum_values( $metadatum_id, $args );
+			$all_values = $this->metadatum_repository->fetch_all_metadatum_values( $metadatum_id, $args );
 			
-			$rest_response = new \WP_REST_Response($response['values'], 200);
+			$response = [
+				'values' => $all_values['values'],
+				'last_term' => $all_values['last_term']
+			];
+			
+			$rest_response = new \WP_REST_Response($response, 200);
 
-			$rest_response->header('X-WP-Total', $response['total']);
-			$rest_response->header('X-WP-TotalPages', $response['pages']);
+			// $rest_response->header('X-WP-Total', $response['total']);
+			// $rest_response->header('X-WP-TotalPages', $response['pages']);
 			
 			return $rest_response;
 			
