@@ -97,8 +97,18 @@ export default {
             return Math.ceil(Number(this.totalItems)/Number(this.itemsPerPage));    
         },
         collectionTotalItems() {
-            // console.log(this.getCollectionTotalItems().total_items// .status....)
-            return this.getCollectionTotalItems().total_items;
+            let collectionTotalItemsObject = this.getCollectionTotalItems().total_items;
+            if (collectionTotalItemsObject) {
+                switch(this.getStatus()) {
+                    case 'draft':
+                        return collectionTotalItemsObject.draft;
+                    case 'trash':
+                        return collectionTotalItemsObject.trash;
+                    default:
+                        return collectionTotalItemsObject.publish + collectionTotalItemsObject.private;
+                }
+            } else
+                return this.totalItems;
         }
     },
     watch: {
@@ -115,7 +125,8 @@ export default {
             'getTotalItems',
             'getPage',
             'getItemsPerPage',
-            'getPostQuery'
+            'getPostQuery',
+            'getStatus'
         ]),
         onChangeItemsPerPage(value) {
             if( this.itemsPerPage == value){
