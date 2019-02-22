@@ -27,7 +27,7 @@ class Elastic_Press {
 	protected function __construct($ajax_query=false) {
 		add_action('init', [$this, 'init']);
 	}
-	
+
 	function init() {
 		if (!class_exists('EP_API')) {
 			return; // ElasticPress not active
@@ -51,7 +51,7 @@ class Elastic_Press {
 		// 	error_log($query["args"]["body"]);
 		// });
 	}
-	
+
 	function filter_args($args, $type) {
 
 		if ($type == 'items' && (!isset($args['ep_integrate']) || $args['ep_integrate'] === true)) {
@@ -61,7 +61,7 @@ class Elastic_Press {
 
 		return $args;
 	}
-	
+
 	private function add_items_args($args) {
 		
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
@@ -111,7 +111,7 @@ class Elastic_Press {
 			$this->facets = [];
 			
 			if ( isset($args['facet_metadatum_id']) ) {
-				$this->$aggregation_type = 'facets';				
+				$this->$aggregation_type = 'facets';
 				$metadatum = Repositories\Metadata::get_instance()->fetch($args['facet_metadatum_id']);
 				$metadatum_options = $metadatum->get_metadata_type_options();
 				$metadata_type = $metadatum->get_metadata_type();
@@ -154,10 +154,10 @@ class Elastic_Press {
 							$key = "terms.$taxonomy_slug.term_id";
 							$field = "terms.$taxonomy_slug";
 							
-							if( isset($args['taxquery']) ){
-								foreach( $args['taxquery'] as $taxquery ){
-									if( $taxquery['taxonomy'] === $taxonomy_slug ){
-										$include[] = $taxquery['terms']; 
+							if( isset($args['tax_query']) ) {
+								foreach( $args['tax_query'] as $taxquery ) {
+									if( $taxquery['taxonomy'] === $taxonomy_slug ) {
+										$include = $taxquery['terms']; 
 									}
 								}
 							}
@@ -168,14 +168,13 @@ class Elastic_Press {
 							$key = "meta.$metadatum_id.raw";
 							$field = "meta.$metadatum_id.raw";
 							
-							if( isset($args['metaquery']) ){
-								foreach( $args['metaquery'] as $metaquery ){
+							if( isset($args['meta_query']) ) {
+								foreach( $args['meta_query'] as $metaquery ) {
 									if( $metaquery['key'] == $metadatum_id ){
-										$include[] = $metaquery['value'];
+										$include = $metaquery['value'];
 									}
 								}
 							}
-							
 						}
 						$this->$aggregation_type = 'items';
 						$this->facets[$id] = [
@@ -194,7 +193,7 @@ class Elastic_Press {
 		add_filter('ep_formatted_args', array($this, "prepare_request")); //filtro para os argumentos já no formato a ser enviado para o elasticpress.
 		return $args;
 	}
-	
+
 	/**
 	 * Create a formatted array of args to send to elasticpress containing the aggregations for items or for one single facet depending on the request
 	 * 
@@ -213,7 +212,7 @@ class Elastic_Press {
 		}
 		return $formatted_args;
 	}
-	
+
 	/**
 	* Formats the response from Elastic Search to Tainacan API format 
 	* 
@@ -226,7 +225,7 @@ class Elastic_Press {
 				return  $this->format_aggregations_facet($aggregations);
 		}
 	}
-	
+
 	public function fetch_all_metadatum_values($return, $metadatum, $args) {
 		
 		$metadatum_type = $metadatum->get_metadata_type();
@@ -354,11 +353,30 @@ class Elastic_Press {
 						)
 					)
 				];
+
+				if (!empty($filter['include'])) {
+					$custom_filter_include = $custom_filter;
+					$custom_filter_include['bool']['must'][] = ["bool" => [ "must"=> [ [ "terms" => ["$field.term_id" => $filter['include'] ] ] ] ] ];
+					$aggs[$id.'.include'] = [
+						"filter" => $custom_filter_include,
+						"aggs"	=> array(
+							$id.'.include' => array(
+								"terms"=>array(
+									"script" => [
+										"lang" 	=> "painless",
+										"source"=> "def c= ['']; for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }} return c;"
+									]
+								)
+							)
+						)
+					];
+				}
 			} else {
+				$field = $filter['field'];
 				$aggs[$id] = [
 					"filter" => $custom_filter,
 					"aggs"	=> array(
-						$id => array(
+						$id.'.include' => array(
 							"terms"=>array(
 								"size" => $filter['max_options'],
 								"field"=> $filter['field']
@@ -366,8 +384,22 @@ class Elastic_Press {
 						)
 					)
 				];
+
+				if (!empty($filter['include'])) {
+					$custom_filter_include = $custom_filter;
+					$custom_filter_include['bool']['must'][] = ["bool" => [ "must"=> [ [ "terms" => ["$field.raw" => $filter['include'] ] ] ] ] ];
+					$aggs[$id.'.include'] = [
+						"filter" => $custom_filter_include,
+						"aggs"	=> array(
+							$id => array(
+								"terms"=>array(
+									"field"=> $filter['field']
+								)
+							)
+						)
+					];
+				}
 			}
-			
 		}
 		$formatted_args['aggs'] = $aggs;
 		return $formatted_args;
@@ -413,6 +445,7 @@ class Elastic_Press {
 	private function prepare_request_for_facet($formatted_args) {
 		$formatted_args['size'] 	= 0;
 		$formatted_args['query'] 	= $formatted_args['post_filter'];
+		$custom_filter_include = $formatted_args['post_filter'];
 		unset($formatted_args['post_filter']);
 		foreach($this->facets as $id => $filter) {
 			$search = $filter['search'];
@@ -434,6 +467,23 @@ class Elastic_Press {
 						]
 					)
 				];
+				if (!empty($filter['include'])) {
+					$custom_filter_include['bool']['must'][] = ["bool" => [ "must"=> [ [ "terms" => ["$field.term_id" => $filter['include'] ] ] ] ] ];
+					$aggs[$id.'.include'] = [
+						"filter" => $custom_filter_include,
+						"aggs"	=> array(
+							$id.'.include' => array(
+								"terms" => array(
+									"script" => [
+										"lang" 	=> "painless",
+										"source"=> "def c= ['']; for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }} return c;"
+									]
+								)
+							)
+						)
+					];
+				}
+
 				if($search != '') {
 					$formatted_args['query']['bool']['must'][] = ["wildcard"=>["$field.name.raw" => "*$search*"]];
 				}
@@ -444,6 +494,21 @@ class Elastic_Press {
 						"sources" => [ $id => [ "terms" => [ "field" => $field ] ] ]
 					)
 				];
+
+				if (!empty($filter['include'])) {
+					$custom_filter_include['bool']['must'][] = ["bool" => [ "must"=> [ [ "terms" => ["$field" => $filter['include'] ] ] ] ] ];
+					$aggs[$id.'.include'] = [
+						"filter" => $custom_filter_include,
+						"aggs"	=> array(
+							$id => array(
+								"terms"=>array(
+									"field"=> $field
+								)
+							)
+						)
+					];
+				}
+
 				if($search != '') {
 					$formatted_args['query']['bool']['must'][] = ["wildcard"=>["$field" => "*$search*"]];
 				}
@@ -462,17 +527,17 @@ class Elastic_Press {
 		global $wpdb;
 		$formated_aggs = [];
 		foreach($aggregations as $key => $aggregation) {
-			$metadata_type = \explode(".", $key);
-			$filter_id = $metadata_type[0];
-			if($metadata_type[1] == 'taxonomy') {
-				$taxonomy_slug = $metadata_type[2];
-				$formated_aggs[$filter_id] = [];
+			$description_types = \explode(".", $key);
+			$filter_id = $description_types[0];
+			$formated_aggs[$filter_id] = isset($formated_aggs[$filter_id]) ? $formated_aggs[$filter_id] : [];
+			if($description_types[1] == 'taxonomy') {
+				$taxonomy_slug = $description_types[2];
 				foreach ($aggregation[$key]['buckets'] as $term) {
 					$term_id = $term['key'];
 					$term_object = \Tainacan\Repositories\Terms::get_instance()->fetch($term_id, $taxonomy_slug);
 					$count_query = $wpdb->prepare("SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", $term_id);
 					$total_children = $wpdb->get_var($count_query);
-					$formated_aggs[$filter_id][] = [
+					$fct = [
 						"type" 						=> "Taxonomy",
 						"value" 					=> $term['key'],
 						"taxonomy" 				=> $taxonomy_slug,
@@ -482,37 +547,49 @@ class Elastic_Press {
 						"label" 					=> $term_object->get('name'),
 						"parent"					=> $term_object->get('parent')
 					];
+					if (isset($description_types[3])) {
+						array_unshift($formated_aggs[$filter_id], $fct);
+					} else {
+						$formated_aggs[$filter_id][] = $fct;
+					}
 				}
 			} else {
-				$metada_label = $metadata_type[1];
+				$metada_label = $description_types[1];
 				$formated_aggs[$filter_id] = [];
 				if (isset($aggregation[$key]['buckets']))
 				foreach ($aggregation[$key]['buckets'] as $term) {
-					$formated_aggs[$filter_id][] = [
+					$fct = [
 						"type" 				=> "Text",
 						"label" 			=> $term['key'],
 						"value" 			=> $term['key'],
 						"total_items" => $term['doc_count']
 					];
+					if (isset($description_types[3])) {
+						array_unshift($formated_aggs[$filter_id], $fct);
+					} else {
+						$formated_aggs[$filter_id][] = $fct;
+					}
 				}
 			}
+
+			//remove duplicates
+			$formated_aggs[$filter_id] = array_intersect_key($formated_aggs[$filter_id], array_unique(array_map('serialize', $formated_aggs[$filter_id])));
+
 		}
 		return $formated_aggs;
 	}
-	
+
 	/**
 	* Format ES aggregation response for one facet request
 	*/
 	private function format_aggregations_facet($aggregations) {
 		global $wpdb;
-		$formated_aggs = [];
+		$formated_aggs = ['values'=>[]];
 		foreach($aggregations as $key => $aggregation) {
 			$after_key = $aggregation['after_key'];
-			$metadata_type = \explode(".", $key);
-			//$filter_id = $metadata_type[0];
-			if($metadata_type[0] == 'taxonomy') {
-				$taxonomy_slug = $metadata_type[1];
-				$formated_aggs = [];
+			$description_types = \explode(".", $key);
+			if($description_types[0] == 'taxonomy') {
+				$taxonomy_slug = $description_types[1];
 				foreach ($aggregation['buckets'] as $term) {
 					$term_id = $term['key'][$key];
 					if ($term_id == '') continue;
@@ -520,7 +597,8 @@ class Elastic_Press {
 					$term_object = \Tainacan\Repositories\Terms::get_instance()->fetch($term_id, $taxonomy_slug);
 					$count_query = $wpdb->prepare("SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", $term_id);
 					$total_children = $wpdb->get_var($count_query);
-					$formated_aggs['values'][] = [
+
+					$fct = [
 						"type" 						=> "Taxonomy",
 						"value" 					=> $term_id,
 						"taxonomy" 				=> $taxonomy_slug,
@@ -530,21 +608,42 @@ class Elastic_Press {
 						"label" 					=> $term_object->get('name'),
 						"parent"					=> $term_object->get('parent')
 					];
+					if (isset($description_types[3])) {
+						array_unshift($formated_aggs['values'], $fct);
+					} else {
+						$formated_aggs['values'][] = $fct;
+					}
 				}
 			} else {
-				$metada_label = $metadata_type[1];
-				if (isset($aggregation['buckets']))
-				foreach ($aggregation['buckets'] as $term) {
-					if ($term['key'][$key] == '') continue;
-					$formated_aggs['values'][] = [
-						"type" 				=> "Text",
-						"label" 			=> $term['key'][$key],
-						"value" 			=> $term['key'][$key],
-						"total_items" => $term['doc_count']
-					];
+				$metada_label = $description_types[0].'.'.$description_types[1];
+				if (isset($aggregation['buckets'])) {
+					foreach ($aggregation['buckets'] as $term) {
+						if ( isset($term['key'][$key]) ) {
+							$fct = [
+								"type" 				=> "Text",
+								"label" 			=> $term['key'][$key],
+								"value" 			=> $term['key'][$key],
+								"total_items" => $term['doc_count']
+							];
+							$formated_aggs['values'][] = $fct;
+						}
+					}
+				} elseif ( isset($aggregation[$metada_label]['buckets'])) {
+					foreach ($aggregation[$metada_label]['buckets'] as $term) {
+						$fct = [
+							"type" 				=> "Text",
+							"label" 			=> $term['key'],
+							"value" 			=> $term['key'],
+							"total_items" => $term['doc_count']
+						];
+						array_unshift($formated_aggs['values'], $fct);
+					}
 				}
+				$formated_aggs['last_term'] = $after_key[$key];
+				
+				//remove duplicates
+				$formated_aggs['values'] = array_intersect_key($formated_aggs['values'], array_unique(array_map('serialize', $formated_aggs['values'])));
 			}
-			$formated_aggs['last_term'] = $after_key[$key];
 		}
 		return $formated_aggs;
 	}
