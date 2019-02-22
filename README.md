@@ -15,3 +15,16 @@ First, get to know the [key concepts](docs/key-concepts.md) of tainacan and what
 We are still in early stages of development, and any help, feedback or contribution is welcome. Please drop us a line opening an issue or via one of our communication channels: 
 
 * twitter: @tainacan_l3p
+
+
+***
+
+### Important links
+- Follow updates on Tainacan on [our blog](http://tainacan.org/blog/)
+- Explore [our documentation](https://wiki.tainacan.org/) on our own wiki
+- Join our community by signing up to [our mailing list](https://lists.riseup.net/www/info/tainacan)!
+
+### Contributing
+Tainacan is a free, open source software licensed under **GPLv3**. Contributions to the codebase will abide to the same license; other contributions may be under aditional or other terms.
+
+To contribute with our project, you can report bugs and other issues, or suggest new features. You are also free to submit pull requests or translate Tainacan to multiple languages on [placeholder]. If you are interested in contributing, you can get started by reading our contribution guidelines [add link to CONTRIBUTING.md].
