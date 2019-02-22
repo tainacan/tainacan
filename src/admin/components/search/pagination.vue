@@ -10,9 +10,10 @@
                 $i18n.get('info_showing_items') +
                 getFirstItem() +
                 $i18n.get('info_to') + 
-                getLastItemNumber() + 
-                $i18n.get('info_of') + totalItems + '.'
+                getLastItemNumber() +
+                $i18n.get('info_of')
             }} 
+            <span :class="{ 'has-text-warning': collectionTotalItems > totalItems }">{{ totalItems + '.' }}</span>
         </div> 
         <div class="items-per-page">
             <b-field 
@@ -94,6 +95,10 @@ export default {
         },
         totalPages(){
             return Math.ceil(Number(this.totalItems)/Number(this.itemsPerPage));    
+        },
+        collectionTotalItems() {
+            // console.log(this.getCollectionTotalItems().total_items// .status....)
+            return this.getCollectionTotalItems().total_items;
         }
     },
     watch: {
@@ -103,6 +108,9 @@ export default {
         }
     },
     methods: {
+         ...mapGetters('collection', [
+            'getCollectionTotalItems'
+        ]),
         ...mapGetters('search', [
             'getTotalItems',
             'getPage',
