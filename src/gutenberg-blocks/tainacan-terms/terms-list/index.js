@@ -13,7 +13,11 @@ import qs from 'qs';
 
 registerBlockType('tainacan/terms-list', {
     title: __('Tainacan Terms List', 'tainacan'),
-    icon: 'list-view',
+    icon:
+        <svg width="24" height="24" viewBox="0 -2 12 16">
+            <path
+                d="M 4.4,2.5 H 0 V 0 h 4.4 l 1.2,1.3 z m -1.9,5 v 3.1 H 5 v 1.2 H 1.3 v -8 H 2.5 V 6.3 H 5 V 7.6 H 2.5 Z m 8.2,0.7 H 6.3 V 5.7 h 4.4 l 1.2,1.2 z M 11.9,11.3 10.7,10 H 6.3 v 2.5 h 4.4 z"/>       
+        </svg>,
     category: 'tainacan-blocks',
     keywords: [ __( 'Tainacan', 'tainacan' ), __( 'terms', 'tainacan' ), __( 'taxonomy', 'tainacan' ) ],
     attributes: {
@@ -126,11 +130,6 @@ registerBlockType('tainacan/terms-list', {
             showImage,
             layout 
         } = attributes;
-        
-        console.log("Editando...");
-        // console.log(selectedTerms);
-        // console.log(selectedTerms);
-        // console.log(content);
 
         function prepareTerm(term) {
             return (
@@ -159,18 +158,16 @@ registerBlockType('tainacan/terms-list', {
 
         function setContent(){
 
-            let currentSelectedTermsHTML = [];
+            selectedTermsHTML = [];
 
             for (let i = 0; i < selectedTermsObject.length; i++)
-                currentSelectedTermsHTML.push(prepareTerm(selectedTermsObject[i]));
-
-            selectedTermsHTML = currentSelectedTermsHTML;
+                selectedTermsHTML.push(prepareTerm(selectedTermsObject[i]));
 
             setAttributes({
-                selectedTermsHTML: currentSelectedTermsHTML,
                 content: (
-                    <ul className={'terms-list  terms-layout-' + layout}>{ currentSelectedTermsHTML }</ul>
-                )
+                    <ul className={'terms-list  terms-layout-' + layout}>{ selectedTermsHTML }</ul>
+                ),
+                selectedTermsHTML: selectedTermsHTML 
             });
         }
 
@@ -303,13 +300,7 @@ registerBlockType('tainacan/terms-list', {
                 title: __( 'List View' ),
                 onClick: () => updateLayout('list'),
                 isActive: layout === 'list',
-            },            
-            {
-                icon: 'exerpt-view',
-                title: __( 'Card View' ),
-                onClick: () => updateLayout('card'),
-                isActive: layout === 'card',
-            },
+            }
         ];
 
         return (
@@ -467,8 +458,8 @@ registerBlockType('tainacan/terms-list', {
             </div>
         );
     },
-    save({ attributes }){
+    save({ attributes, className }){
         const { content } = attributes;
-        return <div>{ content }</div>
+        return <div className={className}>{ content }</div>
     }
 });
