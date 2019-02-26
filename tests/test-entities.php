@@ -11,7 +11,7 @@ namespace Tainacan\Tests;
 /**
 * Sample test case.
 */
-class Entities extends TAINACAN_UnitTestCase {
+class TestEntities extends TAINACAN_UnitTestCase {
 	
 	
 	function setUp() {
