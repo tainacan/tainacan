@@ -180,3 +180,7 @@ export const cleanTaxQueries = (state) => {
 export const cleanFetchOnly = (state) => {
     delete state.postquery.fetch_only;
 };
+
+export const setFacets = (state, facets) => {
+    state.facets = facets;
+}
