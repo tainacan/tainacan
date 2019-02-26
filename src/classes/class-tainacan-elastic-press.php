@@ -376,7 +376,7 @@ class Elastic_Press {
 				$aggs[$id] = [
 					"filter" => $custom_filter,
 					"aggs"	=> array(
-						$id.'.include' => array(
+						$id => array(
 							"terms"=>array(
 								"size" => $filter['max_options'],
 								"field"=> $filter['field']
@@ -391,7 +391,7 @@ class Elastic_Press {
 					$aggs[$id.'.include'] = [
 						"filter" => $custom_filter_include,
 						"aggs"	=> array(
-							$id => array(
+							$id.'.include' => array(
 								"terms"=>array(
 									"field"=> $filter['field']
 								)
