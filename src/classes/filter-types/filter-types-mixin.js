@@ -108,7 +108,7 @@ export const filter_type_mixin = {
                 });
             }
         },
-        getValuesRelationship(collectionTarget, search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0') {
+        getValuesRelationship(search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0') {
             
             if (isInCheckboxModal || search || this.facetsFromItemSearch && this.facetsFromItemSearch.length > 0) {
 
@@ -217,15 +217,13 @@ export const filter_type_mixin = {
 
             this.searchResults = sResults;
 
-            if (opts.length) {
+            if (opts.length)
                 this.options = opts;
-            } else if(!search) {
+            else if(!search)
                 this.noMorePage = 1;
-            }
 
-            if(this.options.length < this.maxNumOptionsCheckboxList && !search){
+            if(this.options.length < this.maxNumOptionsCheckboxList && !search)
                 this.noMorePage = 1;
-            }
 
             if (this.filter.max_options && this.options.length >= this.filter.max_options) {
                 let showViewAllButton = true;
@@ -283,16 +281,15 @@ export const filter_type_mixin = {
 
             this.searchResults = sResults;
 
-            if (opts.length) {
+            if (opts.length)
                 this.options = opts;
-            } else {
+            else
                 this.noMorePage = 1;
-            }
+            
 
-            if(this.options.length < this.maxNumOptionsCheckboxList){
+            if(this.options.length < this.maxNumOptionsCheckboxList)
                 this.noMorePage = 1;
-            }
-
+            
             if (this.filter.max_options && this.options.length >= this.filter.max_options) {
                 let showViewAllButton = true;
 

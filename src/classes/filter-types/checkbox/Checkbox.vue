@@ -115,32 +115,22 @@
                 if (this.getOptionsValuesCancel != undefined)
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
-                    let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
-                        this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
-
-                    promise = this.getValuesRelationship( collectionTarget, null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1');
-                    promise.request
-                        .then(() => {
-                            if(this.options.length > this.filter.max_options){
-                                this.options.splice(this.filter.max_options);
-                            }
-                        }).catch((error) => {
-                            this.$console.error(error);
-                    }) 
-                } else {
+                if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' )
+                    promise = this.getValuesRelationship( null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1');
+                else
                     promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1' );
-                    promise.request
-                        .then(() => {
 
-                            if(this.options.length > this.filter.max_options){
-                                this.options.splice(this.filter.max_options);
-                            }
-                            
-                        }).catch((error) => {
-                            this.$console.error(error);
-                        });
-                }
+                promise.request
+                    .then(() => {
+
+                        if(this.options.length > this.filter.max_options){
+                            this.options.splice(this.filter.max_options);
+                        }
+                        
+                    }).catch((error) => {
+                        this.$console.error(error);
+                    });
+
                 if (skipSelected == undefined || skipSelected == false) {
                     promise.request
                         .then(() => {
