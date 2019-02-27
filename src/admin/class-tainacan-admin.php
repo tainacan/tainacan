@@ -334,7 +334,9 @@ class Admin {
 	}
 	
 	public function systemcheck_page() {
-		echo 'asdasd';
+		require_once('system-check/class-tainacan-system-check.php');
+		$check = new System_Check();
+		$check->admin_page();
 	}
 
 }
