@@ -1167,9 +1167,11 @@ export default {
         }
 
         // Obtains collection name
-        this.fetchCollectionName(this.collectionId).then((collectionName) => {
-            this.collectionName = collectionName;
-        });
+        if (!this.isRepositoryLevel) {
+            this.fetchCollectionName(this.collectionId).then((collectionName) => {
+                this.collectionName = collectionName;
+            });
+        }
         
         // Obtains if collection allow items comments
         this.fetchCollectionAllowComments(this.collectionId).then((collectionAllowComments) => {

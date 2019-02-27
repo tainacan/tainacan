@@ -773,9 +773,6 @@ class Old_Tainacan extends Importer{
 
         /*Properties of metadatum*/
         if(isset($meta->metadata)){
-            if($meta->metadata->required == 1){
-                $newMetadatum->set_required(true);
-            }
 
             if(!empty($meta->metadata->default_value)){
                 $newMetadatum->set_default_value($meta->metadata->default_value);

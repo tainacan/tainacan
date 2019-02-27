@@ -10,13 +10,7 @@ class Oaipmh_Importer extends Importer {
             'name' => 'Create Collections',
             'progress_label' => 'Create Collections',
             'callback' => 'create_collections'
-        ],
-        [
-            'name' => 'Import Items',
-            'progress_label' => 'Import Items',
-            'callback' => 'process_collections'
         ]
-
     ];
 
     protected $tainacan_api_address, $wordpress_api_address, $actual_collection;
@@ -34,7 +28,6 @@ class Oaipmh_Importer extends Importer {
 
         $this->remove_import_method('file');
         $this->add_import_method('url');
-        $this->tainacan_api_address = "/wp-json/tainacan/v1/oai";
 
     }
 
@@ -43,7 +36,7 @@ class Oaipmh_Importer extends Importer {
      * @return int
      */
     public function process_item( $index, $collection_id ){
-
+        return true;
     }
 
     /**
@@ -58,17 +51,19 @@ class Oaipmh_Importer extends Importer {
         if( isset($collection_xml->ListSets) ){
             foreach ($collection_xml->ListSets->set as $set) {
 
-                $setSpec = $set->setSpec;
-                $setName = $set->setName;
+                $setSpec = (string) $set->setSpec;
+                $setName =  (string) $set->setName;
 
                 $collection = $this->create_collection( $setSpec, $setName );
 
                 $metadata_map = $this->create_collection_metadata($collection);
+                $total = intval($this->get_total_items_from_source($setSpec));
+                $this->add_log('total in collection: ' . $total);
 
                 $this->add_collection([
                     'id' => $collection->get_id(),
                     'mapping' => $metadata_map,
-                    'total_items' => intval($this->get_total_items_from_source($setSpec)),
+                    'total_items' => $total,
                     'source_id' => $setSpec
                 ]);
             }
@@ -87,6 +82,7 @@ class Oaipmh_Importer extends Importer {
         $info = $this->requester( $this->get_url() . "?verb=ListRecords&metadataPrefix=oai_dc&set=" . $setSpec);
 
         if( !isset($info['body']) ){
+            $this->add_log('ERROR');
             $this->add_error_log('Error in fetch remote total items');
             $this->abort();
             return false;
@@ -96,22 +92,28 @@ class Oaipmh_Importer extends Importer {
             $xml = new \SimpleXMLElement($info['body']);
 
             if( isset($xml->ListRecords) && !isset($xml->ListRecords->resumptionToken) ){
+                $this->add_log('NO resumptiontoken ');
                 $cont = 0;
                 foreach ($xml->ListRecords->record as $record) $cont++;
 
                 return $cont;
             } elseif ( isset($xml->ListRecords) && !isset($xml->ListRecords->resumptionToken) ){
+
                 $resumptionToken_attributes = $xml->ListRecords->resumptionToken->attributes();
                 foreach ($resumptionToken_attributes as $tag => $attribute) {
+
+                    $this->add_log('resumptiontoken: ' . (string) $tag . ' ' . (string) $attribute );
                     if ($tag == 'completeListSize') {
                         return (string) $attribute;
                     }
                 }
             }
         } catch (Exception $e) {
+            $this->add_log('ERROR');
             return 0;
         }
 
+        $this->add_log('SKIP');
         return 0;
     }
 
@@ -150,7 +152,7 @@ class Oaipmh_Importer extends Importer {
      * @throws \ErrorException
      */
     protected function create_collection_metadata( $collection_object ){
-        $Tainacan_Mappers = \Tainacan\Repositories\Mappers::get_instance();
+        $Tainacan_Mappers = \Tainacan\Mappers_Handler::get_instance();
         $mapper_obj = $Tainacan_Mappers->check_class_name('dublin-core', true, $Tainacan_Mappers::MAPPER_CLASS_PREFIX);
         $mapper = new $mapper_obj;
         $array_metadata = [];
@@ -173,7 +175,8 @@ class Oaipmh_Importer extends Importer {
                         $_meta_mapping[$mapper->slug] = $slug;
                         $core_meta->set_exposer_mapping($_meta_mapping);
                         if ($core_meta->validate()) {
-                            $Tainacan_Metadata->insert($core_meta);
+                            $new_metadata = $Tainacan_Metadata->insert($core_meta);
+                            $array_metadata[$new_metadata->get_id()] = $slug;
                         }
                     }
                     continue;
@@ -201,7 +204,7 @@ class Oaipmh_Importer extends Importer {
                 if($metadatum->validate()){
 
                     $new_metadata = $Tainacan_Metadata->insert($metadatum);
-                    $array_metadata[$new_metadata->get_id()] = $mapper_metadatum['label'];
+                    $array_metadata[$new_metadata->get_id()] = $slug;
                 }
             }
         }

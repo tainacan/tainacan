@@ -603,10 +603,11 @@ export default {
 
         
         // Obtains collection name
-        this.fetchCollectionName(this.collectionId).then((collectionName) => {
-            this.collectionName = collectionName;
-        });
-
+        if (!this.isRepositoryLevel) {
+            this.fetchCollectionName(this.collectionId).then((collectionName) => {
+                this.collectionName = collectionName;
+            });
+        }
         // Sets modal callback function
         this.$refs.filterTypeModal.onCancel = () => {
             this.onCancelFilterTypeSelection();

@@ -20,6 +20,7 @@
 
                 <!-- Sorting options ----  -->
                 <b-field class="header-item">
+                    <label class="label">{{ $i18n.get('label_sorting') + ':' }}</label>
                     <b-select
                             class="sorting-select"
                             :disabled="taxonomies.length <= 0"
@@ -167,7 +168,7 @@
                 order: 'asc',
                 ordeBy: 'date',
                 sortingOptions: [
-                    { label: this.$i18n.get('label_title'), value: 'title' },
+                    { label: this.$i18n.get('label_name'), value: 'title' },
                     { label: this.$i18n.get('label_creation_date'), value: 'date' },
                 ]
             }
@@ -315,6 +316,11 @@
         .header-item .button .icon i{
             width: 100%;
         } 
+        .header-item .label{
+            font-weight: normal;
+            font-size: 0.875rem;
+            margin-top: 3px;
+        }
 
         @media screen and (max-width: 769px) {
             height: 60px;
