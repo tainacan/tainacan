@@ -17,11 +17,11 @@ class System_Check {
 	private $health_check_mysql_rec_version = null;
 
 	public function __construct() {
-		$this->init();
+		//$this->init();
 	}
 
 	public function init() {
-		$this->php_min_version_check       = version_compare( $this->min_php_version, PHP_VERSION, '<=' );
+		$this->php_min_version_check       = 
 		//$this->php_supported_version_check = version_compare( HEALTH_CHECK_PHP_SUPPORTED_VERSION, PHP_VERSION, '<=' );
 		//$this->php_rec_version_check       = version_compare( HEALTH_CHECK_PHP_REC_VERSION, PHP_VERSION, '<=' );
 
@@ -30,6 +30,29 @@ class System_Check {
 		//add_action( 'wp_ajax_health-check-site-status', array( $this, 'site_status' ) );
 
 		//add_action( 'wp_loaded', array( $this, 'check_wp_version_check_exists' ) );
+	}
+	
+	public function admin_page() {
+		include('admin-page.php');
+	}
+	
+	public function test_php_version() {
+		$testphpmin = version_compare( $this->min_php_version, PHP_VERSION, '<=' );
+		$testphprec = version_compare( 7, PHP_VERSION, '<=' );
+		
+		if ($testphprec) {
+			$class = 'good';
+			$text = __('Version', 'tainacan') . ': ' . PHP_VERSION;
+		} elseif ($testphpmin)  {
+			$class = 'warning';
+			$text = __('Version ok but....', 'tainacan') . ': ' . PHP_VERSION;
+		} else {
+			$class = 'error';
+			$text = __('Upgrade!', 'tainacan') . ': ' . PHP_VERSION;
+		}
+		
+		printf( '<span class="%1$s"></span> %2$s', esc_attr( $class ), esc_html( $text ) );
+		
 	}
 
 	private function prepare_sql_data() {
@@ -73,7 +96,15 @@ class System_Check {
 		$text  = '';
 		$class = '';
 
-		if ( ! is_array( $core_updates ) ) {
+		if ( version_compare($core_current_version, '4.8') < 0 ) {
+			
+			$class = 'error';
+			$text =  sprintf(
+				__('Tainacan requires WordPress 4.8 or newer! Your version is %s. Please upgrade.'),
+				$core_current_version
+			);
+			
+		} elseif ( ! is_array( $core_updates ) ) {
 			$class = 'warning';
 			$text  = sprintf(
 				// translators: %s: Your current version of WordPress.
