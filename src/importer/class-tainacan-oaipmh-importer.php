@@ -130,7 +130,7 @@ class Oaipmh_Importer extends Importer {
                     'id' => $collection->get_id(),
                     'mapping' => $metadata_map,
                     'total_items' =>ceil( $total / 100 ),
-                    'source_id' => $setSpec
+                    'source_id' => $setSpec,
                 ]);
             }
         }
@@ -151,18 +151,30 @@ class Oaipmh_Importer extends Importer {
         $this->items_repo->disable_logs();
         $records = $processed_item['records'];
         $map = $collection_index['mapping'];
+        $collection = new Entities\Collection($collection_index['id']);
+        $this->add_log( serialize($collection_index) );
 
         foreach ( $records as $record ) {
             $item = new Entities\Item();
+            $item->set_status('publish');
+            $item->set_collection( $collection );
+            $item->set_title( ( isset($record['dc:title']) ) ? $record['dc:title'][0] : 'title' );
+            $item->set_description(  '' );
 
-            if( $record ){
+            $this->add_log(  ( isset($record['dc:title']) ) ? $record['dc:title'][0] : 'title'   );
+            if( $record && $item->validate() ){
+                $insertedItem = $this->items_repo->insert( $item );
+                $this->add_log(  ' record ' . serialize($record) );
+
                 foreach ( $record as $index => $value ){
 
-                    if( in_array( $index, $map )){
+                    $this->add_log( $index . ' ' . serialize($map) );
+                    $this->add_log(  $insertedItem->get_id() );
+                    if( in_array( $index, $map ) && $insertedItem->get_id()){
                         $metadatum_id = array_search($index, $map );
                         $newMetadatum = new Entities\Metadatum($metadatum_id);
 
-                        $item_metadata = new Entities\Item_Metadata_Entity( $item, $newMetadatum );
+                        $item_metadata = new Entities\Item_Metadata_Entity( $insertedItem, $newMetadatum );
 
                         $unique = !$item_metadata->is_multiple();
                         $value_final = ( is_array($value) && $unique ) ? $value[0] : $value;
@@ -179,6 +191,8 @@ class Oaipmh_Importer extends Importer {
                     }
 
                 }
+            } else {
+                $this->add_log( (is_array($item->get_errors())) ? serialize($item->get_errors()) : $item->get_errors()  );
             }
 
         }
