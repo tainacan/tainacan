@@ -40,7 +40,7 @@ export const filter_type_mixin = {
         ]),
         getValuesPlainText(metadatumId, search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0') {
             
-            if (search || this.facetsFromItemSearch && this.facetsFromItemSearch.length > 0) {
+            if (isInCheckboxModal || search || this.facetsFromItemSearch && this.facetsFromItemSearch.length > 0) {
 
                 const source = axios.CancelToken.source();
 
@@ -110,7 +110,7 @@ export const filter_type_mixin = {
         },
         getValuesRelationship(collectionTarget, search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0') {
             
-            if (search || this.facetsFromItemSearch && this.facetsFromItemSearch.length > 0) {
+            if (isInCheckboxModal || search || this.facetsFromItemSearch && this.facetsFromItemSearch.length > 0) {
 
                 const source = axios.CancelToken.source();
 
