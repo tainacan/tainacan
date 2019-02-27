@@ -110,53 +110,71 @@ export const filter_type_mixin = {
         },
         getValuesRelationship(collectionTarget, search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0') {
             
-            const source = axios.CancelToken.source();
+            if (search || this.facetsFromItemSearch && this.facetsFromItemSearch.length > 0) {
 
-            let currentQuery  = JSON.parse(JSON.stringify(this.query));
-                if (currentQuery.fetch_only != undefined) {
-                    delete currentQuery.fetch_only;
-                //     for (let key of Object.keys(currentQuery.fetch_only)) {
-                //     if (currentQuery.fetch_only[key] == null)
-                //         delete currentQuery.fetch_only[key];
-                // }
-            }
-            let query_items = { 'current_query': currentQuery };
+                const source = axios.CancelToken.source();
 
-            let url = '';
-            if (isRepositoryLevel  || this.filter.collection_id == 'filter_in_repository')
-                url =  '/facets/' + this.filter.metadatum.metadatum_id + `?getSelected=${getSelected}&`; 
-            else
-                url =  '/collection/' + this.filter.collection_id + '/facets/' + this.filter.metadatum.metadatum_id + `?getSelected=${getSelected}&`;
-                
-            if(offset != undefined && number != undefined){
-                url += `offset=${offset}&number=${number}`;
-            } else {
-                url += `nopaging=1`
-            }
+                let currentQuery  = JSON.parse(JSON.stringify(this.query));
+                    if (currentQuery.fetch_only != undefined) {
+                        delete currentQuery.fetch_only;
+                    //     for (let key of Object.keys(currentQuery.fetch_only)) {
+                    //     if (currentQuery.fetch_only[key] == null)
+                    //         delete currentQuery.fetch_only[key];
+                    // }
+                }
+                let query_items = { 'current_query': currentQuery };
 
-            if(search){
-                url += `&search=${search}`;
-            }
+                let url = '';
+                if (isRepositoryLevel  || this.filter.collection_id == 'filter_in_repository')
+                    url =  '/facets/' + this.filter.metadatum.metadatum_id + `?getSelected=${getSelected}&`; 
+                else
+                    url =  '/collection/' + this.filter.collection_id + '/facets/' + this.filter.metadatum.metadatum_id + `?getSelected=${getSelected}&`;
+                    
+                if(offset != undefined && number != undefined){
+                    url += `offset=${offset}&number=${number}`;
+                } else {
+                    url += `nopaging=1`
+                }
 
-            this.isLoadingOptions = true;
+                if(search){
+                    url += `&search=${search}`;
+                }
 
-            return new Object ({
-                request:
-                    axios.tainacan.get(url + '&fetch_only=thumbnail,title,id&' + qs.stringify(query_items))
-                        .then(res => {
-                            this.isLoadingOptions = false;
-                            this.prepareOptionsForRelationship(res.data, search, valuesToIgnore, isInCheckboxModal);
-                        })
-                        .catch((thrown) => {
-                            if (axios.isCancel(thrown)) {
-                                console.log('Request canceled: ', thrown.message);
-                            } else {
+                this.isLoadingOptions = true;
+
+                return new Object ({
+                    request:
+                        axios.tainacan.get(url + '&fetch_only=thumbnail,title,id&' + qs.stringify(query_items))
+                            .then(res => {
                                 this.isLoadingOptions = false;
-                                reject(thrown);
-                            }
-                        }),
-                source: source
-            });
+                                
+                                if (res.data.values)
+                                    this.prepareOptionsForRelationship(res.data.values, search, valuesToIgnore, isInCheckboxModal);
+                                else
+                                    this.prepareOptionsForRelationship(res.data, search, valuesToIgnore, isInCheckboxModal);
+                            })
+                            .catch((thrown) => {
+                                if (axios.isCancel(thrown)) {
+                                    console.log('Request canceled: ', thrown.message);
+                                } else {
+                                    this.isLoadingOptions = false;
+                                    reject(thrown);
+                                }
+                            }),
+                    source: source
+                });
+            } else {
+                let callback = new Promise((resolve) => {
+                    for (const facet in this.facetsFromItemSearch) {
+                        if (facet == this.filter.id) {
+                            this.prepareOptionsForRelationship(this.facetsFromItemSearch[facet], search, valuesToIgnore, isInCheckboxModal);
+                        }    
+                    }
+                });
+                return new Object ({
+                    request: callback
+                });
+            }
         },
         prepareOptionsForPlainText(metadata, search, valuesToIgnore, isInCheckboxModal) {
 
@@ -224,7 +242,7 @@ export const filter_type_mixin = {
             let sResults = [];
             let opts = [];
 
-            if (res.data.length > 0) {
+            if (items.length > 0) {
                 for (let item of items) {
                     if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {
                         let indexToIgnore = valuesToIgnore.findIndex(value => value == item.value);

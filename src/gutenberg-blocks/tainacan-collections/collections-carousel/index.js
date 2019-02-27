@@ -123,7 +123,7 @@ registerBlockType('tainacan/collections-carousel', {
 
            return tainacan.get(`/collection/${collectionID}/items?perpage=3&paged=1&orderby=date`)
                .then(response => {
-                   return response.data;
+                   return response.data.items;
                })
                .catch(error => {
                    console.error(error);
