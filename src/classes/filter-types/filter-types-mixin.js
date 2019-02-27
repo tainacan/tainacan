@@ -40,7 +40,7 @@ export const filter_type_mixin = {
         ]),
         getValuesPlainText(metadatumId, search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0') {
             
-            if (this.facetsFromItemSearch && this.facetsFromItemSearch.length > 0) {
+            if (search || this.facetsFromItemSearch && this.facetsFromItemSearch.length > 0) {
 
                 const source = axios.CancelToken.source();
 
@@ -79,7 +79,10 @@ export const filter_type_mixin = {
                         axios.tainacan.get(url, { cancelToken: source.token })
                             .then(res => {
                                 this.isLoadingOptions = false;
-                                this.prepareOptionsForPlainText(res.data, search, valuesToIgnore, isInCheckboxModal);
+                                if (res.data.values)
+                                    this.prepareOptionsForPlainText(res.data.values, search, valuesToIgnore, isInCheckboxModal);
+                                else
+                                    this.prepareOptionsForPlainText(res.data, search, valuesToIgnore, isInCheckboxModal);
                             })
                             .catch((thrown) => {
                                 if (axios.isCancel(thrown)) {

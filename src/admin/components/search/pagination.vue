@@ -13,7 +13,9 @@
                 getLastItemNumber() +
                 $i18n.get('info_of')
             }} 
-            <span :class="{ 'has-text-warning': collectionTotalItems > totalItems }">{{ totalItems + '.' }}</span>
+            <span><!-- :class="{ 'has-text-warning': collectionTotalItems > totalItems }"> -->
+                {{ totalItems + '.' }}
+            </span>
         </div> 
         <div class="items-per-page">
             <b-field 
