@@ -69,7 +69,7 @@ export const getOrderByName = state => {
 };
 
 export const getMetaKey = state => {
-    return state.postquery.meta_key;
+    return state.postquery.metakey;
 };
 
 export const getFetchOnlyMeta = state => {

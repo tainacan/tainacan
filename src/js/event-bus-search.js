@@ -97,16 +97,16 @@ export default {
                                     this.$route.query.orderby = 'author_name';
                                 } else if (orderBy.metadata_type_object.primitive_type == 'float' || orderBy.metadata_type_object.primitive_type == 'int') {
                                     this.$route.query.orderby = 'meta_value_num';
-                                    this.$route.query.meta_key = orderBy.id;
+                                    this.$route.query.metakey = orderBy.id;
                                 } else if (orderBy.metadata_type_object.primitive_type == 'date') {
                                     this.$route.query.orderby = 'meta_value';
-                                    this.$route.query.meta_key = orderBy.id;
-                                    this.$route.query.meta_type = 'DATETIME';
+                                    this.$route.query.metakey = orderBy.id;
+                                    this.$route.query.metatype = 'DATETIME';
                                 } else if (orderBy.metadata_type_object.core) {
                                     this.$route.query.orderby =  orderBy.metadata_type_object.related_mapped_prop;
                                 } else {
                                     this.$route.query.orderby = 'meta_value';
-                                    this.$route.query.meta_key = orderBy.id;
+                                    this.$route.query.metakey = orderBy.id;
                                 }
 
                             } else {
