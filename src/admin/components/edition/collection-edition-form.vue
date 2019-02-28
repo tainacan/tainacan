@@ -34,7 +34,8 @@
                             v-if="formHooks != undefined && 
                                 formHooks['collection'] != undefined &&
                                 formHooks['collection']['begin-left'] != undefined">  
-                        <form 
+                        <form
+                            class="form-hook-region" 
                             id="form-collection-begin-left"
                             v-html="this.formHooks['collection']['begin-left'].join('')"/>
                     </template>
@@ -245,6 +246,7 @@
                         <form
                             ref="form-collection-end-left" 
                             id="form-collection-end-left"
+                            class="form-hook-region"
                             v-html="formHooks['collection']['end-left'].join('')"/>
                     </template>
 
@@ -319,6 +321,7 @@
                                 formHooks['collection']['begin-right'] != undefined">  
                         <form 
                             id="form-collection-begin-right"
+                            class="form-hook-region"
                             v-html="formHooks['collection']['begin-right'].join('')"/>
                     </template>
 
@@ -430,6 +433,7 @@
                                 formHooks['collection']['end-right'] != undefined">  
                         <form 
                             id="form-collection-end-right"
+                            class="form-hook-region"
                             v-html="formHooks['collection']['end-right'].join('')"/>
                     </template>
                 </div>

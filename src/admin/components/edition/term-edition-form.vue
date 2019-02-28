@@ -70,6 +70,7 @@
                     formHooks['term']['begin-left'] != undefined">  
             <form 
                 id="form-term-begin-left"
+                class="form-hook-region"
                 v-html="formHooks['term']['begin-left'].join('')"/>
         </template>
 
@@ -139,6 +140,7 @@
                     formHooks['term']['end-left'] != undefined">  
             <form 
                 id="form-term-end-left"
+                class="form-hook-region"
                 v-html="formHooks['term']['end-left'].join('')"/>
         </template>
 

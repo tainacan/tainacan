@@ -38,6 +38,7 @@
                                     formHooks['taxonomy']['begin-left'] != undefined">  
                             <form 
                                 id="form-taxonomy-begin-left"
+                                class="form-hook-region"
                                 v-html="formHooks['taxonomy']['begin-left'].join('')"/>
                         </template>
 
@@ -145,6 +146,7 @@
                                     formHooks['taxonomy']['end-left'] != undefined">  
                             <form 
                                 id="form-taxonomy-end-left"
+                                class="form-hook-region"
                                 v-html="formHooks['taxonomy']['end-left'].join('')"/>
                         </template>
 

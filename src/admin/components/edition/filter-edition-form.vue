@@ -30,6 +30,7 @@
                         formHooks['filter']['begin-left'] != undefined">  
                 <form 
                     id="form-filter-begin-left"
+                    class="form-hook-region"
                     v-html="formHooks['filter']['begin-left'].join('')"/>
             </template>
 
@@ -152,6 +153,7 @@
                         formHooks['filter']['end-left'] != undefined">  
                 <form 
                     id="form-filter-end-left"
+                    class="form-hook-region"
                     v-html="formHooks['filter']['end-left'].join('')"/>
             </template>
         </div>

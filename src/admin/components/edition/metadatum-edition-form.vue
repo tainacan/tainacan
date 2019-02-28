@@ -31,6 +31,7 @@
                         formHooks['metadatum']['begin-left'] != undefined">  
                 <form 
                     id="form-metadatum-begin-left"
+                    class="form-hook-region"
                     v-html="formHooks['metadatum']['begin-left'].join('')"/>
             </template>
 
@@ -223,6 +224,7 @@
                         formHooks['metadatum']['end-left'] != undefined">  
                 <form 
                     id="form-metadatum-end-left"
+                    class="form-hook-region"
                     v-html="formHooks['metadatum']['end-left'].join('')"/>
             </template>
         </div>

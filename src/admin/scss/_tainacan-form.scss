@@ -122,4 +122,20 @@
             white-space: initial !important;
         }
     }
+
+    .form-hook-region {
+        background-color: $gray1;
+        padding: 1rem 1.875rem 2rem 1.875rem;
+
+        h4 {
+            font-weight: 600;
+            color: #298596;
+            margin-bottom: 6px;
+        }
+        hr {
+            margin-top: 8px;
+            height: 1px;
+            background-color: #298596;
+        }
+    }
 }
