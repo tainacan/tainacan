@@ -97,7 +97,8 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                     dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
                     dispatch('search/setTotalPages', res.headers['x-wp-totalpages'], { root: true } );
                     dispatch('search/setItemsPerPage', res.headers['x-wp-itemsperpage'], { root: true } );
-                    if (res.data.filters && Object.values(res.data.filters))
+                    
+                    if (res.data.filters && Object.values(res.data.filters) && Object.values(res.data.filters).length > 0)
                         dispatch('search/setFacets', res.data.filters, { root: true } );
                     else
                         dispatch('search/setFacets', {}, { root: true } );

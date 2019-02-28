@@ -39,9 +39,9 @@ export const filter_type_mixin = {
             'getFacets'
         ]),
         getValuesPlainText(metadatumId, search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0') {
-            
-            if (isInCheckboxModal || search || this.facetsFromItemSearch && this.facetsFromItemSearch.length > 0) {
 
+            if (isInCheckboxModal || search || !this.facetsFromItemSearch || Object.values(this.facetsFromItemSearch).length <= 0) {
+  
                 const source = axios.CancelToken.source();
 
                 let currentQuery  = JSON.parse(JSON.stringify(this.query));
@@ -60,11 +60,9 @@ export const filter_type_mixin = {
                 else
                     url = `/collection/${this.collection}/facets/${metadatumId}?getSelected=${getSelected}&`;
                 
-                if (offset != undefined && number != undefined && offset != -1 && number != -1) {
+                if (offset != undefined && number != undefined) {
                     url += `offset=${offset}&number=${number}&`;
-                } else if (offset != undefined && number != undefined && offset == -1 && number == -1) {
-                    url += 'nopaging=1&';
-                }
+                } 
 
                 if(search && offset != undefined && number != undefined){
                     url += `search=${search}&` + qs.stringify(query_items);
@@ -91,7 +89,6 @@ export const filter_type_mixin = {
                                     console.log('Request canceled: ', thrown.message);
                                 } else {
                                     this.isLoadingOptions = false;
-                                    reject(thrown);
                                 }
                             }),
                     source: source
@@ -112,7 +109,7 @@ export const filter_type_mixin = {
         },
         getValuesRelationship(search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0') {
             
-            if (isInCheckboxModal || search || this.facetsFromItemSearch && this.facetsFromItemSearch.length > 0) {
+            if (isInCheckboxModal || search || !this.facetsFromItemSearch || Object.values(this.facetsFromItemSearch).length <= 0) {
 
                 const source = axios.CancelToken.source();
 
