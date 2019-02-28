@@ -76,9 +76,9 @@ class Oaipmh_Importer extends Importer {
         }
 
         if( $xml->ListRecords ){
-            $size = count($xml->ListRecords->record); // verifico o tamanho dos list record para o for
+            $j = 0;
 
-            for ($j = 0; $j < $size; $j++) {
+            while ( isset($xml->ListRecords->record[$j]) ) {
                 $record = $record = $xml->ListRecords->record[$j];
                 $dc = $record->metadata->children("http://www.openarchives.org/OAI/2.0/oai_dc/");
 
@@ -98,6 +98,8 @@ class Oaipmh_Importer extends Importer {
                     $records['records'][] = $record_processed;
                     $record_processed = [];
                 }
+
+                $j++;
             }
         }
 
