@@ -157,7 +157,7 @@ class Elastic_Press {
 							if( isset($args['tax_query']) ) {
 								foreach( $args['tax_query'] as $taxquery ) {
 									if( $taxquery['taxonomy'] === $taxonomy_slug ) {
-										$include = $taxquery['terms']; 
+										$include = is_array($taxquery['terms']) ? $taxquery['terms'] : [$taxquery['terms']]; 
 									}
 								}
 							}
@@ -171,7 +171,7 @@ class Elastic_Press {
 							if( isset($args['meta_query']) ) {
 								foreach( $args['meta_query'] as $metaquery ) {
 									if( $metaquery['key'] == $metadatum_id ){
-										$include = $metaquery['value'];
+										$include = is_array($metaquery['value']) ? $metaquery['value'] : [$metaquery['value']];
 									}
 								}
 							}
