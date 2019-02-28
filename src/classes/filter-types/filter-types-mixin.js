@@ -60,8 +60,10 @@ export const filter_type_mixin = {
                 else
                     url = `/collection/${this.collection}/facets/${metadatumId}?getSelected=${getSelected}&`;
                 
-                if(offset != undefined && number != undefined){
+                if (offset != undefined && number != undefined && offset != -1 && number != -1) {
                     url += `offset=${offset}&number=${number}&`;
+                } else if (offset != undefined && number != undefined && offset == -1 && number == -1) {
+                    url += 'nopaging=1&';
                 }
 
                 if(search && offset != undefined && number != undefined){

@@ -89,7 +89,7 @@
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
                 let promise = null;
-                promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel );
+                promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel, undefined, -1, -1 );
                 promise.request
                     .then(() => {
                     })
