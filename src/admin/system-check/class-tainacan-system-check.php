@@ -3,9 +3,6 @@
 namespace Tainacan;
 
 class System_Check {
-	private $php_min_version_check;
-	private $php_supported_version_check;
-	private $php_rec_version_check;
 	
 	private $min_php_version = '5.6';
 
@@ -14,22 +11,15 @@ class System_Check {
 
 	public  $mariadb                        = false;
 	private $mysql_server_version           = null;
-	private $health_check_mysql_rec_version = null;
+	private $health_check_mysql_rec_version = '8.0';
+	private $health_check_mysql_min_version = '5.0';
 
 	public function __construct() {
-		//$this->init();
+		$this->init();
 	}
 
 	public function init() {
-		$this->php_min_version_check       = 
-		//$this->php_supported_version_check = version_compare( HEALTH_CHECK_PHP_SUPPORTED_VERSION, PHP_VERSION, '<=' );
-		//$this->php_rec_version_check       = version_compare( HEALTH_CHECK_PHP_REC_VERSION, PHP_VERSION, '<=' );
-
 		$this->prepare_sql_data();
-
-		//add_action( 'wp_ajax_health-check-site-status', array( $this, 'site_status' ) );
-
-		//add_action( 'wp_loaded', array( $this, 'check_wp_version_check_exists' ) );
 	}
 	
 	public function admin_page() {
@@ -42,13 +32,13 @@ class System_Check {
 		
 		if ($testphprec) {
 			$class = 'good';
-			$text = __('Version', 'tainacan') . ': ' . PHP_VERSION;
+			$text = PHP_VERSION;
 		} elseif ($testphpmin)  {
 			$class = 'warning';
-			$text = __('Version ok but....', 'tainacan') . ': ' . PHP_VERSION;
+			$text = PHP_VERSION . ' - ' . __('Version supported, but you should consider upgrade to PHP 7', 'tainacan') . ': ';
 		} else {
 			$class = 'error';
-			$text = __('Upgrade!', 'tainacan') . ': ' . PHP_VERSION;
+			$text = PHP_VERSION . ' - ' . __('This PHP Version is not supported. Please upgrade to PHP 5.6 or higher!', 'tainacan');
 		}
 		
 		printf( '<span class="%1$s"></span> %2$s', esc_attr( $class ), esc_html( $text ) );
@@ -70,15 +60,94 @@ class System_Check {
 			$this->mysql_server_version = $wpdb->get_var( 'SELECT VERSION()' );
 		}
 
-		$this->health_check_mysql_rec_version = HEALTH_CHECK_MYSQL_REC_VERSION;
-
 		if ( stristr( $mysql_server_type, 'mariadb' ) ) {
 			$this->mariadb                        = true;
-			$this->health_check_mysql_rec_version = '10.0';
+			$this->health_check_mysql_rec_version = '10.2.2';
+			$this->health_check_mysql_min_version = '10.0';
 		}
 
-		$this->mysql_min_version_check = version_compare( HEALTH_CHECK_MYSQL_MIN_VERSION, $this->mysql_server_version, '<=' );
+		$this->mysql_min_version_check = version_compare( $this->health_check_mysql_min_version, $this->mysql_server_version, '<=' );
 		$this->mysql_rec_version_check = version_compare( $this->health_check_mysql_rec_version, $this->mysql_server_version, '<=' );
+	}
+	
+	public function check_permalink_settings() {
+		
+		$settings = get_option( 'permalink_structure' );
+		
+		if ( empty($settings) ) {
+			$class = 'error';
+			$text =  sprintf(
+				__('Tainacan requires your Permalink settings to be configured. Please visit %1$sPermalink settings%2$s and configure it.', 'tainacan'),
+				'<a href="'.admin_url('options-permalink.php').'">',
+				'</a>'
+			);
+		} else {
+			
+			$class = 'good';
+			$text = 'Ok';
+			
+		}
+		
+		printf( '<span class="%1$s"></span> %2$s', esc_attr( $class ), $text );
+		
+	}
+	
+	public function check_php_timeout() {
+		$time = ini_get('max_execution_time');
+		$min = 30;
+		$rec = 240;
+		
+		
+		$text .= '';
+		
+		if ( $time < $min ) {
+			$class = 'error';
+			$text .=  sprintf(
+				__('Your current configuratino is %ds. This is too little. Please increase it to at least 30s', 'tainacan'),
+				$time
+			);
+		} elseif ( $time < $rec ) {
+			$class = 'warning';
+			$text .=  sprintf(
+				__('Your current configuration is %d seconds. This is fine, but you should consider increase it to at least 240 seconds if possible', 'tainacan'),
+				$time
+			);
+		} else {
+			$class = 'good';
+			$text .=  sprintf(
+				__('Your current configuratino is %ds. This is excellent.', 'tainacan'),
+				$time
+			);
+		}
+		
+		printf( '<span class="%1$s"></span> %2$s', esc_attr( $class ), $text );
+		
+	}
+	
+	public function check_upload_permission() {
+		
+		$upload_dir = wp_upload_dir(); 
+		$writable = is_writable($upload_dir['basedir']);
+		
+		if ( ! $writable ) {
+			$class = 'error';
+			$text .=  sprintf(
+				__('Your upload folder is not writable by the server. You must fix your folder permissions.', 'tainacan')
+			);
+		} else {
+			$class = 'good';
+			$text .=  sprintf(
+				__('Your upload folder is writable!', 'tainacan')
+			);
+		}
+		
+		printf( '<span class="%1$s"></span> %2$s', esc_attr( $class ), $text );
+		
+	}
+	
+	public function check_max_upload_size() {
+		$upload_max_size = ini_get('upload_max_filesize');
+		echo $upload_max_size;
 	}
 
 	
@@ -125,7 +194,7 @@ class System_Check {
 						$class = 'warning';
 						$text  = sprintf(
 							// translators: %1$s: Your current version of WordPress. %2$s The latest version of WordPress available.
-							__( '%1$s ( Latest version: %2$s )', 'health-check' ),
+							__( 'You are running WordPress %1$s. This version is supported, but you should always keep you WordPress installation updated. ( Latest version is %2$s )', 'tainacan' ),
 							$core_current_version,
 							$update->version
 						);
@@ -134,7 +203,7 @@ class System_Check {
 						$class = 'error';
 						$text  = sprintf(
 							// translators: %1$s: Your current version of WordPress. %2$s The latest version of WordPress available.
-							__( '%1$s ( Latest version: %2$s ) - We strongly urge you to update, as minor updates are often security related.', 'health-check' ),
+							__( 'You are running WordPress %1$s. ( Latest version is %2$s ) - We strongly urge you to update, as minor updates are often security related.', 'tainacan' ),
 							$core_current_version,
 							$update->version
 						);
@@ -150,88 +219,6 @@ class System_Check {
 	}
 
 	
-
-	public function test_plugin_version() {
-		$plugins        = get_plugins();
-		$plugin_updates = get_plugin_updates();
-
-		$show_unused_plugins  = true;
-		$plugins_have_updates = false;
-		$plugins_active       = 0;
-		$plugins_total        = 0;
-		$plugins_needs_update = 0;
-
-		if ( $this->is_troubleshooting() ) {
-			$show_unused_plugins = false;
-		}
-
-		foreach ( $plugins as $plugin_path => $plugin ) {
-			$plugins_total++;
-
-			if ( is_plugin_active( $plugin_path ) ) {
-				$plugins_active++;
-			}
-
-			$plugin_version = $plugin['Version'];
-
-			if ( array_key_exists( $plugin_path, $plugin_updates ) ) {
-				$plugins_needs_update++;
-				$plugins_have_updates = true;
-			}
-		}
-
-		echo '<ul>';
-
-		if ( $plugins_needs_update > 0 ) {
-			printf(
-				'<li><span class="error"></span> %s',
-				sprintf(
-					// translators: %d: The amount of outdated plugins.
-					esc_html( _n(
-						'Your site has %d plugin waiting to be updated.',
-						'Your site has %d plugins waiting to be updated.',
-						$plugins_needs_update,
-						'health-check'
-					) ),
-					$plugins_needs_update
-				)
-			);
-		} else {
-			printf(
-				'<li><span class="good"></span> %s',
-				sprintf(
-					// translators: %d: The amount of plugins.
-					esc_html( _n(
-						'Your site has %d active plugin, and it is up to date.',
-						'Your site has %d active plugins, and they are all up to date.',
-						$plugins_active,
-						'health-check'
-					) ),
-					$plugins_active
-				)
-			);
-		}
-
-		if ( ( $plugins_total > $plugins_active ) && $show_unused_plugins ) {
-			$unused_plugins = $plugins_total - $plugins_active;
-			printf(
-				'<li><span class="warning"></span> %s',
-				sprintf(
-					// translators: %d: The amount of inactive plugins.
-					esc_html( _n(
-						'Your site has %d inactive plugin, it is recommended to remove any unused plugins to enhance your site security.',
-						'Your site has %d inactive plugins, it is recommended to remove any unused plugins to enhance your site security.',
-						$unused_plugins,
-						'health-check'
-					) ),
-					$unused_plugins
-				)
-			);
-		}
-
-		echo '</ul>';
-	}
-
 	public function child_test_php_extension_availability( $extension = null, $function = null ) {
 		// If no extension or function is passed, claim to fail testing, as we have nothing to test against.
 		if ( null === $extension && null === $function ) {
@@ -270,65 +257,67 @@ class System_Check {
 		 * }
 		 */
 		$modules = array(
-			'bcmath'    => array(
-				'function' => 'bcadd',
-				'required' => false,
-			),
+			// 'bcmath'    => array(
+			// 	'function' => 'bcadd',
+			// 	'required' => false,
+			// ),
 			'curl'      => array(
 				'function' => 'curl_version',
 				'required' => false,
 			),
-			'exif'      => array(
-				'function' => 'exif_read_data',
-				'required' => false,
-			),
-			'filter'    => array(
-				'function' => 'filter_list',
-				'required' => false,
-			),
-			'fileinfo'  => array(
-				'function' => 'finfo_file',
-				'required' => false,
-			),
-			'mod_xml'   => array(
-				'extension' => 'libxml',
-				'required'  => false,
-			),
-			'mysqli'    => array(
-				'function' => 'mysqli_connect',
-				'required' => false,
-			),
-			'libsodium' => array(
-				'function' => 'sodium_compare',
-				'required' => false,
-			),
-			'openssl'   => array(
-				'function' => 'openssl_encrypt',
-				'required' => false,
-			),
-			'pcre'      => array(
-				'function' => 'preg_match',
-				'required' => false,
-			),
+			// 'exif'      => array(
+			// 	'function' => 'exif_read_data',
+			// 	'required' => false,
+			// ),
+			// 'filter'    => array(
+			// 	'function' => 'filter_list',
+			// 	'required' => false,
+			// ),
+			// 'fileinfo'  => array(
+			// 	'function' => 'finfo_file',
+			// 	'required' => false,
+			// ),
+			// 'mod_xml'   => array(
+			// 	'extension' => 'libxml',
+			// 	'required'  => false,
+			// ),
+			// 'mysqli'    => array(
+			// 	'function' => 'mysqli_connect',
+			// 	'required' => false,
+			// ),
+			// 'libsodium' => array(
+			// 	'function' => 'sodium_compare',
+			// 	'required' => false,
+			// ),
+			// 'openssl'   => array(
+			// 	'function' => 'openssl_encrypt',
+			// 	'required' => false,
+			// ),
+			// 'pcre'      => array(
+			// 	'function' => 'preg_match',
+			// 	'required' => false,
+			// ),
 			'imagick'   => array(
 				'extension' => 'imagick',
 				'required'  => false,
+				'message' => __('This is used, among other things, to automatically extract the first page of PDFs to use as a thumbnail.', 'tainacan')
 			),
 			'gd'        => array(
 				'extension'    => 'gd',
 				'required'     => false,
 				'fallback_for' => 'imagick',
+				'message' => __('This is used for image processing, such as resizing and cropping images.', 'tainacan')
 			),
-			'mcrypt'    => array(
-				'extension'    => 'mcrypt',
-				'required'     => false,
-				'fallback_for' => 'libsodium',
-			),
-			'xmlreader' => array(
-				'extension'    => 'xmlreader',
-				'required'     => false,
-				'fallback_for' => 'xml',
-			),
+			// 'mcrypt'    => array(
+			// 	'extension'    => 'mcrypt',
+			// 	'required'     => false,
+			// 	'fallback_for' => 'libsodium',
+			// ),
+			// 'xmlreader' => array(
+			// 	'extension'    => 'xmlreader',
+			// 	'required'     => false,
+			// 	'fallback_for' => 'xml',
+			// ),
 			'zlib'      => array(
 				'extension'    => 'zlib',
 				'required'     => false,
@@ -361,11 +350,14 @@ class System_Check {
 					( $module['required'] ? 'error' : 'warning' ),
 					sprintf(
 						// translators: %1$2: If a module is required or recommended. %2$s: The module name.
-						__( 'The %1$s module, %2$s, is not installer, or has been disabled.', 'health-check' ),
+						__( 'The %1$s module %2$s is not installed, or has been disabled.', 'tainacan' ),
 						( $module['required'] ? __( 'required', 'health-check' ) : __( 'optional', 'health-check' ) ),
 						$library
 					)
 				);
+				if ( isset($module['message']) ) {
+					$failures[ $library ] .= ' ' . $module['message'];
+				}
 			}
 		}
 
@@ -398,7 +390,7 @@ class System_Check {
 			$status   = 'warning';
 			$notice[] = sprintf(
 				// translators: %1$s: The database engine in use (MySQL or MariaDB). %2$s: Database server recommended version number.
-				esc_html__( 'For performance and security reasons, we strongly recommend running %1$s version %2$s or higher.', 'health-check' ),
+				esc_html__( 'We strongly recommend running %1$s version %2$s or higher. Future features may depend on this versions.', 'tainacan' ),
 				( $this->mariadb ? 'MariaDB' : 'MySQL' ),
 				$this->health_check_mysql_rec_version
 			);
@@ -408,9 +400,9 @@ class System_Check {
 			$status   = 'error';
 			$notice[] = sprintf(
 				// translators: %1$s: The database engine in use (MySQL or MariaDB). %2$s: Database server minimum version number.
-				esc_html__( 'WordPress 3.2+ requires %1$s version %2$s or higher.', 'health-check' ),
+				esc_html__( 'Tainacan requires %1$s version %2$s or higher.', 'tainacan' ),
 				( $this->mariadb ? 'MariaDB' : 'MySQL' ),
-				HEALTH_CHECK_MYSQL_MIN_VERSION
+				$this->health_check_mysql_min_version
 			);
 		}
 
@@ -419,7 +411,7 @@ class System_Check {
 			$notice[] = wp_kses(
 				sprintf(
 					// translators: %s: The name of the database engine being used.
-					__( 'You are using a <code>wp-content/db.php</code> drop-in which might mean that a %s database is not being used.', 'health-check' ),
+					__( 'You are using a <code>wp-content/db.php</code> drop-in which might mean that a %s database is not being used.', 'tainacan' ),
 					( $this->mariadb ? 'MariaDB' : 'MySQL' )
 				),
 				array(
