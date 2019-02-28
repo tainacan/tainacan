@@ -50,7 +50,7 @@ class Oaipmh_Importer extends Importer {
             $info = $this->requester( $this->get_url() . "?verb=ListRecords&metadataPrefix=oai_dc&set=" . $collection_id['source_id'] );
         } else {
             $token = $this->get_transient('resumptionToken');
-            $info = $this->requester( $this->get_url() . "?verb=ListRecords&metadataPrefix=oai_dc&set=" . $collection_id['source_id'] . '&resumptionToken=' . $token);
+            $info = $this->requester( $this->get_url() . "?verb=ListRecords&resumptionToken=" . $token);
         }
 
         if( !isset($info['body']) ){
@@ -93,11 +93,15 @@ class Oaipmh_Importer extends Importer {
 
                     }
                 }
+
+                if( $record_processed ){
+                    $records['records'][] = $record_processed;
+                    $record_processed = [];
+                }
             }
         }
 
-        if( $record_processed ){
-            $records['records'][] = $record_processed;
+        if( $records['records'] ){
             return $records;
         } else {
             $this->add_log('proccessing an item empty');
@@ -125,6 +129,7 @@ class Oaipmh_Importer extends Importer {
                 $metadata_map = $this->create_collection_metadata($collection);
                 $total = intval($this->get_total_items_from_source($setSpec));
                 $this->add_log('total in collection: ' . $total);
+                $this->add_log('collection id ' . (string) $collection->get_id());
 
                 $this->add_collection([
                     'id' => $collection->get_id(),
@@ -150,9 +155,9 @@ class Oaipmh_Importer extends Importer {
     public function insert( $processed_item, $collection_index ) {
         $this->items_repo->disable_logs();
         $records = $processed_item['records'];
-        $map = $collection_index['mapping'];
-        $collection = new Entities\Collection($collection_index['id']);
-        $this->add_log( serialize($collection_index) );
+        $collection_id = $processed_item['collection_definition'];
+        $collection = new Entities\Collection($collection_id['id']);
+        $map = $collection_id['mapping'];
 
         foreach ( $records as $record ) {
             $item = new Entities\Item();
@@ -164,7 +169,6 @@ class Oaipmh_Importer extends Importer {
             $this->add_log(  ( isset($record['dc:title']) ) ? $record['dc:title'][0] : 'title'   );
             if( $record && $item->validate() ){
                 $insertedItem = $this->items_repo->insert( $item );
-                $this->add_log(  ' record ' . serialize($record) );
 
                 foreach ( $record as $index => $value ){
 
@@ -197,6 +201,7 @@ class Oaipmh_Importer extends Importer {
 
         }
 
+        return isset($insertedItem) ? $insertedItem : false;
     }
 
     //protected functions
