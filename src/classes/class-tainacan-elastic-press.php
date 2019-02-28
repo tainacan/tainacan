@@ -387,7 +387,7 @@ class Elastic_Press {
 
 				if (!empty($filter['include'])) {
 					$custom_filter_include = $custom_filter;
-					$custom_filter_include['bool']['must'][] = ["bool" => [ "must"=> [ [ "terms" => ["$field.raw" => $filter['include'] ] ] ] ] ];
+					$custom_filter_include['bool']['must'][] = ["bool" => [ "must"=> [ [ "terms" => ["$field" => $filter['include'] ] ] ] ] ];
 					$aggs[$id.'.include'] = [
 						"filter" => $custom_filter_include,
 						"aggs"	=> array(
@@ -555,7 +555,6 @@ class Elastic_Press {
 				}
 			} else {
 				$metada_label = $description_types[1];
-				$formated_aggs[$filter_id] = [];
 				if (isset($aggregation[$key]['buckets']))
 				foreach ($aggregation[$key]['buckets'] as $term) {
 					$fct = [
