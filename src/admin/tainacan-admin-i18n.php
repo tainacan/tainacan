@@ -541,7 +541,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_empty'                                     => __( 'empty', 'tainacan' ),
 	'info_url_copied'	         	    	    	 => __( 'URL link copied', 'tainacan' ),
 	'info_other_item_listing_options'				 => __('Other items listing options: ', 'tainacan'),
-	'info_send_email'				 				 => __('The exporter may take a while depending on the size of your collection. Check this option to receive an e-mail when the process is done. You can also check the process status visiting the', 'tainacan'),
+	'info_send_email'				 				 => __('The exporter may take a while. Check this option to receive an e-mail when the process is done. You can also check the process status visiting the', 'tainacan'),
 	'info_tainacan_api'				 				 => __('Tainacan API on JSON format.', 'tainacan'),
 
 	// Tainacan Metadatum Types
