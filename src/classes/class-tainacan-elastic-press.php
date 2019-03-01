@@ -46,10 +46,10 @@ class Elastic_Press {
 		
 		add_filter('tainacan-fetch-all-metadatum-values', [$this, 'fetch_all_metadatum_values'], 10, 3);
 
-		add_action('ep_add_query_log', function($query) { //using to DEBUG
-			error_log("DEGUG:");
-			error_log($query["args"]["body"]);
-		});
+		// add_action('ep_add_query_log', function($query) { //using to DEBUG
+		// 	error_log("DEGUG:");
+		// 	error_log($query["args"]["body"]);
+		// });
 	}
 
 	function filter_args($args, $type) {
@@ -585,7 +585,6 @@ class Elastic_Press {
 		global $wpdb;
 		$formated_aggs = ['values'=>[]];
 		foreach($aggregations as $key => $aggregation) {
-			$after_key = $aggregation['after_key'];
 			$description_types = \explode(".", $key);
 			if($description_types[0] == 'taxonomy') {
 				$has_include = isset($description_types[2]);
@@ -618,12 +617,13 @@ class Elastic_Press {
 						"label" 					=> $term_object->get('name'),
 						"parent"					=> $term_object->get('parent')
 					];
-				}
-				if ($has_include) {
-					array_unshift($formated_aggs['values'], $fct);
-				} else {
-					$formated_aggs['values'][] = $fct;
-					$formated_aggs['last_term'] = $after_key[$key];
+					if ($has_include) {
+						array_unshift($formated_aggs['values'], $fct);
+					} else {
+						$after_key = $aggregation['after_key'];
+						$formated_aggs['values'][] = $fct;
+						$formated_aggs['last_term'] = $after_key[$key];
+					}
 				}
 			} else {
 				$metada_label = $description_types[0].'.'.$description_types[1];
@@ -639,6 +639,7 @@ class Elastic_Press {
 							$formated_aggs['values'][] = $fct;
 						}
 					}
+					$after_key = $aggregation['after_key'];
 					$formated_aggs['last_term'] = $after_key[$key];
 				} elseif ( isset($aggregation[$metada_label]['buckets'])) {
 					foreach ($aggregation[$metada_label]['buckets'] as $term) {
