@@ -252,6 +252,9 @@ registerBlockType('tainacan/terms-list', {
 
         function fetchModalTerms(offset) {
 
+            if (offset <= 0)
+                modalTerms = [];
+
             let endpoint = '/taxonomy/'+ taxonomyId + '/terms/?number=12&offset=' + offset;
 
             if (name != undefined && name != '')
@@ -260,16 +263,19 @@ registerBlockType('tainacan/terms-list', {
             tainacan.get(endpoint)
                 .then(response => {
 
-                    modalTerms = response.data.map((term) => ({ 
-                        name: term.name, 
-                        value: term.id + "", // same as string version of id, because autocomplete expects value
-                        id: term.id,
-                        url: term.url,
-                        header_image: [{
-                            src: term.header_image,
-                            alt: term.name
-                        }]
-                    }));
+                    for (let term of response.data) {
+                        modalTerms.push({ 
+                            name: term.name, 
+                            value: term.id + "", // same as string version of id, because autocomplete expects value
+                            id: term.id,
+                            url: term.url,
+                            header_image: [{
+                                src: term.header_image,
+                                alt: term.name
+                            }]
+                        });
+                    }
+                    console.log(modalTerms)
                     isLoadingTerms = false; 
 
                     setAttributes({ 
@@ -300,7 +306,6 @@ registerBlockType('tainacan/terms-list', {
         }
 
         function isTermSelected(termId) {
-            console.log(selectedTermsObject.findIndex(term => (term.id == termId) || (term.id == 'term-id-' + termId)) >= 0)
             return selectedTermsObject.findIndex(term => (term.id == termId) || (term.id == 'term-id-' + termId)) >= 0;
         }
 
