@@ -31,6 +31,7 @@
                         formHooks['view-item']['begin-left'] != undefined">
                         <div
                                 id="view-item-begin-left"
+                                class="form-hook-region"
                                 v-html="formHooks['view-item']['begin-left'].join('')"/>
                     </template>
 
@@ -197,6 +198,7 @@
                         formHooks['view-item']['end-left'] != undefined">
                         <div
                                 id="view-item-end-left"
+                                class="form-hook-region"
                                 v-html="formHooks['view-item']['end-left'].join('')"/>
                     </template>
 
@@ -210,6 +212,7 @@
                         formHooks['view-item']['begin-right'] != undefined">
                         <div
                                 id="view-item-begin-right"
+                                class="form-hook-region"
                                 v-html="formHooks['view-item']['begin-right'].join('')"/>
                     </template>
 
@@ -306,6 +309,7 @@
                                 formHooks['view-item']['end-right'] != undefined">
                                 <div
                                         id="view-item-end-right"
+                                        class="form-hook-region"
                                         v-html="formHooks['view-item']['end-right'].join('')"/>
                             </template>
                         </b-tab-item>

@@ -10,7 +10,13 @@ class Oaipmh_Importer extends Importer {
             'name' => 'Create Collections',
             'progress_label' => 'Create Collections',
             'callback' => 'create_collections'
-        ]
+        ],
+        [
+            'name' => 'Import Items',
+            'progress_label' => 'Import Items',
+            'callback' => 'process_collections',
+            'total' => 2
+        ],
     ];
 
     protected $tainacan_api_address, $wordpress_api_address, $actual_collection;
@@ -36,7 +42,71 @@ class Oaipmh_Importer extends Importer {
      * @return int
      */
     public function process_item( $index, $collection_id ){
-        return true;
+        $this->add_log('Proccess item index' . $index . ' in set ' . $collection_id['source_id'] );
+        $records = [ 'records' => [] , 'collection_definition' => $collection_id ];
+        $record_processed = [];
+
+        if( $index === 0 ){
+            $info = $this->requester( $this->get_url() . "?verb=ListRecords&metadataPrefix=oai_dc&set=" . $collection_id['source_id'] );
+        } else {
+            $token = $this->get_transient('resumptionToken');
+            $info = $this->requester( $this->get_url() . "?verb=ListRecords&resumptionToken=" . $token);
+        }
+
+        if( !isset($info['body']) ){
+            $this->add_log('no answer');
+            return false;
+        }
+
+
+        try {
+            $xml = new \SimpleXMLElement($info['body']);
+
+            if ( isset($xml->ListRecords) && isset($xml->ListRecords->resumptionToken) ){
+
+                $resumptionToken = $xml->ListRecords->resumptionToken;
+                if ($resumptionToken) {
+                    $this->add_transient('resumptionToken',(string) $resumptionToken);
+                }
+            }
+
+        } catch (Exception $e) {
+            $this->add_log('error on read xml and get ');
+            return false;
+        }
+
+        if( $xml->ListRecords ){
+            $size = count($xml->ListRecords->record); // verifico o tamanho dos list record para o for
+
+            for ($j = 0; $j < $size; $j++) {
+                $record = $record = $xml->ListRecords->record[$j];
+                $dc = $record->metadata->children("http://www.openarchives.org/OAI/2.0/oai_dc/");
+
+                if ($record->metadata->Count() > 0 ) {
+                    $metadata = $dc->children('http://purl.org/dc/elements/1.1/');
+                    $tam_metadata = count($metadata);
+                    for ($i = 0; $i < $tam_metadata; $i++) {
+
+                        $value = (string) $metadata[$i];
+                        $identifier = $this->get_identifier($metadata[$i]);
+                        $record_processed['dc:' . $identifier ][] = $value;
+
+                    }
+                }
+
+                if( $record_processed ){
+                    $records['records'][] = $record_processed;
+                    $record_processed = [];
+                }
+            }
+        }
+
+        if( $records['records'] ){
+            return $records;
+        } else {
+            $this->add_log('proccessing an item empty');
+            return false;
+        }
     }
 
     /**
@@ -59,12 +129,13 @@ class Oaipmh_Importer extends Importer {
                 $metadata_map = $this->create_collection_metadata($collection);
                 $total = intval($this->get_total_items_from_source($setSpec));
                 $this->add_log('total in collection: ' . $total);
+                $this->add_log('collection id ' . (string) $collection->get_id());
 
                 $this->add_collection([
                     'id' => $collection->get_id(),
                     'mapping' => $metadata_map,
-                    'total_items' => $total,
-                    'source_id' => $setSpec
+                    'total_items' =>ceil( $total / 100 ),
+                    'source_id' => $setSpec,
                 ]);
             }
         }
@@ -72,7 +143,85 @@ class Oaipmh_Importer extends Importer {
         return false;
     }
 
+    /**
+     * insert processed item from source to Tainacan
+     *
+     * @param array $processed_item Associative array with metadatum source's as index with
+     *                              its value or values
+     * @param integet $collection_index The index in the $this->collections array of the collection the item is beeing inserted into
+     *
+     * @return Tainacan\Entities\Item Item inserted
+     */
+    public function insert( $processed_item, $collection_index ) {
+        $this->items_repo->disable_logs();
+        $records = $processed_item['records'];
+        $collection_id = $processed_item['collection_definition'];
+        $collection = new Entities\Collection($collection_id['id']);
+        $map = $collection_id['mapping'];
+
+        foreach ( $records as $record ) {
+            $item = new Entities\Item();
+            $item->set_status('publish');
+            $item->set_collection( $collection );
+            $item->set_title( ( isset($record['dc:title']) ) ? $record['dc:title'][0] : 'title' );
+            $item->set_description(  '' );
+
+            $this->add_log(  ( isset($record['dc:title']) ) ? $record['dc:title'][0] : 'title'   );
+            if( $record && $item->validate() ){
+                $insertedItem = $this->items_repo->insert( $item );
+
+                foreach ( $record as $index => $value ){
+
+                    $this->add_log( $index . ' ' . serialize($map) );
+                    $this->add_log(  $insertedItem->get_id() );
+                    if( in_array( $index, $map ) && $insertedItem->get_id()){
+                        $metadatum_id = array_search($index, $map );
+                        $newMetadatum = new Entities\Metadatum($metadatum_id);
+
+                        $item_metadata = new Entities\Item_Metadata_Entity( $insertedItem, $newMetadatum );
+
+                        $unique = !$item_metadata->is_multiple();
+                        $value_final = ( is_array($value) && $unique ) ? $value[0] : $value;
+                        $item_metadata->set_value($value_final);
+
+                        if( $item_metadata->validate() ){
+                            $inserted = $this->item_metadata_repo->insert( $item_metadata );
+                            $this->add_log('Item Metadata inserted for item  ' .$item->get_title() . ' and metadata ' . $newMetadatum->get_name() );
+                        } else {
+                            $this->add_log( 'Error inserting metadatum' . $newMetadatum->get_name() );
+                            $this->add_log( 'Values' . $value );
+                            $this->add_log( $item_metadata->get_errors() );
+                        }
+                    }
+
+                }
+            } else {
+                $this->add_log( (is_array($item->get_errors())) ? serialize($item->get_errors()) : $item->get_errors()  );
+            }
+
+        }
+
+        return isset($insertedItem) ? $insertedItem : false;
+    }
+
     //protected functions
+
+    /**
+     * @signature - get_identifyier($metadata)
+     * @param \SimpleXMLElement $metadata
+     * @return string O identifier
+     */
+    protected function get_identifier($metadata) {
+        $attributes = $metadata->attributes(); // atributos
+        if ($attributes) {
+            foreach ($attributes as $a => $b) {
+                return $metadata->getName().'_'.(string) $b;
+            }
+        } else {
+            return $metadata->getName();
+        }
+    }
+
 
     /**
      * Method implemented by the child importer class to return the number of items to be imported
@@ -92,17 +241,14 @@ class Oaipmh_Importer extends Importer {
             $xml = new \SimpleXMLElement($info['body']);
 
             if( isset($xml->ListRecords) && !isset($xml->ListRecords->resumptionToken) ){
-                $this->add_log('NO resumptiontoken ');
                 $cont = 0;
                 foreach ($xml->ListRecords->record as $record) $cont++;
 
                 return $cont;
-            } elseif ( isset($xml->ListRecords) && !isset($xml->ListRecords->resumptionToken) ){
+            } elseif ( isset($xml->ListRecords) && isset($xml->ListRecords->resumptionToken) ){
 
                 $resumptionToken_attributes = $xml->ListRecords->resumptionToken->attributes();
                 foreach ($resumptionToken_attributes as $tag => $attribute) {
-
-                    $this->add_log('resumptiontoken: ' . (string) $tag . ' ' . (string) $attribute );
                     if ($tag == 'completeListSize') {
                         return (string) $attribute;
                     }
@@ -113,7 +259,6 @@ class Oaipmh_Importer extends Importer {
             return 0;
         }
 
-        $this->add_log('SKIP');
         return 0;
     }
 
