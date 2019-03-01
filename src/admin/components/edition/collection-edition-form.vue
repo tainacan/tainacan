@@ -696,10 +696,10 @@ export default {
                 // Generates options for parent collection
                 this.isFetchingCollections = true;
                 this.fetchCollectionsForParent()
-                .then((collections) => {
-                    this.collections = collections;
-                    this.isFetchingCollections = false;
-                })
+                    .then((collections) => {
+                        this.collections = collections;
+                        this.isFetchingCollections = false;
+                    })
                 .catch((error) => {
                     this.$console.error(error);
                     this.isFetchingCollections = false;

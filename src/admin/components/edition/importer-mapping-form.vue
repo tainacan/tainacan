@@ -232,9 +232,6 @@ export default {
             'runImporter',
             'fetchMappingImporter'
         ]),
-        ...mapActions('collection', [
-            'fetchCollectionsForParent'
-        ]),
         ...mapActions('bgprocess', [
             'fetchProcess'
         ]),
