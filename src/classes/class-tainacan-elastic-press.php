@@ -46,10 +46,10 @@ class Elastic_Press {
 		
 		add_filter('tainacan-fetch-all-metadatum-values', [$this, 'fetch_all_metadatum_values'], 10, 3);
 
-		// add_action('ep_add_query_log', function($query) { //using to DEBUG
-		// 	error_log("DEGUG:");
-		// 	error_log($query["args"]["body"]);
-		// });
+		add_action('ep_add_query_log', function($query) { //using to DEBUG
+			error_log("DEGUG:");
+			error_log($query["args"]["body"]);
+		});
 	}
 
 	function filter_args($args, $type) {
@@ -588,9 +588,20 @@ class Elastic_Press {
 			$after_key = $aggregation['after_key'];
 			$description_types = \explode(".", $key);
 			if($description_types[0] == 'taxonomy') {
+				$has_include = isset($description_types[2]);
+
+				$taxonomy_label = $description_types[0].'.'.$description_types[1];
 				$taxonomy_slug = $description_types[1];
-				foreach ($aggregation['buckets'] as $term) {
-					$term_id = $term['key'][$key];
+
+				$buckets = ($has_include == false ? $aggregation['buckets'] : $aggregation[$key]['buckets']);
+				foreach ($buckets as $term) {
+					if ($has_include) {
+						$term_id = $term['key'];
+						$doc_count = $term['doc_count'];
+					} else {
+						$term_id = $term['key'][$key];
+						$doc_count = $term['doc_count'];
+					}
 					if ($term_id == '') continue;
 
 					$term_object = \Tainacan\Repositories\Terms::get_instance()->fetch($term_id, $taxonomy_slug);
@@ -607,11 +618,12 @@ class Elastic_Press {
 						"label" 					=> $term_object->get('name'),
 						"parent"					=> $term_object->get('parent')
 					];
-					if (isset($description_types[3])) {
-						array_unshift($formated_aggs['values'], $fct);
-					} else {
-						$formated_aggs['values'][] = $fct;
-					}
+				}
+				if ($has_include) {
+					array_unshift($formated_aggs['values'], $fct);
+				} else {
+					$formated_aggs['values'][] = $fct;
+					$formated_aggs['last_term'] = $after_key[$key];
 				}
 			} else {
 				$metada_label = $description_types[0].'.'.$description_types[1];
@@ -627,6 +639,7 @@ class Elastic_Press {
 							$formated_aggs['values'][] = $fct;
 						}
 					}
+					$formated_aggs['last_term'] = $after_key[$key];
 				} elseif ( isset($aggregation[$metada_label]['buckets'])) {
 					foreach ($aggregation[$metada_label]['buckets'] as $term) {
 						$fct = [
@@ -638,11 +651,9 @@ class Elastic_Press {
 						array_unshift($formated_aggs['values'], $fct);
 					}
 				}
-				$formated_aggs['last_term'] = $after_key[$key];
-				
-				//remove duplicates
-				$formated_aggs['values'] = array_intersect_key($formated_aggs['values'], array_unique(array_map('serialize', $formated_aggs['values'])));
 			}
+			//remove duplicates
+			$formated_aggs['values'] = array_intersect_key($formated_aggs['values'], array_unique(array_map('serialize', $formated_aggs['values'])));
 		}
 		return $formated_aggs;
 	}
