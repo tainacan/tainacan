@@ -414,7 +414,11 @@ class Collections extends Repository {
 
 		$Tainacan_Metadata->register_core_metadata( $collection );
 
-		if ( $this->old_collection instanceof Entities\Collection && $this->old_collection->get_parent() != $collection->get_parent() ) {
+		if ( $this->old_collection instanceof Entities\Collection && 
+			$this->old_collection->get_parent() != $collection->get_parent() &&
+			$this->old_core_title instanceof Entities\Metadatum &&
+			$this->old_core_description instanceof Entities\Metadatum 
+		) {
 			$Tainacan_Metadata->maybe_update_core_metadata_meta_keys( $collection, $this->old_collection, $this->old_core_title, $this->old_core_description );
 		}
 	}

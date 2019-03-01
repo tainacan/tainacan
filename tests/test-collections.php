@@ -346,4 +346,40 @@ class Collections extends TAINACAN_UnitTestCase {
     	$this->assertEquals([1 => 4, 2 => 5, 0 => 3], $diff['moderators_ids']['diff_with_index']);
     	
     }
+	
+	function test_create_child_collection() {
+		
+		$x = $this->tainacan_entity_factory->create_entity(
+    		'collection',
+    		array(
+    			'name'				=> 'test',
+    			'description'		=> 'adasdasdsa',
+    			'default_order' 	=> 'DESC',
+    		),
+    		true
+    	);
+		
+		$col = $this->tainacan_entity_factory->create_entity(
+    		'collection',
+    		array(
+    			'name'				=> 'test',
+    			'description'		=> 'adasdasdsa',
+    			'default_order' 	=> 'DESC',
+				'status'			=> 'auto-draft'
+    		),
+    		true
+    	);
+		
+		$Collections = \Tainacan\Repositories\Collections::get_instance();
+		
+		$col->set_parent($x->get_id());
+		$col->set_status('publish');
+		
+		$col->validate();
+		
+		$col = $Collections->insert($col);
+		
+		$this->assertEquals($x->get_id(), $col->get_parent());
+		
+	}
 }
