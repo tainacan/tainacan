@@ -111,7 +111,7 @@ class Elastic_Press {
 			$this->facets = [];
 			
 			if ( isset($args['facet_metadatum_id']) ) {
-				$this->$aggregation_type = 'facets';
+				$this->aggregation_type = 'facets';
 				$metadatum = Repositories\Metadata::get_instance()->fetch($args['facet_metadatum_id']);
 				$metadatum_options = $metadatum->get_metadata_type_options();
 				$metadata_type = $metadatum->get_metadata_type();
@@ -176,7 +176,7 @@ class Elastic_Press {
 								}
 							}
 						}
-						$this->$aggregation_type = 'items';
+						$this->aggregation_type = 'items';
 						$this->facets[$id] = [
 							"key" => $key, 
 							"field" => $field, 
@@ -202,7 +202,7 @@ class Elastic_Press {
 	 * @return \Array with formatted array of args.
 	 */
 	public function prepare_request($formatted_args) {
-		switch ($this->$aggregation_type) {
+		switch ($this->aggregation_type) {
 			case 'items':
 				$formatted_args = $this->prepare_request_for_items($formatted_args);
 				break;
@@ -218,7 +218,7 @@ class Elastic_Press {
 	* 
 	*/
 	public function format_aggregations($aggregations) {
-		switch ($this->$aggregation_type) {
+		switch ($this->aggregation_type) {
 			case 'items':
 				return $this->format_aggregations_items($aggregations);
 			case 'facets':
