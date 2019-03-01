@@ -48,9 +48,11 @@ class Oaipmh_Importer extends Importer {
 
         if( $index === 0 ){
             $info = $this->requester( $this->get_url() . "?verb=ListRecords&metadataPrefix=oai_dc&set=" . $collection_id['source_id'] );
+            $this->add_log('fetching ' . $this->get_url() . "?verb=ListRecords&metadataPrefix=oai_dc&set=" . $collection_id['source_id']);
         } else {
             $token = $this->get_transient('resumptionToken');
             $info = $this->requester( $this->get_url() . "?verb=ListRecords&resumptionToken=" . $token);
+            $this->add_log('fetching ' . $this->get_url() . "?verb=ListRecords&resumptionToken=" . $token);
         }
 
         if( !isset($info['body']) ){
@@ -106,7 +108,7 @@ class Oaipmh_Importer extends Importer {
         if( $records['records'] ){
             return $records;
         } else {
-            $this->add_log('proccessing an item empty');
+            $this->add_log('proccessing an item empty or xml not found');
             return false;
         }
     }
@@ -198,7 +200,7 @@ class Oaipmh_Importer extends Importer {
 
                 }
             } else {
-                $this->add_log( (is_array($item->get_errors())) ? serialize($item->get_errors()) : $item->get_errors()  );
+                $this->add_log('item not inserted ');
             }
 
         }
