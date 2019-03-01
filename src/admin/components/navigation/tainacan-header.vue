@@ -53,13 +53,14 @@
                 <b-dropdown
                         ref="advancedSearchShortcut"
                         class="advanced-search-header-dropdown"
-                        position="is-bottom-left">
+                        position="is-bottom-left"
+                        aria-role="list">
                     <a
                             class="advanced-search-text"
                             slot="trigger">
                         {{ $i18n.get('advanced_search') }}
                     </a>
-                    <b-dropdown-item>
+                    <b-dropdown-item aria-role="listitem">
                         <div :style="{'height': '25px'}">
                             <p class="is-pulled-left advanced-search-text-di">{{ $i18n.get('advanced_search') }}</p>
                             <span 
@@ -72,7 +73,8 @@
                     </b-dropdown-item>
                     <b-dropdown-item
                             style="padding-left: 0 !important; padding-right: 0 !important;"
-                            :custom="true">
+                            :custom="true"
+                            aria-role="listitem">
                         <advanced-search
                                 :is-repository-level="true"
                                 :is-header="true"/>

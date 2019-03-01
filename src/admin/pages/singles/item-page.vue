@@ -281,7 +281,8 @@
                                         v-for="(metadatum, index) of metadatumList"
                                         :key="index"
                                         class="field">
-                                    <b-collapse 
+                                    <b-collapse
+                                            :aria-id="'metadatum-collapse-' + metadatum.id" 
                                             animation="filter-item"
                                             :open="open">
                                         <label
