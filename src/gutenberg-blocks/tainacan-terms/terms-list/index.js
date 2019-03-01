@@ -2,7 +2,9 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { IconButton, Spinner, ToggleControl, Placeholder, Toolbar } = wp.components;
+const { TextControl, IconButton, Button, Modal, Spinner, ToggleControl, Placeholder, Toolbar } = wp.components;
+
+
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -110,6 +112,14 @@ registerBlockType('tainacan/terms-list', {
             type: String,
             default: 'grid'
         },
+        isModalOpen: {
+            type: Boolean,
+            default: false
+        },
+        modalTerms: {
+            type: Array,
+            default: []
+        }
     },
     supports: {
         align: ['full', 'left', 'right', 'wide'],
@@ -128,7 +138,9 @@ registerBlockType('tainacan/terms-list', {
             isLoadingTaxonomies, 
             taxonomies, 
             showImage,
-            layout 
+            layout,
+            isModalOpen,
+            modalTerms
         } = attributes;
 
         function prepareTerm(term) {
@@ -237,6 +249,41 @@ registerBlockType('tainacan/terms-list', {
                 });
         }
 
+
+        function fetchModalTerms(offset) {
+
+            let endpoint = '/taxonomy/'+ taxonomyId + '/terms/?number=12&offset=' + offset;
+
+            if (name != undefined && name != '')
+                endpoint += '&searchterm=' + name;
+
+            tainacan.get(endpoint)
+                .then(response => {
+
+                    modalTerms = response.data.map((term) => ({ 
+                        name: term.name, 
+                        value: term.id + "", // same as string version of id, because autocomplete expects value
+                        id: term.id,
+                        url: term.url,
+                        header_image: [{
+                            src: term.header_image,
+                            alt: term.name
+                        }]
+                    }));
+                    isLoadingTerms = false; 
+
+                    setAttributes({ 
+                        isLoadingTerms: isLoadingTerms, 
+                        modalTerms: modalTerms
+                    });
+                    
+                    return modalTerms;
+                })
+                .catch(error => {
+                    console.log('Error trying to fetch terms: ' + error);
+                });
+        }
+
         function fetchTaxonomy() {
             tainacan.get('/taxonomies/' + taxonomyId)
                 .then((response) => {
@@ -245,6 +292,11 @@ registerBlockType('tainacan/terms-list', {
                 }).catch(error => {
                     console.log('Error trying to fetch taxonomy: ' + error);
                 });
+        }
+
+        function openTermsModal() {
+            fetchModalTerms(0);
+            setAttributes( { isModalOpen: true, terms: [] } );
         }
 
         function selectTerm(term) {
@@ -331,8 +383,61 @@ registerBlockType('tainacan/terms-list', {
                 </div>
 
                 { isSelected ? 
-                    
-                        (<div>
+                        (
+                        <div>
+                            <Button isDefault onClick={ () => openTermsModal() }>{__('Select terms', 'tainacan')}</Button>
+                            { isModalOpen && (
+                                <Modal
+                                    title={__('Select the desired terms', 'tainacan')}
+                                    onRequestClose={ () => setAttributes( { isModalOpen: false } ) }
+                                    contentLabel={__('Select terms', 'tainacan')}>
+
+                                    { isLoadingTerms ? <Spinner /> : null }
+
+                                    <TextControl 
+                                        label={__('Search for a term', 'tainacan')}
+                                        value={ currentTermName }
+                                        onChange={(value) => {
+                                            setAttributes({ 
+                                                currentTermName: value
+                                            });
+                                            _.debounce(fetchTerms(value), 300);
+                                        }}/>
+                                    
+                                    {
+                                        terms.length > 0 ? 
+                                        (
+                                            <ul>
+                                            {
+                                                terms.map((term) =>
+                                                    <li key={ term.id }>{ term.name }</li>
+                                                )
+                                            }                                                
+                                            </ul>
+                                        )
+                                        :
+                                        modalTerms.length > 0 ? 
+                                        (
+                                            <ul>
+                                            {
+                                                modalTerms.map((term) =>
+                                                    <li key={ term.id }>{ term.name }</li>
+                                                )
+                                            }                                                
+                                            </ul>
+                                        ) : null
+                                        
+                                    }
+ 
+                                    <Button isDefault onClick={ () => setAttributes( { isModalOpen: false } ) }>
+                                        {__('Cancel', 'tainacan')}
+                                    </Button>
+                                    <Button isDefault onClick={ () => setAttributes( { isModalOpen: false } ) }>
+                                        {__('Finish', 'tainacan')}
+                                    </Button>
+                                </Modal>
+                            ) }
+
                             { isLoadingTaxonomies || isLoadingTerms ? <Spinner /> : null }
 
                             <div className="block-control">
