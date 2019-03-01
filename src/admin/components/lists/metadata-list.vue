@@ -220,7 +220,6 @@
                         <div class="field is-grouped form-submit">
                             <b-select
                                     id="mappers-options-dropdown"
-                                    class="button is-secondary"
                                     :placeholder="$i18n.get('instruction_select_a_mapper')">
                                 <option
                                         v-for="metadatum_mapper in metadatum_mappers"
@@ -835,9 +834,11 @@ export default {
             });
 
         // Obtains collection name
-        this.fetchCollectionName(this.collectionId).then((collectionName) => {
-            this.collectionName = collectionName;
-        });
+        if (!this.isRepositoryLevel) {
+            this.fetchCollectionName(this.collectionId).then((collectionName) => {
+                this.collectionName = collectionName;
+            });
+        }
     }
 }
 </script>
@@ -1279,10 +1280,6 @@ export default {
                 }
 
             }
-        }
-        #mappers-options-dropdown {
-            background-color: transparent;
-            color: #fff;
         }
 
     }

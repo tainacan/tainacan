@@ -70,6 +70,7 @@
                     formHooks['term']['begin-left'] != undefined">  
             <form 
                 id="form-term-begin-left"
+                class="form-hook-region"
                 v-html="formHooks['term']['begin-left'].join('')"/>
         </template>
 
@@ -139,6 +140,7 @@
                     formHooks['term']['end-left'] != undefined">  
             <form 
                 id="form-term-end-left"
+                class="form-hook-region"
                 v-html="formHooks['term']['end-left'].join('')"/>
         </template>
 
@@ -154,13 +156,14 @@
                 </button>
             </div>
             <div class="control">
-                <button
+                <a
                         type="button"
                         v-if="editForm.url != undefined && editForm.url!= ''"
                         class="button is-secondary"
+                        target="_blank"
                         :href="editForm.url">
-                    {{ $i18n.get('see') + ' ' + $i18n.get('term') }}
-                </button>
+                    {{ $i18n.get('label_view_term') }}
+                </a>
             </div>
             <div class="control">
                 <button
@@ -279,13 +282,15 @@
                 );
             },
             initializeMediaFrames() {
-                this.headerImageMediaFrame = new wpMediaFrames.headerImageControl(
-                    'my-header-image-media-frame', {
+                this.headerImageMediaFrame = new wpMediaFrames.thumbnailControl(
+                    'my-thumbnail-image-media-frame', {
                         button_labels: {
                             frame_title: this.$i18n.get('instruction_select_term_header_image'),
+                            frame_button: this.$i18n.get('label_select_file')
                         },
                         relatedPostId: this.editForm.id,
                         onSave: (croppedImage) => {
+
                            this.editForm = Object.assign({},
                                 this.editForm,
                                 {

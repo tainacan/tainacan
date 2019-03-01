@@ -16,7 +16,8 @@
                         position="is-bottom-left"
                         v-if="$userCaps.hasCapability('delete_tainacan-taxonomies')"
                         :disabled="!isSelecting"
-                        id="bulk-actions-dropdown">
+                        id="bulk-actions-dropdown"
+                        aria-role="list">
                     <button
                             class="button is-white"
                             slot="trigger">
@@ -28,10 +29,13 @@
 
                     <b-dropdown-item
                             id="item-delete-selected-items"
-                            @click="deleteSelected()">
+                            @click="deleteSelected()"
+                            aria-role="listitem">
                         {{ $i18n.get('label_delete_selected_taxonomies') }}
                     </b-dropdown-item>
-                    <b-dropdown-item disabled>{{ $i18n.get('label_edit_selected_taxonomies') + ' (Not ready)' }}
+                    <b-dropdown-item 
+                            disabled
+                            aria-role="listitem">{{ $i18n.get('label_edit_selected_taxonomies') + ' (Not ready)' }}
                     </b-dropdown-item>
                 </b-dropdown>
             </div>

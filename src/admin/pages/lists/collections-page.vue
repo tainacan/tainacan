@@ -9,7 +9,9 @@
             
             <!-- New Collection button -->
             <div class="header-item">
-                <b-dropdown id="collection-creation-options-dropdown">
+                <b-dropdown 
+                        aria-role="list"
+                        id="collection-creation-options-dropdown">
                     <button
                             class="button is-secondary"
                             slot="trigger">
@@ -18,7 +20,7 @@
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
                         </span>
                     </button>
-                    <b-dropdown-item>
+                    <b-dropdown-item aria-role="listitem">
                         <router-link
                                 id="a-create-collection"
                                 tag="div"
@@ -31,7 +33,8 @@
                     <b-dropdown-item
                             :key="metadatum_mapper.slug"
                             v-for="metadatum_mapper in metadatum_mappers"
-                            v-if="metadatum_mapper.metadata != false">
+                            v-if="metadatum_mapper.metadata != false"
+                            aria-role="listitem">
                         <router-link
                                 :id="'a-create-collection-' + metadatum_mapper.slug"
                                 tag="div"
@@ -39,7 +42,7 @@
                             {{ $i18n.get(metadatum_mapper.name) }}
                         </router-link>
                     </b-dropdown-item>
-                    <b-dropdown-item>
+                    <b-dropdown-item aria-role="listitem">
                         <div
                                 id="a-import-collection"
                                 tag="div"
@@ -131,7 +134,8 @@
                             <div v-if="$userCaps.hasCapability('edit_tainacan-collections') && status == undefined || status == ''">
                                 <b-dropdown 
                                         :disabled="isLoadingMetadatumMappers"
-                                        id="collection-creation-options-dropdown">
+                                        id="collection-creation-options-dropdown"
+                                        aria-role="list">
                                     <button
                                             class="button is-secondary"
                                             slot="trigger">
@@ -140,7 +144,7 @@
                                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
                                         </span>
                                     </button>
-                                    <b-dropdown-item>
+                                    <b-dropdown-item aria-role="listitem">
                                         <router-link
                                                 id="a-create-collection"
                                                 tag="div"
@@ -153,7 +157,8 @@
                                     <b-dropdown-item
                                             :key="metadatum_mapper.slug"
                                             v-for="metadatum_mapper in metadatum_mappers"
-                                            v-if="metadatum_mapper.metadata != false">
+                                            v-if="metadatum_mapper.metadata != false"
+                                            aria-role="listitem">
                                         <router-link
                                                 :id="'a-create-collection-' + metadatum_mapper.slug"
                                                 tag="div"
@@ -161,7 +166,7 @@
                                             {{ $i18n.get(metadatum_mapper.name) }}
                                         </router-link>
                                     </b-dropdown-item>
-                                    <b-dropdown-item>
+                                    <b-dropdown-item aria-role="listitem">
                                         <div
                                                 id="a-import-collection"
                                                 tag="div"

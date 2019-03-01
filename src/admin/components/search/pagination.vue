@@ -10,9 +10,10 @@
                 $i18n.get('info_showing_items') +
                 getFirstItem() +
                 $i18n.get('info_to') + 
-                getLastItemNumber() + 
-                $i18n.get('info_of') + totalItems + '.'
+                getLastItemNumber() +
+                $i18n.get('info_of')
             }} 
+            <span :class="{ 'has-text-warning': collectionTotalItems > totalItems }">{{ totalItems + '.' }}</span>
         </div> 
         <div class="items-per-page">
             <b-field 
@@ -38,7 +39,8 @@
                     :label="$i18n.get('label_go_to_page')"> 
                 <b-dropdown 
                         position="is-top-right"
-                        @change="onPageChange">
+                        @change="onPageChange"
+                        aria-role="list">
                     <button
                             aria-labelledby="go-to-page-dropdown"
                             class="button is-white"
@@ -53,7 +55,8 @@
                             role="button" 
                             :key="pageNumber"
                             v-for="pageNumber in totalPages"
-                            :value="Number(pageNumber)">
+                            :value="Number(pageNumber)"
+                            aria-role="listitem">
                         {{ pageNumber }}
                     </b-dropdown-item>
                 </b-dropdown>
@@ -94,6 +97,20 @@ export default {
         },
         totalPages(){
             return Math.ceil(Number(this.totalItems)/Number(this.itemsPerPage));    
+        },
+        collectionTotalItems() {
+            let collectionTotalItemsObject = this.getCollectionTotalItems().total_items;
+            if (collectionTotalItemsObject) {
+                switch(this.getStatus()) {
+                    case 'draft':
+                        return collectionTotalItemsObject.draft;
+                    case 'trash':
+                        return collectionTotalItemsObject.trash;
+                    default:
+                        return collectionTotalItemsObject.publish + collectionTotalItemsObject.private;
+                }
+            } else
+                return this.totalItems;
         }
     },
     watch: {
@@ -103,11 +120,15 @@ export default {
         }
     },
     methods: {
+         ...mapGetters('collection', [
+            'getCollectionTotalItems'
+        ]),
         ...mapGetters('search', [
             'getTotalItems',
             'getPage',
             'getItemsPerPage',
-            'getPostQuery'
+            'getPostQuery',
+            'getStatus'
         ]),
         onChangeItemsPerPage(value) {
             if( this.itemsPerPage == value){

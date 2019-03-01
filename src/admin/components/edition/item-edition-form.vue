@@ -44,6 +44,7 @@
                                     formHooks['item']['begin-left'] != undefined">  
                             <form 
                                 id="form-item-begin-left"
+                                class="form-hook-region"
                                 v-html="formHooks['item']['begin-left'].join('')"/>
                         </template>
 
@@ -349,6 +350,7 @@
                                     formHooks['item']['end-left'] != undefined">  
                             <form 
                                 id="form-item-end-left"
+                                class="form-hook-region"
                                 v-html="formHooks['item']['end-left'].join('')"/>
                         </template>
 
@@ -362,6 +364,7 @@
                                     formHooks['item']['begin-right'] != undefined">  
                             <form 
                                 id="form-item-begin-right"
+                                class="form-hook-region"
                                 v-html="formHooks['item']['begin-right'].join('')"/>
                         </template>
 
@@ -438,6 +441,7 @@
                                     formHooks['item']['end-right'] != undefined">  
                             <form 
                                 id="form-item-end-right"
+                                class="form-hook-region"
                                 v-html="formHooks['item']['end-right'].join('')"/>
                         </template>
                     </div>
@@ -1009,8 +1013,8 @@ export default {
                         frame_title: this.$i18n.get('instruction_select_item_thumbnail'),
                     },
                     relatedPostId: this.itemId,
-                    onSave: (mediaId) => {
-                        this.updateThumbnail({itemId: this.itemId, thumbnailId: mediaId})
+                    onSave: (media) => {
+                        this.updateThumbnail({itemId: this.itemId, thumbnailId: media.id})
                         .then((res) => {
                             this.item.thumbnail = res.thumbnail;
                         })
@@ -1167,9 +1171,11 @@ export default {
         }
 
         // Obtains collection name
-        this.fetchCollectionName(this.collectionId).then((collectionName) => {
-            this.collectionName = collectionName;
-        });
+        if (!this.isRepositoryLevel) {
+            this.fetchCollectionName(this.collectionId).then((collectionName) => {
+                this.collectionName = collectionName;
+            });
+        }
         
         // Obtains if collection allow items comments
         this.fetchCollectionAllowComments(this.collectionId).then((collectionAllowComments) => {

@@ -31,6 +31,7 @@
                         formHooks['view-item']['begin-left'] != undefined">
                         <div
                                 id="view-item-begin-left"
+                                class="form-hook-region"
                                 v-html="formHooks['view-item']['begin-left'].join('')"/>
                     </template>
 
@@ -197,6 +198,7 @@
                         formHooks['view-item']['end-left'] != undefined">
                         <div
                                 id="view-item-end-left"
+                                class="form-hook-region"
                                 v-html="formHooks['view-item']['end-left'].join('')"/>
                     </template>
 
@@ -210,6 +212,7 @@
                         formHooks['view-item']['begin-right'] != undefined">
                         <div
                                 id="view-item-begin-right"
+                                class="form-hook-region"
                                 v-html="formHooks['view-item']['begin-right'].join('')"/>
                     </template>
 
@@ -278,7 +281,8 @@
                                         v-for="(metadatum, index) of metadatumList"
                                         :key="index"
                                         class="field">
-                                    <b-collapse 
+                                    <b-collapse
+                                            :aria-id="'metadatum-collapse-' + metadatum.id" 
                                             animation="filter-item"
                                             :open="open">
                                         <label
@@ -306,6 +310,7 @@
                                 formHooks['view-item']['end-right'] != undefined">
                                 <div
                                         id="view-item-end-right"
+                                        class="form-hook-region"
                                         v-html="formHooks['view-item']['end-right'].join('')"/>
                             </template>
                         </b-tab-item>
@@ -467,10 +472,12 @@
                 this.loadMetadata();
             });
 
-            // Obtains collection name
+        // Obtains collection name
+        if (!this.isRepositoryLevel) {
             this.fetchCollectionName(this.collectionId).then((collectionName) => {
                 this.collectionName = collectionName;
             });
+        }
 
             // Get attachments
             this.fetchAttachments(this.itemId);

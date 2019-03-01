@@ -29,8 +29,9 @@
                 v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="is-hidden-mobile"
                 id="filter-menu-compress-button"
-                :style="{ top: !isOnTheme ? (isRepositoryLevel ? '172px' : '120px') : '76px' }"
                 :aria-label="isFiltersMenuCompressed ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
+
+                :style="{ top: !isOnTheme ? (isRepositoryLevel ? '172px' : '120px') : '76px' }"
                 @click="isFiltersMenuCompressed = !isFiltersMenuCompressed">
             <span class="icon">
                 <i 
@@ -45,8 +46,9 @@
                 v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="is-hidden-tablet"
                 id="filter-menu-compress-button-mobile"
-                :style="{ top: !isOnTheme ? (isRepositoryLevel ? (searchControlHeight + 100) : (searchControlHeight + 70) + 'px') : (searchControlHeight - 25) + 'px' }"
                 :aria-label="isFiltersMenuCompressed ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
+
+                :style="{ top: !isOnTheme ? (isRepositoryLevel ? (searchControlHeight + 100) : (searchControlHeight + 70) + 'px') : (searchControlHeight - 25) + 'px' }"
                 @click="isFilterModalActive = !isFilterModalActive">
             <span class="icon">
                 <i 
@@ -64,7 +66,7 @@
                 role="region"
                 aria-labelledby="filters-label-landmark"
                 :style="{ top: searchControlHeight + 'px' }"
-                v-if="!isFiltersMenuCompressed && 
+                v-show="!isFiltersMenuCompressed && 
                         !openAdvancedSearch && 
                         !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="filters-menu tainacan-form is-hidden-mobile">
@@ -174,7 +176,8 @@
                         v-if="!isOnTheme">
                     <b-dropdown 
                             :mobile-modal="true"
-                            id="item-creation-options-dropdown">
+                            id="item-creation-options-dropdown"
+                            aria-role="list">
                         <button
                                 class="button is-secondary"
                                 slot="trigger">
@@ -184,7 +187,9 @@
                             </span>
                         </button>
 
-                        <b-dropdown-item v-if="!isRepositoryLevel">
+                        <b-dropdown-item 
+                                v-if="!isRepositoryLevel"
+                                aria-role="listitem">
                             <router-link
                                     id="a-create-item"
                                     tag="div"
@@ -192,7 +197,9 @@
                                 {{ $i18n.get('add_one_item') }}
                             </router-link>
                         </b-dropdown-item>
-                        <b-dropdown-item v-if="isRepositoryLevel">
+                        <b-dropdown-item 
+                                v-if="isRepositoryLevel"
+                                aria-role="listitem">
                             <div
                                     id="a-create-item"
                                     tag="div"
@@ -200,7 +207,9 @@
                                 {{ $i18n.get('add_one_item') }}
                             </div>
                         </b-dropdown-item>
-                        <b-dropdown-item v-if="!isRepositoryLevel">
+                        <b-dropdown-item 
+                                v-if="!isRepositoryLevel"
+                                aria-role="listitem">
                             <router-link
                                     id="a-item-add-bulk"
                                     tag="div"
@@ -210,7 +219,7 @@
                                 <small class="is-small">{{ $i18n.get('info_bulk_add_items') }}</small>
                             </router-link>
                         </b-dropdown-item>
-                        <b-dropdown-item>
+                        <b-dropdown-item aria-role="listitem">
                             <div
                                     id="a-import-items"
                                     tag="div"
@@ -240,7 +249,8 @@
                             ref="displayedMetadataDropdown"
                             :mobile-modal="true"
                             :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry'"
-                            class="show">
+                            class="show metadata-options-dropdown"
+                            aria-role="list">
                         <button
                                 :aria-label="$i18n.get('label_displayed_metadata')"
                                 class="button is-white"
@@ -255,7 +265,8 @@
                                     v-for="(column, index) in localDisplayedMetadata"
                                     :key="index"
                                     class="control"
-                                    custom>
+                                    custom
+                                    aria-role="listitem">
                                 <b-checkbox
                                         v-model="column.display"
                                         :native-value="column.display">
@@ -277,15 +288,16 @@
                 <!-- Change OrderBy Select and Order Button-->
                 <div class="search-control-item">
                     <b-field>
+                        <label class="label is-hidden-mobile">{{ $i18n.get('label_sorting') + ':' }}</label>
                         <b-dropdown
                                 :mobile-modal="true"
-                                :disabled="totalItems <= 0"
-                                @input="onChangeOrderBy($event)">
+                                @input="onChangeOrderBy($event)"
+                                aria-role="list">
                             <button
                                     :aria-label="$i18n.get('label_sorting')"
                                     class="button is-white"
                                     slot="trigger">
-                                <span>{{ $i18n.get('label_sorting') }}</span>
+                                <span>{{ orderByName }}</span>
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
                                 </span>
@@ -293,14 +305,12 @@
                             <b-dropdown-item
                                     aria-controls="items-list-results"
                                     role="button"
-                                    :class="{ 'is-active': metadatum != undefined && orderBy == metadatum.slug }"
+                                    :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && orderBy == metadatum.slug) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
                                     v-for="metadatum of sortingMetadata"
-                                    v-if="
-                                        totalItems > 0 &&
-                                        metadatum != undefined 
-                                    "
+                                    v-if="metadatum != undefined"
                                     :value="metadatum"
-                                    :key="metadatum.slug">
+                                    :key="metadatum.slug"
+                                    aria-role="listitem">
                                 {{ metadatum.name }}
                             </b-dropdown-item>
                             <!-- Once we have sorting by metadata we can use this -->
@@ -326,21 +336,21 @@
                         <button
                                 aria-controls="items-list-results"
                                 class="button is-white is-small"
-                                :aria-label="$i18n.get('label_sort_ascending')"
+                                :aria-label="$i18n.get('label_sort_descending')"
                                 :disabled="totalItems <= 0 || order == 'DESC'"
                                 @click="onChangeOrder()">
                             <span class="icon is-small gray-icon">
-                                <i class="tainacan-icon tainacan-icon-sortascending"/>
+                                <i class="tainacan-icon tainacan-icon-sortdescending"/>
                             </span>
                         </button>
                         <button
                                 aria-controls="items-list-results"
                                 :disabled="totalItems <= 0 || order == 'ASC'"
-                                :aria-label="$i18n.get('label_sort_descending')"
+                                :aria-label="$i18n.get('label_sort_ascending')"
                                 class="button is-white is-small"
                                 @click="onChangeOrder()">
                             <span class="icon is-small gray-icon">
-                                <i class="tainacan-icon tainacan-icon-sortdescending"/>
+                                <i class="tainacan-icon tainacan-icon-sortascending"/>
                             </span>
                         </button>
                     </b-field>
@@ -351,20 +361,22 @@
                         v-if="isOnTheme"
                         class="search-control-item">
                     <b-field>
+                        <label class="label is-hidden-mobile">{{ $i18n.get('label_visualization') + ':&nbsp; ' }}</label>
                         <b-dropdown
                                 @change="onChangeViewMode($event)"
                                 :mobile-modal="true"
                                 position="is-bottom-left"
-                                :aria-label="$i18n.get('label_view_mode')">
+                                :aria-label="$i18n.get('label_view_mode')"
+                                aria-role="list">
                             <button 
-                                    :aria-label="$i18n.get('label_view_mode')"
+                                    :aria-label="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : $i18n.get('label_visualization')"
                                     class="button is-white" 
                                     slot="trigger">
                                 <span 
                                         class="gray-icon view-mode-icon"
                                         v-if="registeredViewModes[viewMode] != undefined"
                                         v-html="registeredViewModes[viewMode].icon"/>
-                                    <span class="is-hidden-touch">&nbsp;&nbsp;&nbsp;{{ $i18n.get('label_visualization') }}</span>
+                                    <span class="is-hidden-touch">&nbsp;&nbsp;&nbsp;{{ registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : $i18n.get('label_visualization') }}</span>
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
                                 </span>
@@ -376,7 +388,8 @@
                                     v-for="(viewModeOption, index) of enabledViewModes"
                                     :key="index"
                                     :value="viewModeOption"
-                                    v-if="registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == false">
+                                    v-if="registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == false"
+                                    aria-role="listitem">
                                 <span 
                                         class="gray-icon"
                                         v-html="registeredViewModes[viewModeOption].icon"/>
@@ -389,17 +402,19 @@
                         v-if="!isOnTheme"
                         class="search-control-item">
                     <b-field>
+                        <label class="label is-hidden-mobile">{{ $i18n.get('label_visualization') + ':' }}</label>
                         <b-dropdown
                                 @change="onChangeAdminViewMode($event)"
                                 :mobile-modal="true"
                                 position="is-bottom-left"
-                                :aria-label="$i18n.get('label_view_mode')">
+                                :aria-label="$i18n.get('label_view_mode')"
+                                aria-role="list">
                             <button
                                     :aria-label="$i18n.get('label_view_mode')"
                                     class="button is-white"
                                     slot="trigger">
                                 <span>
-                                        <span class="icon is-small gray-icon">
+                                    <span class="view-mode-icon icon is-small gray-icon">
                                         <i 
                                                 :class="{'tainacan-icon-viewtable' : ( adminViewMode == 'table' || adminViewMode == undefined),
                                                         'tainacan-icon-viewcards' : adminViewMode == 'cards',
@@ -409,7 +424,7 @@
                                                 class="tainacan-icon"/>
                                     </span>
                                 </span>
-                                &nbsp;&nbsp;&nbsp;{{ $i18n.get('label_visualization') }}
+                                &nbsp;&nbsp;&nbsp;{{ adminViewMode != undefined ? $i18n.get('label_' + adminViewMode) : $i18n.get('label_table') }}
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
                                 </span>
@@ -418,7 +433,8 @@
                                     aria-controls="items-list-results"
                                     role="button"
                                     :class="{ 'is-active': adminViewMode == 'table' }"
-                                    :value="'table'">
+                                    :value="'table'"
+                                    aria-role="listitem">
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-viewtable"/>
                                 </span>
@@ -428,7 +444,8 @@
                                     aria-controls="items-list-results"
                                     role="button"
                                     :class="{ 'is-active': adminViewMode == 'cards' }"
-                                    :value="'cards'">
+                                    :value="'cards'"
+                                    aria-role="listitem">
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-viewcards"/>
                                 </span>
@@ -438,7 +455,8 @@
                                     aria-controls="items-list-results"
                                     role="button"
                                     :class="{ 'is-active': adminViewMode == 'grid' }"
-                                    :value="'grid'">
+                                    :value="'grid'"
+                                    aria-role="listitem">
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-viewminiature"/>
                                 </span>
@@ -448,7 +466,8 @@
                                     aria-controls="items-list-results"
                                     role="button"
                                     :class="{ 'is-active': adminViewMode == 'records' }"
-                                    :value="'records'">
+                                    :value="'records'"
+                                    aria-role="listitem">
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-viewrecords"/>
                                 </span>
@@ -458,7 +477,8 @@
                                     aria-controls="items-list-results"
                                     role="button"
                                     :class="{ 'is-active': adminViewMode == 'masonry' }"
-                                    :value="'masonry'">
+                                    :value="'masonry'"
+                                    aria-role="listitem">
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-viewmasonry"/>
                                 </span>
@@ -560,7 +580,7 @@
                         :open-form-advanced-search="openFormAdvancedSearch"
                         :is-do-search="isDoSearch"/>
 
-                <div class="advanced-searh-form-submit">
+                <div class="advanced-search-form-submit">
                     <p
                             v-if="advancedSearchResults"
                             class="control">
@@ -883,6 +903,27 @@
             },
             showLoading() {
                 return this.isLoadingItems || this.isLoadingFilters || this.isLoadingMetadata;
+            },
+            metaKey() {
+                return this.getMetaKey();
+            },
+            orderByName() {
+
+                if (this.getOrderByName() != null && this.getOrderByName() != undefined && this.getOrderByName() != '') {
+                    return this.getOrderByName();
+                } else {
+
+                    for (let metadatum of this.sortingMetadata) {
+
+                        if (
+                            ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug == 'creation_date' && (!metadatum.metadata_type_object || !metadatum.metadata_type_object.core)) && this.orderBy == 'date') ||
+                            ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug != 'creation_date' && (metadatum.metadata_type_object != undefined && metadatum.metadata_type_object.core)) && this.orderBy == metadatum.metadata_type_object.related_mapped_prop) ||
+                            ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug != 'creation_date' && (!metadatum.metadata_type_object || !metadatum.metadata_type_object.core)) && this.orderBy == metadatum.slug) ||
+                            ((this.orderBy == 'meta_value' || this.orderBy == 'meta_value_num') && this.getMetaKey() == metadatum.id)
+                           )     
+                            return metadatum.name;
+                    }
+                }
             }
         },
         components: {
@@ -930,10 +971,12 @@
                 'getSearchQuery',
                 'getStatus',
                 'getOrderBy',
+                'getOrderByName',
                 'getOrder',
                 'getViewMode',
                 'getTotalItems',
                 'getAdminViewMode',
+                'getMetaKey'
             ]),
             onSwipeFiltersMenu($event) {
                 if (this.registeredViewModes[this.viewMode] == undefined || 
@@ -1493,7 +1536,7 @@
         }
     }
 
-    .advanced-searh-form-submit {
+    .advanced-search-form-submit {
         display: flex;
         justify-content: flex-end;
         padding-right: $page-side-padding;
@@ -1653,6 +1696,14 @@
             flex-basis: 100%;
         }
 
+        .label {
+            font-size: 0.875rem;
+            font-weight: normal;
+            margin-top: 3px;
+            margin-bottom: 2px;
+            cursor: default;
+        }
+
         .button {
             display: flex;
             align-items: center;
@@ -1673,8 +1724,9 @@
         }
         
         .view-mode-icon {
-            margin-right: 4px !important;
+            margin-right: 3px !important;
             margin-top: 1px;
+            margin-left: 6px !important;
         }
 
         .dropdown-menu {
@@ -1684,7 +1736,7 @@
                 padding: 0;
 
                 .metadata-options-container {
-                    max-height: 240px;
+                    max-height: 288px;
                     overflow: auto;
                 }
                 .dropdown-item {
@@ -1696,7 +1748,7 @@
                 .dropdown-item-apply {
                     width: 100%;
                     border-top: 1px solid #efefef;
-                    padding: 8px 12px 2px 12px;
+                    padding: 8px 12px;
                     text-align: right;
                 }
                 .dropdown-item-apply .button {

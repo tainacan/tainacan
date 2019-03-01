@@ -47,7 +47,7 @@ export default {
             },
             watch: {
                 '$route'  (to, from) {
-                
+                    
                     // Should set Collection ID from URL only when in admin.
                     if (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage')
                         this.collectionId = !this.$route.params.collectionId ? this.$route.params.collectionId : parseInt(this.$route.params.collectionId);
@@ -84,7 +84,7 @@ export default {
                                 this.$userPrefs.set(orderKey, 'DESC');
                             }
                         }
-                           
+
                         // Order By (required extra work to deal with custom metadata ordering)
                         if (this.$route.query.orderby == undefined || to.params.collectionId != from.params.collectionId) {
                             let orderByKey = (this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by');
@@ -92,23 +92,22 @@ export default {
 
                             if (orderBy) {
                                 if (orderBy.slug == 'creation_date') {
-                                 this.$route.query.orderby = 'date';
+                                    this.$route.query.orderby = 'date';
                                 } else if (orderBy.slug == 'author_name') {
-                                 this.$route.query.orderby = 'author_name';
+                                    this.$route.query.orderby = 'author_name';
                                 } else if (orderBy.metadata_type_object.primitive_type == 'float' || orderBy.metadata_type_object.primitive_type == 'int') {
-                                 this.$route.query.orderby = 'meta_value_num';
-                                 this.$route.query.meta_key = orderBy.id;
+                                    this.$route.query.orderby = 'meta_value_num';
+                                    this.$route.query.metakey = orderBy.id;
                                 } else if (orderBy.metadata_type_object.primitive_type == 'date') {
-                                 this.$route.query.orderby = 'meta_value';
-                                 this.$route.query.meta_key = orderBy.id;
-                                 this.$route.query.meta_type = 'DATETIME';
+                                    this.$route.query.orderby = 'meta_value';
+                                    this.$route.query.metakey = orderBy.id;
+                                    this.$route.query.metatype = 'DATETIME';
                                 } else if (orderBy.metadata_type_object.core) {
-                                 this.$route.query.orderby =  orderBy.metadata_type_object.related_mapped_prop;
+                                    this.$route.query.orderby =  orderBy.metadata_type_object.related_mapped_prop;
                                 } else {
-                                 this.$route.query.orderby = 'meta_value';
-                                 this.$route.query.meta_key = orderBy.id;
+                                    this.$route.query.orderby = 'meta_value';
+                                    this.$route.query.metakey = orderBy.id;
                                 }
-                                this.$route.query.orderby = orderBy.slug;
 
                             } else {
                                 this.$route.query.orderby = 'date';
