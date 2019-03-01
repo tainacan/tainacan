@@ -39,8 +39,8 @@
                     <transition-group name="item-appear">
                         <div 
                                 class="document-item"
-                                v-for="(item, index) of items"
-                                :key="index">
+                                v-for="(item) of items"
+                                :key="item.id">
                             <img 
                                 v-if="item.document!= undefined && item.document != '' && item.document_type != 'empty'"
                                 class="document-thumb"
