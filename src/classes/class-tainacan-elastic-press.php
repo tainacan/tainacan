@@ -364,7 +364,7 @@ class Elastic_Press {
 								"terms"=>array(
 									"script" => [
 										"lang" 	=> "painless",
-										"source"=> "def c= ['']; for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }} return c;"
+										"source"=> "def c= ['']; if(!params._source.terms.empty) { for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
 									]
 								)
 							)
@@ -460,7 +460,7 @@ class Elastic_Press {
 								"terms" => [
 									"script" => [
 										"lang"		=> "painless",
-										"source"	=> "def c= ['']; for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }} return c;"
+										"source"	=> "def c= ['']; if(!params._source.terms.empty) { for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
 									]
 								]
 							]
@@ -476,7 +476,7 @@ class Elastic_Press {
 								"terms" => array(
 									"script" => [
 										"lang" 	=> "painless",
-										"source"=> "def c= ['']; for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }} return c;"
+										"source"=> "def c= ['']; if(!params._source.terms.empty) { for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
 									]
 								)
 							)
