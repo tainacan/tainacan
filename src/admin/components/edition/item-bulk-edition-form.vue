@@ -84,7 +84,7 @@
                     <div 
                             class="document-item"
                             v-for="(item, index) of uploadedItems"
-                            :key="index">
+                            :key="item.id">
                         <img 
                                 v-if="item.document!= undefined && item.document != '' && item.document_type != 'empty'"
                                 class="document-thumb"
