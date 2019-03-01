@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { TextControl, IconButton, Button, Modal, Spinner, ToggleControl, Placeholder, Toolbar } = wp.components;
+const { TextControl, IconButton, Button, Modal, CheckboxControl, Spinner, ToggleControl, Placeholder, Toolbar } = wp.components;
 
 
 
@@ -179,7 +179,7 @@ registerBlockType('tainacan/terms-list', {
                 content: (
                     <ul className={'terms-list  terms-layout-' + layout}>{ selectedTermsHTML }</ul>
                 ),
-                selectedTermsHTML: selectedTermsHTML 
+                selectedTermsHTML: selectedTermsHTML
             });
         }
 
@@ -299,9 +299,21 @@ registerBlockType('tainacan/terms-list', {
             setAttributes( { isModalOpen: true, terms: [] } );
         }
 
-        function selectTerm(term) {
-            let existingTermIndex = selectedTermsObject.findIndex((existingTerm) => existingTerm.id == 'term-id-' + term.id);
+        function isTermSelected(termId) {
+            console.log(selectedTermsObject.findIndex(term => (term.id == termId) || (term.id == 'term-id-' + termId)) >= 0)
+            return selectedTermsObject.findIndex(term => (term.id == termId) || (term.id == 'term-id-' + termId)) >= 0;
+        }
 
+        function toggleSelectTerm(term, isChecked) {
+            if (isChecked)
+                selectTerm(term);
+            else
+                removeTermOfId(term.id);
+        }
+
+        function selectTerm(term) {
+            let existingTermIndex = selectedTermsObject.findIndex((existingTerm) => (existingTerm.id == 'term-id-' + term.id) || (existingTerm.id == term.id));
+   
             if (existingTermIndex < 0) {
                 let termId = isNaN(term.id) ? term.id : 'term-id-' + term.id;
                 selectedTermsObject.push({
@@ -410,31 +422,41 @@ registerBlockType('tainacan/terms-list', {
                                             <ul>
                                             {
                                                 terms.map((term) =>
-                                                    <li key={ term.id }>{ term.name }</li>
+                                                <li 
+                                                    key={ term.id }>
+                                                    <CheckboxControl
+                                                        label={ term.name }
+                                                        checked={ isTermSelected(term.id) }
+                                                        onChange={ ( isChecked ) => { toggleSelectTerm(term, isChecked) } }
+                                                    />
+                                                </li>
                                                 )
                                             }                                                
                                             </ul>
                                         )
                                         :
                                         modalTerms.length > 0 ? 
-                                        (
-                                            <ul>
-                                            {
-                                                modalTerms.map((term) =>
-                                                    <li key={ term.id }>{ term.name }</li>
-                                                )
-                                            }                                                
-                                            </ul>
+                                        (   
+                                            <div>
+                                                <ul>
+                                                {
+                                                    modalTerms.map((term) =>
+                                                        <li 
+                                                            key={ term.id }>
+                                                            <CheckboxControl
+                                                                label={ term.name }
+                                                                checked={ isTermSelected(term.id) }
+                                                                onChange={ ( isChecked ) => { toggleSelectTerm(term, isChecked) } }
+                                                            />
+                                                        </li>
+                                                    )
+                                                }                                                
+                                                </ul>
+                                                <Button isDefault onClick={ () => fetchModalTerms(modalTerms.length) }>{__('Load more', 'tainacan')}</Button>
+                                            </div>
                                         ) : null
                                         
                                     }
- 
-                                    <Button isDefault onClick={ () => setAttributes( { isModalOpen: false } ) }>
-                                        {__('Cancel', 'tainacan')}
-                                    </Button>
-                                    <Button isDefault onClick={ () => setAttributes( { isModalOpen: false } ) }>
-                                        {__('Finish', 'tainacan')}
-                                    </Button>
                                 </Modal>
                             ) }
 
