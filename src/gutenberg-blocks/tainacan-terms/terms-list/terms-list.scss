@@ -14,6 +14,9 @@
 
         .block-control-item {
             width: 100%;
+            button {
+                margin: 5px;
+            }
         }
 
         .block-control-item.disabled {
@@ -233,4 +236,48 @@
         }
     }
 
+}
+.wp-block-tainacan-terms-modal {
+    width: 50%;
+
+    @media only screen and (max-width: 1024px) {  width: 75% }
+    @media only screen and (max-width: 768px) { width: 100%; }
+
+    ul.modal-terms-list {
+        padding: 0;
+        display: -ms-grid;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 250px);
+        grid-gap: 0px;
+        justify-content: space-evenly;
+        list-style-type: none;
+        margin: 12px;
+    
+        li.modal-terms-list-item {
+            display: flex;
+            justify-content: flex-end;
+            flex-direction: row-reverse;
+
+            img {
+                max-width: 24px;
+                margin-right: 10px;
+            }
+            label {
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                display: inline-block;
+                max-width: 85%;
+            }
+        }
+    }
+    .modal-terms-footer {
+        display: flex;
+        align-items: baseline;
+        
+        p {
+            color: #555758;
+            margin-right: 12px;
+        }
+    }
 }
