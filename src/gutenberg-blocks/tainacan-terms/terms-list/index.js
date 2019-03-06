@@ -119,6 +119,10 @@ registerBlockType('tainacan/terms-list', {
         modalTerms: {
             type: Array,
             default: []
+        },
+        totalModalTerms: {
+            type: Number,
+            default: 0
         }
     },
     supports: {
@@ -140,7 +144,8 @@ registerBlockType('tainacan/terms-list', {
             showImage,
             layout,
             isModalOpen,
-            modalTerms
+            modalTerms,
+            totalModalTerms
         } = attributes;
 
         function prepareTerm(term) {
@@ -260,8 +265,16 @@ registerBlockType('tainacan/terms-list', {
             if (name != undefined && name != '')
                 endpoint += '&searchterm=' + name;
 
+            isLoadingTerms = true;
+
+            setAttributes({ 
+                isLoadingTerms: isLoadingTerms, 
+                modalTerms: modalTerms
+            });
+
             tainacan.get(endpoint)
                 .then(response => {
+                    console.log(response);
 
                     for (let term of response.data) {
                         modalTerms.push({ 
@@ -275,12 +288,13 @@ registerBlockType('tainacan/terms-list', {
                             }]
                         });
                     }
-                    console.log(modalTerms)
-                    isLoadingTerms = false; 
+                    isLoadingTerms = false;
+                    totalModalTerms = response.headers['x-wp-total']; 
 
                     setAttributes({ 
                         isLoadingTerms: isLoadingTerms, 
-                        modalTerms: modalTerms
+                        modalTerms: modalTerms,
+                        totalModalTerms: totalModalTerms
                     });
                     
                     return modalTerms;
@@ -400,178 +414,162 @@ registerBlockType('tainacan/terms-list', {
                 </div>
 
                 { isSelected ? 
-                        (
-                        <div>
-                            <Button isDefault onClick={ () => openTermsModal() }>{__('Select terms', 'tainacan')}</Button>
-                            { isModalOpen && (
-                                <Modal
-                                    title={__('Select the desired terms', 'tainacan')}
-                                    onRequestClose={ () => setAttributes( { isModalOpen: false } ) }
-                                    contentLabel={__('Select terms', 'tainacan')}>
+                    (
+                    <div>
+                        { isModalOpen && (
+                            <Modal
+                                className="wp-block-tainacan-terms-modal"
+                                title={__('Select the desired terms', 'tainacan')}
+                                onRequestClose={ () => setAttributes( { isModalOpen: false } ) }
+                                contentLabel={__('Select terms', 'tainacan')}>
 
-                                    { isLoadingTerms ? <Spinner /> : null }
-
-                                    <TextControl 
-                                        label={__('Search for a term', 'tainacan')}
-                                        value={ currentTermName }
-                                        onChange={(value) => {
-                                            setAttributes({ 
-                                                currentTermName: value
-                                            });
-                                            _.debounce(fetchTerms(value), 300);
-                                        }}/>
-                                    
-                                    {
-                                        terms.length > 0 ? 
+                                <TextControl 
+                                    label={__('Search for a term', 'tainacan')}
+                                    value={ currentTermName }
+                                    onChange={(value) => {
+                                        setAttributes({ 
+                                            currentTermName: value
+                                        });
+                                        _.debounce(fetchTerms(value), 300);
+                                    }}/>
+                                {
                                         (
-                                            <ul>
-                                            {
-                                                terms.map((term) =>
-                                                <li 
-                                                    key={ term.id }>
-                                                    <CheckboxControl
-                                                        label={ term.name }
-                                                        checked={ isTermSelected(term.id) }
-                                                        onChange={ ( isChecked ) => { toggleSelectTerm(term, isChecked) } }
-                                                    />
-                                                </li>
-                                                )
-                                            }                                                
-                                            </ul>
+                                        terms.length > 0 && currentTermName != '' ? 
+                                        (
+                                            <div>
+                                                <ul className="modal-terms-list">
+                                                {
+                                                    terms.map((term) =>
+                                                    <li 
+                                                        key={ term.id }
+                                                        className="modal-terms-list-item">
+                                                        <CheckboxControl
+                                                            label={ term.name }
+                                                            checked={ isTermSelected(term.id) }
+                                                            onChange={ ( isChecked ) => { toggleSelectTerm(term, isChecked) } }
+                                                        />
+                                                        { term.header_image && showImage ?
+                                                            <img
+                                                                aria-hidden
+                                                                src={ term.header_image && term.header_image[0] && term.header_image[0].src ? term.header_image[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
+                                                                alt={ term.header_image && term.header_image[0] ? term.header_image[0].alt : term.name }/>
+                                                            : null
+                                                        }
+                                                    </li>
+                                                    )
+                                                }                                                
+                                                </ul>
+                                                { isLoadingTerms ? <Spinner /> : null }
+                                            </div>
                                         )
                                         :
                                         modalTerms.length > 0 ? 
                                         (   
                                             <div>
-                                                <ul>
+                                                <ul className="modal-terms-list">
                                                 {
                                                     modalTerms.map((term) =>
                                                         <li 
-                                                            key={ term.id }>
+                                                            key={ term.id }
+                                                            className="modal-terms-list-item">
                                                             <CheckboxControl
                                                                 label={ term.name }
                                                                 checked={ isTermSelected(term.id) }
-                                                                onChange={ ( isChecked ) => { toggleSelectTerm(term, isChecked) } }
-                                                            />
+                                                                onChange={ ( isChecked ) => { toggleSelectTerm(term, isChecked) } } />
+                                                            { term.header_image && showImage ?
+                                                                <img
+                                                                    aria-hidden
+                                                                    src={ term.header_image && term.header_image[0] && term.header_image[0].src ? term.header_image[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
+                                                                    alt={ term.header_image && term.header_image[0] ? term.header_image[0].alt : term.name }/>
+                                                                : null
+                                                            }
                                                         </li>
                                                     )
                                                 }                                                
                                                 </ul>
-                                                <Button isDefault onClick={ () => fetchModalTerms(modalTerms.length) }>{__('Load more', 'tainacan')}</Button>
+                                                { isLoadingTerms ? <Spinner /> : null }
+                                                <div className="modal-terms-footer">
+                                                    <p>{ __('Showing', 'tainacan') + " " + modalTerms.length + " " + __('of', 'tainacan') + " " + totalModalTerms + " " + __('terms', 'tainacan') + "."}</p>
+                                                    {
+                                                        modalTerms.length < totalModalTerms ? (
+                                                        <Button 
+                                                            isDefault
+                                                            onClick={ () => fetchModalTerms(modalTerms.length) }>
+                                                            {__('Load more', 'tainacan')}
+                                                        </Button>
+                                                        ) : null
+                                                    }
+                                                </div>
                                             </div>
                                         ) : null
-                                        
-                                    }
-                                </Modal>
-                            ) }
+                                    )
+                                }
+                            </Modal>
+                        ) }
 
-                            { isLoadingTaxonomies || isLoadingTerms ? <Spinner /> : null }
+                        { isLoadingTaxonomies || isLoadingTerms ? <Spinner /> : null }
 
-                            <div className="block-control">
+                        <div className="block-control">
+                            
+                            <div className="block-control-item">
+                                <label 
+                                    className="autocomplete-label"
+                                    htmlFor="taxonomy-autocomplete">
+                                    {__('Select a taxonomy', 'tainacan')}
+                                </label>
                                 
-                                <div className="block-control-item">
-                                    <label 
+                                <Autocomplete
+                                    inputProps={{ id: 'taxonomy-autocomplete' }}
+                                    wrapperProps={{ className: 'react-autocomplete' }}
+                                    value={ taxonomyName }
+                                    items={ taxonomies }
+                                    onSelect={(value, item) => {
+                                            taxonomyId = value;
+                                            taxonomyName = item.name;
+                                            setAttributes({ taxonomyId: taxonomyId, taxonomyName: taxonomyName, taxonomies: [ item ] });
+                                        }
+                                    }
+                                    getItemValue={(taxonomy) => taxonomy.value }
+                                    onChange={(event, value) => {
+                                            taxonomyId = null;
+                                            taxonomyName = value;
+                                            setAttributes({ taxonomyId: taxonomyId, taxonomyName: taxonomyName });    
+                                            _.debounce(fetchTaxonomies(value), 300);
+                                        }
+                                    }
+                                    renderMenu={ children => (
+                                        children.length > 0 ? (
+                                        <div className="menu">
+                                            { children }
+                                        </div>
+                                        ) : <span></span>
+                                    )}
+                                    renderItem={(item, isHighlighted) => (
+                                        <div
+                                            className={`item ${isHighlighted ? 'item-highlighted' : ''}`}
+                                            key={item.value}>
+                                            {item.name}
+                                        </div>
+                                    )}/>
+                                </div>   
+                                <div className={'block-control-item' + (taxonomyId == null || taxonomyId == undefined ? ' disabled' : '')}>
+
+                                    <label
                                         className="autocomplete-label"
                                         htmlFor="taxonomy-autocomplete">
-                                        {__('Select a taxonomy', 'tainacan')}
+                                        {__('Select terms to add', 'tainacan')}
                                     </label>
-                                    
-                                    <Autocomplete
-                                        inputProps={{ id: 'taxonomy-autocomplete' }}
-                                        wrapperProps={{ className: 'react-autocomplete' }}
-                                        value={ taxonomyName }
-                                        items={ taxonomies }
-                                        onSelect={(value, item) => {
-                                                taxonomyId = value;
-                                                taxonomyName = item.name;
-                                                setAttributes({ taxonomyId: taxonomyId, taxonomyName: taxonomyName, taxonomies: [ item ] });
-                                            }
-                                        }
-                                        getItemValue={(taxonomy) => taxonomy.value }
-                                        onChange={(event, value) => {
-                                                taxonomyId = null;
-                                                taxonomyName = value;
-                                                setAttributes({ taxonomyId: taxonomyId, taxonomyName: taxonomyName });    
-                                               _.debounce(fetchTaxonomies(value), 300);
-                                            }
-                                        }
-                                        renderMenu={ children => (
-                                            children.length > 0 ? (
-                                            <div className="menu">
-                                                { children }
-                                            </div>
-                                            ) : <span></span>
-                                        )}
-                                        renderItem={(item, isHighlighted) => (
-                                            <div
-                                                className={`item ${isHighlighted ? 'item-highlighted' : ''}`}
-                                                key={item.value}>
-                                                {item.name}
-                                            </div>
-                                        )}/>
-                                    </div>   
-                                    <div className={'block-control-item' + (taxonomyId == null || taxonomyId == undefined ? ' disabled' : '')}>
-
-                                        <label
-                                            className="autocomplete-label"
-                                            htmlFor="taxonomy-autocomplete">
-                                            {__('Select a term to add', 'tainacan')}
-                                        </label>
-                                        
-                                        <Autocomplete
-                                            autoHighlight={true}
-                                            inputProps={{ 
-                                                id: 'term-autocomplete', 
-                                                disabled: taxonomyId == null || taxonomyId == undefined
-                                            }}
-                                            wrapperProps={{ className: 'react-autocomplete' }}
-                                            value={ currentTermName }
-                                            items={ terms }
-                                            onSelect={(value, item) => {
-                                                    currentTermName = '';
-                                                    setAttributes({ currentTermName: currentTermName });
-                                                    selectTerm(item);
-                                                }
-                                            }
-                                            shouldItemRender={(item) => {
-                                                let existingTermIndex = selectedTermsObject.findIndex((existingTerm) => ((existingTerm.id == 'term-id-' + item.id) || (existingTerm.id == item.id)));
-                                                return existingTermIndex < 0;
-                                            }}
-                                            getItemValue={(term) => term.value }
-                                            onChange={(event, value) => {   
-
-                                                    currentTermName = value;
-                                                    isLoadingTerms = true;
-                                                    terms = [];
-                                        
-                                                    setAttributes({ 
-                                                        isLoadingTerms: isLoadingTerms, 
-                                                        terms: terms,
-                                                        currentTermName: currentTermName 
-                                                    });
-                                                    _.debounce(fetchTerms(value), 300);
-                                                }
-                                            }
-                                            renderMenu={ children => (
-                                                children.length > 0 ? (
-                                                <div 
-                                                    className="menu">
-                                                    { children }
-                                                </div>
-                                                ) : <span></span>
-                                            )}
-                                            renderItem={(item, isHighlighted) => (
-                                                <div
-                                                    className={`item ${isHighlighted ? 'item-highlighted' : ''}`}
-                                                    key={ item.id }>
-                                                    { item.name }
-                                                </div>
-                                            )}/>
-                                    </div>       
-                            </div>
-                            <hr/>
+                                    <Button
+                                        disabled={ taxonomyId == null || taxonomyId == undefined }
+                                        isPrimary
+                                        onClick={ () => openTermsModal() }>
+                                        {__('Select terms', 'tainacan')}
+                                    </Button>
+                                </div>       
                         </div>
-                        ) : null
+                        <hr/>
+                    </div>
+                    ) : null
                 }
 
                 { !selectedTermsHTML.length ? (
