@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { TextControl, IconButton, Button, Modal, CheckboxControl, Spinner, ToggleControl, Placeholder, Toolbar } = wp.components;
+const { TextControl, IconButton, Button, Modal, CheckboxControl, RadioControl, Spinner, ToggleControl, Placeholder, Toolbar } = wp.components;
 
 
 
@@ -100,7 +100,7 @@ registerBlockType('tainacan/terms-list', {
             type: Array,
             default: []
         },
-        currentTermName: {
+        searchTermName: {
             type: String,
             default: ''
         },
@@ -123,7 +123,19 @@ registerBlockType('tainacan/terms-list', {
         totalModalTerms: {
             type: Number,
             default: 0
-        }
+        },
+        modalTaxonomies: {
+            type: Array,
+            default: []
+        },
+        totalModalTaxonomies: {
+            type: Number,
+            default: 0
+        },
+        searchTaxonomyName: {
+            type: String,
+            default: ''
+        },
     },
     supports: {
         align: ['full', 'left', 'right', 'wide'],
@@ -135,12 +147,15 @@ registerBlockType('tainacan/terms-list', {
             selectedTermsHTML, 
             terms, 
             content, 
-            currentTermName, 
+            searchTermName, 
             taxonomyId, 
             taxonomyName, 
             isLoadingTerms, 
             isLoadingTaxonomies, 
-            taxonomies, 
+            taxonomies,
+            modalTaxonomies,
+            totalModalTaxonomies, 
+            searchTaxonomyName, 
             showImage,
             layout,
             isModalOpen,
@@ -170,6 +185,173 @@ registerBlockType('tainacan/terms-list', {
                         { term.name ? term.name : '' }
                     </a>
                 </li>
+            );
+        }
+
+        function renderTaxonomyModalContent() {
+            return (
+                <div>
+                    <TextControl 
+                            label={__('Search for a taxonomy', 'tainacan')}
+                            value={ searchTaxonomyName }
+                            onChange={(value) => {
+                                setAttributes({ 
+                                    searchTaxonomyName: value
+                                });
+                                _.debounce(fetchTaxonomies(value), 300);
+                            }}/>
+                    {(
+                    taxonomies.length > 0 && searchTaxonomyName != '' ? 
+                    (
+                        <div>
+                            <ul className="modal-terms-list">
+                            {
+                                taxonomies.map((taxonomy) =>
+                                <li 
+                                    key={ taxonomy.id }
+                                    className="modal-terms-list-item">
+                                    <RadioControl
+                                        label={ taxonomy.name }
+                                        selected={ isTaxonomySelected(taxonomy.id) }
+                                        onChange={ ( isChecked ) => { toggleSelectTaxonomy(taxonomy, isChecked) } }
+                                    />
+                                </li>
+                                )
+                            }                                                
+                            </ul>
+                            { isLoadingTaxonomies ? <Spinner /> : null }
+                        </div>
+                    )
+                    :
+                    modalTaxonomies.length > 0 ? 
+                    (   
+                        <div>
+                            <ul className="modal-terms-list">
+                            {
+                                modalTaxonomies.map((taxonomy) =>
+                                    <li 
+                                        key={ taxonomy.id }
+                                        className="modal-terms-list-item">
+                                        {<RadioControl
+                                            label={ taxonomy.name }
+                                            selected={ isTaxonomySelected(taxonomy.id) }
+                                            onChange={ ( isChecked ) => { 
+                                                // toggleSelectTaxonomy(term, isChecked)
+                                                console.log(isChecked)
+                                            } } />
+                                        }
+                                    </li>
+                                )
+                            }                                                
+                            </ul>
+                            { isLoadingTaxonomies ? <Spinner /> : null }
+                            <div className="modal-terms-footer">
+                                <p>{ __('Showing', 'tainacan') + " " + modalTaxonomies.length + " " + __('of', 'tainacan') + " " + totalModalTaxonomies + " " + __('taxonomies', 'tainacan') + "."}</p>
+                                {
+                                    modalTaxonomies.length < totalModalTaxonomies ? (
+                                    <Button 
+                                        isDefault
+                                        onClick={ () => fetchModalTaxonomies(modalTaxonomies.length) }>
+                                        {__('Load more', 'tainacan')}
+                                    </Button>
+                                    ) : null
+                                }
+                            </div>
+                        </div>
+                    ) : null
+                )}
+            </div>
+            );
+        }
+
+        function renderTermsModalContent() {
+            return (
+                <div>
+                    <TextControl 
+                            label={__('Search for a term', 'tainacan')}
+                            value={ searchTermName }
+                            onChange={(value) => {
+                                setAttributes({ 
+                                    searchTermName: value
+                                });
+                                _.debounce(fetchTerms(value), 300);
+                            }}/>
+                    {(
+                    terms.length > 0 && searchTermName != '' ? 
+                    (
+                        <div>
+                            <ul className="modal-terms-list">
+                            {
+                                terms.map((term) =>
+                                <li 
+                                    key={ term.id }
+                                    className="modal-terms-list-item">
+                                    <CheckboxControl
+                                        label={ term.name }
+                                        checked={ isTermSelected(term.id) }
+                                        onChange={ ( isChecked ) => { toggleSelectTerm(term, isChecked) } }
+                                    />
+                                    { term.header_image && showImage ?
+                                        <img
+                                            aria-hidden
+                                            src={ term.header_image && term.header_image[0] && term.header_image[0].src ? term.header_image[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
+                                            alt={ term.header_image && term.header_image[0] ? term.header_image[0].alt : term.name }/>
+                                        : null
+                                    }
+                                </li>
+                                )
+                            }                                                
+                            </ul>
+                            { isLoadingTerms ? <Spinner /> : null }
+                        </div>
+                    )
+                    :
+                    modalTerms.length > 0 ? 
+                    (   
+                        <div>
+                            <ul className="modal-terms-list">
+                            {
+                                modalTerms.map((term) =>
+                                    <li 
+                                        key={ term.id }
+                                        className="modal-terms-list-item">
+                                        <CheckboxControl
+                                            label={ term.name }
+                                            checked={ isTermSelected(term.id) }
+                                            onChange={ ( isChecked ) => { toggleSelectTerm(term, isChecked) } } />
+                                        { term.header_image && showImage ?
+                                            <img
+                                                aria-hidden
+                                                src={ term.header_image && term.header_image[0] && term.header_image[0].src ? term.header_image[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
+                                                alt={ term.header_image && term.header_image[0] ? term.header_image[0].alt : term.name }/>
+                                            : null
+                                        }
+                                    </li>
+                                )
+                            }                                                
+                            </ul>
+                            { isLoadingTerms ? <Spinner /> : null }
+                            <div className="modal-terms-footer">
+                                <p>{ __('Showing', 'tainacan') + " " + modalTerms.length + " " + __('of', 'tainacan') + " " + totalModalTerms + " " + __('terms', 'tainacan') + "."}</p>
+                                {
+                                    modalTerms.length < totalModalTerms ? (
+                                    <Button 
+                                        isDefault
+                                        onClick={ () => fetchModalTerms(modalTerms.length) }>
+                                        {__('Load more', 'tainacan')}
+                                    </Button>
+                                    ) : null
+                                }
+                                <Button
+                                    isPrimary
+                                    onClick={ () => resetTaxonomies() }>
+                                    {__('Switch taxonomy', 'tainacan')}
+                                </Button>
+                            </div>
+                        </div>
+                    ) : null
+                )}
+            </div>
             );
         }
 
@@ -220,6 +402,46 @@ registerBlockType('tainacan/terms-list', {
                 });
         }
 
+        function fetchModalTaxonomies(page) {
+
+            if (page <= 1)
+                modalTaxonomies = [];
+
+            let endpoint = '/taxonomies/?perpage=12&paged=' + page;
+
+            isLoadingTaxonomies = true;
+
+            setAttributes({ 
+                isLoadingTaxonomies: isLoadingTaxonomies, 
+                modalTaxonomies: modalTaxonomies
+            });
+
+            tainacan.get(endpoint)
+                .then(response => {
+
+                    for (let taxonomy of response.data) {
+                        modalTaxonomies.push({ 
+                            name: taxonomy.name, 
+                            id: taxonomy.id
+                        });
+                    }
+                    console.log(modalTaxonomies)
+                    isLoadingTaxonomies = false;
+                    totalModalTaxonomies = response.headers['x-wp-total']; 
+
+                    setAttributes({ 
+                        isLoadingTaxonomies: isLoadingTaxonomies, 
+                        modalTaxonomies: modalTaxonomies,
+                        totalModalTaxonomies: totalModalTaxonomies
+                    });
+                    
+                    return modalTaxonomies;
+                })
+                .catch(error => {
+                    console.log('Error trying to fetch taxonomies: ' + error);
+                });
+        }
+
         function fetchTerms(name) {
 
             let endpoint = '/taxonomy/'+ taxonomyId + '/terms/?number=12';
@@ -262,9 +484,6 @@ registerBlockType('tainacan/terms-list', {
 
             let endpoint = '/taxonomy/'+ taxonomyId + '/terms/?number=12&offset=' + offset;
 
-            if (name != undefined && name != '')
-                endpoint += '&searchterm=' + name;
-
             isLoadingTerms = true;
 
             setAttributes({ 
@@ -274,7 +493,6 @@ registerBlockType('tainacan/terms-list', {
 
             tainacan.get(endpoint)
                 .then(response => {
-                    console.log(response);
 
                     for (let term of response.data) {
                         modalTerms.push({ 
@@ -314,8 +532,21 @@ registerBlockType('tainacan/terms-list', {
                 });
         }
 
+        function resetTaxonomies() {
+            taxonomyId = null; 
+            
+            setAttributes({ 
+                taxonomyId: taxonomyId,
+            });
+            fetchModalTaxonomies(1); 
+        }
+
         function openTermsModal() {
-            fetchModalTerms(0);
+            if (taxonomyId != null && taxonomyId != undefined)
+                fetchModalTerms(0);
+            else
+                fetchModalTaxonomies(1)
+
             setAttributes( { isModalOpen: true, terms: [] } );
         }
 
@@ -328,6 +559,23 @@ registerBlockType('tainacan/terms-list', {
                 selectTerm(term);
             else
                 removeTermOfId(term.id);
+        }
+
+        function isTaxonomySelected(aTaxonomyId) {
+            return aTaxonomyId == taxonomyId;
+        }
+
+        function toggleSelectTaxonomy(taxonomy, isChecked) {
+            if (isChecked) {
+                taxonomyId = taxonomy.id;
+                taxonomyName = taxonomy.name;
+
+                setAttributes({
+                    taxonomyId: taxonomyId,
+                    taxonomyName: taxonomyName
+                });
+                setContent();
+            }
         }
 
         function selectTerm(term) {
@@ -422,95 +670,16 @@ registerBlockType('tainacan/terms-list', {
                                 title={__('Select the desired terms', 'tainacan')}
                                 onRequestClose={ () => setAttributes( { isModalOpen: false } ) }
                                 contentLabel={__('Select terms', 'tainacan')}>
-
-                                <TextControl 
-                                    label={__('Search for a term', 'tainacan')}
-                                    value={ currentTermName }
-                                    onChange={(value) => {
-                                        setAttributes({ 
-                                            currentTermName: value
-                                        });
-                                        _.debounce(fetchTerms(value), 300);
-                                    }}/>
-                                {
-                                        (
-                                        terms.length > 0 && currentTermName != '' ? 
-                                        (
-                                            <div>
-                                                <ul className="modal-terms-list">
-                                                {
-                                                    terms.map((term) =>
-                                                    <li 
-                                                        key={ term.id }
-                                                        className="modal-terms-list-item">
-                                                        <CheckboxControl
-                                                            label={ term.name }
-                                                            checked={ isTermSelected(term.id) }
-                                                            onChange={ ( isChecked ) => { toggleSelectTerm(term, isChecked) } }
-                                                        />
-                                                        { term.header_image && showImage ?
-                                                            <img
-                                                                aria-hidden
-                                                                src={ term.header_image && term.header_image[0] && term.header_image[0].src ? term.header_image[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
-                                                                alt={ term.header_image && term.header_image[0] ? term.header_image[0].alt : term.name }/>
-                                                            : null
-                                                        }
-                                                    </li>
-                                                    )
-                                                }                                                
-                                                </ul>
-                                                { isLoadingTerms ? <Spinner /> : null }
-                                            </div>
-                                        )
-                                        :
-                                        modalTerms.length > 0 ? 
-                                        (   
-                                            <div>
-                                                <ul className="modal-terms-list">
-                                                {
-                                                    modalTerms.map((term) =>
-                                                        <li 
-                                                            key={ term.id }
-                                                            className="modal-terms-list-item">
-                                                            <CheckboxControl
-                                                                label={ term.name }
-                                                                checked={ isTermSelected(term.id) }
-                                                                onChange={ ( isChecked ) => { toggleSelectTerm(term, isChecked) } } />
-                                                            { term.header_image && showImage ?
-                                                                <img
-                                                                    aria-hidden
-                                                                    src={ term.header_image && term.header_image[0] && term.header_image[0].src ? term.header_image[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
-                                                                    alt={ term.header_image && term.header_image[0] ? term.header_image[0].alt : term.name }/>
-                                                                : null
-                                                            }
-                                                        </li>
-                                                    )
-                                                }                                                
-                                                </ul>
-                                                { isLoadingTerms ? <Spinner /> : null }
-                                                <div className="modal-terms-footer">
-                                                    <p>{ __('Showing', 'tainacan') + " " + modalTerms.length + " " + __('of', 'tainacan') + " " + totalModalTerms + " " + __('terms', 'tainacan') + "."}</p>
-                                                    {
-                                                        modalTerms.length < totalModalTerms ? (
-                                                        <Button 
-                                                            isDefault
-                                                            onClick={ () => fetchModalTerms(modalTerms.length) }>
-                                                            {__('Load more', 'tainacan')}
-                                                        </Button>
-                                                        ) : null
-                                                    }
-                                                </div>
-                                            </div>
-                                        ) : null
-                                    )
-                                }
+                            
+                                { taxonomyId != null && taxonomyId != undefined ? renderTermsModalContent() : renderTaxonomyModalContent() }
+                                
                             </Modal>
                         ) }
 
                         { isLoadingTaxonomies || isLoadingTerms ? <Spinner /> : null }
 
                         <div className="block-control">
-                            
+{/*                             
                             <div className="block-control-item">
                                 <label 
                                     className="autocomplete-label"
@@ -551,8 +720,8 @@ registerBlockType('tainacan/terms-list', {
                                             {item.name}
                                         </div>
                                     )}/>
-                                </div>   
-                                <div className={'block-control-item' + (taxonomyId == null || taxonomyId == undefined ? ' disabled' : '')}>
+                                </div>    */}
+                                <div className="block-control-item">
 
                                     <label
                                         className="autocomplete-label"
@@ -560,7 +729,6 @@ registerBlockType('tainacan/terms-list', {
                                         {__('Select terms to add', 'tainacan')}
                                     </label>
                                     <Button
-                                        disabled={ taxonomyId == null || taxonomyId == undefined }
                                         isPrimary
                                         onClick={ () => openTermsModal() }>
                                         {__('Select terms', 'tainacan')}
