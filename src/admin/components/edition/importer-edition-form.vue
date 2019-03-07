@@ -4,7 +4,7 @@
         <tainacan-title 
                 :bread-crumb-items="[
                     { path: $routerHelper.getAvailableImportersPath(), label: $i18n.get('importers') },
-                    { path: '', label: importerType != undefined ? importerType : $i18n.get('title_importer_page') }
+                    { path: '', label: importerType != undefined ? (importerName != undefined ? importerName :importerType) : $i18n.get('title_importer_page') }
                 ]"/>
         <form   
                 @click="formErrorMessage = ''"
@@ -186,6 +186,7 @@ export default {
             },
             importerTypes: [],
             importerType: '',
+            importerName: '',
             importerFile: null,
             importerSourceInfo: null,
             collections: [],
@@ -196,7 +197,7 @@ export default {
     },
     methods: {
         ...mapActions('importer', [
-            'fetchImporterTypes',
+            'fetchAvailableImporters',
             'fetchImporter',
             'sendImporter',
             'updateImporter',
@@ -401,6 +402,12 @@ export default {
         if (this.collectionId != undefined) {
             this.onSelectCollection(this.collectionId);
         }
+
+        // Set importer's name
+        this.fetchAvailableImporters().then((importerTypes) => {
+           if (importerTypes[this.importerType]) 
+            this.importerName = importerTypes[this.importerType].name;
+        });
 
         if (this.sessionId != undefined)
             this.loadImporter();

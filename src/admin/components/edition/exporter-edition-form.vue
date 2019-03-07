@@ -3,7 +3,7 @@
         <tainacan-title
                 :bread-crumb-items="[
                     { path: $routerHelper.getAvailableExportersPath(), label: $i18n.get('exporters') },
-                    { path: '', label: exporterType != undefined ? exporterType : $i18n.get('title_exporter_page') }
+                    { path: '', label: exporterType != undefined ? (exporterName != undefined ? exporterName : exporterType) : $i18n.get('title_exporter_page') }
                 ]"/>
         <b-loading
                 :active.sync="isLoading"
@@ -119,6 +119,7 @@
         data(){
             return {
                 exporterType: '',
+                exporterName: '',
                 collections: [],
                 adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#', 
                 isFetchingCollections: false,
@@ -133,6 +134,7 @@
         },
         methods: {
             ...mapActions('exporter', [
+                'fetchAvailableExporters',
                 'createExporterSession',
                 'updateExporterSession',
                 'runExporterSession'
@@ -238,6 +240,13 @@
                     this.isFetchingCollections = false;
                     this.$console.error(error);
                 });
+
+
+        // Set exporter's name
+        this.fetchAvailableExporters().then((exporterTypes) => {
+           if (exporterTypes[this.exporterType]) 
+                this.exporterName = exporterTypes[this.exporterType].name;
+            });
         }
     }
 </script>

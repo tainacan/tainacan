@@ -1,6 +1,7 @@
 <template>
     <b-field class="filter-item-forms">
         <b-collapse
+                aria-id="collection-filters-collapse"
                 class="show"
                 :open="open"
                 animation="filter-item">

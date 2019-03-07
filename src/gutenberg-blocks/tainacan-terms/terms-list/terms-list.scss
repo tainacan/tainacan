@@ -1,0 +1,236 @@
+.wp-block-tainacan-terms-list {
+    margin: 1rem 0px;
+
+    // Spinner
+    .components-spinner {
+        position: absolute;
+        right: 0;
+    }
+
+    // Control region ----------------------------------------------------
+    .block-control {
+        display: flex;
+        flex-direction: row;
+
+        .block-control-item {
+            width: 100%;
+        }
+
+        .block-control-item.disabled {
+            cursor: none;
+            label.autocomplete-label {
+                color: #cbcbcb;
+            }
+            input {
+                background-color: #f2f2f2;
+            }
+        }
+    }
+
+    // Autocomplete ----------------------------------------------------
+    label.autocomplete-label {
+        display: block;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .react-autocomplete {
+        margin: 0 12px 12px 0;
+        position: relative;
+        display: inline-block;
+
+        input {
+            margin: 4px 12px 0px 0px;
+            border: 1px solid #dbdbdb;
+            padding: 4px 10px;
+            width: 100%;
+
+            &:focus, &:active {
+                border: 1px solid #555758;
+            }
+        }
+        .menu {
+            position: absolute;
+            background-color: white;
+            width: 100%;
+            padding: 0;
+            border: 1px solid #cbcbcb;
+            z-index: 999;
+            height: auto;
+            transition: height ease 0.2s, display ease 0.2s, visibility ease 0.2s;
+
+            .item {
+                padding: 4px 12px;
+                font-size: 14px;
+            }
+            .item.item-highlighted {
+                background-color: #e6f6f8;
+            }
+        }
+    }
+
+    // Grid View Mode ----------------------------------------------------
+    ul.terms-list.terms-layout-grid,
+    ul.terms-list-edit.terms-layout-grid {
+        padding: 0;
+        display: -ms-grid;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 220px);
+        grid-gap: 0px;
+        justify-content: space-evenly;
+        list-style-type: none;
+
+        li.term-list-item {
+            position: relative;
+            display: block;
+            margin: 12px 12px 24px 12px;
+            margin-bottom: 12px;
+            width: 185px;
+
+            a { 
+                color: #454647; 
+                font-weight: bold;
+            }
+
+            img {
+                height: auto;
+                width: 185px;
+                min-width: 185px;
+                padding: 0px;
+                margin-bottom: 10px;
+            }
+
+            &:hover a { 
+                color: #454647; 
+                text-decoration: none;
+            }
+        }
+    }
+    ul.terms-list-edit li.term-list-item {
+        display: flex;
+        align-items: flex-start;
+
+        button {
+            position: absolute !important;
+            background-color: rgba(255, 255, 255, 0.75);
+            color: #454647;
+            padding: 2px;
+            margin-left: 5px;
+            min-width: 14px;
+            visibility: hidden;
+            position: relative;
+            opacity: 0;
+            right: -12px;
+            justify-content: center;
+        }
+
+        &:hover button {
+            visibility: visible;
+            opacity: 1;
+            right: 0px;
+            transition: opacity linear 0.15s, right linear 0.15s;
+        }
+    }
+    @media only screen and (max-width: 498px) { 
+        
+        ul.terms-list.terms-layout-grid,
+        ul.terms-list-edit.terms-layout-grid {
+            grid-template-columns: repeat(auto-fill, 100%);
+
+            li.term-list-item { 
+                width: 100%;
+                img { width: 100%; }
+            }
+        }
+    }
+
+    // List View Mode ----------------------------------------------------
+    ul.terms-list.terms-layout-list,
+    ul.terms-list-edit.terms-layout-list {
+        padding: 0;
+        display: block;
+        list-style-type: none;
+
+        li.term-list-item {
+            position: relative;
+            display: inline-block;
+            margin: 12px 12px 24px 12px;
+            margin-bottom: 12px;
+            min-height: 54px;
+            min-width: 22%;
+            width: 22%;
+
+            a { 
+                color: #454647; 
+                // overflow: hidden;
+                // text-overflow: ellipsis;
+                // white-space: nowrap;
+                display: flex;
+                align-items: center;
+                height: 54px;
+            }
+
+            img {
+                height: auto;
+                width: 54px;
+                min-width: 54px;
+                padding: 0px;
+                margin-right: 20px;
+            }
+
+            &:hover a { 
+                color: #454647; 
+                text-decoration: none;
+            }
+        }
+    }
+    ul.terms-list-edit li.term-list-item {
+
+        button {
+            position: absolute !important;
+            background-color: rgba(255, 255, 255, 0.75);
+            color: #454647;
+            padding: 2px;
+            margin-left: 5px;
+            min-width: 14px;
+            visibility: hidden;
+            position: relative;
+            opacity: 0;
+            right: -12px;
+            justify-content: center;
+        }
+
+        &:hover button {
+            visibility: visible;
+            opacity: 1;
+            right: 0px;
+            transition: opacity linear 0.15s, right linear 0.15s;
+        }
+    }
+
+
+    @media only screen and (max-width: 1600px) {  
+        ul.terms-list.terms-layout-list li.term-list-item,
+        ul.terms-list-edit.terms-layout-list li.term-list-item  {        
+            min-width: 30%;
+            width: 30%;
+        }
+    }
+
+    @media only screen and (max-width: 1024px) {  
+        ul.terms-list.terms-layout-list li.term-list-item,
+        ul.terms-list-edit.terms-layout-list li.term-list-item  {        
+            min-width: 45%;
+            width: 45%;
+        }
+    }
+
+    @media only screen and (max-width: 768px) {  
+        ul.terms-list.terms-layout-list li.term-list-item,
+        ul.terms-list-edit.terms-layout-list li.term-list-item {       
+            min-width: 100%;
+            width: 100%;
+        }
+    }
+
+}

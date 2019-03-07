@@ -412,7 +412,7 @@
                     promise = this.getValuesRelationship( this.optionName, this.isRepositoryLevel, [], offset, this.maxNumOptionsCheckboxList, true);
                 else
                     promise = this.getValuesPlainText( this.metadatum_id, this.optionName, this.isRepositoryLevel, [], offset, this.maxNumOptionsCheckboxList, true);
-
+                
                 promise.request
                     .then(() => {
                         this.isCheckboxListLoading = false;
@@ -449,7 +449,7 @@
 
                     axios.get(route)
                         .then((res) => {
-                            this.searchResults = res.data;
+                            this.searchResults = res.data.values;
                             this.isSearchingLoading = false;
                         }).catch((error) => {
                         this.$console.log(error);
@@ -514,7 +514,7 @@
                 }
             },
             createColumn(res, column) {
-                let children = res.data;
+                let children = res.data.values;
 
                 this.totalRemaining = Object.assign({}, this.totalRemaining, {
                     [`${column == undefined ? 0 : column+1}`]: {
@@ -553,9 +553,8 @@
 
                 let parent = 0;
 
-                if (option) {
+                if (option)
                     parent = option.value;
-                }
 
                 let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=0&` + qs.stringify(query_items);
 
@@ -605,7 +604,7 @@
 
                     axios.get(route)
                         .then(res => {
-                            this.appendMore(res.data, key);
+                            this.appendMore(res.data.values, key);
 
                             this.isColumnLoading = false;
                         })

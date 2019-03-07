@@ -82,7 +82,9 @@
                     v-if="metadatum.value_as_html != undefined && metadatum.value_as_html != ''"
                     :key="index"
                     class="field">
-                <b-collapse :open="!collapseAll">
+                <b-collapse 
+                        aria-id="metadata-collapse-for-slideshow"
+                        :open="!collapseAll">
                     <label
                             class="label has-text-white"
                             slot="trigger"

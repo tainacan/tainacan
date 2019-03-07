@@ -41,7 +41,8 @@
                     :label="$i18n.get('label_go_to_page')"> 
                 <b-dropdown 
                         position="is-top-right"
-                        @change="onPageChange">
+                        @change="onPageChange"
+                        aria-role="list">
                     <button
                             aria-labelledby="go-to-page-dropdown"
                             class="button is-white"
@@ -56,7 +57,8 @@
                             role="button" 
                             :key="pageNumber"
                             v-for="pageNumber in totalPages"
-                            :value="Number(pageNumber)">
+                            :value="Number(pageNumber)"
+                            aria-role="listitem">
                         {{ pageNumber }}
                     </b-dropdown-item>
                 </b-dropdown>
