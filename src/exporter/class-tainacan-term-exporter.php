@@ -99,7 +99,7 @@ class Term_Exporter extends Exporter {
         </div>
 
         <div class="field export_term_csv_taxonomies">
-            <label class="label"><?php _e('Target taxonomy:', 'tainacan'); ?></label>
+            <label class="label"><?php _e('Source Taxonomy:', 'tainacan'); ?></label>
             <span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
@@ -108,11 +108,10 @@ class Term_Exporter extends Exporter {
 					</a>
 					<div class="help-tooltip">
 						<div class="help-tooltip-header">
-							<h5><?php _e('Existing Taxonomy', 'tainacan'); ?></h5>
+							<h5><?php _e('Source Taxonomy', 'tainacan'); ?></h5>
 						</div>
 						<div class="help-tooltip-body">
-							<p><?php _e('Inform the taxonomy you want to export the terms', 'tainacan'); ?></p>
-							<p><?php _e('Select a taxonomy.', 'tainacan'); ?></p>
+							<p><?php _e('Inform the taxonomy you want to export the terms from.', 'tainacan'); ?></p>
 						</div>
 					</div>
 				</span>

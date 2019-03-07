@@ -31,7 +31,8 @@
                         position="is-bottom-left"
                         v-if="items.length > 0 && items[0].current_user_can_edit"
                         :disabled="selectedItemsIDs.every(id => id === false) || this.selectedItemsIDs.filter(item => item !== false).length <= 1"
-                        id="bulk-actions-dropdown">
+                        id="bulk-actions-dropdown"
+                        aria-role="list">
                     <button
                             class="button is-white"
                             slot="trigger">
@@ -43,23 +44,27 @@
 
                     <b-dropdown-item
                             v-if="$route.params.collectionId && $userCaps.hasCapability('edit_others_posts') && !isOnTrash"
-                            @click="openBulkEditionModal()">
+                            @click="openBulkEditionModal()"
+                            aria-role="listitem">
                         {{ $i18n.get('label_bulk_edit_selected_items') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="$route.params.collectionId && $userCaps.hasCapability('edit_others_posts') && !isOnTrash"
-                            @click="sequenceEditSelectedItems()">
+                            @click="sequenceEditSelectedItems()"
+                            aria-role="listitem">
                         {{ $i18n.get('label_sequence_edit_selected_items') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="collectionId"
                             @click="deleteSelectedItems()"
-                            id="item-delete-selected-items">
+                            id="item-delete-selected-items"
+                            aria-role="listitem">
                         {{ isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('label_send_to_trash') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="collectionId && isOnTrash"
-                            @click="untrashSelectedItems()">
+                            @click="untrashSelectedItems()"
+                            aria-role="listitem">
                         {{ $i18n.get('label_untrash_selected_items') }}
                     </b-dropdown-item>
                 </b-dropdown>

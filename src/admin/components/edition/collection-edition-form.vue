@@ -173,7 +173,8 @@
                                     class="two-columns-dropdown"
                                     ref="enabledViewModesDropdown"
                                     :mobile-modal="true"
-                                    :disabled="Object.keys(registeredViewModes).length < 0">
+                                    :disabled="Object.keys(registeredViewModes).length < 0"
+                                    aria-role="list">
                                 <button
                                         class="button is-white"
                                         slot="trigger"
@@ -188,7 +189,8 @@
                                         v-for="(viewMode, index) in Object.keys(registeredViewModes)"
                                         :key="index"
                                         class="control"
-                                        custom>
+                                        custom
+                                        aria-role="listitem">
                                     <b-checkbox
                                             v-if="registeredViewModes[viewMode] != undefined"
                                             @input="updateViewModeslist(viewMode)"
@@ -694,10 +696,10 @@ export default {
                 // Generates options for parent collection
                 this.isFetchingCollections = true;
                 this.fetchCollectionsForParent()
-                .then((collections) => {
-                    this.collections = collections;
-                    this.isFetchingCollections = false;
-                })
+                    .then((collections) => {
+                        this.collections = collections;
+                        this.isFetchingCollections = false;
+                    })
                 .catch((error) => {
                     this.$console.error(error);
                     this.isFetchingCollections = false;

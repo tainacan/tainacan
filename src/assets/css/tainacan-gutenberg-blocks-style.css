@@ -1,3 +1,171 @@
-
+.wp-block-tainacan-terms-list {
+  margin: 1rem 0px; }
+  .wp-block-tainacan-terms-list .components-spinner {
+    position: absolute;
+    right: 0; }
+  .wp-block-tainacan-terms-list .block-control {
+    display: flex;
+    flex-direction: row; }
+    .wp-block-tainacan-terms-list .block-control .block-control-item {
+      width: 100%; }
+    .wp-block-tainacan-terms-list .block-control .block-control-item.disabled {
+      cursor: none; }
+      .wp-block-tainacan-terms-list .block-control .block-control-item.disabled label.autocomplete-label {
+        color: #cbcbcb; }
+      .wp-block-tainacan-terms-list .block-control .block-control-item.disabled input {
+        background-color: #f2f2f2; }
+  .wp-block-tainacan-terms-list label.autocomplete-label {
+    display: block;
+    font-weight: 600;
+    font-size: 14px; }
+  .wp-block-tainacan-terms-list .react-autocomplete {
+    margin: 0 12px 12px 0;
+    position: relative;
+    display: inline-block; }
+    .wp-block-tainacan-terms-list .react-autocomplete input {
+      margin: 4px 12px 0px 0px;
+      border: 1px solid #dbdbdb;
+      padding: 4px 10px;
+      width: 100%; }
+      .wp-block-tainacan-terms-list .react-autocomplete input:focus, .wp-block-tainacan-terms-list .react-autocomplete input:active {
+        border: 1px solid #555758; }
+    .wp-block-tainacan-terms-list .react-autocomplete .menu {
+      position: absolute;
+      background-color: white;
+      width: 100%;
+      padding: 0;
+      border: 1px solid #cbcbcb;
+      z-index: 999;
+      height: auto;
+      transition: height ease 0.2s, display ease 0.2s, visibility ease 0.2s; }
+      .wp-block-tainacan-terms-list .react-autocomplete .menu .item {
+        padding: 4px 12px;
+        font-size: 14px; }
+      .wp-block-tainacan-terms-list .react-autocomplete .menu .item.item-highlighted {
+        background-color: #e6f6f8; }
+  .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid,
+  .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid {
+    padding: 0;
+    display: -ms-grid;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 220px);
+    grid-gap: 0px;
+    justify-content: space-evenly;
+    list-style-type: none; }
+    .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid li.term-list-item,
+    .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid li.term-list-item {
+      position: relative;
+      display: block;
+      margin: 12px 12px 24px 12px;
+      margin-bottom: 12px;
+      width: 185px; }
+      .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid li.term-list-item a,
+      .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid li.term-list-item a {
+        color: #454647;
+        font-weight: bold; }
+      .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid li.term-list-item img,
+      .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid li.term-list-item img {
+        height: auto;
+        width: 185px;
+        min-width: 185px;
+        padding: 0px;
+        margin-bottom: 10px; }
+      .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid li.term-list-item:hover a,
+      .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid li.term-list-item:hover a {
+        color: #454647;
+        text-decoration: none; }
+  .wp-block-tainacan-terms-list ul.terms-list-edit li.term-list-item {
+    display: flex;
+    align-items: flex-start; }
+    .wp-block-tainacan-terms-list ul.terms-list-edit li.term-list-item button {
+      position: absolute !important;
+      background-color: rgba(255, 255, 255, 0.75);
+      color: #454647;
+      padding: 2px;
+      margin-left: 5px;
+      min-width: 14px;
+      visibility: hidden;
+      position: relative;
+      opacity: 0;
+      right: -12px;
+      justify-content: center; }
+    .wp-block-tainacan-terms-list ul.terms-list-edit li.term-list-item:hover button {
+      visibility: visible;
+      opacity: 1;
+      right: 0px;
+      transition: opacity linear 0.15s, right linear 0.15s; }
+  @media only screen and (max-width: 498px) {
+    .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid,
+    .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid {
+      grid-template-columns: repeat(auto-fill, 100%); }
+      .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid li.term-list-item,
+      .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid li.term-list-item {
+        width: 100%; }
+        .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid li.term-list-item img,
+        .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid li.term-list-item img {
+          width: 100%; } }
+  .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list,
+  .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list {
+    padding: 0;
+    display: block;
+    list-style-type: none; }
+    .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item,
+    .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item {
+      position: relative;
+      display: inline-block;
+      margin: 12px 12px 24px 12px;
+      margin-bottom: 12px;
+      min-height: 54px;
+      min-width: 22%;
+      width: 22%; }
+      .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item a,
+      .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item a {
+        color: #454647;
+        display: flex;
+        align-items: center;
+        height: 54px; }
+      .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item img,
+      .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item img {
+        height: auto;
+        width: 54px;
+        min-width: 54px;
+        padding: 0px;
+        margin-right: 20px; }
+      .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item:hover a,
+      .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item:hover a {
+        color: #454647;
+        text-decoration: none; }
+  .wp-block-tainacan-terms-list ul.terms-list-edit li.term-list-item button {
+    position: absolute !important;
+    background-color: rgba(255, 255, 255, 0.75);
+    color: #454647;
+    padding: 2px;
+    margin-left: 5px;
+    min-width: 14px;
+    visibility: hidden;
+    position: relative;
+    opacity: 0;
+    right: -12px;
+    justify-content: center; }
+  .wp-block-tainacan-terms-list ul.terms-list-edit li.term-list-item:hover button {
+    visibility: visible;
+    opacity: 1;
+    right: 0px;
+    transition: opacity linear 0.15s, right linear 0.15s; }
+  @media only screen and (max-width: 1600px) {
+    .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item,
+    .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item {
+      min-width: 30%;
+      width: 30%; } }
+  @media only screen and (max-width: 1024px) {
+    .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item,
+    .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item {
+      min-width: 45%;
+      width: 45%; } }
+  @media only screen and (max-width: 768px) {
+    .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item,
+    .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item {
+      min-width: 100%;
+      width: 100%; } }
 
 /*# sourceMappingURL=tainacan-gutenberg-blocks-style.css.map */

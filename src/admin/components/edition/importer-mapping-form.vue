@@ -18,7 +18,7 @@
                         :to="$routerHelper.getAvailableImportersPath()">{{ $i18n.get('importers') }}</router-link> > 
                 <router-link 
                         tag="a" 
-                        :to="$routerHelper.getImporterPath(importerType, sessionId)">{{ importerType }}</router-link> >
+                        :to="$routerHelper.getImporterPath(importerType, sessionId)">{{ importerType != undefined ? (importerName != undefined ? importerName :importerType) : $i18n.get('title_importer_page') }}</router-link> >
                 <router-link 
                         tag="a" 
                         :to="$routerHelper.getImporterMappingPath(importerType, sessionId, collectionId)">{{ $i18n.get('label_metadata_mapping') }}</router-link> 
@@ -196,6 +196,7 @@ export default {
                 'total_items': Number
             },
             importerType: '',
+            importerName: '',
             importerSourceInfo: null,
             collections: [],
             collectionMetadata: [],
@@ -219,7 +220,7 @@ export default {
     },
     methods: {
         ...mapActions('importer', [
-            'fetchImporterTypes',
+            'fetchAvailableImporters',
             'fetchImporter',
             'sendImporter',
             'updateImporter',
@@ -230,9 +231,6 @@ export default {
             'updateImporterCollection',
             'runImporter',
             'fetchMappingImporter'
-        ]),
-        ...mapActions('collection', [
-            'fetchCollectionsForParent'
         ]),
         ...mapActions('bgprocess', [
             'fetchProcess'
@@ -415,6 +413,12 @@ export default {
         this.sessionId = this.$route.params.sessionId;
         this.collectionId = this.$route.params.collectionId;
         this.mappedCollection['id'] = this.collectionId;
+
+        // Set importer's name
+        this.fetchAvailableImporters().then((importerTypes) => {
+           if (importerTypes[this.importerType]) 
+            this.importerName = importerTypes[this.importerType].name;
+        });
 
         this.loadImporter();    
         this.loadMetadata();

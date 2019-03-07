@@ -175,7 +175,8 @@
                         v-if="!isOnTheme">
                     <b-dropdown 
                             :mobile-modal="true"
-                            id="item-creation-options-dropdown">
+                            id="item-creation-options-dropdown"
+                            aria-role="list">
                         <button
                                 class="button is-secondary"
                                 slot="trigger">
@@ -185,7 +186,7 @@
                             </span>
                         </button>
 
-                        <b-dropdown-item>
+                        <b-dropdown-item aria-role="listitem">
                             <router-link
                                     id="a-create-item"
                                     tag="div"
@@ -193,13 +194,17 @@
                                 {{ $i18n.get('add_one_item') }}
                             </router-link>
                         </b-dropdown-item>
-                        <b-dropdown-item disabled>
+                        <b-dropdown-item 
+                                aria-role="listitem"
+                                disabled>
                             {{ $i18n.get('add_items_bulk') + ' (Not ready)' }}
                         </b-dropdown-item>
-                        <b-dropdown-item disabled>
+                        <b-dropdown-item 
+                                aria-role="listitem"
+                                disabled>
                             {{ $i18n.get('add_items_external_source') + ' (Not ready)' }}
                         </b-dropdown-item>
-                        <b-dropdown-item>
+                        <b-dropdown-item aria-role="listitem">
                             <div
                                     id="a-import-collection"
                                     tag="div"
@@ -229,7 +234,8 @@
                             ref="displayedMetadataDropdown"
                             :mobile-modal="true"
                             :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry'"
-                            class="show metadata-options-dropdown">
+                            class="show metadata-options-dropdown"
+                            aria-role="list">
                         <button
                                 :aria-label="$i18n.get('label_displayed_metadata')"
                                 class="button is-white"
@@ -244,7 +250,8 @@
                                 v-for="(column, index) in localDisplayedMetadata"
                                 :key="index"
                                 class="control"
-                                custom>
+                                custom
+                                aria-role="listitem">
                             <b-checkbox
                                     v-model="column.display"
                                     :native-value="column.display">
@@ -269,7 +276,8 @@
                         <label class="label is-hidden-mobile">{{ $i18n.get('label_sorting') + ':' }}</label>
                         <b-dropdown
                                 :mobile-modal="true"
-                                @input="onChangeOrderBy($event)">
+                                @input="onChangeOrderBy($event)"
+                                aria-role="list">
                             <button
                                     :aria-label="$i18n.get('label_sorting')"
                                     class="button is-white"
@@ -286,7 +294,8 @@
                                     v-for="metadatum of sortingMetadata"
                                     v-if="metadatum != undefined"
                                     :value="metadatum"
-                                    :key="metadatum.slug">
+                                    :key="metadatum.slug"
+                                    aria-role="listitem">
                                 {{ metadatum.name }}
                             </b-dropdown-item>
                             <!-- Once we have sorting by metadata we can use this -->
@@ -342,7 +351,8 @@
                                 @change="onChangeViewMode($event)"
                                 :mobile-modal="true"
                                 position="is-bottom-left"
-                                :aria-label="$i18n.get('label_view_mode')">
+                                :aria-label="$i18n.get('label_view_mode')"
+                                aria-role="list">
                             <button 
                                     class="button is-white" 
                                     :aria-label="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : $i18n.get('label_visualization')"
@@ -363,7 +373,8 @@
                                     v-for="(viewModeOption, index) of enabledViewModes"
                                     :key="index"
                                     :value="viewModeOption"
-                                     v-if="registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == false">
+                                    v-if="registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == false"
+                                    aria-role="listitem">
                                 <span 
                                         class="gray-icon"
                                         v-html="registeredViewModes[viewModeOption].icon"/>
@@ -381,7 +392,8 @@
                                 @change="onChangeAdminViewMode($event)"
                                 :mobile-modal="true"
                                 position="is-bottom-left"
-                                :aria-label="$i18n.get('label_view_mode')">
+                                :aria-label="$i18n.get('label_view_mode')"
+                                aria-role="list">
                             <button
                                     class="button is-white"
                                     :aria-label="$i18n.get('label_view_mode')"
@@ -406,7 +418,8 @@
                                     aria-controls="items-list-results"
                                     role="button"
                                     :class="{ 'is-active': adminViewMode == 'table' }"
-                                    :value="'table'">
+                                    :value="'table'"
+                                    aria-role="listitem">
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-viewtable"/>
                                 </span>
@@ -416,7 +429,8 @@
                                     aria-controls="items-list-results"
                                     role="button"
                                     :class="{ 'is-active': adminViewMode == 'cards' }"
-                                    :value="'cards'">
+                                    :value="'cards'"
+                                    aria-role="listitem">
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-viewcards"/>
                                 </span>
@@ -426,7 +440,8 @@
                                     aria-controls="items-list-results"
                                     role="button"
                                     :class="{ 'is-active': adminViewMode == 'grid' }"
-                                    :value="'grid'">
+                                    :value="'grid'"
+                                    aria-role="listitem">
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-viewminiature"/>
                                 </span>
@@ -436,7 +451,8 @@
                                     aria-controls="items-list-results"
                                     role="button"
                                     :class="{ 'is-active': adminViewMode == 'records' }"
-                                    :value="'records'">
+                                    :value="'records'"
+                                    aria-role="listitem">
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-viewrecords"/>
                                 </span>
@@ -446,7 +462,8 @@
                                     aria-controls="items-list-results"
                                     role="button"
                                     :class="{ 'is-active': adminViewMode == 'masonry' }"
-                                    :value="'masonry'">
+                                    :value="'masonry'"
+                                    aria-role="listitem">
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-viewmasonry"/>
                                 </span>
