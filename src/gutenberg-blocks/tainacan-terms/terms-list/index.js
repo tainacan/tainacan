@@ -70,7 +70,7 @@ registerBlockType('tainacan/terms-list', {
         },
         taxonomyId: {
             type: String,
-            default: ''
+            default: undefined
         },
         temporaryTaxonomyId: {
             type: String,
@@ -215,28 +215,33 @@ registerBlockType('tainacan/terms-list', {
                                     }}/>
                         </div>
                         {(
-                        taxonomies.length > 0 && searchTaxonomyName != '' ? 
-                        (
-                            <div>
-                                <div className="modal-taxonomies-list">
-                                    {
-                                    <RadioControl
-                                        selected={ temporaryTaxonomyId }
-                                        options={
-                                            taxonomies.map((taxonomy) => {
-                                                return { label: taxonomy.name, value: '' + taxonomy.id }
-                                            })
-                                        }
-                                        onChange={ ( aTaxonomyId ) => { 
-                                            temporaryTaxonomyId = aTaxonomyId;
-                                            setAttributes({ temporaryTaxonomyId: temporaryTaxonomyId });
-                                        } } />
-                                    }                                      
+                        searchTaxonomyName != '' ? (
+                            taxonomies.length > 0 ?
+                            
+                            (
+                                <div>
+                                    <div className="modal-taxonomies-list">
+                                        {
+                                        <RadioControl
+                                            selected={ temporaryTaxonomyId }
+                                            options={
+                                                taxonomies.map((taxonomy) => {
+                                                    return { label: taxonomy.name, value: '' + taxonomy.id }
+                                                })
+                                            }
+                                            onChange={ ( aTaxonomyId ) => { 
+                                                temporaryTaxonomyId = aTaxonomyId;
+                                                setAttributes({ temporaryTaxonomyId: temporaryTaxonomyId });
+                                            } } />
+                                        }                                      
+                                    </div>
+                                    { isLoadingTaxonomies ? <Spinner /> : null }
                                 </div>
-                                { isLoadingTaxonomies ? <Spinner /> : null }
+                            ):
+                            <div className="modal-terms-loadmore-section">
+                                <p>{ __('Sorry, no taxonomy found.', 'tainacan') }</p>
                             </div>
-                        )
-                        :
+                        ):
                         modalTaxonomies.length > 0 ? 
                         (   
                             <div>
@@ -262,6 +267,7 @@ registerBlockType('tainacan/terms-list', {
                                         modalTaxonomies.length < totalModalTaxonomies ? (
                                         <Button 
                                             isDefault
+                                            isSmall
                                             onClick={ () => fetchModalTaxonomies() }>
                                             {__('Load more', 'tainacan')}
                                         </Button>
@@ -269,7 +275,10 @@ registerBlockType('tainacan/terms-list', {
                                     }
                                 </div>
                             </div>
-                        ) : null
+                        ) :
+                        <div className="modal-terms-loadmore-section">
+                            <p>{ __('Sorry, no taxonomy found.', 'tainacan') }</p>
+                        </div>
                     )}
                     <div className="modal-terms-footer">
                         <Button 
@@ -311,35 +320,40 @@ registerBlockType('tainacan/terms-list', {
                                     }}/>
                         </div>
                         {(
-                        terms.length > 0 && searchTermName != '' ? 
-                        (
-                            <div>
-                                <ul className="modal-terms-list">
-                                {
-                                    terms.map((term) =>
-                                    <li 
-                                        key={ term.id }
-                                        className="modal-terms-list-item">
-                                        { term.header_image && showImage ?
-                                            <img
-                                                aria-hidden
-                                                src={ term.header_image && term.header_image[0] && term.header_image[0].src ? term.header_image[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
-                                                alt={ term.header_image && term.header_image[0] ? term.header_image[0].alt : term.name }/>
-                                            : null
-                                        }
-                                        <CheckboxControl
-                                            label={ term.name }
-                                            checked={ isTemporaryTermSelected(term.id) }
-                                            onChange={ ( isChecked ) => { toggleSelectTemporaryTerm(term, isChecked) } }
-                                        />
-                                    </li>
-                                    )
-                                }                                                
-                                </ul>
-                                { isLoadingTerms ? <Spinner /> : null }
+                        searchTermName != '' ? ( 
+                            terms.length > 0 ?
+                            (
+                                <div>
+                                    <ul className="modal-terms-list">
+                                    {
+                                        terms.map((term) =>
+                                        <li 
+                                            key={ term.id }
+                                            className="modal-terms-list-item">
+                                            { term.header_image && showImage ?
+                                                <img
+                                                    aria-hidden
+                                                    src={ term.header_image && term.header_image[0] && term.header_image[0].src ? term.header_image[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
+                                                    alt={ term.header_image && term.header_image[0] ? term.header_image[0].alt : term.name }/>
+                                                : null
+                                            }
+                                            <CheckboxControl
+                                                label={ term.name }
+                                                checked={ isTemporaryTermSelected(term.id) }
+                                                onChange={ ( isChecked ) => { toggleSelectTemporaryTerm(term, isChecked) } }
+                                            />
+                                        </li>
+                                        )
+                                    }                                                
+                                    </ul>
+                                    { isLoadingTerms ? <Spinner /> : null }
+                                </div>
+                            )
+                            :
+                            <div className="modal-terms-loadmore-section">
+                                <p>{ __('Sorry, no terms found.', 'tainacan') }</p>
                             </div>
-                        )
-                        :
+                        ) :
                         modalTerms.length > 0 ? 
                         (   
                             <div>
@@ -371,6 +385,7 @@ registerBlockType('tainacan/terms-list', {
                                         modalTerms.length < totalModalTerms ? (
                                         <Button 
                                             isDefault
+                                            isSmall
                                             onClick={ () => fetchModalTerms(modalTerms.length) }>
                                             {__('Load more', 'tainacan')}
                                         </Button>
@@ -378,7 +393,10 @@ registerBlockType('tainacan/terms-list', {
                                     }
                                 </div>
                             </div>
-                        ) : null
+                        ) :
+                        <div className="modal-terms-loadmore-section">
+                            <p>{ __('Sorry, no terms found.', 'tainacan') }</p>
+                        </div>
                     )}
                     <div className="modal-terms-footer">
                         <Button

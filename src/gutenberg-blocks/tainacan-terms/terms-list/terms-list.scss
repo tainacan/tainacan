@@ -188,10 +188,12 @@
     .modal-terms-search-area {
         display: flex;
         justify-content: center;
-        margin-bottom: 12px;
+        margin-bottom: 24px;
 
         .components-base-control {
-            width: 80%;
+            width: 60%;
+
+            @media only screen and (max-width: 1024px) {  width: 95% }
 
             label {
                 text-align: center;
@@ -231,7 +233,7 @@
     .modal-terms-loadmore-section {
         display: flex;
         align-items: baseline;
-        justify-content: center
+        justify-content: center;
         
         p {
             color: #555758;
