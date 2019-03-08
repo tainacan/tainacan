@@ -409,14 +409,8 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
      * @group api_item_author
      */
 	public function test_create_item_as_auhor(){
-        $collection = $this->tainacan_entity_factory->create_entity(
-            'collection',
-            array(
-                'name'          => 'testePerms',
-                'description'   => 'adasdasdsa',
-            ),
-            true
-        );
+
+	    //create user as tainacan author
 
         $new_user = $this->factory()->user->create(array( 'role' => 'tainacan-author' ));
         //$new_user = $this->factory()->user->create(array( 'role' => 'administrator' ));
@@ -424,12 +418,49 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
         $user_id = get_current_user_id();
         $this->assertEquals($new_user, $user_id);
 
-        $item_json = json_encode([
-            "comment_status" => "",
+        // create collection as auto-draft
+
+        $collection_JSON = json_encode([
+            'name'         => 'TesteJsonAdd',
+            'description'  => 'Teste JSON',
             "status" => "auto-draft"
         ]);
 
-        $request  = new \WP_REST_Request('POST', $this->namespace . '/collection/' . $collection->get_id() . '/items');
+        $request = new \WP_REST_Request('POST', $this->namespace . '/collections');
+        $request->set_body($collection_JSON);
+
+        $response = $this->server->dispatch( $request );
+        $this->assertEquals( 201, $response->get_status(), sprintf('response: %s', print_r($response, true)) );
+
+        $collection = $response->get_data();
+        $id = $collection['id'];
+
+        // publish collection
+
+        $new_values = json_encode([
+            "status" => "publish"
+        ]);
+
+        $request = new \WP_REST_Request(
+            'PATCH', $this->namespace . '/collections/' . $id
+        );
+
+        $request->set_body($new_values);
+
+        $response = $this->server->dispatch($request);
+
+        $data = $response->get_data();
+        $this->assertEquals('publish', $data['status']);
+
+        // try create item in own collection
+
+        $item_json = json_encode([
+            'title'       => 'SCRUM',
+            'description' => 'Um framework ágil para gerenciamento de produto.',
+            "status" => "auto-draft"
+        ]);
+
+        $request  = new \WP_REST_Request('POST', $this->namespace . '/collection/' . $id . '/items');
         $request->set_body($item_json);
 
         $response = $this->server->dispatch($request);
