@@ -11,65 +11,7 @@
     .block-control {
         display: flex;
         flex-direction: row;
-
-        .block-control-item {
-            width: 100%;
-            button {
-                margin: 5px;
-            }
-        }
-
-        .block-control-item.disabled {
-            cursor: none;
-            label.autocomplete-label {
-                color: #cbcbcb;
-            }
-            input {
-                background-color: #f2f2f2;
-            }
-        }
-    }
-
-    // Autocomplete ----------------------------------------------------
-    label.autocomplete-label {
-        display: block;
-        font-weight: 600;
-        font-size: 14px;
-    }
-
-    .react-autocomplete {
-        margin: 0 12px 12px 0;
-        position: relative;
-        display: inline-block;
-
-        input {
-            margin: 4px 12px 0px 0px;
-            border: 1px solid #dbdbdb;
-            padding: 4px 10px;
-            width: 100%;
-
-            &:focus, &:active {
-                border: 1px solid #555758;
-            }
-        }
-        .menu {
-            position: absolute;
-            background-color: white;
-            width: 100%;
-            padding: 0;
-            border: 1px solid #cbcbcb;
-            z-index: 999;
-            height: auto;
-            transition: height ease 0.2s, display ease 0.2s, visibility ease 0.2s;
-
-            .item {
-                padding: 4px 12px;
-                font-size: 14px;
-            }
-            .item.item-highlighted {
-                background-color: #e6f6f8;
-            }
-        }
+        justify-content: center;
     }
 
     // Grid View Mode ----------------------------------------------------
@@ -243,7 +185,22 @@
     @media only screen and (max-width: 1024px) {  width: 75% }
     @media only screen and (max-width: 768px) { width: 100%; }
 
-    ul.modal-terms-list {
+    .modal-terms-search-area {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 12px;
+
+        .components-base-control {
+            width: 80%;
+
+            label {
+                text-align: center;
+            }
+        }
+    }
+
+    .modal-terms-list,
+    .modal-taxonomies-list .components-base-control__field {
         padding: 0;
         display: -ms-grid;
         display: grid;
@@ -253,10 +210,10 @@
         list-style-type: none;
         margin: 12px;
     
-        li.modal-terms-list-item {
+        .modal-terms-list-item,
+        .components-radio-control__option {
             display: flex;
-            justify-content: flex-end;
-            flex-direction: row-reverse;
+            justify-content: flex-start;
 
             img {
                 max-width: 24px;
@@ -271,13 +228,22 @@
             }
         }
     }
-    .modal-terms-footer {
+    .modal-terms-loadmore-section {
         display: flex;
         align-items: baseline;
+        justify-content: center
         
         p {
             color: #555758;
             margin-right: 12px;
         }
+    }
+    .modal-terms-footer {
+        border-top: 1px solid #e2e4e7;
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        padding: 16px 16px 0 16px;
+        margin: 0 -16px;
     }
 }
