@@ -98,23 +98,21 @@ class System_Check {
 		$rec = 240;
 		
 		
-		$text .= '';
-		
 		if ( $time < $min ) {
 			$class = 'error';
-			$text .=  sprintf(
+			$text =  sprintf(
 				__('Your current configuratino is %ds. This is too little. Please increase it to at least 30s', 'tainacan'),
 				$time
 			);
 		} elseif ( $time < $rec ) {
 			$class = 'warning';
-			$text .=  sprintf(
+			$text =  sprintf(
 				__('Your current configuration is %d seconds. This is fine, but you should consider increase it to at least 240 seconds if possible', 'tainacan'),
 				$time
 			);
 		} else {
 			$class = 'good';
-			$text .=  sprintf(
+			$text =  sprintf(
 				__('Your current configuratino is %ds. This is excellent.', 'tainacan'),
 				$time
 			);
@@ -131,12 +129,12 @@ class System_Check {
 		
 		if ( ! $writable ) {
 			$class = 'error';
-			$text .=  sprintf(
+			$text =  sprintf(
 				__('Your upload folder is not writable by the server. You must fix your folder permissions.', 'tainacan')
 			);
 		} else {
 			$class = 'good';
-			$text .=  sprintf(
+			$text =  sprintf(
 				__('Your upload folder is writable!', 'tainacan')
 			);
 		}
