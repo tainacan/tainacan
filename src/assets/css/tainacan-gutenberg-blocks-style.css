@@ -143,9 +143,14 @@
   .wp-block-tainacan-terms-modal .modal-terms-search-area {
     display: flex;
     justify-content: center;
-    margin-bottom: 12px; }
+    margin-bottom: 24px; }
     .wp-block-tainacan-terms-modal .modal-terms-search-area .components-base-control {
-      width: 80%; }
+      width: 60%; }
+      @media only screen and (max-width: 1024px) {
+        .wp-block-tainacan-terms-modal .modal-terms-search-area .components-base-control {
+          width: 95%; } }
+      .wp-block-tainacan-terms-modal .modal-terms-search-area .components-base-control label {
+        text-align: center; }
   .wp-block-tainacan-terms-modal .modal-terms-list,
   .wp-block-tainacan-terms-modal .modal-taxonomies-list .components-base-control__field {
     padding: 0;
@@ -180,9 +185,10 @@
   .wp-block-tainacan-terms-modal .modal-terms-loadmore-section {
     display: flex;
     align-items: baseline;
-    justify-content: center p;
-      justify-content-color: #555758;
-      justify-content-margin-right: 12px; }
+    justify-content: center; }
+    .wp-block-tainacan-terms-modal .modal-terms-loadmore-section p {
+      color: #555758;
+      margin-right: 12px; }
   .wp-block-tainacan-terms-modal .modal-terms-footer {
     border-top: 1px solid #e2e4e7;
     display: flex;
