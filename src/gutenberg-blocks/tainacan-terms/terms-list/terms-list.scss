@@ -45,6 +45,10 @@
                 margin-bottom: 10px;
             }
 
+            a.term-without-name span {
+                display: none;
+            }
+
             &:hover a { 
                 color: #454647; 
                 text-decoration: none;
@@ -121,6 +125,10 @@
                 min-width: 54px;
                 padding: 0px;
                 margin-right: 20px;
+            }
+
+            a.term-without-image img {
+                display: none;
             }
 
             &:hover a { 
