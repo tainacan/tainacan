@@ -108,6 +108,10 @@ registerBlockType('tainacan/terms-list', {
             type: Boolean,
             default: true
         },
+        showName: {
+            type: Boolean,
+            default: true
+        },
         layout: {
             type: String,
             default: 'grid'
@@ -142,7 +146,7 @@ registerBlockType('tainacan/terms-list', {
         },
     },
     supports: {
-        align: ['full', 'left', 'right', 'wide'],
+        align: ['full', 'wide'],
         html: false,
     },
     edit({ attributes, setAttributes, className, isSelected }){
@@ -163,6 +167,7 @@ registerBlockType('tainacan/terms-list', {
             searchTaxonomyName,
             taxonomyPage, 
             showImage,
+            showName,
             layout,
             isModalOpen,
             modalTerms,
@@ -182,14 +187,12 @@ registerBlockType('tainacan/terms-list', {
                     <a 
                         id={ isNaN(term.id) ? term.id : 'term-id-' + term.id }
                         href={ term.url } 
-                        target="_blank">
-                        { term.header_image && showImage ?
+                        target="_blank"
+                        className={ (!showName ? 'term-without-name' : '') + ' ' + (!showImage ? 'term-without-image' : '') }>
                         <img
                             src={ term.header_image && term.header_image[0] && term.header_image[0].src ? term.header_image[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
                             alt={ term.header_image && term.header_image[0] ? term.header_image[0].alt : term.name }/>
-                        : null
-                        }
-                        { term.name ? term.name : '' }
+                        <span>{ term.name ? term.name : '' }</span>
                     </a>
                 </li>
             );
@@ -681,7 +684,17 @@ registerBlockType('tainacan/terms-list', {
         function updateLayout(newLayout) {
             layout = newLayout;
 
-            setAttributes({ layout: newLayout });
+            if (layout == 'grid' && showImage == false)
+                showImage = true;
+
+            if (layout == 'list' && showName == false)
+                showName = true;
+
+            setAttributes({ 
+                layout: layout, 
+                showImage: showImage,
+                showName: showName
+            });
             setContent();
         }
 
@@ -716,17 +729,32 @@ registerBlockType('tainacan/terms-list', {
                 <div>
                     <InspectorControls>
                         <div style={{ marginTop: '24px' }}>
-                            <ToggleControl
-                                label={__('Image', 'tainacan')}
-                                help={ showImage ? __('Toggle to show term\'s image', 'tainacan') : __('Do not show term\'s image', 'tainacan')}
-                                checked={ showImage }
-                                onChange={ ( isChecked ) => {
-                                        showImage = isChecked;
-                                        setAttributes({ showImage: showImage });
-                                        setContent();
-                                    } 
-                                }
-                            />
+                            { layout == 'list' ? 
+                                <ToggleControl
+                                    label={__('Image', 'tainacan')}
+                                    help={ showImage ? __('Toggle to show term\'s image', 'tainacan') : __('Do not show term\'s image', 'tainacan')}
+                                    checked={ showImage }
+                                    onChange={ ( isChecked ) => {
+                                            showImage = isChecked;
+                                            setAttributes({ showImage: showImage });
+                                            setContent();
+                                        } 
+                                    }
+                                /> 
+                            : null }
+                            { layout == 'grid' ? 
+                                <ToggleControl
+                                    label={__('Name', 'tainacan')}
+                                    help={ showName ? __('Toggle to show term\'s name', 'tainacan') : __('Do not show term\'s name', 'tainacan')}
+                                    checked={ showName }
+                                    onChange={ ( isChecked ) => {
+                                            showName = isChecked;
+                                            setAttributes({ showName: showName });
+                                            setContent();
+                                        } 
+                                    }
+                                />
+                            : null }
                         </div>
                     </InspectorControls>
                 </div>
