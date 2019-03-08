@@ -104,6 +104,10 @@ registerBlockType('tainacan/terms-list', {
             type: String,
             default: ''
         },
+        taxonomyName: {
+            type: String,
+            default: ''
+        },
         showImage: {
             type: Boolean,
             default: true
@@ -157,7 +161,8 @@ registerBlockType('tainacan/terms-list', {
             terms, 
             content, 
             searchTermName, 
-            taxonomyId, 
+            taxonomyId,  
+            taxonomyName, 
             temporaryTaxonomyId, 
             isLoadingTerms, 
             isLoadingTaxonomies, 
@@ -219,7 +224,7 @@ registerBlockType('tainacan/terms-list', {
                         </div>
                         {(
                         searchTaxonomyName != '' ? (
-                            taxonomies.length > 0 ?
+                            taxonomies.length > 0 && !isLoadingTaxonomies ?
                             (
                                 <div>
                                     <div className="modal-taxonomies-list">
@@ -237,14 +242,16 @@ registerBlockType('tainacan/terms-list', {
                                             } } />
                                         }                                      
                                     </div>
-                                    { isLoadingTaxonomies ? <Spinner /> : null }
                                 </div>
+                            ) :
+                            isLoadingTaxonomies ? (
+                                <Spinner />
                             ) :
                             <div className="modal-terms-loadmore-section">
                                 <p>{ __('Sorry, no taxonomy found.', 'tainacan') }</p>
-                            </div>
+                            </div> 
                         ):
-                        modalTaxonomies.length > 0 ? 
+                        modalTaxonomies.length > 0 && !isLoadingTaxonomies? 
                         (   
                             <div>
                                 <div className="modal-taxonomies-list">
@@ -262,7 +269,6 @@ registerBlockType('tainacan/terms-list', {
                                         } } />
                                     }                                     
                                 </div>
-                                { isLoadingTaxonomies ? <Spinner /> : null }
                                 <div className="modal-terms-loadmore-section">
                                     <p>{ __('Showing', 'tainacan') + " " + modalTaxonomies.length + " " + __('of', 'tainacan') + " " + totalModalTaxonomies + " " + __('taxonomies', 'tainacan') + "."}</p>
                                     {
@@ -277,7 +283,7 @@ registerBlockType('tainacan/terms-list', {
                                     }
                                 </div>
                             </div>
-                        ) :
+                        ) : isLoadingTaxonomies ? <Spinner/> :
                         <div className="modal-terms-loadmore-section">
                             <p>{ __('Sorry, no taxonomy found.', 'tainacan') }</p>
                         </div>
@@ -293,6 +299,7 @@ registerBlockType('tainacan/terms-list', {
                         </Button>
                         <Button 
                             isPrimary
+                            disabled={ temporaryTaxonomyId == undefined || temporaryTaxonomyId == null || temporaryTaxonomyId == ''}
                             onClick={ () => selectTaxonomy(temporaryTaxonomyId) }>
                             {__('Select terms', 'tainacan')}
                         </Button>
@@ -306,7 +313,7 @@ registerBlockType('tainacan/terms-list', {
             return (
                 <Modal
                         className="wp-block-tainacan-terms-modal"
-                        title={__('Select the desired terms', 'tainacan')}
+                        title={__('Select the desired terms for taxonomy ' + taxonomyName, 'tainacan')}
                         onRequestClose={ () => setAttributes( { isModalOpen: false } ) }
                         contentLabel={__('Select terms', 'tainacan')}>
                     <div>
@@ -323,7 +330,8 @@ registerBlockType('tainacan/terms-list', {
                         </div>
                         {(
                         searchTermName != '' ? ( 
-                            terms.length > 0 ?
+
+                            terms.length > 0 && !isLoadingTerms ?
                             (
                                 <div>
                                     <ul className="modal-terms-list">
@@ -348,15 +356,14 @@ registerBlockType('tainacan/terms-list', {
                                         )
                                     }                                                
                                     </ul>
-                                    { isLoadingTerms ? <Spinner /> : null }
                                 </div>
                             )
-                            :
+                            : isLoadingTerms ? <Spinner/> :
                             <div className="modal-terms-loadmore-section">
                                 <p>{ __('Sorry, no terms found.', 'tainacan') }</p>
                             </div>
-                        ) :
-                        modalTerms.length > 0 ? 
+                        ) : 
+                        modalTerms.length > 0 && !isLoadingTerms ? 
                         (   
                             <div>
                                 <ul className="modal-terms-list">
@@ -380,7 +387,6 @@ registerBlockType('tainacan/terms-list', {
                                     )
                                 }                                                
                                 </ul>
-                                { isLoadingTerms ? <Spinner /> : null }
                                 <div className="modal-terms-loadmore-section">
                                     <p>{ __('Showing', 'tainacan') + " " + modalTerms.length + " " + __('of', 'tainacan') + " " + totalModalTerms + " " + __('terms', 'tainacan') + "."}</p>
                                     {
@@ -395,7 +401,7 @@ registerBlockType('tainacan/terms-list', {
                                     }
                                 </div>
                             </div>
-                        ) :
+                        ) : isLoadingTerms ? <Spinner /> :
                         <div className="modal-terms-loadmore-section">
                             <p>{ __('Sorry, no terms found.', 'tainacan') }</p>
                         </div>
@@ -597,9 +603,10 @@ registerBlockType('tainacan/terms-list', {
         function openTermsModal() {
             temporarySelectedTerms = JSON.parse(JSON.stringify(selectedTermsObject));
 
-            if (taxonomyId != null && taxonomyId != undefined)
+            if (taxonomyId != null && taxonomyId != undefined) {
+                fetchTaxonomy();
                 fetchModalTerms(0);
-            else {
+            } else {
                 taxonomyPage = 1;
                 fetchModalTaxonomies()
             }
@@ -631,6 +638,7 @@ registerBlockType('tainacan/terms-list', {
             setAttributes({
                 taxonomyId: taxonomyId
             });
+            fetchTaxonomy();
             fetchModalTerms(0);
             setContent();
             
@@ -678,6 +686,16 @@ registerBlockType('tainacan/terms-list', {
                 selectedTermsObject.splice(existingTermIndex, 1);
 
             setContent();
+        }
+
+        function fetchTaxonomy() {
+            tainacan.get('/taxonomies/' + taxonomyId)
+                .then((response) => {
+                    taxonomyName = response.data.name;
+                    setAttributes({ taxonomyName: taxonomyName });
+                }).catch(error => {
+                    console.log('Error trying to fetch taxonomy: ' + error);
+                });
         }
 
         function updateLayout(newLayout) {
