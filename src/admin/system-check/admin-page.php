@@ -55,7 +55,7 @@
 			</tr>
 			
 			<tr>
-				<th scope="row"><?php _e('PHP Maximum execution tim', 'tainacan'); ?>e</th>
+				<th scope="row"><?php _e('PHP Maximum execution time', 'tainacan'); ?></th>
 				<td>
 					<?php $this->check_php_timeout(); ?>
 					<p class="description">
@@ -93,7 +93,7 @@
 				<td>
 					<?php _e('It is strongly recommended that you configure a cron job in your server as described <a href="https://developer.wordpress.org/plugins/cron/hooking-into-the-system-task-scheduler/">here</a>.', 'tainacan'); ?>
 					<p class="description">
-						<?php _e("We can't test wether there is a cronjob set or not, so ignore this if you already configured it.", 'tainacan'); ?>
+						<?php _e("We can't test whether there is a cronjob set or not, so ignore this if you already configured it.", 'tainacan'); ?>
 					</p>
 				</td>
 			</tr>
