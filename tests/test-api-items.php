@@ -404,6 +404,39 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 
 
 	}
+
+    /**
+     * @group api_item_author
+     */
+	public function test_create_item_as_auhor(){
+        $collection = $this->tainacan_entity_factory->create_entity(
+            'collection',
+            array(
+                'name'          => 'testePerms',
+                'description'   => 'adasdasdsa',
+            ),
+            true
+        );
+
+        $new_user = $this->factory()->user->create(array( 'role' => 'tainacan-author' ));
+        //$new_user = $this->factory()->user->create(array( 'role' => 'administrator' ));
+        wp_set_current_user($new_user);
+        $user_id = get_current_user_id();
+        $this->assertEquals($new_user, $user_id);
+
+        $item_json = json_encode([
+            "comment_status" => "",
+            "status" => "auto-draft"
+        ]);
+
+        $request  = new \WP_REST_Request('POST', $this->namespace . '/collection/' . $collection->get_id() . '/items');
+        $request->set_body($item_json);
+
+        $response = $this->server->dispatch($request);
+
+        $this->assertEquals(403, $response->get_status());
+       // $this->assertEquals(201, $response->get_status());
+    }
 }
 
 ?>
