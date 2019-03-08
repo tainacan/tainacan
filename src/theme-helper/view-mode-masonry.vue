@@ -53,7 +53,7 @@
                     <!-- Thumbnail -->
                     <div 
                             v-if="item.thumbnail != undefined"
-                            class="thumbnail"
+                            class="tainacan-masonry-item-thumbnail"
                             :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)) + ')' }">  
                         <img 
                                 :alt="$i18n.get('label_thumbnail')"

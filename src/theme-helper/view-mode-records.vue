@@ -80,7 +80,7 @@
                         <div class="media">
                             <div class="list-metadata media-body">
                                 <div 
-                                        class="thumbnail"
+                                        class="tainacan-record-thumbnail"
                                         v-if="item.thumbnail != undefined">
                                     <img 
                                             :alt="$i18n.get('label_thumbnail')"
