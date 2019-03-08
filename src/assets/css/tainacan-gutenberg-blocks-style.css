@@ -166,7 +166,12 @@
     grid-gap: 0px;
     justify-content: space-evenly;
     list-style-type: none;
-    margin: 12px; }
+    margin: 12px;
+    max-height: 50vh;
+    overflow-y: auto; }
+    .wp-block-tainacan-terms-modal .modal-terms-list .components-base-control,
+    .wp-block-tainacan-terms-modal .modal-taxonomies-list .components-base-control__field .components-base-control {
+      overflow: hidden; }
     .wp-block-tainacan-terms-modal .modal-terms-list .modal-terms-list-item,
     .wp-block-tainacan-terms-modal .modal-terms-list .components-radio-control__option,
     .wp-block-tainacan-terms-modal .modal-taxonomies-list .components-base-control__field .modal-terms-list-item,
@@ -188,6 +193,12 @@
         overflow: hidden;
         display: inline-block;
         max-width: 85%; }
+        @media only screen and (max-width: 768px) {
+          .wp-block-tainacan-terms-modal .modal-terms-list .modal-terms-list-item label,
+          .wp-block-tainacan-terms-modal .modal-terms-list .components-radio-control__option label,
+          .wp-block-tainacan-terms-modal .modal-taxonomies-list .components-base-control__field .modal-terms-list-item label,
+          .wp-block-tainacan-terms-modal .modal-taxonomies-list .components-base-control__field .components-radio-control__option label {
+            max-width: 80%; } }
   .wp-block-tainacan-terms-modal .modal-terms-loadmore-section {
     display: flex;
     align-items: baseline;

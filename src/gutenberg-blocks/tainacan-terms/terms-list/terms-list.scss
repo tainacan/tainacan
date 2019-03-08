@@ -219,6 +219,12 @@
         justify-content: space-evenly;
         list-style-type: none;
         margin: 12px;
+        max-height: 50vh;
+        overflow-y: auto;
+
+        .components-base-control {
+            overflow: hidden;
+        }
     
         .modal-terms-list-item,
         .components-radio-control__option {
@@ -235,6 +241,8 @@
                 overflow: hidden;
                 display: inline-block;
                 max-width: 85%;
+
+                @media only screen and (max-width: 768px) { max-width: 80%; }
             }
         }
     }
