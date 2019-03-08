@@ -220,7 +220,6 @@ registerBlockType('tainacan/terms-list', {
                         {(
                         searchTaxonomyName != '' ? (
                             taxonomies.length > 0 ?
-                            
                             (
                                 <div>
                                     <div className="modal-taxonomies-list">
@@ -240,7 +239,7 @@ registerBlockType('tainacan/terms-list', {
                                     </div>
                                     { isLoadingTaxonomies ? <Spinner /> : null }
                                 </div>
-                            ):
+                            ) :
                             <div className="modal-terms-loadmore-section">
                                 <p>{ __('Sorry, no taxonomy found.', 'tainacan') }</p>
                             </div>
@@ -508,7 +507,7 @@ registerBlockType('tainacan/terms-list', {
 
         function fetchTerms(name) {
 
-            let endpoint = '/taxonomy/'+ taxonomyId + '/terms/?number=' + termsPerPage;
+            let endpoint = '/taxonomy/'+ taxonomyId + '/terms/?hideempty=0number=' + termsPerPage;
 
             if (name != undefined && name != '')
                 endpoint += '&searchterm=' + name;
@@ -545,7 +544,7 @@ registerBlockType('tainacan/terms-list', {
             if (offset <= 0)
                 modalTerms = [];
 
-            let endpoint = '/taxonomy/'+ taxonomyId + '/terms/?number=' + termsPerPage + '&offset=' + offset;
+            let endpoint = '/taxonomy/'+ taxonomyId + '/terms/?hideempty=0&number=' + termsPerPage + '&offset=' + offset;
 
             isLoadingTerms = true;
 
