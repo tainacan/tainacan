@@ -8,6 +8,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Selectbox extends Filter_Type {
 
+    protected $use_max_options = false;
     function __construct(){
         $this->set_supported_types(['string', 'long_string']);
         $this->set_component('tainacan-filter-selectbox');

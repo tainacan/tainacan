@@ -11,6 +11,7 @@ abstract class Filter_Type {
     private $options = [];
     private $component;
     private $preview_template = '';
+    protected $use_max_options = true;
 
     public function __construct(){
         add_action('register_filter_types', array(&$this, 'register_filter_type'));
@@ -75,6 +76,7 @@ abstract class Filter_Type {
         $attributes['component'] = $this->get_component();
         $attributes['supported_types'] = $this->get_supported_types();
         $attributes['preview_template'] = $this->get_preview_template();
+        $attributes['use_max_options'] = $this->get_use_max_options();
 
         return $attributes;
     }
@@ -124,5 +126,13 @@ abstract class Filter_Type {
 	 */
 	public function get_options() {
 		return $this->options;
-	}
+    }
+
+    public function set_use_max_options($use_max_options) {
+        $this->use_max_options = $use_max_options;
+    }
+
+    public function get_use_max_options() {
+        return $this->use_max_options;
+    }
 }

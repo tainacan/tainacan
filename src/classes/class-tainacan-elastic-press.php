@@ -179,8 +179,9 @@ class Elastic_Press {
 						$this->aggregation_type = 'items';
 						$this->facets[$id] = [
 							"key" => $key, 
-							"field" => $field, 
-							"max_options" => $filter->get_max_options(), 
+							"field" => $field,
+							"use_max_options" => $filter->get_filter_type_object()->get_use_max_options(),
+							"max_options" => $filter->get_max_options(),
 							"metadata_type" => $metadata_type,
 							"include" => $include
 							
@@ -344,7 +345,7 @@ class Elastic_Press {
 					"aggs"	=> array(
 						$id => array(
 							"terms"=>array(
-								"size" => $filter['max_options'],
+								//"size" => $filter['max_options'],
 								"script" => [
 									"lang" 	=> "painless",
 									"source"=> "def c= [''];if(!params._source.terms.empty){ for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
@@ -379,7 +380,7 @@ class Elastic_Press {
 					"aggs"	=> array(
 						$id => array(
 							"terms"=>array(
-								"size" => $filter['max_options'],
+								//"size" => $filter['max_options'],
 								"field"=> $filter['field']
 							)
 						)
@@ -407,6 +408,11 @@ class Elastic_Press {
 					];
 				}
 			}
+
+			if($filter['use_max_options'] == true ) {
+				$aggs[$id]['aggs'][$id]['terms']['size'] = $filter['max_options'];
+			}
+
 		}
 		$formatted_args['aggs'] = $aggs;
 		return $formatted_args;
