@@ -29,9 +29,17 @@
                     </h1>
                 </header>
                 {{ message }}
+                <div v-if="showNeverShowAgainOption">
+                    <b-checkbox
+                            @input="changeNeverShowMessageAgain($event)"
+                            :native-value="neverShowAgain">
+                        {{ $i18n.get('instruction_never_show_message_again') }}
+                    </b-checkbox>
+                </div>
             </section>
             <footer class="modal-card-foot form-submit">
                 <button 
+                        v-if="!hideCancel"
                         class="button is-outlined" 
                         type="button"
                         @click="$parent.close()">
@@ -59,6 +67,25 @@
             onConfirm: {
                 type: Function,
                 default: () => {}
+            },
+            hideCancel: {
+                type: Boolean,
+                default: false,
+            },
+            showNeverShowAgainOption: {
+                type: Boolean,
+                default: false
+            },
+            messageKeyForUserPrefs: ''
+        },
+        data() {
+            return {
+                neverShowAgain: false
+            }
+        },
+        methods: {
+            changeNeverShowMessageAgain($event) {
+                this.$userPrefs.set('neverShow' + this.messageKeyForUserPrefs + 'Dialog', $event);
             }
         }
     }
@@ -69,6 +96,14 @@
     i.tainacan-icon,
     i.tainacan-icon::before {
         font-size: 56px;
+    }
+
+    button.is-success {
+        margin-left: auto;
+    }
+
+    .b-checkbox.checkbox {
+        margin-top: 12px;
     }
 
 </style>

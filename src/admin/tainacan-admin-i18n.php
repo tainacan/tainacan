@@ -261,6 +261,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_warning'                                  => __( 'Warning', 'tainacan' ),
 	'label_error'                                    => __( 'Error', 'tainacan' ),
 	'label_thumbnails'                               => __( 'Thumbnails', 'tainacan' ),
+	'label_grid'                                	 => __( 'Thumbnails', 'tainacan' ),
 	'label_table'                                    => __( 'Table', 'tainacan' ),
 	'label_cards'                                    => __( 'Cards', 'tainacan' ),
 	'label_records'                                  => __( 'Records', 'tainacan' ),
@@ -407,6 +408,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_select_an_exporter_type'            => __( 'Select an exporter from the options below:', 'tainacan'),
 	'instruction_select_a_collection'                => __( 'Select a collection', 'tainacan' ),
 	'instruction_hover_a_filter_type_to_preview'     => __( 'Hover a filter type to preview', 'tainacan' ),
+	'instruction_never_show_message_again'     		 => __( 'Never show me this message again', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_error_invalid_date'                        => __( 'Invalid date', 'tainacan' ),
@@ -530,7 +532,6 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_leaving_bulk_edition'                      => __( 'You are leaving the bulk edition now.', 'tainacan' ),
 	'info_current_view_mode_metadata_not_allowed'    => __( 'Current view mode does not allow displayed metadata selection.', 'tainacan' ),
 	'info_cant_select_metadata_without_items'        => __( 'Can not select displayed metadata without items on list.', 'tainacan' ),
-	'info_available_exporters_helper'                => __( '?', 'tainacan' ),
 	'info_process_status_finished' 					 => __('Finished', 'tainacan'),
 	'info_process_status_finished_errors' 			 => __('Finished with errors', 'tainacan'),
 	'info_process_status_errored' 					 => __('Failed', 'tainacan'),
@@ -543,6 +544,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_other_item_listing_options'				 => __('Other items listing options: ', 'tainacan'),
 	'info_send_email'				 				 => __('The exporter may take a while. Check this option to receive an e-mail when the process is done. You can also check the process status visiting the', 'tainacan'),
 	'info_tainacan_api'				 				 => __('Tainacan API on JSON format.', 'tainacan'),
+	'info_items_hidden_due_sorting'					 => __('Items with empty values on the metadata selected for sorting won\'t appear, thus this list has less elements than the total existing.', 'tainacan'),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),

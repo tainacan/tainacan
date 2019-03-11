@@ -13,8 +13,19 @@
                 getLastItemNumber() +
                 $i18n.get('info_of')
             }} 
-            <span><!-- :class="{ 'has-text-warning': collectionTotalItems > totalItems }"> -->
+            <span :class="{ 'has-text-warning': collectionTotalItems > totalItems }">
                 {{ totalItems + '.' }}
+            </span>
+            <span 
+                    v-tooltip="{
+                        content: $i18n.get('info_itens_hidden_due_sorting'),
+                        autoHide: false,
+                        placement: 'auto-start'
+                    }"
+                    style="margin-top: -3px"
+                    class="icon has-text-warning"
+                    v-if="collectionTotalItems > totalItems">
+                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-alertcircle" />
             </span>
         </div> 
         <div class="items-per-page">
@@ -83,10 +94,6 @@ import { mapGetters } from 'vuex';
 
 export default {
     name: 'Pagination',
-    data(){
-        return {
-        }
-    },
     computed: {
         totalItems(){    
             return this.getTotalItems();
@@ -103,14 +110,21 @@ export default {
         collectionTotalItems() {
             let collectionTotalItemsObject = this.getCollectionTotalItems().total_items;
             if (collectionTotalItemsObject) {
+                let newCollectionTotalItems;
+
                 switch(this.getStatus()) {
                     case 'draft':
-                        return collectionTotalItemsObject.draft;
+                        newCollectionTotalItems = collectionTotalItemsObject.draft;
+                        break;
                     case 'trash':
-                        return collectionTotalItemsObject.trash;
+                        newCollectionTotalItems = collectionTotalItemsObject.trash;
+                        break;
                     default:
-                        return collectionTotalItemsObject.publish + collectionTotalItemsObject.private;
+                        newCollectionTotalItems = Number(collectionTotalItemsObject.publish) + Number(collectionTotalItemsObject.private);
                 }
+                   
+                return newCollectionTotalItems;
+
             } else
                 return this.totalItems;
         }
@@ -152,7 +166,7 @@ export default {
             if( this.totalItems == 0 )
                 return 0;
             return ( this.itemsPerPage * ( this.page - 1 ) + 1)
-        },
+        }
     }
 }
 </script>
