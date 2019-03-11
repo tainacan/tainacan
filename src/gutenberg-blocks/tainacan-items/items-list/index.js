@@ -318,6 +318,7 @@ registerBlockType('tainacan/items-list', {
                         </Button>
                         <Button 
                             isPrimary
+                            type="submit"
                             disabled={ temporaryCollectionId == undefined || temporaryCollectionId == null || temporaryCollectionId == ''}
                             onClick={ () => selectCollection(temporaryCollectionId) }>
                             {__('Select items', 'tainacan')}
@@ -435,6 +436,7 @@ registerBlockType('tainacan/items-list', {
                         </Button>
                         <Button 
                             isPrimary
+                            type="submit"
                             onClick={ () => applySelectedItems() }>
                             {__('Finish', 'tainacan')}
                         </Button>
@@ -554,7 +556,7 @@ registerBlockType('tainacan/items-list', {
                 isLoadingItems: isLoadingItems
             });
 
-            let endpoint = '/collection/'+ collectionId + '/items/?perpage=' + itemsPerPage;
+            let endpoint = '/collection/'+ collectionId + '/items/?fetch_only=title,thumbnail&perpage=' + itemsPerPage;
 
             if (title != undefined && title != '')
                 endpoint += '&search=' + title;
@@ -590,7 +592,7 @@ registerBlockType('tainacan/items-list', {
             if (itemsPage <= 1)
                 modalItems = [];
 
-            let endpoint = '/collection/'+ collectionId + '/items/?&perpage=' + itemsPerPage + '&paged=' + itemsPage;
+            let endpoint = '/collection/'+ collectionId + '/items/?fetch_only=title,thumbnail&perpage=' + itemsPerPage + '&paged=' + itemsPage;
 
             isLoadingItems = true;
             itemsPage++;
@@ -634,10 +636,12 @@ registerBlockType('tainacan/items-list', {
         function resetCollections() {
             collectionId = null; 
             collectionPage = 1;
+            modalItems = [];
             
             setAttributes({ 
                 collectionId: collectionId,
-                collectionPage: collectionPage
+                collectionPage: collectionPage,
+                modalItems: false
             });
             fetchModalCollections(); 
         }
@@ -825,10 +829,11 @@ registerBlockType('tainacan/items-list', {
                         { isModalOpen && (
                             collectionId != null && collectionId != undefined ? renderItemsModalContent() : renderCollectionModalContent()                 
                         ) }
-
+                        
                         <div className="block-control">
                             <Button
                                 isPrimary
+                                type="submit"
                                 onClick={ () => openItemsModal() }>
                                 {__('Select items', 'tainacan')}
                             </Button>   

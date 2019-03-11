@@ -223,6 +223,19 @@
     display: flex;
     flex-direction: row;
     justify-content: center; }
+  .wp-block-tainacan-items-list ul.items-list.items-list-without-margin,
+  .wp-block-tainacan-items-list ul.items-list-edit.items-list-without-margin {
+    grid-template-columns: repeat(auto-fill, 185px) !important;
+    justify-content: center !important;
+    grid-template-rows: auto !important; }
+    .wp-block-tainacan-items-list ul.items-list.items-list-without-margin li,
+    .wp-block-tainacan-items-list ul.items-list-edit.items-list-without-margin li {
+      margin: 0 !important;
+      height: 185px !important; }
+      .wp-block-tainacan-items-list ul.items-list.items-list-without-margin li img,
+      .wp-block-tainacan-items-list ul.items-list-edit.items-list-without-margin li img {
+        height: 185px !important;
+        margin-bottom: 0px !important; }
   .wp-block-tainacan-items-list ul.items-list.items-layout-grid,
   .wp-block-tainacan-items-list ul.items-list-edit.items-layout-grid {
     padding: 0;
