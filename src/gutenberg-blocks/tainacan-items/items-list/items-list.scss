@@ -15,8 +15,21 @@
     }
 
     // Grid View Mode ----------------------------------------------------
-    ul.items-list.items-list-without-margin {
-    
+    ul.items-list.items-list-without-margin,
+    ul.items-list-edit.items-list-without-margin {
+        grid-template-columns: repeat(auto-fill, 185px) !important;
+        justify-content: center !important;
+        grid-template-rows: auto !important;
+        
+        li {
+            margin: 0 !important;
+            height: 185px !important;
+
+            img { 
+                height: 185px !important;
+                margin-bottom: 0px !important;
+            }
+        }
     }
     ul.items-list.items-layout-grid,
     ul.items-list-edit.items-layout-grid {
