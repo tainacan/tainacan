@@ -7,7 +7,6 @@ const { TextControl, IconButton, Button, Modal, CheckboxControl, RadioControl, S
 const { InspectorControls, BlockControls } = wp.editor;
 
 import tainacan from '../../api-client/axios.js';
-import qs from 'qs';
 
 registerBlockType('tainacan/terms-list', {
     title: __('Tainacan Terms List', 'tainacan'),
@@ -503,7 +502,7 @@ registerBlockType('tainacan/terms-list', {
                         modalTaxonomies: modalTaxonomies,
                         totalModalTaxonomies: totalModalTaxonomies
                     });
-                    
+                
                     return modalTaxonomies;
                 })
                 .catch(error => {
