@@ -224,7 +224,7 @@ registerBlockType('tainacan/terms-list', {
                         </div>
                         {(
                         searchTaxonomyName != '' ? (
-                            taxonomies.length > 0 && !isLoadingTaxonomies ?
+                            taxonomies.length > 0 ?
                             (
                                 <div>
                                     <div className="modal-taxonomies-list">
@@ -251,7 +251,7 @@ registerBlockType('tainacan/terms-list', {
                                 <p>{ __('Sorry, no taxonomy found.', 'tainacan') }</p>
                             </div> 
                         ):
-                        modalTaxonomies.length > 0 && !isLoadingTaxonomies? 
+                        modalTaxonomies.length > 0 ? 
                         (   
                             <div>
                                 <div className="modal-taxonomies-list">
@@ -331,7 +331,7 @@ registerBlockType('tainacan/terms-list', {
                         {(
                         searchTermName != '' ? ( 
 
-                            terms.length > 0 && !isLoadingTerms ?
+                            terms.length > 0 ?
                             (
                                 <div>
                                     <ul className="modal-terms-list">
@@ -363,7 +363,7 @@ registerBlockType('tainacan/terms-list', {
                                 <p>{ __('Sorry, no terms found.', 'tainacan') }</p>
                             </div>
                         ) : 
-                        modalTerms.length > 0 && !isLoadingTerms ? 
+                        modalTerms.length > 0 ? 
                         (   
                             <div>
                                 <ul className="modal-terms-list">
