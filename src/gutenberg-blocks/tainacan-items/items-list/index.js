@@ -453,7 +453,7 @@ registerBlockType('tainacan/items-list', {
 
             setAttributes({
                 content: (
-                    <ul className={'items-list  items-layout-' + layout}>{ selectedItemsHTML }</ul>
+                    <ul className={'items-list  items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')}>{ selectedItemsHTML }</ul>
                 ),
                 selectedItemsHTML: selectedItemsHTML
             });
@@ -569,8 +569,7 @@ registerBlockType('tainacan/items-list', {
                         thumbnail: [{
                             src: item.thumbnail['tainacan-medium'] != undefined ? item.thumbnail['tainacan-medium'][0] : item.thumbnail['medium'][0],
                             alt: item.title
-                        }],
-                        description: item.description 
+                        }]
                     }));
 
                     setAttributes({ 
@@ -613,8 +612,7 @@ registerBlockType('tainacan/items-list', {
                             thumbnail: [{
                                 src: item.thumbnail['tainacan-medium'] != undefined ? item.thumbnail['tainacan-medium'][0] : item.thumbnail['medium'][0],
                                 alt: item.title
-                            }],
-                            description: item.description
+                            }]
                         });
                     }
                     isLoadingItems = false;
@@ -851,7 +849,7 @@ registerBlockType('tainacan/items-list', {
                     />) : null
                 }
 
-                <ul className={'items-list-edit items-layout-' + layout}>{ selectedItemsHTML }</ul>
+                <ul className={'items-list-edit items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')}>{ selectedItemsHTML }</ul>
                 
             </div>
         );
