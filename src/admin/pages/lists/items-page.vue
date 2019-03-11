@@ -814,6 +814,7 @@
     import AvailableImportersModal from '../../components/other/available-importers-modal.vue';
     import ExposersModal from '../../components/other/exposers-modal.vue';
     import CollectionsModal from '../../components/other/collections-modal.vue';
+    import CustomDialog from '../../components/other/custom-dialog.vue';
     import { mapActions, mapGetters } from 'vuex';
 
     export default {
@@ -840,7 +841,8 @@
                 searchControlHeight: 0,
                 sortingMetadata: [],
                 isFilterModalActive: false,
-                collection: undefined
+                collection: undefined,
+                hasAnOpenModal: false
             }
         },
         props: {
@@ -1317,6 +1319,28 @@
                         this.isLoadingMetadata = false;
                     });
             },
+            showItemsHiddingDueSorting() {
+
+                if (this.orderBy != 'title' && this.orderBy != 'date' && this.$userPrefs.get('neverShowItemsHiddenDueSortingDialog') != true) {     
+                    this.hasAnOpenModal = true;
+
+                    this.$modal.open({
+                        parent: this,
+                        component: CustomDialog,
+                        props: {
+                            icon: 'alert',
+                            title: this.$i18n.get('label_warning'),
+                            message: this.$i18n.get('info_items_hidden_due_sorting'),
+                            onConfirm: () => {
+                                this.hasAnOpenModal = false;
+                            },
+                            hideCancel: true,
+                            showNeverShowAgainOption: true,
+                            messageKeyForUserPrefs: 'ItemsHiddenDueSorting'
+                        }
+                    });
+                }
+            },
             adjustSearchControlHeight: _.debounce( function() {
                 this.$nextTick(() => {
                     if (this.$refs['search-control'] != undefined)
@@ -1434,6 +1458,8 @@
                         this.$eventBusSearch.setInitialAdminViewMode('table');
                 }
             }
+
+            this.showItemsHiddingDueSorting();
 
             // Watches window resize to adjust filter's top position and compression on mobile 
             this.adjustSearchControlHeight();
