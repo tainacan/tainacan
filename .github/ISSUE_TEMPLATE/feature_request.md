@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
+about: Suggest a new feature to our Tainacan devs! 🎉
 title: ''
 labels: ''
 assignees: ''
