@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report a bug to help us improve Tainacan
+about: Is something not working as expected? Report a bug
 title: ''
 labels: bug
 assignees: ''
@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 **Describe the bug**
-A clear and concise description of what the bug is.
+A brief explanation of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
