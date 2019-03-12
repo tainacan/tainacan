@@ -514,7 +514,7 @@ registerBlockType('tainacan/items-list', {
         }
 
         function fetchModalCollections() {
-
+            
             if (collectionPage <= 1)
                 modalCollections = [];
 
@@ -615,7 +615,6 @@ registerBlockType('tainacan/items-list', {
             
             tainacan.get(endpoint)
                 .then(response => {
-
                     for (let item of response.data) {
                         modalItems.push({ 
                             title: item.title, 
@@ -644,14 +643,16 @@ registerBlockType('tainacan/items-list', {
         }
 
         function resetCollections() {
+            itemsPage = 1;
             collectionId = null; 
             collectionPage = 1;
             modalItems = [];
             
             setAttributes({ 
+                itemsPage: itemsPage,
                 collectionId: collectionId,
                 collectionPage: collectionPage,
-                modalItems: false
+                modalItems: modalItems
             });
             fetchModalCollections(); 
         }
