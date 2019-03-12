@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { TextControl, IconButton, Button, Modal, CheckboxControl, RadioControl, Spinner, ToggleControl, Placeholder, Toolbar } = wp.components;
+const { TextControl, RangeControl, IconButton, Button, Modal, CheckboxControl, RadioControl, Spinner, ToggleControl, Placeholder, Toolbar } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -161,6 +161,10 @@ registerBlockType('tainacan/items-list', {
         collectionsRequestSource: {
             type: Object,
             default: undefined
+        },
+        gridMargin: {
+            type: Number,
+            default: 0
         }
     },
     supports: {
@@ -194,14 +198,16 @@ registerBlockType('tainacan/items-list', {
             itemsPerPage,
             itemsPage,
             itemsRequestSource,
-            collectionsRequestSource
+            collectionsRequestSource,
+            gridMargin
         } = attributes;
 
         function prepareItem(item) {
             return (
                 <li 
                     key={ item.id }
-                    className="item-list-item">
+                    className="item-list-item"
+                    style={{ marginTop: layout == 'grid' ?  gridMargin + 'px' : ''}}>
                     <IconButton
                         onClick={ () => removeItemOfId(item.id) }
                         icon="no-alt"
@@ -806,18 +812,30 @@ registerBlockType('tainacan/items-list', {
                                     }
                                 /> 
                             : null }
-                            { layout == 'grid' ? 
-                                <ToggleControl
-                                    label={__('Name', 'tainacan')}
-                                    help={ showName ? __('Toggle to show item\'s title', 'tainacan') : __('Do not show item\'s title', 'tainacan')}
-                                    checked={ showName }
-                                    onChange={ ( isChecked ) => {
-                                            showName = isChecked;
-                                            setAttributes({ showName: showName });
+                            { layout == 'grid' ?
+                                <div>
+                                    <ToggleControl
+                                        label={__('Name', 'tainacan')}
+                                        help={ showName ? __('Toggle to show item\'s title', 'tainacan') : __('Do not show item\'s title', 'tainacan')}
+                                        checked={ showName }
+                                        onChange={ ( isChecked ) => {
+                                                showName = isChecked;
+                                                setAttributes({ showName: showName });
+                                                setContent();
+                                            } 
+                                        }
+                                    />
+                                    <RangeControl
+                                        label={__('Margin', 'tainacan')}
+                                        value={ gridMargin }
+                                        onChange={ ( margin ) => {
+                                            setAttributes( { gridMargin: margin } ) 
                                             setContent();
-                                        } 
-                                    }
-                                />
+                                        }}
+                                        min={ 0 }
+                                        max={ 24 }
+                                    />
+                                </div>
                             : null }
                         </div>
                     </InspectorControls>
@@ -854,7 +872,11 @@ registerBlockType('tainacan/items-list', {
                     />) : null
                 }
 
-                <ul className={'items-list-edit items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')}>{ selectedItemsHTML }</ul>
+                <ul 
+                    style={{ gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' +  gridMargin + 185 + 'px)' : 'inherit' }}
+                    className={'items-list-edit items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')}>
+                    { selectedItemsHTML }
+                </ul>
                 
             </div>
         );

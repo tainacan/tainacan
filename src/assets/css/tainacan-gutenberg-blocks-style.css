@@ -230,7 +230,7 @@
     grid-template-rows: auto !important; }
     .wp-block-tainacan-items-list ul.items-list.items-list-without-margin li,
     .wp-block-tainacan-items-list ul.items-list-edit.items-list-without-margin li {
-      margin: 0 !important;
+      margin: 0;
       height: 185px !important; }
       .wp-block-tainacan-items-list ul.items-list.items-list-without-margin li img,
       .wp-block-tainacan-items-list ul.items-list-edit.items-list-without-margin li img {
