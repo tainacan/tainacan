@@ -1,7 +1,12 @@
 [![Build Status](https://travis-ci.org/tainacan/tainacan.svg?branch=develop)](https://travis-ci.org/tainacan/tainacan) [![Waffle.io - Columns and their card count](https://badge.waffle.io/tainacan/tainacan.svg?columns=In%20Progress)](https://waffle.io/tainacan/tainacan) 
 
 # Tainacan
-[Tainacan on WordPress.org](https://wordpress.org/plugins/tainacan/) / [Homepage](http://tainacan.org) / [Blog](http://tainacan.org/blog/) / [Documentation](https://wiki.tainacan.org/) / [Mailing list](https://lists.riseup.net/www/info/tainacan) / [Twitter](https://twitter.com/tainacan_l3p)
+- [Tainacan on WordPress.org](https://wordpress.org/plugins/tainacan/)
+- [Access our homepage](http://tainacan.org)
+- [Read our official documentation](https://wiki.tainacan.org/)
+- [Explore our blog](http://tainacan.org/blog/)
+- [Join our mailing list](https://lists.riseup.net/www/info/tainacan)
+- [Follow us on Twitter](https://twitter.com/tainacan_l3p)
 
 ### What is Tainacan?
 
