@@ -594,10 +594,12 @@ registerBlockType('tainacan/terms-list', {
         function resetTaxonomies() {
             taxonomyId = null; 
             taxonomyPage = 1;
+            modalTaxonomies = [];
             
             setAttributes({ 
                 taxonomyId: taxonomyId,
-                taxonomyPage: taxonomyPage
+                taxonomyPage: taxonomyPage,
+                modalTaxonomies: modalTaxonomies
             });
             fetchModalTaxonomies(); 
         }
