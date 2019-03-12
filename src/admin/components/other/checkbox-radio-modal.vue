@@ -132,7 +132,7 @@
                             </b-field>
                             <li v-if="finderColumn.length">
                                 <div
-                                        v-if="finderColumn.length < totalRemaining[key].remaining"
+                                        v-if="totalRemaining[key].hasMoreTerms"
                                         @click="getMoreOptions(finderColumn, key)"
                                         class="tainacan-show-more">
                                     <span class="icon">
@@ -518,7 +518,7 @@
 
                 this.totalRemaining = Object.assign({}, this.totalRemaining, {
                     [`${column == undefined ? 0 : column+1}`]: {
-                        remaining: res.headers['x-wp-total'],
+                        hasMoreTerms: res.data.last_term != null,
                     }
                 });
 
