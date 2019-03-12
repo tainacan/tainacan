@@ -315,6 +315,7 @@ registerBlockType('tainacan/terms-list', {
                         title={__('Select the desired terms for taxonomy ' + taxonomyName, 'tainacan')}
                         onRequestClose={ () => setAttributes( { isModalOpen: false } ) }
                         contentLabel={__('Select terms', 'tainacan')}>
+                        
                     <div>
                         <div className="modal-terms-search-area">
                             <TextControl 
@@ -355,6 +356,7 @@ registerBlockType('tainacan/terms-list', {
                                         )
                                     }                                                
                                     </ul>
+                                    { isLoadingTerms ? <Spinner /> : null }
                                 </div>
                             )
                             : isLoadingTerms ? <Spinner/> :
@@ -386,6 +388,7 @@ registerBlockType('tainacan/terms-list', {
                                     )
                                 }                                                
                                 </ul>
+                                { isLoadingTerms ? <Spinner /> : null }
                                 <div className="modal-terms-loadmore-section">
                                     <p>{ __('Showing', 'tainacan') + " " + modalTerms.length + " " + __('of', 'tainacan') + " " + totalModalTerms + " " + __('terms', 'tainacan') + "."}</p>
                                     {

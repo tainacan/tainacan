@@ -6,7 +6,8 @@
   .wp-block-tainacan-terms-list .block-control {
     display: flex;
     flex-direction: row;
-    justify-content: center; }
+    justify-content: center;
+    padding: 12px; }
   .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid,
   .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid {
     padding: 0;
@@ -146,6 +147,10 @@
   @media only screen and (max-width: 768px) {
     .wp-block-tainacan-terms-modal {
       width: 100%; } }
+  .wp-block-tainacan-terms-modal .components-spinner {
+    position: absolute;
+    right: 5%;
+    bottom: 84px; }
   .wp-block-tainacan-terms-modal .modal-terms-search-area {
     display: flex;
     justify-content: center;
@@ -222,7 +227,8 @@
   .wp-block-tainacan-items-list .block-control {
     display: flex;
     flex-direction: row;
-    justify-content: center; }
+    justify-content: center;
+    padding: 12px; }
   .wp-block-tainacan-items-list ul.items-list.items-list-without-margin,
   .wp-block-tainacan-items-list ul.items-list-edit.items-list-without-margin {
     grid-template-columns: repeat(auto-fill, 185px);
@@ -443,6 +449,233 @@
       color: #555758;
       margin-right: 12px; }
   .wp-block-tainacan-items-modal .modal-items-footer {
+    border-top: 1px solid #e2e4e7;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 16px 16px 0 16px;
+    margin: 0 -16px; }
+
+.wp-block-tainacan-collections-list {
+  margin: 1rem 0px; }
+  .wp-block-tainacan-collections-list .components-spinner {
+    position: absolute;
+    right: 0; }
+  .wp-block-tainacan-collections-list .block-control {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 12px; }
+  .wp-block-tainacan-collections-list ul.collections-list.collections-list-without-margin,
+  .wp-block-tainacan-collections-list ul.collections-list-edit.collections-list-without-margin {
+    grid-template-columns: repeat(auto-fill, 185px);
+    justify-content: center !important;
+    grid-template-rows: auto !important; }
+    .wp-block-tainacan-collections-list ul.collections-list.collections-list-without-margin li,
+    .wp-block-tainacan-collections-list ul.collections-list-edit.collections-list-without-margin li {
+      margin-top: 0 !important;
+      margin-right: 0 !important;
+      margin-left: 0 !important;
+      height: 185px !important; }
+      .wp-block-tainacan-collections-list ul.collections-list.collections-list-without-margin li img,
+      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-list-without-margin li img {
+        height: 185px !important;
+        margin-bottom: 0px !important; }
+  .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid,
+  .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid {
+    padding: 0;
+    display: -ms-grid;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 220px);
+    grid-gap: 0px;
+    justify-content: space-evenly;
+    list-style-type: none; }
+    .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item,
+    .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item {
+      position: relative;
+      display: block;
+      margin: 12px 12px 24px 12px;
+      margin-bottom: 12px;
+      width: 185px; }
+      .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item a,
+      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item a {
+        color: #454647;
+        font-weight: bold;
+        line-height: 2rem; }
+      .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item img,
+      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item img {
+        height: auto;
+        width: 185px;
+        min-width: 185px;
+        padding: 0px; }
+      .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item a.collection-without-name span,
+      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item a.collection-without-name span {
+        display: none; }
+      .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item:hover a,
+      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item:hover a {
+        color: #454647;
+        text-decoration: none; }
+  .wp-block-tainacan-collections-list ul.collections-list-edit li.collection-list-item {
+    display: flex;
+    align-items: flex-start; }
+    .wp-block-tainacan-collections-list ul.collections-list-edit li.collection-list-item button {
+      position: absolute !important;
+      background-color: rgba(255, 255, 255, 0.75);
+      color: #454647;
+      padding: 2px;
+      margin-left: 5px;
+      min-width: 14px;
+      visibility: hidden;
+      position: relative;
+      opacity: 0;
+      right: -12px;
+      justify-content: center; }
+    .wp-block-tainacan-collections-list ul.collections-list-edit li.collection-list-item:hover button {
+      visibility: visible;
+      opacity: 1;
+      right: 0px;
+      transition: opacity linear 0.15s, right linear 0.15s; }
+  @media only screen and (max-width: 498px) {
+    .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid,
+    .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid {
+      grid-template-columns: repeat(auto-fill, 100%); }
+      .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item,
+      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item {
+        width: 100%; }
+        .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item img,
+        .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item img {
+          width: 100%; } }
+  .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list,
+  .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list {
+    padding: 0;
+    display: block;
+    list-style-type: none; }
+    .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list li.collection-list-item,
+    .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list li.collection-list-item {
+      position: relative;
+      display: inline-block;
+      margin: 12px 12px 24px 12px;
+      margin-bottom: 12px;
+      min-height: 54px;
+      min-width: 22%;
+      width: 22%; }
+      .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list li.collection-list-item a,
+      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list li.collection-list-item a {
+        color: #454647;
+        display: flex;
+        align-items: center;
+        height: 54px; }
+      .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list li.collection-list-item img,
+      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list li.collection-list-item img {
+        height: auto;
+        width: 54px;
+        min-width: 54px;
+        padding: 0px;
+        margin-right: 20px; }
+      .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list li.collection-list-item a.collection-without-image img,
+      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list li.collection-list-item a.collection-without-image img {
+        display: none; }
+      .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list li.collection-list-item:hover a,
+      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list li.collection-list-item:hover a {
+        color: #454647;
+        text-decoration: none; }
+  .wp-block-tainacan-collections-list ul.collections-list-edit li.collection-list-item button {
+    position: absolute !important;
+    background-color: rgba(255, 255, 255, 0.75);
+    color: #454647;
+    padding: 2px;
+    margin-left: 5px;
+    min-width: 14px;
+    visibility: hidden;
+    position: relative;
+    opacity: 0;
+    right: -12px;
+    justify-content: center; }
+  .wp-block-tainacan-collections-list ul.collections-list-edit li.collection-list-item:hover button {
+    visibility: visible;
+    opacity: 1;
+    right: 0px;
+    transition: opacity linear 0.15s, right linear 0.15s; }
+  @media only screen and (max-width: 1600px) {
+    .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list li.collection-list-item,
+    .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list li.collection-list-item {
+      min-width: 30%;
+      width: 30%; } }
+  @media only screen and (max-width: 1024px) {
+    .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list li.collection-list-item,
+    .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list li.collection-list-item {
+      min-width: 45%;
+      width: 45%; } }
+  @media only screen and (max-width: 768px) {
+    .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list li.collection-list-item,
+    .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list li.collection-list-item {
+      min-width: 100%;
+      width: 100%; } }
+
+.wp-block-tainacan-collections-modal {
+  width: 50%; }
+  @media only screen and (max-width: 1024px) {
+    .wp-block-tainacan-collections-modal {
+      width: 75%; } }
+  @media only screen and (max-width: 768px) {
+    .wp-block-tainacan-collections-modal {
+      width: 100%; } }
+  .wp-block-tainacan-collections-modal .components-spinner {
+    position: absolute;
+    right: 5%;
+    bottom: 84px; }
+  .wp-block-tainacan-collections-modal .modal-collections-search-area {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px; }
+    .wp-block-tainacan-collections-modal .modal-collections-search-area .components-base-control {
+      width: 60%; }
+      @media only screen and (max-width: 1024px) {
+        .wp-block-tainacan-collections-modal .modal-collections-search-area .components-base-control {
+          width: 95%; } }
+      .wp-block-tainacan-collections-modal .modal-collections-search-area .components-base-control label {
+        text-align: center; }
+  .wp-block-tainacan-collections-modal .modal-collections-list {
+    padding: 0;
+    display: -ms-grid;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 250px);
+    grid-gap: 0px;
+    justify-content: space-evenly;
+    list-style-type: none;
+    margin: 12px;
+    max-height: 50vh;
+    overflow-y: auto; }
+    .wp-block-tainacan-collections-modal .modal-collections-list .components-base-control {
+      overflow: hidden; }
+    .wp-block-tainacan-collections-modal .modal-collections-list .modal-collections-list-item,
+    .wp-block-tainacan-collections-modal .modal-collections-list .components-radio-control__option {
+      display: flex;
+      justify-content: flex-start; }
+      .wp-block-tainacan-collections-modal .modal-collections-list .modal-collections-list-item img,
+      .wp-block-tainacan-collections-modal .modal-collections-list .components-radio-control__option img {
+        width: 24px;
+        height: 24px;
+        margin-right: 10px; }
+      .wp-block-tainacan-collections-modal .modal-collections-list .modal-collections-list-item label,
+      .wp-block-tainacan-collections-modal .modal-collections-list .components-radio-control__option label {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        display: inline-block;
+        max-width: 85%; }
+        @media only screen and (max-width: 768px) {
+          .wp-block-tainacan-collections-modal .modal-collections-list .modal-collections-list-item label,
+          .wp-block-tainacan-collections-modal .modal-collections-list .components-radio-control__option label {
+            max-width: 80%; } }
+  .wp-block-tainacan-collections-modal .modal-collections-loadmore-section {
+    display: flex;
+    align-items: baseline;
+    justify-content: center; }
+    .wp-block-tainacan-collections-modal .modal-collections-loadmore-section p {
+      color: #555758;
+      margin-right: 12px; }
+  .wp-block-tainacan-collections-modal .modal-collections-footer {
     border-top: 1px solid #e2e4e7;
     display: flex;
     align-items: baseline;

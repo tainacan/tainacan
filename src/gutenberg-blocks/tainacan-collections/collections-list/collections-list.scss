@@ -1,4 +1,4 @@
-.wp-block-tainacan-items-list {
+.wp-block-tainacan-collections-list {
     margin: 1rem 0px;
 
     // Spinner
@@ -16,8 +16,8 @@
     }
 
     // Grid View Mode ----------------------------------------------------
-    ul.items-list.items-list-without-margin,
-    ul.items-list-edit.items-list-without-margin {
+    ul.collections-list.collections-list-without-margin,
+    ul.collections-list-edit.collections-list-without-margin {
         grid-template-columns: repeat(auto-fill, 185px);
         justify-content: center !important;
         grid-template-rows: auto !important;
@@ -34,8 +34,8 @@
             }
         }
     }
-    ul.items-list.items-layout-grid,
-    ul.items-list-edit.items-layout-grid {
+    ul.collections-list.collections-layout-grid,
+    ul.collections-list-edit.collections-layout-grid {
         padding: 0;
         display: -ms-grid;
         display: grid;
@@ -44,7 +44,7 @@
         justify-content: space-evenly;
         list-style-type: none;
 
-        li.item-list-item {
+        li.collection-list-item {
             position: relative;
             display: block;
             margin: 12px 12px 24px 12px;
@@ -64,7 +64,7 @@
                 padding: 0px;
             }
 
-            a.item-without-title span {
+            a.collection-without-name span {
                 display: none;
             }
 
@@ -74,7 +74,7 @@
             }
         }
     }
-    ul.items-list-edit li.item-list-item {
+    ul.collections-list-edit li.collection-list-item {
         display: flex;
         align-items: flex-start;
 
@@ -101,11 +101,11 @@
     }
     @media only screen and (max-width: 498px) { 
         
-        ul.items-list.items-layout-grid,
-        ul.items-list-edit.items-layout-grid {
+        ul.collections-list.collections-layout-grid,
+        ul.collections-list-edit.collections-layout-grid {
             grid-template-columns: repeat(auto-fill, 100%);
 
-            li.item-list-item { 
+            li.collection-list-item { 
                 width: 100%;
                 img { width: 100%; }
             }
@@ -113,13 +113,13 @@
     }
 
     // List View Mode ----------------------------------------------------
-    ul.items-list.items-layout-list,
-    ul.items-list-edit.items-layout-list {
+    ul.collections-list.collections-layout-list,
+    ul.collections-list-edit.collections-layout-list {
         padding: 0;
         display: block;
         list-style-type: none;
 
-        li.item-list-item {
+        li.collection-list-item {
             position: relative;
             display: inline-block;
             margin: 12px 12px 24px 12px;
@@ -146,7 +146,7 @@
                 margin-right: 20px;
             }
 
-            a.item-without-image img {
+            a.collection-without-image img {
                 display: none;
             }
 
@@ -156,7 +156,7 @@
             }
         }
     }
-    ul.items-list-edit li.item-list-item {
+    ul.collections-list-edit li.collection-list-item {
 
         button {
             position: absolute !important;
@@ -182,31 +182,31 @@
 
 
     @media only screen and (max-width: 1600px) {  
-        ul.items-list.items-layout-list li.item-list-item,
-        ul.items-list-edit.items-layout-list li.item-list-item  {        
+        ul.collections-list.collections-layout-list li.collection-list-item,
+        ul.collections-list-edit.collections-layout-list li.collection-list-item  {        
             min-width: 30%;
             width: 30%;
         }
     }
 
     @media only screen and (max-width: 1024px) {  
-        ul.items-list.items-layout-list li.item-list-item,
-        ul.items-list-edit.items-layout-list li.item-list-item  {        
+        ul.collections-list.collections-layout-list li.collection-list-item,
+        ul.collections-list-edit.collections-layout-list li.collection-list-item  {        
             min-width: 45%;
             width: 45%;
         }
     }
 
     @media only screen and (max-width: 768px) {  
-        ul.items-list.items-layout-list li.item-list-item,
-        ul.items-list-edit.items-layout-list li.item-list-item {       
+        ul.collections-list.collections-layout-list li.collection-list-item,
+        ul.collections-list-edit.collections-layout-list li.collection-list-item {       
             min-width: 100%;
             width: 100%;
         }
     }
 
 }
-.wp-block-tainacan-items-modal {
+.wp-block-tainacan-collections-modal {
     width: 50%;
 
     @media only screen and (max-width: 1024px) {  width: 75% }
@@ -219,7 +219,7 @@
         bottom: 84px;
     }
 
-    .modal-items-search-area {
+    .modal-collections-search-area {
         display: flex;
         justify-content: center;
         margin-bottom: 24px;
@@ -235,8 +235,7 @@
         }
     }
 
-    .modal-items-list,
-    .modal-collections-list .components-base-control__field {
+    .modal-collections-list {
         padding: 0;
         display: -ms-grid;
         display: grid;
@@ -252,7 +251,7 @@
             overflow: hidden;
         }
     
-        .modal-items-list-item,
+        .modal-collections-list-item,
         .components-radio-control__option {
             display: flex;
             justify-content: flex-start;
@@ -273,7 +272,7 @@
             }
         }
     }
-    .modal-items-loadmore-section {
+    .modal-collections-loadmore-section {
         display: flex;
         align-items: baseline;
         justify-content: center;
@@ -283,7 +282,7 @@
             margin-right: 12px;
         }
     }
-    .modal-items-footer {
+    .modal-collections-footer {
         border-top: 1px solid #e2e4e7;
         display: flex;
         align-items: baseline;
