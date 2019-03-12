@@ -8,7 +8,7 @@ module.exports = {
         user_search: './src/admin/js/theme-main.js',
         user_admin: './src/admin/js/main.js',
         //gutenberg_collections_carousel: './src/gutenberg-blocks/tainacan-collections/collections-carousel/index.js',
-        gutenberg_items_grid: './src/gutenberg-blocks/tainacan-items/items-grid/index.js',
+        // gutenberg_items_grid: './src/gutenberg-blocks/tainacan-items/items-grid/index.js',
         gutenberg_terms_list: './src/gutenberg-blocks/tainacan-terms/terms-list/index.js',
         gutenberg_items_list: './src/gutenberg-blocks/tainacan-items/items-list/index.js',
     },

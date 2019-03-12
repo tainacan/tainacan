@@ -829,16 +829,18 @@ registerBlockType('tainacan/items-list', {
                                             } 
                                         }
                                     />
-                                    <RangeControl
-                                        label={__('Margin', 'tainacan')}
-                                        value={ gridMargin }
-                                        onChange={ ( margin ) => {
-                                            setAttributes( { gridMargin: margin } ) 
-                                            setContent();
-                                        }}
-                                        min={ 0 }
-                                        max={ 48 }
-                                    />
+                                    <div style={{ marginTop: '16px'}}>
+                                        <RangeControl
+                                            label={__('Margin between items', 'tainacan')}
+                                            value={ gridMargin }
+                                            onChange={ ( margin ) => {
+                                                setAttributes( { gridMargin: margin } ) 
+                                                setContent();
+                                            }}
+                                            min={ 0 }
+                                            max={ 48 }
+                                        />
+                                    </div>
                                 </div>
                             : null }
                         </div>
