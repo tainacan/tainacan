@@ -225,12 +225,14 @@
     justify-content: center; }
   .wp-block-tainacan-items-list ul.items-list.items-list-without-margin,
   .wp-block-tainacan-items-list ul.items-list-edit.items-list-without-margin {
-    grid-template-columns: repeat(auto-fill, 185px) !important;
+    grid-template-columns: repeat(auto-fill, 185px);
     justify-content: center !important;
     grid-template-rows: auto !important; }
     .wp-block-tainacan-items-list ul.items-list.items-list-without-margin li,
     .wp-block-tainacan-items-list ul.items-list-edit.items-list-without-margin li {
-      margin: 0;
+      margin-top: 0 !important;
+      margin-right: 0 !important;
+      margin-left: 0 !important;
       height: 185px !important; }
       .wp-block-tainacan-items-list ul.items-list.items-list-without-margin li img,
       .wp-block-tainacan-items-list ul.items-list-edit.items-list-without-margin li img {
@@ -261,8 +263,7 @@
         height: auto;
         width: 185px;
         min-width: 185px;
-        padding: 0px;
-        margin-bottom: 10px; }
+        padding: 0px; }
       .wp-block-tainacan-items-list ul.items-list.items-layout-grid li.item-list-item a.item-without-title span,
       .wp-block-tainacan-items-list ul.items-list-edit.items-layout-grid li.item-list-item a.item-without-title span {
         display: none; }

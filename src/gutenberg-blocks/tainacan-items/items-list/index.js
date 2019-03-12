@@ -207,7 +207,7 @@ registerBlockType('tainacan/items-list', {
                 <li 
                     key={ item.id }
                     className="item-list-item"
-                    style={{ marginTop: layout == 'grid' ?  gridMargin + 'px' : ''}}>
+                    style={{ marginBottom: layout == 'grid' ?  gridMargin + 'px' : ''}}>
                     <IconButton
                         onClick={ () => removeItemOfId(item.id) }
                         icon="no-alt"
@@ -461,7 +461,11 @@ registerBlockType('tainacan/items-list', {
 
             setAttributes({
                 content: (
-                    <ul className={'items-list  items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')}>{ selectedItemsHTML }</ul>
+                    <ul 
+                        style={{ gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' +  (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit' }}
+                        className={'items-list  items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')}>
+                        { selectedItemsHTML }
+                    </ul>
                 ),
                 selectedItemsHTML: selectedItemsHTML
             });
@@ -833,7 +837,7 @@ registerBlockType('tainacan/items-list', {
                                             setContent();
                                         }}
                                         min={ 0 }
-                                        max={ 24 }
+                                        max={ 48 }
                                     />
                                 </div>
                             : null }
@@ -873,7 +877,7 @@ registerBlockType('tainacan/items-list', {
                 }
 
                 <ul 
-                    style={{ gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' +  gridMargin + 185 + 'px)' : 'inherit' }}
+                    style={{ gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' +  (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit' }}
                     className={'items-list-edit items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')}>
                     { selectedItemsHTML }
                 </ul>

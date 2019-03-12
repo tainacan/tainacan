@@ -17,12 +17,14 @@
     // Grid View Mode ----------------------------------------------------
     ul.items-list.items-list-without-margin,
     ul.items-list-edit.items-list-without-margin {
-        grid-template-columns: repeat(auto-fill, 185px) !important;
+        grid-template-columns: repeat(auto-fill, 185px);
         justify-content: center !important;
         grid-template-rows: auto !important;
         
         li {
-            margin: 0;
+            margin-top: 0 !important;
+            margin-right: 0 !important;
+            margin-left: 0 !important;
             height: 185px !important;
 
             img { 
@@ -51,6 +53,7 @@
             a { 
                 color: #454647; 
                 font-weight: bold;
+                line-height: 2rem;
             }
 
             img {
@@ -58,7 +61,6 @@
                 width: 185px;
                 min-width: 185px;
                 padding: 0px;
-                margin-bottom: 10px;
             }
 
             a.item-without-title span {
