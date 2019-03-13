@@ -205,12 +205,12 @@ registerBlockType('tainacan/terms-list', {
         function renderTaxonomyModalContent() {
             return (
                 <Modal
-                    className="wp-block-tainacan-terms-modal"
+                    className="wp-block-tainacan-modal"
                     title={__('Select a taxonomy to fetch terms from', 'tainacan')}
                     onRequestClose={ () => setAttributes( { isModalOpen: false } ) }
                     contentLabel={__('Select terms', 'tainacan')}>
                     <div>
-                        <div className="modal-terms-search-area">
+                        <div className="modal-search-area">
                             <TextControl 
                                     label={__('Search for a taxonomy', 'tainacan')}
                                     value={ searchTaxonomyName }
@@ -226,7 +226,7 @@ registerBlockType('tainacan/terms-list', {
                             taxonomies.length > 0 ?
                             (
                                 <div>
-                                    <div className="modal-taxonomies-list">
+                                    <div className="modal-radio-list">
                                         {
                                         <RadioControl
                                             selected={ temporaryTaxonomyId }
@@ -246,14 +246,14 @@ registerBlockType('tainacan/terms-list', {
                             isLoadingTaxonomies ? (
                                 <Spinner />
                             ) :
-                            <div className="modal-terms-loadmore-section">
+                            <div className="modal-loadmore-section">
                                 <p>{ __('Sorry, no taxonomy found.', 'tainacan') }</p>
                             </div> 
                         ):
                         modalTaxonomies.length > 0 ? 
                         (   
                             <div>
-                                <div className="modal-taxonomies-list">
+                                <div className="modal-radio-list">
                                     {
                                     <RadioControl
                                         selected={ temporaryTaxonomyId }
@@ -268,7 +268,7 @@ registerBlockType('tainacan/terms-list', {
                                         } } />
                                     }                                     
                                 </div>
-                                <div className="modal-terms-loadmore-section">
+                                <div className="modal-loadmore-section">
                                     <p>{ __('Showing', 'tainacan') + " " + modalTaxonomies.length + " " + __('of', 'tainacan') + " " + totalModalTaxonomies + " " + __('taxonomies', 'tainacan') + "."}</p>
                                     {
                                         modalTaxonomies.length < totalModalTaxonomies ? (
@@ -283,11 +283,11 @@ registerBlockType('tainacan/terms-list', {
                                 </div>
                             </div>
                         ) : isLoadingTaxonomies ? <Spinner/> :
-                        <div className="modal-terms-loadmore-section">
+                        <div className="modal-loadmore-section">
                             <p>{ __('Sorry, no taxonomy found.', 'tainacan') }</p>
                         </div>
                     )}
-                    <div className="modal-terms-footer">
+                    <div className="modal-footer-area">
                         <Button 
                             isDefault
                             onClick={ () => {
@@ -311,13 +311,13 @@ registerBlockType('tainacan/terms-list', {
         function renderTermsModalContent() {
             return (
                 <Modal
-                        className="wp-block-tainacan-terms-modal"
+                        className="wp-block-tainacan-modal"
                         title={__('Select the desired terms from taxonomy ' + taxonomyName, 'tainacan')}
                         onRequestClose={ () => setAttributes( { isModalOpen: false } ) }
                         contentLabel={__('Select terms', 'tainacan')}>
                         
                     <div>
-                        <div className="modal-terms-search-area">
+                        <div className="modal-search-area">
                             <TextControl 
                                     label={__('Search for a term', 'tainacan')}
                                     value={ searchTermName }
@@ -334,12 +334,12 @@ registerBlockType('tainacan/terms-list', {
                             terms.length > 0 ?
                             (
                                 <div>
-                                    <ul className="modal-terms-list">
+                                    <ul className="modal-checkbox-list">
                                     {
                                         terms.map((term) =>
                                         <li 
                                             key={ term.id }
-                                            className="modal-terms-list-item">
+                                            className="modal-checkbox-list-item">
                                             { term.header_image && showImage ?
                                                 <img
                                                     aria-hidden
@@ -360,19 +360,19 @@ registerBlockType('tainacan/terms-list', {
                                 </div>
                             )
                             : isLoadingTerms ? <Spinner/> :
-                            <div className="modal-terms-loadmore-section">
+                            <div className="modal-loadmore-section">
                                 <p>{ __('Sorry, no terms found.', 'tainacan') }</p>
                             </div>
                         ) : 
                         modalTerms.length > 0 ? 
                         (   
                             <div>
-                                <ul className="modal-terms-list">
+                                <ul className="modal-checkbox-list">
                                 {
                                     modalTerms.map((term) =>
                                         <li 
                                             key={ term.id }
-                                            className="modal-terms-list-item">
+                                            className="modal-checkbox-list-item">
                                             { term.header_image && showImage ?
                                                 <img
                                                     aria-hidden
@@ -389,7 +389,7 @@ registerBlockType('tainacan/terms-list', {
                                 }                                                
                                 </ul>
                                 { isLoadingTerms ? <Spinner /> : null }
-                                <div className="modal-terms-loadmore-section">
+                                <div className="modal-loadmore-section">
                                     <p>{ __('Showing', 'tainacan') + " " + modalTerms.length + " " + __('of', 'tainacan') + " " + totalModalTerms + " " + __('terms', 'tainacan') + "."}</p>
                                     {
                                         modalTerms.length < totalModalTerms ? (
@@ -404,11 +404,11 @@ registerBlockType('tainacan/terms-list', {
                                 </div>
                             </div>
                         ) : isLoadingTerms ? <Spinner /> :
-                        <div className="modal-terms-loadmore-section">
+                        <div className="modal-loadmore-section">
                             <p>{ __('Sorry, no terms found.', 'tainacan') }</p>
                         </div>
                     )}
-                    <div className="modal-terms-footer">
+                    <div className="modal-footer-area">
                         <Button
                             isDefault
                             onClick={ () => resetTaxonomies() }>
