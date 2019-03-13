@@ -147,4 +147,62 @@ class Permissions extends TAINACAN_UnitTestCase {
 		
 	}
 	
+	/**
+	 * @group permission_others_collections
+	 */
+	function test_edit_others_collections_tainacan_role() {
+		
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'          => 'teste1',
+				'description'   => 'adasdasdsa',
+			),
+			true
+		);
+		
+		$item = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'testeItem',
+				'collection' => $collection,
+			),
+			true
+		);
+	
+		$new_author_user = $this->factory()->user->create(array( 'role' => 'tainacan-author' ));
+		wp_set_current_user($new_author_user);
+		
+		$collection2 = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'          => 'teste2',
+				'description'   => 'adasdasdsa',
+			),
+			true
+		);
+		
+		$item2 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'testeItem',
+				'collection' => $collection2,
+			),
+			true
+		);
+		
+		// Once we had a bug that items of all collections shared the same capability type. they should not.
+		// This test avoid it to happen
+        $this->assertNotEquals($item2->get_capabilities()->edit_posts, $item->get_capabilities()->edit_posts);
+        
+		$this->assertTrue(current_user_can( $item2->get_capabilities()->edit_post, $item2->get_id() ), 'author should be able to edit items in his collection');
+		$this->assertFalse(current_user_can( $item->get_capabilities()->edit_post, $item->get_id() ), 'author should not be able to edit items in admins collection');
+		
+		$this->assertTrue($item2->can_edit(), 'author should be able to edit items in his collection');
+		$this->assertFalse($item->can_edit(), 'author should not be able to edit items in admins collection');
+		
+		$this->assertNotEquals($item->get_capabilities()->edit_posts, $item2->get_capabilities()->edit_posts);
+		
+	}
+	
 }
