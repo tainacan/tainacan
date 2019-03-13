@@ -405,19 +405,20 @@ class REST_Items_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function prepare_item_for_database( $request ) {
-
+		
+		$item = new Entities\Item();
+		
 		$item_as_array = $request[0];
 
 		foreach ($item_as_array as $key => $value){
-			$set_ = 'set_' . $key;
-			$this->item->$set_($value);
+			$item->set($key, $value);
 		}
 
 		$collection = $this->collections_repository->fetch($request[1]);
 
-		$this->item->set_collection($collection);
+		$item->set_collection($collection);
 
-		return $this->item;
+		return $item;
 	}
 
 	/**
@@ -438,13 +439,13 @@ class REST_Items_Controller extends REST_Controller {
 		}
 
 		try {
-			$this->prepare_item_for_database( [ $item, $collection_id ] );
+			$item_obj = $this->prepare_item_for_database( [ $item, $collection_id ] );
 		} catch (\Exception $exception){
 			return new \WP_REST_Response($exception->getMessage(), 400);
 		}
 
 		if($this->item->validate()) {
-			$item = $this->items_repository->insert($this->item );
+			$item = $this->items_repository->insert( $item_obj );
 
 			return new \WP_REST_Response($this->prepare_item_for_response($item, $request), 201 );
 		}
