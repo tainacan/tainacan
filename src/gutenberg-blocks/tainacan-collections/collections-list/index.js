@@ -179,13 +179,13 @@ registerBlockType('tainacan/collections-list', {
         function renderCollectionsModalContent() {
             return (
                 <Modal
-                        className="wp-block-tainacan-collections-modal"
+                        className="wp-block-tainacan-modal"
                         title={__('Select the desired collections from your repository', 'tainacan')}
                         onRequestClose={ () => setAttributes( { isModalOpen: false } ) }
                         contentLabel={__('Select collections', 'tainacan')}>
 
                     <div>
-                        <div className="modal-collections-search-area">
+                        <div className="modal-search-area">
                             <TextControl 
                                     label={__('Search for a collection', 'tainacan')}
                                     value={ searchCollectionName }
@@ -202,12 +202,12 @@ registerBlockType('tainacan/collections-list', {
                             collections.length > 0 ?
                             (
                                 <div>
-                                    <ul className="modal-collections-list">
+                                    <ul className="modal-checkbox-list">
                                     {
                                         collections.map((collection) =>
                                         <li 
                                             key={ collection.id }
-                                            className="modal-collections-list-item">
+                                            className="modal-checkbox-list-item">
                                             { collection.thumbnail && showImage ?
                                                 <img
                                                     aria-hidden
@@ -228,19 +228,19 @@ registerBlockType('tainacan/collections-list', {
                                 </div>
                             )
                             : isLoadingCollections ? <Spinner/> :
-                            <div className="modal-collections-loadmore-section">
+                            <div className="modal-loadmore-section">
                                 <p>{ __('Sorry, no collections found.', 'tainacan') }</p>
                             </div>
                         ) : 
                         modalCollections.length > 0 ? 
                         (   
                             <div>
-                                <ul className="modal-collections-list">
+                                <ul className="modal-checkbox-list">
                                 {
                                     modalCollections.map((collection) =>
                                         <li 
                                             key={ collection.id }
-                                            className="modal-collections-list-item">
+                                            className="modal-checkbox-list-item">
                                             { collection.thumbnail && showImage ?
                                                 <img
                                                     aria-hidden
@@ -257,7 +257,7 @@ registerBlockType('tainacan/collections-list', {
                                 } 
                                 { isLoadingCollections ? <Spinner/> : null }                                               
                                 </ul>
-                                <div className="modal-collections-loadmore-section">
+                                <div className="modal-loadmore-section">
                                     <p>{ __('Showing', 'tainacan') + " " + modalCollections.length + " " + __('of', 'tainacan') + " " + totalModalCollections + " " + __('collections', 'tainacan') + "."}</p>
                                     {
                                         modalCollections.length < totalModalCollections ? (
@@ -272,11 +272,11 @@ registerBlockType('tainacan/collections-list', {
                                 </div>
                             </div>
                         ) : isLoadingCollections ? <Spinner /> :
-                        <div className="modal-collections-loadmore-section">
+                        <div className="modal-loadmore-section">
                             <p>{ __('Sorry, no collections found.', 'tainacan') }</p>
                         </div>
                     )}
-                    <div className="modal-collections-footer">
+                    <div className="modal-footer-area">
                         <Button
                             isDefault
                             onClick={ () => cancelSelection() }>

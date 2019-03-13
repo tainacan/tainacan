@@ -229,12 +229,12 @@ registerBlockType('tainacan/items-list', {
         function renderCollectionModalContent() {
             return (
                 <Modal
-                    className="wp-block-tainacan-items-modal"
+                    className="wp-block-tainacan-modal"
                     title={__('Select a collection to fetch items from', 'tainacan')}
                     onRequestClose={ () => setAttributes( { isModalOpen: false } ) }
                     contentLabel={__('Select items', 'tainacan')}>
                     <div>
-                        <div className="modal-items-search-area">
+                        <div className="modal-search-area">
                             <TextControl 
                                     label={__('Search for a collection', 'tainacan')}
                                     value={ searchCollectionName }
@@ -250,7 +250,7 @@ registerBlockType('tainacan/items-list', {
                             collections.length > 0 ?
                             (
                                 <div>
-                                    <div className="modal-collections-list">
+                                    <div className="modal-radio-list">
                                         {
                                         <RadioControl
                                             selected={ temporaryCollectionId }
@@ -271,14 +271,14 @@ registerBlockType('tainacan/items-list', {
                             isLoadingCollections ? (
                                 <Spinner />
                             ) :
-                            <div className="modal-items-loadmore-section">
+                            <div className="modal-loadmore-section">
                                 <p>{ __('Sorry, no collection found.', 'tainacan') }</p>
                             </div> 
                         ):
                         modalCollections.length > 0 ? 
                         (   
                             <div>
-                                <div className="modal-collections-list">
+                                <div className="modal-radio-list">
                                     {
                                     <RadioControl
                                         selected={ temporaryCollectionId }
@@ -294,7 +294,7 @@ registerBlockType('tainacan/items-list', {
                                     }   
                                     { isLoadingItems ? <Spinner/> : null }                                  
                                 </div>
-                                <div className="modal-items-loadmore-section">
+                                <div className="modal-loadmore-section">
                                     <p>{ __('Showing', 'tainacan') + " " + modalCollections.length + " " + __('of', 'tainacan') + " " + totalModalCollections + " " + __('collections', 'tainacan') + "."}</p>
                                     {
                                         modalCollections.length < totalModalCollections ? (
@@ -309,11 +309,11 @@ registerBlockType('tainacan/items-list', {
                                 </div>
                             </div>
                         ) : isLoadingCollections ? <Spinner/> :
-                        <div className="modal-items-loadmore-section">
+                        <div className="modal-loadmore-section">
                             <p>{ __('Sorry, no collection found.', 'tainacan') }</p>
                         </div>
                     )}
-                    <div className="modal-items-footer">
+                    <div className="modal-footer-area">
                         <Button 
                             isDefault
                             onClick={ () => {
@@ -338,21 +338,21 @@ registerBlockType('tainacan/items-list', {
         function renderItemsModalContent() {
             return (
                 <Modal
-                        className="wp-block-tainacan-items-modal"
-                        title={__('Select the desired items from collection ' + collectionName, 'tainacan')}
-                        onRequestClose={ () => setAttributes( { isModalOpen: false } ) }
-                        contentLabel={__('Select items', 'tainacan')}>
+                    className="wp-block-tainacan-modal"
+                    title={__('Select the desired items from collection ' + collectionName, 'tainacan')}
+                    onRequestClose={ () => setAttributes( { isModalOpen: false } ) }
+                    contentLabel={__('Select items', 'tainacan')}>
                     <div>
-                        <div className="modal-items-search-area">
+                        <div className="modal-search-area">
                             <TextControl 
-                                    label={__('Search for an item', 'tainacan')}
-                                    value={ searchItemName }
-                                    onInput={(value) => {
-                                        setAttributes({ 
-                                            searchItemName: value.target.value
-                                        });
-                                    }}
-                                    onChange={(value) => fetchItems(value)}/>
+                                label={__('Search for an item', 'tainacan')}
+                                value={ searchItemName }
+                                onInput={(value) => {
+                                    setAttributes({ 
+                                        searchItemName: value.target.value
+                                    });
+                                }}
+                                onChange={(value) => fetchItems(value)}/>
                         </div>
                         {(
                         searchItemName != '' ? ( 
@@ -360,12 +360,12 @@ registerBlockType('tainacan/items-list', {
                             items.length > 0 ?
                             (
                                 <div>
-                                    <ul className="modal-items-list">
+                                    <ul className="modal-checkbox-list">
                                     {
                                         items.map((item) =>
                                         <li 
                                             key={ item.id }
-                                            className="modal-items-list-item">
+                                            className="modal-checkbox-list-item">
                                             { item.thumbnail && showImage ?
                                                 <img
                                                     aria-hidden
@@ -386,19 +386,19 @@ registerBlockType('tainacan/items-list', {
                                 </div>
                             )
                             : isLoadingItems ? <Spinner/> :
-                            <div className="modal-items-loadmore-section">
+                            <div className="modal-loadmore-section">
                                 <p>{ __('Sorry, no items found.', 'tainacan') }</p>
                             </div>
                         ) : 
                         modalItems.length > 0 ? 
                         (   
                             <div>
-                                <ul className="modal-items-list">
+                                <ul className="modal-checkbox-list">
                                 {
                                     modalItems.map((item) =>
                                         <li 
                                             key={ item.id }
-                                            className="modal-items-list-item">
+                                            className="modal-checkbox-list-item">
                                             { item.thumbnail && showImage ?
                                                 <img
                                                     aria-hidden
@@ -415,7 +415,7 @@ registerBlockType('tainacan/items-list', {
                                 } 
                                 { isLoadingItems ? <Spinner/> : null }                                               
                                 </ul>
-                                <div className="modal-items-loadmore-section">
+                                <div className="modal-loadmore-section">
                                     <p>{ __('Showing', 'tainacan') + " " + modalItems.length + " " + __('of', 'tainacan') + " " + totalModalItems + " " + __('items', 'tainacan') + "."}</p>
                                     {
                                         modalItems.length < totalModalItems ? (
@@ -430,11 +430,11 @@ registerBlockType('tainacan/items-list', {
                                 </div>
                             </div>
                         ) : isLoadingItems ? <Spinner /> :
-                        <div className="modal-items-loadmore-section">
+                        <div className="modal-loadmore-section">
                             <p>{ __('Sorry, no items found.', 'tainacan') }</p>
                         </div>
                     )}
-                    <div className="modal-items-footer">
+                    <div className="modal-footer-area">
                         <Button
                             isDefault
                             onClick={ () => resetCollections() }>
