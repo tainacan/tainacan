@@ -18,7 +18,7 @@
             </span>
             <span 
                     v-tooltip="{
-                        content: $i18n.get('info_itens_hidden_due_sorting'),
+                        content: $i18n.get('info_items_hidden_due_sorting'),
                         autoHide: false,
                         placement: 'auto-start'
                     }"

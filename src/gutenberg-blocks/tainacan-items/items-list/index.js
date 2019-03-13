@@ -339,13 +339,13 @@ registerBlockType('tainacan/items-list', {
             return (
                 <Modal
                         className="wp-block-tainacan-items-modal"
-                        title={__('Select the desired items for collection ' + collectionName, 'tainacan')}
+                        title={__('Select the desired items from collection ' + collectionName, 'tainacan')}
                         onRequestClose={ () => setAttributes( { isModalOpen: false } ) }
                         contentLabel={__('Select items', 'tainacan')}>
                     <div>
                         <div className="modal-items-search-area">
                             <TextControl 
-                                    label={__('Search for a item', 'tainacan')}
+                                    label={__('Search for an item', 'tainacan')}
                                     value={ searchItemName }
                                     onInput={(value) => {
                                         setAttributes({ 
