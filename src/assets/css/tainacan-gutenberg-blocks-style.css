@@ -210,7 +210,8 @@
     justify-content: center; }
     .wp-block-tainacan-terms-modal .modal-terms-loadmore-section p {
       color: #555758;
-      margin-right: 12px; }
+      margin-right: 12px;
+      margin-top: 2px; }
   .wp-block-tainacan-terms-modal .modal-terms-footer {
     border-top: 1px solid #e2e4e7;
     display: flex;
@@ -447,7 +448,8 @@
     justify-content: center; }
     .wp-block-tainacan-items-modal .modal-items-loadmore-section p {
       color: #555758;
-      margin-right: 12px; }
+      margin-right: 12px;
+      margin-top: 2px; }
   .wp-block-tainacan-items-modal .modal-items-footer {
     border-top: 1px solid #e2e4e7;
     display: flex;
@@ -674,7 +676,8 @@
     justify-content: center; }
     .wp-block-tainacan-collections-modal .modal-collections-loadmore-section p {
       color: #555758;
-      margin-right: 12px; }
+      margin-right: 12px;
+      margin-top: 2px; }
   .wp-block-tainacan-collections-modal .modal-collections-footer {
     border-top: 1px solid #e2e4e7;
     display: flex;

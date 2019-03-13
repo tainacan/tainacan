@@ -392,7 +392,7 @@
                     all: true,
                     order: 'asc',
                     offset: 0,
-                    number: 10,
+                    number: 100,
                 }).then((res) => {
                     this.termList = res.terms;
 

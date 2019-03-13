@@ -1032,6 +1032,7 @@
             },  
             onChangeOrderBy(metadatum) {
                 this.$eventBusSearch.setOrderBy(metadatum);
+                this.showItemsHiddingDueSorting();
             },
             onChangeOrder() {
                 this.order == 'DESC' ? this.$eventBusSearch.setOrder('ASC') : this.$eventBusSearch.setOrder('DESC');
@@ -1321,7 +1322,12 @@
             },
             showItemsHiddingDueSorting() {
 
-                if (this.orderBy != 'title' && this.orderBy != 'date' && this.$userPrefs.get('neverShowItemsHiddenDueSortingDialog') != true) {     
+                if (this.orderBy != undefined && 
+                    this.orderBy != '' && 
+                    this.orderBy != 'title' && 
+                    this.orderBy != 'date' && 
+                    this.$userPrefs.get('neverShowItemsHiddenDueSortingDialog') != true) {     
+
                     this.hasAnOpenModal = true;
 
                     this.$modal.open({

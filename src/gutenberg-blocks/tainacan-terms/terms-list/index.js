@@ -312,7 +312,7 @@ registerBlockType('tainacan/terms-list', {
             return (
                 <Modal
                         className="wp-block-tainacan-terms-modal"
-                        title={__('Select the desired terms for taxonomy ' + taxonomyName, 'tainacan')}
+                        title={__('Select the desired terms from taxonomy ' + taxonomyName, 'tainacan')}
                         onRequestClose={ () => setAttributes( { isModalOpen: false } ) }
                         contentLabel={__('Select terms', 'tainacan')}>
                         
