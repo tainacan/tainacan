@@ -413,7 +413,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 
         //create user as tainacan author
 
-        $new_user = $this->factory()->user->create(array('role' => 'author'));
+        $new_user = $this->factory()->user->create(array('role' => 'tainacan-author'));
         //$new_user = $this->factory()->user->create(array( 'role' => 'administrator' ));
         wp_set_current_user($new_user);
         $user_id = get_current_user_id();

@@ -465,6 +465,16 @@ class Capabilities {
 				$role->add_cap($collection_items_caps->$cap);
 				$this->check_dependencies($role, 'tainacan-items', $cap);
 			}
+			
+			// Tainacan relative role 
+			$role = get_role('tainacan-' . $role_name);
+			if (\is_object($role)) {
+				foreach ($caps as $cap) {
+					$role->add_cap($collection_items_caps->$cap);
+					$this->check_dependencies($role, 'tainacan-items', $cap);
+				}
+			}
+			
 		}
         
         // Refresh roles capabilities for current user to have instant effect
