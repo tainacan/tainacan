@@ -34,7 +34,7 @@ class CSV extends Exporter {
 			
 			// if (!$meta) means this metadata is not mapped in the collection so there is no value for it 
 			// an empty value must be returned so the number of columns matches the header 
-			if (!$meta) {
+			if (!$meta || empty($meta->get_value()) ) {
 				$line[] = '';
 				continue;
 			}
