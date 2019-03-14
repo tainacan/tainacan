@@ -236,6 +236,9 @@ class Admin {
 		
 		$settings['wp_post_types'] = $wp_post_types;
 		
+		// add an alternative to enable select all items in all pages while we temporarly disable bulk edit for all (see #199)
+		$settings['enable_select_all_items_pages'] = defined('TAINACAN_ENABLE_SELECT_ALL_ITEMS_PAGES') ? TAINACAN_ENABLE_SELECT_ALL_ITEMS_PAGES : false; 
+		
 		return $settings;
 		
 	}
