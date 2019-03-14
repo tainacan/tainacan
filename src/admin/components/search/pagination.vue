@@ -13,7 +13,7 @@
                 getLastItemNumber() +
                 $i18n.get('info_of')
             }} 
-            <span :class="{ 'has-text-warning': collectionTotalItems > totalItems }">
+            <span :class="{ 'has-text-warning': isSortingByCustomMetadata }">
                 {{ totalItems + '.' }}
             </span>
             <span 
@@ -24,7 +24,7 @@
                     }"
                     style="margin-top: -3px"
                     class="icon has-text-warning"
-                    v-if="collectionTotalItems > totalItems">
+                    v-if="isSortingByCustomMetadata">
                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-alertcircle" />
             </span>
         </div> 
@@ -106,28 +106,10 @@ export default {
         },
         totalPages(){
             return Math.ceil(Number(this.totalItems)/Number(this.itemsPerPage));    
-        },
-        collectionTotalItems() {
-            let collectionTotalItemsObject = this.getCollectionTotalItems().total_items;
-            if (collectionTotalItemsObject) {
-                let newCollectionTotalItems;
-
-                switch(this.getStatus()) {
-                    case 'draft':
-                        newCollectionTotalItems = collectionTotalItemsObject.draft;
-                        break;
-                    case 'trash':
-                        newCollectionTotalItems = collectionTotalItemsObject.trash;
-                        break;
-                    default:
-                        newCollectionTotalItems = Number(collectionTotalItemsObject.publish) + Number(collectionTotalItemsObject.private);
-                }
-                   
-                return newCollectionTotalItems;
-
-            } else
-                return this.totalItems;
         }
+    },
+    props: {
+        isSortingByCustomMetadata: Boolean
     },
     watch: {
         page( value ){
@@ -136,15 +118,11 @@ export default {
         }
     },
     methods: {
-         ...mapGetters('collection', [
-            'getCollectionTotalItems'
-        ]),
         ...mapGetters('search', [
             'getTotalItems',
             'getPage',
             'getItemsPerPage',
-            'getPostQuery',
-            'getStatus'
+            'getPostQuery'
         ]),
         onChangeItemsPerPage(value) {
             if( this.itemsPerPage == value){
