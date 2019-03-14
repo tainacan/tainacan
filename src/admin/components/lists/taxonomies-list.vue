@@ -58,6 +58,10 @@
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_description') }}</div>
                         </th>
+                        <!-- Collections -->
+                        <th>
+                            <div class="th-wrap">{{ $i18n.get('label_collections_using') }}</div>
+                        </th>
                         <!-- Actions -->
                         <th class="actions-header">
                             &nbsp;
@@ -113,6 +117,24 @@
                                         placement: 'auto-start'
                                     }"
                                     v-html="(taxonomy.description != undefined && taxonomy.description != '') ? taxonomy.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`" />
+                        </td>
+                        <!-- Collections using -->
+                        <td
+                                class="column-large-width" 
+                                @click="onClickTaxonomy($event, taxonomy.id, index)"
+                                :label="$i18n.get('label_collections_using')" 
+                                :aria-label="$i18n.get('label_description') + ': ' + taxonomy.collections_ids != undefined && taxonomy.collections_ids.length != undefined && taxonomy.collections_ids.length > 0? taxonomy.collections_ids.length + ' ' + (taxonomy.collections_ids.length > 1 ? $i18n.get('collection') : $i18n.get('collections')) : `<span class='has-text-gray is-italic'>` + $i18n.get('label_no_collections_using_taxonomy') + `</span>`">
+                            <p
+                                    v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
+                                        content: taxonomy.collections_ids != undefined && taxonomy.collections_ids.length != undefined && taxonomy.collections_ids.length > 0 ? taxonomy.collections_ids.length + ' ' + (taxonomy.collections_ids.length > 1 ? $i18n.get('collections') : $i18n.get('collection')) : `<span class='has-text-gray is-italic'>` + $i18n.get('label_no_collections_using_taxonomy') + `</span>`,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }"
+                                    v-html="(taxonomy.collections_ids != undefined && taxonomy.collections_ids.length != undefined && taxonomy.collections_ids.length > 0) ? taxonomy.collections_ids.length + ' ' + (taxonomy.collections_ids.length > 1 ? $i18n.get('collections') : $i18n.get('collection')) : `<span class='has-text-gray is-italic'>` + $i18n.get('label_no_collections_using_taxonomy') + `</span>`" />
                         </td>
                         <!-- Actions -->
                         <td 

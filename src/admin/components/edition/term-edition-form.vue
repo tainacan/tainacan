@@ -11,14 +11,14 @@
         <!-- Header Image -------------------------------- -->
         <b-field
                 :addons="false"
-                :label="$i18n.get('label_header_image')">
+                :label="$i18n.get('label_image')">
             <div class="thumbnail-field">
                 <figure class="image">
                     <span
                             v-if="editForm.header_image === undefined || editForm.header_image === false"
-                            class="image-placeholder">{{ $i18n.get('label_empty_header_image') }}</span>
+                            class="image-placeholder">{{ $i18n.get('label_empty_term_image') }}</span>
                     <img
-                            :alt="$i18n.get('label_header_image')"
+                            :alt="$i18n.get('label_image')"
                             :src="(editForm.header_image === undefined || editForm.header_image === false) ? headerPlaceholderPath : editForm.header_image">
                 </figure>
                 <div class="thumbnail-buttons-row">
