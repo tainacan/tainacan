@@ -145,6 +145,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_image'                                    => __( 'Image', 'tainacan' ),
 	'label_thumbnail'                                => __( 'Thumbnail', 'tainacan' ),
 	'label_empty_thumbnail'                          => __( 'Empty Thumbnail', 'tainacan' ),
+	'label_empty_term_image'                         => __( 'Empty Term Image', 'tainacan' ),
 	'label_moderators'                               => __( 'Moderators', 'tainacan' ),
 	'label_parent_collection'                        => __( 'Parent collection', 'tainacan' ),
 	'label_no_parent_collection'                     => __( 'No parent collection', 'tainacan' ),
@@ -372,8 +373,10 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_open_item'							     => __( 'Open item', 'tainacan' ),
 	'label_open_item_new_tab'					     => __( 'Open item on new tab', 'tainacan' ),
 	'label_select_item'							     => __( 'Select item', 'tainacan' ),
-	'label_unselect_item'							     => __( 'Unselect item', 'tainacan' ),
+	'label_unselect_item'							 => __( 'Unselect item', 'tainacan' ),
 	'label_delete_item'							     => __( 'Delete item', 'tainacan' ),
+	'label_no_collections_using_taxonomy'		     => __( 'There is no collection using this taxonomy', 'tainacan' ),
+	'label_collections_using'					     => __( 'Collections using', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
