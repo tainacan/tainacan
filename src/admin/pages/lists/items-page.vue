@@ -730,6 +730,7 @@
 
                 <!-- Pagination -->
                 <pagination
+                        :is-sorting-by-custom-metadata="isSortingByCustomMetadata"
                         v-if="totalItems > 0 &&
                          (!isOnTheme || (registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].show_pagination)) &&
                           (advancedSearchResults || !openAdvancedSearch)"/>
@@ -851,6 +852,9 @@
             enabledViewModes: Object // Used only on theme
         },
         computed: {
+            isSortingByCustomMetadata() {
+                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'date'); 
+            },
             repositoryTotalItems(){
                 let collections = this.getCollections();
 
@@ -1322,10 +1326,7 @@
             },
             showItemsHiddingDueSorting() {
 
-                if (this.orderBy != undefined && 
-                    this.orderBy != '' && 
-                    this.orderBy != 'title' && 
-                    this.orderBy != 'date' && 
+                if (this.isSortingByCustomMetadata &&
                     this.$userPrefs.get('neverShowItemsHiddenDueSortingDialog') != true) {     
 
                     this.hasAnOpenModal = true;

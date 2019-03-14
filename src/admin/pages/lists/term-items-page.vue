@@ -708,6 +708,7 @@
         
                 <!-- Pagination -->
                 <pagination
+                        :is-sorting-by-custom-metadata="isSortingByCustomMetadata"
                         v-if="totalItems > 0 &&
                          (!isOnTheme || (registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].show_pagination)) &&
                           (advancedSearchResults || !openAdvancedSearch)"/>
@@ -792,6 +793,7 @@
     import AdvancedSearch from '../../components/advanced-search/advanced-search.vue';
     import ExposersModal from '../../components/other/exposers-modal.vue';
     import AvailableImportersModal from '../../components/other/available-importers-modal.vue';
+    import CustomDialog from '../../components/other/custom-dialog.vue';
     import { mapActions, mapGetters } from 'vuex';
 
     export default {
@@ -829,6 +831,9 @@
             enabledViewModes: Object // Used only on theme,
         },
         computed: {
+            isSortingByCustomMetadata() {
+                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'date'); 
+            },
             items() {
                 return this.getItems();
             },
@@ -983,6 +988,7 @@
             },  
             onChangeOrderBy(metadatum) {
                 this.$eventBusSearch.setOrderBy(metadatum);
+                this.showItemsHiddingDueSorting();
             },
             onChangeOrder() {
                 this.order == 'DESC' ? this.$eventBusSearch.setOrder('ASC') : this.$eventBusSearch.setOrder('DESC');
@@ -1280,27 +1286,51 @@
                         this.isLoadingMetadata = false;
                     });
             },
-        },
-        adjustSearchControlHeight: _.debounce( function() {
-            this.$nextTick(() => {
-                    if (this.$refs['search-control'] != undefined)
-                    this.searchControlHeight = this.$refs['search-control'] ? this.$refs['search-control'].clientHeight + this.$refs['search-control'].offsetTop : 0;
-                this.isFiltersMenuCompressed = jQuery(window).width() <= 768;
-            });
-        }, 500),
-        removeEventListeners() {
-            // Component
-            this.$off();
-            // Window
-            window.removeEventListener('resize', this.adjustSearchControlHeight);
-            // $root
-            this.$root.$off('openAdvancedSearch');
-            // $eventBusSearch
-            this.$eventBusSearch.$off('isLoadingItems');
-            this.$eventBusSearch.$off('hasFiltered');
-            this.$eventBusSearch.$off('advancedSearchResults');
-            this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
+            showItemsHiddingDueSorting() {
 
+                if (this.isSortingByCustomMetadata &&
+                    this.$userPrefs.get('neverShowItemsHiddenDueSortingDialog') != true) {     
+
+                    this.hasAnOpenModal = true;
+
+                    this.$modal.open({
+                        parent: this,
+                        component: CustomDialog,
+                        props: {
+                            icon: 'alert',
+                            title: this.$i18n.get('label_warning'),
+                            message: this.$i18n.get('info_items_hidden_due_sorting'),
+                            onConfirm: () => {
+                                this.hasAnOpenModal = false;
+                            },
+                            hideCancel: true,
+                            showNeverShowAgainOption: true,
+                            messageKeyForUserPrefs: 'ItemsHiddenDueSorting'
+                        }
+                    });
+                }
+            },
+            adjustSearchControlHeight: _.debounce( function() {
+                this.$nextTick(() => {
+                        if (this.$refs['search-control'] != undefined)
+                        this.searchControlHeight = this.$refs['search-control'] ? this.$refs['search-control'].clientHeight + this.$refs['search-control'].offsetTop : 0;
+                    this.isFiltersMenuCompressed = jQuery(window).width() <= 768;
+                });
+            }, 500),
+            removeEventListeners() {
+                // Component
+                this.$off();
+                // Window
+                window.removeEventListener('resize', this.adjustSearchControlHeight);
+                // $root
+                this.$root.$off('openAdvancedSearch');
+                // $eventBusSearch
+                this.$eventBusSearch.$off('isLoadingItems');
+                this.$eventBusSearch.$off('hasFiltered');
+                this.$eventBusSearch.$off('advancedSearchResults');
+                this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
+
+            },
         },
         created() {
 
@@ -1392,6 +1422,8 @@
                         this.$eventBusSearch.setInitialAdminViewMode('table');
                 }
             }
+
+            this.showItemsHiddingDueSorting();
 
             // Watches window resize to adjust filter's top position and compression on mobile 
             this.adjustSearchControlHeight();
