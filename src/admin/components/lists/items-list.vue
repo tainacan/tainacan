@@ -72,6 +72,48 @@
         </div>
 
         <div class="table-wrapper">
+
+            <!-- Context menu for right click selection -->
+            <div 
+                    v-if="cursorPosY > 0 && cursorPosX > 0"
+                    class="context-menu">
+
+                <!-- Backdrop for escaping context menu -->
+                <div 
+                    @click.left="clearContextMenu()"
+                    @click.right="clearContextMenu()"
+                    class="context-menu-backdrop" /> 
+
+                <b-dropdown 
+                        inline
+                        :style="{ top: cursorPosY + 'px', left: cursorPosX + 'px' }">
+                    <b-dropdown-item
+                            @click="openItem()" 
+                            v-if="!isOnTrash">
+                        {{ $i18n.get('label_open_item') }}
+                    </b-dropdown-item>
+                    <b-dropdown-item
+                            @click="openItemOnNewTab()"
+                            v-if="!isOnTrash">
+                        {{ $i18n.get('label_open_item_new_tab') }}
+                    </b-dropdown-item>
+                    <b-dropdown-item 
+                            @click="selectItem()"
+                            v-if="contextMenuIndex != null">
+                        {{ !selectedItems[contextMenuIndex] ? $i18n.get('label_select_item') : $i18n.get('label_unselect_item') }}
+                    </b-dropdown-item>
+                    <b-dropdown-item
+                            @click="goToItemEditPage(contextMenuItem)"
+                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit">
+                        {{ $i18n.get('title_edit_item') }}
+                    </b-dropdown-item>
+                    <b-dropdown-item
+                            @click="deleteOneItem(contextMenuItem.id)"
+                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit">
+                        {{ $i18n.get('label_delete_item') }}
+                    </b-dropdown-item>
+                </b-dropdown>
+            </div>
             
             <!-- GRID (THUMBNAILS) VIEW MODE -->
             <div
@@ -114,7 +156,8 @@
                                     autoHide: false,
                                     placement: 'auto-start'
                                 }"                               
-                                @click="onClickItem($event, item, index)">
+                                @click.left="onClickItem($event, item, index)"  
+                                @click.right="onRightClickItem($event, item, index)">
                             {{ item.title != undefined ? item.title : '' }}
                         </p>                            
                     </div>
@@ -122,7 +165,8 @@
                     <!-- Thumbnail -->
                     <a
                             v-if="item.thumbnail != undefined"
-                            @click="onClickItem($event, item, index)"
+                            @click.left="onClickItem($event, item, index)"
+                            @click.right="onRightClickItem($event, item, index)"
                             class="grid-item-thumbnail"
                             :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)) + ')' }">
                         <img 
@@ -213,7 +257,8 @@
 
                     <!-- Thumbnail -->  
                     <div 
-                            @click="onClickItem($event, item, index)"
+                            @click.left="onClickItem($event, item, index)"
+                            @click.right="onRightClickItem($event, item, index)"
                             v-if="item.thumbnail != undefined"
                             class="tainacan-masonry-item-thumbnail"
                             :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)) + ')' }">
@@ -297,7 +342,8 @@
                                     autoHide: false,
                                     placement: 'auto-start'
                                 }"                               
-                                @click="onClickItem($event, item, index)">
+                                @click.left="onClickItem($event, item, index)"
+                                @click.right="onRightClickItem($event, item, index)">
                             {{ item.title != undefined ? item.title : '' }}
                         </p>                            
                     </div>
@@ -339,7 +385,8 @@
                     <!-- Remaining metadata -->  
                     <div    
                             class="media"
-                            @click="onClickItem($event, item, index)">
+                            @click.left="onClickItem($event, item, index)"
+                            @click.right="onRightClickItem($event, item, index)">
                         <div 
                                 :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)) + ')' }"
                                 class="card-thumbnail">
@@ -449,7 +496,8 @@
                                 v-for="(column, columnIndex) in tableMetadata"
                                 :key="columnIndex"
                                 v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                @click="onClickItem($event, item, index)"
+                                @click.left="onClickItem($event, item, index)"
+                                @click.right="onRightClickItem($event, item, index)"
                                 v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />  
                         <p 
                                 v-tooltip="{
@@ -465,7 +513,8 @@
                                 v-for="(column, columnIndex) in tableMetadata"
                                 :key="columnIndex"
                                 v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                @click="onClickItem($event, item, index)"
+                                @click.left="onClickItem($event, item, index)"
+                                @click.right="onRightClickItem($event, item, index)"
                                 v-html="item.title != undefined ? item.title : ''" />                             
                     </div>
                     <!-- Actions -->
@@ -506,7 +555,8 @@
                     <!-- Remaining metadata -->  
                     <div    
                             class="media"
-                            @click="onClickItem($event, item, index)">
+                            @click.left="onClickItem($event, item, index)"
+                            @click.right="onRightClickItem($event, item, index)">
                         <div class="list-metadata media-body">
                             <div class="tainacan-record-thumbnail">
                                 <img 
@@ -611,7 +661,8 @@
                                                                                                             column.metadata_type_object.primitive_type == 'compound') : false,
                                         'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' || column.metadata_type_object.related_mapped_prop == 'description') : false,
                                 }"
-                                @click="onClickItem($event, item, index)">
+                                @click.left="onClickItem($event, item, index)"
+                                @click.right="onRightClickItem($event, item, index)">
 
                             <p
                                     v-tooltip="{
@@ -745,6 +796,10 @@ export default {
             selectedItemsIDs: [],
             queryAllItemsSelected: {},
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
+            cursorPosX: -1,
+            cursorPosY: -1,
+            contextMenuIndex: null,
+            contextMenuItem: null
         }
     },
     props: {
@@ -958,6 +1013,25 @@ export default {
                 }
             });
         },
+        openItem() {
+            if (this.contextMenuItem != null) {
+                this.$router.push(this.$routerHelper.getItemPath(this.contextMenuItem.collection_id, this.contextMenuItem.id));
+            }
+            this.clearContextMenu();
+        },
+        openItemOnNewTab() {
+            if (this.contextMenuItem != null) {
+                let routeData = this.$router.resolve(this.$routerHelper.getItemPath(this.contextMenuItem.collection_id, this.contextMenuItem.id));
+                window.open(routeData.href, '_blank');
+            }
+            this.clearContextMenu();
+        },
+        selectItem() {
+            if (this.contextMenuIndex != null) {
+                this.$set(this.selectedItems, this.contextMenuIndex, !this.selectedItems[this.contextMenuIndex]);
+            }
+            this.clearContextMenu();
+        },
         onClickItem($event, item, index) {
             if ($event.ctrlKey || $event.shiftKey) {
                 this.$set(this.selectedItems, index, !this.selectedItems[index]);
@@ -973,6 +1047,20 @@ export default {
                     this.$router.push(this.$routerHelper.getItemPath(item.collection_id, item.id));
                 }
             }
+        },
+        onRightClickItem($event, item, index) {
+            $event.preventDefault();
+
+            this.cursorPosX = $event.clientX;
+            this.cursorPosY = $event.clientY;
+            this.contextMenuItem = item;
+            this.contextMenuIndex = index;
+        },
+        clearContextMenu() {
+            this.cursorPosX = -1;
+            this.cursorPosY = -1;
+            this.contextMenuItem = null;
+            this.contextMenuIndex = null;
         },
         goToItemEditPage(item) {
             this.$router.push(this.$routerHelper.getItemEditPath(item.collection_id, item.id));
@@ -1021,6 +1109,23 @@ export default {
             &:hover {
                 color: $gray4;
             }
+        }
+    }
+
+    .context-menu {
+        .dropdown {
+            position: fixed;
+            z-index: 99999999999;
+        }
+        .context-menu-backdrop {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            border: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 9999999;
         }
     }
 
