@@ -8,7 +8,7 @@
             <div class="field select-all is-pulled-left">
                 <span>
                     <b-checkbox
-                            @click.native="selectAllItemsOnPage()"
+                            @click.native.prevent="selectAllItemsOnPage()"
                             :value="allItemsOnPageSelected">
                         {{ $i18n.get('label_select_all_items_page') }}
                     </b-checkbox>
@@ -16,9 +16,9 @@
 
                 <span
                         style="margin-left: 10px"
-                        v-if="allItemsOnPageSelected && items.length > 1">
+                        v-if="enableSelectAllItemsPages == true && allItemsOnPageSelected && items.length > 1">
                     <b-checkbox
-                            @click.native="selectAllItems()"
+                            @click.native.prevent="selectAllItems()"
                             v-model="isAllItemsSelected">
                         {{ `${$i18n.get('label_select_all')} ${totalItems} ${$i18n.get('items').toLowerCase()}` }}
                     </b-checkbox>
@@ -799,7 +799,8 @@ export default {
             cursorPosX: -1,
             cursorPosY: -1,
             contextMenuIndex: null,
-            contextMenuItem: null
+            contextMenuItem: null,
+            enableSelectAllItemsPages: tainacan_plugin.enable_select_all_items_pages
         }
     },
     props: {
@@ -890,13 +891,15 @@ export default {
             for (let i = 0; i < this.selectedItems.length; i++) {
                 this.selectedItems.splice(i, 1, !this.allItemsOnPageSelected);
             }
+            if (!this.allItemsOnPageSelected)
+                this.queryAllItemsSelected = {};
         },
         selectAllItems(){
             this.isAllItemsSelected = !this.isAllItemsSelected;
             this.queryAllItemsSelected = this.$route.query;
 
             for (let i = 0; i < this.selectedItems.length; i++) {
-                this.selectedItems.splice(i, 1, !this.isAllItemsSelected);
+                this.selectedItems.splice(i, 1, this.isAllItemsSelected);
             }
         },
         untrashOneItem(itemId) {
