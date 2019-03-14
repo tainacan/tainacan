@@ -121,7 +121,8 @@ class CSV extends Importer {
             return false;
         }
 
-        if( $this->get_option('item_id_index') ) {
+        $this->add_log('item index ' . $this->get_option('item_id_index')  );
+        if( is_numeric($this->get_option('item_id_index')) ) {
             $this->handle_item_id( $values );
         }
 
@@ -522,8 +523,8 @@ class CSV extends Importer {
      */
     private function handle_item_id( $values ) {
         $item_id_index = $this->get_option('item_id_index');
-        if( $item_id_index && isset($values[$item_id_index]) ){
-            $this->add_transient( 'item_id',$values[$item_id_index] );
+        if( is_numeric($item_id_index ) && isset($values[intval($item_id_index)]) ){
+            $this->add_transient( 'item_id',$values[intval($item_id_index)] );
             $this->add_transient( 'item_action',$this->get_option('repeated_item') );
         }
     }
@@ -587,6 +588,33 @@ class CSV extends Importer {
                             }
                             $singleItemMetadata->set_value( $terms );
                         }
+                    } elseif( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Date' ){
+                        $format = 'Y-m-d';
+
+                        if( !is_array( $values ) ) {
+
+                            $d = \DateTime::createFromFormat($format, $values);
+                            if ( !($d && $d->format($format) === $values) ) {
+                                $this->add_error_log('Metadata ' . $metadatum_source . ' has incorrect date value format. Expected: Y-m-d, received: ' . $values);
+                            } else {
+                                $singleItemMetadata->set_value( $values );
+                            }
+
+                        } else {
+                            $final_values = [];
+
+                            foreach($values as $k => $v) {
+                                $d = \DateTime::createFromFormat($format, $v);
+                                if ( !($d && $d->format($format) === $v) ) {
+                                    $this->add_error_log('Metadata ' . $metadatum_source . ' has incorrect date value format. Expected: Y-m-d, received: ' . $v);
+                                } else {
+                                    $final_values[] = $v;
+                                }
+                            }
+
+                            if( $final_values ) $singleItemMetadata->set_value( $final_values );
+                        }
+
                     } else {
                         $singleItemMetadata->set_value( $values );
                     }
@@ -602,16 +630,17 @@ class CSV extends Importer {
             if( $item->validate() ) {
                 $insertedItem = $Tainacan_Items->insert( $item );
             } else {
-                $this->add_error_log( 'Error inserting item' );
+                $this->add_error_log( 'Error inserting Item Title: ' . $item->get_title() );
                 $this->add_error_log( $item->get_errors() );
                 return false;
             }
+
             foreach ( $itemMetadataArray as $itemMetadata ) {
                 $itemMetadata->set_item( $insertedItem );  // *I told you
                 if( $itemMetadata->validate() ) {
                     $result = $Tainacan_Item_Metadata->insert( $itemMetadata );
                 } else {
-                    $this->add_error_log('Error saving value for ' . $itemMetadata->get_metadatum()->get_name());
+                    $this->add_error_log('Error saving value for ' . $itemMetadata->get_metadatum()->get_name() . " in item " . $insertedItem->get_title());
                     $this->add_error_log($itemMetadata->get_errors());
                     continue;
                 }
@@ -624,13 +653,15 @@ class CSV extends Importer {
                 //    $this->add_error_log( 'Item ' . $insertedItem->get_id() . ' has an error' );
                 //}
             }
+
             $insertedItem->set_status('publish' );
             if($insertedItem->validate()) {
                 $insertedItem = $Tainacan_Items->update( $insertedItem );
                 $this->after_inserted_item(  $insertedItem, $collection_index );
             } else {
-                $this->add_error_log( 'Error publishing Item'  ); 
-                $this->add_error_log( $insertedItem->get_errors() ); 
+                $this->add_error_log( 'Error publishing, Item Title: ' . $insertedItem->get_title()  );
+                $this->add_error_log( 'Error publishing, Item ID: ' . $insertedItem->get_id()  );
+                $this->add_error_log( $insertedItem->get_errors() );
                 return false;
             }
             return $insertedItem;
