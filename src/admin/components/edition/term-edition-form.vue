@@ -221,6 +221,7 @@
                         description: this.editForm.description,
                         parent: this.hasParent ? this.editForm.parent : 0,
                         header_image_id: this.editForm.header_image_id,
+                        header_image: this.editForm.header_image,
                     };
                     this.fillExtraFormData(data);
                     this.sendChildTerm({
@@ -244,11 +245,12 @@
                 } else {
 
                     let data = {
-                        term_id: this.editForm.id,
+                        id: this.editForm.id,
                         name: this.editForm.name,
                         description: this.editForm.description,
                         parent: this.hasParent ? this.editForm.parent : 0,
                         header_image_id: this.editForm.header_image_id,
+                        header_image: this.editForm.header_image,
                     }
                     this.fillExtraFormData(data);
                     this.updateChildTerm({
@@ -347,7 +349,7 @@
             }
         },
         mounted() {
-            
+
             // Fills hook forms with it's real values 
             this.$nextTick()
                 .then(() => {

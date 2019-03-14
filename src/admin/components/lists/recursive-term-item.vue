@@ -62,6 +62,7 @@
             </a>
         </span>
     </div>
+
     <transition-group 
             class="children-area"
             name="filter-item">
@@ -242,7 +243,27 @@ export default {
         eventOnEditTerm() {
             this.isEditingTerm = true;
         },
-        eventOnTermEditionSaved() {
+        eventOnTermEditionSaved($event) {
+            if (this.term.id == $event.term.id) {
+                    this.$set(this.term, 'description', $event.term.description);
+                    this.$set(this.term, 'header_image', $event.term.header_image);
+                    this.$set(this.term, 'header_image_id', $event.term.header_image_id);
+                    this.$set(this.term, 'name', $event.term.name);
+                    this.$set(this.term, 'parent', $event.term.parent);
+                    this.$set(this.term, 'id', $event.term.id);
+            } else if (this.term.children != undefined) {
+                for (let i = 0; i < this.term.children.length; i++) {
+                    if (this.term.children[i].id == $event.term.id) {
+                        this.$set(this.term.children[i], 'description', $event.term.description);
+                        this.$set(this.term.children[i], 'header_image', $event.term.header_image);
+                        this.$set(this.term.children[i], 'header_image_id', $event.term.header_image_id);
+                        this.$set(this.term.children[i], 'name', $event.term.name);
+                        this.$set(this.term.children[i], 'parent', $event.term.parent);
+                        this.$set(this.term.children[i], 'id', $event.term.id);
+                    } 
+                }
+            }
+
             this.isEditingTerm = false;
             this.term.opened = false;
         },
