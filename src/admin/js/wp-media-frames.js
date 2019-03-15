@@ -136,8 +136,8 @@ export default {
 			} else {
 				this.params.flex_width = true;
 				this.params.flex_height = true;
-				this.params.width = 1920;
-				this.params.height = 600;
+				this.params.width = 2000;
+				this.params.height = 625;
 			}
 
 			this.frame = wp.media({

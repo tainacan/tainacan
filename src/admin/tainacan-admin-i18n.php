@@ -337,8 +337,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_selected_terms'                           => __( 'Selected terms', 'tainacan' ),
 	'label_editing_item_number'                      => __( 'Editing item n.', 'tainacan' ),
 	'label_sequence_editing_item'                    => __( 'Sequence editing: Item', 'tainacan' ),
-	'label_files_remaining'                          => __( 'files remaining.', 'tainacan' ),
-	'label_file_remaining'                           => __( 'file remaining.', 'tainacan' ),
+	'label_%s_files_remaining'                       => __( '%s files remaining.', 'tainacan' ),
+	'label_one_file_remaining'                       => __( 'One file remaining.', 'tainacan' ),
 	'label_upload_file_prepare_items'                => __( 'Uploading files and preparing items', 'tainacan' ),
 	'label_bulk_edit_items'                          => __( 'Bulk edit items', 'tainacan' ),
 	'label_sequence_edit_items'                      => __( 'Sequence edit items', 'tainacan' ),
@@ -377,6 +377,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_delete_item'							     => __( 'Delete item', 'tainacan' ),
 	'label_no_collections_using_taxonomy'		     => __( 'There is no collection using this taxonomy', 'tainacan' ),
 	'label_collections_using'					     => __( 'Collections using', 'tainacan' ),
+	'label_select_all_%s_items'						 => __( 'Select all %s items', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

@@ -61,12 +61,12 @@
                     <p    
                             v-if="uploadedItems.length > 0 && (uploadedItems.length - amountFinished) > 1"
                             class="has-text-gray">
-                        {{ (uploadedItems.length - amountFinished) + " " + $i18n.get('label_files_remaining') }}
+                        {{ $i18n.getWithVariables('label_%s_files_remaining', [(uploadedItems.length - amountFinished)]) }}
                     </p>
                     <p    
                             v-if="uploadedItems.length > 0 && (uploadedItems.length - amountFinished) == 1"
                             class="has-text-gray">
-                        {{ "1 " + $i18n.get('label_file_remaining') }}
+                        {{ $i18n.get('label_one_file_remaining') }}
                     </p>
                 </div>
 
