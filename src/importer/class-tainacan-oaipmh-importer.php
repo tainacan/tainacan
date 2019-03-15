@@ -26,11 +26,15 @@ class Oaipmh_Importer extends Importer {
      */
     public function __construct($attributes = array()) {
         parent::__construct($attributes);
+        $this->set_default_options([
+            'delimiter' => ','
+        ]);
 
         $this->col_repo = \Tainacan\Repositories\Collections::get_instance();
         $this->items_repo = \Tainacan\Repositories\Items::get_instance();
         $this->metadata_repo = \Tainacan\Repositories\Metadata::get_instance();
         $this->item_metadata_repo = \Tainacan\Repositories\Item_Metadata::get_instance();
+        $this->tax_repo = \Tainacan\Repositories\Taxonomies::get_instance();
 
         $this->remove_import_method('file');
         $this->add_import_method('url');
@@ -47,8 +51,15 @@ class Oaipmh_Importer extends Importer {
         $record_processed = [];
 
         if( $index === 0 ){
-            $info = $this->requester( $this->get_url() . "?verb=ListRecords&metadataPrefix=oai_dc&set=" . $collection_id['source_id'] );
-            $this->add_log('fetching ' . $this->get_url() . "?verb=ListRecords&metadataPrefix=oai_dc&set=" . $collection_id['source_id']);
+
+            if( $collection_id['source_id'] !== 'taxonomies' ){
+                $info = $this->requester( $this->get_url() . "?verb=ListRecords&metadataPrefix=oai_dc&set=" . $collection_id['source_id'] );
+                $this->add_log('fetching ' . $this->get_url() . "?verb=ListRecords&metadataPrefix=oai_dc&set=" . $collection_id['source_id']);
+            } else  {
+                $info = $this->requester( $this->get_url() . "?verb=ListRecords&metadataPrefix=oai_dc" );
+                $this->add_log('fetching ' . $this->get_url() . "?verb=ListRecords&metadataPrefix=oai_dc");
+            }
+
         } else {
             $token = $this->get_transient('resumptionToken');
             $info = $this->requester( $this->get_url() . "?verb=ListRecords&resumptionToken=" . $token);
@@ -123,25 +134,63 @@ class Oaipmh_Importer extends Importer {
         $collection_xml = $this->fetch_collections();
 
         if( isset($collection_xml->ListSets) ){
-            foreach ($collection_xml->ListSets->set as $set) {
 
-                $setSpec = (string) $set->setSpec;
-                $setName =  (string) $set->setName;
+            if( !$this->get_option('using_set') || $this->get_option('using_set') == 'collection' ){
 
-                $collection = $this->create_collection( $setSpec, $setName );
+                foreach ($collection_xml->ListSets->set as $set) {
 
-                $metadata_map = $this->create_collection_metadata($collection);
-                $total = intval($this->get_total_items_from_source($setSpec));
-                $this->add_log('total in collection: ' . $total);
-                $this->add_log('collection id ' . (string) $collection->get_id());
+                    $setSpec = (string) $set->setSpec;
+                    $setName =  (string) $set->setName;
 
-                $this->add_collection([
-                    'id' => $collection->get_id(),
-                    'mapping' => $metadata_map,
-                    'total_items' =>ceil( $total / 100 ),
-                    'source_id' => $setSpec,
-                ]);
+                    $collection = $this->create_collection( $setSpec, $setName );
+
+                    $metadata_map = $this->create_collection_metadata($collection);
+                    $total = intval($this->get_total_items_from_source($setSpec));
+                    $this->add_log('total in collection: ' . $total);
+                    $this->add_log('collection id ' . (string) $collection->get_id());
+
+                    $this->add_collection([
+                        'id' => $collection->get_id(),
+                        'mapping' => $metadata_map,
+                        'total_items' =>ceil( $total / 100 ),
+                        'source_id' => $setSpec,
+                    ]);
+                }
+            } else if( $this->get_option('using_set') == 'taxonomy') {
+
+                $tax = new Entities\Taxonomy();
+                $tax->set_name( 'Sets' );
+                $tax->set_allow_insert('yes');
+                $tax->set_status('publish');
+
+                if ($tax->validate()) {
+                    $tax = $this->tax_repo->insert($tax);
+
+                    $this->add_log('Taxonomy ' . $tax->get_name() . ' created' );
+
+                    $this->add_transient('tax_' . $taxonomy->term_id . '_id', $tax->get_id());
+                    $this->add_transient('tax_' . $taxonomy->term_id . '_name', $tax->get_name());
+
+                    if (isset($taxonomy->children) && $tax) {
+                        $this->add_all_terms($tax, $taxonomy->children);
+                    }
+
+                } else {
+                    $this->add_log('Error creating taxonomy Sets' );
+                    $this->add_log($tax->get_errors());
+
+                    foreach ($collection_xml->ListSets->set as $set) {
+
+                        $setSpec = (string)$set->setSpec;
+                        $setName = (string)$set->setName;
+
+                        //todo: create terms
+                    }
+
+                }
+
             }
+
         }
 
         return false;
@@ -453,8 +502,42 @@ class Oaipmh_Importer extends Importer {
 
 
 
-        $this->add_error_log('Error in fetch remote, expired the 10 requests limit ' . $url);
+        $this->add_error_log('Error in fetch remote, expired the 10 requests limit ' . $link);
         $this->abort();
         return false;
+    }
+
+    public function options_form(){
+        ob_start();
+        ?>
+        <div class="field">
+            <label class="label"><?php _e('Create set as', 'tainacan'); ?></label>
+            <span class="help-wrapper">
+					<a class="help-button has-text-secondary">
+						<span class="icon is-small">
+							 <i class="tainacan-icon tainacan-icon-help" ></i>
+						 </span>
+					</a>
+					<div class="help-tooltip">
+						<div class="help-tooltip-header">
+							<h5><?php _e('Create set as', 'tainacan'); ?></h5>
+						</div>
+						<div class="help-tooltip-body">
+							<p><?php _e('Choose the action to manipulate sets', 'tainacan'); ?></p>
+						</div>
+					</div>
+			</span>
+            <div class="control is-clearfix">
+                <div class="select">
+                    <select disabled name="using_set">
+                        <option value="collection" <?php selected($this->get_option('using_set'), 'collection'); ?> ><?php _e('Collections', 'tainacan'); ?></option>
+                        <option value="taxonomy" <?php selected($this->get_option('using_set'), 'taxonomy'); ?> ><?php _e('Taxonomies', 'tainacan'); ?></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <?php
+
+        return ob_get_clean();
     }
 }
