@@ -20,7 +20,7 @@
                     <b-checkbox
                             @click.native.prevent="selectAllItems()"
                             v-model="isAllItemsSelected">
-                        {{ `${$i18n.get('label_select_all')} ${totalItems} ${$i18n.get('items').toLowerCase()}` }}
+                        {{ `${$i18n.getWithVariables('label_select_all_%s_items', [totalItems])}` }}
                     </b-checkbox>
                 </span>
             </div>
