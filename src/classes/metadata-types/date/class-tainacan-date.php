@@ -48,15 +48,32 @@ class Date extends Metadata_Type {
         if (is_array($value)) {
             foreach ($value as $date_value) {
                 $d = \DateTime::createFromFormat($format, $date_value);
-                if ( !($d && $d->format($format) === $date_value) ) {
+                if (!$d || $d->format($format) !== $value) {
+                    $this->add_error( 
+                        sprintf(
+                            __('Invalid date format. Expected format is YYYY-MM-DD, got %s.', 'tainacan'),
+                            $value
+                        )
+                    );
                     return false;
                 }
             }
             return True;
         }
-
+        
         $d = \DateTime::createFromFormat($format, $value);
-        return $d && $d->format($format) === $value;
+        
+        if (!$d || $d->format($format) !== $value) {
+            $this->add_error( 
+                sprintf(
+                    __('Invalid date format. Expected format is YYYY-MM-DD, got %s.', 'tainacan'),
+                    $value
+                )
+            );
+            return false;
+        }
+        return true;
+        
     }
 	
 	/**
