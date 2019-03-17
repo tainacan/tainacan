@@ -588,33 +588,6 @@ class CSV extends Importer {
                             }
                             $singleItemMetadata->set_value( $terms );
                         }
-                    } elseif( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Date' ){
-                        $format = 'Y-m-d';
-
-                        if( !is_array( $values ) ) {
-
-                            $d = \DateTime::createFromFormat($format, $values);
-                            if ( !($d && $d->format($format) === $values) ) {
-                                $this->add_error_log('Metadata ' . $metadatum_source . ' has incorrect date value format. Expected: Y-m-d, received: ' . $values);
-                            } else {
-                                $singleItemMetadata->set_value( $values );
-                            }
-
-                        } else {
-                            $final_values = [];
-
-                            foreach($values as $k => $v) {
-                                $d = \DateTime::createFromFormat($format, $v);
-                                if ( !($d && $d->format($format) === $v) ) {
-                                    $this->add_error_log('Metadata ' . $metadatum_source . ' has incorrect date value format. Expected: Y-m-d, received: ' . $v);
-                                } else {
-                                    $final_values[] = $v;
-                                }
-                            }
-
-                            if( $final_values ) $singleItemMetadata->set_value( $final_values );
-                        }
-
                     } else {
                         $singleItemMetadata->set_value( $values );
                     }
