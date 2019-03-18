@@ -250,7 +250,8 @@
                             :style="{
                                 'padding-left': !collectionId ? '0 !important' : '1rem'
                             }"
-                            @click="onClickItem($event, item, index)"
+                            @click.left="onClickItem($event, item, index)"
+                            @click.right="onRightClickItem($event, item, index)"
                             class="metadata-title">
                         <p>{{ item.title != undefined ? item.title : '' }}</p>                             
                     </div>
