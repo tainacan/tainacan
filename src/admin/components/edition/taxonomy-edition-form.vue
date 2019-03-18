@@ -477,6 +477,9 @@
         display: flex;
         align-items: center;
     }
+    .tainacan-form>.columns {
+        margin-bottom: 76px;
+    }
     .tainacan-form .column {
         padding: 1rem 4.1666667%;
     }
