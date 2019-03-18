@@ -124,6 +124,7 @@ class CSV extends Importer {
         $this->add_log('item index ' . $this->get_option('item_id_index')  );
         if( is_numeric($this->get_option('item_id_index')) ) {
             $this->handle_item_id( $values );
+            $this->add_log('Updating item' );
         }
 
         foreach ( $collection_definition['mapping'] as $metadatum_id => $header) {
@@ -557,8 +558,12 @@ class CSV extends Importer {
         $Tainacan_Metadata->disable_logs();
         $Tainacan_Item_Metadata->disable_logs();
 
-        $item = new Entities\Item( ( $this->get_transient('item_id') ) ? $this->get_transient('item_id') : 0 );
+        $item = new Entities\Item( ( is_numeric($this->get_transient('item_id')) ) ? $this->get_transient('item_id') : 0 );
         $itemMetadataArray = [];
+
+        if( is_numeric($this->get_transient('item_id')) ) {
+            $this->add_log('item will be updated ID:' . $item->get_id() );
+        }
 
         if( $this->get_transient('item_id') && $item && is_numeric($item->get_id()) && $item->get_id() > 0 && $this->get_transient('item_action') == 'ignore' ){
             $this->add_log('Repeated Item');
