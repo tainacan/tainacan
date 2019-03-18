@@ -46,10 +46,64 @@ class Elastic_Press {
 		
 		add_filter('tainacan-fetch-all-metadatum-values', [$this, 'fetch_all_metadatum_values'], 10, 3);
 
+		add_filter( 'ep_config_mapping', [$this, 'elasticpress_config_mapping'], 10, 1 );
+		add_filter( 'ep_post_sync_args', [$this, 'ep_post_sync_args'], 10, 2 );
+
 		// add_action('ep_add_query_log', function($query) { //using to DEBUG
 		// 	error_log("DEGUG:");
 		// 	error_log($query["args"]["body"]);
 		// });
+	}
+
+	function elasticpress_config_mapping( $mapping ) {
+		$name_field = 'relationship_label';
+		$array_dynamic_templates = $mapping["mappings"]["post"]["dynamic_templates"];
+		foreach ($array_dynamic_templates as $key => $dynamic_templates) {
+			if ( isset($dynamic_templates['template_meta_types'] )) {
+				$mapping["mappings"]["post"]["dynamic_templates"][$key]['template_meta_types']["mapping"]["properties"][$name_field] = ['type' => 'keyword'];
+				// $mapping["mappings"]["post"]["dynamic_templates"][$key]['template_meta_types']["mapping"]["properties"][$name_field] =
+				// 	['type' => 'nested',
+				// 	 'properties' => [
+				// 		 'label' => ['type' => 'text']
+				// 		 //,'description' => ['type'=>'text']
+				// 		]
+				// 	];
+			}
+		}
+		return $mapping;
+	}
+
+	function ep_post_sync_args( $post_args, $post_id ) {
+		$name_field = 'relationship_label';
+
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+
+		$item = $Tainacan_Items->fetch($post_id);
+
+		if ($item instanceof Entities\Item) {
+			$ids_meta = array_keys ($post_args['meta']);
+			\array_filter(function($n) {
+				if (is_numeric($n)) return intval($n);
+			}, $ids_meta);
+
+			$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+			$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+
+			$metadatas = $Tainacan_Item_Metadata->fetch($item, 'OBJECT', [ 'post__in' => $ids_meta, 'order' => 'id', 'metadata_type' => 'Tainacan\Metadata_Types\Relationship' ] );
+			
+			if ( is_array( $metadatas ) ) {
+				foreach ( $metadatas as $meta ) {
+					if(!empty($meta)) {
+						$meta_id = $meta->get_metadatum()->get_id();
+						$title = $meta->get_value_as_string();
+						$description = '';
+						$post_args['meta'][$meta_id][0][$name_field] = $title;
+						//$post_args['meta'][$meta_id][0][$name_field]['description'] = $description;
+					}
+				}
+			}
+		}
+		return $post_args;
 	}
 
 	function filter_args($args, $type) {
@@ -523,7 +577,13 @@ class Elastic_Press {
 				}
 
 				if($search != '') {
-					$formatted_args['query']['bool']['must'][] = ["wildcard"=>["$field" => "*$search*"]];
+					$field_relationship_label = explode ( ".", $field); 
+					$field_relationship_label = "$field_relationship_label[0].$field_relationship_label[1].relationship_label";
+					//$formatted_args['query']['bool']['must'][] = ["wildcard"=>["$field" => "*$search*"]];
+					$formatted_args['query']['bool']['must'][] = ["bool"=>["should"=>[
+						["wildcard"=>["$field"=>"*$search*"]],
+						["wildcard"=>["$field_relationship_label"=>"*$search*"]] //pega nome do metadado é melhor!
+					]]];
 				}
 			}
 
