@@ -371,7 +371,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_filter_type_preview'				         => __( 'Filter type preview', 'tainacan' ),
 	'label_metadatum_type_preview'				     => __( 'Metadatum type preview', 'tainacan' ),
 	'label_open_item'							     => __( 'Open item', 'tainacan' ),
-	'label_open_item_new_tab'					     => __( 'Open item on new tab', 'tainacan' ),
+	'label_open_item_new_tab'					     => __( 'Open item in a new tab', 'tainacan' ),
 	'label_select_item'							     => __( 'Select item', 'tainacan' ),
 	'label_unselect_item'							 => __( 'Unselect item', 'tainacan' ),
 	'label_delete_item'							     => __( 'Delete item', 'tainacan' ),
