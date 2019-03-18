@@ -553,7 +553,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_other_item_listing_options'				 => __('Other items listing options: ', 'tainacan'),
 	'info_send_email'				 				 => __('The exporter may take a while. Check this option to receive an e-mail when the process is done. You can also check the process status visiting the', 'tainacan'),
 	'info_tainacan_api'				 				 => __('Tainacan API on JSON format.', 'tainacan'),
-	'info_items_hidden_due_sorting'					 => __('Items with empty values on the metadata selected for sorting won\'t appear, thus this may list has less elements than the total existing.', 'tainacan'),
+	'info_items_hidden_due_sorting'					 => __('When ordering by metadata value, items that have no value for the chosen metadata will not be listed. This list may have less elements than the total existing for current search criteria.', 'tainacan'),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),
