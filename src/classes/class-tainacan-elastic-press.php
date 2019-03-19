@@ -605,6 +605,7 @@ class Elastic_Press {
 			$formated_aggs[$filter_id] = isset($formated_aggs[$filter_id]) ? $formated_aggs[$filter_id] : [];
 			if($description_types[1] == 'taxonomy') {
 				$taxonomy_slug = $description_types[2];
+				$taxonomy_id = Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($taxonomy_slug);
 				foreach ($aggregation[$key]['buckets'] as $term) {
 					$term_id = $term['key'];
 					$term_object = \Tainacan\Repositories\Terms::get_instance()->fetch($term_id, $taxonomy_slug);
@@ -614,7 +615,7 @@ class Elastic_Press {
 						"type" 						=> "Taxonomy",
 						"value" 					=> $term['key'],
 						"taxonomy" 				=> $taxonomy_slug,
-						"taxonomy_id"			=> $taxonomy_slug,
+						"taxonomy_id"			=> $taxonomy_id,
 						"total_children"	=> $total_children,
 						"total_items"			=> $term['doc_count'],
 						"label" 					=> $term_object->get('name'),
