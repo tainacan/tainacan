@@ -10,6 +10,12 @@
 
 ### What is Tainacan?
 
+
+[![Screenshot](https://user-images.githubusercontent.com/29989176/54641974-407a6100-4a72-11e9-9eb1-05fbd981d2a9.gif)][youtube_demo]
+
+[youtube_demo]: https://www.youtube.com/watch?v=6q42dlcwW5g
+Get to know Tainacan with our [introduction video](https://www.youtube.com/watch?v=6q42dlcwW5g).
+
 Tainacan is a software solution for building, managing and publishing digital repositories of any kind on WordPress. Manage and publish you digital collections as easily as publishing a post to your blog, while having all the tools of a professional repository platform. It is composed of a WordPress plugin, which is being developed on this repository, and an optional [companion WordPress theme](https://github.com/tainacan/tainacan-theme) especially designed to produce beautiful digital exhibits.
 
 ### Features
@@ -31,7 +37,7 @@ Tainacan is a software solution for building, managing and publishing digital re
 In addition to [our documentation](https://wiki.tainacan.org/) and [instructional videos](https://youtu.be/oEl9bWe_rWI), we provide technical support on our [mailing list](https://lists.riseup.net/www/info/tainacan) in English, Portuguese and Spanish. You are welcome to send all of your questions!
 
 ### Contributing
-Tainacan is a free, open source software licensed under **GPLv3**. Contributions to the codebase will abide to the same license; other contributions may be under aditional or other terms.
+Tainacan is a free, open source software licensed under **GPLv3**. Contributions to the codebase will abide to the same license; other contributions may be under additional or other terms.
 
 To contribute with our project, you can report bugs and other issues, or suggest new features. You are also free to submit pull requests or translate Tainacan to multiple languages. If you are interested in contributing, you can get started by reading our [contribution guidelines](docs/CONTRIBUTING.md).
 
