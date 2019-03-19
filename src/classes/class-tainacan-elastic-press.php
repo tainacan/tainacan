@@ -629,11 +629,23 @@ class Elastic_Press {
 				}
 			} else {
 				$metada_label = $description_types[1];
+				$metada_id = $description_types[2];
 				if (isset($aggregation[$key]['buckets']))
 				foreach ($aggregation[$key]['buckets'] as $term) {
+
+					$label = $term['key'];
+					if (\is_numeric($term['key'])) {
+						$item = \Tainacan\Repositories\Items::get_instance()->fetch(intval($term['key']));
+						$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+						$metadatas = $Tainacan_Item_Metadata->fetch($item, 'OBJECT', ['post__in' => [$metada_id], 'metadata_type' => 'Tainacan\Metadata_Types\Relationship']);
+						if ( is_array( $metadatas ) ) {
+							$label = $item->get_title();
+						}
+					}
+
 					$fct = [
 						"type" 				=> "Text",
-						"label" 			=> $term['key'],
+						"label" 			=> $label,
 						"value" 			=> $term['key'],
 						"total_items" => $term['doc_count']
 					];
@@ -701,13 +713,25 @@ class Elastic_Press {
 					}
 				}
 			} else {
+				$metada_id = $description_types[1];
 				$metada_label = $description_types[0].'.'.$description_types[1];
 				if (isset($aggregation['buckets'])) {
 					foreach ($aggregation['buckets'] as $term) {
+
+						$label = $term['key'][$key];
+						if (\is_numeric($term['key'][$key])) {
+							$item = \Tainacan\Repositories\Items::get_instance()->fetch($term['key'][$key]);
+							$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+							$metadatas = $Tainacan_Item_Metadata->fetch($item, 'OBJECT', [ 'post__in' => [$metada_id], 'metadata_type' => 'Tainacan\Metadata_Types\Relationship' ] );
+							if ( is_array( $metadatas ) ) {
+								$label = $item->get_title();
+							}
+						}
+
 						if ( isset($term['key'][$key]) ) {
 							$fct = [
 								"type" 				=> "Text",
-								"label" 			=> $term['key'][$key],
+								"label" 			=> $label,
 								"value" 			=> $term['key'][$key],
 								"total_items" => $term['doc_count']
 							];
