@@ -64,14 +64,23 @@ export const setChildTerms = (state, { terms, parent }) => {
                     Vue.set(parentTerm, 'children', []);
 
                 for (let term of terms){
-                    parentTerm['children'].push(term);
+                    let existingTermIndex = parentTerm['children'].findIndex(aTerm => aTerm.id == term.id);
+                    if (existingTermIndex < 0)
+                        parentTerm['children'].push(term);
+                    else
+                        Vue.set(parentTerm['children'], existingTermIndex, term);
                 }    
             }
         }
     } else {
         if (state.terms != undefined) {   
-            for (let term of terms)
-                state.terms.push(term);
+            for (let term of terms) {
+                let existingTermIndex = state.terms.findIndex(aTerm => aTerm.id == term.id);
+                if (existingTermIndex < 0)
+                    state.terms.push(term);
+                else
+                    Vue.set(state.terms, existingTermIndex, term);
+            }
         } else {    
             state.terms = terms;
         }

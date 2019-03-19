@@ -138,7 +138,7 @@ export default {
             this.$termsListBus.onAddNewChildTerm(this.term.id);
         },       
         toggleShowChildren() {
-            if (this.term.children == undefined || this.term.children.length <= 0) {
+            if (!this.isLoadingTerms && (this.term.children == undefined || this.term.children.length <= 0)) {
                 this.loadChildTerms(this.term.id);
             } else {
                 this.showChildren = !this.showChildren;
