@@ -635,14 +635,12 @@ class Elastic_Press {
 
 					$label = $term['key'];
 					if (\is_numeric($term['key'])) {
-						$item = \Tainacan\Repositories\Items::get_instance()->fetch(intval($term['key']));
-						$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
-						$metadatas = $Tainacan_Item_Metadata->fetch($item, 'OBJECT', ['post__in' => [$metada_id], 'metadata_type' => 'Tainacan\Metadata_Types\Relationship']);
-						if ( is_array( $metadatas ) ) {
+						$metadatadum = \Tainacan\Repositories\Metadata::get_instance()->fetch($metada_id);
+						if ( isset($metadatadum->get_metadata_type_options()['collection_id'])) {
+							$item = \Tainacan\Repositories\Items::get_instance()->fetch(intval($term['key']));
 							$label = $item->get_title();
 						}
 					}
-
 					$fct = [
 						"type" 				=> "Text",
 						"label" 			=> $label,
@@ -720,10 +718,9 @@ class Elastic_Press {
 
 						$label = $term['key'][$key];
 						if (\is_numeric($term['key'][$key])) {
-							$item = \Tainacan\Repositories\Items::get_instance()->fetch($term['key'][$key]);
-							$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
-							$metadatas = $Tainacan_Item_Metadata->fetch($item, 'OBJECT', [ 'post__in' => [$metada_id], 'metadata_type' => 'Tainacan\Metadata_Types\Relationship' ] );
-							if ( is_array( $metadatas ) ) {
+							$metadatadum = \Tainacan\Repositories\Metadata::get_instance()->fetch($metada_id);
+							if ( isset($metadatadum->get_metadata_type_options()['collection_id'])) {
+								$item = \Tainacan\Repositories\Items::get_instance()->fetch($term['key'][$key]);
 								$label = $item->get_title();
 							}
 						}
