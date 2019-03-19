@@ -28,11 +28,12 @@ Tainacan is a software solution for building, managing and publishing digital re
 
 ### Support
 
-We provide technical support on our [mailing list](https://lists.riseup.net/www/info/tainacan) in English, Portuguese and Spanish.
+In addition to [our documentation](https://wiki.tainacan.org/) and [instructional videos](https://youtu.be/oEl9bWe_rWI), we provide technical support on our [mailing list](https://lists.riseup.net/www/info/tainacan) in English, Portuguese and Spanish. You are welcome to send all of your questions!
 
 ### Contributing
 Tainacan is a free, open source software licensed under **GPLv3**. Contributions to the codebase will abide to the same license; other contributions may be under aditional or other terms.
 
 To contribute with our project, you can report bugs and other issues, or suggest new features. You are also free to submit pull requests or translate Tainacan to multiple languages. If you are interested in contributing, you can get started by reading our [contribution guidelines](docs/CONTRIBUTING.md).
 
-### Team
+### Acknowledgements
+Tainacan is the results of continuous efforts from developers, researchers, policy makers and GLAMs in Brazil. We are eternally grateful for all of [our amazing contributors](https://github.com/tainacan/tainacan/graphs/contributors)!
