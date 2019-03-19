@@ -35,6 +35,7 @@ class Oaipmh_Importer extends Importer {
         $this->metadata_repo = \Tainacan\Repositories\Metadata::get_instance();
         $this->item_metadata_repo = \Tainacan\Repositories\Item_Metadata::get_instance();
         $this->tax_repo = \Tainacan\Repositories\Taxonomies::get_instance();
+        $this->term_repo = \Tainacan\Repositories\Terms::get_instance();
 
         $this->remove_import_method('file');
         $this->add_import_method('url');
@@ -168,24 +169,17 @@ class Oaipmh_Importer extends Importer {
 
                     $this->add_log('Taxonomy ' . $tax->get_name() . ' created' );
 
-                    $this->add_transient('tax_' . $taxonomy->term_id . '_id', $tax->get_id());
-                    $this->add_transient('tax_' . $taxonomy->term_id . '_name', $tax->get_name());
-
-                    if (isset($taxonomy->children) && $tax) {
-                        $this->add_all_terms($tax, $taxonomy->children);
-                    }
-
-                } else {
-                    $this->add_log('Error creating taxonomy Sets' );
-                    $this->add_log($tax->get_errors());
-
                     foreach ($collection_xml->ListSets->set as $set) {
 
                         $setSpec = (string)$set->setSpec;
                         $setName = (string)$set->setName;
 
-                        //todo: create terms
+                        $this->createTerms( $tax, $setName, $setSpec );
                     }
+
+                } else {
+                    $this->add_log('Error creating taxonomy Sets' );
+                    $this->add_log($tax->get_errors());
 
                 }
 
@@ -420,6 +414,8 @@ class Oaipmh_Importer extends Importer {
         $collections = $this->requester($collections_link);
         $collections_array = $this->decode_request($collections, $collections_link);
 
+        // TODO: verify if exists resumption token
+
         return ($collections_array) ? $collections_array : [];
     }
 
@@ -507,6 +503,46 @@ class Oaipmh_Importer extends Importer {
         return false;
     }
 
+    /**
+     * @param $taxonomy_father
+     * @param $name
+     * @param $slug
+     * @return bool
+     */
+    public function createTerms( $taxonomy_father, $name, $slug ){
+        $new_term = new Entities\Term();
+        $new_term->set_taxonomy($taxonomy_father->get_db_identifier());
+        $new_term->set_name($name);
+
+        // block terms with same set spec
+        $map = $this->get_transient($slug);
+
+        if($map){
+            return false;
+        }
+
+        if ($new_term->validate()) {
+            $inserted_term = $this->term_repo->insert($new_term);
+        } else {
+            $this->add_log( implode(',', $new_term->get_errors()) );
+            return false;
+        }
+
+
+        if (is_wp_error($inserted_term)) {
+
+            $this->add_log($inserted_term->get_error_message());
+
+        } else {
+            $this->add_transient($slug, $inserted_term->get_id());
+            $this->add_log('Added term: ' . $inserted_term->get_name() . ' in tax: ' . $taxonomy_father->get_name());
+            return true;
+        }
+
+        return false;
+    }
+
+
     public function options_form(){
         ob_start();
         ?>
@@ -518,14 +554,14 @@ class Oaipmh_Importer extends Importer {
 							 <i class="tainacan-icon tainacan-icon-help" ></i>
 						 </span>
 					</a>
-					<div class="help-tooltip">
+					<vdiv class="help-tooltip">
 						<div class="help-tooltip-header">
 							<h5><?php _e('Create set as', 'tainacan'); ?></h5>
 						</div>
 						<div class="help-tooltip-body">
 							<p><?php _e('Choose the action to manipulate sets', 'tainacan'); ?></p>
 						</div>
-					</div>
+					</vdiv>
 			</span>
             <div class="control is-clearfix">
                 <div class="select">
