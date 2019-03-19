@@ -665,6 +665,7 @@ class Elastic_Press {
 
 				$taxonomy_label = $description_types[0].'.'.$description_types[1];
 				$taxonomy_slug = $description_types[1];
+				$taxonomy_id = Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($taxonomy_slug);
 
 				$buckets = ($has_include == false ? $aggregation['buckets'] : $aggregation[$key]['buckets']);
 				foreach ($buckets as $term) {
@@ -685,7 +686,7 @@ class Elastic_Press {
 						"type" 						=> "Taxonomy",
 						"value" 					=> $term_id,
 						"taxonomy" 				=> $taxonomy_slug,
-						"taxonomy_id"			=> $taxonomy_slug,
+						"taxonomy_id"			=> $taxonomy_id,
 						"total_children"	=> $total_children,
 						"total_items"			=> $term['doc_count'],
 						"label" 					=> $term_object->get('name'),
