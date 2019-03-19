@@ -120,21 +120,22 @@
                         </td>
                         <!-- Collections using -->
                         <td
-                                class="column-large-width" 
-                                @click="onClickTaxonomy($event, taxonomy.id, index)"
+                                class="column-large-width has-text-gray "
+                                :class="{ 'is-italic' : !(taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) }" 
                                 :label="$i18n.get('label_collections_using')" 
-                                :aria-label="$i18n.get('label_description') + ': ' + taxonomy.collections_ids != undefined && taxonomy.collections_ids.length != undefined && taxonomy.collections_ids.length > 0? taxonomy.collections_ids.length + ' ' + (taxonomy.collections_ids.length > 1 ? $i18n.get('collection') : $i18n.get('collections')) : `<span class='has-text-gray is-italic'>` + $i18n.get('label_no_collections_using_taxonomy') + `</span>`">
+                                :aria-label="(taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) ? taxonomy.collections.toString() : $i18n.get('label_no_collections_using_taxonomy')">
                             <p
+                                    @click.self="onClickTaxonomy($event, taxonomy.id, index)"
                                     v-tooltip="{
                                         delay: {
                                             show: 500,
                                             hide: 300,
                                         },
-                                        content: taxonomy.collections_ids != undefined && taxonomy.collections_ids.length != undefined && taxonomy.collections_ids.length > 0 ? taxonomy.collections_ids.length + ' ' + (taxonomy.collections_ids.length > 1 ? $i18n.get('collections') : $i18n.get('collection')) : `<span class='has-text-gray is-italic'>` + $i18n.get('label_no_collections_using_taxonomy') + `</span>`,
+                                        content: (taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) ? renderListOfCollections(taxonomy.collections) : $i18n.get('label_no_collections_using_taxonomy'),
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }"
-                                    v-html="(taxonomy.collections_ids != undefined && taxonomy.collections_ids.length != undefined && taxonomy.collections_ids.length > 0) ? taxonomy.collections_ids.length + ' ' + (taxonomy.collections_ids.length > 1 ? $i18n.get('collections') : $i18n.get('collection')) : `<span class='has-text-gray is-italic'>` + $i18n.get('label_no_collections_using_taxonomy') + `</span>`" />
+                                    v-html="(taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) ? renderListOfCollections(taxonomy.collections) : $i18n.get('label_no_collections_using_taxonomy')" />
                         </td>
                         <!-- Actions -->
                         <td 
@@ -298,7 +299,24 @@
                 } else {
                     this.$router.push(this.$routerHelper.getTaxonomyEditPath(taxonomyId));
                 }
-            }  
+            },
+            renderListOfCollections(collections) {
+                let htmlList = '';
+
+                for (let i = 0; i < collections.length; i++) {
+                    htmlList += `<a target="_blank" href=${collections[i].url}>${collections[i].name}</a>`;
+                    if (collections.length > 2 && i > 0 && i < collections.length - 1) {
+                        if (i < collections.length - 2)
+                            htmlList += ', '
+                        else
+                            htmlList += ' ' + this.$i18n.get('label_and') + ' ';
+                    } else if (collections.length == 2 && i == 0) {
+                        htmlList += ' ' + this.$i18n.get('label_and') + ' ';
+                    }
+                }
+
+                return htmlList;
+            } 
         }
     }
 </script>

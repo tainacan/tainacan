@@ -104,13 +104,18 @@ export const setOrderBy = ({ state, commit }, orderBy ) => {
         commit('setPostQueryAttribute', {  attr: 'metakey', value: orderBy.id } );
         commit('removePostQueryAttribute', 'metatype');
     }
-
+    
     commit('setOrderByName', orderBy.name);
 
 };
 
 export const setOrder = ({ commit }, order ) => {
     commit('setPostQueryAttribute', {  attr: 'order', value: order } );
+};
+
+// Set orderByName
+export const setOrderByName = ({ commit }, orderByName ) => {
+    commit('setOrderByName', orderByName );
 };
 
 // Set search query

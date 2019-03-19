@@ -108,6 +108,9 @@ export default {
                                     this.$route.query.orderby = 'meta_value';
                                     this.$route.query.metakey = orderBy.id;
                                 }
+ 
+                                // Sets orderByName as null so ItemsPage can take care of creating it
+                                this.$store.dispatch('search/setOrderByName', null);
 
                             } else {
                                 this.$route.query.orderby = 'date';
@@ -115,6 +118,9 @@ export default {
                                     slug: 'creation_date',
                                     name: this.$i18n.get('label_creation_date')
                                 }).catch(() => { });
+
+                                // Sets orderByName as null so ItemsPage can take care of creating it
+                                this.$store.dispatch('search/setOrderByName', null);
                             }
                         }
 
