@@ -7,43 +7,6 @@
             <h2>{{ $i18n.get("title_term_edition") }}</h2>
             <hr>
         </div>
-
-        <!-- Header Image -------------------------------- -->
-        <b-field
-                :addons="false"
-                :label="$i18n.get('label_image')">
-            <div class="thumbnail-field">
-                <figure class="image">
-                    <span
-                            v-if="editForm.header_image === undefined || editForm.header_image === false"
-                            class="image-placeholder">{{ $i18n.get('label_empty_term_image') }}</span>
-                    <img
-                            :alt="$i18n.get('label_image')"
-                            :src="(editForm.header_image === undefined || editForm.header_image === false) ? headerPlaceholderPath : editForm.header_image">
-                </figure>
-                <div class="thumbnail-buttons-row">
-                    <a
-                            class="button is-rounded is-secondary"
-                            id="button-edit-header"
-                            :aria-label="$i18n.get('label_button_edit_header_image')"
-                            @click="headerImageMediaFrame.openFrame($event)">
-                        <span class="icon is-small">
-                            <i class="tainacan-icon tainacan-icon-edit"/>
-                        </span>
-                    </a>
-                    <a
-                            class="button is-rounded is-secondary"
-                            id="button-delete-header"
-                            :aria-label="$i18n.get('label_button_delete_thumb')"
-                            @click="deleteHeaderImage()">
-                        <span class="icon is-small">
-                            <i class="tainacan-icon tainacan-icon-delete"/>
-                        </span>
-                    </a>
-                </div>
-                <br>
-            </div>
-        </b-field>
     
         <!-- Name -------------- -->
         <b-field
@@ -74,23 +37,67 @@
                 v-html="formHooks['term']['begin-left'].join('')"/>
         </template>
 
-        <!-- Description -------------- -->
-        <b-field
-                :addons="false"
-                :type="formErrors['description'] !== '' && formErrors['description'] !== undefined ? 'is-danger' : ''"
-                :message="formErrors['description']">
-            <label class="label">
-                {{ $i18n.get('label_description') }}
-                <help-button
-                        :title="$i18n.get('label_description')"
-                        :message="$i18n.get('info_help_term_description')"/>
-            </label>
-            <b-input
-                    type="textarea"
-                    name="description"
-                    v-model="editForm.description"
-                    @focus="clearErrors('description')"/>
-        </b-field>
+        <div class="columns is-gapless image-and-description-area">
+            <div class="column">
+
+                <!-- Header Image -------------------------------- -->
+                <b-field
+                        :addons="false"
+                        :label="$i18n.get('label_image')">
+                    <div class="thumbnail-field">
+                        <figure class="image">
+                            <span
+                                    v-if="editForm.header_image === undefined || editForm.header_image === false"
+                                    class="image-placeholder">{{ $i18n.get('label_empty_term_image') }}</span>
+                            <img
+                                    :alt="$i18n.get('label_image')"
+                                    :src="(editForm.header_image === undefined || editForm.header_image === false) ? headerPlaceholderPath : editForm.header_image">
+                        </figure>
+                        <div class="thumbnail-buttons-row">
+                            <a
+                                    class="button is-rounded is-secondary"
+                                    id="button-edit-header"
+                                    :aria-label="$i18n.get('label_button_edit_header_image')"
+                                    @click="headerImageMediaFrame.openFrame($event)">
+                                <span class="icon is-small">
+                                    <i class="tainacan-icon tainacan-icon-edit"/>
+                                </span>
+                            </a>
+                            <a
+                                    class="button is-rounded is-secondary"
+                                    id="button-delete-header"
+                                    :aria-label="$i18n.get('label_button_delete_thumb')"
+                                    @click="deleteHeaderImage()">
+                                <span class="icon is-small">
+                                    <i class="tainacan-icon tainacan-icon-delete"/>
+                                </span>
+                            </a>
+                        </div>
+                        <br>
+                    </div>
+                </b-field>
+            </div>
+
+            <div class="column">
+                <!-- Description -------------- -->
+                <b-field
+                        :addons="false"
+                        :type="formErrors['description'] !== '' && formErrors['description'] !== undefined ? 'is-danger' : ''"
+                        :message="formErrors['description']">
+                    <label class="label">
+                        {{ $i18n.get('label_description') }}
+                        <help-button
+                                :title="$i18n.get('label_description')"
+                                :message="$i18n.get('info_help_term_description')"/>
+                    </label>
+                    <b-input
+                            type="textarea"
+                            name="description"
+                            v-model="editForm.description"
+                            @focus="clearErrors('description')"/>
+                </b-field>
+            </div>
+        </div>
 
         <!-- Parent -------------- -->
         <b-field
@@ -187,7 +194,7 @@
         data() {
             return {
                 formErrors: {},
-                headerPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_rectangle.png',
+                headerPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
                 headerImageMediaFrame: undefined,
                 isFetchingParentTerms: false,
                 parentTerms: [],
@@ -426,6 +433,18 @@
             }
         }
 
+        .image-and-description-area {
+            margin-bottom: 0px;
+            margin-top: 24px;
+
+            .column:first-of-type {
+                margin-right: 24px;
+            }
+            .column:last-of-type {
+                flex-grow: 2;
+            }
+        }
+
         .thumbnail-field {
 
             .content {
@@ -441,7 +460,7 @@
                 margin-right: auto;
                 width: 100%;
                 top: 35%;
-                font-size: 1.2rem;
+                font-size: 1.25rem;
                 font-weight: bold;
                 z-index: 99;
                 text-align: center;

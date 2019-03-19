@@ -241,8 +241,7 @@
                     taxonomiesPerPage: this.taxonomiesPerPage, 
                     status: this.status, 
                     order: this.order,
-                    orderby: this.orderBy,
-                    context: 'edit'
+                    orderby: this.orderBy
                 })
                     .then((res) => {
                         this.isLoading = false;
