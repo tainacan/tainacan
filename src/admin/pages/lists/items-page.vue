@@ -608,18 +608,18 @@
                     <li 
                             @click="onChangeTab('')"
                             :class="{ 'is-active': status == undefined || status == ''}">
-                        <a>{{ `${$i18n.get('label_all_items')}` }}<span class="has-text-gray">&nbsp;{{ `${collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.publish)})` : ` (${repositoryTotalItems ? repositoryTotalItems.private + repositoryTotalItems.publish : ''})`}` }}</span></a>
+                        <a>{{ `${$i18n.get('label_all_items')}` }}<span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.publish)})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private + repositoryTotalItems.publish })` : '' }}</span></a>
                     </li>
                     <li 
                             @click="onChangeTab('draft')"
                             :class="{ 'is-active': status == 'draft'}">
-                        <a>{{ `${$i18n.get('label_draft_items')}` }}<span class="has-text-gray">&nbsp;{{ `${collection && collection.total_items ? ` (${collection.total_items.draft})` : ` (${repositoryTotalItems ? repositoryTotalItems.draft : ''})`}` }}</span></a>
+                        <a>{{ `${$i18n.get('label_draft_items')}` }}<span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${collection.total_items.draft})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.draft })` : '' }}</span></a>
                     </li>
                     <li
                             v-if="!isRepositoryLevel"
                             @click="onChangeTab('trash')"
                             :class="{ 'is-active': status == 'trash'}">
-                        <a>{{ `${$i18n.get('label_trash_items')}` }}<span class="has-text-gray">&nbsp;{{ `${collection && collection.total_items ? ` (${collection.total_items.trash})` : ` (${repositoryTotalItems ? repositoryTotalItems.trash : ''})`}` }}</span></a>
+                        <a>{{ `${$i18n.get('label_trash_items')}` }}<span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${collection.total_items.trash})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.trash })` : '' }}</span></a>
                     </li>
                 </ul>
             </div>
@@ -881,6 +881,7 @@
                 return this.getItemsListTemplate();
             },
             totalItems() {
+                this.updateCollectionInfo();
                 return this.getTotalItems();
             },
             filters() {
@@ -1324,6 +1325,14 @@
                         this.isLoadingMetadata = false;
                     });
             },
+            updateCollectionInfo () {
+                if (this.collectionId) {
+                    this.fetchCollectionTotalItems(this.collectionId)
+                        .then((data) => {
+                            this.collection = data;
+                        })
+                }
+            },
             showItemsHiddingDueSorting() {
 
                 if (this.isSortingByCustomMetadata &&
@@ -1371,13 +1380,6 @@
         },
         created() {
 
-            if(this.collectionId) {
-                this.fetchCollectionTotalItems(this.collectionId)
-                    .then((data) => {
-                        this.collection = data;
-                    })
-            }
-
             this.isOnTheme = (this.$route.name === null);
 
             this.isRepositoryLevel = (this.collectionId === undefined);
@@ -1418,7 +1420,7 @@
             });
 
         },
-        mounted() {
+        mounted() {  
             
             this.prepareFilters();
             this.prepareMetadata();
