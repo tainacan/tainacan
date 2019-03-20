@@ -559,7 +559,7 @@ export default {
                     this.$nextTick(() => this.isLoadingItem = false);
                 } else {
                     // Loads current item
-                    this.fetchItem(this.slideItems[this.slideIndex].id)
+                    this.fetchItem({ itemId: this.slideItems[this.slideIndex].id, contextEdit: true })
                         .then(() => {
                             this.isLoadingItem = false;
                         })
