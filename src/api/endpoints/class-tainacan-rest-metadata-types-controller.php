@@ -23,7 +23,7 @@ class REST_Metadata_Types_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'get_items_permissions_check'),
 					'args'                => [
 						'metadata-type' => [
-							'description' => __('The structure of objects returned.'),
+							'description' => __('Returns the structure of the objects.'),
 							'items'       => [
 								'errors'              => [
 									'type' => 'string'
