@@ -40,6 +40,49 @@
             </div>
         </div>
         <div class="table-wrapper">
+
+            <!-- Context menu for right click selection -->
+            <div 
+                    v-if="cursorPosY > 0 && cursorPosX > 0"
+                    class="context-menu">
+
+                <!-- Backdrop for escaping context menu -->
+                <div 
+                    @click.left="clearContextMenu()"
+                    @click.right="clearContextMenu()"
+                    class="context-menu-backdrop" /> 
+
+                <b-dropdown 
+                        inline
+                        :style="{ top: cursorPosY + 'px', left: cursorPosX + 'px' }">
+                    <b-dropdown-item
+                            @click="openCollection()" 
+                            v-if="!isOnTrash">
+                        {{ $i18n.getFrom('collections', 'view_item') }}
+                    </b-dropdown-item>
+                    <b-dropdown-item
+                            @click="openCollectionOnNewTab()"
+                            v-if="!isOnTrash">
+                        {{ $i18n.get('label_open_collection_new_tab') }}
+                    </b-dropdown-item>
+                    <b-dropdown-item 
+                            @click="selectCollection()"
+                            v-if="contextMenuIndex != null">
+                        {{ !selectedCollections[contextMenuIndex] ? $i18n.get('label_select_collection') : $i18n.get('label_unselect_collection') }}
+                    </b-dropdown-item>
+                    <b-dropdown-item
+                            @click="goToCollectionEditPage(contextMenuCollection)"
+                            v-if="contextMenuCollection != null">
+                        {{ $i18n.getFrom('collections', 'edit_item') }}
+                    </b-dropdown-item>
+                    <b-dropdown-item
+                            @click="deleteOneCollection(contextMenuCollection)"
+                            v-if="contextMenuCollection != null">
+                        {{ $i18n.get('label_delete_collection') }}
+                    </b-dropdown-item>
+                </b-dropdown>
+            </div>
+
             <table class="tainacan-table">
                 <thead>
                     <tr>
@@ -94,7 +137,8 @@
                         <!-- Thumbnail -->
                         <td 
                                 class="thumbnail-cell column-default-width"
-                                @click="onClickCollection($event, collection.id, index)"
+                                @click.left="onClickCollection($event, collection.id, index)"
+                                @click.right="onRightClickCollection($event, collection.id, index)"
                                 :label="$i18n.get('label_thumbnail')" 
                                 :aria-label="$i18n.get('label_thumbnail')">
                             <span>
@@ -107,7 +151,8 @@
                         <!-- Name -->
                         <td 
                                 class="column-default-width column-main-content"
-                                @click="onClickCollection($event, collection.id, index)"
+                                @click.left="onClickCollection($event, collection.id, index)"
+                                @click.right="onRightClickCollection($event, collection.id, index)"
                                 :label="$i18n.get('label_name')" 
                                 :aria-label="$i18n.get('label_name') + ': ' + collection.name">
                             <p
@@ -125,7 +170,8 @@
                         <!-- Description -->
                         <td
                                 class="column-large-width" 
-                                @click="onClickCollection($event, collection.id, index)"
+                                @click.left="onClickCollection($event, collection.id, index)"
+                                @click.right="onRightClickCollection($event, collection.id, index)"
                                 :label="$i18n.get('label_description')" 
                                 :aria-label="$i18n.get('label_description') + ': ' + (collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`">
                             <p
@@ -142,7 +188,8 @@
                         </td>
                         <!-- Creation Date -->
                         <td
-                                @click="onClickCollection($event, collection.id, index)"
+                                @click.left="onClickCollection($event, collection.id, index)"
+                                @click.right="onRightClickCollection($event, collection.id, index)"
                                 class="table-creation column-default-width" 
                                 :label="$i18n.get('label_creation_date')" 
                                 :aria-label="$i18n.get('label_creation_date') + ': ' + collection.creation_date">
@@ -160,7 +207,8 @@
                         </td>
                         <!-- Created by -->
                         <td
-                                @click="onClickCollection($event, collection.id, index)"
+                                @click.left="onClickCollection($event, collection.id, index)"
+                                @click.right="onRightClickCollection($event, collection.id, index)"
                                 class="table-creation column-default-width" 
                                 :label="$i18n.get('label_created_by')" 
                                 :aria-label="$i18n.get('label_created_by') + ': ' + collection.author_name">
@@ -178,7 +226,8 @@
                         </td>
                         <!-- Total items -->
                         <td
-                                @click="onClickCollection($event, collection.id, index)"
+                                @click.left="onClickCollection($event, collection.id, index)"
+                                @click.right="onRightClickCollection($event, collection.id, index)"
                                 class="column-small-width column-align-right" 
                                 :label="$i18n.get('label_total_items')" 
                                 v-if="collection.total_items != undefined"
@@ -239,7 +288,11 @@ export default {
             selectedCollections: [],
             allCollectionsOnPageSelected: false,
             isSelectingCollections: false,
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png'
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
+            cursorPosX: -1,
+            cursorPosY: -1,
+            contextMenuIndex: null,
+            contextMenuCollection: null,
         }
     },
     props: {
@@ -316,6 +369,7 @@ export default {
                 
                 }
             });
+            this.clearContextMenu();
         },
         deleteSelectedCollections() {
             this.$modal.open({
@@ -355,6 +409,25 @@ export default {
                 }
             });
         },
+        openCollection() {
+            if (this.contextMenuCollection != null) {
+                this.$router.push(this.$routerHelper.getCollectionPath(this.contextMenuCollection));
+            }
+            this.clearContextMenu();
+        },
+        openCollectionOnNewTab() {
+            if (this.contextMenuCollection != null) {
+                let routeData = this.$router.resolve(this.$routerHelper.getCollectionPath(this.contextMenuCollection));
+                window.open(routeData.href, '_blank');
+            }
+            this.clearContextMenu();
+        },
+        selectCollection() {
+            if (this.contextMenuIndex != null) {
+                this.$set(this.selectedCollections, this.contextMenuIndex, !this.selectedCollections[this.contextMenuIndex]);
+            }
+            this.clearContextMenu();
+        },
         onClickCollection($event, collectionId, index) {
             if ($event.ctrlKey) {
                 this.$set(this.selectedCollections, index, !this.selectedCollections[index]); 
@@ -364,6 +437,20 @@ export default {
         },
         goToCollectionEditPage(collectionId) {
             this.$router.push(this.$routerHelper.getCollectionEditPath(collectionId));
+        },
+        onRightClickCollection($event, collectionId, index) {
+            $event.preventDefault();
+
+            this.cursorPosX = $event.clientX;
+            this.cursorPosY = $event.clientY;
+            this.contextMenuCollection = collectionId;
+            this.contextMenuIndex = index;
+        },
+        clearContextMenu() {
+            this.cursorPosX = -1;
+            this.cursorPosY = -1;
+            this.contextMenuCollection = null;
+            this.contextMenuIndex = null;
         }
     },
     mounted() {
@@ -432,6 +519,23 @@ export default {
 
     .total-items-header {
         text-align: right;
+    }
+
+    .context-menu {
+        .dropdown {
+            position: fixed;
+            z-index: 99999999999;
+        }
+        .context-menu-backdrop {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            border: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 9999999;
+        }
     }
     
 </style>

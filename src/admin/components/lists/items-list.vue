@@ -90,7 +90,7 @@
                     <b-dropdown-item
                             @click="openItem()" 
                             v-if="!isOnTrash">
-                        {{ $i18n.get('label_open_item') }}
+                        {{ $i18n.getFrom('items','view_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="openItemOnNewTab()"
@@ -105,7 +105,7 @@
                     <b-dropdown-item
                             @click="goToItemEditPage(contextMenuItem)"
                             v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit">
-                        {{ $i18n.get('title_edit_item') }}
+                        {{ $i18n.getFrom('items','edit_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="deleteOneItem(contextMenuItem.id)"
@@ -953,6 +953,7 @@ export default {
                     }
                 }
             });
+            this.clearContextMenu();
         },
         untrashSelectedItems(){
             this.$modal.open({
