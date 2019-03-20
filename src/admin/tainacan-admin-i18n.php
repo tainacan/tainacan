@@ -323,7 +323,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_show_filters'                             => __( 'Show filters menu', 'tainacan' ),
 	'label_select_all_items'                         => __( 'Select all items', 'tainacan' ),
 	'label_select_all'                               => __( 'Select all', 'tainacan' ),
-	'label_untrash_selected_items'                   => __( 'Recover from trash', 'tainacan' ),
+	'label_untrash_selected_items'                   => __( 'Restore from trash', 'tainacan' ),
 	'label_value_not_informed'                       => __( 'Value not informed.', 'tainacan' ),
 	'label_description_not_informed'                 => __( 'Description not informed.', 'tainacan' ),
 	'label_save_goto_metadata'                       => __( 'Save and Go to Metadata', 'tainacan' ),
