@@ -657,7 +657,8 @@
                         :total-items="totalItems"
                         :is-loading="isLoadingItems"
                         :is-on-trash="status == 'trash'"
-                        :view-mode="adminViewMode"/>
+                        :view-mode="adminViewMode"
+                        @updateIsLoading="newIsLoading => isLoadingItems = newIsLoading"/>
                 
                 <!-- Theme View Modes -->
                 <div 

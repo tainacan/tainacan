@@ -180,7 +180,8 @@
             return {
                 selected: [],
                 allOnPageSelected: false,
-                isSelecting: false
+                isSelecting: false,
+                adminUrl: tainacan_plugin.admin_url
             }
         },
         props: {
@@ -304,7 +305,7 @@
                 let htmlList = '';
 
                 for (let i = 0; i < collections.length; i++) {
-                    htmlList += `<a target="_blank" href=${collections[i].url}>${collections[i].name}</a>`;
+                    htmlList += `<a target="_blank" href=${ this.adminUrl + 'admin.php?page=tainacan_admin#' + this.$routerHelper.getCollectionPath(collections[i].id)}>${collections[i].name}</a>`;
                     if (collections.length > 2 && i > 0 && i < collections.length - 1) {
                         if (i < collections.length - 2)
                             htmlList += ', '
