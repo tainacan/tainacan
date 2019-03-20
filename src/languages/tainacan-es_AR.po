@@ -2,40 +2,43 @@
 # This file is distributed under the same license as the Plugins - Tainacan - Development (trunk) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2018-12-05 05:24:08+0000\n"
+"PO-Revision-Date: 2019-03-20 19:13-0300\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: GlotPress/2.4.0-alpha\n"
+"X-Generator: Poedit 2.0.7\n"
 "Language: es_AR\n"
 "Project-Id-Version: Plugins - Tainacan - Development (trunk)\n"
+"POT-Creation-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
 
 #: assets/items_grid-components.js:3015
 msgid "Paste a Tainacan sharing URL for get items"
-msgstr ""
+msgstr "Pegar una URL de compartir de Tainacan para obtener elementos"
 
 #: gutenberg-blocks/tainacan-collections/collections-carousel/index.js:325
 #: gutenberg-blocks/tainacan-collections/collections-carousel/index.js:333
 #: assets/collections_carousel-components.js:4390
 #: assets/collections_carousel-components.js:4394
 msgid "Add collection"
-msgstr ""
+msgstr "Añadir colección"
 
 #: gutenberg-blocks/tainacan-collections/collections-carousel/index.js:80
 #: assets/collections_carousel-components.js:4129
 msgid "collections"
-msgstr ""
+msgstr "colecciones"
 
 #: gutenberg-blocks/tainacan-collections/collections-carousel/index.js:80
 #: assets/collections_carousel-components.js:4129
 msgid "carousel"
-msgstr ""
+msgstr "carrusel"
 
 #: gutenberg-blocks/tainacan-collections/collections-carousel/index.js:16
 #: assets/collections_carousel-components.js:4065
 msgid "Tainacan Collections Carousel"
-msgstr ""
+msgstr "Carrusel de Colecciones Tainacan"
 
 #: gutenberg-blocks/tainacan-items/items-grid/index.js:304
 #: gutenberg-blocks/tainacan-collections/collections-carousel/index.js:80
@@ -43,65 +46,65 @@ msgstr ""
 #: assets/collections_carousel-components.js:4129
 #: assets/collections_carousel-components.js:4407
 msgid "tainacan"
-msgstr ""
+msgstr "tainacan"
 
 #: gutenberg-blocks/tainacan-items/items-grid/index.js:278
 #: gutenberg-blocks/tainacan-items/items-grid/index.js:299
 #: assets/items_grid-components.js:2998 assets/items_grid-components.js:3008
 msgid "Add items"
-msgstr ""
+msgstr "Añadir colección"
 
 #: gutenberg-blocks/tainacan-items/items-grid/index.js:278
 #: assets/items_grid-components.js:2998
 msgid "Update items grid"
-msgstr ""
+msgstr "Actualizar el grid de los ítems"
 
 #: gutenberg-blocks/tainacan-items/items-grid/index.js:258
 #: assets/items_grid-components.js:2978
 msgid "yes"
-msgstr ""
+msgstr "sí"
 
 #: gutenberg-blocks/tainacan-items/items-grid/index.js:257
 #: assets/items_grid-components.js:2977
 msgid "Show items title"
-msgstr ""
+msgstr "Mostrar titulo de los ítems"
 
 #: gutenberg-blocks/tainacan-items/items-grid/index.js:13
 #: assets/items_grid-components.js:2715
 msgid "Tainacan Items Grid"
-msgstr ""
+msgstr "Grid de los ítems de Tainacan"
 
 #: exporter/class-tainacan-export-handler.php:18
 msgid "Allows you to export one collection to a CSV file"
-msgstr ""
+msgstr "Le permite exportar una colección a un archivo CSV"
 
 #: exporter/class-tainacan-csv.php:133
 msgid "Your CSV file is ready! Access it in the link below:"
-msgstr ""
+msgstr "Su archivo CSV está listo! Acceda a él en el siguiente enlace:"
 
 #: exporter/class-tainacan-exporter.php:655
 msgid "Error processing item"
-msgstr ""
+msgstr "Error al procesar el ítem"
 
 #: classes/repositories/class-tainacan-logs.php:372
 msgid "(item: %s)"
-msgstr ""
+msgstr "(ítem: %s)"
 
 #: classes/repositories/class-tainacan-logs.php:370
 msgid "item metadatum"
-msgstr ""
+msgstr "metadato de ítem"
 
 #: classes/repositories/class-tainacan-logs.php:121
 msgid "The id of the item that this log is related to"
-msgstr ""
+msgstr "El ID del ítem con el que está relacionado este registro"
 
 #: classes/repositories/class-tainacan-logs.php:120
 msgid "Log item relationship"
-msgstr ""
+msgstr "Registro de relaciones del ítem"
 
 #: admin/tainacan-admin-i18n.php:542
 msgid "Tainacan API on JSON format."
-msgstr ""
+msgstr "API de Tainacan en formato JSON."
 
 #: admin/tainacan-admin-i18n.php:541
 msgid "The exporter may take a while depending on the size of your collection. Check this option to receive an e-mail when the process is done. You can also check the process status visiting the"
@@ -109,283 +112,283 @@ msgstr ""
 
 #: admin/tainacan-admin-i18n.php:540
 msgid "Other items listing options: "
-msgstr ""
+msgstr "Otras opciones de listado de ítems:"
 
 #: admin/tainacan-admin-i18n.php:539
 msgid "URL link copied"
-msgstr ""
+msgstr "Enlace URL copiado"
 
 #: admin/tainacan-admin-i18n.php:538
 msgid "empty"
-msgstr ""
+msgstr "vacío"
 
 #: admin/tainacan-admin-i18n.php:537
 msgid "Are you sure? This process will be cancelled"
-msgstr ""
+msgstr "¿Estás seguro? Este proceso será cancelado."
 
 #: admin/tainacan-admin-i18n.php:536
 msgid "Running"
-msgstr ""
+msgstr "En ejecución"
 
 #: admin/tainacan-admin-i18n.php:535
 msgid "Paused"
-msgstr ""
+msgstr "En pausa"
 
 #: admin/tainacan-admin-i18n.php:534
 msgid "Cancelled"
-msgstr ""
+msgstr "Cancelado"
 
 #: admin/tainacan-admin-i18n.php:533
 msgid "Failed"
-msgstr ""
+msgstr "Ha fallado"
 
 #: admin/tainacan-admin-i18n.php:532
 msgid "Finished with errors"
-msgstr ""
+msgstr "Terminado con errores."
 
 #: admin/tainacan-admin-i18n.php:531
 msgid "Finished"
-msgstr ""
+msgstr "Terminado"
 
 #: admin/tainacan-admin-i18n.php:530
 msgid "?"
-msgstr ""
+msgstr "?"
 
 #: admin/tainacan-admin-i18n.php:472
 msgid "After"
-msgstr ""
+msgstr "Después"
 
 #: admin/tainacan-admin-i18n.php:471
 msgid "Before"
-msgstr ""
+msgstr "Antes de"
 
 #: admin/tainacan-admin-i18n.php:470
 msgid "No activities"
-msgstr ""
+msgstr "No hay actividades"
 
 #: admin/tainacan-admin-i18n.php:454
 msgid "Showing activities "
-msgstr ""
+msgstr "Mostrando actividades"
 
 #: admin/tainacan-admin-i18n.php:435
 msgid "Do you really want to delete this attachment?"
-msgstr ""
+msgstr "¿Realmente quieres borrar este archivo adjunto?"
 
 #: admin/tainacan-admin-i18n.php:406
 msgid "Select a collection"
-msgstr ""
+msgstr "Seleccione una colección"
 
 #: admin/tainacan-admin-i18n.php:405
 msgid "Select an exporter from the options below:"
-msgstr ""
+msgstr "Seleccione un exportador de las siguientes opciones:"
 
 #: admin/tainacan-admin-i18n.php:395
 msgid "Select an importer from the options below:"
-msgstr ""
+msgstr "Seleccione un importador de las siguientes opciones:"
 
 #: admin/tainacan-admin-i18n.php:368
 msgid "Tainacan API"
-msgstr ""
+msgstr "API do Tainacan"
 
 #: admin/tainacan-admin-i18n.php:367
 msgid "Sorting and visualization control"
-msgstr ""
+msgstr "Control de clasificación y visualización."
 
 #: admin/tainacan-admin-i18n.php:366
 msgid "List pagination"
-msgstr ""
+msgstr "Lista de paginación"
 
 #: admin/tainacan-admin-i18n.php:365
 msgid "Items List"
-msgstr ""
+msgstr "Lista de ítems"
 
 #: admin/tainacan-admin-i18n.php:363
 msgid "Sort ascending"
-msgstr ""
+msgstr "Orden ascendente"
 
 #: admin/tainacan-admin-i18n.php:362
 msgid "Sort descending"
-msgstr ""
+msgstr "Orden descendiente"
 
 #: admin/tainacan-admin-i18n.php:361
 msgid "No mapping"
-msgstr ""
+msgstr "Sin mapeo"
 
 #: admin/tainacan-admin-i18n.php:360
 msgid "Output"
-msgstr ""
+msgstr "Salida"
 
 #: admin/tainacan-admin-i18n.php:359
 msgid "No output info"
-msgstr ""
+msgstr "No hay información de salida"
 
 #: admin/tainacan-admin-i18n.php:358
 msgid "Open externally"
-msgstr ""
+msgstr "Abrir externamente"
 
 #: admin/tainacan-admin-i18n.php:357
 msgid "Copy link URL"
-msgstr ""
+msgstr "Copiar URL del enlace"
 
 #: admin/tainacan-admin-i18n.php:356
 msgid "Items list on website"
-msgstr ""
+msgstr "Lista de ítems en el sitio web"
 
 #: admin/tainacan-admin-i18n.php:355
 msgid "URLs for Items List"
-msgstr ""
+msgstr "URLs para lista de ítems"
 
 #: admin/tainacan-admin-i18n.php:354
 msgid "Approbation"
-msgstr ""
+msgstr "Aprobación"
 
 #: admin/tainacan-admin-i18n.php:353
 msgid "Activity author"
-msgstr ""
+msgstr "Autor de la actividad"
 
 #: admin/tainacan-admin-i18n.php:352
 msgid "Activity creation date"
-msgstr ""
+msgstr "Fecha de creación de actividad"
 
 #: admin/tainacan-admin-i18n.php:351
 msgid "Activity description"
-msgstr ""
+msgstr "Descripción de la actividad"
 
 #: admin/tainacan-admin-i18n.php:350
 msgid "Page"
-msgstr ""
+msgstr "Página"
 
 #: admin/tainacan-admin-i18n.php:349
 msgid "URLs"
-msgstr ""
+msgstr "URLs"
 
 #: admin/tainacan-admin-i18n.php:348
 msgid "Send me an e-mail when done."
-msgstr ""
+msgstr "Envíame un correo electrónico cuando haya terminado."
 
 #: admin/tainacan-admin-i18n.php:347
 msgid "Origin collection"
-msgstr ""
+msgstr "Colección de origen"
 
 #: admin/tainacan-admin-i18n.php:346
 msgid "Available Exporters"
-msgstr ""
+msgstr "Exportadores disponibles"
 
 #: admin/tainacan-admin-i18n.php:329
 msgid "View Repository"
-msgstr ""
+msgstr "Ver repositorio"
 
 #: admin/tainacan-admin-i18n.php:307
 msgid "Process waiting"
-msgstr ""
+msgstr "Proceso en espera"
 
 #: admin/tainacan-admin-i18n.php:306
 msgid "Process paused"
-msgstr ""
+msgstr "Proceso pausado"
 
 #: admin/tainacan-admin-i18n.php:305
 msgid "Process cancelled by user"
-msgstr ""
+msgstr "Proceso cancelado por el usuario"
 
 #: admin/tainacan-admin-i18n.php:304
 msgid "Process completed with errors"
-msgstr ""
+msgstr "Proceso completado con errores"
 
 #: admin/tainacan-admin-i18n.php:236
 msgid "All taxonomies"
-msgstr ""
+msgstr "Todas las taxonomias"
 
 #: admin/tainacan-admin-i18n.php:235
 msgid "All collections"
-msgstr ""
+msgstr "Todas las colecciones"
 
 #: admin/tainacan-admin-i18n.php:212
 msgid "Activity date"
-msgstr ""
+msgstr "Fecha de actividad"
 
 #: admin/tainacan-admin-i18n.php:167
 msgid "Go to Page:"
-msgstr ""
+msgstr "Ir a la página:"
 
 #: admin/tainacan-admin-i18n.php:164
 msgid "Activities per Page:"
-msgstr ""
+msgstr "Actividades por página:"
 
 #: admin/tainacan-admin-i18n.php:103
 msgid "Collection Activities"
-msgstr ""
+msgstr "Actividades de colección"
 
 #: admin/tainacan-admin-i18n.php:99
 msgid "Repository Activities"
-msgstr ""
+msgstr "Actividades de repositorio"
 
 #: admin/tainacan-admin-i18n.php:80
 msgid "Undo"
-msgstr ""
+msgstr "Deshacer"
 
 #: admin/tainacan-admin-i18n.php:47
 msgid "Remove filter"
-msgstr ""
+msgstr "Quitar filtro"
 
 #: admin/tainacan-admin-i18n.php:35 admin/tainacan-admin-i18n.php:124
 msgid "Exporters"
-msgstr ""
+msgstr "Exportadores"
 
 #: admin/tainacan-admin-i18n.php:28 admin/tainacan-admin-i18n.php:107
 #: admin/tainacan-admin-i18n.php:213
 msgid "Activity"
-msgstr ""
+msgstr "Actividad"
 
 #: admin/tainacan-admin-i18n.php:22
 msgid "Activities"
-msgstr ""
+msgstr "Actividades"
 
 #: exposers/class-tainacan-csv.php:15
 msgid "Comma-separated values"
-msgstr ""
+msgstr "Valores Separados por Comas"
 
 #: exposers/class-tainacan-csv.php:14
 msgid "CSV"
-msgstr ""
+msgstr "CSV"
 
 #: exposers/class-tainacan-html.php:18
 msgid "A simple HTML table"
-msgstr ""
+msgstr "Una tabla HTML sencilla"
 
 #. translators: 1: Exposer name. 2: List of accpeted mappers. example: CSV
 #. exposer does not support current mapper. Supported mappers are: dublin-core,
 #. other-mapper
 #: exposers/class-tainacan-exposers-handler.php:252
 msgid "%1$s exposer does not support current mapper. Supported mappers are: %2$s"
-msgstr ""
+msgstr "%1$s exposer no soporta el mapeador actual. Los mapeadores soportados son: %2$s"
 
 #. translators: 1: Exposer name, 2: List of accepted mappers. example: CSV
 #. exposer requires one of the following mappers: dublin-core, other-mapper
 #: exposers/class-tainacan-exposers-handler.php:243
 msgid "%1$s exposer requires one of the following mappers: %2$s"
-msgstr ""
+msgstr "%1$s exposer requiere uno de los siguientes mapeadores: %2$s"
 
 #. translators: To be displayed in a list of supported mappers of a exposer.
 #. Example: Supported mappers: No mapper, Dublin Core
 #: exposers/class-tainacan-exposers-handler.php:229
 msgid "No mapper"
-msgstr ""
+msgstr "No se ha encontrado ningún mapeador"
 
 #: api/endpoints/class-tainacan-rest-logs-controller.php:126
 msgid "An item with this ID does not exist"
-msgstr ""
+msgstr "Un ítem con este ID no existe"
 
 #: api/endpoints/class-tainacan-rest-background-processes-controller.php:61
 msgid "Return only processes created or updated recently"
-msgstr ""
+msgstr "Solo devuelve procesos creados o actualizados recientemente"
 
 #: theme-helper/template-tags.php:358
 msgid "Edit this item"
-msgstr ""
+msgstr "Editar este ítem"
 
 #: admin/tainacan-admin-i18n.php:420
 msgid "No term was found here"
-msgstr ""
+msgstr "No se encontró ningún término aquí"
 
 #: exporter/class-tainacan-exporter.php:784
 msgid "Finished export."
@@ -397,65 +400,65 @@ msgstr ""
 
 #: classes/repositories/class-tainacan-metadata.php:114
 msgid "You can not have two items with the same value for this metadatum"
-msgstr ""
+msgstr "No se puede tener dos elementos con el mismo valor para este metadato"
 
 #: classes/repositories/class-tainacan-metadata.php:113
 msgid "Metadata value should be unique accross all items in this collection"
-msgstr ""
+msgstr "El valor de los metadatos debe ser único en todos los elementos de esta colección."
 
 #: classes/repositories/class-tainacan-metadata.php:104
 msgid "The metadata is required. All items in this collection must fill this field"
-msgstr ""
+msgstr "Los metadatos son obligatorios. Todos los ítems en esta colección deben llenar a este campo"
 
 #: classes/repositories/class-tainacan-logs.php:361
 msgid "(on repository level)"
-msgstr ""
+msgstr "(a nivel de repositorio)"
 
 #: classes/repositories/class-tainacan-logs.php:359
 msgid "(collection: %s)"
-msgstr ""
+msgstr "(colección: %s)"
 
 #. translators: 1=Object name, 2=Object type, 3=Action. e.g. The "Subject"
 #. taxonomy has been created
 #: classes/repositories/class-tainacan-logs.php:353
 msgid "\"%1$s\" %2$s has been %3$s"
-msgstr ""
+msgstr "\"%1$s\" %2$s ha sido %3$s"
 
 #: classes/metadata-types/textarea/class-tainacan-textarea.php:19
 msgid "A textarea with multiple lines"
-msgstr ""
+msgstr "Un textarea con múltiples líneas."
 
 #: classes/metadata-types/textarea/class-tainacan-textarea.php:18
 msgid "Textarea"
-msgstr ""
+msgstr "Textarea"
 
 #: classes/metadata-types/text/class-tainacan-text.php:19
 msgid "A simple, one line, text input"
-msgstr ""
+msgstr "Una entrada de texto simple, de una línea."
 
 #: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:28
 msgid "A metadatum to use a taxonomy in this collection"
-msgstr ""
+msgstr "Un metadato para usar una taxonomía en esta colección."
 
 #: classes/metadata-types/selectbox/class-tainacan-selectbox.php:19
 msgid "A selectbox with a fixed list of value to choose one from"
-msgstr ""
+msgstr "Un cuadro de selección con una lista fija de valores para elegir uno de ellos"
 
 #: classes/metadata-types/selectbox/class-tainacan-selectbox.php:18
 msgid "Selectbox"
-msgstr ""
+msgstr "Selectbox"
 
 #: classes/metadata-types/relationship/class-tainacan-relationship.php:19
 msgid "A relationship with another item"
-msgstr ""
+msgstr "Una relación con otro ítem"
 
 #: classes/metadata-types/numeric/class-tainacan-numeric.php:18
 msgid "A numeric value, integer or float"
-msgstr ""
+msgstr "Un valor numérico, entero o flotante"
 
 #: classes/metadata-types/date/class-tainacan-date.php:21
 msgid "Exact date type, with day, month and year."
-msgstr ""
+msgstr "Tipo de fecha exacta, con día, mes y año."
 
 #: classes/metadata-types/core-title/class-tainacan-core-title.php:23
 msgid "The fixed \"Title\" metadatum automatically created to all collection. This is the default title displayed in items lists and where basic search features will look"
