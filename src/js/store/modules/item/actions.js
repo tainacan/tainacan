@@ -62,10 +62,10 @@ export const setLastUpdated = ({ commit}, value) => {
 };
 
 // Actions directly related to Item
-export const fetchItem = ({ commit }, item_id) => {
+export const fetchItem = ({ commit }, { itemId, contextEdit } ) => {
     commit('cleanItem')
     return new Promise((resolve, reject) => {
-        axios.tainacan.get('/items/'+item_id)
+        axios.tainacan.get('/items/'+ itemId + (contextEdit ? '?context=edit' : ''))
         .then(res => {
             let item = res.data;
             commit('setItem', item);

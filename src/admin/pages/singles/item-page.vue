@@ -336,6 +336,7 @@
             <div class="footer">
                 <div class="form-submission-footer">
                     <router-link
+                            v-if="item.current_user_can_edit"
                             class="button is-secondary"
                             :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
                         {{ $i18n.getFrom('items','edit_item') }}
@@ -464,7 +465,7 @@
                 });
 
             // Obtains Item
-            this.fetchItem(this.itemId).then((item) => {
+            this.fetchItem({ itemId: this.itemId, contextEdit: true }).then((item) => {
                 this.$root.$emit('onCollectionBreadCrumbUpdate', [
                     {path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items')},
                     {path: '', label: item.title}
