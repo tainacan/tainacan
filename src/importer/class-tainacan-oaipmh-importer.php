@@ -98,6 +98,12 @@ class Oaipmh_Importer extends Importer {
                 $dc = $record->metadata->children("http://www.openarchives.org/OAI/2.0/oai_dc/");
 
                 // TODO: add sets if is necessary
+                if( $this->get_option('using_set') == 'taxonomy' && ( isset($record->header) && isset($record->header->setSpec) ) ){
+
+                    foreach ($record->header->setSpec as $item ) {
+                        $record_processed['sets'][] = (string) $item;
+                    }
+                }
 
                 if ($record->metadata->Count() > 0 ) {
                     $metadata = $dc->children('http://purl.org/dc/elements/1.1/');
@@ -179,6 +185,8 @@ class Oaipmh_Importer extends Importer {
                     $metadatum_set_id = $this->create_set_metadata( $collection->get_id(), $tax->get_id() );
 
                     if( $metadatum_set_id ){
+                        $this->add_transient('set_metadatum_id', $metadatum_set_id);
+
                         $this->add_collection([
                             'id' => $collection->get_id(),
                             'mapping' => $metadata_map,
@@ -237,6 +245,26 @@ class Oaipmh_Importer extends Importer {
             $this->add_log(  ( isset($record['dc:title']) ) ? $record['dc:title'][0] : 'title'   );
             if( $record && $item->validate() ){
                 $insertedItem = $this->items_repo->insert( $item );
+
+                if( isset($record['sets']) ){
+                    $terms  = [];
+                    $metadatum_set_id = $this->get_transient('set_metadatum_id');
+
+                    foreach ($record['sets'] as $set) {
+                        $term_id = $this->get_transient($set);
+
+                        if( $term_id ) $terms[] = $term_id;
+                    }
+
+                    if( $metadatum_set_id && $terms ){
+                        $newMetadatum = new Entities\Metadatum($metadatum_set_id);
+
+                        $item_metadata = new Entities\Item_Metadata_Entity( $insertedItem, $newMetadatum );
+                        $item_metadata->set_value($terms);
+                    }
+
+                    unset($record['sets']);
+                }
 
                 foreach ( $record as $index => $value ){
 
@@ -640,7 +668,7 @@ class Oaipmh_Importer extends Importer {
 			</span>
             <div class="control is-clearfix">
                 <div class="select">
-                    <select disabled name="using_set">
+                    <select name="using_set">
                         <option value="collection" <?php selected($this->get_option('using_set'), 'collection'); ?> ><?php _e('Collections', 'tainacan'); ?></option>
                         <option value="taxonomy" <?php selected($this->get_option('using_set'), 'taxonomy'); ?> ><?php _e('Taxonomies', 'tainacan'); ?></option>
                     </select>
