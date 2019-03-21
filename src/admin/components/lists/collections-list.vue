@@ -261,6 +261,7 @@
                                 </a>
                                 <a 
                                         id="button-delete"
+                                        v-if="collection.current_user_can_delete"
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneCollection(collection.id)">
                                     <span class="icon">

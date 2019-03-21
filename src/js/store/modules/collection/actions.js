@@ -204,6 +204,20 @@ export const fetchCollectionName = ({ commit }, id) => {
     });
 };
 
+export const fetchCollectionUserCanEdit = ({ commit }, id) => {
+
+    return new Promise ((resolve, reject) => {
+        axios.tainacan.get('/collections/' + id + '?context=edit&fetch_only=current_user_can_edit')
+        .then(res => {
+            let caps = res.data.current_user_can_edit;
+            resolve( caps );
+        })
+        .catch(error => {
+            reject(error);
+        })
+    });
+};
+
 export const fetchCollectionTotalItems = ({ commit }, id) => {
 
     return new Promise ((resolve, reject) => {

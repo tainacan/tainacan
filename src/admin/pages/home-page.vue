@@ -168,7 +168,7 @@ export default {
         loadCollections() {
             this.cleanCollections();    
             this.isLoadingCollections = true;
-            this.fetchCollections({ 'page': 1, 'collectionsPerPage': 5 })
+            this.fetchCollections({ page: 1, collectionsPerPage: 5, status: undefined, contextEdit: true })
             .then(() => {
                 this.isLoadingCollections = false;
             }) 
