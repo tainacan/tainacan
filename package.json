@@ -35,7 +35,6 @@
     "babel-loader": "^8.0.4",
     "cross-env": "^5.2.0",
     "css-loader": "^1.0.0",
-    "element-theme-chalk": "^2.4.8",
     "eslint": "^4.0.0",
     "eslint-loader": "^2.1.1",
     "eslint-plugin-vue": "^4.7.1",

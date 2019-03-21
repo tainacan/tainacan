@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Tainacan - Development (trunk) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2019-03-20 21:06-0300\n"
+"PO-Revision-Date: 2019-03-21 13:45-0300\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -462,250 +462,250 @@ msgstr "Tipo de fecha exacta, con día, mes y año."
 
 #: classes/metadata-types/core-title/class-tainacan-core-title.php:23
 msgid "The fixed \"Title\" metadatum automatically created to all collection. This is the default title displayed in items lists and where basic search features will look"
-msgstr ""
+msgstr "El \"Título principal\" es un metadato obligatorio creado automáticamente para todas las colecciones de forma predeterminada. Es el principal metadato del elemento y donde las herramientas básicas de investigación realizarán sus búsquedas."
 
 #: classes/metadata-types/core-description/class-tainacan-core-description.php:23
 msgid "The fixed \"Description\" metadatum automatically created to all collection. This is the default description displayed in items lists and where basic search features will look"
-msgstr ""
+msgstr "La \"Descripción principal\" es un metadato obligatorio creado automáticamente para todas las colecciones de forma predeterminada. Esta es la descripción principal que se muestra en las listas de elementos y donde las herramientas básicas de investigación realizarán sus búsquedas."
 
 #: admin/tainacan-admin-i18n.php:529
 msgid "Can not select displayed metadata without items on list."
-msgstr ""
+msgstr "No se pueden seleccionar los metadatos mostrados sin ítems en la lista."
 
 #: admin/tainacan-admin-i18n.php:528
 msgid "Current view mode does not allow displayed metadata selection."
-msgstr ""
+msgstr "El modo de vista actual no permite la selección de metadatos mostrados."
 
 #: admin/tainacan-admin-i18n.php:527
 msgid "You are leaving the bulk edition now."
-msgstr ""
+msgstr "Estás saliendo de la edición masiva ahora."
 
 #: admin/tainacan-admin-i18n.php:526
 msgid "No preview was found."
-msgstr ""
+msgstr "No se encontró ninguna vista previa."
 
 #: admin/tainacan-admin-i18n.php:525
 msgid "item being edited"
-msgstr ""
+msgstr "ítem que se está editando"
 
 #: admin/tainacan-admin-i18n.php:524
 msgid "There is"
-msgstr ""
+msgstr "Ahi esta"
 
 #: admin/tainacan-admin-i18n.php:523
 msgid "items being edited"
-msgstr ""
+msgstr "ítem que se está editando"
 
 #: admin/tainacan-admin-i18n.php:522
 msgid "There are"
-msgstr ""
+msgstr "Ahi esta"
 
 #: admin/tainacan-admin-i18n.php:521
 msgid "All files uploaded."
-msgstr ""
+msgstr "Todos los archivos subidos."
 
 #: admin/tainacan-admin-i18n.php:520
 msgid "No options found."
-msgstr ""
+msgstr "No se encontraron opciones."
 
 #: admin/tainacan-admin-i18n.php:519
 msgid "No options for this filtering."
-msgstr ""
+msgstr "No hay opciones para este filtrado."
 
 #: admin/tainacan-admin-i18n.php:510
 msgid "Bulk add documents from your computer as items."
-msgstr ""
+msgstr "Agrega masivamente documentos de su computadora como elementos."
 
 #: admin/tainacan-admin-i18n.php:345
 msgid "Filters from"
-msgstr ""
+msgstr "Filtros de"
 
 #: admin/tainacan-admin-i18n.php:344
 msgid "Added items"
-msgstr ""
+msgstr "Ítems añadidos"
 
 #: admin/tainacan-admin-i18n.php:343
 msgid "Documents upload"
-msgstr ""
+msgstr "Carga de documentos"
 
 #: admin/tainacan-admin-i18n.php:342
 msgid "Sequence edit items"
-msgstr ""
+msgstr "Editar secuencia de Ítems"
 
 #: admin/tainacan-admin-i18n.php:340
 msgid "Uploading files and preparing items"
-msgstr ""
+msgstr "Subiendo archivos y preparando artículos"
 
 #: admin/tainacan-admin-i18n.php:339
 msgid "file remaining."
-msgstr ""
+msgstr "archivo restante."
 
 #: admin/tainacan-admin-i18n.php:338
 msgid "files remaining."
-msgstr ""
+msgstr "archivos restantes."
 
 #: admin/tainacan-admin-i18n.php:331
 msgid "Create Collection"
-msgstr ""
+msgstr "Crear colección"
 
 #: admin/tainacan-admin-i18n.php:330
 msgid "View on Theme"
-msgstr ""
+msgstr "Ver en el tema"
 
 #: admin/tainacan-admin-i18n.php:328
 msgid "View all Collections"
-msgstr ""
+msgstr "Ver todas las colecciones"
 
 #: admin/tainacan-admin-i18n.php:327
 msgid "Save and Go to Filters"
-msgstr ""
+msgstr "Guarda y ve a los filtros"
 
 #: admin/tainacan-admin-i18n.php:326
 msgid "Save and Go to Metadata"
-msgstr ""
+msgstr "Guarda y ve a metadatos"
 
 #: admin/tainacan-admin-i18n.php:275
 msgid "Create metadatum"
-msgstr ""
+msgstr "Crear metadato"
 
 #: admin/tainacan-admin-i18n.php:126
 msgid "Bulk Add Items"
-msgstr ""
+msgstr "Crear metadato"
 
 #: admin/tainacan-admin-i18n.php:60
 msgid "Bulk add items"
-msgstr ""
+msgstr "Agrega masivamente ítems"
 
 #: theme-helper/class-tainacan-theme-helper.php:92
 #: admin/tainacan-admin-i18n.php:364
 msgid "Slideshow"
-msgstr ""
+msgstr "Slideshow"
 
 #: importer/term-importer/class-tainacan-term-importer.php:100
 msgid "New taxonomy name"
-msgstr ""
+msgstr "Nuevo nombre de taxonomía"
 
 #: importer/term-importer/class-tainacan-term-importer.php:86
 msgid "Create a new taxonomy"
-msgstr ""
+msgstr "Crear una nueva taxonomía."
 
 #: importer/term-importer/class-tainacan-term-importer.php:79
 msgid "Select an existing taxonomy or create a new one on the fly."
-msgstr ""
+msgstr "Seleccione una taxonomía existente o cree una nueva sobre la marcha."
 
 #: importer/term-importer/class-tainacan-term-importer.php:78
 msgid "Inform the taxonomy you want to import the terms to."
-msgstr ""
+msgstr "Informe la taxonomía a la que desea importar los términos."
 
 #: importer/term-importer/class-tainacan-term-importer.php:75
 msgid "Existing Taxonomy"
-msgstr ""
+msgstr "Taxonomia existente"
 
 #: importer/term-importer/class-tainacan-term-importer.php:66
 msgid "Target taxonomy:"
-msgstr ""
+msgstr "Taxonomía de destino:"
 
 #: importer/class-tainacan-importer-handler.php:48
 msgid "Import a vaculary from a CSV file into a taxonomy"
-msgstr ""
+msgstr "Importar un vacular de un archivo CSV en una taxonomía"
 
 #: importer/class-tainacan-csv.php:313
 msgid "Choose the action when a repeated item is found"
-msgstr ""
+msgstr "Elija la acción cuando se encuentre un ítem repetido"
 
 #: importer/class-tainacan-csv.php:301 importer/class-tainacan-csv.php:310
 msgid "Repeated Item"
-msgstr ""
+msgstr "Ítem repetido"
 
 #: exporter/class-tainacan-export-handler.php:54
 msgid "%s Exporter"
-msgstr ""
+msgstr "% s Exportador"
 
 #: admin/tainacan-admin-i18n.php:127 exporter/class-tainacan-bg-exporter.php:14
 msgid "Exporter"
-msgstr ""
+msgstr "Exportador"
 
 #: api/endpoints/class-tainacan-rest-exporters-controller.php:208
 msgid "Error starting exporter"
-msgstr ""
+msgstr "Error al iniciar el exportador"
 
 #: api/endpoints/class-tainacan-rest-exporters-controller.php:199
 msgid "Exporter Session not found"
-msgstr ""
+msgstr "Sesión del exportador no encontrada"
 
 #: api/endpoints/class-tainacan-rest-exporters-controller.php:127
 msgid "Exporter not found"
-msgstr ""
+msgstr "Exportador no encontrado"
 
 #: api/endpoints/class-tainacan-rest-exporters-controller.php:67
 msgid "The array describing the collection as expected by the exporter"
-msgstr ""
+msgstr "La matriz que describe la colección según lo esperado por el exportador"
 
 #: api/endpoints/class-tainacan-rest-exporters-controller.php:63
 msgid "The e-mail to be used by the export to send a message when the process ends"
-msgstr ""
+msgstr "El correo electrónico que utilizará la exportación para enviar un mensaje cuando finalice el proceso."
 
 #: api/endpoints/class-tainacan-rest-exporters-controller.php:49
 msgid "The slug of the exporter to be initialized"
-msgstr ""
+msgstr "El slug del exportador a inicializar."
 
 #: api/endpoints/class-tainacan-rest-bulkedit-controller.php:443
 msgid "Item not found."
-msgstr ""
+msgstr "ìtem no encontrado."
 
 #: api/endpoints/class-tainacan-rest-bulkedit-controller.php:296
 msgid "Group not found"
-msgstr ""
+msgstr "Grupo no encontrado"
 
 #: admin/tainacan-admin-i18n.php:337
 msgid "Sequence editing: Item"
-msgstr ""
+msgstr "Edición de secuencias: Ítem"
 
 #: admin/tainacan-admin-i18n.php:336
 msgid "Editing item n."
-msgstr ""
+msgstr "Editando el item n."
 
 #: admin/tainacan-admin-i18n.php:335
 msgid "Selected terms"
-msgstr ""
+msgstr "Términos seleccionados"
 
 #: admin/tainacan-admin-i18n.php:334
 msgid "All terms"
-msgstr ""
+msgstr "Todos los términos"
 
 #: admin/tainacan-admin-i18n.php:333
 msgid "Show metadata"
-msgstr ""
+msgstr "Mostrar metadatos"
 
 #: admin/tainacan-admin-i18n.php:332
 msgid "Hide metadata"
-msgstr ""
+msgstr "Ocultar metadatos"
 
 #: admin/tainacan-admin-i18n.php:246
 msgid "Edit selected items in sequence"
-msgstr ""
+msgstr "Editar elementos seleccionados en secuencia"
 
 #: admin/tainacan-admin-i18n.php:245
 msgid "Bulk edit selected items"
-msgstr ""
+msgstr "Edición masiva de elementos seleccionados"
 
 #: admin/tainacan-admin-i18n.php:79
 msgid "Clear selected radio"
-msgstr ""
+msgstr "Borrar seleccionado"
 
 #: admin/tainacan-admin-i18n.php:50
 msgid "Previous"
-msgstr ""
+msgstr "Anterior"
 
 #: admin/tainacan-admin-i18n.php:34
 msgid "Sequence"
-msgstr ""
+msgstr "Secuencia"
 
 #. Translators: The Items slug - will be the URL for the repository archive
 #: theme-helper/class-tainacan-theme-helper.php:355
 msgctxt "Slug: the string that will be used to build the URL to list all items of the repository"
 msgid "items"
-msgstr "elementos"
+msgstr "ítems"
 
 #: theme-helper/class-tainacan-theme-helper.php:137
 msgid "All items in repository"

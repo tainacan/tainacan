@@ -141,9 +141,7 @@
                     </button>
                     <div     
                             class="slide-main-content">
-                    <!-- <div <IF WE USE HAMMER JS>
-                            class="slide-main-content"
-                            v-hammer:swipe.prevent="onSwipeFiltersMenu"> -->
+
                         <transition 
                                 mode="out-in"
                                 :name="goingRight ? 'slide-right' : 'slide-left'" >
