@@ -1,10 +1,4 @@
 <template>
-    <!-- <div <IF WE USE HAMMERJS>
-            v-hammer:swipe="onSwipeFiltersMenu"
-            :class="{
-                    'repository-level-page': isRepositoryLevel,
-                    'is-fullscreen': registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen
-            }"> -->
     <div 
             :class="{
                     'repository-level-page': isRepositoryLevel,

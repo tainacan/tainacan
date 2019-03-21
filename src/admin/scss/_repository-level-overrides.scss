@@ -26,9 +26,10 @@
     .has-text-secondary, 
     .has-text-secondary:hover, 
     .is-has-text-secondary:focus {
-        color: $blue3 !important;
+        color: $blue4 !important;
     }
-    a.button.is-secondary {
+    a.button.is-secondary,
+    a.button.is-secondary:hover  {
         color: white !important;
     }
     .tainacan-page-title hr{
