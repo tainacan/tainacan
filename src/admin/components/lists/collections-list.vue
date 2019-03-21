@@ -245,13 +245,14 @@
                                     v-html="getTotalItems(collection.total_items)" />
                         </td>
                         <!-- Actions -->
-                        <td 
+                        <td  
                                 @click="onClickCollection($event, collection.id, index)"
                                 class="actions-cell column-default-width" 
                                 :label="$i18n.get('label_actions')">
                             <div class="actions-container">
                                 <a 
                                         id="button-edit" 
+                                        v-if="collection.current_user_can_edit"
                                         :aria-label="$i18n.getFrom('collections','edit_item')" 
                                         @click.prevent.stop="goToCollectionEditPage(collection.id)">                      
                                     <span class="icon">
@@ -259,7 +260,7 @@
                                     </span>
                                 </a>
                                 <a 
-                                        id="button-delete" 
+                                        id="button-delete"
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneCollection(collection.id)">
                                     <span class="icon">
@@ -292,7 +293,7 @@ export default {
             cursorPosX: -1,
             cursorPosY: -1,
             contextMenuIndex: null,
-            contextMenuCollection: null,
+            contextMenuCollection: null
         }
     },
     props: {
