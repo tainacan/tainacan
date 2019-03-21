@@ -100,6 +100,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 
 				if ( $request['context'] === 'edit' ) {
 					$item_arr['current_user_can_edit'] = $item->can_edit();
+					$item_arr['current_user_can_delete'] = $item->can_delete();
 					$item_arr['collections'] = [];
 					if ( is_array($tax_collections = $item->get_collections()) ) {
 						foreach ($tax_collections as $tax_collection) {

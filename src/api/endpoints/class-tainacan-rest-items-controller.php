@@ -161,6 +161,7 @@ class REST_Items_Controller extends REST_Controller {
 
 				if ( $request['context'] === 'edit' ) {
 					$item_arr['current_user_can_edit'] = $item->can_edit();
+					$item_arr['current_user_can_delete'] = $item->can_delete();
 				}
 
 				$img_size = 'large';
@@ -206,6 +207,7 @@ class REST_Items_Controller extends REST_Controller {
 
 				if ( $request['context'] === 'edit' ) {
 					$item_arr['current_user_can_edit'] = $item->can_edit();
+					$item_arr['current_user_can_delete'] = $item->can_delete();
 				}
 
 				$item_arr['url'] = get_permalink( $item_arr['id'] );
