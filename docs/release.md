@@ -60,6 +60,8 @@ git checkout webpack.config.js
 
 Create a ZIP package with the built plugin and publish a blog post calling for tests.
 
+Commit and push to Git!
+
 ### Test
 
 Using the Test guide as a resource, test every feature of the plugin, including importers and exporters. With time, we can build more detailed test scripts and distribute tests among people in the community.
