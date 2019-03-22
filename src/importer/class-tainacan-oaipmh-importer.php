@@ -97,8 +97,7 @@ class Oaipmh_Importer extends Importer {
                 $record = $record = $xml->ListRecords->record[$j];
                 $dc = $record->metadata->children("http://www.openarchives.org/OAI/2.0/oai_dc/");
 
-                // TODO: add sets if is necessary
-                if( $this->get_option('using_set') == 'taxonomy' && ( isset($record->header) && isset($record->header->setSpec) ) ){
+               if( $this->get_option('using_set') == 'taxonomy' && ( isset($record->header) && isset($record->header->setSpec) ) ){
 
                     foreach ($record->header->setSpec as $item ) {
                         $record_processed['sets'][] = (string) $item;
@@ -216,7 +215,15 @@ class Oaipmh_Importer extends Importer {
 
         }
 
-        return false;
+
+
+        $resumptionToken = $this->get_transient('collection_resump');
+        if( $resumptionToken !== ''){
+            return 1;
+        } else {
+            return false;
+        }
+
     }
 
     /**
@@ -464,8 +471,14 @@ class Oaipmh_Importer extends Importer {
     protected function fetch_collections(){
 
         $collections_array = [];
+        // block terms with same set spec
+        $resumptionToken = $this->get_transient('collection_resump');
+        if( $resumptionToken ){
+            $collections_link = $this->get_url() . "?verb=ListSets&resumptionToken=" . $resumptionToken;
+        } else {
+            $collections_link = $this->get_url() . "?verb=ListSets";
+        }
 
-        $collections_link = $this->get_url() . "?verb=ListSets";
         $collections = $this->requester($collections_link);
         $xml = $this->decode_request($collections, $collections_link);
 
@@ -476,19 +489,10 @@ class Oaipmh_Importer extends Importer {
             }
         }
 
-        while ( isset($xml->ListSets) && isset($xml->ListSets->resumptionToken) ){
-
-            $resumptionToken = (string) $xml->ListSets->resumptionToken;
-            $collections_link = $this->get_url() . "?verb=ListSets&resumptionToken=" . $resumptionToken;
-            $collections = $this->requester($collections_link);
-            $xml = $this->decode_request($collections, $collections_link);
-
-            if( isset($xml->ListSets->set) ) {
-                foreach ($xml->ListSets->set as $set) {
-
-                    $collections_array[] = $set;
-                }
-            }
+        if( isset($xml->ListSets) && isset($xml->ListSets->resumptionToken) ){
+            $this->add_transient('collection_resump',(string) $xml->ListSets->resumptionToken);
+        } else {
+            $this->add_transient('collection_resump', (string) $xml->ListSets->resumptionToken);
         }
 
         return ($collections_array) ? $collections_array : [];
