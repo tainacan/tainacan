@@ -172,7 +172,7 @@ registerBlockType('tainacan/items-list', {
         html: false,
     },
     edit({ attributes, setAttributes, className, isSelected }){
-        let { 
+        let {
             selectedItemsObject, 
             selectedItemsHTML, 
             temporarySelectedItems,

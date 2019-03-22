@@ -299,14 +299,17 @@ export default {
         availableExposers() {
             let exposers = this.getAvailableExposers();
 
-            exposers.unshift({
-                accept_no_mapper: true,
-                class_name: 'API',
-                mappers: [],
-                name: this.$i18n.get('label_tainacan_api'),
-                description: this.$i18n.get('info_tainacan_api'),
-                slug: 'tainacan-api'   
-            });
+            let tainacanApiExposerIndex = exposers.findIndex((aExposer) => aExposer.slug == 'tainacan-api');
+            if (tainacanApiExposerIndex < 0) {
+                exposers.unshift({
+                    accept_no_mapper: true,
+                    class_name: 'API',
+                    mappers: [],
+                    name: this.$i18n.get('label_tainacan_api'),
+                    description: this.$i18n.get('info_tainacan_api'),
+                    slug: 'tainacan-api'   
+                });
+            }
             return exposers;
         }
     },
@@ -416,7 +419,7 @@ export default {
                 this.isLoading = false;
             });
 
-        if (!this.collectionId != undefined) {
+        if (this.collectionId != undefined) {
             this.fetchCollectionNameAndURL(this.collectionId);
         }
     }
