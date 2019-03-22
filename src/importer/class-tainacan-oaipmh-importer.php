@@ -96,10 +96,12 @@ class Oaipmh_Importer extends Importer {
             while ( isset($xml->ListRecords->record[$j]) ) {
                 $record = $record = $xml->ListRecords->record[$j];
                 $dc = $record->metadata->children("http://www.openarchives.org/OAI/2.0/oai_dc/");
+                $header = $record->header;
 
-               if( $this->get_option('using_set') == 'taxonomy' && ( isset($record->header) && isset($record->header->setSpec) ) ){
-
-                    foreach ($record->header->setSpec as $item ) {
+                $this->add_log('searching sets');
+                if( $this->get_option('using_set') == 'taxonomy' && ( isset($header) && isset($header->setSpec) ) ){
+                   $this->add_log('found sets ' . $header->setSpec);
+                    foreach ($header->setSpec as $item ) {
                         $record_processed['sets'][] = (string) $item;
                     }
                 }
@@ -167,7 +169,7 @@ class Oaipmh_Importer extends Importer {
                 }
             } else if( $this->get_option('using_set') == 'taxonomy') {
 
-                $collection = $this->create_collection( 'set', $this->NAME_FOR_SETS );
+                $collection = $this->create_collection( 'set', __('Imported repository') );
                 $metadata_map = $this->create_collection_metadata($collection);
                 $total = intval( $this->get_total_items_from_source(false) );
                 $this->add_log('total in collection: ' . $total);
@@ -214,7 +216,6 @@ class Oaipmh_Importer extends Importer {
             }
 
         }
-
 
 
         $resumptionToken = $this->get_transient('collection_resump');
