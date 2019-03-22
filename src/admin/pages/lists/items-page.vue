@@ -506,7 +506,7 @@
                     <button 
                             class="button is-white"
                             :aria-label="$i18n.get('label_urls')"
-                            :disabled="this.totalItems == undefined || this.totalItems <= 0"
+                            :disabled="totalItems == undefined || totalItems <= 0"
                             @click="openExposersModal()">
                         <span class="gray-icon">
                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
@@ -700,7 +700,7 @@
 
                 <!-- Empty Placeholder (only used in Admin) -->
                 <section
-                        v-if="!isOnTheme && !isLoadingItems && totalItems <= 0"
+                        v-if="!isOnTheme && !isLoadingItems && totalItems == 0"
                         class="section">
                     <div class="content has-text-grey has-text-centered">
                         <p>
@@ -1396,7 +1396,7 @@
             });
 
             this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', (to) => {
-                /* This condition is to prevent a incorrect fetch by filter or metadata when we coming from items
+                /* This condition is to prevent an incorrect fetch by filter or metadata when we coming from items
                  * at collection level to items page at repository level
                  */
                 
@@ -1416,7 +1416,7 @@
 
         },
         mounted() {  
-            
+
             this.prepareFilters();
             this.prepareMetadata();
             this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));

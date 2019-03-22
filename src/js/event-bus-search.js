@@ -272,6 +272,9 @@ export default {
                     this.$store.dispatch('search/setStatus', status);
                     this.updateURLQueries();
                 },
+                setTotalItems(totalItems) {
+                    this.$store.dispatch('search/setTotalItems', totalItems);
+                },
                 setSearchQuery(searchQuery) {
                     this.$store.dispatch('search/setSearchQuery', searchQuery);
                     this.updateURLQueries();
@@ -351,6 +354,7 @@ export default {
                     
                 },
                 setCollectionId(collectionId) {
+                    this.setTotalItems(null);
                     this.collectionId = collectionId;
                 },
                 setTerm(termId, taxonomy) {
