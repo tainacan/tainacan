@@ -1222,7 +1222,6 @@
                                     }
                                     
                                 }
-                                
                             }
 
                             let creationDateMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[1] != null) : true;
@@ -1287,20 +1286,32 @@
                                     display: authorNameMetadatumDisplay
                                 });
                             }
+
                         // Loads only basic attributes necessary to view modes that do not allow custom meta
                         } else {
                        
                             this.$eventBusSearch.addFetchOnly('thumbnail,creation_date,author_name,title,description', true, '');
 
-                            this.sortingMetadata.push({
-                                name: this.$i18n.get('label_title'),
-                                metadatum: 'row_title',
-                                metadata_type_object: {core: true, related_mapped_prop: 'title'},
-                                metadata_type: undefined,
-                                slug: 'title',
-                                id: undefined,
-                                display: true
-                            });
+                            if (this.isRepositoryLevel) {
+                                this.sortingMetadata.push({
+                                    name: this.$i18n.get('label_title'),
+                                    metadatum: 'row_title',
+                                    metadata_type_object: {core: true, related_mapped_prop: 'title'},
+                                    metadata_type: undefined,
+                                    slug: 'title',
+                                    id: undefined,
+                                    display: true
+                                });
+                            }
+                            
+                            for (let metadatum of this.metadata) {
+                                if (metadatum.display !== 'never' &&
+                                    metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
+                                    metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Taxonomy' &&
+                                    metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Relationship') {
+                                        this.sortingMetadata.push(metadatum);
+                                }
+                            }
 
                             this.sortingMetadata.push({
                                 name: this.$i18n.get('label_creation_date'),
