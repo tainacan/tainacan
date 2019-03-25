@@ -28,7 +28,7 @@ Tainacan is a software solution for building, managing and publishing digital re
 
 **Manage taxonomies**. Manage vocabularies that can be used accross all your collections.
 
-**Themes**. Tainacan [has its own default theme](https://wordpress.org/themes/tainacan-interface/), which helps you present your collections in a beautiful and effective way as it is developed to incorporate all of Tainacan fuctionalities. However, it will also work with any WordPress theme. For developers, it will be easy to add Tainacan specific features to an existing theme.
+**Themes**. Tainacan [has its own default theme](https://wordpress.org/themes/tainacan-interface/), which helps you present your collections in a beautiful and effective way as it is developed to incorporate all of Tainacan functionalities. However, it will also work with any WordPress theme. For developers, it will be easy to add Tainacan specific features to an existing theme.
 
 **API and interoperability**. Tainacan implements a RESTful API (read and write) to allow other applications to interact with your repository. Expose you collection in different formats, such as JSON, JSON-LD and OAI-PMH. If your collection uses a custom standard, you can map it to well-known stardards such as DublinCore.
 
