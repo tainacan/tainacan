@@ -1303,7 +1303,7 @@
                                     display: true
                                 });
                             }
-                            
+
                             for (let metadatum of this.metadata) {
                                 if (metadatum.display !== 'never' &&
                                     metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
@@ -1357,7 +1357,7 @@
                                 this.hasAnOpenModal = false;
                             },
                             hideCancel: true,
-                            showNeverShowAgainOption: true,
+                            showNeverShowAgainOption: tainacan_plugin.user_caps != undefined && tainacan_plugin.user_caps.length != undefined && tainacan_plugin.user_caps.length > 0,
                             messageKeyForUserPrefs: 'ItemsHiddenDueSorting'
                         }
                     });
