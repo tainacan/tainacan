@@ -11,12 +11,12 @@
 ### What is Tainacan?
 
 
-[![Screenshot](https://user-images.githubusercontent.com/29989176/54641974-407a6100-4a72-11e9-9eb1-05fbd981d2a9.gif)][youtube_demo]
+[![Screenshot](https://user-images.githubusercontent.com/29989176/54926885-f8cf5b80-4eef-11e9-870f-92b264f13dea.gif)][youtube_demo]
 
 [youtube_demo]: https://www.youtube.com/watch?v=6q42dlcwW5g
 Get to know Tainacan with our [introduction video](https://www.youtube.com/watch?v=6q42dlcwW5g).
 
-Tainacan is a software solution for building, managing and publishing digital repositories of any kind on WordPress. Manage and publish you digital collections as easily as publishing a post to your blog, while having all the tools of a professional repository platform. It is composed of a WordPress plugin, which is being developed on this repository, and an optional [companion WordPress theme](https://github.com/tainacan/tainacan-theme) especially designed to produce beautiful digital exhibits.
+Tainacan is a software solution for building, managing and publishing digital repositories of any kind on WordPress. Manage and publish you digital collections as easily as publishing a post to your blog, while having all the tools of a professional repository platform. It is composed of a WordPress plugin, which is being developed on this repository, and an optional [companion WordPress theme](https://github.com/tainacan/tainacan-theme) especially designed to produce beautiful digital exhibits. [Try it out!](http://demo.tainacan.org/)
 
 ### Features
 
@@ -28,9 +28,13 @@ Tainacan is a software solution for building, managing and publishing digital re
 
 **Manage taxonomies**. Manage vocabularies that can be used accross all your collections.
 
-**Themes**. Tainacan has its own default theme, that helps you present your collections in a beautiful and effective way, but will also work with any WordPress theme. For developers, it will be easy to add Tainacan specific features to an existing theme.
+**Themes**. Tainacan [has its own default theme](https://wordpress.org/themes/tainacan-interface/), which helps you present your collections in a beautiful and effective way, but will also work with any WordPress theme. For developers, it will be easy to add Tainacan specific features to an existing theme.
 
 **API and interoperability**. Tainacan implements a RESTful API (read and write) to allow other applications to interact with your repository. Expose you collection in different formats, such as JSON, JSON-LD and OAI-PMH. If your collection uses a custom standard, you can map it to well-known stardards such as DublinCore.
+
+### Showcases
+
+Check out the digital exhibits from [Museu do Índio](http://tainacan.museudoindio.gov.br/) and [Museu Histórico Nacional](http://mhn.acervos.museus.gov.br/) to see Tainacan in action!
 
 ### Support
 
