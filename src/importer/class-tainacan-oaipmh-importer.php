@@ -98,9 +98,12 @@ class Oaipmh_Importer extends Importer {
                 $dc = $record->metadata->children("http://www.openarchives.org/OAI/2.0/oai_dc/");
                 $header = $record->header;
 
-                $this->add_log('searching sets');
+                $is_inserted = $this->get_transient($header->identifier);
+                if( $is_inserted ){
+                    continue;
+                }
+
                 if( $this->get_option('using_set') == 'taxonomy' && ( isset($header) && isset($header->setSpec) ) ){
-                   $this->add_log('found sets ' . $header->setSpec);
                     foreach ($header->setSpec as $item ) {
                         $record_processed['sets'][] = (string) $item;
                     }
@@ -169,7 +172,7 @@ class Oaipmh_Importer extends Importer {
                 }
             } else if( $this->get_option('using_set') == 'taxonomy') {
 
-                $collection = $this->create_collection( 'set', __('Imported repository') );
+                $collection = $this->create_collection( 'set', $this->getRepoName() );
                 $metadata_map = $this->create_collection_metadata($collection);
                 $total = intval( $this->get_total_items_from_source(false) );
                 $this->add_log('total in collection: ' . $total);
@@ -181,7 +184,14 @@ class Oaipmh_Importer extends Importer {
                 $tax->set_status('publish');
 
                 if ($tax->validate()) {
-                    $tax = $this->tax_repo->insert($tax);
+
+                    $is_tax_created = $this->get_transient('set_taxonomy_id');
+                    if( $is_tax_created ){
+                        $tax = new Entities\Taxonomy( $is_tax_created );
+                    } else {
+                        $tax = $this->tax_repo->insert($tax);
+                        $this->add_transient('set_taxonomy_id', $tax->get_id());
+                    }
 
                     $metadatum_set_id = $this->create_set_metadata( $collection->get_id(), $tax->get_id() );
 
@@ -269,6 +279,10 @@ class Oaipmh_Importer extends Importer {
 
                         $item_metadata = new Entities\Item_Metadata_Entity( $insertedItem, $newMetadatum );
                         $item_metadata->set_value($terms);
+
+                        if( $item_metadata->validate() ){
+                            $this->item_metadata_repo->insert( $item_metadata );
+                        }
                     }
 
                     unset($record['sets']);
@@ -276,8 +290,7 @@ class Oaipmh_Importer extends Importer {
 
                 foreach ( $record as $index => $value ){
 
-                    $this->add_log( $index . ' ' . serialize($map) );
-                    $this->add_log(  $insertedItem->get_id() );
+                    $this->add_log( 'inserting metadata ' . $index );
                     if( in_array( $index, $map ) && $insertedItem->get_id()){
                         $metadatum_id = array_search($index, $map );
                         $newMetadatum = new Entities\Metadatum($metadatum_id);
@@ -376,6 +389,12 @@ class Oaipmh_Importer extends Importer {
      * @return Entities\Collection
      */
     protected function create_collection( $setSpec, $setName ){
+        $is_created = $this->get_transient('collection_' . $setSpec. '_name');
+        if( $is_created ){
+            $new_collection = new Entities\Collection( $is_created );
+            return $new_collection;
+        }
+
         $new_collection = new Entities\Collection();
         $new_collection->set_name($setName);
         $new_collection->set_status('publish');
@@ -456,8 +475,14 @@ class Oaipmh_Importer extends Importer {
 
                 if($metadatum->validate()){
 
-                    $new_metadata = $Tainacan_Metadata->insert($metadatum);
-                    $array_metadata[$new_metadata->get_id()] = $slug;
+                    $metadatum_id_created = $this->get_transient('collection_' . $id . '_' . $slug );
+                    if( $metadatum_id_created ){
+                        $array_metadata[$metadatum_id_created] = $slug;
+                    } else {
+                        $new_metadata = $Tainacan_Metadata->insert($metadatum);
+                        $array_metadata[$new_metadata->get_id()] = $slug;
+                    }
+
                 }
             }
         }
@@ -639,15 +664,48 @@ class Oaipmh_Importer extends Importer {
         $newMetadatum->set_collection_id( (isset($collection_id)) ? $collection_id : 'default');
         $newMetadatum->set_status('publish');
         $newMetadatum->set_metadata_type_options(['taxonomy_id' => $taxonomy_id ]);
+        $newMetadatum->set_multiple('yes');
 
         if($newMetadatum->validate()){
-            $inserted_metadata = $this->metadata_repo->insert( $newMetadatum );
+            $is_meta_created = $this->get_transient('set_metadatum_id');
+            if( $is_meta_created ){
+                $inserted_metadata =  new Entities\Metadatum($is_meta_created);
 
-            $this->add_log('Metadata created: ' . $inserted_metadata->get_name());
+                $this->add_log('Metadata get: ' . $inserted_metadata->get_name());
+            } else {
+                $inserted_metadata = $this->metadata_repo->insert( $newMetadatum );
+
+                $this->add_log('Metadata created: ' . $inserted_metadata->get_name());
+            }
 
             return $inserted_metadata->get_id();
         } else{
             return false;
+        }
+    }
+
+    public function getRepoName(){
+        $info = $this->requester( $this->get_url() . "?verb=Identify");
+
+        if( !isset($info['body']) ){
+            $this->add_log('ERROR on get repo name');
+            $this->add_error_log('Error in fetch remote total items');
+            $this->abort();
+            return __('Imported Repo');
+        } else {
+
+            try {
+                $xml = new \SimpleXMLElement($info['body']);
+
+                if( isset($xml->Identify) && isset($xml->Identify->repositoryName) ){
+                    return (string) $xml->Identify->repositoryName;
+                }
+            } catch (Exception $e) {
+                return __('Imported Repo');
+            }
+
+            return __('Imported Repo');
+
         }
     }
 
