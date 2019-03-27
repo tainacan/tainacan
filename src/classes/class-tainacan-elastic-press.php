@@ -638,7 +638,9 @@ class Elastic_Press {
 						$metadatadum = \Tainacan\Repositories\Metadata::get_instance()->fetch($metada_id);
 						if ( isset($metadatadum->get_metadata_type_options()['collection_id'])) {
 							$item = \Tainacan\Repositories\Items::get_instance()->fetch(intval($term['key']));
-							$label = $item->get_title();
+							if ($item instanceof \Tainacan\Entities\Items ) {
+								$label = $item->get_title();
+							}
 						}
 					}
 					$fct = [
