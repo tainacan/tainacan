@@ -3,8 +3,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Plugins - Tainacan - Development (trunk)\n"
-"POT-Creation-Date: 2019-03-26 17:13-0300\n"
-"PO-Revision-Date: 2019-03-26 17:13-0300\n"
+"POT-Creation-Date: 2019-03-27 12:05-0300\n"
+"PO-Revision-Date: 2019-03-27 12:05-0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_AR\n"
@@ -34,10 +34,6 @@ msgid "Tainacan System Check"
 msgstr "Tainacan System Check"
 
 #: admin/system-check/admin-page.php:22
-#, fuzzy
-#| msgid ""
-#| "This page checks your system against the Tainacan requirements. It helps "
-#| "you to find out wether your server is properly configured."
 msgid ""
 "This page checks your system against the Tainacan requirements. It helps you "
 "to find out whether your server is properly configured."
@@ -1634,10 +1630,9 @@ msgid "Sequence editing: Item"
 msgstr "Edición de secuencias: Ítem"
 
 #: admin/tainacan-admin-i18n.php:341
-#, fuzzy, php-format
-#| msgid "files remaining."
+#, php-format
 msgid "%s files remaining."
-msgstr "archivos restantes."
+msgstr "%s archivos restantes."
 
 #: admin/tainacan-admin-i18n.php:342
 msgid "One file remaining."
@@ -1761,16 +1756,12 @@ msgid "Tainacan API"
 msgstr "API do Tainacan"
 
 #: admin/tainacan-admin-i18n.php:372
-#, fuzzy
-#| msgid "Filter type options"
 msgid "Filter type preview"
-msgstr "Opciones del tipo de filtro"
+msgstr "Vista previa del tipo de filtro"
 
 #: admin/tainacan-admin-i18n.php:373
-#, fuzzy
-#| msgid "Metadata type options"
 msgid "Metadatum type preview"
-msgstr "Opciones para el tipo de metadatos"
+msgstr "Vista previa del tipo de metadato"
 
 #: admin/tainacan-admin-i18n.php:374
 msgid "Open item in a new tab"
@@ -1781,26 +1772,18 @@ msgid "Open collection in a new tab"
 msgstr "No hay ninguna colección en la papelera"
 
 #: admin/tainacan-admin-i18n.php:376
-#, fuzzy
-#| msgid "Select File"
 msgid "Select item"
-msgstr "Seleccionar archivo"
+msgstr "Seleccionar ítem"
 
 #: admin/tainacan-admin-i18n.php:377
-#, fuzzy
-#| msgid "Select File"
 msgid "Unselect item"
-msgstr "Seleccionar archivo"
+msgstr "Seleccionar ítem"
 
 #: admin/tainacan-admin-i18n.php:378
-#, fuzzy
-#| msgid "Select a collection"
 msgid "Select collection"
 msgstr "Seleccione una colección"
 
 #: admin/tainacan-admin-i18n.php:379
-#, fuzzy
-#| msgid "Select a collection"
 msgid "Unselect collection"
 msgstr "Seleccione una colección"
 
@@ -1813,22 +1796,17 @@ msgid "Delete collection"
 msgstr "Delete la colección"
 
 #: admin/tainacan-admin-i18n.php:382
-#, fuzzy
-#| msgid "The IDs of collection where the taxonomy is used"
 msgid "There is no collection using this taxonomy"
-msgstr "Los IDs de de la colección donde la taxonomía está siendo utilizada"
+msgstr "No hay colección utilizando esta taxonomía"
 
 #: admin/tainacan-admin-i18n.php:383
-#, fuzzy
-#| msgid "Collections"
 msgid "Collections using"
-msgstr "Colecciones"
+msgstr "Colecciones utilizando"
 
 #: admin/tainacan-admin-i18n.php:384
-#, fuzzy, php-format
-#| msgid "Select all items on page"
+#, php-format
 msgid "Select all %s items"
-msgstr "Seleccione todos los ítems en la página"
+msgstr "Seleccionar todos los %s ítems"
 
 #: admin/tainacan-admin-i18n.php:388
 msgid "Delete selected items"
@@ -1847,10 +1825,8 @@ msgid "Select a status"
 msgstr "Seleccione un status"
 
 #: admin/tainacan-admin-i18n.php:393
-#, fuzzy
-#| msgid "Select a filter type:"
 msgid "Click to select a filter type:"
-msgstr "Seleccione un tipo de filtro:"
+msgstr "Clic para seleccionar un filtro de tipo:"
 
 #: admin/tainacan-admin-i18n.php:394
 msgid "Select a parent term:"
@@ -1925,10 +1901,8 @@ msgid "Drop your source file or click here to upload."
 msgstr "Suelte su archivo fuente o haga clic aquí para subir."
 
 #: admin/tainacan-admin-i18n.php:414
-#, fuzzy
-#| msgid "Create metadatum"
 msgid "Configure new metadatum"
-msgstr "Crear metadato"
+msgstr "Configurar nuevo metadato"
 
 #: admin/tainacan-admin-i18n.php:415
 msgid "Insert the new mapper's metadatum info"
@@ -1943,8 +1917,6 @@ msgid "Select a collection to fetch items"
 msgstr "Seleccione una colección para buscar ítems"
 
 #: admin/tainacan-admin-i18n.php:418
-#, fuzzy
-#| msgid "Select a action"
 msgid "Select an action"
 msgstr "Selecciona una acción"
 
@@ -1965,10 +1937,8 @@ msgid "Select a collection"
 msgstr "Seleccione una colección"
 
 #: admin/tainacan-admin-i18n.php:423
-#, fuzzy
-#| msgid "The filter type options"
 msgid "Hover a filter type to preview"
-msgstr "Opciones del tipo de filtro"
+msgstr "Flota un tipo de filtro para previsualizar"
 
 #: admin/tainacan-admin-i18n.php:424
 msgid "Never show me this message again"
@@ -2514,18 +2484,13 @@ msgid "Other items listing options: "
 msgstr "Otras opciones de listado de ítems: "
 
 #: admin/tainacan-admin-i18n.php:557
-#, fuzzy
-#| msgid ""
-#| "The exporter may take a while depending on the size of your collection. "
-#| "Check this option to receive an e-mail when the process is done. You can "
-#| "also check the process status visiting the"
 msgid ""
 "The exporter may take a while. Check this option to receive an e-mail when "
 "the process is done. You can also check the process status visiting the"
 msgstr ""
-"El exportador puede tardar un tiempo dependiendo del tamaño de su colección. "
-"Marque esta opción para recibir un correo electrónico cuando se complete el "
-"proceso. También puede consultar el estado del proceso visitando el"
+"El exportador puede tardar un rato. Marque esta opción para recibir un "
+"correo electrónico cuando se complete el proceso. También puede consultar el "
+"estado del proceso visitando el"
 
 #: admin/tainacan-admin-i18n.php:558
 msgid "Tainacan API on JSON format."
@@ -2789,47 +2754,50 @@ msgid ""
 "Whether to return processes from all users (if current user is admin). "
 "Default false."
 msgstr ""
+"Si devolve procesos de todos los usuarios (si el usuario actual es "
+"administrador). Falso por defecto."
 
 #: api/endpoints/class-tainacan-rest-background-processes-controller.php:49
 msgid ""
 "\"open\" returns only processes currently running. \"closed\" returns only "
 "finished or aborted. \"all\" returns all. Default \"all\""
 msgstr ""
+"\"open\" devuelve solo los procesos que se ejecutan actualmente. Las "
+"devoluciones \"closed\" solo están terminadas o abortadas. \"all\" devuelve "
+"todo. Predeterminado: \"todo\""
 
 #: api/endpoints/class-tainacan-rest-background-processes-controller.php:53
 msgid "Number of processes to return per page. Default 10"
-msgstr ""
+msgstr "Número de procesos para devolver por página. Predeterminado 10"
 
 #: api/endpoints/class-tainacan-rest-background-processes-controller.php:57
 msgid "Page to retrieve. Default 1"
-msgstr ""
+msgstr "Página para recuperar. Predeterminado 1"
 
 #: api/endpoints/class-tainacan-rest-background-processes-controller.php:61
-#, fuzzy
-#| msgid "Return only processes created or updated recently"
 msgid "Returns only processes created or updated recently"
 msgstr "Solo devuelve procesos creados o actualizados recientemente"
 
 #: api/endpoints/class-tainacan-rest-background-processes-controller.php:84
 msgid "\"open\" or \"closed\" "
-msgstr ""
+msgstr "\"open\" o \"closed\" "
 
 #: api/endpoints/class-tainacan-rest-background-processes-controller.php:225
 msgid "Status must be informed"
-msgstr ""
+msgstr "El estado debe ser informado"
 
 #: api/endpoints/class-tainacan-rest-bulkedit-controller.php:58
 #: api/endpoints/class-tainacan-rest-bulkedit-controller.php:119
 #: api/endpoints/class-tainacan-rest-bulkedit-controller.php:138
 #: api/endpoints/class-tainacan-rest-bulkedit-controller.php:157
 msgid "The metadatum ID"
-msgstr ""
+msgstr "La identificación del metadato"
 
 #: api/endpoints/class-tainacan-rest-bulkedit-controller.php:62
 #: api/endpoints/class-tainacan-rest-bulkedit-controller.php:123
 #: api/endpoints/class-tainacan-rest-bulkedit-controller.php:142
 msgid "The value to be added"
-msgstr ""
+msgstr "El valor a añadir"
 
 #: api/endpoints/class-tainacan-rest-bulkedit-controller.php:104
 msgid "The new status value"
@@ -2837,15 +2805,15 @@ msgstr "El nuevo valor de status"
 
 #: api/endpoints/class-tainacan-rest-bulkedit-controller.php:161
 msgid "The value to search for"
-msgstr ""
+msgstr "El valor a buscar"
 
 #: api/endpoints/class-tainacan-rest-bulkedit-controller.php:165
 msgid "The value to be set"
-msgstr ""
+msgstr "El valor a configurar"
 
 #: api/endpoints/class-tainacan-rest-bulkedit-controller.php:223
 msgid "You mus specify items_ids OR use_query"
-msgstr ""
+msgstr "Debe especificar los identificadores items_ids OR use_query"
 
 #: api/endpoints/class-tainacan-rest-bulkedit-controller.php:263
 msgid "Value must be provided"
@@ -2868,16 +2836,16 @@ msgstr "El cuerpo no puede estar vacío."
 
 #: api/endpoints/class-tainacan-rest-bulkedit-controller.php:388
 msgid "You must specify a Metadatum ID."
-msgstr ""
+msgstr "Debes especificar un ID de metadato."
 
 #: api/endpoints/class-tainacan-rest-bulkedit-controller.php:395
 #, php-format
 msgid "%s must be provided"
-msgstr ""
+msgstr "%s debe ser provisto"
 
 #: api/endpoints/class-tainacan-rest-bulkedit-controller.php:426
 msgid "Metadatum not found."
-msgstr ""
+msgstr "Metadato no encontrado."
 
 #: api/endpoints/class-tainacan-rest-bulkedit-controller.php:443
 msgid "Item not found."
@@ -2890,11 +2858,11 @@ msgstr "Limita el conjunto de resultados a ítems con un título específico"
 
 #: api/endpoints/class-tainacan-rest-bulkedit-controller.php:472
 msgid "Array of items IDs"
-msgstr ""
+msgstr "Matriz de ID de ítems"
 
 #: api/endpoints/class-tainacan-rest-bulkedit-controller.php:477
 msgid "Whether to use the current query to select posts"
-msgstr ""
+msgstr "Si utiliza la consulta actual para seleccionar publicaciones"
 
 #: api/endpoints/class-tainacan-rest-collections-controller.php:74
 #: api/endpoints/class-tainacan-rest-filters-controller.php:83
@@ -2952,19 +2920,19 @@ msgstr ""
 
 #: api/endpoints/class-tainacan-rest-export-controller.php:150
 msgid "Export Process"
-msgstr ""
+msgstr "Proceso de exportación"
 
 #: api/endpoints/class-tainacan-rest-export-controller.php:151
 msgid "Exporting Data"
-msgstr ""
+msgstr "Exportando datos"
 
 #: api/endpoints/class-tainacan-rest-export-controller.php:167
 msgid "Export Process Error"
-msgstr ""
+msgstr "Error de proceso de exportación"
 
 #: api/endpoints/class-tainacan-rest-export-controller.php:168
 msgid "Exporting Error"
-msgstr ""
+msgstr "Error de exportación"
 
 #: api/endpoints/class-tainacan-rest-exporters-controller.php:49
 msgid "The slug of the exporter to be initialized"
@@ -2985,7 +2953,7 @@ msgstr ""
 #: api/endpoints/class-tainacan-rest-exporters-controller.php:71
 #: api/endpoints/class-tainacan-rest-importers-controller.php:64
 msgid "The importer options"
-msgstr ""
+msgstr "Las opciones de importación"
 
 #: api/endpoints/class-tainacan-rest-exporters-controller.php:127
 msgid "Exporter not found"
@@ -2994,7 +2962,7 @@ msgstr "Exportador no encontrado"
 #: api/endpoints/class-tainacan-rest-exporters-controller.php:159
 #: api/endpoints/class-tainacan-rest-importers-controller.php:208
 msgid "Invalid collection"
-msgstr ""
+msgstr "Colección inválida"
 
 #: api/endpoints/class-tainacan-rest-exporters-controller.php:175
 #: api/endpoints/class-tainacan-rest-importers-controller.php:226
@@ -3004,12 +2972,12 @@ msgstr ""
 #: api/endpoints/class-tainacan-rest-importers-controller.php:308
 #: api/endpoints/class-tainacan-rest-importers-controller.php:337
 msgid "Importer Session not found"
-msgstr ""
+msgstr "Sesión del importador no encontrada"
 
 #: api/endpoints/class-tainacan-rest-exporters-controller.php:181
 #: api/endpoints/class-tainacan-rest-importers-controller.php:232
 msgid "The body can not be empty"
-msgstr ""
+msgstr "El cuerpo no puede estar vacío"
 
 #: api/endpoints/class-tainacan-rest-exporters-controller.php:199
 msgid "Exporter Session not found"
@@ -3021,10 +2989,8 @@ msgstr "Error al iniciar el exportador"
 
 #: api/endpoints/class-tainacan-rest-filter-types-controller.php:26
 #: api/endpoints/class-tainacan-rest-metadata-types-controller.php:26
-#, fuzzy
-#| msgid "The structure of objects returned."
 msgid "Returns the structure of the objects."
-msgstr "La estructura de los objetos devueltos."
+msgstr "Devuelve la estructura de los objetos."
 
 #: api/endpoints/class-tainacan-rest-filters-controller.php:182
 msgid "Please verify, invalid attribute(s)."
@@ -3044,28 +3010,30 @@ msgstr "Limita el conjunto de resultados a filtros con un nombre específico"
 
 #: api/endpoints/class-tainacan-rest-importers-controller.php:42
 msgid "The slug of the importer to be initialized"
-msgstr ""
+msgstr "El slug del importador a inicializar"
 
 #: api/endpoints/class-tainacan-rest-importers-controller.php:56
 msgid "The URL to be used by the importer"
-msgstr ""
+msgstr "La URL a ser utilizada por el importador"
 
 #: api/endpoints/class-tainacan-rest-importers-controller.php:60
 msgid ""
 "The array describing the destination collectino as expected by the importer"
 msgstr ""
+"La matriz que describe la colección de destino según lo esperado por el "
+"importador"
 
 #: api/endpoints/class-tainacan-rest-importers-controller.php:171
 msgid "Importer not found"
-msgstr ""
+msgstr "Importador no encontrado"
 
 #: api/endpoints/class-tainacan-rest-importers-controller.php:321
 msgid "Failed to upload file"
-msgstr ""
+msgstr "Error al subir el archivo"
 
 #: api/endpoints/class-tainacan-rest-importers-controller.php:348
 msgid "Error starting importer"
-msgstr ""
+msgstr "Error al iniciar el importador"
 
 #: api/endpoints/class-tainacan-rest-item-metadata-controller.php:217
 msgid "The metadatum does not accept suggestions"
@@ -3141,7 +3109,7 @@ msgstr ""
 
 #: classes/class-tainacan-background-process.php:75
 msgid "Background Process"
-msgstr ""
+msgstr "Proceso de fondo"
 
 #: classes/class-tainacan-bulk-edit.php:219
 #: classes/class-tainacan-bulk-edit.php:247
@@ -3152,7 +3120,7 @@ msgstr ""
 #: classes/class-tainacan-bulk-edit.php:393
 #: classes/class-tainacan-bulk-edit.php:418
 msgid "Bulk Edit group not initialized"
-msgstr ""
+msgstr "Grupo de edición masiva no inicializado"
 
 #: classes/class-tainacan-bulk-edit.php:226
 msgid "Invalid status"
@@ -3162,31 +3130,37 @@ msgstr "Status inválido"
 msgid ""
 "Unable to add a value to a metadata if it does not accept multiple values"
 msgstr ""
+"No se puede agregar un valor a los metadatos si no acepta varios valores"
 
 #: classes/class-tainacan-bulk-edit.php:255
 msgid "Unable to add a value to a metadata set to be a collection key"
 msgstr ""
+"No se puede agregar un valor a un conjunto de metadatos para que sea una "
+"clave de recopilación"
 
 #: classes/class-tainacan-bulk-edit.php:266
 #: classes/class-tainacan-bulk-edit.php:299
 #: classes/class-tainacan-bulk-edit.php:358
 msgid "Invalid Value"
-msgstr ""
+msgstr "Valor no válido"
 
 #: classes/class-tainacan-bulk-edit.php:287
 #: classes/class-tainacan-bulk-edit.php:343
 msgid "Unable to set a value to a metadata set to be a collection key"
 msgstr ""
+"No se puede establecer un valor para que un conjunto de metadatos sea una "
+"clave de recopilación"
 
 #: classes/class-tainacan-bulk-edit.php:320
 msgid "Unable to remove a value from a required metadatum"
-msgstr ""
+msgstr "No se puede eliminar un valor de un metadato requerido"
 
 #: classes/class-tainacan-bulk-edit.php:323
 msgid ""
 "Unable to remove a value from a metadata if it does not accept multiple "
 "values"
 msgstr ""
+"No se puede eliminar un valor de un metadato si no acepta varios valores"
 
 #: classes/class-tainacan-bulk-edit.php:347
 msgid "Old value and new value can not be the same"
@@ -3195,12 +3169,12 @@ msgstr "El valor antiguo y el valor nuevo no pueden ser iguales"
 #: classes/class-tainacan-bulk-edit.php:458
 #: classes/class-tainacan-bulk-edit.php:605
 msgid "Error adding term"
-msgstr ""
+msgstr "Error al agregar término"
 
 #: classes/class-tainacan-bulk-edit.php:532
 #: classes/class-tainacan-bulk-edit.php:595
 msgid "Term not found"
-msgstr ""
+msgstr "Término no encontrado"
 
 #: classes/class-tainacan-bulk-edit.php:573
 msgid "New value and old value can not be the same"
@@ -3290,10 +3264,8 @@ msgstr "ítem"
 #: classes/filter-types/taginput/class-tainacan-taginput.php:16
 #: classes/filter-types/taxonomy/class-tainacan-taxonomycheckbox.php:17
 #: classes/filter-types/taxonomy/class-tainacan-taxonomytaginput.php:16
-#, fuzzy
-#| msgid "Selected terms"
 msgid "Selected values"
-msgstr "Términos seleccionados"
+msgstr "Valores seleccionados"
 
 #: classes/filter-types/checkbox/class-tainacan-checkbox.php:21
 #: classes/filter-types/checkbox/class-tainacan-checkbox.php:27
@@ -3329,14 +3301,9 @@ msgstr "Selecciona aquí..."
 #: classes/libs/wp-background-process.php:434
 #, php-format
 msgid "Every %d Minutes"
-msgstr ""
+msgstr "Cada %d Minutos"
 
 #: classes/metadata-types/core-description/class-tainacan-core-description.php:23
-#, fuzzy
-#| msgid ""
-#| "The fixed \"Description\" metadatum automatically created to all "
-#| "collection. This is the default description displayed in items lists and "
-#| "where basic search features will look"
 msgid ""
 "The \"Core Description\" is a compulsory metadata automatically created for "
 "all collections by default. This is the main description displayed in items "
@@ -3353,11 +3320,6 @@ msgid "Core Metadata can not accept multiple values"
 msgstr "Los metadatos principales no pueden aceptar múltiples valores"
 
 #: classes/metadata-types/core-title/class-tainacan-core-title.php:23
-#, fuzzy
-#| msgid ""
-#| "The fixed \"Title\" metadatum automatically created to all collection. "
-#| "This is the default title displayed in items lists and where basic search "
-#| "features will look"
 msgid ""
 "The \"Core Title\" is a compulsory metadata automatically created for all "
 "collections by default. It is the main metadatum of the item and where the "
@@ -3374,13 +3336,14 @@ msgstr "Tipo de fecha exacta, con día, mes y año."
 
 #: classes/metadata-types/date/class-tainacan-date.php:25
 msgid "mm/dd/yyyy"
-msgstr ""
+msgstr "mm/dd/yyyy"
 
 #: classes/metadata-types/date/class-tainacan-date.php:54
 #: classes/metadata-types/date/class-tainacan-date.php:69
 #, php-format
 msgid "Invalid date format. Expected format is YYYY-MM-DD, got %s."
 msgstr ""
+"Formato de fecha no válido. El formato esperado es YYYY-MM-DD, se obtuvo %s."
 
 #: classes/metadata-types/numeric/class-tainacan-numeric.php:18
 msgid "A numeric value, integer or float"
@@ -3393,7 +3356,7 @@ msgstr "Una relación con otro ítem"
 #: classes/metadata-types/relationship/class-tainacan-relationship.php:54
 #: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:81
 msgid "Related Collection"
-msgstr ""
+msgstr "Colección relacionada"
 
 #: classes/metadata-types/relationship/class-tainacan-relationship.php:55
 #: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:82
@@ -3472,7 +3435,7 @@ msgstr "Una entrada de texto sencilla, de una línea"
 
 #: classes/metadata-types/text/class-tainacan-text.php:23
 msgid "Type here..."
-msgstr ""
+msgstr "Escriba aquí..."
 
 #: classes/metadata-types/textarea/class-tainacan-textarea.php:18
 msgid "Textarea"
@@ -3484,7 +3447,7 @@ msgstr "Un textarea con múltiples líneas"
 
 #: classes/metadata-types/textarea/class-tainacan-textarea.php:23
 msgid "Type some long text here..."
-msgstr ""
+msgstr "Escriba un texto largo aquí..."
 
 #: classes/repositories/class-tainacan-collections.php:43
 msgid "The title of the collection"
@@ -3586,6 +3549,7 @@ msgstr "Modo de visualización de la colección por defecto"
 msgid ""
 "Which visualization modes will be available for the public to choose from"
 msgstr ""
+"Qué modos de visualización estarán disponibles para que el público elija"
 
 #: classes/repositories/class-tainacan-collections.php:144
 msgid "Ordination metadata"
@@ -3620,6 +3584,8 @@ msgid ""
 "If enabled, this custom page will be used as cover for this collection, "
 "instead of default items list."
 msgstr ""
+"Si está habilitada, esta página personalizada se usará como portada para "
+"esta colección, en lugar de la lista de elementos predeterminados."
 
 #: classes/repositories/class-tainacan-collections.php:172
 msgid "Invalid page"
@@ -3653,10 +3619,6 @@ msgid "Comment Status"
 msgstr "Status del comentario"
 
 #: classes/repositories/class-tainacan-collections.php:202
-#, fuzzy
-#| msgid ""
-#| "The status of collection comment, if is \"open\" the comments are "
-#| "allowed, or is \"closed\" for deny comments."
 msgid ""
 "Collection comment status: \"open\" means comments are allowed, \"closed\" "
 "means comments are not allowed."
@@ -3670,10 +3632,6 @@ msgid "Allow Items Comments"
 msgstr "Permitir comentários de itens"
 
 #: classes/repositories/class-tainacan-collections.php:210
-#, fuzzy
-#| msgid ""
-#| "Collection items comment is allowed, if is \"open\" the comments are "
-#| "allowed for collection items, or is \"closed\" for deny comments to items."
 msgid ""
 "Collection items comment status: \"open\" means comments are allowed, "
 "\"closed\" means comments are not allowed."
@@ -3795,11 +3753,12 @@ msgstr "Filtrar metadatos"
 
 #: classes/repositories/class-tainacan-filters.php:92
 msgid "Max of options"
-msgstr ""
+msgstr "Max de opciones"
 
 #: classes/repositories/class-tainacan-filters.php:94
 msgid "The max number of options to be showed in filter sidebar."
 msgstr ""
+"El número máximo de opciones que se mostrarán en la barra lateral del filtro."
 
 #: classes/repositories/class-tainacan-filters.php:111
 msgid "Add new Filter"
@@ -3900,10 +3859,6 @@ msgid "Invalid document"
 msgstr "Documento inválido"
 
 #: classes/repositories/class-tainacan-items.php:114
-#, fuzzy
-#| msgid ""
-#| "The status of item comment, if is \"open\" the comments are allowed to "
-#| "item, or is \"closed\" for deny comments to item."
 msgid ""
 "Item comment status: \"open\" means comments are allowed, \"closed\" means "
 "comments are not allowed."
@@ -4232,15 +4187,15 @@ msgstr "Mostrar por defecto en el listado o no mostrar o no mostrar nunca."
 
 #: classes/repositories/class-tainacan-metadata.php:194
 msgid "The semantic metadatum description URI"
-msgstr ""
+msgstr "La descripción del metadato semántico URI"
 
 #: classes/repositories/class-tainacan-metadata.php:195
 msgid "url"
-msgstr ""
+msgstr "url"
 
 #: classes/repositories/class-tainacan-metadata.php:197
 msgid "The semantic metadatum description URI like: "
-msgstr ""
+msgstr "La descripción del metadato semántico URI como: "
 
 #: classes/repositories/class-tainacan-metadata.php:213
 msgid "Add new Metadata"
@@ -4310,15 +4265,17 @@ msgstr "Valor inválido, los valores admitidos son (sí/no)"
 
 #: classes/repositories/class-tainacan-taxonomies.php:70
 msgid "Enabled for post types"
-msgstr ""
+msgstr "Habilitado para tipos de publicaciones"
 
 #: classes/repositories/class-tainacan-taxonomies.php:72
 msgid "Also enable this taxonomy for other WordPress post types"
 msgstr ""
+"También habilite esta taxonomía para otros tipos de publicaciones de "
+"WordPress"
 
 #: classes/repositories/class-tainacan-taxonomies.php:73
 msgid "Error enabling this taxonomy for post types"
-msgstr ""
+msgstr "Error al habilitar esta taxonomía para tipos de publicaciones"
 
 #: classes/repositories/class-tainacan-taxonomies.php:81
 msgid "The IDs of collection where the taxonomy is used"
@@ -4440,7 +4397,7 @@ msgstr "Su archivo CSV está listo! Acceda a él en el siguiente enlace:"
 #: importer/term-importer/class-tainacan-term-importer.php:44
 #: importer/term-importer/class-tainacan-term-importer.php:53
 msgid "CSV Delimiter"
-msgstr ""
+msgstr "Delimitador CSV"
 
 #: exporter/class-tainacan-csv.php:174
 #: exporter/class-tainacan-term-exporter.php:92
@@ -4448,37 +4405,40 @@ msgstr ""
 #: importer/term-importer/class-tainacan-term-importer.php:56
 msgid "The character used to separate each column in your CSV (e.g. , or ;)"
 msgstr ""
+"El carácter utilizado para separar cada columna en su CSV (por ejemplo , o ;)"
 
 #: exporter/class-tainacan-csv.php:184 exporter/class-tainacan-csv.php:193
 #: importer/class-tainacan-csv.php:232 importer/class-tainacan-csv.php:241
 msgid "Multivalued metadata delimiter"
-msgstr ""
+msgstr "Delimitador de metadatos multivalor"
 
 #: exporter/class-tainacan-csv.php:196 importer/class-tainacan-csv.php:244
 msgid ""
 "The character used to separate each value inside a cell with multiple values "
 "(e.g. ||). Note that the target metadatum must accept multiple values."
 msgstr ""
+"El carácter utilizado para separar cada valor dentro de una célula con "
+"varios valores (por ejemplo, ||). Tenga en cuenta que el metadato de destino "
+"debe aceptar varios valores."
 
 #: exporter/class-tainacan-csv.php:206 exporter/class-tainacan-csv.php:215
 #: importer/class-tainacan-csv.php:254 importer/class-tainacan-csv.php:263
 msgid "Enclosure"
-msgstr ""
+msgstr "Encapsular"
 
 #: exporter/class-tainacan-csv.php:218 importer/class-tainacan-csv.php:266
 msgid ""
 "The character that wraps the content of each cell in your CSV. (e.g. \")"
 msgstr ""
+"El carácter que envuelve el contenido de cada célula en tu CSV. (p.ej. \")"
 
 #: exporter/class-tainacan-export-handler.php:18
 msgid "Allows you to export one collection to a CSV file"
 msgstr "Le permite exportar una colección a un archivo CSV"
 
 #: exporter/class-tainacan-export-handler.php:25
-#, fuzzy
-#| msgid "Allows you to export one collection to a CSV file"
 msgid "Allows you to export a taxonomy to a CSV file"
-msgstr "Le permite exportar una colección a un archivo CSV"
+msgstr "Le permite exportar una taxonomía a un archivo CSV"
 
 #: exporter/class-tainacan-export-handler.php:63
 #, php-format
@@ -4489,12 +4449,12 @@ msgstr "% s Exportador"
 #: importer/class-tainacan-importer.php:529
 #, php-format
 msgid "Step %d of %d"
-msgstr ""
+msgstr "Paso %d de %d"
 
 #: exporter/class-tainacan-exporter.php:380
 #: importer/class-tainacan-importer.php:534
 msgid "Running Importer"
-msgstr ""
+msgstr "Importador ejecutando"
 
 #: exporter/class-tainacan-exporter.php:655
 msgid "Error processing item"
@@ -4505,22 +4465,16 @@ msgid "Finished export."
 msgstr "Exportación terminada."
 
 #: exporter/class-tainacan-term-exporter.php:102
-#, fuzzy
-#| msgid "Parent Taxonomy:"
 msgid "Source Taxonomy:"
-msgstr "Taxonomía pariente:"
+msgstr "Taxonomía Fuente:"
 
 #: exporter/class-tainacan-term-exporter.php:111
-#, fuzzy
-#| msgid "New Taxonomy"
 msgid "Source Taxonomy"
-msgstr "Nueva taxonomía"
+msgstr "Taxonomía Fuente"
 
 #: exporter/class-tainacan-term-exporter.php:114
-#, fuzzy
-#| msgid "Inform the taxonomy you want to import the terms to."
 msgid "Inform the taxonomy you want to export the terms from."
-msgstr "Informe la taxonomía a la que desea importar los términos."
+msgstr "Informe la taxonomía de la que desea importar los términos."
 
 #: exposers/class-tainacan-csv.php:14
 msgid "CSV"
@@ -4552,55 +4506,41 @@ msgid "A simple HTML table"
 msgstr "Una tabla HTML sencilla"
 
 #: gutenberg-blocks/tainacan-collections/collections-list/index.js:14
-#, fuzzy
-#| msgid "Tainacan Collections Carousel"
 msgid "Tainacan Collections List"
-msgstr "Carrusel de Colecciones Tainacan"
+msgstr "Lista de Colecciones Tainacan"
 
 #: gutenberg-blocks/tainacan-collections/collections-list/index.js:183
-#, fuzzy
-#| msgid "Select the collection to fetch items"
 msgid "Select the desired collections from your repository"
-msgstr "Seleccione la colección para recuperar los ítems"
+msgstr "Seleccione las colecciones deseadas de su repositorio"
 
 #: gutenberg-blocks/tainacan-collections/collections-list/index.js:185
 #: gutenberg-blocks/tainacan-collections/collections-list/index.js:607
-#, fuzzy
-#| msgid "Select a collection"
 msgid "Select collections"
-msgstr "Seleccione una colección"
+msgstr "Seleccionar colecciones"
 
 #: gutenberg-blocks/tainacan-collections/collections-list/index.js:190
 #: gutenberg-blocks/tainacan-items/items-list/index.js:239
-#, fuzzy
-#| msgid "Search Collections"
 msgid "Search for a collection"
-msgstr "Buscar colecciones"
+msgstr "Buscar una colección"
 
 #: gutenberg-blocks/tainacan-collections/collections-list/index.js:232
 #: gutenberg-blocks/tainacan-collections/collections-list/index.js:276
-#, fuzzy
-#| msgid "No draft collection found."
 msgid "Sorry, no collections found."
-msgstr "No se encontró ninguna colección borrador."
+msgstr "Perdón, no se han encontrado colecciones."
 
 #: gutenberg-blocks/tainacan-collections/collections-list/index.js:261
 #: gutenberg-blocks/tainacan-items/items-list/index.js:298
 #: gutenberg-blocks/tainacan-items/items-list/index.js:419
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:272
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:393
-#, fuzzy
-#| msgid "Showing items "
 msgid "Showing"
-msgstr "Mostrando ítems"
+msgstr "Mostrando"
 
 #: gutenberg-blocks/tainacan-collections/collections-list/index.js:261
 #: gutenberg-blocks/tainacan-items/items-list/index.js:298
 #: gutenberg-blocks/tainacan-items/items-list/index.js:419
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:272
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:393
-#, fuzzy
-#| msgid " of "
 msgid "of"
 msgstr "de"
 
@@ -4615,53 +4555,39 @@ msgstr "colecciones"
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:279
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:400
 msgid "Load more"
-msgstr ""
+msgstr "Subir más"
 
 #: gutenberg-blocks/tainacan-collections/collections-list/index.js:527
 #: gutenberg-blocks/tainacan-items/items-list/index.js:783
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:729
-#, fuzzy
-#| msgid "View"
 msgid "Grid View"
-msgstr "Vista"
+msgstr "Vista en cuadrícula"
 
 #: gutenberg-blocks/tainacan-collections/collections-list/index.js:533
 #: gutenberg-blocks/tainacan-items/items-list/index.js:789
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:735
-#, fuzzy
-#| msgid "View"
 msgid "List View"
-msgstr "Vista"
+msgstr "Vista de la lista"
 
 #: gutenberg-blocks/tainacan-collections/collections-list/index.js:554
-#, fuzzy
-#| msgid "Select all collections on page"
 msgid "Toggle to show collection's image"
-msgstr "Seleccione todas las colecciones en la página"
+msgstr "Alterne para mostrar la imagen de la colección"
 
 #: gutenberg-blocks/tainacan-collections/collections-list/index.js:554
-#, fuzzy
-#| msgid "Showing collections "
 msgid "Do not show collection's image"
-msgstr "Mostrando colecciones"
+msgstr "No mostrar la imagen de la colección"
 
 #: gutenberg-blocks/tainacan-collections/collections-list/index.js:568
-#, fuzzy
-#| msgid "Select all collections on page"
 msgid "Toggle to show collection's name"
-msgstr "Seleccione todas las colecciones en la página"
+msgstr "Alterne para mostrar el nombre de la colección"
 
 #: gutenberg-blocks/tainacan-collections/collections-list/index.js:568
-#, fuzzy
-#| msgid "Showing collections "
 msgid "Do not show collection's name"
-msgstr "Mostrando colecciones"
+msgstr "No mostrar el nombre de la colección"
 
 #: gutenberg-blocks/tainacan-collections/collections-list/index.js:579
-#, fuzzy
-#| msgid "Origin collection"
 msgid "Margin between collections"
-msgstr "Colección de origen"
+msgstr "Margen entre colecciones"
 
 #: gutenberg-blocks/tainacan-items/items-grid/index.js:13
 msgid "Tainacan Items Grid"
@@ -4685,42 +4611,32 @@ msgid "Add items"
 msgstr "Añadir item"
 
 #: gutenberg-blocks/tainacan-items/items-list/index.js:14
-#, fuzzy
-#| msgid "Tainacan Items Grid"
 msgid "Tainacan Items List"
-msgstr "Grid de los ítems de Tainacan"
+msgstr "Lista de ítems de Tainacan"
 
 #: gutenberg-blocks/tainacan-items/items-list/index.js:233
-#, fuzzy
-#| msgid "Select the collection to fetch items"
 msgid "Select a collection to fetch items from"
-msgstr "Seleccione la colección para recuperar los ítems"
+msgstr "Seleccione una colección para obtener ítems de"
 
 #: gutenberg-blocks/tainacan-items/items-list/index.js:235
 #: gutenberg-blocks/tainacan-items/items-list/index.js:330
 #: gutenberg-blocks/tainacan-items/items-list/index.js:344
 #: gutenberg-blocks/tainacan-items/items-list/index.js:863
-#, fuzzy
-#| msgid "Selected terms"
 msgid "Select items"
-msgstr "Términos seleccionados"
+msgstr "Seleccionar ítems"
 
 #: gutenberg-blocks/tainacan-items/items-list/index.js:275
 #: gutenberg-blocks/tainacan-items/items-list/index.js:313
-#, fuzzy
-#| msgid "No draft collection found."
 msgid "Sorry, no collection found."
-msgstr "No se encontró ninguna colección borrador."
+msgstr "Perdón, no se ha encontrado ninguna colección."
 
 #: gutenberg-blocks/tainacan-items/items-list/index.js:342
 msgid "Select the desired items from collection "
 msgstr "Seleccionar una imagen de cabecera para la colección "
 
 #: gutenberg-blocks/tainacan-items/items-list/index.js:348
-#, fuzzy
-#| msgid "Search items"
 msgid "Search for an item"
-msgstr "Buscar ítems"
+msgstr "Buscar un ítem"
 
 #: gutenberg-blocks/tainacan-items/items-list/index.js:390
 #: gutenberg-blocks/tainacan-items/items-list/index.js:434
@@ -4728,51 +4644,36 @@ msgid "Sorry, no items found."
 msgstr "Perdón, no se encontraron ítems."
 
 #: gutenberg-blocks/tainacan-items/items-list/index.js:419
-#, fuzzy
-#| msgctxt ""
-#| "Slug: the string that will be used to build the URL to list all items of "
-#| "the repository"
-#| msgid "items"
 msgid "items"
 msgstr "ítems"
 
 #: gutenberg-blocks/tainacan-items/items-list/index.js:441
-#, fuzzy
-#| msgid "Showing collections "
 msgid "Switch collection"
-msgstr "Mostrando colecciones"
+msgstr "Cambio de coleccion"
 
 #: gutenberg-blocks/tainacan-items/items-list/index.js:810
 msgid "Toggle to show item's image"
-msgstr ""
+msgstr "Alternar para mostrar la imagen del ítem"
 
 #: gutenberg-blocks/tainacan-items/items-list/index.js:810
-#, fuzzy
-#| msgid "Show items title"
 msgid "Do not show item's image"
-msgstr "Mostrar titulo de los ítems"
+msgstr "No mostrar la imagen del ítem"
 
 #: gutenberg-blocks/tainacan-items/items-list/index.js:824
-#, fuzzy
-#| msgid "Show items title"
 msgid "Toggle to show item's title"
-msgstr "Mostrar titulo de los ítems"
+msgstr "Alterne para mostrar el título del elemento"
 
 #: gutenberg-blocks/tainacan-items/items-list/index.js:824
-#, fuzzy
-#| msgid "Show items title"
 msgid "Do not show item's title"
-msgstr "Mostrar titulo de los ítems"
+msgstr "No mostrar el título del ítem"
 
 #: gutenberg-blocks/tainacan-items/items-list/index.js:835
 msgid "Margin between items"
-msgstr ""
+msgstr "Margen entre elementos"
 
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:12
-#, fuzzy
-#| msgid "Tainacan Items Grid"
 msgid "Tainacan Terms List"
-msgstr "Grid de los ítems de Tainacan"
+msgstr "Lista de ítems de Tainacan"
 
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:19
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:393
@@ -4788,32 +4689,24 @@ msgid "Remove"
 msgstr "Remover"
 
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:209
-#, fuzzy
-#| msgid "Select the collection to fetch items"
 msgid "Select a taxonomy to fetch terms from"
-msgstr "Seleccione la colección para recuperar los ítems"
+msgstr "Seleccione una taxonomía para obtener términos de"
 
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:211
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:303
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:317
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:794
-#, fuzzy
-#| msgid "Selected terms"
 msgid "Select terms"
-msgstr "Términos seleccionados"
+msgstr "Seleccionar términos"
 
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:215
-#, fuzzy
-#| msgid "Search Taxonomies"
 msgid "Search for a taxonomy"
-msgstr "Busar taxonomías"
+msgstr "Buscar una taxonomia"
 
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:250
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:287
-#, fuzzy
-#| msgid "No draft taxonomy found."
 msgid "Sorry, no taxonomy found."
-msgstr "No se encontró ninguna categoría borrador."
+msgstr "Perdón, no se encontró ninguna taxonomía."
 
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:272
 msgid "taxonomies"
@@ -4821,13 +4714,11 @@ msgstr "taxonomías"
 
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:315
 msgid "Select the desired terms from taxonomy "
-msgstr ""
+msgstr "Seleccione los términos deseados de taxonomía "
 
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:322
-#, fuzzy
-#| msgid "Search items"
 msgid "Search for a term"
-msgstr "Buscar ítems"
+msgstr "Buscar un termino"
 
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:364
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:408
@@ -4835,38 +4726,32 @@ msgid "Sorry, no terms found."
 msgstr "Perdón, no se encontraron términos."
 
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:415
-#, fuzzy
-#| msgid "Select taxonomy"
 msgid "Switch taxonomy"
-msgstr "Seleccione taxonomía"
+msgstr "Cambiar taxonomía"
 
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:756
 msgid "Toggle to show term's image"
-msgstr ""
+msgstr "Alternar para mostrar la imagen del término"
 
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:756
 msgid "Do not show term's image"
-msgstr ""
+msgstr "No mostrar la imagen del término"
 
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:769
-#, fuzzy
-#| msgid "The term name"
 msgid "Toggle to show term's name"
-msgstr "El nombre del término"
+msgstr "Alterne para mostrar el nombre del término"
 
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:769
-#, fuzzy
-#| msgid "The term name"
 msgid "Do not show term's name"
-msgstr "El nombre del término"
+msgstr "No mostrar el nombre del término"
 
 #: importer/class-tainacan-csv.php:276 importer/class-tainacan-csv.php:285
 msgid "File Encoding"
-msgstr ""
+msgstr "Codificación de archivos"
 
 #: importer/class-tainacan-csv.php:288
 msgid "The encoding of the CSV file."
-msgstr ""
+msgstr "La codificación del archivo CSV."
 
 #: importer/class-tainacan-csv.php:303 importer/class-tainacan-csv.php:312
 msgid "Repeated Item"
@@ -4878,7 +4763,7 @@ msgstr "Elija la acción cuando se encuentre un ítem repetido"
 
 #: importer/class-tainacan-csv.php:330
 msgid "Importing attachments"
-msgstr ""
+msgstr "Importando archivos adjuntos"
 
 #: importer/class-tainacan-csv.php:332
 msgid ""
@@ -4903,10 +4788,33 @@ msgid ""
 "\n"
 "\t\t\t"
 msgstr ""
+"Si también tiene archivos que desea importar, que están relacionados con los "
+"elementos en su CSV, puede usar algunas columnas especiales en su csv para "
+"hacerlo.\n"
+"\n"
+"\t\t\tHay dos columnas especiales que puedes usar: <b>special_document</b>, "
+"que establecerá el documento de su artículo, y <b>special_attachments</b> "
+"para agregar uno o varios archivos adjuntos.\n"
+"\n"
+"\t\t\tLos valores para el special_document se deben anteponer con url:'', "
+"'file:'' o 'text:'. Esto indicará el tipo de documento.\n"
+"\n"
+"\t\t\tLos valores para el special_attachments es sólo una lista de archivos. "
+"Si desea agregar muchos archivos adjuntos, use el separador que configuró en "
+"la opción Multivalued Delimiter. \n"
+" \n"
+"\t\t\tEn cualquier caso, puedes apuntar a un archivo utilizando una URL "
+"completa, o simplemente un nombre de archivo. En este último caso, debes "
+"configurar la siguiente opción para decir a Tainacan dónde encontrar los "
+"archivos en su servidor. \n"
+" Luego puede subirlos directamente (por ejemplo, a través de FTP) y Tainacan "
+"los agregará a sus ítems. \n"
+" \n"
+"\t\t\t"
 
 #: importer/class-tainacan-csv.php:339 importer/class-tainacan-csv.php:348
 msgid "Server path"
-msgstr ""
+msgstr "Ruta del servidor"
 
 #: importer/class-tainacan-csv.php:351
 msgid ""
@@ -4914,18 +4822,21 @@ msgid ""
 "uploaded to the server, inform the full path to the folder here (e.g. /home/"
 "user/files/)"
 msgstr ""
+"Cuando use el campo especial CSV para agregar documentos o archivos adjuntos "
+"que haya cargado al servidor, informe la ruta completa a la carpeta aquí "
+"(por ejemplo, home/user/files/)"
 
 #: importer/class-tainacan-importer-handler.php:21
 msgid "Import items from a CSV file to a chosen collection"
-msgstr ""
+msgstr "Importar elementos desde un archivo CSV a una colección elegida"
 
 #: importer/class-tainacan-importer-handler.php:30
 msgid "Create 2 test colletions with random items"
-msgstr ""
+msgstr "Crea 2 colecciones de prueba con ítems aleatorios"
 
 #: importer/class-tainacan-importer-handler.php:39
 msgid "Import structure from legacy version of Tainacan"
-msgstr ""
+msgstr "Importar estructura de la versión heredada de Tainacan"
 
 #: importer/class-tainacan-importer-handler.php:48
 msgid "Import a vaculary from a CSV file into a taxonomy"
@@ -4933,38 +4844,32 @@ msgstr "Importar un vacular de un archivo CSV en una taxonomía"
 
 #: importer/class-tainacan-importer-handler.php:57
 msgid "Import structure from a OAI PMH repository"
-msgstr ""
+msgstr "Importar estructura desde un repositorio OAI PMH"
 
 #: importer/class-tainacan-importer-handler.php:79
 #, php-format
 msgid "%s Importer"
-msgstr ""
+msgstr "Importador %s"
 
 #: importer/class-tainacan-oaipmh-importer.php:694
 #: importer/class-tainacan-oaipmh-importer.php:704
 #: importer/class-tainacan-oaipmh-importer.php:707
-#, fuzzy
-#| msgid "Import"
 msgid "Imported Repo"
-msgstr "Importar"
+msgstr "Repositorio importado"
 
 #: importer/class-tainacan-oaipmh-importer.php:716
 #: importer/class-tainacan-oaipmh-importer.php:725
-#, fuzzy
-#| msgid "Create metadatum"
 msgid "Create set as"
-msgstr "Crear metadato"
+msgstr "Crear conjunto como"
 
 #: importer/class-tainacan-oaipmh-importer.php:728
-#, fuzzy
-#| msgid "Choose the action when a repeated item is found"
 msgid "Choose the action to manipulate sets"
-msgstr "Elija la acción cuando se encuentre un ítem repetido"
+msgstr "Elige la acción para manipular conjuntos"
 
 #: importer/class-tainacan-test-importer.php:109
 #: importer/class-tainacan-test-importer.php:118
 msgid "Number of items in collection 1"
-msgstr ""
+msgstr "Número de ítems en la colección 1"
 
 #: importer/class-tainacan-test-importer.php:121
 msgid "The total of items to created in first collection (e.g. 20)"
@@ -4973,7 +4878,7 @@ msgstr ""
 
 #: importer/class-tainacan-test-importer.php:131
 msgid "Number of extra metadata to create in first collection"
-msgstr ""
+msgstr "Número de metadatos adicionales para crear en la primera colección"
 
 #: importer/class-tainacan-test-importer.php:140
 msgid "Number of extra metadata"
@@ -4998,11 +4903,12 @@ msgid ""
 "Create second collection with a relationship with the first collection "
 "created"
 msgstr ""
+"Crear una segunda colección con una relación con la primera colección creada"
 
 #: importer/class-tainacan-test-importer.php:182
 #: importer/class-tainacan-test-importer.php:191
 msgid "Number of items in collection 2"
-msgstr ""
+msgstr "Número de elementos en la colección 2"
 
 #: importer/class-tainacan-test-importer.php:194
 msgid "The total of items to created in second collection (e.g. 20)"
@@ -5011,7 +4917,7 @@ msgstr ""
 
 #: importer/class-tainacan-test-importer.php:204
 msgid "Images"
-msgstr ""
+msgstr "Imágenes"
 
 #: importer/class-tainacan-test-importer.php:207
 #: importer/class-tainacan-test-importer.php:216
@@ -5023,10 +4929,12 @@ msgid ""
 "Add random images from flickr using [https://loremflickr.com/] in first "
 "collection"
 msgstr ""
+"Agregue imágenes aletorias de flickr usando [https://loremflickr.com/] en la "
+"primera colección"
 
 #: importer/class-tainacan-test-importer.php:236
 msgid "Horizontal image size (0 for random)"
-msgstr ""
+msgstr "Tamaño de imagen horizontal (0 para aleatorio)"
 
 #: importer/class-tainacan-test-importer.php:245
 msgid "Horizontal image size"
@@ -5038,7 +4946,7 @@ msgstr "Tamaño de imagen horizontal en píxeles (0 para tamaño aleatorio)"
 
 #: importer/class-tainacan-test-importer.php:258
 msgid "Vertical image size (0 for random)"
-msgstr ""
+msgstr "Tamaño de imagen vertical (0 para aleatorio)"
 
 #: importer/class-tainacan-test-importer.php:267
 msgid "Vertical image size"
@@ -5105,12 +5013,12 @@ msgstr "ítems"
 #: theme-helper/class-tainacan-theme-helper.php:557
 #, php-format
 msgid "Daily Archives: %s"
-msgstr ""
+msgstr "Archivos diarios: %s"
 
 #: theme-helper/class-tainacan-theme-helper.php:559
 #, php-format
 msgid "Monthly Archives: %s"
-msgstr ""
+msgstr "Archivos mensuales: %s"
 
 #: theme-helper/class-tainacan-theme-helper.php:559
 msgctxt "monthly archives date format"
@@ -5120,7 +5028,7 @@ msgstr "F Y"
 #: theme-helper/class-tainacan-theme-helper.php:561
 #, php-format
 msgid "Yearly Archives: %s"
-msgstr ""
+msgstr "Archivos anuales: %s"
 
 #: theme-helper/class-tainacan-theme-helper.php:561
 msgctxt "yearly archives date format"

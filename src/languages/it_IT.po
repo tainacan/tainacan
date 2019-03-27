@@ -291,7 +291,7 @@ msgstr ""
 
 #: admin/tainacan-admin-i18n.php:16
 msgid "Repository"
-msgstr ""
+msgstr "Repository"
 
 #: admin/tainacan-admin-i18n.php:17
 #: classes/repositories/class-tainacan-collections.php:225
@@ -299,12 +299,12 @@ msgstr ""
 #: classes/repositories/class-tainacan-taxonomies.php:79
 #: importer/class-tainacan-oaipmh-importer.php:735
 msgid "Collections"
-msgstr ""
+msgstr "Collezioni"
 
 #: admin/tainacan-admin-i18n.php:18 admin/tainacan-admin-i18n.php:94
 #: classes/repositories/class-tainacan-items.php:130
 msgid "Items"
-msgstr ""
+msgstr "Articolo"
 
 #: admin/tainacan-admin-i18n.php:19 admin/tainacan-admin-i18n.php:25
 #: admin/tainacan-admin-i18n.php:102
@@ -316,24 +316,24 @@ msgstr ""
 #: dev-interface/class-tainacan-dev-interface.php:243
 #: dev-interface/class-tainacan-dev-interface.php:315
 msgid "Metadata"
-msgstr ""
+msgstr "Matadati"
 
 #: admin/tainacan-admin-i18n.php:20
 #: classes/repositories/class-tainacan-filters.php:108
 #: classes/repositories/class-tainacan-filters.php:119
 msgid "Filters"
-msgstr ""
+msgstr "Filtri"
 
 #: admin/tainacan-admin-i18n.php:21 admin/tainacan-admin-i18n.php:97
 #: classes/repositories/class-tainacan-taxonomies.php:94
 #: classes/repositories/class-tainacan-taxonomies.php:108
 #: importer/class-tainacan-oaipmh-importer.php:736
 msgid "Taxonomies"
-msgstr ""
+msgstr "Tassonomie"
 
 #: admin/tainacan-admin-i18n.php:22
 msgid "Activities"
-msgstr ""
+msgstr "Attività"
 
 #: admin/tainacan-admin-i18n.php:23 admin/tainacan-admin-i18n.php:100
 #: classes/filter-types/autocomplete/class-tainacan-autocomplete.php:25
@@ -352,7 +352,7 @@ msgstr ""
 #: classes/repositories/class-tainacan-items.php:59
 #: classes/repositories/class-tainacan-metadata.php:161
 msgid "Collection"
-msgstr ""
+msgstr "Collezione"
 
 #: admin/tainacan-admin-i18n.php:24 admin/tainacan-admin-i18n.php:101
 #: classes/filter-types/autocomplete/class-tainacan-autocomplete.php:20
@@ -360,7 +360,7 @@ msgstr ""
 #: classes/metadata-types/relationship/class-tainacan-relationship.php:26
 #: classes/repositories/class-tainacan-items.php:131
 msgid "Item"
-msgstr ""
+msgstr "Articolo"
 
 #: admin/tainacan-admin-i18n.php:26 admin/tainacan-admin-i18n.php:104
 #: classes/repositories/class-tainacan-filters.php:109
@@ -387,327 +387,327 @@ msgstr ""
 #: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:59
 #: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:66
 msgid "Term"
-msgstr ""
+msgstr "Termine"
 
 #: admin/tainacan-admin-i18n.php:30 admin/tainacan-admin-i18n.php:98
 msgid "Terms"
-msgstr ""
+msgstr "Termini"
 
 #: admin/tainacan-admin-i18n.php:31
 msgid "Mapping"
-msgstr ""
+msgstr "Mappatura"
 
 #: admin/tainacan-admin-i18n.php:32 admin/tainacan-admin-i18n.php:121
 msgid "Importers"
-msgstr ""
+msgstr "Importatori"
 
 #: admin/tainacan-admin-i18n.php:33 admin/tainacan-admin-i18n.php:125
 msgid "Processes"
-msgstr ""
+msgstr "Processi"
 
 #: admin/tainacan-admin-i18n.php:34
 msgid "Sequence"
-msgstr ""
+msgstr "Sequenza"
 
 #: admin/tainacan-admin-i18n.php:35 admin/tainacan-admin-i18n.php:124
 msgid "Exporters"
-msgstr ""
+msgstr "Esportatori"
 
 #: admin/tainacan-admin-i18n.php:38
 #: gutenberg-blocks/tainacan-items/items-grid/index.js:333
 msgid "Close"
-msgstr ""
+msgstr "Chiuso"
 
 #: admin/tainacan-admin-i18n.php:39
 msgid "Edit"
-msgstr ""
+msgstr "Modificare"
 
 #: admin/tainacan-admin-i18n.php:40 admin/tainacan-admin-i18n.php:140
 msgid "Settings"
-msgstr ""
+msgstr " Impostazioni"
 
 #: admin/tainacan-admin-i18n.php:41
 msgid "New"
-msgstr ""
+msgstr "Nuovo"
 
 #: admin/tainacan-admin-i18n.php:42 admin/tainacan-admin-i18n.php:283
 msgid "Add value"
-msgstr ""
+msgstr "Aggiungere valore"
 
 #: admin/tainacan-admin-i18n.php:43
 msgid "Import"
-msgstr ""
+msgstr "Importare"
 
 #: admin/tainacan-admin-i18n.php:44
 msgid "Export"
-msgstr ""
+msgstr "Esportare"
 
 #: admin/tainacan-admin-i18n.php:45
 #: gutenberg-blocks/tainacan-collections/collections-list/index.js:283
 #: gutenberg-blocks/tainacan-items/items-list/index.js:323
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:297
 msgid "Cancel"
-msgstr ""
+msgstr "Annulla"
 
 #: admin/tainacan-admin-i18n.php:46 admin/tainacan-admin-i18n.php:284
 msgid "Remove value"
-msgstr ""
+msgstr "Rimuovi valore"
 
 #: admin/tainacan-admin-i18n.php:47
 msgid "Remove filter"
-msgstr ""
+msgstr "Rimuovi il filtro"
 
 #: admin/tainacan-admin-i18n.php:48
 msgid "Save"
-msgstr ""
+msgstr "Salvare"
 
 #: admin/tainacan-admin-i18n.php:49
 msgid "Next"
-msgstr ""
+msgstr "Prossimo"
 
 #: admin/tainacan-admin-i18n.php:50
 msgid "Previous"
-msgstr ""
+msgstr "Precedente"
 
 #: admin/tainacan-admin-i18n.php:51
 msgid "Back"
-msgstr ""
+msgstr "Indietro"
 
 #: admin/tainacan-admin-i18n.php:52
 msgid "Exit"
-msgstr ""
+msgstr "Uscita"
 
 #: admin/tainacan-admin-i18n.php:53
 msgid "View"
-msgstr ""
+msgstr "Vista"
 
 #: admin/tainacan-admin-i18n.php:54 admin/tainacan-admin-i18n.php:407
 msgid "Search"
-msgstr ""
+msgstr "Ricerca"
 
 #: admin/tainacan-admin-i18n.php:55
 msgid "Advanced Search"
-msgstr ""
+msgstr "Ricerca Avanzata"
 
 #: admin/tainacan-admin-i18n.php:56
 msgid "Continue"
-msgstr ""
+msgstr "Continua"
 
 #: admin/tainacan-admin-i18n.php:57
 msgid "Approve"
-msgstr ""
+msgstr "Approvare"
 
 #: admin/tainacan-admin-i18n.php:58
 msgid "Not approve"
-msgstr ""
+msgstr "Non approvare"
 
 #: admin/tainacan-admin-i18n.php:59
 msgid "Add one item"
-msgstr ""
+msgstr "Aggiungi un elemento"
 
 #: admin/tainacan-admin-i18n.php:60
 msgid "Bulk add items"
-msgstr ""
+msgstr "Aggiungi elementi in massa"
 
 #: admin/tainacan-admin-i18n.php:61
 msgid "Add items from an external source"
-msgstr ""
+msgstr "Aggiungi elementi da una fonte esterna"
 
 #: admin/tainacan-admin-i18n.php:62
 msgid "New mapped collection"
-msgstr ""
+msgstr "Nuova collezione mappata"
 
 #: admin/tainacan-admin-i18n.php:63
 msgid "New Blank Collection"
-msgstr ""
+msgstr "Nuova collezione vuota"
 
 #: admin/tainacan-admin-i18n.php:64
 msgid "Split"
-msgstr ""
+msgstr "Diviso"
 
 #: admin/tainacan-admin-i18n.php:65
 msgid "Unified"
-msgstr ""
+msgstr "Unificato"
 
 #: admin/tainacan-admin-i18n.php:66
 msgid "Add another search criterion"
-msgstr ""
+msgstr "Aggiungi un altro criterio di ricerca"
 
 #: admin/tainacan-admin-i18n.php:67
 msgid "Add one search criterion"
-msgstr ""
+msgstr "Aggiungi un criterio di ricerca"
 
 #: admin/tainacan-admin-i18n.php:68
 msgid "Clear search"
-msgstr ""
+msgstr "Cancella ricerca"
 
 #: admin/tainacan-admin-i18n.php:69
 msgid "Run"
-msgstr ""
+msgstr "Correre"
 
 #: admin/tainacan-admin-i18n.php:70
 msgid "Edit search"
-msgstr ""
+msgstr "Modifica la ricerca"
 
 #: admin/tainacan-admin-i18n.php:71
 msgid "Apply"
-msgstr ""
+msgstr "Applicare"
 
 #: admin/tainacan-admin-i18n.php:72
 msgid "Add another edition criterion"
-msgstr ""
+msgstr "Aggiungi un altro criterio di edizione"
 
 #: admin/tainacan-admin-i18n.php:73
 msgid "Add one edition criterion"
-msgstr ""
+msgstr "Aggiungi un criterio di edizione"
 
 #: admin/tainacan-admin-i18n.php:74
 msgid "Set new value"
-msgstr ""
+msgstr "Imposta un nuovo valore"
 
 #: admin/tainacan-admin-i18n.php:75
 msgid "Replace value"
-msgstr ""
+msgstr "Sostituisci valore"
 
 #: admin/tainacan-admin-i18n.php:76
 #: gutenberg-blocks/tainacan-collections/collections-list/index.js:289
 #: gutenberg-blocks/tainacan-items/items-list/index.js:447
 #: gutenberg-blocks/tainacan-terms/terms-list/index.js:420
 msgid "Finish"
-msgstr ""
+msgstr "Finire"
 
 #: admin/tainacan-admin-i18n.php:77
 msgid "select to create"
-msgstr ""
+msgstr "Seleziona per creare"
 
 #: admin/tainacan-admin-i18n.php:78
 msgid "New action"
-msgstr ""
+msgstr "Nuova azione"
 
 #: admin/tainacan-admin-i18n.php:79
 msgid "Clear selected radio"
-msgstr ""
+msgstr "Cancella la selezionata"
 
 #: admin/tainacan-admin-i18n.php:80
 msgid "Undo"
-msgstr ""
+msgstr "Disfare"
 
 #: admin/tainacan-admin-i18n.php:83 admin/tainacan-admin-i18n.php:294
 msgid "Publish"
-msgstr ""
+msgstr "Pubblicare"
 
 #: admin/tainacan-admin-i18n.php:84
 msgid "Public"
-msgstr ""
+msgstr "Pubblico"
 
 #: admin/tainacan-admin-i18n.php:85 admin/tainacan-admin-i18n.php:239
 msgid "Draft"
-msgstr ""
+msgstr "Bozza"
 
 #: admin/tainacan-admin-i18n.php:86
 msgid "Private"
-msgstr ""
+msgstr "Privato"
 
 #: admin/tainacan-admin-i18n.php:87 admin/tainacan-admin-i18n.php:240
 msgid "Trash"
-msgstr ""
+msgstr "Spazzatura"
 
 #: admin/tainacan-admin-i18n.php:88
 msgid "Automatic Draft"
-msgstr ""
+msgstr "Bozza automatica"
 
 #: admin/tainacan-admin-i18n.php:89
 msgid "Visible to everyone"
-msgstr ""
+msgstr "Visibile a tutti"
 
 #: admin/tainacan-admin-i18n.php:90
 msgid "Visible only for editors"
-msgstr ""
+msgstr "Visibile solo per gli editori"
 
 #: admin/tainacan-admin-i18n.php:93
 msgid "Repository Collections"
-msgstr ""
+msgstr "Collezioni di repository"
 
 #: admin/tainacan-admin-i18n.php:95
 msgid "Repository Metadata"
-msgstr ""
+msgstr "Metadati del repository"
 
 #: admin/tainacan-admin-i18n.php:96
 msgid "Repository Filters"
-msgstr ""
+msgstr "Filtri del repository"
 
 #: admin/tainacan-admin-i18n.php:99
 msgid "Repository Activities"
-msgstr ""
+msgstr "Attività del repository"
 
 #: admin/tainacan-admin-i18n.php:103
 msgid "Collection Activities"
-msgstr ""
+msgstr "Attività di Attività di collezioni"
 
 #: admin/tainacan-admin-i18n.php:106
 msgid "Term edition"
-msgstr ""
+msgstr "Edizione di termine"
 
 #: admin/tainacan-admin-i18n.php:108
 msgid "Collection Creation"
-msgstr ""
+msgstr "Creazione di collezioni"
 
 #: admin/tainacan-admin-i18n.php:109
 msgid "Taxonomy Creation"
-msgstr ""
+msgstr "Creazione di tassonomia"
 
 #: admin/tainacan-admin-i18n.php:110
 msgid "Create Item on Collection"
-msgstr ""
+msgstr "Crea un elemento sulla collezione"
 
 #: admin/tainacan-admin-i18n.php:111
 msgid "Filter Creation"
-msgstr ""
+msgstr "Creazione di filtri"
 
 #: admin/tainacan-admin-i18n.php:112
 msgid "Settings of Collection"
-msgstr ""
+msgstr "Impostazioni della collezione"
 
 #: admin/tainacan-admin-i18n.php:113
 #: classes/repositories/class-tainacan-items.php:134
 msgid "Edit Item"
-msgstr ""
+msgstr "Edizione di elemento"
 
 #: admin/tainacan-admin-i18n.php:114
 msgid "Taxonomy Edition"
-msgstr ""
+msgstr "Edizione di tassonomia"
 
 #: admin/tainacan-admin-i18n.php:115
 msgid "Filter Edition"
-msgstr ""
+msgstr "Edizione del filtro"
 
 #: admin/tainacan-admin-i18n.php:116
 msgid "Metadata Edition"
-msgstr ""
+msgstr "Edizione di metadati"
 
 #: admin/tainacan-admin-i18n.php:117
 msgid "Edit Metadata of"
-msgstr ""
+msgstr "Edizione metadatimetadati di"
 
 #: admin/tainacan-admin-i18n.php:118
 msgid "Edit Filters of"
-msgstr ""
+msgstr "Modifica i filtri di"
 
 #: admin/tainacan-admin-i18n.php:119 importer/class-tainacan-bg-importer.php:19
 msgid "Importer"
-msgstr ""
+msgstr "Importatore"
 
 #: admin/tainacan-admin-i18n.php:120
 msgid "Metadata Mapping"
-msgstr ""
+msgstr "Mappatura dei metadati"
 
 #: admin/tainacan-admin-i18n.php:122
 msgid "Export Collection Page"
-msgstr ""
+msgstr "Esporta pagina di collezione"
 
 #: admin/tainacan-admin-i18n.php:123
 msgid "Export Item"
-msgstr ""
+msgstr "Esporta elemento"
 
 #: admin/tainacan-admin-i18n.php:126
 msgid "Bulk Add Items"
@@ -963,11 +963,11 @@ msgstr ""
 #: importer/class-tainacan-test-importer.php:176
 #: importer/class-tainacan-test-importer.php:230
 msgid "Yes"
-msgstr ""
+msgstr "Sì"
 
 #: admin/tainacan-admin-i18n.php:184
 msgid "No"
-msgstr ""
+msgstr "No"
 
 #: admin/tainacan-admin-i18n.php:185
 msgid "Approved"
@@ -1011,11 +1011,11 @@ msgstr ""
 
 #: admin/tainacan-admin-i18n.php:194
 msgid "Attachments"
-msgstr ""
+msgstr "Allegati"
 
 #: admin/tainacan-admin-i18n.php:195
 msgid "Attachment"
-msgstr ""
+msgstr "Allegato"
 
 #: admin/tainacan-admin-i18n.php:196
 msgid "Enabled"
@@ -1047,7 +1047,7 @@ msgstr ""
 
 #: admin/tainacan-admin-i18n.php:203
 msgid "Parent Term"
-msgstr ""
+msgstr "Termine genitore"
 
 #: admin/tainacan-admin-i18n.php:204
 msgid "children terms"
@@ -1063,7 +1063,7 @@ msgstr ""
 
 #: admin/tainacan-admin-i18n.php:207
 msgid "Taxonomy Terms"
-msgstr ""
+msgstr "Termini di tassonomia"
 
 #: admin/tainacan-admin-i18n.php:208
 msgid "No parent term"
@@ -1146,24 +1146,24 @@ msgstr ""
 #: admin/tainacan-admin-i18n.php:227
 #: classes/repositories/class-tainacan-items.php:99
 msgid "Document"
-msgstr ""
+msgstr "Documento"
 
 #: admin/tainacan-admin-i18n.php:228
 msgid "Empty document"
-msgstr ""
+msgstr "Documento vuoto"
 
 #: admin/tainacan-admin-i18n.php:229
 msgid "File"
-msgstr ""
+msgstr "File"
 
 #: admin/tainacan-admin-i18n.php:230 admin/tainacan-admin-i18n.php:562
 #: classes/metadata-types/text/class-tainacan-text.php:18
 msgid "Text"
-msgstr ""
+msgstr "Testo"
 
 #: admin/tainacan-admin-i18n.php:231
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: admin/tainacan-admin-i18n.php:232
 msgid "Select File"
