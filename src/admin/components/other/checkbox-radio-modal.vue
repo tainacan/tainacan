@@ -88,9 +88,9 @@
                             <b-field
                                     role="li"
                                     :addons="false"
-                                    v-if="finderColumn.length"
+                                    v-if="finderColumn.children.length"
                                     class="tainacan-li-checkbox-modal"
-                                    v-for="(option, index) in finderColumn"
+                                    v-for="(option, index) in finderColumn.children"
                                     :id="`${key}.${index}-tainacan-li-checkbox-model`"
                                     :ref="`${key}.${index}-tainacan-li-checkbox-model`"
                                     :key="index">
@@ -130,9 +130,9 @@
                                     </span>
                                 </a>
                             </b-field>
-                            <li v-if="finderColumn.length">
+                            <li v-if="finderColumn.children.length">
                                 <div
-                                        v-if="totalRemaining[key].hasMoreTerms"
+                                        v-if="totalRemaining[key].hasMoreTerms || finderColumn.children[finderColumn.length - 1] == finderColumn.lastTerm"
                                         @click="getMoreOptions(finderColumn, key)"
                                         class="tainacan-show-more">
                                     <span class="icon">
@@ -195,7 +195,7 @@
                 </b-tab-item>
             </b-tabs>
             <!--<pre>{{ hierarchicalPath }}</pre>-->
-            <!--<pre>{{ totalRemaining }}</pre>-->
+            <!-- <pre>{{ totalRemaining }}</pre> -->
             <!--<pre>{{ selected }}</pre>-->
             <!--<pre>{{ options }}</pre>-->
             <!--<pre>{{ searchResults }}</pre>-->
@@ -311,7 +311,7 @@
                 options: [],
                 maxNumOptionsCheckboxList: 20,
                 maxNumSearchResultsShow: 20,
-                maxNumOptionsCheckboxFinderColumns: 100,
+                maxNumOptionsCheckboxFinderColumns: 5,
                 checkboxListOffset: 0,
                 collection: this.collection_id,
                 isCheckboxListLoading: false,
@@ -518,7 +518,7 @@
 
                 this.totalRemaining = Object.assign({}, this.totalRemaining, {
                     [`${column == undefined ? 0 : column+1}`]: {
-                        hasMoreTerms: res.data.last_term != null,
+                        hasMoreTerms: res.headers['x-wp-total'],
                     }
                 });
 
@@ -526,7 +526,7 @@
 
                 if (children.length > 0) {
                     for (let f in this.finderColumns) {
-                        if (this.finderColumns[f][0].value == children[0].value) {
+                        if (this.finderColumns[f].children[0].value == children[0].value) {
                             first = f;
                             break;
                         }
@@ -534,15 +534,16 @@
                 }
 
                 if (first != undefined) {
-                    this.finderColumns.splice(first, 1, children);
+                    this.finderColumns.splice(first, 1, { children: children, lastTerm: res.data.last_term });
                 } else {
-                    this.finderColumns.push(children);
+                    this.finderColumns.push({ children: children, lastTerm: res.data.last_term });
                 }
             },
-            appendMore(options, key) {
+            appendMore(options, key, lastTerm) {
                 for (let option of options) {
-                    this.finderColumns[key].push(option)
+                    this.finderColumns[key].children.push(option);
                 }
+                this.finderColumns[key].lastTerm = lastTerm;
             },
             getOptionChildren(option, key, index) {
                 let query_items = { 'current_query': this.query };
@@ -584,15 +585,19 @@
 
             },
             getMoreOptions(finderColumn, key) {
-                if (finderColumn.length > 0) {
-                    let parent = finderColumn[0].parent;
-                    let offset = finderColumn.length;
+                console.log(finderColumn);
+                if (finderColumn.children && finderColumn.children.length > 0) {
+                    let parent = finderColumn.children[0].parent;
+                    let offset = finderColumn.children.length;
                     let query_items = { 'current_query': this.query };
 
                     let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=${offset}&` + qs.stringify(query_items);
 
                     if (!this.isFilter)
                         query += '&hideempty=0';
+
+                    if (finderColumn.lastTerm)
+                        query += '&last_term=' + finderColumn.lastTerm
 
                     this.isColumnLoading = true;
 
@@ -604,7 +609,9 @@
 
                     axios.get(route)
                         .then(res => {
-                            this.appendMore(res.data.values, key);
+                            this.appendMore(res.data.values, key, res.data.last_term);
+
+                            console.log(this.totalRemaining)
 
                             this.isColumnLoading = false;
                         })
