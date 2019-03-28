@@ -153,6 +153,10 @@ abstract class Metadata_Type  {
     public function set_description($description){
         $this->description = $description;
     }
+    
+    public function add_error($msg) {
+        $this->errors[] = $msg;
+    }
 
     /**
      * @param $options

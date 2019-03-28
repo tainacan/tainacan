@@ -38,6 +38,7 @@ class Background_Exporter extends Background_Process {
 			
 			if (false === $runned) {
 				$batch->output = $object->get_output();
+                $this->debug((string)$batch->output);
 				$this->update($key, $batch);
 				
 				return false;

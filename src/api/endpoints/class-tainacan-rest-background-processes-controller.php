@@ -58,7 +58,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
                     ],
 					'recent' => [
                         'type'        => 'bool',
-                        'description' => __( 'Return only processes created or updated recently', 'tainacan' ),
+                        'description' => __( 'Returns only processes created or updated recently', 'tainacan' ),
                     ],
                 ],
 	        ),

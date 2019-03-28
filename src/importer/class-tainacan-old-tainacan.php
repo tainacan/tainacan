@@ -613,6 +613,7 @@ class Old_Tainacan extends Importer{
         $args = array(
             'timeout'     => 60,
             'redirection' => 30,
+            'sslverify'   => false
         );
 
         $this->add_log('fetching init  ' . $link );
@@ -643,6 +644,7 @@ class Old_Tainacan extends Importer{
             $args = array(
                 'timeout'     => 60,
                 'redirection' => 30,
+                'sslverify'   => false
             );
     
             $result = wp_remote_get($link, $args);
@@ -771,9 +773,6 @@ class Old_Tainacan extends Importer{
 
         /*Properties of metadatum*/
         if(isset($meta->metadata)){
-            if($meta->metadata->required == 1){
-                $newMetadatum->set_required(true);
-            }
 
             if(!empty($meta->metadata->default_value)){
                 $newMetadatum->set_default_value($meta->metadata->default_value);

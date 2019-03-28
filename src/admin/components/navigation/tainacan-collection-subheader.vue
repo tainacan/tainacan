@@ -55,89 +55,93 @@
                 <li     
                         :class="activeRoute == 'ItemPage' || activeRoute == 'CollectionItemsPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage' ? 'is-active':''" 
                         class="level-item">
-                    <router-link 
-                            tag="a" 
-                            :to="{ path: $routerHelper.getCollectionItemsPath(id, '') }" 
-                            :aria-label="$i18n.get('label_collection_items')">
-                        <b-tooltip 
+                    <b-tooltip 
                                 :label="$i18n.get('items')"
                                 position="is-bottom">
+                        <router-link 
+                                tag="a" 
+                                :to="{ path: $routerHelper.getCollectionItemsPath(id, '') }" 
+                                :aria-label="$i18n.get('label_collection_items')">               
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-items"/>
                             </span>
-                        </b-tooltip>
-                        <!-- <span class="menu-text">{{ $i18n.get('items') }}</span> -->
-                    </router-link>
+                            <!-- <span class="menu-text">{{ $i18n.get('items') }}</span> -->
+                        </router-link>
+                    </b-tooltip>
                 </li>
                 <li 
+                        v-if="currentUserCanEdit"
                         :class="activeRoute == 'CollectionEditionForm' ? 'is-active':''" 
                         class="level-item">
-                    <router-link
+                    <b-tooltip 
+                            :label="$i18n.get('label_settings')"
+                            position="is-bottom">
+                        <router-link
                             tag="a" 
                             :to="{ path: $routerHelper.getCollectionEditPath(id) }" 
                             :aria-label="$i18n.get('label_settings')">
-                        <b-tooltip 
-                                :label="$i18n.get('label_settings')"
-                                position="is-bottom">
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-settings"/>
                             </span>
-                        </b-tooltip>
+                        
                         <!-- <span class="menu-text">{{ $i18n.get('label_settings') }}</span> -->
-                    </router-link>
+                        </router-link>
+                    </b-tooltip>
                 </li>
                 <li 
+                        v-if="currentUserCanEdit"
                         :class="activeRoute == 'MetadataList' ? 'is-active':''"
                         class="level-item">
-                    <router-link  
-                            tag="a" 
-                            :to="{ path: $routerHelper.getCollectionMetadataPath(id) }"
-                            :aria-label="$i18n.get('label_collection_metadata')">
-                        <b-tooltip 
-                                :label="$i18n.getFrom('metadata', 'name')"
-                                position="is-bottom">
+                    <b-tooltip 
+                            :label="$i18n.getFrom('metadata', 'name')"
+                            position="is-bottom">
+                        <router-link  
+                                tag="a" 
+                                :to="{ path: $routerHelper.getCollectionMetadataPath(id) }"
+                                :aria-label="$i18n.get('label_collection_metadata')">
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-metadata"/>
                             </span>
-                        </b-tooltip>
                         <!-- <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span> -->
-                    </router-link>
+                        </router-link>
+                    </b-tooltip>
                 </li>
                 <li 
+                        v-if="currentUserCanEdit"
                         :class="activeRoute == 'FiltersList' ? 'is-active':''" 
                         class="level-item">
-                    <router-link 
-                            tag="a" 
-                            :to="{ path: $routerHelper.getCollectionFiltersPath(id) }" 
-                            :aria-label="$i18n.get('label_collection_filters')">
-                        <b-tooltip 
-                                animated
-                                :label="$i18n.getFrom('filters', 'name')"
-                                position="is-bottom">
+                    <b-tooltip 
+                            animated
+                            :label="$i18n.getFrom('filters', 'name')"
+                            position="is-bottom">
+                        <router-link 
+                                tag="a" 
+                               :to="{ path: $routerHelper.getCollectionFiltersPath(id) }" 
+                               :aria-label="$i18n.get('label_collection_filters')">
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-filters"/>
                             </span>
-                        </b-tooltip>
                         <!-- <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span> -->
-                    </router-link>
+                        </router-link>
+                    </b-tooltip>
                 </li>
                 <li 
                         :class="activeRoute == 'CollectionActivitiesPage' ? 'is-active':''"
                         class="level-item">
+                    <b-tooltip 
+                            :label="$i18n.get('activities')"
+                            position="is-bottom">
                     <router-link 
                             tag="a" 
                             :to="{ path: $routerHelper.getCollectionActivitiesPath(id) }"
                             :aria-label="$i18n.get('label_collection_activities')">
-                        <b-tooltip 
-                                :label="$i18n.get('activities')"
-                                position="is-bottom">
+                        
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-activities"/>
                             </span>
-                        </b-tooltip>
                         <!-- <span class="menu-text">{{ $i18n.get('activities') }}</span> -->
-                    </router-link>
-                   
+                        </router-link>
+                    </b-tooltip>
                 </li>
             
             </ul>
@@ -162,6 +166,7 @@ export default {
     },
     props: {
         id: Number,
+        currentUserCanEdit: Boolean
     },
     watch: {
         '$route' (to, from) {

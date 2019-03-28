@@ -242,6 +242,139 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 		
     }
 	
+	function test_relate_taxonomy_match() {
+        $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+        
+        $collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test',
+				'status'	 => 'publish',
+			),
+			true
+		);
+		
+		$collection2 = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test2',
+				'status'	 => 'publish',
+			),
+			true
+		);
+		
+		$tax = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_test',
+				'status'	 => 'publish',
+			),
+			true
+		);
+		
+		$tax2 = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_test2',
+				'status'	 => 'publish',
+			),
+			true
+		);
+		
+		$tax3 = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_test3',
+				'status'	 => 'publish',
+			),
+			true
+		);
+        
+        $metadatum = $this->tainacan_entity_factory->create_entity(
+        	'metadatum',
+	        array(
+	        	'name' => 'meta',
+		        'description' => 'description',
+		        'collection' => $collection,
+		        'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'	 => 'publish',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax->get_id(),
+					'allow_new_terms' => false
+				]
+	        ),
+	        true
+        );
+		
+		$metadatum2 = $this->tainacan_entity_factory->create_entity(
+        	'metadatum',
+	        array(
+	        	'name' => 'meta2',
+		        'description' => 'description',
+		        'collection' => $collection,
+		        'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'	 => 'publish',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax2->get_id(),
+					'allow_new_terms' => false
+				]
+	        ),
+	        true
+        );
+		
+		$metadatum3 = $this->tainacan_entity_factory->create_entity(
+        	'metadatum',
+	        array(
+	        	'name' => 'meta3',
+		        'description' => 'description',
+		        'collection' => $collection2,
+		        'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'	 => 'publish',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax2->get_id(),
+					'allow_new_terms' => false
+				]
+	        ),
+	        true
+        );
+		
+		$metadatum4 = $this->tainacan_entity_factory->create_entity(
+        	'metadatum',
+	        array(
+	        	'name' => 'meta4',
+		        'description' => 'description',
+		        'collection' => $collection2,
+		        'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'	 => 'publish',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax3->get_id(),
+					'allow_new_terms' => false
+				]
+	        ),
+	        true
+        );
+		
+		$checkTax = $Tainacan_Taxonomies->fetch($tax->get_id());
+		$checkTax2 = $Tainacan_Taxonomies->fetch($tax2->get_id());
+		$checkTax3 = $Tainacan_Taxonomies->fetch($tax3->get_id());
+		
+		$this->assertEquals( sizeof($checkTax->get_collections_ids()), sizeof($checkTax->get_collections()) );
+		$this->assertEquals( sizeof($checkTax2->get_collections_ids()), sizeof($checkTax2->get_collections()) );
+		$this->assertEquals( sizeof($checkTax3->get_collections_ids()), sizeof($checkTax3->get_collections()) );
+		
+		$this->assertNotContains($checkTax3->get_db_identifier(), get_object_taxonomies($collection->get_db_identifier()), 'Collection must be added to taxonomy when metadatum is created');
+		$this->assertContains($checkTax->get_db_identifier(), get_object_taxonomies($collection->get_db_identifier()), 'Collection must be added to taxonomy when metadatum is created');
+		$this->assertContains($checkTax2->get_db_identifier(), get_object_taxonomies($collection->get_db_identifier()), 'Collection must be added to taxonomy when metadatum is created');
+		
+		$this->assertNotContains($checkTax->get_db_identifier(), get_object_taxonomies($collection2->get_db_identifier()), 'Collection must be added to taxonomy when metadatum is created');
+		$this->assertContains($checkTax3->get_db_identifier(), get_object_taxonomies($collection2->get_db_identifier()), 'Collection must be added to taxonomy when metadatum is created');
+		$this->assertContains($checkTax2->get_db_identifier(), get_object_taxonomies($collection2->get_db_identifier()), 'Collection must be added to taxonomy when metadatum is created');
+		
+		$this->assertEquals(2, sizeof( get_object_taxonomies($collection2->get_db_identifier()) ));
+		$this->assertEquals(2, sizeof( get_object_taxonomies($collection->get_db_identifier()) ));
+    }
+	
 	/**
 	 * @group fetch_by_collection
 	 */

@@ -10,6 +10,9 @@ Assuming:
 * $BUILD_PATH is where the plugin is condigured to buid 
 * $SVN_PATH is where the WordPress.org SVN repo is
 
+## Pre-release
+
+Before we publish a new version, we always release one or more Release Candidates so the community have time to test and make sure the new version of Tainacan is clean and ready to reach the world.
 
 ### Start in the git repository
 
@@ -19,9 +22,21 @@ git checkout develop
 git pull
 ```
 
+### Create a new Release branch
+
+Create a new `release/$NEW_VERSION` branch. If using git flow:
+
+```
+git flow release start $NEW_VERSION
+```
+
 ### Edit version numbers
 
 Edit `src/readme.txt` and `src/tainacan.php` and change the version numbers to `$NEW_VERSION`.
+
+When releasing a RC version, append RC (number) to the version.
+
+Also increase the `Tested Up` version, if applicable.
 
 ### Set build to production mode
 
@@ -33,6 +48,62 @@ Edit `webpack.config.js` to set production mode.
 ./build.sh
 cd $BUILD_PATH
 rm -r admin/scss/.sass-cache
+```
+### Set build to development mode
+
+```
+cd $GIT_PATH
+git checkout webpack.config.js
+```
+
+### Publish the RC
+
+Create a ZIP package with the built plugin and publish a blog post calling for tests.
+
+Commit and push to Git!
+
+### Test
+
+Using the Test guide as a resource, test every feature of the plugin, including importers and exporters. With time, we can build more detailed test scripts and distribute tests among people in the community.
+
+
+### Fix and publish new RC, or finish
+
+If bugs are found, fix them and commit to the release branch. Publish a new RC, following the steps above, until we have a stable version we feel confident to release.
+
+## Release
+
+The plugin is ready to go. We have published one or more RCs and the community have tested it. Lets get it live to the world!
+
+### Finish version number
+
+Back to the git repository, make sure everything is up to date:
+
+```
+cd $GIT_PATH
+git checkout release/$NEW_VERSION
+git pull
+```
+Edit `src/readme.txt` and `src/tainacan.php` and change the version numbers to `$NEW_VERSION`.
+
+Commit and push.
+
+### Set build to production mode
+
+Edit `webpack.config.js` to set production mode.
+
+### Build and cleanup 
+
+```
+./build.sh
+cd $BUILD_PATH
+rm -r admin/scss/.sass-cache
+```
+### Set build to development mode
+
+```
+cd $GIT_PATH
+git checkout webpack.config.js
 ```
 
 ### Prepare SVN repo
@@ -98,17 +169,14 @@ Check if everything is ok.
 
 Once the release is tested and confirmed, commit and create the tag on git.
 
-Don't forget to undo the changes to `webpack.config.js`, setting production mode to false again.
+Merge the release branch into master and develop branches and create a tag.
+
+Using git flow:
 
 ```
 cd $GIT_PATH
 
-git checkout webpack.config.js
-
-git commit -am "Releasing verion $NEW_VERSION"
-git tag $NEW_VERSION
-git checkout master
-git merge develop
+git flow release finish $NEW_VERSION
 git push --all
 git push --tags
 ```

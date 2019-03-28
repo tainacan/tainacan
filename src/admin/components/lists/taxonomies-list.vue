@@ -16,7 +16,8 @@
                         position="is-bottom-left"
                         v-if="$userCaps.hasCapability('delete_tainacan-taxonomies')"
                         :disabled="!isSelecting"
-                        id="bulk-actions-dropdown">
+                        id="bulk-actions-dropdown"
+                        aria-role="list">
                     <button
                             class="button is-white"
                             slot="trigger">
@@ -28,10 +29,13 @@
 
                     <b-dropdown-item
                             id="item-delete-selected-items"
-                            @click="deleteSelected()">
+                            @click="deleteSelected()"
+                            aria-role="listitem">
                         {{ $i18n.get('label_delete_selected_taxonomies') }}
                     </b-dropdown-item>
-                    <b-dropdown-item disabled>{{ $i18n.get('label_edit_selected_taxonomies') + ' (Not ready)' }}
+                    <b-dropdown-item 
+                            disabled
+                            aria-role="listitem">{{ $i18n.get('label_edit_selected_taxonomies') + ' (Not ready)' }}
                     </b-dropdown-item>
                 </b-dropdown>
             </div>
@@ -53,6 +57,10 @@
                         <!-- Description -->
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_description') }}</div>
+                        </th>
+                        <!-- Collections -->
+                        <th>
+                            <div class="th-wrap">{{ $i18n.get('label_collections_using') }}</div>
                         </th>
                         <!-- Actions -->
                         <th class="actions-header">
@@ -110,6 +118,25 @@
                                     }"
                                     v-html="(taxonomy.description != undefined && taxonomy.description != '') ? taxonomy.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`" />
                         </td>
+                        <!-- Collections using -->
+                        <td
+                                class="column-large-width has-text-gray "
+                                :class="{ 'is-italic' : !(taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) }" 
+                                :label="$i18n.get('label_collections_using')" 
+                                :aria-label="(taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) ? taxonomy.collections.toString() : $i18n.get('label_no_collections_using_taxonomy')">
+                            <p
+                                    @click.self="onClickTaxonomy($event, taxonomy.id, index)"
+                                    v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
+                                        content: (taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) ? renderListOfCollections(taxonomy.collections) : $i18n.get('label_no_collections_using_taxonomy'),
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }"
+                                    v-html="(taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) ? renderListOfCollections(taxonomy.collections) : $i18n.get('label_no_collections_using_taxonomy')" />
+                        </td>
                         <!-- Actions -->
                         <td 
                                 @click="onClickTaxonomy($event, taxonomy.id, index)"
@@ -153,7 +180,8 @@
             return {
                 selected: [],
                 allOnPageSelected: false,
-                isSelecting: false
+                isSelecting: false,
+                adminUrl: tainacan_plugin.admin_url
             }
         },
         props: {
@@ -272,7 +300,24 @@
                 } else {
                     this.$router.push(this.$routerHelper.getTaxonomyEditPath(taxonomyId));
                 }
-            }  
+            },
+            renderListOfCollections(collections) {
+                let htmlList = '';
+
+                for (let i = 0; i < collections.length; i++) {
+                    htmlList += `<a target="_blank" href=${ this.adminUrl + 'admin.php?page=tainacan_admin#' + this.$routerHelper.getCollectionPath(collections[i].id)}>${collections[i].name}</a>`;
+                    if (collections.length > 2 && i > 0 && i < collections.length - 1) {
+                        if (i < collections.length - 2)
+                            htmlList += ', '
+                        else
+                            htmlList += ' ' + this.$i18n.get('label_and') + ' ';
+                    } else if (collections.length == 2 && i == 0) {
+                        htmlList += ' ' + this.$i18n.get('label_and') + ' ';
+                    }
+                }
+
+                return htmlList;
+            } 
         }
     }
 </script>

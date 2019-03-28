@@ -81,26 +81,41 @@ export const setOrderBy = ({ state, commit }, orderBy ) => {
     // Primitive Types: string, date, item, term, compound, float
     if (orderBy.slug == 'creation_date') {
         commit('setPostQueryAttribute', {  attr: 'orderby', value: 'date' } );
+        commit('removePostQueryAttribute', 'metakey');
+        commit('removePostQueryAttribute', 'metatype');
     } else if (orderBy.slug == 'author_name') {
         commit('setPostQueryAttribute', {  attr: 'orderby', value: 'author_name' } );
+        commit('removePostQueryAttribute', 'metakey');
+        commit('removePostQueryAttribute', 'metatype');
     } else if (orderBy.metadata_type_object.primitive_type == 'float' || orderBy.metadata_type_object.primitive_type == 'int') {
-        commit('setPostQueryAttribute', {  attr: 'metakey', value: orderBy.id } );
         commit('setPostQueryAttribute', {  attr: 'orderby', value: 'meta_value_num' } );
+        commit('setPostQueryAttribute', {  attr: 'metakey', value: orderBy.id } );
+        commit('removePostQueryAttribute', 'metatype');
     } else if (orderBy.metadata_type_object.primitive_type == 'date') {
+        commit('setPostQueryAttribute', {  attr: 'orderby', value: 'meta_value' } );
         commit('setPostQueryAttribute', {  attr: 'metakey', value: orderBy.id } );
         commit('setPostQueryAttribute', {  attr: 'metatype', value: 'DATETIME' } );
-        commit('setPostQueryAttribute', {  attr: 'orderby', value: 'meta_value' } );
     } else if (orderBy.metadata_type_object.core) {
         commit('setPostQueryAttribute', {  attr: 'orderby', value: orderBy.metadata_type_object.related_mapped_prop } );
+        commit('removePostQueryAttribute', 'metakey');
+        commit('removePostQueryAttribute', 'metatype');
     } else {
-        commit('setPostQueryAttribute', {  attr: 'metakey', value: orderBy.id } );
         commit('setPostQueryAttribute', {  attr: 'orderby', value: 'meta_value' } );
+        commit('setPostQueryAttribute', {  attr: 'metakey', value: orderBy.id } );
+        commit('removePostQueryAttribute', 'metatype');
     }
+    
+    commit('setOrderByName', orderBy.name);
 
 };
 
 export const setOrder = ({ commit }, order ) => {
     commit('setPostQueryAttribute', {  attr: 'order', value: order } );
+};
+
+// Set orderByName
+export const setOrderByName = ({ commit }, orderByName ) => {
+    commit('setOrderByName', orderByName );
 };
 
 // Set search query

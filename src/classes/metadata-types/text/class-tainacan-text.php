@@ -17,13 +17,13 @@ class Text extends Metadata_Type {
 		parent::set_component('tainacan-text');
 		$this->set_name( __('Text', 'tainacan') );
 		$this->set_description( __('A simple, one line, text input', 'tainacan') );
-		// $this->set_preview_template('
-		// 	<div>
-		// 		<div class="control is-clearfix">
-		// 			<input type="text" autocomplete="on" class="input"> 
-		// 		</div>
-		// 	</div>
-		// ');
+		$this->set_preview_template('
+			<div>
+				<div class="control is-clearfix">
+					<input type="text" placeholder="' . __('Type here...') . '" class="input"> 
+				</div>
+			</div>
+		');
     }
 
     /**

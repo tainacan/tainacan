@@ -28,10 +28,10 @@
                     </div>
                     <br>
                     <p v-if="items.length <= 0 && !isLoadingGroupInfo && bulkEditGroup.items_count == 1">
-                        {{ $i18n.get('info_there_is') + ' ' + bulkEditGroup.items_count + ' ' + $i18n.get('info_item_being_edited') + '.' }}
+                        {{ $i18n.get('info_there_is_one_item_being_edited') }}
                     </p>
                     <p v-if="items.length <= 0 && !isLoadingGroupInfo && bulkEditGroup.items_count > 1">
-                        {{ $i18n.get('info_there_are') + ' ' + bulkEditGroup.items_count + ' ' + $i18n.get('info_items_being_edited') + '.' }}
+                        {{ $i18n.getWithVariables('info_there_are_%s_items_being_edited', bulkEditGroup.items_count) }}
                     </p>
                     <p v-if="items.length <= 0 && !isLoadingGroupInfo">
                         {{ $i18n.get('info_no_preview_found') }}
@@ -39,8 +39,8 @@
                     <transition-group name="item-appear">
                         <div 
                                 class="document-item"
-                                v-for="(item, index) of items"
-                                :key="index">
+                                v-for="(item) of items"
+                                :key="item.id">
                             <img 
                                 v-if="item.document!= undefined && item.document != '' && item.document_type != 'empty'"
                                 class="document-thumb"

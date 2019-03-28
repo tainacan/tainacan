@@ -25,6 +25,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 	public function init_objects() {
 		$this->taxonomy = new Entities\Taxonomy();
 		$this->taxonomy_repository = Repositories\Taxonomies::get_instance();
+		$this->collections_repository = Repositories\Collections::get_instance();
 	}
 
 	public function register_routes() {
@@ -99,6 +100,16 @@ class REST_Taxonomies_Controller extends REST_Controller {
 
 				if ( $request['context'] === 'edit' ) {
 					$item_arr['current_user_can_edit'] = $item->can_edit();
+					$item_arr['current_user_can_delete'] = $item->can_delete();
+					$item_arr['collections'] = [];
+					if ( is_array($tax_collections = $item->get_collections()) ) {
+						foreach ($tax_collections as $tax_collection) {
+							if ( $tax_collection instanceof \Tainacan\Entities\Collection ) {
+								$item_arr['collections'][] = $tax_collection->_toArray();
+							}
+						}
+						
+					}
 				}
 			} else {
 				$attributes_to_filter = $request['fetch_only'];

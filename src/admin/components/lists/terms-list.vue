@@ -41,7 +41,8 @@
                         :disabled="isEditingTerm">
                     <span
                             @click="searchTerms(0)"
-                            class="icon is-right">
+                            class="icon is-right"
+                            :class="{ 'has-text-gray3': isEditingTerm }">
                         <i class="tainacan-icon tainacan-icon-search" />
                     </span>
             </div>
@@ -241,6 +242,29 @@ export default {
         },
         onTermEditionFinished($event) {
             this.$termsListBus.onTermEditionSaved($event);
+
+            for (let i = 0; i < this.termsList.length; i++) {
+                if (this.termsList[i].id == $event.term.id) {
+                    this.$set(this.termsList[i], 'description', $event.term.description);
+                    this.$set(this.termsList[i], 'header_image', $event.term.header_image);
+                    this.$set(this.termsList[i], 'header_image_id', $event.term.header_image_id);
+                    this.$set(this.termsList[i], 'name', $event.term.name);
+                    this.$set(this.termsList[i], 'parent', $event.term.parent);
+                    this.$set(this.termsList[i], 'id', $event.term.id);
+                } 
+                else if (this.termsList[i].children != undefined) {
+                    for (let j = 0; j < this.termsList[i].children.length; j++) {
+                        if (this.termsList[i].children[j].id == $event.term.id) {
+                            this.$set(this.termsList[i].children[j], 'description', $event.term.description);
+                            this.$set(this.termsList[i].children[j], 'header_image', $event.term.header_image);
+                            this.$set(this.termsList[i].children[j], 'header_image_id', $event.term.header_image_id);
+                            this.$set(this.termsList[i].children[j], 'name', $event.term.name);
+                            this.$set(this.termsList[i].children[j], 'parent', $event.term.parent);
+                            this.$set(this.termsList[i].children[j], 'id', $event.term.id);
+                        } 
+                    }
+                }
+            } 
         },
         onTermEditionCanceled($event) {
 

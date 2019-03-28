@@ -131,7 +131,7 @@ export const deleteItem = ({ commit }, { itemId, isPermanently }) => {
     });
 };
  
-export const fetchCollections = ({commit} , { page, collectionsPerPage, status, contextEdit }) => {
+export const fetchCollections = ({commit} , { page, collectionsPerPage, status, contextEdit, order, orderby }) => {
     
     return new Promise((resolve, reject) => {
         let endpoint = '/collections?paged='+page+'&perpage='+collectionsPerPage;
@@ -141,7 +141,10 @@ export const fetchCollections = ({commit} , { page, collectionsPerPage, status, 
 
         if (status != '' && status != undefined)
             endpoint = endpoint + '&status=' + status;
-            
+                    
+        if (order != undefined && order != '' && orderby != undefined && orderby != '')
+            endpoint = endpoint + '&order=' + order + '&orderby=' + orderby;
+
         axios.tainacan.get(endpoint)
         .then(res => {
             let collections = res.data;
@@ -194,6 +197,20 @@ export const fetchCollectionName = ({ commit }, id) => {
             let collectionName = res.data;
             commit('setCollectionName', collectionName.name);
             resolve( collectionName.name );
+        })
+        .catch(error => {
+            reject(error);
+        })
+    });
+};
+
+export const fetchCollectionUserCanEdit = ({ commit }, id) => {
+
+    return new Promise ((resolve, reject) => {
+        axios.tainacan.get('/collections/' + id + '?context=edit&fetch_only=current_user_can_edit')
+        .then(res => {
+            let caps = res.data.current_user_can_edit;
+            resolve( caps );
         })
         .catch(error => {
             reject(error);
@@ -444,7 +461,7 @@ export const fetchUsers = ({ commit }, { search, exceptions }) => {
 // Fetch Collections for choosing Parent Collection
 export const fetchCollectionsForParent = ({ commit }) => {
     return new Promise((resolve, reject) => { 
-        axios.tainacan.get('/collections/?fetch_only=name,id')
+        axios.tainacan.get('/collections/?nopaging=1fetch_only=name,id')
         .then(res => {
             let collections = res.data;
             resolve( collections );
@@ -459,7 +476,7 @@ export const fetchCollectionsForParent = ({ commit }) => {
 export const sendFile = ( { commit }, file ) => {
     return new Promise(( resolve, reject ) => {
         axios.wp.post('/media/', file, {
-            headers: { 'Content-Type': 'multipart/form-data;', 'Content-Disposition': 'attachment; filename=' + file.name },
+            headers: { 'Content-Disposition': 'attachment; filename=' + file.name },
         })
             .then( res => {
                 let file = res.data;

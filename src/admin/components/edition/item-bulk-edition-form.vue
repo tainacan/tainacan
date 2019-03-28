@@ -61,12 +61,12 @@
                     <p    
                             v-if="uploadedItems.length > 0 && (uploadedItems.length - amountFinished) > 1"
                             class="has-text-gray">
-                        {{ (uploadedItems.length - amountFinished) + " " + $i18n.get('label_files_remaining') }}
+                        {{ $i18n.getWithVariables('label_%s_files_remaining', [(uploadedItems.length - amountFinished)]) }}
                     </p>
                     <p    
                             v-if="uploadedItems.length > 0 && (uploadedItems.length - amountFinished) == 1"
                             class="has-text-gray">
-                        {{ "1 " + $i18n.get('label_file_remaining') }}
+                        {{ $i18n.get('label_one_file_remaining') }}
                     </p>
                 </div>
 
@@ -84,7 +84,7 @@
                     <div 
                             class="document-item"
                             v-for="(item, index) of uploadedItems"
-                            :key="index">
+                            :key="item.id">
                         <img 
                                 v-if="item.document!= undefined && item.document != '' && item.document_type != 'empty'"
                                 class="document-thumb"
@@ -107,7 +107,7 @@
                             <span 
                                     v-if="item.document != '' && item.document_type != 'empty'"
                                     class="icon has-text-success">
-                                <i class="tainacan-icon tainacan-icon-24px tainacan-icon-approvedcircle" />
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approvedcircle" />
                             </span>  
                         </div>   
                         <div 

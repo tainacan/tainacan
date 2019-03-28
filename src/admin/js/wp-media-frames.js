@@ -113,11 +113,11 @@ export default {
 				id: this.params.relatedPostId
 			}
 			this.params.attachment = attachment;
-			this.params.onSave(attachment.id);
+			this.params.onSave(attachment);
 		}
 
 	}),
-	// CroppedImageControl, with presets for thumbnail dimensions
+	// CroppedImageControl, with presets for header dimensions
 	headerImageControl: wp.customize.CroppedImageControl.extend({
 		
 		initFrame: function() {
@@ -137,7 +137,7 @@ export default {
 				this.params.flex_width = true;
 				this.params.flex_height = true;
 				this.params.width = 2000;
-				this.params.height = 280;
+				this.params.height = 625;
 			}
 
 			this.frame = wp.media({

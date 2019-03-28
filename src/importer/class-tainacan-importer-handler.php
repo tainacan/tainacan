@@ -52,6 +52,15 @@ class Importer_Handler {
 			'manual_mapping' => false,
 		]);
 
+        $this->register_importer([
+            'name' => 'OAI-PMH (Experimental)',
+            'description' => __('Import items from an OAI-PMH data source', 'tainacan'),
+            'slug' => 'oaipmh_importer',
+            'class_name' => '\Tainacan\Importer\Oaipmh_Importer',
+            'manual_collection' => false,
+            'manual_mapping' => false,
+        ]);
+
 		do_action('tainacan_register_importers');
 
 		add_action( 'tainacan-enqueue-admin-scripts', array($this, 'enqueue_scripts') );

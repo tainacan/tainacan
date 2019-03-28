@@ -75,6 +75,10 @@
         font-size: 0.75rem;
         margin-bottom: -0.375rem;
 
+        @media only screen and (max-width: 768px) { 
+            padding-top: 1rem;
+        }   
+
         &.is-inline-flex {
             flex-wrap: wrap;
             justify-content: flex-start;   

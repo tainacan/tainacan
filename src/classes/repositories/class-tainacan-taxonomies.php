@@ -65,6 +65,15 @@ class Taxonomies extends Repository {
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 				'default'     => 'yes'
 			],
+			'enabled_post_types'    => [
+				'map'         => 'meta_multi',
+				'title'       => __( 'Enabled for post types', 'tainacan' ),
+				'type'        => 'array/string',
+				'description' => __( 'Also enable this taxonomy for other WordPress post types', 'tainacan' ),
+				'on_error'    => __( 'Error enabling this taxonomy for post types', 'tainacan' ),
+				'validation'  => '',
+				'default'	  => []
+			],
 			'collections_ids' => [
 				'map'         => 'meta_multi',
 				'title'       => __( 'Collections', 'tainacan' ),
@@ -251,7 +260,9 @@ class Taxonomies extends Repository {
 			return $deleted;
 		}
 
-		$this->logs_repository->insert_log( $deleted, [], false, true );
+		if($this->use_logs){
+			$this->logs_repository->insert_log( $deleted, [], false, true );
+		}
 
 		do_action( 'tainacan-deleted', $deleted );
 
@@ -270,7 +281,9 @@ class Taxonomies extends Repository {
 			return $trashed;
 		}
 
-		$this->logs_repository->insert_log( $trashed, [], false, false, true );
+		if($this->use_logs){
+			$this->logs_repository->insert_log( $trashed, [], false, false, true );
+		}
 
 		do_action( 'tainacan-trashed', $trashed );
 
@@ -344,6 +357,18 @@ class Taxonomies extends Repository {
 	public function get_db_identifier_by_id($id) {
 		$prefix = Entities\Taxonomy::$db_identifier_prefix;
 		return $prefix . $id;
+	}
+	
+	public function get_id_by_db_identifier( $db_identifier ) {
+		$prefix = \Tainacan\Entities\Taxonomy::$db_identifier_prefix;
+		//$sufix  = \Tainacan\Entities\Taxonomy::$db_identifier_sufix;
+		$id     = str_replace( $prefix, '', $db_identifier );
+		//$id     = str_replace( $sufix, '', $id );
+		if ( is_numeric( $id ) ) {
+			return (int) $id;
+		}
+
+		return false;
 	}
 	
 	/**

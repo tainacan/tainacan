@@ -717,6 +717,12 @@ class Exporter extends CommunImportExport {
 		];
 	}
 
+	/**
+	* Append content to a file. Create the file if it does not exist 
+	* 
+	* @param string $key The file identifier. (it is the name of the file, with extension, and will be prefixed with the process ID)
+	* @param string $data The content to be appended to the file
+	*/
 	public function	append_to_file($key, $data) {
 		if ( array_key_exists ( $key , $this->output_files ) ) {
 			$fp = fopen($this->output_files[$key]['filename'], 'a');

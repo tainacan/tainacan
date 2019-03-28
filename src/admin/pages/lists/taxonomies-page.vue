@@ -6,6 +6,8 @@
             <div 
                     class="sub-header" 
                     v-if="$userCaps.hasCapability('edit_tainacan-taxonomies')">
+
+                <!-- New Taxonomy Button ----  -->
                 <div class="header-item">
                     <router-link
                             id="button-create-taxonomy" 
@@ -15,6 +17,40 @@
                         {{ $i18n.getFrom('taxonomies', 'new_item') }}
                     </router-link>
                 </div>
+
+                <!-- Sorting options ----  -->
+                <b-field class="header-item">
+                    <label class="label">{{ $i18n.get('label_sorting') + ':' }}</label>
+                    <b-select
+                            class="sorting-select"
+                            :disabled="taxonomies.length <= 0"
+                            @input="onChangeOrderBy($event)"
+                            :value="orderBy"
+                            :label="$i18n.get('label_sorting')">
+                        <option
+                                v-for="(option, index) in sortingOptions"
+                                :value="option.value"
+                                :key="index">
+                            {{ option.label }}
+                        </option>
+                    </b-select>
+                    <button
+                            :disabled="taxonomies.length <= 0 || isLoading || order == 'asc'"
+                            class="button is-white is-small"
+                            @click="onChangeOrder('asc')">
+                        <span class="icon gray-icon is-small">
+                            <i class="tainacan-icon tainacan-icon-sortascending tainacan-icon-20px"/>
+                        </span>
+                    </button>
+                    <button
+                            :disabled="taxonomies.length <= 0 || isLoading || order == 'desc'"
+                            class="button is-white is-small"
+                            @click="onChangeOrder('desc')">
+                        <span class="icon gray-icon is-small">
+                            <i class="tainacan-icon tainacan-icon-sortdescending tainacan-icon-20px"/>
+                        </span>
+                    </button>
+                </b-field>
             </div>
 
             <div class="above-subheader">
@@ -128,7 +164,13 @@
                 total: 0,
                 page: 1,
                 taxonomiesPerPage: 12,
-                status: ''
+                status: '',
+                order: 'asc',
+                ordeBy: 'date',
+                sortingOptions: [
+                    { label: this.$i18n.get('label_name'), value: 'title' },
+                    { label: this.$i18n.get('label_creation_date'), value: 'date' },
+                ]
             }
         },
         components: {
@@ -144,6 +186,33 @@
             ]),
             onChangeTab(status) {
                 this.status = status;
+                this.load();
+            },
+            onChangeOrder(newOrder) {
+                if (newOrder != this.order) { 
+                    this.$userPrefs.set('taxonomies_order', newOrder)
+                        .then((newOrder) => {
+                            this.order = newOrder;
+                        })
+                        .catch(() => {
+                            this.$console.log("Error settings user prefs for taxonomies order")
+                        });
+
+                }
+                this.order = newOrder;
+                this.load();
+            },
+            onChangeOrderBy(newOrderBy) {
+                if (newOrderBy != this.orderBy) { 
+                    this.$userPrefs.set('taxonomies_order_by', newOrderBy)
+                        .then((newOrderBy) => {
+                            this.orderBy = newOrderBy;
+                        })
+                        .catch(() => {
+                            this.$console.log("Error settings user prefs for taxonomies orderby")
+                        });
+                }
+                this.orderBy = newOrderBy;
                 this.load();
             },
             onChangePerPage(value) {
@@ -167,7 +236,13 @@
             load() {
                 this.isLoading = true;
 
-                this.fetch({ 'page': this.page, 'taxonomiesPerPage': this.taxonomiesPerPage, 'status': this.status })
+                this.fetch({ 
+                    page: this.page, 
+                    taxonomiesPerPage: this.taxonomiesPerPage, 
+                    status: this.status, 
+                    order: this.order,
+                    orderby: this.orderBy
+                })
                     .then((res) => {
                         this.isLoading = false;
                         this.total = res.total;
@@ -195,10 +270,24 @@
         mounted(){
             if (this.taxonomiesPerPage != this.$userPrefs.get('taxonomies_per_page'))
                 this.taxonomiesPerPage = this.$userPrefs.get('taxonomies_per_page');
-
             if (!this.taxonomiesPerPage) {
                 this.taxonomiesPerPage = 12;
                 this.$userPrefs.set('taxonomies_per_page', 12);
+            }
+
+            if (this.order != this.$userPrefs.get('taxonomies_order'))
+                this.order = this.$userPrefs.get('taxonomies_order');
+            if (!this.order) {
+                this.order = 'asc';
+                this.$userPrefs.set('taxonomies_order', 'asc');
+            }
+
+
+            if (this.orderBy != this.$userPrefs.get('taxonomies_order_by'))
+                this.orderBy = this.$userPrefs.get('taxonomies_order_by');
+            if (!this.orderBy) {
+                this.orderBy = 'date';
+                this.$userPrefs.set('taxonomies_order_by', 'date');
             }
             
             this.load();
@@ -215,10 +304,22 @@
         padding-left: 0;
         padding-right: 0;
         border-bottom: 1px solid #ddd;
+        display: inline-flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
 
-        .header-item {
-            display: inline-block;
-            padding-right: 8em;
+        .header-item:not(:last-child) {
+            padding-right: 0.5em;
+        }
+
+        .header-item .button .icon i{
+            width: 100%;
+        } 
+        .header-item .label{
+            font-weight: normal;
+            font-size: 0.875rem;
+            margin-top: 3px;
         }
 
         @media screen and (max-width: 769px) {
@@ -226,8 +327,8 @@
             margin-top: -0.5em;
             padding-top: 0.9em;
 
-            .header-item {
-                padding-right: 0.5em;
+            .header-item:not(:last-child) {
+                padding-right: 0.2em;
             }
         }
     }

@@ -174,7 +174,7 @@ class Taxonomies extends TAINACAN_UnitTestCase {
 		// testing passing taxonomy object 
 		$this->assertTrue( $Tainacan_Terms->term_exists('Rock', $taxonomy) );
 		
-		// testing passing ID
+		// testing passing taxonomy ID
 		$this->assertTrue( $Tainacan_Terms->term_exists('Rock', $taxonomy->get_id()) );
 		
 		// testing via Taxonomy object
@@ -188,6 +188,20 @@ class Taxonomies extends TAINACAN_UnitTestCase {
 		$this->assertTrue( $Tainacan_Terms->term_exists('Child', $taxonomy->get_db_identifier()) ); // parent null
 		$this->assertFalse( $Tainacan_Terms->term_exists('Child', $taxonomy->get_db_identifier(), 0) ); // parent 0
 		$this->assertTrue( $Tainacan_Terms->term_exists('Child', $taxonomy->get_db_identifier(), $parent->get_id()) ); // parent 
+		
+		// test with ID 
+		$this->assertTrue( $Tainacan_Terms->term_exists($term->get_id(), $taxonomy->get_id()) );
+		
+		// test get term 
+		$test_term = $Tainacan_Terms->term_exists($term->get_id(), $taxonomy->get_id(), null, true);
+		$this->assertEquals($term->get_id(), $test_term->term_id);
+		
+		$test_term = $Tainacan_Terms->term_exists('Rock', $taxonomy->get_id(), null, true);
+		$this->assertEquals($term->get_id(), $test_term->term_id);
+		
+		$test_term = $Tainacan_Terms->term_exists('Parent', $taxonomy->get_id(), null, true);
+		$this->assertEquals($parent->get_id(), $test_term->term_id);
+		
 		
 	}
 	
@@ -252,4 +266,28 @@ class Taxonomies extends TAINACAN_UnitTestCase {
 		
 		
 	}
+    
+    /**
+    * @group enabled 
+    */
+    function test_enabled_post_types(){
+        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+        $Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
+
+	    $taxonomy = $this->tainacan_entity_factory->create_entity(
+		    'taxonomy',
+		    array(
+			    'name' => 'genero',
+                'enabled_post_types' => ['post']
+		    ),
+		    true
+	    );
+
+        $taxonomy = $Tainacan_Taxonomies->insert($taxonomy);
+        
+	    $pto = get_object_taxonomies('post');
+	    $pages = get_object_taxonomies('page');
+        $this->assertContains($taxonomy->get_db_identifier(), $pto);
+        $this->assertNotContains($taxonomy->get_db_identifier(), $pages);
+    }
 }

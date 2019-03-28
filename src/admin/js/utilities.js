@@ -91,6 +91,28 @@ I18NPlugin.install = function (Vue, options = {}) {
             let string = tainacan_plugin.i18n['helpers_label'][entity][key].description;
             return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n helper object. ";
         },
+
+        /**
+         * Parsed strings created with variables according to WordPress Logic.
+         * Check https://developer.wordpress.org/themes/functionality/internationalization/#variables
+         * An example: ('This sentence has %s letters', [nLetters]) 
+         * or ('This one has %1$s letters and %2$s words', [nLetters, nWords]). 
+         */
+        getWithVariables(key, variables) { // TRY WITH regex: \%((\d)\$)*s 
+            let rawString = tainacan_plugin.i18n[key];
+            if (rawString != undefined && rawString != null && rawString != '' ) {
+                let splits = rawString.match(/\%((\d)\$)*s/gm); // An array with all the %s, %1$s, %2$s, etc
+                let parsedString = '';
+                
+                for (let i = 0; i < splits.length; i++) {
+                    parsedString += rawString.split(splits[i]).join(variables[i]);
+                }
+                return parsedString;
+
+            } else {
+                "Invalid i18n key: " + tainacan_plugin.i18n[key];
+            }
+        }
     }
 
 };
@@ -114,7 +136,11 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
             'view_mode': undefined,
             'admin_view_mode': 'cards',
             'fetch_only': 'thumbnail,creation_date,author_name',
-            'fetch_only_meta': ''
+            'fetch_only_meta': '',
+            'taxonomies_order': 'desc',
+            'taxonomies_order_by': 'date',
+            'collections_order': 'desc',
+            'collections_order_by': 'date'
         },
         init() {
             if (tainacan_plugin.user_prefs == undefined || tainacan_plugin.user_prefs == '') {

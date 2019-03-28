@@ -20,7 +20,7 @@ class Core_Title extends Metadata_Type {
         $this->set_related_mapped_prop('title');
         $this->set_component('tainacan-text');
         $this->set_name( __('Core Description', 'tainacan') );
-        $this->set_description( __('The fixed "Title" metadatum automatically created to all collection. This is the default title displayed in items lists and where basic search features will look', 'tainacan') );
+        $this->set_description( __('The "Core Title" is a compulsory metadata automatically created for all collections by default. It is the main metadatum of the item and where the basic research tools will do their searches.', 'tainacan') );
     }
 
     /**
@@ -45,7 +45,7 @@ class Core_Title extends Metadata_Type {
     }
     
     /**
-     * Title core Metadatum type is stored as the item title
+     * Core title metadatum type is stored as the item title
      *
      * Lets validate it as the item title
      *

@@ -87,9 +87,12 @@
                     </span>
                 </div>
                 <p>{{ $i18n.get('info_other_item_listing_options') }}</p>
-                <div class="exposer-types-list">
+                <div 
+                        role="list"
+                        class="exposer-types-list">
                     <div
                             class="exposer-type"
+                            role="listitem"
                             v-for="(exposerType, index ) in availableExposers"
                             :key="index"
                             @click="siteLinkCopied = false; selectExposer(exposerType)">
@@ -101,10 +104,12 @@
             
             <div 
                     v-if="selectedExposer != undefined"
-                    class="exposer-item-container">
+                    class="exposer-item-container"
+                    role="list">
                 <b-field 
                         :addons="false"
                         class="exposer-item"
+                        role="listitem"
                         v-for="(exposerMapper, index) in selectedExposerMappers"
                         :key="index">
                     <span 
@@ -131,9 +136,11 @@
                     </span>
                     <transition name="filter-item">
                         <div 
+                                role="list"
                                 class="exposer-item-links-list"
                                 v-show="!exposerMapper.collapsed">    
                             <div
+                                    role="listitem"
                                     :key="pagedLink"
                                     v-for="pagedLink in totalPages"
                                     class="exposer-item-link">
@@ -292,14 +299,17 @@ export default {
         availableExposers() {
             let exposers = this.getAvailableExposers();
 
-            exposers.unshift({
-                accept_no_mapper: true,
-                class_name: 'API',
-                mappers: [],
-                name: this.$i18n.get('label_tainacan_api'),
-                description: this.$i18n.get('info_tainacan_api'),
-                slug: 'tainacan-api'   
-            });
+            let tainacanApiExposerIndex = exposers.findIndex((aExposer) => aExposer.slug == 'tainacan-api');
+            if (tainacanApiExposerIndex < 0) {
+                exposers.unshift({
+                    accept_no_mapper: true,
+                    class_name: 'API',
+                    mappers: [],
+                    name: this.$i18n.get('label_tainacan_api'),
+                    description: this.$i18n.get('info_tainacan_api'),
+                    slug: 'tainacan-api'   
+                });
+            }
             return exposers;
         }
     },
@@ -409,7 +419,7 @@ export default {
                 this.isLoading = false;
             });
 
-        if (!this.collectionId != undefined) {
+        if (this.collectionId != undefined) {
             this.fetchCollectionNameAndURL(this.collectionId);
         }
     }

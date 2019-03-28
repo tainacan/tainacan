@@ -31,6 +31,7 @@
                         formHooks['metadatum']['begin-left'] != undefined">  
                 <form 
                     id="form-metadatum-begin-left"
+                    class="form-hook-region"
                     v-html="formHooks['metadatum']['begin-left'].join('')"/>
             </template>
 
@@ -223,6 +224,7 @@
                         formHooks['metadatum']['end-left'] != undefined">  
                 <form 
                     id="form-metadatum-end-left"
+                    class="form-hook-region"
                     v-html="formHooks['metadatum']['end-left'].join('')"/>
             </template>
         </div>
@@ -392,25 +394,25 @@
         border-top: 1px solid $gray2;
         border-bottom: 1px solid $gray2;
         margin-top: 1.0em;
+    }
+    form#metadatumEditForm .options-columns {
+        -moz-column-count: 2;
+        -moz-column-gap: 0;
+        -moz-column-rule: none;
+        -webkit-column-count: 2;
+        -webkit-column-gap: 0;
+        -webkit-column-rule: none;
+        column-count: 2;
+        column-gap: 4rem;
+        column-rule: none;
+        padding-bottom: 1.5rem;
 
-        .options-columns {
-            -moz-column-count: 2;
-            -moz-column-gap: 0;
-            -moz-column-rule: none;
-            -webkit-column-count: 2;
-            -webkit-column-gap: 0;
-            -webkit-column-rule: none;
-            column-count: 2;
-            column-gap: 4rem;
-            column-rule: none;
-            padding-bottom: 1.5rem;
-
-            &>.field, &>section {
-                -webkit-column-break-inside: avoid;
-                page-break-inside: avoid;
-                break-inside: avoid;
-            }
+        &>.field, &>section {
+            -webkit-column-break-inside: avoid;
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
+        
     }
 
 </style>

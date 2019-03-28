@@ -111,7 +111,7 @@ class Items extends Repository {
 		        'map'         => 'comment_status',
 		        'title'       => __( 'Comment Status', 'tainacan' ),
 		        'type'        => 'string',
-		        'description' => __( 'The status of item comment, if is "open" the comments are allowed to item, or is "closed" for deny comments to item.', 'tainacan' ),
+		        'description' => __( 'Item comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
 		        'default'     => get_default_comment_status(Entities\Collection::get_post_type()),
 		        'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
 		    ]
@@ -313,7 +313,7 @@ class Items extends Repository {
 	public function delete( $item_id ) {
 		$deleted = new Entities\Item( wp_delete_post( $item_id, true ) );
 
-		if ( $deleted ) {
+		if ( $deleted && $this->use_logs) {
 			$this->logs_repository->insert_log( $deleted, [], false, true );
 
 			do_action( 'tainacan-deleted', $deleted );
@@ -330,7 +330,7 @@ class Items extends Repository {
 	public function trash( $item_id ) {
 		$trashed = new Entities\Item( wp_trash_post( $item_id ) );
 
-		if ( $trashed ) {
+		if ( $trashed && $this->use_logs) {
 			$this->logs_repository->insert_log( $trashed, [], false, false, true );
 
 			do_action( 'tainacan-trashed', $trashed );

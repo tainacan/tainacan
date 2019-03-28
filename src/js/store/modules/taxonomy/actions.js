@@ -45,12 +45,15 @@ export const updateTaxonomy = ({ commit }, taxonomy) => {
     });
 };
 
-export const fetch = ({ commit }, { page, taxonomiesPerPage, status } ) => {
+export const fetch = ({ commit }, { page, taxonomiesPerPage, status, order, orderby } ) => {
     return new Promise((resolve, reject) => {
         let endpoint = `/taxonomies?paged=${page}&perpage=${taxonomiesPerPage}&context=edit`;
 
         if (status != undefined && status != '')
             endpoint = endpoint + '&status=' + status;
+        
+        if (order != undefined && order != '' && orderby != undefined && orderby != '')
+            endpoint = endpoint + '&order=' + order + '&orderby=' + orderby;
 
         axios.tainacan.get(endpoint)
             .then(res => {
@@ -110,13 +113,14 @@ export const fetchTaxonomyName = ({ commit }, taxonomyId) => {
 };
 
 // TAXONOMY TERMS
-export const sendTerm = ({commit}, { taxonomyId, name, description, parent, headerImageId }) => {
+export const sendTerm = ({commit}, { taxonomyId, name, description, parent, headerImageId, headerImage }) => {
     return new Promise(( resolve, reject ) => {
         axios.tainacan.post('/taxonomy/' + taxonomyId + '/terms/', {
             name: name,
             description: description,
             parent: parent,
             header_image_id: headerImageId,
+            header_image: headerImage
         })
             .then( res => {
                 let term = res.data;
@@ -143,13 +147,15 @@ export const deleteTerm = ({ commit }, { taxonomyId, termId }) => {
     });
 };
 
-export const updateTerm = ({ commit }, { taxonomyId, termId, name, description, parent, headerImageId }) => {
+export const updateTerm = ({ commit }, { taxonomyId, id, name, description, parent, headerImageId, headerImage }) => {
+
     return new Promise(( resolve, reject ) => {
-        axios.tainacan.patch(`/taxonomy/${taxonomyId}/terms/${termId}`, {
+        axios.tainacan.patch(`/taxonomy/${taxonomyId}/terms/${id}`, {
             name: name,
             description: description,
             parent: parent,
             header_image_id: headerImageId,
+            header_image: headerImage,
         })
             .then( res => {
                 let term = res.data;
@@ -248,7 +254,7 @@ export const sendChildTerm = ({ commit }, { taxonomyId, term }) => {
 
 export const updateChildTerm = ({ commit }, { taxonomyId, term }) => {
     return new Promise(( resolve, reject ) => {
-        axios.tainacan.patch(`/taxonomy/${taxonomyId}/terms/${term.term_id}`, term)
+        axios.tainacan.patch(`/taxonomy/${taxonomyId}/terms/${term.id}`, term)
             .then( res => {
                 let updatedTerm = res.data;
                 commit('updateChildTerm', { term: updatedTerm, parent: updatedTerm.parent, oldParent: term.parent });

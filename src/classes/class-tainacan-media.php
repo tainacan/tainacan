@@ -34,7 +34,7 @@ class Media {
 
 		$http = new \WP_Http();
 		
-		$response = $http->request( $url );
+		$response = $http->request( $url, ['sslverify' => false] );
 		
 		if( !is_array($response) || !isset($response['response']) || $response['response']['code'] != 200 ) {
 			return false;

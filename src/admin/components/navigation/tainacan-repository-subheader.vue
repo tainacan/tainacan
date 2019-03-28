@@ -105,6 +105,14 @@ export default {
             return this.getCollectionURL();
         }
     },
+    watch: {
+        '$route'  (to, from) {
+            if (!this.isRepositoryLevel && from.path != undefined && to.path != from.path) {
+                this.collectionId = this.$route.params.collectionId;
+                this.fetchCollectionNameAndURL(this.collectionId);
+            }
+        }
+    },
     methods: {
         ...mapActions('collection', [
             'fetchCollectionNameAndURL'
@@ -114,6 +122,7 @@ export default {
             'getCollectionURL'
         ]),
         openAvailableExportersModal(){
+
             this.$modal.open({
                 parent: this,
                 component: AvailableExportersModal,
@@ -123,12 +132,6 @@ export default {
                     hideWhenManualCollection: true
                 }
             });
-        }
-    },
-    mounted() {
-        if (!this.isRepositoryLevel) {
-            this.collectionId = this.$route.params.collectionId;
-            this.fetchCollectionNameAndURL(this.collectionId);
         }
     }
 }
@@ -180,7 +183,7 @@ export default {
         h1 {
             font-size: 1.125rem;
             color: white;
-            line-height: 1.125rem;
+            line-height: 1.4rem;
             max-width: 100%;
             text-overflow: ellipsis;
             white-space: nowrap;

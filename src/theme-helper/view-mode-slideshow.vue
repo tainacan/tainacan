@@ -82,7 +82,9 @@
                     v-if="metadatum.value_as_html != undefined && metadatum.value_as_html != ''"
                     :key="index"
                     class="field">
-                <b-collapse :open="!collapseAll">
+                <b-collapse 
+                        aria-id="metadata-collapse-for-slideshow"
+                        :open="!collapseAll">
                     <label
                             class="label has-text-white"
                             slot="trigger"
@@ -139,9 +141,7 @@
                     </button>
                     <div     
                             class="slide-main-content">
-                    <!-- <div <IF WE USE HAMMER JS>
-                            class="slide-main-content"
-                            v-hammer:swipe.prevent="onSwipeFiltersMenu"> -->
+
                         <transition 
                                 mode="out-in"
                                 :name="goingRight ? 'slide-right' : 'slide-left'" >
@@ -557,7 +557,7 @@ export default {
                     this.$nextTick(() => this.isLoadingItem = false);
                 } else {
                     // Loads current item
-                    this.fetchItem(this.slideItems[this.slideIndex].id)
+                    this.fetchItem({ itemId: this.slideItems[this.slideIndex].id, contextEdit: true })
                         .then(() => {
                             this.isLoadingItem = false;
                         })
@@ -585,8 +585,6 @@ export default {
 
             if (!metadata) {
                 return '';
-            } else if (metadata.date_i18n) {
-                return metadata.date_i18n;
             } else {
                 return metadata.value_as_html;
             }
@@ -626,7 +624,7 @@ export default {
     $gray1: #f2f2f2; 
     $gray2: #e5e5e5;
     $gray3: #dcdcdc;
-    $gray4: #898d8f;
+    $gray4: #555758;
     $gray5: #454647; 
     $page-small-side-padding: 25px;
     $page-side-padding: 4.166666667%; 

@@ -10,7 +10,7 @@
                 label-width="120px">
         
             <div class="columns">
-                <div class="column is-4">
+                <div class="column is-5">
 
                     <!-- Name -------------------------------- --> 
                     <b-field 
@@ -34,7 +34,8 @@
                             v-if="formHooks != undefined && 
                                 formHooks['collection'] != undefined &&
                                 formHooks['collection']['begin-left'] != undefined">  
-                        <form 
+                        <form
+                            class="form-hook-region" 
                             id="form-collection-begin-left"
                             v-html="this.formHooks['collection']['begin-left'].join('')"/>
                     </template>
@@ -172,7 +173,8 @@
                                     class="two-columns-dropdown"
                                     ref="enabledViewModesDropdown"
                                     :mobile-modal="true"
-                                    :disabled="Object.keys(registeredViewModes).length < 0">
+                                    :disabled="Object.keys(registeredViewModes).length < 0"
+                                    aria-role="list">
                                 <button
                                         class="button is-white"
                                         slot="trigger"
@@ -187,7 +189,8 @@
                                         v-for="(viewMode, index) in Object.keys(registeredViewModes)"
                                         :key="index"
                                         class="control"
-                                        custom>
+                                        custom
+                                        aria-role="listitem">
                                     <b-checkbox
                                             v-if="registeredViewModes[viewMode] != undefined"
                                             @input="updateViewModeslist(viewMode)"
@@ -245,11 +248,11 @@
                         <form
                             ref="form-collection-end-left" 
                             id="form-collection-end-left"
+                            class="form-hook-region"
                             v-html="formHooks['collection']['end-left'].join('')"/>
                     </template>
 
                 </div>
-                <div class="column is-1" />
                 <div class="column">
 
                     <!-- Status -------------------------------- --> 
@@ -319,6 +322,7 @@
                                 formHooks['collection']['begin-right'] != undefined">  
                         <form 
                             id="form-collection-begin-right"
+                            class="form-hook-region"
                             v-html="formHooks['collection']['begin-right'].join('')"/>
                     </template>
 
@@ -430,6 +434,7 @@
                                 formHooks['collection']['end-right'] != undefined">  
                         <form 
                             id="form-collection-end-right"
+                            class="form-hook-region"
                             v-html="formHooks['collection']['end-right'].join('')"/>
                     </template>
                 </div>
@@ -690,10 +695,10 @@ export default {
                 // Generates options for parent collection
                 this.isFetchingCollections = true;
                 this.fetchCollectionsForParent()
-                .then((collections) => {
-                    this.collections = collections;
-                    this.isFetchingCollections = false;
-                })
+                    .then((collections) => {
+                        this.collections = collections;
+                        this.isFetchingCollections = false;
+                    })
                 .catch((error) => {
                     this.$console.error(error);
                     this.isFetchingCollections = false;
@@ -801,12 +806,14 @@ export default {
                         frame_button: this.$i18n.get('label_select_file'),
                     },
                     relatedPostId: this.collectionId,
-                    onSave: (mediaId) => {
-                        this.updateThumbnail({collectionId: this.collectionId, thumbnailId: mediaId})
-                        .then((res) => {
-                            this.collection.thumbnail = res.thumbnail;
+                    onSave: (media) => {
+                        this.updateThumbnail({
+                            collectionId: this.collectionId, thumbnailId: media.id
                         })
-                        .catch(error => this.$console.error(error));
+                            .then((res) => {
+                                this.collection.thumbnail = res.thumbnail;
+                            })
+                            .catch(error => this.$console.error(error));
                     }
                 }
             );
@@ -931,9 +938,10 @@ export default {
 
     @import "../../scss/_variables.scss";
 
-    .column {
-        padding-left: 0;
-        padding-right: 0;
+    @media screen and (max-width: 1024px) {
+        .column:last-of-type {
+            padding-left: $page-side-padding !important;
+        }
     }
 
     .field {

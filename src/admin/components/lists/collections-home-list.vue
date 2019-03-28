@@ -121,20 +121,6 @@
                         class="tainacan-card">       
                     <ul class="menu-list">
                         <li>
-                            <a 
-                                    :href="collection.url"
-                                    target="_blank" 
-                                    :aria-label="$i18n.get('label_view_collection')">
-                                <b-tooltip 
-                                        :label="$i18n.get('label_view_collection')"
-                                        position="is-bottom">
-                                    <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
-                                    </span>
-                                </b-tooltip>
-                            </a>
-                        </li>
-                        <li>
                             <router-link 
                                     tag="a" 
                                     :to="{ path: $routerHelper.getCollectionItemsPath(collection.id, '') }" 
@@ -149,7 +135,7 @@
                                 <!-- <span class="menu-text">{{ $i18n.get('items') }}</span> -->
                             </router-link>
                         </li>
-                        <li>
+                        <li v-if="collection.current_user_can_edit">
                             <router-link
                                     tag="a" 
                                     :to="{ path: $routerHelper.getCollectionEditPath(collection.id) }" 
@@ -209,6 +195,20 @@
                                 </b-tooltip>
                                 <!-- <span class="menu-text">{{ $i18n.get('activities') }}</span> -->
                             </router-link> 
+                        </li>
+                        <li>
+                            <a 
+                                    :href="collection.url"
+                                    target="_blank" 
+                                    :aria-label="$i18n.get('label_view_collection')">
+                                <b-tooltip 
+                                        :label="$i18n.get('label_view_collection')"
+                                        position="is-bottom">
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+                                    </span>
+                                </b-tooltip>
+                            </a>
                         </li>
                     </ul>
                     <router-link

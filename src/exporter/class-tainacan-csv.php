@@ -24,7 +24,6 @@ class CSV extends Exporter {
 
 	public function process_item( $item, $metadata ) {
 		
-		$mapper = $this->get_current_mapper();
 		$line = [];
 		
 		$line[] = $item->get_id();
@@ -33,7 +32,9 @@ class CSV extends Exporter {
 		
 		foreach ($metadata as $meta_key => $meta) {
 			
-			if (!$meta) {
+			// if (!$meta) means this metadata is not mapped in the collection so there is no value for it 
+			// an empty value must be returned so the number of columns matches the header 
+			if (!$meta || empty($meta->get_value()) ) {
 				$line[] = '';
 				continue;
 			}

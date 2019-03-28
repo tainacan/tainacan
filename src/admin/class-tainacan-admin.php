@@ -42,6 +42,15 @@ class Admin {
 			array( &$this, 'admin_page' ),
 			plugin_dir_url( __FILE__ ) . 'images/tainacan_logo_symbol.svg'
 		);
+		
+		add_submenu_page( 
+			$this->menu_slug, 
+			__('System check', 'tainacan'), 
+			__('System check', 'tainacan'), 
+			'manage_options', 
+			'tainacan_systemcheck', 
+			array( &$this, 'systemcheck_page' ) 
+		);
 
 		add_action( 'load-' . $page_suffix, array( &$this, 'load_admin_page' ) );
 	}
@@ -213,6 +222,23 @@ class Admin {
 		
 		$settings['form_hooks'] = Admin_Hooks::get_instance()->get_registered_hooks();
 		
+		$wp_post_types = get_post_types(['show_ui' => true], 'objects');
+		if (isset($wp_post_types['attachment'])) {
+			unset($wp_post_types['attachment']);
+		}
+		
+		$wp_post_types = array_map(function($i) {
+			return [
+				'slug' => $i->name,
+				'label' => $i->label
+			];
+		}, $wp_post_types);
+		
+		$settings['wp_post_types'] = $wp_post_types;
+		
+		// add an alternative to enable select all items in all pages while we temporarly disable bulk edit for all (see #199)
+		$settings['enable_select_all_items_pages'] = defined('TAINACAN_ENABLE_SELECT_ALL_ITEMS_PAGES') ? TAINACAN_ENABLE_SELECT_ALL_ITEMS_PAGES : false; 
+		
 		return $settings;
 		
 	}
@@ -308,6 +334,12 @@ class Admin {
 		echo json_encode($permalink);
 
 		wp_die();
+	}
+	
+	public function systemcheck_page() {
+		require_once('system-check/class-tainacan-system-check.php');
+		$check = new System_Check();
+		$check->admin_page();
 	}
 
 }

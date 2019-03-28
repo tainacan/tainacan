@@ -1,5 +1,8 @@
 // These tooltips are customized versions of V-Tooltip 
 // Tooltips:
+.b-tooltip::after {
+    box-shadow: none;
+}
 .tooltip {
     z-index: 999999999;
     display: block !important;
@@ -88,5 +91,74 @@
         visibility: visible;
         opacity: 1;
         transition: opacity .15s;
+    }
+
+    // Metadata type Preview tooltips
+    &.metadata-type-preview-tooltip[x-placement^="bottom"] {
+        top: -19px !important;
+    }
+    &.metadata-type-preview-tooltip[x-placement^="bottom"] .tooltip-inner {
+        max-height: initial !important;
+    }
+    &.metadata-type-preview-tooltip[x-placement^="bottom"] .tooltip-arrow {
+            border-width: 8px 10px 0px 10px !important;
+            border-left-color: transparent !important;
+            border-right-color: transparent !important;
+            border-bottom-color: transparent !important;
+            border-top-color: $turquoise1 !important;
+            top: initial !important;
+            bottom: -5px !important;
+    }
+    .metadata-type-preview {
+        background: $turquoise1;
+        padding: 0px 8px;
+        border-radius: 3px;
+        width: 200px;
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        cursor: none;
+        flex-wrap: wrap;
+
+        .metadata-type-label {
+            font-weight: 600;
+            color: $turquoise4;
+            width: 100%;
+            font-size: 1rem;
+            margin-bottom: 6px;
+            margin-left: -18px;
+        }
+
+        input, select, textarea, 
+        .input, .tags, .tag  {
+            pointer-events: none;
+            cursor: none;
+            background-color: rgba(255,255,255,0.60) !important;
+        }
+        .autocomplete>.control, .autocomplete>.control>input, .dropdown-content {
+            background-color: #f7fcfd !important;
+        }
+        .taginput {
+            margin-bottom: 100px;
+        }
+        input[type="checkbox"]:checked + .check  {
+            background: rgba(255,255,255,0.60) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3Cpath style='fill:rgb(69,70,71)' d='M 0.04038059,0.6267767 0.14644661,0.52071068 0.42928932,0.80355339 0.3232233,0.90961941 z M 0.21715729,0.80355339 0.85355339,0.16715729 0.95961941,0.2732233 0.3232233,0.90961941 z'%3E%3C/path%3E%3C/svg%3E") no-repeat center center !important
+        }
+        textarea {
+            min-height: 70px;
+        }
+        .field {
+            width: 100%;
+            .label { 
+                color: $gray4;
+            }
+        }
+        .add-new-term {
+            font-size: 0.75rem;
+            text-decoration: underline;
+            margin: 0.875rem 1.5rem;
+        }
     }
 }

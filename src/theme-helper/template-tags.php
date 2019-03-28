@@ -203,7 +203,7 @@ function tainacan_the_faceted_search() {
 	$props .= 'default-view-mode="' . $default_view_mode . '" ';
 	$props .= 'enabled-view-modes="' . implode(',', $enabled_view_modes) . '" ';
 
-	echo "<div id='tainacan-items-page' $props ></div>";
+	echo "<main id='tainacan-items-page' $props ></main>";
 	
 }
 
@@ -378,6 +378,9 @@ function tainacan_get_initials($string, $one = false) {
 	if (empty($string)) {
 		return '';
 	}
+	
+	$string = remove_accents($string);
+	
 	if (strlen($string) == 1) {
 		return strtoupper($string);
 	}

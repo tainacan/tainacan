@@ -38,17 +38,22 @@ class Item_Metadata extends Repository {
 		}
 
 		$is_update = true;
-		$old = get_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), true );
+		
 		$new = $item_metadata->get_value();
 
-		if($old != $new) {
-			$diffs['value'] = [
-				'new'             => $new,
-				'old'             => $old,
-				'diff_with_index' => [],
-			];
-		} else {
-			$diffs['value'] = [];
+		$diffs = [];
+
+		if ($this->use_logs) {
+			$old = get_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), true );
+			if($old != $new) {
+				$diffs['value'] = [
+					'new'             => $new,
+					'old'             => $old,
+					'diff_with_index' => [],
+				];
+			} else {
+				$diffs['value'] = [];
+			}
 		}
 
 		$unique = ! $item_metadata->is_multiple();
@@ -100,8 +105,10 @@ class Item_Metadata extends Repository {
 					}
 				}
 			}
-
-			$this->logs_repository->insert_log( $item_metadata, $diffs, $is_update );
+			
+			if ($this->use_logs) {
+				$this->logs_repository->insert_log( $item_metadata, $diffs, $is_update );
+			}
 
 			do_action( 'tainacan-insert', $item_metadata, $diffs, $is_update );
 			do_action( 'tainacan-insert-Item_Metadata_Entity', $item_metadata );
@@ -173,13 +180,15 @@ class Item_Metadata extends Repository {
 			$taxonomy  = new Entities\Taxonomy( $metadata_type->get_option( 'taxonomy_id' ) );
 
 			if ( $taxonomy ) {
-				$old = wp_get_object_terms(  $item_metadata->get_item()->get_id(), $taxonomy->get_db_identifier(), [
-					'fields' => 'names'
-				] );
+				if ( $this->use_logs  ) {
+					$old = wp_get_object_terms(  $item_metadata->get_item()->get_id(), $taxonomy->get_db_identifier(), [
+						'fields' => 'names'
+					] );
+				}
 
 				$success = wp_set_object_terms( $item_metadata->get_item()->get_id(), $new_terms, $taxonomy->get_db_identifier() );
 
-				if ( ! $success instanceof \WP_Error ) {
+				if ( $this->use_logs && ! $success instanceof \WP_Error ) {
 
 					$new = get_terms(array(
 						'taxonomy'   => $taxonomy->get_db_identifier(),
@@ -194,8 +203,10 @@ class Item_Metadata extends Repository {
 						'diff_with_index' => []
 					];
 
-					$this->logs_repository->insert_log( $item_metadata, $diffs, true );
-					//do_action( 'tainacan-insert', $item_metadata, $diffs, true );
+					if($this->use_logs){
+						$this->logs_repository->insert_log( $item_metadata, $diffs, true );
+						//do_action( 'tainacan-insert', $item_metadata, $diffs, true );
+					}
 				}
 			}
 		}

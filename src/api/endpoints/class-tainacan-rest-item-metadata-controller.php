@@ -100,6 +100,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 
 		if($request['context'] === 'edit'){
 			$item_arr['current_user_can_edit'] = $item->can_edit();
+			$item_arr['current_user_can_delete'] = $item->can_delete();
 		}
 
 		return $item_arr;

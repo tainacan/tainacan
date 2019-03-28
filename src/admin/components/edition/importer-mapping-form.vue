@@ -18,7 +18,7 @@
                         :to="$routerHelper.getAvailableImportersPath()">{{ $i18n.get('importers') }}</router-link> > 
                 <router-link 
                         tag="a" 
-                        :to="$routerHelper.getImporterPath(importerType, sessionId)">{{ importerType }}</router-link> >
+                        :to="$routerHelper.getImporterPath(importerType, sessionId)">{{ importerType != undefined ? (importerName != undefined ? importerName :importerType) : $i18n.get('title_importer_page') }}</router-link> >
                 <router-link 
                         tag="a" 
                         :to="$routerHelper.getImporterMappingPath(importerType, sessionId, collectionId)">{{ $i18n.get('label_metadata_mapping') }}</router-link> 
@@ -88,9 +88,6 @@
                                 class="tainacan-modal-content">
                             <div class="tainacan-modal-title">
                                 <h2>{{ $i18n.get('instruction_select_metadatum_type') }}</h2>
-                                <a 
-                                        class="back-link"
-                                        @click="onMetadatumEditionCanceled(); isNewMetadatumModalActive = false">{{ $i18n.get('exit') }}</a>
                                 <hr>
                             </div>
                             <section class="tainacan-form">
@@ -103,6 +100,16 @@
                                         <h4>{{ metadatumType.name }}</h4>           
                                     </div>
                                 </div>
+                                <div class="field is-grouped form-submit">
+                                    <div class="control">
+                                        <button
+                                                id="button-cancel-importer-edition"
+                                                class="button is-outlined"
+                                                type="button"
+                                                @click="onMetadatumEditionCanceled(); isNewMetadatumModalActive = false">
+                                            {{ $i18n.get('cancel') }}</button>
+                                    </div>
+                                </div>
                             </section>
                         </div>
                         <div 
@@ -110,6 +117,11 @@
                                 class="tainacan-modal-content">
                             <div class="tainacan-modal-title">
                                 <h2>{{ $i18n.get('instruction_configure_new_metadatum') }}</h2>
+                                <a 
+                                        class="back-link" 
+                                        @click="isEditingMetadatum = false">
+                                    {{ $i18n.get('back') }}
+                                </a>
                                 <hr>
                             </div>
                             <metadatum-edition-form
@@ -184,6 +196,7 @@ export default {
                 'total_items': Number
             },
             importerType: '',
+            importerName: '',
             importerSourceInfo: null,
             collections: [],
             collectionMetadata: [],
@@ -207,7 +220,7 @@ export default {
     },
     methods: {
         ...mapActions('importer', [
-            'fetchImporterTypes',
+            'fetchAvailableImporters',
             'fetchImporter',
             'sendImporter',
             'updateImporter',
@@ -218,9 +231,6 @@ export default {
             'updateImporterCollection',
             'runImporter',
             'fetchMappingImporter'
-        ]),
-        ...mapActions('collection', [
-            'fetchCollectionsForParent'
         ]),
         ...mapActions('bgprocess', [
             'fetchProcess'
@@ -403,6 +413,12 @@ export default {
         this.sessionId = this.$route.params.sessionId;
         this.collectionId = this.$route.params.collectionId;
         this.mappedCollection['id'] = this.collectionId;
+
+        // Set importer's name
+        this.fetchAvailableImporters().then((importerTypes) => {
+           if (importerTypes[this.importerType]) 
+            this.importerName = importerTypes[this.importerType].name;
+        });
 
         this.loadImporter();    
         this.loadMetadata();

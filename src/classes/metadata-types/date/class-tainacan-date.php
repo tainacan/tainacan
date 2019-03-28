@@ -19,6 +19,13 @@ class Date extends Metadata_Type {
         $this->set_component('tainacan-date');
         $this->set_name( __('Date', 'tainacan') );
         $this->set_description( __('Exact date type, with day, month and year.', 'tainacan') );
+        $this->set_preview_template('
+            <div>
+                <div class="control is-inline">
+                    <input type="text" placeholder="' . __('mm/dd/yyyy') . '" class="input"></input>
+                </div>
+            </div>
+        ');
     }
 
     /**
@@ -41,15 +48,32 @@ class Date extends Metadata_Type {
         if (is_array($value)) {
             foreach ($value as $date_value) {
                 $d = \DateTime::createFromFormat($format, $date_value);
-                if ( !($d && $d->format($format) === $date_value) ) {
+                if (!$d || $d->format($format) !== $date_value) {
+                    $this->add_error( 
+                        sprintf(
+                            __('Invalid date format. Expected format is YYYY-MM-DD, got %s.', 'tainacan'),
+                            $date_value
+                        )
+                    );
                     return false;
                 }
             }
             return True;
         }
-
+        
         $d = \DateTime::createFromFormat($format, $value);
-        return $d && $d->format($format) === $value;
+        
+        if (!$d || $d->format($format) !== $value) {
+            $this->add_error( 
+                sprintf(
+                    __('Invalid date format. Expected format is YYYY-MM-DD, got %s.', 'tainacan'),
+                    $value
+                )
+            );
+            return false;
+        }
+        return true;
+        
     }
 	
 	/**
@@ -68,14 +92,14 @@ class Date extends Metadata_Type {
 			$separator = $item_metadata->get_multivalue_separator();
 			foreach ( $value as $el ) {
 				$return .= $prefix;
-				$return .= date(get_option('date_format'), strtotime($el));
+				$return .= mysql2date(get_option('date_format'), ($el));
 				$return .= $suffix;
 				$count ++;
 				if ($count < $total)
 					$return .= $separator;
 			}
 		} else {
-			$return = date(get_option('date_format'), strtotime($value));
+			$return = mysql2date(get_option('date_format'), ($value));
 		}
 		return $return;
 		

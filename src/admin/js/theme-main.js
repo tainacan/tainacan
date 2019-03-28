@@ -2,7 +2,6 @@
 import Vue from 'vue';
 import Buefy from 'buefy';
 import VTooltip from 'v-tooltip';
-// import { VueHammer } from 'vue2-hammer';
 import VueMasonry from 'vue-masonry-css';
 
 // Custom elements
@@ -48,7 +47,6 @@ import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin } from '
 // Configure and Register Plugins
 Vue.use(Buefy);
 Vue.use(VTooltip);
-// Vue.use(VueHammer);
 Vue.use(VueMasonry);
 Vue.use(I18NPlugin);
 Vue.use(UserPrefsPlugin);
@@ -129,4 +127,23 @@ export const ThemeItemsListing =  new Vue({
 
     }
     
+});
+
+// Display Icons only once everything is loaded 
+function listen(evnt, elem, func) {
+    if (elem.addEventListener)  // W3C DOM
+        elem.addEventListener(evnt,func,false);
+    else if (elem.attachEvent) { // IE DOM
+         var r = elem.attachEvent("on"+evnt, func);
+         return r;
+    }
+    else {
+        jQuery('head').append('<style>.tainacan-icon{ opacity: 1 !important; }</style>');
+    }
+}
+listen("load", window, function() {
+    var iconsStyle = document.createElement("style");
+    iconsStyle.setAttribute('type', 'text/css');
+    iconsStyle.innerText = '.tainacan-icon{ opacity: 1 !important; }';
+    document.head.appendChild(iconsStyle);
 });

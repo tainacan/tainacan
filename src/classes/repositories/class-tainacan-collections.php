@@ -69,7 +69,7 @@ class Collections extends Repository {
 				'description' => __( 'The collection modification date', 'tainacan' )
 			],
 			'order'                      => [
-				'map'         => 'menu_order',
+				'map'         => 'order',
 				'title'       => __( 'Order', 'tainacan' ),
 				'type'        => 'string',
 				'description' => __( 'Collection order. This metadata is used if collections are manually ordered.', 'tainacan' ),
@@ -199,7 +199,7 @@ class Collections extends Repository {
 	            'map'         => 'comment_status',
 	            'title'       => __( 'Comment Status', 'tainacan' ),
 	            'type'        => 'string',
-	            'description' => __( 'The status of collection comment, if is "open" the comments are allowed, or is "closed" for deny comments.', 'tainacan' ),
+	            'description' => __( 'Collection comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
 		        'default'     => get_default_comment_status(Entities\Collection::get_post_type()),
 		        'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
 		    ],
@@ -207,7 +207,7 @@ class Collections extends Repository {
 		        'map'         => 'meta',
 		        'title'       => __( 'Allow Items Comments', 'tainacan' ),
 		        'type'        => 'string',
-		        'description' => __( 'Collection items comment is allowed, if is "open" the comments are allowed for collection items, or is "closed" for deny comments to items.', 'tainacan' ),
+		        'description' => __( 'Collection items comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
 		        'default'     => 'open',
 		        'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
 		    ]
@@ -302,7 +302,7 @@ class Collections extends Repository {
 	public function delete( $collection_id ) {
 		$deleted = new Entities\Collection( wp_delete_post( $collection_id, true ) );
 
-		if ( $deleted ) {
+		if ( $deleted && $this->use_logs) {
 			$this->logs_repository->insert_log( $deleted, [], false, true );
 
 			do_action( 'tainacan-deleted', $deleted );
@@ -319,7 +319,7 @@ class Collections extends Repository {
 	public function trash( $collection_id ) {
 		$trashed = new Entities\Collection( wp_trash_post( $collection_id ) );
 
-		if ( $trashed ) {
+		if ( $trashed && $this->use_logs) {
 			$this->logs_repository->insert_log( $trashed, [], false, false, true );
 
 			do_action( 'tainacan-trashed', $trashed );
@@ -414,7 +414,11 @@ class Collections extends Repository {
 
 		$Tainacan_Metadata->register_core_metadata( $collection );
 
-		if ( $this->old_collection instanceof Entities\Collection && $this->old_collection->get_parent() != $collection->get_parent() ) {
+		if ( $this->old_collection instanceof Entities\Collection && 
+			$this->old_collection->get_parent() != $collection->get_parent() &&
+			$this->old_core_title instanceof Entities\Metadatum &&
+			$this->old_core_description instanceof Entities\Metadatum 
+		) {
 			$Tainacan_Metadata->maybe_update_core_metadata_meta_keys( $collection, $this->old_collection, $this->old_core_title, $this->old_core_description );
 		}
 	}

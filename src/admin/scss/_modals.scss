@@ -2,6 +2,12 @@
 .modal .animation-content {
     width: 100%;
 }
+.modal .modal-close {
+    z-index: 99999;
+    @media only screen and (max-width: 768px) {
+        &:before, &:after { background-color: #298596; }
+    }
+}
 
 .tainacan-modal-title {
     display: flex;
@@ -13,6 +19,7 @@
     h1, h2 {
         font-size: 1.25rem;
         font-weight: normal;
+        font-weight: 500;
         color: $gray5;
         display: inline-block;
         width: 90%;
@@ -36,9 +43,11 @@
     background-color: white;
     padding: 40px 50px;
     position: relative;
-    max-height: 100vh;
+    max-height: 86%;
+    max-height: 86vh;
     overflow-y: auto;
-
+    overflow-x: hidden;
+    
     figure {
         margin: 0;
         text-align: center;
@@ -49,6 +58,11 @@
 
     .form-submit {
         padding: 40px 0em 0.4em 0em !important;
+    }
+
+    @media only screen and (max-width: 768px) {
+        max-height: 100%;
+        max-height: 100vh;
     }
 }
 // Bulma modals customized for Tainacan (custom-dialog.vue)
@@ -89,12 +103,12 @@
             margin-bottom: 12px;
         }
         .modal-card-body {
-            padding: 0px 0px 0px 16px;
+            padding: 0px 0px 12px 20px;
             width: 50%;
         }
         .modal-card-foot {
             justify-content: space-between;
-            padding: 24px 0px 0px 0px;
+            padding: 12px 0px 0px 0px;
             width: 100%;
 
             .button {

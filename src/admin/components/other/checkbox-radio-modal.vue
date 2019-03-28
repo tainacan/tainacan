@@ -449,7 +449,7 @@
                     this.isSearchingLoading = true;
                     let query_items = { 'current_query': this.query };
 
-                    let query = `?order=asc&number=${this.maxNumSearchResultsShow}&searchterm=${this.optionName}&` + qs.stringify(query_items);
+                    let query = `?order=asc&number=${this.maxNumSearchResultsShow}&search=${this.optionName}&` + qs.stringify(query_items);
 
                     if (!this.isFilter)
                         query += '&hideempty=0';

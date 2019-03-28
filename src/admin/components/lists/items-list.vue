@@ -8,7 +8,7 @@
             <div class="field select-all is-pulled-left">
                 <span>
                     <b-checkbox
-                            @click.native="selectAllItemsOnPage()"
+                            @click.native.prevent="selectAllItemsOnPage()"
                             :value="allItemsOnPageSelected">
                         {{ $i18n.get('label_select_all_items_page') }}
                     </b-checkbox>
@@ -16,11 +16,11 @@
 
                 <span
                         style="margin-left: 10px"
-                        v-if="allItemsOnPageSelected && items.length > 1">
+                        v-if="enableSelectAllItemsPages == true && allItemsOnPageSelected && items.length > 1">
                     <b-checkbox
-                            @click.native="selectAllItems()"
+                            @click.native.prevent="selectAllItems()"
                             v-model="isAllItemsSelected">
-                        {{ `${$i18n.get('label_select_all')} ${totalItems} ${$i18n.get('items').toLowerCase()}` }}
+                        {{ `${$i18n.getWithVariables('label_select_all_%s_items', [totalItems])}` }}
                     </b-checkbox>
                 </span>
             </div>
@@ -31,7 +31,8 @@
                         position="is-bottom-left"
                         v-if="items.length > 0 && items[0].current_user_can_edit"
                         :disabled="selectedItemsIDs.every(id => id === false) || this.selectedItemsIDs.filter(item => item !== false).length <= 1"
-                        id="bulk-actions-dropdown">
+                        id="bulk-actions-dropdown"
+                        aria-role="list">
                     <button
                             class="button is-white"
                             slot="trigger">
@@ -43,23 +44,27 @@
 
                     <b-dropdown-item
                             v-if="$route.params.collectionId && $userCaps.hasCapability('edit_others_posts') && !isOnTrash"
-                            @click="openBulkEditionModal()">
+                            @click="openBulkEditionModal()"
+                            aria-role="listitem">
                         {{ $i18n.get('label_bulk_edit_selected_items') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="$route.params.collectionId && $userCaps.hasCapability('edit_others_posts') && !isOnTrash"
-                            @click="sequenceEditSelectedItems()">
+                            @click="sequenceEditSelectedItems()"
+                            aria-role="listitem">
                         {{ $i18n.get('label_sequence_edit_selected_items') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="collectionId"
                             @click="deleteSelectedItems()"
-                            id="item-delete-selected-items">
+                            id="item-delete-selected-items"
+                            aria-role="listitem">
                         {{ isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('label_send_to_trash') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="collectionId && isOnTrash"
-                            @click="untrashSelectedItems()">
+                            @click="untrashSelectedItems()"
+                            aria-role="listitem">
                         {{ $i18n.get('label_untrash_selected_items') }}
                     </b-dropdown-item>
                 </b-dropdown>
@@ -67,6 +72,48 @@
         </div>
 
         <div class="table-wrapper">
+
+            <!-- Context menu for right click selection -->
+            <div 
+                    v-if="cursorPosY > 0 && cursorPosX > 0"
+                    class="context-menu">
+
+                <!-- Backdrop for escaping context menu -->
+                <div 
+                    @click.left="clearContextMenu()"
+                    @click.right="clearContextMenu()"
+                    class="context-menu-backdrop" /> 
+
+                <b-dropdown 
+                        inline
+                        :style="{ top: cursorPosY + 'px', left: cursorPosX + 'px' }">
+                    <b-dropdown-item
+                            @click="openItem()" 
+                            v-if="!isOnTrash">
+                        {{ $i18n.getFrom('items','view_item') }}
+                    </b-dropdown-item>
+                    <b-dropdown-item
+                            @click="openItemOnNewTab()"
+                            v-if="!isOnTrash">
+                        {{ $i18n.get('label_open_item_new_tab') }}
+                    </b-dropdown-item>
+                    <b-dropdown-item 
+                            @click="selectItem()"
+                            v-if="contextMenuIndex != null">
+                        {{ !selectedItems[contextMenuIndex] ? $i18n.get('label_select_item') : $i18n.get('label_unselect_item') }}
+                    </b-dropdown-item>
+                    <b-dropdown-item
+                            @click="goToItemEditPage(contextMenuItem)"
+                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit">
+                        {{ $i18n.getFrom('items','edit_item') }}
+                    </b-dropdown-item>
+                    <b-dropdown-item
+                            @click="deleteOneItem(contextMenuItem.id)"
+                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit">
+                        {{ $i18n.get('label_delete_item') }}
+                    </b-dropdown-item>
+                </b-dropdown>
+            </div>
             
             <!-- GRID (THUMBNAILS) VIEW MODE -->
             <div
@@ -109,7 +156,8 @@
                                     autoHide: false,
                                     placement: 'auto-start'
                                 }"                               
-                                @click="onClickItem($event, item, index)">
+                                @click.left="onClickItem($event, item, index)"  
+                                @click.right="onRightClickItem($event, item, index)">
                             {{ item.title != undefined ? item.title : '' }}
                         </p>                            
                     </div>
@@ -117,7 +165,8 @@
                     <!-- Thumbnail -->
                     <a
                             v-if="item.thumbnail != undefined"
-                            @click="onClickItem($event, item, index)"
+                            @click.left="onClickItem($event, item, index)"
+                            @click.right="onRightClickItem($event, item, index)"
                             class="grid-item-thumbnail"
                             :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)) + ')' }">
                         <img 
@@ -201,16 +250,18 @@
                             :style="{
                                 'padding-left': !collectionId ? '0 !important' : '1rem'
                             }"
-                            @click="onClickItem($event, item, index)"
+                            @click.left="onClickItem($event, item, index)"
+                            @click.right="onRightClickItem($event, item, index)"
                             class="metadata-title">
                         <p>{{ item.title != undefined ? item.title : '' }}</p>                             
                     </div>
 
                     <!-- Thumbnail -->  
                     <div 
-                            @click="onClickItem($event, item, index)"
+                            @click.left="onClickItem($event, item, index)"
+                            @click.right="onRightClickItem($event, item, index)"
                             v-if="item.thumbnail != undefined"
-                            class="thumbnail"
+                            class="tainacan-masonry-item-thumbnail"
                             :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)) + ')' }">
                         <img 
                                 :alt="$i18n.get('label_thumbnail')"
@@ -292,7 +343,8 @@
                                     autoHide: false,
                                     placement: 'auto-start'
                                 }"                               
-                                @click="onClickItem($event, item, index)">
+                                @click.left="onClickItem($event, item, index)"
+                                @click.right="onRightClickItem($event, item, index)">
                             {{ item.title != undefined ? item.title : '' }}
                         </p>                            
                     </div>
@@ -334,7 +386,8 @@
                     <!-- Remaining metadata -->  
                     <div    
                             class="media"
-                            @click="onClickItem($event, item, index)">
+                            @click.left="onClickItem($event, item, index)"
+                            @click.right="onRightClickItem($event, item, index)">
                         <div 
                                 :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)) + ')' }"
                                 class="card-thumbnail">
@@ -352,13 +405,13 @@
                                             show: 500,
                                             hide: 300,
                                         },
-                                        content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`,
+                                        content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`,
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }"   
                                     class="metadata-description"
-                                    v-html="item.description != undefined && item.description != '' ? getLimitedDescription(item.description) : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`" />
+                                    v-html="item.description != undefined && item.description != '' ? getLimitedDescription(item.description) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`" />
                             <!-- Author-->
                             <p 
                                     v-tooltip="{
@@ -444,7 +497,8 @@
                                 v-for="(column, columnIndex) in tableMetadata"
                                 :key="columnIndex"
                                 v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                @click="onClickItem($event, item, index)"
+                                @click.left="onClickItem($event, item, index)"
+                                @click.right="onRightClickItem($event, item, index)"
                                 v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />  
                         <p 
                                 v-tooltip="{
@@ -460,7 +514,8 @@
                                 v-for="(column, columnIndex) in tableMetadata"
                                 :key="columnIndex"
                                 v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                @click="onClickItem($event, item, index)"
+                                @click.left="onClickItem($event, item, index)"
+                                @click.right="onRightClickItem($event, item, index)"
                                 v-html="item.title != undefined ? item.title : ''" />                             
                     </div>
                     <!-- Actions -->
@@ -501,9 +556,10 @@
                     <!-- Remaining metadata -->  
                     <div    
                             class="media"
-                            @click="onClickItem($event, item, index)">
+                            @click.left="onClickItem($event, item, index)"
+                            @click.right="onRightClickItem($event, item, index)">
                         <div class="list-metadata media-body">
-                            <div class="thumbnail">
+                            <div class="tainacan-record-thumbnail">
                                 <img 
                                         :alt="$i18n.get('label_thumbnail')"
                                         v-if="item.thumbnail != undefined"
@@ -606,7 +662,8 @@
                                                                                                             column.metadata_type_object.primitive_type == 'compound') : false,
                                         'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' || column.metadata_type_object.related_mapped_prop == 'description') : false,
                                 }"
-                                @click="onClickItem($event, item, index)">
+                                @click.left="onClickItem($event, item, index)"
+                                @click.right="onRightClickItem($event, item, index)">
 
                             <p
                                     v-tooltip="{
@@ -614,7 +671,7 @@
                                             show: 500,
                                             hide: 300,
                                         },
-                                        content: item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
+                                        content: item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -622,14 +679,14 @@
                                     v-if="collectionId == undefined &&
                                           column.metadata_type_object != undefined && 
                                           column.metadata_type_object.related_mapped_prop == 'title'"
-                                    v-html="(item.title != undefined && item.title != '') ? item.title : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                    v-html="(item.title != undefined && item.title != '') ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
                             <p
                                     v-tooltip="{
                                         delay: {
                                             show: 500,
                                             hide: 300,
                                         },
-                                        content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
+                                        content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -637,14 +694,14 @@
                                     v-if="collectionId == undefined &&
                                           column.metadata_type_object != undefined && 
                                           column.metadata_type_object.related_mapped_prop == 'description'"
-                                    v-html="(item.description != undefined && item.description) != '' ? item.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                    v-html="(item.description != undefined && item.description) != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
                             <p
                                     v-tooltip="{
                                         delay: {
                                             show: 500,
                                             hide: 300,
                                         },
-                                        content: renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
+                                        content: renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -656,7 +713,7 @@
                                           column.metadatum !== 'row_author' &&
                                           column.metadatum !== 'row_title' &&
                                           column.metadatum !== 'row_description'"
-                                    v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column, column.metadata_type_object.component) : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                    v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column, column.metadata_type_object.component) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
 
                             <span v-if="column.metadatum == 'row_thumbnail'">
                                 <img 
@@ -740,6 +797,11 @@ export default {
             selectedItemsIDs: [],
             queryAllItemsSelected: {},
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
+            cursorPosX: -1,
+            cursorPosY: -1,
+            contextMenuIndex: null,
+            contextMenuItem: null,
+            enableSelectAllItemsPages: tainacan_plugin.enable_select_all_items_pages
         }
     },
     props: {
@@ -830,13 +892,15 @@ export default {
             for (let i = 0; i < this.selectedItems.length; i++) {
                 this.selectedItems.splice(i, 1, !this.allItemsOnPageSelected);
             }
+            if (!this.allItemsOnPageSelected)
+                this.queryAllItemsSelected = {};
         },
         selectAllItems(){
             this.isAllItemsSelected = !this.isAllItemsSelected;
             this.queryAllItemsSelected = this.$route.query;
 
             for (let i = 0; i < this.selectedItems.length; i++) {
-                this.selectedItems.splice(i, 1, !this.isAllItemsSelected);
+                this.selectedItems.splice(i, 1, this.isAllItemsSelected);
             }
         },
         untrashOneItem(itemId) {
@@ -849,6 +913,7 @@ export default {
                     message: this.$i18n.get('info_warning_remove_item_from_trash'),
                     onConfirm: () => {
                         this.isLoading = true;
+                        this.$emit('updateIsLoading', this.isLoading);
 
                         this.createEditGroup({
                             collectionID: this.collectionId,
@@ -877,6 +942,7 @@ export default {
                     message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
                     onConfirm: () => {
                         this.isLoading = true;
+                        this.$emit('updateIsLoading', this.isLoading);
 
                         this.deleteItem({
                             itemId: itemId,
@@ -887,6 +953,7 @@ export default {
                     }
                 }
             });
+            this.clearContextMenu();
         },
         untrashSelectedItems(){
             this.$modal.open({
@@ -898,6 +965,7 @@ export default {
                     message: this.$i18n.get('info_warning_selected_items_remove_from_trash'),
                     onConfirm: () => {
                         this.isLoading = true;
+                        this.$emit('updateIsLoading', this.isLoading);
 
                         this.createEditGroup({
                             collectionID: this.collectionId,
@@ -926,6 +994,7 @@ export default {
                     message: this.isOnTrash ? this.$i18n.get('info_warning_selected_items_delete') : this.$i18n.get('info_warning_selected_items_trash'),
                     onConfirm: () => {
                         this.isLoading = true;
+                        this.$emit('updateIsLoading', this.isLoading);
 
                         this.createEditGroup({
                             collectionID: this.collectionId,
@@ -953,6 +1022,25 @@ export default {
                 }
             });
         },
+        openItem() {
+            if (this.contextMenuItem != null) {
+                this.$router.push(this.$routerHelper.getItemPath(this.contextMenuItem.collection_id, this.contextMenuItem.id));
+            }
+            this.clearContextMenu();
+        },
+        openItemOnNewTab() {
+            if (this.contextMenuItem != null) {
+                let routeData = this.$router.resolve(this.$routerHelper.getItemPath(this.contextMenuItem.collection_id, this.contextMenuItem.id));
+                window.open(routeData.href, '_blank');
+            }
+            this.clearContextMenu();
+        },
+        selectItem() {
+            if (this.contextMenuIndex != null) {
+                this.$set(this.selectedItems, this.contextMenuIndex, !this.selectedItems[this.contextMenuIndex]);
+            }
+            this.clearContextMenu();
+        },
         onClickItem($event, item, index) {
             if ($event.ctrlKey || $event.shiftKey) {
                 this.$set(this.selectedItems, index, !this.selectedItems[index]);
@@ -969,6 +1057,20 @@ export default {
                 }
             }
         },
+        onRightClickItem($event, item, index) {
+            $event.preventDefault();
+
+            this.cursorPosX = $event.clientX;
+            this.cursorPosY = $event.clientY;
+            this.contextMenuItem = item;
+            this.contextMenuIndex = index;
+        },
+        clearContextMenu() {
+            this.cursorPosX = -1;
+            this.cursorPosY = -1;
+            this.contextMenuItem = null;
+            this.contextMenuIndex = null;
+        },
         goToItemEditPage(item) {
             this.$router.push(this.$routerHelper.getItemEditPath(item.collection_id, item.id));
         },
@@ -978,8 +1080,6 @@ export default {
 
             if (!metadata || itemMetadata == undefined) {
                 return '';
-            } else if (metadata.date_i18n) {
-                return metadata.date_i18n;
             } else {
                 if (component != undefined && component == 'tainacan-textarea')
                     return metadata.value_as_string;
@@ -1018,6 +1118,23 @@ export default {
             &:hover {
                 color: $gray4;
             }
+        }
+    }
+
+    .context-menu {
+        .dropdown {
+            position: fixed;
+            z-index: 99999999999;
+        }
+        .context-menu-backdrop {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            border: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 9999999;
         }
     }
 

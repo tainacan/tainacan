@@ -17,6 +17,32 @@ class Relationship extends Metadata_Type {
         $this->set_form_component('tainacan-form-relationship');
         $this->set_name( __('Relationship', 'tainacan') );
         $this->set_description( __('A relationship with another item', 'tainacan') );
+        $this->set_preview_template('
+            <div>
+                <div class="taginput control is-expanded has-selected">
+                    <div class="taginput-container is-focusable"> 
+                        <div class="autocomplete control">
+                            <div class="control has-icon-right is-loading is-clearfix">
+                                <input type="text" class="input" value="'. __('Item') . ' 9" > 
+                            </div> 
+                            <div class="dropdown-menu" style="">
+                                <div class="dropdown-content">
+                                    <a class="dropdown-item is-hovered">
+                                        <span>'. __('Collection') . ' 2 <strong>'._('item') . ' 9</strong>9</span>
+                                    </a>
+                                    <a class="dropdown-item">
+                                        <span>'. __('Collection') . ' 3 <strong>'._('item') . ' 9</strong>9</span>
+                                    </a>
+                                    <a class="dropdown-item">
+                                        <span>'. __('Collection') . ' 3 <strong>'._('item') . ' 9</strong>8</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        ');
     }
 
     /**
@@ -29,8 +55,8 @@ class Relationship extends Metadata_Type {
                'description' => __( 'Select the collection to fetch items', 'tainacan' ),
            ],
            'search' => [
-               'title' => __( 'Metadata for search', 'tainacan' ),
-               'description' => __( 'Select the metadata to help the search', 'tainacan' ),
+               'title' => __( 'Metadata to search', 'tainacan' ),
+               'description' => __( 'Select the metadata to use as search criteria in the target collection', 'tainacan' ),
            ],
            'repeated' => [
                'title' =>__( 'Allow repeated items', 'tainacan' ),
@@ -66,6 +92,13 @@ class Relationship extends Metadata_Type {
                 'collection_id' => __('The related collection is required','tainacan')
             ];
         }
+		
+		if  ( !is_array($this->get_option('search')) ) {
+			return [
+                'search' => __('Search option must be an array','tainacan')
+            ];
+		}
+		
         return true;
     }
 	

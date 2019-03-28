@@ -53,13 +53,14 @@
                 <b-dropdown
                         ref="advancedSearchShortcut"
                         class="advanced-search-header-dropdown"
-                        position="is-bottom-left">
+                        position="is-bottom-left"
+                        aria-role="list">
                     <a
                             class="advanced-search-text"
                             slot="trigger">
                         {{ $i18n.get('advanced_search') }}
                     </a>
-                    <b-dropdown-item>
+                    <b-dropdown-item aria-role="listitem">
                         <div :style="{'height': '25px'}">
                             <p class="is-pulled-left advanced-search-text-di">{{ $i18n.get('advanced_search') }}</p>
                             <span 
@@ -72,7 +73,8 @@
                     </b-dropdown-item>
                     <b-dropdown-item
                             style="padding-left: 0 !important; padding-right: 0 !important;"
-                            :custom="true">
+                            :custom="true"
+                            aria-role="listitem">
                         <advanced-search
                                 :is-repository-level="true"
                                 :is-header="true"/>
@@ -94,7 +96,7 @@
                     class="level-item"
                     :href="wordpressAdmin">
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-wordpress"/>
+                    <i class="tainacan-icon tainacan-icon-wordpress"/>
                 </span>
             </a>
         </div>
@@ -207,6 +209,10 @@
             }
             .button:hover, .button:active, .button:focus {
                 background-color: white !important;
+            }
+
+            .tainacan-icon-wordpress {
+                font-size: 26px;
             }
             
             .search-area {

@@ -31,6 +31,7 @@
                         formHooks['view-item']['begin-left'] != undefined">
                         <div
                                 id="view-item-begin-left"
+                                class="form-hook-region"
                                 v-html="formHooks['view-item']['begin-left'].join('')"/>
                     </template>
 
@@ -197,6 +198,7 @@
                         formHooks['view-item']['end-left'] != undefined">
                         <div
                                 id="view-item-end-left"
+                                class="form-hook-region"
                                 v-html="formHooks['view-item']['end-left'].join('')"/>
                     </template>
 
@@ -210,6 +212,7 @@
                         formHooks['view-item']['begin-right'] != undefined">
                         <div
                                 id="view-item-begin-right"
+                                class="form-hook-region"
                                 v-html="formHooks['view-item']['begin-right'].join('')"/>
                     </template>
 
@@ -278,7 +281,8 @@
                                         v-for="(metadatum, index) of metadatumList"
                                         :key="index"
                                         class="field">
-                                    <b-collapse 
+                                    <b-collapse
+                                            :aria-id="'metadatum-collapse-' + metadatum.id" 
                                             animation="filter-item"
                                             :open="open">
                                         <label
@@ -292,14 +296,7 @@
                                         </span>
                                             {{ metadatum.metadatum.name }}
                                         </label>
-                                        <div
-                                                v-if="metadatum.date_i18n"
-                                                class="content">
-                                            <p v-html="metadatum.date_i18n != '' ? metadatum.date_i18n : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
-                                        </div>
-                                        <div
-                                                v-else
-                                                class="content">
+                                        <div class="content">
                                             <p v-html="metadatum.value_as_html != '' ? metadatum.value_as_html : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
                                         </div>
                                     </b-collapse>
@@ -313,6 +310,7 @@
                                 formHooks['view-item']['end-right'] != undefined">
                                 <div
                                         id="view-item-end-right"
+                                        class="form-hook-region"
                                         v-html="formHooks['view-item']['end-right'].join('')"/>
                             </template>
                         </b-tab-item>
@@ -338,6 +336,7 @@
             <div class="footer">
                 <div class="form-submission-footer">
                     <router-link
+                            v-if="item.current_user_can_edit"
                             class="button is-secondary"
                             :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
                         {{ $i18n.getFrom('items','edit_item') }}
@@ -466,7 +465,7 @@
                 });
 
             // Obtains Item
-            this.fetchItem(this.itemId).then((item) => {
+            this.fetchItem({ itemId: this.itemId, contextEdit: true }).then((item) => {
                 this.$root.$emit('onCollectionBreadCrumbUpdate', [
                     {path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items')},
                     {path: '', label: item.title}
@@ -474,10 +473,12 @@
                 this.loadMetadata();
             });
 
-            // Obtains collection name
+        // Obtains collection name
+        if (!this.isRepositoryLevel) {
             this.fetchCollectionName(this.collectionId).then((collectionName) => {
                 this.collectionName = collectionName;
             });
+        }
 
             // Get attachments
             this.fetchAttachments(this.itemId);
