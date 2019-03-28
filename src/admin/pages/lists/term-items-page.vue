@@ -492,7 +492,7 @@
                     <button 
                             class="button is-white"
                             :aria-label="$i18n.get('label_urls')"
-                            :disabled="this.totalItems == undefined || this.totalItems <= 0"
+                            :disabled="totalItems == undefined || totalItems <= 0"
                             @click="openExposersModal()">
                         <span class="gray-icon">
                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
@@ -679,7 +679,7 @@
 
                 <!-- Empty Placeholder (only used in Admin) -->
                 <section
-                        v-if="!isOnTheme && !isLoadingItems && totalItems <= 0"
+                        v-if="!isOnTheme && !isLoadingItems && totalItems == 0"
                         class="section">
                     <div class="content has-text-grey has-text-centered">
                         <p>
@@ -1253,16 +1253,27 @@
                         } else {
                        
                             this.$eventBusSearch.addFetchOnly('thumbnail,creation_date,author_name,title,description', true, '');
-
-                            this.sortingMetadata.push({
-                                name: this.$i18n.get('label_title'),
-                                metadatum: 'row_title',
-                                metadata_type_object: {core: true, related_mapped_prop: 'title'},
-                                metadata_type: undefined,
-                                slug: 'title',
-                                id: undefined,
-                                display: true
-                            });
+                            
+                            if (this.isRepositoryLevel) {
+                                this.sortingMetadata.push({
+                                    name: this.$i18n.get('label_title'),
+                                    metadatum: 'row_title',
+                                    metadata_type_object: {core: true, related_mapped_prop: 'title'},
+                                    metadata_type: undefined,
+                                    slug: 'title',
+                                    id: undefined,
+                                    display: true
+                                });
+                            }
+                            
+                            for (let metadatum of this.metadata) {
+                                if (metadatum.display !== 'never' &&
+                                    metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
+                                    metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Taxonomy' &&
+                                    metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Relationship') {
+                                        this.sortingMetadata.push(metadatum);
+                                }
+                            }
 
                             this.sortingMetadata.push({
                                 name: this.$i18n.get('label_creation_date'),
@@ -1300,7 +1311,7 @@
                                 this.hasAnOpenModal = false;
                             },
                             hideCancel: true,
-                            showNeverShowAgainOption: true,
+                            showNeverShowAgainOption: tainacan_plugin.user_caps != undefined && tainacan_plugin.user_caps.length != undefined && tainacan_plugin.user_caps.length > 0,
                             messageKeyForUserPrefs: 'ItemsHiddenDueSorting'
                         }
                     });
@@ -1356,7 +1367,7 @@
             });
 
             this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', (to) => {
-                /* This condition is to prevent a incorrect fetch by filter or metadata when we come from items
+                /* This condition is to prevent an incorrect fetch by filter or metadata when we come from items
                  * at collection level to items page at repository level
                  */
 

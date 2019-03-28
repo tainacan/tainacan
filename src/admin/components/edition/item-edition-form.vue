@@ -198,6 +198,7 @@
                                     <div class="control">
                                         <button
                                                 id="button-submit-text-content-writing"
+                                                type="submit"
                                                 @click.prevent="confirmTextWriting()"
                                                 class="button is-success">
                                             {{ $i18n.get('save') }}</button>

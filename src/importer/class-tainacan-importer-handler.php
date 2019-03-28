@@ -53,8 +53,8 @@ class Importer_Handler {
 		]);
 
         $this->register_importer([
-            'name' => 'OAI PMH (Experimental)',
-            'description' => __('Import structure from a OAI PMH repository', 'tainacan'),
+            'name' => 'OAI-PMH (Experimental)',
+            'description' => __('Import items from an OAI-PMH data source', 'tainacan'),
             'slug' => 'oaipmh_importer',
             'class_name' => '\Tainacan\Importer\Oaipmh_Importer',
             'manual_collection' => false,

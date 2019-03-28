@@ -9,6 +9,7 @@ class REST_Controller extends \WP_REST_Controller {
 	 * REST_Controller constructor.
 	 */
 	public function __construct() {
+		session_write_close();
 		$this->namespace = TAINACAN_REST_NAMESPACE;
 		add_action('rest_api_init', array($this, 'register_routes'));
 	}

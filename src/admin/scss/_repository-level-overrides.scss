@@ -18,9 +18,12 @@
         background-color: $blue5 !important;
         color: white !important;
     }
-    .has-text-primary, .has-text-primary:hover, .is-has-text-primary:focus {
-        color: $blue4 !important;
+    .dropdown .dropdown-menu .dropdown-content a.dropdown-item:hover {
+        color: black !important;
     }
+    .has-text-primary, 
+    .has-text-primary:hover, 
+    .is-has-text-primary:focus,
     a:not(.has-text-danger):not(.disabled), 
     a:hover:not(.has-text-danger):not(.disabled),
     .has-text-secondary, 
@@ -34,6 +37,9 @@
     }
     .tainacan-page-title hr{
         background-color: $blue3 !important;
+    }
+    button.link-style, button.link-style:focus button.link-style:active {
+        color: $blue4;
     }
     .button[disabled]:not(.is-white), .button:hover[disabled]:not(.is-white) {
         border: none !important;
