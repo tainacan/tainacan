@@ -7,6 +7,7 @@ namespace Tainacan;
 class Media {
 	
 	private static $instance = null;
+	private static $file_handle = null;
 
     public static function get_instance() {
         if(!isset(self::$instance)) {
@@ -29,18 +30,13 @@ class Media {
 	 * @return Int|false    Attachment ID. False on failure
 	 */
 	public function insert_attachment_from_url($url, $post_id = null) {
-		if( !class_exists( '\WP_Http' ) )
-			include_once( ABSPATH . WPINC . '/class-http.php' );
+		$filename = $this->save_remote_file($url);
 
-		// $http = new \WP_Http();
-		
-		// $response = $http->request( $url, ['sslverify' => false] );
-		
-//		if( !is_array($response) || !isset($response['response']) || $response['response']['code'] != 200 ) {
-//			return false;
-//		}
+        if( !file_exists($filename) ) {
+            return false;
+        }
 
-		return $this->insert_attachment_from_blob(file_get_contents($this->save_remote_file($url)), basename($url), $post_id);
+		return $this->insert_attachment_from_blob(fopen($filename,'r'), basename($url), $post_id);
 		
 	}
 
@@ -57,7 +53,7 @@ class Media {
 			return false;
 		}
 		
-		return $this->insert_attachment_from_blob(file_get_contents($filename), basename($filename), $post_id);
+		return $this->insert_attachment_from_blob(fopen($filename,'r'), basename($filename), $post_id);
 		
 	}
 
@@ -68,7 +64,6 @@ class Media {
      * @return string the file path
      */
     public function save_remote_file($url) {
-        global $GlobalFileHandle;
 
         set_time_limit(0);
 
@@ -76,17 +71,16 @@ class Media {
         $filename = $wp_upload_dir['path'] . '/' . basename($url);
 
         # Open the file for writing...
-        $GlobalFileHandle = fopen($filename, 'w+');
+        self::$file_handle = fopen($filename, 'w+');
 
         $callback = function ($ch, $str)  {
-            global $GlobalFileHandle;
-            $len = fwrite($GlobalFileHandle, $str);
+            $len = fwrite(self::$file_handle, $str);
             return $len;
         };
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_FILE, $GlobalFileHandle);
+        curl_setopt($ch, CURLOPT_FILE, self::$file_handle);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
@@ -108,7 +102,7 @@ class Media {
         curl_close($ch);
 
         # Close the file pointer
-        fclose($GlobalFileHandle);
+        fclose(self::$file_handle);
 
         return $filename;
     }
