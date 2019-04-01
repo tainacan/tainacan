@@ -1190,8 +1190,8 @@ class Metadata extends Repository {
 		}
 		
 		return [
-			// 'total' => $total,
-			// 'pages' => $pages,
+			'total' => $total,
+			'pages' => $pages,
 			'values' => $values,
 			'last_term' => $args['last_term']
 		];

@@ -137,8 +137,8 @@ class REST_Facets_Controller extends REST_Controller {
 			
 			$rest_response = new \WP_REST_Response($response, 200);
 
-			// $rest_response->header('X-WP-Total', $response['total']);
-			// $rest_response->header('X-WP-TotalPages', $response['pages']);
+			$rest_response->header('X-WP-Total', isset($all_values['total']) ? $all_values['total'] : 0 );
+			$rest_response->header('X-WP-TotalPages', isset($all_values['pages']) ? $all_values['pages'] : 0 );
 			
 			return $rest_response;
 			
