@@ -67,7 +67,8 @@
                 type: '',
                 collection: '',
                 metadatum: '',
-                taxonomy: ''
+                taxonomy: '',
+                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
             }
         },
         props: {

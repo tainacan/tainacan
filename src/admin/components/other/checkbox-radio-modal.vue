@@ -132,7 +132,7 @@
                             </b-field>
                             <li v-if="finderColumn.children.length">
                                 <div
-                                        v-if="totalRemaining[key].hasMoreTerms || finderColumn.children[finderColumn.length - 1] == finderColumn.lastTerm"
+                                        v-if="totalRemaining[key].remaining == true || (finderColumn.length < totalRemaining[key].remaining)"
                                         @click="getMoreOptions(finderColumn, key)"
                                         class="tainacan-show-more">
                                     <span class="icon">
@@ -295,7 +295,7 @@
             isCheckbox: {
                 type: Boolean,
                 default: true,
-            },
+            }
         },
         data() {
             return {
@@ -311,7 +311,7 @@
                 options: [],
                 maxNumOptionsCheckboxList: 20,
                 maxNumSearchResultsShow: 20,
-                maxNumOptionsCheckboxFinderColumns: 5,
+                maxNumOptionsCheckboxFinderColumns: 100,
                 checkboxListOffset: 0,
                 collection: this.collection_id,
                 isCheckboxListLoading: false,
@@ -321,6 +321,7 @@
                 activeTab: 0,
                 selectedTagsName: {},
                 isSelectedTermsLoading: false,
+                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
             }
         },
         updated(){
@@ -518,7 +519,7 @@
 
                 this.totalRemaining = Object.assign({}, this.totalRemaining, {
                     [`${column == undefined ? 0 : column+1}`]: {
-                        hasMoreTerms: res.headers['x-wp-total'],
+                        remaining: this.isUsingElasticSearch ? res.data.last_term == children[children.length - 1].value : res.headers['x-wp-total'],
                     }
                 });
 
@@ -585,7 +586,7 @@
 
             },
             getMoreOptions(finderColumn, key) {
-                console.log(finderColumn);
+
                 if (finderColumn.children && finderColumn.children.length > 0) {
                     let parent = finderColumn.children[0].parent;
                     let offset = finderColumn.children.length;
@@ -611,7 +612,11 @@
                         .then(res => {
                             this.appendMore(res.data.values, key, res.data.last_term);
 
-                            console.log(this.totalRemaining)
+                            this.totalRemaining = Object.assign({}, this.totalRemaining, {
+                                [`${key}`]: {
+                                    remaining: this.isUsingElasticSearch ? (res.data.values.length > 0 ? (res.data.last_term == res.data.values[res.data.values.length - 1].value) : false) : res.headers['x-wp-total'],
+                                }
+                            });
 
                             this.isColumnLoading = false;
                         })

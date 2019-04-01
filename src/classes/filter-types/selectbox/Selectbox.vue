@@ -46,7 +46,9 @@
                     if( result && result.metadata_type ){
                         vm.metadatum_object = result;
                         vm.type = result.metadata_type;
-                        vm.loadOptions();
+                        
+                        if (!this.isUsingElasticSearch)
+                            vm.loadOptions();
                     }
                 })
                 .catch(error => {
