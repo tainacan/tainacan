@@ -8,7 +8,8 @@ export const filter_type_mixin = {
         return {
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
             getOptionsValuesCancel: undefined,
-            isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
+            isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
+            isLoadingOptions: false
         }
     },
     props: {
@@ -19,8 +20,7 @@ export const filter_type_mixin = {
         collection_id: [Number], // not required, but overrides the filter metadatum id if is set
         filter_type: [String],  // not required, but overrides the filter metadatum type if is set
         id: '',
-        query: {},
-        isLoadingOptions: false
+        query: {}
     },
     mounted() {
         // We listen to event, but reload event if hasFiltered is negative, as 

@@ -1,7 +1,7 @@
 <template>
     <div 
-            :style="{ 'height': (isLoadingOptions == true || isLoadingOptions == undefined ) ? (Number(filter.max_options)*28) + 'px' : 'auto' }"
-            :class="{ 'skeleton': isLoadingOptions == true || isLoadingOptions == undefined }"
+            :style="{ 'height': isLoadingOptions ? (Number(filter.max_options)*28) + 'px' : 'auto' }"
+            :class="{ 'skeleton': isLoadingOptions }"
             class="block">
         <!-- <span 
                 v-if="isLoadingOptions"
@@ -11,7 +11,7 @@
         </span> -->
         <div
                 v-for="(option, index) in options.slice(0, filter.max_options)"
-                v-if="isLoadingOptions == false"
+                v-if="!isLoadingOptions"
                 :key="index"
                 class="metadatum">
             <label 
@@ -88,6 +88,7 @@
             this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
 
             if (this.isUsingElasticSearch) {
+                this.isLoadingOptions = false;
                 this.$eventBusSearch.$on('isLoadingItems', isLoading => {
                     this.isLoadingOptions = isLoading;
                 });

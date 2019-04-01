@@ -1,9 +1,9 @@
 <template>
     <div 
-            :class="{ 'skeleton': isLoadingOptions == true || isLoadingOptions == undefined }"
+            :class="{ 'skeleton': isLoadingOptions }"
             class="block">
         <b-select
-                v-if="isLoadingOptions == false"
+                v-if="!isLoadingOptions"
                 :value="selected"
                 :aria-labelledby="labelId"
                 @input="onSelect($event)"
