@@ -127,22 +127,19 @@
                     promise = this.getValuesRelationship( null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1');
                 else
                     promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1' );
-
-                promise.request
-                    .then(() => {
-
-                        if(this.options.length > this.filter.max_options){
-                            this.options.splice(this.filter.max_options);
-                        }
-                        
-                    }).catch((error) => {
-                        this.$console.error(error);
-                    });
-
-                if (skipSelected == undefined || skipSelected == false) {
+                
+                if (skipSelected != undefined && skipSelected == true) {
                     promise.request
                         .then(() => {
-                            this.selectedValues()
+                            if (this.options.length > this.filter.max_options)
+                                this.options.splice(this.filter.max_options);
+                        }).catch((error) => {
+                            this.$console.error(error);
+                        });
+                } else {
+                    promise.request
+                        .then(() => {
+                            this.selectedValues();
                         })
                         .catch( error => {
                             this.$console.log('error select', error );
@@ -176,7 +173,7 @@
                     value: onlyLabels.length ? onlyLabels : this.selected,
                 });
             },
-            selectedValues(){
+            selectedValues() {
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
@@ -207,7 +204,9 @@
                         query: this.query
                     },
                     events: {
-                        appliedCheckBoxModal: () => this.loadOptions()
+                        appliedCheckBoxModal: () => {
+                            this.loadOptions();
+                        } 
                     }
                 });
             },

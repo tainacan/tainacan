@@ -176,17 +176,17 @@
                 });
                 
                 let onlyLabels = [];
+
+
                 for(let selected of this.selected) {
                     let valueIndex = this.options.findIndex(option => option.value == selected );
 
                     if (valueIndex >= 0) {
-                        
                         let existingLabelIndex = onlyLabels.findIndex(aLabel => aLabel == this.options[valueIndex].label)
                         if (existingLabelIndex < 0)
                             onlyLabels.push(this.options[valueIndex].label);
                         else  
                             this.$set(onlyLabels, onlyLabels.push(this.options[valueIndex].label), existingLabelIndex); 
-
                     } else {
 
                         let route = '';
@@ -203,19 +203,20 @@
                                 }
 
                                 let existingLabelIndex = onlyLabels.findIndex(aLabel => aLabel == res.data.values[0].label)
+
                                 if (existingLabelIndex < 0) {
-                                    onlyLabels.push(res.data[0].label);
+                                    onlyLabels.push(res.data.values[0].label);
                                     this.options.push({
                                         isChild: true,
-                                        label: res.data[0].label,
-                                        value: res.data[0].value
+                                        label: res.data.values[0].label,
+                                        value: res.data.values[0].value
                                     });
                                 } else {  
-                                    this.$set(onlyLabels, onlyLabels.push(res.data[0].label), existingLabelIndex);
+                                    this.$set(onlyLabels, onlyLabels.push(res.data.values[0].label), existingLabelIndex);
                                     this.$set(this.options, {
                                             isChild: true,
-                                            label: res.data[0].label,
-                                            value: res.data[0].value
+                                            label: res.data.values[0].label,
+                                            value: res.data.values[0].value
                                         }
                                     , existingLabelIndex); 
                                 }
@@ -225,7 +226,7 @@
                             });
                     }
                 }
-
+                
                 this.$eventBusSearch.$emit("sendValuesToTags", {
                     filterId: this.filter.id,
                     value: onlyLabels
@@ -247,7 +248,9 @@
                         query: this.query
                     },                    
                     events: {
-                        appliedCheckBoxModal: () => this.loadOptions()
+                        appliedCheckBoxModal: () => {
+                            this.loadOptions();
+                        } 
                     },
                     width: 'calc(100% - 8.333333333%)',
                 });
@@ -257,7 +260,7 @@
 
                     let selectedOption = this.options.find(option => option.label == filterTag.singleValue);
 
-                    if(selectedOption) {
+                    if (selectedOption) {
                     
                         let selectedIndex = this.selected.findIndex(option => option == selectedOption.value);
                         if (selectedIndex >= 0) {

@@ -102,6 +102,7 @@ export const filter_type_mixin = {
                             this.prepareOptionsForPlainText(this.facetsFromItemSearch[facet], search, valuesToIgnore, isInCheckboxModal);
                         }    
                     }
+                    resolve();
                 });
                 return new Object ({
                     request: callback
@@ -170,6 +171,7 @@ export const filter_type_mixin = {
                             this.prepareOptionsForRelationship(this.facetsFromItemSearch[facet], search, valuesToIgnore, isInCheckboxModal);
                         }    
                     }
+                    resolve();
                 });
                 return new Object ({
                     request: callback

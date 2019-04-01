@@ -519,7 +519,7 @@
 
                 this.totalRemaining = Object.assign({}, this.totalRemaining, {
                     [`${column == undefined ? 0 : column+1}`]: {
-                        remaining: this.isUsingElasticSearch ? res.data.last_term == children[children.length - 1].value : res.headers['x-wp-total'],
+                        remaining: this.isUsingElasticSearch ? (children.length > 0 ? res.data.last_term == children[children.length - 1].value : false) : res.headers['x-wp-total'],
                     }
                 });
 
