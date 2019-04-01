@@ -60,6 +60,11 @@
             this.loadOptions();
 
             this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTag);
+            if (this.isUsingElasticSearch) {
+                this.$eventBusSearch.$on('isLoadingItems', isLoading => {
+                    this.isLoading = isLoading;
+                });
+            }
         },    
         mounted(){
             // We listen to event, but reload event if hasFiltered is negative, as 
@@ -134,6 +139,7 @@
                             this.isLoading = false;
                         });
                 } else {
+
                     for (const facet in this.facetsFromItemSearch) {
                         if (facet == this.filter.id) {
                             if (Array.isArray(this.facetsFromItemSearch[facet]))
@@ -142,7 +148,7 @@
                                 this.prepareOptionsForTaxonomy(Object.values(this.facetsFromItemSearch[facet]), skipSelected);
                         }    
                     }
-                    this.isLoading = false;
+
                 }
             },
             selectedValues(){
@@ -321,6 +327,9 @@
         },
         beforeDestroy() {
             this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
+            
+            if (this.isUsingElasticSearch)
+                this.$eventBusSearch.$off('isLoadingItems');
         }
     }
 </script>
