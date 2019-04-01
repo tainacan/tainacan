@@ -1,9 +1,9 @@
 <template>
     <div 
-            :class="{ 'skeleton': isLoadingOptions }"
+            :class="{ 'skeleton': isLoadingOptions == true || isLoadingOptions == undefined }"
             class="block">
         <b-select
-                v-if="!isLoadingOptions"
+                v-if="isLoadingOptions == false"
                 :value="selected"
                 :aria-labelledby="labelId"
                 @input="onSelect($event)"
@@ -46,7 +46,9 @@
                     if( result && result.metadata_type ){
                         vm.metadatum_object = result;
                         vm.type = result.metadata_type;
-                        vm.loadOptions();
+                        
+                        if (!this.isUsingElasticSearch)
+                            vm.loadOptions();
                     }
                 })
                 .catch(error => {
@@ -54,6 +56,12 @@
                 });
             
             this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
+
+            if (this.isUsingElasticSearch) {
+                this.$eventBusSearch.$on('isLoadingItems', isLoading => {
+                    this.isLoadingOptions = isLoading;
+                });
+            }
         },
         props: {
             isRepositoryLevel: Boolean,
@@ -136,6 +144,9 @@
         },
         beforeDestroy() {
             this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
+
+            if (this.isUsingElasticSearch)
+                this.$eventBusSearch.$off('isLoadingItems');
         }
     }
 </script>

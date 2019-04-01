@@ -1,7 +1,7 @@
 <template>
     <div 
-            :style="{ 'height': isLoadingOptions ? (Number(filter.max_options)*28) + 'px' : 'auto' }"
-            :class="{ 'skeleton': isLoadingOptions }"
+            :style="{ 'height': (isLoadingOptions == true || isLoadingOptions == undefined ) ? (Number(filter.max_options)*28) + 'px' : 'auto' }"
+            :class="{ 'skeleton': isLoadingOptions == true || isLoadingOptions == undefined }"
             class="block">
         <!-- <span 
                 v-if="isLoadingOptions"
@@ -9,10 +9,9 @@
                 class="icon has-text-centered loading-icon">
             <div class="control has-icons-right is-loading is-clearfix" />
         </span> -->
-
         <div
                 v-for="(option, index) in options.slice(0, filter.max_options)"
-                v-if="!isLoadingOptions"
+                v-if="isLoadingOptions == false"
                 :key="index"
                 class="metadatum">
             <label 
@@ -47,7 +46,7 @@
             </button>
         </div>
         <p 
-                v-if="!isLoadingOptions && options.length != undefined && options.length <= 0"
+                v-if="isLoadingOptions == false && options.length != undefined && options.length <= 0"
                 class="no-options-placeholder">
             {{ $i18n.get('info_no_options_avialable_filtering') }}
         </p>
@@ -77,7 +76,9 @@
                     if( result && result.metadata_type ){
                         vm.metadatum_object = result;
                         vm.type = result.metadata_type;
-                        vm.loadOptions();
+                        
+                        if (!this.isUsingElasticSearch)
+                            vm.loadOptions();
                     }
                 })
                 .catch(error => {
@@ -85,6 +86,12 @@
                 });
 
             this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
+
+            if (this.isUsingElasticSearch) {
+                this.$eventBusSearch.$on('isLoadingItems', isLoading => {
+                    this.isLoadingOptions = isLoading;
+                });
+            }
         },
         props: {
             isRepositoryLevel: Boolean,
@@ -238,6 +245,9 @@
         },
         beforeDestroy() {
             this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
+            
+            if (this.isUsingElasticSearch)
+                this.$eventBusSearch.$off('isLoadingItems');
         }
     }
 </script>

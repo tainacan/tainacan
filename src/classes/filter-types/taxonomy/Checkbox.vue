@@ -56,9 +56,15 @@
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
             this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id ;
             this.type = ( this.filter_type ) ? this.filter_type : this.filter.metadatum.metadata_type;
+
             this.loadOptions();
 
             this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTag);
+            if (this.isUsingElasticSearch) {
+                this.$eventBusSearch.$on('isLoadingItems', isLoading => {
+                    this.isLoading = isLoading;
+                });
+            }
         },    
         mounted(){
             // We listen to event, but reload event if hasFiltered is negative, as 
@@ -78,6 +84,7 @@
                 selected: [],
                 taxonomy: '',
                 taxonomy_id: Number,
+                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
             }
         },
         props: {
@@ -108,7 +115,7 @@
                 'getFacets'
             ]),
             loadOptions(skipSelected) {
-                if (!this.facetsFromItemSearch || Object.values(this.facetsFromItemSearch).length <= 0) {
+                if (!this.isUsingElasticSearch) {
 
                     this.isLoading = true;
                     let query_items = { 'current_query': this.query };
@@ -132,6 +139,7 @@
                             this.isLoading = false;
                         });
                 } else {
+
                     for (const facet in this.facetsFromItemSearch) {
                         if (facet == this.filter.id) {
                             if (Array.isArray(this.facetsFromItemSearch[facet]))
@@ -140,6 +148,7 @@
                                 this.prepareOptionsForTaxonomy(Object.values(this.facetsFromItemSearch[facet]), skipSelected);
                         }    
                     }
+
                 }
             },
             selectedValues(){
@@ -275,7 +284,6 @@
                 }
             },
             prepareOptionsForTaxonomy(items, skipSelected) {
-
                 for (let item of items) {
                     this.taxonomy = item.taxonomy;
                     this.taxonomy_id = item.taxonomy_id;
@@ -319,6 +327,9 @@
         },
         beforeDestroy() {
             this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
+            
+            if (this.isUsingElasticSearch)
+                this.$eventBusSearch.$off('isLoadingItems');
         }
     }
 </script>

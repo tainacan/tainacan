@@ -7,7 +7,8 @@ export const filter_type_mixin = {
     data () {
         return {
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
-            getOptionsValuesCancel: undefined
+            getOptionsValuesCancel: undefined,
+            isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
         }
     },
     props: {
