@@ -274,14 +274,14 @@ class Terms extends Repository {
 	/**
 	* Check if a term already exists 
 	*
-	* @param string $term_name The term name 
+	* @param string $searched_term The term name (string) or term_id (integer). If term id is passed, parent is not considered. 
 	* @param mixed $taxonomy The taxonomy ID, slug or Entity.
 	* @param int $parent The ID of the parent term to look for children or null to look for terms in any hierarchical position. Default is null 
 	* @param bool $return_term wether to return the term object if it exists. default is to false 
 	* 
 	* @return bool|WP_Term return boolean indicating if term exists. If $return_term is true and term exists, return WP_Term object 
 	*/
-	public function term_exists($name, $taxonomy, $parent = null, $return_term = false) {
+	public function term_exists($searched_term, $taxonomy, $parent = null, $return_term = false) {
 		
 		$Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
 
@@ -293,36 +293,39 @@ class Terms extends Repository {
 			$taxonomy_slug = $taxonomy->get_db_identifier();
 		}
 
-		if(is_numeric($name)){
-			$args = [
-				'id'              => (int) $name,
-				'taxonomy'        => $taxonomy_slug,
-				'parent'          => $parent,
-				'hide_empty'      => 0,
-				'suppress_filter' => true
-			];
+		if(is_int($searched_term)){
+			
+			$term = get_term_by( 'id', $searched_term, $taxonomy_slug );
+			
+			if ( ! $term ) {
+				return false;
+			}
+			
 		} else {
 			$args = [
-				'name'            => $name,
+				'name'            => $searched_term,
 				'taxonomy'        => $taxonomy_slug,
 				'parent'          => $parent,
 				'hide_empty'      => 0,
 				'suppress_filter' => true
 			];
-		}
-		
-		if (is_null($parent)) {
-			unset($args['parent']);
-		}
-		
-		$terms = get_terms($args);
-		
-		if (empty($terms)) {
-			return false;
+			
+			if (is_null($parent)) {
+				unset($args['parent']);
+			}
+			
+			$terms = get_terms($args);
+			
+			if (empty($terms)) {
+				return false;
+			}
+			
+			$term = $terms[0];
+			
 		}
 		
 		if ($return_term) {
-			return $terms[0];
+			return $term;
 		}
 		
 		return true;

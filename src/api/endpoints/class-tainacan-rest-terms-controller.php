@@ -261,6 +261,7 @@ class REST_Terms_Controller extends REST_Controller {
 
 				if ( $request['context'] === 'edit' ) {
 					$item_arr['current_user_can_edit'] = $item->can_edit();
+					$item_arr['current_user_can_delete'] = $item->can_delete();
 				}
 
 				$children =  get_terms([

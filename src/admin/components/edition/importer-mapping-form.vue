@@ -296,7 +296,18 @@ export default {
             this.$router.go(-2);
         },
         checkIfMetadatumIsAvailable(metadatumId) {
-            return this.mappedCollection['mapping'][metadatumId] != undefined;
+            if ( this.mappedCollection['mapping'][metadatumId] != undefined &&
+                this.importerSourceInfo != undefined &&
+                this.importerSourceInfo != null){
+                let val = this.mappedCollection['mapping'][metadatumId];
+                const { source_metadata } = this.importerSourceInfo;
+
+                if(source_metadata && source_metadata.indexOf(val) >= 0) {
+                    return true;
+                }
+            }
+
+            return false;
         },
         checkCurrentSelectedCollectionMetadatum(sourceMetadatum) {
             for (let key in this.mappedCollection['mapping']) {

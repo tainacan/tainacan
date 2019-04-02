@@ -135,7 +135,7 @@
                                 <!-- <span class="menu-text">{{ $i18n.get('items') }}</span> -->
                             </router-link>
                         </li>
-                        <li>
+                        <li v-if="collection.current_user_can_edit">
                             <router-link
                                     tag="a" 
                                     :to="{ path: $routerHelper.getCollectionEditPath(collection.id) }" 

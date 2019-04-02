@@ -19,7 +19,7 @@
 <div class="wrap">
 	<h1><?php _e('Tainacan System Check', 'tainacan'); ?></h1>
 	
-	<p><?php _e('This page checks your system against the Tainacan requirements. It helps you to find out wether your server is properly configured.', 'tainacan'); ?></p>
+	<p><?php _e('This page checks your system against the Tainacan requirements. It helps you to find out whether your server is properly configured.', 'tainacan'); ?></p>
 	
 	<p><?php printf( __('If you want to have a more complete diagnosis of your current WordPress instance, we recommend you to install the %1$sHealth Check & Troubleshooting%2$s plugin.', 'tainacan'), '<a href="https://wordpress.org/plugins/health-check/" target="_blank">', '</a>' ); ?></p>
 	

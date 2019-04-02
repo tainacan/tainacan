@@ -7,6 +7,7 @@
                 <h2>{{ this.$i18n.get('exporters') }}</h2>
                 <hr>
             </header>
+            
             <section class="tainacan-form">
                 <p>{{ $i18n.get('instruction_select_an_exporter_type') }}</p>
                 <div 
