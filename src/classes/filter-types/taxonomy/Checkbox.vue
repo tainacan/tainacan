@@ -32,7 +32,7 @@
             </label>
             <button
                     class="view-all-button link-style"
-                    v-if="option.showViewAllButton && index == options.slice(0, filter.max_options).length - 1"
+                    v-if="option.showViewAllButton"
                     @click="openCheckboxModal(option.parent)"> 
                 {{ $i18n.get('label_view_all') }}
             </button>
@@ -103,6 +103,10 @@
             selected: function(){
                 //this.selected = val;
                 this.onSelect();
+            },
+            facetsFromItemSearch() {
+                if (this.isUsingElasticSearch)
+                    this.loadOptions();
             }
         },    
         computed: {
@@ -177,8 +181,7 @@
                 
                 let onlyLabels = [];
 
-
-                for(let selected of this.selected) {
+                for (let selected of this.selected) {
                     let valueIndex = this.options.findIndex(option => option.value == selected );
 
                     if (valueIndex >= 0) {
@@ -188,42 +191,47 @@
                         else  
                             this.$set(onlyLabels, onlyLabels.push(this.options[valueIndex].label), existingLabelIndex); 
                     } else {
-
-                        let route = '';
                         
-                        if(this.collection == 'filter_in_repository')
-                            route = '/facets/' + this.metadatum +`?term_id=${selected}&fetch_only=name,id`;
-                        else
-                            route = '/collection/'+ this.collection +'/facets/' + this.metadatum +`?term_id=${selected}&fetch_only=name,id`;
+                        // Not finding all options will happen on elastic search, 
+                        // as the facetsFromItemSearch will not be ready yet
+                        if (!this.isUsingElasticSearch)
+                            this.$console.log("Looking for terms that are not in the options list... ");
+
+                        // let route = '';
                         
-                        axios.get(route)
-                            .then( res => {
-                                if(!res || !res.data || !res.data.values){
-                                    return false;
-                                }
+                        // if (this.collection == 'filter_in_repository')
+                        //     route = '/facets/' + this.metadatum +`?term_id=${selected}&fetch_only=name,id`;
+                        // else
+                        //     route = '/collection/'+ this.collection +'/facets/' + this.metadatum +`?term_id=${selected}&fetch_only=name,id`;
+                        
+                        // axios.get(route)
+                        //     .then( res => {
+                        //         if(!res || !res.data || !res.data.values){
+                        //             return false;
+                        //         }
 
-                                let existingLabelIndex = onlyLabels.findIndex(aLabel => aLabel == res.data.values[0].label)
+                        //         let existingLabelIndex = onlyLabels.findIndex(aLabel => aLabel == res.data.values[0].label)
 
-                                if (existingLabelIndex < 0) {
-                                    onlyLabels.push(res.data.values[0].label);
-                                    this.options.push({
-                                        isChild: true,
-                                        label: res.data.values[0].label,
-                                        value: res.data.values[0].value
-                                    });
-                                } else {  
-                                    this.$set(onlyLabels, onlyLabels.push(res.data.values[0].label), existingLabelIndex);
-                                    this.$set(this.options, {
-                                            isChild: true,
-                                            label: res.data.values[0].label,
-                                            value: res.data.values[0].value
-                                        }
-                                    , existingLabelIndex); 
-                                }
-                            })
-                            .catch(error => {
-                                this.$console.log(error);
-                            });
+                        //         if (existingLabelIndex < 0) {
+                        //             onlyLabels.push(res.data.values[0].label);
+                        //             this.options.push({
+                        //                 isChild: true,
+                        //                 label: res.data.values[0].label,
+                        //                 value: res.data.values[0].value
+                        //             });
+                        //         } else {  
+                        //             this.$set(onlyLabels, onlyLabels.push(res.data.values[0].label), existingLabelIndex);
+                        //             this.$set(this.options, {
+                        //                     isChild: true,
+                        //                     label: res.data.values[0].label,
+                        //                     value: res.data.values[0].value
+                        //                 }
+                        //             , existingLabelIndex); 
+                        //         }
+                        //     })
+                        //     .catch(error => {
+                        //         this.$console.log(error);
+                        //     });
                     }
                 }
                 
@@ -287,38 +295,30 @@
                 }
             },
             prepareOptionsForTaxonomy(items, skipSelected) {
-                for (let item of items) {
-                    this.taxonomy = item.taxonomy;
-                    this.taxonomy_id = item.taxonomy_id;
-                    
-                    let existingOptionIndex = this.options.findIndex(anOption => anOption.value == item.value)
-                    if (existingOptionIndex < 0)
-                        this.options.push(item);  
-                    else  
-                        this.$set(this.options, item, existingOptionIndex); 
-                }
+
+                this.taxonomy = items[0].taxonomy;
+                this.taxonomy_id = items[0].taxonomy_id;
+
+                this.options = [];
+                this.options = items.slice(); // copy array.
 
                 if (this.options) {
                     let hasChildren = false;
 
                     for( let term of this.options ){
-                        if(term.total_children > 0){
+                        if (term.total_children > 0){
                             hasChildren = true;
                             break;
                         }
                     }
 
-                    if(this.filter.max_options && (this.options.length >= this.filter.max_options || hasChildren)){
-                        if(this.options.length > this.filter.max_options){
-                            this.options.splice(this.filter.max_options);
-                        }
-
+                    if (this.filter.max_options && (this.options.length >= this.filter.max_options || hasChildren)) {
                         let showViewAllButton = true;
 
-                        if(this.options.length === this.filter.max_options){
-                            this.options[this.filter.max_options-1].showViewAllButton = showViewAllButton;
+                        if (this.options.length > this.filter.max_options){
+                            this.options[this.filter.max_options - 1].showViewAllButton = showViewAllButton;
                         } else {
-                            this.options[this.options.length-1].showViewAllButton = showViewAllButton;
+                            this.options[this.options.length - 1].showViewAllButton = showViewAllButton;
                         }
                     }
                 }
