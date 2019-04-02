@@ -296,8 +296,10 @@
             },
             prepareOptionsForTaxonomy(items, skipSelected) {
 
-                this.taxonomy = items[0].taxonomy;
-                this.taxonomy_id = items[0].taxonomy_id;
+                if (items[0] != undefined) {
+                    this.taxonomy = items[0].taxonomy;
+                    this.taxonomy_id = items[0].taxonomy_id;
+                }
 
                 this.options = [];
                 this.options = items.slice(); // copy array.

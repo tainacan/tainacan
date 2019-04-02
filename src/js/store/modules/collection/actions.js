@@ -102,6 +102,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                         dispatch('search/setFacets', res.data.filters, { root: true } );
                     else
                         dispatch('search/setFacets', {}, { root: true } );
+
                 })
                 .catch((thrown) => {
                     if (axios.isCancel(thrown)) {

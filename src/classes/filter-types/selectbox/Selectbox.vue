@@ -76,6 +76,16 @@
             }
         },
         mixins: [filter_type_mixin],
+        watch: {
+            selected(value) {
+                if (value) {
+                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                        filterId: this.filter.id,
+                        value: value
+                    });
+                }
+            }
+        },
         computed: {
             selected() {
                 if ( this.query && this.query.metaquery && Array.isArray( this.query.metaquery ) ) {
@@ -109,33 +119,13 @@
                 this.getOptionsValuesCancel = promise.source;
             },
             onSelect(value){
-                this.selected = value;
+                //this.selected = value;
                 this.$emit('input', {
                     filter: 'selectbox',
                     metadatum_id: this.metadatum,
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     value: ( value ) ? value : ''
                 });
-
-                if (value) {
-                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                        filterId: this.filter.id,
-                        value: value
-                    });
-                }
-            },
-            selectedValues(){
-                if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
-                    return false;
-
-                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
-                if ( index >= 0){
-                    let metadata = this.query.metaquery[ index ];
-                    this.selected = metadata.value;
-
-                } else {
-                    return false;
-                }
             },
             cleanSearchFromTags(filterTag) {
                 if (filterTag.filterId == this.filter.id)
