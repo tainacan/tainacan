@@ -378,6 +378,9 @@ function tainacan_get_initials($string, $one = false) {
 	if (empty($string)) {
 		return '';
 	}
+	
+	$string = remove_accents($string);
+	
 	if (strlen($string) == 1) {
 		return strtoupper($string);
 	}

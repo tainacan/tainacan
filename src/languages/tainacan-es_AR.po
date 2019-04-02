@@ -1,0 +1,5077 @@
+# Translation of Plugins - Tainacan - Development (trunk) in Spanish (Argentina)
+# This file is distributed under the same license as the Plugins - Tainacan - Development (trunk) package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Plugins - Tainacan - Development (trunk)\n"
+"POT-Creation-Date: 2019-03-27 12:05-0300\n"
+"PO-Revision-Date: 2019-03-27 12:05-0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es_AR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Poedit 2.0.7\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: __;_e;esc_html_e;esc_html_x:1,2c;esc_html__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_attr__;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;"
+"_x:1,2c;_n:1,2;_n_noop:1,2;__ngettext:1,2;__ngettext_noop:1,2;_c,_nc:4c,1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: admin/class-tainacan-admin.php:38 admin/class-tainacan-admin.php:39
+#: gutenberg-blocks/class-tainacan-gutenberg-block.php:38
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:19
+msgid "Tainacan"
+msgstr "Tainacan"
+
+#: admin/class-tainacan-admin.php:48 admin/class-tainacan-admin.php:49
+msgid "System check"
+msgstr "System check"
+
+#: admin/system-check/admin-page.php:20
+msgid "Tainacan System Check"
+msgstr "Tainacan System Check"
+
+#: admin/system-check/admin-page.php:22
+msgid ""
+"This page checks your system against the Tainacan requirements. It helps you "
+"to find out whether your server is properly configured."
+msgstr ""
+"Esta página compara su sistema con los requisitos de Tainacan. Le ayuda a "
+"averiguar si su servidor está configurado correctamente."
+
+#: admin/system-check/admin-page.php:24
+#, php-format
+msgid ""
+"If you want to have a more complete diagnosis of your current WordPress "
+"instance, we recommend you to install the %1$sHealth Check & Troubleshooting"
+"%2$s plugin."
+msgstr ""
+"Si desea tener un diagnóstico más completo de su instancia actual de "
+"WordPress, le recomendamos que instale el plugin %1$sHealth Check & "
+"Troubleshooting%2$s."
+
+#: admin/system-check/admin-page.php:30
+msgid "WordPress version"
+msgstr "Versión de WordPress"
+
+#: admin/system-check/admin-page.php:37
+msgid "PHP version"
+msgstr "Versión de PHP"
+
+#: admin/system-check/admin-page.php:44
+msgid "Database version"
+msgstr "Versión de Database"
+
+#: admin/system-check/admin-page.php:51
+msgid "PHP Modules"
+msgstr "Módulos PHP"
+
+#: admin/system-check/admin-page.php:58
+msgid "PHP Maximum execution time"
+msgstr "Tiempo máximo de ejecución de PHP"
+
+#: admin/system-check/admin-page.php:62
+msgid ""
+"Some Tainacan features, such as import processes, may need a little extra "
+"time to run. It is a good idea to set the PHP maximum execution time to a "
+"bigger value than the default, although this is not mandatory. If you see a "
+"\"Maximum execution time of XX seconds exceeded\" in any error log, then you "
+"shoud definitely do it."
+msgstr ""
+"Algunas funciones de Tainacan, como los procesos de importación, pueden "
+"necesitar un poco más de tiempo para ejecutarse. Es una buena idea "
+"establecer el tiempo máximo de ejecución de PHP en un valor mayor que el "
+"predeterminado, aunque esto no es obligatorio. Si ve un \"Tiempo de "
+"ejecución máximo de XX segundos excedido\" en cualquier registro de errores, "
+"entonces definitivamente debe hacerlo."
+
+#: admin/system-check/admin-page.php:68
+msgid "Permalinks Structure"
+msgstr "Estructura de enlaces permanentes (permalinks)"
+
+#: admin/system-check/admin-page.php:75
+msgid "Upload Folder"
+msgstr "Subir carpeta"
+
+#: admin/system-check/admin-page.php:82
+msgid "Max Upload File size"
+msgstr "Tamaño máximo del archivo a subir"
+
+#: admin/system-check/admin-page.php:86
+msgid ""
+"This is the maximum size of each individual upload to your site. You should "
+"increase it depending on your needs."
+msgstr ""
+"Este es el tamaño máximo de cada upload individual a su sitio. Debes "
+"aumentarlo dependiendo de tus necesidades."
+
+#: admin/system-check/admin-page.php:92
+msgid "Cron"
+msgstr "Cron"
+
+#: admin/system-check/admin-page.php:94
+msgid ""
+"It is strongly recommended that you configure a cron job in your server as "
+"described <a href=\"https://developer.wordpress.org/plugins/cron/hooking-"
+"into-the-system-task-scheduler/\">here</a>."
+msgstr ""
+"Se recomienda encarecidamente que configure un cron job en su servidor como "
+"se describe <a href=\"https://developer.wordpress.org/plugins/cron/hooking-"
+"into-the-system-task-scheduler/\">aquí</a>."
+
+#: admin/system-check/admin-page.php:96
+msgid ""
+"We can't test whether there is a cronjob set or not, so ignore this if you "
+"already configured it."
+msgstr ""
+"No podemos probar si hay un cronjob set o no, así que ignórelo si ya lo "
+"configuró."
+
+#: admin/system-check/class-tainacan-system-check.php:38
+msgid "Version supported, but you should consider upgrade to PHP 7"
+msgstr "Versión compatible, pero debería considerar actualizar a PHP 7"
+
+#: admin/system-check/class-tainacan-system-check.php:41
+msgid "This PHP Version is not supported. Please upgrade to PHP 5.6 or higher!"
+msgstr ""
+"Esta versión de PHP no es compatible. Por favor, actualice a PHP 5.6 o "
+"superior!"
+
+#: admin/system-check/class-tainacan-system-check.php:80
+#, php-format
+msgid ""
+"Tainacan requires your Permalink settings to be configured. Please visit "
+"%1$sPermalink settings%2$s and configure it."
+msgstr ""
+"Tainacan requiere que su configuración de Permalink esté configurada. Visite "
+"la %1$sConfiguración de Permalink%2$s y configúrelo."
+
+#: admin/system-check/class-tainacan-system-check.php:104
+#, php-format
+msgid ""
+"Your current configuratino is %ds. This is too little. Please increase it to "
+"at least 30s"
+msgstr ""
+"Su configuración actual es %ds. Esto es muy poco. Por favor aumentarlo a por "
+"lo menos 30s"
+
+#: admin/system-check/class-tainacan-system-check.php:110
+#, php-format
+msgid ""
+"Your current configuration is %d seconds. This is fine, but you should "
+"consider increase it to at least 240 seconds if possible"
+msgstr ""
+"Su configuración actual es %d segundos. Esto está bien, pero debería "
+"considerar aumentarlo a por lo menos 240 segundos si es posible"
+
+#: admin/system-check/class-tainacan-system-check.php:116
+#, php-format
+msgid "Your current configuratino is %ds. This is excellent."
+msgstr "Su configuración actual es %ds. Esto es excelente."
+
+#: admin/system-check/class-tainacan-system-check.php:133
+msgid ""
+"Your upload folder is not writable by the server. You must fix your folder "
+"permissions."
+msgstr ""
+"Su carpeta de upload no se puede escribir en el servidor. Debes arreglar los "
+"permisos de tu carpeta."
+
+#: admin/system-check/class-tainacan-system-check.php:138
+msgid "Your upload folder is writable!"
+msgstr "Su carpeta de upload es escribible!"
+
+#: admin/system-check/class-tainacan-system-check.php:170
+#, php-format
+msgid ""
+"Tainacan requires WordPress 4.8 or newer! Your version is %s. Please upgrade."
+msgstr ""
+"Tainacan requiere WordPress 4.8 o más nuevo! Tu versión es %s. Por favor "
+"actualice."
+
+#: admin/system-check/class-tainacan-system-check.php:178
+#, php-format
+msgid "%s - We were unable to check if any new versions are available."
+msgstr "%s: no hemos podido comprobar si hay nuevas versiones disponibles."
+
+#: admin/system-check/class-tainacan-system-check.php:195
+#, php-format
+msgid ""
+"You are running WordPress %1$s. This version is supported, but you should "
+"always keep you WordPress installation updated. ( Latest version is %2$s )"
+msgstr ""
+"Usted está ejecutando WordPress %1$s. Esta versión es compatible, pero "
+"siempre debe mantener su instalación de WordPress actualizada. (La última "
+"versión es %2$s)"
+
+#: admin/system-check/class-tainacan-system-check.php:204
+#, php-format
+msgid ""
+"You are running WordPress %1$s. ( Latest version is %2$s ) - We strongly "
+"urge you to update, as minor updates are often security related."
+msgstr ""
+"Usted está ejecutando WordPress %1$s. (La última versión es %2$s): le "
+"recomendamos encarecidamente que la actualice, ya que las actualizaciones "
+"menores a menudo están relacionadas con la seguridad."
+
+#: admin/system-check/class-tainacan-system-check.php:301
+msgid ""
+"This is used, among other things, to automatically extract the first page of "
+"PDFs to use as a thumbnail."
+msgstr ""
+"Esto se usa, entre otras cosas, para extraer automáticamente la primera "
+"página de PDF para usar como miniatura."
+
+#: admin/system-check/class-tainacan-system-check.php:307
+msgid ""
+"This is used for image processing, such as resizing and cropping images."
+msgstr ""
+"Esto se utiliza para el procesamiento de imágenes, como cambiar el tamaño y "
+"recortar imágenes."
+
+#: admin/system-check/class-tainacan-system-check.php:351
+#, php-format
+msgid "The %1$s module %2$s is not installed, or has been disabled."
+msgstr "El %1$s módulo %2$s no está instalado o se ha deshabilitado."
+
+#: admin/system-check/class-tainacan-system-check.php:352
+msgid "required"
+msgstr "requerido"
+
+#: admin/system-check/class-tainacan-system-check.php:352
+msgid "optional"
+msgstr "opcional"
+
+#: admin/system-check/class-tainacan-system-check.php:376
+msgid "All required and recommended modules are installed."
+msgstr "Todos los módulos requeridos y recomendados están instalados."
+
+#: admin/system-check/class-tainacan-system-check.php:391
+#, php-format
+msgid ""
+"We strongly recommend running %1$s version %2$s or higher. Future features "
+"may depend on this versions."
+msgstr ""
+"Recomendamos encarecidamente ejecutar %1$s versión %2$s o superior. Las "
+"características futuras pueden depender de estas versiones."
+
+#: admin/system-check/class-tainacan-system-check.php:401
+#, php-format
+msgid "Tainacan requires %1$s version %2$s or higher."
+msgstr "Tainacan requiere %1$s versión %2$s o superior."
+
+#: admin/system-check/class-tainacan-system-check.php:412
+#, php-format
+msgid ""
+"You are using a <code>wp-content/db.php</code> drop-in which might mean that "
+"a %s database is not being used."
+msgstr ""
+"Usted está utilizando un drop-in <code>wp-content/db.php</code>, lo que "
+"puede significar que no se está utilizando una base de datos %s."
+
+#: admin/system-check/class-tainacan-system-check.php:441
+#, php-format
+msgid "WordPress' utf8mb4 support requires MySQL version %s or greater"
+msgstr ""
+"El soporte de WordPress a el utf8mb4 requiere la versión de MySQL %s o mayor"
+
+#: admin/system-check/class-tainacan-system-check.php:448
+msgid "Your MySQL version supports utf8mb4"
+msgstr "Tu versión de MySQL soporta utf8mb4"
+
+#: admin/system-check/class-tainacan-system-check.php:457
+#, php-format
+msgid "WordPress' utf8mb4 support requires MariaDB version %s or greater"
+msgstr ""
+"El soporte de WordPress a el utf8mb4 requiere la versión de MariaDB %s o "
+"mayor"
+
+#: admin/system-check/class-tainacan-system-check.php:464
+msgid "Your MariaDB version supports utf8mb4"
+msgstr "Tu versión MariaDB soporta utf8mb4"
+
+#: admin/system-check/class-tainacan-system-check.php:488
+#: admin/system-check/class-tainacan-system-check.php:500
+#, php-format
+msgid ""
+"WordPress' utf8mb4 support requires MySQL client library (%1$s) version %2$s "
+"or newer."
+msgstr ""
+"El soporte de WordPress a el utf8mb4 requiere la (%1$s) versión %2$s de "
+"MySQL client library o mayor."
+
+#: admin/tainacan-admin-i18n.php:6
+msgid "Equal"
+msgstr "Igual"
+
+#: admin/tainacan-admin-i18n.php:7
+msgid "Not equal"
+msgstr "No es igual"
+
+#: admin/tainacan-admin-i18n.php:8
+msgid "Contains"
+msgstr "Contiene"
+
+#: admin/tainacan-admin-i18n.php:9
+msgid "Do not contain"
+msgstr "No contiene"
+
+#: admin/tainacan-admin-i18n.php:10
+msgid "Greater than"
+msgstr "Mayor que"
+
+#: admin/tainacan-admin-i18n.php:11
+msgid "Less than"
+msgstr "Menos que"
+
+#: admin/tainacan-admin-i18n.php:12
+msgid "Greater than or equal to"
+msgstr "Mayor qué o igual a"
+
+#: admin/tainacan-admin-i18n.php:13
+msgid "Less than or equal to"
+msgstr "Menos que o igual a"
+
+#: admin/tainacan-admin-i18n.php:16
+msgid "Repository"
+msgstr "Repositorio"
+
+#: admin/tainacan-admin-i18n.php:17
+#: classes/repositories/class-tainacan-collections.php:225
+#: classes/repositories/class-tainacan-collections.php:239
+#: classes/repositories/class-tainacan-taxonomies.php:79
+#: importer/class-tainacan-oaipmh-importer.php:735
+msgid "Collections"
+msgstr "Colecciones"
+
+#: admin/tainacan-admin-i18n.php:18 admin/tainacan-admin-i18n.php:94
+#: classes/repositories/class-tainacan-items.php:130
+msgid "Items"
+msgstr "Ítems"
+
+#: admin/tainacan-admin-i18n.php:19 admin/tainacan-admin-i18n.php:25
+#: admin/tainacan-admin-i18n.php:102
+#: classes/repositories/class-tainacan-filters.php:85
+#: classes/repositories/class-tainacan-metadata.php:210
+#: classes/repositories/class-tainacan-metadata.php:211
+#: classes/repositories/class-tainacan-metadata.php:221
+#: dev-interface/class-tainacan-dev-interface.php:100
+#: dev-interface/class-tainacan-dev-interface.php:243
+#: dev-interface/class-tainacan-dev-interface.php:315
+msgid "Metadata"
+msgstr "Metadatos"
+
+#: admin/tainacan-admin-i18n.php:20
+#: classes/repositories/class-tainacan-filters.php:108
+#: classes/repositories/class-tainacan-filters.php:119
+msgid "Filters"
+msgstr "Filtros"
+
+#: admin/tainacan-admin-i18n.php:21 admin/tainacan-admin-i18n.php:97
+#: classes/repositories/class-tainacan-taxonomies.php:94
+#: classes/repositories/class-tainacan-taxonomies.php:108
+#: importer/class-tainacan-oaipmh-importer.php:736
+msgid "Taxonomies"
+msgstr "Taxonomías"
+
+#: admin/tainacan-admin-i18n.php:22
+msgid "Activities"
+msgstr "Actividades"
+
+#: admin/tainacan-admin-i18n.php:23 admin/tainacan-admin-i18n.php:100
+#: classes/filter-types/autocomplete/class-tainacan-autocomplete.php:25
+#: classes/filter-types/autocomplete/class-tainacan-autocomplete.php:28
+#: classes/filter-types/autocomplete/class-tainacan-autocomplete.php:31
+#: classes/filter-types/taginput/class-tainacan-taginput.php:20
+#: classes/filter-types/taginput/class-tainacan-taginput.php:26
+#: classes/filter-types/taginput/class-tainacan-taginput.php:40
+#: classes/filter-types/taginput/class-tainacan-taginput.php:43
+#: classes/filter-types/taginput/class-tainacan-taginput.php:46
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:31
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:34
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:37
+#: classes/repositories/class-tainacan-collections.php:226
+#: classes/repositories/class-tainacan-filters.php:71
+#: classes/repositories/class-tainacan-items.php:59
+#: classes/repositories/class-tainacan-metadata.php:161
+msgid "Collection"
+msgstr "Colección"
+
+#: admin/tainacan-admin-i18n.php:24 admin/tainacan-admin-i18n.php:101
+#: classes/filter-types/autocomplete/class-tainacan-autocomplete.php:20
+#: classes/filter-types/taginput/class-tainacan-taginput.php:35
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:26
+#: classes/repositories/class-tainacan-items.php:131
+msgid "Item"
+msgstr "Ítem"
+
+#: admin/tainacan-admin-i18n.php:26 admin/tainacan-admin-i18n.php:104
+#: classes/repositories/class-tainacan-filters.php:109
+msgid "Filter"
+msgstr "Filtro"
+
+#: admin/tainacan-admin-i18n.php:27 admin/tainacan-admin-i18n.php:105
+#: admin/tainacan-admin-i18n.php:568
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:27
+#: classes/repositories/class-tainacan-taxonomies.php:95
+#: classes/repositories/class-tainacan-terms.php:67
+msgid "Taxonomy"
+msgstr "Taxonomía"
+
+#: admin/tainacan-admin-i18n.php:28 admin/tainacan-admin-i18n.php:107
+#: admin/tainacan-admin-i18n.php:215
+msgid "Activity"
+msgstr "Actividad"
+
+#: admin/tainacan-admin-i18n.php:29
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:36
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:42
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:51
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:59
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:66
+msgid "Term"
+msgstr "Término"
+
+#: admin/tainacan-admin-i18n.php:30 admin/tainacan-admin-i18n.php:98
+msgid "Terms"
+msgstr "Términos"
+
+#: admin/tainacan-admin-i18n.php:31
+msgid "Mapping"
+msgstr "Mapeo"
+
+#: admin/tainacan-admin-i18n.php:32 admin/tainacan-admin-i18n.php:121
+msgid "Importers"
+msgstr "Importadores"
+
+#: admin/tainacan-admin-i18n.php:33 admin/tainacan-admin-i18n.php:125
+msgid "Processes"
+msgstr "Procesos"
+
+#: admin/tainacan-admin-i18n.php:34
+msgid "Sequence"
+msgstr "Secuencia"
+
+#: admin/tainacan-admin-i18n.php:35 admin/tainacan-admin-i18n.php:124
+msgid "Exporters"
+msgstr "Exportadores"
+
+#: admin/tainacan-admin-i18n.php:38
+#: gutenberg-blocks/tainacan-items/items-grid/index.js:333
+msgid "Close"
+msgstr "Cerrar"
+
+#: admin/tainacan-admin-i18n.php:39
+msgid "Edit"
+msgstr "Editar"
+
+#: admin/tainacan-admin-i18n.php:40 admin/tainacan-admin-i18n.php:140
+msgid "Settings"
+msgstr "Configuración"
+
+#: admin/tainacan-admin-i18n.php:41
+msgid "New"
+msgstr "Nuevo"
+
+#: admin/tainacan-admin-i18n.php:42 admin/tainacan-admin-i18n.php:283
+msgid "Add value"
+msgstr "Añadir valor"
+
+#: admin/tainacan-admin-i18n.php:43
+msgid "Import"
+msgstr "Importar"
+
+#: admin/tainacan-admin-i18n.php:44
+msgid "Export"
+msgstr "Exportar"
+
+#: admin/tainacan-admin-i18n.php:45
+#: gutenberg-blocks/tainacan-collections/collections-list/index.js:283
+#: gutenberg-blocks/tainacan-items/items-list/index.js:323
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:297
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: admin/tainacan-admin-i18n.php:46 admin/tainacan-admin-i18n.php:284
+msgid "Remove value"
+msgstr "Quitar valor"
+
+#: admin/tainacan-admin-i18n.php:47
+msgid "Remove filter"
+msgstr "Quitar filtro"
+
+#: admin/tainacan-admin-i18n.php:48
+msgid "Save"
+msgstr "Guardar"
+
+#: admin/tainacan-admin-i18n.php:49
+msgid "Next"
+msgstr "Próximo"
+
+#: admin/tainacan-admin-i18n.php:50
+msgid "Previous"
+msgstr "Anterior"
+
+#: admin/tainacan-admin-i18n.php:51
+msgid "Back"
+msgstr "Atrás"
+
+#: admin/tainacan-admin-i18n.php:52
+msgid "Exit"
+msgstr "Salida"
+
+#: admin/tainacan-admin-i18n.php:53
+msgid "View"
+msgstr "Vista"
+
+#: admin/tainacan-admin-i18n.php:54 admin/tainacan-admin-i18n.php:407
+msgid "Search"
+msgstr "Búsqueda"
+
+#: admin/tainacan-admin-i18n.php:55
+msgid "Advanced Search"
+msgstr "Búsqueda avanzada"
+
+#: admin/tainacan-admin-i18n.php:56
+msgid "Continue"
+msgstr "Continuar"
+
+#: admin/tainacan-admin-i18n.php:57
+msgid "Approve"
+msgstr "Aprobar"
+
+#: admin/tainacan-admin-i18n.php:58
+msgid "Not approve"
+msgstr "No aprobar"
+
+#: admin/tainacan-admin-i18n.php:59
+msgid "Add one item"
+msgstr "Añadir un ítem"
+
+#: admin/tainacan-admin-i18n.php:60
+msgid "Bulk add items"
+msgstr "Agrega masivamente ítems"
+
+#: admin/tainacan-admin-i18n.php:61
+msgid "Add items from an external source"
+msgstr "Agregar ítems de una fuente externa"
+
+#: admin/tainacan-admin-i18n.php:62
+msgid "New mapped collection"
+msgstr "Nueva colección mapeada"
+
+#: admin/tainacan-admin-i18n.php:63
+msgid "New Blank Collection"
+msgstr "Nueva colección en blanco"
+
+#: admin/tainacan-admin-i18n.php:64
+msgid "Split"
+msgstr "Dividir"
+
+#: admin/tainacan-admin-i18n.php:65
+msgid "Unified"
+msgstr "Unificado"
+
+#: admin/tainacan-admin-i18n.php:66
+msgid "Add another search criterion"
+msgstr "Añadir otro criterio de búsqueda"
+
+#: admin/tainacan-admin-i18n.php:67
+msgid "Add one search criterion"
+msgstr "Añadir un criterio de búsqueda"
+
+#: admin/tainacan-admin-i18n.php:68
+msgid "Clear search"
+msgstr "Borrar búsqueda"
+
+#: admin/tainacan-admin-i18n.php:69
+msgid "Run"
+msgstr "Ejecutar"
+
+#: admin/tainacan-admin-i18n.php:70
+msgid "Edit search"
+msgstr "Editar sección"
+
+#: admin/tainacan-admin-i18n.php:71
+msgid "Apply"
+msgstr "Aplicar"
+
+#: admin/tainacan-admin-i18n.php:72
+msgid "Add another edition criterion"
+msgstr "Añadir otro criterio de edición"
+
+#: admin/tainacan-admin-i18n.php:73
+msgid "Add one edition criterion"
+msgstr "Añadir un criterio de edición"
+
+#: admin/tainacan-admin-i18n.php:74
+msgid "Set new value"
+msgstr "Definir nuevo valor"
+
+#: admin/tainacan-admin-i18n.php:75
+msgid "Replace value"
+msgstr "Reemplazar valor"
+
+#: admin/tainacan-admin-i18n.php:76
+#: gutenberg-blocks/tainacan-collections/collections-list/index.js:289
+#: gutenberg-blocks/tainacan-items/items-list/index.js:447
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:420
+msgid "Finish"
+msgstr "Terminar"
+
+#: admin/tainacan-admin-i18n.php:77
+msgid "select to create"
+msgstr "seleccione para crear"
+
+#: admin/tainacan-admin-i18n.php:78
+msgid "New action"
+msgstr "Nueva accion"
+
+#: admin/tainacan-admin-i18n.php:79
+msgid "Clear selected radio"
+msgstr "Borrar seleccionado"
+
+#: admin/tainacan-admin-i18n.php:80
+msgid "Undo"
+msgstr "Deshacer"
+
+#: admin/tainacan-admin-i18n.php:83 admin/tainacan-admin-i18n.php:294
+msgid "Publish"
+msgstr "Publicar"
+
+#: admin/tainacan-admin-i18n.php:84
+msgid "Public"
+msgstr "Público"
+
+#: admin/tainacan-admin-i18n.php:85 admin/tainacan-admin-i18n.php:239
+msgid "Draft"
+msgstr "Borrador"
+
+#: admin/tainacan-admin-i18n.php:86
+msgid "Private"
+msgstr "Privado"
+
+#: admin/tainacan-admin-i18n.php:87 admin/tainacan-admin-i18n.php:240
+msgid "Trash"
+msgstr "Papelera"
+
+#: admin/tainacan-admin-i18n.php:88
+msgid "Automatic Draft"
+msgstr "Borrador automático"
+
+#: admin/tainacan-admin-i18n.php:89
+msgid "Visible to everyone"
+msgstr "Visible para todos"
+
+#: admin/tainacan-admin-i18n.php:90
+msgid "Visible only for editors"
+msgstr "Visible solamente para los editores"
+
+#: admin/tainacan-admin-i18n.php:93
+msgid "Repository Collections"
+msgstr "Colecciones del repositorio"
+
+#: admin/tainacan-admin-i18n.php:95
+msgid "Repository Metadata"
+msgstr "Metadatos del repositorio"
+
+#: admin/tainacan-admin-i18n.php:96
+msgid "Repository Filters"
+msgstr "Filtros de repositorio"
+
+#: admin/tainacan-admin-i18n.php:99
+msgid "Repository Activities"
+msgstr "Actividades de repositorio"
+
+#: admin/tainacan-admin-i18n.php:103
+msgid "Collection Activities"
+msgstr "Actividades de colección"
+
+#: admin/tainacan-admin-i18n.php:106
+msgid "Term edition"
+msgstr "Edición de término"
+
+#: admin/tainacan-admin-i18n.php:108
+msgid "Collection Creation"
+msgstr "Creación de la colección"
+
+#: admin/tainacan-admin-i18n.php:109
+msgid "Taxonomy Creation"
+msgstr "Creación de la taxonomía"
+
+#: admin/tainacan-admin-i18n.php:110
+msgid "Create Item on Collection"
+msgstr "Crear ítem en la colección"
+
+#: admin/tainacan-admin-i18n.php:111
+msgid "Filter Creation"
+msgstr "Creación del filtro"
+
+#: admin/tainacan-admin-i18n.php:112
+msgid "Settings of Collection"
+msgstr "Configuración de la colección"
+
+#: admin/tainacan-admin-i18n.php:113
+#: classes/repositories/class-tainacan-items.php:134
+msgid "Edit Item"
+msgstr "Editar ítem"
+
+#: admin/tainacan-admin-i18n.php:114
+msgid "Taxonomy Edition"
+msgstr "Edición de taxonomía"
+
+#: admin/tainacan-admin-i18n.php:115
+msgid "Filter Edition"
+msgstr "Edición de filtro"
+
+#: admin/tainacan-admin-i18n.php:116
+msgid "Metadata Edition"
+msgstr "Edición de metadatos"
+
+#: admin/tainacan-admin-i18n.php:117
+msgid "Edit Metadata of"
+msgstr "Editar metadatos de"
+
+#: admin/tainacan-admin-i18n.php:118
+msgid "Edit Filters of"
+msgstr "Editar filtros de"
+
+#: admin/tainacan-admin-i18n.php:119 importer/class-tainacan-bg-importer.php:19
+msgid "Importer"
+msgstr "Importador"
+
+#: admin/tainacan-admin-i18n.php:120
+msgid "Metadata Mapping"
+msgstr "Mapeo de metadatos"
+
+#: admin/tainacan-admin-i18n.php:122
+msgid "Export Collection Page"
+msgstr "Exportar página de colección"
+
+#: admin/tainacan-admin-i18n.php:123
+msgid "Export Item"
+msgstr "Exportar Ítem"
+
+#: admin/tainacan-admin-i18n.php:126
+msgid "Bulk Add Items"
+msgstr "Añadir ítems en masa"
+
+#: admin/tainacan-admin-i18n.php:127 exporter/class-tainacan-bg-exporter.php:14
+msgid "Exporter"
+msgstr "Exportador"
+
+#: admin/tainacan-admin-i18n.php:130
+msgid "Clear"
+msgstr "Limpiar"
+
+#: admin/tainacan-admin-i18n.php:131
+msgid "Clear filters"
+msgstr "Borrar filtros"
+
+#: admin/tainacan-admin-i18n.php:132
+msgid "and"
+msgstr "y"
+
+#: admin/tainacan-admin-i18n.php:133
+msgid "Selected"
+msgstr "Seleccionado"
+
+#: admin/tainacan-admin-i18n.php:134
+msgid "New Search"
+msgstr "Nueva búsqueda"
+
+#: admin/tainacan-admin-i18n.php:135
+msgid "Items found"
+msgstr "Ítems encontrados"
+
+#: admin/tainacan-admin-i18n.php:136
+msgid "Menu"
+msgstr "Menú"
+
+#: admin/tainacan-admin-i18n.php:137
+msgid "Main Menu"
+msgstr "Menú principal"
+
+#: admin/tainacan-admin-i18n.php:138
+msgid "Collection Menu"
+msgstr "Menú de la colección"
+
+#: admin/tainacan-admin-i18n.php:139
+#: classes/repositories/class-tainacan-items.php:36
+#: classes/repositories/class-tainacan-logs.php:39
+msgid "Title"
+msgstr "Título"
+
+#: admin/tainacan-admin-i18n.php:141
+msgid "Actions"
+msgstr "Acciones"
+
+#: admin/tainacan-admin-i18n.php:142
+#: classes/repositories/class-tainacan-collections.php:41
+#: classes/repositories/class-tainacan-filters.php:33
+#: classes/repositories/class-tainacan-metadata.php:53
+#: classes/repositories/class-tainacan-taxonomies.php:38
+#: classes/repositories/class-tainacan-terms.php:43
+#: gutenberg-blocks/tainacan-collections/collections-list/index.js:567
+#: gutenberg-blocks/tainacan-items/items-list/index.js:823
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:768
+msgid "Name"
+msgstr "Nombre"
+
+#: admin/tainacan-admin-i18n.php:143
+#: classes/repositories/class-tainacan-collections.php:87
+#: classes/repositories/class-tainacan-filters.php:48
+#: classes/repositories/class-tainacan-items.php:51
+#: classes/repositories/class-tainacan-logs.php:67
+#: classes/repositories/class-tainacan-metadata.php:85
+#: classes/repositories/class-tainacan-taxonomies.php:46
+#: classes/repositories/class-tainacan-terms.php:59
+msgid "Description"
+msgstr "Descripción"
+
+#: admin/tainacan-admin-i18n.php:144
+#: classes/repositories/class-tainacan-collections.php:48
+#: classes/repositories/class-tainacan-items.php:44
+#: classes/repositories/class-tainacan-repository.php:378
+#: classes/repositories/class-tainacan-repository.php:380
+msgid "Status"
+msgstr "Estado"
+
+#: admin/tainacan-admin-i18n.php:145
+#: classes/repositories/class-tainacan-collections.php:95
+#: classes/repositories/class-tainacan-logs.php:75
+#: classes/repositories/class-tainacan-metadata.php:61
+#: classes/repositories/class-tainacan-taxonomies.php:54
+msgid "Slug"
+msgstr "Slug"
+
+#: admin/tainacan-admin-i18n.php:146
+#: gutenberg-blocks/tainacan-collections/collections-list/index.js:553
+#: gutenberg-blocks/tainacan-items/items-list/index.js:809
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:755
+msgid "Image"
+msgstr "Imagen"
+
+#: admin/tainacan-admin-i18n.php:147
+#: classes/repositories/class-tainacan-collections.php:195
+#: classes/repositories/class-tainacan-items.php:107
+msgid "Thumbnail"
+msgstr "Miniatura"
+
+#: admin/tainacan-admin-i18n.php:148
+msgid "Empty Thumbnail"
+msgstr "Miniatura vacía"
+
+#: admin/tainacan-admin-i18n.php:149
+msgid "Empty Term Image"
+msgstr "Imagen de término vacía"
+
+#: admin/tainacan-admin-i18n.php:150
+#: classes/repositories/class-tainacan-collections.php:187
+msgid "Moderators"
+msgstr "Moderadores"
+
+#: admin/tainacan-admin-i18n.php:151
+msgid "Parent collection"
+msgstr "Colección pariente"
+
+#: admin/tainacan-admin-i18n.php:152
+msgid "No parent collection"
+msgstr "No hay colección pariente"
+
+#: admin/tainacan-admin-i18n.php:153
+msgid "Button View"
+msgstr "Botón Ver"
+
+#: admin/tainacan-admin-i18n.php:154
+msgid "Button Edit"
+msgstr "Botón Editar"
+
+#: admin/tainacan-admin-i18n.php:155
+msgid "Button Delete"
+msgstr "Botón Eliminar"
+
+#: admin/tainacan-admin-i18n.php:156
+msgid "Button Remove from Trash"
+msgstr "Botón Eliminar de la Papelera"
+
+#: admin/tainacan-admin-i18n.php:157
+msgid "Button Delete Header Image"
+msgstr "Botón Borrar imagen de cabecera"
+
+#: admin/tainacan-admin-i18n.php:158
+msgid "Button Edit Thumbnail"
+msgstr "Botón Editar miniatura"
+
+#: admin/tainacan-admin-i18n.php:159
+msgid "Button Edit Header Image"
+msgstr "Botón Editar imagen de cabecera"
+
+#: admin/tainacan-admin-i18n.php:160
+msgid "Button Edit Document"
+msgstr "Botón Editar Documento"
+
+#: admin/tainacan-admin-i18n.php:161
+msgid "Button Delete Document"
+msgstr "Botón Eliminar documento"
+
+#: admin/tainacan-admin-i18n.php:162
+msgid "Choose Thumbnail"
+msgstr "Elegir miniatura"
+
+#: admin/tainacan-admin-i18n.php:163
+msgid "Button Delete Thumbnail"
+msgstr "Botón de borrar miniatura"
+
+#: admin/tainacan-admin-i18n.php:164
+msgid "Collections per Page:"
+msgstr "Colecciones por página:"
+
+#: admin/tainacan-admin-i18n.php:165
+msgid "Taxonomies per Page:"
+msgstr "Taxonomías por página:"
+
+#: admin/tainacan-admin-i18n.php:166
+msgid "Activities per Page:"
+msgstr "Actividades por página:"
+
+#: admin/tainacan-admin-i18n.php:167
+msgid "Items per Page:"
+msgstr "Ítems por página:"
+
+#: admin/tainacan-admin-i18n.php:168
+msgid "Processes per Page:"
+msgstr "Procesos por página:"
+
+#: admin/tainacan-admin-i18n.php:169
+msgid "Go to Page:"
+msgstr "Ir a la página:"
+
+#: admin/tainacan-admin-i18n.php:170
+msgid "Active Metadata"
+msgstr "Metadatos activos"
+
+#: admin/tainacan-admin-i18n.php:171
+msgid "Available Metadata"
+msgstr "Metadatos disponibles"
+
+#: admin/tainacan-admin-i18n.php:172
+msgid "Available Metadata Types"
+msgstr "Tipos de metadatos disponibles"
+
+#: admin/tainacan-admin-i18n.php:173
+msgid "Active Filters"
+msgstr "Filtros activos"
+
+#: admin/tainacan-admin-i18n.php:174
+msgid "Filter Type"
+msgstr "Tipo de filtros"
+
+#: admin/tainacan-admin-i18n.php:175
+msgid "Available Filters"
+msgstr "Filtros disponibles"
+
+#: admin/tainacan-admin-i18n.php:176
+msgid "Available Filter Types"
+msgstr "Tipos de filtros disponibles"
+
+#: admin/tainacan-admin-i18n.php:177
+msgid "per Page"
+msgstr "por página"
+
+#: admin/tainacan-admin-i18n.php:178
+msgid "Displayed metadata"
+msgstr "Metadatos mostrados"
+
+#: admin/tainacan-admin-i18n.php:179
+#: classes/repositories/class-tainacan-metadata.php:102
+msgid "Required"
+msgstr "Requerido"
+
+#: admin/tainacan-admin-i18n.php:180
+msgid "Allow multiple values"
+msgstr "Permitir múltiples valores"
+
+#: admin/tainacan-admin-i18n.php:181
+#: classes/repositories/class-tainacan-metadata.php:147
+msgid "Default value"
+msgstr "Valor por defecto"
+
+#: admin/tainacan-admin-i18n.php:182
+#: classes/repositories/class-tainacan-metadata.php:111
+msgid "Unique value"
+msgstr "Valor único"
+
+#: admin/tainacan-admin-i18n.php:183
+#: importer/class-tainacan-test-importer.php:176
+#: importer/class-tainacan-test-importer.php:230
+msgid "Yes"
+msgstr "Sí"
+
+#: admin/tainacan-admin-i18n.php:184
+msgid "No"
+msgstr "No"
+
+#: admin/tainacan-admin-i18n.php:185
+msgid "Approved"
+msgstr "Aprobada"
+
+#: admin/tainacan-admin-i18n.php:186
+msgid "Collection Related"
+msgstr "Colección relacionada"
+
+#: admin/tainacan-admin-i18n.php:187
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:58
+msgid "Metadata for search"
+msgstr "Metadatos para búsqueda"
+
+#: admin/tainacan-admin-i18n.php:188
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:62
+msgid "Allow repeated items"
+msgstr "Permitir ítems repetidos"
+
+#: admin/tainacan-admin-i18n.php:189
+msgid "Select taxonomy"
+msgstr "Seleccione taxonomía"
+
+#: admin/tainacan-admin-i18n.php:190
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:85
+msgid "Input type"
+msgstr "Tipo de entrada"
+
+#: admin/tainacan-admin-i18n.php:191
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:89
+msgid "Allow new terms"
+msgstr "Permitir nuevos términos"
+
+#: admin/tainacan-admin-i18n.php:192
+msgid "Select"
+msgstr "Seleccione"
+
+#: admin/tainacan-admin-i18n.php:193
+msgid "Insert options"
+msgstr "Inserte opciones"
+
+#: admin/tainacan-admin-i18n.php:194
+msgid "Attachments"
+msgstr "Adjuntos"
+
+#: admin/tainacan-admin-i18n.php:195
+msgid "Attachment"
+msgstr "Adjunto"
+
+#: admin/tainacan-admin-i18n.php:196
+msgid "Enabled"
+msgstr "Habilitado"
+
+#: admin/tainacan-admin-i18n.php:197
+msgid "Disabled"
+msgstr "Inhabilitado"
+
+#: admin/tainacan-admin-i18n.php:198
+msgid "Creation"
+msgstr "Creación"
+
+#: admin/tainacan-admin-i18n.php:199
+msgid "Creation date"
+msgstr "Fecha de creación"
+
+#: admin/tainacan-admin-i18n.php:200
+msgid "Collection Items"
+msgstr "Ítems de la colección"
+
+#: admin/tainacan-admin-i18n.php:201
+msgid "Collection Metadata"
+msgstr "Metadatos de la colección"
+
+#: admin/tainacan-admin-i18n.php:202
+msgid "Collection Filters"
+msgstr "Filtros de la colección"
+
+#: admin/tainacan-admin-i18n.php:203
+msgid "Parent Term"
+msgstr "Término pariente"
+
+#: admin/tainacan-admin-i18n.php:204
+msgid "children terms"
+msgstr "término hijo"
+
+#: admin/tainacan-admin-i18n.php:205
+msgid "Create New Term"
+msgstr "Crear nuevo término"
+
+#: admin/tainacan-admin-i18n.php:206
+msgid "New Child"
+msgstr "Nuevo hijo"
+
+#: admin/tainacan-admin-i18n.php:207
+msgid "Taxonomy Terms"
+msgstr "Términos de la taxonomía"
+
+#: admin/tainacan-admin-i18n.php:208
+msgid "No parent term"
+msgstr "Sin término pariente"
+
+#: admin/tainacan-admin-i18n.php:209
+msgid "Term without name"
+msgstr "Término sin nombre"
+
+#: admin/tainacan-admin-i18n.php:210
+msgid "Inherited"
+msgstr "Heredado"
+
+#: admin/tainacan-admin-i18n.php:211
+msgid "Core Title"
+msgstr "Título principal"
+
+#: admin/tainacan-admin-i18n.php:212
+#: classes/metadata-types/core-description/class-tainacan-core-description.php:22
+#: classes/metadata-types/core-title/class-tainacan-core-title.php:22
+msgid "Core Description"
+msgstr "Descripción principal"
+
+#: admin/tainacan-admin-i18n.php:213
+msgid "Sorting"
+msgstr "Clasificación"
+
+#: admin/tainacan-admin-i18n.php:214
+msgid "Activity date"
+msgstr "Fecha de actividad"
+
+#: admin/tainacan-admin-i18n.php:216
+#: classes/repositories/class-tainacan-collections.php:178
+#: classes/repositories/class-tainacan-terms.php:84
+msgid "Header Image"
+msgstr "Imagen de cabecera"
+
+#: admin/tainacan-admin-i18n.php:217
+msgid "Empty Header Image"
+msgstr "Imagen de cabecera vacía"
+
+#: admin/tainacan-admin-i18n.php:218
+#: classes/repositories/class-tainacan-collections.php:160
+msgid "Enable Cover Page"
+msgstr "Habilitar página de portada"
+
+#: admin/tainacan-admin-i18n.php:219
+msgid "Cover Page"
+msgstr "Página de portada"
+
+#: admin/tainacan-admin-i18n.php:220
+msgid "Allow Comments"
+msgstr "Permitir comentarios"
+
+#: admin/tainacan-admin-i18n.php:221
+#: classes/repositories/class-tainacan-collections.php:118
+msgid "Default Displayed Metadata"
+msgstr "Metadatos mostrados por defecto"
+
+#: admin/tainacan-admin-i18n.php:222
+msgid "Display on Listing"
+msgstr "Mostrar en la lista"
+
+#: admin/tainacan-admin-i18n.php:223
+msgid "Display by default"
+msgstr "Mostrar por defecto"
+
+#: admin/tainacan-admin-i18n.php:224
+msgid "Never displayed"
+msgstr "Nunca se muestra"
+
+#: admin/tainacan-admin-i18n.php:225
+msgid "Not display by default"
+msgstr "No se muestra por defecto"
+
+#: admin/tainacan-admin-i18n.php:226
+msgid "Attach to item"
+msgstr "Adjuntar al ítem"
+
+#: admin/tainacan-admin-i18n.php:227
+#: classes/repositories/class-tainacan-items.php:99
+msgid "Document"
+msgstr "Documento"
+
+#: admin/tainacan-admin-i18n.php:228
+msgid "Empty document"
+msgstr "Documento vacío"
+
+#: admin/tainacan-admin-i18n.php:229
+msgid "File"
+msgstr "Archivo"
+
+#: admin/tainacan-admin-i18n.php:230 admin/tainacan-admin-i18n.php:562
+#: classes/metadata-types/text/class-tainacan-text.php:18
+msgid "Text"
+msgstr "Texto"
+
+#: admin/tainacan-admin-i18n.php:231
+msgid "URL"
+msgstr "URL"
+
+#: admin/tainacan-admin-i18n.php:232
+msgid "Select File"
+msgstr "Seleccionar archivo"
+
+#: admin/tainacan-admin-i18n.php:233
+msgid "Expand all"
+msgstr "Expandir todo"
+
+#: admin/tainacan-admin-i18n.php:234
+msgid "Collapse all"
+msgstr "Desplegar todo"
+
+#: admin/tainacan-admin-i18n.php:235
+msgid "View Term"
+msgstr "Ver término"
+
+#: admin/tainacan-admin-i18n.php:236
+msgid "All items"
+msgstr "Todos los ítems"
+
+#: admin/tainacan-admin-i18n.php:237
+msgid "All collections"
+msgstr "Todas las colecciones"
+
+#: admin/tainacan-admin-i18n.php:238
+msgid "All taxonomies"
+msgstr "Todas las taxonomias"
+
+#: admin/tainacan-admin-i18n.php:241
+msgid "Bulk actions"
+msgstr "Acciones en masa"
+
+#: admin/tainacan-admin-i18n.php:242 admin/tainacan-admin-i18n.php:387
+msgid "Delete selected collections"
+msgstr "Elimine las colecciones seleccionadas"
+
+#: admin/tainacan-admin-i18n.php:243
+msgid "Edit selected collections"
+msgstr "Edite las colecciones seleccionadas"
+
+#: admin/tainacan-admin-i18n.php:244
+msgid "Delete permanently"
+msgstr "Borrar permanentemente"
+
+#: admin/tainacan-admin-i18n.php:245
+msgid "Send to trash"
+msgstr "Enviar a la basura"
+
+#: admin/tainacan-admin-i18n.php:246 admin/tainacan-admin-i18n.php:389
+msgid "Delete selected taxonomies"
+msgstr "Elimine las categorías seleccionadas"
+
+#: admin/tainacan-admin-i18n.php:247
+msgid "Bulk edit selected items"
+msgstr "Edición masiva de elementos seleccionados"
+
+#: admin/tainacan-admin-i18n.php:248
+msgid "Edit selected items in sequence"
+msgstr "Editar elementos seleccionados en secuencia"
+
+#: admin/tainacan-admin-i18n.php:249
+msgid "Edit selected taxonomies"
+msgstr "Edite todas las categorías seleccionadas"
+
+#: admin/tainacan-admin-i18n.php:250
+msgid "Select all collections on page"
+msgstr "Seleccione todas las colecciones en la página"
+
+#: admin/tainacan-admin-i18n.php:251
+msgid "Select all items on page"
+msgstr "Seleccione todos los ítems en la página"
+
+#: admin/tainacan-admin-i18n.php:252
+msgid "Select all taxonomies on page"
+msgstr "Seleccione todas las categorías en la página"
+
+#: admin/tainacan-admin-i18n.php:253
+msgid "Select all processes on page"
+msgstr "Seleccionar todos los procesos en la página"
+
+#: admin/tainacan-admin-i18n.php:254
+msgid "Edit attachments"
+msgstr "Editar los adjuntos"
+
+#: admin/tainacan-admin-i18n.php:255
+msgid "Blank collection"
+msgstr "Colección en blanco"
+
+#: admin/tainacan-admin-i18n.php:256
+msgid "Dublin Core"
+msgstr "Dublin Core"
+
+#: admin/tainacan-admin-i18n.php:257
+msgid "Created by"
+msgstr "Creado por"
+
+#: admin/tainacan-admin-i18n.php:258
+msgid "Apply changes"
+msgstr "Aplique los cambios"
+
+#: admin/tainacan-admin-i18n.php:259
+msgid "View mode"
+msgstr "Modo de vista"
+
+#: admin/tainacan-admin-i18n.php:260
+#: classes/repositories/class-tainacan-collections.php:127
+msgid "Default view mode"
+msgstr "Modo de vista por defecto"
+
+#: admin/tainacan-admin-i18n.php:261
+#: classes/repositories/class-tainacan-collections.php:135
+msgid "Enabled view modes"
+msgstr "Modos de vista habilitados"
+
+#: admin/tainacan-admin-i18n.php:262
+msgid "View modes available on theme"
+msgstr "Modos de vista disponibles en tema"
+
+#: admin/tainacan-admin-i18n.php:263
+msgid "Warning"
+msgstr "Advertencia"
+
+#: admin/tainacan-admin-i18n.php:264
+msgid "Error"
+msgstr "Error"
+
+#: admin/tainacan-admin-i18n.php:265 admin/tainacan-admin-i18n.php:266
+msgid "Thumbnails"
+msgstr "Miniaturas"
+
+#: admin/tainacan-admin-i18n.php:267
+#: theme-helper/class-tainacan-theme-helper.php:63
+msgid "Table"
+msgstr "Mesa"
+
+#: admin/tainacan-admin-i18n.php:268
+#: theme-helper/class-tainacan-theme-helper.php:70
+msgid "Cards"
+msgstr "Tarjetas"
+
+#: admin/tainacan-admin-i18n.php:269
+#: theme-helper/class-tainacan-theme-helper.php:78
+msgid "Records"
+msgstr "Archivos"
+
+#: admin/tainacan-admin-i18n.php:270
+#: theme-helper/class-tainacan-theme-helper.php:86
+msgid "Masonry"
+msgstr "Mosaico"
+
+#: admin/tainacan-admin-i18n.php:271
+msgid "Visualization"
+msgstr "Visualización"
+
+#: admin/tainacan-admin-i18n.php:272
+msgid "Available Importers"
+msgstr "Importadores disponibles"
+
+#: admin/tainacan-admin-i18n.php:273
+msgid "Target Collection"
+msgstr "Colección objetivo"
+
+#: admin/tainacan-admin-i18n.php:274
+msgid "Source file"
+msgstr "Archivo fuente"
+
+#: admin/tainacan-admin-i18n.php:275
+msgid "URL Source link"
+msgstr "URL fuente de enlace"
+
+#: admin/tainacan-admin-i18n.php:276
+msgid "Metadata mapping"
+msgstr "Mapeo de metadatos"
+
+#: admin/tainacan-admin-i18n.php:277
+msgid "Select metadatum"
+msgstr "Seleccione metadato"
+
+#: admin/tainacan-admin-i18n.php:278
+msgid "Create metadatum"
+msgstr "Crear metadato"
+
+#: admin/tainacan-admin-i18n.php:279 admin/tainacan-admin-i18n.php:413
+msgid "Select a metadatum type"
+msgstr "Seleccione un tipo de metadato"
+
+#: admin/tainacan-admin-i18n.php:280
+msgid "Add more metadata"
+msgstr "Añadir más metadatos"
+
+#: admin/tainacan-admin-i18n.php:281
+msgid "From source collection"
+msgstr "De la colección de origen"
+
+#: admin/tainacan-admin-i18n.php:282
+msgid "To target collection"
+msgstr "A la colección objetivo"
+
+#: admin/tainacan-admin-i18n.php:285
+msgid "Create new page"
+msgstr "Crear nueva página"
+
+#: admin/tainacan-admin-i18n.php:286
+msgid "Total items"
+msgstr "Ítems totales"
+
+#: admin/tainacan-admin-i18n.php:287
+#: classes/filter-types/checkbox/class-tainacan-checkbox.php:55
+#: classes/filter-types/taxonomy/class-tainacan-taxonomycheckbox.php:55
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:70
+msgid "View all"
+msgstr "Ver todo"
+
+#: admin/tainacan-admin-i18n.php:288
+msgid "until"
+msgstr "hasta"
+
+#: admin/tainacan-admin-i18n.php:289
+msgid "Visibility"
+msgstr "Visibilidad"
+
+#: admin/tainacan-admin-i18n.php:290
+msgid "Discard"
+msgstr "Descartar"
+
+#: admin/tainacan-admin-i18n.php:291
+msgid "Save as draft"
+msgstr "Guardar como borrador"
+
+#: admin/tainacan-admin-i18n.php:292
+msgid "Update draft"
+msgstr "Borrador de actualización"
+
+#: admin/tainacan-admin-i18n.php:293
+msgid "Return to draft"
+msgstr "Volver al borrador"
+
+#: admin/tainacan-admin-i18n.php:295
+msgid "Update"
+msgstr "Actualizar"
+
+#: admin/tainacan-admin-i18n.php:296
+msgid "Mapper Metadata"
+msgstr "Metadatos del mapeador"
+
+#: admin/tainacan-admin-i18n.php:297
+msgid "Add more mapper's metadata"
+msgstr "Añadir más metadatos del mapeador"
+
+#: admin/tainacan-admin-i18n.php:298
+msgid "Exposer URLs"
+msgstr "URLs del expositor"
+
+#: admin/tainacan-admin-i18n.php:299
+msgid "values only, no metadata scheme"
+msgstr "solo valores, sin esquema de metadatos"
+
+#: admin/tainacan-admin-i18n.php:300
+msgid "exposer"
+msgstr "expositor"
+
+#: admin/tainacan-admin-i18n.php:301
+msgid "mapper"
+msgstr "mapeador"
+
+#: admin/tainacan-admin-i18n.php:302
+msgid "There are no details about this process"
+msgstr "There are no details about this process"
+
+#: admin/tainacan-admin-i18n.php:303
+msgid "Queued on:"
+msgstr "En cola:"
+
+#: admin/tainacan-admin-i18n.php:304
+msgid "Last processed on:"
+msgstr "Último procesado en:"
+
+#: admin/tainacan-admin-i18n.php:305
+msgid "Progress"
+msgstr "Progreso"
+
+#: admin/tainacan-admin-i18n.php:306
+#: classes/class-tainacan-background-process.php:196
+msgid "Process completed"
+msgstr "Proceso completado"
+
+#: admin/tainacan-admin-i18n.php:307
+msgid "Process completed with errors"
+msgstr "Proceso completado con errores"
+
+#: admin/tainacan-admin-i18n.php:308
+msgid "Process cancelled by user"
+msgstr "Proceso cancelado por el usuario"
+
+#: admin/tainacan-admin-i18n.php:309
+msgid "Process paused"
+msgstr "Proceso pausado"
+
+#: admin/tainacan-admin-i18n.php:310
+msgid "Process waiting"
+msgstr "Proceso en espera"
+
+#: admin/tainacan-admin-i18n.php:311 admin/tainacan-admin-i18n.php:312
+msgid "Stop process"
+msgstr "Detener el proceso"
+
+#: admin/tainacan-admin-i18n.php:313
+msgid "Process failed"
+msgstr "Proceso fallido"
+
+#: admin/tainacan-admin-i18n.php:314
+msgid "Max options to show"
+msgstr "Max opciones para mostrar"
+
+#: admin/tainacan-admin-i18n.php:315
+msgid "Unamed process"
+msgstr "Proceso sin nombre"
+
+#: admin/tainacan-admin-i18n.php:316
+msgid "Semantic Uri"
+msgstr "Uri semantico"
+
+#: admin/tainacan-admin-i18n.php:317
+msgid "View collection"
+msgstr "Ver colección"
+
+#: admin/tainacan-admin-i18n.php:318
+msgid "View more"
+msgstr "Ver más"
+
+#: admin/tainacan-admin-i18n.php:319
+msgid "Log file"
+msgstr "Archivo de registro"
+
+#: admin/tainacan-admin-i18n.php:320
+msgid "Error Log file"
+msgstr "Archivo de registro de errores"
+
+#: admin/tainacan-admin-i18n.php:321
+msgid "Import items"
+msgstr "Importar ítems"
+
+#: admin/tainacan-admin-i18n.php:322
+msgid "Hide filters menu"
+msgstr "Ocultar el menú de filtros"
+
+#: admin/tainacan-admin-i18n.php:323
+msgid "Show filters menu"
+msgstr "Mostrar filtros de menú"
+
+#: admin/tainacan-admin-i18n.php:324
+msgid "Select all items"
+msgstr "Seleccionar todos los ítems"
+
+#: admin/tainacan-admin-i18n.php:325
+msgid "Select all"
+msgstr "Seleccionar todo"
+
+#: admin/tainacan-admin-i18n.php:326
+msgid "Restore from trash"
+msgstr "Restaurar de la basura"
+
+#: admin/tainacan-admin-i18n.php:327
+msgid "Value not informed."
+msgstr "Valor no informado."
+
+#: admin/tainacan-admin-i18n.php:328
+msgid "Description not informed."
+msgstr "Descripción no informada."
+
+#: admin/tainacan-admin-i18n.php:329
+msgid "Save and Go to Metadata"
+msgstr "Guarda y ve a metadatos"
+
+#: admin/tainacan-admin-i18n.php:330
+msgid "Save and Go to Filters"
+msgstr "Guarda y ve a los filtros"
+
+#: admin/tainacan-admin-i18n.php:331
+msgid "View all Collections"
+msgstr "Ver todas las colecciones"
+
+#: admin/tainacan-admin-i18n.php:332
+msgid "View Repository"
+msgstr "Ver repositorio"
+
+#: admin/tainacan-admin-i18n.php:333
+msgid "View on Theme"
+msgstr "Ver en el tema"
+
+#: admin/tainacan-admin-i18n.php:334
+msgid "Create Collection"
+msgstr "Crear colección"
+
+#: admin/tainacan-admin-i18n.php:335
+msgid "Hide metadata"
+msgstr "Ocultar metadatos"
+
+#: admin/tainacan-admin-i18n.php:336
+msgid "Show metadata"
+msgstr "Mostrar metadatos"
+
+#: admin/tainacan-admin-i18n.php:337
+msgid "All terms"
+msgstr "Todos los términos"
+
+#: admin/tainacan-admin-i18n.php:338
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:32
+msgid "Selected terms"
+msgstr "Términos seleccionados"
+
+#: admin/tainacan-admin-i18n.php:339
+msgid "Editing item n."
+msgstr "Editando el item n."
+
+#: admin/tainacan-admin-i18n.php:340
+msgid "Sequence editing: Item"
+msgstr "Edición de secuencias: Ítem"
+
+#: admin/tainacan-admin-i18n.php:341
+#, php-format
+msgid "%s files remaining."
+msgstr "%s archivos restantes."
+
+#: admin/tainacan-admin-i18n.php:342
+msgid "One file remaining."
+msgstr "Un archivo restante."
+
+#: admin/tainacan-admin-i18n.php:343
+msgid "Uploading files and preparing items"
+msgstr "Subiendo archivos y preparando artículos"
+
+#: admin/tainacan-admin-i18n.php:344 admin/tainacan-admin-i18n.php:529
+msgid "Bulk edit items"
+msgstr "Edición masiva de ítems"
+
+#: admin/tainacan-admin-i18n.php:345
+msgid "Sequence edit items"
+msgstr "Editar secuencia de Ítems"
+
+#: admin/tainacan-admin-i18n.php:346
+msgid "Documents upload"
+msgstr "Carga de documentos"
+
+#: admin/tainacan-admin-i18n.php:347
+msgid "Added items"
+msgstr "Ítems añadidos"
+
+#: admin/tainacan-admin-i18n.php:348
+msgid "Filters from"
+msgstr "Filtros de"
+
+#: admin/tainacan-admin-i18n.php:349
+msgid "Available Exporters"
+msgstr "Exportadores disponibles"
+
+#: admin/tainacan-admin-i18n.php:350
+msgid "Origin collection"
+msgstr "Colección de origen"
+
+#: admin/tainacan-admin-i18n.php:351
+msgid "Send me an e-mail when done."
+msgstr "Envíame un correo electrónico cuando haya terminado."
+
+#: admin/tainacan-admin-i18n.php:352
+msgid "URLs"
+msgstr "URLs"
+
+#: admin/tainacan-admin-i18n.php:353
+msgid "Page"
+msgstr "Página"
+
+#: admin/tainacan-admin-i18n.php:354
+msgid "Activity description"
+msgstr "Descripción de la actividad"
+
+#: admin/tainacan-admin-i18n.php:355
+msgid "Activity creation date"
+msgstr "Fecha de creación de actividad"
+
+#: admin/tainacan-admin-i18n.php:356
+msgid "Activity author"
+msgstr "Autor de la actividad"
+
+#: admin/tainacan-admin-i18n.php:357
+msgid "Approbation"
+msgstr "Aprobación"
+
+#: admin/tainacan-admin-i18n.php:358
+msgid "URLs for Items List"
+msgstr "URLs para lista de ítems"
+
+#: admin/tainacan-admin-i18n.php:359
+msgid "Items list on website"
+msgstr "Lista de ítems en el sitio web"
+
+#: admin/tainacan-admin-i18n.php:360
+msgid "Copy link URL"
+msgstr "Copiar URL del enlace"
+
+#: admin/tainacan-admin-i18n.php:361
+msgid "Open externally"
+msgstr "Abrir externamente"
+
+#: admin/tainacan-admin-i18n.php:362
+msgid "No output info"
+msgstr "No hay información de salida"
+
+#: admin/tainacan-admin-i18n.php:363
+msgid "Output"
+msgstr "Salida"
+
+#: admin/tainacan-admin-i18n.php:364
+msgid "No mapping"
+msgstr "Sin mapeo"
+
+#: admin/tainacan-admin-i18n.php:365
+msgid "Sort descending"
+msgstr "Orden descendiente"
+
+#: admin/tainacan-admin-i18n.php:366
+msgid "Sort ascending"
+msgstr "Orden ascendente"
+
+#: admin/tainacan-admin-i18n.php:367
+#: theme-helper/class-tainacan-theme-helper.php:94
+msgid "Slideshow"
+msgstr "Slideshow"
+
+#: admin/tainacan-admin-i18n.php:368
+msgid "Items List"
+msgstr "Lista de ítems"
+
+#: admin/tainacan-admin-i18n.php:369
+msgid "List pagination"
+msgstr "Lista de paginación"
+
+#: admin/tainacan-admin-i18n.php:370
+msgid "Sorting and visualization control"
+msgstr "Control de clasificación y visualización"
+
+#: admin/tainacan-admin-i18n.php:371
+msgid "Tainacan API"
+msgstr "API do Tainacan"
+
+#: admin/tainacan-admin-i18n.php:372
+msgid "Filter type preview"
+msgstr "Vista previa del tipo de filtro"
+
+#: admin/tainacan-admin-i18n.php:373
+msgid "Metadatum type preview"
+msgstr "Vista previa del tipo de metadato"
+
+#: admin/tainacan-admin-i18n.php:374
+msgid "Open item in a new tab"
+msgstr "Abrir ítem en una nueva pestaña"
+
+#: admin/tainacan-admin-i18n.php:375
+msgid "Open collection in a new tab"
+msgstr "No hay ninguna colección en la papelera"
+
+#: admin/tainacan-admin-i18n.php:376
+msgid "Select item"
+msgstr "Seleccionar ítem"
+
+#: admin/tainacan-admin-i18n.php:377
+msgid "Unselect item"
+msgstr "Seleccionar ítem"
+
+#: admin/tainacan-admin-i18n.php:378
+msgid "Select collection"
+msgstr "Seleccione una colección"
+
+#: admin/tainacan-admin-i18n.php:379
+msgid "Unselect collection"
+msgstr "Seleccione una colección"
+
+#: admin/tainacan-admin-i18n.php:380
+msgid "Delete item"
+msgstr "Elimine los ítems"
+
+#: admin/tainacan-admin-i18n.php:381
+msgid "Delete collection"
+msgstr "Delete la colección"
+
+#: admin/tainacan-admin-i18n.php:382
+msgid "There is no collection using this taxonomy"
+msgstr "No hay colección utilizando esta taxonomía"
+
+#: admin/tainacan-admin-i18n.php:383
+msgid "Collections using"
+msgstr "Colecciones utilizando"
+
+#: admin/tainacan-admin-i18n.php:384
+#, php-format
+msgid "Select all %s items"
+msgstr "Seleccionar todos los %s ítems"
+
+#: admin/tainacan-admin-i18n.php:388
+msgid "Delete selected items"
+msgstr "Elimine los ítems seleccionados"
+
+#: admin/tainacan-admin-i18n.php:390
+msgid "Drop an image here or click to upload."
+msgstr "Suelte una imagen aquí o haga click para subir."
+
+#: admin/tainacan-admin-i18n.php:391
+msgid "Select a status:"
+msgstr "Seleccione un estado:"
+
+#: admin/tainacan-admin-i18n.php:392
+msgid "Select a status"
+msgstr "Seleccione un status"
+
+#: admin/tainacan-admin-i18n.php:393
+msgid "Click to select a filter type:"
+msgstr "Clic para seleccionar un filtro de tipo:"
+
+#: admin/tainacan-admin-i18n.php:394
+msgid "Select a parent term:"
+msgstr "Seleccione un término pariente:"
+
+#: admin/tainacan-admin-i18n.php:395
+msgid "Select a metadatum"
+msgstr "Seleccione un metadato"
+
+#: admin/tainacan-admin-i18n.php:396
+msgid "Type to search a Page to choose."
+msgstr "Escriba para buscar la página a elegir."
+
+#: admin/tainacan-admin-i18n.php:397
+msgid "Type to search a User to add."
+msgstr "Escriba para buscar un usuario para añadir."
+
+#: admin/tainacan-admin-i18n.php:398
+msgid "Select a parent collection."
+msgstr "Seleccione una colección pariente."
+
+#: admin/tainacan-admin-i18n.php:399
+msgid "Select a thumbnail image for collection"
+msgstr "Seleccionar una imagen miniatura para la colección"
+
+#: admin/tainacan-admin-i18n.php:400
+msgid "Select a thumbnail image for item"
+msgstr "Seleccionar una imagen miniatura para el ítem"
+
+#: admin/tainacan-admin-i18n.php:401
+msgid "Select a header image for collection"
+msgstr "Seleccionar una imagen de cabecera para la colección"
+
+#: admin/tainacan-admin-i18n.php:402
+msgid "Select a header image for term"
+msgstr "Seleccionar una imagen de cabecera para el término"
+
+#: admin/tainacan-admin-i18n.php:403
+msgid "Select files to attach to item"
+msgstr "Seleccionar archivos para adjuntar al ítem"
+
+#: admin/tainacan-admin-i18n.php:404
+msgid "Select a document file for item"
+msgstr "Seleccionar un archivo para el ítem"
+
+#: admin/tainacan-admin-i18n.php:405
+msgid "Insert URL"
+msgstr "Insertar URL"
+
+#: admin/tainacan-admin-i18n.php:406
+msgid "Write Text"
+msgstr "Escribir texto"
+
+#: admin/tainacan-admin-i18n.php:408
+msgid "Search in repository"
+msgstr "Buscar en el repositorio"
+
+#: admin/tainacan-admin-i18n.php:409
+msgid "Select a target collection"
+msgstr "Seleccionar una colección de destino"
+
+#: admin/tainacan-admin-i18n.php:410
+msgid "Select a mapper"
+msgstr "Seleccione un mapeador"
+
+#: admin/tainacan-admin-i18n.php:411
+msgid "Select an importer from the options below:"
+msgstr "Seleccione un importador de las siguientes opciones:"
+
+#: admin/tainacan-admin-i18n.php:412
+msgid "Drop your source file or click here to upload."
+msgstr "Suelte su archivo fuente o haga clic aquí para subir."
+
+#: admin/tainacan-admin-i18n.php:414
+msgid "Configure new metadatum"
+msgstr "Configurar nuevo metadato"
+
+#: admin/tainacan-admin-i18n.php:415
+msgid "Insert the new mapper's metadatum info"
+msgstr "Insertar la información del metadato del nuevo mapeador"
+
+#: admin/tainacan-admin-i18n.php:416
+msgid "Select max options to show"
+msgstr "Seleccione max opciones para mostrar"
+
+#: admin/tainacan-admin-i18n.php:417
+msgid "Select a collection to fetch items"
+msgstr "Seleccione una colección para buscar ítems"
+
+#: admin/tainacan-admin-i18n.php:418
+msgid "Select an action"
+msgstr "Selecciona una acción"
+
+#: admin/tainacan-admin-i18n.php:419
+msgid "Type to search a Parent Term to choose."
+msgstr "Escriba para buscar un término pariente para elegir."
+
+#: admin/tainacan-admin-i18n.php:420
+msgid "Type to add an existing term..."
+msgstr "Escriba para agregar un término existente ..."
+
+#: admin/tainacan-admin-i18n.php:421
+msgid "Select an exporter from the options below:"
+msgstr "Seleccione un exportador de las siguientes opciones:"
+
+#: admin/tainacan-admin-i18n.php:422
+msgid "Select a collection"
+msgstr "Seleccione una colección"
+
+#: admin/tainacan-admin-i18n.php:423
+msgid "Hover a filter type to preview"
+msgstr "Flota un tipo de filtro para previsualizar"
+
+#: admin/tainacan-admin-i18n.php:424
+msgid "Never show me this message again"
+msgstr "Nunca muestres este mensaje otra vez"
+
+#: admin/tainacan-admin-i18n.php:427
+msgid "Invalid date"
+msgstr "Fecha invalida"
+
+#: admin/tainacan-admin-i18n.php:428
+msgid "Search Results"
+msgstr "Resultados de la búsqueda"
+
+#: admin/tainacan-admin-i18n.php:429
+msgid "Search Criteria"
+msgstr "Criterio de búsqueda"
+
+#: admin/tainacan-admin-i18n.php:430
+msgid "Name is required."
+msgstr "Se requiere el nombre."
+
+#: admin/tainacan-admin-i18n.php:431
+msgid "No collection was created in this repository."
+msgstr "No se creó ninguna colección en este repositorio."
+
+#: admin/tainacan-admin-i18n.php:432
+msgid "No draft collection found."
+msgstr "No se encontró ninguna colección borrador."
+
+#: admin/tainacan-admin-i18n.php:433
+msgid "No collection in trash."
+msgstr "No hay ninguna colección en la papelera."
+
+#: admin/tainacan-admin-i18n.php:434
+msgid "No draft taxonomy found."
+msgstr "No se encontró ninguna categoría borrador."
+
+#: admin/tainacan-admin-i18n.php:435
+msgid "No taxonomy in trash."
+msgstr "No taxonomía en la basura."
+
+#: admin/tainacan-admin-i18n.php:436
+msgid "No taxonomy was created in this repository."
+msgstr "No se creó ninguna taxonomía en este repositorio."
+
+#: admin/tainacan-admin-i18n.php:437
+msgid "No term was created for this taxonomy."
+msgstr "Ningún término fue creado para esta taxonomía."
+
+#: admin/tainacan-admin-i18n.php:438
+msgid "No term was found here"
+msgstr "No se encontró ningún vocablo aquí"
+
+#: admin/tainacan-admin-i18n.php:439
+msgid "No item was created in this collection."
+msgstr "No se creó ningún ítem en esta colección."
+
+#: admin/tainacan-admin-i18n.php:440
+msgid "No draft item found."
+msgstr "No se encontró ningún borrador de ítem."
+
+#: admin/tainacan-admin-i18n.php:441
+msgid "No item in trash."
+msgstr "No hay ítems en la papelera."
+
+#: admin/tainacan-admin-i18n.php:442
+msgid "No page was found with this name."
+msgstr "No se encontró ninguna página con ese nombre."
+
+#: admin/tainacan-admin-i18n.php:443
+msgid "No user was found with this name."
+msgstr "No se encontró ningún usuario con ese nombre."
+
+#: admin/tainacan-admin-i18n.php:444
+msgid "No item was found here with these filters."
+msgstr "No se encontró ningún ítem aquí con esos filtros."
+
+#: admin/tainacan-admin-i18n.php:445
+msgid "No item was found."
+msgstr "No se ha encontrado ningún ítem."
+
+#: admin/tainacan-admin-i18n.php:446
+msgid "Warning: Item not saved."
+msgstr "Advertencia: el ítem no ha sido salvado."
+
+#: admin/tainacan-admin-i18n.php:447
+msgid "This collection doesn't have any moderator yet."
+msgstr "Esta colección no tiene aún ningún moderador."
+
+#: admin/tainacan-admin-i18n.php:448
+msgid "Error on deleting collection."
+msgstr "Error al borrar la colección."
+
+#: admin/tainacan-admin-i18n.php:449
+msgid "Error on deleting taxonomy"
+msgstr "Error al borrar la taxonomía"
+
+#: admin/tainacan-admin-i18n.php:450
+msgid "Collection deleted."
+msgstr "Colección eliminada."
+
+#: admin/tainacan-admin-i18n.php:451
+msgid "Item deleted."
+msgstr "Ítem eliminado."
+
+#: admin/tainacan-admin-i18n.php:452
+msgid "Taxonomy deleted"
+msgstr "Taxonomía eliminada"
+
+#: admin/tainacan-admin-i18n.php:453
+msgid "Do you really want to delete this attachment?"
+msgstr "¿Realmente quieres borrar este archivo adjunto?"
+
+#: admin/tainacan-admin-i18n.php:454
+msgid "Do you really want to permanently delete this collection?"
+msgstr "¿Realmente quieres eliminar de forma permanente esta colección?"
+
+#: admin/tainacan-admin-i18n.php:455
+msgid "Do you really want to trash this collection?"
+msgstr "¿Realmente quiere eliminar esta colección?"
+
+#: admin/tainacan-admin-i18n.php:456
+msgid "Do you really want to permanently delete this item?"
+msgstr "¿Realmente quieres eliminar permanentemente este ítem?"
+
+#: admin/tainacan-admin-i18n.php:457
+msgid "Do you really want to remove this item from trash?"
+msgstr "¿Realmente quieres eliminar este ítem de la papelera?"
+
+#: admin/tainacan-admin-i18n.php:458
+msgid "Do you really want to trash this item?"
+msgstr "¿Realmente quiere eliminar este ítem?"
+
+#: admin/tainacan-admin-i18n.php:459
+msgid "Do you really want to permanently delete this metadatum?"
+msgstr "¿Realmente quieres eliminar permanentemente este metadato?"
+
+#: admin/tainacan-admin-i18n.php:460
+msgid "Do you really want to delete this taxonomy?"
+msgstr "¿Realmente quiere eliminar esta taxonomía?"
+
+#: admin/tainacan-admin-i18n.php:461
+msgid "Do you really want to permanently delete the selected collections?"
+msgstr ""
+"¿Realmente quieres eliminar permanentemente las colecciones seleccionadas?"
+
+#: admin/tainacan-admin-i18n.php:462
+msgid "Do you really want to trash the selected collections?"
+msgstr "¿Realmente quiere eliminar las colecciones seleccionadas?"
+
+#: admin/tainacan-admin-i18n.php:463
+msgid "Do you really want to permanently delete the selected items?"
+msgstr "¿Realmente desea eliminar permanentemente los ítems seleccionados?"
+
+#: admin/tainacan-admin-i18n.php:464
+msgid "Do you really want to permanently delete the selected term?"
+msgstr "¿Realmente quieres borrar permanentemente el ítem seleccionado?"
+
+#: admin/tainacan-admin-i18n.php:465
+msgid "Do you really want to trash the selected items?"
+msgstr "¿Realmente quiere eliminar los ítems seleccionados?"
+
+#: admin/tainacan-admin-i18n.php:466
+msgid "Do you really want to delete the selected taxonomies?"
+msgstr "¿Realmente quiere eliminar las categorías seleccionadas?"
+
+#: admin/tainacan-admin-i18n.php:467
+msgid "The metadata Collection related is required"
+msgstr "Se requieren los metadatos relacionados a la colección"
+
+#: admin/tainacan-admin-i18n.php:468
+msgid "No metadata found in this collection"
+msgstr "No se encontraron metadatos en esta colección"
+
+#: admin/tainacan-admin-i18n.php:469
+msgid "Showing items "
+msgstr "Mostrando ítems "
+
+#: admin/tainacan-admin-i18n.php:470
+msgid "Showing collections "
+msgstr "Mostrando colecciones "
+
+#: admin/tainacan-admin-i18n.php:471
+msgid "Showing taxonomies "
+msgstr "Mostrando taxonomías "
+
+#: admin/tainacan-admin-i18n.php:472
+msgid "Showing activities "
+msgstr "Mostrando actividades "
+
+#: admin/tainacan-admin-i18n.php:473
+msgid "Showing processes "
+msgstr "Mostrando procesos "
+
+#: admin/tainacan-admin-i18n.php:474
+msgid "Remove this item from trash first"
+msgstr "Quitar este ítem de la basura primero"
+
+#: admin/tainacan-admin-i18n.php:475
+msgid " to "
+msgstr " para "
+
+#: admin/tainacan-admin-i18n.php:476
+msgid " of "
+msgstr " de "
+
+#: admin/tainacan-admin-i18n.php:477
+msgid "Created by: "
+msgstr "Creado por: "
+
+#: admin/tainacan-admin-i18n.php:478
+msgid "By: "
+msgstr "Por: "
+
+#: admin/tainacan-admin-i18n.php:479
+msgid "Date: "
+msgstr "Fecha: "
+
+#: admin/tainacan-admin-i18n.php:480
+msgid "Not saved "
+msgstr "Sin salvar "
+
+#: admin/tainacan-admin-i18n.php:481
+msgid "Are you sure? The item is not saved, changes will be lost."
+msgstr "¿Estás segura? Este ítem no ha sido salvado, se perderán los cambios."
+
+#: admin/tainacan-admin-i18n.php:482
+msgid "Are you sure? There are metadata not saved, changes will be lost."
+msgstr ""
+"¿Estás segura? Estos metadatos no han sido salvados, se perderán los cambios."
+
+#: admin/tainacan-admin-i18n.php:483
+msgid "Are you sure? There are filters not saved, changes will be lost."
+msgstr ""
+"¿Estás segura? Estos filtros no han sido salvados, se perderán los cambios."
+
+#: admin/tainacan-admin-i18n.php:484
+msgid "No description provided."
+msgstr "Ninguna descripción proporcionada."
+
+#: admin/tainacan-admin-i18n.php:485
+msgid "Are you sure? The taxonomy is not saved, changes will be lost."
+msgstr ""
+"¿Estás segura? Estos metadatos no han sido salvados, los cambios se perderán."
+
+#: admin/tainacan-admin-i18n.php:486
+msgid "Are you sure? There are terms not saved, changes will be lost."
+msgstr ""
+"¿Estás segura? Estos términos no han sido salvados, los cambios se perderán."
+
+#: admin/tainacan-admin-i18n.php:487
+msgid ""
+"Are you sure? This term is parent of other terms. These will be converted to "
+"root terms."
+msgstr ""
+"¿Estás segura? Este término es pariente de otros términos. Estos serán "
+"convertidos en términos raíz."
+
+#: admin/tainacan-admin-i18n.php:488
+msgid "No activities"
+msgstr "No hay actividades"
+
+#: admin/tainacan-admin-i18n.php:489
+msgid "Before"
+msgstr "Antes de"
+
+#: admin/tainacan-admin-i18n.php:490
+msgid "After"
+msgstr "Después"
+
+#: admin/tainacan-admin-i18n.php:491
+msgid "There is no metadata here yet."
+msgstr "No hay aún ningún metadato aquí."
+
+#: admin/tainacan-admin-i18n.php:492
+msgid "There is no filter here yet."
+msgstr "No hay aún ningún filtro aquí."
+
+#: admin/tainacan-admin-i18n.php:493
+msgid "Changes"
+msgstr "Cambios"
+
+#: admin/tainacan-admin-i18n.php:494
+msgid "Possible external sources: CSV, Instagram, Youtube, etc."
+msgstr "Posibles fuentes externas: CSV, Instagram, Youtube, etc."
+
+#: admin/tainacan-admin-i18n.php:495
+msgid "The term name"
+msgstr "El nombre del término"
+
+#: admin/tainacan-admin-i18n.php:496
+msgid "The description of the Term."
+msgstr "La descripción del término."
+
+#: admin/tainacan-admin-i18n.php:497
+msgid "The parent term"
+msgstr "El término pariente"
+
+#: admin/tainacan-admin-i18n.php:498
+msgid "The are no attachments on this item so far."
+msgstr "No hay ningún adjunto en este ítem por ahora."
+
+#: admin/tainacan-admin-i18n.php:499
+msgid "Repository Metadata will be inherited by all collections."
+msgstr ""
+"Los metadatos del repositorios serán heredados por todas las colecciones."
+
+#: admin/tainacan-admin-i18n.php:500
+msgid "Repository Filters will be inherited by all collections."
+msgstr "Los filtros del repositorio serán heredados por todas las colecciones."
+
+#: admin/tainacan-admin-i18n.php:501
+msgid "Click or Drag and Drop Metadata here for creating a new Filter."
+msgstr ""
+"Click o Arrastre y Suelte los metadatos aquí para crear un nuevo filtro."
+
+#: admin/tainacan-admin-i18n.php:502
+msgid "Click or Drag and Drop Metadata Types here for creating a new Metadata."
+msgstr ""
+"Click o Arrastre y Suelte los tipos de metadatos aquí para crear nuevos "
+"metadatos."
+
+#: admin/tainacan-admin-i18n.php:503
+msgid "Choose your metadata."
+msgstr "Seleccione sus metadatos."
+
+#: admin/tainacan-admin-i18n.php:504
+msgid "The collection where imported item will be added."
+msgstr "La colección donde se agregará el ítem importado."
+
+#: admin/tainacan-admin-i18n.php:505
+msgid "The file containing the data to be imported."
+msgstr "El archivo que contiene los datos a importar."
+
+#: admin/tainacan-admin-i18n.php:506
+msgid ""
+"Map each file metadata with the corresponding one in selected collection."
+msgstr ""
+"Mapear los metadatos de cada archivo con el correspondiente en la colección "
+"seleccionada."
+
+#: admin/tainacan-admin-i18n.php:507
+msgid "Upload a source file to load metadata."
+msgstr "Sube un archivo fuente para cargar metadatos."
+
+#: admin/tainacan-admin-i18n.php:508
+msgid "Select a target collection to list metadata."
+msgstr "Seleccione una colección de destino para listar los metadatos."
+
+#: admin/tainacan-admin-i18n.php:509
+msgid "Link to file containing the data to be imported."
+msgstr "Enlace al archivo que contiene los datos a importar."
+
+#: admin/tainacan-admin-i18n.php:510
+msgid "Updated at"
+msgstr "Actualizado en"
+
+#: admin/tainacan-admin-i18n.php:511
+msgid "Editing metadata values..."
+msgstr "Editando valores de metadatos ..."
+
+#: admin/tainacan-admin-i18n.php:512
+msgid "Updating metadata values..."
+msgstr "Actualizando valores de metadatos ..."
+
+#: admin/tainacan-admin-i18n.php:513
+msgid "Add items..."
+msgstr "Añadir ítems..."
+
+#: admin/tainacan-admin-i18n.php:514
+msgid "Search items..."
+msgstr "Buscar ítems..."
+
+#: admin/tainacan-admin-i18n.php:515
+msgid "Add terms..."
+msgstr "Añadir términos..."
+
+#: admin/tainacan-admin-i18n.php:516
+msgid "Search metadata..."
+msgstr "Buscar metadatos..."
+
+#: admin/tainacan-admin-i18n.php:517
+msgid "Add metadata..."
+msgstr "Añadir metadatos..."
+
+#: admin/tainacan-admin-i18n.php:518
+msgid "How the item will be available to visualization."
+msgstr "Cómo estará disponible el ítem para su visualización."
+
+#: admin/tainacan-admin-i18n.php:519
+msgid "There are errors in the form"
+msgstr "Hay errores en el formulario"
+
+#: admin/tainacan-admin-i18n.php:520
+msgid "No document was uploaded to this item."
+msgstr "Ningún documento fue subido a este ítem."
+
+#: admin/tainacan-admin-i18n.php:521
+msgid "unfinished processes"
+msgstr "procesos inacabados"
+
+#: admin/tainacan-admin-i18n.php:522
+msgid "There are no processes executing."
+msgstr "No hay procesos en ejecución."
+
+#: admin/tainacan-admin-i18n.php:523
+msgid "Unknown date."
+msgstr "Fecha desconocida."
+
+#: admin/tainacan-admin-i18n.php:524
+msgid "There are no metadata to search"
+msgstr "No hay metadatos para buscar"
+
+#: admin/tainacan-admin-i18n.php:525
+msgid "There are no metadata in repository level"
+msgstr "No hay metadatos en el nivel del repositorio"
+
+#: admin/tainacan-admin-i18n.php:526
+msgid "Import from external sources."
+msgstr "Importar desde fuentes externas."
+
+#: admin/tainacan-admin-i18n.php:527
+msgid "Import items from external sources."
+msgstr "Importar ítems desde fuentes externas."
+
+#: admin/tainacan-admin-i18n.php:528
+msgid "Bulk add documents from your computer as items."
+msgstr "Agrega masivamente documentos de su computadora como elementos."
+
+#: admin/tainacan-admin-i18n.php:530
+msgid "by"
+msgstr "por"
+
+#: admin/tainacan-admin-i18n.php:531
+msgid "items selected"
+msgstr "items seleccionados"
+
+#: admin/tainacan-admin-i18n.php:532
+msgid "items affected"
+msgstr "ítems afectados"
+
+#: admin/tainacan-admin-i18n.php:533
+msgid "item affected"
+msgstr "ítem afectado"
+
+#: admin/tainacan-admin-i18n.php:534
+msgid "No valid parent term was found with this name."
+msgstr "No se encontró un término pariente válido con este nombre."
+
+#: admin/tainacan-admin-i18n.php:535
+msgid ""
+"Warning! Changing parent term will reload the terms list, thus uncheking any "
+"selection."
+msgstr ""
+"¡Advertencia! Al cambiar el término pariente, se volverá a cargar la lista "
+"de términos, por lo que se anula la selección de cualquier selección."
+
+#: admin/tainacan-admin-i18n.php:536
+msgid "Do you really want to remove from trash the selected items?"
+msgstr "¿Realmente desea eliminar de la papelera los ítems seleccionados?"
+
+#: admin/tainacan-admin-i18n.php:537
+msgid "No options for this filtering."
+msgstr "No hay opciones para este filtrado."
+
+#: admin/tainacan-admin-i18n.php:538
+msgid "No options found."
+msgstr "No se encontraron opciones."
+
+#: admin/tainacan-admin-i18n.php:539
+msgid "All files uploaded."
+msgstr "Todos los archivos subidos."
+
+#: admin/tainacan-admin-i18n.php:540
+#, php-format
+msgid "There are %s items being edited"
+msgstr "Hay %s ítems siendo editados"
+
+#: admin/tainacan-admin-i18n.php:541
+msgid "There is one item being edited"
+msgstr "Hay un ítem que se está editando"
+
+#: admin/tainacan-admin-i18n.php:542
+msgid "item being edited"
+msgstr "ítem que se está editando"
+
+#: admin/tainacan-admin-i18n.php:543
+msgid "No preview was found."
+msgstr "No se encontró ninguna vista previa."
+
+#: admin/tainacan-admin-i18n.php:544
+msgid "You are leaving the bulk edition now."
+msgstr "Estás saliendo de la edición masiva ahora."
+
+#: admin/tainacan-admin-i18n.php:545
+msgid "Current view mode does not allow displayed metadata selection."
+msgstr ""
+"El modo de vista actual no permite la selección de metadatos mostrados."
+
+#: admin/tainacan-admin-i18n.php:546
+msgid "Can not select displayed metadata without items on list."
+msgstr ""
+"No se pueden seleccionar los metadatos mostrados sin ítems en la lista."
+
+#: admin/tainacan-admin-i18n.php:547
+msgid "Finished"
+msgstr "Terminado"
+
+#: admin/tainacan-admin-i18n.php:548
+msgid "Finished with errors"
+msgstr "Terminado con errores"
+
+#: admin/tainacan-admin-i18n.php:549
+msgid "Failed"
+msgstr "Ha fallado"
+
+#: admin/tainacan-admin-i18n.php:550
+msgid "Cancelled"
+msgstr "Cancelado"
+
+#: admin/tainacan-admin-i18n.php:551
+msgid "Paused"
+msgstr "En pausa"
+
+#: admin/tainacan-admin-i18n.php:552
+msgid "Running"
+msgstr "En ejecución"
+
+#: admin/tainacan-admin-i18n.php:553
+msgid "Are you sure? This process will be cancelled"
+msgstr "¿Estás seguro? Este proceso será cancelado"
+
+#: admin/tainacan-admin-i18n.php:554
+msgid "empty"
+msgstr "vacío"
+
+#: admin/tainacan-admin-i18n.php:555
+msgid "URL link copied"
+msgstr "Enlace URL copiado"
+
+#: admin/tainacan-admin-i18n.php:556
+msgid "Other items listing options: "
+msgstr "Otras opciones de listado de ítems: "
+
+#: admin/tainacan-admin-i18n.php:557
+msgid ""
+"The exporter may take a while. Check this option to receive an e-mail when "
+"the process is done. You can also check the process status visiting the"
+msgstr ""
+"El exportador puede tardar un rato. Marque esta opción para recibir un "
+"correo electrónico cuando se complete el proceso. También puede consultar el "
+"estado del proceso visitando el"
+
+#: admin/tainacan-admin-i18n.php:558
+msgid "Tainacan API on JSON format."
+msgstr "API de Tainacan en formato JSON."
+
+#: admin/tainacan-admin-i18n.php:559
+msgid ""
+"When ordering by metadata value, items that have no value for the chosen "
+"metadata will not be listed. This list may have less elements than the total "
+"existing for current search criteria."
+msgstr ""
+"Al ordenar por valor de metadatos, los ítems que no tienen un valor para los "
+"metadatos elegidos no se mostrarán. Esta lista puede tener menos elementos "
+"que el total existente para los criterios de búsqueda actuales."
+
+#: admin/tainacan-admin-i18n.php:563
+msgid "Text area"
+msgstr "Área de texto"
+
+#: admin/tainacan-admin-i18n.php:564
+#: classes/metadata-types/date/class-tainacan-date.php:20
+msgid "Date"
+msgstr "Fecha"
+
+#: admin/tainacan-admin-i18n.php:565
+#: classes/metadata-types/numeric/class-tainacan-numeric.php:17
+msgid "Numeric"
+msgstr "Numérico"
+
+#: admin/tainacan-admin-i18n.php:566
+msgid "Select box"
+msgstr "Casilla de selección"
+
+#: admin/tainacan-admin-i18n.php:567
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:18
+msgid "Relationship"
+msgstr "Relación"
+
+#: admin/tainacan-admin-i18n.php:569
+msgid "Compound"
+msgstr "Compuesto"
+
+#: admin/tainacan-admin-i18n.php:572
+msgid "Custom Interval"
+msgstr "Intervalo personalizado"
+
+#: admin/tainacan-admin-i18n.php:573
+msgid "Select Box"
+msgstr "Casilla de selección"
+
+#: admin/tainacan-admin-i18n.php:574
+msgid "Autocomplete"
+msgstr "Autocompletar"
+
+#: admin/tainacan-admin-i18n.php:575
+msgid "Tag Input"
+msgstr "Etiqueta de entrada"
+
+#: admin/tainacan-admin-i18n.php:576
+msgid "Check Box"
+msgstr "Casilla de verificación"
+
+#: admin/tainacan-admin-i18n.php:577
+msgid "Taxonomy Tag Input"
+msgstr "Etiqueta de entrada de la taxonomía"
+
+#: admin/tainacan-admin-i18n.php:578
+msgid "Taxonomy Check Box"
+msgstr "Casilla de verificación de la taxonomía"
+
+#: admin/tainacan-admin-i18n.php:579
+msgid "Taxonomy Select Box"
+msgstr "Casilla de selección de la taxonomía"
+
+#: api/class-tainacan-rest-controller.php:223
+msgid "Limit results to those matching a string."
+msgstr "Limitar los resultados a aquellos que coincidan con una string."
+
+#: api/class-tainacan-rest-controller.php:257
+msgid "Order sort attribute ascending or descending."
+msgstr "Ordenar los atributos de manera ascendente o descendente."
+
+#: api/class-tainacan-rest-controller.php:306
+#: api/class-tainacan-rest-controller.php:328
+msgid "Custom metadata key."
+msgstr "Código de los metadatos personalizados."
+
+#: api/class-tainacan-rest-controller.php:310
+#: api/class-tainacan-rest-controller.php:314
+msgid "Custom metadata value"
+msgstr "Valor de los metadatos personalizados"
+
+#: api/class-tainacan-rest-controller.php:318
+msgid ""
+"Operator to test the meta_value. Possible values are =, !=, >, >=, <, <=, "
+"LIKE, NOT LIKE, IN, NOT IN, BETWEEN, NOT BETWEEN, NOT EXISTS, REGEXP, NOT "
+"REGEXP or RLIKE."
+msgstr ""
+"Para probar por el operador el meta_value. Los valores posibles son =, !=, "
+">, >=, <, <=, LIKE, NOT LIKE, IN, NOT IN, BETWEEN, NOT BETWEEN, NOT EXISTS, "
+"REGEXP, NOT REGEXP o RLIKE."
+
+#: api/class-tainacan-rest-controller.php:322
+msgid "Limits result set to items that have specific custom metadata"
+msgstr ""
+"Limita el conjunto de resultados a los ítems que tienen metadatos "
+"personalizados específicos"
+
+#: api/class-tainacan-rest-controller.php:332
+msgid ""
+"Custom metadata value. It can be an array only when compare is IN, NOT IN, "
+"BETWEEN, or NOT BETWEEN. You dont have to specify a value when using the "
+"EXISTS or NOT EXISTS comparisons in WordPress 3.9 and up.\n"
+"\t(Note: Due to bug #23268, value is required for NOT EXISTS comparisons to "
+"work correctly prior to 3.9. You must supply some string for the value "
+"parameter. An empty string or NULL will NOT work. However, any other string "
+"will do the trick and will NOT show up in your SQL when using NOT EXISTS. "
+"Need inspiration? How about 'bug #23268'."
+msgstr ""
+"Valor de los metadatos personalizados. Puede ser una matriz solamente cuando "
+"comparar está IN, NOT IN, BETWEEN, o NOT BETWEEN. No se necesita especificar "
+"cuando se utiliza EXISTS o NOT EXISTS en las comparaciones en  WordPress 3.9 "
+"y superiores.\n"
+"\t(Nota: debido al bug #23268, se requiere un vlaor para que las "
+"comparaciones NOT EXISTS funcionen correctamente en las versiones previas a "
+"3.9. Se debe proveer alguna string para el parámetro del valor. Una string "
+"NULL no funcionará. Sin embargo, cualquier otra string hará el truco y NO "
+"aparacerá en tu SQL cuando se utilice NOT EXISTS. ¿Necesita inspiración? Qué "
+"tal si utiliza 'bug #23268'."
+
+#: api/class-tainacan-rest-controller.php:337
+#: api/class-tainacan-rest-controller.php:388
+msgid ""
+"Operator to test. Possible values are =, !=, >, >=, <, <=, LIKE, NOT LIKE, "
+"IN, NOT IN, BETWEEN, NOT BETWEEN, EXISTS and NOT EXISTS."
+msgstr ""
+"Para probar por el operador. Los valores posibles son =, !=, >, >=, <, <=, "
+"LIKE, NOT LIKE, IN, NOT IN, BETWEEN, NOT BETWEEN, EXISTS y NOT EXISTS."
+
+#: api/class-tainacan-rest-controller.php:342
+msgid "OR or AND, how the sub-arrays should be compared."
+msgstr "OR y AND, cómo las sub-matrices deben ser comparadas."
+
+#: api/class-tainacan-rest-controller.php:347
+msgid ""
+"Custom metadata type. Possible values are NUMERIC, BINARY, CHAR, DATE, "
+"DATETIME, DECIMAL, SIGNED, TIME, UNSIGNED. Default value is CHAR. You can "
+"also specify precision and scale for the DECIMAL and NUMERIC types (for "
+"example, DECIMAL(10,5) or NUMERIC(10) are valid). The type DATE works with "
+"the compare value BETWEEN only if the date is stored at the format YYYY-MM-"
+"DD and tested with this format."
+msgstr ""
+"Tipo de metadatos personalizados. Los valores posibles son NUMERIC, BINARY, "
+"CHAR, DATE, DATETIME, DECIMAL, SIGNED, TIME, UNSIGNED. El valor por defecto "
+"es CHAR. También se puede especificar la precisión y la escala para los "
+"tipos DECIMALES y NUMÉRICOS (por ejemplo, DECIMALES(10,5) o NUMÉRICOS(10) "
+"son válidos). El tipo DATE funciona con el valor de comparación BETWEEN "
+"solamente si la fecha se guarda con el formato YYYY-MM-DD y se testea con "
+"este formato."
+
+#: api/class-tainacan-rest-controller.php:354
+msgid "Limits the result set to items that were created in some specific date"
+msgstr ""
+"Limita el conjunto de resultados a ítems que fueron creados en alguna fecha "
+"específica"
+
+#: api/class-tainacan-rest-controller.php:360
+msgid "4 digit year (e.g. 2018)."
+msgstr "4 dígitos del año (ej. 2018)."
+
+#: api/class-tainacan-rest-controller.php:364
+msgid "Month number (from 1 to 12)."
+msgstr "Número del mes (de 1 a 12)."
+
+#: api/class-tainacan-rest-controller.php:368
+msgid "Day of the month (from 1 to 31)."
+msgstr "Día del mes (de 1 a 31)."
+
+#: api/class-tainacan-rest-controller.php:372
+msgid "Week of the year (from 0 to 53)."
+msgstr "Semana del año (de 0 a 53)."
+
+#: api/class-tainacan-rest-controller.php:376
+msgid "Hour (from 0 to 23)."
+msgstr "Hora (de 0 a 23)."
+
+#: api/class-tainacan-rest-controller.php:380
+msgid "Minute (from 0 to 59)."
+msgstr "Minuto (de 0 a 59)."
+
+#: api/class-tainacan-rest-controller.php:384
+msgid "Second (from 0 to 59)."
+msgstr "Segundo (de 0 a 59)."
+
+#: api/class-tainacan-rest-controller.php:394
+msgid "For after/before, whether exact value should be matched or not."
+msgstr "Para antes/después, aún si el valor exacto deba coincidir o no."
+
+#: api/class-tainacan-rest-controller.php:398
+msgid ""
+"Date to retrieve posts before. Accepts strtotime()-compatible string, or "
+"array of year, month, day "
+msgstr ""
+"Fecha para recuperar los posts antes. Acepta strtotime()-compatible string, "
+"o matriz de año, mes, día "
+
+#: api/class-tainacan-rest-controller.php:402
+msgid ""
+"Date to retrieve posts after. Accepts strtotime()-compatible string, or "
+"array of year, month, day "
+msgstr ""
+"Fecha para recuperar los posts después. Acepta strtotime()-compatible "
+"string, o matriz de año, mes, día "
+
+#: api/class-tainacan-rest-controller.php:409
+msgid "Show items associated with certain taxonomy."
+msgstr "Mostrar los ítems asociados con cierta taxonomía."
+
+#: api/class-tainacan-rest-controller.php:415
+msgid "The taxonomy data base identifier."
+msgstr "El identificador de la base de datos de la taxonomía."
+
+#: api/class-tainacan-rest-controller.php:419
+msgid ""
+"Select taxonomy term by. Possible values are term_id, name, slug or "
+"term_taxonomy_id. Default value is term_id."
+msgstr ""
+"Seleccionar el vocablo de la taxonomía según. Los valores posibles son "
+"term_id, slug o term_taxonomy_id. El valor por defecto es term_id."
+
+#: api/class-tainacan-rest-controller.php:423
+msgid "Taxonomy term(s)."
+msgstr "Términos de la taxonomía."
+
+#: api/class-tainacan-rest-controller.php:427
+msgid ""
+"Operator to test. Possible values are IN, NOT IN, AND, EXISTS and NOT EXISTS"
+msgstr ""
+"Para probar por el operador. Los valores posibles son IN, NOT IN, AND, "
+"EXISTS y NOT EXISTS"
+
+#: api/class-tainacan-rest-controller.php:432
+msgid ""
+"The logical relationship between each inner taxonomy array when there is "
+"more than one. Possible values are AND, OR. Do not use with a single inner "
+"taxonomy array."
+msgstr ""
+"La relación lógica entre cada matriz interna de la taxonomía cuando hay más "
+"de una. Los valores posibles son AND, OR. No utilizar con una sola matriz "
+"interna de la taxonomía."
+
+#: api/endpoints/class-tainacan-rest-background-processes-controller.php:41
+msgid ""
+"The ID of the owner of the background processes. Defaults to current user"
+msgstr ""
+"El ID del propietario de los procesos en segundo plano. Por defecto el "
+"usuario actual"
+
+#: api/endpoints/class-tainacan-rest-background-processes-controller.php:45
+msgid ""
+"Whether to return processes from all users (if current user is admin). "
+"Default false."
+msgstr ""
+"Si devolve procesos de todos los usuarios (si el usuario actual es "
+"administrador). Falso por defecto."
+
+#: api/endpoints/class-tainacan-rest-background-processes-controller.php:49
+msgid ""
+"\"open\" returns only processes currently running. \"closed\" returns only "
+"finished or aborted. \"all\" returns all. Default \"all\""
+msgstr ""
+"\"open\" devuelve solo los procesos que se ejecutan actualmente. Las "
+"devoluciones \"closed\" solo están terminadas o abortadas. \"all\" devuelve "
+"todo. Predeterminado: \"todo\""
+
+#: api/endpoints/class-tainacan-rest-background-processes-controller.php:53
+msgid "Number of processes to return per page. Default 10"
+msgstr "Número de procesos para devolver por página. Predeterminado 10"
+
+#: api/endpoints/class-tainacan-rest-background-processes-controller.php:57
+msgid "Page to retrieve. Default 1"
+msgstr "Página para recuperar. Predeterminado 1"
+
+#: api/endpoints/class-tainacan-rest-background-processes-controller.php:61
+msgid "Returns only processes created or updated recently"
+msgstr "Solo devuelve procesos creados o actualizados recientemente"
+
+#: api/endpoints/class-tainacan-rest-background-processes-controller.php:84
+msgid "\"open\" or \"closed\" "
+msgstr "\"open\" o \"closed\" "
+
+#: api/endpoints/class-tainacan-rest-background-processes-controller.php:225
+msgid "Status must be informed"
+msgstr "El estado debe ser informado"
+
+#: api/endpoints/class-tainacan-rest-bulkedit-controller.php:58
+#: api/endpoints/class-tainacan-rest-bulkedit-controller.php:119
+#: api/endpoints/class-tainacan-rest-bulkedit-controller.php:138
+#: api/endpoints/class-tainacan-rest-bulkedit-controller.php:157
+msgid "The metadatum ID"
+msgstr "La identificación del metadato"
+
+#: api/endpoints/class-tainacan-rest-bulkedit-controller.php:62
+#: api/endpoints/class-tainacan-rest-bulkedit-controller.php:123
+#: api/endpoints/class-tainacan-rest-bulkedit-controller.php:142
+msgid "The value to be added"
+msgstr "El valor a añadir"
+
+#: api/endpoints/class-tainacan-rest-bulkedit-controller.php:104
+msgid "The new status value"
+msgstr "El nuevo valor de status"
+
+#: api/endpoints/class-tainacan-rest-bulkedit-controller.php:161
+msgid "The value to search for"
+msgstr "El valor a buscar"
+
+#: api/endpoints/class-tainacan-rest-bulkedit-controller.php:165
+msgid "The value to be set"
+msgstr "El valor a configurar"
+
+#: api/endpoints/class-tainacan-rest-bulkedit-controller.php:223
+msgid "You mus specify items_ids OR use_query"
+msgstr "Debe especificar los identificadores items_ids OR use_query"
+
+#: api/endpoints/class-tainacan-rest-bulkedit-controller.php:263
+msgid "Value must be provided"
+msgstr "El valor debe ser proporcionado"
+
+#: api/endpoints/class-tainacan-rest-bulkedit-controller.php:296
+msgid "Group not found"
+msgstr "Grupo no encontrado"
+
+#: api/endpoints/class-tainacan-rest-bulkedit-controller.php:382
+#: api/endpoints/class-tainacan-rest-collections-controller.php:292
+#: api/endpoints/class-tainacan-rest-exporters-controller.php:116
+#: api/endpoints/class-tainacan-rest-importers-controller.php:158
+#: api/endpoints/class-tainacan-rest-items-controller.php:438
+#: api/endpoints/class-tainacan-rest-metadata-controller.php:258
+#: api/endpoints/class-tainacan-rest-metadatum-mappers-controller.php:170
+#: api/endpoints/class-tainacan-rest-taxonomies-controller.php:315
+msgid "Body can not be empty."
+msgstr "El cuerpo no puede estar vacío."
+
+#: api/endpoints/class-tainacan-rest-bulkedit-controller.php:388
+msgid "You must specify a Metadatum ID."
+msgstr "Debes especificar un ID de metadato."
+
+#: api/endpoints/class-tainacan-rest-bulkedit-controller.php:395
+#, php-format
+msgid "%s must be provided"
+msgstr "%s debe ser provisto"
+
+#: api/endpoints/class-tainacan-rest-bulkedit-controller.php:426
+msgid "Metadatum not found."
+msgstr "Metadato no encontrado."
+
+#: api/endpoints/class-tainacan-rest-bulkedit-controller.php:443
+msgid "Item not found."
+msgstr "Ítem no encontrado."
+
+#: api/endpoints/class-tainacan-rest-bulkedit-controller.php:463
+#: api/endpoints/class-tainacan-rest-items-controller.php:629
+msgid "Limits the result set to items with a specific title"
+msgstr "Limita el conjunto de resultados a ítems con un título específico"
+
+#: api/endpoints/class-tainacan-rest-bulkedit-controller.php:472
+msgid "Array of items IDs"
+msgstr "Matriz de ID de ítems"
+
+#: api/endpoints/class-tainacan-rest-bulkedit-controller.php:477
+msgid "Whether to use the current query to select posts"
+msgstr "Si utiliza la consulta actual para seleccionar publicaciones"
+
+#: api/endpoints/class-tainacan-rest-collections-controller.php:74
+#: api/endpoints/class-tainacan-rest-filters-controller.php:83
+#: api/endpoints/class-tainacan-rest-items-controller.php:83
+#: api/endpoints/class-tainacan-rest-taxonomies-controller.php:64
+msgid ""
+"To delete permanently, you can pass 'permanently' as true. By default this "
+"will only trash collection"
+msgstr ""
+"Para borrar permanentemente, se puede seleccionar 'permanentemente' como "
+"verdadero. Por defecto esto solamente enviará la colección a la papelera"
+
+#: api/endpoints/class-tainacan-rest-collections-controller.php:316
+#: api/endpoints/class-tainacan-rest-collections-controller.php:425
+#: api/endpoints/class-tainacan-rest-items-controller.php:457
+#: api/endpoints/class-tainacan-rest-items-controller.php:546
+#: api/endpoints/class-tainacan-rest-metadata-controller.php:229
+#: api/endpoints/class-tainacan-rest-metadata-controller.php:249
+#: api/endpoints/class-tainacan-rest-metadata-controller.php:465
+#: api/endpoints/class-tainacan-rest-metadatum-mappers-controller.php:158
+#: api/endpoints/class-tainacan-rest-taxonomies-controller.php:308
+#: api/endpoints/class-tainacan-rest-taxonomies-controller.php:365
+#: api/endpoints/class-tainacan-rest-terms-controller.php:217
+msgid "One or more values are invalid."
+msgstr "Uno o más de los valores son inválidos."
+
+#: api/endpoints/class-tainacan-rest-collections-controller.php:432
+msgid "Collection with this ID was not found"
+msgstr "No se encontraron colecciones con este ID"
+
+#: api/endpoints/class-tainacan-rest-collections-controller.php:438
+#: api/endpoints/class-tainacan-rest-filters-controller.php:188
+#: api/endpoints/class-tainacan-rest-filters-controller.php:296
+#: api/endpoints/class-tainacan-rest-items-controller.php:559
+#: api/endpoints/class-tainacan-rest-metadata-controller.php:478
+#: api/endpoints/class-tainacan-rest-taxonomies-controller.php:378
+#: api/endpoints/class-tainacan-rest-terms-controller.php:231
+msgid "The body could not be empty"
+msgstr "El cuerpo no puede estar vacío"
+
+#: api/endpoints/class-tainacan-rest-collections-controller.php:472
+#: api/endpoints/class-tainacan-rest-items-controller.php:592
+#: api/endpoints/class-tainacan-rest-taxonomies-controller.php:408
+msgid ""
+"Fetch only specific attribute. The specifics attributes are the same in "
+"schema."
+msgstr ""
+"Recupera solamente el atributo específico. Los atributos específicos son los "
+"mismos que en el esquema."
+
+#: api/endpoints/class-tainacan-rest-collections-controller.php:512
+msgid "Limits the result set to collections with a specific name"
+msgstr ""
+"Limita el conjunto de resultados a las colecciones con un nombre específico"
+
+#: api/endpoints/class-tainacan-rest-export-controller.php:150
+msgid "Export Process"
+msgstr "Proceso de exportación"
+
+#: api/endpoints/class-tainacan-rest-export-controller.php:151
+msgid "Exporting Data"
+msgstr "Exportando datos"
+
+#: api/endpoints/class-tainacan-rest-export-controller.php:167
+msgid "Export Process Error"
+msgstr "Error de proceso de exportación"
+
+#: api/endpoints/class-tainacan-rest-export-controller.php:168
+msgid "Exporting Error"
+msgstr "Error de exportación"
+
+#: api/endpoints/class-tainacan-rest-exporters-controller.php:49
+msgid "The slug of the exporter to be initialized"
+msgstr "El slug del exportador a inicializar"
+
+#: api/endpoints/class-tainacan-rest-exporters-controller.php:63
+msgid ""
+"The e-mail to be used by the export to send a message when the process ends"
+msgstr ""
+"El correo electrónico que utilizará la exportación para enviar un mensaje "
+"cuando finalice el proceso"
+
+#: api/endpoints/class-tainacan-rest-exporters-controller.php:67
+msgid "The array describing the collection as expected by the exporter"
+msgstr ""
+"La matriz que describe la colección según lo esperado por el exportador"
+
+#: api/endpoints/class-tainacan-rest-exporters-controller.php:71
+#: api/endpoints/class-tainacan-rest-importers-controller.php:64
+msgid "The importer options"
+msgstr "Las opciones de importación"
+
+#: api/endpoints/class-tainacan-rest-exporters-controller.php:127
+msgid "Exporter not found"
+msgstr "Exportador no encontrado"
+
+#: api/endpoints/class-tainacan-rest-exporters-controller.php:159
+#: api/endpoints/class-tainacan-rest-importers-controller.php:208
+msgid "Invalid collection"
+msgstr "Colección inválida"
+
+#: api/endpoints/class-tainacan-rest-exporters-controller.php:175
+#: api/endpoints/class-tainacan-rest-importers-controller.php:226
+#: api/endpoints/class-tainacan-rest-importers-controller.php:244
+#: api/endpoints/class-tainacan-rest-importers-controller.php:274
+#: api/endpoints/class-tainacan-rest-importers-controller.php:292
+#: api/endpoints/class-tainacan-rest-importers-controller.php:308
+#: api/endpoints/class-tainacan-rest-importers-controller.php:337
+msgid "Importer Session not found"
+msgstr "Sesión del importador no encontrada"
+
+#: api/endpoints/class-tainacan-rest-exporters-controller.php:181
+#: api/endpoints/class-tainacan-rest-importers-controller.php:232
+msgid "The body can not be empty"
+msgstr "El cuerpo no puede estar vacío"
+
+#: api/endpoints/class-tainacan-rest-exporters-controller.php:199
+msgid "Exporter Session not found"
+msgstr "Sesión del exportador no encontrada"
+
+#: api/endpoints/class-tainacan-rest-exporters-controller.php:208
+msgid "Error starting exporter"
+msgstr "Error al iniciar el exportador"
+
+#: api/endpoints/class-tainacan-rest-filter-types-controller.php:26
+#: api/endpoints/class-tainacan-rest-metadata-types-controller.php:26
+msgid "Returns the structure of the objects."
+msgstr "Devuelve la estructura de los objetos."
+
+#: api/endpoints/class-tainacan-rest-filters-controller.php:182
+msgid "Please verify, invalid attribute(s)."
+msgstr "Por favor verifique, atributos inválidos."
+
+#: api/endpoints/class-tainacan-rest-filters-controller.php:282
+msgid "Please verify, invalid value(s)."
+msgstr "Por favor verifique, valores inválidos."
+
+#: api/endpoints/class-tainacan-rest-filters-controller.php:289
+msgid "A filter with this ID was not found"
+msgstr "No se encontraron filtros con este ID"
+
+#: api/endpoints/class-tainacan-rest-filters-controller.php:489
+msgid "Limits the result set to filters with a specific name"
+msgstr "Limita el conjunto de resultados a filtros con un nombre específico"
+
+#: api/endpoints/class-tainacan-rest-importers-controller.php:42
+msgid "The slug of the importer to be initialized"
+msgstr "El slug del importador a inicializar"
+
+#: api/endpoints/class-tainacan-rest-importers-controller.php:56
+msgid "The URL to be used by the importer"
+msgstr "La URL a ser utilizada por el importador"
+
+#: api/endpoints/class-tainacan-rest-importers-controller.php:60
+msgid ""
+"The array describing the destination collectino as expected by the importer"
+msgstr ""
+"La matriz que describe la colección de destino según lo esperado por el "
+"importador"
+
+#: api/endpoints/class-tainacan-rest-importers-controller.php:171
+msgid "Importer not found"
+msgstr "Importador no encontrado"
+
+#: api/endpoints/class-tainacan-rest-importers-controller.php:321
+msgid "Failed to upload file"
+msgstr "Error al subir el archivo"
+
+#: api/endpoints/class-tainacan-rest-importers-controller.php:348
+msgid "Error starting importer"
+msgstr "Error al iniciar el importador"
+
+#: api/endpoints/class-tainacan-rest-item-metadata-controller.php:217
+msgid "The metadatum does not accept suggestions"
+msgstr "Los metadatos no aceptan sugerencias"
+
+#: api/endpoints/class-tainacan-rest-item-metadata-controller.php:224
+msgid "Please verify, invalid value(s)"
+msgstr "Por favor verifique, valores inválidos"
+
+#: api/endpoints/class-tainacan-rest-item-metadata-controller.php:277
+msgid "The value(s) of item metadata"
+msgstr "El valor de los metadatos del ítem"
+
+#: api/endpoints/class-tainacan-rest-items-controller.php:553
+msgid "An item with this ID was not found"
+msgstr "No se encontraron ítems con este ID"
+
+#: api/endpoints/class-tainacan-rest-logs-controller.php:126
+msgid "An item with this ID does not exist"
+msgstr "Un ítem con este ID no existe"
+
+#: api/endpoints/class-tainacan-rest-logs-controller.php:167
+msgid "A collection with this ID does not exist"
+msgstr "No existe colección con este ID"
+
+#: api/endpoints/class-tainacan-rest-logs-controller.php:346
+msgid "Limits the result set to a log with a specific title"
+msgstr ""
+"Limita el conjunto de resultados a un registro con un título específico"
+
+#: api/endpoints/class-tainacan-rest-metadata-controller.php:433
+msgid "Metadata with this ID was not found"
+msgstr "No se encontraron metadatos con este ID"
+
+#: api/endpoints/class-tainacan-rest-metadata-controller.php:439
+msgid "This metadata is not a default metadata"
+msgstr "Este metadato no es un metadato por defecto"
+
+#: api/endpoints/class-tainacan-rest-metadata-controller.php:446
+msgid "This metadata is not a collection metadata"
+msgstr "Este metadato no es un metadato de una colección"
+
+#: api/endpoints/class-tainacan-rest-metadata-controller.php:513
+msgid "Limits the result set to metadata with a specific name"
+msgstr ""
+"Limita el conjunto de resultados a los metadatos con un nombre específico"
+
+#: api/endpoints/class-tainacan-rest-taxonomies-controller.php:204
+msgid "Failed to delete"
+msgstr "No se pudo borrar"
+
+#: api/endpoints/class-tainacan-rest-taxonomies-controller.php:372
+msgid "A taxonomy with this ID was not found"
+msgstr "No se encontró una taxonomía con este ID"
+
+#: api/endpoints/class-tainacan-rest-taxonomies-controller.php:448
+msgid "Limits the result set to a taxonomy with a specific name."
+msgstr ""
+"Limita el conjunto de resultados a una taxonomía con un nombre específico."
+
+#: api/endpoints/class-tainacan-rest-terms-controller.php:59
+msgid "Delete term permanently."
+msgstr "Término eliminado de manera permanente."
+
+#: api/endpoints/class-tainacan-rest-terms-controller.php:224
+msgid "Term or Taxonomy with this ID was not found"
+msgstr "No se encontró un término o taxonomía con este ID"
+
+#: api/endpoints/class-tainacan-rest-terms-controller.php:443
+msgid "Limits the result set to terms with a specific name"
+msgstr ""
+"Limita el conjunto de los resultados a términos con un nombre específico"
+
+#: classes/class-tainacan-background-process.php:75
+msgid "Background Process"
+msgstr "Proceso de fondo"
+
+#: classes/class-tainacan-bulk-edit.php:219
+#: classes/class-tainacan-bulk-edit.php:247
+#: classes/class-tainacan-bulk-edit.php:281
+#: classes/class-tainacan-bulk-edit.php:314
+#: classes/class-tainacan-bulk-edit.php:337
+#: classes/class-tainacan-bulk-edit.php:366
+#: classes/class-tainacan-bulk-edit.php:393
+#: classes/class-tainacan-bulk-edit.php:418
+msgid "Bulk Edit group not initialized"
+msgstr "Grupo de edición masiva no inicializado"
+
+#: classes/class-tainacan-bulk-edit.php:226
+msgid "Invalid status"
+msgstr "Status inválido"
+
+#: classes/class-tainacan-bulk-edit.php:252
+msgid ""
+"Unable to add a value to a metadata if it does not accept multiple values"
+msgstr ""
+"No se puede agregar un valor a los metadatos si no acepta varios valores"
+
+#: classes/class-tainacan-bulk-edit.php:255
+msgid "Unable to add a value to a metadata set to be a collection key"
+msgstr ""
+"No se puede agregar un valor a un conjunto de metadatos para que sea una "
+"clave de recopilación"
+
+#: classes/class-tainacan-bulk-edit.php:266
+#: classes/class-tainacan-bulk-edit.php:299
+#: classes/class-tainacan-bulk-edit.php:358
+msgid "Invalid Value"
+msgstr "Valor no válido"
+
+#: classes/class-tainacan-bulk-edit.php:287
+#: classes/class-tainacan-bulk-edit.php:343
+msgid "Unable to set a value to a metadata set to be a collection key"
+msgstr ""
+"No se puede establecer un valor para que un conjunto de metadatos sea una "
+"clave de recopilación"
+
+#: classes/class-tainacan-bulk-edit.php:320
+msgid "Unable to remove a value from a required metadatum"
+msgstr "No se puede eliminar un valor de un metadato requerido"
+
+#: classes/class-tainacan-bulk-edit.php:323
+msgid ""
+"Unable to remove a value from a metadata if it does not accept multiple "
+"values"
+msgstr ""
+"No se puede eliminar un valor de un metadato si no acepta varios valores"
+
+#: classes/class-tainacan-bulk-edit.php:347
+msgid "Old value and new value can not be the same"
+msgstr "El valor antiguo y el valor nuevo no pueden ser iguales"
+
+#: classes/class-tainacan-bulk-edit.php:458
+#: classes/class-tainacan-bulk-edit.php:605
+msgid "Error adding term"
+msgstr "Error al agregar término"
+
+#: classes/class-tainacan-bulk-edit.php:532
+#: classes/class-tainacan-bulk-edit.php:595
+msgid "Term not found"
+msgstr "Término no encontrado"
+
+#: classes/class-tainacan-bulk-edit.php:573
+msgid "New value and old value can not be the same"
+msgstr "Nuevo valor y antiguo valor no pueden ser los mismos"
+
+#: classes/class-tainacan-capabilities.php:305
+msgctxt "User role"
+msgid "Tainacan Author"
+msgstr "Autor Tainacan"
+
+#: classes/class-tainacan-capabilities.php:306
+msgctxt "User role"
+msgid "Tainacan Contributor"
+msgstr "Colaborador Tainacan"
+
+#: classes/class-tainacan-capabilities.php:307
+msgctxt "User role"
+msgid "Tainacan Editor"
+msgstr "Editor Tainacan"
+
+#: classes/entities/class-tainacan-entity.php:269
+msgid " is invalid"
+msgstr " es inválido"
+
+#: classes/entities/class-tainacan-metadatum.php:448
+msgid ""
+"Compound metadata do not support metadata with multiple values (except "
+"taxonomies)"
+msgstr ""
+"Los metadatos compuestos no soportan metadatos con múltiples valores "
+"(excepto categorías)"
+
+#: classes/entities/class-tainacan-metadatum.php:457
+#: classes/entities/class-tainacan-metadatum.php:472
+msgid ""
+"Taxonomy metadata can not be used inside Compound metadata with multiple "
+"values"
+msgstr ""
+"Los metadatos de taxonomía no puede ser utilizada dentro de metadatos "
+"compuestos con múltiples valores"
+
+#: classes/entities/class-tainacan-taxonomy.php:62
+msgid "Parent term"
+msgstr "Término pariente"
+
+#: classes/entities/class-tainacan-taxonomy.php:63
+msgid "Parent term:"
+msgstr "Término pariente:"
+
+#: classes/entities/class-tainacan-taxonomy.php:64
+msgid "Edit term"
+msgstr "Editar término"
+
+#: classes/entities/class-tainacan-taxonomy.php:65
+msgid "Update term"
+msgstr "Actualizar término"
+
+#: classes/entities/class-tainacan-taxonomy.php:66
+msgid "Add New term"
+msgstr "Agregar nuevo término"
+
+#: classes/entities/class-tainacan-taxonomy.php:67
+msgid "New Genre term"
+msgstr "Nuevo vocablo de género"
+
+#: classes/entities/class-tainacan-term.php:227
+msgid "You can not have two terms with the same name at the same level"
+msgstr "No se pueden tener dos términos con el mismo nombre al mismo nivel"
+
+#: classes/filter-types/autocomplete/class-tainacan-autocomplete.php:25
+#: classes/filter-types/autocomplete/class-tainacan-autocomplete.php:28
+#: classes/filter-types/autocomplete/class-tainacan-autocomplete.php:31
+#: classes/filter-types/taginput/class-tainacan-taginput.php:20
+#: classes/filter-types/taginput/class-tainacan-taginput.php:26
+#: classes/filter-types/taginput/class-tainacan-taginput.php:40
+#: classes/filter-types/taginput/class-tainacan-taginput.php:43
+#: classes/filter-types/taginput/class-tainacan-taginput.php:46
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:31
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:34
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:37
+#: exposers/class-tainacan-html.php:99 exposers/class-tainacan-txt.php:37
+#: exposers/class-tainacan-xml.php:57
+msgid "item"
+msgstr "ítem"
+
+#: classes/filter-types/checkbox/class-tainacan-checkbox.php:17
+#: classes/filter-types/taginput/class-tainacan-taginput.php:16
+#: classes/filter-types/taxonomy/class-tainacan-taxonomycheckbox.php:17
+#: classes/filter-types/taxonomy/class-tainacan-taxonomytaginput.php:16
+msgid "Selected values"
+msgstr "Valores seleccionados"
+
+#: classes/filter-types/checkbox/class-tainacan-checkbox.php:21
+#: classes/filter-types/checkbox/class-tainacan-checkbox.php:27
+#: classes/filter-types/checkbox/class-tainacan-checkbox.php:36
+#: classes/filter-types/checkbox/class-tainacan-checkbox.php:44
+#: classes/filter-types/checkbox/class-tainacan-checkbox.php:51
+#: classes/filter-types/taxonomy/class-tainacan-taxonomycheckbox.php:21
+#: classes/filter-types/taxonomy/class-tainacan-taxonomycheckbox.php:27
+#: classes/filter-types/taxonomy/class-tainacan-taxonomycheckbox.php:36
+#: classes/filter-types/taxonomy/class-tainacan-taxonomycheckbox.php:44
+#: classes/filter-types/taxonomy/class-tainacan-taxonomycheckbox.php:51
+#: classes/filter-types/taxonomy/class-tainacan-taxonomytaginput.php:20
+#: classes/filter-types/taxonomy/class-tainacan-taxonomytaginput.php:26
+#: classes/filter-types/taxonomy/class-tainacan-taxonomytaginput.php:35
+#: classes/filter-types/taxonomy/class-tainacan-taxonomytaginput.php:40
+#: classes/filter-types/taxonomy/class-tainacan-taxonomytaginput.php:43
+#: classes/filter-types/taxonomy/class-tainacan-taxonomytaginput.php:46
+#: dev-interface/class-tainacan-dev-interface.php:149
+#: dev-interface/class-tainacan-dev-interface.php:244
+#: dev-interface/class-tainacan-dev-interface.php:316
+msgid "Value"
+msgstr "Valor"
+
+#: classes/filter-types/filter-type/class-tainacan-filter-type.php:111
+msgid "The metadata primitive type is not supported by this filter"
+msgstr "El tipo de metadato primario no está soportado por este filtro"
+
+#: classes/filter-types/selectbox/class-tainacan-selectbox.php:19
+#: classes/metadata-types/selectbox/class-tainacan-selectbox.php:25
+msgid "Select here..."
+msgstr "Selecciona aquí..."
+
+#: classes/libs/wp-background-process.php:434
+#, php-format
+msgid "Every %d Minutes"
+msgstr "Cada %d Minutos"
+
+#: classes/metadata-types/core-description/class-tainacan-core-description.php:23
+msgid ""
+"The \"Core Description\" is a compulsory metadata automatically created for "
+"all collections by default. This is the main description displayed in items "
+"lists and where the basic research tools will do their searches."
+msgstr ""
+"La \"Descripción principal\" es un metadato obligatorio creado "
+"automáticamente para todas las colecciones de forma predeterminada. Esta es "
+"la descripción principal que se muestra en las listas de elementos y donde "
+"las herramientas básicas de investigación realizarán sus búsquedas."
+
+#: classes/metadata-types/core-description/class-tainacan-core-description.php:79
+#: classes/metadata-types/core-title/class-tainacan-core-title.php:78
+msgid "Core Metadata can not accept multiple values"
+msgstr "Los metadatos principales no pueden aceptar múltiples valores"
+
+#: classes/metadata-types/core-title/class-tainacan-core-title.php:23
+msgid ""
+"The \"Core Title\" is a compulsory metadata automatically created for all "
+"collections by default. It is the main metadatum of the item and where the "
+"basic research tools will do their searches."
+msgstr ""
+"El \"Título principal\" es un metadato obligatorio creado automáticamente "
+"para todas las colecciones de forma predeterminada. Es el principal metadato "
+"del elemento y donde las herramientas básicas de investigación realizarán "
+"sus búsquedas."
+
+#: classes/metadata-types/date/class-tainacan-date.php:21
+msgid "Exact date type, with day, month and year."
+msgstr "Tipo de fecha exacta, con día, mes y año."
+
+#: classes/metadata-types/date/class-tainacan-date.php:25
+msgid "mm/dd/yyyy"
+msgstr "mm/dd/yyyy"
+
+#: classes/metadata-types/date/class-tainacan-date.php:54
+#: classes/metadata-types/date/class-tainacan-date.php:69
+#, php-format
+msgid "Invalid date format. Expected format is YYYY-MM-DD, got %s."
+msgstr ""
+"Formato de fecha no válido. El formato esperado es YYYY-MM-DD, se obtuvo %s."
+
+#: classes/metadata-types/numeric/class-tainacan-numeric.php:18
+msgid "A numeric value, integer or float"
+msgstr "Un valor numérico, entero o flotante"
+
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:19
+msgid "A relationship with another item"
+msgstr "Una relación con otro ítem"
+
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:54
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:81
+msgid "Related Collection"
+msgstr "Colección relacionada"
+
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:55
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:82
+msgid "Select the collection to fetch items"
+msgstr "Seleccione la colección para recuperar los ítems"
+
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:59
+msgid "Select the metadata to help the search"
+msgstr "Seleccionar los metadatos para ayudar a la búsqueda"
+
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:63
+msgid ""
+"Allows different items to be related to the same item selected in another "
+"collection."
+msgstr ""
+"Permite a los diferentes ítems estar relacionados al mismo ítem seleccionado "
+"en otra colección."
+
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:88
+msgid "Invalid collection ID"
+msgstr "ID de la colección inválido"
+
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:92
+msgid "The related collection is required"
+msgstr "Se requiere la colección relacionada"
+
+#: classes/metadata-types/selectbox/class-tainacan-selectbox.php:18
+msgid "Selectbox"
+msgstr "Selectbox"
+
+#: classes/metadata-types/selectbox/class-tainacan-selectbox.php:19
+msgid "A selectbox with a fixed list of value to choose one from"
+msgstr ""
+"Un cuadro de selección con una lista fija de valores para elegir uno de ellos"
+
+#: classes/metadata-types/selectbox/class-tainacan-selectbox.php:39
+msgid "Options"
+msgstr "Opciones"
+
+#: classes/metadata-types/selectbox/class-tainacan-selectbox.php:40
+msgid "Creates options for what is selected. Hit <enter> to add a new one."
+msgstr ""
+"Crea opciones para lo que está seleccionado. Presiona <enter> para añadir "
+"una nueva."
+
+#: classes/metadata-types/selectbox/class-tainacan-selectbox.php:69
+msgid "Required options"
+msgstr "Opciones requeridas"
+
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:28
+msgid "A metadatum to use a taxonomy in this collection"
+msgstr "Un metadato para usar una taxonomía en esta colección"
+
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:86
+msgid "The html type of the terms list "
+msgstr "El tipo html de la lista de términos "
+
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:90
+msgid "Allows to create new terms"
+msgstr "Permite crear nuevos términos"
+
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:116
+msgid "Please select a taxonomy"
+msgstr "Por favor, seleccione una taxonomía"
+
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:134
+msgid ""
+"You can not have 2 taxonomy metadata using the same taxonomy in a collection."
+msgstr ""
+"No se puede tener dos taxonomías de metadatos utilizando la misma taxonomía "
+"en una colección."
+
+#: classes/metadata-types/text/class-tainacan-text.php:19
+msgid "A simple, one line, text input"
+msgstr "Una entrada de texto sencilla, de una línea"
+
+#: classes/metadata-types/text/class-tainacan-text.php:23
+msgid "Type here..."
+msgstr "Escriba aquí..."
+
+#: classes/metadata-types/textarea/class-tainacan-textarea.php:18
+msgid "Textarea"
+msgstr "Textarea"
+
+#: classes/metadata-types/textarea/class-tainacan-textarea.php:19
+msgid "A textarea with multiple lines"
+msgstr "Un textarea con múltiples líneas"
+
+#: classes/metadata-types/textarea/class-tainacan-textarea.php:23
+msgid "Type some long text here..."
+msgstr "Escriba un texto largo aquí..."
+
+#: classes/repositories/class-tainacan-collections.php:43
+msgid "The title of the collection"
+msgstr "El título de la colección"
+
+#: classes/repositories/class-tainacan-collections.php:51
+msgid "The current situation of the post"
+msgstr "La situación actual del post"
+
+#: classes/repositories/class-tainacan-collections.php:55
+msgid "Author ID"
+msgstr "ID del autor"
+
+#: classes/repositories/class-tainacan-collections.php:57
+msgid "The collection author's user ID (numeric string)"
+msgstr "El ID del creador de la colección (valor numérico)"
+
+#: classes/repositories/class-tainacan-collections.php:61
+#: classes/repositories/class-tainacan-items.php:72
+msgid "Creation Date"
+msgstr "Fecha de creación"
+
+#: classes/repositories/class-tainacan-collections.php:63
+msgid "The collection creation date"
+msgstr "Fecha de creación de la colección"
+
+#: classes/repositories/class-tainacan-collections.php:67
+#: classes/repositories/class-tainacan-items.php:78
+msgid "Modification Date"
+msgstr "Fecha de modificación"
+
+#: classes/repositories/class-tainacan-collections.php:69
+msgid "The collection modification date"
+msgstr "Fecha de modificación de la colección"
+
+#: classes/repositories/class-tainacan-collections.php:73
+#: classes/repositories/class-tainacan-filters.php:41
+#: classes/repositories/class-tainacan-metadata.php:68
+msgid "Order"
+msgstr "Orden"
+
+#: classes/repositories/class-tainacan-collections.php:75
+msgid ""
+"Collection order. This metadata is used if collections are manually ordered."
+msgstr ""
+"Orden de la colección. Este metadato se utiliza si las colecciones están "
+"ordenadas manualmente."
+
+#: classes/repositories/class-tainacan-collections.php:80
+msgid "Parent Collection"
+msgstr "Colección pariente"
+
+#: classes/repositories/class-tainacan-collections.php:82
+msgid "Original collection from which features are inherited"
+msgstr "Colección original de la cual se heredan las características"
+
+#: classes/repositories/class-tainacan-collections.php:89
+msgid "An introductory text describing the collection"
+msgstr "Un texto de introducción describiendo la colección"
+
+#: classes/repositories/class-tainacan-collections.php:97
+msgid ""
+"An unique and sanitized string representation of the collection, used to "
+"build the collection URL. It must not contain any special characters or "
+"spaces."
+msgstr ""
+"Una cadena de representación única y limpia de la colección, utilizada para "
+"construir la URL de la colección. No debe contener caracteres especiales o "
+"espacios."
+
+#: classes/repositories/class-tainacan-collections.php:102
+msgid "Default Order metadata"
+msgstr "Orden de los metadatos por defecto"
+
+#: classes/repositories/class-tainacan-collections.php:104
+msgid "Default property items in this collections will be ordered by"
+msgstr ""
+"La propiedad de los ítems por defecto en esta colección serán ordenados por"
+
+#: classes/repositories/class-tainacan-collections.php:110
+msgid "Default order"
+msgstr "Orden por defecto"
+
+#: classes/repositories/class-tainacan-collections.php:111
+msgid "Default order for items in this collection. ASC or DESC"
+msgstr "Orden por defecto para los ítems en esta colección. ASC o DESC"
+
+#: classes/repositories/class-tainacan-collections.php:122
+msgid "List of collection properties that will be displayed in the table view"
+msgstr ""
+"Lista de las propiedades de la colección que serán exhibidas en la vista de "
+"tabla"
+
+#: classes/repositories/class-tainacan-collections.php:129
+msgid "Collection default visualization mode"
+msgstr "Modo de visualización de la colección por defecto"
+
+#: classes/repositories/class-tainacan-collections.php:137
+msgid ""
+"Which visualization modes will be available for the public to choose from"
+msgstr ""
+"Qué modos de visualización estarán disponibles para que el público elija"
+
+#: classes/repositories/class-tainacan-collections.php:144
+msgid "Ordination metadata"
+msgstr "Ordenación de los metadatos"
+
+#: classes/repositories/class-tainacan-collections.php:147
+msgid "Collection metadata ordination"
+msgstr "Ordenación de los metadatos de la colección"
+
+#: classes/repositories/class-tainacan-collections.php:152
+msgid "Ordination filters"
+msgstr "Filtros de ordenación"
+
+#: classes/repositories/class-tainacan-collections.php:155
+msgid "Collection filters ordination"
+msgstr "Filtros de ordenación de la colección"
+
+#: classes/repositories/class-tainacan-collections.php:162
+msgid "To use this page as the home page of this collection"
+msgstr "Para utilizar esta página como la página principal de esta colección"
+
+#: classes/repositories/class-tainacan-collections.php:163
+msgid "Value should be yes or no"
+msgstr "El valor debe ser sí o no"
+
+#: classes/repositories/class-tainacan-collections.php:169
+msgid "Cover Page ID"
+msgstr "ID de la página de cubierta"
+
+#: classes/repositories/class-tainacan-collections.php:171
+msgid ""
+"If enabled, this custom page will be used as cover for this collection, "
+"instead of default items list."
+msgstr ""
+"Si está habilitada, esta página personalizada se usará como portada para "
+"esta colección, en lugar de la lista de elementos predeterminados."
+
+#: classes/repositories/class-tainacan-collections.php:172
+msgid "Invalid page"
+msgstr "Página inválida"
+
+#: classes/repositories/class-tainacan-collections.php:180
+msgid "The image to be used in collection header"
+msgstr "La imagen a ser utilizada en la cabecera de la colección"
+
+#: classes/repositories/class-tainacan-collections.php:181
+#: classes/repositories/class-tainacan-terms.php:87
+msgid "Invalid image"
+msgstr "Imagen inválida"
+
+#: classes/repositories/class-tainacan-collections.php:190
+msgid "To assign users as Moderators of this collection"
+msgstr "Para asignar usuarios como moderadores de esta colección"
+
+#: classes/repositories/class-tainacan-collections.php:196
+#: classes/repositories/class-tainacan-items.php:108
+msgid ""
+"Squared reduced-size version of a picture that helps recognizing and "
+"organizing files"
+msgstr ""
+"Versión cuadrada de tamaño reducido de una imagen que ayuda a reconocer y "
+"organizar archivos"
+
+#: classes/repositories/class-tainacan-collections.php:200
+#: classes/repositories/class-tainacan-items.php:112
+msgid "Comment Status"
+msgstr "Status del comentario"
+
+#: classes/repositories/class-tainacan-collections.php:202
+msgid ""
+"Collection comment status: \"open\" means comments are allowed, \"closed\" "
+"means comments are not allowed."
+msgstr ""
+"Status del comentario de la colección: \"open\" significa que los "
+"comentarios no están permitidos, \"closed\" significa que los comentarios no "
+"están permitidos."
+
+#: classes/repositories/class-tainacan-collections.php:208
+msgid "Allow Items Comments"
+msgstr "Permitir comentários de itens"
+
+#: classes/repositories/class-tainacan-collections.php:210
+msgid ""
+"Collection items comment status: \"open\" means comments are allowed, "
+"\"closed\" means comments are not allowed."
+msgstr ""
+"Status de comentarios de los ítem de la colección: \"open\" significa que se "
+"permiten comentarios, \"closed\" significa que no se permiten comentarios."
+
+#: classes/repositories/class-tainacan-collections.php:227
+#: classes/repositories/class-tainacan-filters.php:110
+#: classes/repositories/class-tainacan-items.php:132
+#: classes/repositories/class-tainacan-items.php:133
+#: classes/repositories/class-tainacan-logs.php:135
+#: classes/repositories/class-tainacan-metadata.php:212
+#: classes/repositories/class-tainacan-taxonomies.php:96
+msgid "Add new"
+msgstr "Añadir nuevo"
+
+#: classes/repositories/class-tainacan-collections.php:228
+msgid "Add new Collection"
+msgstr "Añadir nueva colección"
+
+#: classes/repositories/class-tainacan-collections.php:229
+msgid "Edit Collection"
+msgstr "Editar colección"
+
+#: classes/repositories/class-tainacan-collections.php:230
+msgid "New Collection"
+msgstr "Nueva colección"
+
+#: classes/repositories/class-tainacan-collections.php:231
+msgid "View Collection"
+msgstr "Ver colección"
+
+#: classes/repositories/class-tainacan-collections.php:232
+msgid "View Collections"
+msgstr "Ver colecciones"
+
+#: classes/repositories/class-tainacan-collections.php:233
+msgid "Search Collections"
+msgstr "Buscar colecciones"
+
+#: classes/repositories/class-tainacan-collections.php:234
+msgid "No Collections found "
+msgstr "No se encontraron colecciones "
+
+#: classes/repositories/class-tainacan-collections.php:235
+msgid "No Collections found in trash"
+msgstr "No se encontraron colecciones en la papelera"
+
+#: classes/repositories/class-tainacan-collections.php:236
+msgid "Parent Collection:"
+msgstr "Colección pariente:"
+
+#: classes/repositories/class-tainacan-collections.php:237
+msgid "All Collections"
+msgstr "Todas las colecciones"
+
+#: classes/repositories/class-tainacan-collections.php:238
+msgid "Collections Archive"
+msgstr "Archivo de colecciones"
+
+#: classes/repositories/class-tainacan-collections.php:257
+msgctxt "Slug: the string that will be used to build the URL"
+msgid "collections"
+msgstr "colecciones"
+
+#: classes/repositories/class-tainacan-filters.php:35
+msgid "Name of the filter"
+msgstr "Nombre del filtro"
+
+#: classes/repositories/class-tainacan-filters.php:36
+msgid "The filter name should be a text value and not empty"
+msgstr "El nombre del filtro debe ser un valor de texto y no debe estar vacío"
+
+#: classes/repositories/class-tainacan-filters.php:43
+msgid "Filter order. This metadata is used if filters were manually ordered."
+msgstr ""
+"Order del filtro. Estos metadatos se utilizan si los filtros fueron "
+"ordenados manualmente."
+
+#: classes/repositories/class-tainacan-filters.php:50
+msgid "The filter description"
+msgstr "Descripción del filtro"
+
+#: classes/repositories/class-tainacan-filters.php:56
+msgid "Filter type options"
+msgstr "Opciones del tipo de filtro"
+
+#: classes/repositories/class-tainacan-filters.php:59
+msgid "The filter type options"
+msgstr "Opciones del tipo de filtro"
+
+#: classes/repositories/class-tainacan-filters.php:64
+#: classes/repositories/class-tainacan-metadata.php:94
+msgid "Type"
+msgstr "Tipo"
+
+#: classes/repositories/class-tainacan-filters.php:66
+msgid "The filter type"
+msgstr "Tipo de filtro"
+
+#: classes/repositories/class-tainacan-filters.php:73
+#: classes/repositories/class-tainacan-items.php:61
+#: classes/repositories/class-tainacan-metadata.php:163
+msgid "The collection ID"
+msgstr "ID de la colección"
+
+#: classes/repositories/class-tainacan-filters.php:78
+msgid "Color"
+msgstr "Color"
+
+#: classes/repositories/class-tainacan-filters.php:80
+msgid "Filter color"
+msgstr "Color del filtro"
+
+#: classes/repositories/class-tainacan-filters.php:87
+msgid "Filter metadata"
+msgstr "Filtrar metadatos"
+
+#: classes/repositories/class-tainacan-filters.php:92
+msgid "Max of options"
+msgstr "Max de opciones"
+
+#: classes/repositories/class-tainacan-filters.php:94
+msgid "The max number of options to be showed in filter sidebar."
+msgstr ""
+"El número máximo de opciones que se mostrarán en la barra lateral del filtro."
+
+#: classes/repositories/class-tainacan-filters.php:111
+msgid "Add new Filter"
+msgstr "Agregar nuevo filtro"
+
+#: classes/repositories/class-tainacan-filters.php:112
+msgid "Edit Filter"
+msgstr "Editar filtro"
+
+#: classes/repositories/class-tainacan-filters.php:113
+msgid "New Filter"
+msgstr "Nuevo filtro"
+
+#: classes/repositories/class-tainacan-filters.php:114
+msgid "View Filter"
+msgstr "Ver filtros"
+
+#: classes/repositories/class-tainacan-filters.php:115
+msgid "Search Filters"
+msgstr "Buscar filtros"
+
+#: classes/repositories/class-tainacan-filters.php:116
+msgid "No Filters found "
+msgstr "No se encontraron filtros "
+
+#: classes/repositories/class-tainacan-filters.php:117
+msgid "No Filters found in trash"
+msgstr "No se encontraron filtros en la papelera"
+
+#: classes/repositories/class-tainacan-filters.php:118
+msgid "Parent Filter:"
+msgstr "Filtro por parientes:"
+
+#: classes/repositories/class-tainacan-items.php:38
+msgid "Title of the item"
+msgstr "Título del ítem"
+
+#: classes/repositories/class-tainacan-items.php:39
+#: classes/repositories/class-tainacan-logs.php:42
+msgid "The title should be a text value and not empty"
+msgstr "El título debe ser un valor de texto y no debe estar vacío"
+
+#: classes/repositories/class-tainacan-items.php:47
+msgid "The posts status"
+msgstr "Estado del post"
+
+#: classes/repositories/class-tainacan-items.php:53
+msgid "The item description"
+msgstr "Descripción del ítem"
+
+#: classes/repositories/class-tainacan-items.php:66
+msgid "Author"
+msgstr "Autor"
+
+#: classes/repositories/class-tainacan-items.php:68
+msgid "The item author's user ID (numeric string)"
+msgstr "ID de usuario del creador del ítem (valor numérico)"
+
+#: classes/repositories/class-tainacan-items.php:74
+msgid "The item creation date"
+msgstr "Fecha de creación del ítem"
+
+#: classes/repositories/class-tainacan-items.php:80
+msgid "The item modification date"
+msgstr "Fecha de modificación del ítem"
+
+#: classes/repositories/class-tainacan-items.php:84
+msgid "Term IDs"
+msgstr "Términos del ID"
+
+#: classes/repositories/class-tainacan-items.php:86
+msgid "The item term IDs"
+msgstr "Los IDs del vocablo del ítem"
+
+#: classes/repositories/class-tainacan-items.php:90
+msgid "Document Type"
+msgstr "Tipo de documento"
+
+#: classes/repositories/class-tainacan-items.php:92
+msgid "The document type, can be a local attachment, an external URL or a text"
+msgstr ""
+"El tipo de documento, puede ser un adjunto local, una URL externa o un texto"
+
+#: classes/repositories/class-tainacan-items.php:93
+msgid "Invalid document type"
+msgstr "Tipo de documento inválido"
+
+#: classes/repositories/class-tainacan-items.php:101
+msgid ""
+"The document itself. An ID in case of attachment, an URL in case of link or "
+"a text in the case of text."
+msgstr ""
+"El documento como tal. Un ID en caso de un adjunto, una URL en caso de un "
+"link o un texto en caso de un texto."
+
+#: classes/repositories/class-tainacan-items.php:102
+msgid "Invalid document"
+msgstr "Documento inválido"
+
+#: classes/repositories/class-tainacan-items.php:114
+msgid ""
+"Item comment status: \"open\" means comments are allowed, \"closed\" means "
+"comments are not allowed."
+msgstr ""
+"Status del comentario del ítem: \"open\" significa que los comentarios no "
+"están permitidos, \"closed\" significa que los comentarios no están "
+"permitidos."
+
+#: classes/repositories/class-tainacan-items.php:135
+msgid "New Item"
+msgstr "Nuevo ítem"
+
+#: classes/repositories/class-tainacan-items.php:136
+msgid "View Item"
+msgstr "Ver ítem"
+
+#: classes/repositories/class-tainacan-items.php:137
+msgid "Search items"
+msgstr "Buscar ítems"
+
+#: classes/repositories/class-tainacan-items.php:138
+msgid "No items found"
+msgstr "No se encontraron ítems"
+
+#: classes/repositories/class-tainacan-items.php:139
+msgid "No items found in trash"
+msgstr "Ningún ítem en la papelera"
+
+#: classes/repositories/class-tainacan-items.php:140
+msgid "Parent item:"
+msgstr "Ítem pariente:"
+
+#: classes/repositories/class-tainacan-logs.php:41
+msgid "The title of the log"
+msgstr "Título del registro"
+
+#: classes/repositories/class-tainacan-logs.php:47
+msgid "Log date"
+msgstr "Fecha del registro"
+
+#: classes/repositories/class-tainacan-logs.php:49
+msgid "The log date"
+msgstr "Fecha del registro"
+
+#: classes/repositories/class-tainacan-logs.php:53
+msgid "Menu order"
+msgstr "Orden del menú"
+
+#: classes/repositories/class-tainacan-logs.php:55
+#: classes/repositories/class-tainacan-logs.php:62
+msgid "Log order"
+msgstr "Orden del registro"
+
+#: classes/repositories/class-tainacan-logs.php:60
+#: classes/repositories/class-tainacan-metadata.php:76
+#: classes/repositories/class-tainacan-terms.php:51
+msgid "Parent"
+msgstr "Parientes"
+
+#: classes/repositories/class-tainacan-logs.php:69
+msgid "The log description"
+msgstr "Descripción del registro"
+
+#: classes/repositories/class-tainacan-logs.php:77
+msgid "The log slug"
+msgstr "Slug del registro"
+
+#: classes/repositories/class-tainacan-logs.php:82
+msgid "Items per page"
+msgstr "Ítems por página"
+
+#: classes/repositories/class-tainacan-logs.php:84
+msgid "The quantity of items that should be loaded"
+msgstr "La cantidad de ítems que deben ser cargados"
+
+#: classes/repositories/class-tainacan-logs.php:89
+msgid "User ID"
+msgstr "ID del usuario"
+
+#: classes/repositories/class-tainacan-logs.php:91
+#: classes/repositories/class-tainacan-logs.php:98
+#: classes/repositories/class-tainacan-repository.php:387
+#: classes/repositories/class-tainacan-terms.php:38
+msgid "Unique identifier"
+msgstr "Identificador único"
+
+#: classes/repositories/class-tainacan-logs.php:96
+msgid "Blog ID"
+msgstr "Blog ID"
+
+#: classes/repositories/class-tainacan-logs.php:103
+msgid "Actual value"
+msgstr "Valor actual"
+
+#: classes/repositories/class-tainacan-logs.php:105
+msgid "The actual log value"
+msgstr "El valor actual del registro"
+
+#: classes/repositories/class-tainacan-logs.php:110
+msgid "Log differences"
+msgstr "Diferencias de registro"
+
+#: classes/repositories/class-tainacan-logs.php:111
+msgid "Differences between old and new versions of object"
+msgstr "Diferencia entre las viejas y las nuevas versiones del objeto"
+
+#: classes/repositories/class-tainacan-logs.php:115
+msgid "Log collection relationship"
+msgstr "Relación del registro con la colección"
+
+#: classes/repositories/class-tainacan-logs.php:116
+msgid "The ID of the collection that this log is related to"
+msgstr "El ID de la colección a la cual este registro se relaciona"
+
+#: classes/repositories/class-tainacan-logs.php:120
+msgid "Log item relationship"
+msgstr "Registro de relaciones del ítem"
+
+#: classes/repositories/class-tainacan-logs.php:121
+msgid "The id of the item that this log is related to"
+msgstr "El ID del ítem con el que está relacionado este registro"
+
+#: classes/repositories/class-tainacan-logs.php:133
+#: classes/repositories/class-tainacan-logs.php:144
+msgid "Logs"
+msgstr "Registros"
+
+#: classes/repositories/class-tainacan-logs.php:134
+msgid "Log"
+msgstr "Registro"
+
+#: classes/repositories/class-tainacan-logs.php:136
+msgid "Add new Log"
+msgstr "Añadir nuevo registro"
+
+#: classes/repositories/class-tainacan-logs.php:137
+msgid "Edit Log"
+msgstr "Editar registro"
+
+#: classes/repositories/class-tainacan-logs.php:138
+msgid "New Log"
+msgstr "Nuevo registro"
+
+#: classes/repositories/class-tainacan-logs.php:139
+msgid "View Log"
+msgstr "Ver registro"
+
+#: classes/repositories/class-tainacan-logs.php:140
+msgid "Search Logs"
+msgstr "Búsqueda de registros"
+
+#: classes/repositories/class-tainacan-logs.php:141
+msgid "No Logs found "
+msgstr "No se encontraron registros "
+
+#: classes/repositories/class-tainacan-logs.php:142
+msgid "No Logs found in trash"
+msgstr "No se han encontrado registros en la papelera"
+
+#: classes/repositories/class-tainacan-logs.php:143
+msgid "Parent Log:"
+msgstr "Registro del pariente:"
+
+#: classes/repositories/class-tainacan-logs.php:353
+#, php-format
+msgid "\"%1$s\" %2$s has been %3$s"
+msgstr "\"%1$s\" %2$s ha sido %3$s"
+
+#: classes/repositories/class-tainacan-logs.php:359
+#, php-format
+msgid "(collection: %s)"
+msgstr "(colección: %s)"
+
+#: classes/repositories/class-tainacan-logs.php:361
+msgid "(on repository level)"
+msgstr "(a nivel de repositorio)"
+
+#: classes/repositories/class-tainacan-logs.php:370
+msgid "item metadatum"
+msgstr "metadato de ítem"
+
+#: classes/repositories/class-tainacan-logs.php:372
+#, php-format
+msgid "(item: %s)"
+msgstr "(ítem: %s)"
+
+#: classes/repositories/class-tainacan-metadata.php:55
+msgid "Name of the metadata"
+msgstr "Nombre de los metadatos"
+
+#: classes/repositories/class-tainacan-metadata.php:56
+msgid "The name should be a text value and not empty"
+msgstr "El nombre debe ser un valor de texto y no debe estar vacío"
+
+#: classes/repositories/class-tainacan-metadata.php:63
+msgid "A unique and santized string representation of the metadata"
+msgstr "Una string de representación única y limpia de los metadatos"
+
+#: classes/repositories/class-tainacan-metadata.php:70
+msgid ""
+"Metadata order. This metadata will be used if collections were manually "
+"ordered."
+msgstr ""
+"Orden de los metadatos. Este metadato será utilizado si las colecciones "
+"están ordenadas manualmente."
+
+#: classes/repositories/class-tainacan-metadata.php:71
+msgid "The menu order should be a numeric value"
+msgstr "El orden del menú debe ser un valor numérico"
+
+#: classes/repositories/class-tainacan-metadata.php:78
+msgid "Parent metadata"
+msgstr "Metadatos parientes"
+
+#: classes/repositories/class-tainacan-metadata.php:87
+msgid "The metadata description"
+msgstr "Descripción de los metadatos"
+
+#: classes/repositories/class-tainacan-metadata.php:96
+msgid "The metadata type"
+msgstr "El tipo de metadatos"
+
+#: classes/repositories/class-tainacan-metadata.php:97
+msgid "Metadata type is empty"
+msgstr "El tipo de metadatos está vacío"
+
+#: classes/repositories/class-tainacan-metadata.php:104
+msgid ""
+"The metadata is required. All items in this collection must fill this field"
+msgstr ""
+"Los metadatos son obligatorios. Todos los ítems en esta colección deben "
+"llenar a este campo"
+
+#: classes/repositories/class-tainacan-metadata.php:105
+msgid "The metadata content is invalid"
+msgstr "El contenido de los metadatos es inválido"
+
+#: classes/repositories/class-tainacan-metadata.php:113
+msgid "Metadata value should be unique accross all items in this collection"
+msgstr ""
+"El valor de los metadatos debe ser único en todos los ítems de esta colección"
+
+#: classes/repositories/class-tainacan-metadata.php:114
+msgid "You can not have two items with the same value for this metadatum"
+msgstr "No se puede tener dos elementos con el mismo valor para este metadato"
+
+#: classes/repositories/class-tainacan-metadata.php:120
+msgid "Multiple"
+msgstr "Múltiple"
+
+#: classes/repositories/class-tainacan-metadata.php:122
+msgid "Allow items to have more than one value for this metadatum"
+msgstr "Permitir que los elementos tengan más de un valor para este metadato"
+
+#: classes/repositories/class-tainacan-metadata.php:123
+msgid "Invalid multiple metadata"
+msgstr "Múltiples metadatos inválido"
+
+#: classes/repositories/class-tainacan-metadata.php:130
+msgid "Cardinality"
+msgstr "Cardinalidad"
+
+#: classes/repositories/class-tainacan-metadata.php:132
+msgid "Number of multiples possible metadata"
+msgstr "Número de múltiples metadatos posibles"
+
+#: classes/repositories/class-tainacan-metadata.php:133
+msgid "This number of multiples metadata is not allowed"
+msgstr "No se permite este número de múltiples metadatos"
+
+#: classes/repositories/class-tainacan-metadata.php:139
+msgid "Mask"
+msgstr "Máscara"
+
+#: classes/repositories/class-tainacan-metadata.php:141
+msgid "The mask to be used in the metadata"
+msgstr "La máscara a ser utilizada en los metadatos"
+
+#: classes/repositories/class-tainacan-metadata.php:149
+msgid "The default value for the metadata"
+msgstr "El valor por defecto para los metadatos"
+
+#: classes/repositories/class-tainacan-metadata.php:153
+msgid "Metadata type options"
+msgstr "Opciones para el tipo de metadatos"
+
+#: classes/repositories/class-tainacan-metadata.php:156
+msgid "Specific options for metadata type"
+msgstr "Opciones específicas para el tipo de metadatos"
+
+#: classes/repositories/class-tainacan-metadata.php:168
+msgid "Metadata Value Accepts Suggestions"
+msgstr "El valor de los metadatos acepta sugerencias"
+
+#: classes/repositories/class-tainacan-metadata.php:170
+msgid "Allow community to suggest different values for the metadata"
+msgstr "Permitir a la comunidad sugerir diferentes valores para los metadatos"
+
+#: classes/repositories/class-tainacan-metadata.php:176
+msgid "Relationship metadata mapping"
+msgstr "Relación del mapeo de metadatos"
+
+#: classes/repositories/class-tainacan-metadata.php:179
+msgid ""
+"The metadata mapping options. Metadata can be configured to match another "
+"type of data distribution."
+msgstr ""
+"Las opciones de mapeo de metadatos. Los metadatos pueden ser configurados "
+"para combinar con otro tipo de distribución de datos."
+
+#: classes/repositories/class-tainacan-metadata.php:180
+msgid "Invalid Metadata Mapping"
+msgstr "Mapeo de metadatos inválido"
+
+#: classes/repositories/class-tainacan-metadata.php:186
+msgid "Display"
+msgstr "Mostrar"
+
+#: classes/repositories/class-tainacan-metadata.php:187
+msgid "string"
+msgstr "string"
+
+#: classes/repositories/class-tainacan-metadata.php:189
+msgid "Display by default on listing or do not display or never display."
+msgstr "Mostrar por defecto en el listado o no mostrar o no mostrar nunca."
+
+#: classes/repositories/class-tainacan-metadata.php:194
+msgid "The semantic metadatum description URI"
+msgstr "La descripción del metadato semántico URI"
+
+#: classes/repositories/class-tainacan-metadata.php:195
+msgid "url"
+msgstr "url"
+
+#: classes/repositories/class-tainacan-metadata.php:197
+msgid "The semantic metadatum description URI like: "
+msgstr "La descripción del metadato semántico URI como: "
+
+#: classes/repositories/class-tainacan-metadata.php:213
+msgid "Add new Metadata"
+msgstr "Añadir nuevos metadatos"
+
+#: classes/repositories/class-tainacan-metadata.php:214
+msgid "Edit Metadata"
+msgstr "Editar metadatos"
+
+#: classes/repositories/class-tainacan-metadata.php:215
+msgid "New Metadata"
+msgstr "Nuevos metadatos"
+
+#: classes/repositories/class-tainacan-metadata.php:216
+msgid "View Metadata"
+msgstr "Ver metadatos"
+
+#: classes/repositories/class-tainacan-metadata.php:217
+msgid "Search Metadata"
+msgstr "Buscar metadatos"
+
+#: classes/repositories/class-tainacan-metadata.php:218
+msgid "No Metadata found "
+msgstr "No se encontraron metadatos "
+
+#: classes/repositories/class-tainacan-metadata.php:219
+msgid "No Metadata found in trash"
+msgstr "No se encontraron metadatos en la papelera"
+
+#: classes/repositories/class-tainacan-metadata.php:220
+msgid "Parent Metadata:"
+msgstr "Metadatos pariente:"
+
+#: classes/repositories/class-tainacan-repository.php:385
+#: classes/repositories/class-tainacan-terms.php:36
+msgid "ID"
+msgstr "ID"
+
+#: classes/repositories/class-tainacan-taxonomies.php:40
+msgid "Name of the taxonomy"
+msgstr "Nombre de la taxonomía"
+
+#: classes/repositories/class-tainacan-taxonomies.php:41
+msgid "The taxonomy name should be a text value and should not be empty."
+msgstr ""
+"El nombre de la taxonomía debe ser un valor de texto y no debe estar vacío."
+
+#: classes/repositories/class-tainacan-taxonomies.php:48
+msgid "The taxonomy description"
+msgstr "La descripción de la taxonomía"
+
+#: classes/repositories/class-tainacan-taxonomies.php:56
+msgid "The taxonomy slug"
+msgstr "El slug de la taxonomía"
+
+#: classes/repositories/class-tainacan-taxonomies.php:61
+msgid "Allow insert"
+msgstr "Permitir inserciones"
+
+#: classes/repositories/class-tainacan-taxonomies.php:63
+msgid "Allow/Deny the creation of new terms in the taxonomy"
+msgstr "Permitir/Negar la creación de nuevos términos en la taxonomía"
+
+#: classes/repositories/class-tainacan-taxonomies.php:64
+msgid "Invalid insertion, allowed values are ( yes/no )"
+msgstr "Valor inválido, los valores admitidos son (sí/no)"
+
+#: classes/repositories/class-tainacan-taxonomies.php:70
+msgid "Enabled for post types"
+msgstr "Habilitado para tipos de publicaciones"
+
+#: classes/repositories/class-tainacan-taxonomies.php:72
+msgid "Also enable this taxonomy for other WordPress post types"
+msgstr ""
+"También habilite esta taxonomía para otros tipos de publicaciones de "
+"WordPress"
+
+#: classes/repositories/class-tainacan-taxonomies.php:73
+msgid "Error enabling this taxonomy for post types"
+msgstr "Error al habilitar esta taxonomía para tipos de publicaciones"
+
+#: classes/repositories/class-tainacan-taxonomies.php:81
+msgid "The IDs of collection where the taxonomy is used"
+msgstr "Los IDs de de la colección donde la taxonomía está siendo utilizada"
+
+#: classes/repositories/class-tainacan-taxonomies.php:97
+msgid "Add new Taxonomy"
+msgstr "Agregar nueva taxonomía"
+
+#: classes/repositories/class-tainacan-taxonomies.php:98
+msgid "Edit Taxonomy"
+msgstr "Editar taxonomía"
+
+#: classes/repositories/class-tainacan-taxonomies.php:99
+msgid "New Taxonomy"
+msgstr "Nueva taxonomía"
+
+#: classes/repositories/class-tainacan-taxonomies.php:100
+msgid "View Taxonomy"
+msgstr "Ver taxonomía"
+
+#: classes/repositories/class-tainacan-taxonomies.php:101
+msgid "View Taxonomies"
+msgstr "Ver taxonomías"
+
+#: classes/repositories/class-tainacan-taxonomies.php:102
+msgid "Search Taxonomies"
+msgstr "Busar taxonomías"
+
+#: classes/repositories/class-tainacan-taxonomies.php:103
+msgid "No Taxonomies found "
+msgstr "No se encontró ninguna taxonomía "
+
+#: classes/repositories/class-tainacan-taxonomies.php:104
+msgid "No Taxonomies found in trash"
+msgstr "No se encontró ninguna taxonomía en la papelera"
+
+#: classes/repositories/class-tainacan-taxonomies.php:105
+msgid "Parent Taxonomy:"
+msgstr "Taxonomía pariente:"
+
+#: classes/repositories/class-tainacan-taxonomies.php:106
+msgid "All Taxonomies"
+msgstr "Todas las taxonomias"
+
+#: classes/repositories/class-tainacan-taxonomies.php:107
+msgid "Taxonomies Archive"
+msgstr "Archivo de taxonomías"
+
+#: classes/repositories/class-tainacan-terms.php:45
+msgid "Name of the term"
+msgstr "Nombre del término"
+
+#: classes/repositories/class-tainacan-terms.php:46
+msgid "The name is empty"
+msgstr "El nombre está vacío"
+
+#: classes/repositories/class-tainacan-terms.php:53
+msgid "The parent of the term"
+msgstr "Término pariente"
+
+#: classes/repositories/class-tainacan-terms.php:61
+msgid "The term description"
+msgstr "Descripción del término"
+
+#: classes/repositories/class-tainacan-terms.php:69
+msgid "The term taxonomy"
+msgstr "Término de la taxonomía"
+
+#: classes/repositories/class-tainacan-terms.php:70
+msgid "The taxonomy is empty"
+msgstr "La taxonomía está vacía"
+
+#: classes/repositories/class-tainacan-terms.php:75
+msgid "User"
+msgstr "Usuario"
+
+#: classes/repositories/class-tainacan-terms.php:77
+msgid "The term creator"
+msgstr "El creador del término"
+
+#: classes/repositories/class-tainacan-terms.php:78
+msgid "The user is empty or invalid"
+msgstr "El usuario está vacío o es inválido"
+
+#: classes/repositories/class-tainacan-terms.php:86
+msgid "The image to be used in term header"
+msgstr "La imagen a ser utilizada en el encabezado de términos"
+
+#: classes/repositories/class-tainacan-terms.php:93
+msgid "Hide empty"
+msgstr "Ocultar vacíos"
+
+#: classes/repositories/class-tainacan-terms.php:95
+msgid "Hide empty terms"
+msgstr "Ocultar términos vacíos"
+
+#: dev-interface/class-tainacan-dev-interface.php:85
+msgid "Properties"
+msgstr "Propiedades"
+
+#: dev-interface/class-tainacan-dev-interface.php:148
+msgid "Property"
+msgstr "Propiedad"
+
+#: dev-interface/class-tainacan-helpers-html.php:59
+msgid "Select an option"
+msgstr "Selecciona una opción"
+
+#: exporter/class-tainacan-csv.php:134
+#: exporter/class-tainacan-term-exporter.php:44
+msgid "Your CSV file is ready! Access it in the link below:"
+msgstr "Su archivo CSV está listo! Acceda a él en el siguiente enlace:"
+
+#: exporter/class-tainacan-csv.php:162 exporter/class-tainacan-csv.php:171
+#: exporter/class-tainacan-term-exporter.php:80
+#: exporter/class-tainacan-term-exporter.php:89
+#: importer/class-tainacan-csv.php:210 importer/class-tainacan-csv.php:219
+#: importer/term-importer/class-tainacan-term-importer.php:44
+#: importer/term-importer/class-tainacan-term-importer.php:53
+msgid "CSV Delimiter"
+msgstr "Delimitador CSV"
+
+#: exporter/class-tainacan-csv.php:174
+#: exporter/class-tainacan-term-exporter.php:92
+#: importer/class-tainacan-csv.php:222
+#: importer/term-importer/class-tainacan-term-importer.php:56
+msgid "The character used to separate each column in your CSV (e.g. , or ;)"
+msgstr ""
+"El carácter utilizado para separar cada columna en su CSV (por ejemplo , o ;)"
+
+#: exporter/class-tainacan-csv.php:184 exporter/class-tainacan-csv.php:193
+#: importer/class-tainacan-csv.php:232 importer/class-tainacan-csv.php:241
+msgid "Multivalued metadata delimiter"
+msgstr "Delimitador de metadatos multivalor"
+
+#: exporter/class-tainacan-csv.php:196 importer/class-tainacan-csv.php:244
+msgid ""
+"The character used to separate each value inside a cell with multiple values "
+"(e.g. ||). Note that the target metadatum must accept multiple values."
+msgstr ""
+"El carácter utilizado para separar cada valor dentro de una célula con "
+"varios valores (por ejemplo, ||). Tenga en cuenta que el metadato de destino "
+"debe aceptar varios valores."
+
+#: exporter/class-tainacan-csv.php:206 exporter/class-tainacan-csv.php:215
+#: importer/class-tainacan-csv.php:254 importer/class-tainacan-csv.php:263
+msgid "Enclosure"
+msgstr "Encapsular"
+
+#: exporter/class-tainacan-csv.php:218 importer/class-tainacan-csv.php:266
+msgid ""
+"The character that wraps the content of each cell in your CSV. (e.g. \")"
+msgstr ""
+"El carácter que envuelve el contenido de cada célula en tu CSV. (p.ej. \")"
+
+#: exporter/class-tainacan-export-handler.php:18
+msgid "Allows you to export one collection to a CSV file"
+msgstr "Le permite exportar una colección a un archivo CSV"
+
+#: exporter/class-tainacan-export-handler.php:25
+msgid "Allows you to export a taxonomy to a CSV file"
+msgstr "Le permite exportar una taxonomía a un archivo CSV"
+
+#: exporter/class-tainacan-export-handler.php:63
+#, php-format
+msgid "%s Exporter"
+msgstr "% s Exportador"
+
+#: exporter/class-tainacan-exporter.php:375
+#: importer/class-tainacan-importer.php:529
+#, php-format
+msgid "Step %d of %d"
+msgstr "Paso %d de %d"
+
+#: exporter/class-tainacan-exporter.php:380
+#: importer/class-tainacan-importer.php:534
+msgid "Running Importer"
+msgstr "Importador ejecutando"
+
+#: exporter/class-tainacan-exporter.php:655
+msgid "Error processing item"
+msgstr "Error al procesar el ítem"
+
+#: exporter/class-tainacan-exporter.php:790
+msgid "Finished export."
+msgstr "Exportación terminada."
+
+#: exporter/class-tainacan-term-exporter.php:102
+msgid "Source Taxonomy:"
+msgstr "Taxonomía Fuente:"
+
+#: exporter/class-tainacan-term-exporter.php:111
+msgid "Source Taxonomy"
+msgstr "Taxonomía Fuente"
+
+#: exporter/class-tainacan-term-exporter.php:114
+msgid "Inform the taxonomy you want to export the terms from."
+msgstr "Informe la taxonomía de la que desea importar los términos."
+
+#: exposers/class-tainacan-csv.php:14
+msgid "CSV"
+msgstr "CSV"
+
+#: exposers/class-tainacan-csv.php:15
+msgid "Comma-separated values"
+msgstr "Valores Separados por Comas"
+
+#: exposers/class-tainacan-exposers-handler.php:229
+msgid "No mapper"
+msgstr "No se ha encontrado ningún mapeador"
+
+#: exposers/class-tainacan-exposers-handler.php:243
+#, php-format
+msgid "%1$s exposer requires one of the following mappers: %2$s"
+msgstr "%1$s exposer requiere uno de los siguientes mapeadores: %2$s"
+
+#: exposers/class-tainacan-exposers-handler.php:252
+#, php-format
+msgid ""
+"%1$s exposer does not support current mapper. Supported mappers are: %2$s"
+msgstr ""
+"%1$s exposer no soporta el mapeador actual. Los mapeadores soportados son: "
+"%2$s"
+
+#: exposers/class-tainacan-html.php:18
+msgid "A simple HTML table"
+msgstr "Una tabla HTML sencilla"
+
+#: gutenberg-blocks/tainacan-collections/collections-list/index.js:14
+msgid "Tainacan Collections List"
+msgstr "Lista de Colecciones Tainacan"
+
+#: gutenberg-blocks/tainacan-collections/collections-list/index.js:183
+msgid "Select the desired collections from your repository"
+msgstr "Seleccione las colecciones deseadas de su repositorio"
+
+#: gutenberg-blocks/tainacan-collections/collections-list/index.js:185
+#: gutenberg-blocks/tainacan-collections/collections-list/index.js:607
+msgid "Select collections"
+msgstr "Seleccionar colecciones"
+
+#: gutenberg-blocks/tainacan-collections/collections-list/index.js:190
+#: gutenberg-blocks/tainacan-items/items-list/index.js:239
+msgid "Search for a collection"
+msgstr "Buscar una colección"
+
+#: gutenberg-blocks/tainacan-collections/collections-list/index.js:232
+#: gutenberg-blocks/tainacan-collections/collections-list/index.js:276
+msgid "Sorry, no collections found."
+msgstr "Perdón, no se han encontrado colecciones."
+
+#: gutenberg-blocks/tainacan-collections/collections-list/index.js:261
+#: gutenberg-blocks/tainacan-items/items-list/index.js:298
+#: gutenberg-blocks/tainacan-items/items-list/index.js:419
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:272
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:393
+msgid "Showing"
+msgstr "Mostrando"
+
+#: gutenberg-blocks/tainacan-collections/collections-list/index.js:261
+#: gutenberg-blocks/tainacan-items/items-list/index.js:298
+#: gutenberg-blocks/tainacan-items/items-list/index.js:419
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:272
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:393
+msgid "of"
+msgstr "de"
+
+#: gutenberg-blocks/tainacan-collections/collections-list/index.js:261
+#: gutenberg-blocks/tainacan-items/items-list/index.js:298
+msgid "collections"
+msgstr "colecciones"
+
+#: gutenberg-blocks/tainacan-collections/collections-list/index.js:268
+#: gutenberg-blocks/tainacan-items/items-list/index.js:305
+#: gutenberg-blocks/tainacan-items/items-list/index.js:426
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:279
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:400
+msgid "Load more"
+msgstr "Subir más"
+
+#: gutenberg-blocks/tainacan-collections/collections-list/index.js:527
+#: gutenberg-blocks/tainacan-items/items-list/index.js:783
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:729
+msgid "Grid View"
+msgstr "Vista en cuadrícula"
+
+#: gutenberg-blocks/tainacan-collections/collections-list/index.js:533
+#: gutenberg-blocks/tainacan-items/items-list/index.js:789
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:735
+msgid "List View"
+msgstr "Vista de la lista"
+
+#: gutenberg-blocks/tainacan-collections/collections-list/index.js:554
+msgid "Toggle to show collection's image"
+msgstr "Alterne para mostrar la imagen de la colección"
+
+#: gutenberg-blocks/tainacan-collections/collections-list/index.js:554
+msgid "Do not show collection's image"
+msgstr "No mostrar la imagen de la colección"
+
+#: gutenberg-blocks/tainacan-collections/collections-list/index.js:568
+msgid "Toggle to show collection's name"
+msgstr "Alterne para mostrar el nombre de la colección"
+
+#: gutenberg-blocks/tainacan-collections/collections-list/index.js:568
+msgid "Do not show collection's name"
+msgstr "No mostrar el nombre de la colección"
+
+#: gutenberg-blocks/tainacan-collections/collections-list/index.js:579
+msgid "Margin between collections"
+msgstr "Margen entre colecciones"
+
+#: gutenberg-blocks/tainacan-items/items-grid/index.js:13
+msgid "Tainacan Items Grid"
+msgstr "Grid de los ítems de Tainacan"
+
+#: gutenberg-blocks/tainacan-items/items-grid/index.js:257
+msgid "Show items title"
+msgstr "Mostrar titulo de los ítems"
+
+#: gutenberg-blocks/tainacan-items/items-grid/index.js:258
+msgid "yes"
+msgstr "sí"
+
+#: gutenberg-blocks/tainacan-items/items-grid/index.js:278
+msgid "Update items grid"
+msgstr "Actualizar el grid de los ítems"
+
+#: gutenberg-blocks/tainacan-items/items-grid/index.js:278
+#: gutenberg-blocks/tainacan-items/items-grid/index.js:299
+msgid "Add items"
+msgstr "Añadir item"
+
+#: gutenberg-blocks/tainacan-items/items-list/index.js:14
+msgid "Tainacan Items List"
+msgstr "Lista de ítems de Tainacan"
+
+#: gutenberg-blocks/tainacan-items/items-list/index.js:233
+msgid "Select a collection to fetch items from"
+msgstr "Seleccione una colección para obtener ítems de"
+
+#: gutenberg-blocks/tainacan-items/items-list/index.js:235
+#: gutenberg-blocks/tainacan-items/items-list/index.js:330
+#: gutenberg-blocks/tainacan-items/items-list/index.js:344
+#: gutenberg-blocks/tainacan-items/items-list/index.js:863
+msgid "Select items"
+msgstr "Seleccionar ítems"
+
+#: gutenberg-blocks/tainacan-items/items-list/index.js:275
+#: gutenberg-blocks/tainacan-items/items-list/index.js:313
+msgid "Sorry, no collection found."
+msgstr "Perdón, no se ha encontrado ninguna colección."
+
+#: gutenberg-blocks/tainacan-items/items-list/index.js:342
+msgid "Select the desired items from collection "
+msgstr "Seleccionar una imagen de cabecera para la colección "
+
+#: gutenberg-blocks/tainacan-items/items-list/index.js:348
+msgid "Search for an item"
+msgstr "Buscar un ítem"
+
+#: gutenberg-blocks/tainacan-items/items-list/index.js:390
+#: gutenberg-blocks/tainacan-items/items-list/index.js:434
+msgid "Sorry, no items found."
+msgstr "Perdón, no se encontraron ítems."
+
+#: gutenberg-blocks/tainacan-items/items-list/index.js:419
+msgid "items"
+msgstr "ítems"
+
+#: gutenberg-blocks/tainacan-items/items-list/index.js:441
+msgid "Switch collection"
+msgstr "Cambio de coleccion"
+
+#: gutenberg-blocks/tainacan-items/items-list/index.js:810
+msgid "Toggle to show item's image"
+msgstr "Alternar para mostrar la imagen del ítem"
+
+#: gutenberg-blocks/tainacan-items/items-list/index.js:810
+msgid "Do not show item's image"
+msgstr "No mostrar la imagen del ítem"
+
+#: gutenberg-blocks/tainacan-items/items-list/index.js:824
+msgid "Toggle to show item's title"
+msgstr "Alterne para mostrar el título del elemento"
+
+#: gutenberg-blocks/tainacan-items/items-list/index.js:824
+msgid "Do not show item's title"
+msgstr "No mostrar el título del ítem"
+
+#: gutenberg-blocks/tainacan-items/items-list/index.js:835
+msgid "Margin between items"
+msgstr "Margen entre elementos"
+
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:12
+msgid "Tainacan Terms List"
+msgstr "Lista de ítems de Tainacan"
+
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:19
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:393
+msgid "terms"
+msgstr "términos"
+
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:19
+msgid "taxonomy"
+msgstr "taxonomía"
+
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:190
+msgid "Remove"
+msgstr "Remover"
+
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:209
+msgid "Select a taxonomy to fetch terms from"
+msgstr "Seleccione una taxonomía para obtener términos de"
+
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:211
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:303
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:317
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:794
+msgid "Select terms"
+msgstr "Seleccionar términos"
+
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:215
+msgid "Search for a taxonomy"
+msgstr "Buscar una taxonomia"
+
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:250
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:287
+msgid "Sorry, no taxonomy found."
+msgstr "Perdón, no se encontró ninguna taxonomía."
+
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:272
+msgid "taxonomies"
+msgstr "taxonomías"
+
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:315
+msgid "Select the desired terms from taxonomy "
+msgstr "Seleccione los términos deseados de taxonomía "
+
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:322
+msgid "Search for a term"
+msgstr "Buscar un termino"
+
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:364
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:408
+msgid "Sorry, no terms found."
+msgstr "Perdón, no se encontraron términos."
+
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:415
+msgid "Switch taxonomy"
+msgstr "Cambiar taxonomía"
+
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:756
+msgid "Toggle to show term's image"
+msgstr "Alternar para mostrar la imagen del término"
+
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:756
+msgid "Do not show term's image"
+msgstr "No mostrar la imagen del término"
+
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:769
+msgid "Toggle to show term's name"
+msgstr "Alterne para mostrar el nombre del término"
+
+#: gutenberg-blocks/tainacan-terms/terms-list/index.js:769
+msgid "Do not show term's name"
+msgstr "No mostrar el nombre del término"
+
+#: importer/class-tainacan-csv.php:276 importer/class-tainacan-csv.php:285
+msgid "File Encoding"
+msgstr "Codificación de archivos"
+
+#: importer/class-tainacan-csv.php:288
+msgid "The encoding of the CSV file."
+msgstr "La codificación del archivo CSV."
+
+#: importer/class-tainacan-csv.php:303 importer/class-tainacan-csv.php:312
+msgid "Repeated Item"
+msgstr "Ítem repetido"
+
+#: importer/class-tainacan-csv.php:315
+msgid "Choose the action when a repeated item is found"
+msgstr "Elija la acción cuando se encuentre un ítem repetido"
+
+#: importer/class-tainacan-csv.php:330
+msgid "Importing attachments"
+msgstr "Importando archivos adjuntos"
+
+#: importer/class-tainacan-csv.php:332
+msgid ""
+"If you also have files you want to import, that are related to the items in "
+"your CSV, you can use some special columns in your csv to do so.\n"
+"\n"
+"\t\t\tThere are two special columns you can use: <b>special_document</b>, "
+"which will set the Document of your item, and <b>special_attachments</b> to "
+"add one or many attachments.\n"
+"\n"
+"\t\t\tThe values for the special_document must be prepended with 'url:'', "
+"'file:'' or 'text:'. This will indicate the Document Type.\n"
+"\n"
+"\t\t\tThe values for the special_attachments is just a list of files. If you "
+"want to add many attachments, use the separator you set in the Multivalued "
+"Delimiter option.\n"
+"\n"
+"\t\t\tIn either case, you can point to a file using a full URL, or just a "
+"file name. In this last case, you should set the option below to tell "
+"Tainacan where to find the files in your server. You can then upload them "
+"directly (via FTP for example) and tainacan will add them to your items.\n"
+"\n"
+"\t\t\t"
+msgstr ""
+"Si también tiene archivos que desea importar, que están relacionados con los "
+"elementos en su CSV, puede usar algunas columnas especiales en su csv para "
+"hacerlo.\n"
+"\n"
+"\t\t\tHay dos columnas especiales que puedes usar: <b>special_document</b>, "
+"que establecerá el documento de su artículo, y <b>special_attachments</b> "
+"para agregar uno o varios archivos adjuntos.\n"
+"\n"
+"\t\t\tLos valores para el special_document se deben anteponer con url:'', "
+"'file:'' o 'text:'. Esto indicará el tipo de documento.\n"
+"\n"
+"\t\t\tLos valores para el special_attachments es sólo una lista de archivos. "
+"Si desea agregar muchos archivos adjuntos, use el separador que configuró en "
+"la opción Multivalued Delimiter. \n"
+" \n"
+"\t\t\tEn cualquier caso, puedes apuntar a un archivo utilizando una URL "
+"completa, o simplemente un nombre de archivo. En este último caso, debes "
+"configurar la siguiente opción para decir a Tainacan dónde encontrar los "
+"archivos en su servidor. \n"
+" Luego puede subirlos directamente (por ejemplo, a través de FTP) y Tainacan "
+"los agregará a sus ítems. \n"
+" \n"
+"\t\t\t"
+
+#: importer/class-tainacan-csv.php:339 importer/class-tainacan-csv.php:348
+msgid "Server path"
+msgstr "Ruta del servidor"
+
+#: importer/class-tainacan-csv.php:351
+msgid ""
+"When using CSV special field to add documents or attachments that you've "
+"uploaded to the server, inform the full path to the folder here (e.g. /home/"
+"user/files/)"
+msgstr ""
+"Cuando use el campo especial CSV para agregar documentos o archivos adjuntos "
+"que haya cargado al servidor, informe la ruta completa a la carpeta aquí "
+"(por ejemplo, home/user/files/)"
+
+#: importer/class-tainacan-importer-handler.php:21
+msgid "Import items from a CSV file to a chosen collection"
+msgstr "Importar elementos desde un archivo CSV a una colección elegida"
+
+#: importer/class-tainacan-importer-handler.php:30
+msgid "Create 2 test colletions with random items"
+msgstr "Crea 2 colecciones de prueba con ítems aleatorios"
+
+#: importer/class-tainacan-importer-handler.php:39
+msgid "Import structure from legacy version of Tainacan"
+msgstr "Importar estructura de la versión heredada de Tainacan"
+
+#: importer/class-tainacan-importer-handler.php:48
+msgid "Import a vaculary from a CSV file into a taxonomy"
+msgstr "Importar un vacular de un archivo CSV en una taxonomía"
+
+#: importer/class-tainacan-importer-handler.php:57
+msgid "Import structure from a OAI PMH repository"
+msgstr "Importar estructura desde un repositorio OAI PMH"
+
+#: importer/class-tainacan-importer-handler.php:79
+#, php-format
+msgid "%s Importer"
+msgstr "Importador %s"
+
+#: importer/class-tainacan-oaipmh-importer.php:694
+#: importer/class-tainacan-oaipmh-importer.php:704
+#: importer/class-tainacan-oaipmh-importer.php:707
+msgid "Imported Repo"
+msgstr "Repositorio importado"
+
+#: importer/class-tainacan-oaipmh-importer.php:716
+#: importer/class-tainacan-oaipmh-importer.php:725
+msgid "Create set as"
+msgstr "Crear conjunto como"
+
+#: importer/class-tainacan-oaipmh-importer.php:728
+msgid "Choose the action to manipulate sets"
+msgstr "Elige la acción para manipular conjuntos"
+
+#: importer/class-tainacan-test-importer.php:109
+#: importer/class-tainacan-test-importer.php:118
+msgid "Number of items in collection 1"
+msgstr "Número de ítems en la colección 1"
+
+#: importer/class-tainacan-test-importer.php:121
+msgid "The total of items to created in first collection (e.g. 20)"
+msgstr ""
+"El total de elementos a crear en la primera colección (por ejemplo, 20)"
+
+#: importer/class-tainacan-test-importer.php:131
+msgid "Number of extra metadata to create in first collection"
+msgstr "Número de metadatos adicionales para crear en la primera colección"
+
+#: importer/class-tainacan-test-importer.php:140
+msgid "Number of extra metadata"
+msgstr "Número de metadatos adicionales"
+
+#: importer/class-tainacan-test-importer.php:143
+msgid "Create additional text metadata with random values  in first collection"
+msgstr ""
+"Crea metadatos de texto adicionales con valores aleatorios en la primera "
+"colección"
+
+#: importer/class-tainacan-test-importer.php:153
+msgid "Create second collection with a relationship"
+msgstr "Crear una segunda colección con una relación"
+
+#: importer/class-tainacan-test-importer.php:162
+msgid "Create second collection"
+msgstr "Crear segunda colección"
+
+#: importer/class-tainacan-test-importer.php:165
+msgid ""
+"Create second collection with a relationship with the first collection "
+"created"
+msgstr ""
+"Crear una segunda colección con una relación con la primera colección creada"
+
+#: importer/class-tainacan-test-importer.php:182
+#: importer/class-tainacan-test-importer.php:191
+msgid "Number of items in collection 2"
+msgstr "Número de elementos en la colección 2"
+
+#: importer/class-tainacan-test-importer.php:194
+msgid "The total of items to created in second collection (e.g. 20)"
+msgstr ""
+"El total de elementos a crear en la segunda colección (por ejemplo, 20)"
+
+#: importer/class-tainacan-test-importer.php:204
+msgid "Images"
+msgstr "Imágenes"
+
+#: importer/class-tainacan-test-importer.php:207
+#: importer/class-tainacan-test-importer.php:216
+msgid "Add random images from flickr"
+msgstr "Añade imágenes aleatorias de Flickr"
+
+#: importer/class-tainacan-test-importer.php:219
+msgid ""
+"Add random images from flickr using [https://loremflickr.com/] in first "
+"collection"
+msgstr ""
+"Agregue imágenes aletorias de flickr usando [https://loremflickr.com/] en la "
+"primera colección"
+
+#: importer/class-tainacan-test-importer.php:236
+msgid "Horizontal image size (0 for random)"
+msgstr "Tamaño de imagen horizontal (0 para aleatorio)"
+
+#: importer/class-tainacan-test-importer.php:245
+msgid "Horizontal image size"
+msgstr "Tamaño de imagen horizontal"
+
+#: importer/class-tainacan-test-importer.php:248
+msgid "Horizontal image size in pixels ( 0 for random size )"
+msgstr "Tamaño de imagen horizontal en píxeles (0 para tamaño aleatorio)"
+
+#: importer/class-tainacan-test-importer.php:258
+msgid "Vertical image size (0 for random)"
+msgstr "Tamaño de imagen vertical (0 para aleatorio)"
+
+#: importer/class-tainacan-test-importer.php:267
+msgid "Vertical image size"
+msgstr "Tamaño de imagen vertical"
+
+#: importer/class-tainacan-test-importer.php:270
+msgid "Vertical image size in pixels ( 0 for random size )"
+msgstr "Tamaño de imagen vertical en píxeles (0 para tamaño aleatorio)"
+
+#: importer/class-tainacan-test-importer.php:280
+#: importer/class-tainacan-test-importer.php:289
+msgid "Keyword Search"
+msgstr "Búsqueda por palabra clave"
+
+#: importer/class-tainacan-test-importer.php:292
+msgid ""
+"Optionally ype one keyword which it will be used to find images in flickr (e."
+"g. dogs, cat). Default is \"kitten\"."
+msgstr ""
+"Opcionalmente, escriba una palabra clave que se usará para encontrar "
+"imágenes en flickr (por ejemplo; perros, gato). El valor predeterminado es "
+"\"gatito\"."
+
+#: importer/term-importer/class-tainacan-term-importer.php:66
+msgid "Target taxonomy:"
+msgstr "Taxonomía de destino:"
+
+#: importer/term-importer/class-tainacan-term-importer.php:75
+msgid "Existing Taxonomy"
+msgstr "Taxonomia existente"
+
+#: importer/term-importer/class-tainacan-term-importer.php:78
+msgid "Inform the taxonomy you want to import the terms to."
+msgstr "Informe la taxonomía a la que desea importar los términos."
+
+#: importer/term-importer/class-tainacan-term-importer.php:79
+msgid "Select an existing taxonomy or create a new one on the fly."
+msgstr "Seleccione una taxonomía existente o cree una nueva sobre la marcha."
+
+#: importer/term-importer/class-tainacan-term-importer.php:86
+msgid "Create a new taxonomy"
+msgstr "Crear una nueva taxonomía"
+
+#: importer/term-importer/class-tainacan-term-importer.php:100
+msgid "New taxonomy name"
+msgstr "Nuevo nombre de taxonomía"
+
+#: theme-helper/class-tainacan-theme-helper.php:135
+#, php-format
+msgid "Collection: %s"
+msgstr "Colección: %s"
+
+#: theme-helper/class-tainacan-theme-helper.php:139
+msgid "All items in repository"
+msgstr "Todos los elementos en el repositorio"
+
+#: theme-helper/class-tainacan-theme-helper.php:382
+msgctxt ""
+"Slug: the string that will be used to build the URL to list all items of the "
+"repository"
+msgid "items"
+msgstr "ítems"
+
+#: theme-helper/class-tainacan-theme-helper.php:557
+#, php-format
+msgid "Daily Archives: %s"
+msgstr "Archivos diarios: %s"
+
+#: theme-helper/class-tainacan-theme-helper.php:559
+#, php-format
+msgid "Monthly Archives: %s"
+msgstr "Archivos mensuales: %s"
+
+#: theme-helper/class-tainacan-theme-helper.php:559
+msgctxt "monthly archives date format"
+msgid "F Y"
+msgstr "F Y"
+
+#: theme-helper/class-tainacan-theme-helper.php:561
+#, php-format
+msgid "Yearly Archives: %s"
+msgstr "Archivos anuales: %s"
+
+#: theme-helper/class-tainacan-theme-helper.php:561
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr "Y"
+
+#: theme-helper/template-tags.php:358
+msgid "Edit this item"
+msgstr "Editar este ítem"
+
+#~ msgid "Paste a Tainacan sharing URL for get items"
+#~ msgstr "Pegar una URL de compartir de Tainacan para obtener elementos"
+
+#~ msgid "Add collection"
+#~ msgstr "Añadir colección"
+
+#~ msgid "carousel"
+#~ msgstr "carrusel"
+
+#~ msgid "tainacan"
+#~ msgstr "tainacan"
+
+#~ msgid "?"
+#~ msgstr "?"
+
+#~ msgid "There is"
+#~ msgstr "Ahi esta"
+
+#~ msgid "There are"
+#~ msgstr "Ahi esta"
+
+#~ msgid "Media Lab / UFG"
+#~ msgstr "Media Lab / UFG"
+
+#~ msgid ""
+#~ "powerfull and flexible repository platform for WordPress. Manage and "
+#~ "publish you digital collections as easily as publishing a post to your "
+#~ "blog, while having all the tools of a professional respository platform."
+#~ msgstr ""
+#~ "Es una plataforma de repositorios para WordPress, poderosa y flexible. "
+#~ "Gestiona y publia tus colecciones digitales de una manera tan fácil como "
+#~ "publicar un post en tu blog, con todas las herramientas de una plataforma "
+#~ "profesional de repositorios."
+
+#~ msgid "https://tainacan.org/"
+#~ msgstr "https://tainacan.org/"

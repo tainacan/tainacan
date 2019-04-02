@@ -1042,7 +1042,7 @@ class Metadata extends Repository {
 			}
 			
 			
-			$query = "SELECT DISTINCT t.name, tt.term_taxonomy_id, tt.parent $base_query $pagination";
+			$query = "SELECT DISTINCT t.name, t.term_id, tt.term_taxonomy_id, tt.parent $base_query $pagination";
 			
 			$total_query = "SELECT COUNT(DISTINCT tt.term_taxonomy_id) $base_query";
 			
@@ -1056,15 +1056,15 @@ class Metadata extends Repository {
 					$args['include'] = array_map(function($t) { return (int) $t; }, $args['include']);
 					
 					$include_ids = implode(',', $args['include']);
-					$query_to_include = "SELECT DISTINCT t.name, tt.term_taxonomy_id, tt.parent FROM $wpdb->term_taxonomy tt 
+					$query_to_include = "SELECT DISTINCT t.name, t.term_id, tt.term_taxonomy_id, tt.parent FROM $wpdb->term_taxonomy tt 
 						INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id 
 						WHERE 
-						tt.term_taxonomy_id IN ($include_ids)";
+						t.term_id IN ($include_ids)";
 					
 					$to_include = $wpdb->get_results($query_to_include);
 					
 					// remove terms that will be included at the begining
-					$results = array_filter($results, function($t) use($args) { return !in_array($t->term_taxonomy_id, $args['include']); });
+					$results = array_filter($results, function($t) use($args) { return !in_array($t->term_id, $args['include']); });
 					
 					$results = array_merge($to_include, $results);
 					
@@ -1082,7 +1082,7 @@ class Metadata extends Repository {
 			$values = [];
 			foreach ($results as $r) {
 				
-				$count_query = $wpdb->prepare("SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", $r->term_taxonomy_id);
+				$count_query = $wpdb->prepare("SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", $r->term_id);
 				$total_children = $wpdb->get_var($count_query);
 				
 				$label = $r->name;
@@ -1096,7 +1096,7 @@ class Metadata extends Repository {
 					}
 					$count_items_query['tax_query'][] = [
 						'taxonomy' => $taxonomy_slug,
-						'terms' => $r->term_taxonomy_id
+						'terms' => $r->term_id
 					];
 					$count_items_results = $itemsRepo->fetch($count_items_query, $args['collection_id']);
 					$total_items = $count_items_results->found_posts;
@@ -1106,7 +1106,7 @@ class Metadata extends Repository {
 				}
 				
 				$values[] = [
-					'value' => $r->term_taxonomy_id,
+					'value' => $r->term_id,
 					'label' => $label,
 					'total_children' => $total_children,
 					'taxonomy' => $taxonomy_slug,

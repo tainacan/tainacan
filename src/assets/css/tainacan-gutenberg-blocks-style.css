@@ -55,13 +55,22 @@
       visibility: hidden;
       position: relative;
       opacity: 0;
-      right: -12px;
-      justify-content: center; }
+      right: -14px;
+      top: 0px;
+      justify-content: center;
+      z-index: 999; }
     .wp-block-tainacan-terms-list ul.terms-list-edit li.term-list-item:hover button {
       visibility: visible;
+      background-color: white !important;
       opacity: 1;
-      right: 0px;
+      right: -8px;
+      top: -8px;
+      border: 1px solid #cbcbcb;
+      border-radius: 12px;
       transition: opacity linear 0.15s, right linear 0.15s; }
+    .wp-block-tainacan-terms-list ul.terms-list-edit li.term-list-item:hover button:hover {
+      background-color: white !important;
+      border: 1px solid #cbcbcb !important; }
   @media only screen and (max-width: 498px) {
     .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid,
     .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid {
@@ -106,23 +115,6 @@
       .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item:hover a {
         color: #454647;
         text-decoration: none; }
-  .wp-block-tainacan-terms-list ul.terms-list-edit li.term-list-item button {
-    position: absolute !important;
-    background-color: rgba(255, 255, 255, 0.75);
-    color: #454647;
-    padding: 2px;
-    margin-left: 5px;
-    min-width: 14px;
-    visibility: hidden;
-    position: relative;
-    opacity: 0;
-    right: -12px;
-    justify-content: center; }
-  .wp-block-tainacan-terms-list ul.terms-list-edit li.term-list-item:hover button {
-    visibility: visible;
-    opacity: 1;
-    right: 0px;
-    transition: opacity linear 0.15s, right linear 0.15s; }
   @media only screen and (max-width: 1600px) {
     .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item,
     .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item {
@@ -211,13 +203,22 @@
       visibility: hidden;
       position: relative;
       opacity: 0;
-      right: -12px;
-      justify-content: center; }
+      right: -14px;
+      top: 0px;
+      justify-content: center;
+      z-index: 999; }
     .wp-block-tainacan-items-list ul.items-list-edit li.item-list-item:hover button {
       visibility: visible;
+      background-color: white !important;
       opacity: 1;
-      right: 0px;
+      right: -8px;
+      top: -8px;
+      border: 1px solid #cbcbcb;
+      border-radius: 12px;
       transition: opacity linear 0.15s, right linear 0.15s; }
+    .wp-block-tainacan-items-list ul.items-list-edit li.item-list-item:hover button:hover {
+      background-color: white !important;
+      border: 1px solid #cbcbcb !important; }
   @media only screen and (max-width: 498px) {
     .wp-block-tainacan-items-list ul.items-list.items-layout-grid,
     .wp-block-tainacan-items-list ul.items-list-edit.items-layout-grid {
@@ -262,38 +263,6 @@
       .wp-block-tainacan-items-list ul.items-list-edit.items-layout-list li.item-list-item:hover a {
         color: #454647;
         text-decoration: none; }
-  .wp-block-tainacan-items-list ul.items-list-edit li.item-list-item button {
-    position: absolute !important;
-    background-color: rgba(255, 255, 255, 0.75);
-    color: #454647;
-    padding: 2px;
-    margin-left: 5px;
-    min-width: 14px;
-    visibility: hidden;
-    position: relative;
-    opacity: 0;
-    right: -12px;
-    justify-content: center; }
-  .wp-block-tainacan-items-list ul.items-list-edit li.item-list-item:hover button {
-    visibility: visible;
-    opacity: 1;
-    right: 0px;
-    transition: opacity linear 0.15s, right linear 0.15s; }
-  @media only screen and (max-width: 1600px) {
-    .wp-block-tainacan-items-list ul.items-list.items-layout-list li.item-list-item,
-    .wp-block-tainacan-items-list ul.items-list-edit.items-layout-list li.item-list-item {
-      min-width: 30%;
-      width: 30%; } }
-  @media only screen and (max-width: 1024px) {
-    .wp-block-tainacan-items-list ul.items-list.items-layout-list li.item-list-item,
-    .wp-block-tainacan-items-list ul.items-list-edit.items-layout-list li.item-list-item {
-      min-width: 45%;
-      width: 45%; } }
-  @media only screen and (max-width: 768px) {
-    .wp-block-tainacan-items-list ul.items-list.items-layout-list li.item-list-item,
-    .wp-block-tainacan-items-list ul.items-list-edit.items-layout-list li.item-list-item {
-      min-width: 100%;
-      width: 100%; } }
 
 .wp-block-tainacan-collections-list {
   margin: 2rem 0px; }
@@ -367,13 +336,22 @@
       visibility: hidden;
       position: relative;
       opacity: 0;
-      right: -12px;
-      justify-content: center; }
+      right: -14px;
+      top: 0px;
+      justify-content: center;
+      z-index: 999; }
     .wp-block-tainacan-collections-list ul.collections-list-edit li.collection-list-item:hover button {
       visibility: visible;
+      background-color: white !important;
       opacity: 1;
-      right: 0px;
+      right: -8px;
+      top: -8px;
+      border: 1px solid #cbcbcb;
+      border-radius: 12px;
       transition: opacity linear 0.15s, right linear 0.15s; }
+    .wp-block-tainacan-collections-list ul.collections-list-edit li.collection-list-item:hover button:hover {
+      background-color: white !important;
+      border: 1px solid #cbcbcb !important; }
   @media only screen and (max-width: 498px) {
     .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid,
     .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid {
@@ -418,23 +396,6 @@
       .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list li.collection-list-item:hover a {
         color: #454647;
         text-decoration: none; }
-  .wp-block-tainacan-collections-list ul.collections-list-edit li.collection-list-item button {
-    position: absolute !important;
-    background-color: rgba(255, 255, 255, 0.75);
-    color: #454647;
-    padding: 2px;
-    margin-left: 5px;
-    min-width: 14px;
-    visibility: hidden;
-    position: relative;
-    opacity: 0;
-    right: -12px;
-    justify-content: center; }
-  .wp-block-tainacan-collections-list ul.collections-list-edit li.collection-list-item:hover button {
-    visibility: visible;
-    opacity: 1;
-    right: 0px;
-    transition: opacity linear 0.15s, right linear 0.15s; }
   @media only screen and (max-width: 1600px) {
     .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list li.collection-list-item,
     .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list li.collection-list-item {

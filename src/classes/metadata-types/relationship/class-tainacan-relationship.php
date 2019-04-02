@@ -55,8 +55,8 @@ class Relationship extends Metadata_Type {
                'description' => __( 'Select the collection to fetch items', 'tainacan' ),
            ],
            'search' => [
-               'title' => __( 'Metadata for search', 'tainacan' ),
-               'description' => __( 'Select the metadata to help the search', 'tainacan' ),
+               'title' => __( 'Metadata to search', 'tainacan' ),
+               'description' => __( 'Select the metadata to use as search criteria in the target collection', 'tainacan' ),
            ],
            'repeated' => [
                'title' =>__( 'Allow repeated items', 'tainacan' ),
@@ -92,6 +92,13 @@ class Relationship extends Metadata_Type {
                 'collection_id' => __('The related collection is required','tainacan')
             ];
         }
+		
+		if  ( !is_array($this->get_option('search')) ) {
+			return [
+                'search' => __('Search option must be an array','tainacan')
+            ];
+		}
+		
         return true;
     }
 	

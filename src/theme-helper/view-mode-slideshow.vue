@@ -141,9 +141,7 @@
                     </button>
                     <div     
                             class="slide-main-content">
-                    <!-- <div <IF WE USE HAMMER JS>
-                            class="slide-main-content"
-                            v-hammer:swipe.prevent="onSwipeFiltersMenu"> -->
+
                         <transition 
                                 mode="out-in"
                                 :name="goingRight ? 'slide-right' : 'slide-left'" >
@@ -559,7 +557,7 @@ export default {
                     this.$nextTick(() => this.isLoadingItem = false);
                 } else {
                     // Loads current item
-                    this.fetchItem(this.slideItems[this.slideIndex].id)
+                    this.fetchItem({ itemId: this.slideItems[this.slideIndex].id, contextEdit: true })
                         .then(() => {
                             this.isLoadingItem = false;
                         })

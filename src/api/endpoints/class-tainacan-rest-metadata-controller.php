@@ -295,6 +295,7 @@ class REST_Metadata_Controller extends REST_Controller {
 			
 			if($request['context'] === 'edit'){
 				$item_arr['current_user_can_edit'] = $item->can_edit();
+				$item_arr['current_user_can_delete'] = $item->can_delete();
 				ob_start();
 				$item->get_metadata_type_object()->form();
 				$form = ob_get_clean();

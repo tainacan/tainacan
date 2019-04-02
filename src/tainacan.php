@@ -4,7 +4,7 @@ Plugin Name: Tainacan
 Plugin URI: https://tainacan.org/
 Description: powerfull and flexible repository platform for WordPress. Manage and publish you digital collections as easily as publishing a post to your blog, while having all the tools of a professional respository platform.
 Author: Media Lab / UFG
-Version: 0.7
+Version: 0.8
 Text Domain: tainacan
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html

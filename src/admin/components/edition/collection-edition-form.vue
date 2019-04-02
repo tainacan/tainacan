@@ -10,7 +10,7 @@
                 label-width="120px">
         
             <div class="columns">
-                <div class="column is-4">
+                <div class="column is-5">
 
                     <!-- Name -------------------------------- --> 
                     <b-field 
@@ -253,7 +253,6 @@
                     </template>
 
                 </div>
-                <div class="column is-1" />
                 <div class="column">
 
                     <!-- Status -------------------------------- --> 
@@ -939,9 +938,10 @@ export default {
 
     @import "../../scss/_variables.scss";
 
-    .column {
-        padding-left: 0;
-        padding-right: 0;
+    @media screen and (max-width: 1024px) {
+        .column:last-of-type {
+            padding-left: $page-side-padding !important;
+        }
     }
 
     .field {

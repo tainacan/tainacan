@@ -171,7 +171,7 @@
                 this.loadingMetadata = true;
                 this.hasMetadata = false;
 
-                axios.get('/collection/' + value + '/metadata/')
+                axios.get('/collection/' + value + '/metadata/?nopaging=1')
                     .then((res) => {
                         this.loadingMetadata = false;
                         let metadata = res.data;

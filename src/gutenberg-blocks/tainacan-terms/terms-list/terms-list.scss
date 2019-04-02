@@ -70,15 +70,25 @@
             visibility: hidden;
             position: relative;
             opacity: 0;
-            right: -12px;
+            right: -14px;
+            top: 0px;
             justify-content: center;
+            z-index: 999
         }
 
         &:hover button {
             visibility: visible;
+            background-color: rgba(255, 255, 255, 1) !important;
             opacity: 1;
-            right: 0px;
+            right: -8px;
+            top: -8px;
+            border: 1px solid #cbcbcb;
+            border-radius: 12px;
             transition: opacity linear 0.15s, right linear 0.15s;
+        }
+        &:hover button:hover {
+            background-color: rgba(255, 255, 255, 1) !important;
+            border: 1px solid #cbcbcb !important;
         }
     }
     @media only screen and (max-width: 498px) { 
@@ -138,31 +148,7 @@
             }
         }
     }
-    ul.terms-list-edit li.term-list-item {
-
-        button {
-            position: absolute !important;
-            background-color: rgba(255, 255, 255, 0.75);
-            color: #454647;
-            padding: 2px;
-            margin-left: 5px;
-            min-width: 14px;
-            visibility: hidden;
-            position: relative;
-            opacity: 0;
-            right: -12px;
-            justify-content: center;
-        }
-
-        &:hover button {
-            visibility: visible;
-            opacity: 1;
-            right: 0px;
-            transition: opacity linear 0.15s, right linear 0.15s;
-        }
-    }
-
-
+   
     @media only screen and (max-width: 1600px) {  
         ul.terms-list.terms-layout-list li.term-list-item,
         ul.terms-list-edit.terms-layout-list li.term-list-item  {        

@@ -198,6 +198,7 @@
                                     <div class="control">
                                         <button
                                                 id="button-submit-text-content-writing"
+                                                type="submit"
                                                 @click.prevent="confirmTextWriting()"
                                                 class="button is-success">
                                             {{ $i18n.get('save') }}</button>
@@ -1067,8 +1068,12 @@ export default {
             // Initializes Media Frames now that itemId exists
             this.initializeMediaFrames();
 
-            this.fetchItem(this.itemId).then(res => {
+            this.fetchItem({ itemId: this.itemId, contextEdit: true }).then(res => {
                 this.item = res;
+
+                // Checks if user has permission to edit
+                if (!this.item.current_user_can_edit)
+                    this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
 
                 // Updates Collection BreadCrumb
                 if (this.isOnSequenceEdit) {

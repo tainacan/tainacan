@@ -19,6 +19,7 @@ class Oaipmh_Importer extends Importer {
         ],
     ];
 
+    protected $NAME_FOR_SETS = 'Sets';
     protected $tainacan_api_address, $wordpress_api_address, $actual_collection;
 
     /**
@@ -53,7 +54,7 @@ class Oaipmh_Importer extends Importer {
 
         if( $index === 0 ){
 
-            if( $collection_id['source_id'] !== 'taxonomies' ){
+            if( $collection_id['source_id'] !== 'sets' ){
                 $info = $this->requester( $this->get_url() . "?verb=ListRecords&metadataPrefix=oai_dc&set=" . $collection_id['source_id'] );
                 $this->add_log('fetching ' . $this->get_url() . "?verb=ListRecords&metadataPrefix=oai_dc&set=" . $collection_id['source_id']);
             } else  {
@@ -95,6 +96,18 @@ class Oaipmh_Importer extends Importer {
             while ( isset($xml->ListRecords->record[$j]) ) {
                 $record = $record = $xml->ListRecords->record[$j];
                 $dc = $record->metadata->children("http://www.openarchives.org/OAI/2.0/oai_dc/");
+                $header = $record->header;
+
+                $is_inserted = $this->get_transient($header->identifier);
+                if( $is_inserted ){
+                    continue;
+                }
+
+                if( $this->get_option('using_set') == 'taxonomy' && ( isset($header) && isset($header->setSpec) ) ){
+                    foreach ($header->setSpec as $item ) {
+                        $record_processed['sets'][] = (string) $item;
+                    }
+                }
 
                 if ($record->metadata->Count() > 0 ) {
                     $metadata = $dc->children('http://purl.org/dc/elements/1.1/');
@@ -134,11 +147,11 @@ class Oaipmh_Importer extends Importer {
         $this->add_log('Creating collections');
         $collection_xml = $this->fetch_collections();
 
-        if( isset($collection_xml->ListSets) ){
+        if( $collection_xml ){
 
             if( !$this->get_option('using_set') || $this->get_option('using_set') == 'collection' ){
 
-                foreach ($collection_xml->ListSets->set as $set) {
+                foreach ($collection_xml as $set ) {
 
                     $setSpec = (string) $set->setSpec;
                     $setName =  (string) $set->setName;
@@ -159,17 +172,44 @@ class Oaipmh_Importer extends Importer {
                 }
             } else if( $this->get_option('using_set') == 'taxonomy') {
 
+                $collection = $this->create_collection( 'set', $this->getRepoName() );
+                $metadata_map = $this->create_collection_metadata($collection);
+                $total = intval( $this->get_total_items_from_source(false) );
+                $this->add_log('total in collection: ' . $total);
+                $this->add_log('collection id ' . (string) $collection->get_id());
+
                 $tax = new Entities\Taxonomy();
-                $tax->set_name( 'Sets' );
+                $tax->set_name( $this->NAME_FOR_SETS );
                 $tax->set_allow_insert('yes');
                 $tax->set_status('publish');
 
                 if ($tax->validate()) {
-                    $tax = $this->tax_repo->insert($tax);
+
+                    $is_tax_created = $this->get_transient('set_taxonomy_id');
+                    if( $is_tax_created ){
+                        $tax = new Entities\Taxonomy( $is_tax_created );
+                    } else {
+                        $tax = $this->tax_repo->insert($tax);
+                        $this->add_transient('set_taxonomy_id', $tax->get_id());
+                    }
+
+                    $metadatum_set_id = $this->create_set_metadata( $collection->get_id(), $tax->get_id() );
+
+                    if( $metadatum_set_id ){
+                        $this->add_transient('set_metadatum_id', $metadatum_set_id);
+
+                        $this->add_collection([
+                            'id' => $collection->get_id(),
+                            'mapping' => $metadata_map,
+                            'total_items' =>ceil( $total / 100 ),
+                            'source_id' => 'sets',
+                            'metadatum_id' => $metadatum_set_id
+                        ]);
+                    }
 
                     $this->add_log('Taxonomy ' . $tax->get_name() . ' created' );
 
-                    foreach ($collection_xml->ListSets->set as $set) {
+                    foreach ($collection_xml as $set) {
 
                         $setSpec = (string)$set->setSpec;
                         $setName = (string)$set->setName;
@@ -187,7 +227,14 @@ class Oaipmh_Importer extends Importer {
 
         }
 
-        return false;
+
+        $resumptionToken = $this->get_transient('collection_resump');
+        if( $resumptionToken !== ''){
+            return 1;
+        } else {
+            return false;
+        }
+
     }
 
     /**
@@ -217,10 +264,33 @@ class Oaipmh_Importer extends Importer {
             if( $record && $item->validate() ){
                 $insertedItem = $this->items_repo->insert( $item );
 
+                if( isset($record['sets']) ){
+                    $terms  = [];
+                    $metadatum_set_id = $this->get_transient('set_metadatum_id');
+
+                    foreach ($record['sets'] as $set) {
+                        $term_id = $this->get_transient($set);
+
+                        if( $term_id ) $terms[] = $term_id;
+                    }
+
+                    if( $metadatum_set_id && $terms ){
+                        $newMetadatum = new Entities\Metadatum($metadatum_set_id);
+
+                        $item_metadata = new Entities\Item_Metadata_Entity( $insertedItem, $newMetadatum );
+                        $item_metadata->set_value($terms);
+
+                        if( $item_metadata->validate() ){
+                            $this->item_metadata_repo->insert( $item_metadata );
+                        }
+                    }
+
+                    unset($record['sets']);
+                }
+
                 foreach ( $record as $index => $value ){
 
-                    $this->add_log( $index . ' ' . serialize($map) );
-                    $this->add_log(  $insertedItem->get_id() );
+                    $this->add_log( 'inserting metadata ' . $index );
                     if( in_array( $index, $map ) && $insertedItem->get_id()){
                         $metadatum_id = array_search($index, $map );
                         $newMetadatum = new Entities\Metadatum($metadatum_id);
@@ -275,7 +345,11 @@ class Oaipmh_Importer extends Importer {
      * @return int
      */
     public function get_total_items_from_source( $setSpec ) {
-        $info = $this->requester( $this->get_url() . "?verb=ListRecords&metadataPrefix=oai_dc&set=" . $setSpec);
+
+        if($setSpec)
+            $info = $this->requester( $this->get_url() . "?verb=ListRecords&metadataPrefix=oai_dc&set=" . $setSpec);
+        else
+            $info = $this->requester( $this->get_url() . "?verb=ListRecords&metadataPrefix=oai_dc");
 
         if( !isset($info['body']) ){
             $this->add_log('ERROR');
@@ -315,6 +389,12 @@ class Oaipmh_Importer extends Importer {
      * @return Entities\Collection
      */
     protected function create_collection( $setSpec, $setName ){
+        $is_created = $this->get_transient('collection_' . $setSpec. '_name');
+        if( $is_created ){
+            $new_collection = new Entities\Collection( $is_created );
+            return $new_collection;
+        }
+
         $new_collection = new Entities\Collection();
         $new_collection->set_name($setName);
         $new_collection->set_status('publish');
@@ -395,8 +475,14 @@ class Oaipmh_Importer extends Importer {
 
                 if($metadatum->validate()){
 
-                    $new_metadata = $Tainacan_Metadata->insert($metadatum);
-                    $array_metadata[$new_metadata->get_id()] = $slug;
+                    $metadatum_id_created = $this->get_transient('collection_' . $id . '_' . $slug );
+                    if( $metadatum_id_created ){
+                        $array_metadata[$metadatum_id_created] = $slug;
+                    } else {
+                        $new_metadata = $Tainacan_Metadata->insert($metadatum);
+                        $array_metadata[$new_metadata->get_id()] = $slug;
+                    }
+
                 }
             }
         }
@@ -410,9 +496,30 @@ class Oaipmh_Importer extends Importer {
      */
     protected function fetch_collections(){
 
-        $collections_link = $this->get_url() . "?verb=ListSets";
+        $collections_array = [];
+        // block terms with same set spec
+        $resumptionToken = $this->get_transient('collection_resump');
+        if( $resumptionToken ){
+            $collections_link = $this->get_url() . "?verb=ListSets&resumptionToken=" . $resumptionToken;
+        } else {
+            $collections_link = $this->get_url() . "?verb=ListSets";
+        }
+
         $collections = $this->requester($collections_link);
-        $collections_array = $this->decode_request($collections, $collections_link);
+        $xml = $this->decode_request($collections, $collections_link);
+
+        if( isset($xml->ListSets->set) ) {
+            foreach ($xml->ListSets->set as $set) {
+
+                $collections_array[] = $set;
+            }
+        }
+
+        if( isset($xml->ListSets) && isset($xml->ListSets->resumptionToken) ){
+            $this->add_transient('collection_resump',(string) $xml->ListSets->resumptionToken);
+        } else {
+            $this->add_transient('collection_resump', (string) $xml->ListSets->resumptionToken);
+        }
 
         // TODO: verify if exists resumption token
 
@@ -542,6 +649,67 @@ class Oaipmh_Importer extends Importer {
         return false;
     }
 
+    /**
+     * @param $collection_id
+     * @param $taxonomy_id
+     * @return bool|int
+     * @throws \Exception
+     */
+    public function create_set_metadata( $collection_id, $taxonomy_id ){
+        $newMetadatum = new Entities\Metadatum();
+
+        $name = $this->NAME_FOR_SETS;
+        $type = 'Taxonomy';
+
+        $newMetadatum->set_name($name);
+        $newMetadatum->set_metadata_type('Tainacan\Metadata_Types\\'.$type);
+        $newMetadatum->set_collection_id( (isset($collection_id)) ? $collection_id : 'default');
+        $newMetadatum->set_status('publish');
+        $newMetadatum->set_metadata_type_options(['taxonomy_id' => $taxonomy_id ]);
+        $newMetadatum->set_multiple('yes');
+
+        if($newMetadatum->validate()){
+            $is_meta_created = $this->get_transient('set_metadatum_id');
+            if( $is_meta_created ){
+                $inserted_metadata =  new Entities\Metadatum($is_meta_created);
+
+                $this->add_log('Metadata get: ' . $inserted_metadata->get_name());
+            } else {
+                $inserted_metadata = $this->metadata_repo->insert( $newMetadatum );
+
+                $this->add_log('Metadata created: ' . $inserted_metadata->get_name());
+            }
+
+            return $inserted_metadata->get_id();
+        } else{
+            return false;
+        }
+    }
+
+    public function getRepoName(){
+        $info = $this->requester( $this->get_url() . "?verb=Identify");
+
+        if( !isset($info['body']) ){
+            $this->add_log('ERROR on get repo name');
+            $this->add_error_log('Error in fetch remote total items');
+            $this->abort();
+            return __('Imported Repo');
+        } else {
+
+            try {
+                $xml = new \SimpleXMLElement($info['body']);
+
+                if( isset($xml->Identify) && isset($xml->Identify->repositoryName) ){
+                    return (string) $xml->Identify->repositoryName;
+                }
+            } catch (Exception $e) {
+                return __('Imported Repo');
+            }
+
+            return __('Imported Repo');
+
+        }
+    }
 
     public function options_form(){
         ob_start();
@@ -565,7 +733,11 @@ class Oaipmh_Importer extends Importer {
 			</span>
             <div class="control is-clearfix">
                 <div class="select">
+<<<<<<< HEAD
                     <select disabled name="using_set">
+=======
+                    <select name="using_set">
+>>>>>>> develop
                         <option value="collection" <?php selected($this->get_option('using_set'), 'collection'); ?> ><?php _e('Collections', 'tainacan'); ?></option>
                         <option value="taxonomy" <?php selected($this->get_option('using_set'), 'taxonomy'); ?> ><?php _e('Taxonomies', 'tainacan'); ?></option>
                     </select>

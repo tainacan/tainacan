@@ -70,6 +70,7 @@
                     </b-tooltip>
                 </li>
                 <li 
+                        v-if="currentUserCanEdit"
                         :class="activeRoute == 'CollectionEditionForm' ? 'is-active':''" 
                         class="level-item">
                     <b-tooltip 
@@ -88,6 +89,7 @@
                     </b-tooltip>
                 </li>
                 <li 
+                        v-if="currentUserCanEdit"
                         :class="activeRoute == 'MetadataList' ? 'is-active':''"
                         class="level-item">
                     <b-tooltip 
@@ -105,6 +107,7 @@
                     </b-tooltip>
                 </li>
                 <li 
+                        v-if="currentUserCanEdit"
                         :class="activeRoute == 'FiltersList' ? 'is-active':''" 
                         class="level-item">
                     <b-tooltip 
@@ -163,6 +166,7 @@ export default {
     },
     props: {
         id: Number,
+        currentUserCanEdit: Boolean
     },
     watch: {
         '$route' (to, from) {

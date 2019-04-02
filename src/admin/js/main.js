@@ -6,7 +6,6 @@
 import Vue from 'vue';
 import Buefy from 'buefy';
 import VTooltip from 'v-tooltip';
-// import { VueHammer } from 'vue2-hammer';
 import VueMasonry from 'vue-masonry-css';
 import draggable from 'vuedraggable';
 import VueTheMask from 'vue-the-mask';
@@ -49,7 +48,6 @@ import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, UserCap
 // Configure and Register Plugins
 Vue.use(Buefy);
 Vue.use(VTooltip);
-// Vue.use(VueHammer);
 Vue.use(VueMasonry);
 Vue.use(I18NPlugin);
 Vue.use(UserPrefsPlugin);

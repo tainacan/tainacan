@@ -199,7 +199,7 @@ class Collections extends Repository {
 	            'map'         => 'comment_status',
 	            'title'       => __( 'Comment Status', 'tainacan' ),
 	            'type'        => 'string',
-	            'description' => __( 'The status of collection comment, if is "open" the comments are allowed, or is "closed" for deny comments.', 'tainacan' ),
+	            'description' => __( 'Collection comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
 		        'default'     => get_default_comment_status(Entities\Collection::get_post_type()),
 		        'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
 		    ],
@@ -207,7 +207,7 @@ class Collections extends Repository {
 		        'map'         => 'meta',
 		        'title'       => __( 'Allow Items Comments', 'tainacan' ),
 		        'type'        => 'string',
-		        'description' => __( 'Collection items comment is allowed, if is "open" the comments are allowed for collection items, or is "closed" for deny comments to items.', 'tainacan' ),
+		        'description' => __( 'Collection items comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
 		        'default'     => 'open',
 		        'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
 		    ]
