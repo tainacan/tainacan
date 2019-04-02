@@ -132,7 +132,7 @@
                             </b-field>
                             <li v-if="finderColumn.children.length">
                                 <div
-                                        v-if="totalRemaining[key].remaining == true || (finderColumn.length < totalRemaining[key].remaining)"
+                                        v-if="totalRemaining[key].remaining === true || (finderColumn.length < totalRemaining[key].remaining)"
                                         @click="getMoreOptions(finderColumn, key)"
                                         class="tainacan-show-more">
                                     <span class="icon">
@@ -570,7 +570,7 @@
                 if(this.collection_id == 'default' || this.collection_id == 'filter_in_repository'){
                     route = `/facets/${this.metadatum_id}${query}`
                 }
-
+                
                 axios.get(route)
                     .then(res => {
                         this.removeLevelsAfter(key);
