@@ -315,12 +315,13 @@ export default {
                     this.$store.dispatch('search/set_postquery', this.$route.query);
                 },
                 loadItems(to) {
-                    this.$emit( 'isLoadingItems', true);
 
                     // Forces fetch_only to be filled before any search happens
                     if (this.$store.getters['search/getPostQuery']['fetch_only'] == undefined) {  
                         this.$emit( 'hasToPrepareMetadataAndFilters', to);
                     } else {  
+
+                        this.$emit( 'isLoadingItems', true);
                         
                         // Cancels previous Request
                         if (this.searchCancel != undefined)

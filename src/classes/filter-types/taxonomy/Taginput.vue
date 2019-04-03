@@ -130,7 +130,8 @@
                 }
 
                 return axios.get(endpoint).then( res => {
-                    for (let term of res.data.values) {     
+                    for (let term of res.data.values) {   
+                          
                         this.taxonomy = term.taxonomy;
 
                         if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {
