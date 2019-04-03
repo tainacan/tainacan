@@ -385,19 +385,36 @@ class REST_Items_Controller extends REST_Controller {
 	public function get_items_permissions_check( $request ) {
 		$collection = $this->collections_repository->fetch($request['collection_id']);
 
+		if('edit' === $request['context'] && !is_user_logged_in()) {
+			return false;
+		}
+
+		if ( isset($request['taxquery']) && !$this->get_items_permissions_check_for_taxonomy($request['taxquery']) ) {
+			return false;
+		}
+
 		if(($collection instanceof Entities\Collection)) {
-			if('edit' === $request['context'] && !$collection->can_read()) {
+			if(!$collection->can_read()) {
 				return false;
 			}
-
 			return true;
 		} else {
-			if('edit' === $request['context'] && !$this->collections_repository->can_read(new Entities\Collection())) {
-				return false;
-			}
-
 			return true;
 		}
+	}
+
+	private function get_items_permissions_check_for_taxonomy($taxonomies) {
+		$taxonomy_repository = Repositories\Taxonomies::get_instance();
+		foreach ($taxonomies as $tax) {
+			$tax_id = $taxonomy_repository->get_id_by_db_identifier($tax['taxonomy']);
+			$taxonomy = $taxonomy_repository->fetch($tax_id);
+			if(($taxonomy instanceof Entities\Taxonomy)) {
+				if(!$taxonomy->can_read()) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	/**

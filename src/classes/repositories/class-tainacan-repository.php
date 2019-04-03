@@ -670,6 +670,12 @@ abstract class Repository {
 	 * @throws \Exception
 	 */
 	public function can_read( $entity, $user = null ) {
+		if(!is_user_logged_in()) {
+			$status = get_post_status($entity->get_id());
+			$post_status_obj = get_post_status_object($status);
+			return $post_status_obj->public;
+		}
+
 		if ( is_null( $user ) ) {
 			$user = get_current_user_id();
 		} elseif ( is_object( $user ) ) {
