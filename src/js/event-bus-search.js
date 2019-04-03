@@ -17,7 +17,7 @@ export default {
             created() {
                 this.$on('input', data => {
                     this.$store.dispatch('search/setPage', 1);
-        
+
                     if( data.taxonomy ){
                         this.add_taxquery(data);
                     } else {
