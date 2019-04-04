@@ -62,23 +62,23 @@
         created(){
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
             this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id;
-            const vm = this;
 
             let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum +'?nopaging=1';
 
-            if(this.isRepositoryLevel || this.collection == 'filter_in_repository'){
+            if (this.isRepositoryLevel || this.collection == 'filter_in_repository')
                 in_route = '/metadata?nopaging=1';
-            }
 
             axios.get(in_route)
                 .then( res => {
                     let result = res.data;
-                    if( result && result.metadata_type ){
-                        vm.metadatum_object = result;
-                        vm.type = result.metadata_type;
+                    if ( result && result.metadata_type ){
+                        this.metadatum_object = result;
+                        this.type = result.metadata_type;
                         
                         if (!this.isUsingElasticSearch)
-                            vm.loadOptions();
+                            this.loadOptions();
+                        else
+                            this.selectedValues();
                     }
                 })
                 .catch(error => {
@@ -181,6 +181,7 @@
                 if ( index >= 0){
                     let query = this.query.metaquery.slice();
                     this.selected = query[ index ].value;
+
                 } else {
                     this.selected = [];
                     return false;

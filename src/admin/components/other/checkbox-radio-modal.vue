@@ -25,7 +25,7 @@
                     animated
                     @input="fetchSelectedLabels()"
                     v-model="activeTab">
-                <b-tab-item :label="$i18n.get('label_all_terms')">
+                <b-tab-item :label="isTaxonomy ? $i18n.get('label_all_terms') : $i18n.get('label_all_metadatum_values')">
                     <div
                             v-if="!isSearching && !isTaxonomy"
                             class="modal-card-body tainacan-checkbox-list-container">
@@ -168,7 +168,7 @@
                 </b-tab-item>
 
                 <b-tab-item
-                        :label="$i18n.get('label_selected_terms')">
+                        :label="isTaxonomy ? $i18n.get('label_selected_terms') : $i18n.get('label_selected_metadatum_values')">
 
                     <div class="modal-card-body tainacan-tags-container">
                         <b-field
@@ -183,7 +183,7 @@
                                         attached
                                         closable
                                         @close="selected instanceof Array ? selected.splice(index, 1) : selected = ''">
-                                    {{ isTaxonomy ? selectedTagsName[term] : term }}
+                                    {{ (isTaxonomy || metadatum_type === 'Tainacan\\Metadata_Types\\Relationship') ? selectedTagsName[term] : term }}
                                 </b-tag>
                             </div>
                         </b-field>
@@ -341,16 +341,13 @@
         },
         methods: {
             fetchSelectedLabels() {
-                this.isSelectedTermsLoading = true;
 
                 let selected = this.selected instanceof Array ? this.selected : [this.selected];
 
-                if(this.taxonomy_id && selected.length) {
+                if (this.taxonomy_id && selected.length) {
                     for (const term of selected) {
 
-                        if(!this.isSelectedTermsLoading){
-                            this.isSelectedTermsLoading = true;
-                        }
+                        this.isSelectedTermsLoading = true;
 
                         axios.get(`/taxonomy/${this.taxonomy_id}/terms/${term}`)
                             .then((res) => {
@@ -362,12 +359,25 @@
                                 this.isSelectedTermsLoading = false;
                             });
                     }
-                } else {
-                    this.isSelectedTermsLoading = false;
+                } else if (this.metadatum_type === 'Tainacan\\Metadata_Types\\Relationship' && selected.length) {
+                    this.isSelectedTermsLoading = true;
+
+                    for (const item of selected) {
+
+                        axios.get('/items/' + item + '?fetch_only=title')
+                            .then((res) => {
+                                this.saveSelectedTagName(res.data.id, res.data.title);
+                                this.isSelectedTermsLoading = false;
+                            })
+                            .catch((error) => {
+                                this.$console.log(error);
+                                this.isSelectedTermsLoading = false;
+                            });
+                    }
                 }
             },
             saveSelectedTagName(value, label){
-                if(!this.selectedTagsName[value]) {
+                if (!this.selectedTagsName[value]) {
                     this.$set(this.selectedTagsName, `${value}`, label);
                 }
             },
