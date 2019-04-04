@@ -8,6 +8,7 @@ class Media {
 	
 	private static $instance = null;
 	private static $file_handle = null;
+	private static $file_name = null;
 
     public static function get_instance() {
         if(!isset(self::$instance)) {
@@ -67,11 +68,11 @@ class Media {
 
         set_time_limit(0);
 
-        $wp_upload_dir = wp_upload_dir();
-        $filename = $wp_upload_dir['path'] . '/' . basename($url);
+        $filename = tempnam(sys_get_temp_dir(), basename($url));
 
         # Open the file for writing...
         self::$file_handle = fopen($filename, 'w+');
+        self::$file_name = $filename;
 
         $callback = function ($ch, $str)  {
             $len = fwrite(self::$file_handle, $str);
@@ -122,6 +123,13 @@ class Media {
 		if( !empty( $upload['error'] ) ) {
 			return false;
 		}
+
+		if( @filesize($upload['file']) == 0 && is_resource($blob) ){
+            $file_wordpress_stream = fopen( $upload['file'], 'r+');
+            stream_copy_to_stream($blob, $file_wordpress_stream);
+
+            if( file_exists(self::$file_name) ) unlink(self::$file_name);
+        }
 
 		$file_path = $upload['file'];
 		$file_name = basename( $file_path );
