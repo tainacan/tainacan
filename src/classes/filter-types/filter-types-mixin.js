@@ -60,10 +60,13 @@ export const filter_type_mixin = {
                     url = `/facets/${metadatumId}?getSelected=${getSelected}&`;
                 else
                     url = `/collection/${this.collection}/facets/${metadatumId}?getSelected=${getSelected}&`;
-                
+
                 if (offset != undefined && number != undefined) {
-                    url += `offset=${offset}&number=${number}&`;
-                } 
+                    if (!this.isUsingElasticSearch)
+                        url += `offset=${offset}&number=${number}&`;
+                    else 
+                        url += `last_term=${offset}&number=${number}&`;
+                }  
 
                 if(search && offset != undefined && number != undefined){
                     url += `search=${search}&` + qs.stringify(query_items);
@@ -77,20 +80,25 @@ export const filter_type_mixin = {
                 
                 return new Object ({
                     request: 
-                        axios.tainacan.get(url, { cancelToken: source.token })
-                            .then(res => {
-                                this.isLoadingOptions = false;
-                                if (res.data.values)
-                                    this.prepareOptionsForPlainText(res.data.values, search, valuesToIgnore, isInCheckboxModal);
-                                else
-                                    this.prepareOptionsForPlainText(res.data, search, valuesToIgnore, isInCheckboxModal);
-                            })
-                            .catch((thrown) => {
-                                if (axios.isCancel(thrown)) {
-                                    console.log('Request canceled: ', thrown.message);
-                                } else {
+                        new Promise((resolve, reject) => {
+                            axios.tainacan.get(url, { cancelToken: source.token })
+                                .then(res => {
                                     this.isLoadingOptions = false;
-                                }
+                                    if (res.data.values)
+                                        this.prepareOptionsForPlainText(res.data.values, search, valuesToIgnore, isInCheckboxModal);
+                                    else
+                                        this.prepareOptionsForPlainText(res.data, search, valuesToIgnore, isInCheckboxModal);
+                                
+                                    resolve(res.data);
+                                })
+                                .catch((thrown) => {
+                                    if (axios.isCancel(thrown)) {
+                                        console.log('Request canceled: ', thrown.message);
+                                    } else {
+                                        this.isLoadingOptions = false;
+                                    }
+                                    reject(thrown);
+                                })
                             }),
                     source: source
                 });
@@ -145,22 +153,26 @@ export const filter_type_mixin = {
 
                 return new Object ({
                     request:
-                        axios.tainacan.get(url + '&fetch_only=thumbnail,title,id&' + qs.stringify(query_items))
-                            .then(res => {
-                                this.isLoadingOptions = false;
-                                
-                                if (res.data.values)
-                                    this.prepareOptionsForRelationship(res.data.values, search, valuesToIgnore, isInCheckboxModal);
-                                else
-                                    this.prepareOptionsForRelationship(res.data, search, valuesToIgnore, isInCheckboxModal);
-                            })
-                            .catch((thrown) => {
-                                if (axios.isCancel(thrown)) {
-                                    console.log('Request canceled: ', thrown.message);
-                                } else {
+                        new Promise((resolve, reject) => {
+                            axios.tainacan.get(url + '&fetch_only=thumbnail,title,id&' + qs.stringify(query_items))
+                                .then(res => {
                                     this.isLoadingOptions = false;
+                                    
+                                    if (res.data.values)
+                                        this.prepareOptionsForRelationship(res.data.values, search, valuesToIgnore, isInCheckboxModal);
+                                    else
+                                        this.prepareOptionsForRelationship(res.data, search, valuesToIgnore, isInCheckboxModal);
+                                
+                                    resolve(res.data);
+                                })
+                                .catch((thrown) => {
+                                    if (axios.isCancel(thrown)) {
+                                        console.log('Request canceled: ', thrown.message);
+                                    } else {
+                                        this.isLoadingOptions = false;
+                                    }
                                     reject(thrown);
-                                }
+                                })
                             }),
                     source: source
                 });

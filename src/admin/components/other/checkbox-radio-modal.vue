@@ -26,15 +26,14 @@
                     @input="fetchSelectedLabels()"
                     v-model="activeTab">
                 <b-tab-item :label="$i18n.get('label_all_terms')">
-
                     <div
                             v-if="!isSearching && !isTaxonomy"
                             class="modal-card-body tainacan-checkbox-list-container">
                         <a
-                                v-if="checkboxListOffset"
+                                v-if="isUsingElasticSearch ? lastTermOnFisrtPage != checkboxListOffset : checkboxListOffset"
                                 role="button"
                                 class="tainacan-checkbox-list-page-changer"
-                                @click="beforePage">
+                                @click="previousPage">
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-previous"/>
                             </span>
@@ -321,7 +320,9 @@
                 activeTab: 0,
                 selectedTagsName: {},
                 isSelectedTermsLoading: false,
-                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
+                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
+                previousLastTerms: [],
+                lastTermOnFisrtPage: null
             }
         },
         updated(){
@@ -376,23 +377,37 @@
                 }
                 return label;
             },
-            beforePage(){
-                this.checkboxListOffset -= this.maxNumOptionsCheckboxList;
+            previousPage() {
+
                 this.noMorePage = 0;
-
-                if(this.checkboxListOffset < 0){
-                    this.checkboxListOffset = 0;
-                }
-
                 this.isCheckboxListLoading = true;
 
-                this.getOptions(this.checkboxListOffset);
+                if (this.isUsingElasticSearch) {
+                    this.previousLastTerms.pop();
+
+                    if (this.previousLastTerms.length > 0) {
+                        this.getOptions(this.previousLastTerms.pop());
+                        this.previousLastTerms.push(this.checkboxListOffset);
+                    } else {
+                        this.getOptions(0);
+                    }
+                } else {
+                    this.checkboxListOffset -= this.maxNumOptionsCheckboxList;
+                    if (this.checkboxListOffset < 0)
+                        this.checkboxListOffset = 0;
+
+                    this.getOptions(this.checkboxListOffset);
+                }
             },
-            nextPage(){
-                if(!this.noMorePage) {
+            nextPage() {
+    
+                if (this.isUsingElasticSearch)
+                    this.previousLastTerms.push(this.checkboxListOffset);
+
+                if (!this.noMorePage && !this.isUsingElasticSearch) {
                     // LIMIT 0, 20 / LIMIT 19, 20 / LIMIT 39, 20 / LIMIT 59, 20
-                    if(this.checkboxListOffset === this.maxNumOptionsCheckboxList){
-                        this.checkboxListOffset += this.maxNumOptionsCheckboxList-1;
+                    if (this.checkboxListOffset === this.maxNumOptionsCheckboxList){
+                        this.checkboxListOffset += this.maxNumOptionsCheckboxList - 1;
                     } else {
                         this.checkboxListOffset += this.maxNumOptionsCheckboxList;
                     }
@@ -402,9 +417,9 @@
 
                 this.getOptions(this.checkboxListOffset);
             },
-            getOptions(offset){
+            getOptions(offset) {
                 let promise = '';
-
+                
                 // Cancels previous Request
                 if (this.getOptionsValuesCancel != undefined)
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
@@ -415,9 +430,19 @@
                     promise = this.getValuesPlainText( this.metadatum_id, this.optionName, this.isRepositoryLevel, [], offset, this.maxNumOptionsCheckboxList, true);
                 
                 promise.request
-                    .then(() => {
+                    .then((data) => {
                         this.isCheckboxListLoading = false;
                         this.isSearchingLoading = false;
+
+                        if (this.isUsingElasticSearch) {
+                                                        
+                            this.checkboxListOffset = data.last_term;
+
+                            if (!this.lastTermOnFisrtPage || this.lastTermOnFisrtPage == this.checkboxListOffset) {
+                                this.lastTermOnFisrtPage = this.checkboxListOffset;
+                                this.previousLastTerms.push(0);
+                            }
+                        }
                     })
                     .catch(error => {
                         this.$console.log(error);
