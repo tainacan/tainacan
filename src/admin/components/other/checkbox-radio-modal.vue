@@ -712,7 +712,7 @@
     // In theme, the bootstrap removes the style of <a> without href
     a {
         cursor: pointer;
-        color: $turquoise5 !important;
+        color: $turquoise5;
     }
 
     .tainacan-form {
