@@ -18,17 +18,20 @@ export const filter_type_mixin = {
         },
         metadatum_id: [Number], // not required, but overrides the filter metadatum id if is set
         collection_id: [Number], // not required, but overrides the filter metadatum id if is set
-        filter_type: [String],  // not required, but overrides the filter metadatum type if is set
+        filter_type: [String], // not required, but overrides the filter metadatum type if is set
         id: '',
         query: {}
     },
-    mounted() {
+    created() {
         // We listen to event, but reload event if hasFiltered is negative, as 
         // an empty query also demands filters reloading.
         this.$eventBusSearch.$on('hasFiltered', () => {
             if (typeof this.loadOptions == "function")
                 this.loadOptions(true);
         });
+    },
+    mounted() {
+        
     },
     computed: {
         facetsFromItemSearch() {
@@ -41,8 +44,8 @@ export const filter_type_mixin = {
         ]),
         getValuesPlainText(metadatumId, search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0') {
 
-            if (isInCheckboxModal || search || !this.facetsFromItemSearch || Object.values(this.facetsFromItemSearch).length <= 0) {
-  
+            if (isInCheckboxModal || search || !this.isUsingElasticSearch) {
+
                 const source = axios.CancelToken.source();
 
                 let currentQuery  = JSON.parse(JSON.stringify(this.query));
@@ -84,6 +87,7 @@ export const filter_type_mixin = {
                             axios.tainacan.get(url, { cancelToken: source.token })
                                 .then(res => {
                                     this.isLoadingOptions = false;
+
                                     if (res.data.values)
                                         this.prepareOptionsForPlainText(res.data.values, search, valuesToIgnore, isInCheckboxModal);
                                     else
@@ -106,9 +110,8 @@ export const filter_type_mixin = {
             } else {
                 let callback = new Promise((resolve) => {
                     for (const facet in this.facetsFromItemSearch) {
-                        if (facet == this.filter.id) {
+                        if (facet == this.filter.id)
                             this.prepareOptionsForPlainText(this.facetsFromItemSearch[facet], search, valuesToIgnore, isInCheckboxModal);
-                        }    
                     }
                     resolve();
                 });
@@ -194,7 +197,6 @@ export const filter_type_mixin = {
 
             let sResults = [];
             let opts = [];
-
             for (let metadatum of metadata) {
                 if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {
                     let indexToIgnore = valuesToIgnore.findIndex(value => value == metadatum.value);
@@ -320,5 +322,6 @@ export const filter_type_mixin = {
         if (this.getOptionsValuesCancel != undefined)
             this.getOptionsValuesCancel.cancel('Facet search Canceled.');
     
+        this.$eventBusSearch.$off('hasFiltered');
     },
 };

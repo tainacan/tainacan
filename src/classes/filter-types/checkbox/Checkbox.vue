@@ -63,22 +63,21 @@
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
             this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id;
 
-            let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum +'?nopaging=1';
+            let route = '/collection/' + this.collection + '/metadata/' +  this.metadatum +'?nopaging=1';
 
             if (this.isRepositoryLevel || this.collection == 'filter_in_repository')
-                in_route = '/metadata?nopaging=1';
+                route = '/metadata?nopaging=1';
 
-            axios.get(in_route)
+            axios.get(route)
                 .then( res => {
                     let result = res.data;
                     if ( result && result.metadata_type ){
                         this.metadatum_object = result;
                         this.type = result.metadata_type;
-                        
+                    
                         if (!this.isUsingElasticSearch)
                             this.loadOptions();
-                        else
-                            this.selectedValues();
+
                     }
                 })
                 .catch(error => {
@@ -115,8 +114,7 @@
             }
         },
         methods: {
-            loadOptions(skipSelected){
-                
+            loadOptions(skipSelected) {
                 let promise = null;
                 
                 // Cancels previous Request

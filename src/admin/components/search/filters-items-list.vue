@@ -102,7 +102,6 @@
                     :open="collapsed"
                     :is-repository-level="isRepositoryLevel"/>
         </template>
-
     </div>
 </template> 
 
