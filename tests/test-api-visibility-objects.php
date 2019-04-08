@@ -161,7 +161,7 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 			'metadatum',
 			array(
 				'name'   => 'metadata-private',
-				'status' => 'publish',
+				'status' => 'private',
 				'collection' => $collection,
 				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
 				'metadata_type_options' => [
