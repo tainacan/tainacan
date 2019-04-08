@@ -677,14 +677,19 @@ class CSV extends Importer {
 		
 		$Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
         $taxonomy = new Entities\Taxonomy( $metadatum->get_metadata_type_options()['taxonomy_id']);
-		$exploded_values = explode(">>",$values);
+		
+        if ( strpos($values, '>>') === false ) {
+            return $values;
+        }
+        
+        $exploded_values = explode(">>",$values);
 		
 		if (empty($exploded_values)) {
 			return false;
 		}
 
         if( is_array($exploded_values) ) {
-            $parent = ( count($exploded_values) === 1 ) ? null : 0;
+            $parent = 0;
             foreach ( $exploded_values as $key => $value) {
 				$value = trim($value);
                 if ($value=='') {
@@ -692,8 +697,8 @@ class CSV extends Importer {
 					return false;
                 }
                 $exists = $Tainacan_Terms->term_exists( $value ,$taxonomy->get_db_identifier(), $parent, true );
-                if (false !== $exists && isset($exists->term_taxonomy_id)) {
-					$parent = $exists->term_taxonomy_id;
+                if (false !== $exists && isset($exists->term_id)) {
+					$parent = $exists->term_id;
                 } else {
 					$this->add_log('New term created: ' . $value . ' in tax_id: ' . $taxonomy->get_db_identifier() . '; parent: ' . $parent);
                     $term = new Entities\Term();
