@@ -1,6 +1,16 @@
 // Tainacan modals
 .modal .animation-content {
-    width: 100%;
+    width: 91.6666667%;
+    width: 91.6666667vw;
+    max-height: 86%;
+    max-height: 86vh;
+    overflow: auto;
+    border-radius: 0;
+
+    @media screen and (max-width: 769px) {
+        max-height: 95%;
+        max-height: 95vh;
+    }
 }
 .modal .modal-close {
     z-index: 99999;
@@ -24,6 +34,7 @@
         display: inline-block;
         width: 90%;
         margin-right: auto;
+        margin-bottom: 0px;
     }
     a.back-link{
         font-weight: 500;
@@ -41,12 +52,19 @@
 .tainacan-modal-content {
     border-radius: 0px;
     background-color: white;
-    padding: 40px 50px;
+    padding: 40px $page-side-padding;
     position: relative;
-    max-height: 86%;
-    max-height: 86vh;
     overflow-y: auto;
     overflow-x: hidden;
+
+    @media only screen and (max-width: 768px) {
+        padding: 40px 8.333333%;
+        padding: 40px 8.333333vw;
+    }
+
+    nav {
+        border: none !important;
+    }
     
     figure {
         margin: 0;
@@ -63,6 +81,7 @@
     @media only screen and (max-width: 768px) {
         max-height: 100%;
         max-height: 100vh;
+        display: block;
     }
 }
 // Bulma modals customized for Tainacan (custom-dialog.vue)
