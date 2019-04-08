@@ -670,7 +670,7 @@ class CSV extends Importer {
 		}
 
         if( is_array($exploded_values) ) {
-			$parent = 0;
+            $parent = ( count($exploded_values) === 1 ) ? null : 0;
             foreach ( $exploded_values as $key => $value) {
 				$value = trim($value);
                 if ($value=='') {

@@ -61,6 +61,9 @@
     }
     &.is-mobile-modal {
         @media screen and (max-width: 1088px) {
+            .dropdown-content {
+                max-height: 100vh;
+            }
             .dropdown-menu {
                 border-radius: 4px;
                 .dropdown-item {

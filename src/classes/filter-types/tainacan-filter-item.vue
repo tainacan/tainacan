@@ -33,7 +33,6 @@
                 </span>
                 <span class="collapse-label">{{ filter.name }}</span>
             </button>
-
             <div
                     :id="'filter-input-id-' + filter.id">
                 <component
@@ -100,6 +99,10 @@
     .filter-item-forms {
 
         .datepicker {
+
+            .datepicker-content {
+                height: auto;
+            }
 
             .dropdown-item {
                 background-color: white !important;

@@ -55,7 +55,7 @@ export default {
     @import "../admin/scss/_pagination.scss";
     @import "../admin/scss/_tags.scss";
     @import "../admin/scss/_notices.scss";
-    // @import "../admin/scss/_tabs.scss";
+    @import "../admin/scss/_tabs.scss";
     @import "../admin/scss/_selects.scss";
     @import "../admin/scss/_dropdown-and-autocomplete.scss";
     @import "../admin/scss/_tooltips.scss";

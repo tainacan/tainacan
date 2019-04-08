@@ -1,11 +1,14 @@
 // Tabs 
 .tabs {
+    li {
+        overflow-y: hidden;
+    }
     a {
         font-size: 0.8125rem;
         color: black !important;
-        margin-bottom: -3px !important;
-        border-bottom: 5px solid transparent;
+        border-bottom: 4px solid transparent;
         transition: border-bottom-color ease 0.3s;
+        cursor: pointer !important;
 
         &:hover{
             border-bottom-color: transparent;

@@ -145,7 +145,8 @@
                                 :active.sync="isColumnLoading"/>
                     </div>
                     <nav
-                            style="margin-top: 10px;"
+                            v-if="!isSearching && isTaxonomy"
+                            style="margin-top: 6px;"
                             class="breadcrumb is-small has-succeeds-separator"
                             aria-label="breadcrumbs">
                         <ul>
@@ -744,7 +745,7 @@
     // In theme, the bootstrap removes the style of <a> without href
     a {
         cursor: pointer;
-        color: $turquoise5 !important;
+        color: $turquoise5;
     }
 
     .tainacan-form {
@@ -788,6 +789,7 @@
         .b-checkbox, .b-radio {
             max-width: 81%;
             margin-left: 0.7rem;
+            margin-bottom: 0;
             height: 24px;
         }
 
@@ -801,6 +803,7 @@
         flex-grow: 0;
         flex-shrink: 1;
         max-width: calc(50% - 8.3333333%);
+        padding-left: 0.5rem;
 
         .b-checkbox, .b-radio {
             margin-right: 10px;
@@ -818,6 +821,7 @@
         overflow: auto;
         padding: 0 !important;
         min-height: 253px;
+        max-height: 35vh;
 
         &:focus {
             outline: none;

@@ -350,7 +350,10 @@ class REST_Terms_Controller extends REST_Controller {
 		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
 
 		if(($taxonomy instanceof Entities\Taxonomy)) {
-			if('edit' === $request['context'] && !$taxonomy->can_read()) {
+			if('edit' === $request['context'] && !is_user_logged_in()) {
+				return false;
+			}
+			if(!$taxonomy->can_read()) {
 				return false;
 			}
 
@@ -385,7 +388,10 @@ class REST_Terms_Controller extends REST_Controller {
 		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
 
 		if(($taxonomy instanceof Entities\Taxonomy)) {
-			if('edit' === $request['context'] && !$taxonomy->can_read()) {
+			if('edit' === $request['context'] && !is_user_logged_in()) {
+				return false;
+			}
+			if(!$taxonomy->can_read()) {
 				return false;
 			}
 
