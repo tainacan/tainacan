@@ -193,15 +193,9 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		$this->tainacan_item_metadata_factory->create_item_metadata(
-				$item_a, $metadata_tax_public, $term_a_public->get_id());
-		$this->tainacan_item_metadata_factory->create_item_metadata(
-				$item_a, $metadata_tax_public, $term_b_public->get_id());
-			
-		$this->tainacan_item_metadata_factory->create_item_metadata(
-				$item_b, $metadata_tax_private, $term_a_private->get_id());
-		$this->tainacan_item_metadata_factory->create_item_metadata(
-				$item_b, $metadata_tax_private, $term_b_private->get_id());
+		wp_set_post_terms($item_a->get_id(), [$term_a_public->get_id(), $term_b_public->get_id()], $taxonomy_public->get_db_identifier());
+		wp_set_post_terms($item_b->get_id(), [$term_a_private->get_id(), $term_b_private->get_id()], $taxonomy_private->get_db_identifier());
+		
 	}
 
 	public function test_get_terms_of_taxonomy_logged() {
@@ -352,13 +346,12 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 			'compare' => 'IN'
 		]];
 
-		$request_public->set_query_params(['hideempty' => false]);
 		$request_public->set_query_params(['taxquery' => $tax_query]);
 		$response = $this->server->dispatch($request_public);
 		$status = $response->status;
 		$data = $response->get_data();
 		$this->assertEquals(200, $status);
-		//$this->assertEquals(1, sizeof($data));
+		$this->assertEquals(1, sizeof($data));
 
 		//tax public - context=edit:
 		$request_public_edit = new \WP_REST_Request(
@@ -370,7 +363,7 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 		$status = $response->status;
 		$data = $response->get_data();
 		$this->assertEquals(200, $status);
-		//$this->assertEquals(2, sizeof($data));
+		$this->assertEquals(1, sizeof($data));
 
 		//tax private:
 		$request_private = new \WP_REST_Request(
@@ -383,13 +376,12 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 			'compare' => 'IN'
 		]];
 
-		$request_private->set_query_params(['hideempty' => false]);
 		$request_private->set_query_params(['taxquery' => $tax_query]);
 		$response = $this->server->dispatch($request_private);
 		$status = $response->status;
 		$data = $response->get_data();
 		$this->assertEquals(200, $status);
-		//$this->assertEquals(2, sizeof($data));
+		$this->assertEquals(1, sizeof($data));
 
 		//tax private - context=edit:
 		$request_private_edit = new \WP_REST_Request(
@@ -401,7 +393,7 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 		$status = $response->status;
 		$data = $response->get_data();
 		$this->assertEquals(200, $status);
-		//$this->assertEquals(2, sizeof($data));
+		$this->assertEquals(1, sizeof($data));
 	}
 
 	public function test_get_items_not_logged() {
@@ -418,25 +410,23 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 			'compare' => 'IN'
 		]];
 
-		$request_public->set_query_params(['hideempty' => false]);
 		$request_public->set_query_params(['taxquery' => $tax_query]);
 		$response = $this->server->dispatch($request_public);
 		$status = $response->status;
 		$data = $response->get_data();
 		$this->assertEquals(200, $status);
-		//$this->assertEquals(1, sizeof($data));
+		$this->assertEquals(1, sizeof($data));
 
 		//tax public - context=edit:
 		$request_public_edit = new \WP_REST_Request(
 			'GET', $this->namespace . '/items'
 		);
-		$request_public_edit->set_query_params(['context' => 'edit']);
 		$request_public_edit->set_query_params(['taxquery' => $tax_query]);
+		$request_public_edit->set_query_params(['context' => 'edit']);
 		$response = $this->server->dispatch($request_public_edit);
 		$status = $response->status;
 		$data = $response->get_data();
-		$this->assertEquals(200, $status);
-		//$this->assertEquals(2, sizeof($data));
+		$this->assertEquals(401, $status);
 
 		//tax private:
 		$request_private = new \WP_REST_Request(
@@ -449,13 +439,11 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 			'compare' => 'IN'
 		]];
 
-		$request_private->set_query_params(['hideempty' => false]);
 		$request_private->set_query_params(['taxquery' => $tax_query]);
 		$response = $this->server->dispatch($request_private);
 		$status = $response->status;
 		$data = $response->get_data();
 		$this->assertEquals(401, $status);
-		//$this->assertEquals(2, sizeof($data));
 
 		//tax private - context=edit:
 		$request_private_edit = new \WP_REST_Request(
@@ -467,7 +455,6 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 		$status = $response->status;
 		$data = $response->get_data();
 		$this->assertEquals(401, $status);
-		//$this->assertEquals(2, sizeof($data));
 	}
 }
 
