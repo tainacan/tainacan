@@ -108,11 +108,12 @@ export const filter_type_mixin = {
                 });
 
             } else {
+ 
                 let callback = new Promise((resolve) => {
                     for (const facet in this.facetsFromItemSearch) {
                         if (facet == this.filter.id)
                             this.prepareOptionsForPlainText(this.facetsFromItemSearch[facet], search, valuesToIgnore, isInCheckboxModal);
-                    }
+                        }   
                     resolve();
                 });
                 return new Object ({
@@ -197,6 +198,10 @@ export const filter_type_mixin = {
 
             let sResults = [];
             let opts = [];
+
+            if (!Array.isArray(metadata))
+                metadata = Object.values(metadata);
+
             for (let metadatum of metadata) {
                 if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {
                     let indexToIgnore = valuesToIgnore.findIndex(value => value == metadatum.value);
