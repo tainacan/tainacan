@@ -656,7 +656,8 @@ class Elastic_Press {
 			}
 
 			//remove duplicates
-			$formated_aggs[$filter_id] = array_intersect_key($formated_aggs[$filter_id], array_unique(array_map('serialize', $formated_aggs[$filter_id])));
+			$formated_aggs[$filter_id] = array_values( array_map( 'unserialize', array_unique( array_map( 'serialize', $formated_aggs[$filter_id] ) ) ) );
+			//$formated_aggs[$filter_id] = array_intersect_key($formated_aggs[$filter_id], array_unique(array_map('serialize', $formated_aggs[$filter_id])));
 
 		}
 		return $formated_aggs;
