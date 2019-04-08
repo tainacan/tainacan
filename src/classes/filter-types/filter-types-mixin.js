@@ -259,7 +259,7 @@ export const filter_type_mixin = {
         prepareOptionsForRelationship(items, search, valuesToIgnore, isInCheckboxModal) {
 
             let sResults = [];
-            let opts = [];
+            let opts = [];      
 
             if (items.length > 0) {
                 for (let item of items) {
