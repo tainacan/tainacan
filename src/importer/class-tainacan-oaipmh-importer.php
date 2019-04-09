@@ -21,6 +21,8 @@ class Oaipmh_Importer extends Importer {
 
     protected $NAME_FOR_SETS = 'Sets';
     protected $tainacan_api_address, $wordpress_api_address, $actual_collection;
+    protected $has_sets = true;
+    protected $items_per_page = 100;
 
     /**
      * tainacan old importer construct
@@ -54,7 +56,7 @@ class Oaipmh_Importer extends Importer {
 
         if( $index === 0 ){
 
-            if( $collection_id['source_id'] !== 'sets' ){
+            if( $collection_id['source_id'] !== 'sets' && $this->has_sets ){
                 $info = $this->requester( $this->get_url() . "?verb=ListRecords&metadataPrefix=oai_dc&set=" . $collection_id['source_id'] );
                 $this->add_log('fetching ' . $this->get_url() . "?verb=ListRecords&metadataPrefix=oai_dc&set=" . $collection_id['source_id']);
             } else  {
@@ -166,7 +168,7 @@ class Oaipmh_Importer extends Importer {
                     $this->add_collection([
                         'id' => $collection->get_id(),
                         'mapping' => $metadata_map,
-                        'total_items' =>ceil( $total / 100 ),
+                        'total_items' =>ceil( $total / $this->items_per_page ),
                         'source_id' => $setSpec,
                     ]);
                 }
@@ -201,7 +203,7 @@ class Oaipmh_Importer extends Importer {
                         $this->add_collection([
                             'id' => $collection->get_id(),
                             'mapping' => $metadata_map,
-                            'total_items' =>ceil( $total / 100 ),
+                            'total_items' =>ceil( $total / $this->items_per_page ),
                             'source_id' => 'sets',
                             'metadatum_id' => $metadatum_set_id
                         ]);
@@ -226,7 +228,22 @@ class Oaipmh_Importer extends Importer {
             }
 
         }
+        // if there is no set
+        else {
+            $collection = $this->create_collection( 'set', $this->getRepoName() );
+            $metadata_map = $this->create_collection_metadata($collection);
+            $total = intval( $this->get_total_items_from_source(false) );
+            $this->add_log('total in collection: ' . $total);
+            $this->add_log('collection id ' . (string) $collection->get_id());
 
+            $this->add_collection([
+                'id' => $collection->get_id(),
+                'mapping' => $metadata_map,
+                'total_items' =>ceil( $total / $this->items_per_page ),
+            ]);
+
+            $this->has_sets = false;
+        }
 
         $resumptionToken = $this->get_transient('collection_resump');
         if( $resumptionToken !== ''){
@@ -369,6 +386,12 @@ class Oaipmh_Importer extends Importer {
             } elseif ( isset($xml->ListRecords) && isset($xml->ListRecords->resumptionToken) ){
 
                 $resumptionToken_attributes = $xml->ListRecords->resumptionToken->attributes();
+                foreach ($resumptionToken_attributes as $tag => $attribute) {
+                    if ($tag == 'cursor') {
+                        $this->items_per_page = $attribute;
+                    }
+                }
+
                 foreach ($resumptionToken_attributes as $tag => $attribute) {
                     if ($tag == 'completeListSize') {
                         return (string) $attribute;
