@@ -121,6 +121,7 @@
                     v-if="!isLoadingFilters &&
                         ((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
                     :filters="filters"
+                    :repository-collection-filters="repositoryCollectionFilters"
                     :collapsed="collapseAll"
                     :is-repository-level="isRepositoryLevel"/>
 
@@ -772,6 +773,7 @@
                             ((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
                         :filters="filters"
                         :collapsed="collapseAll"
+                        :repository-collection-filters="repositoryCollectionFilters"
                         :is-repository-level="isRepositoryLevel"/>
 
                 <section
@@ -882,6 +884,9 @@
             filters() {
                 return this.getFilters();
             },
+            repositoryCollectionFilters() {
+                return this.getRepositoryCollectionFilters();
+            },
             metadata() {
                 return this.getMetadata();
             },
@@ -964,10 +969,12 @@
                 'getMetadata'
             ]),
             ...mapActions('filter', [
-                'fetchFilters'
+                'fetchFilters',
+                'fetchRepositoryCollectionFilters'
             ]),
             ...mapGetters('filter', [
-                'getFilters'
+                'getFilters',
+                'getRepositoryCollectionFilters'
             ]),
             ...mapGetters('search', [
                 'getSearchQuery',
@@ -1111,6 +1118,13 @@
                 })
                     .then(() => this.isLoadingFilters = false)
                     .catch(() => this.isLoadingFilters = false);
+
+                // On repository level we also fetch collection filters
+                if (this.isRepositoryLevel) {
+                    this.fetchRepositoryCollectionFilters()
+                        .catch(() => this.isLoadingFilters = false);
+                }
+
             },
             prepareMetadata() {
 
