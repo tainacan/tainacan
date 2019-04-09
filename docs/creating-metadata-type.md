@@ -181,3 +181,68 @@ Note that it checks whether the value is a string (single value) or an array (mu
 This method will change the way a value is converted to HTML for metadata of this metadata type. For example, Taxonomy and Relationship Metadata Type use this to add links to the related term/item in the HTML output.
 
 ## Creating Vue Web Component
+
+*TODO: explain how to load the web component code.*
+
+The Vue component is the chunk that will be rendered inside the Item Edition form so the user can edit it's metadata of your custom type. 
+
+As in any Vue component, you should provide a `template` with it's HTML content, a `script` with it's logic and optionally a `style`. Above are the template and script for the Selectbox metadata type:
+
+```html
+<template>
+    <b-input
+            :disabled="disabled"
+            :class="{'has-content': inputValue !== undefined && inputValue !== ''}"
+            :id="id"
+            type="number"
+            :value="inputValue"
+            step="0.01"
+            @blur="onBlur"
+            @change="onBlur"
+            @input="onInput($event)"/>
+</template>
+```
+```javascript
+<script>
+    export default {
+        created(){
+            if( this.value )
+                this.inputValue = this.value;
+        },
+        data() {
+            return {
+                inputValue: ''
+            }
+        },
+        props: {
+            id: '',
+            metadatum: {
+                type: Object
+            },
+            value: [String, Number, Array],
+            disabled: false,
+        },
+        methods: {
+            onBlur() {
+                this.$emit('blur');
+            },
+            onInput($event) {
+                this.inputValue = $event;
+                this.$emit('input', this.inputValue);
+            }
+        }
+    }
+</script>
+```
+
+Notice first the "props" on the component. They are passed to every metadata:
+- `metadadum` is the metadatum object itself, wich also contains the `metadata_type_options`;
+- `value` is the value used for binding whatever is the content of this metadatum;
+- `id` is the metadatum id;
+- `disabled` is a boolean handled by the Item's form, which can be used to disable any inner component in case the options are not loaded and other situations that might be desired;
+
+The "data" here has only a copy of the input value, passed during the `created()` lifecycle. Props are usualy not to be modified so we use this as an internal variable.
+
+The "methods" here simply delegate the blur and input events to the default parent component, which is responsible for passing this values to the Item's form. **Attention: all metadatum component must emit an input value, passing the updated value that they received from the props**.
+ 
+In the example above, a custom component from [Buefy](https://buefy.github.io/), `b-input` is used. You can use any javascript available from your plugin here, or just try out theirs, as it's already loaded on Tainacan's plugin. The styling also come from this library, inheriting [Bulma](http://bulma.io/), and it's recommended the use of their classes as most are overrided by Tainacan stylesheets. 
