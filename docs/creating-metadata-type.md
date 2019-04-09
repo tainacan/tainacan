@@ -53,7 +53,7 @@ set_preview_template
 
 You can also set a HTML preview of your Metadata Type to help users visualize how it works. This will be displayed in the Metadata configuration screen, when the user click on the "?" icon of a Metadata Type.
 
-* **set_preview_template(string $template)** - The HTML code that previwes the plugin. Use Buefy classes.
+* **set_preview_template(string $template)** - The HTML code that previwes the plugin. Use [Buefy](https://buefy.github.io/) and [Bulma](http://bulma.io/) classes.
 
 
 ### Metadata type Options 
@@ -186,7 +186,7 @@ This method will change the way a value is converted to HTML for metadata of thi
 
 The Vue component is the chunk that will be rendered inside the Item Edition form so the user can edit it's metadata of your custom type. 
 
-As in any Vue component, you should provide a `template` with it's HTML content, a `script` with it's logic and optionally a `style`. Above are the template and script for the Selectbox metadata type:
+As in any Vue component, you should provide a `template` with it's HTML content, a `script` with it's logic and optionally a `style`. Bellow are the template and script for the Selectbox metadata type:
 
 ```html
 <template>
@@ -245,4 +245,4 @@ The "data" here has only a copy of the input value, passed during the `created()
 
 The "methods" here simply delegate the blur and input events to the default parent component, which is responsible for passing this values to the Item's form. **Attention: all metadatum component must emit an input value, passing the updated value that they received from the props**.
  
-In the example above, a custom component from [Buefy](https://buefy.github.io/), `b-input` is used. You can use any javascript available from your plugin here, or just try out theirs, as it's already loaded on Tainacan's plugin. The styling also come from this library, inheriting [Bulma](http://bulma.io/), and it's recommended the use of their classes as most are overrided by Tainacan stylesheets. 
+In the above example, a custom component from [Buefy](https://buefy.github.io/), `b-input` is used. You can use any javascript available from your plugin here, or just try out theirs, as it's already loaded on Tainacan's plugin. The styling also come from this library, inheriting [Bulma](http://bulma.io/), and it's recommended the use of their classes as most are overrided by Tainacan stylesheets. 
