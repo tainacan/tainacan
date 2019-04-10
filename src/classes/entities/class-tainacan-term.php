@@ -223,7 +223,7 @@ class Term extends Entity {
 		$term_exists = $repo->term_exists($name, $taxonomy, $parent, true);
 		
 		if (false !== $term_exists) {
-			if ($this->get_id() != $term_exists->term_taxonomy_id) {
+			if ($this->get_id() != $term_exists->term_id) {
 				$this->add_error( 'repeated', __('You can not have two terms with the same name at the same level', 'tainacan') );
 				return false;
 			}
