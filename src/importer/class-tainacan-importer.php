@@ -720,6 +720,10 @@ abstract class Importer {
 		
 		$current_collection_item ++;
 		$this->set_current_collection_item($current_collection_item);
+
+		if( $this->get_transient('change_total') ){
+            $collection['total_items'] = $this->get_transient('change_total');
+        }
 		
 		if ($current_collection_item >= $collection['total_items']) {
 			return $this->next_collection();

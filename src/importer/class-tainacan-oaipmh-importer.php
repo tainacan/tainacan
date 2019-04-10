@@ -86,25 +86,25 @@ class Oaipmh_Importer extends Importer {
                     $this->add_transient('resumptionToken',(string) $resumptionToken);
                 }
 
-                // if there is no total in resumption token and exists cursos
+                // if there is no total in resumption token and exists cursor
                 // it will change dynamic the total of items
 
                 $resumptionToken_attributes = $xml->ListRecords->resumptionToken->attributes();
-
                 $real_total = $this->get_transient('total_general');
 
-//                $this->add_log('real total '.$real_total);
-//                foreach ($resumptionToken_attributes as $tag => $attribute) {
-//                    if ($tag == 'cursor' && $real_total == ( (string) $attribute ) ) {
-//
-//                        $real_total = intval($real_total) + intval(( (string) $attribute ));
-//                        $this->add_log('real total after '. $real_total);
-//                        $current_collection = $this->get_current_collection();
-//                        $current_collection['total_items'] = ceil( $real_total / $this->items_per_page );
-//                        $this->set_current_collection( $current_collection );
-//                        break;
-//                    }
-//                }
+                foreach ($resumptionToken_attributes as $tag => $attribute) {
+
+                    if ($tag == 'cursor' && $real_total == ( (string) $attribute ) ) {
+
+                        $real_total = $real_total + intval($this->get_transient('items_per_page'));
+                        $this->add_transient('total_general', $real_total);
+
+                        $total = ( $this->get_transient('change_total') ) ?  $this->get_transient('change_total') : 1;
+
+                        $this->add_transient('change_total', $total + 1);
+                        break;
+                    }
+                }
             }
 
         } catch (Exception $e) {
@@ -409,6 +409,7 @@ class Oaipmh_Importer extends Importer {
                 foreach ($resumptionToken_attributes as $tag => $attribute) {
                     if ($tag == 'cursor') {
                         $this->items_per_page = $attribute;
+                        $this->add_transient('items_per_page', (string) $this->items_per_page);
                     }
                 }
 
