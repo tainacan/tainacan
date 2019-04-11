@@ -38,10 +38,26 @@
                         aria-controls="items-list-results"
                         aria-labelledby="items-per-page-select"
                         @input="onChangeItemsPerPage">
-                    <option value="12">12 &nbsp;</option>
-                    <option value="24">24 &nbsp;</option>
-                    <option value="48">48 &nbsp;</option>
-                    <option value="96">96 &nbsp;</option>
+                    <option
+                            v-if="maxItemsPerPage >= 12"
+                            value="12">
+                        12 &nbsp;
+                    </option>
+                    <option
+                            v-if="maxItemsPerPage >= 24"
+                            value="24">
+                        24 &nbsp;
+                    </option>
+                    <option 
+                            v-if="maxItemsPerPage >= 48"
+                            value="48">
+                        48 &nbsp;
+                    </option>
+                    <option 
+                            v-if="maxItemsPerPage >= 96"
+                            value="96">
+                        96 &nbsp;
+                    </option>
                 </b-select>
             </b-field>
         </div>
@@ -98,6 +114,11 @@ import { mapGetters } from 'vuex';
 
 export default {
     name: 'Pagination',
+    data() {
+        return {
+            maxItemsPerPage: tainacan_plugin.api_max_items_per_page
+        }
+    },
     computed: {
         totalItems(){    
             return this.getTotalItems();
@@ -129,10 +150,13 @@ export default {
             'getPostQuery'
         ]),
         onChangeItemsPerPage(value) {
-            if( this.itemsPerPage == value){
+            if ( this.itemsPerPage == value){
                 return false;
+            } else if (Number(value) > Number(this.maxItemsPerPage)) {
+                this.$eventBusSearch.setItemsPerPage(this.maxItemsPerPage);
+            } else {
+                this.$eventBusSearch.setItemsPerPage(value);
             }
-            this.$eventBusSearch.setItemsPerPage(value);
         },
         onPageChange(page) {
             if(page == 0)
