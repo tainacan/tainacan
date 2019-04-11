@@ -321,6 +321,61 @@ class Facets extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals( 20, sizeof($values) );
 		
 		// test default text metadata with filter 
+		$values = $this->repository->fetch_all_metadatum_values( $this->metadatum_text->get_id(), [
+			'collection_id' => $this->collection1->get_id(),
+			'count_items' => true,
+			'items_filter' => [
+				'meta_query' => [
+					[
+						'key' => $this->metadatum_repo->get_id(),
+						'value' => ['Value 2', 'Value 4', 'Value 6', 'Value 8', 'Value 1', 'Value 3', 'Value 80', 'Value 78', 'Value 79']
+					]
+				]
+			]
+		] );
+		$values = $this->get_values($values);
+		$this->assertEquals( 2, sizeof($values) );
+		$this->assertEquals( 4, $values[0]['total_items']);
+		$this->assertEquals( 2, $values[1]['total_items']);
+		
+
+		$values = $this->repository->fetch_all_metadatum_values( $this->metadatum_text->get_id(), [
+			'collection_id' => $this->collection1->get_id(),
+			'count_items' => true,
+			'items_filter' => [
+				'tax_query' => [
+					[
+						'taxonomy'  => $this->taxonomy->get_db_identifier(),
+						'field' 		=> 'name',
+						'terms'     => 'Term for collection 1'
+					]
+				]
+			]
+		] );
+		$values = $this->get_values($values);
+		
+		$this->assertEquals( 2, sizeof($values) );
+		$this->assertEquals(10, $values[0]['total_items']);
+		$this->assertEquals(10, $values[1]['total_items']);
+
+		$values = $this->repository->fetch_all_metadatum_values( $this->metadatum_text->get_id(), [
+			'collection_id' => $this->collection1->get_id(),
+			'count_items' => true,
+			'items_filter' => [
+				'tax_query' => [
+					[
+						'taxonomy'  => $this->taxonomy->get_db_identifier(),
+						'field' 		=> 'name',
+						'terms'     => 'Term for collection 1 child'
+					]
+				]
+			]
+		] );
+		$values = $this->get_values($values);
+		
+		$this->assertEquals( 2, sizeof($values) );
+		$this->assertEquals(5, $values[0]['total_items']);
+		$this->assertEquals(5, $values[1]['total_items']);
 		
 		// test default taxonomy with filter 
 		
