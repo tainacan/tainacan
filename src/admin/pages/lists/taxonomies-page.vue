@@ -286,8 +286,8 @@
             if (this.orderBy != this.$userPrefs.get('taxonomies_order_by'))
                 this.orderBy = this.$userPrefs.get('taxonomies_order_by');
             if (!this.orderBy) {
-                this.orderBy = 'date';
-                this.$userPrefs.set('taxonomies_order_by', 'date');
+                this.orderBy = 'name';
+                this.$userPrefs.set('taxonomies_order_by', 'name');
             }
             
             this.load();
