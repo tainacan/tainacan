@@ -187,8 +187,7 @@ class Facets extends TAINACAN_UnitApiTestCase {
 					'allow_new_terms' => true,
 					'collection_id' => $collection1->get_id(),
 					'search' => []
-				],
-				'multiple' => 'yes'
+				]
 		    ),
 		    true
 	    );
@@ -333,21 +332,106 @@ class Facets extends TAINACAN_UnitApiTestCase {
 		
 		
 		// test default text metadata without filter 
+		$values = $this->repository->fetch_all_metadatum_values( $this->metadatum_text->get_id(), [
+			'collection_id' => $this->collection1->get_id(),
+			'items_filter' => false
+		] );
+		$values = $this->get_values($values);
+		$this->assertEquals( 2, sizeof($values) );
 		
-		// test default taxonomy without filter 
 		
 		// test default relationship without filter
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_relationship->get_id(), [
+			'collection_id' => $this->collection2->get_id(),
+			'items_filter' => false
+		] );
+		$values = $this->get_values($values);
+		$this->assertEquals( 40, sizeof($values) );
 		
 		// test search
+		$values = $this->repository->fetch_all_metadatum_values( $this->metadatum_repo->get_id(), [
+			'search' => '23'
+		] );
+		$values = $this->get_values($values);
+		$this->assertEquals( 1, sizeof($values) );
+		$this->assertEquals( 'Value 23', $values[0]['value']);
 		
+		$values = $this->repository->fetch_all_metadatum_values( $this->metadatum_repo->get_id(), [
+			'search' => '2'
+		] );
+		$values = $this->get_values($values);
+		$this->assertEquals( 17, sizeof($values) ); // 2, 12, 20, 21, 22, 23 ... 32, 42...
 		
 		
 		// test search relationship 
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_relationship->get_id(), [
+			'collection_id' => $this->collection2->get_id(),
+			'search' => '23'
+		] );
+		$values = $this->get_values($values);
+		$this->assertEquals( 1, sizeof($values) );
+		$this->assertEquals( 'testeItem 23', $values[0]['label']);
+		
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_relationship->get_id(), [
+			'collection_id' => $this->collection2->get_id(),
+			'search' => '66'
+		] );
+		$values = $this->get_values($values);
+		$this->assertEquals( 0, sizeof($values) );
+		
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_relationship->get_id(), [
+			'collection_id' => $this->collection2->get_id(),
+			'search' => '2'
+		] );
+		$values = $this->get_values($values);
+		$this->assertEquals( 13, sizeof($values) ); // 2, 12, 20, 21, 22, 23 ... 32
 		
 		// test search with filter
-		
+		$values = $this->repository->fetch_all_metadatum_values( $this->metadatum_repo->get_id(), [
+			'search' => '2',
+			'items_filter' => [
+				'tax_query' => [
+					[
+						'taxonomy' => $this->taxonomy->get_db_identifier(),
+						'field' => 'name',
+						'terms' => ['Term for all child', 'Term for collection 1 child', 'Term for collection 2 child']
+					]
+				]
+			]
+		] );
+		$values = $this->get_values($values);
+		$this->assertEquals( 5, sizeof($values) ); // 12, 20, 32, 52, 72
+		$valuesParsed = array_map(function($el) {
+			return $el['label'];
+		}, $values);
+		$this->assertContains( 'Value 12', $valuesParsed); 
+		$this->assertContains( 'Value 20', $valuesParsed); 
+		$this->assertContains( 'Value 32', $valuesParsed); 
+		$this->assertContains( 'Value 52', $valuesParsed); 
+		$this->assertContains( 'Value 72', $valuesParsed); 
 		
 		// test search relationship  with filter
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_relationship->get_id(), [
+			'search' => '2',
+			'items_filter' => [
+				'tax_query' => [
+					[
+						'taxonomy' => $this->taxonomy->get_db_identifier(),
+						'field' => 'name',
+						'terms' => ['Term for all child', 'Term for collection 2 child']
+					]
+				]
+			]
+		] );
+		$values = $this->get_values($values);
+		// items in the range of 51-60 and 71-80 have the queried terms and are related to items in the firts collection with the number -40
+		$this->assertEquals( 3, sizeof($values) ); // 12, 20, 32
+		$valuesParsed = array_map(function($el) {
+			return $el['label'];
+		}, $values);
+		$this->assertContains( 'testeItem 12', $valuesParsed); 
+		$this->assertContains( 'testeItem 20', $valuesParsed); 
+		$this->assertContains( 'testeItem 32', $valuesParsed);
 		
 		// test search without filter
 		
@@ -363,6 +447,7 @@ class Facets extends TAINACAN_UnitApiTestCase {
 		// test count items normal 
 		
 		// test default taxonomy 
+		// test default taxonomy without filter 
 		// test search taxonomy 
 		// test search taxonomy  with filter
 		// test search taxonomy  without filter
