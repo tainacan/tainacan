@@ -382,6 +382,10 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_no_collections_using_taxonomy'		     => __( 'There is no collection using this taxonomy', 'tainacan' ),
 	'label_collections_using'					     => __( 'Collections using', 'tainacan' ),
 	'label_select_all_%s_items'						 => __( 'Select all %s items', 'tainacan' ),
+	'label_next_page'								 => __( 'Next page', 'tainacan' ),
+	'label_previous_page'						 	 => __( 'Previous page', 'tainacan' ),
+	'label_page'								 	 => __( 'Page', 'tainacan' ),
+	'label_current_page'							 => __( 'Current page', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

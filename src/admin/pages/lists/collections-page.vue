@@ -218,7 +218,11 @@
                                 :current.sync="page"
                                 order="is-centered"
                                 size="is-small"
-                                :per-page="collectionsPerPage"/> 
+                                :per-page="collectionsPerPage"
+                                :aria-next-label="$i18n.get('label_next_page')"
+                                :aria-previous-label="$i18n.get('label_previous_page')"
+                                :aria-page-label="$i18n.get('label_page')"
+                                :aria-current-label="$i18n.get('label_current_page')"/> 
                     </div>
                 </div>    
             </div> 
