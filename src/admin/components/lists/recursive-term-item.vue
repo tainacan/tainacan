@@ -1,6 +1,7 @@
 <template>
 <div 
         style="width: 100%;">
+        
     <div
             class="term-item"
             :style="{
@@ -14,7 +15,13 @@
                 class="icon children-icon">
             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-nextlevel"/>
         </span> 
-        <span class="children-dropdown icon">
+        <span
+                v-tooltip="{
+                    content: $i18n.get('label_show_children_terms'),
+                    autoHide: true,
+                    placement: 'bottom'
+                }"
+                class="children-dropdown icon">
             <i 
                     :class="{ 
                         'tainacan-icon-arrowright': !showChildren,  
@@ -45,18 +52,36 @@
                 class="controls" 
                 :class="{'is-disabled': isEditingTerm}">
             <a @click="addNewChildTerm(term, index)">
-                <span class="icon">
+                <span
+                        v-tooltip="{
+                            content: $i18n.get('label_new_child'),
+                            autoHide: true,
+                            placement: 'bottom'
+                        }"
+                        class="icon">
                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-add"/>
                 </span>
             </a>
             <a
                     @click.prevent="editTerm()">
-                <span class="icon">
+                <span
+                        v-tooltip="{
+                            content: $i18n.get('edit'),
+                            autoHide: true,
+                            placement: 'bottom'
+                        }"
+                        class="icon">
                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
                 </span>
             </a>
             <a @click.prevent="tryToRemoveTerm()">
-                <span class="icon">
+                <span
+                        v-tooltip="{
+                            content: $i18n.get('delete'),
+                            autoHide: true,
+                            placement: 'bottom'
+                        }"
+                        class="icon">
                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
                 </span>
             </a>

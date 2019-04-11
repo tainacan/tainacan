@@ -255,7 +255,13 @@
                                         v-if="collection.current_user_can_edit"
                                         :aria-label="$i18n.getFrom('collections','edit_item')" 
                                         @click.prevent.stop="goToCollectionEditPage(collection.id)">                      
-                                    <span class="icon">
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('edit'),
+                                                autoHide: true,
+                                                placement: 'auto'
+                                            }"
+                                            class="icon">
                                         <i class="tainacan-icon tainacan-icon-20px tainacan-icon-settings"/>
                                     </span>
                                 </a>
@@ -264,7 +270,13 @@
                                         v-if="collection.current_user_can_delete"
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneCollection(collection.id)">
-                                    <span class="icon">
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('delete'),
+                                                autoHide: true,
+                                                placement: 'auto'
+                                            }"
+                                            class="icon">
                                         <i 
                                                 :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                                 class="tainacan-icon tainacan-icon-20px"/>

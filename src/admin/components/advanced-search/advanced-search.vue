@@ -129,7 +129,13 @@
                                 @click="removeThis(searchCriterion)"
                                 :class="{'has-text-blue4': isHeader, 'has-text-secondary': !isHeader,}"
                                 class="button is-white is-pulled-right">
-                            <span class="icon">
+                            <span 
+                                    v-tooltip="{
+                                        content: $i18n.get('remove_search_criterion'),
+                                        autoHide: true,
+                                        placement: 'auto-end'
+                                    }"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-close"/>
                             </span>
                         </button>

@@ -113,7 +113,13 @@
                             class="button is-white is-pulled-right"
                             :aria-label="$i18n.getFrom('items','edit_item')"
                             @click.prevent="showEditMaxOptions = true">
-                        <span class="icon">
+                        <span 
+                                v-tooltip="{
+                                    content: $i18n.get('edit'),
+                                    autoHide: true,
+                                    placement: 'bottom'
+                                }"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-edit has-text-secondary"/>
                         </span>
                     </button>
@@ -129,7 +135,13 @@
                     <button
                             @click.prevent="showEditMaxOptions = false"
                             class="button is-white is-pulled-right">
-                        <span class="icon">
+                        <span 
+                                v-tooltip="{
+                                    content: $i18n.get('close'),
+                                    autoHide: true,
+                                    placement: 'bottom'
+                                }"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-close has-text-secondary"/>
                         </span>
                     </button>

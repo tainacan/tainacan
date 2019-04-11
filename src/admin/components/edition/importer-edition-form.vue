@@ -89,7 +89,13 @@
                             <a 
                                     target="_blank"
                                     @click.prevent="importerFile = undefined">
-                                <span class="icon">
+                                <span 
+                                        v-tooltip="{
+                                            content: $i18n.get('remove_value'),
+                                            autoHide: true,
+                                            placement: 'bottom'
+                                        }"
+                                        class="icon">
                                     <i class="tainacan-icon tainacan-icon-18px tainacan-icon-close"/>
                                 </span>
                             </a>

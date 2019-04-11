@@ -65,6 +65,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'unified'                                        => __( 'Unified', 'tainacan' ),
 	'add_another_search_criterion'                   => __( 'Add another search criterion', 'tainacan' ),
 	'add_one_search_criterion'                       => __( 'Add one search criterion', 'tainacan' ),
+	'remove_search_criterion'                        => __( 'Remove search criterion', 'tainacan' ),
 	'clear_search'                                   => __( 'Clear search', 'tainacan' ),
 	'run'                                            => __( 'Run', 'tainacan' ),
 	'edit_search'                                    => __( 'Edit search', 'tainacan' ),
@@ -78,6 +79,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'new_action'                                     => __( 'New action', 'tainacan' ),
 	'clear_radio'                                    => __( 'Clear selected radio', 'tainacan' ),
 	'undo'                                           => __( 'Undo', 'tainacan' ),
+	'delete'                                    	 => __( 'Delete', 'tainacan' ),
 
 	// Wordpress Status
 	'publish'                                        => __( 'Publish', 'tainacan' ),
@@ -386,6 +388,14 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_previous_page'						 	 => __( 'Previous page', 'tainacan' ),
 	'label_page'								 	 => __( 'Page', 'tainacan' ),
 	'label_current_page'							 => __( 'Current page', 'tainacan' ),
+	'label_shrink_menu'								 => __( 'Shrink menu', 'tainacan' ),	
+	'label_document_uploaded'						 => __( 'Document uploaded', 'tainacan' ),	
+	'label_repository_filter'						 => __( 'Repository filter', 'tainacan' ),	
+	'label_repository_metadatum'					 => __( 'Repository metadatum', 'tainacan' ),	
+	'label_collection_filter'						 => __( 'Collection filter', 'tainacan' ),	
+	'label_collection_metadatum'					 => __( 'Collection metadatum', 'tainacan' ),	
+	'label_recover_from_trash'						 => __( 'Recover from trash', 'tainacan' ),	
+	'label_show_children_terms'						 => __( 'Show children terms', 'tainacan' ),	
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -426,6 +436,10 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_select_a_collection'                => __( 'Select a collection', 'tainacan' ),
 	'instruction_hover_a_filter_type_to_preview'     => __( 'Hover a filter type to preview', 'tainacan' ),
 	'instruction_never_show_message_again'     		 => __( 'Never show me this message again', 'tainacan' ),
+	'instruction_click_or_drag_filter_create'	     => __( 'Click or drag and drop to create a new filter', 'tainacan' ),
+	'instruction_click_or_drag_metadatum_create'     => __( 'Click or drag and drop to create a new metadatum', 'tainacan' ),
+	'instruction_drag_and_drop_filter_sort'	     	 => __( 'Drag and drop to change filter order', 'tainacan' ),
+	'instruction_drag_and_drop_metadatum_sort'     	 => __( 'Drag and drop to change metadatum order', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_error_invalid_date'                        => __( 'Invalid date', 'tainacan' ),

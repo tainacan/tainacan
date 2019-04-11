@@ -106,7 +106,16 @@
                             </span>  
                             <span 
                                     v-if="item.document != '' && item.document_type != 'empty'"
-                                    class="icon has-text-success">
+                                    class="icon has-text-success"
+                                    v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
+                                        content: $i18n.get('label_document_uploaded'),
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }">
                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approvedcircle" />
                             </span>  
                         </div>   

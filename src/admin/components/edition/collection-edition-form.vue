@@ -68,7 +68,13 @@
                                         id="button-edit-thumbnail" 
                                         :aria-label="$i18n.get('label_button_edit_thumb')"
                                         @click.prevent="thumbnailMediaFrame.openFrame($event)">
-                                    <span class="icon">
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('edit'),
+                                                autoHide: true,
+                                                placement: 'bottom'
+                                            }"
+                                            class="icon">
                                         <i class="tainacan-icon tainacan-icon-edit"/>
                                     </span>
                                 </a>
@@ -77,7 +83,13 @@
                                         id="button-delete-header-image" 
                                         :aria-label="$i18n.get('label_button_delete_thumb')" 
                                         @click="deleteThumbnail()">
-                                    <span class="icon">
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('delete'),
+                                                autoHide: true,
+                                                placement: 'bottom'
+                                            }"
+                                            class="icon">
                                         <i class="tainacan-icon tainacan-icon-delete"/>
                                     </span>
                                 </a>
@@ -125,7 +137,13 @@
                                 <a 
                                         target="_blank"
                                         @click.prevent="removeCoverPage()">
-                                    <span class="icon is-small">
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('remove_value'),
+                                                autoHide: true,
+                                                placement: 'bottom'
+                                            }"
+                                            class="icon is-small">
                                         <i class="tainacan-icon tainacan-icon-close"/>
                                     </span>
                                 </a>
@@ -137,7 +155,13 @@
                             <a 
                                     target="_blank" 
                                     :href="coverPage.link">
-                                <span class="icon is-small">
+                                <span 
+                                        v-tooltip="{
+                                            content: $i18n.get('see'),
+                                            autoHide: true,
+                                            placement: 'bottom'
+                                        }"
+                                        class="icon is-small">
                                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
                                 </span>
                             </a>
@@ -145,7 +169,13 @@
                             <a 
                                     target="blank" 
                                     :href="coverPageEditPath">
-                                <span class="icon is-small">
+                                <span 
+                                        v-tooltip="{
+                                            content: $i18n.get('edit'),
+                                            autoHide: true,
+                                            placement: 'bottom'
+                                        }"
+                                        class="icon is-small">
                                     <i class="tainacan-icon tainacan-icon-edit"/>
                                 </span>
                             </a>
@@ -298,7 +328,13 @@
                                         id="button-edit-header-image" 
                                         :aria-label="$i18n.get('label_button_edit_header_image')"
                                         @click="headerImageMediaFrame.openFrame($event)">
-                                    <span class="icon">
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('edit'),
+                                                autoHide: true,
+                                                placement: 'bottom'
+                                            }"
+                                            class="icon">
                                         <i class="tainacan-icon tainacan-icon-edit"/>
                                     </span>
                                 </a>
@@ -307,7 +343,13 @@
                                         id="button-delete-header-image" 
                                         :aria-label="$i18n.get('label_button_delete_thumb')" 
                                         @click="deleteHeaderImage()">
-                                    <span class="icon">
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('delete'),
+                                                autoHide: true,
+                                                placement: 'bottom'
+                                            }"
+                                            class="icon">
                                         <i class="tainacan-icon tainacan-icon-delete"/>
                                     </span>
                                 </a>
