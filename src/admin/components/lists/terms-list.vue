@@ -19,6 +19,7 @@
                         v-tooltip="{
                             content: $i18n.get('label_sort_ascending'),
                             autoHide: true,
+                            classes: ['tooltip', 'repository-tooltip'],
                             placement: 'bottom'
                         }"
                         class="icon gray-icon">
@@ -33,6 +34,7 @@
                         v-tooltip="{
                             content: $i18n.get('label_sort_descending'),
                             autoHide: true,
+                            classes: ['tooltip', 'repository-tooltip'],
                             placement: 'bottom'
                         }"
                         class="icon gray-icon">

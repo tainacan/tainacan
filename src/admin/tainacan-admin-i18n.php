@@ -396,6 +396,12 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_collection_metadatum'					 => __( 'Collection metadatum', 'tainacan' ),	
 	'label_recover_from_trash'						 => __( 'Recover from trash', 'tainacan' ),	
 	'label_show_children_terms'						 => __( 'Show children terms', 'tainacan' ),	
+	'label_begin_slide_transition'					 => __( 'Begin slide transition', 'tainacan' ),	
+	'label_pause_slide_transition'					 => __( 'Pause slide transition', 'tainacan' ),	
+	'label_next_group_slides'					 	 => __( 'Next group of slides', 'tainacan' ),		
+	'label_previous_group_slides'					 => __( 'Previous group of slides', 'tainacan' ),	
+	'label_plugin_home_page'					 	 => __( 'Plugin home page', 'tainacan' ),	
+	'label_wordpress_admin_page'					 => __( 'WordPress Admin Page', 'tainacan' ),	
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

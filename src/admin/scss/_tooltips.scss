@@ -3,6 +3,14 @@
 .b-tooltip::after {
     box-shadow: none;
 }
+.repository-tooltip {
+    .tooltip-inner {
+        background: $blue1 !important;
+    }
+    .tooltip-arrow {
+        border-color: $blue1 !important;
+    }
+}
 .tooltip {
     z-index: 999999999;
     display: block !important;

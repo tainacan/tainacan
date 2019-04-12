@@ -35,19 +35,33 @@
                         </option>
                     </b-select>
                     <button
-                            :disabled="taxonomies.length <= 0 || isLoading || order == 'asc'"
-                            class="button is-white is-small"
-                            @click="onChangeOrder('asc')">
-                        <span class="icon gray-icon is-small">
-                            <i class="tainacan-icon tainacan-icon-sortascending tainacan-icon-20px"/>
-                        </span>
-                    </button>
-                    <button
                             :disabled="taxonomies.length <= 0 || isLoading || order == 'desc'"
                             class="button is-white is-small"
                             @click="onChangeOrder('desc')">
-                        <span class="icon gray-icon is-small">
+                        <span
+                                v-tooltip="{
+                                    content: $i18n.get('label_sort_descending'),
+                                    autoHide: true,
+                                    placement: 'bottom',
+                                    classes: ['tooltip', 'repository-tooltip']
+                                }"
+                                class="icon gray-icon is-small">
                             <i class="tainacan-icon tainacan-icon-sortdescending tainacan-icon-20px"/>
+                        </span>
+                    </button>
+                    <button
+                            :disabled="taxonomies.length <= 0 || isLoading || order == 'asc'"
+                            class="button is-white is-small"
+                            @click="onChangeOrder('asc')">
+                        <span
+                                v-tooltip="{
+                                    content: $i18n.get('label_sort_ascending'),
+                                    autoHide: true,
+                                    placement: 'bottom',
+                                    classes: ['tooltip', 'repository-tooltip']
+                                }"
+                                class="icon gray-icon is-small">
+                            <i class="tainacan-icon tainacan-icon-sortascending tainacan-icon-20px"/>
                         </span>
                     </button>
                 </b-field>

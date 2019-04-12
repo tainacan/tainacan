@@ -18,7 +18,8 @@
                         v-tooltip="{
                             content: $i18n.get('label_shrink_menu'),
                             autoHide: true,
-                            placement: 'auto-end'
+                            placement: 'auto-end',
+                            classes: ['tooltip', 'repository-tooltip']     
                         }"
                         class="icon">
                     <i 

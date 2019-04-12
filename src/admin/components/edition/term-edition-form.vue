@@ -63,6 +63,7 @@
                                         v-tooltip="{
                                             content: $i18n.get('edit'),
                                             autoHide: true,
+                                            classes: ['tooltip', 'repository-tooltip'],
                                             placement: 'bottom'
                                         }"
                                         class="icon is-small">
@@ -78,6 +79,7 @@
                                         v-tooltip="{
                                             content: $i18n.get('delete'),
                                             autoHide: true,
+                                            classes: ['tooltip', 'repository-tooltip'],
                                             placement: 'bottom'
                                         }"
                                         class="icon is-small">

@@ -1,14 +1,14 @@
 <template>
     <div>
         <span v-if="!showForm">
-                <a
-                        @click="toggleForm()"
-                        class="is-inline add-link">
-                    <span class="icon is-small">
-                        <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
-                    </span>
-                    &nbsp;{{ $i18n.get('label_new_term') }}</a>
-
+            <a
+                    @click="toggleForm()"
+                    class="is-inline add-link">
+                <span class="icon is-small">
+                    <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                </span>
+                &nbsp;{{ $i18n.get('label_new_term') }}
+            </a>
         </span>
         <transition name="appear">
             <section

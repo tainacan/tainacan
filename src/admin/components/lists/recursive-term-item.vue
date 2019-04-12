@@ -19,6 +19,7 @@
                 v-tooltip="{
                     content: $i18n.get('label_show_children_terms'),
                     autoHide: true,
+                    classes: ['tooltip', 'repository-tooltip'],
                     placement: 'bottom'
                 }"
                 class="children-dropdown icon">
@@ -56,6 +57,7 @@
                         v-tooltip="{
                             content: $i18n.get('label_new_child'),
                             autoHide: true,
+                            classes: ['tooltip', 'repository-tooltip'],
                             placement: 'bottom'
                         }"
                         class="icon">
@@ -68,6 +70,7 @@
                         v-tooltip="{
                             content: $i18n.get('edit'),
                             autoHide: true,
+                            classes: ['tooltip', 'repository-tooltip'],
                             placement: 'bottom'
                         }"
                         class="icon">
@@ -79,6 +82,7 @@
                         v-tooltip="{
                             content: $i18n.get('delete'),
                             autoHide: true,
+                            classes: ['tooltip', 'repository-tooltip'],
                             placement: 'bottom'
                         }"
                         class="icon">

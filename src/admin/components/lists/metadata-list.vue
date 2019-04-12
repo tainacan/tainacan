@@ -65,6 +65,7 @@
                                             v-tooltip="{
                                                 content: $i18n.get('instruction_drag_and_drop_metadatum_sort'),
                                                 autoHide: true,
+                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                 placement: 'auto-start'
                                             }"
                                             class="icon grip-icon">
@@ -74,6 +75,7 @@
                                             v-tooltip="{
                                                 content: (metadatum.collection_id == 'default') || isRepositoryLevel ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
                                                 autoHide: true,
+                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                 placement: 'auto-start'
                                             }"
                                             class="icon icon-level-identifier">
@@ -137,6 +139,7 @@
                                                     v-tooltip="{
                                                         content: $i18n.get('edit'),
                                                         autoHide: true,
+                                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                         placement: 'auto-start'
                                                     }"
                                                     class="icon">
@@ -155,6 +158,7 @@
                                                     v-tooltip="{
                                                         content: $i18n.get('delete'),
                                                         autoHide: true,
+                                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                         placement: 'auto-start'
                                                     }"
                                                     class="icon">
@@ -200,6 +204,7 @@
                                             v-tooltip="{
                                                 content: $i18n.get('instruction_click_or_drag_metadatum_create'),
                                                 autoHide: true,
+                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                 placement: 'auto-start'
                                             }"   
                                             class="icon grip-icon">
@@ -320,6 +325,7 @@
                                                     v-tooltip="{
                                                         content: $i18n.get('edit'),
                                                         autoHide: true,
+                                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                         placement: 'auto-start'
                                                     }"
                                                     class="icon">
@@ -336,6 +342,7 @@
                                                     v-tooltip="{
                                                         content: $i18n.get('delete'),
                                                         autoHide: true,
+                                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                         placement: 'auto-start'
                                                     }"
                                                     class="icon">

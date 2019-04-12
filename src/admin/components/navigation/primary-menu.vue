@@ -19,6 +19,7 @@
                                     offset: 4,
                                     content: isMenuCompressed ? $i18n.getFrom('collections', 'name') : '',
                                     autoHide: true,
+                                    classes: ['tooltip', 'repository-tooltip'],
                                     placement: 'auto'
                                 }"
                                 class="icon">
@@ -37,6 +38,7 @@
                                     offset: 4,
                                     content: isMenuCompressed ? $i18n.getFrom('items', 'name') : '',
                                     autoHide: true,
+                                    classes: ['tooltip', 'repository-tooltip'],
                                     placement: 'auto'
                                 }"
                                 class="icon">
@@ -56,6 +58,7 @@
                                     offset: 4,
                                     content: isMenuCompressed ? $i18n.get('metadata') : '',
                                     autoHide: true,
+                                    classes: ['tooltip', 'repository-tooltip'],
                                     placement: 'auto'
                                 }"
                                 class="icon">
@@ -74,6 +77,7 @@
                                     offset: 4,
                                     content: isMenuCompressed ? $i18n.getFrom('filters', 'name') : '',
                                     autoHide: true,
+                                    classes: ['tooltip', 'repository-tooltip'],
                                     placement: 'auto'
                                 }"
                                 class="icon">
@@ -92,6 +96,7 @@
                                     offset: 4,
                                     content: isMenuCompressed ? $i18n.getFrom('taxonomies', 'name') : '',
                                     autoHide: true,
+                                    classes: ['tooltip', 'repository-tooltip'],
                                     placement: 'auto'
                                 }"
                                 class="icon">
@@ -110,6 +115,7 @@
                                     offset: 4,
                                     content: isMenuCompressed ? $i18n.get('activities') : '',
                                     autoHide: true,
+                                    classes: ['tooltip', 'repository-tooltip'],
                                     placement: 'auto'
                                 }"
                                 class="icon">
@@ -132,6 +138,7 @@
                                     offset: 4,
                                     content: isMenuCompressed ? $i18n.get('importers') : '',
                                     autoHide: true,
+                                    classes: ['tooltip', 'repository-tooltip'],
                                     placement: 'auto'
                                 }"
                                 class="icon">
@@ -152,6 +159,7 @@
                                     offset: 4,
                                     content: isMenuCompressed ? $i18n.get('exporters') : '',
                                     autoHide: true,
+                                    classes: ['tooltip', 'repository-tooltip'],
                                     placement: 'auto'
                                 }"
                                 class="icon">

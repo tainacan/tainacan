@@ -72,8 +72,8 @@
                         <span class="icon is-small">
                             <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
                         </span>
-                        &nbsp;{{ $i18n.get('label_add_value') }}</a>
-
+                        &nbsp;{{ $i18n.get('label_add_value') }}
+                    </a>
                 </div>
             </div>
         </transition>

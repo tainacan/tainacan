@@ -13,6 +13,7 @@
                             },
                             content: $i18n.get('label_filters_from') + ' ' + taxonomyFiltersCollectionNames[key] + ': ',
                             autoHide: false,
+                            classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                             placement: 'auto-start'
                         }" 
                         v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined"
@@ -56,6 +57,7 @@
                             },
                             content: $i18n.get('label_filters_from') + ' ' + taxonomyFiltersCollectionNames[key] + ': ',
                             autoHide: false,
+                            classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                             placement: 'auto-start'
                         }" 
                         v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined"
@@ -104,6 +106,7 @@
                             },
                             content: $i18n.get('label_filters_from') + ' ' + repositoryCollectionNames[key] + ': ',
                             autoHide: false,
+                            classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                             placement: 'auto-start'
                         }" 
                         v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined"
@@ -147,6 +150,7 @@
                             },
                             content: $i18n.get('label_filters_from') + ' ' + repositoryCollectionNames[key] + ': ',
                             autoHide: false,
+                            classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                             placement: 'auto-start'
                         }" 
                         v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined"
