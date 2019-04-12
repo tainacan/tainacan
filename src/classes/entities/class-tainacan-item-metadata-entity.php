@@ -313,7 +313,7 @@ class Item_Metadata_Entity extends Entity {
             return $this->has_value;
         
 		$value = $this->get_value();
-		$this->has_value = !empty($value);
+		$this->has_value = (is_array($value)) ? !empty(array_filter($value)) : !empty($value);
 		return $this->has_value;
     }
     
