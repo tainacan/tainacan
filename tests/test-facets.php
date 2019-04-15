@@ -495,7 +495,6 @@ class Facets extends TAINACAN_UnitApiTestCase {
 		$values = $this->get_values($values);
 		$this->assertEquals( 17, sizeof($values) ); // 2, 12, 20, 21, 22, 23 ... 32, 42...
 		
-		
 		// test search relationship 
 		$values = $this->repository->fetch_all_metadatum_values( $this->meta_relationship->get_id(), [
 			'collection_id' => $this->collection2->get_id(),
@@ -567,14 +566,62 @@ class Facets extends TAINACAN_UnitApiTestCase {
 		$this->assertContains( 'testeItem 32', $valuesParsed);
 		
 		// test search without filter
-		
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_relationship->get_id(), [
+			'search' => '2',
+			'items_filter' => false
+		] );
+		$values = $this->get_values($values);
+		$this->assertEquals( 13, sizeof($values) ); // 2,12,20-29,32
+
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_2_tax->get_id(), [
+			'count_items' => true,
+			'search' => 'collection',
+			'items_filter' => false
+		] );
+		$values = $this->get_values($values);
+		$this->assertEquals( 2, sizeof($values) );
+
+		$valuesParsed = array_map(function($el) {
+			$this->assertEquals( 20, $el['total_items'] );
+			return $el['label'];
+		}, $values);
+
+		$this->assertContains( 'Term for collection 1', $valuesParsed);
+		$this->assertContains( 'Term for collection 2', $valuesParsed);
 		
 		// test search relationship  without filter
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_relationship->get_id(), [
+			'search' => 'testeItem 1',
+			'items_filter' => false
+		] );
+		$values = $this->get_values($values);
+		$this->assertEquals( 10, sizeof($values) );
 		
-		// test offset normal 
+		// test offset normal
+		$values_p1 = $this->repository->fetch_all_metadatum_values( $this->metadatum_repo->get_id(), [
+			'number' => 10,
+			'offset' => 0,
+			'items_filter' => false
+		] );
+		$values_p1 = $this->get_values($values_p1);
+		$values_p2 = $this->repository->fetch_all_metadatum_values( $this->metadatum_repo->get_id(), [
+			'number' => 10,
+			'offset' => 10,
+			'items_filter' => false
+		] );
+		$values_p2 = $this->get_values($values_p2);
+		$values_p3 = $this->repository->fetch_all_metadatum_values( $this->metadatum_repo->get_id(), [
+			'number' => 10,
+			'offset' => 20,
+			'items_filter' => false
+		] );
+		$values_p3 = $this->get_values($values_p3);
 		
+		$this->assertEquals($values_p1[9]['label'], 'Value 18');
+		$this->assertEquals($values_p2[9]['label'], 'Value 27');
+		$this->assertEquals($values_p3[9]['label'], 'Value 36');
 		
-		// test include normal 
+		// test include normal
 		
 		
 		// test count items normal 
