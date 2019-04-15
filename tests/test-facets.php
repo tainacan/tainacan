@@ -295,15 +295,56 @@ class Facets extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals( 80, sizeof($values) );
 		
 		// test defaults with filter 
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_1_tax->get_id(), [
+			'items_filter' => [
+				'meta_query' => [
+					[
+						'key' => $this->metadatum_repo->get_id(),
+						'value' => ['Value 1', 'Value 10', 'Value 20', 'Value 30', 'Value 40', 'Value 50', 'Value 60', 'Value 70', 'Value 80']
+					]
+				]
+			]
+		]);
+		$values = $this->get_values($values);
+		$this->assertEquals( 3, sizeof($values) );
+
+		// test defaults 1 collection with filter
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_1_tax->get_id(), [
+			'collection_id' => $this->collection1->get_id(),
+			'items_filter' => [
+				'meta_query' => [
+					[
+						'key' => $this->metadatum_repo->get_id(),
+						'value' => ['Value 1', 'Value 10', 'Value 20', 'Value 30', 'Value 40', 'Value 50', 'Value 60', 'Value 70', 'Value 80']
+					]
+				]
+			]
+		]);
+		$values = $this->get_values($values);
+		$this->assertEquals( 2, sizeof($values) );
 		
 		// test defaults 1 collection 
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_1_tax->get_id(), [
+			'collection_id' => $this->collection1->get_id()
+		]);
+		$values = $this->get_values($values);
+		$this->assertEquals( 2, sizeof($values) );
 		
 		// test default text metadata 
-		
-		
-		
+		$values = $this->repository->fetch_all_metadatum_values( $this->metadatum_text->get_id());
+		$values = $this->get_values($values);
+		$this->assertEquals( 2, sizeof($values) );
+
 		// test default relationship 
-		
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_relationship->get_id());
+		$values = $this->get_values($values);
+		$this->assertEquals( 40, sizeof($values) );
+
+		// test default metadatum repo 
+		$values = $this->repository->fetch_all_metadatum_values( $this->metadatum_repo->get_id());
+		$values = $this->get_values($values);
+		$this->assertEquals( 80, sizeof($values) );
+
 		// test defaults 1 collection with filter
 		$values = $this->repository->fetch_all_metadatum_values( $this->metadatum_repo->get_id(), [
 			'collection_id' => $this->collection1->get_id(),
@@ -318,10 +359,9 @@ class Facets extends TAINACAN_UnitApiTestCase {
 		] );
 		$values = $this->get_values($values);
 		$this->assertEquals( 20, sizeof($values) );
-		
+
 		// test default text metadata with filter 
 		$values = $this->repository->fetch_all_metadatum_values( $this->metadatum_text->get_id(), [
-			'collection_id' => $this->collection1->get_id(),
 			'count_items' => true,
 			'items_filter' => [
 				'meta_query' => [
@@ -336,10 +376,8 @@ class Facets extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals( 2, sizeof($values) );
 		$this->assertEquals( 4, $values[0]['total_items']);
 		$this->assertEquals( 2, $values[1]['total_items']);
-		
 
 		$values = $this->repository->fetch_all_metadatum_values( $this->metadatum_text->get_id(), [
-			'collection_id' => $this->collection1->get_id(),
 			'count_items' => true,
 			'items_filter' => [
 				'tax_query' => [
@@ -352,13 +390,11 @@ class Facets extends TAINACAN_UnitApiTestCase {
 			]
 		] );
 		$values = $this->get_values($values);
-		
 		$this->assertEquals( 2, sizeof($values) );
 		$this->assertEquals(10, $values[0]['total_items']);
 		$this->assertEquals(10, $values[1]['total_items']);
 
 		$values = $this->repository->fetch_all_metadatum_values( $this->metadatum_text->get_id(), [
-			'collection_id' => $this->collection1->get_id(),
 			'count_items' => true,
 			'items_filter' => [
 				'tax_query' => [
@@ -371,21 +407,63 @@ class Facets extends TAINACAN_UnitApiTestCase {
 			]
 		] );
 		$values = $this->get_values($values);
-		
 		$this->assertEquals( 2, sizeof($values) );
 		$this->assertEquals(5, $values[0]['total_items']);
 		$this->assertEquals(5, $values[1]['total_items']);
 		
-		// test default taxonomy with filter 
+		// test default taxonomy with filter
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_2_tax->get_id(),[
+			//'collection_id' => $this->collection2->get_id(),
+			'items_filter' => [
+				'meta_query' => [
+					[
+						'key' => $this->meta_relationship->get_id(),
+						'value' => [$this->items_ids[1], $this->items_ids[10], $this->items_ids[20], $this->items_ids[30], $this->items_ids[40]]
+					]
+				]
+			]
+		]);
+		$values = $this->get_values($values);
+		$this->assertEquals( 2, sizeof($values) );
 		
 		// test default relationship with filter
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_relationship->get_id(), [
+			//'collection_id' => $this->collection2->get_id(),
+			'items_filter' => [
+				'tax_query' => [
+					[
+						'taxonomy'  => $this->taxonomy->get_db_identifier(),
+						'field' 		=> 'name',
+						'terms'     => ['Term for collection 2','Term for collection 2 child', 'Term for all child']
+					]
+				]
+			]
+		]);
+		$values = $this->get_values($values);
+		$this->assertEquals( 30, sizeof($values) );
+
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_relationship->get_id(), [
+			//'collection_id' => $this->collection2->get_id(),
+			'items_filter' => [
+				'tax_query' => [
+					[
+						'taxonomy'  => $this->taxonomy->get_db_identifier(),
+						'field' 		=> 'name',
+						'terms'     => ['Term for collection 2','Term for collection 2 child', 'Term for all child']
+					]
+				],
+				'meta_query' => [
+					[
+						'key' => $this->metadatum_repo->get_id(),
+						'value' => ['Value 80', 'Value 75', 'Value 70', 'Value 65', 'Value 60','Value 55','Value 50','Value 45','Value 40']
+					]
+				]
+			]
+		]);
+		$values = $this->get_values($values);
+		$this->assertEquals( 6, sizeof($values) );
 		
 		// test defaults 1 collection without filter
-		
-		
-		//
-		
-		
 		// test default text metadata without filter 
 		$values = $this->repository->fetch_all_metadatum_values( $this->metadatum_text->get_id(), [
 			'collection_id' => $this->collection1->get_id(),
