@@ -708,7 +708,7 @@
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata"
                         :items="items"
-                        :is-filters-menu-compressed="isFiltersMenuCompressed"
+                        :is-filters-menu-compressed="isFiltersMenuCompressed || openAdvancedSearch "
                         :total-items="totalItems"
                         :is-loading="isLoadingItems"
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>

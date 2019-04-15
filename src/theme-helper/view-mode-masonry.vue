@@ -88,8 +88,7 @@ export default {
     },
     data () {
         return {
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
-            isMounted: false
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png'
         }
     },
     methods: {
@@ -121,7 +120,7 @@ export default {
                 this.$refs.masonryWrapper.children[0] != undefined && 
                 this.$refs.masonryWrapper.children[0].children[0] != undefined && 
                 this.$refs.masonryWrapper.children[0].children[0].clientWidth != undefined)
-                this.itemColumnWidth = this.$refs.masonryWrapper.children[0].children[0].clientWidth;
+                    this.itemColumnWidth = this.$refs.masonryWrapper.children[0].children[0].clientWidth;
 
             return (imageHeight*this.itemColumnWidth)/imageWidth;
         },
@@ -130,12 +129,14 @@ export default {
         }, 500)
     },
     mounted() {
+
         if (this.$refs.masonryWrapper != undefined && 
             this.$refs.masonryWrapper.children[0] != undefined && 
             this.$refs.masonryWrapper.children[0].children[0] != undefined && 
-            this.$refs.masonryWrapper.children[0].children[0].clientWidth != undefined)
+            this.$refs.masonryWrapper.children[0].children[0].clientWidth != undefined) {
                 this.itemColumnWidth = this.$refs.masonryWrapper.children[0].children[0].clientWidth;
-        else
+                this.recalculateItemsHeight();
+            } else
                 this.itemColumnWidth = 202;
     },
     created() {

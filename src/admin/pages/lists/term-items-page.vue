@@ -123,7 +123,6 @@
                     :taxonomy="taxonomy"
                     :collapsed="collapseAll"
                     :is-repository-level="isRepositoryLevel"/>
-
             <section
                     v-else
                     class="is-grouped-centered section">
