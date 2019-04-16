@@ -24,6 +24,7 @@ class Youtube_Importer extends Importer {
      */
     public function __construct($attributes = array()) {
         parent::__construct($attributes);
+        // API KEY TEST: AIzaSyBmHM3AXUSCkwzXxyVZiBYfQ7j2XS7AI1Q
 
         $this->col_repo = \Tainacan\Repositories\Collections::get_instance();
         $this->items_repo = \Tainacan\Repositories\Items::get_instance();
@@ -38,6 +39,25 @@ class Youtube_Importer extends Importer {
     }
 
     /**
+     * @inheritdoc
+     */
+    public function get_source_metadata() {
+        $details = $this->identify_url(true);
+
+        if( $details ){
+            $api_key = $this->get_option('api_id');
+
+            $api_url = 'https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id='
+                . $details['id'] . '&key=' . $api_key;
+
+            var_dump(json_decode(file_get_contents($api_url)));
+
+        } else {
+            return [];
+        }
+    }
+
+    /**
      * Method implemented by the child importer class to proccess each item
      * @return int
      */
@@ -48,28 +68,74 @@ class Youtube_Importer extends Importer {
     /**
      * identify the type of url is send by user
      */
-    public function identify_url(){
+    public function identify_url( $showDetails = false ){
         $url = $this->get_url();
+        $details = [];
+        $matches = [];
 
         $preg_entities        = [
             'channel_id'  => '\/channel\/(([^\/])+?)$', //match YouTube channel ID from url
             'user'        => '\/user\/(([^\/])+?)$', //match YouTube user from url
             'playlist_id' => '\/playlist\?list=(([^\/])+?)$',  //match YouTube playlist ID from url
-            'v'           => '\'%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i\''
+            'v'           => '\/(?:[^/]+/.+/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i\''
         ];
 
 
         foreach ( $preg_entities as $key => $preg_entity ) {
             if ( preg_match( '/' . $preg_entity . '/', $url, $matches ) ) {
                 if ( isset( $matches[1] ) ) {
-                    return [
+                    $details = [
                         'type' => $key,
                         'id' => $matches[1],
+                    ];
+                    break;
+                }
+            } else {
+                if ( FALSE === strpos($url, 'youtu.be/') ) {
+                    parse_str(parse_url($url, PHP_URL_QUERY), $id);
+                    $id = isset($id['v']) ? $id['v'] : false;
+
+                    if(!$id)
+                        continue;
+
+                    $details = [
+                        'type' => 'v',
+                        'id' => $id,
+                    ];
+                    break;
+                } else if( strpos($url, 'youtu.be/') >= 0){
+                    $id = basename($url);
+                    $details = [
+                        'type' => 'v',
+                        'id' => $id,
                     ];
                 }
             }
         }
 
+        if( !$details ) {
+            $this->add_error_log('None url from youtube has found');
+            $this->abort();
+            return false;
+        } else {
+            $this->add_transient( 'url_type', $details['type'] );
+            $this->add_transient( 'youtube_id', $details['id'] );
+            return ( !$showDetails ) ? false : $details;
+        }
+
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function get_source_number_of_items() {
+        $type = $this->get_transient('url_type');
+
+        if( $type === 'v'){
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
 
