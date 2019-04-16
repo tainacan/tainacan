@@ -21,6 +21,8 @@ class Oaipmh_Importer extends Importer {
 
     protected $NAME_FOR_SETS = 'Sets';
     protected $tainacan_api_address, $wordpress_api_address, $actual_collection;
+    protected $has_sets = true;
+    protected $items_per_page = 100;
 
     /**
      * tainacan old importer construct
@@ -54,7 +56,7 @@ class Oaipmh_Importer extends Importer {
 
         if( $index === 0 ){
 
-            if( $collection_id['source_id'] !== 'sets' ){
+            if( $collection_id['source_id'] !== 'sets' && $this->has_sets ){
                 $info = $this->requester( $this->get_url() . "?verb=ListRecords&metadataPrefix=oai_dc&set=" . $collection_id['source_id'] );
                 $this->add_log('fetching ' . $this->get_url() . "?verb=ListRecords&metadataPrefix=oai_dc&set=" . $collection_id['source_id']);
             } else  {
@@ -83,6 +85,26 @@ class Oaipmh_Importer extends Importer {
                 if ($resumptionToken) {
                     $this->add_transient('resumptionToken',(string) $resumptionToken);
                 }
+
+                // if there is no total in resumption token and exists cursos
+                // it will change dynamic the total of items
+
+                $resumptionToken_attributes = $xml->ListRecords->resumptionToken->attributes();
+
+                $real_total = $this->get_transient('total_general');
+
+//                $this->add_log('real total '.$real_total);
+//                foreach ($resumptionToken_attributes as $tag => $attribute) {
+//                    if ($tag == 'cursor' && $real_total == ( (string) $attribute ) ) {
+//
+//                        $real_total = intval($real_total) + intval(( (string) $attribute ));
+//                        $this->add_log('real total after '. $real_total);
+//                        $current_collection = $this->get_current_collection();
+//                        $current_collection['total_items'] = ceil( $real_total / $this->items_per_page );
+//                        $this->set_current_collection( $current_collection );
+//                        break;
+//                    }
+//                }
             }
 
         } catch (Exception $e) {
@@ -166,7 +188,7 @@ class Oaipmh_Importer extends Importer {
                     $this->add_collection([
                         'id' => $collection->get_id(),
                         'mapping' => $metadata_map,
-                        'total_items' =>ceil( $total / 100 ),
+                        'total_items' => ceil( $total / $this->items_per_page ),
                         'source_id' => $setSpec,
                     ]);
                 }
@@ -201,7 +223,7 @@ class Oaipmh_Importer extends Importer {
                         $this->add_collection([
                             'id' => $collection->get_id(),
                             'mapping' => $metadata_map,
-                            'total_items' =>ceil( $total / 100 ),
+                            'total_items' =>ceil( $total / $this->items_per_page ),
                             'source_id' => 'sets',
                             'metadatum_id' => $metadatum_set_id
                         ]);
@@ -226,7 +248,22 @@ class Oaipmh_Importer extends Importer {
             }
 
         }
+        // if there is no set
+        else {
+            $collection = $this->create_collection( 'set', $this->getRepoName() );
+            $metadata_map = $this->create_collection_metadata($collection);
+            $total = intval( $this->get_total_items_from_source(false) );
+            $this->add_log('total in collection: ' . $total);
+            $this->add_log('collection id ' . (string) $collection->get_id());
 
+            $this->add_collection([
+                'id' => $collection->get_id(),
+                'mapping' => $metadata_map,
+                'total_items' =>ceil( $total / $this->items_per_page ),
+            ]);
+
+            $this->has_sets = false;
+        }
 
         $resumptionToken = $this->get_transient('collection_resump');
         if( $resumptionToken !== ''){
@@ -290,7 +327,6 @@ class Oaipmh_Importer extends Importer {
 
                 foreach ( $record as $index => $value ){
 
-                    $this->add_log( 'inserting metadata ' . $index );
                     if( in_array( $index, $map ) && $insertedItem->get_id()){
                         $metadatum_id = array_search($index, $map );
                         $newMetadatum = new Entities\Metadatum($metadatum_id);
@@ -303,7 +339,7 @@ class Oaipmh_Importer extends Importer {
 
                         if( $item_metadata->validate() ){
                             $inserted = $this->item_metadata_repo->insert( $item_metadata );
-                            $this->add_log('Item Metadata inserted for item  ' .$item->get_title() . ' and metadata ' . $newMetadatum->get_name() );
+                            // $this->add_log('Item Metadata inserted for item  ' .$item->get_title() . ' and metadata ' . $newMetadatum->get_name() );
                         } else {
                             $this->add_log( 'Error inserting metadatum' . $newMetadatum->get_name() );
                             $this->add_log( 'Values' . $value );
@@ -365,15 +401,27 @@ class Oaipmh_Importer extends Importer {
                 $cont = 0;
                 foreach ($xml->ListRecords->record as $record) $cont++;
 
+                $this->add_transient('total_general', (string) $cont );
                 return $cont;
             } elseif ( isset($xml->ListRecords) && isset($xml->ListRecords->resumptionToken) ){
 
                 $resumptionToken_attributes = $xml->ListRecords->resumptionToken->attributes();
                 foreach ($resumptionToken_attributes as $tag => $attribute) {
+                    if ($tag == 'cursor') {
+                        $this->items_per_page = $attribute;
+                    }
+                }
+
+                foreach ($resumptionToken_attributes as $tag => $attribute) {
                     if ($tag == 'completeListSize') {
+                        $this->add_transient('total_general', (string) $attribute);
                         return (string) $attribute;
                     }
                 }
+
+                // if the total is not found
+                $this->add_transient('total_general', (string) $this->items_per_page);
+                return $this->items_per_page;
             }
         } catch (Exception $e) {
             $this->add_log('ERROR');
@@ -697,7 +745,7 @@ class Oaipmh_Importer extends Importer {
             try {
                 $xml = new \SimpleXMLElement($info['body']);
 
-                if( isset($xml->Identify) && isset($xml->Identify->repositoryName) ){
+                if( isset($xml->Identify) && isset($xml->Identify->repositoryName) && !empty($xml->Identify->repositoryName) ){
                     return (string) $xml->Identify->repositoryName;
                 }
             } catch (Exception $e) {

@@ -101,7 +101,7 @@ class System_Check {
 		if ( $time < $min ) {
 			$class = 'error';
 			$text =  sprintf(
-				__('Your current configuratino is %ds. This is too little. Please increase it to at least 30s', 'tainacan'),
+				__('Your current configuration is %ds. This is too little. Please increase it to at least 30s', 'tainacan'),
 				$time
 			);
 		} elseif ( $time < $rec ) {
@@ -113,7 +113,7 @@ class System_Check {
 		} else {
 			$class = 'good';
 			$text =  sprintf(
-				__('Your current configuratino is %ds. This is excellent.', 'tainacan'),
+				__('Your current configuration is %ds. This is excellent.', 'tainacan'),
 				$time
 			);
 		}

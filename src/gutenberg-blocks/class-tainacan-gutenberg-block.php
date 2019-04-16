@@ -26,10 +26,6 @@ function tainacan_blocks_add_gutenberg_blocks_actions() {
 
 function tainacan_blocks_register_categories($categories, $post){
 
-	if ( $post->post_type !== 'post' ) {
-		return $categories;
-	}
-
 	return array_merge(
 		$categories,
 		array(

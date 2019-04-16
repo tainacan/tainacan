@@ -62,7 +62,8 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 	        array(
 	        	'name'         => 'genero',
 		        'description'  => 'tipos de musica',
-		        'allow_insert' => 'yes'
+		        'allow_insert' => 'yes',
+				'status' => 'publish'
 	        ),
 	        true
 		);
@@ -1214,7 +1215,8 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 	        array(
 	        	'name'         => 'tax2',
 		        'description'  => 'tipos de musica',
-		        'allow_insert' => 'yes'
+		        'allow_insert' => 'yes',
+				'status' => 'publish'
 	        ),
 	        true
 		);

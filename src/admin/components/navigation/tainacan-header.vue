@@ -221,11 +221,12 @@
                 margin-right: 28px;
                 .control {
                     .search-header {
-                        border: 1px solid $gray2 !important;
+                        border: 1px solid $gray2;
                         height: 28px;
                         transition: width linear 0.15s;
                         -webkit-transition: width linear 0.15s;
                         width: 220px;
+                        font-size: 0.75rem;
                     }
                     .search-header:focus, .search-header:active {
                         width: 372px !important;

@@ -7,6 +7,8 @@ namespace Tainacan;
 class Media {
 	
 	private static $instance = null;
+	private static $file_handle = null;
+	private static $file_name = null;
 
     public static function get_instance() {
         if(!isset(self::$instance)) {
@@ -29,18 +31,13 @@ class Media {
 	 * @return Int|false    Attachment ID. False on failure
 	 */
 	public function insert_attachment_from_url($url, $post_id = null) {
-		if( !class_exists( '\WP_Http' ) )
-			include_once( ABSPATH . WPINC . '/class-http.php' );
+		$filename = $this->save_remote_file($url);
 
-		$http = new \WP_Http();
-		
-		$response = $http->request( $url, ['sslverify' => false] );
-		
-		if( !is_array($response) || !isset($response['response']) || $response['response']['code'] != 200 ) {
-			return false;
-		}
-		
-		return $this->insert_attachment_from_blob($response['body'], basename($url), $post_id);
+        if( !file_exists($filename) ) {
+            return false;
+        }
+
+		return $this->insert_attachment_from_blob(fopen($filename,'r'), basename($url), $post_id);
 		
 	}
 
@@ -57,11 +54,62 @@ class Media {
 			return false;
 		}
 		
-		return $this->insert_attachment_from_blob(file_get_contents($filename), basename($filename), $post_id);
+		return $this->insert_attachment_from_blob(fopen($filename,'r'), basename($filename), $post_id);
 		
 	}
-	
-	/**
+
+    /**
+     * Avoid memory overflow problems with large files (Exceeded maximum memory limit of PHP)
+     *
+     * @param $url
+     * @return string the file path
+     */
+    public function save_remote_file($url) {
+
+        set_time_limit(0);
+
+        $filename = tempnam(sys_get_temp_dir(), basename($url));
+
+        # Open the file for writing...
+        self::$file_handle = fopen($filename, 'w+');
+        self::$file_name = $filename;
+
+        $callback = function ($ch, $str)  {
+            $len = fwrite(self::$file_handle, $str);
+            return $len;
+        };
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_FILE, self::$file_handle);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); # optional
+        curl_setopt($ch, CURLOPT_TIMEOUT, -1); # optional: -1 = unlimited, 3600 = 1 hour
+        curl_setopt($ch, CURLOPT_VERBOSE, false); # Set to true to see all the innards
+
+        # Only if you need to bypass SSL certificate validation
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        # Assign a callback function to the CURL Write-Function
+        curl_setopt($ch, CURLOPT_WRITEFUNCTION, $callback);
+
+        # Exceute the download - note we DO NOT put the result into a variable!
+        curl_exec($ch);
+
+        # Close CURL
+        curl_close($ch);
+
+        # Close the file pointer
+        fclose(self::$file_handle);
+
+        return $filename;
+    }
+
+
+    /**
 	 * Insert an attachment from an URL address.
 	 *
 	 * @param  blob $blob bitstream of the attachment
@@ -75,6 +123,13 @@ class Media {
 		if( !empty( $upload['error'] ) ) {
 			return false;
 		}
+
+		if( @filesize($upload['file']) == 0 && is_resource($blob) ){
+            $file_wordpress_stream = fopen( $upload['file'], 'r+');
+            stream_copy_to_stream($blob, $file_wordpress_stream);
+
+            if( file_exists(self::$file_name) ) unlink(self::$file_name);
+        }
 
 		$file_path = $upload['file'];
 		$file_name = basename( $file_path );

@@ -35,6 +35,7 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 			array(
 				'name'   => 'tax_test',
 				'collections' => [$collection],
+				'status' => 'publish'
 			),
 			true
 		);
@@ -556,6 +557,7 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 			'taxonomy',
 			array(
 				'name'   => 'tax_test',
+				'status' => 'publish'
 			),
 			true
 		);
@@ -604,5 +606,51 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 		
 		
     }
+
+	function test_validate_private_taxonomy() {
+		
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+        $Tainacan_ItemMetadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+        
+        $collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test',
+			),
+			true
+		);
+		
+		$tax = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_test',
+				'status' => 'private'
+			),
+			true
+		);
+		
+		$meta = new \Tainacan\Entities\Metadatum();
+		
+		$meta->set_name('test meta');
+		$meta->set_status('publish');
+		$meta->set_metadata_type('Tainacan\Metadata_Types\Taxonomy');
+		$meta->set_collection($collection);
+		$meta->set_metadata_type_options([
+			'taxonomy_id' => $tax->get_id(),
+			'allow_new_terms' => true
+		]);
+		
+		$this->assertFalse($meta->validate(), 'Metadatum should not validate because taxonomy is private');
+		
+		$meta->set_status('private');
+		
+		$this->assertTrue($meta->validate(), 'Metadatum should validate because it is private now');
+		
+		
+		
+		
+		
+	}
     
 }
