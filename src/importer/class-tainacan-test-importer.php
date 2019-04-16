@@ -509,7 +509,8 @@ class Test_Importer extends Importer {
 				'type' => 'Tainacan\Metadata_Types\Relationship',
 				'options' => [
 				'collection_id' => $col2->get_id(),
-				'repeated' => 'yes'
+				'repeated' => 'yes',
+				'search' => [ $col2_core_title->get_id() ]
 				]
 			], $col1 );
 
