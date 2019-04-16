@@ -380,16 +380,12 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 
         $this->assertFalse($item_metadata->has_value());
 
-        $item_metadata_text->set_value([
-            ''
+		$item_metadata_text->set_value([
+            'has_value'
         ]);
 
         $item_metadata_text->validate();
         $item_metadata_text = $Tainacan_Item_Metadata->insert($item_metadata_text);
-
-        $item_metadata_text->set_value([
-            'has_value'
-        ]);
 
         $this->assertTrue($item_metadata_text->has_value());
     }
