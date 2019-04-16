@@ -622,7 +622,27 @@ class Facets extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals($values_p3[9]['label'], 'Value 36');
 		
 		// test include normal
-		
+		$values = $this->repository->fetch_all_metadatum_values( $this->metadatum_repo->get_id(), [
+			'include' => ['Value 1','Value 2','Value 55','Value 77'],
+			'number' => 10,
+			'offset' => 0,
+			'items_filter' => [
+				'meta_query' => [
+					[
+						'key' => $this->metadatum_text->get_id(),
+						'value' => ['even']
+					]
+				]
+			]
+		] );
+		$values = $this->get_values($values);
+		$valuesParsed = array_map(function($el) {
+			return $el['label'];
+		}, $values);
+		$this->assertContains( 'Value 1', $valuesParsed);
+		$this->assertContains( 'Value 2', $valuesParsed);
+		$this->assertContains( 'Value 55', $valuesParsed);
+		$this->assertContains( 'Value 77', $valuesParsed);
 		
 		// test count items normal 
 		
