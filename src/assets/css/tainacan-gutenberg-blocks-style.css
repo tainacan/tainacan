@@ -27,14 +27,15 @@
       .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid li.term-list-item a,
       .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid li.term-list-item a {
         color: #454647;
-        font-weight: bold; }
+        font-weight: bold;
+        line-height: normal; }
       .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid li.term-list-item img,
       .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid li.term-list-item img {
         height: auto;
         width: 185px;
         min-width: 185px;
         padding: 0px;
-        margin-bottom: 10px; }
+        margin-bottom: 0.5rem; }
       .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid li.term-list-item a.term-without-name span,
       .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid li.term-list-item a.term-without-name span {
         display: none; }
@@ -176,13 +177,14 @@
       .wp-block-tainacan-items-list ul.items-list-edit.items-layout-grid li.item-list-item a {
         color: #454647;
         font-weight: bold;
-        line-height: 2rem; }
+        line-height: normal; }
       .wp-block-tainacan-items-list ul.items-list.items-layout-grid li.item-list-item img,
       .wp-block-tainacan-items-list ul.items-list-edit.items-layout-grid li.item-list-item img {
         height: auto;
         width: 185px;
         min-width: 185px;
-        padding: 0px; }
+        padding: 0px;
+        margin-bottom: 0.5rem; }
       .wp-block-tainacan-items-list ul.items-list.items-layout-grid li.item-list-item a.item-without-title span,
       .wp-block-tainacan-items-list ul.items-list-edit.items-layout-grid li.item-list-item a.item-without-title span {
         display: none; }
@@ -309,13 +311,14 @@
       .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item a {
         color: #454647;
         font-weight: bold;
-        line-height: 2rem; }
+        line-height: normal; }
       .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item img,
       .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item img {
         height: auto;
         width: 185px;
         min-width: 185px;
-        padding: 0px; }
+        padding: 0px;
+        margin-bottom: 0.5rem; }
       .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item a.collection-without-name span,
       .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item a.collection-without-name span {
         display: none; }
