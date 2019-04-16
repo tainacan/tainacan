@@ -230,7 +230,8 @@
 
     .multiple-inputs {
         display: flex;
-        align-items: center;
+        margin: 0.75rem 0;
+        flex-direction: column;
         justify-content: space-between;
     }
 
