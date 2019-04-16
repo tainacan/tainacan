@@ -53,7 +53,19 @@ class Item_Metadata_Entity extends Entity {
 	 * @return string 
 	 */
 	public function get_multivalue_prefix() {
-		return apply_filters('tainacan-item-metadata-get-multivalue-prefix', '', $this);
+		$metadatum = $this->get_metadatum();
+		$value = '';
+		if (is_object($metadatum)) {
+			$fto = $metadatum->get_metadata_type_object();
+			if (is_object($fto)) {
+				
+				if ( method_exists($fto, 'get_multivalue_prefix') ) {
+					$value = $fto->get_multivalue_prefix();
+				}
+				
+			}
+		}
+		return apply_filters('tainacan-item-metadata-get-multivalue-prefix', $value, $this);
 	}
 	
 	/**
@@ -63,7 +75,19 @@ class Item_Metadata_Entity extends Entity {
 	 * @return string 
 	 */
 	public function get_multivalue_suffix() {
-		return apply_filters('tainacan-item-metadata-get-multivalue-suffix', '', $this);
+		$metadatum = $this->get_metadatum();
+		$value = '';
+		if (is_object($metadatum)) {
+			$fto = $metadatum->get_metadata_type_object();
+			if (is_object($fto)) {
+				
+				if ( method_exists($fto, 'get_multivalue_suffix') ) {
+					$value = $fto->get_multivalue_suffix();
+				}
+				
+			}
+		}
+		return apply_filters('tainacan-item-metadata-get-multivalue-suffix', $value, $this);
 	}
 	
 	/**
@@ -73,7 +97,19 @@ class Item_Metadata_Entity extends Entity {
 	 * @return string 
 	 */
 	public function get_multivalue_separator() {
-		return apply_filters('tainacan-item-metadata-get-multivalue-separator', ', ', $this);
+		$metadatum = $this->get_metadatum();
+		$value = ', ';
+		if (is_object($metadatum)) {
+			$fto = $metadatum->get_metadata_type_object();
+			if (is_object($fto)) {
+				
+				if ( method_exists($fto, 'get_multivalue_separator') ) {
+					$value = $fto->get_multivalue_separator();
+				}
+				
+			}
+		}
+		return apply_filters('tainacan-item-metadata-get-multivalue-separator', $value, $this);
 	}
 	
 	/**

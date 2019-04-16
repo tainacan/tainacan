@@ -39,6 +39,18 @@ class Textarea extends Metadata_Type {
                         value=\''.json_encode( $itemMetadata->get_value() ).'\'  
                         name="'.$itemMetadata->get_metadatum()->get_name().'"></tainacan-textarea>';
     }
+	
+	public function get_multivalue_prefix() {
+		return '<p>';
+	}
+	
+	public function get_multivalue_separator() {
+		return '';
+	}
+	
+	public function get_multivalue_suffix() {
+		return '</p>';
+	}
 
 	/**
 	 * Get the value as a HTML string with links and breakline tag.
