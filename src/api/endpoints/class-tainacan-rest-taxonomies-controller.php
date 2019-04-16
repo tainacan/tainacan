@@ -122,16 +122,17 @@ class REST_Taxonomies_Controller extends REST_Controller {
 				$item_arr['collections_ids'] = [];
 				
 				$taxonomy = get_taxonomy( $item->get_db_identifier() );
-				foreach ($taxonomy->object_type as $slug) {
-					
-					$tax_collection = Repositories\Collections::get_instance()->fetch_by_db_identifier($slug);
-					if ( $tax_collection instanceof \Tainacan\Entities\Collection ) {
-						$item_arr['collections'][] = $tax_collection->_toArray();
-						$item_arr['collections_ids'][] = $tax_collection->get_id();
+				if (is_object($taxonomy) && isset($taxonomy->object_type) && is_array($taxonomy->object_type)) {
+					foreach ($taxonomy->object_type as $slug) {
+						
+						$tax_collection = Repositories\Collections::get_instance()->fetch_by_db_identifier($slug);
+						if ( $tax_collection instanceof \Tainacan\Entities\Collection ) {
+							$item_arr['collections'][] = $tax_collection->_toArray();
+							$item_arr['collections_ids'][] = $tax_collection->get_id();
+						}
+						
 					}
-					
 				}
-				
 				
 				
 				
