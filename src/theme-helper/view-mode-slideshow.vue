@@ -134,8 +134,15 @@
                     <button 
                             @click.stop.prevent="prevSlide()"
                             :style="{ visibility: (page > 1 && slideIndex <= 0) || slideIndex > 0 ? 'visible' : 'hidden' }"
-                            class="slide-control-arrow arrow-left">
-                        <span class="icon is-large">
+                            class="slide-control-arrow arrow-left"
+                            :aria-label="$i18n.get('previous')">
+                        <span
+                                v-tooltip="{
+                                    content: $i18n.get('previous'),
+                                    autoHide: true,
+                                    placement: 'auto'
+                                }"
+                                class="icon is-large">
                             <icon class="tainacan-icon tainacan-icon-48px tainacan-icon-previous"/>
                         </span> 
                     </button>
@@ -179,8 +186,15 @@
                     <button 
                             @click.stop.prevent="nextSlide()"
                             :style="{ visibility: (slideIndex < slideItems.length - 1) || page < totalPages ? 'visible' : 'hidden' }"
-                            class="slide-control-arrow arrow-right">
-                        <span class="icon is-large has-text-turoquoise5">
+                            class="slide-control-arrow arrow-right"
+                            :aria-label="$i18n.get('next')">
+                        <span
+                                v-tooltip="{
+                                    content: $i18n.get('next'),
+                                    autoHide: true,
+                                    placement: 'auto'
+                                }"
+                                class="icon is-large has-text-turoquoise5">
                             <icon class="tainacan-icon tainacan-icon-48px tainacan-icon-next"/>
                         </span>
                     </button>
@@ -198,7 +212,13 @@
                                 :disabled="(slideIndex == slideItems.length - 1 && page == totalPages)"
                                 class="play-button"
                                 @click.stop.prevent="isPlaying = !isPlaying">
-                            <span class="icon">
+                            <span 
+                                    v-tooltip="{
+                                        content: isPlaying ? $i18n.get('label_pause_slide_transition') : $i18n.get('label_begin_slide_transition'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i 
                                         :class="{ 'tainacan-icon-pausefill' : isPlaying, 'tainacan-icon-playfill' : !isPlaying }"
                                         class="has-text-secondary tainacan-icon tainacan-icon-30px"/>
@@ -248,16 +268,30 @@
                     <button 
                             @click.prevent="prevGroupOfSlides()"
                             :style="{ visibility: (page > 1 && slideIndex <= 0) || slideIndex > 0 ? 'visible' : 'hidden' }"
-                            class="slide-control-arrow slide-group-arrow arrow-left">
-                        <span class="icon is-medium has-text-white">
+                            class="slide-control-arrow slide-group-arrow arrow-left"
+                            :aria-label="$i18n.get('label_previous_group_slides')">
+                        <span
+                                v-tooltip="{
+                                    content: $i18n.get('label_previous_group_slides'),
+                                    autoHide: true,
+                                    placement: 'auto'
+                                }"
+                                class="icon is-medium has-text-white">
                             <icon class="tainacan-icon tainacan-icon-20px tainacan-icon-previous"/>
                         </span>
                     </button>
                     <button 
                             @click.prevent="nextGroupOfSlides()"
                             :style="{ visibility: (slideIndex < slideItems.length - 1) || page < totalPages ? 'visible' : 'hidden' }"
-                            class="slide-control-arrow slide-group-arrow arrow-right">
-                        <span class="icon is-medium has-text-white">
+                            class="slide-control-arrow slide-group-arrow arrow-right"
+                            :aria-label="$i18n.get('label_previous_group_slides')">
+                        <span 
+                                v-tooltip="{
+                                    content: $i18n.get('label_previous_group_slides'),
+                                    autoHide: true,
+                                    placement: 'auto'
+                                }"
+                                class="icon is-medium has-text-white">
                             <icon class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
                         </span>
                     </button>

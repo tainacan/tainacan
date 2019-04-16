@@ -184,7 +184,13 @@
                                 id="button-edit"   
                                 :aria-label="$i18n.getFrom('items','edit_item')" 
                                 @click.prevent.stop="goToItemEditPage(item)">
-                            <span class="icon">
+                            <span 
+                                    v-tooltip="{
+                                        content: $i18n.get('edit'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
                             </span>
                         </a>
@@ -192,7 +198,13 @@
                                 :aria-lavel="$i18n.get('label_button_untrash')"
                                 @click.prevent.stop="untrashOneItem(item.id)"
                                 v-if="isOnTrash">
-                            <span class="icon">
+                            <span 
+                                    v-tooltip="{
+                                        content: $i18n.get('label_recover_from_trash'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-undo"/>
                             </span>
                         </a>
@@ -201,7 +213,13 @@
                                 id="button-delete" 
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
-                            <span class="icon">
+                            <span
+                                    v-tooltip="{
+                                        content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i 
                                         :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                         class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
@@ -278,7 +296,13 @@
                                 id="button-edit"   
                                 :aria-label="$i18n.getFrom('items','edit_item')" 
                                 @click.prevent.stop="goToItemEditPage(item)">
-                            <span class="icon">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('edit'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
                             </span>
                         </a>
@@ -286,7 +310,13 @@
                                 :aria-lavel="$i18n.get('label_button_untrash')"
                                 @click.prevent.stop="untrashOneItem(item.id)"
                                 v-if="isOnTrash">
-                            <span class="icon">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('label_recover_from_trash'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-undo"/>
                             </span>
                         </a>
@@ -295,7 +325,13 @@
                                 id="button-delete" 
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
-                            <span class="icon">
+                            <span
+                                    v-tooltip="{
+                                        content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i 
                                         :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                         class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
@@ -358,7 +394,13 @@
                                 id="button-edit"   
                                 :aria-label="$i18n.getFrom('items','edit_item')" 
                                 @click.prevent.stop="goToItemEditPage(item)">
-                            <span class="icon">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('edit'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
                             </span>
                         </a>
@@ -366,7 +408,13 @@
                                 :aria-lavel="$i18n.get('label_button_untrash')"
                                 @click.prevent.stop="untrashOneItem(item.id)"
                                 v-if="isOnTrash">
-                            <span class="icon">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('label_recover_from_trash'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-undo"/>
                             </span>
                         </a>
@@ -375,7 +423,13 @@
                                 id="button-delete" 
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
-                            <span class="icon">
+                            <span
+                                    v-tooltip="{
+                                        content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i 
                                         :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                         class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
@@ -528,7 +582,13 @@
                                 id="button-edit"   
                                 :aria-label="$i18n.getFrom('items','edit_item')" 
                                 @click.prevent.stop="goToItemEditPage(item)">
-                            <span class="icon">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('edit'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
                             </span>
                         </a>
@@ -536,7 +596,13 @@
                                 :aria-lavel="$i18n.get('label_button_untrash')"
                                 @click.prevent.stop="untrashOneItem(item.id)"
                                 v-if="isOnTrash">
-                            <span class="icon">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('label_recover_from_trash'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-undo"/>
                             </span>
                         </a>
@@ -545,7 +611,13 @@
                                 id="button-delete" 
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
-                            <span class="icon">
+                            <span
+                                    v-tooltip="{
+                                        content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i 
                                         :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                         class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
@@ -749,7 +821,13 @@
                                         id="button-edit"   
                                         :aria-label="$i18n.getFrom('items','edit_item')" 
                                         @click.prevent.stop="goToItemEditPage(item)">
-                                    <span class="icon">
+                                    <span
+                                            v-tooltip="{
+                                                content: $i18n.get('edit'),
+                                                autoHide: true,
+                                                placement: 'auto'
+                                            }"
+                                            class="icon">
                                         <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
                                     </span>
                                 </a>
@@ -757,7 +835,13 @@
                                         :aria-lavel="$i18n.get('label_button_untrash')"
                                         @click.prevent.stop="untrashOneItem(item.id)"
                                         v-if="isOnTrash">
-                                    <span class="icon">
+                                    <span
+                                            v-tooltip="{
+                                                content: $i18n.get('label_recover_from_trash'),
+                                                autoHide: true,
+                                                placement: 'auto'
+                                            }"
+                                            class="icon">
                                         <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-undo"/>
                                     </span>
                                 </a>
@@ -766,7 +850,13 @@
                                         id="button-delete" 
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneItem(item.id)">
-                                    <span class="icon">
+                                    <span
+                                            v-tooltip="{
+                                                content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
+                                                autoHide: true,
+                                                placement: 'auto'
+                                            }"
+                                            class="icon">
                                     <i 
                                             :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                             class="has-text-secondary tainacan-icon tainacan-icon-20px"/>

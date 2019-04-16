@@ -297,8 +297,9 @@ class Item_Metadata extends Repository {
 		} elseif ( $metadata_type->get_primitive_type() == 'term' ) {
 
 			if ( is_numeric( $metadata_type->get_option( 'taxonomy_id' ) ) ) {
-				$taxonomy = new Entities\Taxonomy( $metadata_type->get_option( 'taxonomy_id' ) );
-				if ( $taxonomy ) {
+				//$taxonomy = new Entities\Taxonomy( $metadata_type->get_option( 'taxonomy_id' ) );
+				$taxonomy = Taxonomies::get_instance()->fetch( (int) $metadata_type->get_option( 'taxonomy_id' ) );
+				if ( $taxonomy instanceof Entities\Taxonomy && $taxonomy->can_read() ) {
 					$taxonomy_slug = $taxonomy->get_db_identifier();
 				} else {
 					return null;

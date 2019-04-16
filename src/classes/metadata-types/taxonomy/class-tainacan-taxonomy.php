@@ -117,6 +117,16 @@ class Taxonomy extends Metadata_Type {
 		
 		$Tainacan_Metadata = Metadata::get_instance();
 		
+		// Check taxonomy visibility 
+		$status = get_post_status( $this->get_option('taxonomy_id') );
+		$post_status_obj = get_post_status_object($status);
+		if ( ! $post_status_obj->public ) {
+			$meta_status_obj = get_post_status_object($metadatum->get_status());
+			if ( $meta_status_obj->public ) {
+				return ['taxonomy_id' => __('This metadatum can not be public because chosen taxonomy is not.', 'tainacan')];
+			}
+		}
+		
 		$taxonomy_metadata = $Tainacan_Metadata->fetch([
 			'collection_id' => $metadatum->get_collection_id(),
 			'metadata_type' => 'Tainacan\\Metadata_Types\\Taxonomy'

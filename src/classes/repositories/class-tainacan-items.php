@@ -227,7 +227,12 @@ class Items extends Repository {
 		}
 
 		if ( empty( $collections ) ) {
-			$collections = $Tainacan_Collections->fetch( [], 'OBJECT' );
+			$post_types = get_post_types();
+			$collections = array_map( function($el) use ($Tainacan_Collections) {
+				if ( $id = $Tainacan_Collections->get_id_by_db_identifier($el) ) {
+					return $id;
+				}
+			} , $post_types);
 		}
 
 		if ( is_numeric( $collections ) ) {

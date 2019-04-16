@@ -7,7 +7,14 @@
                 <router-link
                         tag="a"
                         to="/">
-                    <span class="icon">
+                    <span
+                            v-tooltip="{
+                                content: $i18n.get('label_plugin_home_page'),
+                                autoHide: true,
+                                placement: 'auto',
+                                classes: ['repository-header-tooltips']
+                            }"
+                            class="icon">
                         <i class="tainacan-icon tainacan-icon-home has-text-blue5"/>
                     </span>
                 </router-link>
@@ -85,7 +92,14 @@
             <button
                     @click="showProcesses = !showProcesses"
                     class="button is-small is-white level-item">
-                <span class="icon">
+                <span
+                        v-tooltip="{
+                            content: $i18n.get('processes'),
+                            autoHide: true,
+                            placement: 'auto',
+                            classes: ['repository-header-tooltips']
+                        }"
+                        class="icon">
                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-processes"/>
                 </span>
             </button>
@@ -95,7 +109,14 @@
             <a
                     class="level-item"
                     :href="wordpressAdmin">
-                <span class="icon">
+                <span
+                        v-tooltip="{
+                            content: $i18n.get('label_wordpress_admin_page'),
+                            autoHide: true,
+                            placement: 'auto',
+                            classes: ['repository-header-tooltips']
+                        }"
+                        class="icon">
                     <i class="tainacan-icon tainacan-icon-wordpress"/>
                 </span>
             </a>
@@ -162,6 +183,17 @@
 <style lang="scss" scoped>
 
     @import "../../scss/_variables.scss";
+
+    .repository-header-tooltips .tooltip-inner {
+        color: white;
+        background-color: $blue3;
+        font-size: 0.75rem;
+        font-weight: 400;
+        padding: 10px 14px;
+    }
+    .repository-header-tooltips .tooltip-arrow {
+        border-color: $blue3;
+    }
 
     // Tainacan Header
     #tainacan-header {

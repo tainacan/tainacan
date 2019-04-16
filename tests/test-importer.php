@@ -334,6 +334,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		    'taxonomy',
 		    array(
 			    'name' => 'genero',
+				'status' => 'publish'
 		    ),
 		    true
         );

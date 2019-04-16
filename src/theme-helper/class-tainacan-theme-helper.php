@@ -214,7 +214,7 @@ class Theme_Helper {
 			$tax_id = \Tainacan\Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($term->taxonomy);
 			$tax = \Tainacan\Repositories\Taxonomies::get_instance()->fetch($tax_id);
 			
-			if ( $tax ) {
+			if ( $tax && $tax->can_read() ) {
 				$post_types = $tax->get_enabled_post_types();
 
 				// TODO: Why post_type = any does not work? 
@@ -223,6 +223,9 @@ class Theme_Helper {
 				$post_types = array_merge($post_types, \Tainacan\Repositories\Repository::get_collections_db_identifiers());
 				$wp_query->set( 'post_type',  $post_types);
 				
+			} else {
+				$wp_query->set_404();
+				status_header( 404 );
 			}
 			
 			

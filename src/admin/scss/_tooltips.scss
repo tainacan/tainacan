@@ -3,6 +3,14 @@
 .b-tooltip::after {
     box-shadow: none;
 }
+.repository-tooltip {
+    .tooltip-inner {
+        background: $blue1 !important;
+    }
+    .tooltip-arrow {
+        border-color: $blue1 !important;
+    }
+}
 .tooltip {
     z-index: 999999999;
     display: block !important;
@@ -16,7 +24,7 @@
         color: $gray5;
         font-size: 0.6875rem;
         border-radius: 5px;
-        padding: 20px;
+        padding: 10px 14px;
         max-width: 280px;
         max-height: 200px;
         overflow-x: auto;

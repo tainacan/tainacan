@@ -138,7 +138,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
             'fetch_only': 'thumbnail,creation_date,author_name',
             'fetch_only_meta': '',
             'taxonomies_order': 'desc',
-            'taxonomies_order_by': 'date',
+            'taxonomies_order_by': 'name',
             'collections_order': 'desc',
             'collections_order_by': 'date'
         },

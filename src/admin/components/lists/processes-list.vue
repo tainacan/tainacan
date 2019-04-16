@@ -76,7 +76,7 @@
                                         hide: 300,
                                     },
                                     content: bgProcess.name ? bgProcess.name : $i18n.get('label_unamed_process'),
-                                    autoHide: false,
+                                    autoHide: false, classes: ['tooltip', 'repository-tooltip'],
                                     placement: 'auto-start'
                                 }">
                             {{ bgProcess.name ? bgProcess.name : $i18n.get('label_unamed_process') }}</p>
@@ -93,7 +93,7 @@
                                         hide: 300,
                                     },
                                     content: bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process'),
-                                    autoHide: false,
+                                    autoHide: false, classes: ['tooltip', 'repository-tooltip'],
                                     placement: 'auto-start'
                                 }">
                             <span :class="{'occluding-content': bgProcess.progress_value }"><span class="has-text-weight-bold">{{ $i18n.get('label_progress') + " " }}</span>{{ bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process') }}</span>
@@ -112,7 +112,7 @@
                                         hide: 300,
                                     },
                                     content: getDate(bgProcess.queued_on),
-                                    autoHide: false,
+                                    autoHide: false, classes: ['tooltip', 'repository-tooltip'],
                                     placement: 'auto-start'
                                 }">
                             <span class="has-text-weight-bold">{{ $i18n.get('label_queued_on') + " " }}</span>{{ getDate(bgProcess.queued_on) }}</p>
@@ -135,7 +135,7 @@
                                             hide: 300,
                                         },
                                         content: $i18n.get('label_stop_process'),
-                                        autoHide: false,
+                                        autoHide: false, classes: ['tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
                                     v-if=" bgProcess.status === 'running' "
@@ -150,7 +150,7 @@
                                             hide: 300,
                                         },
                                         content: $i18n.get('label_process_completed'),
-                                        autoHide: false,
+                                        autoHide: false, classes: ['tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
                                     v-if=" ( bgProcess.status === 'finished' && !bgProcess.error_log ) || bgProcess.status === null"
@@ -164,7 +164,7 @@
                                             hide: 300,
                                         },
                                         content: $i18n.get('label_process_completed_with_errors'),
-                                        autoHide: false,
+                                        autoHide: false, classes: ['tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
                                     v-if=" bgProcess.status === 'finished-errors' || ( bgProcess.done > 0 && bgProcess.error_log && bgProcess.status === 'finished' ) "
@@ -181,7 +181,7 @@
                                             hide: 300,
                                         },
                                         content: $i18n.get('label_process_cancelled'),
-                                        autoHide: false,
+                                        autoHide: false, classes: ['tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
                                     v-if=" bgProcess.status === 'cancelled' "
@@ -195,7 +195,7 @@
                                             hide: 300,
                                         },
                                         content: $i18n.get('label_process_paused'),
-                                        autoHide: false,
+                                        autoHide: false, classes: ['tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
                                     v-if=" bgProcess.status === 'paused' "
@@ -209,7 +209,7 @@
                                             hide: 300,
                                         },
                                         content: $i18n.get('label_process_waiting'),
-                                        autoHide: false,
+                                        autoHide: false, classes: ['tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
                                     v-if=" bgProcess.status === 'waiting' "
@@ -223,7 +223,7 @@
                                             hide: 300,
                                         },
                                         content: $i18n.get('label_process_failed'),
-                                        autoHide: false,
+                                        autoHide: false, classes: ['tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
                                     v-if="bgProcess.status === 'errored'"
@@ -286,7 +286,7 @@
                                             hide: 300,
                                         },
                                         content: getDate(bgProcess.processed_last),
-                                        autoHide: false,
+                                        autoHide: false, classes: ['tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }">
                                 <span class="has-text-weight-bold">{{ $i18n.get('label_last_processed_on') + " " }}</span>{{ getDate(bgProcess.processed_last) }}</p>

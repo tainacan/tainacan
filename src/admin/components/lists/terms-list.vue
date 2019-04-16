@@ -15,7 +15,14 @@
                     :disabled="localTerms.length <= 0 || isLoadingTerms || isEditingTerm || order == 'asc'"
                     class="button is-white is-small"
                     @click="onChangeOrder('asc')">
-                <span class="icon gray-icon">
+                <span
+                        v-tooltip="{
+                            content: $i18n.get('label_sort_ascending'),
+                            autoHide: true,
+                            classes: ['tooltip', 'repository-tooltip'],
+                            placement: 'bottom'
+                        }"
+                        class="icon gray-icon">
                     <i class="tainacan-icon tainacan-icon-sortascending"/>
                 </span>
             </button>
@@ -23,7 +30,14 @@
                     :disabled="localTerms.length <= 0 || isLoadingTerms || isEditingTerm || order == 'desc'"
                     class="button is-white is-small"
                     @click="onChangeOrder('desc')">
-                <span class="icon gray-icon">
+                <span
+                        v-tooltip="{
+                            content: $i18n.get('label_sort_descending'),
+                            autoHide: true,
+                            classes: ['tooltip', 'repository-tooltip'],
+                            placement: 'bottom'
+                        }"
+                        class="icon gray-icon">
                     <i class="tainacan-icon tainacan-icon-sortdescending"/>
                 </span>
             </button>

@@ -273,6 +273,12 @@
 .tainacan-icon-viewtable:before {
     content: "viewtable";
 }
+.tainacan-icon-facebook:before {
+    content: "facebook";
+}
+.tainacan-icon-twitter:before {
+    content: "twitter";
+}
 
 .tainacan-icon-18px.tainacan-icon-set, 
 .tainacan-icon-18px.tainacan-icon:before {

@@ -304,4 +304,93 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$this->assertEquals($item_metadata_text->get_value_as_html(), $response_text);
 		$this->assertEquals($item_metadata_textarea->get_value_as_html(), $response_textarea);
 	}
+
+    /**
+     * @group test_item_metadata_has_value
+     */
+	function test_item_metadata_has_value() {
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+
+        $collection = $this->tainacan_entity_factory->create_entity(
+            'collection',
+            array(
+                'name' => 'teste'
+            ),
+            true
+        );
+
+        $i = $this->tainacan_entity_factory->create_entity(
+            'item',
+            array(
+                'title'       => 'item teste',
+                'description' => 'description',
+                'collection'  => $collection,
+                'status'      => 'publish'
+            ),
+            true
+        );
+
+
+        $metadatum_textarea = $this->tainacan_entity_factory->create_entity(
+            'metadatum',
+            array(
+                'name'              => 'metadadoTextarea',
+                'description'       => 'descricao',
+                'collection_id'     => $collection->get_id(),
+                'metadata_type'  => 'Tainacan\Metadata_Types\Textarea',
+            ),
+            true
+        );
+
+        $value_textarea = '';
+        $item_metadata_textarea = new \Tainacan\Entities\Item_Metadata_Entity($i, $metadatum_textarea);
+        $item_metadata_textarea->set_value($value_textarea);
+
+        $item_metadata_textarea->validate();
+        $item_metadata_textarea = $Tainacan_Item_Metadata->insert($item_metadata_textarea);
+
+        $this->assertFalse($item_metadata_textarea->has_value());
+
+        $item_metadata_textarea->set_value('has_value');
+        $item_metadata_textarea->validate();
+        $item_metadata_textarea = $Tainacan_Item_Metadata->insert($item_metadata_textarea);
+
+        $this->assertTrue($item_metadata_textarea->has_value());
+
+        $metadatum_text = $this->tainacan_entity_factory->create_entity(
+            'metadatum',
+            array(
+                'name'              => 'metadadoText',
+                'description'       => 'descricao',
+                'collection_id'     => $collection->get_id(),
+                'metadata_type'     => 'Tainacan\Metadata_Types\Text',
+                'multiple'          => 'yes'
+            ),
+            true
+        );
+
+        $item_metadata_text = new \Tainacan\Entities\Item_Metadata_Entity($i, $metadatum_text);
+
+        $item_metadata_text->set_value([
+            ''
+        ]);
+
+        $item_metadata_text->validate();
+        $item_metadata = $Tainacan_Item_Metadata->insert($item_metadata_text);
+
+        $this->assertFalse($item_metadata->has_value());
+
+        $item_metadata_text->set_value([
+            ''
+        ]);
+
+        $item_metadata_text->validate();
+        $item_metadata_text = $Tainacan_Item_Metadata->insert($item_metadata_text);
+
+        $item_metadata_text->set_value([
+            'has_value'
+        ]);
+
+        $this->assertTrue($item_metadata_text->has_value());
+    }
 }

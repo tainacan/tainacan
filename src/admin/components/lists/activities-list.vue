@@ -40,6 +40,7 @@
                                     },
                                     content: activity.title,
                                     autoHide: false,
+                                    classes: ['tooltip', 'repository-tooltip'],
                                     placement: 'auto-start'
                                 }">
                             {{ activity.title }}
@@ -59,6 +60,7 @@
                                     },
                                     content: activity.user_name,
                                     autoHide: false,
+                                    classes: ['tooltip', 'repository-tooltip'],
                                     placement: 'auto-start'
                                 }"
                                 v-html="activity.user_name"/>
@@ -77,6 +79,7 @@
                                     },
                                     content: activity.log_date,
                                     autoHide: false,
+                                    classes: ['tooltip', 'repository-tooltip'],
                                     placement: 'auto-start'
                                 }"
                                 v-html="activity.log_date"/>

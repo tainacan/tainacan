@@ -18,7 +18,8 @@
                     },
                     content: isFiltersMenuCompressed ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters'),
                     autoHide: false,
-                    placement: 'auto-start'
+                    placement: 'auto-start',
+                    classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
                 }"  
                 v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="is-hidden-mobile"
@@ -81,9 +82,7 @@
                         <span
                                 @click="updateSearch()"
                                 class="icon is-right">
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-search"/>
-                            </span>
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-search"/>
                         </span>
                 </div>
             </div>
@@ -121,6 +120,7 @@
                     v-if="!isLoadingFilters &&
                         ((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
                     :filters="filters"
+                    :repository-collection-filters="repositoryCollectionFilters"
                     :collapsed="collapseAll"
                     :is-repository-level="isRepositoryLevel"/>
 
@@ -238,7 +238,8 @@
                                 },
                                 content: (totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry') ? (adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry') ? $i18n.get('info_current_view_mode_metadata_not_allowed') : $i18n.get('info_cant_select_metadata_without_items') : '',
                                 autoHide: false,
-                                placement: 'auto-start'
+                                placement: 'auto-start',
+                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
                             }" 
                             ref="displayedMetadataDropdown"
                             :mobile-modal="true"
@@ -333,7 +334,14 @@
                                 :aria-label="$i18n.get('label_sort_descending')"
                                 :disabled="totalItems <= 0 || order == 'DESC'"
                                 @click="onChangeOrder()">
-                            <span class="icon is-small gray-icon">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('label_sort_descending'),
+                                        autoHide: true,
+                                        placement: 'bottom',
+                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
+                                    }"
+                                    class="icon is-small gray-icon">
                                 <i class="tainacan-icon tainacan-icon-sortdescending"/>
                             </span>
                         </button>
@@ -343,7 +351,14 @@
                                 :aria-label="$i18n.get('label_sort_ascending')"
                                 class="button is-white is-small"
                                 @click="onChangeOrder()">
-                            <span class="icon is-small gray-icon">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('label_sort_ascending'),
+                                        autoHide: true,
+                                        placement: 'bottom',
+                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
+                                    }"
+                                    class="icon is-small gray-icon">
                                 <i class="tainacan-icon tainacan-icon-sortascending"/>
                             </span>
                         </button>
@@ -693,7 +708,7 @@
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata"
                         :items="items"
-                        :is-filters-menu-compressed="isFiltersMenuCompressed"
+                        :is-filters-menu-compressed="isFiltersMenuCompressed || openAdvancedSearch "
                         :total-items="totalItems"
                         :is-loading="isLoadingItems"
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>
@@ -772,6 +787,7 @@
                             ((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
                         :filters="filters"
                         :collapsed="collapseAll"
+                        :repository-collection-filters="repositoryCollectionFilters"
                         :is-repository-level="isRepositoryLevel"/>
 
                 <section
@@ -882,6 +898,9 @@
             filters() {
                 return this.getFilters();
             },
+            repositoryCollectionFilters() {
+                return this.getRepositoryCollectionFilters();
+            },
             metadata() {
                 return this.getMetadata();
             },
@@ -964,10 +983,12 @@
                 'getMetadata'
             ]),
             ...mapActions('filter', [
-                'fetchFilters'
+                'fetchFilters',
+                'fetchRepositoryCollectionFilters'
             ]),
             ...mapGetters('filter', [
-                'getFilters'
+                'getFilters',
+                'getRepositoryCollectionFilters'
             ]),
             ...mapGetters('search', [
                 'getSearchQuery',
@@ -1111,6 +1132,13 @@
                 })
                     .then(() => this.isLoadingFilters = false)
                     .catch(() => this.isLoadingFilters = false);
+
+                // On repository level we also fetch collection filters
+                if (this.isRepositoryLevel) {
+                    this.fetchRepositoryCollectionFilters()
+                        .catch(() => this.isLoadingFilters = false);
+                }
+
             },
             prepareMetadata() {
 
