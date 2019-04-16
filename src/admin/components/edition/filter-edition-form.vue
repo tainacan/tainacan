@@ -86,7 +86,7 @@
 
             <b-field
                     :addons="false"
-                    v-if="editForm.filter_type_object && editForm.filter_type_object.component.includes('checkbox')">
+                    v-if="editForm.filter_type_object && editForm.filter_type_object.use_max_options">
                 <label class="label is-inline-block">
                     {{ $i18n.get('label_max_options_to_show') }}
                     <help-button

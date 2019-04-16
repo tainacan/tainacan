@@ -137,7 +137,7 @@ registerBlockType('tainacan/items-grid', {
             if(collectionID) {
                 return tainacan.get(`/collection/${collectionID}/items?${query}`)
                     .then(response => {
-                        return response.data;
+                        return response.data.items;
                     })
                     .catch(error => {
                         console.error(error);
@@ -145,7 +145,7 @@ registerBlockType('tainacan/items-grid', {
             } else {
                 return tainacan.get(`/items?${query}`)
                     .then(response => {
-                        return response.data;
+                        return response.data.items;
                     })
                     .catch(error => {
                         console.error(error);

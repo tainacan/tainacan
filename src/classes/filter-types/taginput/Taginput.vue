@@ -128,14 +128,10 @@
                 if (this.getOptionsValuesCancel != undefined)
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
-                    let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
-                        this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
-                    promise = this.getValuesRelationship( collectionTarget, query, this.isRepositoryLevel, valuesToIgnore );
- 
-                } else {
+                if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' )
+                    promise = this.getValuesRelationship( query, this.isRepositoryLevel, valuesToIgnore );
+                else
                     promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel, valuesToIgnore );
-                }
 
                 promise.request
                     .catch( error => {
@@ -163,8 +159,10 @@
 
                         axios.get('/collection/' + collectionTarget + '/items?' + query)
                             .then( res => {
-                                for (let item of res.data) {
-                                    instance.selected.push({ label: item.title, value: item.id, img: item.thumbnail.thumbnail[0] });
+                                if (res.data.items) {
+                                    for (let item of res.data) {
+                                        instance.selected.push({ label: item.title, value: item.id, img: item.thumbnail.thumbnail[0] });
+                                    }
                                 }
                             })
                             .catch(error => {

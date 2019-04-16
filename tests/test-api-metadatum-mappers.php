@@ -262,7 +262,7 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
 		]));
 		$response = $this->server->dispatch($item_request);
 		$this->assertEquals(200, $response->get_status());
-		$data = $response->get_data();
+		$data = $response->get_data()['items'];
 		
 		$this->assertEquals(1, sizeof($data), 'Response should contain 1 item');
 		

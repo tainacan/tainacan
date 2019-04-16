@@ -16,14 +16,14 @@ class Filter extends Entity {
         $order,
         $color,
         $metadatum,
-	    $max_options,
+        $max_options,
         $filter_type,
         $filter_type_options;
 
     static $post_type = 'tainacan-filter';
-	public $enabled_for_collection = true;
+    public $enabled_for_collection = true;
 
-	/**
+    /**
      * {@inheritDoc}
      * @see \Tainacan\Entities\Entity::repository
      * @var string
@@ -209,7 +209,7 @@ class Filter extends Entity {
      * @param string | \Tainacan\Filter_Types\Filter_Type $value The name of the class or the instance
      */
     public function set_filter_type($value){
-        $this->set_mapped_property('filter_type', ( is_object( $value ) ) ? get_class( $value ) : $value );
+				$this->set_mapped_property('filter_type', ( is_object( $value ) ) ? get_class( $value ) : $value );
     }
 
 

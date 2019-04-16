@@ -198,6 +198,7 @@ class Admin {
 			'exposer_type_param'     	=> \Tainacan\Exposers_Handler::TYPE_PARAM,
 			'repository_name'	 		=> get_bloginfo('name'),
 			'api_max_items_per_page'    => $TAINACAN_API_MAX_ITEMS_PER_PAGE,
+			'wp_elasticpress'    			=> class_exists('EP_API'),
 		];
 
 		$maps = [

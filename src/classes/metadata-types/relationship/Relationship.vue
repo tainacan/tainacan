@@ -27,8 +27,10 @@
                 let query = qs.stringify({ postin: ( Array.isArray( this.metadatum.value ) ) ? this.metadatum.value : [ this.metadatum.value ]  });
                 axios.get('/collection/'+collectionId+'/items?' + query + '&nopaging=1')
                     .then( res => {
-                        for (let item of res.data) {
-                            this.selected.push({ label: item.title, value: item.id, img: '' });
+                        if (res.data.items) {
+                            for (let item of res.data.items) {
+                                this.selected.push({ label: item.title, value: item.id, img: '' });
+                            }
                         }
                     })
                     .catch(error => {
@@ -115,8 +117,11 @@
                         this.loading = false;
                         this.options = [];
                         let result = res.data;
-                        for (let item of result) {
-                            this.options.push({ label: item.title, value: item.id })
+
+                        if (result.items) {
+                            for (let item of result.items) {
+                                this.options.push({ label: item.title, value: item.id })
+                            }
                         }
                     })
                     .catch(error => {

@@ -275,13 +275,18 @@ class REST_Items_Controller extends REST_Controller {
 			}
 		}
 		
+		$response = [];
+		$response['items'] = [];
+		$response['template'] = '';
+		
 		$query_start = microtime(true);
 		
 		$items = $this->items_repository->fetch($args, $collection_id, 'WP_Query');
 		
-		$query_end = microtime(true);
+		// Filter right after the ->fetch() method. Elastic Search integration relies on this on its 'last_aggregations' hook
+		$response['filters'] = apply_filters('tainacan-api-items-filters-response', [], $request);
 		
-		$response = [];
+		$query_end = microtime(true);
 
 		$return_template = false;
 
@@ -297,7 +302,7 @@ class REST_Items_Controller extends REST_Controller {
 
 		}
 		
-		if ( $return_template ) {
+		if ( $return_template ) { 
 			
 			ob_start();
 
@@ -324,7 +329,7 @@ class REST_Items_Controller extends REST_Controller {
 			
 			include $view_mode['template'];
 			
-			$response = ob_get_clean();
+			$response['template'] = ob_get_clean();
 
 		} else {
 
@@ -336,13 +341,15 @@ class REST_Items_Controller extends REST_Controller {
 	
 					$prepared_item = $this->prepare_item_for_response($item, $request);
 	
-					array_push($response, $prepared_item);
+					array_push($response['items'], $prepared_item);
 				}
 	
 				wp_reset_postdata();
 			}
 			
 		}
+		
+		$response = apply_filters('tainacan-api-items-response', $response, $request);
 		
 		$total_items  = $items->found_posts;
 		$max_pages = ceil($total_items / (int) $items->query_vars['posts_per_page']);

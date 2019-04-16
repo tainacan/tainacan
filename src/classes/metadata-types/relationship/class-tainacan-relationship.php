@@ -125,7 +125,10 @@ class Relationship extends Metadata_Type {
 				
 				try {
 					
-					$item = new \Tainacan\Entities\Item($item_id);
+					//$item = new \Tainacan\Entities\Item($item_id);
+					$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+					$item = $Tainacan_Items->fetch($item_id);
+					
 					
 					$count ++;
 					

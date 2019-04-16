@@ -32,7 +32,7 @@
             </label>
             <button
                     class="view-all-button link-style"
-                    v-if="option.showViewAllButton && index == options.slice(0, filter.max_options).length - 1"
+                    v-if="option.showViewAllButton"
                     @click="openCheckboxModal(option.parent)"> 
                 {{ $i18n.get('label_view_all') }}
             </button>
@@ -48,6 +48,7 @@
 <script>
     import qs from 'qs';
     import { tainacan as axios } from '../../../js/axios/axios';
+    import { mapGetters } from 'vuex';
     import CheckboxRadioModal from '../../../admin/components/other/checkbox-radio-modal.vue';
 
     export default {
@@ -55,9 +56,15 @@
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
             this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id ;
             this.type = ( this.filter_type ) ? this.filter_type : this.filter.metadatum.metadata_type;
+
             this.loadOptions();
 
             this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTag);
+            if (this.isUsingElasticSearch) {
+                this.$eventBusSearch.$on('isLoadingItems', isLoading => {
+                    this.isLoading = isLoading;
+                });
+            }
         },    
         mounted(){
             // We listen to event, but reload event if hasFiltered is negative, as 
@@ -77,6 +84,7 @@
                 selected: [],
                 taxonomy: '',
                 taxonomy_id: Number,
+                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
             }
         },
         props: {
@@ -95,70 +103,57 @@
             selected: function(){
                 //this.selected = val;
                 this.onSelect();
+            },
+            facetsFromItemSearch() {
+                if (this.isUsingElasticSearch)
+                    this.loadOptions();
+            }
+        },    
+        computed: {
+            facetsFromItemSearch() {
+                return this.getFacets();
             }
         },
         methods: {
-            loadOptions(skipSelected){
-                this.isLoading = true;
-                let query_items = { 'current_query': this.query };
+            ...mapGetters('search', [
+                'getFacets'
+            ]),
+            loadOptions(skipSelected) {
+                if (!this.isUsingElasticSearch) {
 
-                let route = '';
-                
-                if(this.collection == 'filter_in_repository')
-                    route = `/facets/${this.metadatum}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
-                else
-                    route = `/collection/${this.collection}/facets/${this.metadatum}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
+                    this.isLoading = true;
+                    let query_items = { 'current_query': this.query };
 
-                this.options = [];
+                    let route = '';
+                    
+                    if(this.collection == 'filter_in_repository')
+                        route = `/facets/${this.metadatum}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
+                    else
+                        route = `/collection/${this.collection}/facets/${this.metadatum}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
 
-                axios.get(route)
-                    .then( res => {
+                    this.options = [];
 
-                        for (let item of res.data) {
-                            this.taxonomy = item.taxonomy;
-                            this.taxonomy_id = item.taxonomy_id;
-                            
-                            let existingOptionIndex = this.options.findIndex(anOption => anOption.value == item.value)
-                            if (existingOptionIndex < 0)
-                                this.options.push(item);  
-                            else  
-                                this.$set(this.options, item, existingOptionIndex); 
-                        }
+                    axios.get(route)
+                        .then( res => {
+                            this.prepareOptionsForTaxonomy(res.data.values ? res.data.values : res.data, skipSelected);
+                            this.isLoading = false;
+                        })
+                        .catch(error => {
+                            this.$console.log(error);
+                            this.isLoading = false;
+                        });
+                } else {
 
-                        if (this.options) {
-                            let hasChildren = false;
+                    for (const facet in this.facetsFromItemSearch) {
+                        if (facet == this.filter.id) {
+                            if (Array.isArray(this.facetsFromItemSearch[facet]))
+                                this.prepareOptionsForTaxonomy(this.facetsFromItemSearch[facet], skipSelected);
+                            else
+                                this.prepareOptionsForTaxonomy(Object.values(this.facetsFromItemSearch[facet]), skipSelected);
+                        }    
+                    }
 
-                            for( let term of this.options ){
-                                if(term.total_children > 0){
-                                    hasChildren = true;
-                                    break;
-                                }
-                            }
-
-                            if(this.filter.max_options && (this.options.length >= this.filter.max_options || hasChildren)){
-                                if(this.options.length > this.filter.max_options){
-                                    this.options.splice(this.filter.max_options);
-                                }
-
-                                let showViewAllButton = true;
-
-                                if(this.options.length === this.filter.max_options){
-                                    this.options[this.filter.max_options-1].showViewAllButton = showViewAllButton;
-                                } else {
-                                    this.options[this.options.length-1].showViewAllButton = showViewAllButton;
-                                }
-                            }
-                        }
-
-                        this.isLoading = false;
-                        if (skipSelected == undefined || skipSelected == false) {
-                            this.selectedValues();
-                        }
-                    })
-                    .catch(error => {
-                        this.$console.log(error);
-                        this.isLoading = false;
-                    });
+                }
             },
             selectedValues(){
                 
@@ -185,56 +180,61 @@
                 });
                 
                 let onlyLabels = [];
-                for(let selected of this.selected) {
+
+                for (let selected of this.selected) {
                     let valueIndex = this.options.findIndex(option => option.value == selected );
 
                     if (valueIndex >= 0) {
-                        
                         let existingLabelIndex = onlyLabels.findIndex(aLabel => aLabel == this.options[valueIndex].label)
                         if (existingLabelIndex < 0)
                             onlyLabels.push(this.options[valueIndex].label);
                         else  
                             this.$set(onlyLabels, onlyLabels.push(this.options[valueIndex].label), existingLabelIndex); 
-
                     } else {
-
-                        let route = '';
                         
-                        if(this.collection == 'filter_in_repository')
-                            route = '/facets/' + this.metadatum +`?term_id=${selected}&fetch_only=name,id`;
-                        else
-                            route = '/collection/'+ this.collection +'/facets/' + this.metadatum +`?term_id=${selected}&fetch_only=name,id`;
-                        
-                        axios.get(route)
-                            .then( res => {
-                                if(!res || !res.data){
-                                    return false;
-                                }
+                        // Not finding all options will happen on elastic search, 
+                        // as the facetsFromItemSearch will not be ready yet
+                        if (!this.isUsingElasticSearch)
+                            this.$console.log("Looking for terms that are not in the options list... ");
 
-                                let existingLabelIndex = onlyLabels.findIndex(aLabel => aLabel == res.data[0].label)
-                                if (existingLabelIndex < 0) {
-                                    onlyLabels.push(res.data[0].label);
-                                    this.options.push({
-                                        isChild: true,
-                                        label: res.data[0].label,
-                                        value: res.data[0].value
-                                    });
-                                } else {  
-                                    this.$set(onlyLabels, onlyLabels.push(res.data[0].label), existingLabelIndex);
-                                    this.$set(this.options, {
-                                            isChild: true,
-                                            label: res.data[0].label,
-                                            value: res.data[0].value
-                                        }
-                                    , existingLabelIndex); 
-                                }
-                            })
-                            .catch(error => {
-                                this.$console.log(error);
-                            });
+                        // let route = '';
+                        
+                        // if (this.collection == 'filter_in_repository')
+                        //     route = '/facets/' + this.metadatum +`?term_id=${selected}&fetch_only=name,id`;
+                        // else
+                        //     route = '/collection/'+ this.collection +'/facets/' + this.metadatum +`?term_id=${selected}&fetch_only=name,id`;
+                        
+                        // axios.get(route)
+                        //     .then( res => {
+                        //         if(!res || !res.data || !res.data.values){
+                        //             return false;
+                        //         }
+
+                        //         let existingLabelIndex = onlyLabels.findIndex(aLabel => aLabel == res.data.values[0].label)
+
+                        //         if (existingLabelIndex < 0) {
+                        //             onlyLabels.push(res.data.values[0].label);
+                        //             this.options.push({
+                        //                 isChild: true,
+                        //                 label: res.data.values[0].label,
+                        //                 value: res.data.values[0].value
+                        //             });
+                        //         } else {  
+                        //             this.$set(onlyLabels, onlyLabels.push(res.data.values[0].label), existingLabelIndex);
+                        //             this.$set(this.options, {
+                        //                     isChild: true,
+                        //                     label: res.data.values[0].label,
+                        //                     value: res.data.values[0].value
+                        //                 }
+                        //             , existingLabelIndex); 
+                        //         }
+                        //     })
+                        //     .catch(error => {
+                        //         this.$console.log(error);
+                        //     });
                     }
                 }
-
+                
                 this.$eventBusSearch.$emit("sendValuesToTags", {
                     filterId: this.filter.id,
                     value: onlyLabels
@@ -256,7 +256,9 @@
                         query: this.query
                     },                    
                     events: {
-                        appliedCheckBoxModal: () => this.loadOptions()
+                        appliedCheckBoxModal: () => {
+                            this.loadOptions();
+                        } 
                     },
                     width: 'calc(100% - 8.333333333%)',
                 });
@@ -266,7 +268,7 @@
 
                     let selectedOption = this.options.find(option => option.label == filterTag.singleValue);
 
-                    if(selectedOption) {
+                    if (selectedOption) {
                     
                         let selectedIndex = this.selected.findIndex(option => option == selectedOption.value);
                         if (selectedIndex >= 0) {
@@ -291,10 +293,48 @@
                         }
                     }
                 }
+            },
+            prepareOptionsForTaxonomy(items, skipSelected) {
+
+                if (items[0] != undefined) {
+                    this.taxonomy = items[0].taxonomy;
+                    this.taxonomy_id = items[0].taxonomy_id;
+                }
+
+                this.options = [];
+                this.options = items.slice(); // copy array.
+
+                if (this.options) {
+                    let hasChildren = false;
+
+                    for( let term of this.options ){
+                        if (term.total_children > 0){
+                            hasChildren = true;
+                            break;
+                        }
+                    }
+
+                    if (this.filter.max_options && (this.options.length >= this.filter.max_options || hasChildren)) {
+                        let showViewAllButton = true;
+
+                        if (this.options.length > this.filter.max_options){
+                            this.options[this.filter.max_options - 1].showViewAllButton = showViewAllButton;
+                        } else {
+                            this.options[this.options.length - 1].showViewAllButton = showViewAllButton;
+                        }
+                    }
+                }
+
+                if (skipSelected == undefined || skipSelected == false) {
+                    this.selectedValues();
+                }
             }
         },
         beforeDestroy() {
             this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
+            
+            if (this.isUsingElasticSearch)
+                this.$eventBusSearch.$off('isLoadingItems');
         }
     }
 </script>

@@ -112,16 +112,12 @@
 
                     // Cancels previous Request
                     if (this.getOptionsValuesCancel != undefined)
-                    this.getOptionsValuesCancel.cancel('Facet search Canceled.');
+                        this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-
-                    if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
-                        let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
-                            this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
-                        promise = this.getValuesRelationship( collectionTarget, query, this.isRepositoryLevel );
-                    } else {
+                    if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' )
+                        promise = this.getValuesRelationship( query, this.isRepositoryLevel );
+                    else
                         promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel );
-                    }
                     
                     promise.request.catch( error => {
                         this.$console.log('error select', error );

@@ -79,3 +79,7 @@ export const getFetchOnlyMeta = state => {
 export const getFilterTags = state => {
     return state.filter_tags;
 };
+
+export const getFacets = state => {
+    return state.facets;
+};

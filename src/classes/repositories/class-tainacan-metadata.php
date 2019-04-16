@@ -300,6 +300,9 @@ class Metadata extends Repository {
 	 * You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
 	 * appropriate WP_Query argument
 	 *
+	 * If a number is passed to $args, it will return a \Tainacan\Entities\Metadatum object.  But if the post is not found or
+	 * does not match the entity post type, it will return an empty array
+	 *
 	 * @param array $args WP_Query args || int $args the metadatum id
 	 * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
 	 *
@@ -311,7 +314,11 @@ class Metadata extends Repository {
 		if ( is_numeric( $args ) ) {
 			$existing_post = get_post( $args );
 			if ( $existing_post instanceof \WP_Post ) {
-				return new Entities\Metadatum( $existing_post );
+				try {
+					return new Entities\Metadatum( $existing_post );
+				} catch (\Exception $e) {
+					return [];
+				}
 			} else {
 				return [];
 			}
@@ -736,6 +743,11 @@ class Metadata extends Repository {
 	 * @throws \Exception
 	 */
 	public function disable_delete_core_metadata( $before, $post ) {
+		
+		if ( Entities\Metadatum::get_post_type() != $post->post_type ) {
+			return null;
+		}
+		
 		$metadatum = $this->fetch( $post->ID );
 
 		if ( $metadatum && in_array( $metadatum->get_metadata_type(), $this->core_metadata ) && is_numeric( $metadatum->get_collection_id() ) ) {
@@ -755,6 +767,11 @@ class Metadata extends Repository {
 	 * @internal param The $post_id post ID which is deleting
 	 */
 	public function force_delete_core_metadata( $before, $post, $force_delete ) {
+		
+		if ( Entities\Metadatum::get_post_type() != $post->post_type ) {
+			return null;
+		}
+		
 		$metadatum = $this->fetch( $post->ID );
 
 		if ( $metadatum && in_array( $metadatum->get_metadata_type(), $this->core_metadata ) && is_numeric( $metadatum->get_collection_id() ) ) {
@@ -892,7 +909,9 @@ class Metadata extends Repository {
 	  *
 	  *     @type array		 $parent_id					Used by taxonomy metadata. The ID of the parent term to retrieve terms from. Default 0 
 	  *
-	  * 	@type bool		 $count_items				Include the count of items that can be found in each value (uses $items_filter as well). Default false
+		*     @type bool		 $count_items				Include the count of items that can be found in each value (uses $items_filter as well). Default false
+		*
+		*     @type string   $last_term				The last term returned when using a elasticsearch for calculates the facet.
 	  * 
 	  * }
 	  * 
@@ -908,7 +927,8 @@ class Metadata extends Repository {
 			'include' => [],
 			'items_filter' => [],
 			'parent_id' => 0,
-			'count_items' => false
+			'count_items' => false,
+			'last_term' => ''
 		);
 		$args = wp_parse_args($args, $defaults);
 		
@@ -927,12 +947,9 @@ class Metadata extends Repository {
 		}
 		
 		
-		//////////////////////////////////////////
-		// Get the query for current items
-		// this avoids wp_query to run the query. We just want to build the query
+		
 		$items_query = false;
 		if ( false !== $args['items_filter'] && is_array($args['items_filter']) ) {
-			add_filter('posts_pre_query', '__return_empty_array');
 			
 			$args['items_filter']['fields'] = 'ids';
 			unset($args['items_filter']['paged']);
@@ -953,15 +970,27 @@ class Metadata extends Repository {
 				$args['items_filter']['meta_query'] = array_filter($args['items_filter']['meta_query'], function($t) use ($metadatum_id) { return $t['key'] != $metadatum_id; });
 				//var_dump($args['items_filter']['meta_query']);
 			}
-			
+
+		}
+		
+		$filter = apply_filters('tainacan-fetch-all-metadatum-values', null, $metadatum, $args);
+		if ($filter !== null) {
+			return $filter;
+		}
+		
+		//////////////////////////////////////////
+		// Get the query for current items
+		// this avoids wp_query to run the query. We just want to build the query
+		if ( false !== $args['items_filter'] && is_array($args['items_filter']) ) {
+			add_filter('posts_pre_query', '__return_empty_array');
 			$items_query = $itemsRepo->fetch($args['items_filter'], $args['collection_id']);
 			$items_query = $items_query->request;
-			
 			remove_filter('posts_pre_query', '__return_empty_array');
 		}
 		//// end filtering query ////////
 		////////////////////////////////////////////
 		////////////////////////////////////////////
+
 		
 		$pagination = '';
 		if ( $args['offset'] >= 0 && $args['number'] >= 1 ) {
@@ -1163,7 +1192,8 @@ class Metadata extends Repository {
 		return [
 			'total' => $total,
 			'pages' => $pages,
-			'values' => $values
+			'values' => $values,
+			'last_term' => $args['last_term']
 		];
 		
 	}

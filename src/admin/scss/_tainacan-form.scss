@@ -118,6 +118,9 @@
         padding: 1.25rem;
     }
     .autocomplete {
+        .dropdown-menu {
+            width: 100%;
+        }
         .dropdown-item {
             white-space: initial !important;
         }

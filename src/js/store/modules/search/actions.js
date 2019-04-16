@@ -70,6 +70,10 @@ export const setItemsPerPage = ({ commit }, perPage ) => {
     commit('setItemsPerPage', perPage );
 };
 
+export const setFacets = ({ commit }, facets) => {
+    commit('setFacets', facets);
+};
+
 export const setStatus= ({ commit }, status ) => {
     if (status == undefined || status == '')
         commit('removePostQueryAttribute', 'status');

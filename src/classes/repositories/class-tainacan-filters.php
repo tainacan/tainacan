@@ -232,6 +232,9 @@ class Filters extends Repository {
 	 * to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
 	 * You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
 	 * appropriate WP_Query argument
+	 * 
+	 * If a number is passed to $args, it will return a \Tainacan\Entities\Filter object.  But if the post is not found or
+	 * does not match the entity post type, it will return an empty array
 	 *
 	 * @param array $args WP_Query args || int $args the filter id
 	 * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
@@ -240,15 +243,19 @@ class Filters extends Repository {
 	 */
 	public function fetch( $args = [], $output = null ) {
 		if ( is_numeric( $args ) ) {
+			
 			$existing_post = get_post( $args );
 			if ( $existing_post instanceof \WP_Post ) {
-				return new Entities\Filter( $existing_post );
+				try {
+					return new Entities\Filter( $existing_post );
+				} catch (\Exception $e) {
+					return [];
+				}
 			} else {
 				return [];
 			}
 
 		} elseif ( is_array( $args ) ) {
-			// TODO: get filters from parent collections
 			$args = array_merge( [
 				'posts_per_page' => - 1,
 			], $args );

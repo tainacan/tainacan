@@ -1455,7 +1455,6 @@
 
         },
         mounted() {  
-
             this.prepareFilters();
             this.prepareMetadata();
             this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));

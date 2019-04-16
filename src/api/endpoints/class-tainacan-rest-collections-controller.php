@@ -271,7 +271,7 @@ class REST_Collections_Controller extends REST_Controller {
 			}
 
 			return true;
-		}
+		} 
 
 		return false;
 	}

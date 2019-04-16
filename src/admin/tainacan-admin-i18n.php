@@ -338,6 +338,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_show_metadata'                            => __( 'Show metadata', 'tainacan' ),
 	'label_all_terms'                                => __( 'All terms', 'tainacan' ),
 	'label_selected_terms'                           => __( 'Selected terms', 'tainacan' ),
+	'label_all_metadatum_values'                     => __( 'All metadatum values', 'tainacan' ),
+	'label_selected_metadatum_values'                => __( 'Selected metadatum values', 'tainacan' ),
 	'label_editing_item_number'                      => __( 'Editing item n.', 'tainacan' ),
 	'label_sequence_editing_item'                    => __( 'Sequence editing: Item', 'tainacan' ),
 	'label_%s_files_remaining'                       => __( '%s files remaining.', 'tainacan' ),

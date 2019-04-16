@@ -2,7 +2,6 @@
 
 namespace Tainacan\Tests;
 use Tainacan\Importer;
-use Tainacan\Entities;
 /**
 * Class Importer
 *
