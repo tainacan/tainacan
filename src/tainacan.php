@@ -10,8 +10,11 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 */
 
+const TAINACAN_VERSION = '0.8.1';
+
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 $TAINACAN_BASE_URL = plugins_url('', __FILE__);
+const TAINACAN_BASE_DIR     = __DIR__;
 const TAINACAN_API_DIR     = __DIR__ . '/api/';
 const TAINACAN_CLASSES_DIR = __DIR__ . '/classes/';
 $TAINACAN_API_MAX_ITEMS_PER_PAGE = defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? TAINACAN_API_MAX_ITEMS_PER_PAGE : 96;
