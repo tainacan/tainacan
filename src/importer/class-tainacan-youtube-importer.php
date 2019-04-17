@@ -24,7 +24,6 @@ class Youtube_Importer extends Importer {
      */
     public function __construct($attributes = array()) {
         parent::__construct($attributes);
-        // API KEY TEST: AIzaSyBmHM3AXUSCkwzXxyVZiBYfQ7j2XS7AI1Q
 
         $this->col_repo = \Tainacan\Repositories\Collections::get_instance();
         $this->items_repo = \Tainacan\Repositories\Items::get_instance();
