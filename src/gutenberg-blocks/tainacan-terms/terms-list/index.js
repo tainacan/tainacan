@@ -243,16 +243,16 @@ registerBlockType('tainacan/terms-list', {
                     <div>
                         { isModalOpen ? 
                             <TermsModal
-                                existingTaxonomyId={ taxonomyId } 
-                                selectedTermsObject={ selectedTermsObject } 
-                                onSelectTaxonomy={ (selectedTaxonomyId) => {
-                                    taxonomyId = selectedTaxonomyId;
-                                    setAttributes({ taxonomyId: taxonomyId });
+                                existingCollectionId={ collectionId } 
+                                selectedItemsObject={ selectedItemsObject } 
+                                onSelectCollections={ (selectedCollectionId) => {
+                                    collectionId = selectedCollectionId;
+                                    setAttributes({ collectionId: collectionId });
                                 }}
-                                onApplySelection={ (aSelectedTermsObject) =>{
-                                    selectedTermsObject = aSelectedTermsObject
+                                onApplySelection={ (aSelectedItemObject) =>{
+                                    selectedItemsObject = aSelectedItemsObject
                                     setAttributes({
-                                        selectedTermsObject: selectedTermsObject,
+                                        selectedItemsObject: selectedItemsObject,
                                         isModalOpen: false
                                     });
                                     setContent();
