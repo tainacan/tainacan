@@ -43,15 +43,45 @@ class Youtube_Importer extends Importer {
      */
     public function get_source_metadata() {
         $details = $this->identify_url(true);
+        $api_key = $this->get_option('api_id');
 
-        if( $details ){
-            $api_key = $this->get_option('api_id');
+        if( $details && $api_key ){
 
-            $api_url = 'https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id='
-                . $details['id'] . '&key=' . $api_key;
+            switch ($details['type']) {
 
-            var_dump(json_decode(file_get_contents($api_url)));
+                case 'channel_id':
+                    $api_url = 'https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id='
+                        . $details['id'] . '&key=' . $api_key;
 
+                    $json = json_decode(file_get_contents($api_url));
+                    if( $json && isset($json->items) ){
+                        $item = $json->items[0];
+
+                        $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails%2Cstatistics&maxResults=1&playlistId='
+                            . $item->contentDetails->relatedPlaylists->uploads . '&key=' . $api_key;
+                    }
+                    die;
+                    break;
+
+                case 'user':
+                    $api_url = 'https://www.googleapis.com/youtube/v3/channels?part=CcontentDetails%2Cstatistics&maxResults=1&forUsername='
+                        . $details['id'] . '&key=' . $api_key;
+                    break;
+
+                case 'playlist_id':
+                    $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails%2Cstatistics&maxResults=1&playlistId='
+                        . $details['id'] . '&key=' . $api_key;
+                    break;
+
+                case 'v':
+                    $api_url = 'https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id='
+                        . $details['id'] . '&key=' . $api_key;
+                    break;
+
+                default:
+                    return [];
+                    break;
+            }
         } else {
             return [];
         }

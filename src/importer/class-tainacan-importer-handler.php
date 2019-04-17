@@ -67,7 +67,7 @@ class Importer_Handler {
 //            'slug' => 'youtube_importer',
 //            'class_name' => '\Tainacan\Importer\Youtube_Importer',
 //            'manual_collection' => true,
-//            'manual_mapping' => false,
+//            'manual_mapping' => true,
 //        ]);
 
 		do_action('tainacan_register_importers');
