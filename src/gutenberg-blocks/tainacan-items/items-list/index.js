@@ -153,166 +153,11 @@ registerBlockType('tainacan/items-list', {
             });
         }
 
-        function fetchModalCollections() {
-            
-            if (collectionPage <= 1)
-                modalCollections = [];
-
-            let endpoint = '/collections/?perpage=' + itemsPerPage + '&paged=' + collectionPage;
-
-            collectionPage++;
-            isLoadingCollections = true;
-
-            setAttributes({ 
-                isLoadingCollections: isLoadingCollections,
-                collectionPage: collectionPage, 
-                modalCollections: modalCollections
-            });
-
-            tainacan.get(endpoint)
-                .then(response => {
-
-                    for (let collection of response.data) {
-                        modalCollections.push({ 
-                            name: collection.name, 
-                            id: collection.id
-                        });
-                    }
-                    isLoadingCollections = false;
-                    totalModalCollections = response.headers['x-wp-total']; 
-
-                    setAttributes({ 
-                        isLoadingCollections: isLoadingCollections, 
-                        modalCollections: modalCollections,
-                        totalModalCollections: totalModalCollections
-                    });
-                    
-                    return modalCollections;
-                })
-                .catch(error => {
-                    console.log('Error trying to fetch collections: ' + error);
-                });
-        }
-
-        function fetchItems(title) {
-            if (itemsRequestSource != undefined)
-                itemsRequestSource.cancel('Previous items search canceled.');
-
-            itemsRequestSource = axios.CancelToken.source();
-            isLoadingItems = true;
-
-            setAttributes({
-                itemsRequestSource: itemsRequestSource,
-                isLoadingItems: isLoadingItems
-            });
-
-            let endpoint = '/collection/'+ collectionId + '/items/?fetch_only=title,thumbnail&perpage=' + itemsPerPage;
-
-            if (title != undefined && title != '')
-                endpoint += '&search=' + title;
-
-            tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
-                .then(response => {
-
-                    items = response.data.map((item) => ({ 
-                        title: item.title, 
-                        id: item.id,
-                        url: item.url,
-                        thumbnail: [{
-                            src: item.thumbnail['tainacan-medium'] != undefined ? item.thumbnail['tainacan-medium'][0] : item.thumbnail['medium'][0],
-                            alt: item.title
-                        }]
-                    }));
-
-                    setAttributes({ 
-                        isLoadingItems: isLoadingItems, 
-                        items: items
-                    });
-                    
-                    return items;
-                })
-                .catch(error => {
-                    console.log('Error trying to fetch items: ' + error);
-                });
-        }
-
         function openItemsModal() {
-            temporarySelectedItems = JSON.parse(JSON.stringify(selectedItemsObject));
-
-            if (collectionId != null && collectionId != undefined) {
-                fetchCollection();
-                itemsPage = 1;
-                fetchModalItems();
-            } else {
-                collectionPage = 1;
-                fetchModalCollections()
-            }
+            isModalOpen = true;
             setAttributes( { 
-                isModalOpen: true, 
-                items: [], 
-                temporarySelectedItems: temporarySelectedItems
-            } );
-        }
-
-        function isTemporaryItemSelected(itemId) {
-            return temporarySelectedItems.findIndex(item => (item.id == itemId) || (item.id == 'item-id-' + itemId)) >= 0;
-        }
-
-        function toggleSelectTemporaryItem(item, isChecked) {
-            if (isChecked)
-                selectTemporaryItem(item);
-            else
-                removeTemporaryItemOfId(item.id);
-            
-            setAttributes({ temporarySelectedItems: temporarySelectedItems });
-            setContent();
-        }
-
-        function selectCollection(selectedCollectionId) {
-
-            collectionId = selectedCollectionId;
-
-            setAttributes({
-                collectionId: collectionId
-            });
-            fetchCollection();
-            fetchModalItems();
-            setContent();
-            
-        }
-
-        function selectTemporaryItem(item) {
-            let existingItemIndex = temporarySelectedItems.findIndex((existingItem) => (existingItem.id == 'item-id-' + item.id) || (existingItem.id == item.id));
-   
-            if (existingItemIndex < 0) {
-                let itemId = isNaN(item.id) ? item.id : 'item-id-' + item.id;
-                temporarySelectedItems.push({
-                    id: itemId,
-                    title: item.title,
-                    url: item.url,
-                    thumbnail: item.thumbnail
-                });
-            }
-        }
-
-        function removeTemporaryItemOfId(itemId) {
-
-            let existingItemIndex = temporarySelectedItems.findIndex((existingItem) => ((existingItem.id == 'item-id-' + itemId) || (existingItem.id == itemId)));
-
-            if (existingItemIndex >= 0)
-                temporarySelectedItems.splice(existingItemIndex, 1);
-        }
-
-        function applySelectedItems() {
-            selectedItemsObject = JSON.parse(JSON.stringify(temporarySelectedItems));
-            isModalOpen = false;
-
-            setAttributes({ 
-                selectedItemsObject: selectedItemsObject, 
                 isModalOpen: isModalOpen
-            });
-
-            setContent();
+            } );
         }
 
         function removeItemOfId(itemId) {
@@ -323,16 +168,6 @@ registerBlockType('tainacan/items-list', {
                 selectedItemsObject.splice(existingItemIndex, 1);
 
             setContent();
-        }
-
-        function fetchCollection() {
-            tainacan.get('/collections/' + collectionId)
-                .then((response) => {
-                    collectionName = response.data.name;
-                    setAttributes({ collectionName: collectionName });
-                }).catch(error => {
-                    console.log('Error trying to fetch collection: ' + error);
-                });
         }
 
         function updateLayout(newLayout) {
@@ -431,23 +266,23 @@ registerBlockType('tainacan/items-list', {
                     (
                     <div>
                         { isModalOpen ? 
-                            <TermsModal
-                                existingTaxonomyId={ taxonomyId } 
-                                selectedTermsObject={ selectedTermsObject } 
-                                onSelectTaxonomy={ (selectedTaxonomyId) => {
-                                    taxonomyId = selectedTaxonomyId;
-                                    setAttributes({ taxonomyId: taxonomyId });
+                            <ItemsModal
+                                existingCollectionId={ collectionId } 
+                                selectedItemsObject={ selectedItemsObject } 
+                                onSelectCollection={ (selectedCollectionId) => {
+                                    collectionId = selectedCollectionId;
+                                    setAttributes({ collectionId: collectionId });
                                 }}
-                                onApplySelection={ (aSelectedTermsObject) =>{
-                                    selectedTermsObject = aSelectedTermsObject
+                                onApplySelection={ (aSelectedItemsObject) =>{
+                                    selectedItemsObject = aSelectedItemsObject
                                     setAttributes({
-                                        selectedTermsObject: selectedTermsObject,
+                                        selectedItemsObject: selectedItemsObject,
                                         isModalOpen: false
                                     });
                                     setContent();
                                 }}
                                 onCancelSelection={ () => setAttributes({ isModalOpen: false }) }/> 
-                            : null 
+                            : null
                         }
                         
                         <div className="block-control">

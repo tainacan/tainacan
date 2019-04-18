@@ -243,24 +243,23 @@ registerBlockType('tainacan/terms-list', {
                     <div>
                         { isModalOpen ? 
                             <TermsModal
-                                existingCollectionId={ collectionId } 
-                                selectedItemsObject={ selectedItemsObject } 
-                                onSelectCollections={ (selectedCollectionId) => {
-                                    collectionId = selectedCollectionId;
-                                    setAttributes({ collectionId: collectionId });
+                                existingTaxonomyId={ taxonomyId } 
+                                selectedTermsObject={ selectedTermsObject } 
+                                onSelectTaxonomy={ (selectedTaxonomyId) => {
+                                    taxonomyId = selectedTaxonomyId;
+                                    setAttributes({ taxonomyId: taxonomyId });
                                 }}
-                                onApplySelection={ (aSelectedItemObject) =>{
-                                    selectedItemsObject = aSelectedItemsObject
+                                onApplySelection={ (aSelectedTermsObject) =>{
+                                    selectedTermsObject = aSelectedTermsObject
                                     setAttributes({
-                                        selectedItemsObject: selectedItemsObject,
+                                        selectedTermsObject: selectedTermsObject,
                                         isModalOpen: false
                                     });
                                     setContent();
                                 }}
                                 onCancelSelection={ () => setAttributes({ isModalOpen: false }) }/> 
-                            : null
+                            : null 
                         }
-
                         <div className="block-control">
                             <Button
                                 isPrimary

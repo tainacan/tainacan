@@ -56,14 +56,14 @@ export default class ItemsModal extends React.Component {
 
         if (this.props.existingCollectionId != null && this.props.existingCollectionId != undefined) {
             this.fetchCollection(this.props.existingCollectionId);
-            this.fetchModalItems(0, this.props.existingCollectionId);
+            this.fetchModalItems(this.props.existingCollectionId);
         } else {
             this.setState({ collectionPage: 1 });
             this.fetchModalCollections();
         }
     }
 
-    // TERMS RELATED --------------------------------------------------
+    // ITEMS RELATED --------------------------------------------------
     selectTemporaryItem(item) {
         let existingItemIndex = this.state.temporarySelectedItems.findIndex((existingItem) => (existingItem.id == 'item-id-' + item.id) || (existingItem.id == item.id));
 
@@ -137,7 +137,7 @@ export default class ItemsModal extends React.Component {
             .then(response => {
 
                 let someItems = response.data.map((item) => ({ 
-                    name: item.title, 
+                    title: item.title, 
                     id: item.id,
                     url: item.url,
                     thumbnail: [{
@@ -159,7 +159,7 @@ export default class ItemsModal extends React.Component {
     }
 
     fetchModalItems(collectionId) {
-
+        console.log(this.state.modalItems)
         let someModalItems = this.state.modalItems;
 
         if (this.state.itemsPage <= 1) {}
@@ -178,8 +178,8 @@ export default class ItemsModal extends React.Component {
 
                 let otherModalItems = this.state.modalItems;
                 for (let item of response.data) {
-                    otherModalItems.push({ 
-                        name: item.title, 
+                    someModalItems.push({ 
+                        title: item.title, 
                         id: item.id,
                         url: item.url,
                         thumbnail: [{
@@ -189,6 +189,7 @@ export default class ItemsModal extends React.Component {
                     });
                 }
                 
+                console.log(otherModalItems)
                 this.setState({ 
                     isLoadingItems: false, 
                     modalItems: otherModalItems,
@@ -202,7 +203,7 @@ export default class ItemsModal extends React.Component {
             });
     }
 
-    // TAXONOMY RELATED --------------------------------------------------
+    // COLLECTIONS RELATED --------------------------------------------------
     fetchModalCollections() {
 
         let someModalCollections = this.state.modalCollections;
@@ -338,7 +339,7 @@ export default class ItemsModal extends React.Component {
                                     <li 
                                         key={ item.id }
                                         className="modal-checkbox-list-item">
-                                        { item.header_image ?
+                                        { item.thumbnail ?
                                             <img
                                                 aria-hidden
                                                 src={ item.thumbnail && item.thumbnail[0] && item.thumbnail[0].src ? item.thumbnail[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
@@ -371,7 +372,7 @@ export default class ItemsModal extends React.Component {
                                     <li 
                                         key={ item.id }
                                         className="modal-checkbox-list-item">
-                                        { item.thumbnail && showImage ?
+                                        { item.thumbnail ?
                                             <img
                                                 aria-hidden
                                                 src={ item.thumbnail && item.thumbnail[0] && item.thumbnail[0].src ? item.thumbnail[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
