@@ -46,41 +46,14 @@ class Youtube_Importer extends Importer {
 
         if( $details && $api_key ){
 
-            switch ($details['type']) {
-
-                case 'channel_id':
-                    $api_url = 'https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id='
-                        . $details['id'] . '&key=' . $api_key;
-
-                    $json = json_decode(file_get_contents($api_url));
-                    if( $json && isset($json->items) ){
-                        $item = $json->items[0];
-
-                        $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails%2Cstatistics&maxResults=1&playlistId='
-                            . $item->contentDetails->relatedPlaylists->uploads . '&key=' . $api_key;
-                    }
-                    die;
-                    break;
-
-                case 'user':
-                    $api_url = 'https://www.googleapis.com/youtube/v3/channels?part=CcontentDetails%2Cstatistics&maxResults=1&forUsername='
-                        . $details['id'] . '&key=' . $api_key;
-                    break;
-
-                case 'playlist_id':
-                    $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails%2Cstatistics&maxResults=1&playlistId='
-                        . $details['id'] . '&key=' . $api_key;
-                    break;
-
-                case 'v':
-                    $api_url = 'https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id='
-                        . $details['id'] . '&key=' . $api_key;
-                    break;
-
-                default:
-                    return [];
-                    break;
-            }
+            return [
+                    'title',
+                    'description',
+                    'publishedAt',
+                    'videoId',
+                    'channelTitle',
+                    'position',
+            ];
         } else {
             return [];
         }
@@ -159,12 +132,79 @@ class Youtube_Importer extends Importer {
      */
     public function get_source_number_of_items() {
         $type = $this->get_transient('url_type');
+        $id = $this->get_transient('youtube_id');
+        $api_key = $this->get_option('api_id');
 
-        if( $type === 'v'){
-            return 1;
-        } else {
-            return 0;
+        switch ($type) {
+
+            case 'channel_id':
+                $api_url = 'https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,contentDetails&id='
+                    . $id . '&key=' . $api_key;
+
+                $json = json_decode(file_get_contents($api_url));
+                if( $json && isset($json->items) ){
+                    $item = $json->items[0];
+
+                    $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=statistics,snippet,contentDetails&maxResults=1&playlistId='
+                        . $item->contentDetails->relatedPlaylists->uploads . '&key=' . $api_key;
+
+                    $json = json_decode(file_get_contents($api_url));
+
+                    if( $json && isset($json->items) ){
+                        $item = $json->items[0];
+
+                        if( $item->pageInfo && $item->pageInfo->totalResults ){
+                            return $item->pageInfo->totalResults;
+                        }
+
+                    }
+                }
+                break;
+
+            case 'user':
+                $api_url = 'https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,contentDetails&forUsername='
+                    . $id . '&key=' . $api_key;
+
+                $json = json_decode(file_get_contents($api_url));
+                if( $json && isset($json->items) ){
+                    $item = $json->items[0];
+
+                    $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=1&playlistId='
+                        . $item->contentDetails->relatedPlaylists->uploads . '&key=' . $api_key;
+
+                    $json = json_decode(file_get_contents($api_url));
+
+                    if( $json && isset($json->pageInfo) && $json->pageInfo->totalResults ){
+                        return $json->pageInfo->totalResults;
+                    }
+                }
+                break;
+
+            case 'playlist_id':
+                $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=1&playlistId='
+                    . $id . '&key=' . $api_key;
+
+                $json = json_decode(file_get_contents($api_url));
+                if( $json && isset($json->items) ){
+                    $item = $json->items[0];
+
+                    if( $item->pageInfo && $item->pageInfo->totalResults ){
+                        return $item->pageInfo->totalResults;
+                    }
+
+                }
+                break;
+
+            case 'v':
+                return 1;
+                break;
+
+            default:
+                return 0;
+                break;
         }
+
+        return 0;
     }
 
 
