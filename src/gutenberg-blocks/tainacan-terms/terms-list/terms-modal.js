@@ -154,7 +154,7 @@ export default class TermsModal extends React.Component {
 
         let someModalTerms = this.state.modalTerms;
 
-        if (offset <= 0) {}
+        if (offset <= 0)
             someModalTerms = [];
 
         let endpoint = '/taxonomy/'+ taxonomyId + '/terms/?hideempty=0&number=' + this.state.termsPerPage + '&offset=' + offset;

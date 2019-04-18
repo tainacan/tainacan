@@ -131,7 +131,7 @@ export default class ItemsModal extends React.Component {
         let endpoint = '/collection/'+ this.state.collectionId + '/items/?fetch_only=title,thumbnail&perpage=' + this.state.itemsPerPage;
 
         if (name != undefined && name != '')
-            endpoint += '&searchitem=' + name;
+            endpoint += '&search=' + name;
 
         tainacan.get(endpoint, { cancelToken: anItemsRequestSource.token })
             .then(response => {
@@ -159,10 +159,9 @@ export default class ItemsModal extends React.Component {
     }
 
     fetchModalItems(collectionId) {
-        console.log(this.state.modalItems)
         let someModalItems = this.state.modalItems;
 
-        if (this.state.itemsPage <= 1) {}
+        if (this.state.itemsPage <= 1)
             someModalItems = [];
 
         let endpoint = '/collection/'+ collectionId + '/items/?fetch_only=title,thumbnail&perpage=' + this.state.itemsPerPage + '&paged=' + this.state.itemsPage;
@@ -176,7 +175,7 @@ export default class ItemsModal extends React.Component {
         tainacan.get(endpoint)
             .then(response => {
 
-                let otherModalItems = this.state.modalItems;
+                someModalItems = this.state.modalItems;
                 for (let item of response.data) {
                     someModalItems.push({ 
                         title: item.title, 
@@ -189,14 +188,13 @@ export default class ItemsModal extends React.Component {
                     });
                 }
                 
-                console.log(otherModalItems)
                 this.setState({ 
                     isLoadingItems: false, 
-                    modalItems: otherModalItems,
+                    modalItems: someModalItems,
                     totalModalItems: response.headers['x-wp-total']
                 });
                 
-                return otherModalItems;
+                return someModalItems;
             })
             .catch(error => {
                 console.log('Error trying to fetch items: ' + error);
