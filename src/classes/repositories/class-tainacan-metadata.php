@@ -1014,19 +1014,78 @@ class Metadata extends Repository {
 		if ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ) {
 			
 			if ($items_query) {
-				$base_query = $wpdb->prepare("FROM $wpdb->term_relationships tr 
-					INNER JOIN $wpdb->term_taxonomy tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
-					INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id 
-					WHERE 
-					tt.parent = %d AND
-					tr.object_id IN ($items_query) AND 
-					tt.taxonomy = %s
-					$search_q
+				
+				// $base_query = $wpdb->prepare("FROM $wpdb->term_relationships tr 
+				// 	INNER JOIN $wpdb->term_taxonomy tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+				// 	INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id 
+				// 	WHERE 
+				// 	tt.parent = %d AND
+				// 	tr.object_id IN ($items_query) AND 
+				// 	tt.taxonomy = %s
+				// 	$search_q
+				// 	ORDER BY t.name ASC
+				// 	",
+				// 	$args['parent_id'],
+				// 	$taxonomy_slug
+				// );
+				
+				//$search_query = "AND (tt.parent <> %d OR t.name LIKE '%master%')";
+				
+				
+				$base_query = $wpdb->prepare("
+					SELECT DISTINCT t.term_id, t.name, tt.parent, coalesce(tr.term_taxonomy_id, 0) as have_items
+					FROM 
+					$wpdb->terms t INNER JOIN $wpdb->term_taxonomy tt ON t.term_id = tt.term_id 
+					LEFT JOIN $wpdb->term_relationships tr ON tt.term_taxonomy_id = tr.term_taxonomy_id AND tr.object_id IN ($items_query)
+					WHERE tt.taxonomy = %s
 					ORDER BY t.name ASC
-					",
-					$args['parent_id'],
-					$taxonomy_slug
+				",
+				$taxonomy_slug
 				);
+				
+				$all_hierarchy = $wpdb->get_results($base_query);
+				
+				$results = $this->_process_terms_tree($all_hierarchy, $args['parent_id']);
+				$total = count($results);
+				
+				// $results = [];
+				// 
+				// function children_has_items($term_id, $hierarchy) {
+				// 
+				// 	$has_items = false;
+				// 
+				// 	foreach ( $hierarchy as $h ) {
+				// 
+				// 		if ( $term_in_hierarchy->parent != $term_id ) {
+				// 			continue;
+				// 		}
+				// 
+				// 		if ( $h->have_items > 0 ) {
+				// 			return true;
+				// 		} else {
+				// 			return children_has_items($h->term_id, $hierarchy);
+				// 		}
+				// 
+				// 	}
+				// 
+				// 	return false;
+				// 
+				// }
+				// var_dump($all_hierarchy);
+				// foreach ($all_hierarchy as $term_in_hierarchy) {
+				// 	if ( $term_in_hierarchy->parent != $args['parent_id'] ) {
+				// 		continue;
+				// 	}
+				// 
+				// 	if ( $term_in_hierarchy->have_items > 0 || children_has_items($term_in_hierarchy->term_id, $all_hierarchy) ) {
+				// 		$results[] = $term_in_hierarchy;
+				// 	}
+				// 
+				// }
+				
+				
+				
+				
 			} else {
 				$base_query = $wpdb->prepare("FROM $wpdb->term_taxonomy tt 
 					INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id 
@@ -1039,14 +1098,18 @@ class Metadata extends Repository {
 					$args['parent_id'],
 					$taxonomy_slug
 				);
+				
+				$query = "SELECT DISTINCT t.name, t.term_id, tt.term_taxonomy_id, tt.parent $base_query $pagination";
+				
+				$total_query = "SELECT COUNT(DISTINCT tt.term_taxonomy_id) $base_query";
+				$total = $wpdb->get_var($total_query);
+				
+				$results = $wpdb->get_results($query);
+				
 			}
 			
 			
-			$query = "SELECT DISTINCT t.name, t.term_id, tt.term_taxonomy_id, tt.parent $base_query $pagination";
 			
-			$total_query = "SELECT COUNT(DISTINCT tt.term_taxonomy_id) $base_query";
-			
-			$results = $wpdb->get_results($query);
 			
 			// add selected to the result
 			if ( !empty($args['include']) ) {
@@ -1071,7 +1134,7 @@ class Metadata extends Repository {
 				}
 			}
 			
-			$total = $wpdb->get_var($total_query);
+			
 			$number = is_integer($args['number']) && $args['number'] >=1 ? $args['number'] : $total;
 			if( $number < 1){
 				$pages = 1;
@@ -1195,6 +1258,75 @@ class Metadata extends Repository {
 			'values' => $values,
 			'last_term' => $args['last_term']
 		];
+		
+	}
+	
+	public function _process_terms_tree($tree, $search_parent) {
+		
+		$h_map = [];
+		$results = [];
+		foreach ( $tree as $h ) {
+			
+			//echo "Processing $h->term_id\n";
+			//var_dump($h);
+			//echo "Já ta mapeado?\n";
+			//var_dump(( isset($h_map[$h->term_id]) && $h_map[$h->term_id]->have_items > 0 ));
+			
+			if ( $h->have_items > 0 || ( isset($h_map[$h->term_id]) && $h_map[$h->term_id]->have_items > 0 ) ) {
+				
+				//echo "have_items\n";
+				
+				$h->have_items = 1;
+				$h_map[$h->term_id] = $h;
+				
+				
+				
+				if ($h->parent == $search_parent) {
+					//echo "Add to results\n";
+					$results[] = $h;
+				}
+				
+				$_parent = $h->parent;
+				
+				if ( $h->parent > 0 && !isset($h_map[$_parent]) ) {
+					//echo "Setting parent with have items 1\n";
+					//echo "Parent ID = $_parent\n";
+					$h_map[$_parent] = (object)['have_items' => 1];
+				}
+				
+				while( isset($h_map[$_parent]) && $h_map[$_parent]->have_items != 1 ) {
+					
+					//echo "Looping\n";
+					
+					$h_map[$_parent]->have_items = 1;
+					
+					if ( isset($h_map[$_parent]->parent) ) {
+						//echo "Parent exists: $_parent\n";
+						if ($h_map[$_parent]->parent == $search_parent) {
+							//echo "Add to results: {$h_map[$_parent]->term_id}\n";
+							$results[] = $h_map[$_parent];
+						}
+						$_parent = $h_map[$_parent]->parent;
+					} else {
+						//echo "Parent not exists\n";
+						$_parent = 0;
+					}
+					
+				}
+				
+			} else {
+				//echo "Not have items\n";
+				$h_map[$h->term_id] = $h;
+				if ( $h->parent > 0 && !isset($h_map[$h->parent]) ) {
+					//echo "Parent added: $h->parent\n";
+					$h_map[$h->parent] = (object)['have_items' => $h->have_items];
+				}
+				
+			}
+			
+		}
+		
+		return $results;
 		
 	}
 
