@@ -44,10 +44,6 @@ class Textarea extends Metadata_Type {
 		return '<p>';
 	}
 	
-	public function get_multivalue_separator() {
-		return '';
-	}
-	
 	public function get_multivalue_suffix() {
 		return '</p>';
 	}
