@@ -523,6 +523,8 @@ class Theme_Helper {
 					$img_info = ( has_post_thumbnail( tainacan_get_collection_id() ) ) ? wp_get_attachment_image_src( get_post_thumbnail_id( tainacan_get_collection_id() ), 'full' ) : $logo;
 					$url_src = home_url( $wp->request );
 					$excerpt = tainacan_get_the_collection_description();
+				} elseif ( is_post_type_archive('tainacan-collection') ) {
+					$title = __('Collections', 'tainacan');
 				}
 			} elseif ( is_singular() ) {
 				global $post;
