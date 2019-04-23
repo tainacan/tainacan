@@ -897,7 +897,7 @@ class Metadata extends Repository {
 	  * 	@type mixed		 $collection_id				The collection ID you want to consider or null for all collections. If a collectoin is set
 	  *													then only values applied to items in this collection will be returned
 	  * 
-	  *     @type int		 $number					The number of values to return (for pagination). Default 0 (unlimited)
+	  *     @type int		 $number					The number of values to return (for pagination). Default empty (unlimited)
 	  * 
 	  *     @type int		 $offset					The offset (for pagination). Default 0
 	  * 
@@ -1015,78 +1015,102 @@ class Metadata extends Repository {
 			
 			if ($items_query) {
 				
-				// $base_query = $wpdb->prepare("FROM $wpdb->term_relationships tr 
-				// 	INNER JOIN $wpdb->term_taxonomy tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
-				// 	INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id 
-				// 	WHERE 
-				// 	tt.parent = %d AND
-				// 	tr.object_id IN ($items_query) AND 
-				// 	tt.taxonomy = %s
-				// 	$search_q
-				// 	ORDER BY t.name ASC
-				// 	",
-				// 	$args['parent_id'],
-				// 	$taxonomy_slug
-				// );
+				$check_hierarchy_q = $wpdb->prepare("SELECT term_id FROM $wpdb->term_taxonomy WHERE taxonomy = %s AND parent > 0 LIMIT 1", $taxonomy_slug);
+				$has_hierarchy = ! is_null($wpdb->get_var($check_hierarchy_q));
 				
-				//$search_query = "AND (tt.parent <> %d OR t.name LIKE '%master%')";
-				
-				
-				$base_query = $wpdb->prepare("
-					SELECT DISTINCT t.term_id, t.name, tt.parent, coalesce(tr.term_taxonomy_id, 0) as have_items
-					FROM 
-					$wpdb->terms t INNER JOIN $wpdb->term_taxonomy tt ON t.term_id = tt.term_id 
-					LEFT JOIN $wpdb->term_relationships tr ON tt.term_taxonomy_id = tr.term_taxonomy_id AND tr.object_id IN ($items_query)
-					WHERE tt.taxonomy = %s
-					ORDER BY t.name ASC
-				",
-				$taxonomy_slug
-				);
-				
-				$all_hierarchy = $wpdb->get_results($base_query);
-				
-				$results = $this->_process_terms_tree($all_hierarchy, $args['parent_id']);
-				$total = count($results);
-				
-				// $results = [];
-				// 
-				// function children_has_items($term_id, $hierarchy) {
-				// 
-				// 	$has_items = false;
-				// 
-				// 	foreach ( $hierarchy as $h ) {
-				// 
-				// 		if ( $term_in_hierarchy->parent != $term_id ) {
-				// 			continue;
-				// 		}
-				// 
-				// 		if ( $h->have_items > 0 ) {
-				// 			return true;
-				// 		} else {
-				// 			return children_has_items($h->term_id, $hierarchy);
-				// 		}
-				// 
-				// 	}
-				// 
-				// 	return false;
-				// 
-				// }
-				// var_dump($all_hierarchy);
-				// foreach ($all_hierarchy as $term_in_hierarchy) {
-				// 	if ( $term_in_hierarchy->parent != $args['parent_id'] ) {
-				// 		continue;
-				// 	}
-				// 
-				// 	if ( $term_in_hierarchy->have_items > 0 || children_has_items($term_in_hierarchy->term_id, $all_hierarchy) ) {
-				// 		$results[] = $term_in_hierarchy;
-				// 	}
-				// 
-				// }
-				
-				
-				
+				if ( ! $has_hierarchy ) {
+					$base_query = $wpdb->prepare("FROM $wpdb->term_relationships tr 
+						INNER JOIN $wpdb->term_taxonomy tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+						INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id 
+						WHERE 
+						tt.parent = %d AND
+						tr.object_id IN ($items_query) AND 
+						tt.taxonomy = %s
+						$search_q
+						ORDER BY t.name ASC
+						",
+						$args['parent_id'],
+						$taxonomy_slug
+					);
+					
+					$query = "SELECT DISTINCT t.name, t.term_id, tt.term_taxonomy_id, tt.parent $base_query $pagination";
+					
+					$total_query = "SELECT COUNT(DISTINCT tt.term_taxonomy_id) $base_query";
+					$total = $wpdb->get_var($total_query);
+					
+					$results = $wpdb->get_results($query);
+					
+				} else {
+					
+					$search_q = '';
+					if (!empty($search)) {
+						/**
+						* We need all children to figure out what parents have items on their descendants, but we want 
+						* to filter only the terms with the search string
+						*/
+						$search_q = $wpdb->prepare("AND (tt.parent <> %d OR t.name LIKE %s)", $args['parent_id'], '%' . $search . '%');
+					}
+					
+					$base_query = $wpdb->prepare("
+						SELECT DISTINCT t.term_id, t.name, tt.parent, coalesce(tr.term_taxonomy_id, 0) as have_items
+						FROM 
+						$wpdb->terms t INNER JOIN $wpdb->term_taxonomy tt ON t.term_id = tt.term_id 
+						LEFT JOIN $wpdb->term_relationships tr ON tt.term_taxonomy_id = tr.term_taxonomy_id AND tr.object_id IN ($items_query)
+						WHERE tt.taxonomy = %s $search_q
+						ORDER BY t.name ASC
+					",
+					$taxonomy_slug
+					);
+					
+					$all_hierarchy = $wpdb->get_results($base_query);
+					
+					$results = $this->_process_terms_tree($all_hierarchy, $args['parent_id']);
+					$total = count($results);
+					
+					if ( $args['offset'] >= 0 && $args['number'] >= 1 ) {
+						$results = array_slice($results, (int) $args['offset'], (int) $args['number']);
+					}
+					
+					
+					// $results = [];
+					// 
+					// function children_has_items($term_id, $hierarchy) {
+					// 
+					// 	$has_items = false;
+					// 
+					// 	foreach ( $hierarchy as $h ) {
+					// 
+					// 		if ( $term_in_hierarchy->parent != $term_id ) {
+					// 			continue;
+					// 		}
+					// 
+					// 		if ( $h->have_items > 0 ) {
+					// 			return true;
+					// 		} else {
+					// 			return children_has_items($h->term_id, $hierarchy);
+					// 		}
+					// 
+					// 	}
+					// 
+					// 	return false;
+					// 
+					// }
+					// var_dump($all_hierarchy);
+					// foreach ($all_hierarchy as $term_in_hierarchy) {
+					// 	if ( $term_in_hierarchy->parent != $args['parent_id'] ) {
+					// 		continue;
+					// 	}
+					// 
+					// 	if ( $term_in_hierarchy->have_items > 0 || children_has_items($term_in_hierarchy->term_id, $all_hierarchy) ) {
+					// 		$results[] = $term_in_hierarchy;
+					// 	}
+					// 
+					// }
+					
+				}
 				
 			} else {
+				
 				$base_query = $wpdb->prepare("FROM $wpdb->term_taxonomy tt 
 					INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id 
 					WHERE 
