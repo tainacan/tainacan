@@ -20,7 +20,7 @@ class Youtube_Importer extends Importer {
     ];
 
     /**
-     * construct
+     * constructor
      */
     public function __construct($attributes = array()) {
         parent::__construct($attributes);
@@ -109,7 +109,7 @@ class Youtube_Importer extends Importer {
                         break;
 
                     case 'url':
-                        $value = 'https://www.youtube.com/watch?v=' . $item->snippet->videoId;
+                        $value = 'https://www.youtube.com/watch?v=' . $item->contentDetails->videoId;
                         break;
                 }
 
@@ -129,7 +129,10 @@ class Youtube_Importer extends Importer {
     }
 
     /**
-     * identify the type of url is send by user
+     * method responsible for identify the type of url
+     *
+     * @param bool $showDetails
+     * @return array|bool
      */
     public function identify_url( $showDetails = false ){
         $url = $this->get_url();
@@ -212,6 +215,8 @@ class Youtube_Importer extends Importer {
     }
 
     /**
+     * return the list of items for the different types of url
+     *
      * @return array|mixed
      */
     private function get_list_items() {
