@@ -136,7 +136,7 @@ export default class ItemsModal extends React.Component {
         tainacan.get(endpoint, { cancelToken: anItemsRequestSource.token })
             .then(response => {
 
-                let someItems = response.data.map((item) => ({ 
+                let someItems = response.data.items.map((item) => ({ 
                     title: item.title, 
                     id: item.id,
                     url: item.url,
@@ -176,7 +176,7 @@ export default class ItemsModal extends React.Component {
             .then(response => {
 
                 someModalItems = this.state.modalItems;
-                for (let item of response.data) {
+                for (let item of response.data.items) {
                     someModalItems.push({ 
                         title: item.title, 
                         id: item.id,
