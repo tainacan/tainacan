@@ -1072,40 +1072,7 @@ class Metadata extends Repository {
 					}
 					
 					
-					// $results = [];
-					// 
-					// function children_has_items($term_id, $hierarchy) {
-					// 
-					// 	$has_items = false;
-					// 
-					// 	foreach ( $hierarchy as $h ) {
-					// 
-					// 		if ( $term_in_hierarchy->parent != $term_id ) {
-					// 			continue;
-					// 		}
-					// 
-					// 		if ( $h->have_items > 0 ) {
-					// 			return true;
-					// 		} else {
-					// 			return children_has_items($h->term_id, $hierarchy);
-					// 		}
-					// 
-					// 	}
-					// 
-					// 	return false;
-					// 
-					// }
-					// var_dump($all_hierarchy);
-					// foreach ($all_hierarchy as $term_in_hierarchy) {
-					// 	if ( $term_in_hierarchy->parent != $args['parent_id'] ) {
-					// 		continue;
-					// 	}
-					// 
-					// 	if ( $term_in_hierarchy->have_items > 0 || children_has_items($term_in_hierarchy->term_id, $all_hierarchy) ) {
-					// 		$results[] = $term_in_hierarchy;
-					// 	}
-					// 
-					// }
+
 					
 				}
 				

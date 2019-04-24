@@ -969,6 +969,74 @@ class Facets extends TAINACAN_UnitApiTestCase {
 		
 		
 	}
-	
 
+	/**
+	* @group term_tree
+	*/
+	public function test_process_term_tree_naria() {
+		$MetaRepo = \Tainacan\Repositories\Metadata::get_instance();
+		
+		$nchildrens = 3;
+		$h = 6;
+		$data = $this->generate_narias_tree_test($nchildrens, $h);
+		$this->set_items_in_tree($data, $nchildrens, $h, [1,3], 1);
+		//var_dump($data);
+		$start = microtime(true);
+		$results = $MetaRepo->_process_terms_tree($data, 0);
+		$time = microtime(true) - $start;
+
+		$this->assertEquals(2, count($results));
+		$ids = array_map(function($el) {return $el->term_id; }, $results);
+		$this->assertContains(1, $ids);
+		$this->assertContains(3, $ids);
+	}
+
+	private function set_items_in_tree($data, $nchildrens, $h, $parents=[], $items_repeat=1) {
+		if (empty($parents) || $nchildrens < 2 || $h < 1)
+			return $data;
+
+		foreach ($parents as $parent) {
+			for($i=0; $i < $items_repeat; $i++) {
+				$rando_h = rand (1, $h);
+				$rando_c = rand (1, $nchildrens) - 1;
+				$id = $parent;
+				for ($count=0; $count < $rando_h; $count++ ) {
+					$idx = ($id * $nchildrens) + $rando_c;
+					if($idx > count($data)-1) {
+						$idx = ($parent * $nchildrens) + $rando_c;
+					}
+					$id = $data[$idx]->term_id;
+				}
+				$data[$idx]->have_items = 1;
+			}
+		}
+	}
+
+	/*
+	* generate n-árias trees
+	*
+	* $nchildrens ||  $h=2 | $h=4 | $h=8  | $h=9
+	*           2 ||    3  |  15  |  255  |  511
+	*           3 ||    4  |  40  |  3280 |  9841
+	*           4 ||    5  |  85  |  21845|  87381
+	*           5 ||    6  |  156 |  97656|  488281
+	*/
+	private function generate_narias_tree_test($nchildrens, $h) {
+		if ($nchildrens < 2 || $h < 2)
+			return [];
+
+		$n = (pow($nchildrens, $h) - 1) / ($nchildrens - 1);
+		$data = [];
+		for ($i = 0; $i < $n-1; $i++) {
+			$id = $i+1;
+			$parent = floor($i/$nchildrens);
+			$data[] = (object) [
+				'term_id' => $id,
+				'name'		=> "i-$id",
+				'parent'	=> $parent,
+				'have_items' => 0
+			];
+		}
+		return $data;
+	}
 }
