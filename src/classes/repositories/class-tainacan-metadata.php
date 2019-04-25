@@ -1252,70 +1252,72 @@ class Metadata extends Repository {
 		
 	}
 	
+	/**
+	* This method processes the result of the query for all terms in a taxonomy done in get_all_metadatum_values()
+	* It efficiently runs through all the terms and checks what terms with a given $parent have items in itself or any of 
+	* its descendants, keeping the order they originally came.
+	* 
+	* It returns an array with the term objects with the given $parent that have items considering items in its descendants. The objects are 
+	* in the same format they came, as expected by the rest of the method. 
+	*
+	* This method is public only for tests purposes, it should not be used anywhere else
+	*/
 	public function _process_terms_tree($tree, $search_parent) {
 		
 		$h_map = [];
 		$results = [];
 		foreach ( $tree as $h ) {
 			
-			//echo "Processing $h->term_id\n";
-			//var_dump($h);
-			//echo "Já ta mapeado?\n";
-			//var_dump(( isset($h_map[$h->term_id]) && $h_map[$h->term_id]->have_items > 0 ));
-			
 			if ( $h->have_items > 0 || ( isset($h_map[$h->term_id]) && $h_map[$h->term_id]->have_items > 0 ) ) {
-				
-				//echo "have_items\n";
 				
 				$h->have_items = 1;
 				$h_map[$h->term_id] = $h;
-				
-				
-				
+
 				if ($h->parent == $search_parent) {
-					//echo "Add to results\n";
-					$results[] = $h;
+					$results[$h->term_id] = $h;
 				}
 				
 				$_parent = $h->parent;
 				
 				if ( $h->parent > 0 && !isset($h_map[$_parent]) ) {
-					//echo "Setting parent with have items 1\n";
-					//echo "Parent ID = $_parent\n";
 					$h_map[$_parent] = (object)['have_items' => 1];
 				}
 				
 				while( isset($h_map[$_parent]) && $h_map[$_parent]->have_items != 1 ) {
-					
-					//echo "Looping\n";
-					
 					$h_map[$_parent]->have_items = 1;
 					
 					if ( isset($h_map[$_parent]->parent) ) {
-						//echo "Parent exists: $_parent\n";
 						if ($h_map[$_parent]->parent == $search_parent) {
-							//echo "Add to results: {$h_map[$_parent]->term_id}\n";
-							$results[] = $h_map[$_parent];
+							$results[$h_map[$_parent]->term_id] = $h_map[$_parent];
 						}
 						$_parent = $h_map[$_parent]->parent;
 					} else {
-						//echo "Parent not exists\n";
 						$_parent = 0;
 					}
 					
 				}
 				
 			} else {
-				//echo "Not have items\n";
 				$h_map[$h->term_id] = $h;
 				if ( $h->parent > 0 && !isset($h_map[$h->parent]) ) {
-					//echo "Parent added: $h->parent\n";
 					$h_map[$h->parent] = (object)['have_items' => $h->have_items];
 				}
-				
+				if ($h->parent == $search_parent) {
+					$results[$h->term_id] = $h;
+				}
 			}
 			
 		}
+		
+		// Results have all terms with wanted parent. Now we unset those who dont have items
+		// and set it back to incremental keys]
+		// we could have sent to $results only those with items, but doing that we would not preserve their order
+		$results = array_reduce($results, function ($return, $el) {
+			if ($el->have_items > 0) {
+				$return[] = $el;
+			}
+			return $return;
+		}, []);
 		
 		return $results;
 		
