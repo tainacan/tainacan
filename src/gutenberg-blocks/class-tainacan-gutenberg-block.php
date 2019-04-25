@@ -121,7 +121,7 @@ function tainacan_blocks_register_tainacan_dynamic_items_list(){
 
 	wp_register_script(
 		'dynamic-items-list',
-		$TAINACAN_BASE_URL . '/assets/gutenberg_dynamic-items_list-components.js',
+		$TAINACAN_BASE_URL . '/assets/gutenberg_dynamic_items_list-components.js',
 		array('wp-blocks', 'wp-element', 'wp-components', 'wp-editor')
 	);
 
@@ -168,7 +168,8 @@ function tainacan_blocks_get_plugin_js_settings(){
 	$settings = [
 		'root'     => esc_url_raw( rest_url() ) . 'tainacan/v2',
 		'nonce'    => wp_create_nonce( 'wp_rest' ),
-		'base_url' => $TAINACAN_BASE_URL
+		'base_url' => $TAINACAN_BASE_URL,
+		'admin_url' => admin_url()
 	];
 
 	return $settings;

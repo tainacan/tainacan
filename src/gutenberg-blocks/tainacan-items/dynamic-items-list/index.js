@@ -2,14 +2,14 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, IconButton, Button, Modal, CheckboxControl, RadioControl, Spinner, ToggleControl, Placeholder, Toolbar } = wp.components;
+const { RangeControl, IconButton, Button, ToggleControl, Placeholder, Toolbar } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
 import DynamicItemsModal from './dynamic-items-modal.js';
 
 registerBlockType('tainacan/dynamic-items-list', {
-    title: __('Tainacan Items List', 'tainacan'),
+    title: __('Tainacan Dynamic Items List', 'tainacan'),
     icon:
         <svg width="24" height="24" viewBox="0 -2 12 16">
             <path
@@ -153,7 +153,7 @@ registerBlockType('tainacan/dynamic-items-list', {
             });
         }
 
-        function openItemsModal() {
+        function openDynamicItemsModal() {
             isModalOpen = true;
             setAttributes( { 
                 isModalOpen: isModalOpen
@@ -266,21 +266,21 @@ registerBlockType('tainacan/dynamic-items-list', {
                     (
                     <div>
                         { isModalOpen ? 
-                            <ItemsModal
+                            <DynamicItemsModal
                                 existingCollectionId={ collectionId } 
-                                selectedItemsObject={ selectedItemsObject } 
+                                // selectedItemsObject={ selectedItemsObject } 
                                 onSelectCollection={ (selectedCollectionId) => {
                                     collectionId = selectedCollectionId;
                                     setAttributes({ collectionId: collectionId });
                                 }}
-                                onApplySelection={ (aSelectedItemsObject) =>{
-                                    selectedItemsObject = aSelectedItemsObject
-                                    setAttributes({
-                                        selectedItemsObject: selectedItemsObject,
-                                        isModalOpen: false
-                                    });
-                                    setContent();
-                                }}
+                                // onApplySelection={ (aSelectedItemsObject) =>{
+                                //     selectedItemsObject = aSelectedItemsObject
+                                //     setAttributes({
+                                //         selectedItemsObject: selectedItemsObject,
+                                //         isModalOpen: false
+                                //     });
+                                //     setContent();
+                                // }}
                                 onCancelSelection={ () => setAttributes({ isModalOpen: false }) }/> 
                             : null
                         }
@@ -289,8 +289,8 @@ registerBlockType('tainacan/dynamic-items-list', {
                             <Button
                                 isPrimary
                                 type="submit"
-                                onClick={ () => openItemsModal() }>
-                                {__('Select items', 'tainacan')}
+                                onClick={ () => openDynamicItemsModal() }>
+                                {__('Select items search', 'tainacan')}
                             </Button>   
                         </div>
                         <hr/>

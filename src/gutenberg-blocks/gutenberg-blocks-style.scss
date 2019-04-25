@@ -11,6 +11,27 @@
     @media only screen and (max-width: 1024px) {  width: 75% }
     @media only screen and (max-width: 768px) { width: 100%; }
 
+    // Iframe for dynamic modal
+    &.large-modal {
+        width: 90%;
+        height: 90%;
+        width: 80vw;
+        height: 80vh;
+
+        iframe {
+            width: calc(100% + 64px);
+            height: calc(100% - 104px);
+            margin-left: -32px;
+        }
+
+        .modal-footer {
+            height: 68px;
+            background: #dbdbdb;
+            width: calc(100% + 64px);
+            margin: 0px 0 -32px -32px;
+        }
+    }
+
     // Spinner
     .components-spinner {
         position: absolute;

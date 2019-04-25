@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, IconButton, Button, Modal, CheckboxControl, RadioControl, Spinner, ToggleControl, Placeholder, Toolbar } = wp.components;
+const { RangeControl, IconButton, Button, ToggleControl, Placeholder, Toolbar } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
