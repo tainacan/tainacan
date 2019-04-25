@@ -6,9 +6,9 @@ const { RangeControl, IconButton, Button, Modal, CheckboxControl, RadioControl, 
 
 const { InspectorControls, BlockControls } = wp.editor;
 
-import ItemsModal from './items-modal.js';
+import DynamicItemsModal from './dynamic-items-modal.js';
 
-registerBlockType('tainacan/items-list', {
+registerBlockType('tainacan/dynamic-items-list', {
     title: __('Tainacan Items List', 'tainacan'),
     icon:
         <svg width="24" height="24" viewBox="0 -2 12 16">
