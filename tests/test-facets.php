@@ -712,14 +712,15 @@ class Facets extends TAINACAN_UnitApiTestCase {
 
 		$values = $this->repository->fetch_all_metadatum_values( $this->meta_2_tax->get_id(), [
 			'count_items' => true,
-			'search' => 'collection',
+			'collection_id' => $this->collection2->get_id(),
+			'search' => 'child',
 			'items_filter' => false
 		] );
 		$values = $this->get_values($values);
 		$this->assertEquals( 2, sizeof($values) );
 
 		$valuesParsed = array_map(function($el) {
-			$this->assertEquals( 20, $el['total_items'] );
+			$this->assertEquals( 10, $el['total_items'] );
 			return $el['label'];
 		}, $values);
 
@@ -797,21 +798,21 @@ class Facets extends TAINACAN_UnitApiTestCase {
 
 		//test search taxonomy
 		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
-			'items_filter' => [ 'parent_id' => 0],
+			'items_filter' => false,
 			'search' => 't2',
 		]);
 		$values = $this->get_values($values);
 		$this->assertEquals(1, sizeof($values));
 
 		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
-			'items_filter' => [ 'parent_id' => 0],
+			'items_filter' => false,
 			'search' => 'Children',
 		]);
 		$values = $this->get_values($values);
 		$this->assertEquals(5, sizeof($values));
 
 		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
-			'items_filter' => [ 'parent_id' => 0],
+			'items_filter' => false,
 			'search' => 'GGC',
 		]);
 		$values = $this->get_values($values);
