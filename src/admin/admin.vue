@@ -2,7 +2,10 @@
     <div 
             id="tainacan-admin-app" 
             class="columns is-fullheight"
-            :class="{ 'tainacan-admin-read-mode': isReadMode }">
+            :class="{ 
+                'tainacan-admin-iframe-mode': $route.query.iframemode, 
+                'tainacan-admin-read-mode': $route.query.readmode
+            }">
         <template v-if="activeRoute == 'HomePage'">
             <tainacan-header />
             <router-view /> 
@@ -52,8 +55,7 @@
             return {
                 isMenuCompressed: false,
                 isRepositoryLevel : true,
-                activeRoute: '/collections',
-                isReadMode: false
+                activeRoute: '/collections'
             }
         },
         components: {
@@ -72,7 +74,6 @@
                 this.isMenuCompressed = (to.params.collectionId != undefined);
                 this.activeRoute = to.name;
                 this.isRepositoryLevel = this.$route.params.collectionId == undefined;
-                this.isReadMode = this.$route.query.readmode;
             }
         }
     }
@@ -146,32 +147,6 @@
 
         .icon {
             margin-top: -2px;
-        }
-    }
-
-    // READ MODE
-    // Used on gutenberg blocks, hiding content
-    .tainacan-admin-read-mode#tainacan-admin-app {
-        #primary-menu,
-        #menu-compress-button,
-        #tainacan-header,
-        #tainacan-repository-subheader,
-        #tainacan-subheader {
-            display: none;
-        }
-        #repository-container .is-secondary-content {
-            margin-top: 0;
-            height: 100%;
-            
-            .page-container-small {
-                height: 100%;
-
-                #item-creation-options-dropdown,
-                .tabs,
-                #items-list-results .selection-control {
-                    display: none;
-                }
-            }
         }
     }
 

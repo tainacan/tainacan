@@ -167,7 +167,7 @@
                 <!-- Item Creation Dropdown, only on Admin -->
                 <div 
                         class="search-control-item"
-                        v-if="!isOnTheme">
+                        v-if="!isOnTheme && !$route.query.iframemode">
                     <b-dropdown 
                             :mobile-modal="true"
                             id="item-creation-options-dropdown"
@@ -517,7 +517,9 @@
                 </div>
 
                 <!-- Exposers or alternative links modal button -->
-                <div class="search-control-item">
+                <div 
+                        v-if="!$route.query.iframemode"
+                        class="search-control-item">
                     <button 
                             class="button is-white"
                             :aria-label="$i18n.get('label_urls')"

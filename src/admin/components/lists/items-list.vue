@@ -75,7 +75,7 @@
 
             <!-- Context menu for right click selection -->
             <div 
-                    v-if="cursorPosY > 0 && cursorPosX > 0"
+                    v-if="cursorPosY > 0 && cursorPosX > 0 && !$route.query.readmode"
                     class="context-menu">
 
                 <!-- Backdrop for escaping context menu -->
@@ -89,12 +89,12 @@
                         :style="{ top: cursorPosY + 'px', left: cursorPosX + 'px' }">
                     <b-dropdown-item
                             @click="openItem()" 
-                            v-if="!isOnTrash">
+                            v-if="!isOnTrash && !$route.query.iframemode">
                         {{ $i18n.getFrom('items','view_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="openItemOnNewTab()"
-                            v-if="!isOnTrash">
+                            v-if="!isOnTrash && !$route.query.iframemode">
                         {{ $i18n.get('label_open_item_new_tab') }}
                     </b-dropdown-item>
                     <b-dropdown-item 
@@ -104,12 +104,12 @@
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="goToItemEditPage(contextMenuItem)"
-                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit">
+                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$route.query.iframemode">
                         {{ $i18n.getFrom('items','edit_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="deleteOneItem(contextMenuItem.id)"
-                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit">
+                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$route.query.iframemode">
                         {{ $i18n.get('label_delete_item') }}
                     </b-dropdown-item>
                 </b-dropdown>
@@ -130,7 +130,7 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId"
+                            v-if="collectionId && !$route.query.readmode"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="grid-item-checkbox">
                         <b-checkbox 
@@ -176,7 +176,7 @@
 
                     <!-- Actions -->
                     <div 
-                            v-if="item.current_user_can_edit"
+                            v-if="item.current_user_can_edit && !$route.query.iframemode"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -249,7 +249,7 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId"
+                            v-if="collectionId && !$route.query.readmode"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="masonry-item-checkbox">
                         <label 
@@ -288,7 +288,7 @@
                     
                     <!-- Actions -->
                     <div 
-                            v-if="item.current_user_can_edit"
+                            v-if="item.current_user_can_edit && !$route.query.iframemode"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -356,7 +356,7 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId"
+                            v-if="collectionId && !$route.query.readmode"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="card-checkbox">
                         <b-checkbox 
@@ -386,7 +386,7 @@
                     </div>
                     <!-- Actions -->
                     <div 
-                            v-if="item.current_user_can_edit"
+                            v-if="item.current_user_can_edit && !$route.query.iframemode"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -519,7 +519,7 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId"
+                            v-if="collectionId && !$route.query.readmode"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="record-checkbox">
                         <label
@@ -574,7 +574,7 @@
                     </div>
                     <!-- Actions -->
                     <div 
-                            v-if="item.current_user_can_edit"
+                            v-if="item.current_user_can_edit && !$route.query.iframemode"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -671,7 +671,7 @@
                     <tr>
                         <!-- Checking list -->
                         <th
-                                v-if="collectionId">
+                                v-if="collectionId && !$route.query.readmode">
                             &nbsp;
                             <!-- nothing to show on header for checkboxes -->
                         </th>
@@ -708,7 +708,7 @@
                         <!-- Checking list -->
                         <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                         <td
-                                v-if="collectionId"
+                                v-if="collectionId && !$route.query.readmode"
                                 :class="{ 'is-selecting': isSelectingItems }"
                                 class="checkbox-cell">
                             <b-checkbox 
@@ -815,7 +815,7 @@
 
                         <!-- Actions -->
                         <td 
-                                v-if="item.current_user_can_edit"
+                                v-if="item.current_user_can_edit && !$route.query.iframemode"
                                 class="actions-cell"
                                 :label="$i18n.get('label_actions')">
                             <div class="actions-container">
@@ -914,6 +914,19 @@ export default {
             this.selectedItemsIDs.push(false);
             this.selectedItems.push(false);
         }
+
+        // Disables every link in case we're inside an iframe
+        if (this.$route.query.iframemode) {
+            jQuery(document).ready(() =>{       
+                jQuery('a[data-linkto="item"]').click((event) => {
+                    this.$console.log("Preventing link navigation inside gutenberg modal iframe.");
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return false;
+                }); 
+            });
+        }
+
     },
     watch: {
         selectedItems() {
@@ -1138,25 +1151,31 @@ export default {
             if ($event.ctrlKey || $event.shiftKey) {
                 this.$set(this.selectedItems, index, !this.selectedItems[index]);
             } else {
-                if(this.isOnTrash){
-                    this.$toast.open({
-                        duration: 3000,
-                        message: this.$i18n.get('info_warning_remove_from_trash_first'),
-                        position: 'is-bottom',
-                        type: 'is-warning'
-                    });
-                } else {
-                    this.$router.push(this.$routerHelper.getItemPath(item.collection_id, item.id));
+                if (!this.$route.query.iframemode && this.$route.query.iframemode) {
+                    this.$set(this.selectedItems, index, !this.selectedItems[index]);
+                } else if (!this.$route.query.iframemode && !this.$route.query.readmode) {
+                    if(this.isOnTrash){
+                        this.$toast.open({
+                            duration: 3000,
+                            message: this.$i18n.get('info_warning_remove_from_trash_first'),
+                            position: 'is-bottom',
+                            type: 'is-warning'
+                        });
+                    } else {
+                        this.$router.push(this.$routerHelper.getItemPath(item.collection_id, item.id));
+                    }
                 }
             }
         },
         onRightClickItem($event, item, index) {
-            $event.preventDefault();
+            if (!this.$route.query.readmode) {
+                $event.preventDefault();
 
-            this.cursorPosX = $event.clientX;
-            this.cursorPosY = $event.clientY;
-            this.contextMenuItem = item;
-            this.contextMenuIndex = index;
+                this.cursorPosX = $event.clientX;
+                this.cursorPosY = $event.clientY;
+                this.contextMenuItem = item;
+                this.contextMenuIndex = index;
+            }
         },
         clearContextMenu() {
             this.cursorPosX = -1;
