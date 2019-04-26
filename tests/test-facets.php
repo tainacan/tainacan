@@ -40,27 +40,27 @@ class Facets extends TAINACAN_UnitApiTestCase {
 		$this->collection2 = $collection2;
 		
 		$taxonomy = $this->tainacan_entity_factory->create_entity(
-        	'taxonomy',
-	        array(
-	        	'name'         => 'genero',
-		        'description'  => 'tipos de musica',
-		        'allow_insert' => 'yes',
+			'taxonomy',
+			array(
+				'name'         => 'genero',
+				'description'  => 'tipos de musica',
+				'allow_insert' => 'yes',
 				'status' => 'publish'
-	        ),
-	        true
+			),
+			true
 		);
 		
 		$this->taxonomy = $taxonomy;
 		
 		$taxonomy2 = $this->tainacan_entity_factory->create_entity(
-        	'taxonomy',
-	        array(
-	        	'name'         => 'genero2',
-		        'description'  => 'tipos de musica2',
-		        'allow_insert' => 'yes',
+			'taxonomy',
+			array(
+				'name'         => 'genero2',
+				'description'  => 'tipos de musica2',
+				'allow_insert' => 'yes',
 				'status' => 'publish'
-	        ),
-	        true
+			),
+			true
 		);
 		
 		$this->taxonomy = $taxonomy;
@@ -781,20 +781,42 @@ class Facets extends TAINACAN_UnitApiTestCase {
 		$this->assertContains( 'Value 55', $valuesParsed);
 		$this->assertContains( 'Value 77', $valuesParsed);
 		
-		// test count items normal 
+		// test count items normal
 		
-		// test default taxonomy 
+		// test default taxonomy
 		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id());
 		$values = $this->get_values($values);
 		$this->assertEquals(2, sizeof($values));
 		
-		// test default taxonomy without filter 
+		// test default taxonomy without filter
 		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
 			'items_filter' => false
 		]);
 		$values = $this->get_values($values);
 		$this->assertEquals(2, sizeof($values));
-		// test search taxonomy 
+
+		//test search taxonomy
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
+			'items_filter' => [ 'parent_id' => 0],
+			'search' => 't2',
+		]);
+		$values = $this->get_values($values);
+		$this->assertEquals(1, sizeof($values));
+
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
+			'items_filter' => [ 'parent_id' => 0],
+			'search' => 'Children',
+		]);
+		$values = $this->get_values($values);
+		$this->assertEquals(5, sizeof($values));
+
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
+			'items_filter' => [ 'parent_id' => 0],
+			'search' => 'GGC',
+		]);
+		$values = $this->get_values($values);
+		$this->assertEquals(1, sizeof($values));
+
 		// test search taxonomy  with filter
 		// test search taxonomy  without filter
 		// test offset taxonomy 
@@ -998,9 +1020,9 @@ class Facets extends TAINACAN_UnitApiTestCase {
 		foreach ($parents as $parent) {
 			for($i=0; $i < $items_repeat; $i++) {
 				$rando_h = rand (1, $h);
-				$rando_c = rand (1, $nchildrens) - 1;
 				$id = $parent;
 				for ($count=0; $count < $rando_h; $count++ ) {
+					$rando_c = rand (1, $nchildrens) - 1;
 					$idx = ($id * $nchildrens) + $rando_c;
 					if($idx > count($data)-1) {
 						$idx = ($parent * $nchildrens) + $rando_c;

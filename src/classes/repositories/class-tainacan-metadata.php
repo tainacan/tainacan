@@ -1042,40 +1042,28 @@ class Metadata extends Repository {
 					
 				} else {
 					
-					$search_q = '';
-					if (!empty($search)) {
-						/**
-						* We need all children to figure out what parents have items on their descendants, but we want 
-						* to filter only the terms with the search string
-						*/
-						$search_q = $wpdb->prepare("AND (tt.parent <> %d OR t.name LIKE %s)", $args['parent_id'], '%' . $search . '%');
-					}
-					
 					$base_query = $wpdb->prepare("
 						SELECT DISTINCT t.term_id, t.name, tt.parent, coalesce(tr.term_taxonomy_id, 0) as have_items
 						FROM 
 						$wpdb->terms t INNER JOIN $wpdb->term_taxonomy tt ON t.term_id = tt.term_id 
 						LEFT JOIN $wpdb->term_relationships tr ON tt.term_taxonomy_id = tr.term_taxonomy_id AND tr.object_id IN ($items_query)
-						WHERE tt.taxonomy = %s $search_q
-						ORDER BY t.name ASC
-					",
-					$taxonomy_slug
+						WHERE tt.taxonomy = %s ORDER BY t.name ASC", $taxonomy_slug
 					);
 					
 					$all_hierarchy = $wpdb->get_results($base_query);
 					
-					$results = $this->_process_terms_tree($all_hierarchy, $args['parent_id']);
+					if (empty($search)) {
+						$results = $this->_process_terms_tree($all_hierarchy, $args['parent_id'], 'parent');
+					} else  {
+						$results = $this->_process_terms_tree($all_hierarchy, $search, 'name');
+					}
+					
 					$total = count($results);
 					
 					if ( $args['offset'] >= 0 && $args['number'] >= 1 ) {
 						$results = array_slice($results, (int) $args['offset'], (int) $args['number']);
 					}
-					
-					
-
-					
 				}
-				
 			} else {
 				
 				$base_query = $wpdb->prepare("FROM $wpdb->term_taxonomy tt 
@@ -1262,7 +1250,7 @@ class Metadata extends Repository {
 	*
 	* This method is public only for tests purposes, it should not be used anywhere else
 	*/
-	public function _process_terms_tree($tree, $search_parent) {
+	public function _process_terms_tree($tree, $search_value, $search_type='parent') {
 		
 		$h_map = [];
 		$results = [];
@@ -1273,7 +1261,8 @@ class Metadata extends Repository {
 				$h->have_items = 1;
 				$h_map[$h->term_id] = $h;
 
-				if ($h->parent == $search_parent) {
+				if(($search_type == 'parent' && $h->parent == $search_value) ||
+					 ($search_type == 'name' && $h->have_items > 0 && strpos(strtolower($h->name), strtolower($search_value)) !== false)) {
 					$results[$h->term_id] = $h;
 				}
 				
@@ -1287,7 +1276,8 @@ class Metadata extends Repository {
 					$h_map[$_parent]->have_items = 1;
 					
 					if ( isset($h_map[$_parent]->parent) ) {
-						if ($h_map[$_parent]->parent == $search_parent) {
+						if(($search_type == 'parent' && $h->parent == $search_value) ||
+							 ($search_type == 'name' && $h->have_items > 0 && strpos(strtolower($h->name), strtolower($search_value)) !== false)) {
 							$results[$h_map[$_parent]->term_id] = $h_map[$_parent];
 						}
 						$_parent = $h_map[$_parent]->parent;
@@ -1302,11 +1292,12 @@ class Metadata extends Repository {
 				if ( $h->parent > 0 && !isset($h_map[$h->parent]) ) {
 					$h_map[$h->parent] = (object)['have_items' => $h->have_items];
 				}
-				if ($h->parent == $search_parent) {
+				if(($search_type == 'parent' && $h->parent == $search_value) ||
+					 ($search_type == 'name' && $h->have_items > 0 && strpos(strtolower($h->name), strtolower($search_value)) !== false)) {
 					$results[$h->term_id] = $h;
 				}
 			}
-			
+
 		}
 		
 		// Results have all terms with wanted parent. Now we unset those who dont have items
