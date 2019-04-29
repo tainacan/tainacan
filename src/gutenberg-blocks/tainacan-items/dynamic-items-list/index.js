@@ -7,6 +7,8 @@ const { RangeControl, IconButton, Button, ToggleControl, Placeholder, Toolbar } 
 const { InspectorControls, BlockControls } = wp.editor;
 
 import DynamicItemsModal from './dynamic-items-modal.js';
+import tainacan from '../../api-client/axios.js';
+import axios from 'axios';
 
 registerBlockType('tainacan/dynamic-items-list', {
     title: __('Tainacan Dynamic Items List', 'tainacan'),
@@ -19,56 +21,16 @@ registerBlockType('tainacan/dynamic-items-list', {
     category: 'tainacan-blocks',
     keywords: [ __( 'Tainacan', 'tainacan' ), __( 'items', 'tainacan' ), __( 'collection', 'tainacan' ) ],
     attributes: {
-        selectedItemsObject: {
-            type: 'array',
-            source: 'query',
-            selector: 'a',
-            query: {
-                id: {
-                    type: 'string',
-                    source: 'attribute',
-                    attribute: 'id'
-                },
-                url: {
-                    type: 'string',
-                    source: 'attribute',
-                    attribute: 'href'
-                },
-                title: {
-                    type: 'string',
-                    source: 'text'
-                },
-                thumbnail: {
-                    source: 'query',
-                    selector: 'img',
-                    query: {
-                        src: {
-                            source: 'attribute',
-                            attribute: 'src'
-                        },
-                        alt: {
-                            source: 'attribute',
-                            attribute: 'alt'
-                        },
-                    }
-                }, 
-            },
-            default: []
-        },
         content: {
             type: 'array',
             source: 'children',
             selector: 'div'
         },
-        query: {
-            type: Object,
-            default: {}
-        },
         collectionId: {
             type: String,
             default: undefined
         },
-        selectedItemsHTML: {
+        items: {
             type: Array,
             default: []
         },
@@ -91,6 +53,14 @@ registerBlockType('tainacan/dynamic-items-list', {
         gridMargin: {
             type: Number,
             default: 0
+        },
+        searchURL: {
+            type: String,
+            default: undefined
+        },
+        itemsRequestSource: {
+            type: String,
+            default: undefined
         }
     },
     supports: {
@@ -99,15 +69,16 @@ registerBlockType('tainacan/dynamic-items-list', {
     },
     edit({ attributes, setAttributes, className, isSelected }){
         let {
-            selectedItemsObject, 
-            selectedItemsHTML, 
+            items, 
             content, 
             collectionId,  
             showImage,
             showName,
             layout,
             isModalOpen,
-            gridMargin
+            gridMargin,
+            searchURL,
+            itemsRequestSource
         } = attributes;
 
         function prepareItem(item) {
@@ -115,11 +86,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                 <li 
                     key={ item.id }
                     className="item-list-item"
-                    style={{ marginBottom: layout == 'grid' ?  gridMargin + 'px' : ''}}>
-                    <IconButton
-                        onClick={ () => removeItemOfId(item.id) }
-                        icon="no-alt"
-                        label={__('Remove', 'tainacan')}/>         
+                    style={{ marginBottom: layout == 'grid' ?  gridMargin + 'px' : ''}}>      
                     <a 
                         id={ isNaN(item.id) ? item.id : 'item-id-' + item.id }
                         href={ item.url } 
@@ -136,21 +103,32 @@ registerBlockType('tainacan/dynamic-items-list', {
 
         function setContent(){
 
-            selectedItemsHTML = [];
+            items = [];
 
-            for (let i = 0; i < selectedItemsObject.length; i++)
-                selectedItemsHTML.push(prepareItem(selectedItemsObject[i]));
+            if (itemsRequestSource != undefined)
+                itemsRequestSource.cancel('Previous items search canceled.');
 
-            setAttributes({
-                content: (
-                    <ul 
-                        style={{ gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' +  (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit' }}
-                        className={'items-list  items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')}>
-                        { selectedItemsHTML }
-                    </ul>
-                ),
-                selectedItemsHTML: selectedItemsHTML
-            });
+            let anItemsRequestSource = axios.CancelToken.source();
+
+            let endpoint = '/collection' + searchURL.split('#')[1].split('/collections')[1];
+
+            tainacan.get(endpoint, { cancelToken: anItemsRequestSource.token })
+                .then(response => {
+
+                    for (let item of response.data.items)
+                        items.push(prepareItem(item));
+
+                    setAttributes({
+                        content: (
+                            <ul 
+                                style={{ gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' +  (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit' }}
+                                className={'items-list  items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')}>
+                                { items }
+                            </ul>
+                        ),
+                        items: items
+                    });
+                });
         }
 
         function openDynamicItemsModal() {
@@ -158,16 +136,6 @@ registerBlockType('tainacan/dynamic-items-list', {
             setAttributes( { 
                 isModalOpen: isModalOpen
             } );
-        }
-
-        function removeItemOfId(itemId) {
-
-            let existingItemIndex = selectedItemsObject.findIndex((existingItem) => ((existingItem.id == 'item-id-' + itemId) || (existingItem.id == itemId)));
-
-            if (existingItemIndex >= 0)
-                selectedItemsObject.splice(existingItemIndex, 1);
-
-            setContent();
         }
 
         function updateLayout(newLayout) {
@@ -268,19 +236,19 @@ registerBlockType('tainacan/dynamic-items-list', {
                         { isModalOpen ? 
                             <DynamicItemsModal
                                 existingCollectionId={ collectionId } 
-                                // selectedItemsObject={ selectedItemsObject } 
+                                existingsearchURL={ searchURL } 
                                 onSelectCollection={ (selectedCollectionId) => {
                                     collectionId = selectedCollectionId;
                                     setAttributes({ collectionId: collectionId });
                                 }}
-                                // onApplySelection={ (aSelectedItemsObject) =>{
-                                //     selectedItemsObject = aSelectedItemsObject
-                                //     setAttributes({
-                                //         selectedItemsObject: selectedItemsObject,
-                                //         isModalOpen: false
-                                //     });
-                                //     setContent();
-                                // }}
+                                onApplySearchURL={ (aSearchURL) =>{
+                                    searchURL = aSearchURL
+                                    setAttributes({
+                                        searchURL: searchURL,
+                                        isModalOpen: false
+                                    });
+                                    setContent();
+                                }}
                                 onCancelSelection={ () => setAttributes({ isModalOpen: false }) }/> 
                             : null
                         }
@@ -298,7 +266,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                     ) : null
                 }
 
-                { !selectedItemsHTML.length ? (
+                { !items.length ? (
                     <Placeholder
                         icon={(
                             <img
@@ -312,7 +280,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                 <ul 
                     style={{ gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' +  (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit' }}
                     className={'items-list-edit items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')}>
-                    { selectedItemsHTML }
+                    { items }
                 </ul>
                 
             </div>

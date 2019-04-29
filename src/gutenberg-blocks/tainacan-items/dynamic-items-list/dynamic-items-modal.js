@@ -22,7 +22,7 @@ export default class DynamicItemsModal extends React.Component {
             searchCollectionName: '',
             collections: [],
             collectionsRequestSource: undefined,
-            itemsURL: '',
+            searchURL: '',
         };
         
         // Bind events
@@ -31,6 +31,7 @@ export default class DynamicItemsModal extends React.Component {
         this.fetchCollections = this.fetchCollections.bind(this);
         this.fetchModalCollections = this.fetchModalCollections.bind(this);
         this.fetchCollection = this.fetchCollection.bind(this);
+        this.applySelectedSearchURL = this.applySelectedSearchURL.bind(this);
     }
 
     componentWillMount() {
@@ -41,7 +42,7 @@ export default class DynamicItemsModal extends React.Component {
          
         if (this.props.existingCollectionId != null && this.props.existingCollectionId != undefined) {
             this.fetchCollection(this.props.existingCollectionId);
-            this.setState({ itemsURL: this.props.existingItemsURL ? this.props.existingItemsURL : '/collections/'+ this.props.existingCollectionId + '/items/?readmode=true&iframemode=true' });
+            this.setState({ searchURL: this.props.existingsearchURL ? this.props.existingsearchURL : '/collections/'+ this.props.existingCollectionId + '/items/?readmode=true&iframemode=true' });
         } else {
             this.setState({ collectionPage: 1 });
             this.fetchModalCollections();
@@ -99,7 +100,7 @@ export default class DynamicItemsModal extends React.Component {
     selectCollection(selectedCollectionId) {
         this.setState({
             collectionId: selectedCollectionId,
-            itemsURL: '/collections/' + selectedCollectionId + '/items/?readmode=true&iframemode=true'
+            searchURL: '/collections/' + selectedCollectionId + '/items/?readmode=true&iframemode=true'
         });
 
         this.props.onSelectCollection(selectedCollectionId);
@@ -140,16 +141,27 @@ export default class DynamicItemsModal extends React.Component {
             });
     }
 
+    applySelectedSearchURL() {    
+        this.props.onApplySearchURL(document.getElementById("itemsFrame").contentWindow.location.href);
+    }
+
     resetCollections() {
 
         this.setState({
-            itemsPage: 1, 
             collectionId: null,
             collectionPage: 1,
-            modalCollections: [],
-            modalItems: []
+            modalCollections: []
         });
         this.fetchModalCollections(); 
+    }
+
+    cancelSelection() {
+
+        this.setState({
+            modalCollections: []
+        });
+
+        this.props.onCancelSelection();
     }
 
     render() {
@@ -159,18 +171,20 @@ export default class DynamicItemsModal extends React.Component {
                 className="wp-block-tainacan-modal dynamic-modal"
                 title={__('Select the desired items from collection ' + this.state.collectionName, 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
-                contentLabel={__('Select items', 'tainacan')}>
-                <iframe src={ tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#' + this.state.itemsURL }></iframe>
+                contentLabel={__('Configure your items search to be shown on block', 'tainacan')}>
+                <iframe
+                        id="itemsFrame"
+                        src={ tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#' + this.state.searchURL } />
                 <div className="modal-footer-area">
                     <Button 
                         isDefault
-                        onClick={ () => { this.cancelSelection() }}>
-                        {__('Cancel', 'tainacan')}
+                        onClick={ () => { this.resetCollections() }}>
+                        {__('Switch collection', 'tainacan')}
                     </Button>
                     <Button 
                         isPrimary
-                        onClick={ () => console.log("Feito!") }>
-                        {__('Select items', 'tainacan')}
+                        onClick={ () => this.applySelectedSearchURL() }>
+                        {__('Use this search', 'tainacan')}
                     </Button>
                 </div>
         </Modal>

@@ -914,19 +914,6 @@ export default {
             this.selectedItemsIDs.push(false);
             this.selectedItems.push(false);
         }
-
-        // Disables every link in case we're inside an iframe
-        if (this.$route.query.iframemode) {
-            jQuery(document).ready(() =>{       
-                jQuery('a[data-linkto="item"]').click((event) => {
-                    this.$console.log("Preventing link navigation inside gutenberg modal iframe.");
-                    event.preventDefault();
-                    event.stopPropagation();
-                    return false;
-                }); 
-            });
-        }
-
     },
     watch: {
         selectedItems() {
@@ -1193,7 +1180,7 @@ export default {
             if (!metadata || itemMetadata == undefined) {
                 return '';
             } else {
-                if (component != undefined && component == 'tainacan-textarea')
+                if ((component != undefined && component == 'tainacan-textarea') || this.$route.query.iframemode)
                     return metadata.value_as_string;
                 else
                     return metadata.value_as_html;
