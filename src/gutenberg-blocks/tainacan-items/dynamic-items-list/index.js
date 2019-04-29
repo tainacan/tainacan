@@ -2,13 +2,14 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, IconButton, Button, ToggleControl, Placeholder, Toolbar } = wp.components;
+const { RangeControl, Spinner, Button, ToggleControl, Placeholder, Toolbar } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
 import DynamicItemsModal from './dynamic-items-modal.js';
 import tainacan from '../../api-client/axios.js';
 import axios from 'axios';
+import qs from 'qs';
 
 registerBlockType('tainacan/dynamic-items-list', {
     title: __('Tainacan Dynamic Items List', 'tainacan'),
@@ -61,6 +62,18 @@ registerBlockType('tainacan/dynamic-items-list', {
         itemsRequestSource: {
             type: String,
             default: undefined
+        },
+        maxItemsNumber: {
+            type: Number,
+            value: undefined
+        },
+        isLoading: {
+            type: Boolean,
+            value: false
+        },
+        showSearchBar: {
+            type: Boolean,
+            value: false
         }
     },
     supports: {
@@ -78,7 +91,10 @@ registerBlockType('tainacan/dynamic-items-list', {
             isModalOpen,
             gridMargin,
             searchURL,
-            itemsRequestSource
+            itemsRequestSource,
+            maxItemsNumber,
+            isLoading,
+            showSearchBar
         } = attributes;
 
         function prepareItem(item) {
@@ -93,8 +109,18 @@ registerBlockType('tainacan/dynamic-items-list', {
                         target="_blank"
                         className={ (!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '') }>
                         <img
-                            src={ item.thumbnail && item.thumbnail[0] && item.thumbnail[0].src ? item.thumbnail[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
-                            alt={ item.thumbnail && item.thumbnail[0] ? item.thumbnail[0].alt : item.title }/>
+                            src={ 
+                                item.thumbnail && item.thumbnail['tainacan-medium'][0] && item.thumbnail['tainacan-medium'][0] 
+                                    ?
+                                item.thumbnail['tainacan-medium'][0] 
+                                    :
+                                (item.thumbnail && item.thumbnail['thumbnail'][0] && item.thumbnail['thumbnail'][0]
+                                    ?    
+                                item.thumbnail['thumbnail'][0] 
+                                    : 
+                                `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
+                            }
+                            alt={ item.title ? item.title : __( 'Thumbnail', 'tainacan' ) }/>
                         <span>{ item.title ? item.title : '' }</span>
                     </a>
                 </li>
@@ -104,15 +130,39 @@ registerBlockType('tainacan/dynamic-items-list', {
         function setContent(){
 
             items = [];
-
-            if (itemsRequestSource != undefined)
+            isLoading = true;
+            
+            if (itemsRequestSource != undefined && typeof itemsRequestSource == 'function')
                 itemsRequestSource.cancel('Previous items search canceled.');
 
-            let anItemsRequestSource = axios.CancelToken.source();
+            itemsRequestSource = axios.CancelToken.source();
+            
+            setAttributes({
+                isLoading: isLoading
+            });
 
             let endpoint = '/collection' + searchURL.split('#')[1].split('/collections')[1];
+            let query = endpoint.split('?')[1];
+            let queryObject = qs.parse(query);
 
-            tainacan.get(endpoint, { cancelToken: anItemsRequestSource.token })
+            // Set up max items to be shown
+            if (maxItemsNumber != undefined && maxItemsNumber > 0)
+                queryObject.perpage = maxItemsNumber;
+            else if (queryObject.perpage != undefined && queryObject.perpage > 0)
+                setAttributes({ maxItemsNumber: queryObject.perpage });
+            else {
+                queryObject.perpage = 12;
+                setAttributes({ maxItemsNumber: 12 });
+            }
+
+            // Remove unecessary queries
+            delete queryObject.readmode;
+            delete queryObject.iframemode;
+            delete queryObject.admin_view_mode;
+            
+            endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
+            
+            tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
                 .then(response => {
 
                     for (let item of response.data.items)
@@ -126,7 +176,9 @@ registerBlockType('tainacan/dynamic-items-list', {
                                 { items }
                             </ul>
                         ),
-                        items: items
+                        items: items,
+                        isLoading: false,
+                        itemsRequestSource: itemsRequestSource
                     });
                 });
         }
@@ -227,6 +279,30 @@ registerBlockType('tainacan/dynamic-items-list', {
                                 </div>
                             : null }
                         </div>
+                        <div style={{ marginTop: '20px'}}>
+                            <RangeControl
+                                label={__('Maximum number of items', 'tainacan')}
+                                value={ maxItemsNumber }
+                                onChange={ ( aMaxItemsNumber ) => {
+                                    setAttributes( { maxItemsNumber: aMaxItemsNumber } ) 
+                                    setContent();
+                                }}
+                                min={ 1 }
+                                max={ 96 }
+                            />
+                        </div>
+                        <div style={{ marginTop: '20px'}}>
+                            <ToggleControl
+                                label={__('Search bar', 'tainacan')}
+                                help={ showSearchBar ? __('Toggle to show search bar on block', 'tainacan') : __('Do not show search bar', 'tainacan')}
+                                checked={ showSearchBar }
+                                onChange={ ( isChecked ) => {
+                                        showSearchBar = isChecked;
+                                        setAttributes({ showSearchBar: showSearchBar });
+                                    } 
+                                }
+                            />
+                        </div>
                     </InspectorControls>
                 </div>
 
@@ -236,7 +312,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                         { isModalOpen ? 
                             <DynamicItemsModal
                                 existingCollectionId={ collectionId } 
-                                existingsearchURL={ searchURL } 
+                                existingSearchURL={ searchURL } 
                                 onSelectCollection={ (selectedCollectionId) => {
                                     collectionId = selectedCollectionId;
                                     setAttributes({ collectionId: collectionId });
@@ -258,7 +334,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                                 isPrimary
                                 type="submit"
                                 onClick={ () => openDynamicItemsModal() }>
-                                {__('Select items search', 'tainacan')}
+                                {__('Configure items search', 'tainacan')}
                             </Button>   
                         </div>
                         <hr/>
@@ -276,18 +352,33 @@ registerBlockType('tainacan/dynamic-items-list', {
                         )}
                     />) : null
                 }
-
-                <ul 
-                    style={{ gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' +  (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit' }}
-                    className={'items-list-edit items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')}>
-                    { items }
-                </ul>
-                
+                { isLoading ? <Spinner /> :
+                    <div>
+                        { showSearchBar ?
+                            <div class="dynamic-items-search-bar">
+                            </div>
+                        : null
+                        }
+                        <ul 
+                            style={{ gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' +  (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit' }}
+                            className={'items-list-edit items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')}>
+                            { items }
+                        </ul>
+                    </div>
+                }
             </div>
         );
     },
     save({ attributes, className }){
-        const { content } = attributes;
+        const {
+            gridMargin,
+            showImage,
+            showName,
+            layout,
+            showSearchBar,
+            searchURL,
+            content 
+        } = attributes;
         return <div className={className}>{ content }</div>
     }
 });

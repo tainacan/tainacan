@@ -730,7 +730,7 @@
                         <p v-if="status == 'trash'">{{ $i18n.get('info_no_item_trash') }}</p>
 
                         <router-link
-                                v-if="!hasFiltered && (status == undefined || status == '')"
+                                v-if="!hasFiltered && (status == undefined || status == '') && !$route.query.iframemode"
                                 id="button-create-item"
                                 tag="button"
                                 class="button is-secondary"
@@ -804,7 +804,7 @@
                         </p>
                         <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
                         <router-link
-                                v-if="!isOnTheme"
+                                v-if="!isOnTheme && !$route.query.iframemode"
                                 id="button-create-filter"
                                 :to="isRepositoryLevel ? $routerHelper.getNewFilterPath() : $routerHelper.getNewCollectionFilterPath(collectionId)"
                                 tag="button"
