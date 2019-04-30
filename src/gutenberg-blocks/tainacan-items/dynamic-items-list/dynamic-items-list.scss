@@ -2,8 +2,53 @@
     margin: 2rem 0px;
 
     // Spinner
-    .components-spinner {
-        margin: 1rem 50%;
+    .spinner-container {
+        min-height: 56px;
+        padding: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    // Search control bar
+    .dynamic-items-search-bar {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #cbcbcb;
+        padding: 1.25rem 0 0.75rem;
+        margin-bottom: 1rem;
+
+        button {
+            margin-right: 0.75rem;
+            z-index: 2;
+
+            svg { 
+                fill: #cbcbcb; 
+                transition: fill 0.4s ease;
+            }
+            &:hover svg { fill: #545758; }
+            &:focus, &:active { border: none; box-shadow: none; }
+            &.sorting-button-selected svg {
+                fill: #545758;
+            }
+        }
+        input {
+            width: 20%;
+            border-radius: 0;
+            margin-left: -52px;
+            padding-left: 52px;
+            border: 1px solid white;
+            transition: border-color 0.7s ease, width 0.5s ease-in;
+
+            &:focus,
+            &:active,
+            &:hover {
+                width: 100%;
+                border: 1px solid #cbcbcb;
+                box-shadow: none;
+            }
+        }
     }
 
     // Grid View Mode ----------------------------------------------------
