@@ -5,7 +5,46 @@
 @import 'tainacan-items/dynamic-items-list/dynamic-items-list';
 
 // COMMON TO MOST BLOCKS
-// Generic style for selection modals
+// Control and placeholder region ----------------------------------------------------
+.block-control {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    position: relative;
+    top: -14px;
+    left: -14px;
+    width: calc(100% + 28px);
+    background: #f2f2f2;
+
+    p {
+        font-size: 0.875rem !important; 
+        margin: 12px 1.5rem 16px 0; 
+        fill: #555758;
+
+        svg {
+            top: 4px;
+            margin-right: 0.75rem;
+            position: relative;
+            fill: #555758;
+        }
+    }
+}
+.components-placeholder__fieldset p {
+    font-size: 0.875rem !important;
+    margin-top: -2px;
+    fill: #555758;
+
+    svg {
+        margin-right: 1rem; 
+        top: 4px;
+        position: relative;
+        fill: #555758;
+    }
+}
+
+// Generic style for selection modals ---------------------------
 .wp-block-tainacan-modal {
     width: 50%;
 

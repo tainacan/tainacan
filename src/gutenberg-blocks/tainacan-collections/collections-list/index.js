@@ -274,16 +274,25 @@ registerBlockType('tainacan/collections-list', {
                                 onCancelSelection={ () => setAttributes({ isModalOpen: false }) }/> 
                             : null
                         }
-                        
-                        <div className="block-control">
-                            <Button
-                                isPrimary
-                                type="submit"
-                                onClick={ () => openCollectionsModal() }>
-                                {__('Select collections', 'tainacan')}
-                            </Button>   
-                        </div>
-                        <hr/>
+                        { selectedCollectionsHTML.length ? (
+                            <div className="block-control">
+                                <p>
+                                    <svg width="24" height="24" viewBox="0 -5 12 16">
+                                        <path
+                                            d="M10,8.8v1.3H1.2C0.6,10.1,0,9.5,0,8.8V2.5h1.3v6.3H10z M6.9,0H3.8C3.1,0,2.5,0.6,2.5,1.3l0,5c0,0.7,0.6,1.2,1.3,1.2h7.5
+                                            c0.7,0,1.3-0.6,1.3-1.2V2.5c0-0.7-0.6-1.2-1.3-1.2H8.2L6.9,0z"/>       
+                                    </svg>
+                                    {__('Expose collections from your Tainacan repository', 'tainacan')}
+                                </p>
+                                <Button
+                                    isPrimary
+                                    type="submit"
+                                    onClick={ () => openCollectionsModal() }>
+                                    {__('Select collections', 'tainacan')}
+                                </Button>   
+                            </div>
+                            ): null
+                        }
                     </div>
                     ) : null
                 }
@@ -295,8 +304,23 @@ registerBlockType('tainacan/collections-list', {
                                 width={148}
                                 src={ `${tainacan_plugin.base_url}/admin/images/tainacan_logo_header.svg` }
                                 alt="Tainacan Logo"/>
-                        )}
-                    />) : null
+                        )}>
+                        <p>
+                            <svg width="24" height="24" viewBox="0 -5 12 16">
+                                <path
+                                    d="M10,8.8v1.3H1.2C0.6,10.1,0,9.5,0,8.8V2.5h1.3v6.3H10z M6.9,0H3.8C3.1,0,2.5,0.6,2.5,1.3l0,5c0,0.7,0.6,1.2,1.3,1.2h7.5
+                                    c0.7,0,1.3-0.6,1.3-1.2V2.5c0-0.7-0.6-1.2-1.3-1.2H8.2L6.9,0z"/>       
+                            </svg>
+                            {__('Expose collections from your Tainacan repository', 'tainacan')}
+                        </p>
+                        <Button
+                            isPrimary
+                            type="submit"
+                            onClick={ () => openCollectionsModal() }>
+                            {__('Select collections', 'tainacan')}
+                        </Button>   
+                    </Placeholder>
+                    ) : null
                 }
 
                 <ul 

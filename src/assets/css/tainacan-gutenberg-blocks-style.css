@@ -3,11 +3,6 @@
   .wp-block-tainacan-terms-list .components-spinner {
     position: absolute;
     right: 0; }
-  .wp-block-tainacan-terms-list .block-control {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    padding: 12px; }
   .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid,
   .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid {
     padding: 0;
@@ -137,11 +132,6 @@
   .wp-block-tainacan-items-list .components-spinner {
     position: absolute;
     right: 0; }
-  .wp-block-tainacan-items-list .block-control {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    padding: 12px; }
   .wp-block-tainacan-items-list ul.items-list.items-list-without-margin,
   .wp-block-tainacan-items-list ul.items-list-edit.items-list-without-margin {
     grid-template-columns: repeat(auto-fill, 185px);
@@ -271,11 +261,6 @@
   .wp-block-tainacan-collections-list .components-spinner {
     position: absolute;
     right: 0; }
-  .wp-block-tainacan-collections-list .block-control {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    padding: 12px; }
   .wp-block-tainacan-collections-list ul.collections-list.collections-list-without-margin,
   .wp-block-tainacan-collections-list ul.collections-list-edit.collections-list-without-margin {
     grid-template-columns: repeat(auto-fill, 185px);
@@ -419,11 +404,6 @@
   margin: 2rem 0px; }
   .wp-block-tainacan-dynamic-items-list .components-spinner {
     margin: 1rem 50%; }
-  .wp-block-tainacan-dynamic-items-list .block-control {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    padding: 12px; }
   .wp-block-tainacan-dynamic-items-list ul.items-list.items-list-without-margin,
   .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-list-without-margin {
     grid-template-columns: repeat(auto-fill, 185px);
@@ -547,6 +527,37 @@
       .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-list li.item-list-item:hover a {
         color: #454647;
         text-decoration: none; }
+
+.block-control {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  position: relative;
+  top: -14px;
+  left: -14px;
+  width: calc(100% + 28px);
+  background: #f2f2f2; }
+  .block-control p {
+    font-size: 0.875rem !important;
+    margin: 12px 1.5rem 16px 0;
+    fill: #555758; }
+    .block-control p svg {
+      top: 4px;
+      margin-right: 0.75rem;
+      position: relative;
+      fill: #555758; }
+
+.components-placeholder__fieldset p {
+  font-size: 0.875rem !important;
+  margin-top: -2px;
+  fill: #555758; }
+  .components-placeholder__fieldset p svg {
+    margin-right: 1rem;
+    top: 4px;
+    position: relative;
+    fill: #555758; }
 
 .wp-block-tainacan-modal {
   width: 50%; }
