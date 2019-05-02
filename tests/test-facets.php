@@ -712,20 +712,21 @@ class Facets extends TAINACAN_UnitApiTestCase {
 
 		$values = $this->repository->fetch_all_metadatum_values( $this->meta_2_tax->get_id(), [
 			'count_items' => true,
-			'collection_id' => $this->collection2->get_id(),
 			'search' => 'child',
-			'items_filter' => false
+			'items_filter' => false,
 		] );
 		$values = $this->get_values($values);
-		$this->assertEquals( 2, sizeof($values) );
+		$this->assertEquals( 3, sizeof($values) );
 
 		$valuesParsed = array_map(function($el) {
-			$this->assertEquals( 10, $el['total_items'] );
+			//$this->assertEquals( 10, $el['total_items'] );
+			$this->assertContains($el['total_items'], [10,20]);
 			return $el['label'];
 		}, $values);
 
-		$this->assertContains( 'Term for collection 1', $valuesParsed);
-		$this->assertContains( 'Term for collection 2', $valuesParsed);
+		$this->assertContains( 'Term for collection 2 child', $valuesParsed);
+		$this->assertContains( 'Term for collection 1 child', $valuesParsed);
+		$this->assertContains( 'Term for all child', $valuesParsed);
 		
 		// test search relationship  without filter
 		$values = $this->repository->fetch_all_metadatum_values( $this->meta_relationship->get_id(), [
@@ -809,7 +810,7 @@ class Facets extends TAINACAN_UnitApiTestCase {
 			'search' => 'Children',
 		]);
 		$values = $this->get_values($values);
-		$this->assertEquals(5, sizeof($values));
+		$this->assertEquals(9, sizeof($values));
 
 		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
 			'items_filter' => false,
@@ -819,14 +820,83 @@ class Facets extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals(1, sizeof($values));
 
 		// test search taxonomy  with filter
-		// test search taxonomy  without filter
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
+			'count_items' => true,
+			'search' => 'GGC',
+			'items_filter' => [
+				'meta_query' => [
+					[
+						'key' => $this->metadatum_text->get_id(),
+						'value' => ['even']
+					]
+				]
+			]
+		] );
+		$values = $this->get_values($values);
+		$this->assertEquals( 1, sizeof($values) );
+		$this->assertEquals( 5, $values[0]['total_items']);
+
 		// test offset taxonomy 
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
+			'items_filter' => false,
+			'search' => 'Children',
+			'number' => 9,
+			'offset' => 0
+		]);
+		$values = $this->get_values($values);
+		$this->assertEquals(9, sizeof($values));
+
+		$values_p1 = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
+			'items_filter' => false,
+			'search' => 'Children',
+			'number' => 3,
+			'offset' => 0
+		]);
+		$values_p1 = $this->get_values($values_p1);
+		$this->assertEquals(3, sizeof($values_p1));
+
+		$values_p2 = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
+			'items_filter' => false,
+			'search' => 'Children',
+			'number' => 3,
+			'offset' => 3
+		]);
+		$values_p2 = $this->get_values($values_p2);
+		$this->assertEquals(3, sizeof($values_p2));
+
+		$values_p3 = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
+			'items_filter' => false,
+			'search' => 'Children',
+			'number' => 3,
+			'offset' => 6
+		]);
+		$values_p3 = $this->get_values($values_p3);
+		$this->assertEquals(3, sizeof($values_p3));
+
+		$this->assertEquals($values[0]['label'], $values_p1[0]['label']);
+		$this->assertEquals($values[3]['label'], $values_p2[0]['label']);
+		$this->assertEquals($values[6]['label'], $values_p3[0]['label']);
+		
 		// test include taxonomy 
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
+			'count_items' => true,
+			'include' => ['18','16'],
+			'search' => 'GGC',
+			'items_filter' => [
+				'meta_query' => [
+					[
+						'key' => $this->metadatum_text->get_id(),
+						'value' => ['even']
+					]
+				]
+			]
+		] );
+		$values = $this->get_values($values);
+		$this->assertEquals(3, sizeof($values));
+
+
+		// test search taxonomy  without filter
 		// test count items taxonomy 
-		
-		//
-		
-		
 		
 		
 	}

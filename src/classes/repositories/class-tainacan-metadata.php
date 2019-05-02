@@ -1066,15 +1066,18 @@ class Metadata extends Repository {
 				}
 			} else {
 				
+				$parent_q = $wpdb->prepare("AND tt.parent = %d", $args['parent_id']);
+				if ($search_q) {
+					$parent_q = '';
+				}
 				$base_query = $wpdb->prepare("FROM $wpdb->term_taxonomy tt 
 					INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id 
-					WHERE 
-					tt.parent = %d AND
-					tt.taxonomy = %s
+					WHERE 1=1
+					$parent_q
+					AND tt.taxonomy = %s
 					$search_q
 					ORDER BY t.name ASC
 					",
-					$args['parent_id'],
 					$taxonomy_slug
 				);
 				
