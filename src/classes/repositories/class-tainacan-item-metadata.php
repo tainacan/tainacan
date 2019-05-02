@@ -186,8 +186,28 @@ class Item_Metadata extends Repository {
 					] );
 				}
 
-				$success = wp_set_object_terms( $item_metadata->get_item()->get_id(), $new_terms, $taxonomy->get_db_identifier() );
-
+				// We can not simply use wp_set_object_terms() because it uses term_exists() which is not reliable 
+				// see https://core.trac.wordpress.org/ticket/45333 and https://core.trac.wordpress.org/ticket/47099
+				// $success = wp_set_object_terms( $item_metadata->get_item()->get_id(), $new_terms, $taxonomy->get_db_identifier() );
+				
+				$insert = [];
+				foreach ( (array) $new_terms as $new_term ) {
+					$exists = Terms::get_instance()->term_exists($new_term, $taxonomy, null, true);
+					if ( $exists ) {
+						$insert[] = $exists->term_id;
+					} else {
+						$create_term = new Entities\Term();
+						$create_term->set_name($new_term);
+						$create_term->set_taxonomy( $taxonomy->get_db_identifier() );
+						if ($create_term->validate()) { // Item_Metadata Entity was validated before, so this should be fine
+							$created_term = Terms::get_instance()->insert($create_term);
+							$insert[] = $created_term->get_id();
+						}
+					}
+				}
+				
+				$success = wp_set_object_terms( $item_metadata->get_item()->get_id(), $insert, $taxonomy->get_db_identifier() );
+				
 				if ( $this->use_logs && ! $success instanceof \WP_Error ) {
 
 					$new = get_terms(array(

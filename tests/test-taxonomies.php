@@ -202,6 +202,9 @@ class Taxonomies extends TAINACAN_UnitTestCase {
 		$test_term = $Tainacan_Terms->term_exists('Parent', $taxonomy->get_id(), null, true);
 		$this->assertEquals($parent->get_id(), $test_term->term_id);
 		
+		// test brackets
+		$test_term = $Tainacan_Terms->term_exists('[Rock]', $taxonomy->get_id(), null, true);
+		$this->assertFalse($test_term);
 		
 	}
 	
@@ -290,4 +293,127 @@ class Taxonomies extends TAINACAN_UnitTestCase {
         $this->assertContains($taxonomy->get_db_identifier(), $pto);
         $this->assertNotContains($taxonomy->get_db_identifier(), $pages);
     }
+	
+	function test_brackets() {
+		
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+        	'taxonomy',
+	        array(
+	        	'name'         => 'genero',
+		        'description'  => 'tipos de musica',
+		        'allow_insert' => 'yes',
+				'status'       => 'publish'
+	        ),
+	        true
+        );
+		
+		$Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+		$Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
+		
+		$term = $this->tainacan_entity_factory->create_entity(
+		    'term',
+		    array(
+			    'taxonomy' => $taxonomy->get_db_identifier(),
+			    'name'     => 'Rock',
+		    ),
+		    true
+	    );
+		
+		$term2 = $this->tainacan_entity_factory->create_entity(
+		    'term',
+		    array(
+			    'taxonomy' => $taxonomy->get_db_identifier(),
+			    'name'     => '[Rock]',
+		    ),
+		    true
+	    );
+		
+		$terms = $Tainacan_Terms->fetch(['hide_empty' => false], $taxonomy);
+		$this->assertEquals(2, sizeof($terms));
+		
+	}
+	
+	function test_brackets_2() {
+		
+		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+		
+		$collection = $this->tainacan_entity_factory->create_entity(
+        	'collection',
+	        array(
+	        	'name' => 'teste',
+		        'description' => 'No description',
+	        ),
+	        true
+        );
+		
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+        	'taxonomy',
+	        array(
+	        	'name'         => 'genero',
+		        'description'  => 'tipos de musica',
+		        'allow_insert' => 'yes',
+				'status'       => 'publish'
+	        ),
+	        true
+        );
+
+	    $metadatum = $this->tainacan_entity_factory->create_entity(
+        	'metadatum',
+	        array(
+	        	'name'              => 'metadado',
+		        'description'       => 'descricao',
+		        'collection'        => $collection,
+		        'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
+				'metadata_type_options' => [
+					'allow_new_terms' => true,
+					'taxonomy_id' => $taxonomy->get_id()
+				],
+	        ),
+	        true
+        );
+
+        $i1 = $this->tainacan_entity_factory->create_entity(
+        	'item',
+	        array(
+	        	'title'       => 'item teste',
+		        'description' => 'adasdasdsa',
+		        'collection'  => $collection
+	        ),
+	        true
+        );
+		
+		$i2 = $this->tainacan_entity_factory->create_entity(
+        	'item',
+	        array(
+	        	'title'       => 'item2 teste',
+		        'description' => 'adasdasdsa',
+		        'collection'  => $collection
+	        ),
+	        true
+        );
+		
+		$itemMeta1 = new \Tainacan\Entities\Item_Metadata_Entity($i1, $metadatum);
+		$itemMeta1->set_value('Rock');
+		$itemMeta1->validate();
+		$Tainacan_Item_Metadata->insert($itemMeta1);
+		
+		//$this->assertNotFalse(term_exists( 'Rock', $taxonomy->get_db_identifier() ));
+		// term_exists() is not to be trusted
+		//$this->assertFalse(term_exists( '[Rock]', $taxonomy->get_db_identifier() ));
+		
+		$itemMeta2 = new \Tainacan\Entities\Item_Metadata_Entity($i2, $metadatum);
+		$itemMeta2->set_value('[Rock]');
+		$itemMeta2->validate();
+		$Tainacan_Item_Metadata->insert($itemMeta2);
+		
+		$itemMeta1_check = new \Tainacan\Entities\Item_Metadata_Entity($i1, $metadatum);
+		$this->assertEquals('Rock', $itemMeta1_check->get_value()->get_name());
+		
+		$itemMeta2_check = new \Tainacan\Entities\Item_Metadata_Entity($i2, $metadatum);
+		$this->assertEquals('[Rock]', $itemMeta2_check->get_value()->get_name());
+		
+		
+		
+	}
+	
 }
