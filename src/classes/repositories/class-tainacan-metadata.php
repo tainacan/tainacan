@@ -897,7 +897,7 @@ class Metadata extends Repository {
 	  * 	@type mixed		 $collection_id				The collection ID you want to consider or null for all collections. If a collectoin is set
 	  *													then only values applied to items in this collection will be returned
 	  * 
-	  *     @type int		 $number					The number of values to return (for pagination). Default 0 (unlimited)
+	  *     @type int		 $number					The number of values to return (for pagination). Default empty (unlimited)
 	  * 
 	  *     @type int		 $offset					The offset (for pagination). Default 0
 	  * 
@@ -1014,39 +1014,84 @@ class Metadata extends Repository {
 		if ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ) {
 			
 			if ($items_query) {
-				$base_query = $wpdb->prepare("FROM $wpdb->term_relationships tr 
-					INNER JOIN $wpdb->term_taxonomy tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
-					INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id 
-					WHERE 
-					tt.parent = %d AND
-					tr.object_id IN ($items_query) AND 
-					tt.taxonomy = %s
-					$search_q
-					ORDER BY t.name ASC
-					",
-					$args['parent_id'],
-					$taxonomy_slug
-				);
+				
+				$check_hierarchy_q = $wpdb->prepare("SELECT term_id FROM $wpdb->term_taxonomy WHERE taxonomy = %s AND parent > 0 LIMIT 1", $taxonomy_slug);
+				$has_hierarchy = ! is_null($wpdb->get_var($check_hierarchy_q));
+				
+				if ( ! $has_hierarchy ) {
+					$base_query = $wpdb->prepare("FROM $wpdb->term_relationships tr 
+						INNER JOIN $wpdb->term_taxonomy tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+						INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id 
+						WHERE 
+						tt.parent = %d AND
+						tr.object_id IN ($items_query) AND 
+						tt.taxonomy = %s
+						$search_q
+						ORDER BY t.name ASC
+						",
+						$args['parent_id'],
+						$taxonomy_slug
+					);
+					
+					$query = "SELECT DISTINCT t.name, t.term_id, tt.term_taxonomy_id, tt.parent $base_query $pagination";
+					
+					$total_query = "SELECT COUNT(DISTINCT tt.term_taxonomy_id) $base_query";
+					$total = $wpdb->get_var($total_query);
+					
+					$results = $wpdb->get_results($query);
+					
+				} else {
+					
+					$base_query = $wpdb->prepare("
+						SELECT DISTINCT t.term_id, t.name, tt.parent, coalesce(tr.term_taxonomy_id, 0) as have_items
+						FROM 
+						$wpdb->terms t INNER JOIN $wpdb->term_taxonomy tt ON t.term_id = tt.term_id 
+						LEFT JOIN $wpdb->term_relationships tr ON tt.term_taxonomy_id = tr.term_taxonomy_id AND tr.object_id IN ($items_query)
+						WHERE tt.taxonomy = %s ORDER BY t.name ASC", $taxonomy_slug
+					);
+					
+					$all_hierarchy = $wpdb->get_results($base_query);
+					
+					if (empty($search)) {
+						$results = $this->_process_terms_tree($all_hierarchy, $args['parent_id'], 'parent');
+					} else  {
+						$results = $this->_process_terms_tree($all_hierarchy, $search, 'name');
+					}
+					
+					$total = count($results);
+					
+					if ( $args['offset'] >= 0 && $args['number'] >= 1 ) {
+						$results = array_slice($results, (int) $args['offset'], (int) $args['number']);
+					}
+				}
 			} else {
+				
+				$parent_q = $wpdb->prepare("AND tt.parent = %d", $args['parent_id']);
+				if ($search_q) {
+					$parent_q = '';
+				}
 				$base_query = $wpdb->prepare("FROM $wpdb->term_taxonomy tt 
 					INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id 
-					WHERE 
-					tt.parent = %d AND
-					tt.taxonomy = %s
+					WHERE 1=1
+					$parent_q
+					AND tt.taxonomy = %s
 					$search_q
 					ORDER BY t.name ASC
 					",
-					$args['parent_id'],
 					$taxonomy_slug
 				);
+				
+				$query = "SELECT DISTINCT t.name, t.term_id, tt.term_taxonomy_id, tt.parent $base_query $pagination";
+				
+				$total_query = "SELECT COUNT(DISTINCT tt.term_taxonomy_id) $base_query";
+				$total = $wpdb->get_var($total_query);
+				
+				$results = $wpdb->get_results($query);
+				
 			}
 			
 			
-			$query = "SELECT DISTINCT t.name, t.term_id, tt.term_taxonomy_id, tt.parent $base_query $pagination";
 			
-			$total_query = "SELECT COUNT(DISTINCT tt.term_taxonomy_id) $base_query";
-			
-			$results = $wpdb->get_results($query);
 			
 			// add selected to the result
 			if ( !empty($args['include']) ) {
@@ -1071,7 +1116,7 @@ class Metadata extends Repository {
 				}
 			}
 			
-			$total = $wpdb->get_var($total_query);
+			
 			$number = is_integer($args['number']) && $args['number'] >=1 ? $args['number'] : $total;
 			if( $number < 1){
 				$pages = 1;
@@ -1195,6 +1240,80 @@ class Metadata extends Repository {
 			'values' => $values,
 			'last_term' => $args['last_term']
 		];
+		
+	}
+	
+	/**
+	* This method processes the result of the query for all terms in a taxonomy done in get_all_metadatum_values()
+	* It efficiently runs through all the terms and checks what terms with a given $parent have items in itself or any of 
+	* its descendants, keeping the order they originally came.
+	* 
+	* It returns an array with the term objects with the given $parent that have items considering items in its descendants. The objects are 
+	* in the same format they came, as expected by the rest of the method. 
+	*
+	* This method is public only for tests purposes, it should not be used anywhere else
+	*/
+	public function _process_terms_tree($tree, $search_value, $search_type='parent') {
+		
+		$h_map = [];
+		$results = [];
+		foreach ( $tree as $h ) {
+			
+			if ( $h->have_items > 0 || ( isset($h_map[$h->term_id]) && $h_map[$h->term_id]->have_items > 0 ) ) {
+				
+				$h->have_items = 1;
+				$h_map[$h->term_id] = $h;
+
+				if(($search_type == 'parent' && $h->parent == $search_value) ||
+					 ($search_type == 'name' && $h->have_items > 0 && strpos(strtolower($h->name), strtolower($search_value)) !== false)) {
+					$results[$h->term_id] = $h;
+				}
+				
+				$_parent = $h->parent;
+				
+				if ( $h->parent > 0 && !isset($h_map[$_parent]) ) {
+					$h_map[$_parent] = (object)['have_items' => 1];
+				}
+				
+				while( isset($h_map[$_parent]) && $h_map[$_parent]->have_items != 1 ) {
+					$h_map[$_parent]->have_items = 1;
+					
+					if ( isset($h_map[$_parent]->parent) ) {
+						if(($search_type == 'parent' && $h->parent == $search_value) ||
+							 ($search_type == 'name' && $h->have_items > 0 && strpos(strtolower($h->name), strtolower($search_value)) !== false)) {
+							$results[$h_map[$_parent]->term_id] = $h_map[$_parent];
+						}
+						$_parent = $h_map[$_parent]->parent;
+					} else {
+						$_parent = 0;
+					}
+					
+				}
+				
+			} else {
+				$h_map[$h->term_id] = $h;
+				if ( $h->parent > 0 && !isset($h_map[$h->parent]) ) {
+					$h_map[$h->parent] = (object)['have_items' => $h->have_items];
+				}
+				if(($search_type == 'parent' && $h->parent == $search_value) ||
+					 ($search_type == 'name' && $h->have_items > 0 && strpos(strtolower($h->name), strtolower($search_value)) !== false)) {
+					$results[$h->term_id] = $h;
+				}
+			}
+
+		}
+		
+		// Results have all terms with wanted parent. Now we unset those who dont have items
+		// and set it back to incremental keys]
+		// we could have sent to $results only those with items, but doing that we would not preserve their order
+		$results = array_reduce($results, function ($return, $el) {
+			if ($el->have_items > 0) {
+				$return[] = $el;
+			}
+			return $return;
+		}, []);
+		
+		return $results;
 		
 	}
 

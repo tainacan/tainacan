@@ -40,14 +40,27 @@ class Facets extends TAINACAN_UnitApiTestCase {
 		$this->collection2 = $collection2;
 		
 		$taxonomy = $this->tainacan_entity_factory->create_entity(
-        	'taxonomy',
-	        array(
-	        	'name'         => 'genero',
-		        'description'  => 'tipos de musica',
-		        'allow_insert' => 'yes',
+			'taxonomy',
+			array(
+				'name'         => 'genero',
+				'description'  => 'tipos de musica',
+				'allow_insert' => 'yes',
 				'status' => 'publish'
-	        ),
-	        true
+			),
+			true
+		);
+		
+		$this->taxonomy = $taxonomy;
+		
+		$taxonomy2 = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'         => 'genero2',
+				'description'  => 'tipos de musica2',
+				'allow_insert' => 'yes',
+				'status' => 'publish'
+			),
+			true
 		);
 		
 		$this->taxonomy = $taxonomy;
@@ -113,6 +126,106 @@ class Facets extends TAINACAN_UnitApiTestCase {
 			true
 		);
 		
+		$term2_root = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $taxonomy2->get_db_identifier(),
+				'name'     => 'Root'
+			),
+			true
+		);
+		$term2_root2 = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $taxonomy2->get_db_identifier(),
+				'name'     => 'Root2'
+			),
+			true
+		);
+		$term2_root_c1 = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $taxonomy2->get_db_identifier(),
+				'name'     => 'Children',
+				'parent' => $term2_root->get_id()
+			),
+			true
+		);
+		$term2_root_c2 = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $taxonomy2->get_db_identifier(),
+				'name'     => 'Children2',
+				'parent' => $term2_root->get_id()
+			),
+			true
+		);
+		$term2_root_gc1 = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $taxonomy2->get_db_identifier(),
+				'name'     => 'GChildren',
+				'parent' => $term2_root_c2->get_id()
+			),
+			true
+		);
+		$term2_root_gc2 = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $taxonomy2->get_db_identifier(),
+				'name'     => 'GChildren2',
+				'parent' => $term2_root_c2->get_id()
+			),
+			true
+		);
+		$term2_root2_c1 = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $taxonomy2->get_db_identifier(),
+				'name'     => 'Children',
+				'parent' => $term2_root2->get_id()
+			),
+			true
+		);
+		$term2_root2_c2 = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $taxonomy2->get_db_identifier(),
+				'name'     => 'Children2',
+				'parent' => $term2_root2->get_id()
+			),
+			true
+		);
+		$this->term2_root2_c2 = $term2_root2_c2;
+		$term2_root2_gc1 = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $taxonomy2->get_db_identifier(),
+				'name'     => 'GChildren',
+				'parent' => $term2_root2_c2->get_id()
+			),
+			true
+		);
+		$term2_root2_gc2 = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $taxonomy2->get_db_identifier(),
+				'name'     => 'GChildren2',
+				'parent' => $term2_root2_c2->get_id()
+			),
+			true
+		);
+		$this->term2_root2_gc2 = $term2_root2_gc2;
+		$term2_root2_ggc1 = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $taxonomy2->get_db_identifier(),
+				'name'     => 'GGChildren1',
+				'parent' => $term2_root2_gc2->get_id()
+			),
+			true
+		);
+		
 		$meta_1_tax = $this->tainacan_entity_factory->create_entity(
 		    'metadatum',
 		    array(
@@ -149,6 +262,24 @@ class Facets extends TAINACAN_UnitApiTestCase {
 	    );
 		
 		$this->meta_2_tax = $meta_2_tax;
+		
+		$meta_3_tax = $this->tainacan_entity_factory->create_entity(
+		    'metadatum',
+		    array(
+			    'name'   => 'test taxonomy',
+			    'status' => 'publish',
+			    'collection' => $collection2,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
+				'metadata_type_options' => [
+					'allow_new_terms' => true,
+					'taxonomy_id' => $taxonomy2->get_id()
+				],
+				'multiple' => 'yes'
+		    ),
+		    true
+	    );
+		
+		$this->meta_3_tax = $meta_3_tax;
 		
 		$metadatum_text = $this->tainacan_entity_factory->create_entity(
 		    'metadatum',
@@ -239,8 +370,16 @@ class Facets extends TAINACAN_UnitApiTestCase {
 				$this->tainacan_item_metadata_factory->create_item_metadata($item, $meta_2_tax, [$term_2_c->get_id()]);
 			}
 			
-
-		
+			// hierarchical taxonomy 
+			if ($i <= 10) {
+				$this->tainacan_item_metadata_factory->create_item_metadata($item, $meta_3_tax, [$term2_root_c1->get_id()]);
+			} elseif($i <= 20) {
+				$this->tainacan_item_metadata_factory->create_item_metadata($item, $meta_3_tax, [$term2_root2_c1->get_id()]);
+			} elseif($i <= 30) {
+				$this->tainacan_item_metadata_factory->create_item_metadata($item, $meta_3_tax, [$term2_root2_gc2->get_id()]);
+			} elseif($i <= 40) {
+				$this->tainacan_item_metadata_factory->create_item_metadata($item, $meta_3_tax, [$term2_root2_ggc1->get_id()]);
+			} 
 		}
 		
 		$this->repository = \Tainacan\Repositories\Metadata::get_instance();
@@ -575,19 +714,21 @@ class Facets extends TAINACAN_UnitApiTestCase {
 
 		$values = $this->repository->fetch_all_metadatum_values( $this->meta_2_tax->get_id(), [
 			'count_items' => true,
-			'search' => 'collection',
-			'items_filter' => false
+			'search' => 'child',
+			'items_filter' => false,
 		] );
 		$values = $this->get_values($values);
-		$this->assertEquals( 2, sizeof($values) );
+		$this->assertEquals( 3, sizeof($values) );
 
 		$valuesParsed = array_map(function($el) {
-			$this->assertEquals( 20, $el['total_items'] );
+			//$this->assertEquals( 10, $el['total_items'] );
+			$this->assertContains($el['total_items'], [10,20]);
 			return $el['label'];
 		}, $values);
 
-		$this->assertContains( 'Term for collection 1', $valuesParsed);
-		$this->assertContains( 'Term for collection 2', $valuesParsed);
+		$this->assertContains( 'Term for collection 2 child', $valuesParsed);
+		$this->assertContains( 'Term for collection 1 child', $valuesParsed);
+		$this->assertContains( 'Term for all child', $valuesParsed);
 		
 		// test search relationship  without filter
 		$values = $this->repository->fetch_all_metadatum_values( $this->meta_relationship->get_id(), [
@@ -644,23 +785,353 @@ class Facets extends TAINACAN_UnitApiTestCase {
 		$this->assertContains( 'Value 55', $valuesParsed);
 		$this->assertContains( 'Value 77', $valuesParsed);
 		
-		// test count items normal 
+		// test count items normal
 		
-		// test default taxonomy 
-		// test default taxonomy without filter 
-		// test search taxonomy 
+		// test default taxonomy
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id());
+		$values = $this->get_values($values);
+		$this->assertEquals(2, sizeof($values));
+		
+		// test default taxonomy without filter
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
+			'items_filter' => false
+		]);
+		$values = $this->get_values($values);
+		$this->assertEquals(2, sizeof($values));
+
+		//test search taxonomy
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
+			'items_filter' => false,
+			'search' => 't2',
+		]);
+		$values = $this->get_values($values);
+		$this->assertEquals(1, sizeof($values));
+
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
+			'items_filter' => false,
+			'search' => 'Children',
+		]);
+		$values = $this->get_values($values);
+		$this->assertEquals(9, sizeof($values));
+
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
+			'items_filter' => false,
+			'search' => 'GGC',
+		]);
+		$values = $this->get_values($values);
+		$this->assertEquals(1, sizeof($values));
+
 		// test search taxonomy  with filter
-		// test search taxonomy  without filter
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
+			'count_items' => true,
+			'search' => 'GGC',
+			'items_filter' => [
+				'meta_query' => [
+					[
+						'key' => $this->metadatum_text->get_id(),
+						'value' => ['even']
+					]
+				]
+			]
+		] );
+		$values = $this->get_values($values);
+		$this->assertEquals( 1, sizeof($values) );
+		$this->assertEquals( 5, $values[0]['total_items']);
+
 		// test offset taxonomy 
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
+			'items_filter' => false,
+			'search' => 'Children',
+			'number' => 9,
+			'offset' => 0
+		]);
+		$values = $this->get_values($values);
+		$this->assertEquals(9, sizeof($values));
+
+		$values_p1 = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
+			'items_filter' => false,
+			'search' => 'Children',
+			'number' => 3,
+			'offset' => 0
+		]);
+		$values_p1 = $this->get_values($values_p1);
+		$this->assertEquals(3, sizeof($values_p1));
+
+		$values_p2 = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
+			'items_filter' => false,
+			'search' => 'Children',
+			'number' => 3,
+			'offset' => 3
+		]);
+		$values_p2 = $this->get_values($values_p2);
+		$this->assertEquals(3, sizeof($values_p2));
+
+		$values_p3 = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
+			'items_filter' => false,
+			'search' => 'Children',
+			'number' => 3,
+			'offset' => 6
+		]);
+		$values_p3 = $this->get_values($values_p3);
+		$this->assertEquals(3, sizeof($values_p3));
+
+		$this->assertEquals($values[0]['label'], $values_p1[0]['label']);
+		$this->assertEquals($values[3]['label'], $values_p2[0]['label']);
+		$this->assertEquals($values[6]['label'], $values_p3[0]['label']);
+		
 		// test include taxonomy 
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
+			'count_items' => true,
+			'include' => [$this->term2_root2_gc2->get_id(), $this->term2_root2_c2->get_id()], //['18','16'],
+			'search' => 'GGC',
+			'items_filter' => [
+				'meta_query' => [
+					[
+						'key' => $this->metadatum_text->get_id(),
+						'value' => ['even']
+					]
+				]
+			]
+		] );
+		$values = $this->get_values($values);
+		$this->assertEquals(3, sizeof($values));
+
+
+		// test search taxonomy  without filter
 		// test count items taxonomy 
-		
-		//
-		
-		
 		
 		
 	}
 	
+	/**
+	* @group term_tree
+	*/
+	public function test_process_term_tree() {
+		
+		$data = [
+			(object) [
+				'term_id' => 1,
+				'name' => 'Root',
+				'parent' => 0,
+				'have_items' => 0
+			],
+			(object) [
+				'term_id' => 2,
+				'name' => 'Child 1',
+				'parent' => 1,
+				'have_items' => 0
+			],
+			(object) [
+				'term_id' => 3,
+				'name' => 'G Child 1',
+				'parent' => 2,
+				'have_items' => 0
+			],
+			(object) [
+				'term_id' => 4,
+				'name' => 'G G Child',
+				'parent' => 3,
+				'have_items' => 0
+			],
+			(object) [
+				'term_id' => 5,
+				'name' => 'G G Child 2',
+				'parent' => 3,
+				'have_items' => 0
+			],
+			(object) [
+				'term_id' => 6,
+				'name' => 'G G G Child',
+				'parent' => 4,
+				'have_items' => 0
+			],
+			(object) [
+				'term_id' => 7,
+				'name' => 'G G G Child 2',
+				'parent' => 5,
+				'have_items' => 0
+			],
+			(object) [
+				'term_id' => 8,
+				'name' => '2 Root',
+				'parent' => 0,
+				'have_items' => 0
+			],
+			(object) [
+				'term_id' => 9,
+				'name' => '2 Child',
+				'parent' => 8,
+				'have_items' => 0
+			],
+			(object) [
+				'term_id' => 10,
+				'name' => '2 Child 2',
+				'parent' => 8,
+				'have_items' => 0
+			],
+			(object) [
+				'term_id' => 11,
+				'name' => '2 G Child',
+				'parent' => 10,
+				'have_items' => 0
+			],
+			(object) [
+				'term_id' => 12,
+				'name' => '2 G Child 2',
+				'parent' => 10,
+				'have_items' => 0
+			]
+		];
+		
+		$data_b = $data;
+		
+		
+		$MetaRepo = \Tainacan\Repositories\Metadata::get_instance();
+		
+		
+		// items on 5 and 12 
+		$data[4]->have_items = 1;
+		$data[11]->have_items = 1;
+		$i = 0;
+		while ($i<100) {
+			$i++;
+			
+			shuffle($data);
+			
+			$results = $MetaRepo->_process_terms_tree($data, 0);
+			
+			$this->assertEquals(2, count($results));
+			$ids = array_map(function($el) {return $el->term_id; }, $results);
+			$this->assertContains(1, $ids);
+			$this->assertContains(8, $ids);
+			
+			
+			$results = $MetaRepo->_process_terms_tree($data, 3);
+			
+			$this->assertEquals(1, count($results));
+			$ids = array_map(function($el) {return $el->term_id; }, $results);
+			$this->assertContains(5, $ids);
+			
+			$results = $MetaRepo->_process_terms_tree($data, 5);
+			$this->assertEquals(0, count($results));
+			
+			$results = $MetaRepo->_process_terms_tree($data, 10);
+			$this->assertEquals(1, count($results));			
+			$this->assertEquals(12, $results[0]->term_id);
+			
+		}
+		
+		// items on 6, 7 and 8 
+		$data = $data_b;
+		$data[4]->have_items = 0;
+		$data[11]->have_items = 0;
+		$data[7]->have_items = 1;
+		$data[6]->have_items = 1;
+		$data[5]->have_items = 1;
+		
+		$i = 0;
+		while ($i<100) {
+			$i++;
+			
+			shuffle($data);
+			
+			$results = $MetaRepo->_process_terms_tree($data, 0);
+			
+			$this->assertEquals(2, count($results));
+			$ids = array_map(function($el) {return $el->term_id; }, $results);
+			$this->assertContains(1, $ids);
+			$this->assertContains(8, $ids);
+			
+			
+			$results = $MetaRepo->_process_terms_tree($data, 3);
+			$this->assertEquals(2, count($results));
+			$ids = array_map(function($el) {return $el->term_id; }, $results);
+			$this->assertContains(5, $ids);
+			$this->assertContains(4, $ids);
+			
+			$results = $MetaRepo->_process_terms_tree($data, 5);
+			$this->assertEquals(1, count($results));
+			$ids = array_map(function($el) {return $el->term_id; }, $results);
+			$this->assertContains(7, $ids);
+			
+			$results = $MetaRepo->_process_terms_tree($data, 10);
+			$this->assertEquals(0, count($results));
+			
+			$results = $MetaRepo->_process_terms_tree($data, 6);
+			$this->assertEquals(0, count($results));
+			
+		}
+		
+		
+	}
 
+	/**
+	* @group term_tree
+	*/
+	public function test_process_term_tree_naria() {
+		$MetaRepo = \Tainacan\Repositories\Metadata::get_instance();
+		
+		$nchildrens = 3;
+		$h = 6;
+		$data = $this->generate_narias_tree_test($nchildrens, $h);
+		$this->set_items_in_tree($data, $nchildrens, $h, [1,3], 1);
+		//var_dump($data);
+		$start = microtime(true);
+		$results = $MetaRepo->_process_terms_tree($data, 0);
+		$time = microtime(true) - $start;
+
+		$this->assertEquals(2, count($results));
+		$ids = array_map(function($el) {return $el->term_id; }, $results);
+		$this->assertContains(1, $ids);
+		$this->assertContains(3, $ids);
+	}
+
+	private function set_items_in_tree($data, $nchildrens, $h, $parents=[], $items_repeat=1) {
+		if (empty($parents) || $nchildrens < 2 || $h < 1)
+			return $data;
+
+		foreach ($parents as $parent) {
+			for($i=0; $i < $items_repeat; $i++) {
+				$rando_h = rand (1, $h);
+				$id = $parent;
+				for ($count=0; $count < $rando_h; $count++ ) {
+					$rando_c = rand (1, $nchildrens) - 1;
+					$idx = ($id * $nchildrens) + $rando_c;
+					if($idx > count($data)-1) {
+						$idx = ($parent * $nchildrens) + $rando_c;
+					}
+					$id = $data[$idx]->term_id;
+				}
+				$data[$idx]->have_items = 1;
+			}
+		}
+	}
+
+	/*
+	* generate n-árias trees
+	*
+	* $nchildrens ||  $h=2 | $h=4 | $h=8  | $h=9
+	*           2 ||    3  |  15  |  255  |  511
+	*           3 ||    4  |  40  |  3280 |  9841
+	*           4 ||    5  |  85  |  21845|  87381
+	*           5 ||    6  |  156 |  97656|  488281
+	*/
+	private function generate_narias_tree_test($nchildrens, $h) {
+		if ($nchildrens < 2 || $h < 2)
+			return [];
+
+		$n = (pow($nchildrens, $h) - 1) / ($nchildrens - 1);
+		$data = [];
+		for ($i = 0; $i < $n-1; $i++) {
+			$id = $i+1;
+			$parent = floor($i/$nchildrens);
+			$data[] = (object) [
+				'term_id' => $id,
+				'name'		=> "i-$id",
+				'parent'	=> $parent,
+				'have_items' => 0
+			];
+		}
+		return $data;
+	}
 }
