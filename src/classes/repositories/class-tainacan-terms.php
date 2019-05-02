@@ -181,6 +181,15 @@ class Terms extends Repository {
 
 		return new Entities\Term( $term_saved['term_id'], $term->get_taxonomy() );
 	}
+	
+	// TODO: Is this workaround ok to avoid getting htmlentities ?
+	function get_mapped_property($entity, $prop) {
+		$property = parent::get_mapped_property($entity, $prop);
+		if ($prop == 'name' || $prop == 'description') {
+			$property = wp_specialchars_decode($property);
+		}
+		return $property;
+	}
 
 	/**
 	 * fetch terms based on ID or get terms args
