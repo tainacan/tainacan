@@ -30,6 +30,10 @@ use \Tainacan\Repositories;
 	 * 
 	 *     @type bool        $hide_empty                Wether to hide or not metadata the item has no value to
 	 *                                                  Default: true
+	 *     @type string      $before                    String to be added before each metadata block
+	 *                                                  Default '<div class="metadata-type-$type">' where $type is the metadata type slug
+	 *     @type string      $after		                String to be added after each metadata block
+	 *                                                  Default '</div>'
 	 *     @type string      $before_title              String to be added before each metadata title
 	 *                                                  Default '<h3>'
 	 *     @type string      $after_title               String to be added after each metadata title

@@ -20,7 +20,7 @@ class Youtube_Importer extends Importer {
     ];
 
     /**
-     * construct
+     * constructor
      */
     public function __construct($attributes = array()) {
         parent::__construct($attributes);
@@ -71,6 +71,15 @@ class Youtube_Importer extends Importer {
         if ( $items_json && $items_json->items ) {
             $item = $items_json->items[0];
 
+            $id = $this->get_transient('insertedId');
+
+            if ( $id && $id === $item->contentDetails->videoId ) {
+                return false;
+            }
+
+            $this->add_transient( 'video_url', 'https://www.youtube.com/watch?v=' . $item->contentDetails->videoId );
+            $this->add_transient( 'image_url', ( isset( $item->snippet ) && isset( $item->snippet->thumbnails->high->url )  ) ? $item->snippet->thumbnails->high->url : '' );
+
             foreach ( $collection_definition['mapping'] as $metadatum_id => $raw_metadatum) {
                 $value = '';
 
@@ -88,7 +97,7 @@ class Youtube_Importer extends Importer {
                         break;
 
                     case 'videoId':
-                        $value = $item->snippet->videoId;
+                        $value = $item->contentDetails->videoId;
                         break;
 
                     case 'channelTitle':
@@ -100,7 +109,7 @@ class Youtube_Importer extends Importer {
                         break;
 
                     case 'url':
-                        $value = 'https://www.youtube.com/watch?v=' . $item->snippet->videoId;
+                        $value = 'https://www.youtube.com/watch?v=' . $item->contentDetails->videoId;
                         break;
                 }
 
@@ -108,16 +117,22 @@ class Youtube_Importer extends Importer {
                 $processedItem[ $raw_metadatum ] = ( $metadatum->is_multiple() ) ? [ $value ] : $value;
             }
 
+            $this->add_log('nextToken ' . $items_json->nextPageToken);
             if ( isset( $items_json->nextPageToken ) ) {
-                $this->add_transient( 'nextPageToken', $items_json->nextPageToken );
+                $this->add_transient( 'pageToken', $items_json->nextPageToken );
             }
+
+            $this->add_transient( 'insertedId', $item->contentDetails->videoId );
         }
 
         return $processedItem;
     }
 
     /**
-     * identify the type of url is send by user
+     * method responsible for identify the type of url
+     *
+     * @param bool $showDetails
+     * @return array|bool
      */
     public function identify_url( $showDetails = false ){
         $url = $this->get_url();
@@ -183,24 +198,16 @@ class Youtube_Importer extends Importer {
         $type = $this->get_transient('url_type');
 
         switch ($type) {
-
-            case 'channel_id':
-            case 'user':
-            case 'playlist_id':
-                $json = $this->get_list_items();
-
-                if( $json->pageInfo && $json->pageInfo->totalResults ){
-                    return $json->pageInfo->totalResults;
-                }
-
-                break;
-
             case 'v':
                 return 1;
                 break;
 
             default:
-                return 0;
+                $json = $this->get_list_items();
+
+                if( isset( $json->pageInfo ) && $json->pageInfo->totalResults ){
+                    return $json->pageInfo->totalResults;
+                }
                 break;
         }
 
@@ -208,6 +215,8 @@ class Youtube_Importer extends Importer {
     }
 
     /**
+     * return the list of items for the different types of url
+     *
      * @return array|mixed
      */
     private function get_list_items() {
@@ -226,7 +235,7 @@ class Youtube_Importer extends Importer {
                 if( $json && isset($json->items) ){
                     $item = $json->items[0];
 
-                    $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=statistics,snippet,contentDetails&pageToken='
+                    $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&pageToken='
                         . $pageToken . '&maxResults=1&playlistId='
                         . $item->contentDetails->relatedPlaylists->uploads . '&key=' . $api_key;
 
@@ -292,26 +301,26 @@ class Youtube_Importer extends Importer {
     }
 
     /**
-     * create thumb
-     *
-     * @return string the class name
+     * @inheritdoc
      */
-    private function insert_files( $image_url, $video_url , $item ){
+    public function after_inserted_item( $inserted_item, $collection_index ) {
+        $image_url = $this->get_transient('image_url');
+        $video_url = $this->get_transient('video_url');
 
         if( isset( $image_url ) && $image_url ){
             $TainacanMedia = \Tainacan\Media::get_instance();
-            $id = $TainacanMedia->insert_attachment_from_url( $image_url, $item->get_id());
-            $item->set__thumbnail_id( $id );
+            $id = $TainacanMedia->insert_attachment_from_url( $image_url, $inserted_item->get_id());
+            $inserted_item->set__thumbnail_id( $id );
         }
 
         if( isset( $video_url ) && $video_url ){
 
-            $item->set_document( $video_url );
-            $item->set_document_type( 'url' );
+            $inserted_item->set_document( $video_url );
+            $inserted_item->set_document_type( 'url' );
         }
 
-        if( $item->validate() )
-            $this->items_repo->update($item);
+        if( $inserted_item->validate() )
+            $this->items_repo->update($inserted_item);
     }
 
 
