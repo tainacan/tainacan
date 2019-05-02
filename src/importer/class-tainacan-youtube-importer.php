@@ -46,41 +46,15 @@ class Youtube_Importer extends Importer {
 
         if( $details && $api_key ){
 
-            switch ($details['type']) {
-
-                case 'channel_id':
-                    $api_url = 'https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id='
-                        . $details['id'] . '&key=' . $api_key;
-
-                    $json = json_decode(file_get_contents($api_url));
-                    if( $json && isset($json->items) ){
-                        $item = $json->items[0];
-
-                        $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails%2Cstatistics&maxResults=1&playlistId='
-                            . $item->contentDetails->relatedPlaylists->uploads . '&key=' . $api_key;
-                    }
-                    die;
-                    break;
-
-                case 'user':
-                    $api_url = 'https://www.googleapis.com/youtube/v3/channels?part=CcontentDetails%2Cstatistics&maxResults=1&forUsername='
-                        . $details['id'] . '&key=' . $api_key;
-                    break;
-
-                case 'playlist_id':
-                    $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails%2Cstatistics&maxResults=1&playlistId='
-                        . $details['id'] . '&key=' . $api_key;
-                    break;
-
-                case 'v':
-                    $api_url = 'https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id='
-                        . $details['id'] . '&key=' . $api_key;
-                    break;
-
-                default:
-                    return [];
-                    break;
-            }
+            return [
+                    'title',
+                    'description',
+                    'publishedAt',
+                    'videoId',
+                    'channelTitle',
+                    'position',
+                    'url'
+            ];
         } else {
             return [];
         }
@@ -90,8 +64,56 @@ class Youtube_Importer extends Importer {
      * Method implemented by the child importer class to proccess each item
      * @return int
      */
-    public function process_item( $index, $collection_id ){
+    public function process_item( $index, $collection_definition ){
+        $processedItem = [];
+        $items_json = $this->get_list_items();
 
+        if ( $items_json && $items_json->items ) {
+            $item = $items_json->items[0];
+
+            foreach ( $collection_definition['mapping'] as $metadatum_id => $raw_metadatum) {
+                $value = '';
+
+                switch ( $raw_metadatum ) {
+                    case 'title':
+                        $value = $item->snippet->title;
+                        break;
+
+                    case 'description':
+                        $value = $item->snippet->description;
+                        break;
+
+                    case 'publishedAt':
+                        $value = $item->snippet->publishedAt;
+                        break;
+
+                    case 'videoId':
+                        $value = $item->snippet->videoId;
+                        break;
+
+                    case 'channelTitle':
+                        $value = $item->snippet->channelTitle;
+                        break;
+
+                    case 'position':
+                        $value = $item->snippet->position;
+                        break;
+
+                    case 'url':
+                        $value = 'https://www.youtube.com/watch?v=' . $item->snippet->videoId;
+                        break;
+                }
+
+                $metadatum = new \Tainacan\Entities\Metadatum($metadatum_id);
+                $processedItem[ $raw_metadatum ] = ( $metadatum->is_multiple() ) ? [ $value ] : $value;
+            }
+
+            if ( isset( $items_json->nextPageToken ) ) {
+                $this->add_transient( 'nextPageToken', $items_json->nextPageToken );
+            }
+        }
+
+        return $processedItem;
     }
 
     /**
@@ -160,11 +182,136 @@ class Youtube_Importer extends Importer {
     public function get_source_number_of_items() {
         $type = $this->get_transient('url_type');
 
-        if( $type === 'v'){
-            return 1;
-        } else {
-            return 0;
+        switch ($type) {
+
+            case 'channel_id':
+            case 'user':
+            case 'playlist_id':
+                $json = $this->get_list_items();
+
+                if( $json->pageInfo && $json->pageInfo->totalResults ){
+                    return $json->pageInfo->totalResults;
+                }
+
+                break;
+
+            case 'v':
+                return 1;
+                break;
+
+            default:
+                return 0;
+                break;
         }
+
+        return 0;
+    }
+
+    /**
+     * @return array|mixed
+     */
+    private function get_list_items() {
+        $type = $this->get_transient('url_type');
+        $id = $this->get_transient('youtube_id');
+        $pageToken = $this->get_transient('pageToken');
+        $api_key = $this->get_option('api_id');
+
+        switch ($type) {
+
+            case 'channel_id':
+                $api_url = 'https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,contentDetails&id='
+                    . $id . '&key=' . $api_key;
+
+                $json = json_decode(file_get_contents($api_url));
+                if( $json && isset($json->items) ){
+                    $item = $json->items[0];
+
+                    $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=statistics,snippet,contentDetails&pageToken='
+                        . $pageToken . '&maxResults=1&playlistId='
+                        . $item->contentDetails->relatedPlaylists->uploads . '&key=' . $api_key;
+
+                    $json = json_decode(file_get_contents($api_url));
+
+                    if( $json && isset($json->items) ){
+                        return $json;
+
+                    }
+                }
+                break;
+
+            case 'user':
+                $api_url = 'https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,contentDetails&forUsername='
+                    . $id . '&key=' . $api_key;
+
+                $json = json_decode(file_get_contents($api_url));
+                if( $json && isset($json->items) ){
+                    $item = $json->items[0];
+
+                    $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&pageToken='
+                        . $pageToken . '&maxResults=1&playlistId='
+                        . $item->contentDetails->relatedPlaylists->uploads . '&key=' . $api_key;
+
+                    $json = json_decode(file_get_contents($api_url));
+
+                    if( $json && isset($json->items) ){
+                        return $json;
+
+                    }
+                }
+                break;
+
+            case 'playlist_id':
+                $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&pageToken='
+                    . $pageToken . '&maxResults=1&playlistId='
+                    . $id . '&key=' . $api_key;
+
+                $json = json_decode(file_get_contents($api_url));
+                if( $json && isset($json->items) ){
+                    return $json;
+
+                }
+                break;
+
+            case 'v':
+                $api_url = 'https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails&maxResults=1&id='
+                    . $id . '&key=' . $api_key;
+
+                $json = json_decode(file_get_contents($api_url));
+                if( $json && isset($json->items) ){
+                    return $json;
+
+                }
+                break;
+
+            default:
+                return [];
+                break;
+        }
+
+        return [];
+    }
+
+    /**
+     * create thumb
+     *
+     * @return string the class name
+     */
+    private function insert_files( $image_url, $video_url , $item ){
+
+        if( isset( $image_url ) && $image_url ){
+            $TainacanMedia = \Tainacan\Media::get_instance();
+            $id = $TainacanMedia->insert_attachment_from_url( $image_url, $item->get_id());
+            $item->set__thumbnail_id( $id );
+        }
+
+        if( isset( $video_url ) && $video_url ){
+
+            $item->set_document( $video_url );
+            $item->set_document_type( 'url' );
+        }
+
+        if( $item->validate() )
+            $this->items_repo->update($item);
     }
 
 

@@ -858,11 +858,7 @@ class Oaipmh_Importer extends Importer {
 			</span>
             <div class="control is-clearfix">
                 <div class="select">
-<<<<<<< HEAD
-                    <select disabled name="using_set">
-=======
                     <select name="using_set">
->>>>>>> develop
                         <option value="collection" <?php selected($this->get_option('using_set'), 'collection'); ?> ><?php _e('Collections', 'tainacan'); ?></option>
                         <option value="taxonomy" <?php selected($this->get_option('using_set'), 'taxonomy'); ?> ><?php _e('Taxonomies', 'tainacan'); ?></option>
                     </select>

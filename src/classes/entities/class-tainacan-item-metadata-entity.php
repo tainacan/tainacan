@@ -98,7 +98,7 @@ class Item_Metadata_Entity extends Entity {
 	 */
 	public function get_multivalue_separator() {
 		$metadatum = $this->get_metadatum();
-		$value = ', ';
+		$value = '<span class="multivalue-separator"> | </span>';
 		if (is_object($metadatum)) {
 			$fto = $metadatum->get_metadata_type_object();
 			if (is_object($fto)) {
