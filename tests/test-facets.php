@@ -196,6 +196,7 @@ class Facets extends TAINACAN_UnitApiTestCase {
 			),
 			true
 		);
+		$this->term2_root2_c2 = $term2_root2_c2;
 		$term2_root2_gc1 = $this->tainacan_entity_factory->create_entity(
 			'term',
 			array(
@@ -214,6 +215,7 @@ class Facets extends TAINACAN_UnitApiTestCase {
 			),
 			true
 		);
+		$this->term2_root2_gc2 = $term2_root2_gc2;
 		$term2_root2_ggc1 = $this->tainacan_entity_factory->create_entity(
 			'term',
 			array(
@@ -880,7 +882,7 @@ class Facets extends TAINACAN_UnitApiTestCase {
 		// test include taxonomy 
 		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
 			'count_items' => true,
-			'include' => ['18','16'],
+			'include' => [$this->term2_root2_gc2->get_id(), $this->term2_root2_c2->get_id()], //['18','16'],
 			'search' => 'GGC',
 			'items_filter' => [
 				'meta_query' => [
