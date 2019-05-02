@@ -37,11 +37,6 @@ class Elastic_Press {
 		add_filter('ep_sync_terms_allow_hierarchy', '__return_true');
 
 		add_filter('tainacan_fetch_args', [$this, 'filter_args'], 10, 2);
-		
-		add_action('ep_retrieve_aggregations', function ( array $aggregations, $scope, $args ) {
-			$this->last_aggregations = $this->format_aggregations($aggregations);
-		}, 10, 3);
-		
 		add_filter('tainacan-api-items-filters-response', function($filters) { return $this->last_aggregations; });
 		
 		add_filter('tainacan-fetch-all-metadatum-values', [$this, 'fetch_all_metadatum_values'], 10, 3);
@@ -110,6 +105,11 @@ class Elastic_Press {
 
 		if ($type == 'items' && (!isset($args['ep_integrate']) || $args['ep_integrate'] === true)) {
 			$args['ep_integrate'] = true;
+
+			add_action('ep_retrieve_aggregations', function ( array $aggregations, $scope, $args ) {
+				$this->last_aggregations = $this->format_aggregations($aggregations);
+			}, 10, 3);
+
 			$args = $this->add_items_args($args);
 		}
 
