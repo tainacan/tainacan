@@ -82,13 +82,17 @@ registerBlockType('tainacan/dynamic-items-list', {
         order: {
             type: String,
             default: undefined
+        },
+        blockId: {
+            type: String,
+            default: undefined
         }
     },
     supports: {
         align: ['full', 'wide'],
         html: false,
     },
-    edit({ attributes, setAttributes, className, isSelected }){
+    edit({ attributes, setAttributes, className, isSelected, clientId }){
         let {
             items, 
             content, 
@@ -106,6 +110,9 @@ registerBlockType('tainacan/dynamic-items-list', {
             isLoading,
             showSearchBar
         } = attributes;
+
+        // Obtains block's client id to render it on save function
+        setAttributes({ blockId: clientId });
 
         function prepareItem(item) {
             return (
@@ -199,13 +206,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                         items.push(prepareItem(item));
 
                     setAttributes({
-                        content: (
-                            <ul 
-                                style={{ gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' +  (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit' }}
-                                className={'items-list  items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')}>
-                                { items }
-                            </ul>
-                        ),
+                        content: <div></div>,
                         items: items,
                         isLoading: false,
                         itemsRequestSource: itemsRequestSource
@@ -488,14 +489,14 @@ registerBlockType('tainacan/dynamic-items-list', {
     },
     save({ attributes, className }){
         const {
-            gridMargin,
-            showImage,
-            showName,
-            layout,
-            showSearchBar,
             searchURL,
-            content 
+            content,
+            blockId 
         } = attributes;
-        return <div className={className}>{ content }</div>
+
+        return <div
+                    searchURL={ searchURL }
+                    className={ className }
+                    id={ 'wp-block-tainacan-dynamic-items-list_' + blockId }>{ content }</div>
     }
 });

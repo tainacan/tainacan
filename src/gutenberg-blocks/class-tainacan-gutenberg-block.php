@@ -21,7 +21,6 @@ function tainacan_blocks_add_gutenberg_blocks_actions() {
 
 	add_action('init', 'tainacan_blocks_add_plugin_settings');
 	
-	//add_action('wp_enqueue_scripts', 'tainacan_blocks_enqueue_on_theme');
 	add_filter('block_categories', 'tainacan_blocks_register_categories', 10, 2);
 }
 
@@ -36,15 +35,6 @@ function tainacan_blocks_register_categories($categories, $post){
 			),
 		)
 	);
-}
-
-function tainacan_blocks_enqueue_on_theme(){
-	global $TAINACAN_BASE_URL;
-
-	// wp_enqueue_script(
-	// 	'collections-carousel',
-	// 	$TAINACAN_BASE_URL . '/assets/gutenberg_collections_carousel-components.js'
-	// );
 }
 
 // function tainacan_blocks_register_tainacan_items_grid(){
@@ -119,6 +109,11 @@ function tainacan_blocks_register_tainacan_items_list(){
 function tainacan_blocks_register_tainacan_dynamic_items_list(){
 	global $TAINACAN_BASE_URL;
 
+	wp_enqueue_script(
+		'dynamic-items-list-theme',
+		$TAINACAN_BASE_URL . '/assets/gutenberg_dynamic_items_list_theme-components.js'
+	);
+
 	wp_register_script(
 		'dynamic-items-list',
 		$TAINACAN_BASE_URL . '/assets/gutenberg_dynamic_items_list-components.js',
@@ -134,7 +129,8 @@ function tainacan_blocks_register_tainacan_dynamic_items_list(){
 	if (function_exists('register_block_type')) {
 		register_block_type( 'tainacan/dynamic-items-list', array(
 			'editor_script' => 'dynamic-items-list',
-			'style'         => 'dynamic-items-list'
+			'style'         => 'dynamic-items-list',
+			'script'		=> 'dynamic-items-list-theme'
 		) );
 	}
 }
