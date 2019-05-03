@@ -8,7 +8,7 @@ class Flickr_Importer extends Importer {
     protected $endPoint = 'https://api.flickr.com/services/rest/?';
     protected $method = 'method=flickr.';
     protected $apiKey = '&api_key=';
-    protected $perPage = '&per_page=500';
+    protected $perPage = '&per_page=1';
     protected $format = '&format=json&nojsoncallback=1';
     protected $apiKeyValue = '59dcf7e8e317103416c529b476f44fab';
 
@@ -51,16 +51,28 @@ class Flickr_Importer extends Importer {
         $details = $this->identify_url(true);
         $api_key = $this->get_option('api_id');
 
+        //$api_key = $this->apiKeyValue;
+        //var_dump($this->get_list_items());
+        //die;
+
+
         if( $details && $api_key ){
 
             return [
-                    'title',
-                    'description',
-                    'publishedAt',
-                    'videoId',
-                    'channelTitle',
-                    'position',
-                    'url'
+                'title',
+                'ownername',
+                'tags',
+                'description',
+                'owner',
+                'date_upload',
+                'url',
+                'id',
+                'content',
+                'type',
+                'license',
+                'latitude',
+                'longitude',
+                'source'
             ];
         } else {
             return [];
@@ -185,15 +197,17 @@ class Flickr_Importer extends Importer {
         $type = $this->get_transient('url_type');
 
         switch ($type) {
-            case 'v':
+            case 'singlephoto':
                 return 1;
                 break;
 
             default:
                 $json = $this->get_list_items();
 
-                if( isset( $json->pageInfo ) && $json->pageInfo->totalResults ){
-                    return $json->pageInfo->totalResults;
+                if( isset( $json->photos ) && isset( $json->photos->total ) ){
+                    return $json->photos->total;
+                } else if( isset( $json->photoset ) && isset( $json->photoset->total ) ){
+                    return $json->photoset->total;
                 }
                 break;
         }
@@ -208,72 +222,47 @@ class Flickr_Importer extends Importer {
      */
     private function get_list_items() {
         $type = $this->get_transient('url_type');
-        $id = $this->get_transient('youtube_id');
+        $id = $this->get_transient('flickr_id');
         $pageToken = $this->get_transient('pageToken');
         $api_key = $this->get_option('api_id');
 
         switch ($type) {
 
-            case 'channel_id':
-                $api_url = 'https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,contentDetails&id='
-                    . $id . '&key=' . $api_key;
+            case 'album':
+                $api_url = $this->endPoint .
+                    $this->method . 'photosets.getPhotos' .
+                    $this->apiKey . $this->apiKeyValue . '&photoset_id=' . $id .
+                    '&extras=license,date_upload,date_taken,owner_name,icon_server,original_format,last_update,geo,tags,machine_tags,o_dims,views,media,path_alias,url_o' .
+                    $this->perPage . '&page=' . $pageToken . $this->format;
 
                 $json = json_decode(file_get_contents($api_url));
-                if( $json && isset($json->items) ){
-                    $item = $json->items[0];
-
-                    $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&pageToken='
-                        . $pageToken . '&maxResults=1&playlistId='
-                        . $item->contentDetails->relatedPlaylists->uploads . '&key=' . $api_key;
-
-                    $json = json_decode(file_get_contents($api_url));
-
-                    if( $json && isset($json->items) ){
-                        return $json;
-
-                    }
+                if( $json && isset($json->photoset) ){
+                    return $json;
                 }
                 break;
 
             case 'user':
-                $api_url = 'https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,contentDetails&forUsername='
-                    . $id . '&key=' . $api_key;
+                $api_url = $this->endPoint .
+                    $this->method . 'photos.search' .
+                    $this->apiKey . $this->apiKeyValue  . '&user_id=' . $id .
+                    '&sort=date-posted-asc&content_type=1&extras=views,date_upload,license,date_taken,url_o' .
+                    $this->perPage . '&page=' . $pageToken . $this->format;
 
                 $json = json_decode(file_get_contents($api_url));
-                if( $json && isset($json->items) ){
-                    $item = $json->items[0];
-
-                    $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&pageToken='
-                        . $pageToken . '&maxResults=1&playlistId='
-                        . $item->contentDetails->relatedPlaylists->uploads . '&key=' . $api_key;
-
-                    $json = json_decode(file_get_contents($api_url));
-
-                    if( $json && isset($json->items) ){
-                        return $json;
-
-                    }
-                }
-                break;
-
-            case 'playlist_id':
-                $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&pageToken='
-                    . $pageToken . '&maxResults=1&playlistId='
-                    . $id . '&key=' . $api_key;
-
-                $json = json_decode(file_get_contents($api_url));
-                if( $json && isset($json->items) ){
+                if( $json && isset($json->photos) ){
                     return $json;
 
                 }
                 break;
 
-            case 'v':
-                $api_url = 'https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails&maxResults=1&id='
-                    . $id . '&key=' . $api_key;
+            case 'singlephoto':
+                $api_url = $this->endPoint .
+                    $this->method . 'photos.getInfo' .
+                    $this->apiKey . $this->apiKeyValue . '&extras=views,date_upload,license,date_taken,url_o&photo_id='
+                    . $id . $this->format;
 
                 $json = json_decode(file_get_contents($api_url));
-                if( $json && isset($json->items) ){
+                if( $json && isset($json->photo) ){
                     return $json;
 
                 }
