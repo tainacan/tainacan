@@ -417,7 +417,10 @@
     margin-bottom: 1rem; }
     .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar button {
       margin-right: 0.75rem;
-      z-index: 2; }
+      z-index: 2;
+      border: none;
+      background: transparent;
+      cursor: pointer; }
       .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar button svg {
         fill: #cbcbcb;
         transition: fill 0.4s ease; }
@@ -429,6 +432,7 @@
       .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar button.sorting-button-selected svg {
         fill: #545758; }
     .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar input {
+      height: 32px;
       width: 20%;
       border-radius: 0;
       margin-left: -52px;
@@ -443,7 +447,8 @@
   .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-list-without-margin {
     grid-template-columns: repeat(auto-fill, 185px);
     justify-content: center !important;
-    grid-template-rows: auto !important; }
+    grid-template-rows: auto !important;
+    list-style: none; }
     .wp-block-tainacan-dynamic-items-list ul.items-list.items-list-without-margin li,
     .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-list-without-margin li {
       margin-top: 0 !important;

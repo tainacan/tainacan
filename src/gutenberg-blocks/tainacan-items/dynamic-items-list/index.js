@@ -489,14 +489,34 @@ registerBlockType('tainacan/dynamic-items-list', {
     },
     save({ attributes, className }){
         const {
+            content, 
+            blockId,
+            collectionId,  
+            showImage,
+            showName,
+            layout,
+            gridMargin,
             searchURL,
-            content,
-            blockId 
+            maxItemsNumber,
+            order,
+            showSearchBar
         } = attributes;
-
-        return <div
-                    searchURL={ searchURL }
+        console.log(className)
+        return <div 
+                    search-url={ searchURL }
                     className={ className }
-                    id={ 'wp-block-tainacan-dynamic-items-list_' + blockId }>{ content }</div>
+                    collection-id={ collectionId }  
+                    show-image={ '' + showImage }
+                    show-name={ '' + showName }
+                    show-search-bar={ '' + showSearchBar }
+                    layout={ layout }
+                    grid-margin={ gridMargin }
+                    max-items-number={ maxItemsNumber }
+                    order={ order }
+                    tainacan-api-root={ tainacan_plugin.root }
+                    tainacan-base-url={ tainacan_plugin.base_url }
+                    id={ 'wp-block-tainacan-dynamic-items-list_' + blockId }>
+                        { content }
+                </div>
     }
 });
