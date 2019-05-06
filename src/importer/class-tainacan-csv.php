@@ -126,15 +126,15 @@ class CSV extends Importer {
             $this->handle_item_id( $values );
             $this->add_log('Updating item' );
         }
-
         foreach ( $collection_definition['mapping'] as $metadatum_id => $header) {
+            $column = null;
             foreach ( $headers as $indexRaw => $headerRaw ) {
                if( $headerRaw === $header ) {
                     $column = $indexRaw;
                }
             }
 
-            if(!isset($column))
+            if(is_null($column))
                 continue;
 
             $valueToInsert = $this->handle_encoding( $values[ $column ] );
