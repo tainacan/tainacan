@@ -640,6 +640,7 @@
                             <span 
                                     v-for="(column, index) in tableMetadata"
                                     :key="index"
+                                    :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }"
                                     v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'description')">
                                 <h3 class="metadata-label">{{ $i18n.get('label_description') }}</h3>
                                 <p 
@@ -649,6 +650,7 @@
                             <span 
                                     v-for="(column, index) in tableMetadata"
                                     :key="index"
+                                    :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }"
                                     v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
                                 <h3 class="metadata-label">{{ column.name }}</h3>
                                 <p 
@@ -721,7 +723,7 @@
                                 v-if="column.display"
                                 :label="column.name" 
                                 class="column-default-width"
-                                :class="{
+                                :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea',
                                         'thumbnail-cell': column.metadatum == 'row_thumbnail',
                                         'column-main-content' : column.metadata_type_object != undefined ? (column.metadata_type_object.related_mapped_prop == 'title') : false,
                                         'column-needed-width column-align-right' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'float' || 

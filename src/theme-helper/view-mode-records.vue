@@ -59,22 +59,7 @@
                                 :key="index"
                                 class="metadata-title"
                                 v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                             
-                        <p 
-                                v-tooltip="{
-                                    delay: {
-                                        show: 500,
-                                        hide: 300,
-                                    },
-                                    content: item.title != undefined ? item.title : '',
-                                    html: true,
-                                    autoHide: false,
-                                    placement: 'auto-start'
-                                }"
-                                v-for="(column, index) in tableMetadata"
-                                :key="index"
-                                v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                v-html="item.title != undefined ? item.title : ''" />                             
+                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                                                 
 
                         <!-- Remaining metadata -->  
                         <div class="media">
@@ -93,17 +78,9 @@
                                             class="skeleton"/>
                                 </div>
                                 <span 
-                                        v-for="(column, index) in tableMetadata"
-                                        :key="index"
-                                        v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'description')">
-                                    <h3 class="metadata-label">{{ $i18n.get('label_description') }}</h3>
-                                    <p 
-                                            v-html="item.description != undefined ? item.description : ''"
-                                            class="metadata-value"/>
-                                </span>
-                                <span 
                                         v-for="(column, index) in displayedMetadata"
                                         :key="index"
+                                        :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }"
                                         v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
                                     <h3 class="metadata-label">{{ column.name }}</h3>
                                     <p      
@@ -120,7 +97,6 @@
 </template>
 
 <script>
-
 export default {
     name: 'ViewModeRecords',
     props: {
@@ -167,6 +143,7 @@ export default {
 </script>
 
 <style  lang="scss" scoped>
+
     $turquoise1: #e6f6f8;
     $turquoise2: #d1e6e6;
     $tainacan-input-color: #1d1d1d;

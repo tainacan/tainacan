@@ -165,7 +165,6 @@ export default {
                     margin-right: $page-side-padding !important;
                 }
             }
-
             @media screen and (max-width: 768px) {
                 justify-content: space-between !important;
             }
@@ -204,6 +203,23 @@ export default {
 
                 @media screen and (min-width: 769px) and (max-width: 1023px) {
                     margin-left: 25% !important;
+                }
+            }
+
+            // Metadata type textarea has different separators in different spots on interface
+            .multivalue-separator {
+                color: $gray3;
+                margin: 0 8px;    
+            }
+            .metadata-type-textarea {
+                .multivalue-separator {
+                    display: block;
+                    max-height: 1px;
+                    width: 35px;
+                    background: $gray3;
+                    content: none;
+                    color: transparent;
+                    margin: 0 auto 1rem auto;
                 }
             }
         }
