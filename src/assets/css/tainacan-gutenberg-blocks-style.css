@@ -433,6 +433,26 @@
         box-shadow: none; }
       .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar button.sorting-button-selected svg {
         fill: #545758; }
+    .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar a.next-button {
+      max-width: 12px;
+      border-left: 12px solid #cbcbcb;
+      border-right: 12px solid transparent;
+      border-top: 14px solid transparent;
+      border-bottom: 14px solid transparent;
+      cursor: pointer; }
+      .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar a.next-button:hover {
+        border-left-color: #555758; }
+    .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar a.previous-button {
+      margin-left: auto;
+      margin-right: 1rem;
+      max-width: 12px;
+      border-right: 12px solid #cbcbcb;
+      border-left: 12px solid transparent;
+      border-top: 14px solid transparent;
+      border-bottom: 14px solid transparent;
+      cursor: pointer; }
+      .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar a.previous-button:hover {
+        border-right-color: #555758; }
     .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar input {
       height: 32px;
       width: 20%;

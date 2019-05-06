@@ -58,8 +58,19 @@
             </button>
             <input
                     :value="searchString"
-                    @input="(value) => { $root.debounce(applySearchString(value), 1000) } "
-                    type="text" >  
+                    @input="(value) => { $root.debounce(applySearchString(value), 300) } "
+                    type="text">
+            <a
+                    class="previous-button"
+                    v-if="paged > 1"
+                    @click="paged--; fetchItems()"
+                    :label="$root.__('Previous page', 'tainacan')" /> 
+            <a
+                    :style="{ marginLeft: paged <= 1 ? 'auto' : '0' }"
+                    class="next-button"
+                    v-if="paged < totalPages || items.length < totalItems"
+                    @click="paged++; fetchItems()"
+                    :label="$root.__('Next page', 'tainacan')" /> 
         </div>
         <div
                 v-if="isLoading"
@@ -122,12 +133,15 @@ export default {
             isLoading: false,
             localMaxItemsNumber: undefined,
             localOrder: undefined,
-            tainacanAxios: undefined
+            tainacanAxios: undefined,
+            paged: undefined,
+            totalItems: 0
         }
     },
     methods: {
         applySearchString(event) {
 
+            this.paged = 1;
             let value = event.target.value;
 
             if (this.searchString != value) {
@@ -179,6 +193,12 @@ export default {
                 this.searchString = undefined;
             }
 
+            // Set up paging
+            if (this.paged != undefined)
+                queryObject.paged = this.paged;
+            else if (queryObject.paged != undefined)
+                this.paged = queryObject.paged;
+
             // Remove unecessary queries
             delete queryObject.readmode;
             delete queryObject.iframemode;
@@ -191,7 +211,10 @@ export default {
                 .then(response => {
                     for (let item of response.data.items)
                         this.items.push(item);
+
                     this.isLoading = false;
+                    this.totalItems = response.headers['x-wp-total'];
+
                 }).catch((error) => { 
                     this.isLoading = false;
                     console.log(error);
