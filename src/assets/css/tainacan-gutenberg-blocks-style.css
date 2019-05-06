@@ -407,7 +407,8 @@
     padding: 1rem;
     display: flex;
     justify-content: center;
-    align-items: center; }
+    align-items: center;
+    color: #555758; }
   .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar {
     width: 100%;
     display: flex;
@@ -417,6 +418,7 @@
     margin-bottom: 1rem; }
     .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar button {
       margin-right: 0.75rem;
+      min-height: 28px;
       z-index: 2;
       border: none;
       background: transparent;

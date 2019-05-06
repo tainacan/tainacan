@@ -8,6 +8,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        color: #555758;
     }
 
     // Search control bar
@@ -21,6 +22,7 @@
 
         button {
             margin-right: 0.75rem;
+            min-height: 28px;
             z-index: 2;
             border: none;
             background: transparent;

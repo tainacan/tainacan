@@ -111,7 +111,8 @@ function tainacan_blocks_register_tainacan_dynamic_items_list(){
 
 	wp_enqueue_script(
 		'dynamic-items-list-theme',
-		$TAINACAN_BASE_URL . '/assets/gutenberg_dynamic_items_list_theme-components.js'
+		$TAINACAN_BASE_URL . '/assets/gutenberg_dynamic_items_list_theme-components.js',
+		array('wp-components')
 	);
 
 	wp_register_script(

@@ -6,7 +6,7 @@
             <button
                     @click="localOrder = 'asc'; fetchItems()"
                     :class="localOrder == 'asc' ? 'sorting-button-selected' : ''"
-                    label="__('label_sort_ascending', 'tainacan')">
+                    :label="$root.__('label_sort_ascending', 'tainacan')">
                 <span class="icon">
                     <i>
                         <svg
@@ -21,7 +21,7 @@
             <button
                     @click="localOrder = 'desc'; fetchItems(); "
                     :class="localOrder == 'desc' ? 'sorting-button-selected' : ''"
-                    label="__('label_sort_descending', 'tainacan')">
+                    :label="$root.__('label_sort_descending', 'tainacan')">
                 <span class="icon">
                     <i>
                         <svg
@@ -36,7 +36,7 @@
             </button>  
             <button
                     @click="fetchItems()"
-                    label="__('search', 'tainacan')">
+                    :label="$root.__('search', 'tainacan')">
                 <span class="icon">
                     <i>
                         <svg    
@@ -58,13 +58,13 @@
             </button>
             <input
                     :value="searchString"
-                    @change="(value) => { applySearchString(value) } "
+                    @input="(value) => { $root.debounce(applySearchString(value), 1000) } "
                     type="text" >  
         </div>
         <div
                 v-if="isLoading"
                 class="spinner-container">
-            LOADING SÔ
+            {{ $root.__('Loading items...', 'tainacan') }}
         </div>
         <div v-else>
             <ul 
@@ -94,13 +94,15 @@
                                     : 
                                 `${$root.tainacanBaseUrl}/admin/images/placeholder_square.png`)
                             "
-                            :alt="item.title">
+                            :alt="item.title ? item.title : $root.__('Thumbnail', 'tainacan')">
                         <span>{{ item.title ? item.title : '' }}</span>
                     </a>
                 </li>
             </ul>
-            <div v-else>
-                No items baby.
+            <div
+                    v-else
+                    class="spinner-container">
+                {{ $root.__('No items found.', 'tainacan') }}
             </div>
         </div>
     </div>
@@ -181,6 +183,7 @@ export default {
             delete queryObject.readmode;
             delete queryObject.iframemode;
             delete queryObject.admin_view_mode;
+            delete queryObject.fetch_only_meta;
             
             endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
             

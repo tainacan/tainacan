@@ -34,6 +34,14 @@ document.addEventListener("DOMContentLoaded", () => {
             this.showSearchBar = this.$el.attributes['show-search-bar'] != undefined ? Boolean(this.$el.attributes['show-search-bar'].value) : false;
             this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
             this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
+        },
+        methods: {
+            __(text, domain) {
+                return wp.i18n.__(text, domain);
+            },
+            debounce() {
+                return _.debounce;
+            }
         }
     };
 
