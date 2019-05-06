@@ -404,7 +404,7 @@ class Search_Engine {
 		if ( $this->is_tainacan_search && !empty( $this->relationships ) ) {
 
             $relationships = implode(',', $this->relationships);
-			$join .= " LEFT JOIN $wpdb->posts AS p2 ON (m.meta_value = p2.ID AND meta_key IN ($relationships)) ";
+			$join .= " LEFT JOIN $wpdb->posts AS p2 ON (m.meta_value = p2.ID AND m.meta_key IN ($relationships)) ";
 		}
 		return $join;
 	}
