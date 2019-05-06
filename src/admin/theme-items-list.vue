@@ -219,7 +219,7 @@ export default {
                     background: $gray3;
                     content: none;
                     color: transparent;
-                    margin: 0 auto 1rem auto;
+                    margin: 1rem auto;
                 }
             }
         }
