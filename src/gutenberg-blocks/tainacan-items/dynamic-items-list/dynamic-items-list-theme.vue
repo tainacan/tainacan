@@ -1,7 +1,7 @@
 <template>
-    <div :class="$root.className">
+    <div :class="className">
         <div
-                v-if="$root.showSearchBar"
+                v-if="showSearchBar"
                 class="dynamic-items-search-bar">
             <button
                     @click="localOrder = 'asc'; fetchItems()"
@@ -60,18 +60,47 @@
                     :value="searchString"
                     @input="(value) => { $root.debounce(applySearchString(value), 300) } "
                     type="text">
-            <a
+            <button
                     class="previous-button"
                     v-if="paged > 1"
                     @click="paged--; fetchItems()"
-                    :label="$root.__('Previous page', 'tainacan')" /> 
-            <a
+                    :label="$root.__('Previous page', 'tainacan')">
+                <span class="icon">
+                    <i>
+                        <svg
+                                width="30"
+                                height="30"
+                                viewBox="0 0 20 20">
+                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                            <path
+                                    d="M0 0h24v24H0z"
+                                    fill="none"/>                        
+                        </svg>
+                    </i>
+                </span>
+            </button> 
+            <button
                     :style="{ marginLeft: paged <= 1 ? 'auto' : '0' }"
                     class="next-button"
                     v-if="paged < totalPages || items.length < totalItems"
                     @click="paged++; fetchItems()"
-                    :label="$root.__('Next page', 'tainacan')" /> 
+                    :label="$root.__('Next page', 'tainacan')">
+                <span class="icon">
+                    <i>
+                        <svg
+                                width="30"
+                                height="30"
+                                viewBox="0 0 20 20">
+                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                            <path
+                                    d="M0 0h24v24H0z"
+                                    fill="none"/>                        
+                        </svg>
+                    </i>
+                </span>
+            </button> 
         </div>
+
         <div
                 v-if="isLoading"
                 class="spinner-container">
@@ -80,19 +109,19 @@
         <div v-else>
             <ul 
                     v-if="items.length > 0"
-                    :style="{ gridTemplateColumns: $root.layout == 'grid' ? 'repeat(auto-fill, ' + ($root.gridMargin + ($root.showName ? 220 : 185)) + 'px)' : 'inherit' }"
+                    :style="{ gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit' }"
                     class="items-list"
-                    :class="'items-layout-' + $root.layout + (!$root.showName ? ' items-list-without-margin' : '')">
+                    :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
                 <li
                         :key="index"
                         v-for="(item, index) of items"
                         class="item-list-item"
-                        :style="{ marginBottom: $root.layout == 'grid' ? $root.gridMargin + 'px' : ''}">      
+                        :style="{ marginBottom: layout == 'grid' ? gridMargin + 'px' : ''}">      
                     <a 
                             :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
                             :href="item.url"
                             target="_blank"
-                            :class="(!$root.showName ? 'item-without-title' : '') + ' ' + (!$root.showImage ? 'item-without-image' : '')">
+                            :class="(!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '')">
                         <img
                             :src=" 
                                 item.thumbnail && item.thumbnail['tainacan-medium'][0] && item.thumbnail['tainacan-medium'][0] 
@@ -103,7 +132,7 @@
                                     ?    
                                 item.thumbnail['thumbnail'][0] 
                                     : 
-                                `${$root.tainacanBaseUrl}/admin/images/placeholder_square.png`)
+                                `${tainacanBaseUrl}/admin/images/placeholder_square.png`)
                             "
                             :alt="item.title ? item.title : $root.__('Thumbnail', 'tainacan')">
                         <span>{{ item.title ? item.title : '' }}</span>
@@ -138,6 +167,20 @@ export default {
             totalItems: 0
         }
     },
+    props: {
+        collectionId: String,  
+        showImage: Boolean,
+        showName: Boolean,
+        layout: String,
+        gridMargin: Number,
+        searchURL: String,
+        maxItemsNumber: Number,
+        order: String,
+        showSearchBar: Boolean,
+        tainacanApiRoot: String,
+        tainacanBaseUrl: String,
+        className: String
+    },
     methods: {
         applySearchString(event) {
 
@@ -159,13 +202,13 @@ export default {
 
             this.itemsRequestSource = axios.CancelToken.source();
 
-            let endpoint = '/collection' + this.$root.searchURL.split('#')[1].split('/collections')[1];
+            let endpoint = '/collection' + this.searchURL.split('#')[1].split('/collections')[1];
             let query = endpoint.split('?')[1];
             let queryObject = qs.parse(query);
 
             // Set up max items to be shown
-            if (this.$root.maxItemsNumber != undefined && this.$root.maxItemsNumber > 0)
-                queryObject.perpage = this.$root.maxItemsNumber;
+            if (this.maxItemsNumber != undefined && this.maxItemsNumber > 0)
+                queryObject.perpage = this.maxItemsNumber;
             else if (queryObject.perpage != undefined && queryObject.perpage > 0)
                 this.localMaxItemsNumber = queryObject.perpage;
             else {
@@ -222,9 +265,8 @@ export default {
         }
     },
     created() {
-        this.localOrder = this.$root.order;
-
-        this.tainacanAxios = axios.create({ baseURL: this.$root.tainacanApiRoot });
+        this.localOrder = this.order;
+        this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
         this.fetchItems();
     },
 }

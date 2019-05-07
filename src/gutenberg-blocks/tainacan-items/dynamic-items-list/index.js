@@ -115,7 +115,7 @@ registerBlockType('tainacan/dynamic-items-list', {
 
         // Obtains block's client id to render it on save function
         setAttributes({ blockId: clientId });
-
+        
         function prepareItem(item) {
             return (
                 <li 
@@ -451,7 +451,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                 : null
                 }
 
-                { !items.length ? (
+                { !items.length && !isLoading ? (
                     <Placeholder
                         icon={(
                             <img
@@ -508,7 +508,6 @@ registerBlockType('tainacan/dynamic-items-list', {
             order,
             showSearchBar
         } = attributes;
-        console.log(className)
         return <div 
                     search-url={ searchURL }
                     className={ className }

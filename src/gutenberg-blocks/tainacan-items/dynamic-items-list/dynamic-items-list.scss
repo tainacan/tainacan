@@ -37,29 +37,15 @@
             &.sorting-button-selected svg {
                 fill: #545758;
             }
-        }
-        a.next-button {
-            margin-right: 1rem;
-            max-width: 12px;
-            border-left: 12px solid #cbcbcb;
-            border-right: 12px solid transparent;
-            border-top: 14px solid transparent;
-            border-bottom: 14px solid transparent;
-            cursor: pointer;
-
-            &:hover { border-left-color: #555758; }
-        }
-        a.previous-button {
-            margin-left: auto;
-            margin-right: 1rem;
-            max-width: 12px;
-            border-right: 12px solid #cbcbcb;
-            border-left: 12px solid transparent;
-            border-top: 14px solid transparent;
-            border-bottom: 14px solid transparent;
-            cursor: pointer;
-
-            &:hover { border-right-color: #555758; }
+            &.next-button {
+                margin-right: 1rem;
+                padding: 0;
+            }
+            &.previous-button {
+                margin-left: auto;
+                margin-right: 1rem;
+                padding: 0;
+            }
         }
         input {
             height: 32px;

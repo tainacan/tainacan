@@ -20,7 +20,24 @@ document.addEventListener("DOMContentLoaded", () => {
             tainacanBaseUrl: '',
             className: ''
         },
-        render: h => h(DynamicItemsListTheme),
+        render(h){ 
+            return h(DynamicItemsListTheme, {
+                props: {
+                    collectionId: this.collectionId,  
+                    showImage: this.showImage,
+                    showName: this.showImage,
+                    layout: this.layout,
+                    gridMargin: this.gridMargin,
+                    searchURL: this.searchURL,
+                    maxItemsNumber: this.maxItemsNumber,
+                    order: this.order,
+                    showSearchBar: this.showSearchBar,
+                    tainacanApiRoot: this.tainacanApiRoot,
+                    tainacanBaseUrl: this.tainacanBaseUrl,
+                    className: this.className    
+                }
+            });
+        },
         beforeMount () {
             this.className = this.$el.attributes.class != undefined ? this.$el.attributes.class.value : undefined;
             this.searchURL = this.$el.attributes['search-url'] != undefined ? this.$el.attributes['search-url'].value : undefined;
@@ -47,12 +64,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Gets all divs with content created by our block;
     let blocks = document.getElementsByClassName('wp-block-tainacan-dynamic-items-list');
-
+    
     if (blocks) {
         let blockIds = Object.values(blocks).map((block) => block.id);
-    
-        // Creates a new Vue Instance to manage each block isolatelly·
-        for (let blockId of blockIds)
-            new Vue( Object.assign({ el: '#' + blockId }, vueOptions) );
+
+        // Creates a new Vue Instance to manage each block isolatelly
+        for (let blockId of blockIds) {
+            new Vue( Object.assign({ el: '#' + blockId }, jQuery.extend(true, {}, vueOptions)) );
+        }
     }
 });

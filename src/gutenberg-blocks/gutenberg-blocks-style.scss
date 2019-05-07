@@ -60,8 +60,9 @@
 
         iframe {
             width: calc(100% + 64px);
-            height: calc(100% - 104px);
+            height: calc(100% - 100px);
             margin-left: -32px;
+            margin-bottom: -4px;
         }
 
         .modal-footer-area {
