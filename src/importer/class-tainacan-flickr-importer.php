@@ -92,7 +92,7 @@ class Flickr_Importer extends Importer {
                 return $this->process_item_user_request( $items_json, $index, $collection_definition );
 
             case 'singlephoto':
-                return $this->process_item_user_request( $items_json, $index, $collection_definition );
+                return $this->process_item_single_request( $items_json, $index, $collection_definition );
 
             default:
                 return [];
@@ -187,6 +187,8 @@ class Flickr_Importer extends Importer {
                     '&extras=license,date_upload,date_taken,owner_name,icon_server,original_format,last_update,geo,tags,machine_tags,o_dims,views,media,path_alias,url_o' .
                     $this->perPage . '&page=' . $pageToken . $this->format;
 
+                $this->add_log('url ' . $api_url);
+
                 $json = json_decode(file_get_contents($api_url));
                 if( $json && isset($json->photoset) ){
                     return $json;
@@ -200,6 +202,8 @@ class Flickr_Importer extends Importer {
                     '&sort=date-posted-asc&content_type=1&extras=license,date_upload,date_taken,owner_name,icon_server,original_format,last_update,geo,tags,machine_tags,o_dims,views,media,path_alias,url_o' .
                     $this->perPage . '&page=' . $pageToken . $this->format;
 
+                $this->add_log('url ' . $api_url);
+
                 $json = json_decode(file_get_contents($api_url));
                 if( $json && isset($json->photos) ){
                     return $json;
@@ -212,6 +216,8 @@ class Flickr_Importer extends Importer {
                     $this->method . 'photos.getInfo' .
                     $this->apiKey . $this->apiKeyValue . '&extras=license,date_upload,date_taken,owner_name,icon_server,original_format,last_update,geo,tags,machine_tags,o_dims,views,media,path_alias,url_o&photo_id='
                     . $id . $this->format;
+
+                $this->add_log('url ' . $api_url);
 
                 $json = json_decode(file_get_contents($api_url));
                 if( $json && isset($json->photo) ){
@@ -263,7 +269,7 @@ class Flickr_Importer extends Importer {
                         break;
 
                     case 'tags':
-                        $value = [];
+                        $value = '';
                         break;
 
                     case 'id':
@@ -295,7 +301,7 @@ class Flickr_Importer extends Importer {
                 $processedItem[$raw_metadatum] = ($metadatum->is_multiple()) ? [$value] : $value;
             }
 
-            $token = ( $index === 0 ) ? '' : $index + 1;
+            $token = $index + 2;
             $this->add_log('nextToken ' . $token);
             if ( $token ) {
                 $this->add_transient( 'pageToken', $token );
@@ -337,7 +343,7 @@ class Flickr_Importer extends Importer {
                         break;
 
                     case 'tags':
-                        $value = explode(' ', $item->tags );
+                        $value = $item->tags;
                         break;
 
                     case 'id':
@@ -369,7 +375,7 @@ class Flickr_Importer extends Importer {
                 $processedItem[$raw_metadatum] = ($metadatum->is_multiple()) ? [$value] : $value;
             }
 
-            $token = ( $index === 0 ) ? '' : $index + 1;
+            $token = $index + 2;
             $this->add_log('nextToken ' . $token);
             if ( $token ) {
                 $this->add_transient( 'pageToken', $token );
@@ -385,7 +391,78 @@ class Flickr_Importer extends Importer {
      *
      */
     private function process_item_single_request( $items_json, $index, $collection_definition ){
-        // TODO: get info from single request
+        $processedItem = [];
+
+        if ( $items_json && $items_json->photo ) {
+            $item = $items_json->photo;
+
+            $id = $this->get_transient('insertedId');
+
+            if ($id && $id === $item->id ) {
+                return false;
+            }
+
+            $url_image = 'https://farm' . $item->farm . '.staticflickr.com/' . $item->server . '/' . $item->id . '_' . $item->secret . '_b.jpg';
+            $this->add_transient('image_url', $url_image);
+
+            foreach ($collection_definition['mapping'] as $metadatum_id => $raw_metadatum) {
+                $value = '';
+
+                switch ($raw_metadatum) {
+                    case 'title':
+                        $value = $item->title->_content;
+                        break;
+
+                    case 'ownername':
+                        $value = $item->owner->username;
+                        break;
+
+                    case 'tags':
+                        $tags = [];
+
+                        if ( isset( $item->tags ) && isset( $item->tags->tag )  && is_array( $item->tags->tag ) ) {
+                            foreach ( $item->tags->tag as $tag ) {
+                                $tags[] = $tag->raw;
+                            }
+                        }
+
+
+                        $value = ( $tags ) ? implode(', ', $tags) : '';
+                        break;
+
+                    case 'id':
+                        $value = $item->id;
+                        break;
+
+                    case 'description':
+                        $value = $item->description->_content;
+                        break;
+
+                    case 'owner':
+                        $value = $item->owner->nsid;
+                        break;
+
+                    case 'url':
+                        $value = $url_image;
+                        break;
+
+                    case 'date_upload':
+                        $value = date('Y-m-d', $item->dateuploaded );
+                        break;
+
+                    case 'type':
+                        $value = $this->get_image_mime_type( $url_image );
+                        break;
+                }
+
+                $metadatum = new \Tainacan\Entities\Metadatum($metadatum_id);
+                $processedItem[$raw_metadatum] = ($metadatum->is_multiple()) ? [$value] : $value;
+            }
+
+            $this->add_transient( 'insertedId', $item->id );
+        }
+
+        return $processedItem;
     }
 
     /**
@@ -393,17 +470,13 @@ class Flickr_Importer extends Importer {
      */
     public function after_inserted_item( $inserted_item, $collection_index ) {
         $image_url = $this->get_transient('image_url');
-        $video_url = $this->get_transient('video_url');
 
         if( isset( $image_url ) && $image_url ){
             $TainacanMedia = \Tainacan\Media::get_instance();
             $id = $TainacanMedia->insert_attachment_from_url( $image_url, $inserted_item->get_id());
             $inserted_item->set__thumbnail_id( $id );
-        }
 
-        if( isset( $video_url ) && $video_url ){
-
-            $inserted_item->set_document( $video_url );
+            $inserted_item->set_document( $image_url );
             $inserted_item->set_document_type( 'url' );
         }
 
