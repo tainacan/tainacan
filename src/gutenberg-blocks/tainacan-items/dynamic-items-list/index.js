@@ -12,7 +12,7 @@ import axios from 'axios';
 import qs from 'qs';
 
 registerBlockType('tainacan/dynamic-items-list', {
-    title: __('Tainacan Dynamic Items List', 'tainacan'),
+    title: __('Tainacan Collection\'s items List', 'tainacan'),
     icon:
         <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -22,7 +22,7 @@ registerBlockType('tainacan/dynamic-items-list', {
             <path d="M14,2V4H7v7.24A5.33,5.33,0,0,0,5.5,11a4.07,4.07,0,0,0-.5,0V4A2,2,0,0,1,7,2Zm7,10v8a2,2,0,0,1-2,2H12l1-1-2.41-2.41A5.56,5.56,0,0,0,11,16.53a5.48,5.48,0,0,0-2-4.24V8a2,2,0,0,1,2-2h4Zm-2.52,0L14,7.5V12ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1-.5-7,2.74,2.74,0,0,1,.5,0,3.41,3.41,0,0,1,1.5.34,3.5,3.5,0,0,1,2,3.16,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,0,0,5.5,15a1.39,1.39,0,0,0-.5.09A1.5,1.5,0,0,0,5.5,18a1.48,1.48,0,0,0,1.42-1A1.5,1.5,0,0,0,7,16.53Z"/>
         </svg>,
     category: 'tainacan-blocks',
-    keywords: [ __( 'Tainacan', 'tainacan' ), __( 'items', 'tainacan' ), __( 'collection', 'tainacan' ) ],
+    keywords: [ __( 'items', 'tainacan' ), __( 'search', 'tainacan' ), __( 'collection', 'tainacan' ) ],
     attributes: {
         content: {
             type: 'array',
@@ -73,9 +73,21 @@ registerBlockType('tainacan/dynamic-items-list', {
             type: Boolean,
             value: false
         },
+        isLoadingCollection: {
+            type: Boolean,
+            value: false
+        },
         showSearchBar: {
             type: Boolean,
             value: false
+        },
+        showCollectionHeader: {
+            type: Boolean,
+            value: false
+        },
+        collection: {
+            type: Object,
+            value: undefined
         },
         searchString: {
             type: String,
@@ -110,7 +122,10 @@ registerBlockType('tainacan/dynamic-items-list', {
             order,
             searchString,
             isLoading,
-            showSearchBar
+            showSearchBar,
+            showCollectionHeader,
+            isLoadingCollection,
+            collection
         } = attributes;
 
         // Obtains block's client id to render it on save function
@@ -215,6 +230,28 @@ registerBlockType('tainacan/dynamic-items-list', {
                         itemsRequestSource: itemsRequestSource
                     });
                 });
+        }
+
+        function fetchCollectionForHeader() {
+            if (showCollectionHeader) {
+
+                isLoadingCollection = true;             
+                setAttributes({
+                    isLoading: isLoading
+                });
+
+                tainacan.get('/collections/' + collectionId + '?fetch_only=name,thumbnail,header_image')
+                    .then(response => {
+                        collection = response.data;
+                        isLoadingCollection = false;      
+
+                        setAttributes({
+                            content: <div></div>,
+                            collection: collection,
+                            isLoadingCollection: isLoadingCollection,
+                        });
+                    });
+            }
         }
 
         function openDynamicItemsModal() {
@@ -340,6 +377,19 @@ registerBlockType('tainacan/dynamic-items-list', {
                         </div>
                         <div style={{ marginTop: '20px'}}>
                             <ToggleControl
+                                label={__('Collection header', 'tainacan')}
+                                help={ showCollectionHeader ? __('Toggle to show collection header above items', 'tainacan') : __('Do not show collection header', 'tainacan')}
+                                checked={ showCollectionHeader }
+                                onChange={ ( isChecked ) => {
+                                        showCollectionHeader = isChecked;
+                                        if (isChecked) fetchCollectionForHeader();
+                                        setAttributes({ showCollectionHeader: showCollectionHeader });
+                                    } 
+                                }
+                            />
+                        </div>
+                        <div style={{ marginTop: '20px'}}>
+                            <ToggleControl
                                 label={__('Search bar', 'tainacan')}
                                 help={ showSearchBar ? __('Toggle to show search bar on block', 'tainacan') : __('Do not show search bar', 'tainacan')}
                                 checked={ showSearchBar }
@@ -363,6 +413,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                                 onSelectCollection={ (selectedCollectionId) => {
                                     collectionId = selectedCollectionId;
                                     setAttributes({ collectionId: collectionId });
+                                    fetchCollectionForHeader();
                                 }}
                                 onApplySearchURL={ (aSearchURL) =>{
                                     searchURL = aSearchURL
@@ -399,6 +450,38 @@ registerBlockType('tainacan/dynamic-items-list', {
                         }
                     </div>
                     ) : null
+                }
+
+                {
+                    showCollectionHeader ?
+                    
+                    <div> {
+                        isLoadingCollection ? 
+                            <div class="spinner-container">
+                                <Spinner />
+                            </div>
+                            :
+                            <div class="dynamic-items-collection-header">
+                                <div class="collection-name">
+                                    <h3>
+                                        <span class="label">{ __('Collection', 'tainacan') }</span><br/>
+                                        { collection && collection.name ? collection.name : '' }
+                                    </h3>
+                                </div>
+                                {
+                                    collection && collection.thumbnail ? 
+                                        <div class="collection-thumbnail" style={{ backgroundImage: 'url(' + (collection.thumbnail['tainacan-medium'] != undefined ? (collection.thumbnail['tainacan-medium'][0]) : (collection.thumbnail['medium'][0])) + ')' }}/>
+                                    : null
+                                }
+                                {
+                                    collection && collection.header_image ? 
+                                        <div class="collection-header" style={{ backgroundImage: 'url(' + collection.header_image + ')' }}/>
+                                    : null
+                                }
+                            </div>   
+                        }
+                    </div>
+                    : null
                 }
 
                 {
@@ -487,7 +570,10 @@ registerBlockType('tainacan/dynamic-items-list', {
                     </div> :
                     <div>
                         <ul 
-                            style={{ gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' +  (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit' }}
+                            style={{ 
+                                gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' +  (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit', 
+                                marginTop: showSearchBar || showCollectionHeader ? '1.5rem' : '0px'
+                            }}
                             className={'items-list-edit items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')}>
                             { items }
                         </ul>
