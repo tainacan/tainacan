@@ -115,7 +115,7 @@ registerBlockType('tainacan/items-list', {
                 <li 
                     key={ item.id }
                     className="item-list-item"
-                    style={{ marginBottom: layout == 'grid' ?  gridMargin + 'px' : ''}}>
+                    style={{ marginBottom: layout == 'grid' ?  (showName ? gridMargin + 12 : gridMargin) + 'px' : ''}}>
                     <IconButton
                         onClick={ () => removeItemOfId(item.id) }
                         icon="no-alt"

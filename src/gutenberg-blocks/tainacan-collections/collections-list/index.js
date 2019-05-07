@@ -110,7 +110,7 @@ registerBlockType('tainacan/collections-list', {
                 <li 
                     key={ collection.id }
                     className="collection-list-item"
-                    style={{ marginBottom: layout == 'grid' ?  gridMargin + 'px' : ''}}>
+                    style={{ marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : ''}}>
                     <IconButton
                         onClick={ () => removeCollectionOfId(collection.id) }
                         icon="no-alt"

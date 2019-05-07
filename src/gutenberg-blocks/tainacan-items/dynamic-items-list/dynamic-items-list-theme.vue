@@ -116,7 +116,7 @@
                         :key="index"
                         v-for="(item, index) of items"
                         class="item-list-item"
-                        :style="{ marginBottom: layout == 'grid' ? gridMargin + 'px' : ''}">      
+                        :style="{ marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : ''}">      
                     <a 
                             :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
                             :href="item.url"

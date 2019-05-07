@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 props: {
                     collectionId: this.collectionId,  
                     showImage: this.showImage,
-                    showName: this.showImage,
+                    showName: this.showName,
                     layout: this.layout,
                     gridMargin: this.gridMargin,
                     searchURL: this.searchURL,
@@ -42,10 +42,10 @@ document.addEventListener("DOMContentLoaded", () => {
             this.className = this.$el.attributes.class != undefined ? this.$el.attributes.class.value : undefined;
             this.searchURL = this.$el.attributes['search-url'] != undefined ? this.$el.attributes['search-url'].value : undefined;
             this.collectionId = this.$el.attributes['collection-id'] != undefined ? this.$el.attributes['collection-id'].value : undefined;
-            this.showImage = this.$el.attributes['show-image'] != undefined ? Boolean(this.$el.attributes['show-image'].value) : true;
-            this.showName = this.$el.attributes['show-name'] != undefined ? Boolean(this.$el.attributes['show-name'].value) : true;
+            this.showImage = this.$el.attributes['show-image'] != undefined ? this.$el.attributes['show-image'].value == 'true' : true;
+            this.showName = this.$el.attributes['show-name'] != undefined ? this.$el.attributes['show-name'].value == 'true' : true;
             this.layout = this.$el.attributes['layout'] != undefined ? this.$el.attributes['layout'].value : undefined;
-            this.gridMargin = this.$el.attributes['grid-margin'] != undefined ? this.$el.attributes['grid-margin'].value : undefined;
+            this.gridMargin = this.$el.attributes['grid-margin'] != undefined ? Number(this.$el.attributes['grid-margin'].value) : undefined;
             this.maxItemsNumber = this.$el.attributes['max-items-number'] != undefined ? this.$el.attributes['max-items-number'].value : undefined;
             this.order = this.$el.attributes['order'] != undefined ? this.$el.attributes['order'].value : undefined;
             this.showSearchBar = this.$el.attributes['show-search-bar'] != undefined ? Boolean(this.$el.attributes['show-search-bar'].value) : false;

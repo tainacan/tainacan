@@ -121,7 +121,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                 <li 
                     key={ item.id }
                     className="item-list-item"
-                    style={{ marginBottom: layout == 'grid' ?  gridMargin + 'px' : ''}}>      
+                    style={{ marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : ''}}>      
                     <a 
                         id={ isNaN(item.id) ? item.id : 'item-id-' + item.id }
                         href={ item.url } 
@@ -311,9 +311,10 @@ registerBlockType('tainacan/dynamic-items-list', {
                                     />
                                     <div style={{ marginTop: '16px'}}>
                                         <RangeControl
-                                            label={__('Margin between items', 'tainacan')}
+                                            label={__('Margin between items in pixels', 'tainacan')}
                                             value={ gridMargin }
                                             onChange={ ( margin ) => {
+                                                gridMargin = margin;
                                                 setAttributes( { gridMargin: margin } ) 
                                                 setContent();
                                             }}
@@ -329,6 +330,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                                 label={__('Maximum number of items', 'tainacan')}
                                 value={ maxItemsNumber }
                                 onChange={ ( aMaxItemsNumber ) => {
+                                    maxItemsNumber = aMaxItemsNumber;
                                     setAttributes( { maxItemsNumber: aMaxItemsNumber } ) 
                                     setContent();
                                 }}
@@ -508,6 +510,7 @@ registerBlockType('tainacan/dynamic-items-list', {
             order,
             showSearchBar
         } = attributes;
+
         return <div 
                     search-url={ searchURL }
                     className={ className }
