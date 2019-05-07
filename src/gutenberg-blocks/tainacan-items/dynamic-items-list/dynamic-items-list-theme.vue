@@ -12,7 +12,7 @@
                         <svg
                                 width="24"
                                 height="24"
-                                viewBox="-2 -4 20 20">
+                                viewBox="-2 -2 20 20">
                             <path d="M6.7,10.8l-3.3,3.3L0,10.8h2.5V0h1.7v10.8H6.7z M11.7,0.8H8.3v1.7h3.3V0.8z M14.2,5.8H8.3v1.7h5.8V5.8z M16.7,10.8H8.3v1.7	h8.3V10.8z"/>       
                         </svg>
                     </i>
@@ -27,7 +27,7 @@
                         <svg
                                 width="24"
                                 height="24"
-                                viewBox="-2 -4 20 20">
+                                viewBox="-2 -2 20 20">
                             <path
                                     d="M6.7,3.3H4.2v10.8H2.5V3.3H0L3.3,0L6.7,3.3z M11.6,2.5H8.3v1.7h3.3V2.5z M14.1,7.5H8.3v1.7h5.8V7.5z M16.6,12.5H8.3v1.7 h8.3V12.5z"/>
                         </svg>
@@ -42,7 +42,7 @@
                         <svg    
                                 width="24"
                                 height="24"
-                                viewBox="-2 -4 20 20">
+                                viewBox="-2 -2 20 20">
                             <path
                                     class="st0"
                                     d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
@@ -70,7 +70,7 @@
                         <svg
                                 width="30"
                                 height="30"
-                                viewBox="0 0 20 20">
+                                viewBox="0 2 20 20">
                             <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
                             <path
                                     d="M0 0h24v24H0z"
@@ -82,7 +82,7 @@
             <button
                     :style="{ marginLeft: paged <= 1 ? 'auto' : '0' }"
                     class="next-button"
-                    v-if="paged < totalPages || items.length < totalItems"
+                    v-if="paged < totalItems/maxItemsNumber && items.length < totalItems"
                     @click="paged++; fetchItems()"
                     :label="$root.__('Next page', 'tainacan')">
                 <span class="icon">
@@ -90,7 +90,7 @@
                         <svg
                                 width="30"
                                 height="30"
-                                viewBox="0 0 20 20">
+                                viewBox="0 2 20 20">
                             <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
                             <path
                                     d="M0 0h24v24H0z"
