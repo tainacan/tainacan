@@ -454,7 +454,7 @@ registerBlockType('tainacan/dynamic-items-list', {
 
                 {
                     showCollectionHeader ?
-                    
+                
                     <div> {
                         isLoadingCollection ? 
                             <div class="spinner-container">
@@ -462,22 +462,37 @@ registerBlockType('tainacan/dynamic-items-list', {
                             </div>
                             :
                             <div class="dynamic-items-collection-header">
-                                <div class="collection-name">
+                                <div
+                                        style={{ 
+                                            paddingRight: collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium']) ? '' : '20px',
+                                            paddingTop: (!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) ? '1rem' : '',
+                                            width: collection && collection.header_image ? '' : '100%'
+                                        }}
+                                        className={ 
+                                            'collection-name ' + 
+                                            ((!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) && (!collection || !collection.header_image) ? 'only-collection-name' : '') 
+                                        }>
                                     <h3>
                                         <span class="label">{ __('Collection', 'tainacan') }</span><br/>
                                         { collection && collection.name ? collection.name : '' }
                                     </h3>
                                 </div>
                                 {
-                                    collection && collection.thumbnail ? 
-                                        <div class="collection-thumbnail" style={{ backgroundImage: 'url(' + (collection.thumbnail['tainacan-medium'] != undefined ? (collection.thumbnail['tainacan-medium'][0]) : (collection.thumbnail['medium'][0])) + ')' }}/>
+                                    collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium']) ? 
+                                        <div   
+                                            class="collection-thumbnail"
+                                            style={{ 
+                                                backgroundImage: 'url(' + (collection.thumbnail['tainacan-medium'] != undefined ? (collection.thumbnail['tainacan-medium'][0]) : (collection.thumbnail['medium'][0])) + ')',
+                                            }}/>
                                     : null
-                                }
-                                {
-                                    collection && collection.header_image ? 
-                                        <div class="collection-header" style={{ backgroundImage: 'url(' + collection.header_image + ')' }}/>
-                                    : null
-                                }
+                                }  
+                                <div
+                                        class="collection-header-image"
+                                        style={{
+                                            backgroundImage: collection.header_image ? 'url(' + collection.header_image + ')' : '',
+                                            minHeight: collection && collection.header_image ? '' : '80px',
+                                            display: !(collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium'])) ? collection && collection.header_image ? '' : 'none' : ''  
+                                        }}/>
                             </div>   
                         }
                     </div>
