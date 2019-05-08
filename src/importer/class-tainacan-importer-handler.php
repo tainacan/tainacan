@@ -70,14 +70,14 @@ class Importer_Handler {
             'manual_mapping' => true,
         ]);
 
-//        $this->register_importer([
-//            'name' => 'Flickr (Experimental)',
-//            'description' => __('Import items from an Flickr URL', 'tainacan'),
-//            'slug' => 'flickr_importer',
-//            'class_name' => '\Tainacan\Importer\Flickr_Importer',
-//            'manual_collection' => true,
-//            'manual_mapping' => true,
-//        ]);
+        $this->register_importer([
+            'name' => 'Flickr (Experimental)',
+            'description' => __('Import items from an Flickr URL', 'tainacan'),
+            'slug' => 'flickr_importer',
+            'class_name' => '\Tainacan\Importer\Flickr_Importer',
+            'manual_collection' => true,
+            'manual_mapping' => true,
+        ]);
 
 		do_action('tainacan_register_importers');
 

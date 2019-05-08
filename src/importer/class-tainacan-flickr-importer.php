@@ -49,11 +49,8 @@ class Flickr_Importer extends Importer {
      */
     public function get_source_metadata() {
         $details = $this->identify_url(true);
-        $api_key = $this->get_option('api_id');
-
-        //$api_key = $this->apiKeyValue;
-        //var_dump($this->get_list_items());
-        //die;
+        //$api_key = $this->get_option('api_id');
+        $api_key = $this->apiKeyValue;
 
 
         if( $details && $api_key ){
@@ -246,7 +243,6 @@ class Flickr_Importer extends Importer {
 
         if ( $items_json && $items_json->photos ) {
             $item = $items_json->photos->photo[0];
-            $id_from_flickr = $this->get_transient('flickr_id');
 
             $id = $this->get_transient('insertedId');
 
@@ -254,52 +250,8 @@ class Flickr_Importer extends Importer {
                 return false;
             }
 
-            $this->add_transient('image_url', (isset($item->url_o)) ? $item->url_o : '');
-
-            foreach ($collection_definition['mapping'] as $metadatum_id => $raw_metadatum) {
-                $value = '';
-
-                switch ($raw_metadatum) {
-                    case 'title':
-                        $value = $item->title;
-                        break;
-
-                    case 'ownername':
-                        $value = $id_from_flickr;
-                        break;
-
-                    case 'tags':
-                        $value = '';
-                        break;
-
-                    case 'id':
-                        $value = $item->id;
-                        break;
-
-                    case 'description':
-                        $value = '';
-                        break;
-
-                    case 'owner':
-                        $value = $item->owner;
-                        break;
-
-                    case 'url':
-                        $value = $item->url_o;
-                        break;
-
-                    case 'date_upload':
-                        $value = date('Y-m-d', $item->dateupload );
-                        break;
-
-                    case 'type':
-                        $value = $this->get_image_mime_type( $item->url_o );
-                        break;
-                }
-
-                $metadatum = new \Tainacan\Entities\Metadatum($metadatum_id);
-                $processedItem[$raw_metadatum] = ($metadatum->is_multiple()) ? [$value] : $value;
-            }
+            $items_json_from_item = $this->get_item_data( $item->id );
+            $processedItem = $this->process_item_single_request( $items_json_from_item, $index, $collection_definition );
 
             $token = $index + 2;
             $this->add_log('nextToken ' . $token);
@@ -328,52 +280,8 @@ class Flickr_Importer extends Importer {
                 return false;
             }
 
-            $this->add_transient('image_url', (isset($item->url_o)) ? $item->url_o : '');
-
-            foreach ($collection_definition['mapping'] as $metadatum_id => $raw_metadatum) {
-                $value = '';
-
-                switch ($raw_metadatum) {
-                    case 'title':
-                        $value = $item->title;
-                        break;
-
-                    case 'ownername':
-                        $value = $items_json->photoset->ownername;
-                        break;
-
-                    case 'tags':
-                        $value = $item->tags;
-                        break;
-
-                    case 'id':
-                        $value = $item->id;
-                        break;
-
-                    case 'description':
-                        $value = '';
-                        break;
-
-                    case 'owner':
-                        $value = $items_json->photoset->owner;
-                        break;
-
-                    case 'url':
-                        $value = $item->url_o;
-                        break;
-
-                    case 'date_upload':
-                        $value = date('Y-m-d', $item->dateupload );
-                        break;
-
-                    case 'type':
-                        $value = $this->get_image_mime_type( $item->url_o );
-                        break;
-                }
-
-                $metadatum = new \Tainacan\Entities\Metadatum($metadatum_id);
-                $processedItem[$raw_metadatum] = ($metadatum->is_multiple()) ? [$value] : $value;
-            }
+            $items_json_from_item = $this->get_item_data( $item->id );
+            $processedItem = $this->process_item_single_request( $items_json_from_item, $index, $collection_definition );
 
             $token = $index + 2;
             $this->add_log('nextToken ' . $token);
@@ -443,7 +351,7 @@ class Flickr_Importer extends Importer {
                         break;
 
                     case 'url':
-                        $value = $url_image;
+                        $value = ( isset( $item->urls->url ) && !empty( $item->urls->url ) ) ? $item->urls->url[0]->_content : $url_image;
                         break;
 
                     case 'date_upload':
@@ -466,6 +374,27 @@ class Flickr_Importer extends Importer {
     }
 
     /**
+     * method responsible to get data from a unique photo
+     *
+     * @param $id
+     * @return mixed
+     */
+    private function get_item_data( $id ){
+        $api_url = $this->endPoint .
+            $this->method . 'photos.getInfo' .
+            $this->apiKey . $this->apiKeyValue . '&extras=license,date_upload,date_taken,owner_name,icon_server,original_format,last_update,geo,tags,machine_tags,o_dims,views,media,path_alias,url_o&photo_id='
+            . $id . $this->format;
+
+        $this->add_log('url ' . $api_url);
+
+        $json = json_decode(file_get_contents($api_url));
+        if( $json && isset($json->photo) ){
+            return $json;
+
+        }
+    }
+
+    /**
      * @inheritdoc
      */
     public function after_inserted_item( $inserted_item, $collection_index ) {
@@ -484,35 +413,6 @@ class Flickr_Importer extends Importer {
             $this->items_repo->update($inserted_item);
     }
 
-
-    public function options_form(){
-        ob_start();
-        ?>
-        <div class="field">
-            <label class="label"><?php _e('API ID', 'tainacan'); ?></label>
-            <span class="help-wrapper">
-					<a class="help-button has-text-secondary">
-						<span class="icon is-small">
-							 <i class="tainacan-icon tainacan-icon-help" ></i>
-						 </span>
-					</a>
-					<vdiv class="help-tooltip">
-						<div class="help-tooltip-header">
-							<h5><?php _e('Youtube API ID', 'tainacan'); ?></h5>
-						</div>
-						<div class="help-tooltip-body">
-							<p><?php _e('Get youtube API ID if you request for channels or playlists', 'tainacan'); ?></p>
-						</div>
-					</vdiv>
-			</span>
-            <div class="control is-clearfix">
-                <input class="input" type="text" name="api_id" value="<?php echo $this->get_option('api_id'); ?>">
-            </div>
-        </div>
-        <?php
-
-        return ob_get_clean();
-    }
 
     /**
      * @param $image_path
