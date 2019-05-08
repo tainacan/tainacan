@@ -43,6 +43,8 @@ In addition to [our documentation](https://wiki.tainacan.org/) and [instructiona
 ### Contributing
 Tainacan is a free, open source software licensed under **GPLv3**. Contributions to the codebase will abide to the same license; other contributions may be under additional or other terms.
 
+See how to [setup your local development environment](docs/setup-local.md).
+
 To contribute with our project, you can report bugs and other issues, or suggest new features. You are also free to submit pull requests or translate Tainacan to multiple languages. If you are interested in contributing, you can get started by reading our [contribution guidelines](docs/CONTRIBUTING.md).
 
 ### Acknowledgements
