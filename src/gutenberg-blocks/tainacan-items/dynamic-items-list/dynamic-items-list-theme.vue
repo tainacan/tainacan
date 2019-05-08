@@ -12,7 +12,8 @@
                     :href="collection.url ? collection.url : ''"
                     class="dynamic-items-collection-header">
                 <div
-                        :style="{ 
+                        :style="{
+                            backgroundColor: collectionBackgroundColor ? collectionBackgroundColor : '', 
                             paddingRight: collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium']) ? '' : '20px',
                             paddingTop: (!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) ? '1rem' : '',
                             width: collection && collection.header_image ? '' : '100%'
@@ -21,7 +22,7 @@
                             'collection-name ' + 
                             ((!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) && (!collection || !collection.header_image) ? 'only-collection-name' : '') 
                         ">
-                    <h3>
+                    <h3 :style="{ color: collectionTextColor ? collectionTextColor : '' }">
                         <span class="label">{{ $root.__('Collection', 'tainacan') }}</span><br>
                         {{ collection && collection.name ? collection.name : '' }}
                     </h3>
@@ -224,6 +225,8 @@ export default {
         order: String,
         showSearchBar: Boolean,
         showCollectionHeader: Boolean,
+        collectionBackgroundColor: String,
+        collectionTextColor: String,
         tainacanApiRoot: String,
         tainacanBaseUrl: String,
         className: String

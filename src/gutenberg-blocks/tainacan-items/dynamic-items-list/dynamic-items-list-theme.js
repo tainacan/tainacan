@@ -17,6 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
             order: 'asc',
             showSearchBar: false,
             showCollectionHeader: false,
+            collectionBackgroundColor: '#454647',
+            collectionTextColor: '#ffffff',
             tainacanApiRoot: '',
             tainacanBaseUrl: '',
             className: ''
@@ -34,6 +36,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     order: this.order,
                     showSearchBar: this.showSearchBar,
                     showCollectionHeader: this.showCollectionHeader,
+                    collectionBackgroundColor: this.collectionBackgroundColor,
+                    collectionTextColor: this.collectionTextColor,
                     tainacanApiRoot: this.tainacanApiRoot,
                     tainacanBaseUrl: this.tainacanBaseUrl,
                     className: this.className    
@@ -52,6 +56,8 @@ document.addEventListener("DOMContentLoaded", () => {
             this.order = this.$el.attributes['order'] != undefined ? this.$el.attributes['order'].value : undefined;
             this.showSearchBar = this.$el.attributes['show-search-bar'] != undefined ? this.$el.attributes['show-search-bar'].value == 'true' : false;
             this.showCollectionHeader = this.$el.attributes['show-collection-header'] != undefined ? this.$el.attributes['show-collection-header'].value == 'true' : false;
+            this.collectionBackgroundColor = this.$el.attributes['collection-background-color'] != undefined ? this.$el.attributes['collection-background-color'].value : undefined;
+            this.collectionTextColor = this.$el.attributes['collection-text-color'] != undefined ? this.$el.attributes['collection-text-color'].value : undefined;
             this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
             this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
         },

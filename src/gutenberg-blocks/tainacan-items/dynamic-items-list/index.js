@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, ToggleControl, Placeholder, Toolbar } = wp.components;
+const { RangeControl, Spinner, Button, ToggleControl, Placeholder, Toolbar, ColorPicker, ColorPalette, BaseControl } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -100,6 +100,14 @@ registerBlockType('tainacan/dynamic-items-list', {
         blockId: {
             type: String,
             default: undefined
+        },
+        collectionBackgroundColor: {
+            type: String,
+            default: "#454647"
+        },
+        collectionTextColor: {
+            type: String,
+            default: "#ffffff"
         }
     },
     supports: {
@@ -125,7 +133,9 @@ registerBlockType('tainacan/dynamic-items-list', {
             showSearchBar,
             showCollectionHeader,
             isLoadingCollection,
-            collection
+            collection,
+            collectionBackgroundColor,
+            collectionTextColor
         } = attributes;
 
         // Obtains block's client id to render it on save function
@@ -245,10 +255,18 @@ registerBlockType('tainacan/dynamic-items-list', {
                         collection = response.data;
                         isLoadingCollection = false;      
 
+                        if (collection.tainacan_theme_collection_background_color)
+                            collectionBackgroundColor = collection.tainacan_theme_collection_background_color;
+
+                        if (collection.tainacan_theme_collection_color)
+                            collectionTextColor = collection.tainacan_theme_collection_color;
+
                         setAttributes({
                             content: <div></div>,
                             collection: collection,
                             isLoadingCollection: isLoadingCollection,
+                            collectionBackgroundColor: collectionBackgroundColor,
+                            collectionTextColor: collectionTextColor
                         });
                     });
             }
@@ -376,9 +394,10 @@ registerBlockType('tainacan/dynamic-items-list', {
                             />
                         </div>
                         <div style={{ marginTop: '20px'}}>
+                            <hr></hr>    
                             <ToggleControl
                                 label={__('Collection header', 'tainacan')}
-                                help={ showCollectionHeader ? __('Toggle to show collection header above items', 'tainacan') : __('Do not show collection header', 'tainacan')}
+                                help={ showCollectionHeader ? __('Toggle to show collection header', 'tainacan') : __('Do not show collection header', 'tainacan')}
                                 checked={ showCollectionHeader }
                                 onChange={ ( isChecked ) => {
                                         showCollectionHeader = isChecked;
@@ -387,8 +406,39 @@ registerBlockType('tainacan/dynamic-items-list', {
                                     } 
                                 }
                             />
+                            { showCollectionHeader ?
+                                <div style={{ margin: '6px' }}>
+                                    <BaseControl
+                                        id="colorpicker"
+                                        label={ __('Background color', 'tainacan')}>
+                                        <ColorPicker
+                                            color={ collectionBackgroundColor }
+                                            onChangeComplete={ ( value ) => {
+                                                collectionBackgroundColor = value.hex;
+                                                setAttributes({ collectionBackgroundColor: collectionBackgroundColor }) 
+                                            }}
+                                            disableAlpha
+                                            />
+                                    </BaseControl>
+
+                                    <BaseControl
+                                        id="colorpallete"
+                                        label={ __('Collection name color', 'tainacan')}>
+                                        <ColorPalette 
+                                            colors={ [{ name: __('Black', 'tainacan'), color: '#000000'}, { name: __('White', 'tainacan'), color: '#ffffff'} ] } 
+                                            value={ collectionTextColor }
+                                            onChange={ ( color ) => {
+                                                collectionTextColor = color;
+                                                setAttributes({ collectionTextColor: collectionTextColor }) 
+                                            }} 
+                                        />
+                                    </BaseControl>
+                                </div>
+                            : null
+                            }
                         </div>
                         <div style={{ marginTop: '20px'}}>
+                            <hr></hr>
                             <ToggleControl
                                 label={__('Search bar', 'tainacan')}
                                 help={ showSearchBar ? __('Toggle to show search bar on block', 'tainacan') : __('Do not show search bar', 'tainacan')}
@@ -466,7 +516,8 @@ registerBlockType('tainacan/dynamic-items-list', {
                                     target="_blank"
                                     class="dynamic-items-collection-header">
                                 <div
-                                        style={{ 
+                                        style={{
+                                            backgroundColor: collectionBackgroundColor ? collectionBackgroundColor : '', 
                                             paddingRight: collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium']) ? '' : '20px',
                                             paddingTop: (!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) ? '1rem' : '',
                                             width: collection && collection.header_image ? '' : '100%'
@@ -475,7 +526,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                                             'collection-name ' + 
                                             ((!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) && (!collection || !collection.header_image) ? 'only-collection-name' : '') 
                                         }>
-                                    <h3>
+                                    <h3 style={{  color: collectionTextColor ? collectionTextColor : '' }}>
                                         <span class="label">{ __('Collection', 'tainacan') }</span><br/>
                                         { collection && collection.name ? collection.name : '' }
                                     </h3>
@@ -613,7 +664,9 @@ registerBlockType('tainacan/dynamic-items-list', {
             maxItemsNumber,
             order,
             showSearchBar,
-            showCollectionHeader
+            showCollectionHeader,
+            collectionBackgroundColor,
+            collectionTextColor
         } = attributes;
 
         return <div 
@@ -625,6 +678,8 @@ registerBlockType('tainacan/dynamic-items-list', {
                     show-search-bar={ '' + showSearchBar }
                     show-collection-header={ '' + showCollectionHeader }
                     layout={ layout }
+                    collection-background-color={ collectionBackgroundColor }
+                    collection-text-color={ collectionTextColor }
                     grid-margin={ gridMargin }
                     max-items-number={ maxItemsNumber }
                     order={ order }
