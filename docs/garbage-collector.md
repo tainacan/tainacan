@@ -1,8 +1,21 @@
+#Garbage Collector 
 
-* everything auto draft
-* items from deleted collections
+There is a first, experimental version of a WP CLI command for that:
+
+```
+wp tainacan garbage-collector 
+``` 
+
+For more info: 
+```
+wp help tainacan garbage-collector 
+``` 
+
+It will clean:
+
+* items from deleted collections (and its comments and metadata)
 * documents and attachments from deleted items
+* deleted metadata (currently there is interface to untrash them)
 * post_meta of deleted metadata
-* post_meta of deleted instaces of a multiple compound Metadatum. post_meta of a metadatum that is child of a compound metadatum, but which the ID does not appear in any array of a compound metadatum meta_value
 * orphan terms (with taxonomy that does not exist)
-* tnc_bulk postmeta
+* tnc_bulk postmeta (temporary metadata used to group items for bulk edit operations)
