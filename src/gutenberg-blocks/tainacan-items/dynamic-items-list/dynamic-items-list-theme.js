@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
             maxItemsNumber: 12,
             order: 'asc',
             showSearchBar: false,
+            showCollectionHeader: false,
             tainacanApiRoot: '',
             tainacanBaseUrl: '',
             className: ''
@@ -32,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     maxItemsNumber: this.maxItemsNumber,
                     order: this.order,
                     showSearchBar: this.showSearchBar,
+                    showCollectionHeader: this.showCollectionHeader,
                     tainacanApiRoot: this.tainacanApiRoot,
                     tainacanBaseUrl: this.tainacanBaseUrl,
                     className: this.className    
@@ -48,7 +50,8 @@ document.addEventListener("DOMContentLoaded", () => {
             this.gridMargin = this.$el.attributes['grid-margin'] != undefined ? Number(this.$el.attributes['grid-margin'].value) : undefined;
             this.maxItemsNumber = this.$el.attributes['max-items-number'] != undefined ? this.$el.attributes['max-items-number'].value : undefined;
             this.order = this.$el.attributes['order'] != undefined ? this.$el.attributes['order'].value : undefined;
-            this.showSearchBar = this.$el.attributes['show-search-bar'] != undefined ? Boolean(this.$el.attributes['show-search-bar'].value) : false;
+            this.showSearchBar = this.$el.attributes['show-search-bar'] != undefined ? this.$el.attributes['show-search-bar'].value == 'true' : false;
+            this.showCollectionHeader = this.$el.attributes['show-collection-header'] != undefined ? this.$el.attributes['show-collection-header'].value == 'true' : false;
             this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
             this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
         },

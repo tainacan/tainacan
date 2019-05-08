@@ -16,6 +16,10 @@
         display: flex;
         width: 100%;
         align-items: stretch;
+        text-decoration: none;
+        &:hover {
+            text-decoration: none;
+        }
 
         .collection-name {
             width: auto;
@@ -30,7 +34,14 @@
             align-items: center;
             background-color: #454647;
 
-            h3 { color: white; }
+            h3 { 
+                color: white; 
+                text-decoration: none;
+                font-size: 1.3rem;
+                &:hover {
+                    text-decoration: none;
+                }
+            }
             span.label { 
                 font-weight: normal; 
                 font-size: 1rem;
@@ -56,7 +67,8 @@
             flex-shrink: 0;
             position: relative;
             margin-left: -155px; 
-            left: 84px;
+            left: 82px;
+            background-color: #dbdbdb;
         }
         .collection-header-image {
             width: auto;

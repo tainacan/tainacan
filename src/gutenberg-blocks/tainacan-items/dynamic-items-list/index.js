@@ -237,7 +237,7 @@ registerBlockType('tainacan/dynamic-items-list', {
 
                 isLoadingCollection = true;             
                 setAttributes({
-                    isLoading: isLoading
+                    isLoadingCollection: isLoadingCollection
                 });
 
                 tainacan.get('/collections/' + collectionId + '?fetch_only=name,thumbnail,header_image')
@@ -461,7 +461,10 @@ registerBlockType('tainacan/dynamic-items-list', {
                                 <Spinner />
                             </div>
                             :
-                            <div class="dynamic-items-collection-header">
+                            <a
+                                    href={ collection.url ? collection.url : '' }
+                                    target="_blank"
+                                    class="dynamic-items-collection-header">
                                 <div
                                         style={{ 
                                             paddingRight: collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium']) ? '' : '20px',
@@ -493,7 +496,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                                             minHeight: collection && collection.header_image ? '' : '80px',
                                             display: !(collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium'])) ? collection && collection.header_image ? '' : 'none' : ''  
                                         }}/>
-                            </div>   
+                            </a>  
                         }
                     </div>
                     : null
@@ -609,7 +612,8 @@ registerBlockType('tainacan/dynamic-items-list', {
             searchURL,
             maxItemsNumber,
             order,
-            showSearchBar
+            showSearchBar,
+            showCollectionHeader
         } = attributes;
 
         return <div 
@@ -619,6 +623,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                     show-image={ '' + showImage }
                     show-name={ '' + showName }
                     show-search-bar={ '' + showSearchBar }
+                    show-collection-header={ '' + showCollectionHeader }
                     layout={ layout }
                     grid-margin={ gridMargin }
                     max-items-number={ maxItemsNumber }

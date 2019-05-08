@@ -1,5 +1,46 @@
 <template>
     <div :class="className">
+        <div v-if="showCollectionHeader">
+            <div
+                    v-if="isLoadingCollection"
+                    class="spinner-container">
+                <Spinner />
+            </div>
+            <a
+                    v-else
+                    target="_blank"
+                    :href="collection.url ? collection.url : ''"
+                    class="dynamic-items-collection-header">
+                <div
+                        :style="{ 
+                            paddingRight: collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium']) ? '' : '20px',
+                            paddingTop: (!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) ? '1rem' : '',
+                            width: collection && collection.header_image ? '' : '100%'
+                        }"
+                        :class="
+                            'collection-name ' + 
+                            ((!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) && (!collection || !collection.header_image) ? 'only-collection-name' : '') 
+                        ">
+                    <h3>
+                        <span class="label">{{ $root.__('Collection', 'tainacan') }}</span><br>
+                        {{ collection && collection.name ? collection.name : '' }}
+                    </h3>
+                </div>
+                <div
+                    v-if="collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium'])"   
+                    class="collection-thumbnail"
+                    :style="{ 
+                        backgroundImage: 'url(' + (collection.thumbnail['tainacan-medium'] != undefined ? (collection.thumbnail['tainacan-medium'][0]) : (collection.thumbnail['medium'][0])) + ')',
+                    }"/>
+                <div
+                        class="collection-header-image"
+                        :style="{
+                            backgroundImage: collection.header_image ? 'url(' + collection.header_image + ')' : '',
+                            minHeight: collection && collection.header_image ? '' : '80px',
+                            display: !(collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium'])) ? collection && collection.header_image ? '' : 'none' : ''  
+                        }"/>
+            </a>   
+        </div>
         <div
                 v-if="showSearchBar"
                 class="dynamic-items-search-bar">
@@ -109,7 +150,10 @@
         <div v-else>
             <ul 
                     v-if="items.length > 0"
-                    :style="{ gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit' }"
+                    :style="{
+                        gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit', 
+                        marginTop: showSearchBar || showCollectionHeader ? '1.5rem' : '0px'
+                    }"
                     class="items-list"
                     :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
                 <li
@@ -157,9 +201,11 @@ export default {
     data() {
         return {
             items: [],
+            collection: undefined,
             itemsRequestSource: undefined,
             searchString: '',
             isLoading: false,
+            isLoadingCollection: false,
             localMaxItemsNumber: undefined,
             localOrder: undefined,
             tainacanAxios: undefined,
@@ -177,6 +223,7 @@ export default {
         maxItemsNumber: Number,
         order: String,
         showSearchBar: Boolean,
+        showCollectionHeader: Boolean,
         tainacanApiRoot: String,
         tainacanBaseUrl: String,
         className: String
@@ -262,11 +309,27 @@ export default {
                     this.isLoading = false;
                     console.log(error);
                 });
+        },
+        fetchCollectionForHeader() {
+            if (this.showCollectionHeader) {
+
+                this.isLoadingCollection = true;             
+
+                this.tainacanAxios.get('/collections/' + this.collectionId + '?fetch_only=name,thumbnail,header_image')
+                    .then(response => {
+                        this.collection = response.data;
+                        this.isLoadingCollection = false;      
+                    });
+            }
         }
     },
     created() {
-        this.localOrder = this.order;
         this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
+        this.localOrder = this.order;
+  
+        if (this.showCollectionHeader)
+            this.fetchCollectionForHeader();
+
         this.fetchItems();
     },
 }
