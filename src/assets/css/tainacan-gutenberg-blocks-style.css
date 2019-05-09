@@ -527,10 +527,11 @@
         .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar .search-button {
           order: 4;
           position: absolute;
-          margin-top: 28px; }
+          margin-top: 37px; }
         .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar input {
           width: 100% !important;
           order: 5;
+          margin-top: 8px;
           margin-left: 0px !important;
           padding-left: 4px !important;
           border-color: #dbdbdb !important; } }

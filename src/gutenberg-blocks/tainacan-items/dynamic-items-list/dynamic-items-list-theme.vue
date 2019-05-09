@@ -268,7 +268,7 @@ export default {
             let queryObject = qs.parse(query);
 
             // Set up max items to be shown
-            if (this.maxItemsNumber != undefined && this.maxItemsNumber > 0)
+            if (this.maxItemsNumber != undefined && Number(this.maxItemsNumber) > 0)
                 queryObject.perpage = this.maxItemsNumber;
             else if (queryObject.perpage != undefined && queryObject.perpage > 0)
                 this.localMaxItemsNumber = queryObject.perpage;
@@ -302,6 +302,8 @@ export default {
                 queryObject.paged = this.paged;
             else if (queryObject.paged != undefined)
                 this.paged = queryObject.paged;
+            else
+                this.paged = 1;
 
             // Remove unecessary queries
             delete queryObject.readmode;
