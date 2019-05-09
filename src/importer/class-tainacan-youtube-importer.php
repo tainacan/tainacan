@@ -306,6 +306,7 @@ class Youtube_Importer extends Importer {
     public function after_inserted_item( $inserted_item, $collection_index ) {
         $image_url = $this->get_transient('image_url');
         $video_url = $this->get_transient('video_url');
+        $this->add_log('url ' . $image_url);
 
         if( isset( $image_url ) && $image_url ){
             $TainacanMedia = \Tainacan\Media::get_instance();
@@ -321,6 +322,56 @@ class Youtube_Importer extends Importer {
 
         if( $inserted_item->validate() )
             $this->items_repo->update($inserted_item);
+    }
+
+    /**
+     * @param $collection_id int the collection id
+     * @param $mapping array the headers-metadata mapping
+     */
+    public function save_mapping( $collection_id, $mapping ){
+        update_post_meta( $collection_id, 'metadata_mapping', $mapping );
+    }
+
+    /**
+     * @param $collection_id
+     *
+     * @return array/bool false if has no mapping or associated array with metadata id and header
+     */
+    public function get_mapping( $collection_id ){
+        $mapping = get_post_meta( $collection_id, 'metadata_mapping', true );
+        return ( $mapping ) ? $mapping : false;
+    }
+
+
+    /**
+     * @inheritdoc
+     *
+     * allow save mapping
+     */
+    public function add_collection(array $collection) {
+        if (isset($collection['id'])) {
+
+            if( isset($collection['mapping']) && is_array($collection['mapping']) ){
+
+                foreach( $collection['mapping'] as $metadatum_id => $header ){
+
+                    if( !is_numeric($metadatum_id) ) {
+                        $metadatum = $this->create_new_metadata( $header, $collection['id']);
+
+                        if( is_object($metadatum) ){
+                            unset($collection['mapping'][$metadatum_id]);
+                            $collection['mapping'][$metadatum->get_id()] = $header;
+                        }
+
+                    }
+                }
+
+                $this->save_mapping( $collection['id'], $collection['mapping'] );
+            }
+
+            $this->remove_collection($collection['id']);
+            $this->collections[] = $collection;
+        }
     }
 
 
