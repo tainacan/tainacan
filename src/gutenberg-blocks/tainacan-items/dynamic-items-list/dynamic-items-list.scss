@@ -1,3 +1,5 @@
+@import '../../gutenberg-blocks-style.scss';
+
 .wp-block-tainacan-dynamic-items-list {
     margin: 2rem 0px;
 
@@ -138,7 +140,7 @@
         display: flex;
         align-items: center;
         border-bottom: 1px solid #cbcbcb;
-        padding: 1.25rem 0.5rem 0.75rem 0.5rem;
+        padding: 1.00rem 0.5rem 0.75rem 0.5rem;
 
         @media only screen and (max-width: 768px) {
             flex-wrap: wrap;

@@ -1,9 +1,3 @@
-// EACH BLOCK STYLE
-@import 'tainacan-terms/terms-list/terms-list';
-@import 'tainacan-items/items-list/items-list';
-@import 'tainacan-collections/collections-list/collections-list';
-@import 'tainacan-items/dynamic-items-list/dynamic-items-list';
-
 // COMMON TO MOST BLOCKS
 // Control and placeholder region ----------------------------------------------------
 .block-control {
@@ -75,10 +69,14 @@
     }
 
     // Spinner
-    .components-spinner {
-        position: absolute;
-        right: 5%;
-        bottom: 84px;
+    .spinner-container {
+        min-height: 56px;
+        padding: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #555758;
+        .components-spineer { margin: 8px; }
     }
 
     .modal-search-area {
