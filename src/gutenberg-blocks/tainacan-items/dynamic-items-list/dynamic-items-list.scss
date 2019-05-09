@@ -11,6 +11,37 @@
         color: #555758;
     }
 
+    // Skeleton loading
+    @-webkit-keyframes skeleton-animation {
+        0%{opacity: 1.0}
+        50%{opacity: 0.2}
+        100%{opacity: 1.0}
+    }
+    @-moz-keyframes skeleton-animation {
+        0%{opacity: 1.0}
+        50%{opacity: 0.2}
+        100%{opacity: 1.0}
+    }
+    @-o-keyframes skeleton-animation {
+        0%{opacity: 1.0}
+        50%{opacity: 0.2}
+        100%{opacity: 1.0}
+    }
+    @keyframes skeleton-animation {
+        0%{opacity: 1.0}
+        50%{opacity: 0.2}
+        100%{opacity: 1.0}
+    }
+    .skeleton {
+        border-radius: 2px;
+        background: #f2f2f2;
+
+        -webkit-animation: skeleton-animation 1.8s ease infinite;
+        -moz-animation: skeleton-animation 1.8s ease infinite;
+        -o-animation: skeleton-animation 1.8s ease infinite;
+        animation: skeleton-animation 1.8s ease infinite;
+    }
+
     // Collection header
     .dynamic-items-collection-header {
         display: flex;
@@ -109,6 +140,24 @@
         border-bottom: 1px solid #cbcbcb;
         padding: 1.25rem 0.5rem 0.75rem 0.5rem;
 
+        @media only screen and (max-width: 768px) {
+            flex-wrap: wrap;
+
+            .search-button {
+                order: 4;
+                position: absolute;
+                margin-top: 37px;
+            }
+            input {
+                width: 100% !important;
+                order: 5;
+                margin-top: 8px;
+                margin-left: 0px !important;
+                padding-left: 4px !important;
+                border-color: #dbdbdb !important;
+            }
+        } 
+
         button {
             margin-right: 0.75rem;
             min-height: 28px;
@@ -129,11 +178,19 @@
             &.next-button {
                 margin-right: 0rem;
                 padding: 0;
+
+                svg { fill: #298596; }
             }
             &.previous-button {
                 margin-left: auto;
                 margin-right: 1rem;
                 padding: 0;
+
+                svg { fill: #298596; }
+            }
+            &[disabled] svg {
+                fill: #f2f2f2;
+                cursor: not-allowed;
             }
         }
         input {

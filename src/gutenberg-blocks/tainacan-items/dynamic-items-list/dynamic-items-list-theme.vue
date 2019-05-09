@@ -3,9 +3,8 @@
         <div v-if="showCollectionHeader">
             <div
                     v-if="isLoadingCollection"
-                    class="spinner-container">
-                <Spinner />
-            </div>
+                    class="dynamic-items-collection-header skeleton" 
+                    :style="{ height: '165px' }"/>
             <a
                     v-else
                     target="_blank"
@@ -48,7 +47,7 @@
             <button
                     @click="localOrder = 'asc'; fetchItems()"
                     :class="localOrder == 'asc' ? 'sorting-button-selected' : ''"
-                    :label="$root.__('label_sort_ascending', 'tainacan')">
+                    :label="$root.__('Sort ascending', 'tainacan')">
                 <span class="icon">
                     <i>
                         <svg
@@ -63,7 +62,7 @@
             <button
                     @click="localOrder = 'desc'; fetchItems(); "
                     :class="localOrder == 'desc' ? 'sorting-button-selected' : ''"
-                    :label="$root.__('label_sort_descending', 'tainacan')">
+                    :label="$root.__('Sort descending', 'tainacan')">
                 <span class="icon">
                     <i>
                         <svg
@@ -78,7 +77,8 @@
             </button>  
             <button
                     @click="fetchItems()"
-                    :label="$root.__('search', 'tainacan')">
+                    :label="$root.__('Search', 'tainacan')"
+                    class="search-button">
                 <span class="icon">
                     <i>
                         <svg    
@@ -142,18 +142,29 @@
                 </span>
             </button> 
         </div>
-
-        <div
+        <ul
                 v-if="isLoading"
-                class="spinner-container">
-            {{ $root.__('Loading items...', 'tainacan') }}
-        </div>
+                :style="{
+                    gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit', 
+                    marginTop: showSearchBar || showCollectionHeader ? '1.34rem' : '0px'
+                }"
+                class="items-list"
+                :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
+                <li
+                        :key="item"
+                        v-for="item in Number(maxItemsNumber)"
+                        class="item-list-item skeleton"
+                        :style="{ 
+                            marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
+                            height: layout == 'grid' ? '230px' : '54px'
+                        }" />      
+        </ul>
         <div v-else>
             <ul 
                     v-if="items.length > 0"
                     :style="{
                         gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit', 
-                        marginTop: showSearchBar || showCollectionHeader ? '1.5rem' : '0px'
+                        marginTop: showSearchBar || showCollectionHeader ? '1.35rem' : '0px'
                     }"
                     class="items-list"
                     :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">

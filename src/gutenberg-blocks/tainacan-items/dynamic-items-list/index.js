@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, ToggleControl, Placeholder, Toolbar, ColorPicker, ColorPalette, BaseControl } = wp.components;
+const { RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, ColorPicker, ColorPalette, BaseControl, Panel, PanelBody, PanelRow } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -337,110 +337,59 @@ registerBlockType('tainacan/dynamic-items-list', {
 
                 <div>
                     <InspectorControls>
-                        <div style={{ marginTop: '24px' }}>
-                            { layout == 'list' ? 
+                        
+                        <PanelBody
+                                title={__('Collection header', 'tainacan')}
+                                initialOpen={ false }
+                            >
                                 <ToggleControl
-                                    label={__('Image', 'tainacan')}
-                                    help={ showImage ? __('Toggle to show item\'s image', 'tainacan') : __('Do not show item\'s image', 'tainacan')}
-                                    checked={ showImage }
+                                    label={__('Display header', 'tainacan')}
+                                    help={ showCollectionHeader ? __('Toggle to show collection header', 'tainacan') : __('Do not show collection header', 'tainacan')}
+                                    checked={ showCollectionHeader }
                                     onChange={ ( isChecked ) => {
-                                            showImage = isChecked;
-                                            setAttributes({ showImage: showImage });
-                                            setContent();
+                                            showCollectionHeader = isChecked;
+                                            if (isChecked) fetchCollectionForHeader();
+                                            setAttributes({ showCollectionHeader: showCollectionHeader });
                                         } 
                                     }
-                                /> 
-                            : null }
-                            { layout == 'grid' ?
-                                <div>
-                                    <ToggleControl
-                                        label={__('Name', 'tainacan')}
-                                        help={ showName ? __('Toggle to show item\'s title', 'tainacan') : __('Do not show item\'s title', 'tainacan')}
-                                        checked={ showName }
-                                        onChange={ ( isChecked ) => {
-                                                showName = isChecked;
-                                                setAttributes({ showName: showName });
-                                                setContent();
-                                            } 
-                                        }
-                                    />
-                                    <div style={{ marginTop: '16px'}}>
-                                        <RangeControl
-                                            label={__('Margin between items in pixels', 'tainacan')}
-                                            value={ gridMargin }
-                                            onChange={ ( margin ) => {
-                                                gridMargin = margin;
-                                                setAttributes( { gridMargin: margin } ) 
-                                                setContent();
-                                            }}
-                                            min={ 0 }
-                                            max={ 48 }
-                                        />
-                                    </div>
-                                </div>
-                            : null }
-                        </div>
-                        <div style={{ marginTop: '20px'}}>
-                            <RangeControl
-                                label={__('Maximum number of items', 'tainacan')}
-                                value={ maxItemsNumber }
-                                onChange={ ( aMaxItemsNumber ) => {
-                                    maxItemsNumber = aMaxItemsNumber;
-                                    setAttributes( { maxItemsNumber: aMaxItemsNumber } ) 
-                                    setContent();
-                                }}
-                                min={ 1 }
-                                max={ 96 }
-                            />
-                        </div>
-                        <div style={{ marginTop: '20px'}}>
-                            <hr></hr>    
-                            <ToggleControl
-                                label={__('Collection header', 'tainacan')}
-                                help={ showCollectionHeader ? __('Toggle to show collection header', 'tainacan') : __('Do not show collection header', 'tainacan')}
-                                checked={ showCollectionHeader }
-                                onChange={ ( isChecked ) => {
-                                        showCollectionHeader = isChecked;
-                                        if (isChecked) fetchCollectionForHeader();
-                                        setAttributes({ showCollectionHeader: showCollectionHeader });
-                                    } 
-                                }
-                            />
-                            { showCollectionHeader ?
-                                <div style={{ margin: '6px' }}>
-                                    <BaseControl
-                                        id="colorpicker"
-                                        label={ __('Background color', 'tainacan')}>
-                                        <ColorPicker
-                                            color={ collectionBackgroundColor }
-                                            onChangeComplete={ ( value ) => {
-                                                collectionBackgroundColor = value.hex;
-                                                setAttributes({ collectionBackgroundColor: collectionBackgroundColor }) 
-                                            }}
-                                            disableAlpha
-                                            />
-                                    </BaseControl>
+                                />
+                                { showCollectionHeader ?
+                                    <div style={{ margin: '6px' }}>
+                                        <BaseControl
+                                            id="colorpicker"
+                                            label={ __('Background color', 'tainacan')}>
+                                            <ColorPicker
+                                                color={ collectionBackgroundColor }
+                                                onChangeComplete={ ( value ) => {
+                                                    collectionBackgroundColor = value.hex;
+                                                    setAttributes({ collectionBackgroundColor: collectionBackgroundColor }) 
+                                                }}
+                                                disableAlpha
+                                                />
+                                        </BaseControl>
 
-                                    <BaseControl
-                                        id="colorpallete"
-                                        label={ __('Collection name color', 'tainacan')}>
-                                        <ColorPalette 
-                                            colors={ [{ name: __('Black', 'tainacan'), color: '#000000'}, { name: __('White', 'tainacan'), color: '#ffffff'} ] } 
-                                            value={ collectionTextColor }
-                                            onChange={ ( color ) => {
-                                                collectionTextColor = color;
-                                                setAttributes({ collectionTextColor: collectionTextColor }) 
-                                            }} 
-                                        />
-                                    </BaseControl>
-                                </div>
-                            : null
-                            }
-                        </div>
-                        <div style={{ marginTop: '20px'}}>
-                            <hr></hr>
+                                        <BaseControl
+                                            id="colorpallete"
+                                            label={ __('Collection name color', 'tainacan')}>
+                                            <ColorPalette 
+                                                colors={ [{ name: __('Black', 'tainacan'), color: '#000000'}, { name: __('White', 'tainacan'), color: '#ffffff'} ] } 
+                                                value={ collectionTextColor }
+                                                onChange={ ( color ) => {
+                                                    collectionTextColor = color;
+                                                    setAttributes({ collectionTextColor: collectionTextColor }) 
+                                                }} 
+                                            />
+                                        </BaseControl>
+                                    </div>
+                                : null
+                                }
+                        </PanelBody> 
+                        <PanelBody
+                                title={__('Search bar', 'tainacan')}
+                                initialOpen={ true }
+                            >
                             <ToggleControl
-                                label={__('Search bar', 'tainacan')}
+                                label={__('Display bar', 'tainacan')}
                                 help={ showSearchBar ? __('Toggle to show search bar on block', 'tainacan') : __('Do not show search bar', 'tainacan')}
                                 checked={ showSearchBar }
                                 onChange={ ( isChecked ) => {
@@ -449,7 +398,69 @@ registerBlockType('tainacan/dynamic-items-list', {
                                     } 
                                 }
                             />
-                        </div>
+                        </PanelBody>
+                        <PanelBody
+                                title={__('Items', 'tainacan')}
+                                initialOpen={ true }
+                            >
+                            <div>
+                                <RangeControl
+                                    label={__('Maximum number of items', 'tainacan')}
+                                    value={ maxItemsNumber }
+                                    onChange={ ( aMaxItemsNumber ) => {
+                                        maxItemsNumber = aMaxItemsNumber;
+                                        setAttributes( { maxItemsNumber: aMaxItemsNumber } ) 
+                                        setContent();
+                                    }}
+                                    min={ 1 }
+                                    max={ 96 }
+                                />
+                            </div>
+                            <hr></hr>
+                            <div>
+                                { layout == 'list' ? 
+                                    <ToggleControl
+                                        label={__('Image', 'tainacan')}
+                                        help={ showImage ? __("Toggle to show item's image", 'tainacan') : __("Do not show item's image", 'tainacan')}
+                                        checked={ showImage }
+                                        onChange={ ( isChecked ) => {
+                                                showImage = isChecked;
+                                                setAttributes({ showImage: showImage });
+                                                setContent();
+                                            } 
+                                        }
+                                    /> 
+                                : null }
+                                { layout == 'grid' ?
+                                    <div>
+                                        <ToggleControl
+                                            label={__("Item's title", 'tainacan')}
+                                            help={ showName ? __("Toggle to show item's title", 'tainacan') : __("Do not show item's title", 'tainacan')}
+                                            checked={ showName }
+                                            onChange={ ( isChecked ) => {
+                                                    showName = isChecked;
+                                                    setAttributes({ showName: showName });
+                                                    setContent();
+                                                } 
+                                            }
+                                        />
+                                        <div style={{ marginTop: '16px'}}>
+                                            <RangeControl
+                                                label={__('Margin between items in pixels', 'tainacan')}
+                                                value={ gridMargin }
+                                                onChange={ ( margin ) => {
+                                                    gridMargin = margin;
+                                                    setAttributes( { gridMargin: margin } ) 
+                                                    setContent();
+                                                }}
+                                                min={ 0 }
+                                                max={ 48 }
+                                            />
+                                        </div>
+                                    </div>
+                                : null }
+                            </div>
+                        </PanelBody>
                     </InspectorControls>
                 </div>
 
@@ -559,7 +570,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                         <Button
                             onClick={ () => { order = 'asc'; setAttributes({ order: order }); setContent(); }}
                             className={order == 'asc' ? 'sorting-button-selected' : ''}
-                            label={__('label_sort_ascending', 'tainacan')}>
+                            label={__('Sort ascending', 'tainacan')}>
                             <span class="icon">
                                 <i>
                                     <svg width="24" height="24" viewBox="-2 -4 20 20">
@@ -571,7 +582,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                         <Button
                             onClick={ () => { order = 'desc'; setAttributes({ order: order }); setContent(); }}
                             className={order == 'desc' ? 'sorting-button-selected' : ''}
-                            label={__('label_sort_descending', 'tainacan')}>
+                            label={__('Sort descending', 'tainacan')}>
                             <span class="icon">
                                 <i>
                                     <svg width="24" height="24" viewBox="-2 -4 20 20">
@@ -582,7 +593,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                         </Button>  
                         <Button
                             onClick={ () => { setContent(); }}
-                            label={__('search', 'tainacan')}>
+                            label={__('Search', 'tainacan')}>
                             <span class="icon">
                                 <i>
                                     <svg width="24" height="24" viewBox="-2 -4 20 20">
@@ -600,7 +611,47 @@ registerBlockType('tainacan/dynamic-items-list', {
                         <input
                                 value={ searchString }
                                 onChange={ (value) =>  { _.debounce(applySearchString(value), 300); } }
-                                type="text"/>  
+                                type="text"/>
+                        <Tooltip text={__('If necessary, pagination will be available on post or page.', 'tainacan')}>
+                            <button
+                                    class="previous-button"
+                                    disabled
+                                    label={__('Previous page', 'tainacan')}>
+                                <span class="icon">
+                                    <i>
+                                        <svg
+                                                width="30"
+                                                height="30"
+                                                viewBox="0 2 20 20">
+                                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                                            <path
+                                                    d="M0 0h24v24H0z"
+                                                    fill="none"/>                        
+                                        </svg>
+                                    </i>
+                                </span>
+                            </button>
+                        </Tooltip> 
+                        <Tooltip text={__('If necessary, pagination will be available on post or page.', 'tainacan')}>
+                            <button
+                                    class="next-button"
+                                    disabled
+                                    label={__('Next page', 'tainacan')}>
+                                <span class="icon">
+                                    <i>
+                                        <svg
+                                                width="30"
+                                                height="30"
+                                                viewBox="0 2 20 20">
+                                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                                            <path
+                                                    d="M0 0h24v24H0z"
+                                                    fill="none"/>                        
+                                        </svg>
+                                    </i>
+                                </span>
+                            </button>   
+                        </Tooltip>
                     </div>
                 : null
                 }
