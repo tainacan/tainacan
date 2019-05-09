@@ -49,11 +49,10 @@ class Flickr_Importer extends Importer {
      */
     public function get_source_metadata() {
         $details = $this->identify_url(true);
-        //$api_key = $this->get_option('api_id');
-        $api_key = $this->apiKeyValue;
+        $this->apiKeyValue = $this->get_option('api_id');
 
 
-        if( $details && $api_key ){
+        if( $details && $this->apiKeyValue ){
 
             return [
                 'title',
@@ -173,7 +172,6 @@ class Flickr_Importer extends Importer {
         $type = $this->get_transient('url_type');
         $id = $this->get_transient('flickr_id');
         $pageToken = $this->get_transient('pageToken');
-        $api_key = $this->get_option('api_id');
 
         switch ($type) {
 
@@ -413,6 +411,56 @@ class Flickr_Importer extends Importer {
             $this->items_repo->update($inserted_item);
     }
 
+    /**
+     * @param $collection_id int the collection id
+     * @param $mapping array the headers-metadata mapping
+     */
+    public function save_mapping( $collection_id, $mapping ){
+        update_post_meta( $collection_id, 'metadata_mapping', $mapping );
+    }
+
+    /**
+     * @param $collection_id
+     *
+     * @return array/bool false if has no mapping or associated array with metadata id and header
+     */
+    public function get_mapping( $collection_id ){
+        $mapping = get_post_meta( $collection_id, 'metadata_mapping', true );
+        return ( $mapping ) ? $mapping : false;
+    }
+
+
+    /**
+     * @inheritdoc
+     *
+     * allow save mapping
+     */
+    public function add_collection(array $collection) {
+        if (isset($collection['id'])) {
+
+            if( isset($collection['mapping']) && is_array($collection['mapping']) ){
+
+                foreach( $collection['mapping'] as $metadatum_id => $header ){
+
+                    if( !is_numeric($metadatum_id) ) {
+                        $metadatum = $this->create_new_metadata( $header, $collection['id']);
+
+                        if( is_object($metadatum) ){
+                            unset($collection['mapping'][$metadatum_id]);
+                            $collection['mapping'][$metadatum->get_id()] = $header;
+                        }
+
+                    }
+                }
+
+                $this->save_mapping( $collection['id'], $collection['mapping'] );
+            }
+
+            $this->remove_collection($collection['id']);
+            $this->collections[] = $collection;
+        }
+    }
+
 
     /**
      * @param $image_path
@@ -444,5 +492,34 @@ class Flickr_Importer extends Importer {
         } else {
             return FALSE;
         }
+    }
+
+    public function options_form(){
+        ob_start();
+        ?>
+        <div class="field">
+            <label class="label"><?php _e('API ID', 'tainacan'); ?></label>
+            <span class="help-wrapper">
+					<a class="help-button has-text-secondary">
+						<span class="icon is-small">
+							 <i class="tainacan-icon tainacan-icon-help" ></i>
+						 </span>
+					</a>
+					<vdiv class="help-tooltip">
+						<div class="help-tooltip-header">
+							<h5><?php _e('Flickr API ID', 'tainacan'); ?></h5>
+						</div>
+						<div class="help-tooltip-body">
+							<p><?php _e('Get youtube API ID if you request for single photos, albums and users', 'tainacan'); ?></p>
+						</div>
+					</vdiv>
+			</span>
+            <div class="control is-clearfix">
+                <input class="input" type="text" name="api_id" value="59dcf7e8e317103416c529b476f44fab">
+            </div>
+        </div>
+        <?php
+
+        return ob_get_clean();
     }
 }
