@@ -63,7 +63,8 @@ class Flickr_Importer extends Importer {
                 'date_upload',
                 'url',
                 'id',
-                'type'
+                'type',
+                'views'
             ];
         } else {
             return [];
@@ -230,6 +231,8 @@ class Flickr_Importer extends Importer {
     }
 
     /**
+     * get raw user request and return data from specific index
+     *
      * @param $items_json
      * @param $index
      * @param $collection_definition
@@ -264,7 +267,13 @@ class Flickr_Importer extends Importer {
     }
 
     /**
+     * get raw album request and return data from specific index
      *
+     * @param $items_json
+     * @param $index
+     * @param $collection_definition
+     * @return array
+     * @throws \Exception
      */
     private function process_item_album_request( $items_json, $index, $collection_definition ){
         $processedItem = [];
@@ -294,7 +303,13 @@ class Flickr_Importer extends Importer {
     }
 
     /**
+     * get raw item request and return data from specific index
      *
+     * @param $items_json
+     * @param $index
+     * @param $collection_definition
+     * @return array
+     * @throws \Exception
      */
     private function process_item_single_request( $items_json, $index, $collection_definition ){
         $processedItem = [];
@@ -349,11 +364,22 @@ class Flickr_Importer extends Importer {
                         break;
 
                     case 'url':
-                        $value = ( isset( $item->urls->url ) && !empty( $item->urls->url ) ) ? $item->urls->url[0]->_content : $url_image;
+
+                        if ( isset( $item->urls->url ) && !empty( $item->urls->url ) ) {
+                            $url = $item->urls->url[0];
+                            $value = $url->_content;
+                        } else {
+                            $value = $url_image;
+                        }
+
                         break;
 
                     case 'date_upload':
                         $value = date('Y-m-d', $item->dateuploaded );
+                        break;
+
+                    case 'views':
+                        $value = $item->views;
                         break;
 
                     case 'type':
