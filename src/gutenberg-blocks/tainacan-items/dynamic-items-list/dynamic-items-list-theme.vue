@@ -321,9 +321,9 @@ export default {
                     this.isLoading = false;
                     this.totalItems = response.headers['x-wp-total'];
 
-                }).catch((error) => { 
+                }).catch(() => { 
                     this.isLoading = false;
-                    console.log(error);
+                    // console.log(error);
                 });
         },
         fetchCollectionForHeader() {
