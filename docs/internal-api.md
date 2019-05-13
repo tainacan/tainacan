@@ -31,6 +31,9 @@ $metadatum->set_name('new name');
 $metadatum->set_required('yes');
 ```
 
+![Entities and the database](assets/entity-database.png)
+
+
 Tainacan will automatically map the values of the attributes to and from where they are stored.
 
 When you want to fetch entities from the database, this abstraction layer steps aside and let you use all the power and flexibility of `WP_Query`, which you know and love. For example:
@@ -39,8 +42,16 @@ When you want to fetch entities from the database, this abstraction layer steps 
 Repositories\Metadata::get_instance()->fetch('s=test');
 ```
 
-The `fetch` method from the repositories accept exactly the same arguments accepted by `WP_Query` and uses it internally. In fact, you could use `WP_Query` directly if you prefer, but using the repository class gives you some advantages. You dont have to know the name of the post type, you can also fetch by some mapped attribute calling it directly, withour having to use `meta_query` (or even know wether a property is stored as a post attribute or post_meta). See more details in the Fetch section below.
+The `fetch` method from the repositories accept exactly the same arguments accepted by `WP_Query` and uses it internally. In fact, you could use `WP_Query` directly if you prefer, but using the repository class gives you some advantages. You dont have to know the name of the post type, you can also fetch by some mapped attribute calling it directly, without having to use `meta_query` (or even know wether a property is stored as a post attribute or post_meta). See more details in the Fetch section below.
 
+Documentation for each repository:
+
+* [Collections](repository-collections.md)
+* [Metadata'](repository-metadata.md)
+* [Filters](repository-filters.md)
+* [Taxonomies](repository-taxonomies.md)
+* [Items](repository-items.md)
+* [Terms](repository-terms.md)
 
 ## Fetching data
 
@@ -55,7 +66,7 @@ $collection = new Tainacan\Entities\Collection($collection_post);
 $collection = new Tainacan\Entities\Collection($collection_id);
 ```
 
-This will have the same effect as calling the `fetch` method from the repository passing an integer as argument. THe repository will assume it is the collection ID.
+This will have the same effect as calling the `fetch` method from the repository passing an integer as argument. The repository will assume it is the collection ID.
 
 ```PHP
 $collection = Tainacan\Repositories\Collections::get_instance()->fetch($collection_id);
@@ -124,7 +135,7 @@ But it also can be an array of Taincan Entities objects. This is very useful whe
 
 ## Inserting
 
-All repositories have a `insert()` method that gets an Entity as argument and save it in the database. If the entity has an ID, this method will update the entity. (yes, the same way `wp_insert_post` works)
+All repositories have an `insert()` method that gets an Entity as argument and save it in the database. If the entity has an ID, this method will update the entity. (yes, the same way `wp_insert_post` works)
 
 Each repository will get as a parameter an instace of its correspondent entity. For example, Collections repository `insert()` will get an instace of `Tainacan\Entities\Collection` and return the updated entity.
 
@@ -166,9 +177,9 @@ Well, Item Metadata Entity is slightly different.
 
 `Item Metada` is a special kind of entity, because it is not an actual entity itself. Rather, it is the relationship between an Item and a Field. And this relationship has a value.
 
-So imagine a Collection of pens has a Field called "color". This means the an item of this collection will have a relationship with this metadatum, and this relation will have a value. Red, for example.
+So imagine a Collection of pens has a Metadata called "color". This means that an item of this collection will have a relationship with this metadatum, and this relation will have a value. "Red", for example.
 
-So the Item Metadata Entity constructor gets to entities: an item and a metadatum. Lets see an example, considering I alredy have a collection with metadata and an item.
+So the Item Metadata Entity constructor gets two entities: an item and a metadatum. Lets see an example, considering I alredy have a collection with metadata and an item.
 
 ```PHP
 // Considering $item is an existing Item Entity an $metadatum an existing Field Entity
@@ -190,56 +201,6 @@ if ($itemMetadata->validate()) {
 If you want to iterate over all metadata of an item or a collection, there are 2 usefull methods you can use. Metadata repository have a `fetch_by_collection()` method that will fetch all metadata from a given collection and return them in the right order.
 
 Also, ItemMetadata Repository `fetch()` method will return an array of ItemMetadata Entities related to a given item. 
-
-
-### Handling Compound metadata
-
-Compound metadata are a special type of metadata that support child metadata. It is a group of metadata.
-
-The Compound metadatum itself does not have a value, only its children have. So when you are saving a new value for a child metadatum of a compound metadatum, it will behave as it was a normal metadatum.
-
-However, when you save the value for the second metadatum of that same group, you must inform that it belong to that group. You do this by passing a `parent_meta_id` when initializing the Item Metada Entity. Note that you will only have this ID after you saved the first ItemMetadata of that group, because only then the group was created.
-
-```PHP
-
-$item_metadata1 = new \Tainacan\Entities\Item_Metadata_Entity($i, $child_field1);
-$item_metadata1->set_value('Red');
-
-if ($item_metadata1->validate()) {
-	$item_metadata1 = $Tainacan_Item_Metadata->insert($item_metadata1);
-}
-
-$item_metadata2 = new \Tainacan\Entities\Item_Metadata_Entity($i, $child_field2, null, $item_metadata1->get_parent_meta_id());
-$item_metadata2->set_value('Blue');
-
-if ($item_metadata2->validate()) {
-	$item_metadata2 = $Tainacan_Item_Metadata->insert($item_metadata2);
-}
-
-
-```
-
-Now you may get the value directly from the Compound Field, and it will return an array of ItemMetadata Entities (with meta_id and parent_meta_id populated).
-
-```PHP
-
-$compoundItemMeta = new \Tainacan\Entities\Item_Metadata_Entity($item, $compoundField);
-
-$compoundValue = $compoundItemMeta->get_value();
-
-// This is an array of ItemMetadata Entities
-
-foreach ($compoundValue as $metadatum_id => $childItemMeta) {
-	var_dump( $childItemMeta instanceof \Tainacan\Entities\ItemMetadataEntity ); // true
-	var_dump( $metadatum_id == $childItemMeta->get_field()->get_id() ); // true
-	echo "Value for metadatum " . $childItemMeta->get_field()->get_name() " (child of " . $compoundItemMeta->get_name() . ") is:" . $childItemMeta->get_value();
-	var_dump( $childItemMeta->get_field()->get_parent() == compoundItemMeta->get_field()->get_id() ); // true
-	var_dump( is_int($childItemMeta->get_meta_id()) && $childItemMeta->get_parent_meta_id() ); // true. they are allways set when initialized by calling get_value() on the parent ItemMetadataEntity
-}
-
-
-```
-
 
 
 ### More about validating
