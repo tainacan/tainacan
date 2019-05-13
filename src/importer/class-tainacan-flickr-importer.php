@@ -64,7 +64,10 @@ class Flickr_Importer extends Importer {
                 'url',
                 'id',
                 'type',
-                'views'
+                'views',
+                'image_thumbnail',
+                'image_medium',
+                'image_large',
             ];
         } else {
             return [];
@@ -348,7 +351,7 @@ class Flickr_Importer extends Importer {
                         }
 
 
-                        $value = ( $tags ) ? implode(', ', $tags) : '';
+                        $value = ( $tags ) ? $tags : [];
                         break;
 
                     case 'id':
@@ -376,6 +379,18 @@ class Flickr_Importer extends Importer {
 
                     case 'date_upload':
                         $value = date('Y-m-d', $item->dateuploaded );
+                        break;
+
+                    case 'image_thumbnail':
+                        $value = 'https://farm' . $item->farm . '.staticflickr.com/' . $item->server . '/' . $item->id . '_' . $item->secret . '_t.jpg';
+                        break;
+
+                    case 'image_medium':
+                        $value = 'https://farm' . $item->farm . '.staticflickr.com/' . $item->server . '/' . $item->id . '_' . $item->secret . '.jpg';
+                        break;
+
+                    case 'image_large':
+                        $value = 'https://farm' . $item->farm . '.staticflickr.com/' . $item->server . '/' . $item->id . '_' . $item->secret . '_c.jpg';
                         break;
 
                     case 'views':
@@ -429,8 +444,8 @@ class Flickr_Importer extends Importer {
             $id = $TainacanMedia->insert_attachment_from_url( $image_url, $inserted_item->get_id());
             $inserted_item->set__thumbnail_id( $id );
 
-            $inserted_item->set_document( $image_url );
-            $inserted_item->set_document_type( 'url' );
+            $inserted_item->set_document( $id );
+            $inserted_item->set_document_type( 'attachment' );
         }
 
         if( $inserted_item->validate() )
