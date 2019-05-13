@@ -43,16 +43,15 @@
     width: 80vw;
     height: 80vh; }
     .wp-block-tainacan-modal.dynamic-modal iframe {
-      width: calc(100% + 64px);
-      height: calc(100% - 100px);
-      margin-left: -32px;
-      margin-bottom: -4px; }
+      width: calc(100% + 32px);
+      height: calc(100% - 128px);
+      margin-left: -16px; }
     .wp-block-tainacan-modal.dynamic-modal .modal-footer-area {
       height: 68px;
-      background: #dbdbdb;
-      width: calc(100% + 64px);
-      margin: 0px 0 -32px -32px !important;
-      padding: 1.2rem 3rem !important; }
+      width: calc(100% + 32px);
+      margin-left: -16px !important;
+      padding: 1.2rem 1.2rem !important;
+      border-top: 1px solid #cbcbcb; }
   .wp-block-tainacan-modal .spinner-container {
     min-height: 56px;
     padding: 1rem;
