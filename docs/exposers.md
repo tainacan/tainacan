@@ -1,104 +1,260 @@
-# Exposers
+# How to create an Exposer
 
-Exposers are declarations and methods that expose the items of your repository in a certain way.
+Exposers are classes that implement a new Exposer that can be used by Tainacan to expose the content of a repository via API.
 
-## Structure
+In order to create a new exposer you basically have to create an Exposer class and register it.
 
-### Name
+## Creating an Exposer class
 
-String $name
+Create a class that extends `\Tainacan\Exposers\Exposer`.
 
-The name of the Exposer.
+```PHP 
+<?php 
 
-### Slug
+class MyExposer extends \Tainacan\Exposers\Exposer {
+	
+}
 
-String $slug
+```
+
+In this class you will have to set up some attributes and methods:
+
+### Attributes
+
+#### Slug
+
+**String $slug**
 
 A URL friendly version of the Exposer name, to be used as a parameter to the API request informing you want to get the data using this exposer.
 
+```PHP 
+<?php 
 
-### Supported Mapping Standard
+class MyExposer extends \Tainacan\Exposers\Exposer {
+	
+	public $slug = 'my-exposer';
+	
+}
 
-Array or true $mappers
+```
 
-A list of mapping standards that is exposer supports. This means that whenever someone makes a request to receive that via this exposer, he/she will also be able to choose in which mapping standar they want the content to be served, or true for serve all mappers.
+#### Supported Mapping Standard
 
+**Array or true $mappers**
+
+A list of mapping standards that is exposer supports. This means that whenever someone makes a request to receive data via this exposer, he/she will also be able to choose in which mapping standard they want the content to be served. If set to `true` the exposer will accept all mapping standards.
+
+```PHP 
+<?php 
+
+class MyExposer extends \Tainacan\Exposers\Exposer {
+	
+	public $slug = 'my-exposer';
+	public $mappers = true;
+	
+}
+
+```
+
+or 
+
+```PHP 
+<?php 
+
+class MyExposer extends \Tainacan\Exposers\Exposer {
+	
+	public $slug = 'my-exposer';
+	public $mappers = ['dublin-core']; // indicates that this exposer will only serve data mapped to dublin core mapper
+	
+}
+```
+
+#### Accept no Mapping Standards 
+
+**Bool $accept_no_mapper**
+
+Indicates whether this exposer accept to serve data in its native form, without any mapping standards.
+
+```PHP 
+<?php 
+
+class MyExposer extends \Tainacan\Exposers\Exposer {
+	
+	public $slug = 'my-exposer';
+	public $mappers = ['dublin-core']; // indicates that this exposer will only serve data mapped to dublin core mapper
+	public $accept_no_mapper = true; 
+}
+```
 
 ### Methods
 
-Every exposer have to implement PHP methods that will build the API response and have to be parent of Tainacan\Exposers\Types\Type
+Now that you have declared the basic attributes of your Exposer, there are two methods you must implement.
 
-####callback rest response
 
-\WP_REST_Response rest_request_after_callbacks will receve a array of elements to be exposed, and api request, server and reponse.
+#### __construct()
 
-	/**
-		 * Change response after api callbacks
-		 * @param \WP_REST_Response $response
-		 * @param \WP_REST_Server $handler
-		 * @param \WP_REST_Request $request
-		 * @return \WP_REST_Response
-		 */
-		public function rest_request_after_callbacks( $response, $handler, $request ); 
+In this method you must call `set_name()` and `set_description()` to identify your exposer.
 
-Using this method an exposer can also print data in the `HEAD` section of the HTML when visiting an item page. For example, JSON-LD exposer can add a JSON-LD object to the head of the page of every item in your collection, modifing the rest server ($handler).
+```PHP 
+<?php 
+
+class MyExposer extends \Tainacan\Exposers\Exposer {
+	
+	public $slug = 'my-exposer';
+	public $mappers = ['dublin-core']; // indicates that this exposer will only serve data mapped to dublin core mapper
+	public $accept_no_mapper = true; 
+	
+	public function __construct() {
+		$this->set_name( __('My Exposer', 'my-test-plugin-namespace') );
+		$this->set_description( __('This exposer server the data in a very different way', 'my-test-plugin-namespace') );
+	}
+	
+}
+```
+
+**Note**: The reason Name and Description are declared this way, and not as attributes, is to give you the opportunity to localize your strings to different languages. Please refer to the WordPress documentation to learn how to internationalize your plugin.
+
+
+#### rest_request_after_callbacks()
+
+Now this is where all the magic happens!
+
+This method will be called right before the API returns the data to the client.
+
+It will give you all the items it received, in the way they were about to be served in the default JSON format, and give you the opportunity to transform it.
+
+It receives 3 parameters:
+
+* $response: an instance of the `\WP_REST_Response` object 
+* $response: an instance of the `\WP_REST_Server` object 
+* $response: an instance of the `\WP_REST_Request` object 
+
+This method have to return the modified version of the `\WP_REST_Response` object.
+
+```PHP 
+<?php 
+
+class MyExposer extends \Tainacan\Exposers\Exposer {
+	
+	public $slug = 'my-exposer';
+	public $mappers = ['dublin-core']; // indicates that this exposer will only serve data mapped to dublin core mapper
+	public $accept_no_mapper = true; 
+	
+	public function __construct() {
+		$this->set_name( __('My Exposer', 'my-test-plugin-namespace') );
+		$this->set_description( __('This exposer server the data in a very different way', 'my-test-plugin-namespace') );
+	}
+	
+	public function rest_request_after_callbacks( $response, $handler, $request ) {
+		
+		// Set the headers to another content type, if applicable
+		$response->set_headers( ['Content-Type: text/plain; charset=' . get_option( 'blog_charset' )] );
+		
+		$items = $response->get_data();
+		
+		// Transform the items somehow ...
+		// ...
+		
+		$response->set_data($items);
+		
+		return $response;
+	}
+	
+}
+```
+
 
 ### Registering a new exposer
-For register a new exposer, the action need to be added to `tainacan-register-exposer-types` hook, like:
-```
-	function myNewExposer($exposers) {
-		$exposers->register_exposer_type('Tainacan\Exposers\Types\NewExposer');
+
+To register a new exposer, the action need to be added to the `init` hook, like:
+```PHP 
+<?php
+	function registerMyExposer() {
+		$exposers = \Tainacan\Exposers_Handler::get_instance();
+		$exposers->register_exposer_type('MyExposer');
 	}
-	add_action('tainacan-register-exposer-types', 'myNewExposer');
+	add_action('init', 'registerMyExposer');
 ```
 
-### Example
+### Full Example
 
-	<?php
-	
-	namespace Tainacan\Exposers\Types;
-	
-	/**
-	 * Generate a text formated response
-	 *
-	 */
-	class Txt extends Type {
+This is a full example of a plugin that implements a simple text exposer
+
+```PHP 
+<?php
+/*
+Plugin Name: Tainacan TXT Exposer
+Description: This is a sample exposer class
+*/
+
+function myNewExposer($exposers) {
+
+	class TxtExposer extends \Tainacan\Exposers\Exposer {
 		
-		public $mappers = ['Value'];
 		public $slug = 'txt'; // type slug for url safe
 		public $name = 'TXT';
+		protected $mappers = true;
+		public $accept_no_mapper = true;
+		
+		private $identation = '';
+		
+		function __construct() {
+			$this->set_name( 'TXT' );
+			$this->set_description( __('A simple TXT table', 'my-test-plugin-namespace') );
+		}
 		
 		/**
-		 * 
-		 * {@inheritDoc}
-		 * @see \Tainacan\Exposers\Types\Type::rest_request_after_callbacks()
-		 */
+		* 
+		* {@inheritDoc}
+		* @see \Tainacan\Exposers\Types\Type::rest_request_after_callbacks()
+		*/
 		public function rest_request_after_callbacks( $response, $handler, $request ) {
 			$response->set_headers( ['Content-Type: text/plain; charset=' . get_option( 'blog_charset' )] );
-			$txt = '';
-			$txt = $this->array_to_txt($response->get_data(), apply_filters('tainacan-exposer-txt', $txt));
+			
+			$txt = $this->array_to_txt($response->get_data(), false);
+			
 			$response->set_data($txt);
 			return $response;
 		}
 		
 		/**
-		 * Convert Array to Txt
-		 * @param array $data
-		 * @param string $txt
-		 * @return string
-		 */
-		protected function array_to_txt( $data, $txt ) {
-			foreach( $data as $key => $value ) {
-				if( is_numeric($key) ){
-					$key = apply_filters('tainacan-exposer-numeric-item-prefix', __('item', 'tainacan').'-', get_class($this)).$key; //dealing with giving a key prefix
-				}
-				if( is_array($value) ) {
-					$txt .= $key.": ".$this->array_to_txt($value, '['.$txt.']\n');
-				} else {
-					$txt .= $key.": ".$value .'\n';
-				}
+		* Convert Array to Txt
+		* @param array $data
+		* @param string $txt
+		* @return string
+		*/
+		protected function array_to_txt( $data, $addlevel = true ) {
+			
+			$return = '';
+			
+			if ($addlevel) {
+				$this->identation .= '    ';
 			}
-			return $txt;
+			
+			foreach( $data as $key => $value ) {
+				
+				
+				$return .= $this->identation . $key . ': ';
+				if (is_array($value)) {
+					$return .= "\n" . $this->array_to_txt($value);
+				} else {
+					$return .= $value . "\n";
+				}
+				
+			}
+			
+			if ($addlevel) {
+				$this->identation = substr($this->identation, 0,  strlen($this->identation) - 4  );
+			}
+			
+			return $return;
 		}
 	}
-		
+	
+	$exposers = \Tainacan\Exposers_Handler::get_instance();
+	$exposers->register_exposer('TxtExposer');
+	
+	
+}
+add_action('init', 'myNewExposer');
+```
