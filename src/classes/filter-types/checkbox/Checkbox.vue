@@ -88,9 +88,7 @@
 
             if (this.isUsingElasticSearch) {
                 this.isLoadingOptions = false;
-                this.$eventBusSearch.$on('isLoadingItems', isLoading => {
-                    this.isLoadingOptions = isLoading;
-                });
+                this.$eventBusSearch.$on('isLoadingItems', this.updatesIsLoading);
             }
         },
         props: {
@@ -240,13 +238,16 @@
                         this.selectedValues();
                     }
                 }
+            },
+            updatesIsLoading(isLoading) {
+                this.isLoadingOptions = isLoading;
             }
         },
         beforeDestroy() {
             this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
             
             if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$off('isLoadingItems');
+                this.$eventBusSearch.$off('isLoadingItems', this.updatesIsLoading);
         }
     }
 </script>
