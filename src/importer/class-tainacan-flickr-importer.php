@@ -526,13 +526,16 @@ class Flickr_Importer extends Importer {
             IMAGETYPE_WBMP => "image/wbmp",
             IMAGETYPE_XBM => "image/xbm",
             IMAGETYPE_ICO => "image/ico");
-
-        if (($image_type = exif_imagetype($image_path))
-            && (array_key_exists($image_type ,$mimes))){
-            return $mimes[$image_type];
-        } else {
-            return FALSE;
-        }
+		
+		if (function_exists('exif_imagetype')) {
+			if ( $image_type = exif_imagetype($image_path)
+				&& array_key_exists($image_type ,$mimes) ) {	
+				return $mimes[$image_type];
+			}
+		}
+		
+        return false;
+        
     }
 
     public function options_form(){
@@ -540,25 +543,42 @@ class Flickr_Importer extends Importer {
         ?>
         <div class="field">
             <label class="label"><?php _e('API ID', 'tainacan'); ?></label>
-            <span class="help-wrapper">
-					<a class="help-button has-text-secondary">
-						<span class="icon is-small">
-							 <i class="tainacan-icon tainacan-icon-help" ></i>
-						 </span>
-					</a>
-					<vdiv class="help-tooltip">
-						<div class="help-tooltip-header">
-							<h5><?php _e('Flickr API ID', 'tainacan'); ?></h5>
-						</div>
-						<div class="help-tooltip-body">
-							<p><?php _e('Get youtube API ID if you request for single photos, albums and users', 'tainacan'); ?></p>
-						</div>
-					</vdiv>
-			</span>
+            <p>
+				<?php printf(
+					# translators %s are for opening and closing the link
+					__('In order to import photos from Flickr you need to %sapply for a Flickr API Key%s.', 'tainacan'),
+					# translator you may get the link to the console in the current language. e.g. https://console.developers.google.com/?hl=pt-br
+					sprintf('<a target="_blank" href="%s">', __('https://www.flickr.com/services/api/misc.api_keys.html', 'tainacan') ),
+					'</a>'
+				); ?>
+			</p>
+			<br/>
+			<p>
+				<?php _e('Get your API Key and paste it below:', 'tainacan'); ?>
+			</p>
             <div class="control is-clearfix">
-                <input class="input" type="text" name="api_id" value="59dcf7e8e317103416c529b476f44fab">
+                <input class="input" type="text" name="api_id" value="">
             </div>
         </div>
+        
+        <label class="label"><?php _e('Supported URLs', 'tainacan'); ?></label>
+        
+        <p>
+			<?php _e('The following URL types are supported:', 'tainacan'); ?>
+			<br/><br/>
+			<?php _e('User profile', 'tainacan'); ?> - 
+			<?php _e('Example: ', 'tainacan'); ?> https://www.flickr.com/photos/username
+			<br/>
+			<?php _e('Albums', 'tainacan'); ?> - 
+			<?php _e('Example: ', 'tainacan'); ?> https://www.flickr.com/photos/username/albums/123456
+			<br/>
+			<?php _e('Photos', 'tainacan'); ?> - 
+			<?php _e('Example: ', 'tainacan'); ?> https://www.flickr.com/photos/username/123456
+			
+		</p>
+		
+		
+        
         <?php
 
         return ob_get_clean();
