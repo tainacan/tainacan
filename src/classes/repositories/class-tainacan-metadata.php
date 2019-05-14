@@ -1255,46 +1255,71 @@ class Metadata extends Repository {
 	*/
 	public function _process_terms_tree($tree, $search_value, $search_type='parent') {
 		
-		$h_map = [];
-		$results = [];
+		$h_map = []; // all terms will mapped to this array 
+		$results = []; // terms that match search criteria will be copied to this array
 		foreach ( $tree as $h ) {
 			
+			// if current term comes with have_items = 1 from the database 
+			// or, if it was temporarily added by its child that had have_items = 1:
 			if ( $h->have_items > 0 || ( isset($h_map[$h->term_id]) && $h_map[$h->term_id]->have_items > 0 ) ) {
 				
+				// in the case of a parent that was temporarily added by a child, mark it as having items as well
 				$h->have_items = 1;
-				$h_map[$h->term_id] = $h;
+				$h_map[$h->term_id] = $h; // send it to the map array, overriding temporary item if existed
 
+				// if current term matches seach criteria, add to results array
 				if(($search_type == 'parent' && $h->parent == $search_value) ||
-					 ($search_type == 'name' && $h->have_items > 0 && strpos(strtolower($h->name), strtolower($search_value)) !== false)) {
+					 ($search_type == 'name' && strpos(strtolower($h->name), strtolower($search_value)) !== false)) {
 					$results[$h->term_id] = $h;
 				}
 				
+				// Now that we know this ter have_items. Lets climb the tree all the way up 
+				// marking all parents with have_items = 1
 				$_parent = $h->parent;
 				
+				// If parent was not added to the map array yet
+				// Lets add a temporary entry
 				if ( $h->parent > 0 && !isset($h_map[$_parent]) ) {
 					$h_map[$_parent] = (object)['have_items' => 1];
 				}
 				
+				// Now lets loop thorough the map array until I check all my parents
 				while( isset($h_map[$_parent]) && $h_map[$_parent]->have_items != 1 ) {
+					
+					// If my parent was added before, but marked with have_items = 0
+					// Lets set it to 1
+					
 					$h_map[$_parent]->have_items = 1;
 					
+					// If my parent is a whole object, and not a temporary one
 					if ( isset($h_map[$_parent]->parent) ) {
-						if(($search_type == 'parent' && $h->parent == $search_value) ||
-							 ($search_type == 'name' && $h->have_items > 0 && strpos(strtolower($h->name), strtolower($search_value)) !== false)) {
+						// if parent matches search criteira, add to results
+						if(($search_type == 'parent' && $h_map[$_parent]->parent == $search_value) ||
+							 ($search_type == 'name' && strpos(strtolower($h_map[$_parent]->name), strtolower($search_value)) !== false)) {
 							$results[$h_map[$_parent]->term_id] = $h_map[$_parent];
 						}
+						// increment _parent to next Loop interation
 						$_parent = $h_map[$_parent]->parent;
 					} else {
+						// Quit loop. We have reached as high as we could in the tree
 						$_parent = 0;
 					}
 					
 				}
 				
 			} else {
+				
+				// if current term have_items = 0
+				
+				// add it to the map
 				$h_map[$h->term_id] = $h;
+				
+				// if parent was not mapped yet, create a temporary entry for him
 				if ( $h->parent > 0 && !isset($h_map[$h->parent]) ) {
 					$h_map[$h->parent] = (object)['have_items' => $h->have_items];
 				}
+				
+				// if item matches search criteria, add it to the results
 				if(($search_type == 'parent' && $h->parent == $search_value) ||
 					 ($search_type == 'name' && $h->have_items > 0 && strpos(strtolower($h->name), strtolower($search_value)) !== false)) {
 					$results[$h->term_id] = $h;
@@ -1303,7 +1328,7 @@ class Metadata extends Repository {
 
 		}
 		
-		// Results have all terms with wanted parent. Now we unset those who dont have items
+		// Results have all terms that matches search criteria. Now we unset those who dont have items
 		// and set it back to incremental keys]
 		// we could have sent to $results only those with items, but doing that we would not preserve their order
 		$results = array_reduce($results, function ($return, $el) {
