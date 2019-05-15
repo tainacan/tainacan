@@ -44,7 +44,7 @@
                 axios.get('/collection/'+ collectionId +'/metadata?context=edit')
                     .then( res => {
                         for (let item of res.data) {
-                            if( this.metadatum.metadatum.metadata_type_options.search.indexOf( item.id ) >= 0 )
+                            if ( this.metadatum.metadatum.metadata_type_options.search.indexOf( item.id ) >= 0 )
                                 this.searchMetadata.push( item );
                         }
                     })
@@ -100,7 +100,7 @@
                 this.$emit('input', $event);
                 this.$emit('blur');
             },
-            search(query){
+            search: _.debounce(function(query) {
                 if( this.selected.length > 0  && this.metadatum.metadatum.multiple === 'no'){
                     return '';
                 }
@@ -130,14 +130,14 @@
                 } else {
                     this.options = [];
                 }
-            },
+            }, 500),
             mountQuery( search ){
                 let query = []
-                if( this.searchMetadata.length > 0){
+                if ( this.searchMetadata.length > 0){
                     query['metaquery'] = [];
                     const metaquery = query['metaquery'];
                     metaquery['relation'] = 'OR'
-                    for( let index in this.searchMetadata ){
+                    for ( let index in this.searchMetadata ){
                         metaquery[index] = {
                             key: this.searchMetadata[index].id,
                             value: search,
