@@ -23,13 +23,13 @@
     export default {
         created(){
             let collectionId = ( this.metadatum && this.metadatum.metadatum.metadata_type_options.collection_id ) ? this.metadatum.metadatum.metadata_type_options.collection_id : this.collection_id;
-            if( this.metadatum.value && (Array.isArray( this.metadatum.value ) ? this.metadatum.value.length > 0 : true )){
+            if ( this.metadatum.value && (Array.isArray( this.metadatum.value ) ? this.metadatum.value.length > 0 : true )){
                 let query = qs.stringify({ postin: ( Array.isArray( this.metadatum.value ) ) ? this.metadatum.value : [ this.metadatum.value ]  });
-                axios.get('/collection/'+collectionId+'/items?' + query + '&nopaging=1')
+                axios.get('/collection/'+collectionId+'/items?' + query + '&nopaging=1&fetch_only=title,thumbnail')
                     .then( res => {
                         if (res.data.items) {
                             for (let item of res.data.items) {
-                                this.selected.push({ label: item.title, value: item.id, img: '' });
+                                this.selected.push({ label: item.title, value: item.id, img: item.thumbnail && item.thumbnail['tainacan-small'] && item.thumbnail['tainacan-small'][0] ? item.thumbnail['tainacan-small'][0] : '' });
                             }
                         }
                     })
@@ -38,7 +38,7 @@
                     });
             }
 
-            if( this.metadatum.metadatum.metadata_type_options &&
+            if ( this.metadatum.metadatum.metadata_type_options &&
                 this.metadatum.metadatum.metadata_type_options.search &&
                 this.metadatum.metadatum.metadata_type_options.search.length > 0){
                 axios.get('/collection/'+ collectionId +'/metadata?context=edit')
@@ -113,20 +113,20 @@
                     let collectionId = ( this.metadatum && this.metadatum.metadatum.metadata_type_options.collection_id ) ? this.metadatum.metadatum.metadata_type_options.collection_id : this.collection_id;
                     
                     axios.get('/collection/'+collectionId+'/items?' + qs.stringify( metaquery ))
-                    .then( res => {
-                        this.loading = false;
-                        this.options = [];
-                        let result = res.data;
+                        .then( res => {
+                            this.loading = false;
+                            this.options = [];
+                            let result = res.data;
 
-                        if (result.items) {
-                            for (let item of result.items) {
-                                this.options.push({ label: item.title, value: item.id })
+                            if (result.items) {
+                                for (let item of result.items) {
+                                    this.options.push({ label: item.title, value: item.id })
+                                }
                             }
-                        }
-                    })
-                    .catch(error => {
-                        this.$console.log(error);
-                    });
+                        })
+                        .catch(error => {
+                            this.$console.log(error);
+                        });
                 } else {
                     this.options = [];
                 }
@@ -149,6 +149,8 @@
                 } else {
                     query['search'] = search;
                 }
+                query['fetch_only'] = 'title,thumbnail';
+
                 return query;
             }
         }
