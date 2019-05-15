@@ -138,6 +138,11 @@
                                         <i class="tainacan-icon tainacan-icon-20px tainacan-icon-showmore"/>
                                     </span>
                                 </div>
+                                <div 
+                                        class="warning-no-more-terms"
+                                        v-else>
+                                    {{ isUsingElasticSearch ? $i18n.get('info_no_more_terms_found') : '' }}
+                                </div>
                             </li>
                         </ul>
                         <b-loading
@@ -956,6 +961,13 @@
             text-overflow: ellipsis;
             overflow: hidden;
         }
+    }
+
+    .warning-no-more-terms {
+        color: $gray4;
+        font-size: 0.75rem;
+        padding: 0.5rem;
+        text-align: center;
     }
 
 

@@ -169,4 +169,21 @@
             margin: 0.875rem 1.5rem;
         }
     }
-}
+
+    // Metadata type textarea has different separators in different spots on interface
+    & .multivalue-separator {
+        color: $gray4;
+        margin: 0 8px;    
+    }
+    &.metadata-type-textarea {
+        .multivalue-separator {
+            display: block;
+            max-height: 1px;
+            width: 35px;
+            background: $gray4;
+            content: none;
+            color: transparent;
+            margin: 1rem auto;
+        }
+    }
+    }

@@ -462,6 +462,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_no_taxonomy_created'                       => __( 'No taxonomy was created in this repository.', 'tainacan' ),
 	'info_no_terms_created_on_taxonomy'              => __( 'No term was created for this taxonomy.', 'tainacan' ),
 	'info_no_terms_found'				 			 => __( 'No term was found here', 'tainacan' ),
+	'info_no_more_terms_found'				 		 => __( 'No more terms found', 'tainacan' ),
 	'info_no_item_created'                           => __( 'No item was created in this collection.', 'tainacan' ),
 	'info_no_item_draft'                             => __( 'No draft item found.', 'tainacan' ),
 	'info_no_item_trash'                             => __( 'No item in trash.', 'tainacan' ),

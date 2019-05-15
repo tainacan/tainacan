@@ -1,3 +1,5 @@
+@import '../../gutenberg-blocks-style.scss';
+
 .wp-block-tainacan-items-list {
     margin: 2rem 0px;
 
@@ -5,14 +7,6 @@
     .components-spinner {
         position: absolute;
         right: 0;
-    }
-
-    // Control region ----------------------------------------------------
-    .block-control {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        padding: 12px;
     }
 
     // Grid View Mode ----------------------------------------------------

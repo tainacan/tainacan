@@ -13,6 +13,7 @@ const TAINACAN_EXPORTER_DIR     = __DIR__ . '/../exporter/';
 const TAINACAN_EXPOSERS_DIR		= __DIR__ . '/../exposers/';
 const TAINACAN_MAPPERS_DIR		= __DIR__ . '/../mappers/';
 const TAINACAN_OAIPMH_DIR		= __DIR__ . '/../oaipmh-expose/';
+const TAINACAN_CLI_DIR		= __DIR__ . '/../cli/';
 
 const DIRS = [
     TAINACAN_CLASSES_DIR,
@@ -27,7 +28,8 @@ const DIRS = [
     TAINACAN_EXPORTER_DIR,
 	TAINACAN_EXPOSERS_DIR,
 	TAINACAN_MAPPERS_DIR,
-    TAINACAN_OAIPMH_DIR
+    TAINACAN_OAIPMH_DIR,
+	TAINACAN_CLI_DIR
 ];
 
 require_once('libs/wp-async-request.php');
@@ -82,7 +84,9 @@ function tainacan_autoload($class_name){
 		} else if( isset( $class_path[1] ) && $class_path[1] === 'OAIPMHExpose' ){
             $dir = TAINACAN_OAIPMH_DIR;
             if(count($class_path) > 3) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
-        }  else if($sliced) {
+		} else if( isset( $class_path[1] ) && substr($class_path[1], 0, 3) === 'Cli' ){
+			$dir = TAINACAN_CLI_DIR;
+		}  else if($sliced) {
 			$lower     = $sliced[0];
 			$sliced[0] = strtolower( $lower );
 
@@ -170,5 +174,10 @@ require_once(__DIR__ . '/class-tainacan-background-process-heartbeat.php');
 $Tainacan_Importer_Heartbeat = new \Tainacan\Background_Importer_Heartbeat();
 
 $Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();
+
+if (class_exists('WP_CLI')) {
+	$Tainacan_Cli = \Tainacan\Cli::get_instance();
+}
+
 
 ?>

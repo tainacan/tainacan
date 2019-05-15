@@ -93,6 +93,7 @@
                                 :label="column.name" 
                                 class="column-default-width"
                                 :class="{
+                                        'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea',
                                         'thumbnail-cell': column.metadatum == 'row_thumbnail',
                                         'column-main-content' : column.metadata_type_object != undefined ? (column.metadata_type_object.related_mapped_prop == 'title') : false,
                                         'column-needed-width column-align-right' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'float' || 
@@ -142,6 +143,7 @@
                                             show: 500,
                                             hide: 300,
                                         },
+                                        classes: [ column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '' ],
                                         content: renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
                                         html: true,
                                         autoHide: false,

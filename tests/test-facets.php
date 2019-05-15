@@ -16,7 +16,69 @@ use Tainacan\Entities;
 class Facets extends TAINACAN_UnitApiTestCase {
 
 	public $items_ids = [];
-
+	
+	/**
+	 * 
+	 * This tests use sample data in this format 
+	 *
+	 * Taxonomy 1
+	 * + Term for collection 1
+	 * +-- Term 1 Child 
+	 * + Term for collection 2
+	 * +-- Term 2 Child
+	 * + Term for All 
+	 * +-- Term for All child
+	 * + Term for nobody
+	 *
+	 * Taxonomy 2
+	 * + Root
+	 * +-- Children (with items)
+	 * +-- Children2
+	 * +---- GChildren
+	 * +---- GChildren2
+	 * + Root2
+	 * +-- Children (with items)
+	 * +-- Children2
+	 * +---- GChildren
+	 * +---- GChildren2 (with items)
+	 * +------ GGChildren (with items)
+	 *
+	 * Text Metadata in repository level (inherited by two collections)
+	 * *** Evey item as has a value of "Value %d" where %d is the item number (1 to 80)
+	 * 
+	 * Collection 1
+	 * * 40 items 
+	 * * Taxonomy metadata (Taxonomy 1)
+	 * ** items 1 - 10 => Term for collection 1
+	 * ** items 11 - 20 => Term 1 Child 
+	 * ** items 21 - 30 => Term for All 
+	 * ** items 31 - 40 => Term for All child
+	 *
+	 * * Taxonomy metadata (Taxonomy 2)
+	 * ** items 1 - 10 => Root Children
+	 * ** items 11 - 20 => Root2 Children
+	 * ** items 21 - 30 => Root2 GChildren2
+	 * ** items 31 - 40 => Root2 GGChildren
+	 * 
+	 * * Text Metadata
+	 * ** items 1 - 40 => even/odd 
+	 * 
+	 *
+	 * Collection 2
+	 * * 40 items
+	 * * Taxonomy metadata (Taxonomy 1)
+	 * ** items 41 - 50 => Term for All 
+	 * ** items 51 - 60 => Term for All child
+	 * ** items 61 - 70 => Term for collection 2
+	 * ** items 71 - 80 => Term 2 Child 
+	 * 
+	 * * Relationship Metadata (pointing to collection 1)
+	 * ** items 41 - 80 => related to items 1 - 40 in sequence
+	 *
+	 *
+	 * 
+	 */
+	
 	function setUp() {
 		parent::setUp();
 		$collection1 = $this->tainacan_entity_factory->create_entity(
@@ -134,6 +196,7 @@ class Facets extends TAINACAN_UnitApiTestCase {
 			),
 			true
 		);
+		$this->term2_root = $term2_root;
 		$term2_root2 = $this->tainacan_entity_factory->create_entity(
 			'term',
 			array(
@@ -142,6 +205,7 @@ class Facets extends TAINACAN_UnitApiTestCase {
 			),
 			true
 		);
+		$this->term2_root2 = $term2_root2;
 		$term2_root_c1 = $this->tainacan_entity_factory->create_entity(
 			'term',
 			array(
@@ -268,7 +332,7 @@ class Facets extends TAINACAN_UnitApiTestCase {
 		    array(
 			    'name'   => 'test taxonomy',
 			    'status' => 'publish',
-			    'collection' => $collection2,
+			    'collection' => $collection1,
 				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
 				'metadata_type_options' => [
 					'allow_new_terms' => true,
@@ -895,7 +959,25 @@ class Facets extends TAINACAN_UnitApiTestCase {
 		] );
 		$values = $this->get_values($values);
 		$this->assertEquals(3, sizeof($values));
-
+		
+		// test parent 
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
+			'count_items' => true,
+			'parent_id' => $this->term2_root2_c2->get_id()
+		] );
+		$values = $this->get_values($values);
+		$this->assertEquals(1, sizeof($values));
+		$this->assertEquals($values[0]['value'], $this->term2_root2_gc2->get_id());
+		
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
+			'count_items' => true,
+			'items_filter' => false,
+			'parent' => $this->term2_root2_c2->get_id()
+		] );
+		$values = $this->get_values($values);
+		$this->assertEquals(2, sizeof($values));
+		
+		
 
 		// test search taxonomy  without filter
 		// test count items taxonomy 

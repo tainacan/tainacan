@@ -25,10 +25,7 @@ export const filter_type_mixin = {
     created() {
         // We listen to event, but reload event if hasFiltered is negative, as 
         // an empty query also demands filters reloading.
-        this.$eventBusSearch.$on('hasFiltered', () => {
-            if (typeof this.loadOptions == "function")
-                this.loadOptions(true);
-        });
+        this.$eventBusSearch.$on('hasFiltered', this.reloadOptionsDueToFiltering);
     },
     mounted() {
         
@@ -320,6 +317,10 @@ export const filter_type_mixin = {
                     this.options[this.options.length-1].showViewAllButton = showViewAllButton;
                 }
             }
+        },
+        reloadOptionsDueToFiltering() {
+            if (typeof this.loadOptions == "function")
+                this.loadOptions(true);
         }
     },
     beforeDestroy() {
@@ -327,6 +328,6 @@ export const filter_type_mixin = {
         if (this.getOptionsValuesCancel != undefined)
             this.getOptionsValuesCancel.cancel('Facet search Canceled.');
     
-        this.$eventBusSearch.$off('hasFiltered');
+        this.$eventBusSearch.$off('hasFiltered', this.reloadOptionsDueToFiltering);
     },
 };

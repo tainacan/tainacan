@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { TextControl, RangeControl, IconButton, Button, Modal, CheckboxControl, RadioControl, Spinner, ToggleControl, Placeholder, Toolbar } = wp.components;
+const { RangeControl, IconButton, Button, ToggleControl, Placeholder, Toolbar } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -115,7 +115,7 @@ registerBlockType('tainacan/items-list', {
                 <li 
                     key={ item.id }
                     className="item-list-item"
-                    style={{ marginBottom: layout == 'grid' ?  gridMargin + 'px' : ''}}>
+                    style={{ marginBottom: layout == 'grid' ?  (showName ? gridMargin + 12 : gridMargin) + 'px' : ''}}>
                     <IconButton
                         onClick={ () => removeItemOfId(item.id) }
                         icon="no-alt"
@@ -284,16 +284,25 @@ registerBlockType('tainacan/items-list', {
                                 onCancelSelection={ () => setAttributes({ isModalOpen: false }) }/> 
                             : null
                         }
-                        
-                        <div className="block-control">
-                            <Button
-                                isPrimary
-                                type="submit"
-                                onClick={ () => openItemsModal() }>
-                                {__('Select items', 'tainacan')}
-                            </Button>   
-                        </div>
-                        <hr/>
+                        { selectedItemsHTML.length ? (
+                            <div className="block-control">
+                                <p>
+                                    <svg width="24" height="24" viewBox="0 -2 12 16">
+                                        <path
+                                            d="M8.8,1.2H1.2V10H0V1.2C0,0.6,0.6,0,1.2,0h7.5V1.2z M3.8,2.5c-0.7,0-1.2,0.6-1.2,1.3v8.8c0,0.7,0.6,1.2,1.2,1.2h6.9
+                                            c0.7,0,1.2-0.6,1.2-1.2V6.3L8.1,2.5H3.8z M7.5,3.4L11,6.9H7.5V3.4z"/>       
+                                    </svg>
+                                    {__('Expose items from your Tainacan collections', 'tainacan')}
+                                </p>
+                                <Button
+                                    isPrimary
+                                    type="submit"
+                                    onClick={ () => openItemsModal() }>
+                                    {__('Select items', 'tainacan')}
+                                </Button>    
+                            </div>
+                            ): null
+                        }
                     </div>
                     ) : null
                 }
@@ -305,8 +314,23 @@ registerBlockType('tainacan/items-list', {
                                 width={148}
                                 src={ `${tainacan_plugin.base_url}/admin/images/tainacan_logo_header.svg` }
                                 alt="Tainacan Logo"/>
-                        )}
-                    />) : null
+                        )}>
+                        <p>
+                            <svg width="24" height="24" viewBox="0 -2 12 16">
+                                <path
+                                    d="M8.8,1.2H1.2V10H0V1.2C0,0.6,0.6,0,1.2,0h7.5V1.2z M3.8,2.5c-0.7,0-1.2,0.6-1.2,1.3v8.8c0,0.7,0.6,1.2,1.2,1.2h6.9
+                                    c0.7,0,1.2-0.6,1.2-1.2V6.3L8.1,2.5H3.8z M7.5,3.4L11,6.9H7.5V3.4z"/>       
+                            </svg>
+                            {__('Expose items from your Tainacan collections', 'tainacan')}
+                        </p>
+                        <Button
+                            isPrimary
+                            type="submit"
+                            onClick={ () => openItemsModal() }>
+                            {__('Select items', 'tainacan')}
+                        </Button>   
+                    </Placeholder>
+                    ) : null
                 }
 
                 <ul 

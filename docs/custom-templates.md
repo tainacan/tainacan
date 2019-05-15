@@ -15,6 +15,10 @@ Nevertheless, you are still able to create more specific templates, using the st
 
 Examples:
 
+A template to list Collections:
+
+`archive-tainacan-collection.php`
+
 A template for single items in the collection with id 4:
 
 `single-tnc_col_4_item.php`

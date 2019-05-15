@@ -1,7 +1,11 @@
 <template>
     <div 
             id="tainacan-admin-app" 
-            class="columns is-fullheight">
+            class="columns is-fullheight"
+            :class="{ 
+                'tainacan-admin-iframe-mode': $route.query.iframemode, 
+                'tainacan-admin-read-mode': $route.query.readmode
+            }">
         <template v-if="activeRoute == 'HomePage'">
             <tainacan-header />
             <router-view /> 

@@ -187,7 +187,7 @@
                 order: 'asc',
                 ordeBy: 'date',
                 sortingOptions: [
-                    { label: this.$i18n.get('label_name'), value: 'title' },
+                    { label: this.$i18n.get('label_title'), value: 'title' },
                     { label: this.$i18n.get('label_creation_date'), value: 'date' },
                 ]
             }
@@ -305,8 +305,8 @@
             if (this.orderBy != this.$userPrefs.get('taxonomies_order_by'))
                 this.orderBy = this.$userPrefs.get('taxonomies_order_by');
             if (!this.orderBy) {
-                this.orderBy = 'name';
-                this.$userPrefs.set('taxonomies_order_by', 'name');
+                this.orderBy = 'title';
+                this.$userPrefs.set('taxonomies_order_by', 'title');
             }
             
             this.load();

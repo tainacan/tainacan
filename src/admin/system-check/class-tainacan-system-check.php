@@ -263,10 +263,11 @@ class System_Check {
 				'function' => 'curl_version',
 				'required' => false,
 			),
-			// 'exif'      => array(
-			// 	'function' => 'exif_read_data',
-			// 	'required' => false,
-			// ),
+			'exif'      => array(
+				'function' => 'exif_read_data',
+				'required' => false,
+				'message' => __('This is used to read metadata from photos.', 'tainacan')
+			),
 			// 'filter'    => array(
 			// 	'function' => 'filter_list',
 			// 	'required' => false,

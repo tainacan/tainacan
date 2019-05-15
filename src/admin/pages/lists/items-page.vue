@@ -167,7 +167,7 @@
                 <!-- Item Creation Dropdown, only on Admin -->
                 <div 
                         class="search-control-item"
-                        v-if="!isOnTheme">
+                        v-if="!isOnTheme && !$route.query.iframemode">
                     <b-dropdown 
                             :mobile-modal="true"
                             id="item-creation-options-dropdown"
@@ -517,7 +517,9 @@
                 </div>
 
                 <!-- Exposers or alternative links modal button -->
-                <div class="search-control-item">
+                <div 
+                        v-if="!$route.query.iframemode"
+                        class="search-control-item">
                     <button 
                             class="button is-white"
                             :aria-label="$i18n.get('label_urls')"
@@ -728,7 +730,7 @@
                         <p v-if="status == 'trash'">{{ $i18n.get('info_no_item_trash') }}</p>
 
                         <router-link
-                                v-if="!hasFiltered && (status == undefined || status == '')"
+                                v-if="!hasFiltered && (status == undefined || status == '') && !$route.query.iframemode"
                                 id="button-create-item"
                                 tag="button"
                                 class="button is-secondary"
@@ -802,7 +804,7 @@
                         </p>
                         <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
                         <router-link
-                                v-if="!isOnTheme"
+                                v-if="!isOnTheme && !$route.query.iframemode"
                                 id="button-create-filter"
                                 :to="isRepositoryLevel ? $routerHelper.getNewFilterPath() : $routerHelper.getNewCollectionFilterPath(collectionId)"
                                 tag="button"
@@ -1534,11 +1536,13 @@
     }
 
     .is-fullscreen {
-        position: absolute;
+        position: fixed;
         top: 0;
         bottom: 0;
         left: 0;
         right: 0;
+        width: 100%;
+        height: 100%;
         width: 100vw;
         height: 100vh;
         z-index: 999999999;

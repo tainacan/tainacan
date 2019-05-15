@@ -60,11 +60,9 @@
             this.loadOptions();
 
             this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTag);
-            if (this.isUsingElasticSearch) {
-                this.$eventBusSearch.$on('isLoadingItems', isLoading => {
-                    this.isLoading = isLoading;
-                });
-            }
+            if (this.isUsingElasticSearch)
+                this.$eventBusSearch.$on('isLoadingItems', this.updatesIsLoading);
+            
         },    
         mounted(){
             // We listen to event, but reload event if hasFiltered is negative, as 
@@ -234,7 +232,7 @@
                         //     });
                     }
                 }
-                
+
                 this.$eventBusSearch.$emit("sendValuesToTags", {
                     filterId: this.filter.id,
                     value: onlyLabels
@@ -328,13 +326,16 @@
                 if (skipSelected == undefined || skipSelected == false) {
                     this.selectedValues();
                 }
+            },
+            updatesIsLoading(isLoading) {
+                this.isLoadingOptions = isLoading;
             }
         },
         beforeDestroy() {
             this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
             
             if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$off('isLoadingItems');
+                this.$eventBusSearch.$off('isLoadingItems', this.updatesIsLoading);
         }
     }
 </script>

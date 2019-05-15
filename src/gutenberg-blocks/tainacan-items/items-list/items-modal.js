@@ -356,7 +356,7 @@ export default class ItemsModal extends React.Component {
                                 { this.state.isLoadingItems ? <Spinner /> : null }
                             </div>
                         )
-                        : this.state.isLoadingItems ? <Spinner/> :
+                        : this.state.isLoadingItems ? <div class="spinner-container"><Spinner /></div> :
                         <div className="modal-loadmore-section">
                             <p>{ __('Sorry, no items found.', 'tainacan') }</p>
                         </div>
@@ -497,7 +497,7 @@ export default class ItemsModal extends React.Component {
                                 }
                             </div>
                         </div>
-                    ) : this.state.isLoadingCollections ? <Spinner/> :
+                    ) : this.state.isLoadingCollections ? <div class="spinner-container"><Spinner /></div> :
                     <div className="modal-loadmore-section">
                         <p>{ __('Sorry, no collection found.', 'tainacan') }</p>
                     </div>

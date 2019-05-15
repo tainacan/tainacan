@@ -306,6 +306,7 @@ class Youtube_Importer extends Importer {
     public function after_inserted_item( $inserted_item, $collection_index ) {
         $image_url = $this->get_transient('image_url');
         $video_url = $this->get_transient('video_url');
+        $this->add_log('url ' . $image_url);
 
         if( isset( $image_url ) && $image_url ){
             $TainacanMedia = \Tainacan\Media::get_instance();
@@ -323,31 +324,102 @@ class Youtube_Importer extends Importer {
             $this->items_repo->update($inserted_item);
     }
 
+    /**
+     * @param $collection_id int the collection id
+     * @param $mapping array the headers-metadata mapping
+     */
+    public function save_mapping( $collection_id, $mapping ){
+        update_post_meta( $collection_id, 'metadata_mapping', $mapping );
+    }
+
+    /**
+     * @param $collection_id
+     *
+     * @return array/bool false if has no mapping or associated array with metadata id and header
+     */
+    public function get_mapping( $collection_id ){
+        $mapping = get_post_meta( $collection_id, 'metadata_mapping', true );
+        return ( $mapping ) ? $mapping : false;
+    }
+
+
+    /**
+     * @inheritdoc
+     *
+     * allow save mapping
+     */
+    public function add_collection(array $collection) {
+        if (isset($collection['id'])) {
+
+            if( isset($collection['mapping']) && is_array($collection['mapping']) ){
+
+                foreach( $collection['mapping'] as $metadatum_id => $header ){
+
+                    if( !is_numeric($metadatum_id) ) {
+                        $metadatum = $this->create_new_metadata( $header, $collection['id']);
+
+                        if( is_object($metadatum) ){
+                            unset($collection['mapping'][$metadatum_id]);
+                            $collection['mapping'][$metadatum->get_id()] = $header;
+                        }
+
+                    }
+                }
+
+                $this->save_mapping( $collection['id'], $collection['mapping'] );
+            }
+
+            $this->remove_collection($collection['id']);
+            $this->collections[] = $collection;
+        }
+    }
+
 
     public function options_form(){
         ob_start();
         ?>
         <div class="field">
-            <label class="label"><?php _e('API ID', 'tainacan'); ?></label>
-            <span class="help-wrapper">
-					<a class="help-button has-text-secondary">
-						<span class="icon is-small">
-							 <i class="tainacan-icon tainacan-icon-help" ></i>
-						 </span>
-					</a>
-					<vdiv class="help-tooltip">
-						<div class="help-tooltip-header">
-							<h5><?php _e('Youtube API ID', 'tainacan'); ?></h5>
-						</div>
-						<div class="help-tooltip-body">
-							<p><?php _e('Get youtube API ID if you request for channels or playlists', 'tainacan'); ?></p>
-						</div>
-					</vdiv>
-			</span>
+            <label class="label"><?php _e('API Key', 'tainacan'); ?></label>
+            
+			
+			<p>
+				<?php printf(
+					# translators %s are for opening and closing the link
+					__('In order to import videos from Youtube you need to create a project and get an API Key from the %sGoogle Developers Console%s.', 'tainacan'),
+					# translator you may get the link to the console in the current language. e.g. https://console.developers.google.com/?hl=pt-br
+					sprintf('<a target="_blank" href="%s">', __('https://console.developers.google.com', 'tainacan') ),
+					'</a>'
+				); ?>
+			</p>
+			<br/>
+			<p>
+				<?php _e('Get your API Key and paste it below:', 'tainacan'); ?>
+			</p>
+			
             <div class="control is-clearfix">
                 <input class="input" type="text" name="api_id" value="<?php echo $this->get_option('api_id'); ?>">
             </div>
         </div>
+        
+        <label class="label"><?php _e('Supported URLs', 'tainacan'); ?></label>
+        
+        <p>
+			<?php _e('The following URL types are supported:', 'tainacan'); ?>
+			<br/><br/>
+			<?php _e('User profile', 'tainacan'); ?> - 
+			<?php _e('Example: ', 'tainacan'); ?> https://www.youtube.com/user/username
+			<br/>
+			<?php _e('Playlists', 'tainacan'); ?> - 
+			<?php _e('Example: ', 'tainacan'); ?> https://www.youtube.com/playlist?123456
+			<br/>
+			<?php _e('Channels', 'tainacan'); ?> - 
+			<?php _e('Example: ', 'tainacan'); ?> https://www.youtube.com/channel/123456
+			<br/>
+			<?php _e('Videos', 'tainacan'); ?> - 
+			<?php _e('Example: ', 'tainacan'); ?> https://www.youtube.com/watch?v=123456
+			
+		</p>
+
         <?php
 
         return ob_get_clean();
