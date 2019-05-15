@@ -29,7 +29,8 @@ class Elastic_Press {
 	}
 
 	function init() {
-		if (!class_exists('EP_API')) {
+		//if (!class_exists('EP_API')) {
+		if (!class_exists('ElasticPress\Elasticsearch')) {
 			return; // ElasticPress not active
 		}
 		$this->last_aggregations = [];
@@ -106,7 +107,8 @@ class Elastic_Press {
 		if ($type == 'items' && (!isset($args['ep_integrate']) || $args['ep_integrate'] === true)) {
 			$args['ep_integrate'] = true;
 
-			add_action('ep_retrieve_aggregations', function ( array $aggregations, $scope, $args ) {
+			add_action('ep_valid_response', function ( $response, $query, $query_args ) {
+				$aggregations = $response['aggregations'];
 				$this->last_aggregations = $this->format_aggregations($aggregations);
 			}, 10, 3);
 
@@ -117,7 +119,7 @@ class Elastic_Press {
 	}
 
 	private function add_items_args($args) {
-		
+
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 		$Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
@@ -265,15 +267,15 @@ class Elastic_Press {
 				$formatted_args = $this->prepare_request_for_facet($formatted_args);
 				break;
 		}
-		if( isset($formatted_args['sort']) ) {
-			$new_sort = [];
-			foreach ($formatted_args['sort'] as $sort) {
-				foreach ($sort as $key => $value) {
-					$new_sort["$key.raw"] = $value;
-				}
-			}
-			$formatted_args['sort'] = $new_sort;
-		}
+		// if( isset($formatted_args['sort']) ) {
+		// 	$new_sort = [];
+		// 	foreach ($formatted_args['sort'] as $sort) {
+		// 		foreach ($sort as $key => $value) {
+		// 			$new_sort["$key.raw"] = $value;
+		// 		}
+		// 	}
+		// 	$formatted_args['sort'] = $new_sort;
+		// }
 		return $formatted_args;
 	}
 
