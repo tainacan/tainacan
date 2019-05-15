@@ -267,15 +267,19 @@ class Elastic_Press {
 				$formatted_args = $this->prepare_request_for_facet($formatted_args);
 				break;
 		}
-		// if( isset($formatted_args['sort']) ) {
-		// 	$new_sort = [];
-		// 	foreach ($formatted_args['sort'] as $sort) {
-		// 		foreach ($sort as $key => $value) {
-		// 			$new_sort["$key.raw"] = $value;
-		// 		}
-		// 	}
-		// 	$formatted_args['sort'] = $new_sort;
-		// }
+		if( isset($formatted_args['sort']) ) {
+			$new_sort = [];
+			foreach ($formatted_args['sort'] as $sort) {
+				foreach ($sort as $key => $value) {
+					$parts = \explode(".", $key);
+					if( !in_array("long", $parts) )
+						$new_sort["$key.sortable"] = $value;
+					else
+						$new_sort[$key] = $value;
+				}
+			}
+			$formatted_args['sort'] = $new_sort;
+		}
 		return $formatted_args;
 	}
 
