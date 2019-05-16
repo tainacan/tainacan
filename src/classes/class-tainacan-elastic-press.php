@@ -275,10 +275,20 @@ class Elastic_Press {
 			foreach ($formatted_args['sort'] as $sort) {
 				foreach ($sort as $key => $value) {
 					$parts = \explode(".", $key);
-					if( !in_array("long", $parts) )
+					
+					if ($key == 'post_title') {
 						$new_sort["$key.sortable"] = $value;
-					else
+					} elseif ($key == 'post_author') {
+						$new_sort["post_author.login.sortable"] = $value;
+					} elseif ($key == 'post_name') {
+						$new_sort["post_name.raw"] = $value;
+					} elseif ($key == 'post_type') {
+						$new_sort["post_type.raw"] = $value;
+					} elseif( !in_array("long", $parts) && in_array("meta", $parts) ) {
+						$new_sort["$key.sortable"] = $value;
+					} else {
 						$new_sort[$key] = $value;
+					}
 				}
 			}
 			$formatted_args['sort'] = $new_sort;
