@@ -58,8 +58,8 @@
             this.type = ( this.filter_type ) ? this.filter_type : this.filter.metadatum.metadata_type;
 
             this.loadOptions();
-
             this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTag);
+
             if (this.isUsingElasticSearch)
                 this.$eventBusSearch.$on('isLoadingItems', this.updatesIsLoading);
             
@@ -328,7 +328,7 @@
                 }
             },
             updatesIsLoading(isLoading) {
-                this.isLoadingOptions = isLoading;
+                this.isLoading = isLoading;
             }
         },
         beforeDestroy() {
