@@ -91,7 +91,7 @@
 			<tr>
 				<th scope="row"><?php _e('Cron', 'tainacan'); ?></th>
 				<td>
-					<?php _e('It is strongly recommended that you configure a cron job in your server as described <a href="https://developer.wordpress.org/plugins/cron/hooking-into-the-system-task-scheduler/">here</a>.', 'tainacan'); ?>
+					<?php _e('It is strongly recommended that you configure a cron job in your server as described <a href="https://developer.wordpress.org/plugins/cron/hooking-wp-cron-into-the-system-task-scheduler/">here</a>.', 'tainacan'); ?>
 					<p class="description">
 						<?php _e("We can't test whether there is a cronjob set or not, so ignore this if you already configured it.", 'tainacan'); ?>
 					</p>
