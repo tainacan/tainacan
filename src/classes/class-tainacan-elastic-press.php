@@ -28,9 +28,12 @@ class Elastic_Press {
 		add_action('init', [$this, 'init']);
 	}
 
+	function plugin_has_active() {
+		return class_exists('ElasticPress\Elasticsearch');
+	}
+
 	function init() {
-		//if (!class_exists('EP_API')) {
-		if (!class_exists('ElasticPress\Elasticsearch')) {
+		if (!$this->plugin_has_active()) {
 			return; // ElasticPress not active
 		}
 		$this->last_aggregations = [];
