@@ -311,6 +311,10 @@ class Elastic_Press {
 
 	public function fetch_all_metadatum_values($return, $metadatum, $args) {
 		
+		if ($args['items_filter'] === false) {
+			return null;
+		}
+		
 		$metadatum_type = $metadatum->get_metadata_type();
 		$metadatum_id = $metadatum->get_id();
 		$metadatum_options = $metadatum->get_metadata_type_options();
@@ -330,8 +334,8 @@ class Elastic_Press {
 		return [
 			// 'total' => count($items_aggregations),
 			// 'pages' => '0', //TODO get a total of pages
-			'values' => $items_aggregations['values'],
-			'last_term' => $items_aggregations['last_term']
+			'values' => isset($items_aggregations['values']) ? $items_aggregations['values'] : [] ,
+			'last_term' => isset($items_aggregations['last_term']) ? $items_aggregations['last_term'] : ''
 		];
 	}
 
