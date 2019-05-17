@@ -452,7 +452,7 @@ class Items extends Repository {
 					
 					$args['tax_query'][] = [
 						'taxonomy' => $tax_slug,
-						'field' => 'name'
+						'field' => 'name',
 						'terms' => $terms,
 					];
 					
