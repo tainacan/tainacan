@@ -22,7 +22,12 @@
                             ((!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) && (!collection || !collection.header_image) ? 'only-collection-name' : '') 
                         ">
                     <h3 :style="{ color: collectionTextColor ? collectionTextColor : '' }">
-                        <span class="label">{{ $root.__('Collection', 'tainacan') }}</span><br>
+                        <span
+                                v-if="showCollectionLabel"
+                                class="label">
+                            {{ $root.__('Collection', 'tainacan') }}
+                            <br>
+                        </span>
                         {{ collection && collection.name ? collection.name : '' }}
                     </h3>
                 </div>
@@ -100,7 +105,7 @@
             </button>
             <input
                     :value="searchString"
-                    @input="(value) => { $root.debounce(applySearchString(value), 300) } "
+                    @input="(value) => applySearchString(value)"
                     type="text">
             <button
                     class="previous-button"
@@ -207,6 +212,7 @@
 <script>
 import axios from 'axios';
 import qs from 'qs';
+import { debounce } from 'lodash';
 
 export default {
     name: "DynamicItemsListTheme",
@@ -236,6 +242,7 @@ export default {
         order: String,
         showSearchBar: Boolean,
         showCollectionHeader: Boolean,
+        showCollectionLabel: Boolean,
         collectionBackgroundColor: String,
         collectionTextColor: String,
         tainacanApiRoot: String,
@@ -243,16 +250,16 @@ export default {
         className: String
     },
     methods: {
-        applySearchString(event) {
+        applySearchString: debounce(function(event) { 
 
-            this.paged = 1;
             let value = event.target.value;
 
             if (this.searchString != value) {
                 this.searchString = value;
+                this.paged = 1;
                 this.fetchItems();
             }
-        },
+        }, 500),
         fetchItems() {
 
             this.items = [];
@@ -315,6 +322,7 @@ export default {
             
             this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
                 .then(response => {
+
                     for (let item of response.data.items)
                         this.items.push(item);
 

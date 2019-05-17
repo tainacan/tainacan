@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
             order: 'asc',
             showSearchBar: false,
             showCollectionHeader: false,
+            showCollectionLabel: false,
             collectionBackgroundColor: '#454647',
             collectionTextColor: '#ffffff',
             tainacanApiRoot: '',
@@ -36,6 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     order: this.order,
                     showSearchBar: this.showSearchBar,
                     showCollectionHeader: this.showCollectionHeader,
+                    showCollectionLabel: this.showCollectionLabel,
                     collectionBackgroundColor: this.collectionBackgroundColor,
                     collectionTextColor: this.collectionTextColor,
                     tainacanApiRoot: this.tainacanApiRoot,
@@ -56,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
             this.order = this.$el.attributes['order'] != undefined ? this.$el.attributes['order'].value : undefined;
             this.showSearchBar = this.$el.attributes['show-search-bar'] != undefined ? this.$el.attributes['show-search-bar'].value == 'true' : false;
             this.showCollectionHeader = this.$el.attributes['show-collection-header'] != undefined ? this.$el.attributes['show-collection-header'].value == 'true' : false;
+            this.showCollectionLabel = this.$el.attributes['show-collection-label'] != undefined ? this.$el.attributes['show-collection-label'].value == 'true' : false;
             this.collectionBackgroundColor = this.$el.attributes['collection-background-color'] != undefined ? this.$el.attributes['collection-background-color'].value : undefined;
             this.collectionTextColor = this.$el.attributes['collection-text-color'] != undefined ? this.$el.attributes['collection-text-color'].value : undefined;
             this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
@@ -64,9 +67,6 @@ document.addEventListener("DOMContentLoaded", () => {
         methods: {
             __(text, domain) {
                 return wp.i18n.__(text, domain);
-            },
-            debounce() {
-                return _.debounce;
             }
         }
     };
