@@ -77,9 +77,9 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                     let viewModeObject = tainacan_plugin.registered_view_modes[postQueries.view_mode];
                     
                     if (isOnTheme && viewModeObject != undefined && viewModeObject.type == 'template') {
-                        commit('setItemsListTemplate', items);
+                        commit('setItemsListTemplate', res.data.template);
                         resolve({
-                            'itemsListTemplate': items, 
+                            'itemsListTemplate': res.data.template, 
                             'total': res.headers['x-wp-total'], 
                             hasFiltered: hasFiltered, 
                             advancedSearchResults:  advancedSearchResults,
