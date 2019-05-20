@@ -120,7 +120,7 @@ export default class TermsModal extends React.Component {
 
     fetchTerms(name) {
 
-        let endpoint = '/taxonomy/'+ this.state.taxonomyId + '/terms/?hideempty=0&number=' + this.state.termsPerPage;
+        let endpoint = '/taxonomy/'+ this.state.taxonomyId + '/terms/?order=asc&hideempty=0&number=' + this.state.termsPerPage;
 
         if (name != undefined && name != '')
             endpoint += '&searchterm=' + name;
@@ -157,7 +157,7 @@ export default class TermsModal extends React.Component {
         if (offset <= 0)
             someModalTerms = [];
 
-        let endpoint = '/taxonomy/'+ taxonomyId + '/terms/?hideempty=0&number=' + this.state.termsPerPage + '&offset=' + offset;
+        let endpoint = '/taxonomy/'+ taxonomyId + '/terms/?order=asc&hideempty=0&number=' + this.state.termsPerPage + '&offset=' + offset;
 
         this.setState({ 
             isLoadingTerms: true, 
@@ -200,7 +200,7 @@ export default class TermsModal extends React.Component {
         if (this.state.taxonomyPage <= 1)
             someModalTaxonomies = [];
 
-        let endpoint = '/taxonomies/?perpage=' + this.state.termsPerPage + '&paged=' + this.state.taxonomyPage;
+        let endpoint = '/taxonomies/?orderby=title&order=asc&perpage=' + this.state.termsPerPage + '&paged=' + this.state.taxonomyPage;
 
         this.setState({ 
             isLoadingTaxonomies: true,
@@ -259,7 +259,7 @@ export default class TermsModal extends React.Component {
             terms: []
         });
 
-        let endpoint = '/taxonomies/?perpage=' + this.state.termsPerPage;
+        let endpoint = '/taxonomies/?orderby=title&order=asc&perpage=' + this.state.termsPerPage;
         if (name != undefined && name != '')
             endpoint += '&search=' + name;
 

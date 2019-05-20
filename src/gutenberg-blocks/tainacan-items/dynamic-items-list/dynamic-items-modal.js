@@ -56,7 +56,7 @@ export default class DynamicItemsModal extends React.Component {
         if (this.state.collectionPage <= 1)
             someModalCollections = [];
 
-        let endpoint = '/collections/?perpage=' + this.state.collectionsPerPage + '&paged=' + this.state.collectionPage;
+        let endpoint = '/collections/?orderby=title&order=asc&perpage=' + this.state.collectionsPerPage + '&paged=' + this.state.collectionPage;
 
         this.setState({ 
             isLoadingCollections: true,
@@ -121,7 +121,7 @@ export default class DynamicItemsModal extends React.Component {
             items: []
         });
 
-        let endpoint = '/collections/?perpage=' + this.state.collectionsPerPage;
+        let endpoint = '/collections/?orderby=title&order=asc&perpage=' + this.state.collectionsPerPage;
         if (name != undefined && name != '')
             endpoint += '&search=' + name;
 

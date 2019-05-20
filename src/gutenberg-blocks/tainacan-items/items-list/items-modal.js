@@ -128,7 +128,7 @@ export default class ItemsModal extends React.Component {
 
         let anItemsRequestSource = axios.CancelToken.source();
 
-        let endpoint = '/collection/'+ this.state.collectionId + '/items/?fetch_only=title,thumbnail&perpage=' + this.state.itemsPerPage;
+        let endpoint = '/collection/'+ this.state.collectionId + '/items/?orderby=title&order=asc&fetch_only=title,thumbnail&perpage=' + this.state.itemsPerPage;
 
         if (name != undefined && name != '')
             endpoint += '&search=' + name;
@@ -164,7 +164,7 @@ export default class ItemsModal extends React.Component {
         if (this.state.itemsPage <= 1)
             someModalItems = [];
 
-        let endpoint = '/collection/'+ collectionId + '/items/?fetch_only=title,thumbnail&perpage=' + this.state.itemsPerPage + '&paged=' + this.state.itemsPage;
+        let endpoint = '/collection/'+ collectionId + '/items/?orderby=title&order=asc&fetch_only=title,thumbnail&perpage=' + this.state.itemsPerPage + '&paged=' + this.state.itemsPage;
 
         this.setState({ 
             isLoadingItems: true, 
@@ -208,7 +208,7 @@ export default class ItemsModal extends React.Component {
         if (this.state.collectionPage <= 1)
             someModalCollections = [];
 
-        let endpoint = '/collections/?perpage=' + this.state.itemsPerPage + '&paged=' + this.state.collectionPage;
+        let endpoint = '/collections/?orderby=title&order=asc&perpage=' + this.state.itemsPerPage + '&paged=' + this.state.collectionPage;
 
         this.setState({ 
             isLoadingCollections: true,
@@ -272,7 +272,7 @@ export default class ItemsModal extends React.Component {
             items: []
         });
 
-        let endpoint = '/collections/?perpage=' + this.state.itemsPerPage;
+        let endpoint = '/collections/?orderby=title&order=asc&perpage=' + this.state.itemsPerPage;
         if (name != undefined && name != '')
             endpoint += '&search=' + name;
 

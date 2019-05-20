@@ -138,7 +138,10 @@
                             this.selectedValues();
                         })
                         .catch( error => {
-                            this.$console.log('error select', error );
+                            if (axios.isCancel(error))
+                                this.$console.log('Request canceled: ', error.message);
+                            else
+                                this.$console.error( error );
                         });
                 }
                 
