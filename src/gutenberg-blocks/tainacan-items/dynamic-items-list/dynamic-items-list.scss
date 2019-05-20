@@ -49,7 +49,7 @@
         display: flex;
         width: 100%;
         align-items: stretch;
-        text-decoration: none;
+        text-decoration: none !important;
         &:hover {
             text-decoration: none;
         }
@@ -162,6 +162,7 @@
 
         button {
             margin-right: 0.75rem;
+            padding: 0 0.35rem;
             min-height: 28px;
             z-index: 2;
             border: none;
