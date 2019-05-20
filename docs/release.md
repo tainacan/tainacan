@@ -42,12 +42,11 @@ Also increase the `Tested Up` version, if applicable.
 
 Edit `webpack.config.js` to set production mode.
 
-### Build and cleanup 
+### Build
 
 ```
 ./build.sh
 cd $BUILD_PATH
-rm -r admin/scss/.sass-cache
 ```
 ### Set build to development mode
 
@@ -92,12 +91,11 @@ Commit and push.
 
 Edit `webpack.config.js` to set production mode.
 
-### Build and cleanup 
+### Build
 
 ```
 ./build.sh
 cd $BUILD_PATH
-rm -r admin/scss/.sass-cache
 ```
 ### Set build to development mode
 
@@ -129,8 +127,10 @@ cp $GIT_PATH/wp-repo-assets/* $SVN_PATH/assets/
 Create tag folder
 
 ```
-mkdir $SVN_PATH/tags/$NEW_VERSION
-cp -R $SVN_PATH/trunk/* $SVN_PATH/tags/$NEW_VERSION/
+cd $SVN_PATH
+mkdir tags/$NEW_VERSION
+cp -R trunk/* tags/$NEW_VERSION/
+svn add tags/$NEW_VERSION
 ```
 
 ### Finish and commit
