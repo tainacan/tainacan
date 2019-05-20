@@ -140,10 +140,7 @@
 
                     <!-- Title -->
                     <div
-                            :style="{
-                             'padding-left': !collectionId ? '0.5rem !important' : '2.75rem',
-                             'margin-left': !collectionId ? '0 !important' : '24px'
-                            }"
+                            :style="{ 'padding-left': !collectionId ? '0.5rem !important' : '2.75rem' }"
                             class="metadata-title">
                         <p 
                                 v-tooltip="{
