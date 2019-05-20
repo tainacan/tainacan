@@ -942,7 +942,7 @@ abstract class Importer {
         $newMetadatum->set_collection_id( (isset($collection_id)) ? $collection_id : 'default');
         $newMetadatum->set_status('publish');
 
-        if( strcmp($type, "Taxonomy") === 0 ){
+        if( strcmp(strtolower($type), "taxonomy") === 0 ){
             $taxonomy = new Entities\Taxonomy();
             $taxonomy->set_name($name);
             $taxonomy->set_status('publish');
@@ -952,7 +952,7 @@ abstract class Importer {
                 $inserted_tax = $taxonomy_repo->insert( $taxonomy );
                 $newMetadatum->set_metadata_type_options([
                     'taxonomy_id' => $inserted_tax->get_id(),
-                    'allow_new_terms' => true,
+                    'allow_new_terms' => 'yes',
                     'input_type' => 'tainacan-taxonomy-checkbox'
                 ]);
             }
