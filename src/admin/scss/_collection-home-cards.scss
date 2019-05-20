@@ -10,6 +10,28 @@
     animation-name: item-appear;
     animation-duration: 0.5s;
 
+    &>div {
+        width: calc(100% + 25px) !important;
+
+        &>div>.tainacan-card:nth-child(3),
+        &>div>.tainacan-card:nth-child(4),
+        &>div>.tainacan-card:nth-child(5),
+        &>div>.tainacan-card:nth-child(6),
+        &>div>.tainacan-card:nth-child(7),
+        &>div>.tainacan-card:nth-child(8),
+        &>div>.tainacan-card:nth-child(9),
+        &>div>.tainacan-card:nth-child(10) {
+            display: none;
+        }
+
+        @media screen and (max-width: 768px) {
+            &>div>.tainacan-card:nth-child(3),
+            &>div>.tainacan-card:nth-child(4) {
+                display: block;
+            }
+        }
+    }
+
     .tainacan-card {
         background-color: $gray1;
         padding: 0px;
@@ -93,13 +115,14 @@
             }
             .metadata-title {
                 overflow: hidden;
-                padding: 0.75rem 1rem;
+                padding: 0.5rem 0.875rem;
                 flex-basis: calc(100% - 96px);
                 
                 p {
                     color: black !important;
                     font-size: 0.875rem !important; 
                     margin-bottom: 0;
+                    line-height: 1.125rem;
                 }
             }
             &:hover .metadata-title {

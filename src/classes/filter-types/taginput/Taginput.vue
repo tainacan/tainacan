@@ -42,7 +42,7 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios/axios';
+    import { tainacan as axios, isCancel } from '../../../js/axios/axios';
     import { filter_type_mixin } from '../filter-types-mixin'
     import qs from 'qs';
 
@@ -135,7 +135,7 @@
 
                 promise.request
                     .catch( error => {
-                        if (axios.isCancel(error))
+                        if (isCancel(error))
                             this.$console.log('Request canceled: ', error.message);
                         else
                             this.$console.error( error );
