@@ -344,7 +344,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		    array(
 			    'name'              => 'taxonomia',
                 'collection_id'     => $collection->get_id(),
-                'metadata_type_options' => ['taxonomy_id' => $taxonomy->get_id(), 'allow_new_terms' => true ],
+                'metadata_type_options' => ['taxonomy_id' => $taxonomy->get_id(), 'allow_new_terms' => 'yes' ],
 			    'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
 			    'status'            => 'publish'
 		    ),

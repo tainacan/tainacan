@@ -365,7 +365,7 @@ class Taxonomies extends TAINACAN_UnitTestCase {
 		        'collection'        => $collection,
 		        'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
 				'metadata_type_options' => [
-					'allow_new_terms' => true,
+					'allow_new_terms' => 'yes',
 					'taxonomy_id' => $taxonomy->get_id()
 				],
 	        ),

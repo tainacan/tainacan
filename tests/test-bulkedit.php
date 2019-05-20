@@ -78,7 +78,7 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 			    'collection' => $collection,
 				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
 				'metadata_type_options' => [
-					'allow_new_terms' => true,
+					'allow_new_terms' => 'yes',
 					'taxonomy_id' => $taxonomy->get_id()
 				],
 				'multiple' => 'yes'
@@ -1229,7 +1229,7 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 			    'collection' => $this->collection,
 				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
 				'metadata_type_options' => [
-					'allow_new_terms' => false,
+					'allow_new_terms' => 'no',
 					'taxonomy_id' => $taxonomy2->get_id()
 				],
 				'multiple' => 'yes'
