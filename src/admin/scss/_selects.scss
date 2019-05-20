@@ -22,8 +22,8 @@
         }
     }
     &:not(.is-loading)::after {
-        content: "\F35D" !important;
-        font: normal normal normal 24px/1 "Material Design Icons" !important;
+        content: "arrowdown" !important;
+        font: normal normal normal 20px/1 "TainacanIcons";
         border: none !important;
         transform: none !important;
         margin-top: -15px !important;
