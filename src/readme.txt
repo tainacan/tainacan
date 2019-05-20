@@ -26,6 +26,8 @@ Tainacan is a powerful and flexible repository platform for WordPress. Manage an
 
 * "API and Interoperability": Tainacan implements a RESTful API (read and write) to allow other applications to interact with your repository. That way, you can expose your collection in different formats, such as Json, JsonLD, OAI-PMH and others. If your collection has a specific set of metadata, you can map this metadata to match the patterns you want to use.
 
+* "Gutenberg blocks": Tell stories with your collections. Tainacan offers you several Gutenberg blocks so you can present your collections to the public in many different ways!
+
 == Getting Started ==
 
 After installation, you will see a new menu item in your admin panel called "Tainacan". Click on it to open the Tainacan admin interface.
@@ -87,3 +89,6 @@ If you have Imagick installed in your server, Tainacan will be able to automatic
 9. Set up Taxonomies to be used across your repository
 10. Bulk edit as many items as you need quickly
 11. Expose your collection using Tainacan default theme
+12. Use Gutenberg blocks to display your collections in posts and pages
+13. Choose which items will be displayed in your block
+14. Items displayed using a Gutenberg block 
