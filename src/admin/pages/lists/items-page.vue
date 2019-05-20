@@ -283,7 +283,46 @@
                 <!-- Change OrderBy Select and Order Button-->
                 <div class="search-control-item">
                     <b-field>
-                        <label class="label is-hidden-mobile">{{ $i18n.get('label_sorting') + ':' }}</label>
+                        <!-- <label class="label is-hidden-mobile">{{ $i18n.get('label_sorting') + ':' }}</label> -->
+                        <b-dropdown
+                                :mobile-modal="true"
+                                @input="onChangeOrder()"
+                                aria-role="list">
+                            <button
+                                    :aria-label="$i18n.get('label_sorting_direction')"
+                                    class="button is-white"
+                                    slot="trigger">
+                                <span>{{ order == 'DESC' ? $i18n.get('label_sort_descending') : $i18n.get('label_sort_ascending') }}</span>
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
+                                </span>
+                            </button>
+                            <b-dropdown-item
+                                    aria-controls="items-list-results"
+                                    role="button"
+                                    :class="{ 'is-active': order == 'DESC' }"
+                                    :value="'DESC'"
+                                    aria-role="listitem"
+                                    style="padding-bottom: 0.45rem">
+                                <span class="icon is-small gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending"/>
+                                </span>
+                                {{ $i18n.get('label_sort_descending') }}
+                            </b-dropdown-item>
+                            <b-dropdown-item
+                                    aria-controls="items-list-results"
+                                    role="button"
+                                    :class="{ 'is-active': order == 'ASC' }"
+                                    :value="'ASC'"
+                                    aria-role="listitem"
+                                    style="padding-bottom: 0.45rem">
+                                <span class="icon is-small gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending"/>
+                                </span>
+                                {{ $i18n.get('label_sort_ascending') }}
+                            </b-dropdown-item>
+                        </b-dropdown>
+                        <span style="font-size: 0.875rem">{{ $i18n.get('info_by_inner') }}</span>
                         <b-dropdown
                                 :mobile-modal="true"
                                 @input="onChangeOrderBy($event)"
@@ -308,60 +347,7 @@
                                     aria-role="listitem">
                                 {{ metadatum.name }}
                             </b-dropdown-item>
-                            <!-- Once we have sorting by metadata we can use this -->
-                            <!-- <b-dropdown-item
-                                    :class="{ 'is-active': orderBy == metadatum.slug }"
-                                    v-for="metadatum of sortingMetadata"
-                                    v-if="
-                                        metadatum.slug === 'creation_date' ||
-                                        metadatum.slug === 'author_name' || (
-                                            metadatum.id !== undefined &&
-                                            metadatum.metadata_type_object && 
-                                            metadatum.metadata_type_object.related_mapped_prop !== 'description' &&
-                                            metadatum.metadata_type_object.primitive_type !== 'term' &&
-                                            metadatum.metadata_type_object.primitive_type !== 'item' &&
-                                            metadatum.metadata_type_object.primitive_type !== 'compound'
-                                    )"
-                                    :value="metadatum"
-                                    :key="metadatum.slug">
-                                {{ metadatum.name }}
-                            </b-dropdown-item> -->
                         </b-dropdown>
-                        <!-- Order ASC vs DESC buttons -->
-                        <button
-                                aria-controls="items-list-results"
-                                class="button is-white is-small"
-                                :aria-label="$i18n.get('label_sort_descending')"
-                                :disabled="totalItems <= 0 || order == 'DESC'"
-                                @click="onChangeOrder()">
-                            <span
-                                    v-tooltip="{
-                                        content: $i18n.get('label_sort_descending'),
-                                        autoHide: true,
-                                        placement: 'bottom',
-                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
-                                    }"
-                                    class="icon is-small gray-icon">
-                                <i class="tainacan-icon tainacan-icon-sortdescending"/>
-                            </span>
-                        </button>
-                        <button
-                                aria-controls="items-list-results"
-                                :disabled="totalItems <= 0 || order == 'ASC'"
-                                :aria-label="$i18n.get('label_sort_ascending')"
-                                class="button is-white is-small"
-                                @click="onChangeOrder()">
-                            <span
-                                    v-tooltip="{
-                                        content: $i18n.get('label_sort_ascending'),
-                                        autoHide: true,
-                                        placement: 'bottom',
-                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
-                                    }"
-                                    class="icon is-small gray-icon">
-                                <i class="tainacan-icon tainacan-icon-sortascending"/>
-                            </span>
-                        </button>
                     </b-field>
                 </div>
 
@@ -701,7 +687,7 @@
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'template'"
                         v-html="itemsListTemplate"/>
-
+                        
                 <component
                         v-if="isOnTheme && 
                               registeredViewModes[viewMode] != undefined &&

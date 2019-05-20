@@ -57,6 +57,50 @@
 
             <!-- Sorting options ----  -->
             <b-field class="header-item">
+                <b-dropdown
+                        :mobile-modal="true"
+                        :disabled="collections.length <= 0 || isLoading"
+                        @input="onChangeOrder(order == 'asc' ? 'desc' : 'asc')"
+                        aria-role="list">
+                    <button
+                            :aria-label="$i18n.get('label_sorting_direction')"
+                            class="button is-white"
+                            slot="trigger">
+                        <span>{{ order == 'desc' ? $i18n.get('label_sort_descending') : $i18n.get('label_sort_ascending') }}</span>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
+                        </span>
+                    </button>
+                    <b-dropdown-item
+                            aria-controls="items-list-results"
+                            role="button"
+                            :class="{ 'is-active': order == 'desc' }"
+                            :value="'desc'"
+                            aria-role="listitem"
+                            style="padding-bottom: 0.45rem">
+                        <span
+                                style="left: 16px; position: relative"
+                                class="icon is-small gray-icon">
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending"/>
+                        </span>
+                        {{ $i18n.get('label_sort_descending') }}
+                    </b-dropdown-item>
+                    <b-dropdown-item
+                            aria-controls="items-list-results"
+                            role="button"
+                            :class="{ 'is-active': order == 'asc' }"
+                            :value="'asc'"
+                            aria-role="listitem"
+                            style="padding-bottom: 0.45rem">
+                        <span
+                                style="left: 16px; position: relative"
+                                class="icon is-small gray-icon">
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending"/>
+                        </span>
+                        {{ $i18n.get('label_sort_ascending') }}
+                    </b-dropdown-item>
+                </b-dropdown>
+                <span style="font-size: 0.875rem; padding-top: 0.25rem">{{ $i18n.get('info_by_inner') }}</span>
                 <b-select
                         class="sorting-select"
                         :disabled="collections.length <= 0"
@@ -70,38 +114,6 @@
                         {{ option.label }}
                     </option>
                 </b-select>
-                <button
-                        :disabled="collections.length <= 0 || isLoading || order == 'desc'"
-                        class="button is-white is-small"
-                        @click="onChangeOrder('desc')"
-                        :aria-label="$i18n.get('label_sort_descending')">
-                    <span
-                            v-tooltip="{
-                                content: $i18n.get('label_sort_descending'),
-                                autoHide: true,
-                                placement: 'bottom',
-                                classes: ['tooltip', 'repository-tooltip']
-                            }"
-                            class="icon gray-icon is-small">
-                        <i class="tainacan-icon tainacan-icon-sortdescending tainacan-icon-20px"/>
-                    </span>
-                </button>
-                <button
-                        :disabled="collections.length <= 0 || isLoading || order == 'asc'"
-                        class="button is-white is-small"
-                        @click="onChangeOrder('asc')"
-                        :aria-label="$i18n.get('label_sort_ascending')">
-                    <span 
-                            v-tooltip="{
-                                content: $i18n.get('label_sort_ascending'),
-                                autoHide: true,
-                                placement: 'bottom',
-                                classes: ['tooltip', 'repository-tooltip']
-                            }"
-                            class="icon gray-icon is-small">
-                        <i class="tainacan-icon tainacan-icon-sortascending tainacan-icon-20px"/>
-                    </span>
-                </button>
             </b-field>
         </div>
 
@@ -434,6 +446,10 @@ export default {
         justify-content: space-between;
         align-items: center;
         width: 100%;
+
+        .header-item:last-child {
+            padding-top: 0.2rem;
+        }
 
         .header-item:not(:last-child) {
             padding-right: 0.5em;
