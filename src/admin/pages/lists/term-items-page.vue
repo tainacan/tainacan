@@ -267,7 +267,7 @@
                 <!-- Change OrderBy Select and Order Button-->
                 <div class="search-control-item">
                     <b-field>
-                        <!-- <label class="label is-hidden-mobile">{{ $i18n.get('label_sorting') + ':' }}</label> -->
+                        <label class="label">{{ $i18n.get('label_sort') }}</label>
                         <b-dropdown
                                 :mobile-modal="true"
                                 @input="onChangeOrder()"
@@ -276,7 +276,11 @@
                                     :aria-label="$i18n.get('label_sorting_direction')"
                                     class="button is-white"
                                     slot="trigger">
-                                <span>{{ order == 'DESC' ? $i18n.get('label_sort_descending') : $i18n.get('label_sort_ascending') }}</span>
+                                <span class="icon is-small gray-icon">
+                                    <i 
+                                            :class="order == 'DESC' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
+                                            class="tainacan-icon"/>
+                                </span>
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
                                 </span>
@@ -291,7 +295,7 @@
                                 <span class="icon is-small gray-icon">
                                     <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending"/>
                                 </span>
-                                {{ $i18n.get('label_sort_descending') }}
+                                {{ $i18n.get('label_descending') }}
                             </b-dropdown-item>
                             <b-dropdown-item
                                     aria-controls="items-list-results"
@@ -303,10 +307,14 @@
                                 <span class="icon is-small gray-icon">
                                     <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending"/>
                                 </span>
-                                {{ $i18n.get('label_sort_ascending') }}
+                                {{ $i18n.get('label_ascending') }}
                             </b-dropdown-item>
                         </b-dropdown>
-                        <span style="font-size: 0.875rem">{{ $i18n.get('info_by_inner') }}</span>
+                        <span
+                                class="label"
+                                style="padding-left: 0.65rem;">
+                            {{ $i18n.get('info_by_inner') }}
+                        </span>
                         <b-dropdown
                                 :mobile-modal="true"
                                 @input="onChangeOrderBy($event)"

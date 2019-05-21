@@ -20,7 +20,7 @@
 
                 <!-- Sorting options ----  -->
                 <b-field class="header-item">
-                    <!-- <label class="label">{{ $i18n.get('label_sorting') + ':' }}</label> -->
+                    <label class="label">{{ $i18n.get('label_sort') }}</label>
                     <b-dropdown
                             :mobile-modal="true"
                             :disabled="taxonomies.length <= 0 || isLoading"
@@ -30,7 +30,11 @@
                                 :aria-label="$i18n.get('label_sorting_direction')"
                                 class="button is-white"
                                 slot="trigger">
-                            <span>{{ order == 'desc' ? $i18n.get('label_sort_descending') : $i18n.get('label_sort_ascending') }}</span>
+                            <span class="icon is-small gray-icon">
+                                <i 
+                                        :class="order == 'desc' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
+                                        class="tainacan-icon tainacan-icon-18px"/>
+                            </span>
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
                             </span>
@@ -42,12 +46,10 @@
                                 :value="'desc'"
                                 aria-role="listitem"
                                 style="padding-bottom: 0.45rem">
-                            <span
-                                    style="left: 16px; position: relative"
-                                    class="icon is-small gray-icon">
+                            <span class="icon is-small gray-icon">
                                 <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending"/>
                             </span>
-                            {{ $i18n.get('label_sort_descending') }}
+                            {{ $i18n.get('label_descending') }}
                         </b-dropdown-item>
                         <b-dropdown-item
                                 aria-controls="items-list-results"
@@ -56,15 +58,17 @@
                                 :value="'asc'"
                                 aria-role="listitem"
                                 style="padding-bottom: 0.45rem">
-                            <span
-                                    style="left: 16px; position: relative"
-                                    class="icon is-small gray-icon">
+                            <span class="icon is-small gray-icon">
                                 <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending"/>
                             </span>
-                            {{ $i18n.get('label_sort_ascending') }}
+                            {{ $i18n.get('label_ascending') }}
                         </b-dropdown-item>
                     </b-dropdown>
-                    <span style="font-size: 0.875rem; padding-top: 0.25rem">{{ $i18n.get('info_by_inner') }}</span>
+                    <span
+                            class="label"
+                            style="padding-left: 0.65rem;">
+                        {{ $i18n.get('info_by_inner') }}
+                    </span>
                     <b-select
                             class="sorting-select"
                             :disabled="taxonomies.length <= 0"
@@ -342,21 +346,38 @@
         align-items: center;
         width: 100%;
 
-        .header-item:last-child {
-            padding-top: 0.2rem;
-        }
+        .header-item {
 
-        .header-item:not(:last-child) {
-            padding-right: 0.5em;
-        }
+            &:not(:last-child) {
+                padding-right: 0.5em;
+            }
 
-        .header-item .button .icon i{
-            width: 100%;
-        } 
-        .header-item .label{
-            font-weight: normal;
-            font-size: 0.875rem;
-            margin-top: 3px;
+            .label {
+                font-size: 0.875rem;
+                font-weight: normal;
+                margin-top: 3px;
+                margin-bottom: 2px;
+                cursor: default;
+            }
+
+            .button {
+                display: flex;
+                align-items: center;
+            }
+            
+            .field {
+                align-items: center;
+            }
+
+            .gray-icon, .gray-icon .icon {
+                color: $gray4 !important;
+                padding-right: 10px;
+            }
+            .gray-icon .icon i::before, 
+            .gray-icon i::before {
+                font-size: 1.3125rem !important;
+                max-width: 26px;
+            }
         }
 
         @media screen and (max-width: 769px) {

@@ -7,6 +7,9 @@
                 color: $secondary;
                 align-items: center;
             }
+            .gray-icon {
+                padding-right: 0 !important;
+            }
         }
         .button.is-primary, .button.is-secondary, .button.is-success {
             .icon {
