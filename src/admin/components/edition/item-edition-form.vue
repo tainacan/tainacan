@@ -1121,7 +1121,12 @@ export default {
             // Initializes Media Frames now that itemId exists
             this.initializeMediaFrames();
 
-            this.fetchItem({ itemId: this.itemId, contextEdit: true }).then(res => {
+            this.fetchItem({ 
+                itemId: this.itemId, 
+                contextEdit: true, 
+                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document,comment_status,document_as_html' 
+            })
+            .then(res => {
                 this.item = res;
 
                 // Checks if user has permission to edit
