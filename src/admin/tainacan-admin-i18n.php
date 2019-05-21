@@ -476,6 +476,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_no_moderator_on_collection'                => __( "This collection doesn't have any moderator yet.", 'tainacan' ),
 	'info_error_deleting_collection'                 => __( 'Error on deleting collection.', 'tainacan' ),
 	'info_error_deleting_taxonomy'                   => __( 'Error on deleting taxonomy', 'tainacan' ),
+	'info_error_first_value_greater'                 => __( 'First value should be lower than second value', 'tainacan' ),
+	'info_error_value_must_be_number'                => __( 'Value should be a number', 'tainacan' ),
 	'info_collection_deleted'                        => __( 'Collection deleted.', 'tainacan' ),
 	'info_item_deleted'                              => __( 'Item deleted.', 'tainacan' ),
 	'info_taxonomy_deleted'                          => __( 'Taxonomy deleted', 'tainacan' ),
@@ -599,6 +601,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 
 	// Tainacan Filter Types
 	'tainacan-filter-custom-interval'                => __( 'Custom Interval', 'tainacan' ),
+	'tainacan-filter-numeric'		                 => __( 'Numeric', 'tainacan' ),
 	'tainacan-filter-selectbox'                      => __( 'Select Box', 'tainacan' ),
 	'tainacan-filter-autocomplete'                   => __( 'Autocomplete', 'tainacan' ),
 	'tainacan-filter-taginput'                       => __( 'Tag Input', 'tainacan' ),

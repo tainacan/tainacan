@@ -133,6 +133,7 @@ $Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
 
 //register filter type
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Custom_Interval');
+$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Numeric');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Selectbox');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Autocomplete');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Taginput');

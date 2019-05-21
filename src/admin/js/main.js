@@ -24,6 +24,7 @@ import FormTaxonomy from '../../classes/metadata-types/taxonomy/FormTaxonomy.vue
 import FormSelectbox from '../../classes/metadata-types/selectbox/FormSelectbox.vue';
 
 import FilterCustomInterval from '../../classes/filter-types/custom-interval/CustomInterval.vue';
+import FilterNumeric from '../../classes/filter-types/numeric/Numeric.vue';
 import FilterSelectbox from '../../classes/filter-types/selectbox/Selectbox.vue';
 import FilterAutocomplete from '../../classes/filter-types/autocomplete/Autocomplete.vue';
 import FilterCheckbox from '../../classes/filter-types/checkbox/Checkbox.vue';
@@ -73,6 +74,7 @@ Vue.component('tainacan-filter-item', TainacanFiltersList);
 
 /* Filters */
 Vue.component('tainacan-filter-custom-interval', FilterCustomInterval);
+Vue.component('tainacan-filter-numeric', FilterNumeric);
 Vue.component('tainacan-filter-selectbox', FilterSelectbox);
 Vue.component('tainacan-filter-autocomplete', FilterAutocomplete);
 Vue.component('tainacan-filter-checkbox', FilterCheckbox);

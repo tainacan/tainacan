@@ -148,7 +148,7 @@
 
                 this.$toast.open({
                     duration: 3000,
-                    message: `First value should be lower than second value`,
+                    message: this.$i18n.get('info_error_first_value_greater'),
                     position: 'is-bottom',
                     type: 'is-danger'
                 })
