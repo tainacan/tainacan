@@ -216,7 +216,7 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 		$meta_query_request->set_query_params($meta_query);
 
 		$meta_query_response = $this->server->dispatch($meta_query_request);
-		$data3 = $meta_query_response->get_data();
+		$data3 = $meta_query_response->get_data()['items'];
 
 		$this->assertCount(2, $data3);
 
@@ -290,7 +290,7 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 		$tax_query_request_collections->set_query_params($tax_query);
 
 		$tax_query_response_collections = $this->server->dispatch($tax_query_request_collections);
-		$data6 = $tax_query_response_collections->get_data();
+		$data6 = $tax_query_response_collections->get_data()['items'];
 
 		$this->assertCount(2, $data6);
 

@@ -300,6 +300,9 @@ class Metadata extends Repository {
 	 * You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
 	 * appropriate WP_Query argument
 	 *
+	 * If a number is passed to $args, it will return a \Tainacan\Entities\Metadatum object.  But if the post is not found or
+	 * does not match the entity post type, it will return an empty array
+	 *
 	 * @param array $args WP_Query args || int $args the metadatum id
 	 * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
 	 *
@@ -311,7 +314,11 @@ class Metadata extends Repository {
 		if ( is_numeric( $args ) ) {
 			$existing_post = get_post( $args );
 			if ( $existing_post instanceof \WP_Post ) {
-				return new Entities\Metadatum( $existing_post );
+				try {
+					return new Entities\Metadatum( $existing_post );
+				} catch (\Exception $e) {
+					return [];
+				}
 			} else {
 				return [];
 			}
@@ -736,6 +743,11 @@ class Metadata extends Repository {
 	 * @throws \Exception
 	 */
 	public function disable_delete_core_metadata( $before, $post ) {
+		
+		if ( Entities\Metadatum::get_post_type() != $post->post_type ) {
+			return null;
+		}
+		
 		$metadatum = $this->fetch( $post->ID );
 
 		if ( $metadatum && in_array( $metadatum->get_metadata_type(), $this->core_metadata ) && is_numeric( $metadatum->get_collection_id() ) ) {
@@ -755,6 +767,11 @@ class Metadata extends Repository {
 	 * @internal param The $post_id post ID which is deleting
 	 */
 	public function force_delete_core_metadata( $before, $post, $force_delete ) {
+		
+		if ( Entities\Metadatum::get_post_type() != $post->post_type ) {
+			return null;
+		}
+		
 		$metadatum = $this->fetch( $post->ID );
 
 		if ( $metadatum && in_array( $metadatum->get_metadata_type(), $this->core_metadata ) && is_numeric( $metadatum->get_collection_id() ) ) {
@@ -880,7 +897,7 @@ class Metadata extends Repository {
 	  * 	@type mixed		 $collection_id				The collection ID you want to consider or null for all collections. If a collectoin is set
 	  *													then only values applied to items in this collection will be returned
 	  * 
-	  *     @type int		 $number					The number of values to return (for pagination). Default 0 (unlimited)
+	  *     @type int		 $number					The number of values to return (for pagination). Default empty (unlimited)
 	  * 
 	  *     @type int		 $offset					The offset (for pagination). Default 0
 	  * 
@@ -892,7 +909,9 @@ class Metadata extends Repository {
 	  *
 	  *     @type array		 $parent_id					Used by taxonomy metadata. The ID of the parent term to retrieve terms from. Default 0 
 	  *
-	  * 	@type bool		 $count_items				Include the count of items that can be found in each value (uses $items_filter as well). Default false
+		*     @type bool		 $count_items				Include the count of items that can be found in each value (uses $items_filter as well). Default false
+		*
+		*     @type string   $last_term				The last term returned when using a elasticsearch for calculates the facet.
 	  * 
 	  * }
 	  * 
@@ -908,7 +927,8 @@ class Metadata extends Repository {
 			'include' => [],
 			'items_filter' => [],
 			'parent_id' => 0,
-			'count_items' => false
+			'count_items' => false,
+			'last_term' => ''
 		);
 		$args = wp_parse_args($args, $defaults);
 		
@@ -927,12 +947,9 @@ class Metadata extends Repository {
 		}
 		
 		
-		//////////////////////////////////////////
-		// Get the query for current items
-		// this avoids wp_query to run the query. We just want to build the query
+		
 		$items_query = false;
 		if ( false !== $args['items_filter'] && is_array($args['items_filter']) ) {
-			add_filter('posts_pre_query', '__return_empty_array');
 			
 			$args['items_filter']['fields'] = 'ids';
 			unset($args['items_filter']['paged']);
@@ -953,15 +970,27 @@ class Metadata extends Repository {
 				$args['items_filter']['meta_query'] = array_filter($args['items_filter']['meta_query'], function($t) use ($metadatum_id) { return $t['key'] != $metadatum_id; });
 				//var_dump($args['items_filter']['meta_query']);
 			}
-			
+
+		}
+		
+		$filter = apply_filters('tainacan-fetch-all-metadatum-values', null, $metadatum, $args);
+		if ($filter !== null) {
+			return $filter;
+		}
+		
+		//////////////////////////////////////////
+		// Get the query for current items
+		// this avoids wp_query to run the query. We just want to build the query
+		if ( false !== $args['items_filter'] && is_array($args['items_filter']) ) {
+			add_filter('posts_pre_query', '__return_empty_array');
 			$items_query = $itemsRepo->fetch($args['items_filter'], $args['collection_id']);
 			$items_query = $items_query->request;
-			
 			remove_filter('posts_pre_query', '__return_empty_array');
 		}
 		//// end filtering query ////////
 		////////////////////////////////////////////
 		////////////////////////////////////////////
+
 		
 		$pagination = '';
 		if ( $args['offset'] >= 0 && $args['number'] >= 1 ) {
@@ -985,39 +1014,84 @@ class Metadata extends Repository {
 		if ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ) {
 			
 			if ($items_query) {
-				$base_query = $wpdb->prepare("FROM $wpdb->term_relationships tr 
-					INNER JOIN $wpdb->term_taxonomy tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
-					INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id 
-					WHERE 
-					tt.parent = %d AND
-					tr.object_id IN ($items_query) AND 
-					tt.taxonomy = %s
-					$search_q
-					ORDER BY t.name ASC
-					",
-					$args['parent_id'],
-					$taxonomy_slug
-				);
+				
+				$check_hierarchy_q = $wpdb->prepare("SELECT term_id FROM $wpdb->term_taxonomy WHERE taxonomy = %s AND parent > 0 LIMIT 1", $taxonomy_slug);
+				$has_hierarchy = ! is_null($wpdb->get_var($check_hierarchy_q));
+				
+				if ( ! $has_hierarchy ) {
+					$base_query = $wpdb->prepare("FROM $wpdb->term_relationships tr 
+						INNER JOIN $wpdb->term_taxonomy tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+						INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id 
+						WHERE 
+						tt.parent = %d AND
+						tr.object_id IN ($items_query) AND 
+						tt.taxonomy = %s
+						$search_q
+						ORDER BY t.name ASC
+						",
+						$args['parent_id'],
+						$taxonomy_slug
+					);
+					
+					$query = "SELECT DISTINCT t.name, t.term_id, tt.term_taxonomy_id, tt.parent $base_query $pagination";
+					
+					$total_query = "SELECT COUNT(DISTINCT tt.term_taxonomy_id) $base_query";
+					$total = $wpdb->get_var($total_query);
+					
+					$results = $wpdb->get_results($query);
+					
+				} else {
+					
+					$base_query = $wpdb->prepare("
+						SELECT DISTINCT t.term_id, t.name, tt.parent, coalesce(tr.term_taxonomy_id, 0) as have_items
+						FROM 
+						$wpdb->terms t INNER JOIN $wpdb->term_taxonomy tt ON t.term_id = tt.term_id 
+						LEFT JOIN $wpdb->term_relationships tr ON tt.term_taxonomy_id = tr.term_taxonomy_id AND tr.object_id IN ($items_query)
+						WHERE tt.taxonomy = %s ORDER BY t.name ASC", $taxonomy_slug
+					);
+					
+					$all_hierarchy = $wpdb->get_results($base_query);
+					
+					if (empty($search)) {
+						$results = $this->_process_terms_tree($all_hierarchy, $args['parent_id'], 'parent');
+					} else  {
+						$results = $this->_process_terms_tree($all_hierarchy, $search, 'name');
+					}
+					
+					$total = count($results);
+					
+					if ( $args['offset'] >= 0 && $args['number'] >= 1 ) {
+						$results = array_slice($results, (int) $args['offset'], (int) $args['number']);
+					}
+				}
 			} else {
+				
+				$parent_q = $wpdb->prepare("AND tt.parent = %d", $args['parent_id']);
+				if ($search_q) {
+					$parent_q = '';
+				}
 				$base_query = $wpdb->prepare("FROM $wpdb->term_taxonomy tt 
 					INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id 
-					WHERE 
-					tt.parent = %d AND
-					tt.taxonomy = %s
+					WHERE 1=1
+					$parent_q
+					AND tt.taxonomy = %s
 					$search_q
 					ORDER BY t.name ASC
 					",
-					$args['parent_id'],
 					$taxonomy_slug
 				);
+				
+				$query = "SELECT DISTINCT t.name, t.term_id, tt.term_taxonomy_id, tt.parent $base_query $pagination";
+				
+				$total_query = "SELECT COUNT(DISTINCT tt.term_taxonomy_id) $base_query";
+				$total = $wpdb->get_var($total_query);
+				
+				$results = $wpdb->get_results($query);
+				
 			}
 			
 			
-			$query = "SELECT DISTINCT t.name, t.term_id, tt.term_taxonomy_id, tt.parent $base_query $pagination";
 			
-			$total_query = "SELECT COUNT(DISTINCT tt.term_taxonomy_id) $base_query";
-			
-			$results = $wpdb->get_results($query);
 			
 			// add selected to the result
 			if ( !empty($args['include']) ) {
@@ -1042,7 +1116,7 @@ class Metadata extends Repository {
 				}
 			}
 			
-			$total = $wpdb->get_var($total_query);
+			
 			$number = is_integer($args['number']) && $args['number'] >=1 ? $args['number'] : $total;
 			if( $number < 1){
 				$pages = 1;
@@ -1163,8 +1237,108 @@ class Metadata extends Repository {
 		return [
 			'total' => $total,
 			'pages' => $pages,
-			'values' => $values
+			'values' => $values,
+			'last_term' => $args['last_term']
 		];
+		
+	}
+	
+	/**
+	* This method processes the result of the query for all terms in a taxonomy done in get_all_metadatum_values()
+	* It efficiently runs through all the terms and checks what terms with a given $parent have items in itself or any of 
+	* its descendants, keeping the order they originally came.
+	* 
+	* It returns an array with the term objects with the given $parent that have items considering items in its descendants. The objects are 
+	* in the same format they came, as expected by the rest of the method. 
+	*
+	* This method is public only for tests purposes, it should not be used anywhere else
+	*/
+	public function _process_terms_tree($tree, $search_value, $search_type='parent') {
+		
+		$h_map = []; // all terms will mapped to this array 
+		$results = []; // terms that match search criteria will be copied to this array
+		foreach ( $tree as $h ) {
+			
+			// if current term comes with have_items = 1 from the database 
+			// or, if it was temporarily added by its child that had have_items = 1:
+			if ( $h->have_items > 0 || ( isset($h_map[$h->term_id]) && $h_map[$h->term_id]->have_items > 0 ) ) {
+				
+				// in the case of a parent that was temporarily added by a child, mark it as having items as well
+				$h->have_items = 1;
+				$h_map[$h->term_id] = $h; // send it to the map array, overriding temporary item if existed
+
+				// if current term matches seach criteria, add to results array
+				if(($search_type == 'parent' && $h->parent == $search_value) ||
+					 ($search_type == 'name' && strpos(strtolower($h->name), strtolower($search_value)) !== false)) {
+					$results[$h->term_id] = $h;
+				}
+				
+				// Now that we know this ter have_items. Lets climb the tree all the way up 
+				// marking all parents with have_items = 1
+				$_parent = $h->parent;
+				
+				// If parent was not added to the map array yet
+				// Lets add a temporary entry
+				if ( $h->parent > 0 && !isset($h_map[$_parent]) ) {
+					$h_map[$_parent] = (object)['have_items' => 1];
+				}
+				
+				// Now lets loop thorough the map array until I check all my parents
+				while( isset($h_map[$_parent]) && $h_map[$_parent]->have_items != 1 ) {
+					
+					// If my parent was added before, but marked with have_items = 0
+					// Lets set it to 1
+					
+					$h_map[$_parent]->have_items = 1;
+					
+					// If my parent is a whole object, and not a temporary one
+					if ( isset($h_map[$_parent]->parent) ) {
+						// if parent matches search criteira, add to results
+						if(($search_type == 'parent' && $h_map[$_parent]->parent == $search_value) ||
+							 ($search_type == 'name' && strpos(strtolower($h_map[$_parent]->name), strtolower($search_value)) !== false)) {
+							$results[$h_map[$_parent]->term_id] = $h_map[$_parent];
+						}
+						// increment _parent to next Loop interation
+						$_parent = $h_map[$_parent]->parent;
+					} else {
+						// Quit loop. We have reached as high as we could in the tree
+						$_parent = 0;
+					}
+					
+				}
+				
+			} else {
+				
+				// if current term have_items = 0
+				
+				// add it to the map
+				$h_map[$h->term_id] = $h;
+				
+				// if parent was not mapped yet, create a temporary entry for him
+				if ( $h->parent > 0 && !isset($h_map[$h->parent]) ) {
+					$h_map[$h->parent] = (object)['have_items' => $h->have_items];
+				}
+				
+				// if item matches search criteria, add it to the results
+				if(($search_type == 'parent' && $h->parent == $search_value) ||
+					 ($search_type == 'name' && $h->have_items > 0 && strpos(strtolower($h->name), strtolower($search_value)) !== false)) {
+					$results[$h->term_id] = $h;
+				}
+			}
+
+		}
+		
+		// Results have all terms that matches search criteria. Now we unset those who dont have items
+		// and set it back to incremental keys]
+		// we could have sent to $results only those with items, but doing that we would not preserve their order
+		$results = array_reduce($results, function ($return, $el) {
+			if ($el->have_items > 0) {
+				$return[] = $el;
+			}
+			return $return;
+		}, []);
+		
+		return $results;
 		
 	}
 

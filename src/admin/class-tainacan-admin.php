@@ -77,14 +77,14 @@ class Admin {
 		global $TAINACAN_BASE_URL;
 		
 		// wp_enqueue_style( 'style', $TAINACAN_BASE_URL . '/assets/css/fonts/materialdesignicons.css' );
-		wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/css/fonts/tainacanicons.css' );
-		wp_enqueue_script('underscore', includes_url('js') . '/underscore.min.js' );
+		wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/css/fonts/tainacanicons.css', [], TAINACAN_VERSION );
+		wp_enqueue_script('underscore');
 	}
 	
 	function add_admin_css() {
 		global $TAINACAN_BASE_URL;
 		
-		wp_enqueue_style( 'tainacan-admin-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-admin.css' );
+		wp_enqueue_style( 'tainacan-admin-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-admin.css', [], TAINACAN_VERSION );
 		
 //		$undesired_wp_styles = [
 //			'admin-menu',
@@ -125,13 +125,13 @@ class Admin {
 	function add_admin_js() {
 		global $TAINACAN_BASE_URL;
 
-		wp_enqueue_script( 'tainacan-user-admin', $TAINACAN_BASE_URL . '/assets/user_admin-components.js', ['underscore', 'media-editor', 'media-views', 'customize-controls'], null, true );
+		wp_enqueue_script( 'tainacan-user-admin', $TAINACAN_BASE_URL . '/assets/user_admin-components.js', ['underscore', 'media-editor', 'media-views', 'customize-controls'], TAINACAN_VERSION, true );
 		 
 		$settings = $this->get_admin_js_localization_params();
 
 		wp_localize_script( 'tainacan-user-admin', 'tainacan_plugin', $settings );
 		wp_enqueue_media();
-		wp_enqueue_script('underscore', includes_url('js') . '/underscore.min.js' );
+		wp_enqueue_script('underscore');
 		wp_enqueue_script('jcrop');
 		wp_enqueue_script( 'customize-controls' );
 		
@@ -198,6 +198,7 @@ class Admin {
 			'exposer_type_param'     	=> \Tainacan\Exposers_Handler::TYPE_PARAM,
 			'repository_name'	 		=> get_bloginfo('name'),
 			'api_max_items_per_page'    => $TAINACAN_API_MAX_ITEMS_PER_PAGE,
+			'wp_elasticpress'    		=> \Tainacan\Elastic_Press::get_instance()->is_active(),
 		];
 
 		$maps = [

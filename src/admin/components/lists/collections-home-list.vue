@@ -20,7 +20,13 @@
                             tag="a" 
                             :to="{ path: $routerHelper.getNewCollectionPath() }" 
                             :aria-label="$i18n.get('label_collection_items')">
-                        <span class="icon is-medium">
+                        <span
+                                v-tooltip="{
+                                    content: $i18n.get('label_collection_items'),
+                                    autoHide: true,
+                                    placement: 'auto'
+                                }"
+                                class="icon is-medium">
                             <i class="tainacan-icon tainacan-icon-36px tainacan-icon-items"/>
                         </span>
                         <span class="menu-text">{{ $i18n.get('items') }}</span>
@@ -31,7 +37,13 @@
                             tag="a" 
                             :to="{ path: $routerHelper.getNewCollectionPath() }"
                             :aria-label="$i18n.get('label_collection_metadata')">
-                        <span class="icon is-medium">
+                        <span
+                                v-tooltip="{
+                                    content: $i18n.get('label_collection_metadata'),
+                                    autoHide: true,
+                                    placement: 'auto'
+                                }"
+                                class="icon is-medium">
                             <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
@@ -42,7 +54,13 @@
                             tag="a" 
                             :to="{ path: $routerHelper.getNewCollectionPath() }" 
                             :aria-label="$i18n.get('label_collection_filters')">
-                        <span class="icon is-medium">
+                        <span
+                                v-tooltip="{
+                                    content: $i18n.get('label_collection_filters'),
+                                    autoHide: true,
+                                    placement: 'auto'
+                                }"
+                                class="icon is-medium">
                             <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>

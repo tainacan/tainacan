@@ -71,7 +71,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($request);
 
 		$this->assertEquals(200, $response->get_status());
-		$data = $response->get_data();
+		$data = $response->get_data()['items'];
 
 		$items_titles = [$data[0]['title'], $data[1]['title']];
 
@@ -248,7 +248,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 
 		$response = $this->server->dispatch($request);
 
-		$data = $response->get_data();
+		$data = $response->get_data()['items'];
 
 		$this->assertCount(1, $data);
 		$this->assertEquals('SCRUM', $data[0]['title']);
@@ -366,7 +366,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			'GET', $this->namespace . '/items'
 		);
 		$response = $this->server->dispatch($request);
-		$data = $response->get_data();
+		$data = $response->get_data()['items'];
 
 		$this->assertEquals( 2, sizeof($data) );
 		$this->assertEquals( 5, sizeof($data[0]['metadata']) );
@@ -377,7 +377,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		);
 		$request->set_query_params($attributes);
 		$response = $this->server->dispatch($request);
-		$data = $response->get_data();
+		$data = $response->get_data()['items'];
 
 
 		$this->assertEquals( 2, sizeof($data) );
@@ -395,7 +395,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		);
 		$request->set_query_params($attributes);
 		$response = $this->server->dispatch($request);
-		$data = $response->get_data();
+		$data = $response->get_data()['items'];
 
 		$this->assertEquals( 2, sizeof($data) );
 		$this->assertEquals( 1, sizeof($data[0]['metadata']) );

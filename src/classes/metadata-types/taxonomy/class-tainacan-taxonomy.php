@@ -19,7 +19,7 @@ class Taxonomy extends Metadata_Type {
         $this->set_primitive_type('term');
         
         $this->set_default_options([
-            'allow_new_terms' => false
+            'allow_new_terms' => 'no'
         ]);
 
         $this->set_form_component('tainacan-form-taxonomy');
@@ -166,7 +166,7 @@ class Taxonomy extends Metadata_Type {
 
 		$valid = true;
         
-        if (false === $this->get_option('allow_new_terms')) {
+        if ('no' === $this->get_option('allow_new_terms') || false === $this->get_option('allow_new_terms')) { //support legacy bug when it was saved as false
 			$terms = $item_metadata->get_value();
 			
 			if (false === $terms)

@@ -11,7 +11,7 @@ class System_Check {
 
 	public  $mariadb                        = false;
 	private $mysql_server_version           = null;
-	private $health_check_mysql_rec_version = '8.0';
+	private $health_check_mysql_rec_version = '5.0';
 	private $health_check_mysql_min_version = '5.0';
 
 	public function __construct() {
@@ -62,7 +62,7 @@ class System_Check {
 
 		if ( stristr( $mysql_server_type, 'mariadb' ) ) {
 			$this->mariadb                        = true;
-			$this->health_check_mysql_rec_version = '10.2.2';
+			$this->health_check_mysql_rec_version = '10.0';
 			$this->health_check_mysql_min_version = '10.0';
 		}
 
@@ -263,10 +263,11 @@ class System_Check {
 				'function' => 'curl_version',
 				'required' => false,
 			),
-			// 'exif'      => array(
-			// 	'function' => 'exif_read_data',
-			// 	'required' => false,
-			// ),
+			'exif'      => array(
+				'function' => 'exif_read_data',
+				'required' => false,
+				'message' => __('This is used to read metadata from photos.', 'tainacan')
+			),
 			// 'filter'    => array(
 			// 	'function' => 'filter_list',
 			// 	'required' => false,

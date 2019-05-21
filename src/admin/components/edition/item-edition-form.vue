@@ -71,7 +71,13 @@
                                                 id="button-edit-document"
                                                 :aria-label="$i18n.get('label_button_edit_document')"
                                                 @click.prevent="setFileDocument($event)">
-                                            <span class="icon">
+                                            <span 
+                                                    v-tooltip="{
+                                                        content: $i18n.get('edit'),
+                                                        autoHide: true,
+                                                        placement: 'bottom'
+                                                    }"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-edit"/>
                                             </span>
                                         </a>
@@ -81,7 +87,13 @@
                                                 id="button-delete-document"
                                                 :aria-label="$i18n.get('label_button_delete_document')"
                                                 @click.prevent="removeDocument()">
-                                            <span class="icon">
+                                            <span 
+                                                    v-tooltip="{
+                                                        content: $i18n.get('delete'),
+                                                        autoHide: true,
+                                                        placement: 'bottom'
+                                                    }"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-delete"/>
                                             </span>
                                         </a>
@@ -95,7 +107,13 @@
                                                 :aria-label="$i18n.get('label_button_edit_document')"
                                                 id="button-edit-document"
                                                 @click.prevent="setTextDocument()">
-                                            <span class="icon">
+                                            <span 
+                                                    v-tooltip="{
+                                                        content: $i18n.get('edit'),
+                                                        autoHide: true,
+                                                        placement: 'bottom'
+                                                    }"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-edit"/>
                                             </span>
                                         </a>
@@ -105,7 +123,13 @@
                                                 :aria-label="$i18n.get('label_button_delete_document')"
                                                 id="button-delete-document"
                                                 @click.prevent="removeDocument()">
-                                            <span class="icon">
+                                            <span 
+                                                    v-tooltip="{
+                                                        content: $i18n.get('delete'),
+                                                        autoHide: true,
+                                                        placement: 'bottom'
+                                                    }"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-delete"/>
                                             </span>
                                         </a>
@@ -120,7 +144,13 @@
                                                 :aria-label="$i18n.get('label_button_edit_document')"
                                                 id="button-edit-document"
                                                 @click.prevent="setURLDocument()">
-                                            <span class="icon">
+                                            <span 
+                                                    v-tooltip="{
+                                                        content: $i18n.get('edit'),
+                                                        autoHide: true,
+                                                        placement: 'bottom'
+                                                    }"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-edit"/>
                                             </span>
                                         </a>
@@ -130,7 +160,13 @@
                                                 :aria-label="$i18n.get('label_button_delete_document')"
                                                 id="button-delete-document"
                                                 @click.prevent="removeDocument()">
-                                            <span class="icon">
+                                            <span
+                                                    v-tooltip="{
+                                                        content: $i18n.get('delete'),
+                                                        autoHide: true,
+                                                        placement: 'bottom'
+                                                    }"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-delete"/>
                                             </span>
                                         </a>
@@ -274,7 +310,13 @@
                                             id="button-edit-thumbnail"
                                             :aria-label="$i18n.get('label_button_edit_thumb')"
                                             @click.prevent="thumbnailMediaFrame.openFrame($event)">
-                                        <span class="icon">
+                                        <span 
+                                                v-tooltip="{
+                                                    content: $i18n.get('edit'),
+                                                    autoHide: true,
+                                                    placement: 'bottom'
+                                                }"
+                                                class="icon">
                                             <i class="tainacan-icon tainacan-icon-edit"/>
                                         </span>
                                     </a>
@@ -284,7 +326,13 @@
                                             class="button is-rounded is-secondary"
                                             :aria-label="$i18n.get('label_button_delete_thumb')"
                                             @click="deleteThumbnail()">
-                                    <span class="icon">
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('delete'),
+                                                autoHide: true,
+                                                placement: 'bottom'
+                                            }"
+                                            class="icon">
                                         <i class="tainacan-icon tainacan-icon-delete"/>
                                     </span>
                                     </a>
@@ -335,6 +383,11 @@
                                     <span class="file-item-control">
                                         <a 
                                                 @click="deleteAttachment(attachment)"
+                                                v-tooltip="{
+                                                    content: $i18n.get('delete'),
+                                                    autoHide: true,
+                                                    placement: 'bottom'
+                                                }"
                                                 class="icon">
                                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
                                         </a>

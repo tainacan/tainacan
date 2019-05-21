@@ -60,7 +60,7 @@
                             content: $i18n.get('label_view_repository'),
                             autoHide: false,
                             placement: 'bottom-end',
-                            classes: ['header-tooltips']
+                            classes: [ isRepositoryLevel ? 'repository-header-tooltips' : 'header-tooltips']
                         }">
                 <a
                         :href="repositoryURL"
@@ -142,10 +142,26 @@ export default {
     @import "../../scss/_variables.scss";
     
     .header-tooltips .tooltip-inner {
-        color: $turquoise5;
+        color: white;
+        text-shadow: 1px 1px $turquoise4;
+        background-color: $turquoise3;
         font-size: 0.75rem;
         font-weight: 400;
-        padding: 0.75rem;
+        padding: 10px 14px;
+    }
+    .header-tooltips .tooltip-arrow {
+        border-color: $turquoise3;
+    }
+
+    .repository-header-tooltips .tooltip-inner {
+        color: white;
+        background-color: $blue3;
+        font-size: 0.75rem;
+        font-weight: 400;
+        padding: 10px 14px;
+    }
+    .repository-header-tooltips .tooltip-arrow {
+        border-color: $blue3;
     }
 
     // Tainacan Header

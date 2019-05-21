@@ -62,10 +62,23 @@
                                 <div class="handle">
                                     <span 
                                             v-if="!(isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder)"
+                                            v-tooltip="{
+                                                content: $i18n.get('instruction_drag_and_drop_metadatum_sort'),
+                                                autoHide: true,
+                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                placement: 'auto-start'
+                                            }"
                                             class="icon grip-icon">
                                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
                                     </span>
-                                    <span class="icon icon-level-identifier">
+                                    <span 
+                                            v-tooltip="{
+                                                content: (metadatum.collection_id == 'default') || isRepositoryLevel ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
+                                                autoHide: true,
+                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                placement: 'auto-start'
+                                            }"
+                                            class="icon icon-level-identifier">
                                         <i 
                                             :class="{ 
                                                 'tainacan-icon-collections': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
@@ -122,7 +135,14 @@
                                                         ? 'hidden' : 'visible'
                                                     }" 
                                                 @click.prevent="editMetadatum(metadatum)">
-                                            <span class="icon">
+                                            <span 
+                                                    v-tooltip="{
+                                                        content: $i18n.get('edit'),
+                                                        autoHide: true,
+                                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                        placement: 'auto-start'
+                                                    }"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
                                             </span>
                                         </a>
@@ -134,7 +154,14 @@
                                                         ? 'hidden' : 'visible'
                                                     }" 
                                                 @click.prevent="removeMetadatum(metadatum)">
-                                            <span class="icon">
+                                            <span
+                                                    v-tooltip="{
+                                                        content: $i18n.get('delete'),
+                                                        autoHide: true,
+                                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                        placement: 'auto-start'
+                                                    }"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
                                             </span>
                                         </a>
@@ -173,7 +200,14 @@
                                         :class="{ 'hightlighted-metadatum' : hightlightedMetadatum == metadatum.name, 'inherited-metadatum': isRepositoryLevel }"
                                         v-for="(metadatum, index) in availableMetadatumList"
                                         :key="index">
-                                    <span class="icon grip-icon">
+                                    <span
+                                            v-tooltip="{
+                                                content: $i18n.get('instruction_click_or_drag_metadatum_create'),
+                                                autoHide: true,
+                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                placement: 'auto-start'
+                                            }"   
+                                            class="icon grip-icon">
                                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
                                     </span>
                                     <span class="metadatum-name">
@@ -287,7 +321,14 @@
                                                         ? 'visible' : 'hidden'
                                                     }" 
                                                 @click.prevent="editMetadatumCustomMapper(props.row)">
-                                            <span class="icon">
+                                            <span
+                                                    v-tooltip="{
+                                                        content: $i18n.get('edit'),
+                                                        autoHide: true,
+                                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                        placement: 'auto-start'
+                                                    }"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
                                             </span>
                                         </a>
@@ -297,7 +338,14 @@
                                                         ? 'visible' : 'hidden'
                                                     }" 
                                                 @click.prevent="removeMetadatumCustomMapper(props.row)">
-                                            <span class="icon">
+                                            <span
+                                                    v-tooltip="{
+                                                        content: $i18n.get('delete'),
+                                                        autoHide: true,
+                                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                        placement: 'auto-start'
+                                                    }"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
                                             </span>
                                         </a>

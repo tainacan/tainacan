@@ -67,7 +67,8 @@
                 type: '',
                 collection: '',
                 metadatum: '',
-                taxonomy: ''
+                taxonomy: '',
+                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
             }
         },
         props: {
@@ -129,19 +130,28 @@
                 }
 
                 return axios.get(endpoint).then( res => {
-                    for (let term of res.data) {     
+                    for (let term of res.data.values) {   
+                          
+                        this.taxonomy = term.taxonomy;
+
                         if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {
                             let indexToIgnore = valuesToIgnore.findIndex(value => value == term.value);
                             if (indexToIgnore < 0) {
                                 if( term.label.toLowerCase().indexOf( query.toLowerCase() ) >= 0 ){
-                                    this.taxonomy = term.taxonomy;
-                                    this.options.push({label: term.label, value: term.value});
+                                    this.options.push({
+                                        label: term.label, 
+                                        value: term.value,
+                                        total_items: term.total_items
+                                    });
                                 }
                             }
                         } else {
                             if( term.label.toLowerCase().indexOf( query.toLowerCase() ) >= 0 ){
-                                this.taxonomy = term.taxonomy;
-                                this.options.push({label: term.label, value: term.value});
+                                this.options.push({
+                                    label: term.label,
+                                    value: term.value,    
+                                    total_items: term.total_items
+                                });
                             }
                         }                                       
                     }
@@ -152,15 +162,18 @@
                     this.$console.log(error);
                 });
             }, 500),
-            selectedValues( taxonomy ){
+            selectedValues( taxonomyId ){
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;
 
-                let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == 'tnc_tax_' + taxonomy );
+                this.taxonomy = 'tnc_tax_' + taxonomyId;
+
+                let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == this.taxonomy );
                 if ( index >= 0){
                     let metadata = this.query.taxquery[ index ];
+
                     for ( let id of metadata.terms ){
-                       this.getTerm( taxonomy, id );
+                       this.getTerm( taxonomyId, id );
                     }
                 } else {
                     return false;
@@ -169,12 +182,12 @@
             getTerm( taxonomy, id ){
                 //getting a specific value from api, does not need be in fecat api
                 return axios.get('/taxonomy/' + taxonomy + '/terms/' + id + '?order=asc' )
-                .then( res => {
-                    this.selected.push({ label: res.data.name, value: res.data.id })
-                })
-                .catch(error => {
-                    this.$console.log(error);
-                });
+                    .then( res => {
+                        this.selected.push({ label: res.data.name, value: res.data.id });
+                    })
+                    .catch(error => {
+                        this.$console.log(error);
+                    });
             },
             cleanSearchFromTag(filterTag) {
                                
@@ -204,7 +217,6 @@
                             filterId: this.filter.id,
                             value: labels
                         });
-
                    }
                 }
             }

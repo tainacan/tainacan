@@ -86,25 +86,25 @@ class Oaipmh_Importer extends Importer {
                     $this->add_transient('resumptionToken',(string) $resumptionToken);
                 }
 
-                // if there is no total in resumption token and exists cursos
+                // if there is no total in resumption token and exists cursor
                 // it will change dynamic the total of items
 
                 $resumptionToken_attributes = $xml->ListRecords->resumptionToken->attributes();
-
                 $real_total = $this->get_transient('total_general');
 
-//                $this->add_log('real total '.$real_total);
-//                foreach ($resumptionToken_attributes as $tag => $attribute) {
-//                    if ($tag == 'cursor' && $real_total == ( (string) $attribute ) ) {
-//
-//                        $real_total = intval($real_total) + intval(( (string) $attribute ));
-//                        $this->add_log('real total after '. $real_total);
-//                        $current_collection = $this->get_current_collection();
-//                        $current_collection['total_items'] = ceil( $real_total / $this->items_per_page );
-//                        $this->set_current_collection( $current_collection );
-//                        break;
-//                    }
-//                }
+                foreach ($resumptionToken_attributes as $tag => $attribute) {
+
+                    if ( $tag == 'cursor' && $real_total == ( (string) $attribute ) && !$this->hasCompleteSize( $resumptionToken_attributes ) ) {
+
+                        $real_total = $real_total + intval($this->get_transient('items_per_page'));
+                        $this->add_transient('total_general', $real_total);
+
+                        $total = ( $this->get_transient('change_total') ) ?  $this->get_transient('change_total') : 1;
+
+                        $this->add_transient('change_total', $total + 1);
+                        break;
+                    }
+                }
             }
 
         } catch (Exception $e) {
@@ -406,16 +406,18 @@ class Oaipmh_Importer extends Importer {
             } elseif ( isset($xml->ListRecords) && isset($xml->ListRecords->resumptionToken) ){
 
                 $resumptionToken_attributes = $xml->ListRecords->resumptionToken->attributes();
-                foreach ($resumptionToken_attributes as $tag => $attribute) {
-                    if ($tag == 'cursor') {
-                        $this->items_per_page = $attribute;
-                    }
-                }
 
                 foreach ($resumptionToken_attributes as $tag => $attribute) {
                     if ($tag == 'completeListSize') {
                         $this->add_transient('total_general', (string) $attribute);
                         return (string) $attribute;
+                    }
+                }
+
+                foreach ($resumptionToken_attributes as $tag => $attribute) {
+                    if ($tag == 'cursor') {
+                        $this->items_per_page = $attribute;
+                        $this->add_transient('items_per_page', (string) $this->items_per_page);
                     }
                 }
 
@@ -568,6 +570,8 @@ class Oaipmh_Importer extends Importer {
         } else {
             $this->add_transient('collection_resump', (string) $xml->ListSets->resumptionToken);
         }
+
+        // TODO: verify if exists resumption token
 
         return ($collections_array) ? $collections_array : [];
     }
@@ -755,6 +759,81 @@ class Oaipmh_Importer extends Importer {
             return __('Imported Repo');
 
         }
+    }
+
+    /**
+     * @param $attributes
+     * @return bool
+     */
+    public function hasCompleteSize( $attributes ) {
+        foreach ( $attributes as $tag => $attribute ) {
+            if ( $tag == 'completeListSize' ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Gets the current value to build the progress bar and give feedback to the user
+     * on the background process that is running the importer.
+     *
+     * It does so by comparing the "size" attribute with the $in_step_count class attribute
+     * where size indicates the total size of iterations the step will take and $this->in_step_count
+     * is the current iteration.
+     *
+     * For the step with "process_items" as a callback, this method will look for the the $this->collections array
+     * and sum the value of all "total_items" attributes of each collection. Then it will look for
+     * $this->get_current_collection and $this->set_current_collection_item to calculate the progress.
+     *
+     * The value must be from 0 to 100
+     *
+     * If a negative value is passed, it is assumed that the progress is unknown
+     */
+    public function get_progress_value() {
+        $current_step = $this->get_current_step();
+        $steps = $this->get_steps();
+        $value = -1;
+
+        if ( isset($steps[$current_step]) ) {
+            $step = $steps[$current_step];
+
+            if ($step['callback'] == 'process_collections') {
+
+                $totalItems = 0;
+                $currentItem = $this->get_current_collection_item();
+                $current_collection = $this->get_current_collection();
+                $collections = $this->get_collections();
+
+                foreach ($collections as $i => $col) {
+                    if ( isset($col['total_items']) && is_numeric($col['total_items']) ) {
+                        $totalItems += intval($col['total_items']);
+                        if ($i < $current_collection) {
+                            $currentItem += $col['total_items'];
+                        }
+                    }
+                }
+
+                if ($totalItems > 0) {
+                    $totalItems = ($this->get_transient('change_total')) ? $this->get_transient('change_total') : $totalItems;
+                    $value = round( ($currentItem/$totalItems) * 100 );
+                }
+
+
+            } else {
+
+                if ( isset($step['total']) && is_numeric($step['total']) && $step['total'] > 0 ) {
+                    $total = ($this->get_transient('change_total')) ? $this->get_transient('change_total') : $step['total'];
+
+                    $current = $this->get_in_step_count();
+                    $value = round( ($current/$total) * 100 );
+                }
+
+            }
+
+
+        }
+        return $value;
     }
 
     public function options_form(){

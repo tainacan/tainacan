@@ -163,6 +163,7 @@
                                         },
                                         content: collection.name,
                                         autoHide: false,
+                                        classes: ['tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }">
                                 {{ collection.name }}</p>
@@ -182,6 +183,7 @@
                                         },
                                         content: (collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`,
                                         autoHide: false,
+                                        classes: ['tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }" 
                                     v-html="(collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`"/>
@@ -201,6 +203,7 @@
                                         },
                                         content: collection.creation_date,
                                         autoHide: false,
+                                        classes: ['tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }" 
                                     v-html="collection.creation_date" />
@@ -220,6 +223,7 @@
                                         },
                                         content: collection.author_name,
                                         autoHide: false,
+                                        classes: ['tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }" 
                                     v-html="collection.author_name" />
@@ -240,6 +244,7 @@
                                         },
                                         content: getTotalItems(collection.total_items),
                                         autoHide: false,
+                                        classes: ['tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }" 
                                     v-html="getTotalItems(collection.total_items)" />
@@ -255,7 +260,14 @@
                                         v-if="collection.current_user_can_edit"
                                         :aria-label="$i18n.getFrom('collections','edit_item')" 
                                         @click.prevent.stop="goToCollectionEditPage(collection.id)">                      
-                                    <span class="icon">
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('edit'),
+                                                autoHide: true,
+                                                classes: ['tooltip', 'repository-tooltip'],
+                                                placement: 'auto'
+                                            }"
+                                            class="icon">
                                         <i class="tainacan-icon tainacan-icon-20px tainacan-icon-settings"/>
                                     </span>
                                 </a>
@@ -264,7 +276,14 @@
                                         v-if="collection.current_user_can_delete"
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneCollection(collection.id)">
-                                    <span class="icon">
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('delete'),
+                                                autoHide: true,
+                                                classes: ['tooltip', 'repository-tooltip'],
+                                                placement: 'auto'
+                                            }"
+                                            class="icon">
                                         <i 
                                                 :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                                 class="tainacan-icon tainacan-icon-20px"/>

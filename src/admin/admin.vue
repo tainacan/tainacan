@@ -1,7 +1,11 @@
 <template>
     <div 
             id="tainacan-admin-app" 
-            class="columns is-fullheight">
+            class="columns is-fullheight"
+            :class="{ 
+                'tainacan-admin-iframe-mode': $route.query.iframemode, 
+                'tainacan-admin-read-mode': $route.query.readmode
+            }">
         <template v-if="activeRoute == 'HomePage'">
             <tainacan-header />
             <router-view /> 
@@ -13,8 +17,15 @@
             <button 
                     class="is-hidden-mobile"
                     id="menu-compress-button"
-                    @click="isMenuCompressed = !isMenuCompressed">
-                <span class="icon">
+                    @click="isMenuCompressed = !isMenuCompressed">          
+                <span
+                        v-tooltip="{
+                            content: $i18n.get('label_shrink_menu'),
+                            autoHide: true,
+                            placement: 'auto-end',
+                            classes: ['tooltip', 'repository-tooltip']     
+                        }"
+                        class="icon">
                     <i 
                             :class="{ 'tainacan-icon-arrowleft' : !isMenuCompressed, 'tainacan-icon-arrowright' : isMenuCompressed }"
                             class="tainacan-icon tainacan-icon-20px"/>

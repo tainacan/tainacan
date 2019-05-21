@@ -59,7 +59,14 @@
                                     id="button-edit-header"
                                     :aria-label="$i18n.get('label_button_edit_header_image')"
                                     @click="headerImageMediaFrame.openFrame($event)">
-                                <span class="icon is-small">
+                                <span 
+                                        v-tooltip="{
+                                            content: $i18n.get('edit'),
+                                            autoHide: true,
+                                            classes: ['tooltip', 'repository-tooltip'],
+                                            placement: 'bottom'
+                                        }"
+                                        class="icon is-small">
                                     <i class="tainacan-icon tainacan-icon-edit"/>
                                 </span>
                             </a>
@@ -68,7 +75,14 @@
                                     id="button-delete-header"
                                     :aria-label="$i18n.get('label_button_delete_thumb')"
                                     @click="deleteHeaderImage()">
-                                <span class="icon is-small">
+                                <span 
+                                        v-tooltip="{
+                                            content: $i18n.get('delete'),
+                                            autoHide: true,
+                                            classes: ['tooltip', 'repository-tooltip'],
+                                            placement: 'bottom'
+                                        }"
+                                        class="icon is-small">
                                     <i class="tainacan-icon tainacan-icon-delete"/>
                                 </span>
                             </a>

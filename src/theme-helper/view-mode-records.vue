@@ -1,6 +1,8 @@
 <template>
     <div class="table-container">
-        <div class="table-wrapper">
+        <div
+                ref="masonryWrapper"
+                class="table-wrapper">
 
             <!-- Empty result placeholder -->
             <section
@@ -19,7 +21,7 @@
             <!-- SKELETON LOADING -->
             <masonry
                     v-if="isLoading"
-                    :cols="{default: 4, 1919: 3, 1407: 2, 1215: 2, 1023: 1, 767: 1, 343: 1}"
+                    :cols="masonryCols"
                     :gutter="30"                    
                     class="tainacan-records-container">
                 <div 
@@ -33,7 +35,7 @@
             <masonry 
                     role="list"
                     v-if="!isLoading && items.length > 0"
-                    :cols="{default: 4, 1919: 3, 1407: 2, 1215: 2, 1023: 1, 767: 1, 343: 1}"
+                    :cols="masonryCols"
                     :gutter="30"
                     class="tainacan-records-container">
                 <a 
@@ -59,22 +61,7 @@
                                 :key="index"
                                 class="metadata-title"
                                 v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                             
-                        <p 
-                                v-tooltip="{
-                                    delay: {
-                                        show: 500,
-                                        hide: 300,
-                                    },
-                                    content: item.title != undefined ? item.title : '',
-                                    html: true,
-                                    autoHide: false,
-                                    placement: 'auto-start'
-                                }"
-                                v-for="(column, index) in tableMetadata"
-                                :key="index"
-                                v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                v-html="item.title != undefined ? item.title : ''" />                             
+                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                                                 
 
                         <!-- Remaining metadata -->  
                         <div class="media">
@@ -93,17 +80,9 @@
                                             class="skeleton"/>
                                 </div>
                                 <span 
-                                        v-for="(column, index) in tableMetadata"
-                                        :key="index"
-                                        v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'description')">
-                                    <h3 class="metadata-label">{{ $i18n.get('label_description') }}</h3>
-                                    <p 
-                                            v-html="item.description != undefined ? item.description : ''"
-                                            class="metadata-value"/>
-                                </span>
-                                <span 
                                         v-for="(column, index) in displayedMetadata"
                                         :key="index"
+                                        :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }"
                                         v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
                                     <h3 class="metadata-label">{{ column.name }}</h3>
                                     <p      
@@ -120,14 +99,14 @@
 </template>
 
 <script>
-
 export default {
     name: 'ViewModeRecords',
     props: {
         collectionId: Number,
         displayedMetadata: Array,
         items: Array,
-        isLoading: false
+        isLoading: false,
+        isFiltersMenuCompressed: Boolean
     },
     computed: {
         amountOfDisplayedMetadata() {
@@ -136,7 +115,30 @@ export default {
     },
     data () {
         return {
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png'
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
+            masonryCols: {default: 4, 1919: 3, 1407: 2, 1215: 2, 1023: 1, 767: 1, 343: 1}
+        }
+    },
+    watch: {
+        isFiltersMenuCompressed() {
+            if (this.$refs.masonryWrapper != undefined && 
+                this.$refs.masonryWrapper.children[0] != undefined && 
+                this.$refs.masonryWrapper.children[0].children[0] != undefined && 
+                this.$refs.masonryWrapper.children[0].children[0].clientWidth != undefined) {
+                this.containerWidthDiscount = jQuery(window).width() - this.$refs.masonryWrapper.clientWidth;
+            }
+            this.$forceUpdate();
+        },
+        containerWidthDiscount() {
+            let obj = {};
+            obj['default'] = 4;
+            obj[1980 - this.containerWidthDiscount] = 3;
+            obj[1460 - this.containerWidthDiscount] = 2;
+            obj[1275 - this.containerWidthDiscount] = 2;
+            obj[1080 - this.containerWidthDiscount] = 1;
+            obj[828 - this.containerWidthDiscount] = 1;
+            obj[400] = 1;
+            this.masonryCols = obj;
         }
     },
     methods: {
@@ -162,11 +164,38 @@ export default {
             let itemWidth = 120;
             return (imageHeight*itemWidth)/imageWidth;
         },
+        recalculateContainerWidth: _.debounce( function() {
+            if (this.$refs.masonryWrapper != undefined && 
+                this.$refs.masonryWrapper.children[0] != undefined && 
+                this.$refs.masonryWrapper.children[0].children[0] != undefined && 
+                this.$refs.masonryWrapper.children[0].children[0].clientWidth != undefined) {
+                this.containerWidthDiscount = jQuery(window).width() - this.$refs.masonryWrapper.clientWidth;
+            }
+            this.$forceUpdate();
+        }, 500)
+    },
+    mounted() {
+
+        if (this.$refs.masonryWrapper != undefined && 
+            this.$refs.masonryWrapper.children[0] != undefined && 
+            this.$refs.masonryWrapper.children[0].children[0] != undefined && 
+            this.$refs.masonryWrapper.children[0].children[0].clientWidth != undefined) {
+                this.itemColumnWidth = this.$refs.masonryWrapper.children[0].children[0].clientWidth;
+                this.recalculateContainerWidth();
+            } else
+                this.itemColumnWidth = 202;
+    },
+    created() {
+        window.addEventListener('resize', this.recalculateContainerWidth);  
+    },
+    beforeDestroy() {
+        window.removeEventListener('resize', this.recalculateContainerWidth);
     }
 }
 </script>
 
 <style  lang="scss" scoped>
+
     $turquoise1: #e6f6f8;
     $turquoise2: #d1e6e6;
     $tainacan-input-color: #1d1d1d;

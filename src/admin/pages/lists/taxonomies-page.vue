@@ -35,19 +35,33 @@
                         </option>
                     </b-select>
                     <button
-                            :disabled="taxonomies.length <= 0 || isLoading || order == 'asc'"
-                            class="button is-white is-small"
-                            @click="onChangeOrder('asc')">
-                        <span class="icon gray-icon is-small">
-                            <i class="tainacan-icon tainacan-icon-sortascending tainacan-icon-20px"/>
-                        </span>
-                    </button>
-                    <button
                             :disabled="taxonomies.length <= 0 || isLoading || order == 'desc'"
                             class="button is-white is-small"
                             @click="onChangeOrder('desc')">
-                        <span class="icon gray-icon is-small">
+                        <span
+                                v-tooltip="{
+                                    content: $i18n.get('label_sort_descending'),
+                                    autoHide: true,
+                                    placement: 'bottom',
+                                    classes: ['tooltip', 'repository-tooltip']
+                                }"
+                                class="icon gray-icon is-small">
                             <i class="tainacan-icon tainacan-icon-sortdescending tainacan-icon-20px"/>
+                        </span>
+                    </button>
+                    <button
+                            :disabled="taxonomies.length <= 0 || isLoading || order == 'asc'"
+                            class="button is-white is-small"
+                            @click="onChangeOrder('asc')">
+                        <span
+                                v-tooltip="{
+                                    content: $i18n.get('label_sort_ascending'),
+                                    autoHide: true,
+                                    placement: 'bottom',
+                                    classes: ['tooltip', 'repository-tooltip']
+                                }"
+                                class="icon gray-icon is-small">
+                            <i class="tainacan-icon tainacan-icon-sortascending tainacan-icon-20px"/>
                         </span>
                     </button>
                 </b-field>
@@ -142,7 +156,12 @@
                                     :current.sync="page"
                                     order="is-centered"
                                     size="is-small"
-                                    :per-page="taxonomiesPerPage"/>
+                                    :per-page="taxonomiesPerPage"
+                                    :aria-next-label="$i18n.get('label_next_page')"
+                                    :aria-previous-label="$i18n.get('label_previous_page')"
+                                    :aria-page-label="$i18n.get('label_page')"
+                                    :aria-current-label="$i18n.get('label_current_page')"/>
+                       
                         </div>
                     </div>
                 </div>
@@ -168,7 +187,7 @@
                 order: 'asc',
                 ordeBy: 'date',
                 sortingOptions: [
-                    { label: this.$i18n.get('label_name'), value: 'title' },
+                    { label: this.$i18n.get('label_title'), value: 'title' },
                     { label: this.$i18n.get('label_creation_date'), value: 'date' },
                 ]
             }
@@ -286,8 +305,8 @@
             if (this.orderBy != this.$userPrefs.get('taxonomies_order_by'))
                 this.orderBy = this.$userPrefs.get('taxonomies_order_by');
             if (!this.orderBy) {
-                this.orderBy = 'date';
-                this.$userPrefs.set('taxonomies_order_by', 'date');
+                this.orderBy = 'title';
+                this.$userPrefs.set('taxonomies_order_by', 'title');
             }
             
             this.load();

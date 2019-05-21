@@ -145,6 +145,54 @@ export const updateFilteTypes = ( { commit }, filterTypes) => {
     commit('setFilterTypes', filterTypes);
 };
 
+// REPOSITORY COLLECTION FILTERS - MULTIPLE COLLECTIONS ------------------------
+export const fetchRepositoryCollectionFilters = ({ dispatch, commit } ) => {
+    
+    commit('clearRepositoryCollectionFilters');
+
+    return new Promise((resolve, reject) => {
+
+        dispatch('collection/fetchCollectionsForParent', { } ,{ root: true })
+            .then((res) => {
+                let collections = res;
+                if (collections != undefined && collections.length != undefined) {
+
+                    let amountOfCollectionsLoaded = 0;
+
+                    for (let collection of collections ) {
+                
+                        let endpoint = '';
+                        endpoint = '/collection/' + collection.id + '/filters/?nopaging=1&include_disabled=no';
+
+                        axios.tainacan.get(endpoint)
+                            .then((resp) => {
+                                let repositoryFilters = resp.data.filter((filter) => { 
+                                    return (filter.collection_id == 'default' || filter.collection_id == 'filter_in_repository')
+                                });
+                                let collectionFilters = resp.data.filter((filter) => {
+                                    return (filter.collection_id != 'default' && filter.collection_id != 'filter_in_repository')
+                                });
+                                commit('setRepositoryCollectionFilters', { collectionName: collection.id, repositoryCollectionFilters: collectionFilters });
+                                commit('setRepositoryCollectionFilters', { collectionName: undefined, repositoryCollectionFilters: repositoryFilters });
+                                amountOfCollectionsLoaded++;
+
+                                if (amountOfCollectionsLoaded == collections.length) {
+                                    resolve();
+                                }
+                            }) 
+                            .catch((error) => {
+                                console.log(error);
+                                reject(error);
+                            });    
+                    }
+                }
+            })
+            .error(() => {
+                reject();
+            });
+    });
+};
+
 // TAXONOMY FILTERS - MULTIPLE COLLECTIONS ------------------------
 export const fetchTaxonomyFilters = ({ dispatch, commit }, taxonomyId ) => {
     

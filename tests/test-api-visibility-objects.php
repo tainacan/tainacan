@@ -149,7 +149,7 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 				'collection' => $collection,
 				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
 				'metadata_type_options' => [
-					'allow_new_terms' => true,
+					'allow_new_terms' => 'yes',
 					'taxonomy_id' => $taxonomy_public->get_id()
 				],
 				'multiple' => 'yes'
@@ -165,7 +165,7 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 				'collection' => $collection,
 				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
 				'metadata_type_options' => [
-					'allow_new_terms' => true,
+					'allow_new_terms' => 'yes',
 					'taxonomy_id' => $taxonomy_private->get_id()
 				],
 				'multiple' => 'yes'
@@ -351,7 +351,7 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 		$status = $response->status;
 		$data = $response->get_data();
 		$this->assertEquals(200, $status);
-		$this->assertEquals(1, sizeof($data));
+		$this->assertEquals(1, sizeof($data['items']));
 
 		//tax public - context=edit:
 		$request_public_edit = new \WP_REST_Request(
@@ -363,7 +363,7 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 		$status = $response->status;
 		$data = $response->get_data();
 		$this->assertEquals(200, $status);
-		$this->assertEquals(1, sizeof($data));
+		$this->assertEquals(1, sizeof($data['items']));
 
 		//tax private:
 		$request_private = new \WP_REST_Request(
@@ -381,7 +381,7 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 		$status = $response->status;
 		$data = $response->get_data();
 		$this->assertEquals(200, $status);
-		$this->assertEquals(1, sizeof($data));
+		$this->assertEquals(1, sizeof($data['items']));
 
 		//tax private - context=edit:
 		$request_private_edit = new \WP_REST_Request(
@@ -393,7 +393,7 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 		$status = $response->status;
 		$data = $response->get_data();
 		$this->assertEquals(200, $status);
-		$this->assertEquals(1, sizeof($data));
+		$this->assertEquals(1, sizeof($data['items']));
 	}
 
 	public function test_get_items_not_logged() {
@@ -415,7 +415,7 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 		$status = $response->status;
 		$data = $response->get_data();
 		$this->assertEquals(200, $status);
-		$this->assertEquals(1, sizeof($data));
+		$this->assertEquals(1, sizeof($data['items']));
 
 		//tax public - context=edit:
 		$request_public_edit = new \WP_REST_Request(

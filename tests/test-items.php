@@ -379,4 +379,39 @@ class Items extends TAINACAN_UnitTestCase {
         
         $this->assertFalse(comments_open($item->get_id()));
     }
+	
+	public function test_delete_item() {
+		
+		$collection = $this->tainacan_entity_factory->create_entity(
+            'collection',
+            array(
+                'name'   => 'collectionComments',
+                'allow_comments' => 'closed'
+            ),
+            true,
+            true
+        );
+        $item = $this->tainacan_entity_factory->create_entity(
+            'item',
+            array(
+                'title'      => 'itemComments1',
+                'collection' => $collection,
+                'comment_status' => 'open'
+            ),
+            true,
+            true
+        );
+		
+		$item_id = $item->get_id();
+		
+		$items = \Tainacan\Repositories\Items::get_instance();
+		
+		$items->delete($item_id);
+		
+		$fetch_item = $items->fetch($item_id);
+		
+		$this->assertEmpty($fetch_item);
+		
+	}
+	
 }

@@ -25,16 +25,15 @@
                     animated
                     @input="fetchSelectedLabels()"
                     v-model="activeTab">
-                <b-tab-item :label="$i18n.get('label_all_terms')">
-
+                <b-tab-item :label="isTaxonomy ? $i18n.get('label_all_terms') : $i18n.get('label_all_metadatum_values')">
                     <div
                             v-if="!isSearching && !isTaxonomy"
                             class="modal-card-body tainacan-checkbox-list-container">
                         <a
-                                v-if="checkboxListOffset"
+                                v-if="isUsingElasticSearch ? lastTermOnFisrtPage != checkboxListOffset : checkboxListOffset"
                                 role="button"
                                 class="tainacan-checkbox-list-page-changer"
-                                @click="beforePage">
+                                @click="previousPage">
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-previous"/>
                             </span>
@@ -88,9 +87,9 @@
                             <b-field
                                     role="li"
                                     :addons="false"
-                                    v-if="finderColumn.length"
+                                    v-if="finderColumn.children.length"
                                     class="tainacan-li-checkbox-modal"
-                                    v-for="(option, index) in finderColumn"
+                                    v-for="(option, index) in finderColumn.children"
                                     :id="`${key}.${index}-tainacan-li-checkbox-model`"
                                     :ref="`${key}.${index}-tainacan-li-checkbox-model`"
                                     :key="index">
@@ -130,14 +129,19 @@
                                     </span>
                                 </a>
                             </b-field>
-                            <li v-if="finderColumn.length">
+                            <li v-if="finderColumn.children.length">
                                 <div
-                                        v-if="finderColumn.length < totalRemaining[key].remaining"
+                                        v-if="totalRemaining[key].remaining === true || (finderColumn.length < totalRemaining[key].remaining)"
                                         @click="getMoreOptions(finderColumn, key)"
                                         class="tainacan-show-more">
                                     <span class="icon">
                                         <i class="tainacan-icon tainacan-icon-20px tainacan-icon-showmore"/>
                                     </span>
+                                </div>
+                                <div 
+                                        class="warning-no-more-terms"
+                                        v-else>
+                                    {{ isUsingElasticSearch ? $i18n.get('info_no_more_terms_found') : '' }}
                                 </div>
                             </li>
                         </ul>
@@ -170,7 +174,7 @@
                 </b-tab-item>
 
                 <b-tab-item
-                        :label="$i18n.get('label_selected_terms')">
+                        :label="isTaxonomy ? $i18n.get('label_selected_terms') : $i18n.get('label_selected_metadatum_values')">
 
                     <div class="modal-card-body tainacan-tags-container">
                         <b-field
@@ -185,7 +189,7 @@
                                         attached
                                         closable
                                         @close="selected instanceof Array ? selected.splice(index, 1) : selected = ''">
-                                    {{ isTaxonomy ? selectedTagsName[term] : term }}
+                                    {{ (isTaxonomy || metadatum_type === 'Tainacan\\Metadata_Types\\Relationship') ? selectedTagsName[term] : term }}
                                 </b-tag>
                             </div>
                         </b-field>
@@ -196,7 +200,7 @@
                 </b-tab-item>
             </b-tabs>
             <!--<pre>{{ hierarchicalPath }}</pre>-->
-            <!--<pre>{{ totalRemaining }}</pre>-->
+            <!-- <pre>{{ totalRemaining }}</pre> -->
             <!--<pre>{{ selected }}</pre>-->
             <!--<pre>{{ options }}</pre>-->
             <!--<pre>{{ searchResults }}</pre>-->
@@ -296,7 +300,7 @@
             isCheckbox: {
                 type: Boolean,
                 default: true,
-            },
+            }
         },
         data() {
             return {
@@ -322,6 +326,9 @@
                 activeTab: 0,
                 selectedTagsName: {},
                 isSelectedTermsLoading: false,
+                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
+                previousLastTerms: [],
+                lastTermOnFisrtPage: null
             }
         },
         updated(){
@@ -340,16 +347,13 @@
         },
         methods: {
             fetchSelectedLabels() {
-                this.isSelectedTermsLoading = true;
 
                 let selected = this.selected instanceof Array ? this.selected : [this.selected];
 
-                if(this.taxonomy_id && selected.length) {
+                if (this.taxonomy_id && selected.length) {
                     for (const term of selected) {
 
-                        if(!this.isSelectedTermsLoading){
-                            this.isSelectedTermsLoading = true;
-                        }
+                        this.isSelectedTermsLoading = true;
 
                         axios.get(`/taxonomy/${this.taxonomy_id}/terms/${term}`)
                             .then((res) => {
@@ -361,12 +365,25 @@
                                 this.isSelectedTermsLoading = false;
                             });
                     }
-                } else {
-                    this.isSelectedTermsLoading = false;
+                } else if (this.metadatum_type === 'Tainacan\\Metadata_Types\\Relationship' && selected.length) {
+                    this.isSelectedTermsLoading = true;
+
+                    for (const item of selected) {
+
+                        axios.get('/items/' + item + '?fetch_only=title')
+                            .then((res) => {
+                                this.saveSelectedTagName(res.data.id, res.data.title);
+                                this.isSelectedTermsLoading = false;
+                            })
+                            .catch((error) => {
+                                this.$console.log(error);
+                                this.isSelectedTermsLoading = false;
+                            });
+                    }
                 }
             },
             saveSelectedTagName(value, label){
-                if(!this.selectedTagsName[value]) {
+                if (!this.selectedTagsName[value]) {
                     this.$set(this.selectedTagsName, `${value}`, label);
                 }
             },
@@ -376,23 +393,37 @@
                 }
                 return label;
             },
-            beforePage(){
-                this.checkboxListOffset -= this.maxNumOptionsCheckboxList;
+            previousPage() {
+
                 this.noMorePage = 0;
-
-                if(this.checkboxListOffset < 0){
-                    this.checkboxListOffset = 0;
-                }
-
                 this.isCheckboxListLoading = true;
 
-                this.getOptions(this.checkboxListOffset);
+                if (this.isUsingElasticSearch) {
+                    this.previousLastTerms.pop();
+
+                    if (this.previousLastTerms.length > 0) {
+                        this.getOptions(this.previousLastTerms.pop());
+                        this.previousLastTerms.push(this.checkboxListOffset);
+                    } else {
+                        this.getOptions(0);
+                    }
+                } else {
+                    this.checkboxListOffset -= this.maxNumOptionsCheckboxList;
+                    if (this.checkboxListOffset < 0)
+                        this.checkboxListOffset = 0;
+
+                    this.getOptions(this.checkboxListOffset);
+                }
             },
-            nextPage(){
-                if(!this.noMorePage) {
+            nextPage() {
+    
+                if (this.isUsingElasticSearch)
+                    this.previousLastTerms.push(this.checkboxListOffset);
+
+                if (!this.noMorePage && !this.isUsingElasticSearch) {
                     // LIMIT 0, 20 / LIMIT 19, 20 / LIMIT 39, 20 / LIMIT 59, 20
-                    if(this.checkboxListOffset === this.maxNumOptionsCheckboxList){
-                        this.checkboxListOffset += this.maxNumOptionsCheckboxList-1;
+                    if (this.checkboxListOffset === this.maxNumOptionsCheckboxList){
+                        this.checkboxListOffset += this.maxNumOptionsCheckboxList - 1;
                     } else {
                         this.checkboxListOffset += this.maxNumOptionsCheckboxList;
                     }
@@ -402,39 +433,36 @@
 
                 this.getOptions(this.checkboxListOffset);
             },
-            getOptions(offset){
+            getOptions(offset) {
                 let promise = '';
-
+                
                 // Cancels previous Request
                 if (this.getOptionsValuesCancel != undefined)
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                if ( this.metadatum_type === 'Tainacan\\Metadata_Types\\Relationship' ) {
-                    let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
-                        this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
-
-                    promise = this.getValuesRelationship( collectionTarget, this.optionName, this.isRepositoryLevel, [], offset, this.maxNumOptionsCheckboxList, true);
-
-                    promise.request
-                        .then(() => {
-                            this.isCheckboxListLoading = false;
-                            this.isSearchingLoading = false;
-                        })
-                        .catch(error => {
-                            this.$console.log(error);
-                        })
-                } else {
+                if ( this.metadatum_type === 'Tainacan\\Metadata_Types\\Relationship' )
+                    promise = this.getValuesRelationship( this.optionName, this.isRepositoryLevel, [], offset, this.maxNumOptionsCheckboxList, true);
+                else
                     promise = this.getValuesPlainText( this.metadatum_id, this.optionName, this.isRepositoryLevel, [], offset, this.maxNumOptionsCheckboxList, true);
+                
+                promise.request
+                    .then((data) => {
+                        this.isCheckboxListLoading = false;
+                        this.isSearchingLoading = false;
 
-                    promise.request
-                        .then(() => {
-                            this.isCheckboxListLoading = false;
-                            this.isSearchingLoading = false;
-                        })
-                        .catch(error => {
-                            this.$console.log(error);
-                        })
-                }
+                        if (this.isUsingElasticSearch) {
+                                                        
+                            this.checkboxListOffset = data.last_term;
+
+                            if (!this.lastTermOnFisrtPage || this.lastTermOnFisrtPage == this.checkboxListOffset) {
+                                this.lastTermOnFisrtPage = this.checkboxListOffset;
+                                this.previousLastTerms.push(0);
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        this.$console.log(error);
+                    })
 
                 // Search Request Token for cancelling
                 this.getOptionsValuesCancel = promise.source;
@@ -463,7 +491,7 @@
 
                     axios.get(route)
                         .then((res) => {
-                            this.searchResults = res.data;
+                            this.searchResults = res.data.values;
                             this.isSearchingLoading = false;
                         }).catch((error) => {
                         this.$console.log(error);
@@ -528,11 +556,11 @@
                 }
             },
             createColumn(res, column) {
-                let children = res.data;
+                let children = res.data.values;
 
                 this.totalRemaining = Object.assign({}, this.totalRemaining, {
                     [`${column == undefined ? 0 : column+1}`]: {
-                        remaining: res.headers['x-wp-total'],
+                        remaining: this.isUsingElasticSearch ? (children.length > 0 ? res.data.last_term == children[children.length - 1].value : false) : res.headers['x-wp-total'],
                     }
                 });
 
@@ -540,7 +568,7 @@
 
                 if (children.length > 0) {
                     for (let f in this.finderColumns) {
-                        if (this.finderColumns[f][0].value == children[0].value) {
+                        if (this.finderColumns[f].children[0].value == children[0].value) {
                             first = f;
                             break;
                         }
@@ -548,15 +576,16 @@
                 }
 
                 if (first != undefined) {
-                    this.finderColumns.splice(first, 1, children);
+                    this.finderColumns.splice(first, 1, { children: children, lastTerm: res.data.last_term });
                 } else {
-                    this.finderColumns.push(children);
+                    this.finderColumns.push({ children: children, lastTerm: res.data.last_term });
                 }
             },
-            appendMore(options, key) {
+            appendMore(options, key, lastTerm) {
                 for (let option of options) {
-                    this.finderColumns[key].push(option)
+                    this.finderColumns[key].children.push(option);
                 }
+                this.finderColumns[key].lastTerm = lastTerm;
             },
             getOptionChildren(option, key, index) {
                 let query_items = { 'current_query': this.query };
@@ -567,9 +596,8 @@
 
                 let parent = 0;
 
-                if (option) {
+                if (option)
                     parent = option.value;
-                }
 
                 let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=0&` + qs.stringify(query_items);
 
@@ -583,7 +611,7 @@
                 if(this.collection_id == 'default' || this.collection_id == 'filter_in_repository'){
                     route = `/facets/${this.metadatum_id}${query}`
                 }
-
+                
                 axios.get(route)
                     .then(res => {
                         this.removeLevelsAfter(key);
@@ -599,15 +627,19 @@
 
             },
             getMoreOptions(finderColumn, key) {
-                if (finderColumn.length > 0) {
-                    let parent = finderColumn[0].parent;
-                    let offset = finderColumn.length;
+
+                if (finderColumn.children && finderColumn.children.length > 0) {
+                    let parent = finderColumn.children[0].parent;
+                    let offset = finderColumn.children.length;
                     let query_items = { 'current_query': this.query };
 
                     let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=${offset}&` + qs.stringify(query_items);
 
                     if (!this.isFilter)
                         query += '&hideempty=0';
+
+                    if (finderColumn.lastTerm)
+                        query += '&last_term=' + finderColumn.lastTerm
 
                     this.isColumnLoading = true;
 
@@ -619,7 +651,13 @@
 
                     axios.get(route)
                         .then(res => {
-                            this.appendMore(res.data, key);
+                            this.appendMore(res.data.values, key, res.data.last_term);
+
+                            this.totalRemaining = Object.assign({}, this.totalRemaining, {
+                                [`${key}`]: {
+                                    remaining: this.isUsingElasticSearch ? (res.data.values.length > 0 ? (res.data.last_term == res.data.values[res.data.values.length - 1].value) : false) : res.headers['x-wp-total'],
+                                }
+                            });
 
                             this.isColumnLoading = false;
                         })
@@ -923,6 +961,13 @@
             text-overflow: ellipsis;
             overflow: hidden;
         }
+    }
+
+    .warning-no-more-terms {
+        color: $gray4;
+        font-size: 0.75rem;
+        padding: 0.5rem;
+        text-align: center;
     }
 
 

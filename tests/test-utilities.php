@@ -131,6 +131,38 @@ class TestUtilities extends TAINACAN_UnitTestCase {
 		$this->assertEquals(2, sizeof($test));
 		
 	}
-	
+
+	function test_replace_links_to_clickable_tag() {
+
+		$text = new \Tainacan\Metadata_Types\Text;
+
+		$text_no_links = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra sapien quis nunc vulputate dictum. Pellentesque id euismod mauris.";
+		$text_no_links_expected = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra sapien quis nunc vulputate dictum. Pellentesque id euismod mauris.";
+		$text_no_links_response = $text->make_clickable_links($text_no_links);
+		$this->assertEquals($text_no_links_expected, $text_no_links_response);
+
+		$text_simple_link = "Lorem https://www.tainacan.org/ ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra sapien quis nunc vulputate dictum. Pellentesque id euismod mauris.";
+		$text_simple_link_expected = 'Lorem <a href="https://www.tainacan.org/" target="_blank" title="https://www.tainacan.org/">https://www.tainacan.org/</a> ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra sapien quis nunc vulputate dictum. Pellentesque id euismod mauris.';
+		$text_simple_link_response = $text->make_clickable_links($text_simple_link);
+		$this->assertEquals($text_simple_link_expected, $text_simple_link_response);
+
+		$text_multiple_links = 'Lorem https://www.tainacan.org ipsum dolor sit amet http://www.tainacan.org' .
+													' ftp://www.teste.com.br consectetur adipiscing elit. ftps://www.teste.com.br Sed pharetra sapien quis nunc vulputate dictum.' .
+													' www.simple.com.br ' .
+													' www.simple.com ' .
+													' www.simple.org ' .
+													' Pellentesque id //ww.lair.com.br of a http://wwwliar.com.br euismod mauris. //pegadinha.com.br ';
+		
+		$text_multiple_links_expected =  'Lorem <a href="https://www.tainacan.org" target="_blank" title="https://www.tainacan.org">https://www.tainacan.org</a> ipsum dolor sit amet <a href="http://www.tainacan.org" target="_blank" title="http://www.tainacan.org">http://www.tainacan.org</a>' .
+													' <a href="ftp://www.teste.com.br" target="_blank" title="ftp://www.teste.com.br">ftp://www.teste.com.br</a> consectetur adipiscing elit. <a href="ftps://www.teste.com.br" target="_blank" title="ftps://www.teste.com.br">ftps://www.teste.com.br</a> Sed pharetra sapien quis nunc vulputate dictum.' .
+													' <a href="www.simple.com.br" target="_blank" title="www.simple.com.br">www.simple.com.br</a> ' . 
+													' <a href="www.simple.com" target="_blank" title="www.simple.com">www.simple.com</a> ' .
+													' <a href="www.simple.org" target="_blank" title="www.simple.org">www.simple.org</a> ' .
+													' Pellentesque id //ww.lair.com.br of a http://wwwliar.com.br euismod mauris. //pegadinha.com.br ';
+
+		$text_multiple_links_response = $text->make_clickable_links($text_multiple_links);
+		$this->assertEquals($text_multiple_links_expected, $text_multiple_links_response);
+
+	}
 	
 }

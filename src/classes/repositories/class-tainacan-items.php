@@ -194,6 +194,9 @@ class Items extends Repository {
 	 * to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
 	 * You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
 	 * appropriate WP_Query argument
+	 * 
+	 * If a number is passed to $args, it will return a \Tainacan\Entities\Item object.  But if the post is not found or
+	 * does not match the entity post type, it will return an empty array
 	 *
 	 * The second paramater specifies from which collections item should be fetched.
 	 * You can pass the Collection ID or object, or an Array of IDs or collection objects
@@ -209,9 +212,14 @@ class Items extends Repository {
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 
 		if ( is_numeric( $args ) ) {
+			
 			$existing_post = get_post( $args );
 			if ( $existing_post instanceof \WP_Post ) {
-				return new Entities\Item( $existing_post );
+				try {
+					return new Entities\Item( $existing_post );
+				} catch (\Exception $e) {
+					return [];
+				}
 			} else {
 				return [];
 			}
@@ -219,7 +227,12 @@ class Items extends Repository {
 		}
 
 		if ( empty( $collections ) ) {
-			$collections = $Tainacan_Collections->fetch( [], 'OBJECT' );
+			$post_types = get_post_types();
+			$collections = array_map( function($el) use ($Tainacan_Collections) {
+				if ( $id = $Tainacan_Collections->get_id_by_db_identifier($el) ) {
+					return $id;
+				}
+			} , $post_types);
 		}
 
 		if ( is_numeric( $collections ) ) {

@@ -32,7 +32,7 @@ git flow release start $NEW_VERSION
 
 ### Edit version numbers
 
-Edit `src/readme.txt` and `src/tainacan.php` and change the version numbers to `$NEW_VERSION`.
+Edit `src/readme.txt` and `src/tainacan.php` and change the version numbers to `$NEW_VERSION`. In `tainacan.php` also change the `TAINACAN_VERSION` constant after the comments section
 
 When releasing a RC version, append RC (number) to the version.
 
@@ -108,12 +108,6 @@ git checkout webpack.config.js
 
 ### Prepare SVN repo
 
-Create tag with the old version
-
-```
-svn cp https://plugins.svn.wordpress.org/tainacan/trunk https://plugins.svn.wordpress.org/tainacan/tags/$OLD_VERSION
-```
-
 clean trunk
 
 ```
@@ -132,6 +126,12 @@ Update assets
 cp $GIT_PATH/wp-repo-assets/* $SVN_PATH/assets/
 ```
 
+Create tag folder
+
+```
+mkdir $SVN_PATH/tags/$NEW_VERSION
+cp -R $SVN_PATH/trunk/* $SVN_PATH/tags/$NEW_VERSION/
+```
 
 ### Finish and commit
 

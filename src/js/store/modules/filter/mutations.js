@@ -36,6 +36,21 @@ export const setFilterTypes = (state, filterTypes) => {
     state.filterTypes = filterTypes;
 }
 
+// export const setRepositoryCollectionFilters = (state, repositoryCollectionFilters) => {
+//     state.repositoryCollectionFilters = repositoryCollectionFilters;
+// }
+
+export const setRepositoryCollectionFilters = (state, { collectionName, repositoryCollectionFilters }) => {
+    if (collectionName != undefined)
+        Vue.set(state.repositoryCollectionFilters, collectionName, repositoryCollectionFilters);
+    else
+        Vue.set(state.repositoryCollectionFilters, 'repository-filters', repositoryCollectionFilters);
+}
+
+export const clearRepositoryCollectionFilters = (state) => {
+    state.repositoryCollectionFilters = {};
+}
+
 export const setTaxonomyFilters = (state, taxonomyFilters) => {
     state.taxonomyFilters = taxonomyFilters;
 }

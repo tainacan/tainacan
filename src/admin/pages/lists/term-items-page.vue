@@ -19,7 +19,8 @@
                     },
                     content: isFiltersMenuCompressed ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters'),
                     autoHide: false,
-                    placement: 'auto-start'
+                    placement: 'auto-start',
+                    classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
                 }"  
                 v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="is-hidden-mobile"
@@ -79,9 +80,7 @@
                         <span 
                                 @click="updateSearch()"
                                 class="icon is-right">
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-search"/>
-                            </span>
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-search"/>
                         </span>
                 </div>
             </div>
@@ -124,7 +123,6 @@
                     :taxonomy="taxonomy"
                     :collapsed="collapseAll"
                     :is-repository-level="isRepositoryLevel"/>
-
             <section
                     v-else
                     class="is-grouped-centered section">
@@ -167,7 +165,7 @@
                 <!-- Item Creation Dropdown, only on Admin -->
                 <div 
                         class="search-control-item"
-                        v-if="!isOnTheme">
+                        v-if="!isOnTheme && !$route.query.iframemode">
                     <b-dropdown 
                             :mobile-modal="true"
                             id="item-creation-options-dropdown"
@@ -224,7 +222,8 @@
                                 },
                                 content: (totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry') ? (adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry') ? $i18n.get('info_current_view_mode_metadata_not_allowed') : $i18n.get('info_cant_select_metadata_without_items') : '',
                                 autoHide: false,
-                                placement: 'auto-start'
+                                placement: 'auto-start',
+                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
                             }" 
                             ref="displayedMetadataDropdown"
                             :mobile-modal="true"
@@ -319,7 +318,14 @@
                                 :aria-label="$i18n.get('label_sort_descending')"
                                 :disabled="totalItems <= 0 || order == 'DESC'"
                                 @click="onChangeOrder()">
-                            <span class="icon is-small gray-icon">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('label_sort_descending'),
+                                        autoHide: true,
+                                        placement: 'bottom',
+                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
+                                    }"
+                                    class="icon is-small gray-icon">
                                 <i class="tainacan-icon tainacan-icon-sortdescending"/>
                             </span>
                         </button>
@@ -329,7 +335,14 @@
                                 :aria-label="$i18n.get('label_sort_ascending')"
                                 class="button is-white is-small"
                                 @click="onChangeOrder()">
-                            <span class="icon is-small gray-icon">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('label_sort_ascending'),
+                                        autoHide: true,
+                                        placement: 'bottom',
+                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : '']     
+                                    }"
+                                    class="icon is-small gray-icon">
                                 <i class="tainacan-icon tainacan-icon-sortascending"/>
                             </span>
                         </button>
@@ -488,7 +501,9 @@
                 </div>
 
                 <!-- Exposers or alternative links modal button -->
-                <div class="search-control-item">
+                <div
+                        v-if="!$route.query.iframemode"
+                        class="search-control-item">
                     <button 
                             class="button is-white"
                             :aria-label="$i18n.get('label_urls')"
@@ -1463,11 +1478,13 @@
     }
 
     .is-fullscreen {
-        position: absolute;
+        position: fixed;
         top: 0;
         bottom: 0;
         left: 0;
         right: 0;
+        width: 100%;
+        height: 100%;
         width: 100vw;
         height: 100vh;
         z-index: 999999999;

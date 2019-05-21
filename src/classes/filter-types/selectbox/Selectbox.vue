@@ -25,7 +25,7 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios/axios';
+    import { tainacan as axios, isCancel } from '../../../js/axios/axios';
     import { filter_type_mixin } from '../filter-types-mixin'
 
     export default {
@@ -46,7 +46,9 @@
                     if( result && result.metadata_type ){
                         vm.metadatum_object = result;
                         vm.type = result.metadata_type;
-                        vm.loadOptions();
+                        
+                        if (!this.isUsingElasticSearch)
+                            vm.loadOptions();
                     }
                 })
                 .catch(error => {
@@ -54,6 +56,12 @@
                 });
             
             this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
+
+            if (this.isUsingElasticSearch) {
+                this.$eventBusSearch.$on('isLoadingItems', isLoading => {
+                    this.isLoadingOptions = isLoading;
+                });
+            }
         },
         props: {
             isRepositoryLevel: Boolean,
@@ -68,6 +76,16 @@
             }
         },
         mixins: [filter_type_mixin],
+        watch: {
+            selected(value) {
+                if (value) {
+                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                        filterId: this.filter.id,
+                        value: value
+                    });
+                }
+            }
+        },
         computed: {
             selected() {
                 if ( this.query && this.query.metaquery && Array.isArray( this.query.metaquery ) ) {
@@ -83,7 +101,6 @@
         }, 
         methods: {
             loadOptions(){
-
                 // Cancels previous Request
                 if (this.getOptionsValuesCancel != undefined)
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
@@ -94,40 +111,23 @@
                     .then(() => {
                     })
                     .catch( error => {
-                        this.$console.error('error select', error );
+                        if (isCancel(error))
+                            this.$console.log('Request canceled: ', error.message);
+                        else
+                            this.$console.error( error );
                     });
 
                 // Search Request Token for cancelling
                 this.getOptionsValuesCancel = promise.source;
             },
             onSelect(value){
-                this.selected = value;
+                //this.selected = value;
                 this.$emit('input', {
                     filter: 'selectbox',
                     metadatum_id: this.metadatum,
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     value: ( value ) ? value : ''
                 });
-
-                if (value) {
-                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                        filterId: this.filter.id,
-                        value: value
-                    });
-                }
-            },
-            selectedValues(){
-                if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
-                    return false;
-
-                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
-                if ( index >= 0){
-                    let metadata = this.query.metaquery[ index ];
-                    this.selected = metadata.value;
-
-                } else {
-                    return false;
-                }
             },
             cleanSearchFromTags(filterTag) {
                 if (filterTag.filterId == this.filter.id)
@@ -136,6 +136,9 @@
         },
         beforeDestroy() {
             this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
+
+            if (this.isUsingElasticSearch)
+                this.$eventBusSearch.$off('isLoadingItems');
         }
     }
 </script>

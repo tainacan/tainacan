@@ -61,6 +61,24 @@ class Importer_Handler {
             'manual_mapping' => false,
         ]);
 
+        $this->register_importer([
+            'name' => 'Youtube (Experimental)',
+            'description' => __('Import items from an Youtube URL', 'tainacan'),
+            'slug' => 'youtube_importer',
+            'class_name' => '\Tainacan\Importer\Youtube_Importer',
+            'manual_collection' => true,
+            'manual_mapping' => true,
+        ]);
+
+        $this->register_importer([
+            'name' => 'Flickr (Experimental)',
+            'description' => __('Import items from an Flickr URL', 'tainacan'),
+            'slug' => 'flickr_importer',
+            'class_name' => '\Tainacan\Importer\Flickr_Importer',
+            'manual_collection' => true,
+            'manual_mapping' => true,
+        ]);
+
 		do_action('tainacan_register_importers');
 
 		add_action( 'tainacan-enqueue-admin-scripts', array($this, 'enqueue_scripts') );
@@ -68,7 +86,7 @@ class Importer_Handler {
 
 	function enqueue_scripts() {
 	 	global $TAINACAN_BASE_URL;
-	 	wp_enqueue_script('import_term_csv_script', $TAINACAN_BASE_URL . '/importer/term-importer/js/term.js', false, false, true);
+	 	wp_enqueue_script('import_term_csv_script', $TAINACAN_BASE_URL . '/importer/term-importer/js/term.js', false, TAINACAN_VERSION, true);
 	}
 	
 	function add_to_queue(\Tainacan\Importer\Importer $importer_object) {

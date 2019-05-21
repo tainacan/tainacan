@@ -9,7 +9,6 @@
                 class="icon has-text-centered loading-icon">
             <div class="control has-icons-right is-loading is-clearfix" />
         </span> -->
-
         <div
                 v-for="(option, index) in options.slice(0, filter.max_options)"
                 v-if="!isLoadingOptions"
@@ -47,7 +46,7 @@
             </button>
         </div>
         <p 
-                v-if="!isLoadingOptions && options.length != undefined && options.length <= 0"
+                v-if="isLoadingOptions == false && options.length != undefined && options.length <= 0"
                 class="no-options-placeholder">
             {{ $i18n.get('info_no_options_avialable_filtering') }}
         </p>
@@ -55,7 +54,7 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios/axios';
+    import { tainacan as axios, isCancel } from '../../../js/axios/axios';
     import { filter_type_mixin } from '../filter-types-mixin';
     import CheckboxRadioModal from '../../../admin/components/other/checkbox-radio-modal.vue';
 
@@ -63,21 +62,22 @@
         created(){
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
             this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id;
-            const vm = this;
 
-            let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum +'?nopaging=1';
+            let route = '/collection/' + this.collection + '/metadata/' +  this.metadatum +'?nopaging=1';
 
-            if(this.isRepositoryLevel || this.collection == 'filter_in_repository'){
-                in_route = '/metadata?nopaging=1';
-            }
+            if (this.isRepositoryLevel || this.collection == 'filter_in_repository')
+                route = '/metadata?nopaging=1';
 
-            axios.get(in_route)
+            axios.get(route)
                 .then( res => {
                     let result = res.data;
-                    if( result && result.metadata_type ){
-                        vm.metadatum_object = result;
-                        vm.type = result.metadata_type;
-                        vm.loadOptions();
+                    if ( result && result.metadata_type ){
+                        this.metadatum_object = result;
+                        this.type = result.metadata_type;
+                    
+                        if (!this.isUsingElasticSearch)
+                            this.loadOptions();
+
                     }
                 })
                 .catch(error => {
@@ -85,6 +85,11 @@
                 });
 
             this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
+
+            if (this.isUsingElasticSearch) {
+                this.isLoadingOptions = false;
+                this.$eventBusSearch.$on('isLoadingItems', this.updatesIsLoading);
+            }
         },
         props: {
             isRepositoryLevel: Boolean,
@@ -107,47 +112,36 @@
             }
         },
         methods: {
-            loadOptions(skipSelected){
-                
+            loadOptions(skipSelected) {
                 let promise = null;
                 
                 // Cancels previous Request
                 if (this.getOptionsValuesCancel != undefined)
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
-                    let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
-                        this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
-
-                    promise = this.getValuesRelationship( collectionTarget, null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1');
-                    promise.request
-                        .then(() => {
-                            if(this.options.length > this.filter.max_options){
-                                this.options.splice(this.filter.max_options);
-                            }
-                        }).catch((error) => {
-                            this.$console.error(error);
-                    }) 
-                } else {
+                if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' )
+                    promise = this.getValuesRelationship( null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1');
+                else
                     promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1' );
+                
+                if (skipSelected != undefined && skipSelected == true) {
                     promise.request
                         .then(() => {
-
-                            if(this.options.length > this.filter.max_options){
+                            if (this.options.length > this.filter.max_options)
                                 this.options.splice(this.filter.max_options);
-                            }
-                            
                         }).catch((error) => {
                             this.$console.error(error);
                         });
-                }
-                if (skipSelected == undefined || skipSelected == false) {
+                } else {
                     promise.request
                         .then(() => {
-                            this.selectedValues()
+                            this.selectedValues();
                         })
                         .catch( error => {
-                            this.$console.log('error select', error );
+                            if (isCancel(error))
+                                this.$console.log('Request canceled: ', error.message);
+                            else
+                                this.$console.error( error );
                         });
                 }
                 
@@ -178,7 +172,7 @@
                     value: onlyLabels.length ? onlyLabels : this.selected,
                 });
             },
-            selectedValues(){
+            selectedValues() {
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
@@ -186,6 +180,7 @@
                 if ( index >= 0){
                     let query = this.query.metaquery.slice();
                     this.selected = query[ index ].value;
+
                 } else {
                     this.selected = [];
                     return false;
@@ -209,7 +204,9 @@
                         query: this.query
                     },
                     events: {
-                        appliedCheckBoxModal: () => this.loadOptions()
+                        appliedCheckBoxModal: () => {
+                            this.loadOptions();
+                        } 
                     }
                 });
             },
@@ -244,10 +241,16 @@
                         this.selectedValues();
                     }
                 }
+            },
+            updatesIsLoading(isLoading) {
+                this.isLoadingOptions = isLoading;
             }
         },
         beforeDestroy() {
             this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
+            
+            if (this.isUsingElasticSearch)
+                this.$eventBusSearch.$off('isLoadingItems', this.updatesIsLoading);
         }
     }
 </script>

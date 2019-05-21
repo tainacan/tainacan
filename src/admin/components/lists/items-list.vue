@@ -75,7 +75,7 @@
 
             <!-- Context menu for right click selection -->
             <div 
-                    v-if="cursorPosY > 0 && cursorPosX > 0"
+                    v-if="cursorPosY > 0 && cursorPosX > 0 && !$route.query.readmode"
                     class="context-menu">
 
                 <!-- Backdrop for escaping context menu -->
@@ -89,12 +89,12 @@
                         :style="{ top: cursorPosY + 'px', left: cursorPosX + 'px' }">
                     <b-dropdown-item
                             @click="openItem()" 
-                            v-if="!isOnTrash">
+                            v-if="!isOnTrash && !$route.query.iframemode">
                         {{ $i18n.getFrom('items','view_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="openItemOnNewTab()"
-                            v-if="!isOnTrash">
+                            v-if="!isOnTrash && !$route.query.iframemode">
                         {{ $i18n.get('label_open_item_new_tab') }}
                     </b-dropdown-item>
                     <b-dropdown-item 
@@ -104,12 +104,12 @@
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="goToItemEditPage(contextMenuItem)"
-                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit">
+                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$route.query.iframemode">
                         {{ $i18n.getFrom('items','edit_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="deleteOneItem(contextMenuItem.id)"
-                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit">
+                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$route.query.iframemode">
                         {{ $i18n.get('label_delete_item') }}
                     </b-dropdown-item>
                 </b-dropdown>
@@ -130,7 +130,7 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId"
+                            v-if="collectionId && !$route.query.readmode"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="grid-item-checkbox">
                         <b-checkbox 
@@ -140,10 +140,7 @@
 
                     <!-- Title -->
                     <div
-                            :style="{
-                             'padding-left': !collectionId ? '0.5rem !important' : '2.75rem',
-                             'margin-left': !collectionId ? '0 !important' : '24px'
-                            }"
+                            :style="{ 'padding-left': !collectionId ? '0.5rem !important' : '2.75rem' }"
                             class="metadata-title">
                         <p 
                                 v-tooltip="{
@@ -176,7 +173,7 @@
 
                     <!-- Actions -->
                     <div 
-                            v-if="item.current_user_can_edit"
+                            v-if="item.current_user_can_edit && !$route.query.iframemode"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -184,7 +181,13 @@
                                 id="button-edit"   
                                 :aria-label="$i18n.getFrom('items','edit_item')" 
                                 @click.prevent.stop="goToItemEditPage(item)">
-                            <span class="icon">
+                            <span 
+                                    v-tooltip="{
+                                        content: $i18n.get('edit'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
                             </span>
                         </a>
@@ -192,7 +195,13 @@
                                 :aria-lavel="$i18n.get('label_button_untrash')"
                                 @click.prevent.stop="untrashOneItem(item.id)"
                                 v-if="isOnTrash">
-                            <span class="icon">
+                            <span 
+                                    v-tooltip="{
+                                        content: $i18n.get('label_recover_from_trash'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-undo"/>
                             </span>
                         </a>
@@ -201,7 +210,13 @@
                                 id="button-delete" 
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
-                            <span class="icon">
+                            <span
+                                    v-tooltip="{
+                                        content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i 
                                         :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                         class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
@@ -231,7 +246,7 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId"
+                            v-if="collectionId && !$route.query.readmode"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="masonry-item-checkbox">
                         <label 
@@ -270,7 +285,7 @@
                     
                     <!-- Actions -->
                     <div 
-                            v-if="item.current_user_can_edit"
+                            v-if="item.current_user_can_edit && !$route.query.iframemode"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -278,7 +293,13 @@
                                 id="button-edit"   
                                 :aria-label="$i18n.getFrom('items','edit_item')" 
                                 @click.prevent.stop="goToItemEditPage(item)">
-                            <span class="icon">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('edit'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
                             </span>
                         </a>
@@ -286,7 +307,13 @@
                                 :aria-lavel="$i18n.get('label_button_untrash')"
                                 @click.prevent.stop="untrashOneItem(item.id)"
                                 v-if="isOnTrash">
-                            <span class="icon">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('label_recover_from_trash'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-undo"/>
                             </span>
                         </a>
@@ -295,7 +322,13 @@
                                 id="button-delete" 
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
-                            <span class="icon">
+                            <span
+                                    v-tooltip="{
+                                        content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i 
                                         :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                         class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
@@ -320,7 +353,7 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId"
+                            v-if="collectionId && !$route.query.readmode"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="card-checkbox">
                         <b-checkbox 
@@ -350,7 +383,7 @@
                     </div>
                     <!-- Actions -->
                     <div 
-                            v-if="item.current_user_can_edit"
+                            v-if="item.current_user_can_edit && !$route.query.iframemode"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -358,7 +391,13 @@
                                 id="button-edit"   
                                 :aria-label="$i18n.getFrom('items','edit_item')" 
                                 @click.prevent.stop="goToItemEditPage(item)">
-                            <span class="icon">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('edit'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
                             </span>
                         </a>
@@ -366,7 +405,13 @@
                                 :aria-lavel="$i18n.get('label_button_untrash')"
                                 @click.prevent.stop="untrashOneItem(item.id)"
                                 v-if="isOnTrash">
-                            <span class="icon">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('label_recover_from_trash'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-undo"/>
                             </span>
                         </a>
@@ -375,7 +420,13 @@
                                 id="button-delete" 
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
-                            <span class="icon">
+                            <span
+                                    v-tooltip="{
+                                        content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i 
                                         :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                         class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
@@ -465,7 +516,7 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId"
+                            v-if="collectionId && !$route.query.readmode"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="record-checkbox">
                         <label
@@ -520,7 +571,7 @@
                     </div>
                     <!-- Actions -->
                     <div 
-                            v-if="item.current_user_can_edit"
+                            v-if="item.current_user_can_edit && !$route.query.iframemode"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -528,7 +579,13 @@
                                 id="button-edit"   
                                 :aria-label="$i18n.getFrom('items','edit_item')" 
                                 @click.prevent.stop="goToItemEditPage(item)">
-                            <span class="icon">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('edit'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
                             </span>
                         </a>
@@ -536,7 +593,13 @@
                                 :aria-lavel="$i18n.get('label_button_untrash')"
                                 @click.prevent.stop="untrashOneItem(item.id)"
                                 v-if="isOnTrash">
-                            <span class="icon">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('label_recover_from_trash'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-undo"/>
                             </span>
                         </a>
@@ -545,7 +608,13 @@
                                 id="button-delete" 
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
-                            <span class="icon">
+                            <span
+                                    v-tooltip="{
+                                        content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
                                 <i 
                                         :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                         class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
@@ -568,6 +637,7 @@
                             <span 
                                     v-for="(column, index) in tableMetadata"
                                     :key="index"
+                                    :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }"
                                     v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'description')">
                                 <h3 class="metadata-label">{{ $i18n.get('label_description') }}</h3>
                                 <p 
@@ -577,6 +647,7 @@
                             <span 
                                     v-for="(column, index) in tableMetadata"
                                     :key="index"
+                                    :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }"
                                     v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
                                 <h3 class="metadata-label">{{ column.name }}</h3>
                                 <p 
@@ -597,7 +668,7 @@
                     <tr>
                         <!-- Checking list -->
                         <th
-                                v-if="collectionId">
+                                v-if="collectionId && !$route.query.readmode">
                             &nbsp;
                             <!-- nothing to show on header for checkboxes -->
                         </th>
@@ -634,7 +705,7 @@
                         <!-- Checking list -->
                         <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                         <td
-                                v-if="collectionId"
+                                v-if="collectionId && !$route.query.readmode"
                                 :class="{ 'is-selecting': isSelectingItems }"
                                 class="checkbox-cell">
                             <b-checkbox 
@@ -649,7 +720,7 @@
                                 v-if="column.display"
                                 :label="column.name" 
                                 class="column-default-width"
-                                :class="{
+                                :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea',
                                         'thumbnail-cell': column.metadatum == 'row_thumbnail',
                                         'column-main-content' : column.metadata_type_object != undefined ? (column.metadata_type_object.related_mapped_prop == 'title') : false,
                                         'column-needed-width column-align-right' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'float' || 
@@ -701,6 +772,7 @@
                                             show: 500,
                                             hide: 300,
                                         },
+                                        classes: [ column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '' ],
                                         content: renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
                                         html: true,
                                         autoHide: false,
@@ -740,7 +812,7 @@
 
                         <!-- Actions -->
                         <td 
-                                v-if="item.current_user_can_edit"
+                                v-if="item.current_user_can_edit && !$route.query.iframemode"
                                 class="actions-cell"
                                 :label="$i18n.get('label_actions')">
                             <div class="actions-container">
@@ -749,7 +821,13 @@
                                         id="button-edit"   
                                         :aria-label="$i18n.getFrom('items','edit_item')" 
                                         @click.prevent.stop="goToItemEditPage(item)">
-                                    <span class="icon">
+                                    <span
+                                            v-tooltip="{
+                                                content: $i18n.get('edit'),
+                                                autoHide: true,
+                                                placement: 'auto'
+                                            }"
+                                            class="icon">
                                         <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
                                     </span>
                                 </a>
@@ -757,7 +835,13 @@
                                         :aria-lavel="$i18n.get('label_button_untrash')"
                                         @click.prevent.stop="untrashOneItem(item.id)"
                                         v-if="isOnTrash">
-                                    <span class="icon">
+                                    <span
+                                            v-tooltip="{
+                                                content: $i18n.get('label_recover_from_trash'),
+                                                autoHide: true,
+                                                placement: 'auto'
+                                            }"
+                                            class="icon">
                                         <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-undo"/>
                                     </span>
                                 </a>
@@ -766,7 +850,13 @@
                                         id="button-delete" 
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneItem(item.id)">
-                                    <span class="icon">
+                                    <span
+                                            v-tooltip="{
+                                                content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
+                                                autoHide: true,
+                                                placement: 'auto'
+                                            }"
+                                            class="icon">
                                     <i 
                                             :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                             class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
@@ -1045,25 +1135,31 @@ export default {
             if ($event.ctrlKey || $event.shiftKey) {
                 this.$set(this.selectedItems, index, !this.selectedItems[index]);
             } else {
-                if(this.isOnTrash){
-                    this.$toast.open({
-                        duration: 3000,
-                        message: this.$i18n.get('info_warning_remove_from_trash_first'),
-                        position: 'is-bottom',
-                        type: 'is-warning'
-                    });
-                } else {
-                    this.$router.push(this.$routerHelper.getItemPath(item.collection_id, item.id));
+                if (!this.$route.query.iframemode && this.$route.query.iframemode) {
+                    this.$set(this.selectedItems, index, !this.selectedItems[index]);
+                } else if (!this.$route.query.iframemode && !this.$route.query.readmode) {
+                    if(this.isOnTrash){
+                        this.$toast.open({
+                            duration: 3000,
+                            message: this.$i18n.get('info_warning_remove_from_trash_first'),
+                            position: 'is-bottom',
+                            type: 'is-warning'
+                        });
+                    } else {
+                        this.$router.push(this.$routerHelper.getItemPath(item.collection_id, item.id));
+                    }
                 }
             }
         },
         onRightClickItem($event, item, index) {
-            $event.preventDefault();
+            if (!this.$route.query.readmode) {
+                $event.preventDefault();
 
-            this.cursorPosX = $event.clientX;
-            this.cursorPosY = $event.clientY;
-            this.contextMenuItem = item;
-            this.contextMenuIndex = index;
+                this.cursorPosX = $event.clientX;
+                this.cursorPosY = $event.clientY;
+                this.contextMenuItem = item;
+                this.contextMenuIndex = index;
+            }
         },
         clearContextMenu() {
             this.cursorPosX = -1;
@@ -1081,7 +1177,7 @@ export default {
             if (!metadata || itemMetadata == undefined) {
                 return '';
             } else {
-                if (component != undefined && component == 'tainacan-textarea')
+                if ((component != undefined && component == 'tainacan-textarea') || this.$route.query.iframemode)
                     return metadata.value_as_string;
                 else
                     return metadata.value_as_html;

@@ -2,9 +2,9 @@
 Contributors: andrebenedito, daltonmartins, fabianobn, jacsonp, leogermani, weryques, wetah, eduardohumberto, ravipassos, jessicafpx, marinagiolo, omarceloavila
 Tags: museums, libraries, archives, GLAM, collections, repository
 Requires at least: 4.8
-Tested up to: 5.1.1
+Tested up to: 5.2
 Requires PHP: 5.6
-Stable tag: trunk
+Stable tag: 0.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -25,6 +25,8 @@ Tainacan is a powerful and flexible repository platform for WordPress. Manage an
 * "Themes": The Tainacan plugin has its own default theme, which helps you to showcase your collections in a beautiful and effective manner. But it can also work with any WordPress theme, so interface developers can easyly add Tainacan specific features to an existing theme.
 
 * "API and Interoperability": Tainacan implements a RESTful API (read and write) to allow other applications to interact with your repository. That way, you can expose your collection in different formats, such as Json, JsonLD, OAI-PMH and others. If your collection has a specific set of metadata, you can map this metadata to match the patterns you want to use.
+
+* "Gutenberg blocks": Tell stories with your collections. Tainacan offers you several Gutenberg blocks so you can present your collections to the public in many different ways!
 
 == Getting Started ==
 
@@ -87,3 +89,6 @@ If you have Imagick installed in your server, Tainacan will be able to automatic
 9. Set up Taxonomies to be used across your repository
 10. Bulk edit as many items as you need quickly
 11. Expose your collection using Tainacan default theme
+12. Use Gutenberg blocks to display your collections in posts and pages
+13. Choose which items will be displayed in your block
+14. Items displayed using a Gutenberg block 

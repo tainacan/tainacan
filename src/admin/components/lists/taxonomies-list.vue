@@ -147,7 +147,14 @@
                                         id="button-edit" 
                                         :aria-label="$i18n.getFrom('taxonomies','edit_item')" 
                                         @click="onClickTaxonomy($event, taxonomy.id, index)">
-                                    <span class="icon">
+                                    <span
+                                            v-tooltip="{
+                                                content: $i18n.get('edit'),
+                                                autoHide: true,
+                                                classes: ['tooltip', 'repository-tooltip'], 
+                                                placement: 'bottom'
+                                            }"
+                                            class="icon">
                                         <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
                                     </span>
                                 </a>
@@ -155,7 +162,14 @@
                                         id="button-delete" 
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneTaxonomy(taxonomy.id)">
-                                    <span class="icon">
+                                    <span
+                                            v-tooltip="{
+                                                content: $i18n.get('delete'),
+                                                autoHide: true,
+                                                classes: ['tooltip', 'repository-tooltip'],
+                                                placement: 'bottom'
+                                            }"
+                                            class="icon">
                                         <i 
                                                 :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                                 class="has-text-secondary tainacan-icon tainacan-icon-20px"/>

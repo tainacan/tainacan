@@ -167,8 +167,14 @@
                                         type="button"
                                         @click="cancelBack">{{ $i18n.get('cancel') }}</button>
                             </div>
+                            <p 
+                                    v-if="updatedAt != undefined"
+                                    class="updated-at">
+                                {{ ($i18n.get('info_updated_at') + ' ' + updatedAt) }}
+                            </p>
                             <div class="control">
                                 <button
+                                        :class="{ 'is-loading': isLoadingTaxonomy }"
                                         id="button-submit-taxonomy-creation"
                                         @click.prevent="onSubmit"
                                         class="button is-success">{{ $i18n.get('save') }}</button>
@@ -234,7 +240,8 @@
                 wpPostTypes: tainacan_plugin.wp_post_types,
                 editFormErrors: {},
                 formErrorMessage: '',
-                entityName: 'taxonomy'
+                entityName: 'taxonomy',
+                updatedAt: undefined
             }
         },
         components: {
@@ -338,7 +345,9 @@
                         this.formErrorMessage = '';
                         this.editFormErrors = {};
 
-                        this.$router.push(this.$routerHelper.getTaxonomiesPath());
+                        // Updates saved at message
+                        let now = new Date();
+                        this.updatedAt = now.toLocaleString();
                     })
                     .catch((errors) => {
                         for (let error of errors.errors) {
@@ -485,6 +494,14 @@
     }
     .tainacan-form .column:last-of-type {
         padding-left: 0;
+    }
+    .form-submit {
+        align-items: center;
+    }
+    .updated-at {
+        margin: 0 1rem 0 auto;
+        color: #555758;
+        font-style: italic;
     }
 </style>
 

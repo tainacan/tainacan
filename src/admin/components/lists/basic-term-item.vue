@@ -25,12 +25,24 @@
                 :class="{'is-disabled': isEditingTerm}">
             <a
                     @click.prevent="editTerm()">
-                <span class="icon">
+                <span
+                        v-tooltip="{
+                            content: $i18n.get('edit'),
+                            autoHide: true,
+                            placement: 'auto'
+                        }"
+                        class="icon">
                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
                 </span>
             </a>
             <a @click.prevent="tryToRemoveTerm()">
-                <span class="icon">
+                <span
+                        v-tooltip="{
+                            content: $i18n.get('delete'),
+                            autoHide: true,
+                            placement: 'auto'
+                        }"
+                        class="icon">
                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
                 </span>
             </a>

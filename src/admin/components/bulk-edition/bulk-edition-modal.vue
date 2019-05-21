@@ -173,7 +173,13 @@
                                 v-if="!bulkEditionProcedures[criterion].isDone && !bulkEditionProcedures[criterion].isExecuting"
                                 @click="removeThis(criterion)"
                                 class="button is-white is-pulled-right">
-                            <span class="icon">
+                            <span 
+                                    v-tooltip="{
+                                        content: $i18n.get('remove_search_criterion'),
+                                        autoHide: true,
+                                        placement: 'auto-end'
+                                    }"
+                                    class="icon">
                                 <i class="has-text-gray4 tainacan-icon tainacan-icon-20px tainacan-icon-cancel"/>
                             </span>
                         </button>
@@ -248,7 +254,13 @@
                                     bulkEditionProcedures[criterion].action"
                                 @click="executeBulkEditionProcedure(criterion)"
                                 class="button is-white is-pulled-right">
-                            <span class="icon">
+                            <span 
+                                    v-tooltip="{
+                                        content: $i18n.get('label_apply_changes'),
+                                        autoHide: true,
+                                        placement: 'auto-end'
+                                    }"
+                                    class="icon">
                                 <i class="has-text-gray4 tainacan-icon tainacan-icon-20px tainacan-icon-play"/>
                             </span>
                         </button>
@@ -563,8 +575,7 @@
     }
 
     .this-tainacan-modal-content {
-        border-radius: 10px;
-        min-height: 400px;
+        min-height: 300px;
     }
 
     .this-tainacan-modal-content .form-submit {

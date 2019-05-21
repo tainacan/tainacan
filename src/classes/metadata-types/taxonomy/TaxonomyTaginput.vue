@@ -97,7 +97,7 @@
                     this.isFetching = false;
                     throw error;
                 });
-            }, 300),
+            }, 500),
             selectedValues(){
                 let selected = [];
 

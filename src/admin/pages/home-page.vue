@@ -168,7 +168,7 @@ export default {
         loadCollections() {
             this.cleanCollections();    
             this.isLoadingCollections = true;
-            this.fetchCollections({ page: 1, collectionsPerPage: 5, status: undefined, contextEdit: true })
+            this.fetchCollections({ page: 1, collectionsPerPage: 9, status: undefined, contextEdit: true })
             .then(() => {
                 this.isLoadingCollections = false;
             }) 
@@ -255,7 +255,6 @@ export default {
                 a {
                     margin-right: 2rem;
                     display: inline-flex;
-                    overflow: hidden;
                     text-overflow: ellipsis;
                     white-space: nowrap;
 

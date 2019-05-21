@@ -58,18 +58,31 @@
                         <div class="handle">
                             <span 
                                     v-if="!(isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || isRepositoryLevel)"
+                                    v-tooltip="{
+                                        content: $i18n.get('instruction_drag_and_drop_filter_sort'),
+                                        autoHide: true,
+                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        placement: 'auto-start'
+                                    }"
                                     class="icon grip-icon">
                                 <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
                             </span>
-                            <span class="icon icon-level-identifier">
+                            <span 
+                                    v-tooltip="{
+                                        content: filter.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
+                                        autoHide: true,
+                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        placement: 'auto-start'
+                                    }"
+                                    class="icon icon-level-identifier">
                                 <i 
                                     :class="{ 
-                                              'tainacan-icon-collections': filter.collection_id == collectionId, 
-                                              'tainacan-icon-repository': filter.collection_id != collectionId,
-                                              'has-text-turquoise5': filter.enabled && filter.collection_id == collectionId, 
-                                              'has-text-blue5': filter.enabled && filter.collection_id != collectionId,
-                                              'has-text-gray3': !filter.enabled  
-                                            }"
+                                        'tainacan-icon-collections': filter.collection_id == collectionId, 
+                                        'tainacan-icon-repository': filter.collection_id != collectionId,
+                                        'has-text-turquoise5': filter.enabled && filter.collection_id == collectionId, 
+                                        'has-text-blue5': filter.enabled && filter.collection_id != collectionId,
+                                        'has-text-gray3': !filter.enabled  
+                                    }"
                                     class="tainacan-icon" />
                             </span> 
                             <span 
@@ -102,14 +115,28 @@
                                 <a 
                                         :style="{ visibility: filter.collection_id != collectionId && !isRepositoryLevel? 'hidden' : 'visible' }"
                                         @click.prevent="editFilter(filter)">
-                                    <span class="icon">
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('edit'),
+                                                autoHide: true,
+                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                placement: 'bottom'
+                                            }"
+                                            class="icon">
                                         <i class="tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
                                     </span>
                                 </a>
                                 <a 
                                         :style="{ visibility: filter.collection_id != collectionId && !isRepositoryLevel ? 'hidden' : 'visible' }"
                                         @click.prevent="removeFilter(filter)">
-                                    <span class="icon">
+                                    <span
+                                            v-tooltip="{
+                                                content: $i18n.get('delete'),
+                                                autoHide: true,
+                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                placement: 'bottom'
+                                            }"
+                                            class="icon">
                                         <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
                                     </span>
                                 </a>
@@ -151,12 +178,29 @@
                                 v-for="(metadatum, index) in availableMetadata"
                                 :key="index"
                                 @click.prevent="addMetadatumViaButton(metadatum, index)">
-                            <span class="icon grip-icon">
+                            <span 
+                                    v-tooltip="{
+                                        content: $i18n.get('instruction_click_or_drag_filter_create'),
+                                        autoHide: true,
+                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        placement: 'auto-start'
+                                    }" 
+                                    class="icon grip-icon">
                                 <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
                             </span>
-                            <span class="icon icon-level-identifier">
+                            <span 
+                                    v-tooltip="{
+                                        content: isRepositoryLevel || metadatum.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
+                                        autoHide: true,
+                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        placement: 'auto-start'
+                                    }"
+                                    class="icon icon-level-identifier">
                                 <i 
-                                    :class="{ 'tainacan-icon-collections has-text-turquoise5': metadatum.collection_id == collectionId && !isRepositoryLevel, 'tainacan-icon-repository has-text-blue5': isRepositoryLevel || metadatum.collection_id != collectionId }"
+                                    :class="{   
+                                        'tainacan-icon-collections has-text-turquoise5': metadatum.collection_id == collectionId && !isRepositoryLevel, 
+                                        'tainacan-icon-repository has-text-blue5': isRepositoryLevel || metadatum.collection_id != collectionId 
+                                    }"
                                     class="tainacan-icon" />
                             </span>  
                             <span class="metadatum-name">{{ metadatum.name }}</span>

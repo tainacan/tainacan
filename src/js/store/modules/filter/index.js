@@ -10,7 +10,8 @@ const state = {
     },
     filters: [],
     filterTypes: [],
-    taxonomyFilters: {}
+    taxonomyFilters: {},
+    repositoryCollectionFilters: {}
 };
 
 export default {

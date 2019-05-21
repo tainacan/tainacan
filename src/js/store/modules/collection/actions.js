@@ -73,13 +73,13 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
             })
                 .then(res => {
                     
-                    let items = res.data;
+                    let items = res.data.items;
                     let viewModeObject = tainacan_plugin.registered_view_modes[postQueries.view_mode];
                     
                     if (isOnTheme && viewModeObject != undefined && viewModeObject.type == 'template') {
-                        commit('setItemsListTemplate', items);
+                        commit('setItemsListTemplate', res.data.template);
                         resolve({
-                            'itemsListTemplate': items, 
+                            'itemsListTemplate': res.data.template, 
                             'total': res.headers['x-wp-total'], 
                             hasFiltered: hasFiltered, 
                             advancedSearchResults:  advancedSearchResults,
@@ -97,6 +97,12 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                     dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
                     dispatch('search/setTotalPages', res.headers['x-wp-totalpages'], { root: true } );
                     dispatch('search/setItemsPerPage', res.headers['x-wp-itemsperpage'], { root: true } );
+                    
+                    if (res.data.filters && Object.values(res.data.filters) && Object.values(res.data.filters).length > 0)
+                        dispatch('search/setFacets', res.data.filters, { root: true } );
+                    else
+                        dispatch('search/setFacets', {}, { root: true } );
+
                 })
                 .catch((thrown) => {
                     if (axios.isCancel(thrown)) {

@@ -40,6 +40,10 @@ Check out the digital exhibits from [Museu do Índio](http://tainacan.museudoind
 
 In addition to [our documentation](https://wiki.tainacan.org/) and [instructional videos](https://youtu.be/oEl9bWe_rWI), we provide technical support on our [mailing list](https://lists.riseup.net/www/info/tainacan) in English, Portuguese and Spanish. You are welcome to send all of your questions!
 
+### Developers 
+
+Please refer to our [Developers Documentation](docs/index.md) if you want to develop tainacan plugins, themes or if you want to contribute to the core.
+
 ### Contributing
 Tainacan is a free, open source software licensed under **GPLv3**. Contributions to the codebase will abide to the same license; other contributions may be under additional or other terms.
 

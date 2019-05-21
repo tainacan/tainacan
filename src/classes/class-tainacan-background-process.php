@@ -142,6 +142,9 @@ abstract class Background_Process extends \WP_Background_Process {
 		$data = $batch->data;
 		if ( ! empty( $data ) ) {
 			global $wpdb;
+			if (!isset($batch->output)) {
+				$batch->output = '';
+			}
 			$wpdb->update(
 				$this->table, 
 				[
@@ -263,6 +266,7 @@ abstract class Background_Process extends \WP_Background_Process {
 		$batch       = new \stdClass();
 		$batch->key  = $query->ID;
 		$batch->data = maybe_unserialize( $query->data );
+		$batch->status = $query->status;
 		
 		if ($batch->status != 'running') {
 			$this->open($batch->key);

@@ -296,7 +296,9 @@
                                         </span>
                                             {{ metadatum.metadatum.name }}
                                         </label>
-                                        <div class="content">
+                                        <div
+                                                :class="{ 'metadata-type-textarea': metadatum.metadatum.metadata_type_object.component == 'tainacan-textarea' }"
+                                                class="content">
                                             <p v-html="metadatum.value_as_html != '' ? metadatum.value_as_html : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
                                         </div>
                                     </b-collapse>

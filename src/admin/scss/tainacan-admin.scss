@@ -28,6 +28,7 @@
 @import "../scss/_notices.scss";
 @import "../scss/_filters-menu-modal.scss";
 @import "../scss/_repository-level-overrides.scss";
+@import "../scss/_iframe_read_mode_overrides.scss";
 
 // Clears wordpress content
 body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, body.tainacan-admin-page #wp-auth-check-wrap {
@@ -110,6 +111,23 @@ a:hover {
     
     @media screen and (max-width: 769px) {
         padding: $page-mobile-top-padding $page-mobile-side-padding;
+    }
+}
+
+// Metadata type textarea has different separators in different spots on interface
+.multivalue-separator {
+    color: $gray3;
+    margin: 0 8px;    
+}
+.metadata-type-textarea {
+    .multivalue-separator {
+        display: block;
+        max-height: 1px;
+        width: 35px;
+        background: $gray3;
+        content: none;
+        color: transparent;
+        margin: 1rem auto;
     }
 }
 

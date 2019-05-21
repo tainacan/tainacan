@@ -13,12 +13,12 @@ current_OS=`uname`
 # For macOS (Darwin)
 if [ $current_OS == "Darwin" ]; then
     find src ./webpack.config.js -type f \( -name "*.js" -or -name "*.vue" -or -name "webpack.config.js" \) -exec md5 {} \; | sort -k 2 | md5 > last-js-build.md5
-    find ./src/scss/ ./src/admin/scss/ ./src/gutenberg-blocks -type f \( -name "*.scss" \) -exec md5 {} \; | sort -k 2 | md5 > last-sass-build.md5
+    find ./src/scss/ ./src/admin/scss/ ./src/gutenberg-blocks/ ./src/gutenberg-blocks/tainacan-collections/collections-list  ./src/gutenberg-blocks/tainacan-items/dynamic-items-list ./src/gutenberg-blocks/tainacan-items/items-list ./src/gutenberg-blocks/tainacan-terms/terms-list -type f \( -name "*.scss" \) -exec md5 {} \; | sort -k 2 | md5 > last-sass-build.md5
     find ./composer.json -type f \( -name "composer.json" \) -exec md5 {} \; | sort -k 2 | md5 > last-composer-build.md5
     find ./package.json -type f \( -name "package.json" -or -name "package-lock.json" \) -exec md5 {} \; | sort -k 2 | md5 > last-package-build.md5
 else
     find src ./webpack.config.js -type f \( -name "*.js" -or -name "*.vue" -or -name "webpack.config.js" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-js-build.md5
-    find ./src/scss/ ./src/admin/scss/ ./src/gutenberg-blocks -type f \( -name "*.scss" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-sass-build.md5
+    find ./src/scss/ ./src/admin/scss/ ./src/gutenberg-blocks ./src/gutenberg-blocks/tainacan-collections/collections-list  ./src/gutenberg-blocks/tainacan-items/dynamic-items-list ./src/gutenberg-blocks/tainacan-items/items-list ./src/gutenberg-blocks/tainacan-terms/terms-list -type f \( -name "*.scss" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-sass-build.md5
     find ./composer.json -type f \( -name "composer.json" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-composer-build.md5
     find ./package.json -type f \( -name "package.json" -or -name "package-lock.json" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-package-build.md5
 fi

@@ -101,16 +101,41 @@ class REST_Taxonomies_Controller extends REST_Controller {
 				if ( $request['context'] === 'edit' ) {
 					$item_arr['current_user_can_edit'] = $item->can_edit();
 					$item_arr['current_user_can_delete'] = $item->can_delete();
-					$item_arr['collections'] = [];
-					if ( is_array($tax_collections = $item->get_collections()) ) {
-						foreach ($tax_collections as $tax_collection) {
-							if ( $tax_collection instanceof \Tainacan\Entities\Collection ) {
-								$item_arr['collections'][] = $tax_collection->_toArray();
-							}
+					// $item_arr['collections'] = [];
+					// if ( is_array($tax_collections = $item->get_collections()) ) {
+					// 	foreach ($tax_collections as $tax_collection) {
+					// 		if ( $tax_collection instanceof \Tainacan\Entities\Collection ) {
+					// 			$item_arr['collections'][] = $tax_collection->_toArray();
+					// 		}
+					// 	}
+					// 
+					// }
+				}
+				
+				/**
+				* 
+				* 
+				* See issue #229
+				* 
+				*/
+				$item_arr['collections'] = [];
+				$item_arr['collections_ids'] = [];
+				
+				$taxonomy = get_taxonomy( $item->get_db_identifier() );
+				if (is_object($taxonomy) && isset($taxonomy->object_type) && is_array($taxonomy->object_type)) {
+					foreach ($taxonomy->object_type as $slug) {
+						
+						$tax_collection = Repositories\Collections::get_instance()->fetch_by_db_identifier($slug);
+						if ( $tax_collection instanceof \Tainacan\Entities\Collection ) {
+							$item_arr['collections'][] = $tax_collection->_toArray();
+							$item_arr['collections_ids'][] = $tax_collection->get_id();
 						}
 						
 					}
 				}
+				
+				
+				
 			} else {
 				$attributes_to_filter = $request['fetch_only'];
 

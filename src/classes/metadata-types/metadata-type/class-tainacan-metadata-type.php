@@ -245,4 +245,12 @@ abstract class Metadata_Type  {
 	public function set_core($core){
 		$this->core = $core;
 	}
+	
+	/**
+	* Gets a slug based on the class name to represent the metadata type
+	*/
+	public function get_slug() {
+		$classname = get_class($this);
+		return strtolower( substr($classname, strrpos($classname, '\\') + 1) );
+	}
 }

@@ -62,9 +62,16 @@ export const setPage = ({ commit },  page ) => {
     commit('setPostQueryAttribute', {  attr: 'paged', value: page } );
 };
 
-export const setItemsPerPage = ({ commit }, page ) => {
-    commit('setPostQueryAttribute', {  attr: 'perpage', value: page } );
-    commit('setItemsPerPage', page );
+export const setItemsPerPage = ({ commit }, perPage ) => {
+    const maxItemsPerPage = tainacan_plugin.api_max_items_per_page;
+    perPage = (Number(maxItemsPerPage) >= Number(perPage)) ? perPage : maxItemsPerPage;
+
+    commit('setPostQueryAttribute', {  attr: 'perpage', value: perPage } );
+    commit('setItemsPerPage', perPage );
+};
+
+export const setFacets = ({ commit }, facets) => {
+    commit('setFacets', facets);
 };
 
 export const setStatus= ({ commit }, status ) => {

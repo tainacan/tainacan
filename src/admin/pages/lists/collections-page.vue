@@ -71,19 +71,35 @@
                     </option>
                 </b-select>
                 <button
-                        :disabled="collections.length <= 0 || isLoading || order == 'asc'"
+                        :disabled="collections.length <= 0 || isLoading || order == 'desc'"
                         class="button is-white is-small"
-                        @click="onChangeOrder('asc')">
-                    <span class="icon gray-icon is-small">
-                        <i class="tainacan-icon tainacan-icon-sortascending tainacan-icon-20px"/>
+                        @click="onChangeOrder('desc')"
+                        :aria-label="$i18n.get('label_sort_descending')">
+                    <span
+                            v-tooltip="{
+                                content: $i18n.get('label_sort_descending'),
+                                autoHide: true,
+                                placement: 'bottom',
+                                classes: ['tooltip', 'repository-tooltip']
+                            }"
+                            class="icon gray-icon is-small">
+                        <i class="tainacan-icon tainacan-icon-sortdescending tainacan-icon-20px"/>
                     </span>
                 </button>
                 <button
-                        :disabled="collections.length <= 0 || isLoading || order == 'desc'"
+                        :disabled="collections.length <= 0 || isLoading || order == 'asc'"
                         class="button is-white is-small"
-                        @click="onChangeOrder('desc')">
-                    <span class="icon gray-icon is-small">
-                        <i class="tainacan-icon tainacan-icon-sortdescending tainacan-icon-20px"/>
+                        @click="onChangeOrder('asc')"
+                        :aria-label="$i18n.get('label_sort_ascending')">
+                    <span 
+                            v-tooltip="{
+                                content: $i18n.get('label_sort_ascending'),
+                                autoHide: true,
+                                placement: 'bottom',
+                                classes: ['tooltip', 'repository-tooltip']
+                            }"
+                            class="icon gray-icon is-small">
+                        <i class="tainacan-icon tainacan-icon-sortascending tainacan-icon-20px"/>
                     </span>
                 </button>
             </b-field>
@@ -218,7 +234,11 @@
                                 :current.sync="page"
                                 order="is-centered"
                                 size="is-small"
-                                :per-page="collectionsPerPage"/> 
+                                :per-page="collectionsPerPage"
+                                :aria-next-label="$i18n.get('label_next_page')"
+                                :aria-previous-label="$i18n.get('label_previous_page')"
+                                :aria-page-label="$i18n.get('label_page')"
+                                :aria-current-label="$i18n.get('label_current_page')"/> 
                     </div>
                 </div>    
             </div> 

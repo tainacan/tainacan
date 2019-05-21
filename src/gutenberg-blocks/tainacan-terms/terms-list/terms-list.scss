@@ -1,3 +1,5 @@
+@import '../../gutenberg-blocks-style.scss';
+
 .wp-block-tainacan-terms-list {
     margin: 2rem 0px;
 
@@ -5,14 +7,6 @@
     .components-spinner {
         position: absolute;
         right: 0;
-    }
-
-    // Control region ----------------------------------------------------
-    .block-control {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        padding: 12px;
     }
 
     // Grid View Mode ----------------------------------------------------
@@ -36,6 +30,7 @@
             a { 
                 color: #454647; 
                 font-weight: bold;
+                line-height: normal;
             }
 
             img {
@@ -43,7 +38,7 @@
                 width: 185px;
                 min-width: 185px;
                 padding: 0px;
-                margin-bottom: 10px;
+                margin-bottom: 0.5rem;
             }
 
             a.term-without-name span {

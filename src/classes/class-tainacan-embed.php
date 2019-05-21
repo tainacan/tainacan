@@ -115,7 +115,7 @@ class Embed {
 	 */
 	public function add_css() {
 		global $TAINACAN_BASE_URL;
-		wp_enqueue_style( 'tainacan-embeds', $TAINACAN_BASE_URL . '/assets/css/tainacan-embeds.css' );
+		wp_enqueue_style( 'tainacan-embeds', $TAINACAN_BASE_URL . '/assets/css/tainacan-embeds.css', [], TAINACAN_VERSION );
 	}
 	/**
 	 * Adds a responsive embed wrapper around oEmbed content
