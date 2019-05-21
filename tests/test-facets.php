@@ -298,7 +298,7 @@ class Facets extends TAINACAN_UnitApiTestCase {
 			    'collection' => $collection1,
 				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
 				'metadata_type_options' => [
-					'allow_new_terms' => true,
+					'allow_new_terms' => 'yes',
 					'taxonomy_id' => $taxonomy->get_id()
 				],
 				'multiple' => 'yes'
@@ -317,7 +317,7 @@ class Facets extends TAINACAN_UnitApiTestCase {
 			    'collection' => $collection2,
 				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
 				'metadata_type_options' => [
-					'allow_new_terms' => true,
+					'allow_new_terms' => 'yes',
 					'taxonomy_id' => $taxonomy->get_id()
 				],
 				'multiple' => 'yes'
@@ -335,7 +335,7 @@ class Facets extends TAINACAN_UnitApiTestCase {
 			    'collection' => $collection1,
 				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
 				'metadata_type_options' => [
-					'allow_new_terms' => true,
+					'allow_new_terms' => 'yes',
 					'taxonomy_id' => $taxonomy2->get_id()
 				],
 				'multiple' => 'yes'
@@ -379,7 +379,7 @@ class Facets extends TAINACAN_UnitApiTestCase {
 			    'collection' => $collection2,
 				'metadata_type'  => 'Tainacan\Metadata_Types\Relationship',
 				'metadata_type_options' => [
-					'allow_new_terms' => true,
+					'allow_new_terms' => 'yes',
 					'collection_id' => $collection1->get_id(),
 					'search' => []
 				]

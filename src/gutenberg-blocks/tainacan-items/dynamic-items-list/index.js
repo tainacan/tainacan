@@ -85,6 +85,10 @@ registerBlockType('tainacan/dynamic-items-list', {
             type: Boolean,
             value: false
         },
+        showCollectionLabel: {
+            type: Boolean,
+            value: false
+        },
         collection: {
             type: Object,
             value: undefined
@@ -132,6 +136,7 @@ registerBlockType('tainacan/dynamic-items-list', {
             isLoading,
             showSearchBar,
             showCollectionHeader,
+            showCollectionLabel,
             isLoadingCollection,
             collection,
             collectionBackgroundColor,
@@ -348,7 +353,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                             >
                                 <ToggleControl
                                     label={__('Display header', 'tainacan')}
-                                    help={ showCollectionHeader ? __('Toggle to show collection header', 'tainacan') : __('Do not show collection header', 'tainacan')}
+                                    help={ !showCollectionHeader ? __('Toggle to show collection header', 'tainacan') : __('Do not show collection header', 'tainacan')}
                                     checked={ showCollectionHeader }
                                     onChange={ ( isChecked ) => {
                                             showCollectionHeader = isChecked;
@@ -359,6 +364,18 @@ registerBlockType('tainacan/dynamic-items-list', {
                                 />
                                 { showCollectionHeader ?
                                     <div style={{ margin: '6px' }}>
+
+                                        <ToggleControl
+                                            label={__('Display "Collection" label', 'tainacan')}
+                                            help={ !showCollectionLabel ? __('Toggle to show "Collection" label above header', 'tainacan') : __('Do not show "Collection" label', 'tainacan')}
+                                            checked={ showCollectionLabel }
+                                            onChange={ ( isChecked ) => {
+                                                    showCollectionLabel = isChecked;
+                                                    setAttributes({ showCollectionLabel: showCollectionLabel });
+                                                } 
+                                            }
+                                        />
+
                                         <BaseControl
                                             id="colorpicker"
                                             label={ __('Background color', 'tainacan')}>
@@ -542,7 +559,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                                             ((!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) && (!collection || !collection.header_image) ? 'only-collection-name' : '') 
                                         }>
                                     <h3 style={{  color: collectionTextColor ? collectionTextColor : '' }}>
-                                        <span class="label">{ __('Collection', 'tainacan') }</span><br/>
+                                        { showCollectionLabel ? <span class="label">{ __('Collection', 'tainacan') }<br/></span> : null }
                                         { collection && collection.name ? collection.name : '' }
                                     </h3>
                                 </div>
@@ -720,6 +737,7 @@ registerBlockType('tainacan/dynamic-items-list', {
             order,
             showSearchBar,
             showCollectionHeader,
+            showCollectionLabel,
             collectionBackgroundColor,
             collectionTextColor
         } = attributes;
@@ -732,6 +750,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                     show-name={ '' + showName }
                     show-search-bar={ '' + showSearchBar }
                     show-collection-header={ '' + showCollectionHeader }
+                    show-collection-label={ '' + showCollectionLabel }
                     layout={ layout }
                     collection-background-color={ collectionBackgroundColor }
                     collection-text-color={ collectionTextColor }

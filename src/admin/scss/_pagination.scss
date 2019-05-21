@@ -91,16 +91,28 @@
             content: ',';
             color: $gray4;
         }
+        .mdi::before {
+            display: inline-block;
+            font: normal normal normal 20px/1 "TainacanIcons";
+            font-size: inherit;
+            text-rendering: auto;
+            vertical-align: middle;
+            line-height: inherit;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
         .mdi-chevron-left::before {
-            content: "\F40A";
-            font-size: 1.0625rem;
-            transform: rotate(180deg);
+            content: "arrowleft" !important;
+            transform: none !important;
         }
         .mdi-chevron-right::before {
-            content: "\F40A";
-            font-size: 1.0625rem;
+            content: "arrowright" !important;
+            transform: none !important;
         }
-
+        .mdi-24px::before {
+            font-size: 24px !important;
+        }
+        
         @media screen and (max-width: 768px) {
             .pagination-list { order: 2; }
             .pagination-next { order: 3; }

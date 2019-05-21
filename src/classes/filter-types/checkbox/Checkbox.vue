@@ -54,7 +54,7 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios/axios';
+    import { tainacan as axios, isCancel } from '../../../js/axios/axios';
     import { filter_type_mixin } from '../filter-types-mixin';
     import CheckboxRadioModal from '../../../admin/components/other/checkbox-radio-modal.vue';
 
@@ -138,7 +138,10 @@
                             this.selectedValues();
                         })
                         .catch( error => {
-                            this.$console.log('error select', error );
+                            if (isCancel(error))
+                                this.$console.log('Request canceled: ', error.message);
+                            else
+                                this.$console.error( error );
                         });
                 }
                 

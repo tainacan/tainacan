@@ -257,7 +257,6 @@ export default {
                 a {
                     margin-right: 2rem;
                     display: inline-flex;
-                    overflow: hidden;
                     text-overflow: ellipsis;
                     white-space: nowrap;
 

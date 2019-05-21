@@ -366,7 +366,7 @@ class Test_Importer extends Importer {
 			'type' => 'Tainacan\Metadata_Types\Taxonomy',
 			'options' => [
 			'taxonomy_id' => $this->get_transient('tax_1_id'),
-			'allow_new_terms' => true
+			'allow_new_terms' => 'yes'
 			]
 		], $col1 );
 
@@ -584,7 +584,7 @@ class Test_Importer extends Importer {
 		$metadatum1 = $this->metadata_repo->fetch( $this->get_transient('tax_1_metadatum') );
 		if ($metadatum1) {
 			$options = $metadatum1->get_metadata_type_options();
-			$options['allow_new_terms'] = false;
+			$options['allow_new_terms'] = 'no';
 			$metadatum1->set_metadata_type_options($options);
 			if ($metadatum1->validate()) {
 				$this->metadata_repo->insert($metadatum1);

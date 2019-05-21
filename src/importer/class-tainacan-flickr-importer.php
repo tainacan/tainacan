@@ -346,7 +346,10 @@ class Flickr_Importer extends Importer {
 
                         if ( isset( $item->tags ) && isset( $item->tags->tag )  && is_array( $item->tags->tag ) ) {
                             foreach ( $item->tags->tag as $tag ) {
-                                $tags[] = $tag->raw;
+                                if (isset($tag->raw)) {
+									$tags[] = $tag->raw;
+								}
+								
                             }
                         }
 
@@ -403,7 +406,7 @@ class Flickr_Importer extends Importer {
                 }
 
                 $metadatum = new \Tainacan\Entities\Metadatum($metadatum_id);
-                $processedItem[$raw_metadatum] = ($metadatum->is_multiple()) ? [$value] : $value;
+                $processedItem[$raw_metadatum] = ( $metadatum->is_multiple() && !is_array($value) ) ? [$value] : $value;
             }
 
             $this->add_transient( 'insertedId', $item->id );
@@ -484,7 +487,11 @@ class Flickr_Importer extends Importer {
                 foreach( $collection['mapping'] as $metadatum_id => $header ){
 
                     if( !is_numeric($metadatum_id) ) {
-                        $metadatum = $this->create_new_metadata( $header, $collection['id']);
+                        $create_string = $header;
+						if ($header == 'tags') {
+							$create_string = 'Tags|taxonomy|multiple';
+						}
+						$metadatum = $this->create_new_metadata( $create_string, $collection['id']);
 
                         if( is_object($metadatum) ){
                             unset($collection['mapping'][$metadatum_id]);

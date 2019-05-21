@@ -50,7 +50,7 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 				'status'	 => 'publish',
 				'metadata_type_options' => [
 					'taxonomy_id' => $tax->get_id(),
-					'allow_new_terms' => false
+					'allow_new_terms' => 'no'
 				]
 	        ),
 	        true
@@ -187,7 +187,7 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 				'status'	 => 'publish',
 				'metadata_type_options' => [
 					'taxonomy_id' => $tax->get_id(),
-					'allow_new_terms' => false
+					'allow_new_terms' => 'no'
 				]
 	        ),
 	        true
@@ -202,7 +202,7 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 		
 		$metadatum->set_metadata_type_options([
 			'taxonomy_id' => $tax2->get_id(),
-			'allow_new_terms' => false
+			'allow_new_terms' => 'no'
 		]);
 		
 		$metadatum->validate();
@@ -230,7 +230,7 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 				'status'	 => 'publish',
 				'metadata_type_options' => [
 					'taxonomy_id' => $tax3->get_id(),
-					'allow_new_terms' => false
+					'allow_new_terms' => 'no'
 				]
 	        ),
 	        true
@@ -302,7 +302,7 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 				'status'	 => 'publish',
 				'metadata_type_options' => [
 					'taxonomy_id' => $tax->get_id(),
-					'allow_new_terms' => false
+					'allow_new_terms' => 'no'
 				]
 	        ),
 	        true
@@ -318,7 +318,7 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 				'status'	 => 'publish',
 				'metadata_type_options' => [
 					'taxonomy_id' => $tax2->get_id(),
-					'allow_new_terms' => false
+					'allow_new_terms' => 'no'
 				]
 	        ),
 	        true
@@ -334,7 +334,7 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 				'status'	 => 'publish',
 				'metadata_type_options' => [
 					'taxonomy_id' => $tax2->get_id(),
-					'allow_new_terms' => false
+					'allow_new_terms' => 'no'
 				]
 	        ),
 	        true
@@ -350,7 +350,7 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 				'status'	 => 'publish',
 				'metadata_type_options' => [
 					'taxonomy_id' => $tax3->get_id(),
-					'allow_new_terms' => false
+					'allow_new_terms' => 'no'
 				]
 	        ),
 	        true
@@ -469,7 +469,7 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 				'status'	 => 'publish',
 				'metadata_type_options' => [
 					'taxonomy_id' => $tax->get_id(),
-					'allow_new_terms' => false
+					'allow_new_terms' => 'no'
 				]
 	        ),
 	        true
@@ -486,7 +486,7 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 				'status'	 => 'publish',
 				'metadata_type_options' => [
 					'taxonomy_id' => $tax2->get_id(),
-					'allow_new_terms' => false
+					'allow_new_terms' => 'no'
 				]
 	        ),
 	        true
@@ -502,7 +502,7 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 				'status'	 => 'publish',
 				'metadata_type_options' => [
 					'taxonomy_id' => $tax3->get_id(),
-					'allow_new_terms' => false
+					'allow_new_terms' => 'no'
 				]
 	        ),
 	        true
@@ -519,7 +519,7 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 				'status'	 => 'publish',
 				'metadata_type_options' => [
 					'taxonomy_id' => $tax4->get_id(),
-					'allow_new_terms' => false
+					'allow_new_terms' => 'no'
 				]
 	        ),
 	        true
@@ -582,7 +582,7 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 				'status'	 => 'publish',
 				'metadata_type_options' => [
 					'taxonomy_id' => $tax->get_id(),
-					'allow_new_terms' => true
+					'allow_new_terms' => 'yes'
 				]
 	        ),
 	        true
@@ -638,7 +638,7 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 		$meta->set_collection($collection);
 		$meta->set_metadata_type_options([
 			'taxonomy_id' => $tax->get_id(),
-			'allow_new_terms' => true
+			'allow_new_terms' => 'yes'
 		]);
 		
 		$this->assertFalse($meta->validate(), 'Metadatum should not validate because taxonomy is private');

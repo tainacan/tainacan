@@ -37,21 +37,6 @@
                         this.$console.log(error);
                     });
             }
-
-            if ( this.metadatum.metadatum.metadata_type_options &&
-                this.metadatum.metadatum.metadata_type_options.search &&
-                this.metadatum.metadatum.metadata_type_options.search.length > 0){
-                axios.get('/collection/'+ collectionId +'/metadata?context=edit')
-                    .then( res => {
-                        for (let item of res.data) {
-                            if ( this.metadatum.metadatum.metadata_type_options.search.indexOf( item.id ) >= 0 )
-                                this.searchMetadata.push( item );
-                        }
-                    })
-                    .catch(error => {
-                        this.$console.log(error);
-                    });
-            }
         },
         data(){
             return {
@@ -61,7 +46,6 @@
                 loading: false,
                 collectionId: 0,
                 inputValue: null,
-                searchMetadata: [],
                 queryObject: {},
                 itemsFound: []
             }
@@ -101,9 +85,8 @@
                 this.$emit('blur');
             },
             search: _.debounce(function(query) {
-                if( this.selected.length > 0  && this.metadatum.metadatum.multiple === 'no'){
+                if ( this.selected.length > 0  && this.metadatum.metadatum.multiple === 'no')
                     return '';
-                }
 
                 if (query !== '') {
                     this.loading = true;
@@ -131,20 +114,23 @@
                     this.options = [];
                 }
             }, 500),
-            mountQuery( search ){
-                let query = []
-                if ( this.searchMetadata.length > 0){
+            mountQuery( search ) {
+                let query = [];
+
+                if ( this.metadatum.metadatum.metadata_type_options &&
+                    this.metadatum.metadatum.metadata_type_options.search &&
+                    this.metadatum.metadatum.metadata_type_options.search.length > 0)
+                {
                     query['metaquery'] = [];
                     const metaquery = query['metaquery'];
                     metaquery['relation'] = 'OR'
-                    for ( let index in this.searchMetadata ){
-                        metaquery[index] = {
-                            key: this.searchMetadata[index].id,
+                    for ( let i = 0; i < this.metadatum.metadatum.metadata_type_options.search.length; i++ ){
+                        metaquery[i] = {
+                            key: this.metadatum.metadatum.metadata_type_options.search[i],
                             value: search,
                             compare: 'LIKE'
                         }
                     }
-
                     query['metaquery'] = metaquery;
                 } else {
                     query['search'] = search;

@@ -85,10 +85,7 @@
         
         .metadata-title {
             flex-shrink: 0;
-            margin-bottom: 6px;
-            margin-top: 6px;
-            margin-right: 6px;
-            margin-left: 24px;
+            margin: 6px;
             padding: 6px 1rem;
             min-height: 30px;
             cursor: pointer;
@@ -99,6 +96,7 @@
                 white-space: nowrap; 
                 overflow: hidden;
                 text-align: left;
+                color: #454647;
             }
         } 
     

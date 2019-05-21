@@ -149,7 +149,7 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 				'collection' => $collection,
 				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
 				'metadata_type_options' => [
-					'allow_new_terms' => true,
+					'allow_new_terms' => 'yes',
 					'taxonomy_id' => $taxonomy_public->get_id()
 				],
 				'multiple' => 'yes'
@@ -165,7 +165,7 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 				'collection' => $collection,
 				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
 				'metadata_type_options' => [
-					'allow_new_terms' => true,
+					'allow_new_terms' => 'yes',
 					'taxonomy_id' => $taxonomy_private->get_id()
 				],
 				'multiple' => 'yes'
