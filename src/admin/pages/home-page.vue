@@ -130,7 +130,8 @@
             </div>
             <collections-home-list
                     :is-loading="isLoadingCollections"
-                    :collections="collections"/> 
+                    :collections="collections"
+                    :collections-total="collectionsTotal"/> 
         </section>
 
     </div>   
@@ -169,12 +170,13 @@ export default {
             this.cleanCollections();    
             this.isLoadingCollections = true;
             this.fetchCollections({ page: 1, collectionsPerPage: 5, status: undefined, contextEdit: true })
-            .then(() => {
-                this.isLoadingCollections = false;
-            }) 
-            .catch(() => {
-                this.isLoadingCollections = false;
-            });
+                .then((res) => {
+                    this.collectionsTotal = res.total;
+                    this.isLoadingCollections = false;
+                }) 
+                .catch(() => {
+                    this.isLoadingCollections = false;
+                });
         }
     },
     mounted(){
