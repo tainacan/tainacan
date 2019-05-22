@@ -125,7 +125,9 @@
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-20px tainacan-icon-viewtable"/>
                     </span>
-                    <span class="menu-text">{{ $i18n.get('label_view_all_collections') }}</span>
+                    <span class="menu-text">
+                        {{ $i18n.getWithVariables('label_view_all_%s_collections', [collectionsTotal]) }}
+                    </span>
                 </router-link>
             </div>
             <collections-home-list
@@ -169,7 +171,7 @@ export default {
         loadCollections() {
             this.cleanCollections();    
             this.isLoadingCollections = true;
-            this.fetchCollections({ page: 1, collectionsPerPage: 5, status: undefined, contextEdit: true })
+            this.fetchCollections({ page: 1, collectionsPerPage: 9, status: undefined, contextEdit: true })
                 .then((res) => {
                     this.collectionsTotal = res.total;
                     this.isLoadingCollections = false;

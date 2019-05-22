@@ -179,7 +179,7 @@
     display: flex;
     width: 100%;
     align-items: stretch;
-    text-decoration: none; }
+    text-decoration: none !important; }
     .wp-block-tainacan-dynamic-items-list .dynamic-items-collection-header:hover {
       text-decoration: none; }
     .wp-block-tainacan-dynamic-items-list .dynamic-items-collection-header .collection-name {
@@ -268,6 +268,7 @@
           border-color: #dbdbdb !important; } }
     .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar button {
       margin-right: 0.75rem;
+      padding: 0 0.35rem;
       min-height: 28px;
       z-index: 2;
       border: none;

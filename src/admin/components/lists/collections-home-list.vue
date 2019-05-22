@@ -245,16 +245,6 @@
                     </router-link>      
                 </div>
             </masonry>
-            <div
-                    v-if="collectionsTotal > collections.length"
-                    class="home-collections-footer">
-                <router-link
-                        tag="button"
-                        to="/collections"
-                        class="button is-secondary">
-                    {{ $i18n.getWithVariables('label_view_all_%s_collections', [collectionsTotal]) }}
-                </router-link>
-            </div>
         </template>
     </div>
 </template>
@@ -316,11 +306,6 @@ export default {
 
             }
         }
-    }
-
-    .home-collections-footer {
-        width: 100%;
-        text-align: right;
     }
     
 </style>
