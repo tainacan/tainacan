@@ -430,7 +430,7 @@ class Items extends Repository {
 		$metadata = Metadata::get_instance()->fetch([
 			'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
 			'post__in' => array_keys($metas)
-		], [], 'OBJECT');
+		], 'OBJECT');
 		
 		if (empty($metadata)) {
 			return $args;
@@ -446,7 +446,7 @@ class Items extends Repository {
 				$metaquery = $args['meta_query'][$index];
 				$options = $metadatum->get_metadata_type_options();
 				$tax_id = $options['taxonomy_id'];
-				$tax_slug = Taxonomy::get_instance()->get_db_identifier_by_id($tax_id);
+				$tax_slug = Taxonomies::get_instance()->get_db_identifier_by_id($tax_id);
 				
 				if (!isset($metaquery['compare']) || $metaquery['compare'] == '=' || $metaquery['compare'] == 'IN' ) {
 					
