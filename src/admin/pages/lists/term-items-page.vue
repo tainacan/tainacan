@@ -597,7 +597,7 @@
                 <ul>
                     <li 
                             @click="onChangeTab('')"
-                            :class="{ 'is-active': status == undefined || status == ''}"><a>{{ $i18n.get('label_all_items') }}</a></li>
+                            :class="{ 'is-active': status == undefined || status == ''}"><a>{{ $i18n.get('label_all_published_items') }}</a></li>
                     <li 
                             @click="onChangeTab('draft')"
                             :class="{ 'is-active': status == 'draft'}"><a>{{ $i18n.get('label_draft_items') }}</a></li>

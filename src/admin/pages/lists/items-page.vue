@@ -612,19 +612,83 @@
                 <ul>
                     <li 
                             @click="onChangeTab('')"
-                            :class="{ 'is-active': status == undefined || status == ''}">
-                        <a>{{ `${$i18n.get('label_all_items')}` }}<span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.publish)})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private + repositoryTotalItems.publish })` : '' }}</span></a>
+                            :class="{ 'is-active': status == undefined || status == ''}"
+                            v-tooltip="{
+                                content: $i18n.get('info_items_tab_all'),
+                                autoHide: true,
+                                placement: 'auto',
+                            }">
+                        <a :style="{ fontWeight: 'bold', color: '#454647 !important', lineHeight: '1.5rem' }">
+                            {{ `${$i18n.get('label_all_published_items')}` }}
+                            <span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.publish)})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private + repositoryTotalItems.publish })` : '' }}</span>
+                        </a>
+                    </li>
+                    <li 
+                            @click="onChangeTab('publish')"
+                            :class="{ 'is-active': status == 'publish'}"
+                            v-tooltip="{
+                                content: $i18n.get('info_items_tab_publish'),
+                                autoHide: true,
+                                placement: 'auto',
+                            }">
+                        <a>
+                            <span class="icon has-text-gray">
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-public"/>
+                            </span>
+                            {{ `${$i18n.get('label_publish_items')}` }}
+                            <span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${collection.total_items.publish})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.publish })` : '' }}</span>
+                        </a>
+                    </li>
+                    <li
+                            v-if="!isRepositoryLevel"
+                            @click="onChangeTab('private')"
+                            :class="{ 'is-active': status == 'private'}"
+                            style="margin-right: auto"
+                            v-tooltip="{
+                                content: $i18n.get('info_items_tab_private'),
+                                autoHide: true,
+                                placement: 'auto',
+                            }">
+                        <a>
+                            <span class="icon has-text-gray">
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-private"/>
+                            </span>
+                            {{ `${$i18n.get('label_private_items')}` }}
+                            <span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${collection.total_items.private})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private })` : '' }}</span>
+                        </a>
                     </li>
                     <li 
                             @click="onChangeTab('draft')"
-                            :class="{ 'is-active': status == 'draft'}">
-                        <a>{{ `${$i18n.get('label_draft_items')}` }}<span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${collection.total_items.draft})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.draft })` : '' }}</span></a>
+                            :class="{ 'is-active': status == 'draft'}"
+                            v-tooltip="{
+                                content: $i18n.get('info_items_tab_draft'),
+                                autoHide: true,
+                                placement: 'auto',
+                            }">
+                        <a>
+                            <span class="icon has-text-gray">
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-draft"/>
+                            </span>
+                            {{ `${$i18n.get('label_draft_items')}` }}
+                            <span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${collection.total_items.draft})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.draft })` : '' }}</span>
+                        </a>
                     </li>
                     <li
                             v-if="!isRepositoryLevel"
                             @click="onChangeTab('trash')"
-                            :class="{ 'is-active': status == 'trash'}">
-                        <a>{{ `${$i18n.get('label_trash_items')}` }}<span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${collection.total_items.trash})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.trash })` : '' }}</span></a>
+                            :class="{ 'is-active': status == 'trash'}"
+                            v-tooltip="{
+                                content: $i18n.get('info_items_tab_trash'),
+                                autoHide: true,
+                                placement: 'auto',
+                            }">
+                        <a>
+                            <span class="icon has-text-gray">
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-delete"/>
+                            </span>
+                            {{ `${$i18n.get('label_trash_items')}` }}
+                            <span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${collection.total_items.trash})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.trash })` : '' }}</span>
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -720,6 +784,8 @@
                             </span>
                         </p>
                         <p v-if="status == undefined || status == ''">{{ hasFiltered ? $i18n.get('info_no_item_found_filter') : $i18n.get('info_no_item_created') }}</p>
+                        <p v-if="status == 'publish'">{{ $i18n.get('info_no_item_publish') }}</p>
+                        <p v-if="status == 'private'">{{ $i18n.get('info_no_item_priavte') }}</p>
                         <p v-if="status == 'draft'">{{ $i18n.get('info_no_item_draft') }}</p>
                         <p v-if="status == 'trash'">{{ $i18n.get('info_no_item_trash') }}</p>
 
@@ -1867,6 +1933,10 @@
         margin-bottom: 20px;
         padding-left: $page-side-padding;
         padding-right: $page-side-padding;
+
+        li {
+            cursor: pointer;
+        }
     }
 
     .items-list-area {
