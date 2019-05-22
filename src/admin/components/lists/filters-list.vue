@@ -255,7 +255,7 @@
                                             :key="index"
                                             @click="onFilterTypeSelected(filterType)"
                                             @mouseover="currentFilterTypePreview = { name: filterType.name, template: filterType.preview_template }"
-                                            @mouseleave="currentFilterTypePreview = undefined">
+                                            @mouseleave="currentFilterTypePreview = { name: filterType.name, template: filterType.preview_template }">
                                         <h4>{{ filterType.name }}</h4>          
                                     </div>
                                 </div>
@@ -1102,6 +1102,30 @@ export default {
                     text-decoration: underline;
                     margin: 0.875rem 1.5rem;
                 }
+
+                .numeric-filter-container {
+                    display: flex;
+                    .field { margin: 0; }
+                    .dropdown {
+                        width: auto;
+
+                        .dropdown-trigger button {
+                            padding: 0 0.5rem !important;
+                            height: 28px !important;
+
+                            i:not(.tainacan-icon-arrowdown) {
+                                margin-top: -3px;
+                                font-size: 1.5rem;
+                                font-style: normal;
+                                color: #555758;
+                            }
+                        }
+                        .dropdown-menu {
+                            display: block !important;
+                        }
+                    }
+                }
+
             }
 
         }
