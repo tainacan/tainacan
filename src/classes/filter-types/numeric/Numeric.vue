@@ -1,11 +1,68 @@
 <template>
-    <div>
-        <b-input
+    <div class="numeric-filter-container">
+         <b-dropdown
+                :mobile-modal="true"
+                @input="onChangeComparator($event)"
+                aria-role="list">
+            <button
+                    :aria-label="$i18n.get('label_comparator')"
+                    class="button is-white"
+                    slot="trigger">
+                <span class="icon is-small">
+                    <i v-html="comparatorSymbol" />
+                </span>
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
+                </span>
+            </button>
+            <b-dropdown-item
+                    role="button"
+                    :class="{ 'is-active': comparator == '=' }"
+                    :value="'='"
+                    aria-role="listitem">
+                &#61;&nbsp; {{ $i18n.get('is_equal_to') }}
+            </b-dropdown-item>
+            <b-dropdown-item
+                    role="button"
+                    :class="{ 'is-active': comparator == '!=' }"
+                    :value="'!='"
+                    aria-role="listitem">
+                &#8800;&nbsp; {{ $i18n.get('is_not_equal_to') }}
+            </b-dropdown-item>
+            <b-dropdown-item
+                    role="button"
+                    :class="{ 'is-active': comparator == '>' }"
+                    :value="'>'"
+                    aria-role="listitem">
+                &#62;&nbsp; {{ $i18n.get('greater_than') }}
+            </b-dropdown-item>
+            <b-dropdown-item
+                    role="button"
+                    :class="{ 'is-active': comparator == '>=' }"
+                    :value="'>='"
+                    aria-role="listitem">
+                &#8805;&nbsp; {{ $i18n.get('greater_than_or_equal_to') }}
+            </b-dropdown-item>
+            <b-dropdown-item
+                    role="button"
+                    :class="{ 'is-active': comparator == '<' }"
+                    :value="'<'"
+                    aria-role="listitem">
+                &#60;&nbsp; {{ $i18n.get('less_than') }}
+            </b-dropdown-item>
+            <b-dropdown-item
+                    role="button"
+                    :class="{ 'is-active': comparator == '<=' }"
+                    :value="'<='"
+                    aria-role="listitem">
+                &#8804;&nbsp; {{ $i18n.get('less_than_or_equal_to') }}
+            </b-dropdown-item>
+        </b-dropdown>
+
+        <b-numberinput
                 :aria-labelledby="labelId"
                 size="is-small"
-                type="number"
-                step="any"
-                autocomplete="off"
+                step="0.01"
                 @input="emit()"
                 v-model="value"/>
     </div>
@@ -23,14 +80,13 @@
 
             let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 
-            if(this.isRepositoryLevel || this.collection == 'filter_in_repository'){
+            if (this.isRepositoryLevel || this.collection == 'filter_in_repository')
                 in_route = '/metadata/'+ this.metadatum;
-            }
-
+        
             axios.get(in_route)
                 .then( res => {
                     let result = res.data;
-                    if( result && result.metadata_type ){
+                    if ( result && result.metadata_type ){
                         this.metadatum_object = result;
                         this.selectedValues();
                     }
@@ -44,11 +100,11 @@
         data(){
             return {
                 value: null,
-                isValid: false,
                 clear: false,
                 collection: '',
                 metadatum: '',
                 metadatum_object: {},
+                comparator: '=' // =, !=, >, >=, <, <=
             }
         },
         props: {
@@ -61,18 +117,34 @@
             query: Object,
             isRepositoryLevel: Boolean,
         },
+        computed: {
+            comparatorSymbol() {
+                switch(this.comparator) {
+                    case '=': return '&#61;';
+                    case '!=': return '&#8800;';
+                    case '>': return '&#62;';
+                    case '>=': return '&#8805;';
+                    case '<': return '&#60;';
+                    case '<=': return '&#8804;';
+                    default: return '';
+                }
+            }
+        },
         methods: {
             selectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
                 let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
+                
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
-                    if ( metadata.value && metadata.value.length > 0){
-                        this.value = metadata.value[0];
-                        this.isValid = true;
-                    }
+                    
+                    if ( metadata.value && metadata.value.length > 0)
+                        this.value = Number(metadata.value[0]);
+
+                    if ( metadata.compare)
+                        this.comparator = metadata.compare;
 
                     if (metadata.value[0] != undefined) {
                         this.$eventBusSearch.$emit( 'sendValuesToTags', {
@@ -84,6 +156,7 @@
                 } else {
                     return false;
                 }
+
             },
             cleanSearchFromTags(filterTag) {
                 if (filterTag.filterId == this.filter.id)
@@ -95,6 +168,7 @@
 
                 this.$emit('input', {
                     filter: 'numeric',
+                    compare: this.comparator,
                     metadatum_id: this.metadatum,
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     value: ''
@@ -107,9 +181,10 @@
 
                 if ( this.value === null || this.value === '')
                     return;
-                
+
                 this.$emit('input', {
                     filter: 'numeric',
+                    compare: this.comparator,
                     metadatum_id: this.metadatum,
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     value: this.value
@@ -120,6 +195,10 @@
                     value: this.value
                 });
                 
+            },
+            onChangeComparator(newComparator) {
+                this.comparator = newComparator;
+                this.emit();
             }
         },
         beforeDestroy() {
@@ -127,3 +206,27 @@
         }
     }
 </script>
+
+<style lang="scss" scoped>
+
+    .numeric-filter-container {
+        display: flex;
+        
+        .dropdown {
+            width: auto;
+
+            .dropdown-trigger button {
+                padding: 0 0.5rem !important;
+                height: 28px !important;
+
+                i:not(.tainacan-icon-arrowdown) {
+                    margin-top: -3px;
+                    font-size: 1.5rem;
+                    font-style: normal;
+                    color: #555758;
+                }
+            }
+        }
+    }
+
+</style>

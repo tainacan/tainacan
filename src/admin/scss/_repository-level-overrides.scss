@@ -50,6 +50,14 @@
     .button.is-outlined {
         color: $blue5 !important;
     }
+    .b-numberinput {
+        button.is-primary,
+        button.is-primary:hover,
+        button.is-primary:focus,
+        button.is-primary:active  {
+            color: $blue5 !important;
+        }
+    }
     .tabs {
         li.is-active a {
             border-bottom-color: $blue5;

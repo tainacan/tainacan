@@ -1,7 +1,6 @@
 import qs from 'qs';
 import axios from '../../js/axios/axios';
 import { mapGetters } from 'vuex';
-import { resolve } from 'bluebird';
 
 export const filter_type_mixin = {
     data () {

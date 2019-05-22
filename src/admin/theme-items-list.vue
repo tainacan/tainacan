@@ -45,6 +45,7 @@ export default {
     @import "../../node_modules/buefy/src/scss/components/_dropdown.scss";
     @import "../../node_modules/buefy/src/scss/components/_modal.scss";
     @import "../../node_modules/buefy/src/scss/components/_notices.scss";
+    @import "../../node_modules/buefy/src/scss/components/_numberinput.scss";
 
     // Tainacan imports
     @import "../admin/scss/_tables.scss";
