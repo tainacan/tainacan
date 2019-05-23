@@ -453,6 +453,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_click_or_drag_metadatum_create'     => __( 'Click or drag and drop to create a new metadatum', 'tainacan' ),
 	'instruction_drag_and_drop_filter_sort'	     	 => __( 'Drag and drop to change filter order', 'tainacan' ),
 	'instruction_drag_and_drop_metadatum_sort'     	 => __( 'Drag and drop to change metadatum order', 'tainacan' ),
+	'instruction_select_step_options_to_show'     	 => __( 'Select which Step values to show', 'tainacan' ),
+	'instruction_select_maximum_options_to_show'     => __( 'Select which Maximum of options to show', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                        	 => __( 'Every published item of this collection, including those visible only to editors.', 'tainacan' ),

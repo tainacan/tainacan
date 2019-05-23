@@ -619,7 +619,7 @@
                                 placement: 'auto',
                             }">
                         <a :style="{ fontWeight: 'bold', color: '#454647 !important', lineHeight: '1.5rem' }">
-                            {{ `${$i18n.get('label_all_published_items')}` }}
+                            {{ $i18n.get('label_all_published_items') }}
                             <span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.publish)})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private + repositoryTotalItems.publish })` : '' }}</span>
                         </a>
                     </li>
@@ -635,7 +635,7 @@
                             <span class="icon has-text-gray">
                                 <i class="tainacan-icon tainacan-icon-18px tainacan-icon-public"/>
                             </span>
-                            {{ `${$i18n.get('label_publish_items')}` }}
+                            {{ $i18n.get('label_publish_items') }}
                             <span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${collection.total_items.publish})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.publish })` : '' }}</span>
                         </a>
                     </li>
@@ -653,7 +653,7 @@
                             <span class="icon has-text-gray">
                                 <i class="tainacan-icon tainacan-icon-18px tainacan-icon-private"/>
                             </span>
-                            {{ `${$i18n.get('label_private_items')}` }}
+                            {{ $i18n.get('label_private_items') }}
                             <span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${collection.total_items.private})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private })` : '' }}</span>
                         </a>
                     </li>
@@ -669,7 +669,7 @@
                             <span class="icon has-text-gray">
                                 <i class="tainacan-icon tainacan-icon-18px tainacan-icon-draft"/>
                             </span>
-                            {{ `${$i18n.get('label_draft_items')}` }}
+                            {{ $i18n.get('label_draft_items') }}
                             <span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${collection.total_items.draft})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.draft })` : '' }}</span>
                         </a>
                     </li>
@@ -686,7 +686,7 @@
                             <span class="icon has-text-gray">
                                 <i class="tainacan-icon tainacan-icon-18px tainacan-icon-delete"/>
                             </span>
-                            {{ `${$i18n.get('label_trash_items')}` }}
+                            {{ $i18n.get('label_trash_items') }}
                             <span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${collection.total_items.trash})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.trash })` : '' }}</span>
                         </a>
                     </li>

@@ -149,11 +149,10 @@
             </b-field>
 
             <component
-                    :errors="formErrors['filter_type_options']"
-                    v-if="(editForm.filter_type_object && editForm.filter_type_object.form_component) || editForm.edit_form == ''"
+                    v-if="(editForm.filter_type_object && editForm.filter_type_object.form_component && editForm.filter_type_object.options) || editForm.edit_form == ''"
                     :is="editForm.filter_type_object.form_component"
                     :filter="editForm"
-                    v-model="editForm.filter_type_options"/>
+                    v-model="editForm.filter_type_object.options"/>
             <div 
                     v-html="editForm.edit_form" 
                     v-else/>

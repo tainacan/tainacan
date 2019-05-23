@@ -12,8 +12,11 @@ class Numeric extends Filter_Type {
     function __construct(){
         $this->set_supported_types(['float']);
         $this->set_component('tainacan-filter-numeric');
-        // $this->set_form_component('tainacan-filter-form-numeric');
+        $this->set_form_component('tainacan-filter-form-numeric');
         $this->set_use_max_options(false);
+        $this->set_default_options([
+            'step' => 1
+        ]);
         $this->set_preview_template('
             <div>
                 <div>
@@ -67,17 +70,45 @@ class Numeric extends Filter_Type {
     }
 
     /**
+     * @inheritdoc
+     */
+    public function get_form_labels(){
+        return [
+            'step' => [
+                'title' => __( 'Step', 'tainacan' ),
+                'description' => __( 'The amount to be increased or decreased when clicking on filter control buttons.', 'tainacan' ),
+            ]
+        ];
+    }
+    /**
      * @param $filter
      * @return string
      * @internal param $metadatum
      */
     public function render( $filter ){
-        $options = $this->get_option('options');
-        return '<tainacan-filter-custom-interval
-                                        options="' . $options . '" 
+
+        return '<tainacan-filter-numeric
+                                        step="' . $this->get_option('step') . '" 
                                         name="'.$filter->get_name().'"
-                                        typeRange="numeric"
                                         collection_id="'.$filter->get_collection_id().'"
                                         metadatum_id="'.$filter->get_metadatum()->get_id().'"></tainacan-filter-custom-interval>';
+    }
+
+
+    /**
+     * @param \Tainacan\Entities\Filter $filter
+     * @return array|bool true if is validate or array if has error
+     */
+    public function validate_options(\Tainacan\Entities\Filter $filter) {
+        if ( !in_array($filter->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
+            return true;
+
+        if ( empty($this->get_option('step')) ) {
+            return [
+                'step' => __('Required step','tainacan')
+            ];
+        }
+
+        return true;
     }
 }

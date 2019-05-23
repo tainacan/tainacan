@@ -39,7 +39,7 @@ class Filters extends Repository {
 			'order'               => [
 				'map'         => 'menu_order',
 				'title'       => __( 'Order', 'tainacan' ),
-				'type'        => 'string',
+				'type'        => 'string/integer',
 				'description' => __( 'Filter order. This metadata is used if filters were manually ordered.', 'tainacan' ),
 				'validation'  => ''
 			],
@@ -76,14 +76,14 @@ class Filters extends Repository {
 			'color'               => [
 				'map'         => 'meta',
 				'title'       => __( 'Color', 'tainacan' ),
-				'type'        => 'integer',
+				'type'        => 'integer/string',
 				'description' => __( 'Filter color', 'tainacan' ),
 				'validation'  => ''
 			],
 			'metadatum'           => [
 				'map'         => 'meta',
 				'title'       => __( 'Metadata', 'tainacan' ),
-				'type'        => 'integer',
+				'type'        => 'array/object/string',
 				'description' => __( 'Filter metadata', 'tainacan' ),
 				'validation'  => ''
 			],

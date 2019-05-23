@@ -62,7 +62,7 @@
         <b-numberinput
                 :aria-labelledby="labelId"
                 size="is-small"
-                step="0.01"
+                :step="step"
                 @input="emit()"
                 v-model="value"/>
     </div>
@@ -111,6 +111,7 @@
             filter: {
                 type: Object // concentrate all attributes metadatum id and type
             },
+            step: [Number, String],
             metadatum_id: [Number], // not required, but overrides the filter metadatum id if is set
             collection_id: [Number], // not required, but overrides the filter metadatum id if is set
             labelId: '',

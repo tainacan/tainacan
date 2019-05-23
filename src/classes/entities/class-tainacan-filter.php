@@ -124,12 +124,12 @@ class Filter extends Entity {
     function get_filter_type_object(){
         $class_name = $this->get_filter_type();
 
-        if( !class_exists( $class_name ) ){
-            return false;
-        }
+		if (empty($class_name)) {
+			return null;
+		}
 
         $object_type = new $class_name();
-        $object_type->set_options(  $this->get_filter_options() );
+        $object_type->set_options(  $this->get_filter_type_options() );
         return $object_type;
     }
 
@@ -147,7 +147,7 @@ class Filter extends Entity {
      *
      * @return array Configurations for the filter type object
      */
-    function get_filter_options(){
+    function get_filter_type_options(){
         return $this->get_mapped_property('filter_type_options');
     }
 
@@ -258,6 +258,18 @@ class Filter extends Entity {
             $this->add_error($metadatum, $message);
         }
 
+        $this->add_error('filter_type_options', $is_valid);
+
         return false;
+    }
+
+    /**
+     * Set Filter type options
+     *
+     * @param [string || integer] $value
+     * @return void
+     */
+    function set_filter_type_options( $value ){
+        $this->set_mapped_property('filter_type_options', $value);
     }
 }
