@@ -12,6 +12,8 @@ class Numeric extends Filter_Type {
     function __construct(){
         $this->set_supported_types(['float']);
         $this->set_component('tainacan-filter-numeric');
+        // $this->set_form_component('tainacan-filter-form-numeric');
+        $this->set_use_max_options(false);
         $this->set_preview_template('
             <div>
                 <div>
@@ -70,7 +72,9 @@ class Numeric extends Filter_Type {
      * @internal param $metadatum
      */
     public function render( $filter ){
-         return '<tainacan-filter-custom-interval 
+        $options = $this->get_option('options');
+        return '<tainacan-filter-custom-interval
+                                        options="' . $options . '" 
                                         name="'.$filter->get_name().'"
                                         typeRange="numeric"
                                         collection_id="'.$filter->get_collection_id().'"

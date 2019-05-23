@@ -11,6 +11,7 @@ class Taginput extends Filter_Type {
     function __construct(){
         $this->set_supported_types(['string','long_string','item']);
         $this->set_component('tainacan-filter-taginput');
+        $this->set_use_max_options(false);
         $this->set_preview_template('
             <div>
                 <p class="has-text-gray">'. __('Selected values') . ': </p> 

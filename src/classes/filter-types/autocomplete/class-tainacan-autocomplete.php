@@ -8,12 +8,10 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Autocomplete extends Filter_Type {
 
-    //protected $default_max_options = -1;
-    protected $use_max_options = false;
-
     function __construct(){
         $this->set_supported_types(['string','long_string','item']);
         $this->set_component('tainacan-filter-autocomplete');
+        $this->set_use_max_options(false);
         $this->set_preview_template('
             <div>
                 <div class="taginput control is-expanded has-selected">
