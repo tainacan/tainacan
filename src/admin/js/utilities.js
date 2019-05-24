@@ -377,7 +377,7 @@ StatusHelperPlugin.install = function (Vue, options = {}) {
                         this.statuses.push(loadedStatus['private']);
                         
                         this.statuses.concat(Object.values(loadedStatus).filter((status) => {
-                            return !['publish','private','draft','trash'].includes(status); 
+                            return !['publish','private','draft','trash'].includes(status.slug); 
                         }));
 
                         this.statuses.push(loadedStatus['draft']);
