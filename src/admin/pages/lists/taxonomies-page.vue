@@ -94,18 +94,40 @@
                     <ul>
                         <li 
                                 @click="onChangeTab('')"
-                                :class="{ 'is-active': status == undefined || status == ''}">
-                            <a>{{ `${$i18n.get('label_all_taxonomies')}` }}<span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalTaxonomies ? `(${Number(repositoryTotalTaxonomies.private) + Number(repositoryTotalTaxonomies.publish)})` : '' }`}` }}</span></a>
+                                :class="{ 'is-active': status == undefined || status == ''}"
+                                v-tooltip="{
+                                    content: $i18n.getWithVariables('info_%s_tab_all',[$i18n.get('taxonomies')]),
+                                    autoHide: true,
+                                    placement: 'auto',
+                                }">
+                            <a :style="{ fontWeight: 'bold', color: '#454647 !important', lineHeight: '1.5rem' }">
+                                {{ `${$i18n.get('label_all_taxonomies')}` }}
+                                <span class="has-text-gray">&nbsp;{{ repositoryTotalTaxonomies ? `(${Number(repositoryTotalTaxonomies.private) + Number(repositoryTotalTaxonomies.publish)})` : '' }}</span>
+                            </a>
                         </li>
                         <li 
-                                @click="onChangeTab('draft')"
-                                :class="{ 'is-active': status == 'draft'}">
-                            <a>{{ `${$i18n.get('label_draft_items')}` }}<span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalTaxonomies ? `(${repositoryTotalTaxonomies.draft})` : '' }`}` }}</span></a>
-                        </li>
-                        <li 
-                                @click="onChangeTab('trash')"
-                                :class="{ 'is-active': status == 'trash'}">
-                            <a>{{ `${$i18n.get('label_trash_items')}` }}<span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalTaxonomies ? `(${repositoryTotalTaxonomies.trash})` : '' }`}` }}</span></a>
+                                v-for="(statusOption, index) of $statusHelper.getStatuses()"
+                                :key="index"
+                                @click="onChangeTab(statusOption.value)"
+                                :class="{ 'is-active': status == statusOption.value}"
+                                :style="{ marginLeft: statusOption.value == 'draft' ? 'auto' : '' }"
+                                v-tooltip="{
+                                    content: $i18n.getWithVariables('info_%s_tab_' + statusOption.value,[$i18n.get('taxonomies')]),
+                                    autoHide: true,
+                                    placement: 'auto',
+                                }">
+                            <a>
+                                <span 
+                                        v-if="$statusHelper.hasIcon(statusOption.value)"
+                                        class="icon has-text-gray">
+                                    <i 
+                                            class="tainacan-icon tainacan-icon-18px"
+                                            :class="$statusHelper.getIcon(statusOption.value)"
+                                            />
+                                </span>
+                                {{ statusOption.label }}
+                                <span class="has-text-gray">&nbsp;{{ repositoryTotalTaxonomies ? `(${repositoryTotalTaxonomies[statusOption.value]})` : '' }}</span>
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -126,8 +148,12 @@
                                     <i class="tainacan-icon tainacan-icon-36px tainacan-icon-terms"/>
                                 </span>
                                 <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_taxonomy_created') }}</p>
-                                <p v-if="status == 'draft'">{{ $i18n.get('info_no_taxonomy_draft') }}</p>
-                                <p v-if="status == 'trash'">{{ $i18n.get('info_no_taxonomy_trash') }}</p>
+                                <p
+                                        v-for="(statusOption, index) of $statusHelper.getStatuses()"
+                                        :key="index"
+                                        v-if="status == statusOption.value">
+                                    {{ $i18n.getWithVariables('info_no_%s_' + statusOption.value,['taxonomy']) }}
+                                </p>
                                 <router-link
                                         v-if="status == undefined || status == ''"
                                         id="button-create-taxonomy"

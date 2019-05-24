@@ -718,20 +718,6 @@ export default {
                 comment_status: ''
             },
             thumbnail: {},
-            // Can be obtained from api later
-            statusOptions: [{
-                value: 'publish',
-                label: this.$i18n.get('public')
-                }, {
-                value: 'private',
-                label: this.$i18n.get('private')
-                }, {
-                value: 'draft',
-                label: this.$i18n.get('draft')
-                }, {
-                value: 'trash',
-                label: this.$i18n.get('trash')
-            }],
             formErrorMessage: '',
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
             thumbnailMediaFrame: undefined,

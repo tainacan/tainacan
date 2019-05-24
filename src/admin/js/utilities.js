@@ -339,3 +339,33 @@ UserCapabilitiesPlugin.install = function (Vue, options = {}) {
         }
     }
 };
+
+
+// STATUS ICONS PLUGIN - Sets icon for status option
+export const StatusHelperPlugin = {};
+StatusHelperPlugin.install = function (Vue, options = {}) {
+    
+    Vue.prototype.$statusHelper = {
+        getIcon(status) {
+            switch (status) {
+                case 'publish': return 'tainacan-icon-public';
+                case 'private': return 'tainacan-icon-private';
+                case 'draft': return 'tainacan-icon-draft';
+                case 'trash': return 'tainacan-icon-delete';
+                default: '';
+            }
+        },
+        hasIcon(status) {
+            return ['publish', 'private', 'draft', 'trash'].includes(status);
+        },
+        getStatuses() {
+            return  [
+                { label: tainacan_plugin.i18n['status_publish'], value: 'publish' },
+                { label: tainacan_plugin.i18n['status_private'], value: 'private' },
+                { label: tainacan_plugin.i18n['status_draft'], value: 'draft' },
+                { label: tainacan_plugin.i18n['status_trash'], value: 'trash' }
+            ]
+        }
+    }
+
+};

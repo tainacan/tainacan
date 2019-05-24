@@ -597,13 +597,41 @@
                 <ul>
                     <li 
                             @click="onChangeTab('')"
-                            :class="{ 'is-active': status == undefined || status == ''}"><a>{{ $i18n.get('label_all_published_items') }}</a></li>
+                            :class="{ 'is-active': status == undefined || status == ''}"
+                            v-tooltip="{
+                                content: $i18n.getWithVariables('info_%s_tab_all',[$i18n.get('items')]),
+                                autoHide: true,
+                                placement: 'auto',
+                            }">
+                        <a :style="{ fontWeight: 'bold', color: '#454647 !important', lineHeight: '1.5rem' }">
+                            {{ $i18n.get('label_all_published_items') }}
+                            <span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.publish)})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private + repositoryTotalItems.publish })` : '' }}</span>
+                        </a>
+                    </li>
                     <li 
-                            @click="onChangeTab('draft')"
-                            :class="{ 'is-active': status == 'draft'}"><a>{{ $i18n.get('label_draft_items') }}</a></li>
-                    <li 
-                            @click="onChangeTab('trash')"
-                            :class="{ 'is-active': status == 'trash'}"><a>{{ $i18n.get('label_trash_items') }}</a></li>
+                            v-for="(statusOption, index) of $statusHelper.getStatuses()"
+                            :key="index"
+                            @click="onChangeTab(statusOption.value)"
+                            :class="{ 'is-active': status == statusOption.value}"
+                            :style="{ marginLeft: statusOption.value == 'draft' ? 'auto' : '' }"
+                            v-tooltip="{
+                                content: $i18n.getWithVariables('info_%s_tab_' + statusOption.value,[$i18n.get('items')]),
+                                autoHide: true,
+                                placement: 'auto',
+                            }">
+                        <a>
+                            <span 
+                                    v-if="$statusHelper.hasIcon(statusOption.value)"
+                                    class="icon has-text-gray">
+                                <i 
+                                        class="tainacan-icon tainacan-icon-18px"
+                                        :class="$statusHelper.getIcon(statusOption.value)"
+                                        />
+                            </span>
+                            {{ statusOption.label }}
+                            <span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${collection.total_items[statusOption.value]})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems[statusOption.value] })` : '' }}</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
 
@@ -697,8 +725,12 @@
                             </span>
                         </p>
                         <p v-if="status == undefined || status == ''">{{ hasFiltered ? $i18n.get('info_no_item_found_filter') : $i18n.get('info_no_item_created') }}</p>
-                        <p v-if="status == 'draft'">{{ $i18n.get('info_no_item_draft') }}</p>
-                        <p v-if="status == 'trash'">{{ $i18n.get('info_no_item_trash') }}</p>
+                        <p
+                                v-for="(statusOption, index) of $statusHelper.getStatuses()"
+                                :key="index"
+                                v-if="status == statusOption.value">
+                            {{ $i18n.getWithVariables('info_no_%s_' + statusOption.value,['items']) }}
+                        </p>
 
                         <router-link
                                 v-if="!hasFiltered && (status == undefined || status == '')"

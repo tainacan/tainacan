@@ -94,7 +94,7 @@
                                     native-value="draft">
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-draft"/>
-                                </span>  {{ $i18n.get('draft') }}
+                                </span>  {{ $i18n.get('status_draft') }}
                             </b-radio>
                         </div>
                     </div>

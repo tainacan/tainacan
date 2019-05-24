@@ -7,9 +7,11 @@
 
         <div class="tainacan-page-title">
             <h1>
-        <span
-                v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
-                class="status-tag">{{ $i18n.get(item.status) }}</span>
+            <span
+                    v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
+                    class="status-tag">
+                {{ $i18n.get('status_' + item.status) }}
+            </span>
                 {{ $i18n.get('title_item_page') + ' ' }}
                 <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
             </h1>

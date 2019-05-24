@@ -105,7 +105,7 @@ class Numeric extends Filter_Type {
 
         if ( empty($this->get_option('step')) ) {
             return [
-                'step' => __('Required step','tainacan')
+                'step' => __('"Step" value is required','tainacan')
             ];
         }
 

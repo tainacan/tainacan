@@ -124,10 +124,10 @@
                                 :placeholder="$i18n.get('instruction_select_a_status2')"
                                 @input="addToBulkEditionProcedures($event, 'newValue', criterion)">
                             <option
-                                    v-for="(status, key) in statuses"
-                                    :key="key"
-                                    :value="status">
-                                {{ $i18n.get(status) }}
+                                    v-for="(statusOption, index) of $statusHelper.getStatuses().filter(option => { return option.value != 'trash' })"
+                                    :key="index"
+                                    :value="statusOption.value">
+                                {{ statusOption.label }}
                             </option>
                         </b-select>
                     </template>

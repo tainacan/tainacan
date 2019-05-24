@@ -124,7 +124,7 @@ class Filter extends Entity {
     function get_filter_type_object(){
         $class_name = $this->get_filter_type();
 
-		if (empty($class_name)) {
+		if( !class_exists( $class_name ) ){
 			return null;
 		}
 

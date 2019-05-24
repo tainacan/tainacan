@@ -28,7 +28,7 @@ import ViewModeSlideshow from '../../theme-helper/view-mode-slideshow.vue';
 import store from '../../js/store/store'
 import routerTheme from './theme-router.js'
 import eventBusSearch from '../../js/event-bus-search';
-import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin } from './utilities';
+import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, StatusHelperPlugin } from './utilities';
 
 // Configure and Register Plugins
 Vue.use(Buefy);
@@ -37,6 +37,7 @@ Vue.use(VueMasonry);
 Vue.use(I18NPlugin);
 Vue.use(UserPrefsPlugin);
 Vue.use(RouterHelperPlugin);
+Vue.use(StatusHelperPlugin);
 Vue.use(ConsolePlugin, {visual: false});
 
 

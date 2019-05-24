@@ -46,7 +46,7 @@ import store from '../../js/store/store'
 import router from './router'
 import eventBusSearch from '../../js/event-bus-search';
 import termsListBus from './terms-list-bus.js';
-import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, UserCapabilitiesPlugin } from './utilities';
+import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, UserCapabilitiesPlugin, StatusHelperPlugin } from './utilities';
 
 // Configure and Register Plugins
 Vue.use(Buefy);
@@ -56,6 +56,7 @@ Vue.use(I18NPlugin);
 Vue.use(UserPrefsPlugin);
 Vue.use(RouterHelperPlugin);
 Vue.use(UserCapabilitiesPlugin);
+Vue.use(StatusHelperPlugin);
 Vue.use(ConsolePlugin, {visual: false});
 Vue.use(VueTheMask);
 

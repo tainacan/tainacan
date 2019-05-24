@@ -90,13 +90,13 @@
                                     <div class="status-radios">
                                         <b-radio
                                                 v-model="form.status"
-                                                v-for="statusOption in statusOptions"
-                                                :key="statusOption.value"
+                                                v-for="(statusOption, index) of $statusHelper.getStatuses()"
+                                                :key="index"
                                                 :native-value="statusOption.value">
                                             <span class="icon has-text-gray">
                                                 <i 
                                                     class="tainacan-icon tainacan-icon-18px"
-                                                    :class="'tainacan-icon-' + getStatusIcon(statusOption.value)"/>
+                                                    :class="$statusHelper.getIcon(statusOption.value)"/>
                                             </span>
                                             {{ statusOption.label }}
                                         </b-radio>
@@ -224,19 +224,6 @@
                     allowInsert: String,
                     enabledPostTypes: Array
                 },
-                statusOptions: [{
-                    value: 'publish',
-                    label: this.$i18n.get('public')
-                }, {
-                    value: 'private',
-                    label: this.$i18n.get('private')
-                }, {
-                    value: 'draft',
-                    label: this.$i18n.get('draft')
-                }, {
-                    value: 'trash',
-                    label: this.$i18n.get('trash')
-                }],
                 wpPostTypes: tainacan_plugin.wp_post_types,
                 editFormErrors: {},
                 formErrorMessage: '',
@@ -414,15 +401,6 @@
 
                     })
                     .catch(error => this.$console.error(error));
-            },
-            getStatusIcon(status) {
-                switch(status) {
-                    case 'publish': return 'public';
-                    case 'private': return 'private';
-                    case 'draft': return 'draft';
-                    case 'trash': return 'delete';
-                    default: return 'item';
-                }
             },
             clearErrors(attribute) {
                 this.editFormErrors[attribute] = undefined;
