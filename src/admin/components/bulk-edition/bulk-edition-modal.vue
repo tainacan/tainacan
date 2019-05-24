@@ -126,8 +126,8 @@
                             <option
                                     v-for="(statusOption, index) of $statusHelper.getStatuses().filter(option => { return option.value != 'trash' })"
                                     :key="index"
-                                    :value="statusOption.value">
-                                {{ statusOption.label }}
+                                    :value="statusOption.slug">
+                                {{ statusOption.name }}
                             </option>
                         </b-select>
                     </template>

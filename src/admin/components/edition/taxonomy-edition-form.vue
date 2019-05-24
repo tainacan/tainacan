@@ -92,13 +92,13 @@
                                                 v-model="form.status"
                                                 v-for="(statusOption, index) of $statusHelper.getStatuses()"
                                                 :key="index"
-                                                :native-value="statusOption.value">
+                                                :native-value="statusOption.slug">
                                             <span class="icon has-text-gray">
                                                 <i 
                                                     class="tainacan-icon tainacan-icon-18px"
-                                                    :class="$statusHelper.getIcon(statusOption.value)"/>
+                                                    :class="$statusHelper.getIcon(statusOption.slug)"/>
                                             </span>
-                                            {{ statusOption.label }}
+                                            {{ statusOption.name }}
                                         </b-radio>
                                     </div>
                                 </b-field>

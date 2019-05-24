@@ -22,6 +22,7 @@
 export default {
     name: "ThemeItemsList",
     created() {
+        this.$statusHelper.loadStatuses();
         this.$userPrefs.init(); 
     }
 }

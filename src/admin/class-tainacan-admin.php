@@ -78,6 +78,7 @@ class Admin {
 		
 		// wp_enqueue_style( 'style', $TAINACAN_BASE_URL . '/assets/css/fonts/materialdesignicons.css' );
 		wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/css/fonts/tainacanicons.css', [], TAINACAN_VERSION );
+		wp_enqueue_style( 'roboto-fonts', 'https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i', [], TAINACAN_VERSION );
 		wp_enqueue_script('underscore');
 	}
 	

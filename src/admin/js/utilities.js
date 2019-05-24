@@ -346,6 +346,12 @@ export const StatusHelperPlugin = {};
 StatusHelperPlugin.install = function (Vue, options = {}) {
     
     Vue.prototype.$statusHelper = {
+        statuses: [
+            { name: tainacan_plugin.i18n['status_publish'], slug: 'publish' },
+            { name: tainacan_plugin.i18n['status_private'], slug: 'private' },
+            { name: tainacan_plugin.i18n['status_draft'], slug: 'draft' },
+            { name: tainacan_plugin.i18n['status_trash'], slug: 'trash' }
+        ],
         getIcon(status) {
             switch (status) {
                 case 'publish': return 'tainacan-icon-public';
@@ -359,12 +365,27 @@ StatusHelperPlugin.install = function (Vue, options = {}) {
             return ['publish', 'private', 'draft', 'trash'].includes(status);
         },
         getStatuses() {
-            return  [
-                { label: tainacan_plugin.i18n['status_publish'], value: 'publish' },
-                { label: tainacan_plugin.i18n['status_private'], value: 'private' },
-                { label: tainacan_plugin.i18n['status_draft'], value: 'draft' },
-                { label: tainacan_plugin.i18n['status_trash'], value: 'trash' }
-            ]
+            return  this.statuses;
+        },
+        loadStatuses() {
+            wpApi.get('/statuses/')
+                    .then( res => {
+                        let loadedStatus = res.data;
+                        this.statuses = [];
+
+                        this.statuses.push(loadedStatus['publish']);
+                        this.statuses.push(loadedStatus['private']);
+                        
+                        this.statuses.concat(Object.values(loadedStatus).filter((status) => {
+                            return !['publish','private','draft','trash'].includes(status); 
+                        }));
+
+                        this.statuses.push(loadedStatus['draft']);
+                        this.statuses.push(loadedStatus['trash']);
+                    })
+                    .catch(error => {
+                        console.error( error );
+                    });
         }
     }
 

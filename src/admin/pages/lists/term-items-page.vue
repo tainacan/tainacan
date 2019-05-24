@@ -611,25 +611,25 @@
                     <li 
                             v-for="(statusOption, index) of $statusHelper.getStatuses()"
                             :key="index"
-                            @click="onChangeTab(statusOption.value)"
-                            :class="{ 'is-active': status == statusOption.value}"
-                            :style="{ marginLeft: statusOption.value == 'draft' ? 'auto' : '' }"
+                            @click="onChangeTab(statusOption.slug)"
+                            :class="{ 'is-active': status == statusOption.slug}"
+                            :style="{ marginRight: statusOption.slug == 'private' ? 'auto' : '' }"
                             v-tooltip="{
-                                content: $i18n.getWithVariables('info_%s_tab_' + statusOption.value,[$i18n.get('items')]),
+                                content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('items')]),
                                 autoHide: true,
                                 placement: 'auto',
                             }">
                         <a>
                             <span 
-                                    v-if="$statusHelper.hasIcon(statusOption.value)"
+                                    v-if="$statusHelper.hasIcon(statusOption.slug)"
                                     class="icon has-text-gray">
                                 <i 
                                         class="tainacan-icon tainacan-icon-18px"
-                                        :class="$statusHelper.getIcon(statusOption.value)"
+                                        :class="$statusHelper.getIcon(statusOption.slug)"
                                         />
                             </span>
-                            {{ statusOption.label }}
-                            <span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${collection.total_items[statusOption.value]})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems[statusOption.value] })` : '' }}</span>
+                            {{ statusOption.name }}
+                            <span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${collection.total_items[statusOption.slug]})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems[statusOption.slug] })` : '' }}</span>
                         </a>
                     </li>
                 </ul>
@@ -728,8 +728,8 @@
                         <p
                                 v-for="(statusOption, index) of $statusHelper.getStatuses()"
                                 :key="index"
-                                v-if="status == statusOption.value">
-                            {{ $i18n.getWithVariables('info_no_%s_' + statusOption.value,['items']) }}
+                                v-if="status == statusOption.slug">
+                            {{ $i18n.getWithVariables('info_no_%s_' + statusOption.slug,['items']) }}
                         </p>
 
                         <router-link

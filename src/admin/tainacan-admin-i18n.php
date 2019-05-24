@@ -88,8 +88,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'status_private'                                 => __( 'Private', 'tainacan' ),
 	'status_trash'                                   => __( 'Trash', 'tainacan' ),
 	'status_auto-draft'                              => __( 'Automatic Draft', 'tainacan' ),
-	'publish_visibility'                             => __( 'Visible to everyone', 'tainacan' ),
-	'private_visibility'                             => __( 'Visible only for editors', 'tainacan' ),
+	'publish_visibility'                             => __( 'Public (Visible to everyone)', 'tainacan' ),
+	'private_visibility'                             => __( 'Private (Visible only for editors)', 'tainacan' ),
 
 	// Page Titles (used mainly on Router)
 	'title_repository_collections_page'              => __( 'Repository Collections', 'tainacan' ),
@@ -572,9 +572,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_no_options_avialable_filtering'            => __( 'No options for this filtering.', 'tainacan' ),
 	'info_no_options_found'                          => __( 'No options found.', 'tainacan' ),
 	'info_all_files_uploaded'                        => __( 'All files uploaded.', 'tainacan' ),
-	'info_there_are_%s_items_being_edited'           => __( 'There are %s items being edited', 'tainacan' ),
-	'info_there_is_one_item_being_edited'            => __( 'There is one item being edited', 'tainacan' ),
-	'info_item_being_edited'                         => __( 'item being edited', 'tainacan' ),
+	'info_there_are_%s_items_being_edited'           => __( 'There are %s items being edited;', 'tainacan' ),
+	'info_there_is_one_item_being_edited'            => __( 'There is one item being edited.', 'tainacan' ),
 	'info_no_preview_found'                          => __( 'No preview was found.', 'tainacan' ),
 	'info_leaving_bulk_edition'                      => __( 'You are leaving the bulk edition now.', 'tainacan' ),
 	'info_current_view_mode_metadata_not_allowed'    => __( 'Current view mode does not allow displayed metadata selection.', 'tainacan' ),
