@@ -65,7 +65,6 @@ class Numeric extends Filter_Type {
                     </div>
                 </div>
             </div>
-            </div>
         ');
     }
 
@@ -86,7 +85,6 @@ class Numeric extends Filter_Type {
      * @internal param $metadatum
      */
     public function render( $filter ){
-
         return '<tainacan-filter-numeric
                                         step="' . $this->get_option('step') . '" 
                                         name="'.$filter->get_name().'"
