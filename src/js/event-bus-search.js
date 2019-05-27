@@ -320,7 +320,6 @@ export default {
                     if (this.$store.getters['search/getPostQuery']['fetch_only'] == undefined) {  
                         this.$emit( 'hasToPrepareMetadataAndFilters', to);
                     } else {  
-
                         this.$emit( 'isLoadingItems', true);
                         
                         // Cancels previous Request

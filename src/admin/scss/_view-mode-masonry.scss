@@ -74,6 +74,7 @@
                 width: 100%;
                 height: auto;    
                 transition: height 0.2s ease;
+                display: block;
             }
             img:not(.skeleton) {
                 visibility: hidden;

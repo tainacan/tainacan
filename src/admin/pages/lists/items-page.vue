@@ -727,7 +727,7 @@
                         :items="items"
                         :is-filters-menu-compressed="isFiltersMenuCompressed || openAdvancedSearch "
                         :total-items="totalItems"
-                        :is-loading="isLoadingItems"
+                        :is-loading="showLoading"
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>
 
                 <!-- Empty Placeholder (only used in Admin) -->
