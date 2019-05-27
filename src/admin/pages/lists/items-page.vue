@@ -609,7 +609,7 @@
             <div 
                     v-if="!isOnTheme && !openAdvancedSearch"
                     class="tabs">
-                <ul>
+                <ul>               
                     <li 
                             @click="onChangeTab('')"
                             :class="{ 'is-active': status == undefined || status == ''}"
@@ -1892,6 +1892,10 @@
         margin-bottom: 20px;
         padding-left: $page-side-padding;
         padding-right: $page-side-padding;
+
+        @media screen and (min-width: 1024px) {
+            overflow: visible;
+        }
 
         li {
             cursor: pointer;
