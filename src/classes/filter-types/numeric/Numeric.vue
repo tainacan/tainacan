@@ -76,7 +76,7 @@
         mixins: [ wpAjax ],
         created() {
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id;
+            this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : (typeof this.filter.metadatum.metadatum_id == 'object' ? this.filter.metadatum.metadatum_id.metadatum_id : this.filter.metadatum.metadatum_id);
 
             let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 

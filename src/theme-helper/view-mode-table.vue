@@ -18,7 +18,9 @@
             <!-- SKELETON LOADING -->
             <table 
                     v-if="isLoading"
-                    class="tainacan-table tainacan-table-skeleton">
+                    :summary="$i18n.get('label_table_of_items')"
+                    class="tainacan-table tainacan-table-skeleton"
+                    tabindex="0">
                 <thead>
                     <th 
                             v-for="(column, index) in displayedMetadata"

@@ -267,7 +267,7 @@
                 <!-- Change OrderBy Select and Order Button-->
                 <div class="search-control-item">
                     <b-field>
-                        <label class="label">{{ $i18n.get('label_sort') }}</label>
+                        <label class="label">{{ $i18n.get('label_sorting_direction') }}</label>
                         <b-dropdown
                                 :mobile-modal="true"
                                 @input="onChangeOrder()"

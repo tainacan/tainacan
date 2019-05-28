@@ -213,6 +213,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_core_title'                               => __( 'Core Title', 'tainacan' ),
 	'label_core_description'                         => __( 'Core Description', 'tainacan' ),
 	'label_sorting'                                  => __( 'Sorting', 'tainacan' ),
+	'label_sorting_direction'                                  => __( 'Sorting direction', 'tainacan' ),
 	'label_sort'	                                 => __( 'Sort', 'tainacan' ),
 	'label_activity_date'                            => __( 'Activity date', 'tainacan' ),
 	'label_activity_title'                           => __( 'Activity', 'tainacan' ),
@@ -405,6 +406,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_wordpress_admin_page'					 => __( 'WordPress Admin Page', 'tainacan' ),	
 	'label_view_all_%s_collections'					 => __( 'View all %s collections', 'tainacan' ),
 	'label_comparator'								 => __( 'Comparator', 'tainacan' ),
+	'label_table_of_items'                                    => __( 'Table of Items', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
