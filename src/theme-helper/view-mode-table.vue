@@ -121,7 +121,7 @@
                                         v-if="collectionId == undefined &&
                                             column.metadata_type_object != undefined && 
                                             column.metadata_type_object.related_mapped_prop == 'title'"
-                                        v-html="item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                        v-html="`<span class='sr-only'>` + column.name + ': </span>' + (item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`)"/>
                                 <p
                                         v-tooltip="{
                                             delay: {
@@ -133,11 +133,10 @@
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
-                                        :aria-label="column.name + ': ' + (item.description != undefined && item.description != '' ? item.description : $i18n.get('label_value_not_informed'))"
                                         v-if="collectionId == undefined &&
                                             column.metadata_type_object != undefined && 
                                             column.metadata_type_object.related_mapped_prop == 'description'"
-                                        v-html="item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                        v-html="`<span class='sr-only'>` + column.name + ': </span>' + (item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`)"/>
                                 <p
                                         v-tooltip="{
                                             delay: {
@@ -150,7 +149,6 @@
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
-                                        :aria-label="column.name + ': ' + (renderMetadataForAria(item.metadata, column) != '' ? renderMetadataForAria(item.metadata, column) : $i18n.get('label_value_not_informed'))"
                                         v-if="item.metadata != undefined &&
                                             column.metadatum !== 'row_thumbnail' &&
                                             column.metadatum !== 'row_actions' &&
@@ -200,21 +198,11 @@ export default {
                 return '';
             } else {
                 if (component != undefined && component == 'tainacan-textarea')
-                    return metadata.value_as_string;
+                    return '<span class="sr-only">' + column.name + ': </span>' + metadata.value_as_string;
                 else
-                    return metadata.value_as_html;
+                    return '<span class="sr-only">' + column.name + ': </span>' + metadata.value_as_html;
             }
-        },
-        renderMetadataForAria(itemMetadata, column) {
-
-            let metadata = (itemMetadata != undefined && itemMetadata[column.slug] != undefined) ? itemMetadata[column.slug] : false;
-
-            if (!metadata) {
-                return '';
-            } else {
-                return metadata.value_as_string;
-            }
-        },
+        }
     }
 }
 </script>
