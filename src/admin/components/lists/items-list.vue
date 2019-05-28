@@ -687,8 +687,7 @@
                                                                                                             column.metadata_type_object.primitive_type == 'item' || 
                                                                                                             column.metadata_type_object.primitive_type == 'compound') : false,
                                         'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' || column.metadata_type_object.related_mapped_prop == 'description') : false,
-                                }"
-                                :custom-key="column.slug">
+                                }">
                             <div class="th-wrap">{{ column.name }}</div>
                         </th>
                         <th class="actions-header">
@@ -718,7 +717,6 @@
                                 :key="columnIndex"
                                 v-for="(column, columnIndex) in tableMetadata"
                                 v-if="column.display"
-                                :label="column.name" 
                                 class="column-default-width"
                                 :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea',
                                         'thumbnail-cell': column.metadatum == 'row_thumbnail',
