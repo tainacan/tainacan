@@ -117,6 +117,7 @@
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
+                                        :aria-label="column.name + ': ' + (item.title != undefined && item.title != '' ? item.title : $i18n.get('label_value_not_informed'))"
                                         v-if="collectionId == undefined &&
                                             column.metadata_type_object != undefined && 
                                             column.metadata_type_object.related_mapped_prop == 'title'"
@@ -132,6 +133,7 @@
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
+                                        :aria-label="column.name + ': ' + (item.description != undefined && item.description != '' ? item.description : $i18n.get('label_value_not_informed'))"
                                         v-if="collectionId == undefined &&
                                             column.metadata_type_object != undefined && 
                                             column.metadata_type_object.related_mapped_prop == 'description'"
@@ -148,6 +150,7 @@
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
+                                        :aria-label="column.name + ': ' + (renderMetadataForAria(item.metadata, column) != '' ? renderMetadataForAria(item.metadata, column) : $i18n.get('label_value_not_informed'))"
                                         v-if="item.metadata != undefined &&
                                             column.metadatum !== 'row_thumbnail' &&
                                             column.metadatum !== 'row_actions' &&
@@ -201,7 +204,17 @@ export default {
                 else
                     return metadata.value_as_html;
             }
-        }
+        },
+        renderMetadataForAria(itemMetadata, column) {
+
+            let metadata = (itemMetadata != undefined && itemMetadata[column.slug] != undefined) ? itemMetadata[column.slug] : false;
+
+            if (!metadata) {
+                return '';
+            } else {
+                return metadata.value_as_string;
+            }
+        },
     }
 }
 </script>
