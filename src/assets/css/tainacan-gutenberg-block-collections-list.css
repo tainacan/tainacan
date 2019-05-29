@@ -72,6 +72,9 @@
           width: 95%; } }
       .wp-block-tainacan-modal .modal-search-area .components-base-control label {
         text-align: center; }
+  .wp-block-tainacan-modal .modal-radio-area-label {
+    font-weight: bold;
+    margin-left: 1.75rem; }
   .wp-block-tainacan-modal .modal-checkbox-list,
   .wp-block-tainacan-modal .modal-radio-list .components-base-control__field {
     padding: 0;

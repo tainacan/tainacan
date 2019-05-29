@@ -13,7 +13,8 @@ module.exports = {
         gutenberg_items_list: './src/gutenberg-blocks/tainacan-items/items-list/index.js',
         gutenberg_dynamic_items_list: './src/gutenberg-blocks/tainacan-items/dynamic-items-list/index.js',
         gutenberg_dynamic_items_list_theme: './src/gutenberg-blocks/tainacan-items/dynamic-items-list/dynamic-items-list-theme.js',
-        gutenberg_collections_list: './src/gutenberg-blocks/tainacan-collections/collections-list/index.js'
+        gutenberg_collections_list: './src/gutenberg-blocks/tainacan-collections/collections-list/index.js',
+        gutenberg_facets_list: './src/gutenberg-blocks/tainacan-facets/facets-list/index.js'
     },
     output: {
         path: path.resolve(__dirname, './src/assets/'),
