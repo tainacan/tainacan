@@ -12,8 +12,7 @@ export default class MetadataModal extends React.Component {
         // Initialize state
         this.state = {
             collectionsPerPage: 24,
-            collectionId: undefined,  
-            collectionName: '', 
+            collectionId: undefined,
             isLoadingCollections: false, 
             modalCollections: [],
             totalModalCollections: 0, 
@@ -34,9 +33,9 @@ export default class MetadataModal extends React.Component {
         this.selectCollection = this.selectCollection.bind(this);
         this.fetchCollections = this.fetchCollections.bind(this);
         this.fetchModalCollections = this.fetchModalCollections.bind(this);
-        this.fetchCollection = this.fetchCollection.bind(this);
         this.selectMetadatum = this.selectMetadatum.bind(this);
         this.fetchModalMetadata = this.fetchModalMetadata.bind(this);
+        this.getMetadatumType = this.getMetadatumType.bind(this);
     }
 
     componentWillMount() {
@@ -45,7 +44,6 @@ export default class MetadataModal extends React.Component {
             collectionId: this.props.existingCollectionId
         });
         if (this.props.existingCollectionId != null && this.props.existingCollectionId != undefined) {
-            this.fetchCollection(this.props.existingCollectionId);
             this.fetchModalMetadata(this.props.existingCollectionId);
             this.setState({ metadatumId: this.props.existingMetadatumId ? this.props.existingMetadatumId : undefined });
         } else {
@@ -94,19 +92,6 @@ export default class MetadataModal extends React.Component {
             });
     }
 
-    fetchCollection(collectionId) {
-        if (collectionId != 'default') {
-            tainacan.get('/collections/' + collectionId)
-                .then((response) => {
-                    this.setState({ collectionName: response.data.name });
-                }).catch(error => {
-                    console.log('Error trying to fetch collection: ' + error);
-                });
-        } else {
-            this.setState({ collectionName: __('Repository', 'tainacan') });
-        }
-    }
-
     selectCollection(selectedCollectionId) {
 
         this.setState({
@@ -114,7 +99,6 @@ export default class MetadataModal extends React.Component {
         });
 
         this.props.onSelectCollection(selectedCollectionId);
-        this.fetchCollection(selectedCollectionId);
         this.fetchModalMetadata(selectedCollectionId);
     }
 
@@ -171,7 +155,6 @@ export default class MetadataModal extends React.Component {
         this.props.onCancelSelection();
     }
 
-
     // FACETS RELATED --------------------------------------------------
     fetchModalMetadata(selectedCollectionId) {
 
@@ -192,7 +175,7 @@ export default class MetadataModal extends React.Component {
                     otherModalMetadata.push({ 
                         name: metadatum.name, 
                         id: metadatum.id,
-                        type: metadatum.metadata_type_object ? metadatum.metadata_type_object.component : false
+                        type: this.getMetadatumType(metadatum)
                     });
                 }
 
@@ -206,6 +189,26 @@ export default class MetadataModal extends React.Component {
             .catch(error => {
                 console.log('Error trying to fetch metadata: ' + error);
             });
+    }
+
+    getMetadatumType(metadatum) {
+        let metadatumType = metadatum.metadata_type_object ? metadatum.metadata_type_object.component : false;
+
+        if (metadatumType) {
+            switch(metadatumType) {
+                case 'tainacan-text':           return __('Text', 'tainacan');
+                case 'tainacan-textarea':       return __('Text area', 'tainacan');
+                case 'tainacan-date':           return __('Date', 'tainacan');
+                case 'tainacan-numeric':        return __('Numeric', 'tainacan');
+                case 'tainacan-selectbox':      return __('Select box', 'tainacan');
+                case 'tainacan-relationship':   return __('Relationship', 'tainacan');
+                case 'tainacan-taxonomy':       return __('Taxonomy', 'tainacan');
+                case 'tainacan-compound':       return __('Compound', 'tainacan');
+                default:                        return false;
+            }
+        } else {
+            return metadatumType;
+        }
     }
 
     selectMetadatum(selectedMetadatumId) {
@@ -222,7 +225,7 @@ export default class MetadataModal extends React.Component {
             // Metadata modal
             <Modal
                 className="wp-block-tainacan-modal"
-                title={__('Select a metadatum to show it\'s values on block', 'tainacan')}
+                title={__('Select a metadatum to show it\'s facets on block', 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
                 contentLabel={__('Select metadatum', 'tainacan')}>
                 {(
@@ -234,13 +237,14 @@ export default class MetadataModal extends React.Component {
                                     selected={ this.state.temporaryMetadatumId }
                                     options={
                                         this.state.modalMetadata.map((metadatum) => {
-                                            return { label: metadatum.name, value: '' + metadatum.id }
+                                            return { label: metadatum.name + ' (' + metadatum.type + ')', value: '' + metadatum.id }
                                         })
                                     }
                                     onChange={ ( aMetadatumId ) => { 
                                         this.setState({ temporaryMetadatumId: aMetadatumId });
                                     } } />                          
                             </div>
+                            <br/>
                         </div>
                     ) : this.state.isLoadingMetadata ? <Spinner/> :
                         <div className="modal-loadmore-section">
@@ -300,6 +304,7 @@ export default class MetadataModal extends React.Component {
                                         } } />
                                     }                                      
                                 </div>
+                                <br/>
                             </div>
                         ) :
                         this.state.isLoadingCollections ? (
