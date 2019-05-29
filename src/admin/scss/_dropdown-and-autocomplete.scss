@@ -83,6 +83,19 @@
         max-height: unset !important;
     }
 }
+.taginput-container .mdi-magnify::before, 
+.autocomplete .mdi-magnify::before {
+    content: 'search';
+    display: inline-block;
+    font: normal normal normal 20px/1 "TainacanIcons";
+    font-size: inherit;
+    text-rendering: auto;
+    vertical-align: middle;
+    line-height: inherit;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 20px;
+}
 
 .taginput-container {
     padding: 0px !important;
@@ -93,6 +106,9 @@
     }
     .autocomplete .icon {
         height: 2.2em !important;
+        .mdi-magnify::before {
+            margin-top: -3px;
+        }
     }
     .input { 
         margin-bottom: 0px !important; 

@@ -156,11 +156,18 @@
 
             <!-- SEARCH CONTROL ------------------------- -->
             <div
-                    :aria-label="$i18n.get('label_sort_visualization')"
+                    aria-labelledby="search-control-landmark"
                     role="region"
                     ref="search-control"
                     v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                     class="search-control">
+
+                <h3 
+                        id="search-control-landmark"
+                        class="sr-only">
+                    {{ $i18n.get('label_sort_visualization') }}
+                </h3>
+
                 <!-- <b-loading
                         :is-full-page="false"
                         :active.sync="isLoadingMetadata"/> -->
