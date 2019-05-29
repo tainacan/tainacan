@@ -269,6 +269,9 @@
             a.facet-without-title span {
                 display: none;
             }
+            span.facet-item-count {
+                color: #555758;
+            }
 
             &:hover a { 
                 color: #454647; 
@@ -360,6 +363,9 @@
 
             a.facet-without-image img {
                 display: none;
+            }
+            span.facet-item-count {
+                color: #555758;
             }
 
             &:hover a { 

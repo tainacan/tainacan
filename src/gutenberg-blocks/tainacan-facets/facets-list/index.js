@@ -6,7 +6,7 @@ const { RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Tool
 
 const { InspectorControls, BlockControls } = wp.editor;
 
-import FacetsModal from './facets-modal.js';
+import MetadataModal from './metadata-modal.js';
 import tainacan from '../../api-client/axios.js';
 import axios from 'axios';
 import qs from 'qs';
@@ -59,7 +59,7 @@ registerBlockType('tainacan/facets-list', {
             type: Number,
             default: 0
         },
-        searchURL: {
+        metadatumId: {
             type: String,
             default: undefined
         },
@@ -130,7 +130,7 @@ registerBlockType('tainacan/facets-list', {
             layout,
             isModalOpen,
             gridMargin,
-            searchURL,
+            metadatumId,
             facetsRequestSource,
             maxFacetsNumber,
             order,
@@ -171,8 +171,9 @@ registerBlockType('tainacan/facets-list', {
                                     : 
                                 `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
                             }
-                            alt={ facet.title ? facet.title : __( 'Thumbnail', 'tainacan' ) }/>
-                        <span>{ facet.title ? facet.title : '' }</span>
+                            alt={ facet.label ? facet.label : __( 'Thumbnail', 'tainacan' ) }/>
+                        <span>{ facet.label ? facet.label : '' }</span>
+                        { facet.total_items ? <span class="facet-item-count">&nbsp;({ facet.total_items })</span> : null }
                     </a>
                 </li>
             );
@@ -192,7 +193,7 @@ registerBlockType('tainacan/facets-list', {
                 isLoading: isLoading
             });
 
-            let endpoint = '/collection' + searchURL.split('#')[1].split('/collections')[1];
+            let endpoint = collectionId != 'default' ? '/collection/' + collectionId + '/facets/' + metadatumId : '/facets/' + metadatumId;
             let query = endpoint.split('?')[1];
             let queryObject = qs.parse(query);
 
@@ -232,12 +233,12 @@ registerBlockType('tainacan/facets-list', {
             delete queryObject.admin_view_mode;
             delete queryObject.fetch_only_meta;
             
-            endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
+            endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject);
             
             tainacan.get(endpoint, { cancelToken: facetsRequestSource.token })
                 .then(response => {
 
-                    for (let facet of response.data.facets)
+                    for (let facet of response.data.values)
                         facets.push(prepareFacet(facet));
 
                     setAttributes({
@@ -283,7 +284,7 @@ registerBlockType('tainacan/facets-list', {
             }
         }
 
-        function openFacetsModal() {
+        function openMetadataModal() {
             isModalOpen = true;
             setAttributes( { 
                 isModalOpen: isModalOpen
@@ -491,18 +492,18 @@ registerBlockType('tainacan/facets-list', {
                     (
                     <div>
                         { isModalOpen ? 
-                            <FacetsModal
+                            <MetadataModal
                                 existingCollectionId={ collectionId } 
-                                existingSearchURL={ searchURL } 
+                                existingMetadatumId={ metadatumId } 
                                 onSelectCollection={ (selectedCollectionId) => {
                                     collectionId = selectedCollectionId;
                                     setAttributes({ collectionId: collectionId });
                                     fetchCollectionForHeader();
                                 }}
-                                onApplySearchURL={ (aSearchURL) =>{
-                                    searchURL = aSearchURL
+                                onSelectMetadatum={ (selectedFacetId) =>{
+                                    metadatumId = selectedFacetId;
                                     setAttributes({
-                                        searchURL: searchURL,
+                                        metadatumId: metadatumId,
                                         isModalOpen: false
                                     });
                                     setContent();
@@ -528,7 +529,7 @@ registerBlockType('tainacan/facets-list', {
                                 <Button
                                     isPrimary
                                     type="submit"
-                                    onClick={ () => openFacetsModal() }>
+                                    onClick={ () => openMetadataModal() }>
                                     {__('Configure search', 'tainacan')}
                                 </Button>    
                             </div>
@@ -704,7 +705,7 @@ registerBlockType('tainacan/facets-list', {
                         <Button
                             isPrimary
                             type="submit"
-                            onClick={ () => openFacetsModal() }>
+                            onClick={ () => openMetadataModal() }>
                             {__('Select facets', 'tainacan')}
                         </Button>   
                     </Placeholder>
@@ -738,7 +739,7 @@ registerBlockType('tainacan/facets-list', {
             showName,
             layout,
             gridMargin,
-            searchURL,
+            metadatumId,
             maxFacetsNumber,
             order,
             showSearchBar,
@@ -749,8 +750,8 @@ registerBlockType('tainacan/facets-list', {
         } = attributes;
         
         return <div 
-                    search-url={ searchURL }
                     className={ className }
+                    metadatum-id={ metadatumId }
                     collection-id={ collectionId }  
                     show-image={ '' + showImage }
                     show-name={ '' + showName }

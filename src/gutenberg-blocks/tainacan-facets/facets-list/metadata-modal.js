@@ -5,7 +5,7 @@ const { __ } = wp.i18n;
 
 const { TextControl, Button, Modal, RadioControl, Spinner } = wp.components;
 
-export default class FacetsModal extends React.Component {
+export default class MetadataModal extends React.Component {
     constructor(props) {
         super(props);
 
@@ -20,9 +20,13 @@ export default class FacetsModal extends React.Component {
             collectionPage: 1,
             temporaryCollectionId: '',
             searchCollectionName: '',
+            metadatumId: undefined,  
+            isLoadingMetadata: false, 
+            modalMetadata: [],
+            temporaryMetadatumId: '',
             collections: [],
             collectionsRequestSource: undefined,
-            searchURL: '',
+            metadataRequestSource: undefined
         };
         
         // Bind events
@@ -31,7 +35,8 @@ export default class FacetsModal extends React.Component {
         this.fetchCollections = this.fetchCollections.bind(this);
         this.fetchModalCollections = this.fetchModalCollections.bind(this);
         this.fetchCollection = this.fetchCollection.bind(this);
-        this.applySelectedSearchURL = this.applySelectedSearchURL.bind(this);
+        this.selectMetadatum = this.selectMetadatum.bind(this);
+        this.fetchModalMetadata = this.fetchModalMetadata.bind(this);
     }
 
     componentWillMount() {
@@ -39,10 +44,10 @@ export default class FacetsModal extends React.Component {
         this.setState({ 
             collectionId: this.props.existingCollectionId
         });
-         
         if (this.props.existingCollectionId != null && this.props.existingCollectionId != undefined) {
             this.fetchCollection(this.props.existingCollectionId);
-            this.setState({ searchURL: this.props.existingSearchURL ? this.props.existingSearchURL : tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#/collections/'+ this.props.existingCollectionId + '/facets/?readmode=true&iframemode=true' });
+            this.fetchModalMetadata(this.props.existingCollectionId);
+            this.setState({ metadatumId: this.props.existingMetadatumId ? this.props.existingMetadatumId : undefined });
         } else {
             this.setState({ collectionPage: 1 });
             this.fetchModalCollections();
@@ -90,22 +95,27 @@ export default class FacetsModal extends React.Component {
     }
 
     fetchCollection(collectionId) {
-        tainacan.get('/collections/' + collectionId)
-            .then((response) => {
-                this.setState({ collectionName: response.data.name });
-            }).catch(error => {
-                console.log('Error trying to fetch collection: ' + error);
-            });
+        if (collectionId != 'default') {
+            tainacan.get('/collections/' + collectionId)
+                .then((response) => {
+                    this.setState({ collectionName: response.data.name });
+                }).catch(error => {
+                    console.log('Error trying to fetch collection: ' + error);
+                });
+        } else {
+            this.setState({ collectionName: __('Repository', 'tainacan') });
+        }
     }
 
     selectCollection(selectedCollectionId) {
+
         this.setState({
-            collectionId: selectedCollectionId,
-            searchURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#/collections/' + selectedCollectionId + '/facets/?readmode=true&iframemode=true'
+            collectionId: selectedCollectionId        
         });
 
         this.props.onSelectCollection(selectedCollectionId);
         this.fetchCollection(selectedCollectionId);
+        this.fetchModalMetadata(selectedCollectionId);
     }
 
     fetchCollections(name) {
@@ -119,7 +129,7 @@ export default class FacetsModal extends React.Component {
             collectionsRequestSource: aCollectionRequestSource,
             isLoadingCollections: true, 
             collections: [],
-            facets: []
+            metadata: []
         });
 
         let endpoint = '/collections/?orderby=title&order=asc&perpage=' + this.state.collectionsPerPage;
@@ -142,10 +152,6 @@ export default class FacetsModal extends React.Component {
             });
     }
 
-    applySelectedSearchURL() {    
-        this.props.onApplySearchURL(document.getElementById("facetsFrame").contentWindow.location.href);
-    }
-
     resetCollections() {
 
         this.setState({
@@ -165,37 +171,104 @@ export default class FacetsModal extends React.Component {
         this.props.onCancelSelection();
     }
 
+
+    // FACETS RELATED --------------------------------------------------
+    fetchModalMetadata(selectedCollectionId) {
+
+        let someModalMetadata = [];
+        let endpoint = selectedCollectionId != 'default' ? '/collection/' + selectedCollectionId + '/metadata/?nopaging=1' : '/metadata/?nopaging=1';
+
+        this.setState({ 
+            isLoadingMetadata: true,
+            modalMetadata: someModalMetadata
+        });
+
+        tainacan.get(endpoint)
+            .then(response => {
+
+                let otherModalMetadata = this.state.modalMetadata;
+
+                for (let metadatum of response.data) {
+                    otherModalMetadata.push({ 
+                        name: metadatum.name, 
+                        id: metadatum.id,
+                        type: metadatum.metadata_type_object ? metadatum.metadata_type_object.component : false
+                    });
+                }
+
+                this.setState({ 
+                    isLoadingMetadata: false, 
+                    modalMetadata: otherModalMetadata
+                });
+            
+                return otherModalMetadata;
+            })
+            .catch(error => {
+                console.log('Error trying to fetch metadata: ' + error);
+            });
+    }
+
+    selectMetadatum(selectedMetadatumId) {
+        this.setState({
+            collectionId: selectedMetadatumId
+        });
+
+        this.props.onSelectMetadatum(selectedMetadatumId);
+    }
+
+
     render() {
         return this.state.collectionId != null && this.state.collectionId != undefined ? (
-            // Facets modal
-        <Modal
+            // Metadata modal
+            <Modal
                 className="wp-block-tainacan-modal"
-                title={__('Select the facet to show values on block', 'tainacan')}
+                title={__('Select a metadatum to show it\'s values on block', 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
-                contentLabel={__('Configure your facets search to be shown on block', 'tainacan')}>
-                <iframe
-                        id="facetsFrame"
-                        src={ this.state.searchURL } />
-                <div className="modal-footer-area">
-                    <Button 
-                        isDefault
-                        onClick={ () => { this.resetCollections() }}>
-                        {__('Switch collection', 'tainacan')}
-                    </Button>
-                    <Button 
-                        isPrimary
-                        onClick={ () => this.applySelectedSearchURL() }>
-                        {__('Use this search', 'tainacan')}
-                    </Button>
-                </div>
-        </Modal>
-    ) : (
+                contentLabel={__('Select metadatum', 'tainacan')}>
+                {(
+                    this.state.modalMetadata.length > 0 ? 
+                    (   
+                        <div>
+                            <div className="modal-radio-list">
+                                <RadioControl
+                                    selected={ this.state.temporaryMetadatumId }
+                                    options={
+                                        this.state.modalMetadata.map((metadatum) => {
+                                            return { label: metadatum.name, value: '' + metadatum.id }
+                                        })
+                                    }
+                                    onChange={ ( aMetadatumId ) => { 
+                                        this.setState({ temporaryMetadatumId: aMetadatumId });
+                                    } } />                          
+                            </div>
+                        </div>
+                    ) : this.state.isLoadingMetadata ? <Spinner/> :
+                        <div className="modal-loadmore-section">
+                            <p>{ __('Sorry, no metadatum found.', 'tainacan') }</p>
+                        </div>
+                )
+            }
+            <div className="modal-footer-area">
+                <Button 
+                    isDefault
+                    onClick={ () => { this.resetCollections(); }}>
+                    {__('Switch collection', 'tainacan')}
+                </Button>
+                <Button
+                    isPrimary
+                    disabled={ this.state.temporaryMetadatumId == undefined || this.state.temporaryMetadatumId == null || this.state.temporaryMetadatumId == ''}
+                    onClick={ () => { this.selectMetadatum(this.state.temporaryMetadatumId);  } }>
+                    {__('Finish', 'tainacan')}
+                </Button>
+            </div>
+        </Modal> 
+        ) : (
         // Collections modal
         <Modal
                 className="wp-block-tainacan-modal"
-                title={__('Select a collection to fetch facets from', 'tainacan')}
+                title={__('Select a collection to fetch metadata from', 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
-                contentLabel={__('Select facets', 'tainacan')}>
+                contentLabel={__('Select collection', 'tainacan')}>
                 <div>
                     <div className="modal-search-area">
                         <TextControl 
@@ -291,7 +364,7 @@ export default class FacetsModal extends React.Component {
                         isPrimary
                         disabled={ this.state.temporaryCollectionId == undefined || this.state.temporaryCollectionId == null || this.state.temporaryCollectionId == ''}
                         onClick={ () => { this.selectCollection(this.state.temporaryCollectionId);  } }>
-                        {__('Configure search', 'tainacan')}
+                        {__('Select metadatum', 'tainacan')}
                     </Button>
                 </div>
             </div>

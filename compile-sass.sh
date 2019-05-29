@@ -21,5 +21,7 @@ sass -E 'UTF-8' --cache-location .tmp/sass-cache-5 src/gutenberg-blocks/tainacan
 
 sass -E 'UTF-8' --cache-location .tmp/sass-cache-6 src/gutenberg-blocks/tainacan-terms/terms-list/terms-list.scss:src/assets/css/tainacan-gutenberg-block-terms-list.css
 
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-7 src/gutenberg-blocks/tainacan-facets/facets-list/facets-list.scss:src/assets/css/tainacan-gutenberg-block-facets-list.css
+
 echo "Compilação do Sass Concluído!"
 exit 0
