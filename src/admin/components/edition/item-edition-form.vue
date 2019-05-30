@@ -845,9 +845,12 @@ export default {
                 this.isLoading = false;
 
                 if (!this.isOnSequenceEdit) {                    
-                    if (this.form.status != 'trash') 
-                        this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
-                    else
+                    if (this.form.status != 'trash') {
+                        if (previousStatus == 'auto-draft')
+                            this.$router.push({ path: this.$routerHelper.getItemPath(this.form.collectionId, this.itemId), query: { recent: true } });
+                        else
+                            this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
+                    } else
                         this.$router.push(this.$routerHelper.getCollectionPath(this.form.collectionId));
                 }
             })

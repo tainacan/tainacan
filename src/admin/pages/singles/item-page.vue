@@ -340,6 +340,13 @@
             <div class="footer">
                 <div class="form-submission-footer">
                     <router-link
+                            v-if="item.current_user_can_edit && $route.query.recent == true"
+                            class="button is-secondary"
+                            style="margin-right: auto;"
+                            :to="{ path: $routerHelper.getNewItemPath(collectionId)}">
+                        {{ $i18n.get('label_create_another_item') }}
+                    </router-link>
+                    <router-link
                             v-if="item.current_user_can_edit"
                             class="button is-secondary"
                             :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
