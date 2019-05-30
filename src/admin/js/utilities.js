@@ -150,7 +150,8 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
                     .then( updatedRes => {
                         let prefs = JSON.parse(updatedRes.data.meta['tainacan_prefs']);
                         this.tainacanPrefs = prefs;
-                    });
+                    })
+                    .catch( () => console.log("Request to /users/me failed. Maybe you're not logged in.") );
             } else {
                 let prefs = JSON.parse(tainacan_plugin.user_prefs);
                 this.tainacanPrefs = prefs;
@@ -175,9 +176,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
                             this.tainacanPrefs[key] = value;
                         }
                     })
-                    .catch(error => {
-                        reject( error );
-                    });
+                    .catch( () => console.log("Request to /users/me failed. Maybe you're not logged in.") );
             }); 
         },
         clean() {
