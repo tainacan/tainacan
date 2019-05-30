@@ -107,6 +107,11 @@
                             v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$route.query.iframemode">
                         {{ $i18n.getFrom('items','edit_item') }}
                     </b-dropdown-item>
+                    <!-- <b-dropdown-item
+                            @click="duplicateOneItem(contextMenuItem.id)"
+                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$route.query.iframemode">
+                        {{ $i18n.get('label_duplicate_item') }}
+                    </b-dropdown-item> -->
                     <b-dropdown-item
                             @click="deleteOneItem(contextMenuItem.id)"
                             v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$route.query.iframemode">
@@ -947,6 +952,10 @@ export default {
         ...mapGetters('bulkedition', [
             'getGroupID'
         ]),
+        ...mapActions('item', [
+            'fetchItem',
+            'duplicateItem'
+        ]),
         ...mapGetters('search', [
             'getOrder',
             'getOrderBy'
@@ -990,6 +999,19 @@ export default {
             for (let i = 0; i < this.selectedItems.length; i++) {
                 this.selectedItems.splice(i, 1, this.isAllItemsSelected);
             }
+        },
+        duplicateOneItem(itemId) {
+            this.fetchItem({ itemId: itemId, contextEdit: true })
+                .then((item) => {
+                    this.duplicateItem({ item: item })
+                        .then((duplicatedItem) => {
+
+                            // console.log(duplicatedItem);
+                        })
+                        .catch((error) => this.$console.error(error));
+                })
+                .catch(error => this.$console.error("Error fetching item for duplicate: " + error));    
+            this.clearContextMenu();
         },
         untrashOneItem(itemId) {
             this.$modal.open({

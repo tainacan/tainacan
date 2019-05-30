@@ -406,7 +406,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_wordpress_admin_page'					 => __( 'WordPress Admin Page', 'tainacan' ),	
 	'label_view_all_%s_collections'					 => __( 'View all %s collections', 'tainacan' ),
 	'label_comparator'								 => __( 'Comparator', 'tainacan' ),
-	'label_table_of_items'                                    => __( 'Table of Items', 'tainacan' ),
+	'label_table_of_items'                           => __( 'Table of Items', 'tainacan' ),
+	'label_duplicate_item'                           => __( 'Duplicate item', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
