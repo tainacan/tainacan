@@ -1005,8 +1005,7 @@ export default {
                 .then((item) => {
                     this.duplicateItem({ item: item })
                         .then((duplicatedItem) => {
-
-                            // console.log(duplicatedItem);
+                            this.$console.log(duplicatedItem);
                         })
                         .catch((error) => this.$console.error(error));
                 })
