@@ -27,6 +27,7 @@ class Html extends Exposer {
 		$response->set_headers( ['Content-Type: text/html; charset=' . get_option( 'blog_charset' )] );
 		
 		$items = $response->get_data();
+		$items = is_array($items) && isset($items['items']) ? $items['items'] : [];
 		
 		$html = '
 			<!DOCTYPE html>
