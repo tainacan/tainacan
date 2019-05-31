@@ -67,6 +67,10 @@ export const sendFilter = ( { commit }, { collectionId, metadatumId, name, filte
 };
 
 export const updateFilter = ( { commit }, { filterId, index, options }) => {
+
+    if (options['metadatum'] != undefined && options['metadatum']['metadatum_id'] != undefined)
+        options['metadatum'] = options['metadatum']['metadatum_id'];
+
     return new Promise(( resolve, reject ) => {
         let endpoint = '/filters/' + filterId;
         options['context'] = 'edit';

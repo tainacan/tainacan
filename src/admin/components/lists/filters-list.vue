@@ -573,6 +573,7 @@ export default {
                     this.newFilterIndex = 0;
                 }
                 this.openedFilterId = filter.id;
+
                 // First time opening
                 if (this.editForms[this.openedFilterId] == undefined) {
                     this.editForms[this.openedFilterId] = JSON.parse(JSON.stringify(filter));

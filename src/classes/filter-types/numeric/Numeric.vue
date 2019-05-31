@@ -94,7 +94,6 @@
                 .catch(error => {
                     this.$console.log(error);
                 });
-
             this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
         },
         data(){
