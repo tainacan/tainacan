@@ -62,7 +62,7 @@
         <b-numberinput
                 :aria-labelledby="labelId"
                 size="is-small"
-                :step="step"
+                :step="Number(options.step)"
                 @input="emit()"
                 v-model="value"/>
     </div>
@@ -77,6 +77,7 @@
         created() {
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
             this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : (typeof this.filter.metadatum.metadatum_id == 'object' ? this.filter.metadatum.metadatum_id.metadatum_id : this.filter.metadatum.metadatum_id);
+            this.options = this.filter.filter_type_options;
 
             let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 
@@ -103,6 +104,7 @@
             return {
                 value: null,
                 clear: false,
+                options: [],
                 collection: '',
                 metadatum: '',
                 metadatum_object: {},
@@ -113,7 +115,6 @@
             filter: {
                 type: Object // concentrate all attributes metadatum id and type
             },
-            step: [Number, String],
             metadatum_id: [Number], // not required, but overrides the filter metadatum id if is set
             collection_id: [Number], // not required, but overrides the filter metadatum id if is set
             labelId: '',
