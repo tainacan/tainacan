@@ -145,15 +145,15 @@
                     let metadata = this.query.metaquery[ index ];
                     
                     if ( metadata.value && metadata.value.length > 0)
-                        this.value = Number(metadata.value[0]);
+                        this.value = Array.isArray(metadata.value) ? Number(metadata.value[0]) : Number(metadata.value);
 
                     if ( metadata.compare)
                         this.comparator = metadata.compare;
 
-                    if (metadata.value[0] != undefined) {
+                    if (this.value != undefined) {
                         this.$eventBusSearch.$emit( 'sendValuesToTags', {
                             filterId: this.filter.id,
-                            value: metadata.value[0]
+                            value: this.comparator + ' ' + this.value
                         });
                     }
 
@@ -196,7 +196,7 @@
 
                 this.$eventBusSearch.$emit( 'sendValuesToTags', {
                     filterId: this.filter.id,
-                    value: this.value
+                    value: this.comparator + ' ' + this.value
                 });
                 
             },
@@ -226,7 +226,7 @@
 
                 i:not(.tainacan-icon-arrowdown) {
                     margin-top: -3px;
-                    font-size: 1.5rem;
+                    font-size: 1.25rem;
                     font-style: normal;
                     color: #555758;
                 }
