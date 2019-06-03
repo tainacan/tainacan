@@ -94,9 +94,7 @@
             },
         },
         created() {
-            if (this.value) {
-                this.step = this.value.step ? this.value.step : 1;
-            }
+            this.step = this.value && this.value.step ? this.value.step : 1;
         }
     }
 </script>
