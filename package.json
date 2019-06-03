@@ -8,8 +8,8 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "buefy": "^0.7.6",
-    "bulma": "^0.7.4",
+    "buefy": "^0.7.7",
+    "bulma": "^0.7.5",
     "mdi": "^2.2.43",
     "moment": "^2.22.2",
     "node-sass": "^4.12.0",
