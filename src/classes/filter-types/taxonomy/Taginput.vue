@@ -42,7 +42,7 @@
         created(){
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
             this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id ;
-            this.type = ( this.filter_type ) ? this.filter_type : this.filter.metadatum.metadata_type;
+            this.type = this.filter.metadatum.metadata_type;
 
             let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 
@@ -77,7 +77,6 @@
             },
             metadatum_id: [Number], // not required, but overrides the filter metadatum id if is set
             collection_id: [Number], // not required, but overrides the filter metadatum id if is set
-            filter_type: [String],  // not required, but overrides the filter metadatum type if is set
             labelId: '',
             query: {
                 type: Object // concentrate all attributes metadatum id and type

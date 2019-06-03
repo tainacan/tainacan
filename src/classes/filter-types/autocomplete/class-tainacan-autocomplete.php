@@ -48,7 +48,6 @@ class Autocomplete extends Filter_Type {
     public function render( $filter ){
         return '<tainacan-filter-autocomplete name="'.$filter->get_name().'"
                                         collection_id="'.$filter->get_collection_id().'"
-                                        filter_type="'.$filter->get_metadatum()->get_metadata_type().'"
                                         metadatum_id="'.$filter->get_metadatum()->get_id().'"></tainacan-filter-autocomplete>';
     }
 }

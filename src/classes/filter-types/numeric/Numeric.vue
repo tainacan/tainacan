@@ -96,6 +96,9 @@
                 });
             this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
         },
+        mounted() {
+            this.selectedValues();
+        },
         data(){
             return {
                 value: null,
