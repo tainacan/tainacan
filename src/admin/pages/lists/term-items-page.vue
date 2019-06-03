@@ -944,9 +944,11 @@
                 this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
             },
             openAdvancedSearch(newValue){
-                if(newValue == false){
+                if (newValue == false){
                     this.$eventBusSearch.$emit('closeAdvancedSearch');
                     this.advancedSearchResults = false;
+                } else {
+                    this.$eventBusSearch.clearAllFilters();
                 }
             }
         },
