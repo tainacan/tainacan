@@ -288,9 +288,10 @@ class REST_Metadata_Controller extends REST_Controller {
 			$item_arr['metadata_type_object'] = $item->get_metadata_type_object()->_toArray();
 
 			if(isset($item_arr['metadata_type_options']) && isset($item_arr['metadata_type_options']['taxonomy_id'])){
-				$taxonomy = new Entities\Taxonomy($item_arr['metadata_type_options']['taxonomy_id']);
-
-				$item_arr['metadata_type_options']['taxonomy'] = $taxonomy->get_db_identifier();
+				$taxonomy = Repositories\Taxonomies::get_instance()->get_db_identifier_by_id( $item_arr['metadata_type_options']['taxonomy_id'] );
+				//$taxonomy = new Entities\Taxonomy($item_arr['metadata_type_options']['taxonomy_id']);
+				//$item_arr['metadata_type_options']['taxonomy'] = $taxonomy->get_db_identifier();
+				$item_arr['metadata_type_options']['taxonomy'] = $taxonomy;
 			}
 			
 			if($request['context'] === 'edit'){

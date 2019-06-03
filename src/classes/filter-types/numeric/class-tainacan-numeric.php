@@ -89,7 +89,7 @@ class Numeric extends Filter_Type {
                                         step="' . $this->get_option('step') . '" 
                                         name="'.$filter->get_name().'"
                                         collection_id="'.$filter->get_collection_id().'"
-                                        metadatum_id="'.$filter->get_metadatum()->get_id().'"></tainacan-filter-custom-interval>';
+                                        metadatum_id="'.$filter->get_metadatum_id().'"></tainacan-filter-custom-interval>';
     }
 
 

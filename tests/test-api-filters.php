@@ -70,8 +70,6 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			)
 		);
 
-		$filter_type = $this->tainacan_filter_factory->create_filter('custom_interval');
-
 		$filter = $this->tainacan_entity_factory->create_entity(
 			'filter',
 			array(
@@ -79,7 +77,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'collection'  => $collection,
 				'description' => 'descricao',
 				'metadatum'    => $metadatum,
-				'filter_type' => $filter_type,
+				'filter_type' => 'Tainacan\Filter_Types\Custom_Interval',
 			),
 			true
 		);
@@ -296,7 +294,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'description' => 'Description of 2x Filter',
 				'status'      => 'publish'
 			],
-			'metadatum'       => $metadatum2->get_id()
+			'metadatum_id'       => $metadatum2->get_id()
 		]);
 
 		$filter_attr2 = json_encode([
@@ -306,7 +304,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'description' => 'Description of 4x Filter',
 				'status'      => 'publish'
 			],
-			'metadatum'       => $metadatum->get_id()
+			'metadatum_id'       => $metadatum->get_id()
 		]);
 
 		#### CREATE A FILTER IN REPOSITORY ####

@@ -16,6 +16,7 @@ class Filter extends Entity {
         $order,
         $color,
         $metadatum,
+        $metadatum_id,
         $max_options,
         $filter_type,
         $filter_type_options;
@@ -40,7 +41,7 @@ class Filter extends Entity {
 	 */
 	public function _toArray(){
 		$filter_array = parent::_toArray();
-		$metadatum_id = $filter_array['metadatum'];
+		$metadatum_id = $filter_array['metadatum_id'];
 		$metadatum = $this->get_metadatum();
 
 		$filter_array['metadatum'] = [];
@@ -106,14 +107,33 @@ class Filter extends Entity {
     }
 
 	/**
-	 * Return the metadatum
+	 * Return the metadatum ID
 	 *
-	 * @return Metadatum
+	 * @return integer Metadatum ID
+	 */
+    function get_metadatum_id() {
+        return $this->get_mapped_property('metadatum_id');
+    }
+    
+    /**
+	 * Return the metadatum object
+	 *
+	 * @return Metadatum | null
 	 * @throws \Exception
 	 */
     function get_metadatum() {
-        $id = $this->get_mapped_property('metadatum');
-        return new Metadatum( $id );
+        if (isset($this->metadatum)) {
+            return $this->metadatum;
+        }
+        $id = $this->get_metadatum_id();
+        return new Metadatum($id);
+        $metadatum = \Tainacan\Repositories\Metadata::get_instance()->fetch((int) $id);
+        if ($metadatum instanceof Metadatum) {
+            $this->metadatum = $metadatum;
+            return $metadatum;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -192,15 +212,27 @@ class Filter extends Entity {
     }
 
     /**
-     * Define the filter metadatum
+     * Define the filter metadatum passing an object
      * 
      * @param \Tainacan\Entities\Metadatum
      * @return void
      */
-    function set_metadatum( $value ){
-    	$id = ( $value instanceof Metadatum ) ? $value->get_id() : $value;
+    function set_metadatum( \Tainacan\Entities\Metadatum $value ){
+    	$id = $value->get_id();
 
-        $this->set_mapped_property('metadatum', $id);
+        $this->set_metadatum_id($id);
+        $this->metadatum = $value;
+    }
+    
+    /**
+     * Define the filter metadatum passing an ID
+     * 
+     * @param int $value the metadatum ID
+     * @return void
+     */
+    function set_metadatum_id( $value ){
+        unset($this->metadatum);
+        $this->set_mapped_property('metadatum_id', $value);
     }
 
     /**
