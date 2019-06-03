@@ -432,7 +432,7 @@
         animation-duration: 0.5s;
 
         .tainacan-page-title {
-            margin-bottom: 40px;
+            margin-bottom: 35px;
 
             h2 {
                 font-size: 20px;
