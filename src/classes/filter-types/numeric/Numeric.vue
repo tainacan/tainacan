@@ -214,6 +214,7 @@
 
     .numeric-filter-container {
         display: flex;
+        height: 28px;
         
         .dropdown {
             width: auto;
@@ -229,6 +230,10 @@
                     color: #555758;
                 }
             }
+        }
+
+        .b-numberinput.is-grouped {
+            flex-grow: 1;
         }
     }
 
