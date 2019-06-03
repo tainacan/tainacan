@@ -212,7 +212,7 @@
 <script>
 import axios from 'axios';
 import qs from 'qs';
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce.js';
 
 export default {
     name: "DynamicItemsListTheme",
