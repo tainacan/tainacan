@@ -262,6 +262,7 @@
             display: unset;
             white-space: nowrap;
             text-overflow: ellipsis;
+            height: 30px;
         }
 
         .control:not(.taginput) {

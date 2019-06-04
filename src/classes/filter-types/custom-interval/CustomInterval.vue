@@ -23,21 +23,17 @@
 
         <!-- Numeric -->
         <div v-else>
-            <b-input
+            <b-numberinput
                     :aria-labelledby="labelId"
                     size="is-small"
-                    type="number"
                     step="any"
-                    autocomplete="off"
                     @input="validate_values()"
                     v-model="value_init"/>
             <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
-            <b-input
+            <b-numberinput
                     :aria-labelledby="labelId"
                     size="is-small"
-                    type="number"
                     step="any"
-                    autocomplete="off"
                     @input="validate_values()"
                     @focus="isTouched = true"
                     v-model="value_end"/>
@@ -294,3 +290,12 @@
         }
     }
 </script>
+
+<style scoped>
+.field {
+    margin-bottom: 0.125rem !important;
+}
+p.is-size-7 {
+    margin-bottom: 0.125rem !important;
+}
+</style>

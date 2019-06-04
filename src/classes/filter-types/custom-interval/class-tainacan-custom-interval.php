@@ -15,12 +15,44 @@ class Custom_Interval extends Filter_Type {
         $this->set_use_max_options(false);
         $this->set_preview_template('
             <div>
-                <div class="control is-small is-clearfix">
-                    <input type="number" step="any" value="6" class="input is-small"> 
-                </div> 
+                <div class="b-numberinput field is-grouped">
+                    <p class="control">
+                        <button type="button" class="button is-primary is-small">
+                            <span class="icon is-small">
+                                <i class="mdi mdi-minus"></i>
+                            </span>
+                        </button>
+                    </p>
+                    <div class="control is-small is-clearfix">
+                        <input type="number" step="0.01" class="input is-small" value="6">
+                    </div>
+                    <p class="control">
+                        <button type="button" class="button is-primary is-small">
+                            <span class="icon is-small">
+                                <i class="mdi mdi-plus"></i>
+                            </span>
+                        </button>
+                    </p>
+                </div>
                 <p class="is-size-7 has-text-centered is-marginless">until</p> 
-                <div class="control is-small is-clearfix">
-                    <input type="number" step="any" value="10" class="input is-small"> 
+                <div class="b-numberinput field is-grouped">
+                    <p class="control">
+                        <button type="button" class="button is-primary is-small">
+                            <span class="icon is-small">
+                                <i class="mdi mdi-minus"></i>
+                            </span>
+                        </button>
+                    </p>
+                    <div class="control is-small is-clearfix">
+                        <input type="number" step="0.01" class="input is-small" value="10">
+                    </div>
+                    <p class="control">
+                        <button type="button" class="button is-primary is-small">
+                            <span class="icon is-small">
+                                <i class="mdi mdi-plus"></i>
+                            </span>
+                        </button>
+                    </p>
                 </div>
             </div>
         ');
