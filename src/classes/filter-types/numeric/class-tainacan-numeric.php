@@ -35,12 +35,12 @@ class Numeric extends Filter_Type {
                             <div class="background" style="display: none;"></div>
                             <div class="dropdown-menu" style="display: none;">
                                 <div role="list" class="dropdown-content">
-                                    <a class="dropdown-item is-active">=&nbsp; Equal</a>
-                                    <a class="dropdown-item">≠&nbsp; Not equal</a>
-                                    <a class="dropdown-item">&gt;&nbsp; Greater than</a>
-                                    <a class="dropdown-item">≥&nbsp; Greater than or equal to</a>
-                                    <a class="dropdown-item">&lt;&nbsp; Less than</a>
-                                    <a class="dropdown-item">≤&nbsp; Less than or equal to</a>
+                                    <a class="dropdown-item is-active">=&nbsp; ' . __('Equal', 'tainacan') .'</a>
+                                    <a class="dropdown-item">≠&nbsp; '. __('Not qual', 'tainacan') .'</a>
+                                    <a class="dropdown-item">&gt;&nbsp; '. __('Greater than', 'tainacan') .'</a>
+                                    <a class="dropdown-item">≥&nbsp; '. __('Greater than or equal to', 'tainacan') .'</a>
+                                    <a class="dropdown-item">&lt;&nbsp; '. __('Less than', 'tainacan') .'</a>
+                                    <a class="dropdown-item">≤&nbsp;  '. __('Less than or equal to', 'tainacan') .'</a>
                                 </div>
                             </div>
                         </div>

@@ -34,28 +34,28 @@
                     :class="{ 'is-active': comparator == '>' }"
                     :value="'>'"
                     aria-role="listitem">
-                &#62;&nbsp; {{ $i18n.get('greater_than') }}
+                &#62;&nbsp; {{ $i18n.get('before') }}
             </b-dropdown-item>
             <b-dropdown-item
                     role="button"
                     :class="{ 'is-active': comparator == '>=' }"
                     :value="'>='"
                     aria-role="listitem">
-                &#8805;&nbsp; {{ $i18n.get('greater_than_or_equal_to') }}
+                &#8805;&nbsp; {{ $i18n.get('before_or_on_day') }}
             </b-dropdown-item>
             <b-dropdown-item
                     role="button"
                     :class="{ 'is-active': comparator == '<' }"
                     :value="'<'"
                     aria-role="listitem">
-                &#60;&nbsp; {{ $i18n.get('less_than') }}
+                &#60;&nbsp; {{ $i18n.get('after') }}
             </b-dropdown-item>
             <b-dropdown-item
                     role="button"
                     :class="{ 'is-active': comparator == '<=' }"
                     :value="'<='"
                     aria-role="listitem">
-                &#8804;&nbsp; {{ $i18n.get('less_than_or_equal_to') }}
+                &#8804;&nbsp; {{ $i18n.get('after_or_on_day') }}
             </b-dropdown-item>
         </b-dropdown>
 
@@ -72,11 +72,11 @@
 
 <script>
     import { tainacan as axios } from '../../../js/axios/axios';
-    import { wpAjax, dateInter } from "../../../admin/js/mixins";
+    import { wpAjax } from "../../../admin/js/mixins";
     import moment from 'moment';
 
     export default {
-        mixins: [ wpAjax, dateInter ],
+        mixins: [ wpAjax ],
         created() {
             let locale = navigator.language;
 

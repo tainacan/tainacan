@@ -12,7 +12,6 @@ class Date extends Filter_Type {
     function __construct(){
         $this->set_supported_types(['date']);
         $this->set_component('tainacan-filter-date');
-        $this->set_form_component('tainacan-filter-form-date');
         $this->set_use_max_options(false);
         $this->set_preview_template('
             <div>
@@ -32,12 +31,12 @@ class Date extends Filter_Type {
                             <div class="background" style="display: none;"></div>
                             <div class="dropdown-menu" style="display: none;">
                                 <div role="list" class="dropdown-content">
-                                    <a class="dropdown-item is-active">=&nbsp; Equal</a>
-                                    <a class="dropdown-item">≠&nbsp; Not equal</a>
-                                    <a class="dropdown-item">&gt;&nbsp; Greater than</a>
-                                    <a class="dropdown-item">≥&nbsp; Greater than or equal to</a>
-                                    <a class="dropdown-item">&lt;&nbsp; Less than</a>
-                                    <a class="dropdown-item">≤&nbsp; Less than or equal to</a>
+                                    <a class="dropdown-item is-active">=&nbsp; ' . __('Equal', 'tainacan') .'</a>
+                                    <a class="dropdown-item">≠&nbsp; '. __('Not qual', 'tainacan') .'</a>
+                                    <a class="dropdown-item">&gt;&nbsp; '. __('Before', 'tainacan') .'</a>
+                                    <a class="dropdown-item">≥&nbsp; '. __('Before or on day', 'tainacan') .'</a>
+                                    <a class="dropdown-item">&lt;&nbsp; '. __('After', 'tainacan') .'</a>
+                                    <a class="dropdown-item">≤&nbsp;  '. __('After or on day', 'tainacan') .'</a>
                                 </div>
                             </div>
                         </div>
@@ -45,7 +44,7 @@ class Date extends Filter_Type {
                             <div class="dropdown is-bottom-left is-mobile-modal">
                                 <div role="button" class="dropdown-trigger">
                                     <div class="control has-icons-left is-small is-clearfix">
-                                        <input type="text" autocomplete="off" placeholder="Select a date" class="input is-small">
+                                        <input type="text" autocomplete="off" placeholder=" '. __('Select a date', 'tainacan') .'" class="input is-small">
                                         <span class="icon is-left is-small"><i class="mdi mdi-calendar-today"></i></span>
                                     </div>
                                 </div>

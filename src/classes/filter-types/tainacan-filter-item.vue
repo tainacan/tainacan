@@ -102,6 +102,10 @@
 
             .datepicker-content {
                 height: auto;
+                
+                input {
+                    height: 30px;
+                }
             }
 
             .dropdown-item {
