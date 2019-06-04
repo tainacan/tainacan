@@ -25,6 +25,7 @@ import FormSelectbox from '../../classes/metadata-types/selectbox/FormSelectbox.
 
 import FilterCustomInterval from '../../classes/filter-types/custom-interval/CustomInterval.vue';
 import FilterNumeric from '../../classes/filter-types/numeric/Numeric.vue';
+import FilterDate from '../../classes/filter-types/date/Date.vue';
 import FilterSelectbox from '../../classes/filter-types/selectbox/Selectbox.vue';
 import FilterAutocomplete from '../../classes/filter-types/autocomplete/Autocomplete.vue';
 import FilterCheckbox from '../../classes/filter-types/checkbox/Checkbox.vue';
@@ -34,6 +35,7 @@ import FilterTaxonomyCheckbox from '../../classes/filter-types/taxonomy/Checkbox
 import FilterTaxonomyTaginput from '../../classes/filter-types/taxonomy/Taginput.vue';
 
 import FormNumeric from '../../classes/filter-types/numeric/FormNumeric.vue';
+import FormDate from '../../classes/filter-types/date/FormDate.vue';
 
 import TainacanFormItem from '../../classes/metadata-types/tainacan-form-item.vue';
 import TainacanFiltersList from '../../classes/filter-types/tainacan-filter-item.vue';
@@ -78,6 +80,7 @@ Vue.component('tainacan-filter-item', TainacanFiltersList);
 /* Filters */
 Vue.component('tainacan-filter-custom-interval', FilterCustomInterval);
 Vue.component('tainacan-filter-numeric', FilterNumeric);
+Vue.component('tainacan-filter-date', FilterDate);
 Vue.component('tainacan-filter-selectbox', FilterSelectbox);
 Vue.component('tainacan-filter-autocomplete', FilterAutocomplete);
 Vue.component('tainacan-filter-checkbox', FilterCheckbox);
@@ -86,6 +89,7 @@ Vue.component('tainacan-filter-taxonomy-checkbox', FilterTaxonomyCheckbox);
 Vue.component('tainacan-filter-taxonomy-taginput', FilterTaxonomyTaginput);
 /* Filter Metadata Option forms */
 Vue.component('tainacan-filter-form-numeric', FormNumeric);
+Vue.component('tainacan-filter-form-date', FormDate);
 
 /* Others */
 Vue.component('help-button', HelpButton);
