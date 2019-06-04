@@ -123,6 +123,7 @@ class REST_Items_Controller extends REST_Controller {
 			$item_array['metadata'][ $slug ]['value']           = $item_metadata_array['value'];
 			$item_array['metadata'][ $slug ]['value_as_html']   = $item_metadata_array['value_as_html'];
 			$item_array['metadata'][ $slug ]['value_as_string'] = $item_metadata_array['value_as_string'];
+			$item_array['metadata'][ $slug ]['semantic_uri'] = $item_metadata_array['metadatum']['semantic_uri'];
 			
 			$item_array['metadata'][ $slug ]['multiple']        = $metadatum->get_multiple();
 			$item_array['metadata'][ $slug ]['mapping']        = $metadatum->get_exposer_mapping();
@@ -215,7 +216,11 @@ class REST_Items_Controller extends REST_Controller {
 				
 			}
 
+			// \error_log("DEBUG-1:");
+			// \error_log(\json_encode($item_arr));
 			$item_arr = apply_filters('tainacan-api-items-prepare-for-response', $item_arr, $item, $request);
+			// \error_log("DEBUG-2:");
+			// \error_log(\json_encode($item_arr));
 			
 			return $item_arr;
 		}

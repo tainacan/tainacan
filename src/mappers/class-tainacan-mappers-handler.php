@@ -327,7 +327,7 @@ class Mappers_Handler {
 				
 				 
 				$mapped_meta[ $mapped_slug ] = $meta;
-				$mapped_meta[ $mapped_slug ]['semantic_url'] = $url;
+				$mapped_meta[ $mapped_slug ]['semantic_uri'] = $url;
 				$mapped_meta[ $mapped_slug ]['name'] = $label;
 				$mapped_meta[ $mapped_slug ]['slug'] = $mapped_slug;
 			}
