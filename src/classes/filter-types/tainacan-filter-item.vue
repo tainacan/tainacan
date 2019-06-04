@@ -174,6 +174,7 @@
                     max-width: 165px !important;
                     border-radius: 2px !important;
                     padding: 0px;
+                    max-height: inherit;
                 }
             }
         }

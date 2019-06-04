@@ -456,6 +456,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_drag_and_drop_metadatum_sort'     	 => __( 'Drag and drop to change metadatum order', 'tainacan' ),
 	'instruction_select_step_options_to_show'     	 => __( 'Select which Step values to show', 'tainacan' ),
 	'instruction_select_maximum_options_to_show'     => __( 'Select which amount of maximum of options to show', 'tainacan' ),
+	'instruction_select_a_date' 				     => __( 'Select a date', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_%s_tab_all'                				 => __( 'Every published %s, including those visible only to editors.', 'tainacan' ),
@@ -610,6 +611,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	// Tainacan Filter Types
 	'tainacan-filter-custom-interval'                => __( 'Custom Interval', 'tainacan' ),
 	'tainacan-filter-numeric'		                 => __( 'Numeric', 'tainacan' ),
+	'tainacan-filter-date'			                 => __( 'Date', 'tainacan' ),
 	'tainacan-filter-selectbox'                      => __( 'Select Box', 'tainacan' ),
 	'tainacan-filter-autocomplete'                   => __( 'Autocomplete', 'tainacan' ),
 	'tainacan-filter-taginput'                       => __( 'Tag Input', 'tainacan' ),
