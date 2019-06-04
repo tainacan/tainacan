@@ -64,8 +64,7 @@
                 :aria-labelledby="labelId"
                 :placeholder="$i18n.get('instruction_select_a_date')"
                 v-model="value"
-                @input="validate_values()"
-                @focus="isTouched = true"
+                @input="emit()"
                 size="is-small"
                 icon="calendar-today"/>
     </div>
@@ -73,14 +72,23 @@
 
 <script>
     import { tainacan as axios } from '../../../js/axios/axios';
-    import { wpAjax } from "../../../admin/js/mixins";
+    import { wpAjax, dateInter } from "../../../admin/js/mixins";
+    import moment from 'moment';
 
     export default {
-        mixins: [ wpAjax ],
+        mixins: [ wpAjax, dateInter ],
         created() {
+            let locale = navigator.language;
+
+            moment.locale(locale);
+
+            let localeData = moment.localeData();
+
+            this.dateFormat = localeData.longDateFormat('L');
+
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
             this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : (typeof this.filter.metadatum.metadatum_id == 'object' ? this.filter.metadatum.metadatum_id.metadatum_id : this.filter.metadatum.metadatum_id);
-            this.options = this.filter.filter_type_options;
+            // this.options = this.filter.filter_type_options;
 
             let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 
@@ -111,7 +119,8 @@
                 collection: '',
                 metadatum: '',
                 metadatum_object: {},
-                comparator: '=' // =, !=, >, >=, <, <=
+                comparator: '=', // =, !=, >, >=, <, <=
+                dateFormat: '',
             }
         },
         props: {
@@ -138,16 +147,6 @@
             }
         },
         methods: {
-            validate_values: _.debounce( function (){
-
-                if (this.value ==  undefined)
-                        this.value = new Date();
-                else
-                    return;
-
-                this.emit();
-
-            }, 1000),
             selectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
@@ -158,7 +157,7 @@
                     let metadata = this.query.metaquery[ index ];
                     
                     if ( metadata.value && metadata.value.length > 0)
-                        this.value = Array.isArray(metadata.value) ? Number(metadata.value[0]) : Number(metadata.value);
+                        this.value = Array.isArray(metadata.value) ? new Date(metadata.value[0]) : new Date(metadata.value);
 
                     if ( metadata.compare)
                         this.comparator = metadata.compare;
@@ -166,7 +165,7 @@
                     if (this.value != undefined) {
                         this.$eventBusSearch.$emit( 'sendValuesToTags', {
                             filterId: this.filter.id,
-                            value: this.comparator + ' ' + this.value
+                            value: this.comparator + ' ' + this.parseDateToNavigatorLanguage(Array.isArray(metadata.value) ? metadata.value[0] : metadata.value)
                         });
                     }
 
@@ -197,8 +196,12 @@
             // emit the operation for listeners
             emit() {
 
-                if ( this.value === null || this.value === '')
-                    return;
+                if ( this.value == undefined || this.value == null || this.value === '')
+                    this.value = new Date();
+
+                let valueQuery = this.value.getUTCFullYear() + '-' +
+                          ('00' + (this.value.getUTCMonth() + 1)).slice(-2) + '-' +
+                          ('00' + this.value.getUTCDate()).slice(-2);
 
                 this.$emit('input', {
                     filter: 'date',
@@ -206,19 +209,23 @@
                     compare: this.comparator,
                     metadatum_id: this.metadatum,
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
-                    value: this.value
+                    value: valueQuery
                 });
 
                 this.$eventBusSearch.$emit( 'sendValuesToTags', {
                     filterId: this.filter.id,
-                    value: this.comparator + ' ' + this.value
+                    value: this.comparator + ' ' + this.parseDateToNavigatorLanguage(valueQuery)
                 });
                 
             },
             onChangeComparator(newComparator) {
                 this.comparator = newComparator;
                 this.emit();
-            }
+            },
+            parseDateToNavigatorLanguage(date) {
+                date = new Date(date.replace(/-/g, '/'));
+                return moment(date, moment.ISO_8601).format(this.dateFormat);  
+            },
         },
         beforeDestroy() {
             this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
@@ -230,14 +237,14 @@
 
     .date-filter-container {
         display: flex;
-        height: 28px;
+        height: 30px;
         
         .dropdown {
             width: auto;
 
             .dropdown-trigger button {
                 padding: 0 0.5rem !important;
-                height: 28px !important;
+                height: 30px !important;
 
                 i:not(.tainacan-icon-arrowdown) {
                     margin-top: -3px;
@@ -246,10 +253,6 @@
                     color: #555758;
                 }
             }
-        }
-
-        .b-numberinput.is-grouped {
-            flex-grow: 1;
         }
     }
 
