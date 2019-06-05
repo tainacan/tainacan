@@ -201,6 +201,10 @@
                                             font-size: 0.75rem !important;
                                             height: 24px !important;
                                             min-width: 100% !important;
+
+                                            &:not(.is-loading)::after {
+                                                margin-top: -13px !important;
+                                            }
                                         }
                                     }
                                 }
