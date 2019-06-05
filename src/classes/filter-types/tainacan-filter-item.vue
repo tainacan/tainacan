@@ -118,6 +118,61 @@
                 }
             }
 
+            .datepicker-header {
+                .pagination {
+                    a>span>i:before {
+                        display: inline-block;
+                        font: normal normal normal 20px/1 "TainacanIcons";
+                        font-size: inherit;
+                        text-rendering: auto;
+                        vertical-align: middle;
+                        line-height: inherit;
+                        -webkit-font-smoothing: antialiased;
+                        -moz-osx-font-smoothing: grayscale;
+                        color: $secondary;
+                    }
+
+                    .pagination-previous {
+                        border: none;
+                        flex-grow: 0;
+
+                        &>span>i:before {
+                            content: 'previous';
+                            font-size: 20px;
+                        }
+                    }
+
+                    .pagination-next {
+                        border: none;
+                        flex-grow: 0;
+
+                        &>span>i:before {
+                            content: 'next';
+                            font-size: 20px;
+                        }
+                    }
+                }
+            }
+
+            .datepicker-table {
+                margin-bottom: 0px;
+                
+                .datepicker-cell {
+                    border: none !important;
+                    padding: 0.5rem 0.75rem !important;
+                }
+                .datepicker-cell.is-today,
+                .datepicker-cell.is-today:hover {
+                    color: $gray4 !important;
+                    background-color: $turquoise1;
+                }
+                .datepicker-cell.is-selected,
+                .datepicker-cell.is-selected:hover {
+                    color: white !important;
+                    background-color: $turquoise5 !important;
+                }
+            }
+
             @media screen and (min-width: 1024px) {
 
                 .datepicker-header {
@@ -157,7 +212,6 @@
                             height: 24px;
                             padding: 0;
                             font-size: 0.75rem; 
-                            border: none;
                             order: 3;
                         }
 
@@ -166,7 +220,6 @@
                             height: 24px;
                             padding: 0;
                             font-size: 0.75rem;
-                            border: none;
                         }
                     }
                 }
@@ -186,17 +239,6 @@
                     
                     .datepicker-cell {
                         padding: 0.15rem 0.175rem !important;
-                        border: none !important;
-                    }
-                    .datepicker-cell.is-today,
-                    .datepicker-cell.is-today:hover {
-                        color: white !important;
-                        background-color: $turquoise3 !important;
-                    }
-                    .datepicker-cell.is-selected,
-                    .datepicker-cell.is-selected:hover {
-                        color: white !important;
-                        background-color: $turquoise5 !important;
                     }
                 }
                 
