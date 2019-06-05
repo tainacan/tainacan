@@ -99,6 +99,7 @@
     .filter-item-forms {
 
         .datepicker {
+            width: 100%;
 
             .datepicker-content {
                 height: auto;
@@ -108,47 +109,70 @@
                 }
             }
 
-            .dropdown-item {
-                background-color: white !important;
+            .dropdown-menu {
+                background: transparent;
+                border: none;
+                
+                .dropdown-item {
+                    background-color: white !important;
+                }
             }
 
             @media screen and (min-width: 1024px) {
 
                 .datepicker-header {
-                
-                    .pagination-list {
-                        .field.has-addons {
-                            display: table-cell !important;
-                            width: 78px !important;
+                    margin-bottom: 0.5rem;
+                    padding-top: 0.15rem;
+                    padding-bottom: 0.5rem;
+                    
+                    .pagination {
+                        flex-wrap: wrap;
+                    
+                        .pagination-list {
+                            margin-bottom: 0.5rem;
 
-                            .control {
-                                height: 24px !important;
-                                width: 74px !important;
+                            .field.has-addons {
+                                width: 100% !important;
 
-                                select {
-                                    padding-left: 1px !important;
+                                .control {
+                                    height: 24px !important;
+                                    width: 74px !important;
+
+                                    .select {
+                                        min-width: 100% !important;     
+
+                                        select {
+                                            padding-left: 1px !important;
+                                            font-size: 0.75rem !important;
+                                            height: 24px !important;
+                                            min-width: 100% !important;
+                                        }
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    .pagination-previous {
-                        margin: 0;
-                        height: 24px;
-                        padding: 0;
-                        font-size: 0.75rem; 
-                    }
+                        .pagination-previous {
+                            margin: 0;
+                            height: 24px;
+                            padding: 0;
+                            font-size: 0.75rem; 
+                            border: none;
+                            order: 3;
+                        }
 
-                    .pagination-next {
-                        margin: 0;
-                        height: 24px;
-                        padding: 0;
-                        font-size: 0.75rem;
+                        .pagination-next {
+                            margin: 0;
+                            height: 24px;
+                            padding: 0;
+                            font-size: 0.75rem;
+                            border: none;
+                        }
                     }
                 }
 
                 .dropdown-item {
-                    padding: 0.8em;
+                    padding: 0.8rem !important;
                 }
 
                 .dropdown-menu {
@@ -161,7 +185,18 @@
                     margin-bottom: 0px;
                     
                     .datepicker-cell {
-                        padding: 0.2rem 0.1rem !important;
+                        padding: 0.15rem 0.175rem !important;
+                        border: none !important;
+                    }
+                    .datepicker-cell.is-today,
+                    .datepicker-cell.is-today:hover {
+                        color: white !important;
+                        background-color: $turquoise3 !important;
+                    }
+                    .datepicker-cell.is-selected,
+                    .datepicker-cell.is-selected:hover {
+                        color: white !important;
+                        background-color: $turquoise5 !important;
                     }
                 }
                 
@@ -178,7 +213,7 @@
                     max-width: 165px !important;
                     border-radius: 2px !important;
                     padding: 0px;
-                    max-height: inherit;
+                    max-height: inherit !important;
                 }
             }
         }

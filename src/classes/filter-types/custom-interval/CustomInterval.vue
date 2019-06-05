@@ -47,8 +47,7 @@
 
     export default {
         mixins: [ wpAjax ],
-        created(){
-            const vm = this;
+        created() {
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
             this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id;
 
@@ -62,9 +61,9 @@
                 .then( res => {
                     let result = res.data;
                     if( result && result.metadata_type ){
-                        vm.metadatum_object = result;
-                        vm.type = ( result.metadata_type === 'Tainacan\\Metadata_Types\\Date') ? 'date' : 'numeric';
-                        vm.selectedValues();
+                        this.metadatum_object = result;
+                        this.type = ( result.metadata_type === 'Tainacan\\Metadata_Types\\Date') ? 'date' : 'numeric';
+                        this.selectedValues();
                     }
                 })
                 .catch(error => {
@@ -136,7 +135,7 @@
                         return;
                     }
                 }
-                this.emit( this );
+                this.emit();
             }, 1000),
             // message for error
             error_message(){
@@ -218,68 +217,67 @@
                     this.isTouched = false;
                 }
             },
-
             // emit the operation for listeners
-            emit: ( vm ) => {
+            emit() {
                 let values = [];
                 let type = '';
 
-                if( vm.type === 'date' ){
+                if( this.type === 'date' ){
 
-                    if( vm.date_init === null && vm.date_end === null ){
+                    if( this.date_init === null && this.date_end === null ){
                       values = [];
                       type = 'DATE';
-                      vm.isValid = false;
-                      vm.clear = true;
+                      this.isValid = false;
+                      this.clear = true;
                     } else {
-                      let date_init = vm.date_init.getUTCFullYear() + '-' +
-                          ('00' + (vm.date_init.getUTCMonth() + 1)).slice(-2) + '-' +
-                          ('00' + vm.date_init.getUTCDate()).slice(-2);
-                      let date_end = vm.date_end.getUTCFullYear() + '-' +
-                          ('00' + (vm.date_end.getUTCMonth() + 1)).slice(-2) + '-' +
-                          ('00' + vm.date_end.getUTCDate()).slice(-2);
+                      let date_init = this.date_init.getUTCFullYear() + '-' +
+                          ('00' + (this.date_init.getUTCMonth() + 1)).slice(-2) + '-' +
+                          ('00' + this.date_init.getUTCDate()).slice(-2);
+                      let date_end = this.date_end.getUTCFullYear() + '-' +
+                          ('00' + (this.date_end.getUTCMonth() + 1)).slice(-2) + '-' +
+                          ('00' + this.date_end.getUTCDate()).slice(-2);
                       values = [ date_init, date_end ];
                       type = 'DATE';
-                      vm.isValid = true;
-                      vm.clear = false;
+                      this.isValid = true;
+                      this.clear = false;
                     }
                 } else {
-                    if( vm.value_init === null || vm.value_end === null
-                      || vm.value_init === '' || vm.value_end === ''){
+                    if( this.value_init === null || this.value_end === null
+                      || this.value_init === '' || this.value_end === ''){
                         return;
                     } else {
-                        values =  [ vm.value_init, vm.value_end ];
+                        values =  [ this.value_init, this.value_end ];
 
-                        if(vm.value_init !== vm.value_end && (vm.value_init % 1 !== 0 && vm.value_end % 1 == 0)) {
+                        if(this.value_init !== this.value_end && (this.value_init % 1 !== 0 && this.value_end % 1 == 0)) {
                             type = 'DECIMAL';
-                        } else if(vm.value_init !== vm.value_end &&
-                            vm.value_init % 1 !== 0 &&
-                            vm.value_end % 1 !== 0) {
+                        } else if(this.value_init !== this.value_end &&
+                            this.value_init % 1 !== 0 &&
+                            this.value_end % 1 !== 0) {
 
                             type = '';
-                        } else if(vm.value_init !== vm.value_end &&
-                            !(vm.value_init % 1 == 0 && vm.value_end % 1 !== 0)){
+                        } else if(this.value_init !== this.value_end &&
+                            !(this.value_init % 1 == 0 && this.value_end % 1 !== 0)){
                             type = 'DECIMAL';
                         } else {
                             type = '';
                         }
-                        //vm.isValid = true;
-                        //vm.clear = false;
+                        //this.isValid = true;
+                        //this.clear = false;
                     }
                 }
 
-                vm.$emit('input', {
+                this.$emit('input', {
                     filter: 'range',
                     type: type,
                     compare: 'BETWEEN',
-                    metadatum_id: vm.metadatum,
-                    collection_id: ( vm.collection_id ) ? vm.collection_id : vm.filter.collection_id,
+                    metadatum_id: this.metadatum,
+                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     value: values
                 });
 
                 if (values[0] != undefined && values[1] != undefined) {
-                    vm.$eventBusSearch.$emit( 'sendValuesToTags', {
-                        filterId: vm.filter.id,
+                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                        filterId: this.filter.id,
                         value: values[0] + ' - ' + values[1]
                     });
                 }

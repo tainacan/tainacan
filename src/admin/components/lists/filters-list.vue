@@ -1126,6 +1126,7 @@ export default {
                 .numeric-filter-container,
                 .date-filter-container {
                     display: flex;
+
                     .field { margin: 0; }
                     .dropdown {
                         width: auto;

@@ -216,6 +216,11 @@
     .numeric-filter-container {
         display: flex;
         height: 30px;
+
+        @media screen and (min-width: 769px) and (max-width: 1500px) {
+            flex-wrap: wrap;
+            height: 60px;
+        }
         
         .dropdown {
             width: auto;
