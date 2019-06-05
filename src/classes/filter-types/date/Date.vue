@@ -66,7 +66,16 @@
                 v-model="value"
                 @input="emit()"
                 size="is-small"
-                icon="calendar-today"/>
+                icon="calendar-today"
+                :day-names="[
+                    $i18n.get('datepicker_short_sunday'),
+                    $i18n.get('datepicker_short_monday'),
+                    $i18n.get('datepicker_short_tuesday'),
+                    $i18n.get('datepicker_short_wednesday'),
+                    $i18n.get('datepicker_short_thursday'),
+                    $i18n.get('datepicker_short_friday'),
+                    $i18n.get('datepicker_short_saturday'),
+                ]"/>
     </div>
 </template>
 

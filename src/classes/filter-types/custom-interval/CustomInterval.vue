@@ -9,7 +9,16 @@
                     size="is-small"
                     @focus="isTouched = true"
                     @input="validate_values()"
-                    icon="calendar-today"/>
+                    icon="calendar-today"
+                    :day-names="[
+                        $i18n.get('datepicker_short_sunday'),
+                        $i18n.get('datepicker_short_monday'),
+                        $i18n.get('datepicker_short_tuesday'),
+                        $i18n.get('datepicker_short_wednesday'),
+                        $i18n.get('datepicker_short_thursday'),
+                        $i18n.get('datepicker_short_friday'),
+                        $i18n.get('datepicker_short_saturday'),
+                    ]"/>
             <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
             <b-datepicker
                     :aria-labelledby="labelId"
@@ -18,7 +27,16 @@
                     size="is-small"
                     @input="validate_values()"
                     @focus="isTouched = true"
-                    icon="calendar-today"/>
+                    icon="calendar-today"
+                    :day-names="[
+                        $i18n.get('datepicker_short_sunday'),
+                        $i18n.get('datepicker_short_monday'),
+                        $i18n.get('datepicker_short_tuesday'),
+                        $i18n.get('datepicker_short_wednesday'),
+                        $i18n.get('datepicker_short_thursday'),
+                        $i18n.get('datepicker_short_friday'),
+                        $i18n.get('datepicker_short_saturday'),
+                    ]"/>
         </div>
 
         <!-- Numeric -->
