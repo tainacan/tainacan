@@ -490,13 +490,13 @@
                                             show: 500,
                                             hide: 300,
                                         },
-                                        content: item.creation_date != undefined ? item.creation_date : '',
+                                        content: item.creation_date != undefined ? parseDateToNavigatorLanguage(item.creation_date) : '',
                                         html: false,
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }"   
                                     class="metadata-author-creation">   
-                                {{ $i18n.get('info_date') + ' ' + (item.creation_date != undefined ? item.creation_date : '') }}
+                                {{ $i18n.get('info_date') + ' ' + (item.creation_date != undefined ? parseDateToNavigatorLanguage(item.creation_date) : '') }}
                             </p>   
                         </div>
                     </div>
@@ -807,8 +807,22 @@
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }"
-                                    v-if="column.metadatum == 'row_author' || column.metadatum == 'row_creation'">
+                                    v-if="column.metadatum == 'row_author'">
                                     {{ item[column.slug] }}
+                            </p>
+                            <p 
+                                    v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
+                                        content: parseDateToNavigatorLanguage(item[column.slug]),
+                                        html: true,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }"
+                                    v-if="column.metadatum == 'row_creation'">
+                                    {{ parseDateToNavigatorLanguage(item[column.slug]) }}
                             </p>
 
                         </td>
@@ -878,6 +892,7 @@
 import { mapActions, mapGetters } from 'vuex';
 import CustomDialog from '../other/custom-dialog.vue';
 import BulkEditionModal from '../bulk-edition/bulk-edition-modal.vue';
+import { dateInter } from "../../../admin/js/mixins";
 
 export default {
     name: 'ItemsList',
@@ -897,6 +912,7 @@ export default {
             enableSelectAllItemsPages: tainacan_plugin.enable_select_all_items_pages
         }
     },
+    mixins: [ dateInter ],
     props: {
         collectionId: undefined,
         tableMetadata: Array,

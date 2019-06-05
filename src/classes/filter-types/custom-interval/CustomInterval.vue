@@ -61,10 +61,10 @@
 
 <script>
     import { tainacan as axios } from '../../../js/axios/axios';
-    import { wpAjax } from "../../../admin/js/mixins";
+    import { wpAjax, dateInter } from "../../../admin/js/mixins";
 
     export default {
-        mixins: [ wpAjax ],
+        mixins: [ wpAjax, dateInter ],
         created() {
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
             this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id;
@@ -102,7 +102,7 @@
                 type: 'numeric',
                 collection: '',
                 metadatum: '',
-                metadatum_object: {},
+                metadatum_object: {}
             }
         },
         props: {
@@ -187,7 +187,7 @@
                     if (metadata.value[0] != undefined && metadata.value[1] != undefined) {
                         this.$eventBusSearch.$emit( 'sendValuesToTags', {
                             filterId: this.filter.id,
-                            value: metadata.value[0] + ' - ' + metadata.value[1]
+                            value: this.parseDateToNavigatorLanguage(metadata.value[0]) + ' - ' + this.parseDateToNavigatorLanguage(metadata.value[1])
                         });
                     }
 
@@ -296,7 +296,7 @@
                 if (values[0] != undefined && values[1] != undefined) {
                     this.$eventBusSearch.$emit( 'sendValuesToTags', {
                         filterId: this.filter.id,
-                        value: values[0] + ' - ' + values[1]
+                        value: this.parseDateToNavigatorLanguage(values[0]) + ' - ' + this.parseDateToNavigatorLanguage(values[1])
                     });
                 }
             }
@@ -308,10 +308,10 @@
 </script>
 
 <style scoped>
-.field {
-    margin-bottom: 0.125rem !important;
-}
-p.is-size-7 {
-    margin-bottom: 0.125rem !important;
-}
+    .field {
+        margin-bottom: 0.125rem !important;
+    }
+    p.is-size-7 {
+        margin-bottom: 0.125rem !important;
+    }
 </style>

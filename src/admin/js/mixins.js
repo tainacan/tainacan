@@ -22,29 +22,31 @@ export const wpAjax = {
                     new_slug: newSlug,
                     nonce: tainacan_plugin.nonce,
                 }));
-        },
-        getDatei18n(dateString){
-            return this.axiosWPAjax.post('', qs.stringify({
-                action: 'tainacan-date-i18n',
-                date_string: dateString,
-                nonce: tainacan_plugin.nonce,
-            }));
-        },
+        }
     }
 };
 
 export const dateInter = {
-    methods: {
-        getDateLocaleMask() {
-            let locale = navigator.language;
+    created() {
+        let locale = navigator.language;
 
-            moment.locale(locale);
+        moment.locale(locale);
 
-            let localeData = moment.localeData();
-            let format = localeData.longDateFormat('L');
-
-            return format.replace(/[\w]/g, '#');
+        let localeData = moment.localeData();
+        this.dateFormat = localeData.longDateFormat('L');
+        this.dateMask = this.dateFormat.replace(/[\w]/g, '#');
+    },
+    data() {
+        return {
+            dateFormat: '',
+            dateMask: ''
         }
+    },
+    methods: {
+        parseDateToNavigatorLanguage(date) {
+            date = new Date(date.replace(/-/g, '/'));
+            return moment(date, moment.ISO_8601).format(this.dateFormat);  
+        },
     }
 };
 

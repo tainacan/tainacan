@@ -276,14 +276,7 @@
                 this.metadataIsLoading = false;
             });
 
-            let locale = navigator.language;
-
-            moment.locale(locale);
-
-            let localeData = moment.localeData();
-            this.dateFormat = localeData.longDateFormat('L');
-
-            if((this.$route.query.metaquery && Object.keys(this.$route.query.metaquery).length > 0) ||
+            if ((this.$route.query.metaquery && Object.keys(this.$route.query.metaquery).length > 0) ||
                 (this.$route.query.taxquery && Object.keys(this.$route.query.taxquery).length > 0) ){
                 this.searchCriteria = [];
             }
@@ -362,8 +355,6 @@
                 },
                 termList: [],
                 terms: [],
-                dateMask: this.getDateLocaleMask(),
-                dateFormat: '',
                 metadataIsLoading: false,
                 metadata: [],
             }

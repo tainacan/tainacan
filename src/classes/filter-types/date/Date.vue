@@ -81,20 +81,11 @@
 
 <script>
     import { tainacan as axios } from '../../../js/axios/axios';
-    import { wpAjax } from "../../../admin/js/mixins";
-    import moment from 'moment';
+    import { wpAjax, dateInter } from "../../../admin/js/mixins";
 
     export default {
-        mixins: [ wpAjax ],
+        mixins: [ wpAjax, dateInter ],
         created() {
-            let locale = navigator.language;
-
-            moment.locale(locale);
-
-            let localeData = moment.localeData();
-
-            this.dateFormat = localeData.longDateFormat('L');
-
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
             this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : (typeof this.filter.metadatum.metadatum_id == 'object' ? this.filter.metadatum.metadatum_id.metadatum_id : this.filter.metadatum.metadatum_id);
             // this.options = this.filter.filter_type_options;
@@ -129,7 +120,6 @@
                 metadatum: '',
                 metadatum_object: {},
                 comparator: '=', // =, !=, >, >=, <, <=
-                dateFormat: '',
             }
         },
         props: {
@@ -230,11 +220,7 @@
             onChangeComparator(newComparator) {
                 this.comparator = newComparator;
                 this.emit();
-            },
-            parseDateToNavigatorLanguage(date) {
-                date = new Date(date.replace(/-/g, '/'));
-                return moment(date, moment.ISO_8601).format(this.dateFormat);  
-            },
+            }
         },
         beforeDestroy() {
             this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
