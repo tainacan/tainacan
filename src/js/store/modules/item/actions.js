@@ -122,13 +122,31 @@ export const sendItem = ( { commit }, item) => {
 export const updateItem = ({ commit }, item) => {
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.patch('/items/' + item.id, item).then( res => {
-            commit('setItem', res.data);
-            commit('setLastUpdated');
-            resolve( res.data );
-        }).catch( error => { 
-            reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
-        });
+        axios.tainacan.patch('/items/' + item.id, item)
+            .then( res => {
+                commit('setItem', res.data);
+                commit('setLastUpdated');
+                resolve( res.data );
+            }).catch( error => { 
+                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+            });
+
+    }); 
+};
+ 
+export const duplicateItem = ({ commit }, { item, attachment }) => {
+    delete item['id'];
+    
+    if (item['terms'] == null)
+        item['terms'] = [];
+
+    return new Promise((resolve, reject) => {
+        axios.tainacan.post('/collection/' + item.collection_id + '/items/', item)
+            .then( res => {
+                resolve( res.data );
+            }).catch( error => { 
+                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+            });
 
     }); 
 };

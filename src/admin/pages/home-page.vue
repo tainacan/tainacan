@@ -125,8 +125,15 @@
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-20px tainacan-icon-viewtable"/>
                     </span>
-                    <span class="menu-text">
+                    <span
+                            v-if="collectionsTotal != undefined && collectionsTotal > 1"
+                            class="menu-text">
                         {{ $i18n.getWithVariables('label_view_all_%s_collections', [collectionsTotal]) }}
+                    </span>
+                    <span
+                            v-if="collectionsTotal != undefined && collectionsTotal == 1"
+                            class="menu-text">
+                        {{ $i18n.get('label_view_collections_list') }}
                     </span>
                 </router-link>
             </div>

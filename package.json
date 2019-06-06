@@ -8,8 +8,8 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "buefy": "^0.7.6",
-    "bulma": "^0.7.4",
+    "buefy": "^0.7.7",
+    "bulma": "^0.7.5",
     "mdi": "^2.2.43",
     "moment": "^2.22.2",
     "node-sass": "^4.12.0",
@@ -46,6 +46,7 @@
     "vue-loader": "^15.4.2",
     "vue-template-compiler": "^2.5.17",
     "webpack": "^4.22.0",
+    "webpack-bundle-analyzer": "^3.3.2",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": ">=3.1.11"
   }

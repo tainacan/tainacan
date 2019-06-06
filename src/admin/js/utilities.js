@@ -101,14 +101,18 @@ I18NPlugin.install = function (Vue, options = {}) {
         getWithVariables(key, variables) { // TRY WITH regex: \%((\d)\$)*s 
             let rawString = tainacan_plugin.i18n[key];
             if (rawString != undefined && rawString != null && rawString != '' ) {
-                let splits = rawString.match(/\%((\d)\$)*s/gm); // An array with all the %s, %1$s, %2$s, etc
-                let parsedString = '';
-                
-                for (let i = 0; i < splits.length; i++) {
-                    parsedString += rawString.split(splits[i]).join(variables[i]);
-                }
-                return parsedString;
+                // let splits = rawString.match(/\%((\d)\$)*s*/gm); // An array with all the %s, %1$s, %2$s, etc
+                // let parsedString = '';
+                // for (let i = 0; i < splits.length; i++) {
+                //     parsedString += rawString.split(splits[i]).join(variables[i]);
+                // }
+                // return parsedString;
 
+                const regex = /\%(\d\$)*s/m;
+                for (let variable of variables)
+                    rawString = rawString.replace(regex, variable);
+                
+                return rawString;
             } else {
                 "Invalid i18n key: " + tainacan_plugin.i18n[key];
             }
@@ -150,7 +154,8 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
                     .then( updatedRes => {
                         let prefs = JSON.parse(updatedRes.data.meta['tainacan_prefs']);
                         this.tainacanPrefs = prefs;
-                    });
+                    })
+                    .catch( () => console.log("Request to /users/me failed. Maybe you're not logged in.") );
             } else {
                 let prefs = JSON.parse(tainacan_plugin.user_prefs);
                 this.tainacanPrefs = prefs;
@@ -175,9 +180,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
                             this.tainacanPrefs[key] = value;
                         }
                     })
-                    .catch(error => {
-                        reject( error );
-                    });
+                    .catch( () => console.log("Request to /users/me failed. Maybe you're not logged in.") );
             }); 
         },
         clean() {

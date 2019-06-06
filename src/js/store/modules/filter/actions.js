@@ -53,7 +53,7 @@ export const sendFilter = ( { commit }, { collectionId, metadatumId, name, filte
                 name: name,
                 status: status
             },
-            metadatum: metadatumId,
+            metadatum_id: metadatumId,
         })
             .then( res => {
                 let filter = res.data;
@@ -67,6 +67,12 @@ export const sendFilter = ( { commit }, { collectionId, metadatumId, name, filte
 };
 
 export const updateFilter = ( { commit }, { filterId, index, options }) => {
+
+    if (options['metadatum'] != undefined && options['metadatum']['metadatum_id'] != undefined) {
+        options['metadatum_id'] = options['metadatum']['metadatum_id'];
+        delete options['metadatum'];
+    }
+
     return new Promise(( resolve, reject ) => {
         let endpoint = '/filters/' + filterId;
         options['context'] = 'edit';

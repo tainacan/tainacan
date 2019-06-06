@@ -27,6 +27,7 @@ class Csv extends Exposer {
 		);
 		
 		$items = $response->get_data();
+		$items = is_array($items) && isset($items['items']) ? $items['items'] : [];
 		
 		if (sizeof($items) > 0) {
 			

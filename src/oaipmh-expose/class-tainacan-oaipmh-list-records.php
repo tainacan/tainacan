@@ -181,7 +181,7 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
                 foreach ($maps as $key => $val) {
 
                     if( $val && is_object($val) )
-                        $this->xml_creater->addChild($this->working_node, $key, html_entity_decode($val->get_value()));
+                        $this->xml_creater->addChild($this->working_node, $key, html_entity_decode($val->get_value_as_string()));
                     else
                         $this->xml_creater->addChild($this->working_node, $key, '');
                 }

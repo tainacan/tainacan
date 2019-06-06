@@ -338,6 +338,16 @@ class Migrations {
 		flush_rewrite_rules(false);
 	}
 	
+	static function update_filters_definition() {
+		global $wpdb;
+		
+		$wpdb->query("UPDATE $wpdb->postmeta SET meta_key = 'metadatum_id' WHERE
+			meta_key = 'metadatum' AND post_id IN (
+				SELECT ID FROM $wpdb->posts WHERE post_type = 'tainacan-filter'
+			)");
+		
+	}
+	
 }
 
 

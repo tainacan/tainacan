@@ -50,6 +50,8 @@
         }
     }
     .b-numberinput {
+        height: 30px;
+        
         .control {
             margin-right: 0 !important;
         }
@@ -59,7 +61,7 @@
         }
         button, 
         input {
-            height: 28px !important;
+            height: 30px !important;
         }
         button.is-primary,
         button.is-primary:hover,

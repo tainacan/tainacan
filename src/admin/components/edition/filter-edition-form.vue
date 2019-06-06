@@ -150,10 +150,10 @@
 
             <component
                     :errors="formErrors['filter_type_options']"
-                    v-if="(editForm.filter_type_object && editForm.filter_type_object.form_component && editForm.filter_type_object.options) || editForm.edit_form == ''"
+                    v-if="(editForm.filter_type_object && editForm.filter_type_object.form_component) || editForm.edit_form == ''"
                     :is="editForm.filter_type_object.form_component"
                     :filter="editForm"
-                    v-model="editForm.filter_type_object.options"/>
+                    v-model="editForm.filter_type_options"/>
             <div 
                     v-html="editForm.edit_form" 
                     v-else/>
@@ -244,7 +244,7 @@ export default {
         saveEdition(filter) {
 
             if ((filter.filter_type_object && filter.filter_type_object.form_component) || filter.edit_form == '') {
-                
+
                 // this.fillExtraFormData(this.editForm);
                 this.updateFilter({ filterId: filter.id, index: this.index, options: this.editForm})
                     .then(() => {

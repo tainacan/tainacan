@@ -22,14 +22,18 @@
     }
     .dropdown-menu {
         padding: 0px;
+        margin-top: 0;
         border-radius: 0px;
         min-width: 6rem;
+        border: none;
         
         .dropdown-content {
             padding: 0px;
             border-radius: 0px !important;
             max-height: 240px;
             overflow-y: auto;
+            box-shadow: none;
+            border: 1px solid $gray3;
 
             .dropdown-item {
                 display: block;
@@ -83,6 +87,19 @@
         max-height: unset !important;
     }
 }
+.taginput-container .mdi-magnify::before, 
+.autocomplete .mdi-magnify::before {
+    content: 'search';
+    display: inline-block;
+    font: normal normal normal 20px/1 "TainacanIcons";
+    font-size: inherit;
+    text-rendering: auto;
+    vertical-align: middle;
+    line-height: inherit;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 20px;
+}
 
 .taginput-container {
     padding: 0px !important;
@@ -93,6 +110,9 @@
     }
     .autocomplete .icon {
         height: 2.2em !important;
+        .mdi-magnify::before {
+            margin-top: -3px;
+        }
     }
     .input { 
         margin-bottom: 0px !important; 

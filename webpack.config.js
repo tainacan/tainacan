@@ -1,6 +1,7 @@
 let path = require('path');
 let webpack = require('webpack');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
     entry: {
@@ -39,7 +40,7 @@ module.exports = {
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
-                exclude: /node_modules/,
+                exclude: /node_modules/
             },
             {
                 test: /\.(png|jpg|jpeg|gif|eot|ttf|otf|woff|woff2|svg|svgz)(\?.+)?$/,
@@ -114,7 +115,7 @@ if (production === true) {
     module.exports.resolve = {
         alias: {
             'vue$': 'vue/dist/vue.min',
-            'swiper$': 'swiper/dist/js/swiper.js'
+            'swiper$': 'swiper/dist/js/swiper.min.js'
         }
     }
 } else {
@@ -129,12 +130,17 @@ if (production === true) {
             },
         }),
         new VueLoaderPlugin(),
+        new BundleAnalyzerPlugin({
+            openAnalyzer: false,
+            analyzerMode: 'static'
+        })
     ];
 
     module.exports.resolve = {
         alias: {
             //'vue$': 'vue/dist/vue.esm' // uncomment this and comment the above to use vue dev tools (can cause type error)
-            'vue$': 'vue/dist/vue.min'
+            'vue$': 'vue/dist/vue.min',
+            'swiper$': 'swiper/dist/js/swiper.min.js'
         }
     }
 }

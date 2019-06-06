@@ -2,7 +2,7 @@
 
 return apply_filters( 'tainacan-admin-i18n', [
 
-	// Advanced search comparators
+	// Comparators
 	'is_equal_to'                                    => __( 'Equal', 'tainacan' ),
 	'is_not_equal_to'                                => __( 'Not equal', 'tainacan' ),
 	'contains'                                       => __( 'Contains', 'tainacan' ),
@@ -11,6 +11,10 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'less_than'                                      => __( 'Less than', 'tainacan' ),
 	'greater_than_or_equal_to'                       => __( 'Greater than or equal to', 'tainacan' ),
 	'less_than_or_equal_to'                          => __( 'Less than or equal to', 'tainacan' ),
+	'before'                                   	 	 => __( 'Before', 'tainacan' ),
+	'after'		                                     => __( 'After', 'tainacan' ),
+	'before_or_on_day'		                         => __( 'Before or on day', 'tainacan' ),
+	'after_or_on_day'                          		 => __( 'After or on day', 'tainacan' ),
 
 	// Tainacan common terms
 	'repository'                                     => __( 'Repository', 'tainacan' ),
@@ -405,9 +409,12 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_plugin_home_page'					 	 => __( 'Plugin home page', 'tainacan' ),	
 	'label_wordpress_admin_page'					 => __( 'WordPress Admin Page', 'tainacan' ),	
 	'label_view_all_%s_collections'					 => __( 'View all %s collections', 'tainacan' ),
+	'label_view_collections_list'                    => __( 'View collections list', 'tainacan' ),
 	'label_comparator'								 => __( 'Comparator', 'tainacan' ),
-	'label_table_of_items'                                    => __( 'Table of Items', 'tainacan' ),
-
+	'label_table_of_items'                           => __( 'Table of Items', 'tainacan' ),
+	'label_duplicate_item'                           => __( 'Duplicate item', 'tainacan' ),
+	'label_create_another_item'                      => __( 'Create another item', 'tainacan' ),
+	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),
@@ -453,6 +460,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_drag_and_drop_metadatum_sort'     	 => __( 'Drag and drop to change metadatum order', 'tainacan' ),
 	'instruction_select_step_options_to_show'     	 => __( 'Select which Step values to show', 'tainacan' ),
 	'instruction_select_maximum_options_to_show'     => __( 'Select which amount of maximum of options to show', 'tainacan' ),
+	'instruction_select_a_date' 				     => __( 'Select a date', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_%s_tab_all'                				 => __( 'Every published %s, including those visible only to editors.', 'tainacan' ),
@@ -607,12 +615,29 @@ return apply_filters( 'tainacan-admin-i18n', [
 	// Tainacan Filter Types
 	'tainacan-filter-custom-interval'                => __( 'Custom Interval', 'tainacan' ),
 	'tainacan-filter-numeric'		                 => __( 'Numeric', 'tainacan' ),
+	'tainacan-filter-date'			                 => __( 'Date', 'tainacan' ),
 	'tainacan-filter-selectbox'                      => __( 'Select Box', 'tainacan' ),
 	'tainacan-filter-autocomplete'                   => __( 'Autocomplete', 'tainacan' ),
 	'tainacan-filter-taginput'                       => __( 'Tag Input', 'tainacan' ),
 	'tainacan-filter-checkbox'                       => __( 'Check Box', 'tainacan' ),
 	'tainacan-filter-taxonomy-taginput'              => __( 'Taxonomy Tag Input', 'tainacan' ),
 	'tainacan-filter-taxonomy-checkbox'              => __( 'Taxonomy Check Box', 'tainacan' ),
-	'tainacan-filter-taxonomy-selectbox'             => __( 'Taxonomy Select Box', 'tainacan' )
+	'tainacan-filter-taxonomy-selectbox'             => __( 'Taxonomy Select Box', 'tainacan' ),
+
+	// Datepicker week days
+	/* translators: This refers to the short label that will appear on datepickers for Sunday */
+	'datepicker_short_sunday'			=> __( 'Su', 'tainacan' ),
+	/* translators: This refers to the short label that will appear on datepickers for Monday */
+	'datepicker_short_monday'			=> __( 'M', 'tainacan' ),
+	/* translators: This refers to the short label that will appear on datepickers for Tuesday */
+	'datepicker_short_tuesday'			=> __( 'Tu', 'tainacan' ),
+	/* translators: This refers to the short label that will appear on datepickers for Wednesday */
+	'datepicker_short_wednesday'		=> __( 'W', 'tainacan' ),
+	/* translators: This refers to the short label that will appear on datepickers for Thursday */
+	'datepicker_short_thursday'			=> __( 'Th', 'tainacan' ),
+	/* translators: This refers to the short label that will appear on datepickers for Friday */
+	'datepicker_short_friday'			=> __( 'F', 'tainacan' ),
+	/* translators: This refers to the short label that will appear on datepickers for Saturday */
+	'datepicker_short_saturday'			=> __( 'Sa', 'tainacan' )
 ] );
 ?>

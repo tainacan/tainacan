@@ -80,10 +80,10 @@ class Filters extends Repository {
 				'description' => __( 'Filter color', 'tainacan' ),
 				'validation'  => ''
 			],
-			'metadatum'           => [
+			'metadatum_id'           => [
 				'map'         => 'meta',
 				'title'       => __( 'Metadata', 'tainacan' ),
-				'type'        => 'array/object/string',
+				'type'        => 'integer',
 				'description' => __( 'Filter metadata', 'tainacan' ),
 				'validation'  => ''
 			],
