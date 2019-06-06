@@ -37,8 +37,8 @@ export default {
     @import "./scss/theme-basics.sass";
 
     // Buefy imports
-    @import "../../node_modules/buefy/src/scss/components/_datepicker.scss";
     @import "../../node_modules/buefy/src/scss/utils/_all.scss";
+    @import "../../node_modules/buefy/src/scss/components/_datepicker.scss";
     @import "../../node_modules/buefy/src/scss/components/_checkbox.scss";
     @import "../../node_modules/buefy/src/scss/components/_radio.scss";
     @import "../../node_modules/buefy/src/scss/components/_tag.scss";
@@ -151,9 +151,6 @@ export default {
                 .control.has-icons-left .icon {
                     top: 5px;
                 }
-            }
-            .filter-item-forms .datepicker .dropdown-content {
-                max-width: 100% !important;
             }
         }
 

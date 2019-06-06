@@ -99,52 +99,137 @@
     .filter-item-forms {
 
         .datepicker {
+            width: 100%;
 
             .datepicker-content {
                 height: auto;
+                
+                input {
+                    height: 30px;
+                }
             }
 
-            .dropdown-item {
-                background-color: white !important;
+            .dropdown-menu {
+                background: transparent;
+                border: none;
+                
+                .dropdown-item {
+                    background-color: white !important;
+                }
+            }
+
+            .datepicker-header {
+                .pagination {
+                    a>span>i:before {
+                        display: inline-block;
+                        font: normal normal normal 20px/1 "TainacanIcons";
+                        font-size: inherit;
+                        text-rendering: auto;
+                        vertical-align: middle;
+                        line-height: inherit;
+                        -webkit-font-smoothing: antialiased;
+                        -moz-osx-font-smoothing: grayscale;
+                        color: $secondary;
+                    }
+
+                    .pagination-previous {
+                        border: none;
+                        flex-grow: 0;
+
+                        &>span>i:before {
+                            content: 'previous';
+                            font-size: 20px;
+                        }
+                    }
+
+                    .pagination-next {
+                        border: none;
+                        flex-grow: 0;
+
+                        &>span>i:before {
+                            content: 'next';
+                            font-size: 20px;
+                        }
+                    }
+                }
+            }
+
+            .datepicker-table {
+                margin-bottom: 0px;
+                
+                .datepicker-cell {
+                    border: none !important;
+                    padding: 0.5rem 0.75rem !important;
+                }
+                .datepicker-cell.is-today,
+                .datepicker-cell.is-today:hover {
+                    color: $gray4 !important;
+                    background-color: $turquoise1;
+                }
+                .datepicker-cell.is-selected,
+                .datepicker-cell.is-selected:hover {
+                    color: white !important;
+                    background-color: $turquoise5 !important;
+                }
             }
 
             @media screen and (min-width: 1024px) {
 
                 .datepicker-header {
-                
-                    .pagination-list {
-                        .field.has-addons {
-                            display: table-cell !important;
-                            width: 78px !important;
+                    margin-bottom: 0.5rem;
+                    padding-top: 0.15rem;
+                    padding-bottom: 0.5rem;
+                    
+                    .pagination {
+                        flex-wrap: wrap;
+                    
+                        .pagination-list {
+                            margin-bottom: 0.5rem;
 
-                            .control {
-                                height: 24px !important;
-                                width: 74px !important;
+                            .field.has-addons {
+                                width: 100% !important;
 
-                                select {
-                                    padding-left: 1px !important;
+                                .control {
+                                    height: 24px !important;
+                                    width: 74px !important;
+
+                                    .select {
+                                        min-width: 100% !important;     
+
+                                        select {
+                                            padding-left: 1px !important;
+                                            font-size: 0.75rem !important;
+                                            height: 24px !important;
+                                            min-width: 100% !important;
+
+                                            &:not(.is-loading)::after {
+                                                margin-top: -13px !important;
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    .pagination-previous {
-                        margin: 0;
-                        height: 24px;
-                        padding: 0;
-                        font-size: 0.75rem; 
-                    }
+                        .pagination-previous {
+                            margin: 0;
+                            height: 24px;
+                            padding: 0;
+                            font-size: 0.75rem; 
+                            order: 3;
+                        }
 
-                    .pagination-next {
-                        margin: 0;
-                        height: 24px;
-                        padding: 0;
-                        font-size: 0.75rem;
+                        .pagination-next {
+                            margin: 0;
+                            height: 24px;
+                            padding: 0;
+                            font-size: 0.75rem;
+                        }
                     }
                 }
 
                 .dropdown-item {
-                    padding: 0.8em;
+                    padding: 0.8rem !important;
                 }
 
                 .dropdown-menu {
@@ -157,7 +242,7 @@
                     margin-bottom: 0px;
                     
                     .datepicker-cell {
-                        padding: 0.2rem 0.1rem !important;
+                        padding: 0.15rem 0.175rem !important;
                     }
                 }
                 
@@ -174,7 +259,7 @@
                     max-width: 165px !important;
                     border-radius: 2px !important;
                     padding: 0px;
-                    max-height: inherit;
+                    max-height: inherit !important;
                 }
             }
         }
@@ -258,6 +343,7 @@
             display: unset;
             white-space: nowrap;
             text-overflow: ellipsis;
+            height: 30px;
         }
 
         .control:not(.taginput) {

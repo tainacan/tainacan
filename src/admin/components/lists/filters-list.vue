@@ -1032,6 +1032,7 @@ export default {
 
             .column {
                 overflow: visible;
+                margin: 0;
             }
 
             .filter-types-container {
@@ -1110,7 +1111,7 @@ export default {
                 }
                 .field {
                     width: 100%;
-                    margin: 16px;
+                    margin: 6px;
                     .label { 
                         color: $gray5;
                         font-weight: normal;
@@ -1122,15 +1123,17 @@ export default {
                     margin: 0.875rem 1.5rem;
                 }
 
-                .numeric-filter-container {
+                .numeric-filter-container,
+                .date-filter-container {
                     display: flex;
+
                     .field { margin: 0; }
                     .dropdown {
                         width: auto;
 
                         .dropdown-trigger button {
                             padding: 0 0.5rem !important;
-                            height: 28px !important;
+                            height: 30px !important;
 
                             i:not(.tainacan-icon-arrowdown) {
                                 margin-top: -3px;
@@ -1142,6 +1145,10 @@ export default {
                         .dropdown-menu {
                             display: block !important;
                         }
+                    }
+                    .datepicker {
+                        flex-shrink: 0;
+                        max-width: 70%;
                     }
                 }
 

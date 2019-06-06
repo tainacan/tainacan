@@ -2,7 +2,7 @@
 
 return apply_filters( 'tainacan-admin-i18n', [
 
-	// Advanced search comparators
+	// Comparators
 	'is_equal_to'                                    => __( 'Equal', 'tainacan' ),
 	'is_not_equal_to'                                => __( 'Not equal', 'tainacan' ),
 	'contains'                                       => __( 'Contains', 'tainacan' ),
@@ -11,6 +11,10 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'less_than'                                      => __( 'Less than', 'tainacan' ),
 	'greater_than_or_equal_to'                       => __( 'Greater than or equal to', 'tainacan' ),
 	'less_than_or_equal_to'                          => __( 'Less than or equal to', 'tainacan' ),
+	'before'                                   	 	 => __( 'Before', 'tainacan' ),
+	'after'		                                     => __( 'After', 'tainacan' ),
+	'before_or_on_day'		                         => __( 'Before or on day', 'tainacan' ),
+	'after_or_on_day'                          		 => __( 'After or on day', 'tainacan' ),
 
 	// Tainacan common terms
 	'repository'                                     => __( 'Repository', 'tainacan' ),
@@ -618,6 +622,22 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'tainacan-filter-checkbox'                       => __( 'Check Box', 'tainacan' ),
 	'tainacan-filter-taxonomy-taginput'              => __( 'Taxonomy Tag Input', 'tainacan' ),
 	'tainacan-filter-taxonomy-checkbox'              => __( 'Taxonomy Check Box', 'tainacan' ),
-	'tainacan-filter-taxonomy-selectbox'             => __( 'Taxonomy Select Box', 'tainacan' )
+	'tainacan-filter-taxonomy-selectbox'             => __( 'Taxonomy Select Box', 'tainacan' ),
+
+	// Datepicker week days
+	/* translators: This refers to the short label that will appear on datepickers for Sunday */
+	'datepicker_short_sunday'			=> __( 'Su', 'tainacan' ),
+	/* translators: This refers to the short label that will appear on datepickers for Monday */
+	'datepicker_short_monday'			=> __( 'M', 'tainacan' ),
+	/* translators: This refers to the short label that will appear on datepickers for Tuesday */
+	'datepicker_short_tuesday'			=> __( 'Tu', 'tainacan' ),
+	/* translators: This refers to the short label that will appear on datepickers for Wednesday */
+	'datepicker_short_wednesday'		=> __( 'W', 'tainacan' ),
+	/* translators: This refers to the short label that will appear on datepickers for Thursday */
+	'datepicker_short_thursday'			=> __( 'Th', 'tainacan' ),
+	/* translators: This refers to the short label that will appear on datepickers for Friday */
+	'datepicker_short_friday'			=> __( 'F', 'tainacan' ),
+	/* translators: This refers to the short label that will appear on datepickers for Saturday */
+	'datepicker_short_saturday'			=> __( 'Sa', 'tainacan' )
 ] );
 ?>

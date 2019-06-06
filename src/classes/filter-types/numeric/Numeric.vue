@@ -215,14 +215,19 @@
 
     .numeric-filter-container {
         display: flex;
-        height: 28px;
+        height: 30px;
+
+        @media screen and (min-width: 769px) and (max-width: 1500px) {
+            flex-wrap: wrap;
+            height: 60px;
+        }
         
         .dropdown {
             width: auto;
 
             .dropdown-trigger button {
                 padding: 0 0.5rem !important;
-                height: 28px !important;
+                height: 30px !important;
 
                 i:not(.tainacan-icon-arrowdown) {
                     margin-top: -3px;

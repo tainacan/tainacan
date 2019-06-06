@@ -134,6 +134,10 @@
                     color: $gray4;
                 }
 
+                & span:last-of-type>.metadata-value {
+                    margin-bottom: 0px;
+                }
+
             }
         }
     

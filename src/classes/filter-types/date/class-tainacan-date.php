@@ -12,11 +12,7 @@ class Date extends Filter_Type {
     function __construct(){
         $this->set_supported_types(['date']);
         $this->set_component('tainacan-filter-date');
-        $this->set_form_component('tainacan-filter-form-date');
         $this->set_use_max_options(false);
-        $this->set_default_options([
-            'step' => 1
-        ]);
         $this->set_preview_template('
             <div>
                 <div>
@@ -35,33 +31,25 @@ class Date extends Filter_Type {
                             <div class="background" style="display: none;"></div>
                             <div class="dropdown-menu" style="display: none;">
                                 <div role="list" class="dropdown-content">
-                                    <a class="dropdown-item is-active">=&nbsp; Equal</a>
-                                    <a class="dropdown-item">≠&nbsp; Not equal</a>
-                                    <a class="dropdown-item">&gt;&nbsp; Greater than</a>
-                                    <a class="dropdown-item">≥&nbsp; Greater than or equal to</a>
-                                    <a class="dropdown-item">&lt;&nbsp; Less than</a>
-                                    <a class="dropdown-item">≤&nbsp; Less than or equal to</a>
+                                    <a class="dropdown-item is-active">=&nbsp; ' . __('Equal', 'tainacan') .'</a>
+                                    <a class="dropdown-item">≠&nbsp; '. __('Not qual', 'tainacan') .'</a>
+                                    <a class="dropdown-item">&gt;&nbsp; '. __('Before', 'tainacan') .'</a>
+                                    <a class="dropdown-item">≥&nbsp; '. __('Before or on day', 'tainacan') .'</a>
+                                    <a class="dropdown-item">&lt;&nbsp; '. __('After', 'tainacan') .'</a>
+                                    <a class="dropdown-item">≤&nbsp;  '. __('After or on day', 'tainacan') .'</a>
                                 </div>
                             </div>
                         </div>
-                    <div class="b-numberinput field is-grouped">
-                        <p class="control">
-                            <button type="button" class="button is-primary is-small">
-                                <span class="icon is-small">
-                                    <i class="mdi mdi-minus"></i>
-                                </span>
-                            </button>
-                        </p>
-                        <div class="control is-small is-clearfix">
-                            <input type="number" step="0.01" class="input is-small" value="1.5">
+                        <div class="datepicker control is-small">
+                            <div class="dropdown is-bottom-left is-mobile-modal">
+                                <div role="button" class="dropdown-trigger">
+                                    <div class="control has-icons-left is-small is-clearfix">
+                                        <input type="text" autocomplete="off" placeholder=" '. __('Select a date', 'tainacan') .'" class="input is-small">
+                                        <span class="icon is-left is-small"><i class="mdi mdi-calendar-today"></i></span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <p class="control">
-                            <button type="button" class="button is-primary is-small">
-                                <span class="icon is-small">
-                                    <i class="mdi mdi-plus"></i>
-                                </span>
-                            </button>
-                        </p>
                     </div>
                 </div>
             </div>
@@ -69,27 +57,15 @@ class Date extends Filter_Type {
     }
 
     /**
-     * @inheritdoc
-     */
-    public function get_form_labels(){
-        return [
-            'step' => [
-                'title' => __( 'Step', 'tainacan' ),
-                'description' => __( 'The amount to be increased or decreased when clicking on filter control buttons.', 'tainacan' ),
-            ]
-        ];
-    }
-    /**
      * @param $filter
      * @return string
      * @internal param $metadatum
      */
     public function render( $filter ){
         return '<tainacan-filter-date
-                                        step="' . $this->get_option('step') . '" 
                                         name="'.$filter->get_name().'"
                                         collection_id="'.$filter->get_collection_id().'"
-                                        metadatum_id="'.$filter->get_metadatum_id().'"></tainacan-filter-custom-interval>';
+                                        metadatum_id="'.$filter->get_metadatum_id().'"></tainacan-filter-date>';
     }
 
 
@@ -101,12 +77,6 @@ class Date extends Filter_Type {
         if ( !in_array($filter->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
             return true;
 
-        if ( empty($this->get_option('step')) ) {
-            return [
-                'step' => __('"Step" value is required','tainacan')
-            ];
-        }
-
-        return true;
+        return false;
     }
 }
