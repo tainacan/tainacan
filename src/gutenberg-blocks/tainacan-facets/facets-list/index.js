@@ -35,7 +35,15 @@ registerBlockType('tainacan/facets-list', {
             type: String,
             default: undefined
         },
+        collectionSlug: {
+            type: String,
+            default: undefined
+        },
         facets: {
+            type: Array,
+            default: []
+        },
+        facetsObject: {
             type: Array,
             default: []
         },
@@ -99,10 +107,6 @@ registerBlockType('tainacan/facets-list', {
             type: String,
             default: undefined
         },
-        order: {
-            type: String,
-            default: undefined
-        },
         blockId: {
             type: String,
             default: undefined
@@ -115,8 +119,10 @@ registerBlockType('tainacan/facets-list', {
     edit({ attributes, setAttributes, className, isSelected, clientId }){
         let {
             facets, 
+            facetsObject,
             content, 
-            collectionId,  
+            collectionId,
+            collectionSlug,    
             showImage,
             showItemsCount,
             layout,
@@ -127,7 +133,6 @@ registerBlockType('tainacan/facets-list', {
             metadatumType,
             facetsRequestSource,
             maxFacetsNumber,
-            order,
             searchString,
             isLoading,
             showSearchBar
@@ -135,7 +140,7 @@ registerBlockType('tainacan/facets-list', {
 
         // Obtains block's client id to render it on save function
         setAttributes({ blockId: clientId });
-        
+    
         function prepareFacet(facet) {
             return (
                 <li 
@@ -147,7 +152,7 @@ registerBlockType('tainacan/facets-list', {
                         href={ facet.url } 
                         target="_blank"
                         className={ (!showImage ? 'facet-without-image' : '') }
-                        style={{ fontSize: layout == 'cloud' && facet.total_items ? + 1 + (cloudRate/3)*Math.log(facet.total_items) + 'rem' : ''}}>
+                        style={{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'rem' : ''}}>
                         { (metadatumType == 'Taxonomy' || metadatumType == 'Relationship') ? 
                             <img
                                 src={ 
@@ -199,17 +204,7 @@ registerBlockType('tainacan/facets-list', {
                 setAttributes({ maxFacetsNumber: 12 });
             }
 
-            // Set up sorting order
-            if (order != undefined)
-                queryObject.order = order;
-            else if (queryObject.order != undefined)
-                setAttributes({ order: queryObject.order });
-            else {
-                queryObject.order = 'asc';
-                setAttributes({ order: 'asc' });
-            }
-
-            // Set up sorting order
+            // Set up searching string
             if (searchString != undefined)
                 queryObject.search = searchString;
             else if (queryObject.search != undefined)
@@ -223,17 +218,36 @@ registerBlockType('tainacan/facets-list', {
             
             tainacan.get(endpoint, { cancelToken: facetsRequestSource.token })
                 .then(response => {
+                    facetsObject = [];
 
-                    for (let facet of response.data.values)
+                    for (let facet of response.data.values) {
+                        facetsObject.push(Object.assign({ 
+                            url: tainacan_plugin.site_url + '/' + collectionSlug + '/#/?metaquery[0][key]=' + metadatumId + '&metaquery[0][value]=' + facet.value
+                        }, facet));
+                    }
+                    
+                    for (let facet of facetsObject)
                         facets.push(prepareFacet(facet));
 
                     setAttributes({
                         content: <div></div>,
                         facets: facets,
+                        facetsObject: facetsObject,
                         isLoading: false,
                         facetsRequestSource: facetsRequestSource
                     });
                 });
+        }
+
+        function updateContent() {
+            facets = [];
+            for (let facet of facetsObject)
+                facets.push(prepareFacet(facet));
+
+            setAttributes({
+                content: <div></div>,
+                facets: facets
+            });
         }
 
         function openMetadataModal() {
@@ -246,14 +260,18 @@ registerBlockType('tainacan/facets-list', {
         function updateLayout(newLayout) {
             layout = newLayout;
 
-            if (layout == 'grid' && showImage == false)
+            if (layout == 'grid')
                 showImage = true;
+
+            
+            if (layout == 'cloud')
+                showImage = false;
 
             setAttributes({ 
                 layout: layout, 
                 showImage: showImage
             });
-            setContent();
+            updateContent();
         }
 
         function applySearchString(event) {
@@ -346,7 +364,7 @@ registerBlockType('tainacan/facets-list', {
                                         onChange={ ( isChecked ) => {
                                                 showImage = isChecked;
                                                 setAttributes({ showImage: showImage });
-                                                setContent();
+                                                updateContent();
                                             } 
                                         }
                                     /> 
@@ -361,7 +379,7 @@ registerBlockType('tainacan/facets-list', {
                                                 onChange={ ( isChecked ) => {
                                                         showImage = isChecked;
                                                         setAttributes({ showImage: showImage });
-                                                        setContent();
+                                                        updateContent();
                                                     } 
                                                 }
                                             /> : null
@@ -373,7 +391,7 @@ registerBlockType('tainacan/facets-list', {
                                                 onChange={ ( margin ) => {
                                                     gridMargin = margin;
                                                     setAttributes( { gridMargin: margin } ) 
-                                                    setContent();
+                                                    updateContent();
                                                 }}
                                                 min={ 0 }
                                                 max={ 48 }
@@ -388,7 +406,7 @@ registerBlockType('tainacan/facets-list', {
                                         onChange={ ( isChecked ) => {
                                                 showItemsCount = isChecked;
                                                 setAttributes({ showItemsCount: showItemsCount });
-                                                setContent();
+                                                updateContent();
                                             } 
                                         }
                                     /> 
@@ -406,7 +424,7 @@ registerBlockType('tainacan/facets-list', {
                                             onChange={ ( rate ) => {
                                                 cloudRate = rate;
                                                 setAttributes( { cloudRate: rate } ) 
-                                                setContent();
+                                                updateContent();
                                             }}
                                             min={ 0 }
                                             max={ 10 }
@@ -424,10 +442,13 @@ registerBlockType('tainacan/facets-list', {
                         { isModalOpen ? 
                             <MetadataModal
                                 existingCollectionId={ collectionId } 
+                                existingCollectionSlug={ collectionSlug } 
                                 existingMetadatumId={ metadatumId } 
                                 existingMetadatumType={ metadatumType } 
-                                onSelectCollection={ (selectedCollectionId) => {
-                                    collectionId = selectedCollectionId;
+                                onSelectCollection={ (selectedCollection) => {
+                                    collectionId = selectedCollection.id;
+                                    collectionSlug = selectedCollection.slug;
+                                    setAttributes({ collectionSlug: collectionSlug });
                                     setAttributes({ collectionId: collectionId });
                                 }}
                                 onSelectMetadatum={ (selectedFacet) =>{
@@ -475,31 +496,7 @@ registerBlockType('tainacan/facets-list', {
                     showSearchBar ?
                     <div class="facets-search-bar">
                         <Button
-                            onClick={ () => { order = 'asc'; setAttributes({ order: order }); setContent(); }}
-                            className={order == 'asc' ? 'sorting-button-selected' : ''}
-                            label={__('Sort ascending', 'tainacan')}>
-                            <span class="icon">
-                                <i>
-                                    <svg width="24" height="24" viewBox="-2 -4 20 20">
-                                    <path d="M6.7,10.8l-3.3,3.3L0,10.8h2.5V0h1.7v10.8H6.7z M11.7,0.8H8.3v1.7h3.3V0.8z M14.2,5.8H8.3v1.7h5.8V5.8z M16.7,10.8H8.3v1.7	h8.3V10.8z"/>       
-                                    </svg>
-                                </i>
-                            </span>
-                        </Button>  
-                        <Button
-                            onClick={ () => { order = 'desc'; setAttributes({ order: order }); setContent(); }}
-                            className={order == 'desc' ? 'sorting-button-selected' : ''}
-                            label={__('Sort descending', 'tainacan')}>
-                            <span class="icon">
-                                <i>
-                                    <svg width="24" height="24" viewBox="-2 -4 20 20">
-                                    <path d="M6.7,3.3H4.2v10.8H2.5V3.3H0L3.3,0L6.7,3.3z M11.6,2.5H8.3v1.7h3.3V2.5z M14.1,7.5H8.3v1.7h5.8V7.5z M16.6,12.5H8.3v1.7 h8.3V12.5z"/>
-                                    </svg>
-                                </i>
-                            </span>
-                        </Button>  
-                        <Button
-                            onClick={ () => { setContent(); }}
+                            onClick={ () => {  setContent(); }}
                             label={__('Search', 'tainacan')}>
                             <span class="icon">
                                 <i>
@@ -616,6 +613,7 @@ registerBlockType('tainacan/facets-list', {
             content, 
             blockId,
             collectionId,  
+            collectionSlug,  
             showImage,
             showItemsCount,
             layout,
@@ -623,7 +621,6 @@ registerBlockType('tainacan/facets-list', {
             metadatumId,
             metadatumType,
             maxFacetsNumber,
-            order,
             showSearchBar,
         } = attributes;
         
@@ -632,13 +629,13 @@ registerBlockType('tainacan/facets-list', {
                     metadatum-id={ metadatumId }
                     metadatum-type={ metadatumType }
                     collection-id={ collectionId }  
+                    collection-slug={ collectionSlug }  
                     show-image={ '' + showImage }
                     show-items-count={ '' + showItemsCount }
                     show-search-bar={ '' + showSearchBar }
                     layout={ layout }
                     grid-margin={ gridMargin }
                     max-facets-number={ maxFacetsNumber }
-                    order={ order }
                     tainacan-api-root={ tainacan_plugin.root }
                     tainacan-base-url={ tainacan_plugin.base_url }
                     id={ 'wp-block-tainacan-facets-list_' + blockId }>

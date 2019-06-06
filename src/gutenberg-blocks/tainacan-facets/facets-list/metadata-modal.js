@@ -13,6 +13,7 @@ export default class MetadataModal extends React.Component {
         this.state = {
             collectionsPerPage: 24,
             collectionId: undefined,
+            collectionSlug: undefined,
             isLoadingCollections: false, 
             modalCollections: [],
             totalModalCollections: 0, 
@@ -42,7 +43,8 @@ export default class MetadataModal extends React.Component {
     componentWillMount() {
         
         this.setState({ 
-            collectionId: this.props.existingCollectionId
+            collectionId: this.props.existingCollectionId,
+            collectionSlug: this.props.existingCollectionSlug
         });
         if (this.props.existingCollectionId != null && this.props.existingCollectionId != undefined) {
             this.fetchModalMetadata(this.props.existingCollectionId);
@@ -79,7 +81,8 @@ export default class MetadataModal extends React.Component {
                 for (let collection of response.data) {
                     otherModalCollections.push({ 
                         name: collection.name, 
-                        id: collection.id
+                        id: collection.id,
+                        slug: collection.slug
                     });
                 }
 
@@ -98,12 +101,22 @@ export default class MetadataModal extends React.Component {
 
     selectCollection(selectedCollectionId) {
 
+        let selectedCollection;
+        if (selectedCollectionId == 'default')
+            selectedCollection = { label: __('Repository items', 'tainacan'), value: 'default', slug: 'items' };
+        else {
+            selectedCollection = this.state.modalCollections.find((collection) => collection.id == selectedCollectionId)
+            if (selectedCollection == undefined)
+                selectedCollection = this.state.collections.find((collection) => collection.id == selectedCollectionId)
+        }
+
         this.setState({
-            collectionId: selectedCollectionId        
+            collectionId: selectedCollection.id,
+            collectionSlug: selectedCollection.slug      
         });
 
-        this.props.onSelectCollection(selectedCollectionId);
-        this.fetchModalMetadata(selectedCollectionId);
+        this.props.onSelectCollection(selectedCollection);
+        this.fetchModalMetadata(selectedCollection.id);
     }
 
     fetchCollections(name) {
@@ -126,7 +139,7 @@ export default class MetadataModal extends React.Component {
 
         tainacan.get(endpoint, { cancelToken: aCollectionRequestSource.token })
             .then(response => {
-                let someCollections = response.data.map((collection) => ({ name: collection.name, id: collection.id + '' }));
+                let someCollections = response.data.map((collection) => ({ name: collection.name, id: collection.id + '', slug: collection.slug }));
 
                 this.setState({ 
                     isLoadingCollections: false, 
@@ -305,7 +318,7 @@ export default class MetadataModal extends React.Component {
                                         selected={ this.state.temporaryCollectionId }
                                         options={
                                             this.state.collections.map((collection) => {
-                                                return { label: collection.name, value: '' + collection.id }
+                                                return { label: collection.name, value: '' + collection.id, slug: collection.slug }
                                             })
                                         }
                                         onChange={ ( aCollectionId ) => { 
@@ -332,7 +345,7 @@ export default class MetadataModal extends React.Component {
                                 <RadioControl
                                     className={'repository-radio-option'}
                                     selected={ this.state.temporaryCollectionId }
-                                    options={ [{ label: __('Repository items', 'tainacan'), value: 'default' }] }
+                                    options={ [{ label: __('Repository items', 'tainacan'), value: 'default', slug: 'items' }] }
                                     onChange={ ( aCollectionId ) => { 
                                         this.setState({ temporaryCollectionId: aCollectionId });
                                     } } />
@@ -342,7 +355,7 @@ export default class MetadataModal extends React.Component {
                                     selected={ this.state.temporaryCollectionId }
                                     options={
                                         this.state.modalCollections.map((collection) => {
-                                            return { label: collection.name, value: '' + collection.id }
+                                            return { label: collection.name, value: '' + collection.id, slug: collection.slug }
                                         })
                                     }
                                     onChange={ ( aCollectionId ) => { 
@@ -376,8 +389,8 @@ export default class MetadataModal extends React.Component {
                     </Button>
                     <Button
                         isPrimary
-                        disabled={ this.state.temporaryCollectionId == undefined || this.state.temporaryCollectionId == null || this.state.temporaryCollectionId == ''}
-                        onClick={ () => { this.selectCollection(this.state.temporaryCollectionId);  } }>
+                        disabled={ this.state.temporaryCollectionId == undefined || this.state.temporaryCollectionId == null || this.state.temporaryCollectionId == '' && (this.state.searchCollectionName != '' ? this.state.collections.find((collection) => collection.id == this.state.temporaryCollectionId) : this.state.modalCollections.find((collection) => collection.id == this.state.temporaryCollectionId)) != undefined}
+                        onClick={ () => { this.selectCollection(this.state.temporaryCollectionId) } }>
                         {__('Select metadatum', 'tainacan')}
                     </Button>
                 </div>
