@@ -248,7 +248,7 @@
             }
 
             span.facet-item-count {
-                color: #555758;
+                color: #cbcbcb;
             }
 
             a.facet-without-image img {
@@ -347,7 +347,53 @@
                 display: none;
             }
             span.facet-item-count {
-                color: #555758;
+                color: #cbcbcb;
+            }
+
+            &:hover a { 
+                color: #454647; 
+                text-decoration: none;
+            }
+        }
+    }
+
+    // Cloud View Mode ----------------------------------------------------
+    ul.facets-list.facets-layout-cloud,
+    ul.facets-list-edit.facets-layout-cloud {
+        padding: 0;
+        display: block;
+        list-style-type: none;
+        text-align: center;
+
+        li.facet-list-item {
+            position: relative;
+            display: inline-block;
+            margin: 12px 12px 24px 12px;
+            margin-bottom: 12px;
+
+            a { 
+                color: #454647; 
+                // overflow: hidden;
+                // text-overflow: ellipsis;
+                // white-space: nowrap;
+                display: flex;
+                align-items: center;
+                height: 54px;
+            }
+
+            img {
+                height: auto;
+                width: 54px;
+                min-width: 54px;
+                padding: 0px;
+                margin-right: 20px;
+            }
+
+            a.facet-without-image img {
+                display: none;
+            }
+            span.facet-item-count {
+                color: #cbcbcb;
             }
 
             &:hover a { 

@@ -51,6 +51,10 @@ registerBlockType('tainacan/facets-list', {
             type: String,
             default: 'grid'
         },
+        cloudRate: {
+            type: Number,
+            default: 1
+        },
         isModalOpen: {
             type: Boolean,
             default: false
@@ -116,6 +120,7 @@ registerBlockType('tainacan/facets-list', {
             showImage,
             showItemsCount,
             layout,
+            cloudRate,
             isModalOpen,
             gridMargin,
             metadatumId,
@@ -141,7 +146,8 @@ registerBlockType('tainacan/facets-list', {
                         id={ isNaN(facet.id) ? facet.id : 'facet-id-' + facet.id }
                         href={ facet.url } 
                         target="_blank"
-                        className={ (!showImage ? 'facet-without-image' : '') }>
+                        className={ (!showImage ? 'facet-without-image' : '') }
+                        style={{ fontSize: layout == 'cloud' && facet.total_items ? + 1 + (cloudRate/3)*Math.log(facet.total_items) + 'rem' : ''}}>
                         { (metadatumType == 'Taxonomy' || metadatumType == 'Relationship') ? 
                             <img
                                 src={ 
@@ -277,6 +283,12 @@ registerBlockType('tainacan/facets-list', {
                 title: __( 'List View' ),
                 onClick: () => updateLayout('list'),
                 isActive: layout === 'list',
+            },
+            {
+                icon: 'cloud',
+                title: __( 'Cloud View' ),
+                onClick: () => updateLayout('cloud'),
+                isActive: layout === 'cloud',
             }
         ];
 
@@ -382,6 +394,27 @@ registerBlockType('tainacan/facets-list', {
                                     /> 
                             </div>
                         </PanelBody>
+                        { layout == 'cloud' ? 
+                            <PanelBody
+                                    title={__('Cloud settings', 'tainacan')}
+                                    initialOpen={ true }
+                                >
+                                <div>
+                                    <RangeControl
+                                            label={__('Growth rate for facets according to items count.', 'tainacan')}
+                                            value={ cloudRate }
+                                            onChange={ ( rate ) => {
+                                                cloudRate = rate;
+                                                setAttributes( { cloudRate: rate } ) 
+                                                setContent();
+                                            }}
+                                            min={ 0 }
+                                            max={ 10 }
+                                        />
+                                </div>
+                            </PanelBody>
+                        : null 
+                        }
                     </InspectorControls>
                 </div>
 
