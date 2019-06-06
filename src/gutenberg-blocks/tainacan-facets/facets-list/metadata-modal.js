@@ -20,6 +20,7 @@ export default class MetadataModal extends React.Component {
             temporaryCollectionId: '',
             searchCollectionName: '',
             metadatumId: undefined,  
+            metadatumType: undefined,  
             isLoadingMetadata: false, 
             modalMetadata: [],
             temporaryMetadatumId: '',
@@ -45,7 +46,10 @@ export default class MetadataModal extends React.Component {
         });
         if (this.props.existingCollectionId != null && this.props.existingCollectionId != undefined) {
             this.fetchModalMetadata(this.props.existingCollectionId);
-            this.setState({ metadatumId: this.props.existingMetadatumId ? this.props.existingMetadatumId : undefined });
+            this.setState({ 
+                metadatumId: this.props.existingMetadatumId ? this.props.existingMetadatumId : undefined, 
+                metadatumType: this.props.existingMetadatumType ? this.props.existingMetadatumType : undefined 
+            });
         } else {
             this.setState({ collectionPage: 1 });
             this.fetchModalCollections();
@@ -211,12 +215,15 @@ export default class MetadataModal extends React.Component {
         }
     }
 
-    selectMetadatum(selectedMetadatumId) {
+    selectMetadatum(selectedMetadatum) {
         this.setState({
-            collectionId: selectedMetadatumId
+            metadatumId: selectedMetadatum.id,
+            metadatumType: selectedMetadatum.type
         });
-
-        this.props.onSelectMetadatum(selectedMetadatumId);
+        this.props.onSelectMetadatum({ 
+            metadatumId: selectedMetadatum.id,
+            metadatumType: selectedMetadatum.type
+        });
     }
 
 
@@ -241,7 +248,9 @@ export default class MetadataModal extends React.Component {
                                         })
                                     }
                                     onChange={ ( aMetadatumId ) => { 
-                                        this.setState({ temporaryMetadatumId: aMetadatumId });
+                                        this.setState({ 
+                                            temporaryMetadatumId: aMetadatumId
+                                        });
                                     } } />                          
                             </div>
                             <br/>
@@ -261,7 +270,7 @@ export default class MetadataModal extends React.Component {
                 <Button
                     isPrimary
                     disabled={ this.state.temporaryMetadatumId == undefined || this.state.temporaryMetadatumId == null || this.state.temporaryMetadatumId == ''}
-                    onClick={ () => { this.selectMetadatum(this.state.temporaryMetadatumId);  } }>
+                    onClick={ () => { this.selectMetadatum(this.state.modalMetadata.find((metadatatum) => metadatatum.id == this.state.temporaryMetadatumId));  } }>
                     {__('Finish', 'tainacan')}
                 </Button>
             </div>

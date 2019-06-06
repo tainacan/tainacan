@@ -313,22 +313,6 @@
         width: 100%;
         border: 1px solid #cbcbcb;
         box-shadow: none; }
-  .wp-block-tainacan-facets-list ul.facets-list.facets-list-without-margin,
-  .wp-block-tainacan-facets-list ul.facets-list-edit.facets-list-without-margin {
-    grid-template-columns: repeat(auto-fill, 185px);
-    justify-content: center !important;
-    grid-template-rows: auto !important;
-    list-style: none; }
-    .wp-block-tainacan-facets-list ul.facets-list.facets-list-without-margin li,
-    .wp-block-tainacan-facets-list ul.facets-list-edit.facets-list-without-margin li {
-      margin-top: 0 !important;
-      margin-right: 0 !important;
-      margin-left: 0 !important;
-      height: 185px !important; }
-      .wp-block-tainacan-facets-list ul.facets-list.facets-list-without-margin li img,
-      .wp-block-tainacan-facets-list ul.facets-list-edit.facets-list-without-margin li img {
-        height: 185px !important;
-        margin-bottom: 0px !important; }
   .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid,
   .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid {
     padding: 0;
@@ -357,12 +341,12 @@
         min-width: 185px;
         padding: 0px;
         margin-bottom: 0.5rem; }
-      .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item a.facet-without-title span,
-      .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item a.facet-without-title span {
-        display: none; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item span.facet-item-count,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item span.facet-item-count {
         color: #555758; }
+      .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item a.facet-without-image img,
+      .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item a.facet-without-image img {
+        display: none; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item:hover a,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item:hover a {
         color: #454647;

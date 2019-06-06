@@ -43,10 +43,6 @@ registerBlockType('tainacan/facets-list', {
             type: Boolean,
             default: true
         },
-        showName: {
-            type: Boolean,
-            default: true
-        },
         layout: {
             type: String,
             default: 'grid'
@@ -60,6 +56,10 @@ registerBlockType('tainacan/facets-list', {
             default: 0
         },
         metadatumId: {
+            type: String,
+            default: undefined
+        },
+        metadatumType: {
             type: String,
             default: undefined
         },
@@ -83,14 +83,6 @@ registerBlockType('tainacan/facets-list', {
             type: Boolean,
             value: false
         },
-        showCollectionHeader: {
-            type: Boolean,
-            value: false
-        },
-        showCollectionLabel: {
-            type: Boolean,
-            value: false
-        },
         collection: {
             type: Object,
             value: undefined
@@ -107,14 +99,6 @@ registerBlockType('tainacan/facets-list', {
             type: String,
             default: undefined
         },
-        collectionBackgroundColor: {
-            type: String,
-            default: "#454647"
-        },
-        collectionTextColor: {
-            type: String,
-            default: "#ffffff"
-        }
     },
     supports: {
         align: ['full', 'wide'],
@@ -126,23 +110,17 @@ registerBlockType('tainacan/facets-list', {
             content, 
             collectionId,  
             showImage,
-            showName,
             layout,
             isModalOpen,
             gridMargin,
             metadatumId,
+            metadatumType,
             facetsRequestSource,
             maxFacetsNumber,
             order,
             searchString,
             isLoading,
-            showSearchBar,
-            showCollectionHeader,
-            showCollectionLabel,
-            isLoadingCollection,
-            collection,
-            collectionBackgroundColor,
-            collectionTextColor
+            showSearchBar
         } = attributes;
 
         // Obtains block's client id to render it on save function
@@ -153,25 +131,28 @@ registerBlockType('tainacan/facets-list', {
                 <li 
                     key={ facet.id }
                     className="facet-list-item"
-                    style={{ marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : ''}}>      
+                    style={{ marginBottom: layout == 'grid' ? gridMargin + 'px' : ''}}>      
                     <a 
                         id={ isNaN(facet.id) ? facet.id : 'facet-id-' + facet.id }
                         href={ facet.url } 
                         target="_blank"
-                        className={ (!showName ? 'facet-without-title' : '') + ' ' + (!showImage ? 'facet-without-image' : '') }>
-                        <img
-                            src={ 
-                                facet.thumbnail && facet.thumbnail['tainacan-medium'][0] && facet.thumbnail['tainacan-medium'][0] 
-                                    ?
-                                facet.thumbnail['tainacan-medium'][0] 
-                                    :
-                                (facet.thumbnail && facet.thumbnail['thumbnail'][0] && facet.thumbnail['thumbnail'][0]
-                                    ?    
-                                facet.thumbnail['thumbnail'][0] 
-                                    : 
-                                `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
-                            }
-                            alt={ facet.label ? facet.label : __( 'Thumbnail', 'tainacan' ) }/>
+                        className={ (!showImage ? 'facet-without-image' : '') }>
+                        { (metadatumType == 'Taxonomy' || metadatumType == 'Relationship') ? 
+                            <img
+                                src={ 
+                                    facet.thumbnail && facet.thumbnail['tainacan-medium'][0] && facet.thumbnail['tainacan-medium'][0] 
+                                        ?
+                                    facet.thumbnail['tainacan-medium'][0] 
+                                        :
+                                    (facet.thumbnail && facet.thumbnail['thumbnail'][0] && facet.thumbnail['thumbnail'][0]
+                                        ?    
+                                    facet.thumbnail['thumbnail'][0] 
+                                        : 
+                                    `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
+                                }
+                                alt={ facet.label ? facet.label : __( 'Thumbnail', 'tainacan' ) }/>
+                        : null 
+                        }
                         <span>{ facet.label ? facet.label : '' }</span>
                         { facet.total_items ? <span class="facet-item-count">&nbsp;({ facet.total_items })</span> : null }
                     </a>
@@ -199,11 +180,11 @@ registerBlockType('tainacan/facets-list', {
 
             // Set up max facets to be shown
             if (maxFacetsNumber != undefined && maxFacetsNumber > 0)
-                queryObject.perpage = maxFacetsNumber;
-            else if (queryObject.perpage != undefined && queryObject.perpage > 0)
-                setAttributes({ maxFacetsNumber: queryObject.perpage });
+                queryObject.number = maxFacetsNumber;
+            else if (queryObject.number != undefined && queryObject.number > 0)
+                setAttributes({ maxFacetsNumber: queryObject.number });
             else {
-                queryObject.perpage = 12;
+                queryObject.number = 12;
                 setAttributes({ maxFacetsNumber: 12 });
             }
 
@@ -226,12 +207,6 @@ registerBlockType('tainacan/facets-list', {
                 delete queryObject.search;
                 setAttributes({ searchString: undefined });
             }
-
-            // Remove unecessary queries
-            delete queryObject.readmode;
-            delete queryObject.iframemode;
-            delete queryObject.admin_view_mode;
-            delete queryObject.fetch_only_meta;
             
             endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject);
             
@@ -250,40 +225,6 @@ registerBlockType('tainacan/facets-list', {
                 });
         }
 
-        function fetchCollectionForHeader() {
-            if (showCollectionHeader) {
-
-                isLoadingCollection = true;             
-                setAttributes({
-                    isLoadingCollection: isLoadingCollection
-                });
-
-                tainacan.get('/collections/' + collectionId + '?fetch_only=name,thumbnail,header_image')
-                    .then(response => {
-                        collection = response.data;
-                        isLoadingCollection = false;      
-
-                        if (collection.tainacan_theme_collection_background_color)
-                            collectionBackgroundColor = collection.tainacan_theme_collection_background_color;
-                        else
-                            collectionBackgroundColor = '#454647';
-
-                        if (collection.tainacan_theme_collection_color)
-                            collectionTextColor = collection.tainacan_theme_collection_color;
-                        else
-                            collectionTextColor = '#ffffff';
-
-                        setAttributes({
-                            content: <div></div>,
-                            collection: collection,
-                            isLoadingCollection: isLoadingCollection,
-                            collectionBackgroundColor: collectionBackgroundColor,
-                            collectionTextColor: collectionTextColor
-                        });
-                    });
-            }
-        }
-
         function openMetadataModal() {
             isModalOpen = true;
             setAttributes( { 
@@ -297,13 +238,9 @@ registerBlockType('tainacan/facets-list', {
             if (layout == 'grid' && showImage == false)
                 showImage = true;
 
-            if (layout == 'list' && showName == false)
-                showName = true;
-
             setAttributes({ 
                 layout: layout, 
-                showImage: showImage,
-                showName: showName
+                showImage: showImage
             });
             setContent();
         }
@@ -351,64 +288,6 @@ registerBlockType('tainacan/facets-list', {
                     <InspectorControls>
                         
                         <PanelBody
-                                title={__('Collection header', 'tainacan')}
-                                initialOpen={ false }
-                            >
-                                <ToggleControl
-                                    label={__('Display header', 'tainacan')}
-                                    help={ !showCollectionHeader ? __('Toggle to show collection header', 'tainacan') : __('Do not show collection header', 'tainacan')}
-                                    checked={ showCollectionHeader }
-                                    onChange={ ( isChecked ) => {
-                                            showCollectionHeader = isChecked;
-                                            if (isChecked) fetchCollectionForHeader();
-                                            setAttributes({ showCollectionHeader: showCollectionHeader });
-                                        } 
-                                    }
-                                />
-                                { showCollectionHeader ?
-                                    <div style={{ margin: '6px' }}>
-
-                                        <ToggleControl
-                                            label={__('Display "Collection" label', 'tainacan')}
-                                            help={ !showCollectionLabel ? __('Toggle to show "Collection" label above header', 'tainacan') : __('Do not show "Collection" label', 'tainacan')}
-                                            checked={ showCollectionLabel }
-                                            onChange={ ( isChecked ) => {
-                                                    showCollectionLabel = isChecked;
-                                                    setAttributes({ showCollectionLabel: showCollectionLabel });
-                                                } 
-                                            }
-                                        />
-
-                                        <BaseControl
-                                            id="colorpicker"
-                                            label={ __('Background color', 'tainacan')}>
-                                            <ColorPicker
-                                                color={ collectionBackgroundColor }
-                                                onChangeComplete={ ( value ) => {
-                                                    collectionBackgroundColor = value.hex;
-                                                    setAttributes({ collectionBackgroundColor: collectionBackgroundColor }) 
-                                                }}
-                                                disableAlpha
-                                                />
-                                        </BaseControl>
-
-                                        <BaseControl
-                                            id="colorpallete"
-                                            label={ __('Collection name color', 'tainacan')}>
-                                            <ColorPalette 
-                                                colors={ [{ name: __('Black', 'tainacan'), color: '#000000'}, { name: __('White', 'tainacan'), color: '#ffffff'} ] } 
-                                                value={ collectionTextColor }
-                                                onChange={ ( color ) => {
-                                                    collectionTextColor = color;
-                                                    setAttributes({ collectionTextColor: collectionTextColor }) 
-                                                }} 
-                                            />
-                                        </BaseControl>
-                                    </div>
-                                : null
-                                }
-                        </PanelBody> 
-                        <PanelBody
                                 title={__('Search bar', 'tainacan')}
                                 initialOpen={ true }
                             >
@@ -442,7 +321,7 @@ registerBlockType('tainacan/facets-list', {
                             </div>
                             <hr></hr>
                             <div>
-                                { layout == 'list' ? 
+                                { layout == 'list' && (metadatumType == 'Taxonomy' || metadatumType == 'Relationship') ? 
                                     <ToggleControl
                                         label={__('Image', 'tainacan')}
                                         help={ showImage ? __("Toggle to show facet's image", 'tainacan') : __("Do not show facet's image", 'tainacan')}
@@ -457,17 +336,19 @@ registerBlockType('tainacan/facets-list', {
                                 : null }
                                 { layout == 'grid' ?
                                     <div>
-                                        <ToggleControl
-                                            label={__("Facet's title", 'tainacan')}
-                                            help={ showName ? __("Toggle to show facet's title", 'tainacan') : __("Do not show facet's title", 'tainacan')}
-                                            checked={ showName }
-                                            onChange={ ( isChecked ) => {
-                                                    showName = isChecked;
-                                                    setAttributes({ showName: showName });
-                                                    setContent();
-                                                } 
-                                            }
-                                        />
+                                        { (metadatumType == 'Taxonomy' || metadatumType == 'Relationship') ? 
+                                            <ToggleControl
+                                                label={__('Image', 'tainacan')}
+                                                help={ showImage ? __("Toggle to show facet's image", 'tainacan') : __("Do not show facet's image", 'tainacan')}
+                                                checked={ showImage }
+                                                onChange={ ( isChecked ) => {
+                                                        showImage = isChecked;
+                                                        setAttributes({ showImage: showImage });
+                                                        setContent();
+                                                    } 
+                                                }
+                                            /> : null
+                                        }
                                         <div style={{ marginTop: '16px'}}>
                                             <RangeControl
                                                 label={__('Margin between facets in pixels', 'tainacan')}
@@ -495,15 +376,17 @@ registerBlockType('tainacan/facets-list', {
                             <MetadataModal
                                 existingCollectionId={ collectionId } 
                                 existingMetadatumId={ metadatumId } 
+                                existingMetadatumType={ metadatumType } 
                                 onSelectCollection={ (selectedCollectionId) => {
                                     collectionId = selectedCollectionId;
                                     setAttributes({ collectionId: collectionId });
-                                    fetchCollectionForHeader();
                                 }}
-                                onSelectMetadatum={ (selectedFacetId) =>{
-                                    metadatumId = selectedFacetId;
+                                onSelectMetadatum={ (selectedFacet) =>{
+                                    metadatumId = selectedFacet.metadatumId;
+                                    metadatumType = selectedFacet.metadatumType;
                                     setAttributes({
                                         metadatumId: metadatumId,
+                                        metadatumType: metadatumType,
                                         isModalOpen: false
                                     });
                                     setContent();
@@ -537,57 +420,6 @@ registerBlockType('tainacan/facets-list', {
                         }
                     </div>
                     ) : null
-                }
-
-                {
-                    showCollectionHeader ?
-                
-                    <div> {
-                        isLoadingCollection ? 
-                            <div class="spinner-container">
-                                <Spinner />
-                            </div>
-                            :
-                            <a
-                                    href={ collection.url ? collection.url : '' }
-                                    target="_blank"
-                                    class="facets-collection-header">
-                                <div
-                                        style={{
-                                            backgroundColor: collectionBackgroundColor ? collectionBackgroundColor : '', 
-                                            paddingRight: collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium']) ? '' : '20px',
-                                            paddingTop: (!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) ? '1rem' : '',
-                                            width: collection && collection.header_image ? '' : '100%'
-                                        }}
-                                        className={ 
-                                            'collection-name ' + 
-                                            ((!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) && (!collection || !collection.header_image) ? 'only-collection-name' : '') 
-                                        }>
-                                    <h3 style={{  color: collectionTextColor ? collectionTextColor : '' }}>
-                                        { showCollectionLabel ? <span class="label">{ __('Collection', 'tainacan') }<br/></span> : null }
-                                        { collection && collection.name ? collection.name : '' }
-                                    </h3>
-                                </div>
-                                {
-                                    collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium']) ? 
-                                        <div   
-                                            class="collection-thumbnail"
-                                            style={{ 
-                                                backgroundImage: 'url(' + (collection.thumbnail['tainacan-medium'] != undefined ? (collection.thumbnail['tainacan-medium'][0]) : (collection.thumbnail['medium'][0])) + ')',
-                                            }}/>
-                                    : null
-                                }  
-                                <div
-                                        class="collection-header-image"
-                                        style={{
-                                            backgroundImage: collection.header_image ? 'url(' + collection.header_image + ')' : '',
-                                            minHeight: collection && collection.header_image ? '' : '80px',
-                                            display: !(collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium'])) ? collection && collection.header_image ? '' : 'none' : ''  
-                                        }}/>
-                            </a>  
-                        }
-                    </div>
-                    : null
                 }
 
                 {
@@ -719,10 +551,10 @@ registerBlockType('tainacan/facets-list', {
                     <div>
                         <ul 
                             style={{ 
-                                gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' +  (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit', 
-                                marginTop: showSearchBar || showCollectionHeader ? '1.5rem' : '0px'
+                                gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' +  (gridMargin + 185) + 'px)' : 'inherit', 
+                                marginTop: showSearchBar ? '1.5rem' : '0px'
                             }}
-                            className={'facets-list-edit facets-layout-' + layout + (!showName ? ' facets-list-without-margin' : '')}>
+                            className={'facets-list-edit facets-layout-' + layout }>
                             { facets }
                         </ul>
                     </div>
@@ -736,31 +568,23 @@ registerBlockType('tainacan/facets-list', {
             blockId,
             collectionId,  
             showImage,
-            showName,
             layout,
             gridMargin,
             metadatumId,
+            metadatumType,
             maxFacetsNumber,
             order,
             showSearchBar,
-            showCollectionHeader,
-            showCollectionLabel,
-            collectionBackgroundColor,
-            collectionTextColor
         } = attributes;
         
         return <div 
                     className={ className }
                     metadatum-id={ metadatumId }
+                    metadatum-type={ metadatumType }
                     collection-id={ collectionId }  
                     show-image={ '' + showImage }
-                    show-name={ '' + showName }
                     show-search-bar={ '' + showSearchBar }
-                    show-collection-header={ '' + showCollectionHeader }
-                    show-collection-label={ '' + showCollectionLabel }
                     layout={ layout }
-                    collection-background-color={ collectionBackgroundColor }
-                    collection-text-color={ collectionTextColor }
                     grid-margin={ gridMargin }
                     max-facets-number={ maxFacetsNumber }
                     order={ order }

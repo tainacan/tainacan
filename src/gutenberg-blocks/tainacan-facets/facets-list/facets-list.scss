@@ -216,25 +216,6 @@
     }
 
     // Grid View Mode ----------------------------------------------------
-    ul.facets-list.facets-list-without-margin,
-    ul.facets-list-edit.facets-list-without-margin {
-        grid-template-columns: repeat(auto-fill, 185px);
-        justify-content: center !important;
-        grid-template-rows: auto !important;
-        list-style: none;
-
-        li {
-            margin-top: 0 !important;
-            margin-right: 0 !important;
-            margin-left: 0 !important;
-            height: 185px !important;
-
-            img { 
-                height: 185px !important;
-                margin-bottom: 0px !important;
-            }
-        }
-    }
     ul.facets-list.facets-layout-grid,
     ul.facets-list-edit.facets-layout-grid {
         padding: 0;
@@ -266,11 +247,12 @@
                 margin-bottom: 0.5rem;
             }
 
-            a.facet-without-title span {
-                display: none;
-            }
             span.facet-item-count {
                 color: #555758;
+            }
+
+            a.facet-without-image img {
+                display: none;
             }
 
             &:hover a { 
