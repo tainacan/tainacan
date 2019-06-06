@@ -158,8 +158,13 @@ class TestUtilities extends TAINACAN_UnitTestCase {
 													' <a href="www.simple.com.br" target="_blank" title="www.simple.com.br">www.simple.com.br</a> ' . 
 													' <a href="www.simple.com" target="_blank" title="www.simple.com">www.simple.com</a> ' .
 													' <a href="www.simple.org" target="_blank" title="www.simple.org">www.simple.org</a> ' .
-													' Pellentesque id //ww.lair.com.br of a http://wwwliar.com.br euismod mauris. //pegadinha.com.br ';
+													' Pellentesque id //ww.lair.com.br of a <a href="http://wwwliar.com.br" target="_blank" title="http://wwwliar.com.br">http://wwwliar.com.br</a> euismod mauris. //pegadinha.com.br ';
 
+		$text_multiple_links_response = $text->make_clickable_links($text_multiple_links);
+		$this->assertEquals($text_multiple_links_expected, $text_multiple_links_response);
+
+		$text_multiple_links = 'Lorem https://tainacan.org hahahahahahhttps://tainacan.org hahaha ';
+		$text_multiple_links_expected = 'Lorem <a href="https://tainacan.org" target="_blank" title="https://tainacan.org">https://tainacan.org</a> hahahahahah<a href="https://tainacan.org" target="_blank" title="https://tainacan.org">https://tainacan.org</a> hahaha ';
 		$text_multiple_links_response = $text->make_clickable_links($text_multiple_links);
 		$this->assertEquals($text_multiple_links_expected, $text_multiple_links_response);
 
