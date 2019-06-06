@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, ColorPicker, ColorPalette, BaseControl, Panel, PanelBody, PanelRow } = wp.components;
+const { RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -40,6 +40,10 @@ registerBlockType('tainacan/facets-list', {
             default: []
         },
         showImage: {
+            type: Boolean,
+            default: true
+        },
+        showItemsCount: {
             type: Boolean,
             default: true
         },
@@ -110,6 +114,7 @@ registerBlockType('tainacan/facets-list', {
             content, 
             collectionId,  
             showImage,
+            showItemsCount,
             layout,
             isModalOpen,
             gridMargin,
@@ -154,7 +159,7 @@ registerBlockType('tainacan/facets-list', {
                         : null 
                         }
                         <span>{ facet.label ? facet.label : '' }</span>
-                        { facet.total_items ? <span class="facet-item-count">&nbsp;({ facet.total_items })</span> : null }
+                        { facet.total_items ? <span class="facet-item-count" style={{ display: !showItemsCount ? 'none' : '' }}>&nbsp;({ facet.total_items })</span> : null }
                     </a>
                 </li>
             );
@@ -364,6 +369,17 @@ registerBlockType('tainacan/facets-list', {
                                         </div>
                                     </div>
                                 : null }
+                                <ToggleControl
+                                        label={__('Items count', 'tainacan')}
+                                        help={ showItemsCount ? __("Toggle to show items counter", 'tainacan') : __("Do not show items counter", 'tainacan')}
+                                        checked={ showItemsCount }
+                                        onChange={ ( isChecked ) => {
+                                                showItemsCount = isChecked;
+                                                setAttributes({ showItemsCount: showItemsCount });
+                                                setContent();
+                                            } 
+                                        }
+                                    /> 
                             </div>
                         </PanelBody>
                     </InspectorControls>
@@ -514,7 +530,7 @@ registerBlockType('tainacan/facets-list', {
                 : null
                 }
 
-                { !facets.length && !isLoading ? (
+                { !facets.length && !isLoading && !(searchString != undefined && searchString != '') ? (
                     <Placeholder
                         icon={(
                             <img
@@ -568,6 +584,7 @@ registerBlockType('tainacan/facets-list', {
             blockId,
             collectionId,  
             showImage,
+            showItemsCount,
             layout,
             gridMargin,
             metadatumId,
@@ -583,6 +600,7 @@ registerBlockType('tainacan/facets-list', {
                     metadatum-type={ metadatumType }
                     collection-id={ collectionId }  
                     show-image={ '' + showImage }
+                    show-items-count={ '' + showItemsCount }
                     show-search-bar={ '' + showSearchBar }
                     layout={ layout }
                     grid-margin={ gridMargin }
