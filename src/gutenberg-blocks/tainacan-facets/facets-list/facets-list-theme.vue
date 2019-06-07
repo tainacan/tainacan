@@ -93,8 +93,8 @@
                 </li>
             </ul>
             <button
-                    v-if="showLoadMore && facets.length < totalFacets"
-                    @click="offset++; fetchFacets();"
+                    v-if="showLoadMore && (facets.length < totalFacets || lastTerm != undefined)"
+                    @click="loadMore()"
                     class="show-more-button"
                     :label="$root.__('Show more', 'tainacan')">
                 <span class="icon">
@@ -139,7 +139,8 @@ export default {
             localOrder: undefined,
             tainacanAxios: undefined,
             offset: undefined,
-            totalFacets: 0
+            totalFacets: 0,
+            lastTerm: undefined
         }
     },
     props: {
@@ -168,9 +169,14 @@ export default {
             if (this.searchString != value) {
                 this.searchString = value;
                 this.offset = 0;
+                this.lastTerm = undefined;
                 this.fetchFacets();
             }
         }, 500),
+        loadMore() {
+            this.offset++;
+            this.fetchFacets();
+        },
         fetchFacets() {
 
             if (this.offset == 0)
@@ -209,6 +215,9 @@ export default {
 
             // Set up paging
             queryObject.offset = this.offset;
+            if (this.lastTerm != undefined)
+                queryObject.last_term = this.lastTerm;
+
             endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject);
             
             this.tainacanAxios.get(endpoint, { cancelToken: this.facetsRequestSource.token })
@@ -222,6 +231,7 @@ export default {
 
                     this.isLoading = false;
                     this.totalFacets = response.headers['x-wp-total'];
+                    this.lastTerm = response.data.last_term;
 
                 }).catch(() => { 
                     this.isLoading = false;
