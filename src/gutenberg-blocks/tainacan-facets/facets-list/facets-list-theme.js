@@ -7,62 +7,59 @@ document.addEventListener("DOMContentLoaded", () => {
     // Configure Vue logic before passing it to constructor:
     let vueOptions = {
         data: {
-            collectionId: '',  
+            metadatumId: '',
+            metadatumType: '', 
+            collectionId: '',
+            collectionSlug: '',  
             showImage: true,
-            showName: true,
-            layout: 'grid',
-            gridMargin: 0,
-            searchURL: '',
-            maxFacetsNumber: 12,
-            order: 'asc',
+            showItemsCount: true,
             showSearchBar: false,
-            showCollectionHeader: false,
-            showCollectionLabel: false,
-            collectionBackgroundColor: '#454647',
-            collectionTextColor: '#ffffff',
+            layout: 'grid',
+            cloudRate: 1,
+            gridMargin: 0,
+            maxFacetsNumber: 12,
             tainacanApiRoot: '',
             tainacanBaseUrl: '',
+            tainacanSiteUrl: '',
             className: ''
         },
         render(h){ 
             return h(FacetsListTheme, {
                 props: {
-                    collectionId: this.collectionId,  
+                    metadatumId: this.metadatumId,
+                    metadatumType: this.metadatumType, 
+                    collectionId: this.collectionId,
+                    collectionSlug: this.collectionSlug,  
                     showImage: this.showImage,
-                    showName: this.showName,
-                    layout: this.layout,
-                    gridMargin: this.gridMargin,
-                    searchURL: this.searchURL,
-                    maxFacetsNumber: this.maxFacetsNumber,
-                    order: this.order,
+                    showItemsCount: this.showItemsCount,
                     showSearchBar: this.showSearchBar,
-                    showCollectionHeader: this.showCollectionHeader,
-                    showCollectionLabel: this.showCollectionLabel,
-                    collectionBackgroundColor: this.collectionBackgroundColor,
-                    collectionTextColor: this.collectionTextColor,
+                    layout: this.layout,
+                    cloudRate: this.cloudRate,
+                    gridMargin: this.gridMargin,
+                    maxFacetsNumber: this.maxFacetsNumber,
                     tainacanApiRoot: this.tainacanApiRoot,
                     tainacanBaseUrl: this.tainacanBaseUrl,
+                    tainacanSiteUrl: this.tainacanSiteUrl,
                     className: this.className    
                 }
             });
         },
         beforeMount () {
-            this.className = this.$el.attributes.class != undefined ? this.$el.attributes.class.value : undefined;
-            this.searchURL = this.$el.attributes['search-url'] != undefined ? this.$el.attributes['search-url'].value : undefined;
+            this.metadatumId = this.$el.attributes['metadatum-id'] != undefined ? this.$el.attributes['metadatum-id'].value : undefined;
+            this.metadatumType = this.$el.attributes['metadatum-type'] != undefined ? this.$el.attributes['metadatum-type'].value : undefined;
             this.collectionId = this.$el.attributes['collection-id'] != undefined ? this.$el.attributes['collection-id'].value : undefined;
+            this.collectionSlug = this.$el.attributes['collection-slug'] != undefined ? this.$el.attributes['collection-slug'].value : undefined;
             this.showImage = this.$el.attributes['show-image'] != undefined ? this.$el.attributes['show-image'].value == 'true' : true;
-            this.showName = this.$el.attributes['show-name'] != undefined ? this.$el.attributes['show-name'].value == 'true' : true;
+            this.showItemsCount = this.$el.attributes['show-items-count'] != undefined ? this.$el.attributes['show-items-count'].value == 'true' : true;
+            this.showSearchBar = this.$el.attributes['show-search-bar'] != undefined ? this.$el.attributes['show-search-bar'].value == 'true' : false;
             this.layout = this.$el.attributes['layout'] != undefined ? this.$el.attributes['layout'].value : undefined;
+            this.cloudRate = this.$el.attributes['cloud-rate'] != undefined ? Number(this.$el.attributes['cloud-rate'].value) : undefined;
             this.gridMargin = this.$el.attributes['grid-margin'] != undefined ? Number(this.$el.attributes['grid-margin'].value) : undefined;
             this.maxFacetsNumber = this.$el.attributes['max-facets-number'] != undefined ? this.$el.attributes['max-facets-number'].value : undefined;
-            this.order = this.$el.attributes['order'] != undefined ? this.$el.attributes['order'].value : undefined;
-            this.showSearchBar = this.$el.attributes['show-search-bar'] != undefined ? this.$el.attributes['show-search-bar'].value == 'true' : false;
-            this.showCollectionHeader = this.$el.attributes['show-collection-header'] != undefined ? this.$el.attributes['show-collection-header'].value == 'true' : false;
-            this.showCollectionLabel = this.$el.attributes['show-collection-label'] != undefined ? this.$el.attributes['show-collection-label'].value == 'true' : false;
-            this.collectionBackgroundColor = this.$el.attributes['collection-background-color'] != undefined ? this.$el.attributes['collection-background-color'].value : undefined;
-            this.collectionTextColor = this.$el.attributes['collection-text-color'] != undefined ? this.$el.attributes['collection-text-color'].value : undefined;
             this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
             this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
+            this.tainacanSiteUrl = this.$el.attributes['tainacan-site-url'] != undefined ? this.$el.attributes['tainacan-site-url'].value : undefined;
+            this.className = this.$el.attributes.class != undefined ? this.$el.attributes.class.value : undefined;
         },
         methods: {
             __(text, domain) {
@@ -70,7 +67,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     };
-
     // Gets all divs with content created by our block;
     let blocks = document.getElementsByClassName('wp-block-tainacan-facets-list');
     

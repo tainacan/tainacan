@@ -1,85 +1,8 @@
 <template>
     <div :class="className">
-        <div v-if="showCollectionHeader">
-            <div
-                    v-if="isLoadingCollection"
-                    class="facets-collection-header skeleton" 
-                    :style="{ height: '165px' }"/>
-            <a
-                    v-else
-                    target="_blank"
-                    :href="collection.url ? collection.url : ''"
-                    class="facets-collection-header">
-                <div
-                        :style="{
-                            backgroundColor: collectionBackgroundColor ? collectionBackgroundColor : '', 
-                            paddingRight: collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium']) ? '' : '20px',
-                            paddingTop: (!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) ? '1rem' : '',
-                            width: collection && collection.header_image ? '' : '100%'
-                        }"
-                        :class="
-                            'collection-name ' + 
-                            ((!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) && (!collection || !collection.header_image) ? 'only-collection-name' : '') 
-                        ">
-                    <h3 :style="{ color: collectionTextColor ? collectionTextColor : '' }">
-                        <span
-                                v-if="showCollectionLabel"
-                                class="label">
-                            {{ $root.__('Collection', 'tainacan') }}
-                            <br>
-                        </span>
-                        {{ collection && collection.name ? collection.name : '' }}
-                    </h3>
-                </div>
-                <div
-                    v-if="collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium'])"   
-                    class="collection-thumbnail"
-                    :style="{ 
-                        backgroundImage: 'url(' + (collection.thumbnail['tainacan-medium'] != undefined ? (collection.thumbnail['tainacan-medium'][0]) : (collection.thumbnail['medium'][0])) + ')',
-                    }"/>
-                <div
-                        class="collection-header-image"
-                        :style="{
-                            backgroundImage: collection.header_image ? 'url(' + collection.header_image + ')' : '',
-                            minHeight: collection && collection.header_image ? '' : '80px',
-                            display: !(collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium'])) ? collection && collection.header_image ? '' : 'none' : ''  
-                        }"/>
-            </a>   
-        </div>
         <div
                 v-if="showSearchBar"
-                class="facets-search-bar">
-            <button
-                    @click="localOrder = 'asc'; fetchFacets()"
-                    :class="localOrder == 'asc' ? 'sorting-button-selected' : ''"
-                    :label="$root.__('Sort ascending', 'tainacan')">
-                <span class="icon">
-                    <i>
-                        <svg
-                                width="24"
-                                height="24"
-                                viewBox="-2 -2 20 20">
-                            <path d="M6.7,10.8l-3.3,3.3L0,10.8h2.5V0h1.7v10.8H6.7z M11.7,0.8H8.3v1.7h3.3V0.8z M14.2,5.8H8.3v1.7h5.8V5.8z M16.7,10.8H8.3v1.7	h8.3V10.8z"/>       
-                        </svg>
-                    </i>
-                </span>
-            </button>  
-            <button
-                    @click="localOrder = 'desc'; fetchFacets(); "
-                    :class="localOrder == 'desc' ? 'sorting-button-selected' : ''"
-                    :label="$root.__('Sort descending', 'tainacan')">
-                <span class="icon">
-                    <i>
-                        <svg
-                                width="24"
-                                height="24"
-                                viewBox="-2 -2 20 20">
-                            <path
-                                    d="M6.7,3.3H4.2v10.8H2.5V3.3H0L3.3,0L6.7,3.3z M11.6,2.5H8.3v1.7h3.3V2.5z M14.1,7.5H8.3v1.7h5.8V7.5z M16.6,12.5H8.3v1.7 h8.3V12.5z"/>
-                        </svg>
-                    </i>
-                </span>
-            </button>  
+                class="facets-search-bar"> 
             <button
                     @click="fetchFacets()"
                     :label="$root.__('Search', 'tainacan')"
@@ -150,8 +73,8 @@
         <ul
                 v-if="isLoading"
                 :style="{
-                    gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit', 
-                    marginTop: showSearchBar || showCollectionHeader ? '1.34rem' : '0px'
+                    gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + 185) + 'px)' : 'inherit', 
+                    marginTop: showSearchBar ? '1.5rem' : '0px'
                 }"
                 class="facets-list"
                 :class="'facets-layout-' + layout + (!showName ? ' facets-list-without-margin' : '')">
@@ -168,22 +91,24 @@
             <ul 
                     v-if="facets.length > 0"
                     :style="{
-                        gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit', 
-                        marginTop: showSearchBar || showCollectionHeader ? '1.35rem' : '0px'
+                        gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + 185) + 'px)' : 'inherit', 
+                        marginTop: showSearchBar ? '1.5rem' : '0px'
                     }"
                     class="facets-list"
-                    :class="'facets-layout-' + layout + (!showName ? ' facets-list-without-margin' : '')">
+                    :class="'facets-layout-' + layout">
                 <li
                         :key="index"
                         v-for="(facet, index) of facets"
                         class="facet-list-item"
-                        :style="{ marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : ''}">      
+                        :style="{ marginBottom: layout == 'grid' ? gridMargin + 'px' : ''}">      
                     <a 
                             :id="isNaN(facet.id) ? facet.id : 'facet-id-' + facet.id"
                             :href="facet.url"
                             target="_blank"
-                            :class="(!showName ? 'facet-without-title' : '') + ' ' + (!showImage ? 'facet-without-image' : '')">
+                            :class="(!showImage ? 'facet-without-image' : '')"
+                            :style="{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'rem' : ''}">
                         <img
+                            v-if="(metadatumType == 'Taxonomy' || metadatumType == 'Relationship')"
                             :src=" 
                                 facet.thumbnail && facet.thumbnail['tainacan-medium'][0] && facet.thumbnail['tainacan-medium'][0] 
                                     ?
@@ -196,7 +121,13 @@
                                 `${tainacanBaseUrl}/admin/images/placeholder_square.png`)
                             "
                             :alt="facet.title ? facet.title : $root.__('Thumbnail', 'tainacan')">
-                        <span>{{ facet.title ? facet.title : '' }}</span>
+                        <span>{{ facet.label ? facet.label : '' }}</span>
+                        <span 
+                                v-if="facet.total_items"
+                                class="facet-item-count"
+                                :style="{ display: !showItemsCount ? 'none' : '' }">
+                            &nbsp;({{ facet.total_items }})
+                        </span>
                     </a>
                 </li>
             </ul>
@@ -232,21 +163,20 @@ export default {
         }
     },
     props: {
+        metadatumId: String,  
+        metadatumType: String,  
         collectionId: String,  
+        collectionSlug: String,  
         showImage: Boolean,
-        showName: Boolean,
-        layout: String,
-        gridMargin: Number,
-        searchURL: String,
-        maxFacetsNumber: Number,
-        order: String,
+        showItemsCount: Boolean,
         showSearchBar: Boolean,
-        showCollectionHeader: Boolean,
-        showCollectionLabel: Boolean,
-        collectionBackgroundColor: String,
-        collectionTextColor: String,
+        layout: String,
+        cloudRate: Number,
+        gridMargin: Number,
+        maxFacetsNumber: Number,
         tainacanApiRoot: String,
         tainacanBaseUrl: String,
+        tainacanSiteUrl: String,
         className: String
     },
     methods: {
@@ -270,31 +200,21 @@ export default {
 
             this.facetsRequestSource = axios.CancelToken.source();
 
-            let endpoint = '/collection' + this.searchURL.split('#')[1].split('/collections')[1];
+            let endpoint = this.collectionId != 'default' ? '/collection/' + this.collectionId + '/facets/' + this.metadatumId : '/facets/' + this.metadatumId;
             let query = endpoint.split('?')[1];
             let queryObject = qs.parse(query);
 
             // Set up max facets to be shown
             if (this.maxFacetsNumber != undefined && Number(this.maxFacetsNumber) > 0)
-                queryObject.perpage = this.maxFacetsNumber;
-            else if (queryObject.perpage != undefined && queryObject.perpage > 0)
-                this.localMaxFacetsNumber = queryObject.perpage;
+                queryObject.number = this.maxFacetsNumber;
+            else if (queryObject.number != undefined && queryObject.number > 0)
+                this.localMaxFacetsNumber = queryObject.number;
             else {
-                queryObject.perpage = 12;
+                queryObject.number = 12;
                 this.localMaxFacetsNumber = 12;
             }
 
-            // Set up sorting order
-            if (this.localOrder != undefined)
-                queryObject.order = this.localOrder;
-            else if (queryObject.order != undefined)
-                this.localOrder = queryObject.order;
-            else {
-                queryObject.order = 'asc';
-                this.localOrder = 'asc';
-            }
-
-            // Set up sorting order
+            // Set up searching string
             if (this.searchString != undefined)
                 queryObject.search = this.searchString;
             else if (queryObject.search != undefined)
@@ -311,20 +231,18 @@ export default {
                 this.paged = queryObject.paged;
             else
                 this.paged = 1;
-
-            // Remove unecessary queries
-            delete queryObject.readmode;
-            delete queryObject.iframemode;
-            delete queryObject.admin_view_mode;
-            delete queryObject.fetch_only_meta;
             
-            endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
+            endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject);
             
             this.tainacanAxios.get(endpoint, { cancelToken: this.facetsRequestSource.token })
                 .then(response => {
-
-                    for (let facet of response.data.facets)
-                        this.facets.push(facet);
+                    console.log(this.tainacanSiteUrl)
+                    console.log(this.collectionSlug)
+                    for (let facet of response.data.values) {
+                        this.facets.push(Object.assign({ 
+                            url: this.tainacanSiteUrl + '/' + this.collectionSlug + '/#/?metaquery[0][key]=' + this.metadatumId + '&metaquery[0][value]=' + facet.value
+                        }, facet));
+                    }
 
                     this.isLoading = false;
                     this.totalFacets = response.headers['x-wp-total'];
@@ -333,26 +251,10 @@ export default {
                     this.isLoading = false;
                     // console.log(error);
                 });
-        },
-        fetchCollectionForHeader() {
-            if (this.showCollectionHeader) {
-
-                this.isLoadingCollection = true;             
-
-                this.tainacanAxios.get('/collections/' + this.collectionId + '?fetch_only=name,thumbnail,header_image')
-                    .then(response => {
-                        this.collection = response.data;
-                        this.isLoadingCollection = false;      
-                    });
-            }
         }
     },
     created() {
         this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
-        this.localOrder = this.order;
-  
-        if (this.showCollectionHeader)
-            this.fetchCollectionForHeader();
 
         this.fetchFacets();
     },

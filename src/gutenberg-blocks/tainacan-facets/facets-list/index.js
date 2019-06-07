@@ -620,6 +620,7 @@ registerBlockType('tainacan/facets-list', {
             showImage,
             showItemsCount,
             layout,
+            cloudRate,
             gridMargin,
             metadatumId,
             metadatumType,
@@ -637,10 +638,12 @@ registerBlockType('tainacan/facets-list', {
                     show-items-count={ '' + showItemsCount }
                     show-search-bar={ '' + showSearchBar }
                     layout={ layout }
+                    cloud-rate={ cloudRate }
                     grid-margin={ gridMargin }
                     max-facets-number={ maxFacetsNumber }
                     tainacan-api-root={ tainacan_plugin.root }
                     tainacan-base-url={ tainacan_plugin.base_url }
+                    tainacan-site-url={ tainacan_plugin.site_url }
                     id={ 'wp-block-tainacan-facets-list_' + blockId }>
                         { content }
                 </div>
