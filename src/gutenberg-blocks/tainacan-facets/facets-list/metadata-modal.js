@@ -103,7 +103,7 @@ export default class MetadataModal extends React.Component {
 
         let selectedCollection;
         if (selectedCollectionId == 'default')
-            selectedCollection = { label: __('Repository items', 'tainacan'), value: 'default', slug: 'items' };
+            selectedCollection = { label: __('Repository items', 'tainacan'), id: 'default', slug: tainacan_plugin.theme_items_list_url.split('/')[tainacan_plugin.theme_items_list_url.split('/').length - 1] };
         else {
             selectedCollection = this.state.modalCollections.find((collection) => collection.id == selectedCollectionId)
             if (selectedCollection == undefined)
@@ -345,7 +345,7 @@ export default class MetadataModal extends React.Component {
                                 <RadioControl
                                     className={'repository-radio-option'}
                                     selected={ this.state.temporaryCollectionId }
-                                    options={ [{ label: __('Repository items', 'tainacan'), value: 'default', slug: 'items' }] }
+                                    options={ [{ label: __('Repository items', 'tainacan'), value: 'default', slug: tainacan_plugin.theme_items_list_url.split('/')[tainacan_plugin.theme_items_list_url.split('/').length - 1] }] }
                                     onChange={ ( aCollectionId ) => { 
                                         this.setState({ temporaryCollectionId: aCollectionId });
                                     } } />

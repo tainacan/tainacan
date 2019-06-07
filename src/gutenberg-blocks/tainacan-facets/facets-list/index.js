@@ -189,7 +189,7 @@ registerBlockType('tainacan/facets-list', {
             setAttributes({
                 isLoading: isLoading
             });
-
+            
             let endpoint = collectionId != 'default' ? '/collection/' + collectionId + '/facets/' + metadatumId : '/facets/' + metadatumId;
             let query = endpoint.split('?')[1];
             let queryObject = qs.parse(query);
@@ -448,8 +448,11 @@ registerBlockType('tainacan/facets-list', {
                                 onSelectCollection={ (selectedCollection) => {
                                     collectionId = selectedCollection.id;
                                     collectionSlug = selectedCollection.slug;
-                                    setAttributes({ collectionSlug: collectionSlug });
-                                    setAttributes({ collectionId: collectionId });
+
+                                    setAttributes({ 
+                                        collectionSlug: collectionSlug,
+                                        collectionId: collectionId 
+                                    });
                                 }}
                                 onSelectMetadatum={ (selectedFacet) =>{
                                     metadatumId = selectedFacet.metadatumId;

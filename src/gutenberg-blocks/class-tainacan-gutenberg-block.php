@@ -174,7 +174,8 @@ function tainacan_blocks_get_plugin_js_settings(){
 		'nonce'   	=> wp_create_nonce( 'wp_rest' ),
 		'base_url' 	=> $TAINACAN_BASE_URL,
 		'admin_url' => admin_url(),
-		'site_url'	=> site_url()
+		'site_url'	=> site_url(),
+		'theme_items_list_url' => esc_url_raw( get_site_url() ) . '/' . \Tainacan\Theme_Helper::get_instance()->get_items_list_slug(),
 	];
 
 	return $settings;
