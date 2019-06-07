@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
             showImage: true,
             showItemsCount: true,
             showSearchBar: false,
+            showLoadMore: false,
             layout: 'grid',
             cloudRate: 1,
             gridMargin: 0,
@@ -33,6 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     showImage: this.showImage,
                     showItemsCount: this.showItemsCount,
                     showSearchBar: this.showSearchBar,
+                    showLoadMore: this.showLoadMore,
                     layout: this.layout,
                     cloudRate: this.cloudRate,
                     gridMargin: this.gridMargin,
@@ -52,6 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
             this.showImage = this.$el.attributes['show-image'] != undefined ? this.$el.attributes['show-image'].value == 'true' : true;
             this.showItemsCount = this.$el.attributes['show-items-count'] != undefined ? this.$el.attributes['show-items-count'].value == 'true' : true;
             this.showSearchBar = this.$el.attributes['show-search-bar'] != undefined ? this.$el.attributes['show-search-bar'].value == 'true' : false;
+            this.showLoadMore = this.$el.attributes['show-load-more'] != undefined ? this.$el.attributes['show-load-more'].value == 'true' : false;
             this.layout = this.$el.attributes['layout'] != undefined ? this.$el.attributes['layout'].value : undefined;
             this.cloudRate = this.$el.attributes['cloud-rate'] != undefined ? Number(this.$el.attributes['cloud-rate'].value) : undefined;
             this.gridMargin = this.$el.attributes['grid-margin'] != undefined ? Number(this.$el.attributes['grid-margin'].value) : undefined;

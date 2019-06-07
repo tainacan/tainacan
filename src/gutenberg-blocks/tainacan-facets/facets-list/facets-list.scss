@@ -398,9 +398,28 @@
             }
 
             &:hover a { 
-                color: #454647; 
+                color: #298596;
                 text-decoration: none;
             }
+        }
+    }
+
+    .show-more-button {
+        margin: 0 auto;
+        padding: 0.25rem;
+        display: block;
+        background: #298596;
+        border: none;
+        height: 24px;
+        width: 24px;
+        cursor: pointer;
+
+        &[disabled] {
+            background-color: #cbcbcb;
+        }
+        
+        i>svg {
+            fill: white;
         }
     }
 }

@@ -461,7 +461,20 @@
         color: #cbcbcb; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud li.facet-list-item:hover a,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-cloud li.facet-list-item:hover a {
-        color: #454647;
+        color: #298596;
         text-decoration: none; }
+  .wp-block-tainacan-facets-list .show-more-button {
+    margin: 0 auto;
+    padding: 0.25rem;
+    display: block;
+    background: #298596;
+    border: none;
+    height: 24px;
+    width: 24px;
+    cursor: pointer; }
+    .wp-block-tainacan-facets-list .show-more-button[disabled] {
+      background-color: #cbcbcb; }
+    .wp-block-tainacan-facets-list .show-more-button i > svg {
+      fill: white; }
 
 /*# sourceMappingURL=tainacan-gutenberg-block-facets-list.css.map */

@@ -55,6 +55,14 @@ registerBlockType('tainacan/facets-list', {
             type: Boolean,
             default: true
         },
+        showLoadMore: {
+            type: Boolean,
+            default: false
+        },
+        showSearchBar: {
+            type: Boolean,
+            value: false
+        },
         layout: {
             type: String,
             default: 'grid'
@@ -95,10 +103,6 @@ registerBlockType('tainacan/facets-list', {
             type: Boolean,
             value: false
         },
-        showSearchBar: {
-            type: Boolean,
-            value: false
-        },
         collection: {
             type: Object,
             value: undefined
@@ -125,6 +129,8 @@ registerBlockType('tainacan/facets-list', {
             collectionSlug,    
             showImage,
             showItemsCount,
+            showLoadMore,
+            showSearchBar,
             layout,
             cloudRate,
             isModalOpen,
@@ -134,8 +140,7 @@ registerBlockType('tainacan/facets-list', {
             facetsRequestSource,
             maxFacetsNumber,
             searchString,
-            isLoading,
-            showSearchBar
+            isLoading
         } = attributes;
 
         // Obtains block's client id to render it on save function
@@ -323,16 +328,26 @@ registerBlockType('tainacan/facets-list', {
                     <InspectorControls>
                         
                         <PanelBody
-                                title={__('Search bar', 'tainacan')}
+                                title={__('Search', 'tainacan')}
                                 initialOpen={ true }
                             >
                             <ToggleControl
-                                label={__('Display bar', 'tainacan')}
+                                label={__('Display search bar', 'tainacan')}
                                 help={ showSearchBar ? __('Toggle to show search bar on block', 'tainacan') : __('Do not show search bar', 'tainacan')}
                                 checked={ showSearchBar }
                                 onChange={ ( isChecked ) => {
                                         showSearchBar = isChecked;
                                         setAttributes({ showSearchBar: showSearchBar });
+                                    } 
+                                }
+                            />
+                            <ToggleControl
+                                label={__('Display load more', 'tainacan')}
+                                help={ showLoadMore ? __('Toggle to show "load more" button on block', 'tainacan') : __('Do not show "load more" button', 'tainacan')}
+                                checked={ showLoadMore }
+                                onChange={ ( isChecked ) => {
+                                        showLoadMore = isChecked;
+                                        setAttributes({ showLoadMore: showLoadMore });
                                     } 
                                 }
                             />
@@ -519,46 +534,6 @@ registerBlockType('tainacan/facets-list', {
                                 value={ searchString }
                                 onChange={ (value) =>  { _.debounce(applySearchString(value), 300); } }
                                 type="text"/>
-                        <Tooltip text={__('If necessary, pagination will be available on post or page.', 'tainacan')}>
-                            <button
-                                    class="previous-button"
-                                    disabled
-                                    label={__('Previous page', 'tainacan')}>
-                                <span class="icon">
-                                    <i>
-                                        <svg
-                                                width="30"
-                                                height="30"
-                                                viewBox="0 2 20 20">
-                                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-                                            <path
-                                                    d="M0 0h24v24H0z"
-                                                    fill="none"/>                        
-                                        </svg>
-                                    </i>
-                                </span>
-                            </button>
-                        </Tooltip> 
-                        <Tooltip text={__('If necessary, pagination will be available on post or page.', 'tainacan')}>
-                            <button
-                                    class="next-button"
-                                    disabled
-                                    label={__('Next page', 'tainacan')}>
-                                <span class="icon">
-                                    <i>
-                                        <svg
-                                                width="30"
-                                                height="30"
-                                                viewBox="0 2 20 20">
-                                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-                                            <path
-                                                    d="M0 0h24v24H0z"
-                                                    fill="none"/>                        
-                                        </svg>
-                                    </i>
-                                </span>
-                            </button>   
-                        </Tooltip>
                     </div>
                 : null
                 }
@@ -608,6 +583,30 @@ registerBlockType('tainacan/facets-list', {
                         </ul>
                     </div>
                 }
+
+                { showLoadMore ?
+                    <Tooltip text={__('If necessary, the show more button will be available on post or page.', 'tainacan')}>
+                        <button
+                                class="show-more-button"
+                                disabled
+                                label={__('Show more', 'tainacan')}>
+                            <span class="icon">
+                                <i>
+                                    <svg
+                                            width="24"
+                                            height="24"
+                                            viewBox="4 5 24 24">
+                                        <path d="M 7.41,8.295 6,9.705 l 6,6 6,-6 -1.41,-1.41 -4.59,4.58 z"/>
+                                        <path
+                                                d="M0 0h24v24H0z"
+                                                fill="none"/>                        
+                                    </svg>
+                                </i>
+                            </span>
+                        </button>
+                    </Tooltip> 
+                : null
+                }
             </div>
         );
     },
@@ -619,6 +618,7 @@ registerBlockType('tainacan/facets-list', {
             collectionSlug,  
             showImage,
             showItemsCount,
+            showLoadMore,
             layout,
             cloudRate,
             gridMargin,
@@ -637,6 +637,7 @@ registerBlockType('tainacan/facets-list', {
                     show-image={ '' + showImage }
                     show-items-count={ '' + showItemsCount }
                     show-search-bar={ '' + showSearchBar }
+                    show-load-more={ '' + showLoadMore }
                     layout={ layout }
                     cloud-rate={ cloudRate }
                     grid-margin={ gridMargin }

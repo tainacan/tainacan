@@ -30,45 +30,6 @@
                     :value="searchString"
                     @input="(value) => applySearchString(value)"
                     type="text">
-            <button
-                    class="previous-button"
-                    v-if="paged > 1"
-                    @click="paged--; fetchFacets()"
-                    :label="$root.__('Previous page', 'tainacan')">
-                <span class="icon">
-                    <i>
-                        <svg
-                                width="30"
-                                height="30"
-                                viewBox="0 2 20 20">
-                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-                            <path
-                                    d="M0 0h24v24H0z"
-                                    fill="none"/>                        
-                        </svg>
-                    </i>
-                </span>
-            </button> 
-            <button
-                    :style="{ marginLeft: paged <= 1 ? 'auto' : '0' }"
-                    class="next-button"
-                    v-if="paged < totalFacets/maxFacetsNumber && facets.length < totalFacets"
-                    @click="paged++; fetchFacets()"
-                    :label="$root.__('Next page', 'tainacan')">
-                <span class="icon">
-                    <i>
-                        <svg
-                                width="30"
-                                height="30"
-                                viewBox="0 2 20 20">
-                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-                            <path
-                                    d="M0 0h24v24H0z"
-                                    fill="none"/>                        
-                        </svg>
-                    </i>
-                </span>
-            </button> 
         </div>
         <ul
                 v-if="isLoading"
@@ -131,6 +92,24 @@
                     </a>
                 </li>
             </ul>
+            <button
+                    v-if="showLoadMore"
+                    class="show-more-button"
+                    :label="$root.__('Show more', 'tainacan')">
+                <span class="icon">
+                    <i>
+                        <svg
+                                width="24"
+                                height="24"
+                                viewBox="4 3 24 24">
+                            <path d="M 7.41,8.295 6,9.705 l 6,6 6,-6 -1.41,-1.41 -4.59,4.58 z"/>
+                            <path
+                                    d="M0 0h24v24H0z"
+                                    fill="none"/>                        
+                        </svg>
+                    </i>
+                </span>
+            </button>
             <div
                     v-else
                     class="spinner-container">
@@ -170,6 +149,7 @@ export default {
         showImage: Boolean,
         showItemsCount: Boolean,
         showSearchBar: Boolean,
+        showLoadMore: Boolean,
         layout: String,
         cloudRate: Number,
         gridMargin: Number,
@@ -236,8 +216,7 @@ export default {
             
             this.tainacanAxios.get(endpoint, { cancelToken: this.facetsRequestSource.token })
                 .then(response => {
-                    console.log(this.tainacanSiteUrl)
-                    console.log(this.collectionSlug)
+
                     for (let facet of response.data.values) {
                         this.facets.push(Object.assign({ 
                             url: this.tainacanSiteUrl + '/' + this.collectionSlug + '/#/?metaquery[0][key]=' + this.metadatumId + '&metaquery[0][value]=' + facet.value
