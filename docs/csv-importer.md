@@ -23,6 +23,7 @@ The special columns that can be used are:
 * **special_item_id** - Inform the item ID in the Tainacan database. This is useful when re-importing items and let the user decide wether to update existing items or ignore them and only add new items.
 * **special_document** - let the user inform the item document. See "Importing files and attachments"
 * **special_attachments** - let the user inform the attachments. See "Importing files and attachments"
+* **special_comment_status** - Inform the item allows comment. Possible values are open or closed.
 
 
 ## Importing files and attachments

@@ -163,8 +163,8 @@ class TestUtilities extends TAINACAN_UnitTestCase {
 		$text_multiple_links_response = $text->make_clickable_links($text_multiple_links);
 		$this->assertEquals($text_multiple_links_expected, $text_multiple_links_response);
 
-		$text_multiple_links = 'Lorem https://tainacan.org hahahahahahhttps://tainacan.org hahaha ';
-		$text_multiple_links_expected = 'Lorem <a href="https://tainacan.org" target="_blank" title="https://tainacan.org">https://tainacan.org</a> hahahahahah<a href="https://tainacan.org" target="_blank" title="https://tainacan.org">https://tainacan.org</a> hahaha ';
+		$text_multiple_links = 'Lorem <a href="https://www.tainacan.org" target="_blank" title="https://www.tainacan.org">https://www.tainacan.org</a> Lorem https://tainacan.org hahahahahahhttps://tainacan.org hahaha ';
+		$text_multiple_links_expected = 'Lorem <a href="https://www.tainacan.org" target="_blank" title="https://www.tainacan.org">https://www.tainacan.org</a> Lorem <a href="https://tainacan.org" target="_blank" title="https://tainacan.org">https://tainacan.org</a> hahahahahah<a href="https://tainacan.org" target="_blank" title="https://tainacan.org">https://tainacan.org</a> hahaha ';
 		$text_multiple_links_response = $text->make_clickable_links($text_multiple_links);
 		$this->assertEquals($text_multiple_links_expected, $text_multiple_links_response);
 
