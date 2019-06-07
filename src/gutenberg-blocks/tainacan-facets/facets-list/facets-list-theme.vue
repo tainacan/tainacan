@@ -93,7 +93,8 @@
                 </li>
             </ul>
             <button
-                    v-if="showLoadMore"
+                    v-if="showLoadMore && facets.length < totalFacets"
+                    @click="offset++; fetchFacets();"
                     class="show-more-button"
                     :label="$root.__('Show more', 'tainacan')">
                 <span class="icon">
@@ -113,7 +114,7 @@
             <div
                     v-else
                     class="spinner-container">
-                {{ $root.__('No facets found.', 'tainacan') }}
+                {{ offset > 0 && facets.length > 0 ? $root.__('No more facets found.', 'tainacan') : $root.__('No facets found.', 'tainacan') }}
             </div>
         </div>
     </div>
@@ -137,7 +138,7 @@ export default {
             localMaxFacetsNumber: undefined,
             localOrder: undefined,
             tainacanAxios: undefined,
-            paged: undefined,
+            offset: undefined,
             totalFacets: 0
         }
     },
@@ -166,13 +167,15 @@ export default {
 
             if (this.searchString != value) {
                 this.searchString = value;
-                this.paged = 1;
+                this.offset = 0;
                 this.fetchFacets();
             }
         }, 500),
         fetchFacets() {
 
-            this.facets = [];
+            if (this.offset == 0)
+                this.facets = [];
+
             this.isLoading = true;
             
             if (this.facetsRequestSource != undefined && typeof this.facetsRequestSource == 'function')
@@ -205,13 +208,7 @@ export default {
             }
 
             // Set up paging
-            if (this.paged != undefined)
-                queryObject.paged = this.paged;
-            else if (queryObject.paged != undefined)
-                this.paged = queryObject.paged;
-            else
-                this.paged = 1;
-            
+            queryObject.offset = this.offset;
             endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject);
             
             this.tainacanAxios.get(endpoint, { cancelToken: this.facetsRequestSource.token })
@@ -234,7 +231,7 @@ export default {
     },
     created() {
         this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
-
+        this.offset = 0;
         this.fetchFacets();
     },
 }
