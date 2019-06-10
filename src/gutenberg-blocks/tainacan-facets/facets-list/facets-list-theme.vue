@@ -4,7 +4,6 @@
                 v-if="showSearchBar"
                 class="facets-search-bar"> 
             <button
-                    @click="fetchFacets()"
                     :label="$root.__('Search', 'tainacan')"
                     class="search-button">
                 <span class="icon">
@@ -61,12 +60,12 @@
                         :key="index"
                         v-for="(facet, index) of facets"
                         class="facet-list-item"
+                        :class="(!showImage ? 'facet-without-image' : '')"
                         :style="{ marginBottom: layout == 'grid' ? gridMargin + 'px' : ''}">      
                     <a 
                             :id="isNaN(facet.id) ? facet.id : 'facet-id-' + facet.id"
                             :href="facet.url"
                             target="_blank"
-                            :class="(!showImage ? 'facet-without-image' : '')"
                             :style="{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'rem' : ''}">
                         <img
                             v-if="(metadatumType == 'Taxonomy' || metadatumType == 'Relationship')"
@@ -92,8 +91,9 @@
                     </a>
                 </li>
             </ul>
+
             <button
-                    v-if="showLoadMore && (facets.length < totalFacets || lastTerm != undefined)"
+                    v-if="showLoadMore && facets.length > 0 && (facets.length < totalFacets || lastTerm != '')"
                     @click="loadMore()"
                     class="show-more-button"
                     :label="$root.__('Show more', 'tainacan')">
@@ -114,7 +114,7 @@
             <div
                     v-else
                     class="spinner-container">
-                {{ offset > 0 && facets.length > 0 ? $root.__('No more facets found.', 'tainacan') : $root.__('No facets found.', 'tainacan') }}
+                {{ facets.length > 0 ? (offset > 0 ? $root.__('No more facets found.', 'tainacan') : '') : $root.__('No facets found.', 'tainacan') }}
             </div>
         </div>
     </div>
@@ -169,16 +169,15 @@ export default {
             if (this.searchString != value) {
                 this.searchString = value;
                 this.offset = 0;
-                this.lastTerm = undefined;
+                this.lastTerm = '';
                 this.fetchFacets();
             }
         }, 500),
         loadMore() {
-            this.offset++;
+            this.offset += Number(this.maxFacetsNumber);
             this.fetchFacets();
         },
         fetchFacets() {
-
             if (this.offset == 0)
                 this.facets = [];
 
@@ -230,8 +229,8 @@ export default {
                     }
 
                     this.isLoading = false;
-                    this.totalFacets = response.headers['x-wp-total'];
-                    this.lastTerm = response.data.last_term;
+                    this.totalFacets = Number(response.headers['x-wp-total']);
+                    this.lastTerm = response.data.values.length > 0 ? response.data.last_term : '';
 
                 }).catch(() => { 
                     this.isLoading = false;

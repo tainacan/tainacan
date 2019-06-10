@@ -150,13 +150,12 @@ registerBlockType('tainacan/facets-list', {
             return (
                 <li 
                     key={ facet.id }
-                    className="facet-list-item"
+                    className={ 'facet-list-item' + (!showImage ? ' facet-without-image' : '') }
                     style={{ marginBottom: layout == 'grid' ? gridMargin + 'px' : ''}}>      
                     <a 
                         id={ isNaN(facet.id) ? facet.id : 'facet-id-' + facet.id }
                         href={ facet.url } 
                         target="_blank"
-                        className={ (!showImage ? 'facet-without-image' : '') }
                         style={{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'rem' : ''}}>
                         { (metadatumType == 'Taxonomy' || metadatumType == 'Relationship') ? 
                             <img
@@ -268,8 +267,7 @@ registerBlockType('tainacan/facets-list', {
             if (layout == 'grid')
                 showImage = true;
 
-            
-            if (layout == 'cloud')
+            if (layout == 'list' || layout == 'cloud')
                 showImage = false;
 
             setAttributes({ 
@@ -584,7 +582,7 @@ registerBlockType('tainacan/facets-list', {
                     </div>
                 }
 
-                { showLoadMore ?
+                { showLoadMore && facets.length > 0 && !isLoading ?
                     <Tooltip text={__('If necessary, the show more button will be available on post or page.', 'tainacan')}>
                         <button
                                 class="show-more-button"
