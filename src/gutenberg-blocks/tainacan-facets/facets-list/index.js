@@ -224,10 +224,18 @@ registerBlockType('tainacan/facets-list', {
                 .then(response => {
                     facetsObject = [];
 
-                    for (let facet of response.data.values) {
-                        facetsObject.push(Object.assign({ 
-                            url: tainacan_plugin.site_url + '/' + collectionSlug + '/#/?metaquery[0][key]=' + metadatumId + '&metaquery[0][value]=' + facet.value
-                        }, facet));
+                    if (metadatumType == 'Taxonomy') {
+                        for (let facet of response.data.values) {
+                            facetsObject.push(Object.assign({ 
+                                url: tainacan_plugin.site_url + '/' + collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
+                            }, facet));
+                        }
+                    } else {
+                        for (let facet of response.data.values) {
+                            facetsObject.push(Object.assign({ 
+                                url: tainacan_plugin.site_url + '/' + collectionSlug + '/#/?metaquery[0][key]=' + metadatumId + '&metaquery[0][value]=' + facet.value
+                            }, facet));
+                        }
                     }
                     
                     for (let facet of facetsObject)

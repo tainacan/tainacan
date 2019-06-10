@@ -222,12 +222,20 @@ export default {
             this.tainacanAxios.get(endpoint, { cancelToken: this.facetsRequestSource.token })
                 .then(response => {
 
-                    for (let facet of response.data.values) {
-                        this.facets.push(Object.assign({ 
-                            url: this.tainacanSiteUrl + '/' + this.collectionSlug + '/#/?metaquery[0][key]=' + this.metadatumId + '&metaquery[0][value]=' + facet.value
-                        }, facet));
+                    if (this.metadatumType == 'Taxonomy') {
+                        for (let facet of response.data.values) {
+                            this.facets.push(Object.assign({ 
+                                url: this.tainacanSiteUrl + '/' + this.collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
+                            }, facet));
+                        }
+                    } else {
+                        for (let facet of response.data.values) {
+                            this.facets.push(Object.assign({ 
+                                url: this.tainacanSiteUrl + '/' + this.collectionSlug + '/#/?metaquery[0][key]=' + this.metadatumId + '&metaquery[0][value]=' + facet.value
+                            }, facet));
+                        }
                     }
-
+ 
                     this.isLoading = false;
                     this.totalFacets = Number(response.headers['x-wp-total']);
                     this.lastTerm = response.data.values.length > 0 ? response.data.last_term : '';
