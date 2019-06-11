@@ -26,7 +26,7 @@ The special columns that can be used are:
 * **special_comment_status** - Inform the item allows comment. Possible values are open or closed.
 
 
-## Importing files and attachments
+### Importing files and attachments
 
 If you also have files you want to import, that are related to the items in your CSV, you can use some special columns in your csv to do so.
 
@@ -54,6 +54,19 @@ name, special_attachments
 An image,http://example.com/image.jpg
 Many images,http://example.com/image.jpg||http://example.com/image2.jpg||http://example.com/image3.jpg
 Images uploaded via FTP,myfolder/image.jpg||myfolder/image2.jpg
+```
+
+### importing using items status
+
+You can specifies two status config of item when importing using the special columns: `special_item_status`, which will set the item status, a possible values are draft, private or publish, and `special_comment_status` which will set the if the item will accept a comments the possible values are open or closed.
+
+Example:
+
+```
+name, special_item_status, special_comment_status
+item uno, draft,   closed
+item due, private, closed
+item tre, publish, open
 ```
 
 ## Creating metadata on the fly
