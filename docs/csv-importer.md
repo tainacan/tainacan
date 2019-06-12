@@ -23,8 +23,16 @@ The special columns that can be used are:
 * **special_item_id** - Inform the item ID in the Tainacan database. This is useful when re-importing items and let the user decide wether to update existing items or ignore them and only add new items.
 * **special_document** - let the user inform the item document. See "Importing files and attachments"
 * **special_attachments** - let the user inform the attachments. See "Importing files and attachments"
-* **special_comment_status** - Inform the item allows comment. Possible values are open or closed.
+* **special_comment_status** - Inform if the item is open for comments. Possible values are open or closed. Default is closed.
 
+Example:
+
+```
+name, special_item_status, special_comment_status
+item uno, draft,   closed
+item due, private, closed
+item tre, publish, open
+```
 
 ### Importing files and attachments
 
@@ -56,18 +64,6 @@ Many images,http://example.com/image.jpg||http://example.com/image2.jpg||http://
 Images uploaded via FTP,myfolder/image.jpg||myfolder/image2.jpg
 ```
 
-### importing using items status
-
-You can specifies two status config of item when importing using the special columns: `special_item_status`, which will set the item status, a possible values are draft, private or publish, and `special_comment_status` which will set the if the item will accept a comments the possible values are open or closed.
-
-Example:
-
-```
-name, special_item_status, special_comment_status
-item uno, draft,   closed
-item due, private, closed
-item tre, publish, open
-```
 
 ## Creating metadata on the fly
 
