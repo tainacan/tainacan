@@ -351,9 +351,9 @@ StatusHelperPlugin.install = function (Vue, options = {}) {
     Vue.prototype.$statusHelper = {
         statuses: [
             { name: tainacan_plugin.i18n['status_publish'], slug: 'publish' },
-            { name: tainacan_plugin.i18n['status_private'], slug: 'private' },
-            { name: tainacan_plugin.i18n['status_draft'], slug: 'draft' },
-            { name: tainacan_plugin.i18n['status_trash'], slug: 'trash' }
+            // { name: tainacan_plugin.i18n['status_private'], slug: 'private' },
+            // { name: tainacan_plugin.i18n['status_draft'], slug: 'draft' },
+            // { name: tainacan_plugin.i18n['status_trash'], slug: 'trash' }
         ],
         getIcon(status) {
             switch (status) {
@@ -376,15 +376,21 @@ StatusHelperPlugin.install = function (Vue, options = {}) {
                         let loadedStatus = res.data;
                         this.statuses = [];
 
-                        this.statuses.push(loadedStatus['publish']);
-                        this.statuses.push(loadedStatus['private']);
+                        if (loadedStatus['publish'] != undefined)
+                            this.statuses.push(loadedStatus['publish']);
+                        
+                        if (loadedStatus['private'] != undefined)
+                            this.statuses.push(loadedStatus['private']);
                         
                         this.statuses.concat(Object.values(loadedStatus).filter((status) => {
                             return !['publish','private','draft','trash'].includes(status.slug); 
                         }));
 
-                        this.statuses.push(loadedStatus['draft']);
-                        this.statuses.push(loadedStatus['trash']);
+                        if (loadedStatus['draft'] != undefined)
+                            this.statuses.push(loadedStatus['draft']);
+                        
+                        if (loadedStatus['trash'] != undefined)
+                            this.statuses.push(loadedStatus['trash']);
                     })
                     .catch(error => {
                         console.error( error );

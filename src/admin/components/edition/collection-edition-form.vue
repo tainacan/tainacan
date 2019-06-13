@@ -660,10 +660,10 @@ export default {
                 this.form.status = this.collection.status;
                 this.form.cover_page_id = this.collection.cover_page_id;
                 this.form.enable_cover_page = this.collection.enable_cover_page;
-                this.form.enabled_view_modes = this.collection.enabled_view_modes;
+                this.form.enabled_view_modes = this.collection.enabled_view_modes.map((viewMode) => viewMode.viewMode);
                 this.form.default_view_mode = this.collection.default_view_mode;
                 this.form.allow_comments = this.collection.allow_comments;
-
+                
                 this.isLoading = false;
                 this.formErrorMessage = '';
                 this.editFormErrors = {};
@@ -903,10 +903,10 @@ export default {
                 this.form.cover_page_id = this.collection.cover_page_id;
                 this.form.parent = this.collection.parent;
                 this.form.default_view_mode = this.collection.default_view_mode;
-                this.form.enabled_view_modes = JSON.parse(JSON.stringify(this.collection.enabled_view_modes));
+                this.form.enabled_view_modes = JSON.parse(JSON.stringify(this.collection.enabled_view_modes.reduce((result, viewMode) => { typeof viewMode == 'string' ? result.push(viewMode) : null; return result }, [])));
                 this.moderators = JSON.parse(JSON.stringify(this.collection.moderators));
                 this.form.allow_comments = this.collection.allow_comments;
-                 
+
                 // Generates CoverPage from current cover_page_id info
                 if (this.form.cover_page_id != undefined && this.form.cover_page_id != '') {
                     

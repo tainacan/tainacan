@@ -610,6 +610,7 @@
                     </li>
                     <li 
                             v-for="(statusOption, index) of $statusHelper.getStatuses()"
+                            v-if="(isRepositoryLevel || statusOption.slug != 'private') || (statusOption.slug == 'private' && $userCaps.hasCapability('read_private_tnc_col_' + collectionId + '_items'))"
                             :key="index"
                             @click="onChangeTab(statusOption.slug)"
                             :class="{ 'is-active': status == statusOption.slug}"
