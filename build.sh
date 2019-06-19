@@ -27,7 +27,7 @@ new_md5_package=$(<last-package-build.md5)
 if [ "$current_md5_package" != "$new_md5_package" ]
 then
     ## Install js dependencies
-    npm install
+    npm ci
 fi
 
 new_md5_composer=$(<last-composer-build.md5)
@@ -68,7 +68,9 @@ rm -rf $wp_plugin_dir
 mkdir $wp_plugin_dir
 
 rsync -axz --exclude='vendor/bin/phpc*' --exclude='vendor/squizlabs' --exclude='vendor/wimg' \
- --exclude='vendor/respect/validation/.git' --exclude='vendor/symfony/polyfill-mbstring/.git' --exclude='pdf-viewer/pdfjs-dist/web/compressed.tracemonkey-pldi-09.pdf' \
+ --exclude='vendor/respect/validation/.git' --exclude='vendor/symfony/polyfill-mbstring/.git' \
+ --exclude='vendor/respect/validation/docs' --exclude='vendor/respect/validation/tests' \
+ --exclude='pdf-viewer/pdfjs-dist/web/compressed.tracemonkey-pldi-09.pdf' \
   src/* $wp_plugin_dir/
 
 rm -rf $wp_plugin_dir/scss

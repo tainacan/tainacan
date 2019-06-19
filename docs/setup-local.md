@@ -25,7 +25,7 @@ You wil also need:
 * `Sass` to compile sass into css files
 * `WP-Cli` to configure the test environment
 * `Phpunit` to run unit tests
-* `Node` to handle dependencies and vuild the JS application
+* `Node` to handle dependencies and vuild the JS application (at least version 5.7.0)
 
 ```
 sudo apt-get install phpunit composer ruby ruby-dev nodejs npm
