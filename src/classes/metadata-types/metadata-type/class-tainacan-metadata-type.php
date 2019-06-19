@@ -24,6 +24,16 @@ abstract class Metadata_Type  {
     private $primitive_type;
     
     /**
+     * When primitive type points to an entity, such as item or term, this indidicates which repository to use 
+     * to fetch that entity 
+     *
+     * default is false: no repository
+     * 
+     * @var bool | \Tainacan\Repositories\Repository 
+     */
+    private $repository = false;
+    
+    /**
      * Array of options specific to this metadatum type. Stored in metadata_type_options property of the Metadatum object
      * @var array
      */
@@ -244,6 +254,14 @@ abstract class Metadata_Type  {
 
 	public function set_core($core){
 		$this->core = $core;
+	}
+    
+    public function get_repository() {
+		return $this->repository;
+	}
+
+	public function set_repository($repository){
+		$this->repository = $repository;
 	}
 	
 	/**

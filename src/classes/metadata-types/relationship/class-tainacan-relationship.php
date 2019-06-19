@@ -13,6 +13,7 @@ class Relationship extends Metadata_Type {
         // call metadatum type constructor
         parent::__construct();
         $this->set_primitive_type('item');
+        $this->set_repository( \Tainacan\Repositories\Items::get_instance() );
         $this->set_component('tainacan-relationship');
         $this->set_form_component('tainacan-form-relationship');
         $this->set_name( __('Relationship', 'tainacan') );

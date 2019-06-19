@@ -63,6 +63,7 @@ class REST_Facets_Controller extends REST_Controller {
 			
 			$metadatum = $this->metadatum_repository->fetch($metadatum_id);
 			$metadatum_type = $metadatum->get_metadata_type();
+			$metadatum_type_object = $metadatum->get_metadata_type_object();
 			
 			$offset = null;
 			$number = null;
@@ -129,6 +130,25 @@ class REST_Facets_Controller extends REST_Controller {
 			];
 			
 			$all_values = $this->metadatum_repository->fetch_all_metadatum_values( $metadatum_id, $args );
+			
+			if (isset($request['context']) && $request['context'] == 'extended') {
+				
+				if ($metadatum_type_object->get_repository() instanceof \Tainacan\Repositories\Repository) {
+					$all_values['values'] = array_map(function($val) use($metadatum_type_object) {
+						
+						$second_arg = [];
+						if (isset($val['taxonomy'])) {
+							$second_arg = $val['taxonomy'];
+						}
+						$entity = $metadatum_type_object->get_repository()->fetch( (int) $val['value'], $second_arg );
+						if ($entity) {
+							$val['entity'] = $entity->_toArray();
+						}
+						return $val;
+					}, $all_values['values']);
+				}
+				
+			}
 			
 			$response = [
 				'values' => $all_values['values'],
