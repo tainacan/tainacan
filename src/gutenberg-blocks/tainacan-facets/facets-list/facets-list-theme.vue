@@ -68,15 +68,25 @@
                             target="_blank"
                             :style="{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'rem' : ''}">
                         <img
-                            v-if="(metadatumType == 'Taxonomy' || metadatumType == 'Relationship')"
+                            v-if="metadatumType == 'Taxonomy'"
                             :src=" 
-                                facet.thumbnail && facet.thumbnail['tainacan-medium'][0] && facet.thumbnail['tainacan-medium'][0] 
-                                    ?
-                                facet.thumbnail['tainacan-medium'][0] 
-                                    :
-                                (facet.thumbnail && facet.thumbnail['thumbnail'][0] && facet.thumbnail['thumbnail'][0]
+                                facet.entity && facet.entity['header_image']
                                     ?    
-                                facet.thumbnail['thumbnail'][0] 
+                                facet.entity['header_image']
+                                    : 
+                                `${tainacanBaseUrl}/admin/images/placeholder_square.png`
+                            "
+                            :alt="facet.title ? facet.title : $root.__('Thumbnail', 'tainacan')">
+                        <img
+                            v-if="metadatumType == 'Relationship'"
+                            :src=" 
+                                facet.entity.thumbnail && facet.entity.thumbnail['tainacan-medium'][0] && facet.entity.thumbnail['tainacan-medium'][0] 
+                                    ?
+                                facet.entity.thumbnail['tainacan-medium'][0] 
+                                    :
+                                (facet.entity.thumbnail && facet.entity.thumbnail['thumbnail'][0] && facet.entity.thumbnail['thumbnail'][0]
+                                    ?    
+                                facet.entity.thumbnail['thumbnail'][0] 
                                     : 
                                 `${tainacanBaseUrl}/admin/images/placeholder_square.png`)
                             "
@@ -216,6 +226,9 @@ export default {
             queryObject.offset = this.offset;
             if (this.lastTerm != undefined)
                 queryObject.last_term = this.lastTerm;
+            
+            // Parameter fo tech entity object with image and url
+            queryObject['context'] = 'extended';
 
             endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject);
             
@@ -225,7 +238,7 @@ export default {
                     if (this.metadatumType == 'Taxonomy') {
                         for (let facet of response.data.values) {
                             this.facets.push(Object.assign({ 
-                                url: this.tainacanSiteUrl + '/' + this.collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
+                                url: facet.entity && facet.entity.url ? facet.entity.url : this.tainacanSiteUrl + '/' + this.collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
                             }, facet));
                         }
                     } else {

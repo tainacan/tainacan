@@ -157,16 +157,28 @@ registerBlockType('tainacan/facets-list', {
                         href={ facet.url } 
                         target="_blank"
                         style={{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'rem' : ''}}>
-                        { (metadatumType == 'Taxonomy' || metadatumType == 'Relationship') ? 
+                        { metadatumType == 'Taxonomy' ? 
                             <img
                                 src={ 
-                                    facet.thumbnail && facet.thumbnail['tainacan-medium'][0] && facet.thumbnail['tainacan-medium'][0] 
-                                        ?
-                                    facet.thumbnail['tainacan-medium'][0] 
-                                        :
-                                    (facet.thumbnail && facet.thumbnail['thumbnail'][0] && facet.thumbnail['thumbnail'][0]
+                                    facet.entity && facet.entity['header_image']
                                         ?    
-                                    facet.thumbnail['thumbnail'][0] 
+                                    facet.entity['header_image']
+                                        : 
+                                    `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`
+                                }
+                                alt={ facet.label ? facet.label : __( 'Thumbnail', 'tainacan' ) }/>
+                        : null 
+                        }
+                        { metadatumType == 'Relationship' ? 
+                            <img
+                                src={ 
+                                    facet.entity.thumbnail && facet.entity.thumbnail['tainacan-medium'][0] && facet.entity.thumbnail['tainacan-medium'][0] 
+                                        ?
+                                    facet.entity.thumbnail['tainacan-medium'][0] 
+                                        :
+                                    (facet.entity.thumbnail && facet.entity.thumbnail['thumbnail'][0] && facet.entity.thumbnail['thumbnail'][0]
+                                        ?    
+                                    facet.entity.thumbnail['thumbnail'][0] 
                                         : 
                                     `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
                                 }
@@ -217,6 +229,9 @@ registerBlockType('tainacan/facets-list', {
                 delete queryObject.search;
                 setAttributes({ searchString: undefined });
             }
+
+            // Parameter fo tech entity object with image and url
+            queryObject['context'] = 'extended';
             
             endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject);
             
@@ -227,7 +242,7 @@ registerBlockType('tainacan/facets-list', {
                     if (metadatumType == 'Taxonomy') {
                         for (let facet of response.data.values) {
                             facetsObject.push(Object.assign({ 
-                                url: tainacan_plugin.site_url + '/' + collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
+                                url: facet.entity && facet.entity.url ? facet.entity.url : tainacan_plugin.site_url + '/' + collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
                             }, facet));
                         }
                     } else {
