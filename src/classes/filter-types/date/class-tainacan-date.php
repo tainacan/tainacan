@@ -33,10 +33,10 @@ class Date extends Filter_Type {
                                 <div role="list" class="dropdown-content">
                                     <a class="dropdown-item is-active">=&nbsp; ' . __('Equal', 'tainacan') .'</a>
                                     <a class="dropdown-item">≠&nbsp; '. __('Not qual', 'tainacan') .'</a>
-                                    <a class="dropdown-item">&gt;&nbsp; '. __('Before', 'tainacan') .'</a>
-                                    <a class="dropdown-item">≥&nbsp; '. __('Before or on day', 'tainacan') .'</a>
-                                    <a class="dropdown-item">&lt;&nbsp; '. __('After', 'tainacan') .'</a>
-                                    <a class="dropdown-item">≤&nbsp;  '. __('After or on day', 'tainacan') .'</a>
+                                    <a class="dropdown-item">&gt;&nbsp; '. __('After', 'tainacan') .'</a>
+                                    <a class="dropdown-item">≥&nbsp; '. __('After (inclusive)', 'tainacan') .'</a>
+                                    <a class="dropdown-item">&lt;&nbsp; '. __('Before', 'tainacan') .'</a>
+                                    <a class="dropdown-item">≤&nbsp;  '. __('Before (inclusive)', 'tainacan') .'</a>
                                 </div>
                             </div>
                         </div>

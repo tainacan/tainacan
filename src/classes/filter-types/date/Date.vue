@@ -34,28 +34,28 @@
                     :class="{ 'is-active': comparator == '>' }"
                     :value="'>'"
                     aria-role="listitem">
-                &#62;&nbsp; {{ $i18n.get('before') }}
+                &#62;&nbsp; {{ $i18n.get('after') }}
             </b-dropdown-item>
             <b-dropdown-item
                     role="button"
                     :class="{ 'is-active': comparator == '>=' }"
                     :value="'>='"
                     aria-role="listitem">
-                &#8805;&nbsp; {{ $i18n.get('before_or_on_day') }}
+                &#8805;&nbsp; {{ $i18n.get('after_or_on_day') }}
             </b-dropdown-item>
             <b-dropdown-item
                     role="button"
                     :class="{ 'is-active': comparator == '<' }"
                     :value="'<'"
                     aria-role="listitem">
-                &#60;&nbsp; {{ $i18n.get('after') }}
+                &#60;&nbsp; {{ $i18n.get('before') }}
             </b-dropdown-item>
             <b-dropdown-item
                     role="button"
                     :class="{ 'is-active': comparator == '<=' }"
                     :value="'<='"
                     aria-role="listitem">
-                &#8804;&nbsp; {{ $i18n.get('after_or_on_day') }}
+                &#8804;&nbsp; {{ $i18n.get('before_or_on_day') }}
             </b-dropdown-item>
         </b-dropdown>
 

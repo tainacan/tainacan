@@ -13,8 +13,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'less_than_or_equal_to'                          => __( 'Less than or equal to', 'tainacan' ),
 	'before'                                   	 	 => __( 'Before', 'tainacan' ),
 	'after'		                                     => __( 'After', 'tainacan' ),
-	'before_or_on_day'		                         => __( 'Before or on day', 'tainacan' ),
-	'after_or_on_day'                          		 => __( 'After or on day', 'tainacan' ),
+	'before_or_on_day'		                         => __( 'Before (inclusive)', 'tainacan' ),
+	'after_or_on_day'                          		 => __( 'After (inclusive)', 'tainacan' ),
 
 	// Tainacan common terms
 	'repository'                                     => __( 'Repository', 'tainacan' ),
