@@ -68,15 +68,4 @@ class Date extends Filter_Type {
                                         metadatum_id="'.$filter->get_metadatum_id().'"></tainacan-filter-date>';
     }
 
-
-    /**
-     * @param \Tainacan\Entities\Filter $filter
-     * @return array|bool true if is validate or array if has error
-     */
-    public function validate_options(\Tainacan\Entities\Filter $filter) {
-        if ( !in_array($filter->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
-            return true;
-
-        return false;
-    }
 }
