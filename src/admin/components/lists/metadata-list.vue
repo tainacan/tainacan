@@ -905,6 +905,7 @@ export default {
 
     .metadata-list-page {
         padding-bottom: 0;
+        height: calc(100% - 42px + 26px);
 
         .tainacan-page-title {
             margin-bottom: 35px;

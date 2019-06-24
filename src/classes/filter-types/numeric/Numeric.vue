@@ -224,6 +224,7 @@
         
         .dropdown {
             width: auto;
+            flex-grow: 2;
 
             .dropdown-trigger button {
                 padding: 0 0.5rem !important;
