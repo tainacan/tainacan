@@ -126,7 +126,6 @@ class Filter extends Entity {
             return $this->metadatum;
         }
         $id = $this->get_metadatum_id();
-        return new Metadatum($id);
         $metadatum = \Tainacan\Repositories\Metadata::get_instance()->fetch((int) $id);
         if ($metadatum instanceof Metadatum) {
             $this->metadatum = $metadatum;
