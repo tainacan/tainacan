@@ -24,6 +24,7 @@ class Filters extends Repository {
 
 	protected function __construct() {
 		parent::__construct();
+		add_action( 'tainacan-deleted', array( &$this, 'hook_delete_when_metadata_deleted' ) );
 	}
 
 	public function get_map() {
@@ -540,4 +541,19 @@ class Filters extends Repository {
 
 		return $result;
 	}
+	
+	public function hook_delete_when_metadata_deleted($entity) {
+		
+		if ( $entity instanceof Entities\Metadatum ) {
+			$metadatum_id = $entity->get_id();
+			var_dump($metadatum_id);
+			$filters = $this->fetch(['metadatum_id' => $metadatum_id], 'OBJECT');
+			foreach ($filters as $filter) {
+				var_dump($filter->get_id());
+				$this->delete($filter);
+			}
+		}
+		
+	}
+	
 }

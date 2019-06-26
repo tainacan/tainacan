@@ -558,7 +558,8 @@ class Metadata extends Repository {
 	 */
 	public function delete( $metadatum_id ) {
 		$deleted = new Entities\Metadatum( wp_delete_post( $metadatum_id, true ) );
-
+		var_dump($deleted);
+		var_dump($deleted->get_id());
 		if ( $deleted && $this->use_logs) {
 			$this->logs_repository->insert_log( $deleted, [], false, true );
 
