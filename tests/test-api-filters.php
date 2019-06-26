@@ -67,7 +67,10 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			array(
 				'name'        => 'Metadatum filtered',
 				'description' => 'Is filtered',
-			)
+				'collection_id' => $collection->get_id(),
+				'metadata_type'    => 'Tainacan\Metadata_Types\Numeric',
+			),
+			true
 		);
 
 		$filter = $this->tainacan_entity_factory->create_entity(
@@ -76,7 +79,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'        => 'filtro',
 				'collection'  => $collection,
 				'description' => 'descricao',
-				'metadatum'    => $metadatum,
+				'metadatum_id'    => $metadatum->get_id(),
 				'filter_type' => 'Tainacan\Filter_Types\Custom_Interval',
 			),
 			true
@@ -131,8 +134,10 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			array(
 				'name'        => 'Metadatum filtered',
 				'description' => 'Is filtered',
-				'collection_id' => $collection->get_id()
-			)
+				'collection_id' => $collection->get_id(),
+				'metadata_type'    => 'Tainacan\Metadata_Types\Numeric',
+			),
+			true
 		);
 
 		$filter_type = $this->tainacan_filter_factory->create_filter('custom_interval');
@@ -143,7 +148,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'        => 'filtro',
 				'collection'  => $collection,
 				'description' => 'descricao',
-				'metadatum'    => $metadatum,
+				'metadatum_id'    => $metadatum->get_id(),
 				'filter_type' => $filter_type,
 			),
 			true
