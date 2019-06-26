@@ -9,6 +9,9 @@
                     size="is-small"
                     @focus="isTouched = true"
                     @input="validate_values()"
+                    editable
+                    :date-formatter="(date) => dateFormatter(date)"
+                    :date-parser="(date) => dateParser(date)"
                     icon="calendar-today"
                     :day-names="[
                         $i18n.get('datepicker_short_sunday'),
@@ -27,6 +30,9 @@
                     size="is-small"
                     @input="validate_values()"
                     @focus="isTouched = true"
+                    editable
+                    :date-formatter="(date) => dateFormatter(date)"
+                    :date-parser="(date) => dateParser(date)"
                     icon="calendar-today"
                     :day-names="[
                         $i18n.get('datepicker_short_sunday'),
@@ -62,6 +68,7 @@
 <script>
     import { tainacan as axios } from '../../../js/axios/axios';
     import { wpAjax, dateInter } from "../../../admin/js/mixins";
+    import moment from 'moment';
 
     export default {
         mixins: [ wpAjax, dateInter ],
@@ -165,6 +172,12 @@
                     position: 'is-bottom',
                     type: 'is-danger'
                 })
+            },
+            dateFormatter(dateObject) { 
+                return moment(dateObject, moment.ISO_8601).format(this.dateFormat);
+            },
+            dateParser(dateString) { 
+                return moment(dateString, this.dateFormat).toDate(); 
             },
             selectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )

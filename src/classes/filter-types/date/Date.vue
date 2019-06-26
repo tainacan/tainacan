@@ -65,6 +65,9 @@
                 :placeholder="$i18n.get('instruction_select_a_date')"
                 v-model="value"
                 @input="emit()"
+                editable
+                :date-formatter="(date) => dateFormatter(date)"
+                :date-parser="(date) => dateParser(date)"
                 size="is-small"
                 icon="calendar-today"
                 :day-names="[
@@ -82,6 +85,7 @@
 <script>
     import { tainacan as axios } from '../../../js/axios/axios';
     import { wpAjax, dateInter } from "../../../admin/js/mixins";
+    import moment from 'moment';
 
     export default {
         mixins: [ wpAjax, dateInter ],
@@ -191,6 +195,12 @@
                 });
 
                 this.value = null;
+            },
+            dateFormatter(dateObject) { 
+                return moment(dateObject, moment.ISO_8601).format(this.dateFormat);
+            },
+            dateParser(dateString) { 
+                return moment(dateString, this.dateFormat).toDate(); 
             },
             // emit the operation for listeners
             emit() {

@@ -31,11 +31,11 @@
 @import "../scss/_iframe_read_mode_overrides.scss";
 
 // Clears wordpress content
-body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, body.tainacan-admin-page #wp-auth-check-wrap {
-    display: none;
-}
 html {
     overflow-y: hidden;
+}
+body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, body.tainacan-admin-page #wp-auth-check-wrap {
+    display: none;
 }
 #tainacan-admin-app {
     background: #ffffff;
@@ -49,6 +49,21 @@ html {
     overflow-y: auto;
     margin: 0px !important; 
     font-family: $family-sans-serif;
+}
+
+// Scrollbars
+#tainacan-admin-app * {
+    // For Firefox
+    scrollbar-color: $gray3 transparent;
+    scrollbar-width: thin;
+
+    // For Chromium and related
+    &::-webkit-scrollbar {
+        width: 0.4rem;
+    }
+    &::-webkit-scrollbar-thumb {
+        background-color: $gray3;
+    }
 }
 
 // Tainacan Loading
