@@ -24,20 +24,7 @@
                         :style="{ height: 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
                         class="columns"
                         ref="metadataEditionPageColumns">
-                    <div class="column"> 
-                        <section 
-                                v-if="activeMetadatumList.length <= 0 && !isLoadingMetadata"
-                                class="field is-grouped-centered section">
-                            <div class="content has-text-gray has-text-centered">
-                                <p>
-                                    <span class="icon is-large">
-                                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
-                                    </span>
-                                </p>
-                                <p>{{ $i18n.get('info_there_is_no_metadatum' ) }}</p>
-                                <p>{{ $i18n.get('info_create_metadata' ) }}</p>
-                            </div>
-                        </section>             
+                    <div class="column">     
                         <draggable 
                                 v-model="activeMetadatumList"
                                 class="active-metadata-area"
@@ -52,6 +39,19 @@
                                         chosenClass: 'sortable-chosen',
                                         filter: 'not-sortable-item', 
                                         animation: '250'}">
+                            <section 
+                                    v-if="activeMetadatumList.length <= 0 && !isLoadingMetadata"
+                                    class="field is-grouped-centered section">
+                                <div class="content has-text-gray has-text-centered">
+                                    <p>
+                                        <span class="icon is-large">
+                                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
+                                        </span>
+                                    </p>
+                                    <p>{{ $i18n.get('info_there_is_no_metadatum' ) }}</p>
+                                    <p>{{ $i18n.get('info_create_metadata' ) }}</p>
+                                </div>
+                            </section>         
                             <div  
                                     class="active-metadatum-item"
                                     :class="{

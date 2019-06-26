@@ -22,19 +22,7 @@
                 class="columns"
                 ref="filterEditionPageColumns">
             <div class="column">
-                <section 
-                        v-if="activeFilterList.length <= 0 && !isLoadingFilters"
-                        class="field is-grouped-centered section">
-                    <div class="content has-text-gray has-text-centered">
-                        <p>
-                            <span class="icon is-large">
-                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters"/>
-                            </span>
-                        </p>
-                        <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>  
-                        <p>{{ $i18n.get('info_create_filters' ) }}</p>
-                    </div>
-                </section>         
+                     
                 <draggable 
                         class="active-filters-area"
                         @change="handleChangeOnFilter"
@@ -48,6 +36,19 @@
                             ghostClass: 'sortable-ghost',
                             filter: 'not-sortable-item', 
                             animation: '250'}">
+                            <section 
+                        v-if="activeFilterList.length <= 0 && !isLoadingFilters"
+                        class="field is-grouped-centered section">
+                    <div class="content has-text-gray has-text-centered">
+                        <p>
+                            <span class="icon is-large">
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters"/>
+                            </span>
+                        </p>
+                        <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>  
+                        <p>{{ $i18n.get('info_create_filters' ) }}</p>
+                    </div>
+                </section>    
                     <div  
                             class="active-filter-item" 
                             :class="{
