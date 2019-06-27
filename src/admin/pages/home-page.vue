@@ -118,7 +118,7 @@
                         <i class="tainacan-icon tainacan-icon-collections"/>
                     </router-link>
                 </div>
-                <h1>{{ $i18n.get('collections') }}</h1>
+                <h1>{{ $i18n.get('label_recent_collections') }}</h1>
                 <router-link
                         tag="a"
                         to="/collections">
