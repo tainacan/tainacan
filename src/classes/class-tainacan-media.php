@@ -169,9 +169,9 @@ class Media {
 	public function get_pdf_cover($filepath) {
 		
 		$blob = apply_filters('tainacan-extract-pdf-cover', null, $filepath);
-        if ($blob) {
-            return $blob;
-        }
+		if ($blob) {
+			return $blob;
+		}
 		
 		if (!class_exists('\Imagick')) {
 			return null;
@@ -180,13 +180,17 @@ class Media {
 		if ( mime_content_type($filepath) != 'application/pdf') {
 			return null;
 		}
+
+		if ( !is_readable( realpath($filepath) ) ) {
+			return null;
+		}
 		
 		$imagick = new \Imagick();
 		$imagick->setResolution(72,72);
 		$imagick->readImage($filepath . '[0]');  
-        //$imagick->setIteratorIndex(0);
-        $imagick->setImageFormat('jpg');
-        return $imagick->getImageBlob();
+		//$imagick->setIteratorIndex(0);
+		$imagick->setImageFormat('jpg');
+		return $imagick->getImageBlob();
 	}
 	
 }
