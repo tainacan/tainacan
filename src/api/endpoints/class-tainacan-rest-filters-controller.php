@@ -223,13 +223,21 @@ class REST_Filters_Controller extends REST_Controller {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function delete_item( $request ) {
-		$filter_id = $request['filter_id'];
 		$permanently = $request['permanently'];
+		
+		$filter = $this->filter_repository->fetch($request['filter_id']);
+
+		if (! $filter instanceof Entities\Filter) {
+			return new \WP_REST_Response([
+		    	'error_message' => __('A filter with this ID was not found', 'tainacan' ),
+			    'filter_id' => $filter_id
+		    ], 400);
+		}
 
 		if($permanently == true) {
-			$filter = $this->filter_repository->delete($filter_id);
+			$filter = $this->filter_repository->delete($filter);
 		} else {
-			$filter = $this->filter_repository->trash($filter_id);
+			$filter = $this->filter_repository->trash($filter);
 		}
 
 		return new \WP_REST_Response($this->prepare_item_for_response($filter, $request), 200);
@@ -421,7 +429,14 @@ class REST_Filters_Controller extends REST_Controller {
 		$filter_id = $request['filter_id'];
 
 		$filter = $this->filter_repository->fetch($filter_id);
-
+		
+		if(! $filter instanceof Entities\Filter) {
+			return new \WP_REST_Response([
+		    	'error_message' => __('A filter with this ID was not found', 'tainacan' ),
+			    'filter_id' => $filter_id
+		    ], 400);
+		}
+		
 		return new \WP_REST_Response($this->prepare_item_for_response($filter, $request), 200);
 	}
 

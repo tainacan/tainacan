@@ -595,20 +595,45 @@ abstract class Repository {
 
 		return false;
 	}
+	
+	/**
+	 * Shortcut to delete($entity, false)
+	 * 
+	 * @param Entities\Entity $entity
+	 *
+	 * @return mixed|Entity @see https://developer.wordpress.org/reference/functions/wp_delete_post/
+	 */
+	public function trash( Entities\Entity $entity ) {
+		return $this->delete( $entity, false );
+	}
 
 	/**
-	 * @param $object
+	 * @param Entities\Entity $entity
+	 * @param bool $permanent If false, sendo to trash, if true, permanently delete. Default true
 	 *
-	 * @return mixed
+	 * @return mixed|Entity @see https://developer.wordpress.org/reference/functions/wp_delete_post/
 	 */
-	public abstract function delete( $object );
+	public function delete( Entities\Entity $entity, $permanent = true ) {
+		if ($permanent === true) {
+			$return = wp_delete_post( $entity->get_id(), $permanent );
+		} elseif ($permanent === false) {
+			$return = wp_trash_post( $entity->get_id() );
+		}
+		
 
-	/**
-	 * @param $object
-	 *
-	 * @return mixed
-	 */
-	public abstract function trash( $object );
+		if ( $return instanceof \WP_Post && $this->use_logs) {
+			$this->logs_repository->insert_log( $entity, [], false, false, true );
+			
+			do_action( 'tainacan-deleted', $entity, $permanent );
+			var_dump('tainacan-deleted-' . $entity->get_post_type());
+			do_action( 'tainacan-deleted-' . $entity->get_post_type(), $entity, $permanent );
+			
+			$return = $this->get_entity_by_post($return);
+			
+		}
+
+		return $return;
+	}
 
 	/**
 	 * @param $args

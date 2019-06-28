@@ -129,22 +129,6 @@ class Item_Metadata extends Repository {
 	}
 
 	/**
-	 * @param $item_metadata_id
-	 *
-	 * @return mixed|void
-	 */
-	public function delete( $item_metadata_id ) {
-	}
-
-	/**
-	 * @param $item_metadata_id
-	 *
-	 * @return mixed|void
-	 */
-	public function trash( $item_metadata_id ) {
-	}
-
-	/**
 	 * @param Entities\Item_Metadata_Entity $item_metadata
 	 *
 	 * @throws \Exception
