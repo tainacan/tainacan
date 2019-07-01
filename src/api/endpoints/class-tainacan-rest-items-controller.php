@@ -237,7 +237,14 @@ class REST_Items_Controller extends REST_Controller {
 		$item_id = $request['item_id'];
 
 		$item = $this->items_repository->fetch($item_id);
-
+		
+		if (! $item instanceof Entities\Item) {
+			return new \WP_REST_Response([
+		    	'error_message' => __('An item with this ID was not found', 'tainacan' ),
+			    'item_id' => $item_id
+		    ], 400);
+		}
+		
 		$response = $this->prepare_item_for_response($item, $request);
 
 		return new \WP_REST_Response(apply_filters('tainacan-rest-response', $response, $request), 200);
@@ -513,11 +520,20 @@ class REST_Items_Controller extends REST_Controller {
 	public function delete_item( $request ) {
 		$item_id     = $request['item_id'];
 		$permanently = $request['permanently'];
+		
+		$item = $this->items_repository->fetch($request['item_id']);
 
+		if (! $item instanceof Entities\Item) {
+			return new \WP_REST_Response([
+		    	'error_message' => __('An item with this ID was not found', 'tainacan' ),
+			    'item_id' => $item_id
+		    ], 400);
+		}
+		
 		if($permanently == true) {
-			$item = $this->items_repository->delete($item_id);
+			$item = $this->items_repository->delete($item);
 		} else {
-			$item = $this->items_repository->trash($item_id);
+			$item = $this->items_repository->trash($item);
 		}
 
 		$prepared_item = $this->prepare_item_for_response($item, $request);

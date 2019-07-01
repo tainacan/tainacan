@@ -80,8 +80,15 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 	}
 
 	public function test_delete_or_trash_item_from_a_collection(){
-		$collection = $this->tainacan_entity_factory->create_entity('collection', '', true);
-
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Agile',
+				'description' => 'Agile methods',
+                'status'      => 'publish'
+			),
+			true
+		);
 		$item1 = $this->tainacan_entity_factory->create_entity(
 			'item',
 			array(

@@ -24,6 +24,7 @@ class Filters extends Repository {
 
 	protected function __construct() {
 		parent::__construct();
+		add_action( 'tainacan-deleted-tainacan-metadatum', array( &$this, 'hook_delete_when_metadata_deleted' ), 10, 2 );
 	}
 
 	public function get_map() {
@@ -186,40 +187,6 @@ class Filters extends Repository {
         // return a brand new object
         return new Entities\Filter($metadatum->WP_Post);
     }*/
-
-	/**
-	 * @param $filter_id
-	 *
-	 * @return Entities\Filter
-	 */
-	public function delete( $filter_id ) {
-		$deleted = new Entities\Filter( wp_delete_post( $filter_id, true ) );
-
-		if ( $deleted && $this->use_logs) {
-			$this->logs_repository->insert_log( $deleted, [], false, true );
-
-			do_action( 'tainacan-deleted', $deleted );
-		}
-
-		return $deleted;
-	}
-
-	/**
-	 * @param $filter_id
-	 *
-	 * @return mixed|Entities\Filter
-	 */
-	public function trash( $filter_id ) {
-		$trashed = new Entities\Filter( wp_trash_post( $filter_id ) );
-
-		if ( $trashed && $this->use_logs) {
-			$this->logs_repository->insert_log( $trashed, [], false, false, true );
-
-			do_action( 'tainacan-trashed', $trashed );
-		}
-
-		return $trashed;
-	}
 
 	public function update( $object, $new_values = null ) {
 		return $this->insert( $object );
@@ -540,4 +507,22 @@ class Filters extends Repository {
 
 		return $result;
 	}
+	
+	public function hook_delete_when_metadata_deleted($filter, $permanent) {
+		
+		if ( $filter instanceof Entities\Metadatum ) {
+			$metadatum_id = $filter->get_id();
+			$filters = $this->fetch(['metadatum_id' => $metadatum_id, 'post_status' => 'any'], 'OBJECT');
+			foreach ($filters as $filter) {
+				if ($permanent) {
+					$this->delete($filter);
+				} else {
+					$this->trash($filter);
+				}
+				
+			}
+		}
+		
+	}
+	
 }

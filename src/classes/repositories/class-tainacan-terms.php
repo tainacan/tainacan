@@ -177,7 +177,7 @@ class Terms extends Repository {
 
 
 		do_action( 'tainacan-insert', $term, $diffs, $is_update );
-		do_action( 'tainacan-insert-Term', $term );
+		do_action( 'tainacan-insert-term', $term );
 
 		return new Entities\Term( $term_saved['term_id'], $term->get_taxonomy() );
 	}
@@ -260,24 +260,22 @@ class Terms extends Repository {
 	}
 
 	/**
-	 * @param Array $delete_args has ['term_id', 'taxonomy']
+	 * @param Entities\Term $term
+	 * @param bool $permanent this parameter is not used by Terms repository
 	 *
 	 * @return bool|int|mixed|\WP_Error
 	 */
-	public function delete( $delete_args ) {
-		$deleted = wp_delete_term( $delete_args['term_id'], $delete_args['taxonomy'] );
+	public function delete( Entities\Entity $term, $permanent = true ) {
+		$deleted = $term;
+		$return = wp_delete_term( $term->get_id(), $term->get_taxonomy() );
 
-		if ( $deleted ) {
-			$deleted_term_tainacan = new Entities\Term( $delete_args['term_id'], $delete_args['taxonomy'] );
-
-			if($this->use_logs){
-				$this->logs_repository->insert_log( $deleted_term_tainacan, [], false, true );
-			}
-
-			do_action( 'tainacan-deleted', $deleted_term_tainacan );
+		if ( $deleted && $this->use_logs ) {
+			$this->logs_repository->insert_log( $deleted, [], false, true );
+			do_action( 'tainacan-deleted', $deleted );
+			do_action( 'tainacan-deleted-term', $deleted );
 		}
 
-		return $deleted;
+		return $return;
 	}
 	
 	/**
@@ -341,13 +339,6 @@ class Terms extends Repository {
 		
 	}
 
-	/**
-	 * @param $term_id
-	 *
-	 * @return mixed|void
-	 */
-	public function trash( $term_id ) {
-	}
 
 	public function register_post_type() {
 	}

@@ -406,7 +406,7 @@ class Items extends TAINACAN_UnitTestCase {
 		
 		$items = \Tainacan\Repositories\Items::get_instance();
 		
-		$items->delete($item_id);
+		$items->delete($item);
 		
 		$fetch_item = $items->fetch($item_id);
 		
