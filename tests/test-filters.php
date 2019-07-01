@@ -367,4 +367,95 @@ class Filters extends TAINACAN_UnitTestCase {
         
     }
 	
+	
+	function test_delete_filter_when_metadata_deleted() {
+		
+		$Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+		
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Collection filtered',
+				'description' => 'Is filtered',
+			),
+			true
+		);
+		
+		$metadatum2 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'Other filtered',
+				'description'   => 'Is filtered',
+				'metadata_type'    => 'Tainacan\Metadata_Types\Text',
+				'collection_id' => $collection->get_id()
+			),
+			true
+		);
+		
+		$filter = $this->tainacan_entity_factory->create_entity(
+			'filter',
+			array(
+				'name'        => 'filtro',
+				'collection'  => $collection,
+				'description' => 'descricao',
+				'metadatum'       => $metadatum2,
+				'filter_type' => 'Tainacan\Filter_Types\Autocomplete'
+			),
+			true
+		);
+		
+		$Tainacan_Metadata->delete($metadatum2);
+		
+		$x = $Tainacan_Filters->fetch( $filter->get_id() );
+		
+		$this->assertEmpty($x);
+		
+	}
+	
+	function test_trash_filter_when_metadata_trashed() {
+		
+		$Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+		
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Collection filtered',
+				'description' => 'Is filtered',
+			),
+			true
+		);
+		
+		$metadatum2 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'Other filtered',
+				'description'   => 'Is filtered',
+				'metadata_type'    => 'Tainacan\Metadata_Types\Text',
+				'collection_id' => $collection->get_id()
+			),
+			true
+		);
+		
+		$filter = $this->tainacan_entity_factory->create_entity(
+			'filter',
+			array(
+				'name'        => 'filtro',
+				'collection'  => $collection,
+				'description' => 'descricao',
+				'metadatum'       => $metadatum2,
+				'filter_type' => 'Tainacan\Filter_Types\Autocomplete'
+			),
+			true
+		);
+		
+		$Tainacan_Metadata->trash($metadatum2);
+		
+		$x = $Tainacan_Filters->fetch( $filter->get_id() );
+		
+		$this->assertEquals('trash', $x->get_status());
+		
+	}
+	
 }

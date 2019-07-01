@@ -215,12 +215,6 @@ class Logs extends Repository {
 		}
 	}
 
-	public function delete( $object ) {
-	}
-
-	public function trash( $object ) {
-	}
-
 	public function update( $object, $new_values = null ) {
 		return $this->insert( $object );
 	}

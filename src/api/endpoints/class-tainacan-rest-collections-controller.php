@@ -357,13 +357,20 @@ class REST_Collections_Controller extends REST_Controller {
 	 * @return string|\WP_Error|\WP_REST_Response
 	 */
 	public function delete_item( $request ) {
-	    $collection_id = $request['collection_id'];
 		$permanently = $request['permanently'];
+		$collection = $this->collections_repository->fetch($request['collection_id']);
+
+		if(! $collection instanceof Entities\Collection) {
+			return new \WP_REST_Response([
+		    	'error_message' => __('Collection with this ID was not found', 'tainacan' ),
+			    'collection_id' => $collection_id
+		    ], 400);
+		}
 
 		if($permanently == true) {
-			$collection = $this->collections_repository->delete($collection_id);
+			$collection = $this->collections_repository->delete($collection);
 		} else {
-			$collection = $this->collections_repository->trash($collection_id);
+			$collection = $this->collections_repository->trash($collection);
 		}
 
 		$prepared_collection = $this->prepare_item_for_response($collection, $request);

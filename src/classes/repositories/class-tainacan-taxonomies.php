@@ -245,8 +245,8 @@ class Taxonomies extends Repository {
 		return $this->insert( $object );
 	}
 
-	public function delete( $taxonomy_id ) {
-		$taxonomy_name = $this->fetch( $taxonomy_id )->get_db_identifier();
+	public function delete( Entities\Entity $taxonomy, $permanent = true ) {
+		$taxonomy_name = $taxonomy->get_db_identifier();
 
 		/* TODO: Investigate the cause of taxonomies aren't been registered
 		 *
@@ -254,48 +254,16 @@ class Taxonomies extends Repository {
 		 *
 		 * This condition is a temporary solution
 		 */
-		if ( taxonomy_exists( $taxonomy_name ) ) {
+		if ( taxonomy_exists( $taxonomy_name ) && $permanent ) {
 			$unregistered = unregister_taxonomy( $taxonomy_name );
 
 			if ( $unregistered instanceof \WP_Error ) {
 				return $unregistered;
 			}
 		}
-
-		$deleted = new Entities\Taxonomy( wp_delete_post( $taxonomy_id, true ) );
-
-		if ( ! $deleted ) {
-			return $deleted;
-		}
-
-		if($this->use_logs){
-			$this->logs_repository->insert_log( $deleted, [], false, true );
-		}
-
-		do_action( 'tainacan-deleted', $deleted );
-
-		return $deleted;
-	}
-
-	/**
-	 * @param $taxonomy_id
-	 *
-	 * @return mixed|Entities\Taxonomy
-	 */
-	public function trash( $taxonomy_id ) {
-		$trashed = new Entities\Taxonomy( wp_trash_post( $taxonomy_id ) );
-
-		if ( ! $trashed ) {
-			return $trashed;
-		}
-
-		if($this->use_logs){
-			$this->logs_repository->insert_log( $trashed, [], false, false, true );
-		}
-
-		do_action( 'tainacan-trashed', $trashed );
-
-		return $trashed;
+		
+		return parent::delete($taxonomy, $permanent);
+		
 	}
 
 	public function added_collection( $taxonomy_id, $collection_id ) {

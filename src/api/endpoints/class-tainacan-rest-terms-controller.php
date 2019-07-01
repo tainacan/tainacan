@@ -149,19 +149,20 @@ class REST_Terms_Controller extends REST_Controller {
 	public function delete_item( $request ) {
 		$term_id = $request['term_id'];
 		$taxonomy_id = $request['taxonomy_id'];
+		
+		$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
 
-		$taxonomy = $this->taxonomy_repository->fetch( $taxonomy_id );
-		$taxonomy_name = $taxonomy->get_db_identifier();
-
-		if(!$taxonomy_name){
+		$term = $this->terms_repository->fetch($term_id, $taxonomy);
+		
+		if ( ! $term instanceof Entities\Term ) {
 			return new \WP_REST_Response([
-				'error_message' => 'The ID of taxonomy may be incorrect.'
-			]);
+				'error_message' => __('A term with this ID was not found', 'tainacan' ),
+				'taxonomy_id'   => $taxonomy_id,
+				'term_id'   => $term_id
+			], 400);
 		}
 
-		$delete_args = ['term_id' => $term_id, 'taxonomy' => $taxonomy_name];
-
-		$is_deleted = $this->terms_repository->delete($delete_args);
+		$is_deleted = $this->terms_repository->delete($term);
 
 		return new \WP_REST_Response($is_deleted, 200);
 	}
@@ -375,6 +376,14 @@ class REST_Terms_Controller extends REST_Controller {
 		$taxonomy = $this->taxonomy_repository->fetch($tax_id);
 
 		$term = $this->terms_repository->fetch($term_id, $taxonomy);
+		
+		if ( ! $term instanceof Entities\Term ) {
+			return new \WP_REST_Response([
+				'error_message' => __('A term with this ID was not found', 'tainacan' ),
+				'taxonomy_id'   => $tax_id,
+				'term_id'   => $term_id
+			], 400);
+		}
 
 		return new \WP_REST_Response($this->prepare_item_for_response($term, $request), 200);
 	}
