@@ -625,7 +625,6 @@ abstract class Repository {
 			$this->logs_repository->insert_log( $entity, [], false, false, true );
 			
 			do_action( 'tainacan-deleted', $entity, $permanent );
-			var_dump('tainacan-deleted-' . $entity->get_post_type());
 			do_action( 'tainacan-deleted-' . $entity->get_post_type(), $entity, $permanent );
 			
 			$return = $this->get_entity_by_post($return);

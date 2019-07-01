@@ -510,11 +510,16 @@ class Filters extends Repository {
 	
 	public function hook_delete_when_metadata_deleted($filter, $permanent) {
 		
-		if ( $filter instanceof Entities\Metadatum && $permanent ) {
+		if ( $filter instanceof Entities\Metadatum ) {
 			$metadatum_id = $filter->get_id();
 			$filters = $this->fetch(['metadatum_id' => $metadatum_id, 'post_status' => 'any'], 'OBJECT');
 			foreach ($filters as $filter) {
-				$this->delete($filter);
+				if ($permanent) {
+					$this->delete($filter);
+				} else {
+					$this->trash($filter);
+				}
+				
 			}
 		}
 		
