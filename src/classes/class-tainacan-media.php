@@ -167,7 +167,6 @@ class Media {
 	 * @return blob           bitstream of the image in jpg format
 	 */
 	public function get_pdf_cover($filepath) {
-		
 		$blob = apply_filters('tainacan-extract-pdf-cover', null, $filepath);
 		if ($blob) {
 			return $blob;
@@ -185,12 +184,26 @@ class Media {
 			return null;
 		}
 		
-		$imagick = new \Imagick();
-		$imagick->setResolution(72,72);
-		$imagick->readImage($filepath . '[0]');  
-		//$imagick->setIteratorIndex(0);
-		$imagick->setImageFormat('jpg');
-		return $imagick->getImageBlob();
+		try {
+			register_shutdown_function(array($this, 'shutdown_function'));
+			$this->THROW_EXCPTION_ON_FATAL_ERROR = true; 
+			$imagick = new \Imagick();
+			$imagick->setResolution(72,72);
+			$imagick->readImage($filepath . '[0]');
+			//$imagick->setIteratorIndex(0);
+			$imagick->setImageFormat('jpg');
+			$this->THROW_EXCPTION_ON_FATAL_ERROR = false;
+			return $imagick->getImageBlob();
+		} catch(\Exception $e) {
+			return null;
+		} catch (\Error $ex) {
+			return null;
+		}
 	}
-	
+
+	private $THROW_EXCPTION_ON_FATAL_ERROR = false;
+	public function shutdown_function() {
+		if( $this->THROW_EXCPTION_ON_FATAL_ERROR ) 
+			throw new \Exception("fatal error");
+	}
 }
