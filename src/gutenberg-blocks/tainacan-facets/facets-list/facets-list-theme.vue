@@ -198,7 +198,7 @@ export default {
 
             this.facetsRequestSource = axios.CancelToken.source();
 
-            let endpoint = this.collectionId != 'default' ? '/collection/' + this.collectionId + '/facets/' + this.metadatumId : '/facets/' + this.metadatumId;
+            let endpoint = '/facets/' + this.metadatumId;
             let query = endpoint.split('?')[1];
             let queryObject = qs.parse(query);
 

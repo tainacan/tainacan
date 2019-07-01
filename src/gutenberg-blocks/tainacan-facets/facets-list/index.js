@@ -206,7 +206,7 @@ registerBlockType('tainacan/facets-list', {
                 isLoading: isLoading
             });
             
-            let endpoint = collectionId != 'default' ? '/collection/' + collectionId + '/facets/' + metadatumId : '/facets/' + metadatumId;
+            let endpoint = '/facets/' + metadatumId;
             let query = endpoint.split('?')[1];
             let queryObject = qs.parse(query);
 
