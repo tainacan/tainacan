@@ -43,8 +43,8 @@
                         v-for="facet in Number(maxFacetsNumber)"
                         class="facet-list-item skeleton"
                         :style="{ 
-                            marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
-                            height: layout == 'grid' ? '230px' : '54px'
+                            marginBottom: layout == 'grid' && ((metadatumType == 'Relationship' || metadatumType == 'Taxonomy') && showImage) ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
+                            height: getSkeletonHeight()
                         }" />      
         </ul>
         <div v-else>
@@ -257,6 +257,21 @@ export default {
                     this.isLoading = false;
                     // console.log(error);
                 });
+        },
+        getSkeletonHeight() {
+            switch(this.layout) {
+                case 'grid':
+                    if ((this.metadatumType == 'Relationship' || this.metadatumType == 'Taxonomy') && this.showImage)
+                        return '230px';
+                    else
+                        return '24px'
+                case 'list':
+                    if ((this.metadatumType == 'Relationship' || this.metadatumType == 'Taxonomy') && this.showImage)
+                        return '54px';
+                    else
+                        return '24px'
+                default: return '54px';
+            }
         }
     },
     created() {
