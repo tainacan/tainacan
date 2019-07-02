@@ -124,7 +124,7 @@
             <div
                     v-else
                     class="spinner-container">
-                {{ facets.length > 0 ? (offset > 0 ? $root.__('No more facets found.', 'tainacan') : '') : $root.__('No facets found.', 'tainacan') }}
+                {{ facets.length > 0 ? '' : $root.__('No facets found.', 'tainacan') }}
             </div>
         </div>
     </div>
