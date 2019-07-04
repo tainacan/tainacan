@@ -599,7 +599,7 @@
                             @click="onChangeTab('')"
                             :class="{ 'is-active': status == undefined || status == ''}"
                             v-tooltip="{
-                                content: $i18n.getWithVariables('info_%s_tab_all',[$i18n.get('items')]),
+                                content: $i18n.get('info_items_tab_all'),
                                 autoHide: true,
                                 placement: 'auto',
                             }">
@@ -730,7 +730,7 @@
                                 v-for="(statusOption, index) of $statusHelper.getStatuses()"
                                 :key="index"
                                 v-if="status == statusOption.slug">
-                            {{ $i18n.getWithVariables('info_no_%s_' + statusOption.slug,['items']) }}
+                            {{ $i18n.get('info_no_items_' + statusOption.slug) }}
                         </p>
 
                         <router-link

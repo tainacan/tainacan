@@ -1,6 +1,6 @@
 <template>
     <div
-            style="min-height: initial"
+            style="min-height: initial; position: relative"
             class="tainacan-cards-container">
         <template v-if="collections.length <= 0 && !isLoading">
             <ul class="new-collection-menu">

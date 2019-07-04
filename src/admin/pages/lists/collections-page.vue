@@ -129,7 +129,7 @@
                             @click="onChangeTab('')"
                             :class="{ 'is-active': status == undefined || status == ''}"
                             v-tooltip="{
-                                content: $i18n.getWithVariables('info_%s_tab_all',[$i18n.get('collections')]),
+                                content: $i18n.get('info_collections_tab_all'),
                                 autoHide: true,
                                 placement: 'auto',
                             }">
@@ -188,7 +188,7 @@
                                     v-for="(statusOption, index) of $statusHelper.getStatuses()"
                                     :key="index"
                                     v-if="status == statusOption.slug">
-                                {{ $i18n.getWithVariables('info_no_%s_' + statusOption.slug,['collection']) }}
+                                {{ $i18n.get('info_no_collections_' + statusOption.slug) }}
                             </p>
 
                             <div v-if="$userCaps.hasCapability('edit_tainacan-collections') && status == undefined || status == ''">

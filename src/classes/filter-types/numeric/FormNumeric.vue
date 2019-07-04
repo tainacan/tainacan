@@ -13,8 +13,7 @@
                 <b-select
                         name="step_options"
                         v-model="step"
-                        @input="onUpdateStep"
-                        :placeholder="$i18n.get('instruction_select_step_options_to_show')">
+                        @input="onUpdateStep">
                     <option value="0.001">0.001</option>
                     <option value="0.01">0.01</option>
                     <option value="0.1">0.1</option>
