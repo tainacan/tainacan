@@ -908,10 +908,16 @@ export default {
         loadMetadata() {
             // Obtains Item Metadatum
             this.fetchMetadata(this.itemId).then((metadata) => {
+                this.metadataCollapses = [];
+
                 if (this.isOnSequenceEdit && this.$route.query.collapses) {
-                    this.metadataCollapses = [];
                     for (let i = 0; i < metadata.length; i++) {
                         this.metadataCollapses.push(this.$route.query.collapses[i] != undefined ? this.$route.query.collapses[i] : true);
+                    }
+                } else if (this.isOnSequenceEdit && !this.$route.query.collapses) {
+                    for (let i = 0; i < metadata.length; i++) {
+                        this.metadataCollapses.push(true);
+                        this.metadataCollapses[i] = false;
                     }
                 } else {
                     for (let i = 0; i < metadata.length; i++) {
