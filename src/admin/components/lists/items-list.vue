@@ -662,7 +662,7 @@
                             <span 
                                     v-for="(column, index) in tableMetadata"
                                     :key="index"
-                                    v-if="column.metadatum == 'row_creation' || column.metadatum == 'row_author'">
+                                    v-if="(column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined">
                                 <h3 class="metadata-label">{{ column.name }}</h3>
                                 <p 
                                         v-html="column.metadatum == 'row_creation' ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"
