@@ -109,6 +109,9 @@
         </section>
 
         <section class="home-section home-section-collection">
+            <div 
+                    class="collection-section-connector" 
+                    aria-hidden/>
             <div class="home-section-header collections-section-header">
                 <div class="home-section-icon">
                     <router-link
@@ -119,28 +122,29 @@
                     </router-link>
                 </div>
                 <h1>{{ $i18n.get('label_recent_collections') }}</h1>
-                <router-link
-                        tag="a"
-                        to="/collections">
-                    <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-viewtable"/>
-                    </span>
-                    <span
-                            v-if="collectionsTotal != undefined && collectionsTotal > 1"
-                            class="menu-text">
-                        {{ $i18n.getWithVariables('label_view_all_%s_collections', [collectionsTotal]) }}
-                    </span>
-                    <span
-                            v-if="collectionsTotal != undefined && collectionsTotal == 1"
-                            class="menu-text">
-                        {{ $i18n.get('label_view_collections_list') }}
-                    </span>
-                </router-link>
             </div>
             <collections-home-list
                     :is-loading="isLoadingCollections"
                     :collections="collections"
                     :collections-total="collectionsTotal"/> 
+            <router-link
+                    class="collections-see-more"
+                    tag="a"
+                    to="/collections">
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-viewtable"/>
+                </span>
+                <span
+                        v-if="collectionsTotal != undefined && collectionsTotal > 1"
+                        class="menu-text">
+                    {{ $i18n.getWithVariables('label_view_all_%s_collections', [collectionsTotal]) }}
+                </span>
+                <span
+                        v-if="collectionsTotal != undefined && collectionsTotal == 1"
+                        class="menu-text">
+                    {{ $i18n.get('label_view_collections_list') }}
+                </span>
+            </router-link>
         </section>
 
     </div>   
@@ -214,6 +218,7 @@ export default {
                 }
             }
             &.home-section-collection {
+                position: relative;
                 margin-left: 52px;
             }
 
@@ -225,6 +230,15 @@ export default {
                 height: 100%;
                 top: 43px;
                 left: 26px;
+            }
+            .collection-section-connector {
+                border-left: 1px solid $gray2;
+                border-bottom: 1px solid $gray2;
+                position: absolute;
+                width: calc(100% + 26px);
+                height: 100%;
+                top: 0px;
+                left: -26px;
             }
 
             .home-section-header {
@@ -291,6 +305,34 @@ export default {
                         background-color: $turquoise5;
                         color: white;
                     }
+                }
+            }
+            a.collections-see-more {
+                padding: 10px 16px;
+                display: inline-flex;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                background: $gray1;
+                color: $turquoise5;
+                float: right;
+                width: calc(100% - 20px);
+
+                @media screen and (min-width: 768px) {
+                    width: calc(50% - 20px);
+                }
+                @media screen and (min-width: 1215px) {
+                    width: calc(33.3333% - 20px);
+                }
+                @media screen and (min-width: 1408px) {
+                    width: calc(25% - 20px);
+                }
+                @media screen and (min-width: 1920px) {
+                    width: calc(20% - 20px);
+                }
+
+                .menu-text { margin-left: 0.5rem;}
+                &:hover {
+                    background-color: $gray2;
                 }
             }
         }

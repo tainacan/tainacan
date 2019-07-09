@@ -933,7 +933,15 @@ abstract class Importer {
 
         $name = $properties[0];
         $type = $properties[1];
-
+		
+		$supported_types = \Tainacan\Repositories\Metadata::get_instance()->fetch_metadata_types('NAME');
+		$supported_types = array_map('strtolower', $supported_types);
+		
+		if ( ! \in_array($type, $supported_types) ) {
+			$this->add_log( __('Unknown Metadata type "' . $type . '" for '.$name.'. Considering text type.', 'tainacan') );
+			$type = 'text';
+		}
+		
         $newMetadatum = new Entities\Metadatum();
         $newMetadatum->set_name($name);
 
