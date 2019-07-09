@@ -47,6 +47,8 @@ class CSV extends Importer {
                             $this->set_option('item_status_index', $index);
                         } else if( $rawColumn === 'special_item_id' ) {
                             $this->set_option('item_id_index', $index);
+                        } else if( $rawColumn === 'special_comment_status' ) {
+                            $this->set_option('item_comment_status_index', $index);
                         }
                     } else {
                         $columns[] = $rawColumn;
@@ -154,6 +156,7 @@ class CSV extends Importer {
         $column_document = $this->get_option('document_index');
         $column_attachment = $this->get_option('attachment_index');
         $column_item_status = $this->get_option('item_status_index');
+        $column_item_comment_status = $this->get_option('item_comment_status_index');
 
         if( !empty($column_document) || !empty( $column_attachment ) || !empty( $column_item_status ) ){
             
@@ -183,6 +186,10 @@ class CSV extends Importer {
 
             if( is_array($values) && !empty($column_item_status) ) {
                 $this->handle_item_status( $values[$column_item_status], $inserted_item);
+            }
+
+            if( is_array($values) && !empty($column_item_comment_status) ) {
+                $this->handle_item_comment_status( $values[$column_item_comment_status], $inserted_item);
             }
         }
     }
@@ -517,6 +524,20 @@ class CSV extends Importer {
                 $item_inserted = $this->items_repo->update($item_inserted);
             }
         //}
+    }
+
+    /**
+     * @param $comment_status string the item comment status
+     */
+    private function handle_item_comment_status( $comment_status, $item_inserted ) {
+        if ( ! in_array( $comment_status, array( 'open', 'closed' ) ) ) {
+            $comment_status = 'closed';
+        }
+
+        $item_inserted->set_comment_status($comment_status);
+        if( $item_inserted->validate() ) {
+            $item_inserted = $this->items_repo->update($item_inserted);
+        }
     }
 
     /**

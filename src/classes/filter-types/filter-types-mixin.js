@@ -1,7 +1,6 @@
 import qs from 'qs';
 import axios from '../../js/axios/axios';
 import { mapGetters } from 'vuex';
-import { resolve } from 'bluebird';
 
 export const filter_type_mixin = {
     data () {
@@ -18,7 +17,6 @@ export const filter_type_mixin = {
         },
         metadatum_id: [Number], // not required, but overrides the filter metadatum id if is set
         collection_id: [Number], // not required, but overrides the filter metadatum id if is set
-        filter_type: [String], // not required, but overrides the filter metadatum type if is set
         id: '',
         query: {}
     },
@@ -26,9 +24,6 @@ export const filter_type_mixin = {
         // We listen to event, but reload event if hasFiltered is negative, as 
         // an empty query also demands filters reloading.
         this.$eventBusSearch.$on('hasFiltered', this.reloadOptionsDueToFiltering);
-    },
-    mounted() {
-        
     },
     computed: {
         facetsFromItemSearch() {

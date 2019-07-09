@@ -276,8 +276,8 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
 		$this->assertEquals('Value for meta 1', $item['metadata']['dc:language']['value']);
 		$this->assertEquals('Value for meta 3', $item['metadata']['dc:creator']['value']);
 		
-		$this->assertEquals($dc->get_url('dc:language'), $item['metadata']['dc:language']['semantic_url']);
-		$this->assertEquals($dc->get_url('dc:creator'), $item['metadata']['dc:creator']['semantic_url']);
+		$this->assertEquals($dc->get_url('dc:language'), $item['metadata']['dc:language']['semantic_uri']);
+		$this->assertEquals($dc->get_url('dc:creator'), $item['metadata']['dc:creator']['semantic_uri']);
 		
 		$this->assertEquals($dc->metadata['dc:language']['label'], $item['metadata']['dc:language']['name']);
 		$this->assertEquals($dc->metadata['dc:creator']['label'], $item['metadata']['dc:creator']['name']);

@@ -126,8 +126,8 @@ It will give you all the items it received, in the way they were about to be ser
 It receives 3 parameters:
 
 * $response: an instance of the `\WP_REST_Response` object 
-* $response: an instance of the `\WP_REST_Server` object 
-* $response: an instance of the `\WP_REST_Request` object 
+* $handler: an instance of the `\WP_REST_Server` object 
+* $request: an instance of the `\WP_REST_Request` object 
 
 This method have to return the modified version of the `\WP_REST_Response` object.
 

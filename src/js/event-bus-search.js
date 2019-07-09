@@ -203,15 +203,11 @@ export default {
                         let prefsFetchOnly = this.collectionId ? `fetch_only_${this.collectionId}` : 'fetch_only';
                         let prefsFetchOnlyMeta = this.collectionId ? `fetch_only_meta_${this.collectionId}` : 'fetch_only_meta';
 
-                        if (this.$userPrefs.get(prefsFetchOnly) != metadatum) {
-                            this.$userPrefs.set(prefsFetchOnly, metadatum)
-                                .catch(() => this.$console.error("Error setting user preferences for fetch_only"));
-                        }
+                        if (this.$userPrefs.get(prefsFetchOnly) != metadatum)
+                            this.$userPrefs.set(prefsFetchOnly, metadatum);
 
-                        if(this.$userPrefs.get(prefsFetchOnlyMeta) != metadatumIDs) {
-                            this.$userPrefs.set(prefsFetchOnlyMeta, metadatumIDs)
-                                .catch(() => this.$console.error("Error setting user preferences for fetch_only_meta"))
-                        }
+                        if (this.$userPrefs.get(prefsFetchOnlyMeta) != metadatumIDs)
+                            this.$userPrefs.set(prefsFetchOnlyMeta, metadatumIDs);
                     }
                 },
                 cleanFetchOnly() {
@@ -320,7 +316,6 @@ export default {
                     if (this.$store.getters['search/getPostQuery']['fetch_only'] == undefined) {  
                         this.$emit( 'hasToPrepareMetadataAndFilters', to);
                     } else {  
-
                         this.$emit( 'isLoadingItems', true);
                         
                         // Cancels previous Request

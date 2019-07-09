@@ -52,6 +52,8 @@ class CSV extends Exporter {
 		
 		$line[] = $this->get_attachments_cell($item);
 		
+		$line[] = $item->get_comment_status();
+		
 		$line_string = $this->str_putcsv($line, $this->get_option('delimiter'), $this->get_option('enclosure'));
 		
 		
@@ -111,6 +113,7 @@ class CSV extends Exporter {
 		$line[] = 'special_item_status';
 		$line[] = 'special_document';
 		$line[] = 'special_attachments';
+		$line[] = 'special_comment_status';
 		
 		$line_string = $this->str_putcsv($line, $this->get_option('delimiter'), $this->get_option('enclosure'));
 		

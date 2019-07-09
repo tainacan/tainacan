@@ -9,7 +9,19 @@
                     size="is-small"
                     @focus="isTouched = true"
                     @input="validate_values()"
-                    icon="calendar-today"/>
+                    editable
+                    :date-formatter="(date) => dateFormatter(date)"
+                    :date-parser="(date) => dateParser(date)"
+                    icon="calendar-today"
+                    :day-names="[
+                        $i18n.get('datepicker_short_sunday'),
+                        $i18n.get('datepicker_short_monday'),
+                        $i18n.get('datepicker_short_tuesday'),
+                        $i18n.get('datepicker_short_wednesday'),
+                        $i18n.get('datepicker_short_thursday'),
+                        $i18n.get('datepicker_short_friday'),
+                        $i18n.get('datepicker_short_saturday'),
+                    ]"/>
             <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
             <b-datepicker
                     :aria-labelledby="labelId"
@@ -18,26 +30,34 @@
                     size="is-small"
                     @input="validate_values()"
                     @focus="isTouched = true"
-                    icon="calendar-today"/>
+                    editable
+                    :date-formatter="(date) => dateFormatter(date)"
+                    :date-parser="(date) => dateParser(date)"
+                    icon="calendar-today"
+                    :day-names="[
+                        $i18n.get('datepicker_short_sunday'),
+                        $i18n.get('datepicker_short_monday'),
+                        $i18n.get('datepicker_short_tuesday'),
+                        $i18n.get('datepicker_short_wednesday'),
+                        $i18n.get('datepicker_short_thursday'),
+                        $i18n.get('datepicker_short_friday'),
+                        $i18n.get('datepicker_short_saturday'),
+                    ]"/>
         </div>
 
         <!-- Numeric -->
         <div v-else>
-            <b-input
+            <b-numberinput
                     :aria-labelledby="labelId"
                     size="is-small"
-                    type="number"
                     step="any"
-                    autocomplete="off"
                     @input="validate_values()"
                     v-model="value_init"/>
             <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
-            <b-input
+            <b-numberinput
                     :aria-labelledby="labelId"
                     size="is-small"
-                    type="number"
                     step="any"
-                    autocomplete="off"
                     @input="validate_values()"
                     @focus="isTouched = true"
                     v-model="value_end"/>
@@ -47,12 +67,12 @@
 
 <script>
     import { tainacan as axios } from '../../../js/axios/axios';
-    import { wpAjax } from "../../../admin/js/mixins";
+    import { wpAjax, dateInter } from "../../../admin/js/mixins";
+    import moment from 'moment';
 
     export default {
-        mixins: [ wpAjax ],
-        created(){
-            const vm = this;
+        mixins: [ wpAjax, dateInter ],
+        created() {
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
             this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id;
 
@@ -66,9 +86,9 @@
                 .then( res => {
                     let result = res.data;
                     if( result && result.metadata_type ){
-                        vm.metadatum_object = result;
-                        vm.type = ( result.metadata_type === 'Tainacan\\Metadata_Types\\Date') ? 'date' : 'numeric';
-                        vm.selectedValues();
+                        this.metadatum_object = result;
+                        this.type = ( result.metadata_type === 'Tainacan\\Metadata_Types\\Date') ? 'date' : 'numeric';
+                        this.selectedValues();
                     }
                 })
                 .catch(error => {
@@ -89,7 +109,7 @@
                 type: 'numeric',
                 collection: '',
                 metadatum: '',
-                metadatum_object: {},
+                metadatum_object: {}
             }
         },
         props: {
@@ -140,7 +160,7 @@
                         return;
                     }
                 }
-                this.emit( this );
+                this.emit();
             }, 1000),
             // message for error
             error_message(){
@@ -148,10 +168,16 @@
 
                 this.$toast.open({
                     duration: 3000,
-                    message: `First value should be lower than second value`,
+                    message: this.$i18n.get('info_error_first_value_greater'),
                     position: 'is-bottom',
                     type: 'is-danger'
                 })
+            },
+            dateFormatter(dateObject) { 
+                return moment(dateObject, moment.ISO_8601).format(this.dateFormat);
+            },
+            dateParser(dateString) { 
+                return moment(dateString, this.dateFormat).toDate(); 
             },
             selectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
@@ -174,7 +200,7 @@
                     if (metadata.value[0] != undefined && metadata.value[1] != undefined) {
                         this.$eventBusSearch.$emit( 'sendValuesToTags', {
                             filterId: this.filter.id,
-                            value: metadata.value[0] + ' - ' + metadata.value[1]
+                            value: this.parseDateToNavigatorLanguage(metadata.value[0]) + ' - ' + this.parseDateToNavigatorLanguage(metadata.value[1])
                         });
                     }
 
@@ -222,69 +248,68 @@
                     this.isTouched = false;
                 }
             },
-
             // emit the operation for listeners
-            emit: ( vm ) => {
+            emit() {
                 let values = [];
                 let type = '';
 
-                if( vm.type === 'date' ){
+                if( this.type === 'date' ){
 
-                    if( vm.date_init === null && vm.date_end === null ){
+                    if( this.date_init === null && this.date_end === null ){
                       values = [];
                       type = 'DATE';
-                      vm.isValid = false;
-                      vm.clear = true;
+                      this.isValid = false;
+                      this.clear = true;
                     } else {
-                      let date_init = vm.date_init.getUTCFullYear() + '-' +
-                          ('00' + (vm.date_init.getUTCMonth() + 1)).slice(-2) + '-' +
-                          ('00' + vm.date_init.getUTCDate()).slice(-2);
-                      let date_end = vm.date_end.getUTCFullYear() + '-' +
-                          ('00' + (vm.date_end.getUTCMonth() + 1)).slice(-2) + '-' +
-                          ('00' + vm.date_end.getUTCDate()).slice(-2);
+                      let date_init = this.date_init.getUTCFullYear() + '-' +
+                          ('00' + (this.date_init.getUTCMonth() + 1)).slice(-2) + '-' +
+                          ('00' + this.date_init.getUTCDate()).slice(-2);
+                      let date_end = this.date_end.getUTCFullYear() + '-' +
+                          ('00' + (this.date_end.getUTCMonth() + 1)).slice(-2) + '-' +
+                          ('00' + this.date_end.getUTCDate()).slice(-2);
                       values = [ date_init, date_end ];
                       type = 'DATE';
-                      vm.isValid = true;
-                      vm.clear = false;
+                      this.isValid = true;
+                      this.clear = false;
                     }
                 } else {
-                    if( vm.value_init === null || vm.value_end === null
-                      || vm.value_init === '' || vm.value_end === ''){
+                    if( this.value_init === null || this.value_end === null
+                      || this.value_init === '' || this.value_end === ''){
                         return;
                     } else {
-                        values =  [ vm.value_init, vm.value_end ];
+                        values =  [ this.value_init, this.value_end ];
 
-                        if(vm.value_init !== vm.value_end && (vm.value_init % 1 !== 0 && vm.value_end % 1 == 0)) {
+                        if(this.value_init !== this.value_end && (this.value_init % 1 !== 0 && this.value_end % 1 == 0)) {
                             type = 'DECIMAL';
-                        } else if(vm.value_init !== vm.value_end &&
-                            vm.value_init % 1 !== 0 &&
-                            vm.value_end % 1 !== 0) {
+                        } else if(this.value_init !== this.value_end &&
+                            this.value_init % 1 !== 0 &&
+                            this.value_end % 1 !== 0) {
 
                             type = '';
-                        } else if(vm.value_init !== vm.value_end &&
-                            !(vm.value_init % 1 == 0 && vm.value_end % 1 !== 0)){
+                        } else if(this.value_init !== this.value_end &&
+                            !(this.value_init % 1 == 0 && this.value_end % 1 !== 0)){
                             type = 'DECIMAL';
                         } else {
                             type = '';
                         }
-                        //vm.isValid = true;
-                        //vm.clear = false;
+                        //this.isValid = true;
+                        //this.clear = false;
                     }
                 }
 
-                vm.$emit('input', {
+                this.$emit('input', {
                     filter: 'range',
                     type: type,
                     compare: 'BETWEEN',
-                    metadatum_id: vm.metadatum,
-                    collection_id: ( vm.collection_id ) ? vm.collection_id : vm.filter.collection_id,
+                    metadatum_id: this.metadatum,
+                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     value: values
                 });
 
                 if (values[0] != undefined && values[1] != undefined) {
-                    vm.$eventBusSearch.$emit( 'sendValuesToTags', {
-                        filterId: vm.filter.id,
-                        value: values[0] + ' - ' + values[1]
+                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                        filterId: this.filter.id,
+                        value: this.parseDateToNavigatorLanguage(values[0]) + ' - ' + this.parseDateToNavigatorLanguage(values[1])
                     });
                 }
             }
@@ -294,3 +319,12 @@
         }
     }
 </script>
+
+<style scoped>
+    .field {
+        margin-bottom: 0.125rem !important;
+    }
+    p.is-size-7 {
+        margin-bottom: 0.125rem !important;
+    }
+</style>

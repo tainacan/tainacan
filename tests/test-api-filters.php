@@ -67,10 +67,11 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			array(
 				'name'        => 'Metadatum filtered',
 				'description' => 'Is filtered',
-			)
+				'collection_id' => $collection->get_id(),
+				'metadata_type'    => 'Tainacan\Metadata_Types\Numeric',
+			),
+			true
 		);
-
-		$filter_type = $this->tainacan_filter_factory->create_filter('custom_interval');
 
 		$filter = $this->tainacan_entity_factory->create_entity(
 			'filter',
@@ -78,8 +79,8 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'        => 'filtro',
 				'collection'  => $collection,
 				'description' => 'descricao',
-				'metadatum'    => $metadatum,
-				'filter_type' => $filter_type,
+				'metadatum_id'    => $metadatum->get_id(),
+				'filter_type' => 'Tainacan\Filter_Types\Custom_Interval',
 			),
 			true
 		);
@@ -133,8 +134,10 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			array(
 				'name'        => 'Metadatum filtered',
 				'description' => 'Is filtered',
-				'collection_id' => $collection->get_id()
-			)
+				'collection_id' => $collection->get_id(),
+				'metadata_type'    => 'Tainacan\Metadata_Types\Numeric',
+			),
+			true
 		);
 
 		$filter_type = $this->tainacan_filter_factory->create_filter('custom_interval');
@@ -145,7 +148,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'        => 'filtro',
 				'collection'  => $collection,
 				'description' => 'descricao',
-				'metadatum'    => $metadatum,
+				'metadatum_id'    => $metadatum->get_id(),
 				'filter_type' => $filter_type,
 			),
 			true
@@ -296,7 +299,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'description' => 'Description of 2x Filter',
 				'status'      => 'publish'
 			],
-			'metadatum'       => $metadatum2->get_id()
+			'metadatum_id'       => $metadatum2->get_id()
 		]);
 
 		$filter_attr2 = json_encode([
@@ -306,7 +309,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'description' => 'Description of 4x Filter',
 				'status'      => 'publish'
 			],
-			'metadatum'       => $metadatum->get_id()
+			'metadatum_id'       => $metadatum->get_id()
 		]);
 
 		#### CREATE A FILTER IN REPOSITORY ####

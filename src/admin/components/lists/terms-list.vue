@@ -11,36 +11,50 @@
             {{ $i18n.get('label_new_term') }}
         </button>
         <b-field class="order-area">
-            <button
-                    :disabled="localTerms.length <= 0 || isLoadingTerms || isEditingTerm || order == 'asc'"
-                    class="button is-white is-small"
-                    @click="onChangeOrder('asc')">
-                <span
-                        v-tooltip="{
-                            content: $i18n.get('label_sort_ascending'),
-                            autoHide: true,
-                            classes: ['tooltip', 'repository-tooltip'],
-                            placement: 'bottom'
-                        }"
-                        class="icon gray-icon">
-                    <i class="tainacan-icon tainacan-icon-sortascending"/>
-                </span>
-            </button>
-            <button
-                    :disabled="localTerms.length <= 0 || isLoadingTerms || isEditingTerm || order == 'desc'"
-                    class="button is-white is-small"
-                    @click="onChangeOrder('desc')">
-                <span
-                        v-tooltip="{
-                            content: $i18n.get('label_sort_descending'),
-                            autoHide: true,
-                            classes: ['tooltip', 'repository-tooltip'],
-                            placement: 'bottom'
-                        }"
-                        class="icon gray-icon">
-                    <i class="tainacan-icon tainacan-icon-sortdescending"/>
-                </span>
-            </button>
+            <label class="label">{{ $i18n.get('label_sort') }}</label>
+            <b-dropdown
+                    :mobile-modal="true"
+                    :disabled="localTerms.length <= 0 || isLoadingTerms || isEditingTerm"
+                    @input="onChangeOrder(order == 'asc' ? 'desc' : 'asc')"
+                    aria-role="list">
+                <button
+                            :aria-label="$i18n.get('label_sorting_direction')"
+                            class="button is-white"
+                            slot="trigger">
+                    <span class="icon is-small gray-icon">
+                        <i 
+                                :class="order == 'desc' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
+                                class="tainacan-icon"/>
+                    </span>
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
+                    </span>
+                </button>
+                <b-dropdown-item
+                        aria-controls="items-list-results"
+                        role="button"
+                        :class="{ 'is-active': order == 'desc' }"
+                        :value="'desc'"
+                        aria-role="listitem"
+                        style="padding-bottom: 0.45rem">
+                    <span class="icon is-small gray-icon">
+                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending"/>
+                    </span>
+                    {{ $i18n.get('label_descending') }}
+                </b-dropdown-item>
+                <b-dropdown-item
+                        aria-controls="items-list-results"
+                        role="button"
+                        :class="{ 'is-active': order == 'asc' }"
+                        :value="'asc'"
+                        aria-role="listitem"
+                        style="padding-bottom: 0.45rem">
+                    <span class="icon is-small gray-icon">
+                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending"/>
+                    </span>
+                    {{ $i18n.get('label_ascending') }}
+                </b-dropdown-item>
+            </b-dropdown>
         </b-field>
         <div class="search-area is-hidden-mobile">
             <div class="control has-icons-right  is-small is-clearfix">
@@ -468,19 +482,35 @@ export default {
         align-items: flex-start;
 
         .order-area {
-            display: inline-flex !important;
             padding: 4px;
+            margin-top: -4px;
             margin-left: auto;
 
-            .gray-icon, 
-            .gray-icon .icon {
-                color: $gray4 !important;
+            .label {
+                font-size: 0.875rem;
+                font-weight: normal;
+                margin-top: 3px;
+                margin-bottom: 2px;
+                cursor: default;
             }
-            .gray-icon 
-            .icon i::before, 
+
+            .button {
+                display: flex;
+                align-items: center;
+            }
+            
+            .field {
+                align-items: center;
+            }
+
+            .gray-icon, .gray-icon .icon {
+                color: $gray4 !important;
+                padding-right: 10px;
+            }
+            .gray-icon .icon i::before, 
             .gray-icon i::before {
-                font-size: 21px !important;
-                width: 26px;
+                font-size: 1.3125rem !important;
+                max-width: 26px;
             }
         }
 

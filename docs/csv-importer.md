@@ -23,9 +23,18 @@ The special columns that can be used are:
 * **special_item_id** - Inform the item ID in the Tainacan database. This is useful when re-importing items and let the user decide wether to update existing items or ignore them and only add new items.
 * **special_document** - let the user inform the item document. See "Importing files and attachments"
 * **special_attachments** - let the user inform the attachments. See "Importing files and attachments"
+* **special_comment_status** - Inform if the item is open for comments. Possible values are open or closed. Default is closed.
 
+Example:
 
-## Importing files and attachments
+```
+name, special_item_status, special_comment_status
+item uno, draft,   closed
+item due, private, closed
+item tre, publish, open
+```
+
+### Importing files and attachments
 
 If you also have files you want to import, that are related to the items in your CSV, you can use some special columns in your csv to do so.
 
@@ -54,6 +63,7 @@ An image,http://example.com/image.jpg
 Many images,http://example.com/image.jpg||http://example.com/image2.jpg||http://example.com/image3.jpg
 Images uploaded via FTP,myfolder/image.jpg||myfolder/image2.jpg
 ```
+
 
 ## Creating metadata on the fly
 

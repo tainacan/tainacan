@@ -298,8 +298,8 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$item_metadata_textarea = new \Tainacan\Entities\Item_Metadata_Entity($i, $metadatum_textarea);
 		$item_metadata_textarea->set_value($value_textarea);
 
-		$response_text = 'GOOGLE: <a href="www.google.com" target="_blank" title="www.google.com">www.google.com</a>';
-		$response_textarea = 'GOOGLE: <a href="www.google.com" target="_blank" title="www.google.com">www.google.com</a> \n GOOGLE: <a href="https://www.google.com" target="_blank" title="https://www.google.com">https://www.google.com</a>';
+		$response_text = 'GOOGLE: <a href="http://www.google.com" target="_blank" title="www.google.com">www.google.com</a>';
+		$response_textarea = 'GOOGLE: <a href="http://www.google.com" target="_blank" title="www.google.com">www.google.com</a> \n GOOGLE: <a href="https://www.google.com" target="_blank" title="https://www.google.com">https://www.google.com</a>';
 
 		$this->assertEquals($item_metadata_text->get_value_as_html(), $response_text);
 		$this->assertEquals($item_metadata_textarea->get_value_as_html(), $response_textarea);

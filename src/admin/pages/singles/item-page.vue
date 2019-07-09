@@ -7,9 +7,11 @@
 
         <div class="tainacan-page-title">
             <h1>
-        <span
-                v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
-                class="status-tag">{{ $i18n.get(item.status) }}</span>
+            <span
+                    v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
+                    class="status-tag">
+                {{ $i18n.get('status_' + item.status) }}
+            </span>
                 {{ $i18n.get('title_item_page') + ' ' }}
                 <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
             </h1>
@@ -338,6 +340,13 @@
             <div class="footer">
                 <div class="form-submission-footer">
                     <router-link
+                            v-if="item.current_user_can_edit && $route.query.recent == true"
+                            class="button is-secondary"
+                            style="margin-right: auto;"
+                            :to="{ path: $routerHelper.getNewItemPath(collectionId)}">
+                        {{ $i18n.get('label_create_another_item') }}
+                    </router-link>
+                    <router-link
                             v-if="item.current_user_can_edit"
                             class="button is-secondary"
                             :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
@@ -467,7 +476,12 @@
                 });
 
             // Obtains Item
-            this.fetchItem({ itemId: this.itemId, contextEdit: true }).then((item) => {
+            this.fetchItem({ 
+                itemId: this.itemId,
+                contextEdit: true,    
+                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document,comment_status,document_as_html'       
+            })
+            .then((item) => {
                 this.$root.$emit('onCollectionBreadCrumbUpdate', [
                     {path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items')},
                     {path: '', label: item.title}
@@ -510,7 +524,7 @@
 
         .tainacan-page-title {
             padding: 0 $page-side-padding;
-            margin-bottom: 40px;
+            margin-bottom: 35px;
             display: flex;
             flex-wrap: wrap;
             align-items: flex-end;

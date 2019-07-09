@@ -107,6 +107,11 @@
                             v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$route.query.iframemode">
                         {{ $i18n.getFrom('items','edit_item') }}
                     </b-dropdown-item>
+                    <!-- <b-dropdown-item
+                            @click="duplicateOneItem(contextMenuItem.id)"
+                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$route.query.iframemode">
+                        {{ $i18n.get('label_duplicate_item') }}
+                    </b-dropdown-item> -->
                     <b-dropdown-item
                             @click="deleteOneItem(contextMenuItem.id)"
                             v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$route.query.iframemode">
@@ -485,13 +490,13 @@
                                             show: 500,
                                             hide: 300,
                                         },
-                                        content: item.creation_date != undefined ? item.creation_date : '',
+                                        content: item.creation_date != undefined ? parseDateToNavigatorLanguage(item.creation_date) : '',
                                         html: false,
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }"   
                                     class="metadata-author-creation">   
-                                {{ $i18n.get('info_date') + ' ' + (item.creation_date != undefined ? item.creation_date : '') }}
+                                {{ $i18n.get('info_date') + ' ' + (item.creation_date != undefined ? parseDateToNavigatorLanguage(item.creation_date) : '') }}
                             </p>   
                         </div>
                     </div>
@@ -654,6 +659,15 @@
                                         v-html="renderMetadata(item.metadata, column)"
                                         class="metadata-value"/>
                             </span>
+                            <span 
+                                    v-for="(column, index) in tableMetadata"
+                                    :key="index"
+                                    v-if="column.metadatum == 'row_creation' || column.metadatum == 'row_author'">
+                                <h3 class="metadata-label">{{ column.name }}</h3>
+                                <p 
+                                        v-html="column.metadatum == 'row_creation' ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"
+                                        class="metadata-value"/>
+                            </span>
                         </div>
                     </div>
                
@@ -687,8 +701,7 @@
                                                                                                             column.metadata_type_object.primitive_type == 'item' || 
                                                                                                             column.metadata_type_object.primitive_type == 'compound') : false,
                                         'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' || column.metadata_type_object.related_mapped_prop == 'description') : false,
-                                }"
-                                :custom-key="column.slug">
+                                }">
                             <div class="th-wrap">{{ column.name }}</div>
                         </th>
                         <th class="actions-header">
@@ -718,7 +731,6 @@
                                 :key="columnIndex"
                                 v-for="(column, columnIndex) in tableMetadata"
                                 v-if="column.display"
-                                :label="column.name" 
                                 class="column-default-width"
                                 :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea',
                                         'thumbnail-cell': column.metadatum == 'row_thumbnail',
@@ -750,7 +762,7 @@
                                     v-if="collectionId == undefined &&
                                           column.metadata_type_object != undefined && 
                                           column.metadata_type_object.related_mapped_prop == 'title'"
-                                    v-html="(item.title != undefined && item.title != '') ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                    v-html="`<span class='sr-only'>` + column.name + ': </span>' + ((item.title != undefined && item.title != '') ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`)"/>
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -765,7 +777,7 @@
                                     v-if="collectionId == undefined &&
                                           column.metadata_type_object != undefined && 
                                           column.metadata_type_object.related_mapped_prop == 'description'"
-                                    v-html="(item.description != undefined && item.description) != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                    v-html="`<span class='sr-only'>` + column.name + ': </span>' + ((item.description != undefined && item.description) != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`)"/>
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -804,8 +816,22 @@
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }"
-                                    v-if="column.metadatum == 'row_author' || column.metadatum == 'row_creation'">
+                                    v-if="column.metadatum == 'row_author'">
                                     {{ item[column.slug] }}
+                            </p>
+                            <p 
+                                    v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
+                                        content: parseDateToNavigatorLanguage(item[column.slug]),
+                                        html: true,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }"
+                                    v-if="column.metadatum == 'row_creation'">
+                                    {{ parseDateToNavigatorLanguage(item[column.slug]) }}
                             </p>
 
                         </td>
@@ -875,6 +901,7 @@
 import { mapActions, mapGetters } from 'vuex';
 import CustomDialog from '../other/custom-dialog.vue';
 import BulkEditionModal from '../bulk-edition/bulk-edition-modal.vue';
+import { dateInter } from "../../../admin/js/mixins";
 
 export default {
     name: 'ItemsList',
@@ -894,6 +921,7 @@ export default {
             enableSelectAllItemsPages: tainacan_plugin.enable_select_all_items_pages
         }
     },
+    mixins: [ dateInter ],
     props: {
         collectionId: undefined,
         tableMetadata: Array,
@@ -949,6 +977,10 @@ export default {
         ...mapGetters('bulkedition', [
             'getGroupID'
         ]),
+        ...mapActions('item', [
+            'fetchItem',
+            'duplicateItem'
+        ]),
         ...mapGetters('search', [
             'getOrder',
             'getOrderBy'
@@ -992,6 +1024,18 @@ export default {
             for (let i = 0; i < this.selectedItems.length; i++) {
                 this.selectedItems.splice(i, 1, this.isAllItemsSelected);
             }
+        },
+        duplicateOneItem(itemId) {
+            this.fetchItem({ itemId: itemId, contextEdit: true })
+                .then((item) => {
+                    this.duplicateItem({ item: item })
+                        .then((duplicatedItem) => {
+                            this.$console.log(duplicatedItem);
+                        })
+                        .catch((error) => this.$console.error(error));
+                })
+                .catch(error => this.$console.error("Error fetching item for duplicate: " + error));    
+            this.clearContextMenu();
         },
         untrashOneItem(itemId) {
             this.$modal.open({
@@ -1178,9 +1222,9 @@ export default {
                 return '';
             } else {
                 if ((component != undefined && component == 'tainacan-textarea') || this.$route.query.iframemode)
-                    return metadata.value_as_string;
+                    return this.viewMode == 'table' ? ('<span class="sr-only">' + column.name + ': </span>' + metadata.value_as_string) : metadata.value_as_string;
                 else
-                    return metadata.value_as_html;
+                    return this.viewMode == 'table' ? ('<span class="sr-only">' + column.name + ': </span>' + metadata.value_as_html) : metadata.value_as_html;
             }
         },
         getLimitedDescription(description) {

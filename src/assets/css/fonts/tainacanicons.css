@@ -147,8 +147,11 @@
 .tainacan-icon-metadata:before {
     content: "metadata";
 }
-.tainacan-icon-more:before {
-    content: "more";
+.tainacan-icon-plus:before {
+    content: "plus";
+}
+.tainacan-icon-minus:before {
+    content: "minus";
 }
 .tainacan-icon-showmore:before {
     content: "showmore";
@@ -278,6 +281,27 @@
 }
 .tainacan-icon-twitter:before {
     content: "twitter";
+}
+.tainacan-icon-youtube:before {
+    content: "facebook";
+}
+.tainacan-icon-slidercol:before {
+    content: "slidercol";
+}
+.tainacan-icon-slideritems:before {
+    content: "slideritems";
+}
+.tainacan-icon-sliderterms:before {
+    content: "sliderterms";
+}
+.tainacan-icon-dincol:before {
+    content: "dincol";
+}
+.tainacan-icon-dinitems:before {
+    content: "dinitems";
+}
+.tainacan-icon-dinterms:before {
+    content: "dinterms";
 }
 
 .tainacan-icon-18px.tainacan-icon-set, 

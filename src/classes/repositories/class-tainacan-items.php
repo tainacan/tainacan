@@ -284,7 +284,12 @@ class Items extends Repository {
 		$args = $this->parse_fetch_args( $args );
 
 		$args['post_type'] = $cpt;
-
+		
+		// In progress...
+		// if (isset($args['meta_query'])) {
+		// 	$args = $this->transform_meta_query_to_tax_query($args);
+		// }
+		
 		$args = apply_filters( 'tainacan_fetch_args', $args, 'items' );
 
 		$wp_query = new \WP_Query( $args );
@@ -318,39 +323,6 @@ class Items extends Repository {
 		return $this->insert( $object );
 	}
 
-	/**
-	 * @param $item_id
-	 *
-	 * @return mixed|Item
-	 */
-	public function delete( $item_id ) {
-		$deleted = new Entities\Item( wp_delete_post( $item_id, true ) );
-
-		if ( $deleted && $this->use_logs) {
-			$this->logs_repository->insert_log( $deleted, [], false, true );
-
-			do_action( 'tainacan-deleted', $deleted );
-		}
-
-		return $deleted;
-	}
-
-	/**
-	 * @param $item_id
-	 *
-	 * @return mixed|Item
-	 */
-	public function trash( $item_id ) {
-		$trashed = new Entities\Item( wp_trash_post( $item_id ) );
-
-		if ( $trashed && $this->use_logs) {
-			$this->logs_repository->insert_log( $trashed, [], false, false, true );
-
-			do_action( 'tainacan-trashed', $trashed );
-		}
-
-		return $trashed;
-	}
 
 	/**
 	 * allow wp query filter post by array of titles
@@ -406,6 +378,76 @@ class Items extends Repository {
 		}
 
 		return $where;
+	}
+	
+	public function transform_meta_query_to_tax_query($args) {
+		
+		if (!isset($args['meta_query']) || !is_array($args['meta_query'])) {
+			return $args;
+		}
+		
+		$metas = [];
+		
+		foreach ($args['meta_query'] as $i => $meta_q) {
+			if (is_array($meta_q) && isset($meta_q['key']) && is_numeric($meta_q['key'])) {
+				$metas[$meta_q['key']] = $i;
+			}
+		}
+		
+		$metadata = Metadata::get_instance()->fetch([
+			'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
+			'post__in' => array_keys($metas)
+		], 'OBJECT');
+		
+		if (empty($metadata)) {
+			return $args;
+		}
+		
+		if (!isset($args['tax_query'])) {
+			$args['tax_query'] = [];
+		}
+		
+		foreach ($metadata as $metadatum) {
+			if ( isset($metas[$metadatum->get_id()]) ) {
+				$index = $metas[$metadatum->get_id()];
+				$metaquery = $args['meta_query'][$index];
+				$options = $metadatum->get_metadata_type_options();
+				$tax_id = $options['taxonomy_id'];
+				$tax_slug = Taxonomies::get_instance()->get_db_identifier_by_id($tax_id);
+				
+				if (!isset($metaquery['compare']) || $metaquery['compare'] == '=' || $metaquery['compare'] == 'IN' ) {
+					
+					$args['tax_query'][] = [
+						'taxonomy' => $tax_slug,
+						'field' => 'name',
+						'terms' => $terms,
+					];
+					
+				} elseif ( strtoupper($metaquery['compare']) == 'LIKE') {
+					$search['search'] = $metaquery['value'];
+					
+					$terms = get_terms([
+						'taxonomy' => $tax_slug,
+						'fields' => 'ids',
+						'search' => $metaquery['value']
+					]);
+					
+					$args['tax_query'][] = [
+						'taxonomy' => $tax_slug,
+						'terms' => $terms,
+					];
+					
+				} else {
+					continue;
+				}
+				
+				unset( $args['meta_query'][$index] );
+				
+			}
+		}
+		
+		return $args;
+		
 	}
 
 	/**

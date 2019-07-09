@@ -17,21 +17,12 @@
         </div>
         <p v-if="isRepositoryLevel">{{ $i18n.get('info_repository_filters_inheritance') }}</p>
         <br>
-        <div class="columns">
+        <div
+                :style="{ height: 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
+                class="columns"
+                ref="filterEditionPageColumns">
             <div class="column">
-                <section 
-                        v-if="activeFilterList.length <= 0 && !isLoadingFilters"
-                        class="field is-grouped-centered section">
-                    <div class="content has-text-gray has-text-centered">
-                        <p>
-                            <span class="icon is-large">
-                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters"/>
-                            </span>
-                        </p>
-                        <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>  
-                        <p>{{ $i18n.get('info_create_filters' ) }}</p>
-                    </div>
-                </section>         
+                     
                 <draggable 
                         class="active-filters-area"
                         @change="handleChangeOnFilter"
@@ -45,6 +36,19 @@
                             ghostClass: 'sortable-ghost',
                             filter: 'not-sortable-item', 
                             animation: '250'}">
+                            <section 
+                        v-if="activeFilterList.length <= 0 && !isLoadingFilters"
+                        class="field is-grouped-centered section">
+                    <div class="content has-text-gray has-text-centered">
+                        <p>
+                            <span class="icon is-large">
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters"/>
+                            </span>
+                        </p>
+                        <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>  
+                        <p>{{ $i18n.get('info_create_filters' ) }}</p>
+                    </div>
+                </section>    
                     <div  
                             class="active-filter-item" 
                             :class="{
@@ -255,7 +259,7 @@
                                             :key="index"
                                             @click="onFilterTypeSelected(filterType)"
                                             @mouseover="currentFilterTypePreview = { name: filterType.name, template: filterType.preview_template }"
-                                            @mouseleave="currentFilterTypePreview = undefined">
+                                            @mouseleave="currentFilterTypePreview = { name: filterType.name, template: filterType.preview_template }">
                                         <h4>{{ filterType.name }}</h4>          
                                     </div>
                                 </div>
@@ -330,7 +334,8 @@ export default {
             newFilterIndex: 0,
             availableMetadata: [],
             filterTypes: [],
-            currentFilterTypePreview: undefined        
+            currentFilterTypePreview: undefined,
+            columnsTopY: 0        
         }
     },
     computed: {
@@ -569,6 +574,7 @@ export default {
                     this.newFilterIndex = 0;
                 }
                 this.openedFilterId = filter.id;
+
                 // First time opening
                 if (this.editForms[this.openedFilterId] == undefined) {
                     this.editForms[this.openedFilterId] = JSON.parse(JSON.stringify(filter));
@@ -608,6 +614,10 @@ export default {
 
         if (!this.isRepositoryLevel)
             this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('filter') }]);
+
+        this.$nextTick(() => { 
+            this.columnsTopY = this.$refs.filterEditionPageColumns.getBoundingClientRect().top;
+        });
 
         this.isRepositoryLevel = this.$route.name == 'FiltersPage' ? true : false;
         if (this.isRepositoryLevel)
@@ -666,9 +676,10 @@ export default {
     @import "../../scss/_variables.scss";
 
     .filters-list-page {
+        padding-bottom: 0;
 
         .tainacan-page-title {
-            margin-bottom: 40px;
+            margin-bottom: 35px;
             display: flex;
             flex-wrap: wrap;
             align-items: flex-end;
@@ -696,9 +707,18 @@ export default {
             }
         }
                     
-        .column:not(.available-metadata-area){
-            overflow: hidden;
-            flex-grow: 2;
+        .column {
+            overflow-x: hidden;
+            overflow-y: auto;
+
+            &:not(.available-metadata-area){
+                margin-right: $page-side-padding;
+                flex-grow: 2;
+
+                @media screen and (max-width: 769px) {
+                    margin-right: 0;
+                }
+            }
         }
 
         .loading-spinner {
@@ -715,9 +735,9 @@ export default {
 
         .active-filters-area {
             font-size: 14px;
-            margin-right: 0.8em;
-            margin-left: -0.8em;
-            padding-right: 6em;
+            margin-right: 0.8rem;
+            margin-left: -0.8rem;
+            padding-right: 3rem;
             min-height: 330px;
 
             @media screen and (max-width: 769px) {
@@ -888,13 +908,13 @@ export default {
             }
 
             h3 {
-                margin: 0.2em 0em 1em -1.2em;
+                margin: 0.2rem 0rem 1rem 0rem;
                 font-weight: 500;
             }
 
             .available-metadatum-item {
                 padding: 0.7em;
-                margin: 4px;
+                margin: 4px 4px 4px 1.2rem;
                 background-color: white;
                 cursor: pointer;
                 left: 0;
@@ -1013,6 +1033,7 @@ export default {
 
             .column {
                 overflow: visible;
+                margin: 0;
             }
 
             .filter-types-container {
@@ -1091,7 +1112,7 @@ export default {
                 }
                 .field {
                     width: 100%;
-                    margin: 16px;
+                    margin: 6px;
                     .label { 
                         color: $gray5;
                         font-weight: normal;
@@ -1102,6 +1123,36 @@ export default {
                     text-decoration: underline;
                     margin: 0.875rem 1.5rem;
                 }
+
+                .numeric-filter-container,
+                .date-filter-container {
+                    display: flex;
+
+                    .field { margin: 0; }
+                    .dropdown {
+                        width: auto;
+
+                        .dropdown-trigger button {
+                            padding: 0 0.5rem !important;
+                            height: 30px !important;
+
+                            i:not(.tainacan-icon-arrowdown) {
+                                margin-top: -3px;
+                                font-size: 1.5rem;
+                                font-style: normal;
+                                color: #555758;
+                            }
+                        }
+                        .dropdown-menu {
+                            display: block !important;
+                        }
+                    }
+                    .datepicker {
+                        flex-shrink: 0;
+                        max-width: 70%;
+                    }
+                }
+
             }
 
         }

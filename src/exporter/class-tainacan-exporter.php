@@ -629,7 +629,8 @@ class Exporter extends CommunImportExport {
 		$filters = [
 			'posts_per_page' => 1,
 			'paged'   => $index+1,
-			'order'   => 'DESC'
+			'order'   => 'DESC',
+			'orderby' => 'ID'
 		];
 
 		$this->add_log('Proccessing item index ' . $index . ' in collection ' . $collection_definition['id'] );

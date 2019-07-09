@@ -50,6 +50,14 @@
     .button.is-outlined {
         color: $blue5 !important;
     }
+    .b-numberinput {
+        button.is-primary,
+        button.is-primary:hover,
+        button.is-primary:focus,
+        button.is-primary:active  {
+            color: $blue5 !important;
+        }
+    }
     .tabs {
         li.is-active a {
             border-bottom-color: $blue5;
@@ -81,7 +89,21 @@
     .dropdown-menu .dropdown-content {
         .dropdown-item.is-active { background-color: $blue2; }
     }
-
+    .datepicker {
+        .datepicker-header a>span>i:before {
+            color: $blue5 !important;
+        }
+        .datepicker-table {
+            .datepicker-cell.is-today,
+            .datepicker-cell.is-today:hover {
+                background-color: $blue1 !important;
+            }
+            .datepicker-cell.is-selected,
+            .datepicker-cell.is-selected:hover {
+                background-color: $blue5 !important;
+            }
+        }
+    }
     .switch {
         &:hover input[type="checkbox"]:checked + .check {
             background-color: $blue2;

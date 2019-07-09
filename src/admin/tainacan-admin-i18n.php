@@ -2,7 +2,7 @@
 
 return apply_filters( 'tainacan-admin-i18n', [
 
-	// Advanced search comparators
+	// Comparators
 	'is_equal_to'                                    => __( 'Equal', 'tainacan' ),
 	'is_not_equal_to'                                => __( 'Not equal', 'tainacan' ),
 	'contains'                                       => __( 'Contains', 'tainacan' ),
@@ -11,6 +11,10 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'less_than'                                      => __( 'Less than', 'tainacan' ),
 	'greater_than_or_equal_to'                       => __( 'Greater than or equal to', 'tainacan' ),
 	'less_than_or_equal_to'                          => __( 'Less than or equal to', 'tainacan' ),
+	'before'                                   	 	 => __( 'Before', 'tainacan' ),
+	'after'		                                     => __( 'After', 'tainacan' ),
+	'before_or_on_day'		                         => __( 'Before (inclusive)', 'tainacan' ),
+	'after_or_on_day'                          		 => __( 'After (inclusive)', 'tainacan' ),
 
 	// Tainacan common terms
 	'repository'                                     => __( 'Repository', 'tainacan' ),
@@ -82,14 +86,14 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'delete'                                    	 => __( 'Delete', 'tainacan' ),
 
 	// Wordpress Status
-	'publish'                                        => __( 'Publish', 'tainacan' ),
-	'public'                                         => __( 'Public', 'tainacan' ),
-	'draft'                                          => __( 'Draft', 'tainacan' ),
-	'private'                                        => __( 'Private', 'tainacan' ),
-	'trash'                                          => __( 'Trash', 'tainacan' ),
-	'auto-draft'                                     => __( 'Automatic Draft', 'tainacan' ),
-	'publish_visibility'                             => __( 'Visible to everyone', 'tainacan' ),
-	'private_visibility'                             => __( 'Visible only for editors', 'tainacan' ),
+	'status_publish'                                 => __( 'Publish', 'tainacan' ),
+	'status_public'                                  => __( 'Public', 'tainacan' ),
+	'status_draft'                                   => __( 'Draft', 'tainacan' ),
+	'status_private'                                 => __( 'Private', 'tainacan' ),
+	'status_trash'                                   => __( 'Trash', 'tainacan' ),
+	'status_auto-draft'                              => __( 'Automatic Draft', 'tainacan' ),
+	'publish_visibility'                             => __( 'Public (Visible to everyone)', 'tainacan' ),
+	'private_visibility'                             => __( 'Private (Visible only for editors)', 'tainacan' ),
 
 	// Page Titles (used mainly on Router)
 	'title_repository_collections_page'              => __( 'Repository Collections', 'tainacan' ),
@@ -213,6 +217,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_core_title'                               => __( 'Core Title', 'tainacan' ),
 	'label_core_description'                         => __( 'Core Description', 'tainacan' ),
 	'label_sorting'                                  => __( 'Sorting', 'tainacan' ),
+	'label_sorting_direction'                                  => __( 'Sorting direction', 'tainacan' ),
+	'label_sort'	                                 => __( 'Sort', 'tainacan' ),
 	'label_activity_date'                            => __( 'Activity date', 'tainacan' ),
 	'label_activity_title'                           => __( 'Activity', 'tainacan' ),
 	'label_header_image'                             => __( 'Header Image', 'tainacan' ),
@@ -235,11 +241,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_expand_all'                               => __( 'Expand all', 'tainacan' ),
 	'label_collapse_all'                             => __( 'Collapse all', 'tainacan' ),
 	'label_view_term'                                => __( 'View Term', 'tainacan' ),
-	'label_all_items'                                => __( 'All items', 'tainacan' ),
+	'label_all_published_items'                      => __( 'All published items', 'tainacan' ),
 	'label_all_collections'                          => __( 'All collections', 'tainacan' ),
 	'label_all_taxonomies'                           => __( 'All taxonomies', 'tainacan' ),
-	'label_draft_items'                              => __( 'Draft', 'tainacan' ),
-	'label_trash_items'                              => __( 'Trash', 'tainacan' ),
 	'label_bulk_actions'                             => __( 'Bulk actions', 'tainacan' ),
 	'label_delete_selected_collections'              => __( 'Delete selected collections', 'tainacan' ),
 	'label_edit_selected_collections'                => __( 'Edit selected collections', 'tainacan' ),
@@ -366,8 +370,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_no_output_info'			                 => __( 'No output info', 'tainacan' ),
 	'label_output'			                 	 	 => __( 'Output', 'tainacan' ),
 	'label_no_mapping'			                 	 => __( 'No mapping', 'tainacan' ),
-	'label_sort_descending'		                 	 => __( 'Sort descending', 'tainacan' ),
-	'label_sort_ascending'			                 => __( 'Sort ascending', 'tainacan' ),
+	'label_descending'		                 	 	 => __( 'Descending', 'tainacan' ),
+	'label_ascending'			                 	 => __( 'Ascending', 'tainacan' ),
 	'label_slideshow'			                 	 => __( 'Slideshow', 'tainacan' ),
 	'label_items_list'			                 	 => __( 'Items List', 'tainacan' ),
 	'label_list_pagination'			                 => __( 'List pagination', 'tainacan' ),
@@ -404,7 +408,14 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_previous_group_slides'					 => __( 'Previous group of slides', 'tainacan' ),	
 	'label_plugin_home_page'					 	 => __( 'Plugin home page', 'tainacan' ),	
 	'label_wordpress_admin_page'					 => __( 'WordPress Admin Page', 'tainacan' ),	
-
+	'label_view_all_%s_collections'					 => __( 'View all %s collections', 'tainacan' ),
+	'label_view_collections_list'                    => __( 'View collections list', 'tainacan' ),
+	'label_comparator'								 => __( 'Comparator', 'tainacan' ),
+	'label_table_of_items'                           => __( 'Table of Items', 'tainacan' ),
+	'label_duplicate_item'                           => __( 'Duplicate item', 'tainacan' ),
+	'label_create_another_item'                      => __( 'Create another item', 'tainacan' ),
+	'label_recent_collections'	                     => __( 'Recent Collections', 'tainacan' ),
+	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),
@@ -448,24 +459,53 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_click_or_drag_metadatum_create'     => __( 'Click or drag and drop to create a new metadatum', 'tainacan' ),
 	'instruction_drag_and_drop_filter_sort'	     	 => __( 'Drag and drop to change filter order', 'tainacan' ),
 	'instruction_drag_and_drop_metadatum_sort'     	 => __( 'Drag and drop to change metadatum order', 'tainacan' ),
+	'instruction_select_a_date' 				     => __( 'Select a date', 'tainacan' ),
 
 	// Info. Other feedback to user.
+	'info_items_tab_all'                			 => __( 'Every published item, including those visible only to editors.', 'tainacan' ),
+	'info_items_tab_publish'                         => __( 'Only items that are visible to everyone.', 'tainacan' ),
+	'info_items_tab_private'                         => __( 'Items visible only to editors.', 'tainacan' ),
+	'info_items_tab_draft'                           => __( 'Draft items, not published.', 'tainacan' ),
+	'info_items_tab_trash'                         	 => __( 'Items that were sent to trash.', 'tainacan' ),
+
+	'info_collections_tab_all'                		 => __( 'Every published collection, including those visible only to editors.', 'tainacan' ),
+	'info_collections_tab_publish'                   => __( 'Only collections that are visible to everyone.', 'tainacan' ),
+	'info_collections_tab_private'                   => __( 'Collections visible only to editors.', 'tainacan' ),
+	'info_collections_tab_draft'                     => __( 'Draft collections, not published.', 'tainacan' ),
+	'info_collections_tab_trash'                     => __( 'Collections that were sent to trash.', 'tainacan' ),
+
+	'info_taxonomies_tab_all'                	     => __( 'Every published taxonomy, including those visible only to editors.', 'tainacan' ),
+	'info_taxonomies_tab_publish'                    => __( 'Only taxonomies that are visible to everyone.', 'tainacan' ),
+	'info_taxonomies_tab_private'                    => __( 'Taxonomies visible only to editors.', 'tainacan' ),
+	'info_taxonomies_tab_draft'                      => __( 'Draft taxonomies, not published.', 'tainacan' ),
+	'info_taxonomies_tab_trash'                      => __( 'Taxonomies that were sent to trash.', 'tainacan' ),
+
 	'info_error_invalid_date'                        => __( 'Invalid date', 'tainacan' ),
 	'info_search_results'                            => __( 'Search Results', 'tainacan' ),
 	'info_search_criteria'                           => __( 'Search Criteria', 'tainacan' ),
 	'info_name_is_required'                          => __( 'Name is required.', 'tainacan' ),
 	'info_no_collection_created'                     => __( 'No collection was created in this repository.', 'tainacan' ),
-	'info_no_collection_draft'                       => __( 'No draft collection found.', 'tainacan' ),
-	'info_no_collection_trash'                       => __( 'No collection in trash.', 'tainacan' ),
-	'info_no_taxonomy_draft'                         => __( 'No draft taxonomy found.', 'tainacan' ),
-	'info_no_taxonomy_trash'                         => __( 'No taxonomy in trash.', 'tainacan' ),
+	
+	'info_no_items_publish'			                 => __( 'No public items found.', 'tainacan' ),
+	'info_no_items_private'			                 => __( 'No private items found.', 'tainacan' ),
+	'info_no_items_draft'			                 => __( 'No draft items found.', 'tainacan' ),
+	'info_no_items_trash'			                 => __( 'No items found on trash.', 'tainacan' ),
+	
+	'info_no_collections_publish'			         => __( 'No public collections found.', 'tainacan' ),
+	'info_no_collections_private'			         => __( 'No private collections found.', 'tainacan' ),
+	'info_no_collections_draft'			             => __( 'No draft collections found.', 'tainacan' ),
+	'info_no_collections_trash'			             => __( 'No collections found on trash.', 'tainacan' ),
+	
+	'info_no_taxonomies_publish'			         => __( 'No public taxonomies found.', 'tainacan' ),
+	'info_no_taxonomies_private'			         => __( 'No private taxonomies found.', 'tainacan' ),
+	'info_no_taxonomies_draft'			             => __( 'No draft taxonomies found.', 'tainacan' ),
+	'info_no_taxonomies_trash'			             => __( 'No taxonomies found on trash.', 'tainacan' ),
+		
 	'info_no_taxonomy_created'                       => __( 'No taxonomy was created in this repository.', 'tainacan' ),
 	'info_no_terms_created_on_taxonomy'              => __( 'No term was created for this taxonomy.', 'tainacan' ),
 	'info_no_terms_found'				 			 => __( 'No term was found here', 'tainacan' ),
 	'info_no_more_terms_found'				 		 => __( 'No more terms found', 'tainacan' ),
 	'info_no_item_created'                           => __( 'No item was created in this collection.', 'tainacan' ),
-	'info_no_item_draft'                             => __( 'No draft item found.', 'tainacan' ),
-	'info_no_item_trash'                             => __( 'No item in trash.', 'tainacan' ),
 	'info_no_page_found'                             => __( 'No page was found with this name.', 'tainacan' ),
 	'info_no_user_found'                             => __( 'No user was found with this name.', 'tainacan' ),
 	'info_no_item_found_filter'                      => __( 'No item was found here with these filters.', 'tainacan' ),
@@ -474,6 +514,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_no_moderator_on_collection'                => __( "This collection doesn't have any moderator yet.", 'tainacan' ),
 	'info_error_deleting_collection'                 => __( 'Error on deleting collection.', 'tainacan' ),
 	'info_error_deleting_taxonomy'                   => __( 'Error on deleting taxonomy', 'tainacan' ),
+	'info_error_first_value_greater'                 => __( 'First value should be lower than second value', 'tainacan' ),
+	'info_error_value_must_be_number'                => __( 'Value should be a number', 'tainacan' ),
 	'info_collection_deleted'                        => __( 'Collection deleted.', 'tainacan' ),
 	'info_item_deleted'                              => __( 'Item deleted.', 'tainacan' ),
 	'info_taxonomy_deleted'                          => __( 'Taxonomy deleted', 'tainacan' ),
@@ -564,9 +606,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_no_options_avialable_filtering'            => __( 'No options for this filtering.', 'tainacan' ),
 	'info_no_options_found'                          => __( 'No options found.', 'tainacan' ),
 	'info_all_files_uploaded'                        => __( 'All files uploaded.', 'tainacan' ),
-	'info_there_are_%s_items_being_edited'           => __( 'There are %s items being edited', 'tainacan' ),
-	'info_there_is_one_item_being_edited'            => __( 'There is one item being edited', 'tainacan' ),
-	'info_item_being_edited'                         => __( 'item being edited', 'tainacan' ),
+	'info_there_are_%s_items_being_edited'           => __( 'There are %s items being edited;', 'tainacan' ),
+	'info_there_is_one_item_being_edited'            => __( 'There is one item being edited.', 'tainacan' ),
 	'info_no_preview_found'                          => __( 'No preview was found.', 'tainacan' ),
 	'info_leaving_bulk_edition'                      => __( 'You are leaving the bulk edition now.', 'tainacan' ),
 	'info_current_view_mode_metadata_not_allowed'    => __( 'Current view mode does not allow displayed metadata selection.', 'tainacan' ),
@@ -597,12 +638,30 @@ return apply_filters( 'tainacan-admin-i18n', [
 
 	// Tainacan Filter Types
 	'tainacan-filter-custom-interval'                => __( 'Custom Interval', 'tainacan' ),
+	'tainacan-filter-numeric'		                 => __( 'Numeric', 'tainacan' ),
+	'tainacan-filter-date'			                 => __( 'Date', 'tainacan' ),
 	'tainacan-filter-selectbox'                      => __( 'Select Box', 'tainacan' ),
 	'tainacan-filter-autocomplete'                   => __( 'Autocomplete', 'tainacan' ),
 	'tainacan-filter-taginput'                       => __( 'Tag Input', 'tainacan' ),
 	'tainacan-filter-checkbox'                       => __( 'Check Box', 'tainacan' ),
 	'tainacan-filter-taxonomy-taginput'              => __( 'Taxonomy Tag Input', 'tainacan' ),
 	'tainacan-filter-taxonomy-checkbox'              => __( 'Taxonomy Check Box', 'tainacan' ),
-	'tainacan-filter-taxonomy-selectbox'             => __( 'Taxonomy Select Box', 'tainacan' )
+	'tainacan-filter-taxonomy-selectbox'             => __( 'Taxonomy Select Box', 'tainacan' ),
+
+	// Datepicker week days
+	/* translators: This refers to the short label that will appear on datepickers for Sunday */
+	'datepicker_short_sunday'			=> __( 'Su', 'tainacan' ),
+	/* translators: This refers to the short label that will appear on datepickers for Monday */
+	'datepicker_short_monday'			=> __( 'M', 'tainacan' ),
+	/* translators: This refers to the short label that will appear on datepickers for Tuesday */
+	'datepicker_short_tuesday'			=> __( 'Tu', 'tainacan' ),
+	/* translators: This refers to the short label that will appear on datepickers for Wednesday */
+	'datepicker_short_wednesday'		=> __( 'W', 'tainacan' ),
+	/* translators: This refers to the short label that will appear on datepickers for Thursday */
+	'datepicker_short_thursday'			=> __( 'Th', 'tainacan' ),
+	/* translators: This refers to the short label that will appear on datepickers for Friday */
+	'datepicker_short_friday'			=> __( 'F', 'tainacan' ),
+	/* translators: This refers to the short label that will appear on datepickers for Saturday */
+	'datepicker_short_saturday'			=> __( 'Sa', 'tainacan' )
 ] );
 ?>

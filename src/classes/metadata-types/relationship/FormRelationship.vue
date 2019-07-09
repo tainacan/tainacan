@@ -179,8 +179,8 @@
                         if( metadata.length > 0 ){
                             this.metadata = [];
 
-                            for( let metadatum of metadata ){
-                               if( metadatum.metadata_type !== "Tainacan\\Metadata_Types\\Relationship"){
+                            for (let metadatum of metadata) {
+                               if (metadatum.metadata_type !== "Tainacan\\Metadata_Types\\Relationship" && metadatum.metadata_type !== "Tainacan\\Metadata_Types\\Taxonomy") {
                                    this.metadata.push( metadatum );
                                    this.hasMetadata = true;
                                    this.checkMetadata()

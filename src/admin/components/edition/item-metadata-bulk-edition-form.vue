@@ -5,7 +5,7 @@
                 :active.sync="isLoadingMetadata"
                 :can-cancel="false"/>
         <div class="tainacan-page-title">
-            <h1><span class="status-tag">{{ $i18n.get(status) }}</span>{{ $i18n.get('label_bulk_edit_items') }}</h1>
+            <h1><span class="status-tag">{{ $i18n.get('status_' + status) }}</span>{{ $i18n.get('label_bulk_edit_items') }}</h1>
             <a 
                     @click="$router.go(-1)"
                     class="back-link has-text-secondary">
@@ -31,7 +31,7 @@
                         {{ $i18n.get('info_there_is_one_item_being_edited') }}
                     </p>
                     <p v-if="items.length <= 0 && !isLoadingGroupInfo && bulkEditGroup.items_count > 1">
-                        {{ $i18n.getWithVariables('info_there_are_%s_items_being_edited', bulkEditGroup.items_count) }}
+                        {{ $i18n.getWithVariables('info_there_are_%s_items_being_edited', [bulkEditGroup.items_count]) }}
                     </p>
                     <p v-if="items.length <= 0 && !isLoadingGroupInfo">
                         {{ $i18n.get('info_no_preview_found') }}
@@ -70,31 +70,17 @@
                     <div class="section-status">
                         <div class="field has-addons">
                             <b-radio
+                                    v-for="(statusOption, index) of $statusHelper.getStatuses().filter(option => { return option.value != 'trash' })"
+                                    :key="index"
                                     v-model="status"
                                     @input="changeStatus($event)"
-                                    value="publish"
-                                    native-value="publish">
+                                    :value="statusOption.slug"
+                                    :native-value="statusOption.slug">
                                 <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-public"/>
-                                </span> {{ $i18n.get('publish_visibility') }}
-                            </b-radio>
-                            <b-radio
-                                    v-model="status"
-                                    @input="changeStatus($event)"
-                                    value="private"
-                                    native-value="private">
-                                <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-private"/>
-                                </span>  {{ $i18n.get('private_visibility') }}
-                            </b-radio>
-                            <b-radio
-                                    v-model="status"
-                                    @input="changeStatus($event)"
-                                    value="draft"
-                                    native-value="draft">
-                                <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-draft"/>
-                                </span>  {{ $i18n.get('draft') }}
+                                    <i 
+                                            class="tainacan-icon"
+                                            :class="$statusHelper.getIcon(statusOption.slug)"/>
+                                </span> {{ statusOption.name }}
                             </b-radio>
                         </div>
                     </div>
@@ -469,7 +455,7 @@ export default {
         }
 
         .tainacan-page-title {
-            margin-bottom: 40px;
+            margin-bottom: 35px;
             display: flex;
             flex-wrap: wrap;
             align-items: flex-end;

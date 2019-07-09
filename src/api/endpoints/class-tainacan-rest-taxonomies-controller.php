@@ -182,7 +182,14 @@ class REST_Taxonomies_Controller extends REST_Controller {
 		$taxonomy_id = $request['taxonomy_id'];
 
 		$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
-
+		
+		if (! $taxonomy instanceof Entities\Taxonomy) {
+			return new \WP_REST_Response([
+				'error_message' => __('A taxonomy with this ID was not found', 'tainacan' ),
+				'taxonomy_id'   => $taxonomy_id
+			], 400);
+		}
+		
 		$taxonomy_prepared = $this->prepare_item_for_response($taxonomy, $request);
 
 		return new \WP_REST_Response($taxonomy_prepared, 200);
@@ -218,11 +225,20 @@ class REST_Taxonomies_Controller extends REST_Controller {
 	public function delete_item( $request ) {
 		$taxonomy_id = $request['taxonomy_id'];
 		$permanently = $request['permanently'];
-
+		
+		$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
+		
+		if (! $taxonomy instanceof Entities\Taxonomy) {
+			return new \WP_REST_Response([
+				'error_message' => __('A taxonomy with this ID was not found', 'tainacan' ),
+				'taxonomy_id'   => $taxonomy_id
+			], 400);
+		}
+		
 		if($permanently == true){
-			$deleted = $this->taxonomy_repository->delete($taxonomy_id);
+			$deleted = $this->taxonomy_repository->delete($taxonomy);
 		} else {
-			$deleted = $this->taxonomy_repository->trash($taxonomy_id);
+			$deleted = $this->taxonomy_repository->trash($taxonomy);
 		}
 
 		if ( $deleted instanceof \WP_Error ) {

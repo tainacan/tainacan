@@ -9,14 +9,14 @@
             <h1 v-if="isCreatingNewItem">
                 <span 
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
-                        class="status-tag">{{ $i18n.get(item.status) }}</span>
+                        class="status-tag">{{ $i18n.get('status_' + item.status) }}</span>
                 {{ $i18n.get('title_create_item_collection') + ' ' }}
                 <span style="font-weight: 600;">{{ collectionName }}</span>
             </h1>
             <h1 v-else>
                 <span 
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
-                        class="status-tag">{{ $i18n.get(item.status) }}</span>
+                        class="status-tag">{{ $i18n.get('status_' + item.status) }}</span>
                 {{ $i18n.get('title_edit_item') + ' ' }}
                 <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
             </h1>
@@ -485,7 +485,7 @@
                                 v-for="(metadatum, index) of metadatumList"
                                 :key="index"
                                 :metadatum="metadatum"
-                                :is-collapsed="metadatumCollapses[index]"
+                                :is-collapsed="metadataCollapses[index]"
                                 @changeCollapse="onChangeCollapse($event, index)"/>
 
                         <!-- Hook for extra Form options -->
@@ -707,7 +707,7 @@ export default {
             isOnSequenceEdit: false,
             sequenceRightDirection: false,
             isLoading: false,
-            metadatumCollapses: [],
+            metadataCollapses: [],
             collapseAll: true,
             visibility: 'publish',
             form: {
@@ -718,20 +718,6 @@ export default {
                 comment_status: ''
             },
             thumbnail: {},
-            // Can be obtained from api later
-            statusOptions: [{
-                value: 'publish',
-                label: this.$i18n.get('public')
-                }, {
-                value: 'private',
-                label: this.$i18n.get('private')
-                }, {
-                value: 'draft',
-                label: this.$i18n.get('draft')
-                }, {
-                value: 'trash',
-                label: this.$i18n.get('trash')
-            }],
             formErrorMessage: '',
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
             thumbnailMediaFrame: undefined,
@@ -859,9 +845,12 @@ export default {
                 this.isLoading = false;
 
                 if (!this.isOnSequenceEdit) {                    
-                    if (this.form.status != 'trash') 
-                        this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
-                    else
+                    if (this.form.status != 'trash') {
+                        if (previousStatus == 'auto-draft')
+                            this.$router.push({ path: this.$routerHelper.getItemPath(this.form.collectionId, this.itemId), query: { recent: true } });
+                        else
+                            this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
+                    } else
                         this.$router.push(this.$routerHelper.getCollectionPath(this.form.collectionId));
                 }
             })
@@ -919,11 +908,24 @@ export default {
         loadMetadata() {
             // Obtains Item Metadatum
             this.fetchMetadata(this.itemId).then((metadata) => {
-                this.isLoading = false;
-                for (let i = 0; i < metadata.length; i++) {
-                    this.metadatumCollapses.push(false);
-                    this.metadatumCollapses[i] = true;
+                this.metadataCollapses = [];
+
+                if (this.isOnSequenceEdit && this.$route.query.collapses) {
+                    for (let i = 0; i < metadata.length; i++) {
+                        this.metadataCollapses.push(this.$route.query.collapses[i] != undefined ? this.$route.query.collapses[i] : true);
+                    }
+                } else if (this.isOnSequenceEdit && !this.$route.query.collapses) {
+                    for (let i = 0; i < metadata.length; i++) {
+                        this.metadataCollapses.push(true);
+                        this.metadataCollapses[i] = false;
+                    }
+                } else {
+                    for (let i = 0; i < metadata.length; i++) {
+                        this.metadataCollapses.push(false);
+                        this.metadataCollapses[i] = true;
+                    }
                 }
+                this.isLoading = false;
             });
         },
         setFileDocument(event) {
@@ -1095,12 +1097,12 @@ export default {
         toggleCollapseAll() {
             this.collapseAll = !this.collapseAll;
 
-            for (let i = 0; i < this.metadatumCollapses.length; i++)
-                this.metadatumCollapses[i] = this.collapseAll;
+            for (let i = 0; i < this.metadataCollapses.length; i++)
+                this.metadataCollapses[i] = this.collapseAll;
 
         },
         onChangeCollapse(event, index) {
-            this.metadatumCollapses.splice(index, 1, event);
+            this.metadataCollapses.splice(index, 1, event);
         },
         onDeletePermanently() {
             this.$modal.open({
@@ -1121,7 +1123,12 @@ export default {
             // Initializes Media Frames now that itemId exists
             this.initializeMediaFrames();
 
-            this.fetchItem({ itemId: this.itemId, contextEdit: true }).then(res => {
+            this.fetchItem({ 
+                itemId: this.itemId, 
+                contextEdit: true, 
+                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document,comment_status,document_as_html' 
+            })
+            .then(res => {
                 this.item = res;
 
                 // Checks if user has permission to edit
@@ -1173,11 +1180,17 @@ export default {
         },
         onNextInSequence() {
             this.sequenceRightDirection = true; 
-            this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, this.sequenceId, this.itemPosition + 1));
+            this.$router.push({ 
+                path: this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, this.sequenceId, this.itemPosition + 1), 
+                query: { collapses: this.metadataCollapses }
+            });
         },
         onPrevInSequence() {
             this.sequenceRightDirection = false; 
-            this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, this.sequenceId, this.itemPosition - 1));
+            this.$router.push({
+                path: this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, this.sequenceId, this.itemPosition - 1),
+                query: { collapses: this.metadataCollapses }
+            });
         }
     },
     created(){
@@ -1294,7 +1307,7 @@ export default {
 
         .tainacan-page-title {
             padding: 0 $page-side-padding;
-            margin-bottom: 40px;
+            margin-bottom: 35px;
             display: flex;
             flex-wrap: wrap;
             align-items: flex-end;

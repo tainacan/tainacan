@@ -46,22 +46,12 @@
     export default {
         mixins: [ dateInter ],
         created(){
-            let locale = navigator.language;
-
-            moment.locale(locale);
-
-            let localeData = moment.localeData();
-            this.dateFormat = localeData.longDateFormat('L');
-
-            if( this.value ){
+            if (this.value)
                 this.dateValue = this.parseDateToNavigatorLanguage(this.value);
-            }
         },
         data() {
             return {
                 dateValue: '',
-                dateMask: this.getDateLocaleMask(),
-                dateFormat: '',
                 isInvalidDate: false,
             }
         },
@@ -80,7 +70,7 @@
             onInput: _.debounce(function ($event) {
                 let dateISO = '';
 
-                if($event && $event instanceof Date) {
+                if ($event && $event instanceof Date) {
                     dateISO = moment(this.dateValue, this.dateFormat).toISOString() ? moment(this.dateValue, this.dateFormat).toISOString().split('T')[0] : false;
                 } else if($event.target.value && $event.target.value.length === this.dateMask.length) {
                     dateISO = moment(this.dateValue, this.dateFormat).toISOString() ? moment($event.target.value,  this.dateFormat).toISOString().split('T')[0] : false;
@@ -95,12 +85,7 @@
 
                 this.$emit('input', dateISO);
                 this.$emit('blur');
-            }, 300),
-            parseDateToNavigatorLanguage(date){
-                date = new Date(date.replace(/-/g, '/'));
-
-                return moment(date, moment.ISO_8601).format(this.dateFormat);
-            }
+            }, 300)
         }
     }
 </script>

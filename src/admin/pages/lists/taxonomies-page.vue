@@ -20,7 +20,55 @@
 
                 <!-- Sorting options ----  -->
                 <b-field class="header-item">
-                    <label class="label">{{ $i18n.get('label_sorting') + ':' }}</label>
+                    <label class="label">{{ $i18n.get('label_sort') }}</label>
+                    <b-dropdown
+                            :mobile-modal="true"
+                            :disabled="taxonomies.length <= 0 || isLoading"
+                            @input="onChangeOrder(order == 'asc' ? 'desc' : 'asc')"
+                            aria-role="list">
+                        <button
+                                :aria-label="$i18n.get('label_sorting_direction')"
+                                class="button is-white"
+                                slot="trigger">
+                            <span class="icon is-small gray-icon">
+                                <i 
+                                        :class="order == 'desc' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
+                                        class="tainacan-icon tainacan-icon-18px"/>
+                            </span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
+                            </span>
+                        </button>
+                        <b-dropdown-item
+                                aria-controls="items-list-results"
+                                role="button"
+                                :class="{ 'is-active': order == 'desc' }"
+                                :value="'desc'"
+                                aria-role="listitem"
+                                style="padding-bottom: 0.45rem">
+                            <span class="icon is-small gray-icon">
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending"/>
+                            </span>
+                            {{ $i18n.get('label_descending') }}
+                        </b-dropdown-item>
+                        <b-dropdown-item
+                                aria-controls="items-list-results"
+                                role="button"
+                                :class="{ 'is-active': order == 'asc' }"
+                                :value="'asc'"
+                                aria-role="listitem"
+                                style="padding-bottom: 0.45rem">
+                            <span class="icon is-small gray-icon">
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending"/>
+                            </span>
+                            {{ $i18n.get('label_ascending') }}
+                        </b-dropdown-item>
+                    </b-dropdown>
+                    <span
+                            class="label"
+                            style="padding-left: 0.65rem;">
+                        {{ $i18n.get('info_by_inner') }}
+                    </span>
                     <b-select
                             class="sorting-select"
                             :disabled="taxonomies.length <= 0"
@@ -34,36 +82,6 @@
                             {{ option.label }}
                         </option>
                     </b-select>
-                    <button
-                            :disabled="taxonomies.length <= 0 || isLoading || order == 'desc'"
-                            class="button is-white is-small"
-                            @click="onChangeOrder('desc')">
-                        <span
-                                v-tooltip="{
-                                    content: $i18n.get('label_sort_descending'),
-                                    autoHide: true,
-                                    placement: 'bottom',
-                                    classes: ['tooltip', 'repository-tooltip']
-                                }"
-                                class="icon gray-icon is-small">
-                            <i class="tainacan-icon tainacan-icon-sortdescending tainacan-icon-20px"/>
-                        </span>
-                    </button>
-                    <button
-                            :disabled="taxonomies.length <= 0 || isLoading || order == 'asc'"
-                            class="button is-white is-small"
-                            @click="onChangeOrder('asc')">
-                        <span
-                                v-tooltip="{
-                                    content: $i18n.get('label_sort_ascending'),
-                                    autoHide: true,
-                                    placement: 'bottom',
-                                    classes: ['tooltip', 'repository-tooltip']
-                                }"
-                                class="icon gray-icon is-small">
-                            <i class="tainacan-icon tainacan-icon-sortascending tainacan-icon-20px"/>
-                        </span>
-                    </button>
                 </b-field>
             </div>
 
@@ -76,18 +94,40 @@
                     <ul>
                         <li 
                                 @click="onChangeTab('')"
-                                :class="{ 'is-active': status == undefined || status == ''}">
-                            <a>{{ `${$i18n.get('label_all_taxonomies')}` }}<span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalTaxonomies ? `(${Number(repositoryTotalTaxonomies.private) + Number(repositoryTotalTaxonomies.publish)})` : '' }`}` }}</span></a>
+                                :class="{ 'is-active': status == undefined || status == ''}"
+                                v-tooltip="{
+                                    content: $i18n.get('info_taxonomies_tab_all'),
+                                    autoHide: true,
+                                    placement: 'auto',
+                                }">
+                            <a :style="{ fontWeight: 'bold', color: '#454647 !important', lineHeight: '1.5rem' }">
+                                {{ `${$i18n.get('label_all_taxonomies')}` }}
+                                <span class="has-text-gray">&nbsp;{{ repositoryTotalTaxonomies ? `(${Number(repositoryTotalTaxonomies.private) + Number(repositoryTotalTaxonomies.publish)})` : '' }}</span>
+                            </a>
                         </li>
                         <li 
-                                @click="onChangeTab('draft')"
-                                :class="{ 'is-active': status == 'draft'}">
-                            <a>{{ `${$i18n.get('label_draft_items')}` }}<span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalTaxonomies ? `(${repositoryTotalTaxonomies.draft})` : '' }`}` }}</span></a>
-                        </li>
-                        <li 
-                                @click="onChangeTab('trash')"
-                                :class="{ 'is-active': status == 'trash'}">
-                            <a>{{ `${$i18n.get('label_trash_items')}` }}<span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalTaxonomies ? `(${repositoryTotalTaxonomies.trash})` : '' }`}` }}</span></a>
+                                v-for="(statusOption, index) of $statusHelper.getStatuses()"
+                                :key="index"
+                                @click="onChangeTab(statusOption.slug)"
+                                :class="{ 'is-active': status == statusOption.slug}"
+                                :style="{ marginRight: statusOption.slug == 'private' ? 'auto' : '' }"
+                                v-tooltip="{
+                                    content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('taxonomies')]),
+                                    autoHide: true,
+                                    placement: 'auto',
+                                }">
+                            <a>
+                                <span 
+                                        v-if="$statusHelper.hasIcon(statusOption.slug)"
+                                        class="icon has-text-gray">
+                                    <i 
+                                            class="tainacan-icon tainacan-icon-18px"
+                                            :class="$statusHelper.getIcon(statusOption.slug)"
+                                            />
+                                </span>
+                                {{ statusOption.name }}
+                                <span class="has-text-gray">&nbsp;{{ repositoryTotalTaxonomies ? `(${repositoryTotalTaxonomies[statusOption.slug]})` : '' }}</span>
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -108,8 +148,12 @@
                                     <i class="tainacan-icon tainacan-icon-36px tainacan-icon-terms"/>
                                 </span>
                                 <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_taxonomy_created') }}</p>
-                                <p v-if="status == 'draft'">{{ $i18n.get('info_no_taxonomy_draft') }}</p>
-                                <p v-if="status == 'trash'">{{ $i18n.get('info_no_taxonomy_trash') }}</p>
+                                <p
+                                        v-for="(statusOption, index) of $statusHelper.getStatuses()"
+                                        :key="index"
+                                        v-if="status == statusOption.slug">
+                                    {{ $i18n.get('info_no_taxonomies_' + statusOption.slug) }}
+                                </p>
                                 <router-link
                                         v-if="status == undefined || status == ''"
                                         id="button-create-taxonomy"
@@ -328,17 +372,38 @@
         align-items: center;
         width: 100%;
 
-        .header-item:not(:last-child) {
-            padding-right: 0.5em;
-        }
+        .header-item {
 
-        .header-item .button .icon i{
-            width: 100%;
-        } 
-        .header-item .label{
-            font-weight: normal;
-            font-size: 0.875rem;
-            margin-top: 3px;
+            &:not(:last-child) {
+                padding-right: 0.5em;
+            }
+
+            .label {
+                font-size: 0.875rem;
+                font-weight: normal;
+                margin-top: 3px;
+                margin-bottom: 2px;
+                cursor: default;
+            }
+
+            .button {
+                display: flex;
+                align-items: center;
+            }
+            
+            .field {
+                align-items: center;
+            }
+
+            .gray-icon, .gray-icon .icon {
+                color: $gray4 !important;
+                padding-right: 10px;
+            }
+            .gray-icon .icon i::before, 
+            .gray-icon i::before {
+                font-size: 1.3125rem !important;
+                max-width: 26px;
+            }
         }
 
         @media screen and (max-width: 769px) {

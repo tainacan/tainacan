@@ -297,15 +297,15 @@
                         <div class="status-radios">
                             <b-radio
                                     v-model="form.status"
-                                    v-for="statusOption in statusOptions"
-                                    :key="statusOption.value"
-                                    :native-value="statusOption.value">
+                                    v-for="(statusOption, index) of $statusHelper.getStatuses()"
+                                    :key="index"
+                                    :native-value="statusOption.slug">
                                 <span class="icon has-text-gray">
                                     <i 
                                         class="tainacan-icon tainacan-icon-18px"
-                                        :class="'tainacan-icon-' + getStatusIcon(statusOption.value)"/>
+                                        :class="$statusHelper.getIcon(statusOption.slug)"/>
                                 </span>
-                                {{ statusOption.label }}
+                                {{ statusOption.name }}
                             </b-radio>
                         </div>
                     </b-field>
@@ -555,20 +555,6 @@ export default {
             },
             thumbnail: {},
             cover: {},
-            // Can be obtained from api later
-            statusOptions: [{ 
-                value: 'publish',
-                label: this.$i18n.get('public')
-                }, {
-                value: 'private',
-                label: this.$i18n.get('private')
-                }, {
-                value: 'draft',
-                label: this.$i18n.get('draft')
-                }, {
-                value: 'trash',
-                label: this.$i18n.get('trash')
-            }],
             isFetchingPages: false,
             coverPages: [],
             coverPage: '',
@@ -674,10 +660,10 @@ export default {
                 this.form.status = this.collection.status;
                 this.form.cover_page_id = this.collection.cover_page_id;
                 this.form.enable_cover_page = this.collection.enable_cover_page;
-                this.form.enabled_view_modes = this.collection.enabled_view_modes;
+                this.form.enabled_view_modes = this.collection.enabled_view_modes.map((viewMode) => viewMode.viewMode);
                 this.form.default_view_mode = this.collection.default_view_mode;
                 this.form.allow_comments = this.collection.allow_comments;
-
+                
                 this.isLoading = false;
                 this.formErrorMessage = '';
                 this.editFormErrors = {};
@@ -876,15 +862,6 @@ export default {
                     }
                 }
             );
-        },
-        getStatusIcon(status) {
-            switch(status) {
-                case 'publish': return 'public';
-                case 'private': return 'private';
-                case 'draft': return 'draft';
-                case 'trash': return 'delete';
-                default: return 'item';
-            }
         }
     },
     mounted(){
@@ -926,10 +903,10 @@ export default {
                 this.form.cover_page_id = this.collection.cover_page_id;
                 this.form.parent = this.collection.parent;
                 this.form.default_view_mode = this.collection.default_view_mode;
-                this.form.enabled_view_modes = JSON.parse(JSON.stringify(this.collection.enabled_view_modes));
+                this.form.enabled_view_modes = JSON.parse(JSON.stringify(this.collection.enabled_view_modes.reduce((result, viewMode) => { typeof viewMode == 'string' ? result.push(viewMode) : null; return result }, [])));
                 this.moderators = JSON.parse(JSON.stringify(this.collection.moderators));
                 this.form.allow_comments = this.collection.allow_comments;
-                 
+
                 // Generates CoverPage from current cover_page_id info
                 if (this.form.cover_page_id != undefined && this.form.cover_page_id != '') {
                     

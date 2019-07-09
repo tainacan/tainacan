@@ -551,44 +551,6 @@ class Metadata extends Repository {
 	}
 
 	/**
-	 * @param $metadatum_id
-	 *
-	 * @return mixed|void
-	 * @throws \Exception
-	 */
-	public function delete( $metadatum_id ) {
-		$deleted = new Entities\Metadatum( wp_delete_post( $metadatum_id, true ) );
-
-		if ( $deleted && $this->use_logs) {
-			$this->logs_repository->insert_log( $deleted, [], false, true );
-
-			do_action( 'tainacan-deleted', $deleted );
-		}
-
-		return $deleted;
-	}
-
-	/**
-	 * @param $metadatum_id
-	 *
-	 * @return mixed|Entities\Metadatum
-	 * @throws \Exception
-	 */
-	public function trash( $metadatum_id ) {
-		$this->delete_taxonomy_metadatum( $metadatum_id );
-
-		$trashed = new Entities\Metadatum( wp_trash_post( $metadatum_id ) );
-
-		if ( $trashed && $this->use_logs) {
-			$this->logs_repository->insert_log( $trashed, [], false, false, true );
-
-			do_action( 'tainacan-trashed', $trashed );
-		}
-
-		return $trashed;
-	}
-
-	/**
 	 * fetch all registered metadatum type classes
 	 *
 	 * Possible outputs are:
@@ -1389,9 +1351,16 @@ class Metadata extends Repository {
 
 		}
 	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function delete( Entities\Entity $entity, $permanent = true ) {
+		$this->delete_taxonomy_metadatum($entity);
+		return parent::delete($entity, $permanent);
+	}
 
-	private function delete_taxonomy_metadatum( $metadatum_id ) {
-		$metadatum     = $this->fetch( $metadatum_id );
+	private function delete_taxonomy_metadatum( $metadatum ) {
 		$metadata_type = $metadatum->get_metadata_type_object();
 
 		if ( $metadata_type->get_primitive_type() == 'term' ) {

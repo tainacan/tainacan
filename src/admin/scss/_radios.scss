@@ -7,8 +7,10 @@
     }
     input[type="radio"] + .check::before {
         background: black !important;
-        width: 7px !important;
-        height: 7px !important;
+        width: 15px !important;
+        height: 15px !important;
+        margin-left: calc(-16px/2) !important;
+        margin-bottom: calc(-16px/2) !important;
     }
     &:focus input[type="radio"] + .check,
     &:active input[type="radio"] + .check,

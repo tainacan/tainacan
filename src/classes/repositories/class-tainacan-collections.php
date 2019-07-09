@@ -295,40 +295,6 @@ class Collections extends Repository {
 	}
 
 	/**
-	 * @param $collection_id
-	 *
-	 * @return mixed|Collection
-	 */
-	public function delete( $collection_id ) {
-		$deleted = new Entities\Collection( wp_delete_post( $collection_id, true ) );
-
-		if ( $deleted && $this->use_logs) {
-			$this->logs_repository->insert_log( $deleted, [], false, true );
-
-			do_action( 'tainacan-deleted', $deleted );
-		}
-
-		return $deleted;
-	}
-
-	/**
-	 * @param $collection_id
-	 *
-	 * @return mixed|Collection
-	 */
-	public function trash( $collection_id ) {
-		$trashed = new Entities\Collection( wp_trash_post( $collection_id ) );
-
-		if ( $trashed && $this->use_logs) {
-			$this->logs_repository->insert_log( $trashed, [], false, false, true );
-
-			do_action( 'tainacan-trashed', $trashed );
-		}
-
-		return $trashed;
-	}
-
-	/**
 	 * fetch collection based on ID or WP_Query args
 	 *
 	 * Collections are stored as posts. Check WP_Query docs

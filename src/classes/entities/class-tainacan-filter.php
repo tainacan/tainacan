@@ -16,6 +16,7 @@ class Filter extends Entity {
         $order,
         $color,
         $metadatum,
+        $metadatum_id,
         $max_options,
         $filter_type,
         $filter_type_options;
@@ -40,16 +41,20 @@ class Filter extends Entity {
 	 */
 	public function _toArray(){
 		$filter_array = parent::_toArray();
-		$metadatum_id = $filter_array['metadatum'];
+		$metadatum_id = $filter_array['metadatum_id'];
 		$metadatum = $this->get_metadatum();
 
 		$filter_array['metadatum'] = [];
 		$filter_array['metadatum']['metadatum_id'] = $metadatum_id;
-		$filter_array['metadatum']['metadatum_name'] = $metadatum->get_name();
-		$meta_object = $metadatum->get_metadata_type_object();
-		if (is_object($meta_object)) {
-			$filter_array['metadatum']['metadata_type_object'] = $meta_object->_toArray();
+		
+		if ($metadatum instanceof Metadatum) {
+			$filter_array['metadatum']['metadatum_name'] = $metadatum->get_name();
+			$meta_object = $metadatum->get_metadata_type_object();
+			if (is_object($meta_object)) {
+				$filter_array['metadatum']['metadata_type_object'] = $meta_object->_toArray();
+			}
 		}
+		
 		
 		return apply_filters('tainacan-filter-to-array', $filter_array, $this);
 	}
@@ -106,14 +111,32 @@ class Filter extends Entity {
     }
 
 	/**
-	 * Return the metadatum
+	 * Return the metadatum ID
 	 *
-	 * @return Metadatum
+	 * @return integer Metadatum ID
+	 */
+    function get_metadatum_id() {
+        return $this->get_mapped_property('metadatum_id');
+    }
+    
+    /**
+	 * Return the metadatum object
+	 *
+	 * @return Metadatum | null
 	 * @throws \Exception
 	 */
     function get_metadatum() {
-        $id = $this->get_mapped_property('metadatum');
-        return new Metadatum( $id );
+        if (isset($this->metadatum)) {
+            return $this->metadatum;
+        }
+        $id = $this->get_metadatum_id();
+        $metadatum = \Tainacan\Repositories\Metadata::get_instance()->fetch((int) $id);
+        if ($metadatum instanceof Metadatum) {
+            $this->metadatum = $metadatum;
+            return $metadatum;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -124,12 +147,12 @@ class Filter extends Entity {
     function get_filter_type_object(){
         $class_name = $this->get_filter_type();
 
-        if( !class_exists( $class_name ) ){
-            return false;
-        }
+		if( !class_exists( $class_name ) ){
+			return null;
+		}
 
         $object_type = new $class_name();
-        $object_type->set_options(  $this->get_filter_options() );
+        $object_type->set_options(  $this->get_filter_type_options() );
         return $object_type;
     }
 
@@ -147,7 +170,7 @@ class Filter extends Entity {
      *
      * @return array Configurations for the filter type object
      */
-    function get_filter_options(){
+    function get_filter_type_options(){
         return $this->get_mapped_property('filter_type_options');
     }
 
@@ -192,15 +215,27 @@ class Filter extends Entity {
     }
 
     /**
-     * Define the filter metadatum
+     * Define the filter metadatum passing an object
      * 
      * @param \Tainacan\Entities\Metadatum
      * @return void
      */
-    function set_metadatum( $value ){
-    	$id = ( $value instanceof Metadatum ) ? $value->get_id() : $value;
+    function set_metadatum( \Tainacan\Entities\Metadatum $value ){
+    	$id = $value->get_id();
 
-        $this->set_mapped_property('metadatum', $id);
+        $this->set_metadatum_id($id);
+        $this->metadatum = $value;
+    }
+    
+    /**
+     * Define the filter metadatum passing an ID
+     * 
+     * @param int $value the metadatum ID
+     * @return void
+     */
+    function set_metadatum_id( $value ){
+        unset($this->metadatum);
+        $this->set_mapped_property('metadatum_id', $value);
     }
 
     /**
@@ -258,6 +293,18 @@ class Filter extends Entity {
             $this->add_error($metadatum, $message);
         }
 
+        $this->add_error('filter_type_options', $is_valid);
+
         return false;
+    }
+
+    /**
+     * Set Filter type options
+     *
+     * @param [string || integer] $value
+     * @return void
+     */
+    function set_filter_type_options( $value ){
+        $this->set_mapped_property('filter_type_options', $value);
     }
 }

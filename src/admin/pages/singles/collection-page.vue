@@ -15,7 +15,7 @@
 
 <script>
 import TainacanCollectionSubheader from '../../components/navigation/tainacan-collection-subheader.vue';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
     name: 'CollectionPage',
@@ -31,6 +31,9 @@ export default {
     methods: {
         ...mapActions('collection', [
             'fetchCollectionUserCanEdit'
+        ]),
+        ...mapGetters('collection', [
+            'getCollection'
         ])
     },
     created(){
@@ -38,9 +41,14 @@ export default {
         this.$eventBusSearch.setCollectionId(this.collectionId);
     },
     mounted() {
-        this.fetchCollectionUserCanEdit(this.collectionId).then((caps) => {
-            this.currentUserCanEdit = caps;
-        }).catch((error) => this.$console.error(error));
+        let storedCollection = this.getCollection();
+        if (storedCollection != undefined && storedCollection.id == this.collectionId && storedCollection.currentUserCanEdit != undefined)
+            this.currentUserCanEdit = storedCollection.currentUserCanEdit;
+        else {
+            this.fetchCollectionUserCanEdit(this.collectionId).then((caps) => {
+                this.currentUserCanEdit = caps;
+            }).catch((error) => this.$console.error(error));
+        }
     }
 }
 </script>

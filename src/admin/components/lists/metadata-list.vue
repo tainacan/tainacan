@@ -20,21 +20,11 @@
         <br>
         <b-tabs v-model="activeTab">    
             <b-tab-item :label="$i18n.get('metadata')">
-                <div class="columns">
-                    <div class="column"> 
-                        <section 
-                                v-if="activeMetadatumList.length <= 0 && !isLoadingMetadata"
-                                class="field is-grouped-centered section">
-                            <div class="content has-text-gray has-text-centered">
-                                <p>
-                                    <span class="icon is-large">
-                                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
-                                    </span>
-                                </p>
-                                <p>{{ $i18n.get('info_there_is_no_metadatum' ) }}</p>
-                                <p>{{ $i18n.get('info_create_metadata' ) }}</p>
-                            </div>
-                        </section>             
+                <div
+                        :style="{ height: 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
+                        class="columns"
+                        ref="metadataEditionPageColumns">
+                    <div class="column">     
                         <draggable 
                                 v-model="activeMetadatumList"
                                 class="active-metadata-area"
@@ -49,6 +39,19 @@
                                         chosenClass: 'sortable-chosen',
                                         filter: 'not-sortable-item', 
                                         animation: '250'}">
+                            <section 
+                                    v-if="activeMetadatumList.length <= 0 && !isLoadingMetadata"
+                                    class="field is-grouped-centered section">
+                                <div class="content has-text-gray has-text-centered">
+                                    <p>
+                                        <span class="icon is-large">
+                                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
+                                        </span>
+                                    </p>
+                                    <p>{{ $i18n.get('info_there_is_no_metadatum' ) }}</p>
+                                    <p>{{ $i18n.get('info_create_metadata' ) }}</p>
+                                </div>
+                            </section>         
                             <div  
                                     class="active-metadatum-item"
                                     :class="{
@@ -233,10 +236,8 @@
             </b-tab-item>
 
             <!-- Exposer --------------- -->
-            <b-tab-item
-                    :label="$i18n.get('mapping')"
-                    v-model="activeMetadatumList">
-                <div class="active-metadata-area">
+            <b-tab-item :label="$i18n.get('mapping')">
+                <div>
                     <section 
                             v-if="activeMetadatumList.length <= 0 && !isLoadingMetadata"
                             class="field is-grouped-centered section">
@@ -254,11 +255,12 @@
                         <div class="field is-grouped form-submit">
                             <b-select
                                     id="mappers-options-dropdown"
-                                    :placeholder="$i18n.get('instruction_select_a_mapper')">
+                                    :placeholder="$i18n.get('instruction_select_a_mapper')"
+                                    @input="onSelectMetadataMapper($event)">
                                 <option
                                         v-for="metadatum_mapper in metadatum_mappers"
                                         :key="metadatum_mapper.slug"
-                                        @click="onSelectMetadataMapper(metadatum_mapper)">
+                                        :value="metadatum_mapper">
                                     {{ $i18n.get(metadatum_mapper.name) }}
                                 </option>
                             </b-select>
@@ -458,7 +460,8 @@ export default {
             newMapperMetadataList: [],
             new_metadata_label: '',
             new_metadata_uri: '',
-            new_metadata_slug: ''
+            new_metadata_slug: '',
+            columnsTopY: 0
         }
     },
     components: {
@@ -644,6 +647,7 @@ export default {
             this.openedMetadatumId = '';
         },
         onSelectMetadataMapper(metadatum_mapper) {
+
             this.isMapperMetadataLoading = true;
             this.mapper = metadatum_mapper; //TODO try to use v-model again
             this.mapperMetadata = [];
@@ -861,6 +865,10 @@ export default {
         if (!this.isRepositoryLevel)
             this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('metadata') }]);
 
+        this.$nextTick(() => { 
+            this.columnsTopY = this.$refs.metadataEditionPageColumns.getBoundingClientRect().top;
+        });
+
         this.cleanMetadata();
         this.isLoadingMetadatumTypes = true;
         this.isLoadingMetadata = true;
@@ -896,9 +904,11 @@ export default {
     @import "../../scss/_variables.scss";
 
     .metadata-list-page {
+        padding-bottom: 0;
+        height: calc(100% - 42px + 26px);
 
         .tainacan-page-title {
-            margin-bottom: 40px;
+            margin-bottom: 35px;
             display: flex;
             flex-wrap: wrap;
             align-items: flex-end;
@@ -930,10 +940,19 @@ export default {
             overflow: visible;
             min-height: 500px;
         }
-                  
-        .column:not(.available-metadata-area){
-            overflow: hidden;
-            flex-grow: 2;
+
+        .column {
+            overflow-x: hidden;
+            overflow-y: auto;
+
+            &:not(.available-metadata-area){
+                margin-right: $page-side-padding;
+                flex-grow: 2;
+
+                @media screen and (max-width: 769px) {
+                    margin-right: 0;
+                }
+            }
         }
 
         .page-title {
@@ -969,9 +988,9 @@ export default {
 
         .active-metadata-area {
             font-size: 14px;
-            margin-right: 0.8em;
-            margin-left: -0.8em;
-            padding-right: 6em;
+            margin-right: 0.8rem;
+            margin-left: -0.8rem;
+            padding-right: 3rem;
             min-height: 330px;
 
             @media screen and (max-width: 769px) {
@@ -1133,13 +1152,13 @@ export default {
             }
 
             h3 {
-                margin: 0.2em 0em 1em -1.2em;
+                margin: 0.2rem 0rem 1rem 0rem;
                 font-weight: 500;
             }
 
             .available-metadatum-item {
                 padding: 0.7em;
-                margin: 4px;
+                margin: 4px 4px 4px 1.2rem;
                 background-color: white;
                 cursor: pointer;
                 left: 0;
@@ -1169,7 +1188,7 @@ export default {
                     overflow-x: hidden;
                     white-space: nowrap;
                     font-weight: bold;
-                    margin-left: 0.4em;
+                    margin-left: 0.4rem;
                     display: inline-block;
                     max-width: 180px;
                     width: 60%;

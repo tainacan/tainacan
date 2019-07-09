@@ -137,6 +137,13 @@ class REST_Metadata_Controller extends REST_Controller {
 		}
 
 		$result = $this->metadatum_repository->fetch($metadatum_id, 'OBJECT');
+		
+		if (! $result instanceof Entities\Metadatum) {
+			return new \WP_REST_Response([
+				'error_message' => __('Metadata with this ID was not found', 'tainacan'),
+				'item_id' => $item_id
+			], 400);
+		}
 
 		return new \WP_REST_Response($this->prepare_item_for_response($result, $request), 200);
 	}
@@ -288,9 +295,10 @@ class REST_Metadata_Controller extends REST_Controller {
 			$item_arr['metadata_type_object'] = $item->get_metadata_type_object()->_toArray();
 
 			if(isset($item_arr['metadata_type_options']) && isset($item_arr['metadata_type_options']['taxonomy_id'])){
-				$taxonomy = new Entities\Taxonomy($item_arr['metadata_type_options']['taxonomy_id']);
-
-				$item_arr['metadata_type_options']['taxonomy'] = $taxonomy->get_db_identifier();
+				$taxonomy = Repositories\Taxonomies::get_instance()->get_db_identifier_by_id( $item_arr['metadata_type_options']['taxonomy_id'] );
+				//$taxonomy = new Entities\Taxonomy($item_arr['metadata_type_options']['taxonomy_id']);
+				//$item_arr['metadata_type_options']['taxonomy'] = $taxonomy->get_db_identifier();
+				$item_arr['metadata_type_options']['taxonomy'] = $taxonomy;
 			}
 			
 			if($request['context'] === 'edit'){
@@ -384,8 +392,17 @@ class REST_Metadata_Controller extends REST_Controller {
 	 */
 	public function delete_item( $request ) {
 		$metadatum_id = $request['metadatum_id'];
-
-		$metadatum_trashed = $this->metadatum_repository->trash($metadatum_id);
+		
+		$metadatum = $this->metadatum_repository->fetch($metadatum_id);
+		
+		if (! $metadatum instanceof Entities\Metadatum) {
+			return new \WP_REST_Response([
+				'error_message' => __('Metadata with this ID was not found', 'tainacan'),
+				'item_id' => $item_id
+			], 400);
+		}
+		
+		$metadatum_trashed = $this->metadatum_repository->trash($metadatum);
 
 		$prepared = $this->prepare_item_for_response($metadatum_trashed, $request);
 

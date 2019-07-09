@@ -54,11 +54,22 @@ class Migrations {
 		
 		$wpdb->query($query);
 
+	}
+	
+	/**
+	 * We had some cases of tainacan upgrades from very old versions that missed some migrations...
+	 * This migration make sure the table strucure is updated since the very first version
+	 */
+	static function assure_bg_process_database() {
+		global $wpdb;
+		
+		$table_name = $wpdb->prefix . 'tnc_bg_process';
+		
 		$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$wpdb->prefix}tnc_bg_process' AND column_name = 'progress_label'"  );
 
 	    if(empty($column_exists)) {
 			$wpdb->query("
-	        ALTER TABLE {$wpdb->prefix}tnc_bg_process
+	        ALTER TABLE $table_name
 	        ADD progress_label text,
 	        ADD progress_value int
 	        ");
@@ -68,15 +79,12 @@ class Migrations {
 
 	    if(empty($column_exists)) {
 			$wpdb->query("
-	        ALTER TABLE {$wpdb->prefix}tnc_bg_process
+	        ALTER TABLE $table_name
 	        ADD name text NOT NULL
 	        ");
 		}
-	}
-	
-	static function add_output_column_to_bg_process() {
-		global $wpdb;
-		$table_name = $wpdb->prefix . 'tnc_bg_process';
+		
+		
 		$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$wpdb->prefix}tnc_bg_process' AND column_name = 'output'"  );
 
 	    if(empty($column_exists)) {
@@ -85,21 +93,17 @@ class Migrations {
 	        ADD output longtext
 	        ");
 		}
-	}
-
-	static function create_importer_status_column(){
-        global $wpdb;
-
-        $column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$wpdb->prefix}tnc_bg_process' AND column_name = 'status'"  );
+		
+		$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$wpdb->prefix}tnc_bg_process' AND column_name = 'status'"  );
 
         if(empty($column_exists)) {
             $wpdb->query("
-	        ALTER TABLE {$wpdb->prefix}tnc_bg_process
+	        ALTER TABLE $table_name
 	        ADD status ENUM('waiting','running','paused','cancelled','errored','finished','finished-errors')
 	        ");
         }
-
-    }
+		
+	}
 
 	static function init_capabilites() {
 		$Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();
@@ -332,6 +336,16 @@ class Migrations {
 	static function refresh_rewrite_rules_items() {
 		// needed after we added the /items rewrite rule
 		flush_rewrite_rules(false);
+	}
+	
+	static function update_filters_definition() {
+		global $wpdb;
+		
+		$wpdb->query("UPDATE $wpdb->postmeta SET meta_key = 'metadatum_id' WHERE
+			meta_key = 'metadatum' AND post_id IN (
+				SELECT ID FROM $wpdb->posts WHERE post_type = 'tainacan-filter'
+			)");
+		
 	}
 	
 }

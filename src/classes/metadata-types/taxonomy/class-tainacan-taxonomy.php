@@ -17,6 +17,7 @@ class Taxonomy extends Metadata_Type {
         // call metadatum type constructor
         parent::__construct();
         $this->set_primitive_type('term');
+        $this->set_repository( \Tainacan\Repositories\Terms::get_instance() );
         
         $this->set_default_options([
             'allow_new_terms' => 'no'

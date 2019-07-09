@@ -31,7 +31,7 @@
         <template v-if="modalOnClick">
             <b-modal
                     :active.sync="isPreviewModalActive"
-                    :width="640"
+                    :width="1024"
                     scroll="keep">
                 <div class="tainacan-modal-content">
                     <div class="tainacan-modal-title">
@@ -40,7 +40,10 @@
                     <div    
                             class="is-flex rendered-content"
                             v-html="file.description.rendered" />
-
+                    <iframe
+                            style="width: 100%; min-height: 50vh;"    
+                            v-if="file.guid != undefined && file.guid.rendered != undefined && file.mime_type != undefined && file.mime_type == 'application/pdf'"
+                            :src="file.guid.rendered" />
                     <div class="field is-grouped form-submit">
                         <div class="control">
                             <button
@@ -163,6 +166,8 @@ export default {
     }
     .rendered-content {
         justify-content: center !important;
+        flex-direction: column;
+        align-items: center;
     }
     
 </style>

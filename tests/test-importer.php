@@ -559,15 +559,15 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $file = fopen($file_name, 'w');
 
         // save the column headers
-        fputcsv($file, array('Column 1', 'special_item_status', 'Unknow Column'));
+        fputcsv($file, array('Column 1', 'special_item_status', 'Unknow Column', 'special_comment_status'));
 
         // Sample data
         $data = array(
-            array('Data 11', 'publish', 'nothing'),
-            array('Data 21', 'private', 'void'),
-            array('Data 31', 'trash', 'empty'),
-            array('Data 41', 'future', 'null'),
-            array('Data 51', 'trash', 'zero')
+            array('Data 11', 'publish', 'nothing', 'open'),
+            array('Data 21', 'private', 'void', 'closed'),
+            array('Data 31', 'trash', 'empty', 'open'),
+            array('Data 41', 'future', 'null', 'closed'),
+            array('Data 51', 'trash', 'zero', 'open')
         );
 
         // save each row of the data
@@ -658,5 +658,13 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 
         // only 3 items should be published
         $this->assertEquals( 3, count( $items ) );
+
+        //foreach ($items as $item) {
+        //  if ( \in_array( $item->get_description(), ['Data 11', 'Data 31', 'Data 51'] ) ) {
+        //    $this->assertEquals( 'open', $item->get_comment_status() );
+        //  } else {
+        //    $this->assertEquals( 'closed', $item->get_comment_status() );
+        //  }
+        //}
     }
 }

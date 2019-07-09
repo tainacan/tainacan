@@ -101,14 +101,18 @@ I18NPlugin.install = function (Vue, options = {}) {
         getWithVariables(key, variables) { // TRY WITH regex: \%((\d)\$)*s 
             let rawString = tainacan_plugin.i18n[key];
             if (rawString != undefined && rawString != null && rawString != '' ) {
-                let splits = rawString.match(/\%((\d)\$)*s/gm); // An array with all the %s, %1$s, %2$s, etc
-                let parsedString = '';
-                
-                for (let i = 0; i < splits.length; i++) {
-                    parsedString += rawString.split(splits[i]).join(variables[i]);
-                }
-                return parsedString;
+                // let splits = rawString.match(/\%((\d)\$)*s*/gm); // An array with all the %s, %1$s, %2$s, etc
+                // let parsedString = '';
+                // for (let i = 0; i < splits.length; i++) {
+                //     parsedString += rawString.split(splits[i]).join(variables[i]);
+                // }
+                // return parsedString;
 
+                const regex = /\%(\d\$)*s/m;
+                for (let variable of variables)
+                    rawString = rawString.replace(regex, variable);
+                
+                return rawString;
             } else {
                 "Invalid i18n key: " + tainacan_plugin.i18n[key];
             }
@@ -150,7 +154,8 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
                     .then( updatedRes => {
                         let prefs = JSON.parse(updatedRes.data.meta['tainacan_prefs']);
                         this.tainacanPrefs = prefs;
-                    });
+                    })
+                    .catch( () => console.log("Request to /users/me failed. Maybe you're not logged in.") );
             } else {
                 let prefs = JSON.parse(tainacan_plugin.user_prefs);
                 this.tainacanPrefs = prefs;
@@ -175,9 +180,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
                             this.tainacanPrefs[key] = value;
                         }
                     })
-                    .catch(error => {
-                        reject( error );
-                    });
+                    .catch( () => console.log("Request to /users/me failed. Maybe you're not logged in.") );
             }); 
         },
         clean() {
@@ -338,4 +341,61 @@ UserCapabilitiesPlugin.install = function (Vue, options = {}) {
             return false;
         }
     }
+};
+
+
+// STATUS ICONS PLUGIN - Sets icon for status option
+export const StatusHelperPlugin = {};
+StatusHelperPlugin.install = function (Vue, options = {}) {
+    
+    Vue.prototype.$statusHelper = {
+        statuses: [
+            { name: tainacan_plugin.i18n['status_publish'], slug: 'publish' },
+            // { name: tainacan_plugin.i18n['status_private'], slug: 'private' },
+            // { name: tainacan_plugin.i18n['status_draft'], slug: 'draft' },
+            // { name: tainacan_plugin.i18n['status_trash'], slug: 'trash' }
+        ],
+        getIcon(status) {
+            switch (status) {
+                case 'publish': return 'tainacan-icon-public';
+                case 'private': return 'tainacan-icon-private';
+                case 'draft': return 'tainacan-icon-draft';
+                case 'trash': return 'tainacan-icon-delete';
+                default: '';
+            }
+        },
+        hasIcon(status) {
+            return ['publish', 'private', 'draft', 'trash'].includes(status);
+        },
+        getStatuses() {
+            return  this.statuses;
+        },
+        loadStatuses() {
+            wpApi.get('/statuses/')
+                    .then( res => {
+                        let loadedStatus = res.data;
+                        this.statuses = [];
+
+                        if (loadedStatus['publish'] != undefined)
+                            this.statuses.push(loadedStatus['publish']);
+                        
+                        if (loadedStatus['private'] != undefined)
+                            this.statuses.push(loadedStatus['private']);
+                        
+                        this.statuses.concat(Object.values(loadedStatus).filter((status) => {
+                            return !['publish','private','draft','trash'].includes(status.slug); 
+                        }));
+
+                        if (loadedStatus['draft'] != undefined)
+                            this.statuses.push(loadedStatus['draft']);
+                        
+                        if (loadedStatus['trash'] != undefined)
+                            this.statuses.push(loadedStatus['trash']);
+                    })
+                    .catch(error => {
+                        console.error( error );
+                    });
+        }
+    }
+
 };

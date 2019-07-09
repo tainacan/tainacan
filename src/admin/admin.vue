@@ -64,6 +64,7 @@
             TainacanRepositorySubheader
         },
         created() {
+            this.$statusHelper.loadStatuses(); 
             this.$userPrefs.init();
             this.isMenuCompressed = (this.$route.params.collectionId != undefined);
             this.activeRoute = this.$route.name;

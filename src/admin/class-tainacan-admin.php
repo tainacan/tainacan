@@ -18,7 +18,6 @@ class Admin {
 
 	private function __construct() {
 
-		add_action( 'wp_ajax_tainacan-date-i18n', array( &$this, 'ajax_date_i18n') );
 		add_action( 'wp_ajax_tainacan-sample-permalink', array( &$this, 'ajax_sample_permalink') );
 
 		add_action( 'admin_menu', array( &$this, 'add_admin_menu' ) );
@@ -78,6 +77,7 @@ class Admin {
 		
 		// wp_enqueue_style( 'style', $TAINACAN_BASE_URL . '/assets/css/fonts/materialdesignicons.css' );
 		wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/css/fonts/tainacanicons.css', [], TAINACAN_VERSION );
+		wp_enqueue_style( 'roboto-fonts', 'https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i', [], TAINACAN_VERSION );
 		wp_enqueue_script('underscore');
 	}
 	
@@ -220,6 +220,13 @@ class Admin {
 		    $class = new $metadata_type;
             $settings['i18n']['helpers_label'][$class->get_component()] = $class->get_form_labels();
 		}
+
+		$filter_types = $Tainacan_Filters->fetch_filter_types();
+		
+		foreach ( $filter_types as $index => $filter_type){
+		    $class = new $filter_type;
+            $settings['i18n']['helpers_label'][$class->get_component()] = $class->get_form_labels();
+		}
 		
 		$settings['form_hooks'] = Admin_Hooks::get_instance()->get_registered_hooks();
 		
@@ -270,15 +277,6 @@ class Admin {
 			'show_in_rest' => true,
 		);
 		register_meta( 'user', 'tainacan_prefs', $args );
-	}
-
-	function ajax_date_i18n(){
-
-		$unix_time_stamp = strtotime($_POST['date_string']);
-
-		echo date_i18n(get_option('date_format'), $unix_time_stamp);
-
-		wp_die();
 	}
 
 	function ajax_sample_permalink(){

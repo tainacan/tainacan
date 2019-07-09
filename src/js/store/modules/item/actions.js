@@ -62,10 +62,19 @@ export const setLastUpdated = ({ commit}, value) => {
 };
 
 // Actions directly related to Item
-export const fetchItem = ({ commit }, { itemId, contextEdit } ) => {
-    commit('cleanItem')
+export const fetchItem = ({ commit }, { itemId, contextEdit, fetchOnly } ) => {
+    commit('cleanItem');
+
+    let endpoint = '/items/'+ itemId + '?'; 
+
+    if (contextEdit)
+        endpoint += '&context=edit';
+
+    if (fetchOnly != undefined)
+        endpoint += '&fetch_only=' + fetchOnly;
+
     return new Promise((resolve, reject) => {
-        axios.tainacan.get('/items/'+ itemId + (contextEdit ? '?context=edit' : ''))
+        axios.tainacan.get(endpoint)
         .then(res => {
             let item = res.data;
             commit('setItem', item);
@@ -113,13 +122,31 @@ export const sendItem = ( { commit }, item) => {
 export const updateItem = ({ commit }, item) => {
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.patch('/items/' + item.id, item).then( res => {
-            commit('setItem', res.data);
-            commit('setLastUpdated');
-            resolve( res.data );
-        }).catch( error => { 
-            reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
-        });
+        axios.tainacan.patch('/items/' + item.id, item)
+            .then( res => {
+                commit('setItem', res.data);
+                commit('setLastUpdated');
+                resolve( res.data );
+            }).catch( error => { 
+                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+            });
+
+    }); 
+};
+ 
+export const duplicateItem = ({ commit }, { item, attachment }) => {
+    delete item['id'];
+    
+    if (item['terms'] == null)
+        item['terms'] = [];
+
+    return new Promise((resolve, reject) => {
+        axios.tainacan.post('/collection/' + item.collection_id + '/items/', item)
+            .then( res => {
+                resolve( res.data );
+            }).catch( error => { 
+                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+            });
 
     }); 
 };

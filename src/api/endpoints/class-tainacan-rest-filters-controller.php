@@ -136,25 +136,25 @@ class REST_Filters_Controller extends REST_Controller {
 			$metadatum_id      = $request['metadatum_id'];
 
 			$filter_obj->set_collection_id( $collection_id );
-			$filter_obj->set_metadatum( $metadatum_id );
+			$filter_obj->set_metadatum_id( $metadatum_id );
 		} elseif (isset($request['collection_id'])){
 			$collection_id = $request['collection_id'];
 
 			$filter_obj->set_collection_id( $collection_id );
 
-			if(!isset($body['metadatum'])){
+			if(!isset($body['metadatum_id'])){
 				throw new \InvalidArgumentException('You need provide a metadatum id');
 			}
 
-			$filter_obj->set_metadatum($body['metadatum']);
+			$filter_obj->set_metadatum_id($body['metadatum_id']);
 		} else {
 			$filter_obj->set_collection_id( 'filter_in_repository' );
 
-			if(!isset($body['metadatum'])){
+			if(!isset($body['metadatum_id'])){
 				throw new \InvalidArgumentException('You need provide a metadatum id');
 			}
 
-			$filter_obj->set_metadatum($body['metadatum']);
+			$filter_obj->set_metadatum_id($body['metadatum_id']);
 		}
 
 		$filter_obj->set_filter_type($filter_type);
@@ -223,13 +223,21 @@ class REST_Filters_Controller extends REST_Controller {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function delete_item( $request ) {
-		$filter_id = $request['filter_id'];
 		$permanently = $request['permanently'];
+		
+		$filter = $this->filter_repository->fetch($request['filter_id']);
+
+		if (! $filter instanceof Entities\Filter) {
+			return new \WP_REST_Response([
+		    	'error_message' => __('A filter with this ID was not found', 'tainacan' ),
+			    'filter_id' => $filter_id
+		    ], 400);
+		}
 
 		if($permanently == true) {
-			$filter = $this->filter_repository->delete($filter_id);
+			$filter = $this->filter_repository->delete($filter);
 		} else {
-			$filter = $this->filter_repository->trash($filter_id);
+			$filter = $this->filter_repository->trash($filter);
 		}
 
 		return new \WP_REST_Response($this->prepare_item_for_response($filter, $request), 200);
@@ -421,7 +429,14 @@ class REST_Filters_Controller extends REST_Controller {
 		$filter_id = $request['filter_id'];
 
 		$filter = $this->filter_repository->fetch($filter_id);
-
+		
+		if(! $filter instanceof Entities\Filter) {
+			return new \WP_REST_Response([
+		    	'error_message' => __('A filter with this ID was not found', 'tainacan' ),
+			    'filter_id' => $filter_id
+		    ], 400);
+		}
+		
 		return new \WP_REST_Response($this->prepare_item_for_response($filter, $request), 200);
 	}
 

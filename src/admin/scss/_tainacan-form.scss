@@ -49,7 +49,52 @@
           background-color: $red1;  
         }
     }
-    .control{
+    .b-numberinput {
+        height: 30px;
+        
+        .control {
+            margin-right: 0 !important;
+        }
+        div.control {
+            flex-shrink: 1;
+            order: -1;
+        }
+        button, 
+        input {
+            height: 30px !important;
+        }
+        button.is-primary,
+        button.is-primary:hover,
+        button.is-primary:focus,
+        button.is-primary:active {
+            border: 1px solid $gray2;
+            background-color: $gray1 !important;
+            color: $secondary !important;
+            padding: 0 0.6rem !important;
+            border-radius: 0 !important;
+
+            .mdi::before {
+                display: inline-block;
+                font: normal normal normal 20px/1 "TainacanIcons";
+                font-size: inherit;
+                text-rendering: auto;
+                vertical-align: middle;
+                line-height: inherit;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                transform: none !important;
+                font-size: 20px;
+                margin-top: -2px;
+            }
+            .mdi-plus::before {
+                content: "plus" !important;
+            } 
+            .mdi-minus::before {
+                content: "minus" !important;
+            } 
+        }
+    }
+    .control {
         &.has-icons-right {
             .icon {
                 height: 2.0em;

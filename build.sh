@@ -13,12 +13,12 @@ current_OS=`uname`
 # For macOS (Darwin)
 if [ $current_OS == "Darwin" ]; then
     find src ./webpack.config.js -type f \( -name "*.js" -or -name "*.vue" -or -name "webpack.config.js" \) -exec md5 {} \; | sort -k 2 | md5 > last-js-build.md5
-    find ./src/scss/ ./src/admin/scss/ ./src/gutenberg-blocks/ ./src/gutenberg-blocks/tainacan-collections/collections-list  ./src/gutenberg-blocks/tainacan-items/dynamic-items-list ./src/gutenberg-blocks/tainacan-items/items-list ./src/gutenberg-blocks/tainacan-terms/terms-list -type f \( -name "*.scss" \) -exec md5 {} \; | sort -k 2 | md5 > last-sass-build.md5
+    find ./src/scss/ ./src/admin/scss/ ./src/gutenberg-blocks/ ./src/gutenberg-blocks/tainacan-collections/collections-list ./src/gutenberg-blocks/tainacan-facets/facets-list ./src/gutenberg-blocks/tainacan-items/dynamic-items-list ./src/gutenberg-blocks/tainacan-items/items-list ./src/gutenberg-blocks/tainacan-terms/terms-list -type f \( -name "*.scss" \) -exec md5 {} \; | sort -k 2 | md5 > last-sass-build.md5
     find ./composer.json -type f \( -name "composer.json" \) -exec md5 {} \; | sort -k 2 | md5 > last-composer-build.md5
     find ./package.json -type f \( -name "package.json" -or -name "package-lock.json" \) -exec md5 {} \; | sort -k 2 | md5 > last-package-build.md5
 else
     find src ./webpack.config.js -type f \( -name "*.js" -or -name "*.vue" -or -name "webpack.config.js" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-js-build.md5
-    find ./src/scss/ ./src/admin/scss/ ./src/gutenberg-blocks ./src/gutenberg-blocks/tainacan-collections/collections-list  ./src/gutenberg-blocks/tainacan-items/dynamic-items-list ./src/gutenberg-blocks/tainacan-items/items-list ./src/gutenberg-blocks/tainacan-terms/terms-list -type f \( -name "*.scss" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-sass-build.md5
+    find ./src/scss/ ./src/admin/scss/ ./src/gutenberg-blocks ./src/gutenberg-blocks/tainacan-collections/collections-list ./src/gutenberg-blocks/tainacan-facets/facets-list ./src/gutenberg-blocks/tainacan-items/dynamic-items-list ./src/gutenberg-blocks/tainacan-items/items-list ./src/gutenberg-blocks/tainacan-terms/terms-list -type f \( -name "*.scss" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-sass-build.md5
     find ./composer.json -type f \( -name "composer.json" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-composer-build.md5
     find ./package.json -type f \( -name "package.json" -or -name "package-lock.json" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-package-build.md5
 fi
@@ -27,7 +27,7 @@ new_md5_package=$(<last-package-build.md5)
 if [ "$current_md5_package" != "$new_md5_package" ]
 then
     ## Install js dependencies
-    npm install
+    npm ci
 fi
 
 new_md5_composer=$(<last-composer-build.md5)
@@ -68,7 +68,9 @@ rm -rf $wp_plugin_dir
 mkdir $wp_plugin_dir
 
 rsync -axz --exclude='vendor/bin/phpc*' --exclude='vendor/squizlabs' --exclude='vendor/wimg' \
- --exclude='vendor/respect/validation/.git' --exclude='vendor/symfony/polyfill-mbstring/.git' --exclude='pdf-viewer/pdfjs-dist/web/compressed.tracemonkey-pldi-09.pdf' \
+ --exclude='vendor/respect/validation/.git' --exclude='vendor/symfony/polyfill-mbstring/.git' \
+ --exclude='vendor/respect/validation/docs' --exclude='vendor/respect/validation/tests' \
+ --exclude='pdf-viewer/pdfjs-dist/web/compressed.tracemonkey-pldi-09.pdf' \
   src/* $wp_plugin_dir/
 
 rm -rf $wp_plugin_dir/scss

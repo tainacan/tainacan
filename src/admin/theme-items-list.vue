@@ -22,6 +22,7 @@
 export default {
     name: "ThemeItemsList",
     created() {
+        this.$statusHelper.loadStatuses();
         this.$userPrefs.init(); 
     }
 }
@@ -36,8 +37,8 @@ export default {
     @import "./scss/theme-basics.sass";
 
     // Buefy imports
-    @import "../../node_modules/buefy/src/scss/components/_datepicker.scss";
     @import "../../node_modules/buefy/src/scss/utils/_all.scss";
+    @import "../../node_modules/buefy/src/scss/components/_datepicker.scss";
     @import "../../node_modules/buefy/src/scss/components/_checkbox.scss";
     @import "../../node_modules/buefy/src/scss/components/_radio.scss";
     @import "../../node_modules/buefy/src/scss/components/_tag.scss";
@@ -45,6 +46,7 @@ export default {
     @import "../../node_modules/buefy/src/scss/components/_dropdown.scss";
     @import "../../node_modules/buefy/src/scss/components/_modal.scss";
     @import "../../node_modules/buefy/src/scss/components/_notices.scss";
+    @import "../../node_modules/buefy/src/scss/components/_numberinput.scss";
 
     // Tainacan imports
     @import "../admin/scss/_tables.scss";
@@ -149,9 +151,6 @@ export default {
                 .control.has-icons-left .icon {
                     top: 5px;
                 }
-            }
-            .filter-item-forms .datepicker .dropdown-content {
-                max-width: 100% !important;
             }
         }
 

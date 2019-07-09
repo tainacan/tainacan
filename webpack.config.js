@@ -1,6 +1,7 @@
 let path = require('path');
 let webpack = require('webpack');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
     entry: {
@@ -13,7 +14,9 @@ module.exports = {
         gutenberg_items_list: './src/gutenberg-blocks/tainacan-items/items-list/index.js',
         gutenberg_dynamic_items_list: './src/gutenberg-blocks/tainacan-items/dynamic-items-list/index.js',
         gutenberg_dynamic_items_list_theme: './src/gutenberg-blocks/tainacan-items/dynamic-items-list/dynamic-items-list-theme.js',
-        gutenberg_collections_list: './src/gutenberg-blocks/tainacan-collections/collections-list/index.js'
+        gutenberg_collections_list: './src/gutenberg-blocks/tainacan-collections/collections-list/index.js',
+        gutenberg_facets_list: './src/gutenberg-blocks/tainacan-facets/facets-list/index.js',
+        gutenberg_facets_list_theme: './src/gutenberg-blocks/tainacan-facets/facets-list/facets-list-theme.js'
     },
     output: {
         path: path.resolve(__dirname, './src/assets/'),
@@ -38,7 +41,7 @@ module.exports = {
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
-                exclude: /node_modules/,
+                exclude: /node_modules/
             },
             {
                 test: /\.(png|jpg|jpeg|gif|eot|ttf|otf|woff|woff2|svg|svgz)(\?.+)?$/,
@@ -113,7 +116,7 @@ if (production === true) {
     module.exports.resolve = {
         alias: {
             'vue$': 'vue/dist/vue.min',
-            'swiper$': 'swiper/dist/js/swiper.js'
+            'swiper$': 'swiper/dist/js/swiper.min.js'
         }
     }
 } else {
@@ -128,12 +131,17 @@ if (production === true) {
             },
         }),
         new VueLoaderPlugin(),
+        new BundleAnalyzerPlugin({
+            openAnalyzer: false,
+            analyzerMode: 'static'
+        })
     ];
 
     module.exports.resolve = {
         alias: {
             //'vue$': 'vue/dist/vue.esm' // uncomment this and comment the above to use vue dev tools (can cause type error)
-            'vue$': 'vue/dist/vue.min'
+            'vue$': 'vue/dist/vue.min',
+            'swiper$': 'swiper/dist/js/swiper.min.js'
         }
     }
 }
