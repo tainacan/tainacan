@@ -18,11 +18,23 @@
         <p v-if="isRepositoryLevel">{{ $i18n.get('info_repository_filters_inheritance') }}</p>
         <br>
         <div
-                :style="{ height: 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
+                :style="{ height: activeFilterList.length <= 0 && !isLoadingFilters ? 'auto' : 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
                 class="columns"
                 ref="filterEditionPageColumns">
             <div class="column">
-                     
+                <section 
+                        v-if="activeFilterList.length <= 0 && !isLoadingFilters"
+                        class="field is-grouped-centered section">
+                    <div class="content has-text-gray has-text-centered">
+                        <p>
+                            <span class="icon is-large">
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters"/>
+                            </span>
+                        </p>
+                        <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>  
+                        <p>{{ $i18n.get('info_create_filters' ) }}</p>
+                    </div>
+                </section>        
                 <draggable 
                         class="active-filters-area"
                         @change="handleChangeOnFilter"
@@ -35,20 +47,7 @@
                             handle: '.handle', 
                             ghostClass: 'sortable-ghost',
                             filter: 'not-sortable-item', 
-                            animation: '250'}">
-                            <section 
-                        v-if="activeFilterList.length <= 0 && !isLoadingFilters"
-                        class="field is-grouped-centered section">
-                    <div class="content has-text-gray has-text-centered">
-                        <p>
-                            <span class="icon is-large">
-                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters"/>
-                            </span>
-                        </p>
-                        <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>  
-                        <p>{{ $i18n.get('info_create_filters' ) }}</p>
-                    </div>
-                </section>    
+                            animation: '250'}"> 
                     <div  
                             class="active-filter-item" 
                             :class="{
@@ -58,7 +57,7 @@
                                 'inherited-filter': filter.collection_id != collectionId || isRepositoryLevel
                             }" 
                             v-for="(filter, index) in activeFilterList" 
-                            :key="index">
+                            :key="filter.id">
                         <div class="handle">
                             <span 
                                     v-if="!(isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || isRepositoryLevel)"
