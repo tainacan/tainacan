@@ -74,7 +74,7 @@ function tainacan_get_the_document() {
 	if (!$item)
 		return;
 	
-	return apply_filters('tainacan-get-the-document', $item->get_document_html(), $item);
+	return apply_filters('tainacan-get-the-document', $item->get_document_as_html(), $item);
 	
 }
 

@@ -649,7 +649,7 @@ class Item extends Entity {
 		
 	}
 	
-	public function get_document_html($img_size = 'large') {
+	public function get_document_as_html($img_size = 'large') {
 		
 		$type = $this->get_document_type();
 		
@@ -695,7 +695,7 @@ class Item extends Entity {
 			
 		}
 		
-		return apply_filters("tainacan-item-get-document-html", $output, $img_size, $this);
+		return apply_filters("tainacan-item-get-document-as-html", $output, $img_size, $this);
 		
 	}
 	

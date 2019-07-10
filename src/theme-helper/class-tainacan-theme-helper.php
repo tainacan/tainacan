@@ -159,7 +159,7 @@ class Theme_Helper {
 		$content = '';
 		
 		// document
-		$content .= $item->get_document_html();
+		$content .= $item->get_document_as_html();
 		
 		// metadata
 		$content .= $item->get_metadata_as_html();
