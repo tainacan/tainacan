@@ -68,22 +68,27 @@
                 this.$emit('blur');
             },
             onInput: _.debounce(function ($event) {
-                let dateISO = '';
+                // Emty dates don't need to be validated, they remove the metadata
+                if ($event.target.value != '') {
+                    let dateISO = '';
+                    
+                    if ($event && $event instanceof Date) {
+                        dateISO = moment(this.dateValue, this.dateFormat).toISOString() ? moment(this.dateValue, this.dateFormat).toISOString().split('T')[0] : false;
+                    } else if($event.target.value && $event.target.value.length === this.dateMask.length) {
+                        dateISO = moment(this.dateValue, this.dateFormat).toISOString() ? moment($event.target.value,  this.dateFormat).toISOString().split('T')[0] : false;
+                    }
 
-                if ($event && $event instanceof Date) {
-                    dateISO = moment(this.dateValue, this.dateFormat).toISOString() ? moment(this.dateValue, this.dateFormat).toISOString().split('T')[0] : false;
-                } else if($event.target.value && $event.target.value.length === this.dateMask.length) {
-                    dateISO = moment(this.dateValue, this.dateFormat).toISOString() ? moment($event.target.value,  this.dateFormat).toISOString().split('T')[0] : false;
+                    if(dateISO == false){
+                        this.isInvalidDate = true;
+                        return;
+                    } else {
+                        this.isInvalidDate = false;
+                    }
+
+                    this.$emit('input', dateISO);
+                } else  {
+                   this.$emit('input', [null]); 
                 }
-
-                if(!dateISO){
-                    this.isInvalidDate = true;
-                    return;
-                } else {
-                    this.isInvalidDate = false;
-                }
-
-                this.$emit('input', dateISO);
                 this.$emit('blur');
             }, 300)
         }
