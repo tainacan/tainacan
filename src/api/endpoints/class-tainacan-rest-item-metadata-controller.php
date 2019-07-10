@@ -96,7 +96,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 	 * @return array|\WP_Error|\WP_REST_Response
 	 */
 	public function prepare_item_for_response( $item, $request ) {
-		$item_arr = $item->_toArray();
+		$item_arr = $item->_toArray(true, true);
 
 		if($request['context'] === 'edit'){
 			$item_arr['current_user_can_edit'] = $item->can_edit();
@@ -122,7 +122,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 
 		foreach ($items_metadata as $item_metadata){
 			$index = array_push($prepared_item, $this->prepare_item_for_response($item_metadata, $request));
-			$prepared_item[$index-1]['metadatum']['metadata_type_object'] = $this->prepare_item_for_response( $item_metadata->get_metadatum()->get_metadata_type_object(), $request);
+			$prepared_item[$index-1]['metadatum']['metadata_type_object'] = $item_metadata->get_metadatum()->get_metadata_type_object()->_toArray();
 		}
 
 		return new \WP_REST_Response(apply_filters('tainacan-rest-response', $prepared_item, $request), 200);
@@ -147,7 +147,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 			$metadatum = $item_metadata->get_metadatum();
 			if($metadatum->get_id() == $metadatum_id) {
 				$prepared_item = $this->prepare_item_for_response($item_metadata, $request);
-				$prepared_item['metadatum']['metadata_type_object'] = $this->prepare_item_for_response( $metadatum->get_metadata_type_object(), $request);
+				$prepared_item['metadatum']['metadata_type_object'] = $metadatum->get_metadata_type_object()->_toArray();
 			}
 		}
 		
@@ -203,10 +203,10 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 
 			if ( $item_metadata->validate() ) {
 				if($item->can_edit()) {
-					$metadatum_updated = $this->item_metadata_repository->update( $item_metadata );
+					$updated_item_metadata = $this->item_metadata_repository->update( $item_metadata );
 
-					$prepared_item =  $this->prepare_item_for_response($metadatum_updated, $request);
-					$prepared_item['metadatum']['metadata_type_object'] = $this->prepare_item_for_response($metadatum_updated->get_metadatum()->get_metadata_type_object(), $request);
+					$prepared_item =  $this->prepare_item_for_response($updated_item_metadata, $request);
+					$prepared_item['metadatum']['metadata_type_object'] = $updated_item_metadata->get_metadatum()->get_metadata_type_object()->_toArray();
 				}
 				elseif($metadatum->get_accept_suggestion()) {
 					$log = $this->item_metadata_repository->suggest( $item_metadata );

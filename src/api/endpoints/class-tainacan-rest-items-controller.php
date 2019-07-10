@@ -117,13 +117,14 @@ class REST_Items_Controller extends REST_Controller {
 			$item_metadata_array = $me->_toArray();
 
 			$item_array['metadata'][ $slug ]['name']            = $metadatum->get_name();
+			$item_array['metadata'][ $slug ]['id']            = $metadatum->get_id();
 			if($metadatum->get_metadata_type_object()->get_primitive_type() === 'date') {
 				$item_array['metadata'][ $slug ]['date_i18n'] = $item_metadata_array['date_i18n'];
 			}
 			$item_array['metadata'][ $slug ]['value']           = $item_metadata_array['value'];
 			$item_array['metadata'][ $slug ]['value_as_html']   = $item_metadata_array['value_as_html'];
 			$item_array['metadata'][ $slug ]['value_as_string'] = $item_metadata_array['value_as_string'];
-			$item_array['metadata'][ $slug ]['semantic_uri'] = $item_metadata_array['metadatum']['semantic_uri'];
+			$item_array['metadata'][ $slug ]['semantic_uri'] = $metadatum->get_semantic_uri();
 			
 			$item_array['metadata'][ $slug ]['multiple']        = $metadatum->get_multiple();
 			$item_array['metadata'][ $slug ]['mapping']        = $metadatum->get_exposer_mapping();
