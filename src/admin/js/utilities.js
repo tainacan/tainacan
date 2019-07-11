@@ -352,8 +352,8 @@ StatusHelperPlugin.install = function (Vue, options = {}) {
         statuses: [
             { name: tainacan_plugin.i18n['status_publish'], slug: 'publish' },
             // { name: tainacan_plugin.i18n['status_private'], slug: 'private' },
-            // { name: tainacan_plugin.i18n['status_draft'], slug: 'draft' },
-            // { name: tainacan_plugin.i18n['status_trash'], slug: 'trash' }
+            { name: tainacan_plugin.i18n['status_draft'], slug: 'draft' },
+            { name: tainacan_plugin.i18n['status_trash'], slug: 'trash' }
         ],
         getIcon(status) {
             switch (status) {
@@ -383,14 +383,18 @@ StatusHelperPlugin.install = function (Vue, options = {}) {
                             this.statuses.push(loadedStatus['private']);
                         
                         this.statuses.concat(Object.values(loadedStatus).filter((status) => {
-                            return !['publish','private','draft','trash'].includes(status.slug); 
+                            return !['publish','private', 'draft', 'trash'].includes(status.slug); 
                         }));
 
-                        if (loadedStatus['draft'] != undefined)
-                            this.statuses.push(loadedStatus['draft']);
-                        
-                        if (loadedStatus['trash'] != undefined)
-                            this.statuses.push(loadedStatus['trash']);
+                        // We always show draft and trash
+                        this.statuses.push({
+                            name: tainacan_plugin.i18n['status_draft'],
+                            slug: 'draft'
+                        });
+                        this.statuses.push({
+                            name: tainacan_plugin.i18n['status_trash'],
+                            slug: 'trash'}
+                        );
                     })
                     .catch(error => {
                         console.error( error );

@@ -21,10 +21,23 @@
         <b-tabs v-model="activeTab">    
             <b-tab-item :label="$i18n.get('metadata')">
                 <div
-                        :style="{ height: 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
+                        :style="{ height: activeMetadatumList.length <= 0 && !isLoadingMetadata ? 'auto' : 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
                         class="columns"
                         ref="metadataEditionPageColumns">
                     <div class="column">     
+                        <section 
+                                v-if="activeMetadatumList.length <= 0 && !isLoadingMetadata"
+                                class="field is-grouped-centered section">
+                            <div class="content has-text-gray has-text-centered">
+                                <p>
+                                    <span class="icon is-large">
+                                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
+                                    </span>
+                                </p>
+                                <p>{{ $i18n.get('info_there_is_no_metadatum' ) }}</p>
+                                <p>{{ $i18n.get('info_create_metadata' ) }}</p>
+                            </div>
+                        </section>     
                         <draggable 
                                 v-model="activeMetadatumList"
                                 class="active-metadata-area"
@@ -39,19 +52,6 @@
                                         chosenClass: 'sortable-chosen',
                                         filter: 'not-sortable-item', 
                                         animation: '250'}">
-                            <section 
-                                    v-if="activeMetadatumList.length <= 0 && !isLoadingMetadata"
-                                    class="field is-grouped-centered section">
-                                <div class="content has-text-gray has-text-centered">
-                                    <p>
-                                        <span class="icon is-large">
-                                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
-                                        </span>
-                                    </p>
-                                    <p>{{ $i18n.get('info_there_is_no_metadatum' ) }}</p>
-                                    <p>{{ $i18n.get('info_create_metadata' ) }}</p>
-                                </div>
-                            </section>         
                             <div  
                                     class="active-metadatum-item"
                                     :class="{
@@ -61,7 +61,7 @@
                                         'inherited-metadatum': (metadatum.collection_id != collectionId && metadatum.parent == 0) || isRepositoryLevel
                                     }" 
                                     v-for="(metadatum, index) in activeMetadatumList"
-                                    :key="index">
+                                    :key="metadatum.id">
                                 <div class="handle">
                                     <span 
                                             v-if="!(isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder)"

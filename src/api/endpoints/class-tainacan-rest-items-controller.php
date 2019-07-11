@@ -171,7 +171,7 @@ class REST_Items_Controller extends REST_Controller {
 					$img_size = $request['doc_img_size'];
 				}
 
-				$item_arr['document_as_html'] = $item->get_document_html($img_size);
+				$item_arr['document_as_html'] = $item->get_document_as_html($img_size);
 				$item_arr['exposer_urls'] = \Tainacan\Exposers_Handler::get_exposer_urls(rest_url("{$this->namespace}/{$this->rest_base}/{$item->get_id()}/"));
 				$item_arr = $this->add_metadata_to_item( $item, $item_arr );
 			} else {
