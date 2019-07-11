@@ -52,7 +52,6 @@ class Item extends Entity {
 	public function _toArray() {
 		$array_item = parent::_toArray();
 
-		$array_item['thumbnail']         = $this->get_thumbnail();
 		$array_item['_thumbnail_id']     = $this->get__thumbnail_id();
 		$array_item['author_name']       = $this->get_author_name();
 		$array_item['url']               = get_permalink( $this->get_id() );
