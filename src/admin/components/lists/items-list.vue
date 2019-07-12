@@ -670,7 +670,7 @@
                             </span>
                         </div>
                     </div>
-               
+            
                 </div>
             </masonry>
             

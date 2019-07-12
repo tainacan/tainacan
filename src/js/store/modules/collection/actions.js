@@ -58,7 +58,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
             if (collectionId == undefined){
                 endpoint = '/items?';
             }
-
+ 
             if (!isOnTheme){
                 if (postQueries.view_mode != undefined)
                     postQueries.view_mode = null;
