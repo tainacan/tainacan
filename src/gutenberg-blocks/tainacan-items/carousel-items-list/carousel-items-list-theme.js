@@ -8,14 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let vueOptions = {
         data: {
             collectionId: '',  
-            showImage: true,
-            showName: true,
-            layout: 'grid',
-            gridMargin: 0,
             searchURL: '',
             maxItemsNumber: 12,
-            order: 'asc',
-            showSearchBar: false,
             showCollectionHeader: false,
             showCollectionLabel: false,
             collectionBackgroundColor: '#454647',
@@ -28,14 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
             return h(CarouselItemsListTheme, {
                 props: {
                     collectionId: this.collectionId,  
-                    showImage: this.showImage,
-                    showName: this.showName,
-                    layout: this.layout,
-                    gridMargin: this.gridMargin,
                     searchURL: this.searchURL,
                     maxItemsNumber: this.maxItemsNumber,
-                    order: this.order,
-                    showSearchBar: this.showSearchBar,
                     showCollectionHeader: this.showCollectionHeader,
                     showCollectionLabel: this.showCollectionLabel,
                     collectionBackgroundColor: this.collectionBackgroundColor,
@@ -50,13 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
             this.className = this.$el.attributes.class != undefined ? this.$el.attributes.class.value : undefined;
             this.searchURL = this.$el.attributes['search-url'] != undefined ? this.$el.attributes['search-url'].value : undefined;
             this.collectionId = this.$el.attributes['collection-id'] != undefined ? this.$el.attributes['collection-id'].value : undefined;
-            this.showImage = this.$el.attributes['show-image'] != undefined ? this.$el.attributes['show-image'].value == 'true' : true;
-            this.showName = this.$el.attributes['show-name'] != undefined ? this.$el.attributes['show-name'].value == 'true' : true;
-            this.layout = this.$el.attributes['layout'] != undefined ? this.$el.attributes['layout'].value : undefined;
-            this.gridMargin = this.$el.attributes['grid-margin'] != undefined ? Number(this.$el.attributes['grid-margin'].value) : undefined;
             this.maxItemsNumber = this.$el.attributes['max-items-number'] != undefined ? this.$el.attributes['max-items-number'].value : undefined;
-            this.order = this.$el.attributes['order'] != undefined ? this.$el.attributes['order'].value : undefined;
-            this.showSearchBar = this.$el.attributes['show-search-bar'] != undefined ? this.$el.attributes['show-search-bar'].value == 'true' : false;
             this.showCollectionHeader = this.$el.attributes['show-collection-header'] != undefined ? this.$el.attributes['show-collection-header'].value == 'true' : false;
             this.showCollectionLabel = this.$el.attributes['show-collection-label'] != undefined ? this.$el.attributes['show-collection-label'].value == 'true' : false;
             this.collectionBackgroundColor = this.$el.attributes['collection-background-color'] != undefined ? this.$el.attributes['collection-background-color'].value : undefined;
