@@ -19,7 +19,11 @@ class Media {
     }
 	
 	protected function __construct() {
+		error_log('asdsadasds');
+		add_filter('wp_handle_upload_prefilter', [$this, 'pre_upload']);
+		add_filter('wp_handle_upload', [$this, 'post_upload']);
 		
+		add_action('template_redirect', [$this, 'template_redirect']);
 		
 	}
 
@@ -205,5 +209,70 @@ class Media {
 	public function shutdown_function() {
 		if( $this->THROW_EXCPTION_ON_FATAL_ERROR ) 
 			throw new \Exception("fatal error");
+	}
+	
+	
+	function pre_upload($file){
+		error_log('popopopopopo');
+		add_filter('upload_dir', [$this, 'change_upload_dir']);
+		return $file;
+	}
+	
+	function post_upload($fileinfo){
+		remove_filter('upload_dir', [$this, 'change_upload_dir']);
+		return $fileinfo;
+	}
+	
+	function change_upload_dir($path) {
+		error_log (json_encode($path));
+		$post_id = isset($_REQUEST['post_id']) ? $_REQUEST['post_id'] : false;
+		
+		if (false === $post_id) {
+			return $path;
+		}
+		
+		$theme_helper = \Tainacan\Theme_Helper::get_instance();
+		
+		$post = get_post($post_id);
+		
+		if ( !$theme_helper->is_post_an_item($post) ) {
+			return $path;
+		}
+		
+		error_log (json_encode($path));
+		
+		$path['path'] = '/tainacan-uploads/' . $post_id;
+		$path['url'] = str_replace($path['subdir'], '/' . $post_id, $path['url']); 
+		$path['subdir'] = '/' . $post_id;
+		
+		return $path;
+		
+	}
+	
+	function template_redirect() {
+		
+		if (is_404()) {
+			
+			$request = $_SERVER['REQUEST_URI'];
+			$file = \str_replace('/wp-content/uploads', '/tainacan-uploads', $request);
+			
+			if (\file_exists($file)) {
+				//header('Content-Description: File Transfer');
+				//header('Content-Type: application/octet-stream');
+				header("Content-type: " . mime_content_type($file));
+				//header('Content-Disposition: attachment; filename="'.basename($file).'"');
+				// header('Expires: 0');
+				// header('Cache-Control: must-revalidate');
+				// header('Pragma: public');
+				// header('Content-Length: ' . filesize($file));
+				\readfile($file);
+				
+				die;
+			}
+			
+			
+			
+		}
+		
 	}
 }
