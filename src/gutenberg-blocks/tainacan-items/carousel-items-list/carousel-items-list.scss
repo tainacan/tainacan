@@ -134,83 +134,36 @@
         }
     }
 
-    // Search control bar
-    .carousel-items-search-bar {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        border-bottom: 1px solid #cbcbcb;
-        padding: 1.00rem 0.5rem 0.75rem 0.5rem;
+    // Tainacan Carousel
+    .tainacan-carousel {
+        position: relative;
+        width: calc(100% + 50px);
+        left: -50px;
 
-        @media only screen and (max-width: 768px) {
-            flex-wrap: wrap;
+        .swiper-container {
+            margin: 0 50px;
 
-            .search-button {
-                order: 4;
-                position: absolute;
-                margin-top: 37px;
+            a>span,
+            a:hover>span {
+                color: black;
+                font-weight: bold;
+                text-decoration: none;
+                padding: 8px 16px;
+                display: block;
+                line-height: 1.2rem;
             }
-            input {
-                width: 100% !important;
-                order: 5;
-                margin-top: 8px;
-                margin-left: 0px !important;
-                padding-left: 4px !important;
-                border-color: #dbdbdb !important;
-            }
-        } 
-
-        button {
-            margin-right: 0.75rem;
-            padding: 0 0.35rem;
-            min-height: 28px;
-            z-index: 2;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-
-            svg { 
-                fill: #cbcbcb; 
-                transition: fill 0.4s ease;
-            }
-            &:hover svg { fill: #545758; }
-            &:focus, &:active { border: none; box-shadow: none; }
-            &.sorting-button-selected svg {
-                fill: #545758;
-            }
-            &.next-button {
-                margin-right: 0rem;
-                padding: 0;
-
-                svg { fill: #298596; }
-            }
-            &.previous-button {
-                margin-left: auto;
-                margin-right: 1rem;
-                padding: 0;
-
-                svg { fill: #298596; }
-            }
-            &[disabled] svg {
-                fill: #f2f2f2;
-                cursor: not-allowed;
+            a:hover {
+                text-decoration: none;
             }
         }
-        input {
-            height: 32px;
-            width: 20%;
-            border-radius: 0;
-            margin-left: -52px;
-            padding-left: 52px;
-            border: 1px solid white;
-            transition: border-color 0.7s ease, width 0.5s ease-in;
 
-            &:focus,
-            &:active,
-            &:hover {
-                width: 100%;
-                border: 1px solid #cbcbcb;
-                box-shadow: none;
+        .swiper-button-prev, .swiper-button-next {
+            top: initial;
+            bottom: 50%;
+            background-image: none;
+
+            svg {
+                fill: #298596;
             }
         }
     }

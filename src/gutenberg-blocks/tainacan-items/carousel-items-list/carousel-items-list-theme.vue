@@ -46,100 +46,77 @@
                         }"/>
             </a>   
         </div>
-
-        <button
-                class="previous-button"
-                v-if="paged > 1"
-                @click="paged--; fetchItems()"
-                :label="$root.__('Previous page', 'tainacan')">
-            <span class="icon">
-                <i>
+        <div v-if="!isLoading">
+            <div  
+                    class="tainacan-carousel"
+                    v-if="items.length > 0">
+                <swiper 
+                        role="list"
+                        ref="mySwiper"
+                        :options="swiperOptions"
+                    :style="{
+                        marginTop: showCollectionHeader ? '1.35rem' : '0px'
+                        }">
+                    <swiper-slide 
+                            role="listitem"
+                            :key="index"
+                            v-for="(item, index) of items"
+                            class="item-list-item">      
+                        <a 
+                                :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
+                                :href="item.url"
+                                target="_blank"
+                                :class="(!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '')">
+                            <img
+                                :src=" 
+                                    item.thumbnail && item.thumbnail['tainacan-medium'][0] && item.thumbnail['tainacan-medium'][0] 
+                                        ?
+                                    item.thumbnail['tainacan-medium'][0] 
+                                        :
+                                    (item.thumbnail && item.thumbnail['thumbnail'][0] && item.thumbnail['thumbnail'][0]
+                                        ?    
+                                    item.thumbnail['thumbnail'][0] 
+                                        : 
+                                    `${tainacanBaseUrl}/admin/images/placeholder_square.png`)
+                                "
+                                :alt="item.title ? item.title : $root.__('Thumbnail', 'tainacan')">
+                            <span>{{ item.title ? item.title : '' }}</span>
+                        </a>
+                    </swiper-slide>
+                </swiper>
+                <i 
+                        class="swiper-button-prev" 
+                        slot="button-prev">
                     <svg
-                            width="30"
-                            height="30"
-                            viewBox="0 2 20 20">
+                            width="52"
+                            height="52"
+                            viewBox="0 2 24 24">
                         <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
                         <path
                                 d="M0 0h24v24H0z"
-                                fill="none"/>                        
+                                fill="none"/>                         
                     </svg>
                 </i>
-            </span>
-        </button> 
-        <button
-                :style="{ marginLeft: paged <= 1 ? 'auto' : '0' }"
-                class="next-button"
-                v-if="paged < totalItems/maxItemsNumber && items.length < totalItems"
-                @click="paged++; fetchItems()"
-                :label="$root.__('Next page', 'tainacan')">
-            <span class="icon">
-                <i>
+                <i 
+                        class="swiper-button-next" 
+                        slot="button-next">
                     <svg
-                            width="30"
-                            height="30"
-                            viewBox="0 2 20 20">
+                            width="52"
+                            height="52"
+                            viewBox="0 2 24 24">
                         <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
                         <path
                                 d="M0 0h24v24H0z"
                                 fill="none"/>                        
                     </svg>
                 </i>
-            </span>
-        </button> 
-        <ul
-                v-if="isLoading"
-                :style="{
-                    marginTop: showCollectionHeader ? '1.34rem' : '0px'
-                }"
-                class="items-list">
-            <li
-                    :key="item"
-                    v-for="item in Number(maxItemsNumber)"
-                    class="item-list-item skeleton" />      
-        </ul>
-        <div v-else>
-            <swiper 
-                    role="list"
-                    ref="mySwiper"
-                    :options="swiperOptions" 
-                    v-if="items.length > 0"
-                   :style="{
-                       marginTop: showCollectionHeader ? '1.35rem' : '0px'
-                    }">
-                <swiper-slide 
-                        role="listitem"
-                        :key="index"
-                        v-for="(item, index) of items"
-                        class="item-list-item">      
-                    <a 
-                            :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
-                            :href="item.url"
-                            target="_blank"
-                            :class="(!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '')">
-                        <img
-                            :src=" 
-                                item.thumbnail && item.thumbnail['tainacan-medium'][0] && item.thumbnail['tainacan-medium'][0] 
-                                    ?
-                                item.thumbnail['tainacan-medium'][0] 
-                                    :
-                                (item.thumbnail && item.thumbnail['thumbnail'][0] && item.thumbnail['thumbnail'][0]
-                                    ?    
-                                item.thumbnail['thumbnail'][0] 
-                                    : 
-                                `${tainacanBaseUrl}/admin/images/placeholder_square.png`)
-                            "
-                            :alt="item.title ? item.title : $root.__('Thumbnail', 'tainacan')">
-                        <span>{{ item.title ? item.title : '' }}</span>
-                    </a>
-                </swiper-slide>
-                <!-- Add Pagination -->
-                <div class="swiper-pagination" />
-            </swiper>
+            </div>
             <div
                     v-else
                     class="spinner-container">
                 {{ $root.__('No items found.', 'tainacan') }}
             </div>
+                            <!-- Swiper buttons are hidden as they actually swipe from slide to slide -->
         </div>
     </div>
 </template>
@@ -167,17 +144,16 @@ export default {
             swiperOptions: {
                 mousewheel: true,
                 observer: true,
-                keyboard: true,
                 preventInteractionOnTransition: true,
                 allowClick: true,
                 allowTouchMove: true, 
-                slidesPerView: 8,
+                slidesPerView: 7,
                 slidesPerGroup: 1,
-                spaceBetween: 12,
+                spaceBetween: 32,
                 slideToClickedSlide: true,
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true,
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
                 },
                 breakpoints: {
                     320: { slidesPerView: 2 },
@@ -185,7 +161,6 @@ export default {
                     1024: { slidesPerView: 4 },
                     1366: { slidesPerView: 5 },
                     1406: { slidesPerView: 6 },
-                    1600: { slidesPerView: 7 }
                 }
             },
         }
