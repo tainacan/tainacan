@@ -24,6 +24,8 @@ class Media {
 		add_filter('wp_handle_upload', [$this, 'post_upload']);
 		
 		add_action('template_redirect', [$this, 'template_redirect']);
+		add_filter('image_get_intermediate_size', [$this, 'image_get_intermediate_size'], 10, 3);
+		add_filter('wp_get_attachment_url', [$this, 'wp_get_attachment_url'], 10, 2);
 		
 	}
 
@@ -239,11 +241,27 @@ class Media {
 			return $path;
 		}
 		
-		error_log (json_encode($path));
+		$item = \Tainacan\Repositories\Items::get_instance()->fetch( (int) $post_id );
 		
-		$path['path'] = '/tainacan-uploads/' . $post_id;
-		$path['url'] = str_replace($path['subdir'], '/' . $post_id, $path['url']); 
-		$path['subdir'] = '/' . $post_id;
+		if ($item instanceof \Tainacan\Entities\Item) {
+			
+			$tainacan_basepath = '/tainacan-items/';
+			$col_id_url = $item->get_collection_id();
+			$col_id = $item->get_collection_id();
+			$item_id_url = $item->get_id();
+			$item_id = $item->get_id();
+			
+			if (true) {
+				$col_id = '_x_' . $col_id;
+			}
+			
+			$path['path'] = str_replace($path['subdir'], '', $path['path']); //remove default subdir (year/month)
+			$path['url'] = str_replace($path['subdir'], $tainacan_basepath . $col_id_url . '/' . $item_id_url, $path['url']); 
+			$path['path'] .= $tainacan_basepath . $col_id . '/' . $item_id;
+			$path['subdir'] = $tainacan_basepath . $col_id . '/' . $item_id;
+			
+		}
+		
 		
 		return $path;
 		
@@ -253,21 +271,66 @@ class Media {
 		
 		if (is_404()) {
 			
-			$request = $_SERVER['REQUEST_URI'];
-			$file = \str_replace('/wp-content/uploads', '/tainacan-uploads', $request);
+			$upload_dir = wp_get_upload_dir();
+			$base_upload_url = preg_replace('/^https?:\/\//', '', $upload_dir['baseurl']);
 			
-			if (\file_exists($file)) {
-				//header('Content-Description: File Transfer');
-				//header('Content-Type: application/octet-stream');
-				header("Content-type: " . mime_content_type($file));
-				//header('Content-Disposition: attachment; filename="'.basename($file).'"');
-				// header('Expires: 0');
-				// header('Cache-Control: must-revalidate');
-				// header('Pragma: public');
-				// header('Content-Length: ' . filesize($file));
-				\readfile($file);
+			$requested_uri = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+			
+			if ( strpos($requested_uri, $base_upload_url) === false ) {
+				// Not uploads 
+				return;
+			}
+			
+			$requested_uri = str_replace('/_x_', '/', $requested_uri);
+			
+			$file_path = \str_replace( '/', DIRECTORY_SEPARATOR, str_replace($base_upload_url, '', $requested_uri) );
+			
+			$file = $upload_dir['basedir'] . $file_path;
+			
+			$existing_file = false;
+			
+			$file_dirs = explode(DIRECTORY_SEPARATOR, $file);
+			$file_dirs_size = sizeof($file_dirs);
+			
+			$item_id = $file_dirs[$file_dirs_size-2];
+			$collection_id = $file_dirs[$file_dirs_size-3];
+			
+			// private item 
+			$prefixed_file = str_replace( DIRECTORY_SEPARATOR . $item_id . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR . '_x_' . $item_id . DIRECTORY_SEPARATOR, $file);
+			
+			if ( \file_exists( $prefixed_file ) ) {
+				$existing_file = $prefixed_file;
+			}
+			// private collection 
+			$prefixed_collection = str_replace( DIRECTORY_SEPARATOR . $collection_id . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR . '_x_' . $collection_id . DIRECTORY_SEPARATOR, $file);
+			if ( !$existing_file && \file_exists( $prefixed_collection ) ) {
+				$existing_file = $prefixed_collection;
+			}
+			// private both 
+			$prefixed_both = str_replace( DIRECTORY_SEPARATOR . $collection_id . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR . '_x_' . $collection_id . DIRECTORY_SEPARATOR, $prefixed_file);
+			if ( !$existing_file && \file_exists( $prefixed_collection ) ) {
+				$existing_file = $prefixed_both;
+			}
+			
+			if ($existing_file) {
 				
-				die;
+				$item = \Tainacan\Repositories\Items::get_instance()->fetch( (int) $item_id, (int) $collection_id );
+				
+				if ($item instanceof \Tainacan\Entities\Item && $item->can_read()) {
+					//header('Content-Description: File Transfer');
+					//header('Content-Type: application/octet-stream');
+					header("Content-type: " . mime_content_type($existing_file));
+					//header('Content-Disposition: attachment; filename="'.basename($file).'"');
+					// header('Expires: 0');
+					// header('Cache-Control: must-revalidate');
+					// header('Pragma: public');
+					// header('Content-Length: ' . filesize($file));
+					\readfile($existing_file);
+					
+					die;
+				}
+				
+				
 			}
 			
 			
@@ -275,4 +338,19 @@ class Media {
 		}
 		
 	}
+	
+	function image_get_intermediate_size($data, $post_id, $size) {
+		
+		$data['path'] = str_replace(DIRECTORY_SEPARATOR . '_x_', DIRECTORY_SEPARATOR, $data['path']);
+		$data['url'] = str_replace('/_x_', '/', $data['url']);
+		
+		return $data;
+		
+	}
+	
+	function wp_get_attachment_url($url, $post_id) {
+		$url = str_replace('/_x_', '/', $url);
+		return $url;
+	}
+	
 }
