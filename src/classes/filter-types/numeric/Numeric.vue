@@ -175,7 +175,8 @@
                     compare: this.comparator,
                     metadatum_id: this.metadatum,
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
-                    value: ''
+                    value: '',
+                    type: 'NUMERIC'
                 });
 
                 this.value = null;
@@ -191,7 +192,8 @@
                     compare: this.comparator,
                     metadatum_id: this.metadatum,
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
-                    value: this.value
+                    value: this.value,
+                    type: 'NUMERIC'
                 });
 
                 this.$eventBusSearch.$emit( 'sendValuesToTags', {
