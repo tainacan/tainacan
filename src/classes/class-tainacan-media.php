@@ -19,7 +19,6 @@ class Media {
     }
 	
 	protected function __construct() {
-		error_log('asdsadasds');
 		add_filter('wp_handle_upload_prefilter', [$this, 'pre_upload']);
 		add_filter('wp_handle_upload', [$this, 'post_upload']);
 		
