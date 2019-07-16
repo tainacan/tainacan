@@ -27,6 +27,7 @@ class Items extends Repository {
 		add_filter( 'posts_where', array( &$this, 'content_in_posts_where' ), 10, 2 );
 		add_filter( 'comments_open', [$this, 'hook_comments_open'], 10, 2);
 		add_action( 'tainacan-api-item-updated', array( &$this, 'hook_api_updated_item' ), 10, 2 );
+		add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 10, 4 );
 	}
 
 	public function get_map() {
@@ -550,6 +551,84 @@ class Items extends Repository {
 	    }
 	    
 	    return $open_comment;
+	}
+	
+	/**
+	 * Filter to handle special permissions
+	 *
+	 * @see https://developer.wordpress.org/reference/hooks/map_meta_cap/
+	 *
+	 */
+	public function map_meta_cap( $caps, $cap, $user_id, $args ) {
+
+		// Filters meta caps edit_tainacan-collection and check if user is moderator
+		
+		if ( $cap == 'read_post' && is_array( $args ) && array_key_exists( 0, $args ) ) { 
+			
+			$entity = $args[0];
+
+			if ( is_numeric( $entity ) || $entity instanceof Entities\Item ) {
+
+				if ( is_numeric( $entity ) ) {
+					$entity = $this->fetch( (int) $entity );
+				}
+
+				if ( $entity instanceof Entities\Item ) {
+					
+					$collection = $entity->get_collection();
+					
+					if ( $collection instanceof Entities\Collection ) {
+						$status_obj = get_post_status_object( $collection->get_status() );
+						if ( ! $status_obj->public ) {
+							$caps[] = $entity->get_capabilities()->read_private_posts;
+						}
+					}
+					
+					
+				}
+			}
+		}
+
+		return $caps;
+	}
+	
+	/**
+	 * Check if $user can read the item
+	 *
+	 * @param Entities\Entity $entity
+	 * @param int|\WP_User|null $user default is null for the current user
+	 *
+	 * @return boolean
+	 * @throws \Exception
+	 */
+	public function can_read( Entities\Entity $entity, $user = null ) {
+		
+		if ( ! $entity instanceof Entities\Item) {
+			throw new InvalidArgumentException('Items::can_read() expects an Item entity as the first parameter');
+		}
+		
+		$can_read = parent::can_read($entity, $user);
+		
+		if ( $can_read ) {
+			$collection = $entity->get_collection();
+			$status_obj = get_post_status_object( $collection->get_status() );
+			
+			if ( $status_obj->public ) {
+				return $can_read;
+			}
+			
+		}
+		
+		if ( is_null( $user ) ) {
+			return false;
+		} elseif ( is_object( $user ) ) {
+			$user = $user->ID;
+		}
+		
+		$entity_cap = $entity->get_capabilities();
+		
+		return user_can( $user, $entity_cap->read_private_posts, $entity->get_id() );
+		
 	}
 
 }
