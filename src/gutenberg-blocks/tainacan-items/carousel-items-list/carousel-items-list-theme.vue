@@ -157,8 +157,8 @@ export default {
                     prevEl: '.swiper-button-prev',
                 },
                 breakpoints: {
-                    490: { slidesPerView: 2 },
-                    768: { slidesPerView: 3 },
+                    498:  { slidesPerView: 2 },
+                    768:  { slidesPerView: 3 },
                     1024: { slidesPerView: 4 },
                     1366: { slidesPerView: 5 },
                     1600: { slidesPerView: 6 },
@@ -189,7 +189,7 @@ export default {
     },
     methods: {
         fetchItems() {
-
+ 
             this.items = [];
             this.isLoading = true;
             

@@ -518,6 +518,24 @@ registerBlockType('tainacan/carousel-items-list', {
                         <Spinner />
                     </div> :
                     <div>
+                        { isSelected ? 
+                            <div class="preview-warning">{__('Warning: this is just a demonstration. To see the carousel in action, either preview or publish your post.', 'tainacan')}</div>
+                            : null
+                        }
+                        <button 
+                                class="swiper-button-prev" 
+                                slot="button-prev"
+                                style={{ cursor: 'not-allowed' }}>
+                            <svg
+                                    width="42"
+                                    height="42"
+                                    viewBox="0 0 24 24">
+                                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                                <path
+                                        d="M0 0h24v24H0z"
+                                        fill="none"/>                         
+                            </svg>
+                        </button>
                         <ul 
                             style={{ 
                                 marginTop: showCollectionHeader ? '1.5rem' : '0px'
@@ -525,6 +543,20 @@ registerBlockType('tainacan/carousel-items-list', {
                             className={'items-list-edit'}>
                             { items }
                         </ul>
+                        <button 
+                                class="swiper-button-next" 
+                                slot="button-next"
+                                style={{ cursor: 'not-allowed' }}>
+                            <svg
+                                    width="42"
+                                    height="42"
+                                    viewBox="0 0 24 24">
+                                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                                <path
+                                        d="M0 0h24v24H0z"
+                                        fill="none"/>                        
+                            </svg>
+                        </button>
                     </div>
                 }
             </div>
