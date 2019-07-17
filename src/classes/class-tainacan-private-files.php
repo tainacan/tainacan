@@ -29,18 +29,35 @@ class Private_Files {
 		
 		add_action('tainacan-insert', [$this, 'update_item_and_collection'], 10, 3);
 		
+		add_action('tainacan-bulk-edit-set-status', [$this, 'bulk_edit'], 10, 4);
+		
+		
 	}
-	
+
+	/**
+	 * Adds a filter to the upload_dir hook when uploading a new file 
+	 * 
+	 */
 	function pre_upload($file){
 		add_filter('upload_dir', [$this, 'change_upload_dir']);
 		return $file;
 	}
 	
+	/**
+	 * Removes a filter to the upload_dir hook after uploading a new file 
+	 * 
+	 */
 	function post_upload($fileinfo){
 		remove_filter('upload_dir', [$this, 'change_upload_dir']);
 		return $fileinfo;
 	}
 	
+	/**
+	 * Gets the base directory inside the uploads folder where 
+	 * attachments and documents for items will be uploaded 
+	 * 
+	 * @return string The folder name
+	 */
 	function get_items_uploads_folder() {
 		if (defined('TAINACAN_ITEMS_UPLOADS_DIR')) {
 			return TAINACAN_ITEMS_UPLOADS_DIR;
@@ -48,6 +65,12 @@ class Private_Files {
 		return 'tainacan-items';
 	}
 	
+	/**
+	 * Gets the directory prefix to be added to folders holding
+	 * attachments and documents for private items or collections 
+	 * 
+	 * @return string The folder prefix
+	 */
 	function get_private_folder_prefix() {
 		if (defined('TAINACAN_PRIVATE_FOLDER_PREFIX')) {
 			return TAINACAN_PRIVATE_FOLDER_PREFIX;
@@ -55,6 +78,17 @@ class Private_Files {
 		return '_x_';
 	}
 	
+	/**
+	 * Change the upload directory for items attachments and documents 
+	 *
+	 * It replaces the default WordPress strucutre, which is YYYY/MM/file 
+	 * with a path containing the collection id and the item id inside the @see get_items_uploads_folder(): 
+	 * ex: * tainacan-items/$collection_id/$item_id
+	 *
+	 * It also add a prefix in the folder name of private items or collections: 
+	 * tainacan-items/$collection_id/_x_$item_id ($item_id is a private item)
+	 * 
+	 */
 	function change_upload_dir($path) {
 		$post_id = isset($_REQUEST['post_id']) ? $_REQUEST['post_id'] : false;
 		
@@ -101,6 +135,14 @@ class Private_Files {
 		
 	}
 	
+	/**
+	 * Handles 404 returns looking for attachments inside the tainacan items uploads folder 
+	 *
+	 * When looking for a file that does not exists, it checks for relative prefixed folders. 
+	 * If it finds the file, it then checks to see if current user have permission to see this file, based on
+	 * the permission he/she have to read the related item.
+	 * 
+	 */
 	function template_redirect() {
 		
 		if (is_404()) {
@@ -173,7 +215,10 @@ class Private_Files {
 		
 	}
 	
-	
+	/**
+	 * Filters the image_get_intermediate_size hook to strip out the 
+	 * private uploads folder prefix from the attachments URLs
+	 */
 	function image_get_intermediate_size($data, $post_id, $size) {
 		
 		$data['path'] = str_replace(DIRECTORY_SEPARATOR . $this->get_private_folder_prefix(), DIRECTORY_SEPARATOR, $data['path']);
@@ -183,11 +228,20 @@ class Private_Files {
 		
 	}
 	
+	/**
+	 * Filters the wp_get_attachment_url hook to strip out the 
+	 * private uploads folder prefix from the attachments URLs
+	 */
 	function wp_get_attachment_url($url, $post_id) {
 		$url = str_replace('/' . $this->get_private_folder_prefix(), '/', $url);
 		return $url;
 	}
 	
+	/**
+	 * When an item or collection is saved, it checks if the satus was changed and 
+	 * if the items upload directory mus be renamed to add or remove the 
+	 * private folder prefix 
+	 */
 	function update_item_and_collection($obj, $diffs, $is_update) {
 		
 		// updating collection or item
