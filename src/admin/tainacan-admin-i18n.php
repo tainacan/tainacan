@@ -625,6 +625,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_send_email'				 				 => __('The exporter may take a while. Check this option to receive an e-mail when the process is done. You can also check the process status visiting the', 'tainacan'),
 	'info_tainacan_api'				 				 => __('Tainacan API on JSON format.', 'tainacan'),
 	'info_items_hidden_due_sorting'					 => __('When ordering by metadata value, items that have no value for the chosen metadata will not be listed. This list may have less elements than the total existing for current search criteria.', 'tainacan'),
+	'info_sorting_by_metadata_value_%s'				 => __('Showing only items that have value for metadata %s.'),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),
