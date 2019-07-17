@@ -300,4 +300,44 @@ class Private_Files {
 		
 	}
 	
+	/**
+	 * Rename all folders from items after a bulk edit operation move their statuses 
+	 *
+	 * TODO: In the upcoming bulk edit refactor this must be handled as there are performance issues
+	 * 
+	 */
+	function bulk_edit($status, $group, $select_query, $query) {
+		global $wpdb;
+		
+		$ids = $wpdb->get_col($select_query);
+		
+		$status_obj = get_post_status_object($status);
+		$prefix = $status_obj->public ? $this->get_private_folder_prefix() : '';
+		
+		$upload_dir = wp_get_upload_dir();
+		$base_dir = $upload_dir['basedir'];
+		$full_path = $base_dir . DIRECTORY_SEPARATOR . $this->get_items_uploads_folder() . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . $prefix;
+		
+		foreach ($ids as $id) {
+			$folder = $full_path . $id;
+			$found = glob($folder);
+			
+			if (sizeof($found) == 1 && isset($found[0])) {
+				
+				if ($status_obj->public) {
+					$target = str_replace(DIRECTORY_SEPARATOR . $this->get_private_folder_prefix() . $id, DIRECTORY_SEPARATOR . $id, $found[0]);
+				} else {
+					$target = str_replace(DIRECTORY_SEPARATOR . $id, DIRECTORY_SEPARATOR . $this->get_private_folder_prefix() . $id, $found[0]);
+				}
+				
+				rename($found[0], $target);
+				do_action('tainacan-upload-folder-renamed', $found[0], $target);
+				
+			}
+			if (\file_exists($folder)) {
+				
+			}
+		}
+	}
+	
 }
