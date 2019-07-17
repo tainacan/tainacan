@@ -63,6 +63,18 @@ registerBlockType('tainacan/carousel-items-list', {
             type: Boolean,
             value: false
         },
+        autoPlay: {
+            type: Boolean,
+            value: false
+        },
+        autoPlaySpeed: {
+            type: Number,
+            value: 3
+        },
+        loopSlides: {
+            type: Boolean,
+            value: false
+        },
         showCollectionHeader: {
             type: Boolean,
             value: false
@@ -107,6 +119,9 @@ registerBlockType('tainacan/carousel-items-list', {
             maxItemsNumber,
             searchString,
             isLoading,
+            autoPlay,
+            autoPlaySpeed,
+            loopSlides,
             showCollectionHeader,
             showCollectionLabel,
             isLoadingCollection,
@@ -306,7 +321,49 @@ registerBlockType('tainacan/carousel-items-list', {
                                 : null
                                 }
                         </PanelBody> 
-                       
+
+                        <PanelBody
+                                title={__('Carousel', 'tainacan')}
+                                initialOpen={ true }
+                            >
+                            <div>
+                                <ToggleControl
+                                        label={__('Loop slides', 'tainacan')}
+                                        help={ !loopSlides ? __('Toggle to make slides loop from first to last', 'tainacan') : __('Do not loop slides from first to last', 'tainacan')}
+                                        checked={ loopSlides }
+                                        onChange={ ( isChecked ) => {
+                                                loopSlides = isChecked;
+                                                setAttributes({ loopSlides: loopSlides });
+                                            } 
+                                        }
+                                    />
+                                <ToggleControl
+                                        label={__('Auto play', 'tainacan')}
+                                        help={ !autoPlay ? __('Toggle to automatically slide to next item', 'tainacan') : __('Do not automatically slide to next item', 'tainacan')}
+                                        checked={ autoPlay }
+                                        onChange={ ( isChecked ) => {
+                                                autoPlay = isChecked;
+                                                setAttributes({ autoPlay: autoPlay });
+                                            } 
+                                        }
+                                    />
+                                { 
+                                    autoPlay ? 
+                                        <RangeControl
+                                            label={__('Seconds before translating to next', 'tainacan')}
+                                            value={ autoPlaySpeed }
+                                            onChange={ ( aAutoPlaySpeed ) => {
+                                                autoPlaySpeed = aAutoPlaySpeed;
+                                                setAttributes( { autoPlaySpeed: aAutoPlaySpeed } ) 
+                                            }}
+                                            min={ 1 }
+                                            max={ 5 }
+                                        />
+                                    : null
+                                }
+                            </div>                           
+                        </PanelBody>
+
                         <PanelBody
                                 title={__('Items', 'tainacan')}
                                 initialOpen={ true }
@@ -480,6 +537,9 @@ registerBlockType('tainacan/carousel-items-list', {
             collectionId,  
             searchURL,
             maxItemsNumber,
+            autoPlay,
+            autoPlaySpeed,
+            loopSlides,
             showCollectionHeader,
             showCollectionLabel,
             collectionBackgroundColor,
@@ -490,6 +550,9 @@ registerBlockType('tainacan/carousel-items-list', {
                     search-url={ searchURL }
                     className={ className }
                     collection-id={ collectionId }  
+                    auto-play={ '' + autoPlay }
+                    auto-play-speed={ autoPlaySpeed }
+                    loop-slides={ '' + loopSlides }
                     show-collection-header={ '' + showCollectionHeader }
                     show-collection-label={ '' + showCollectionLabel }
                     collection-background-color={ collectionBackgroundColor }

@@ -10,6 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
             collectionId: '',  
             searchURL: '',
             maxItemsNumber: 12,
+            autoPlay: false,
+            autoPlaySpeed: 3,
+            loopSlides: false,
             showCollectionHeader: false,
             showCollectionLabel: false,
             collectionBackgroundColor: '#454647',
@@ -24,6 +27,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     collectionId: this.collectionId,  
                     searchURL: this.searchURL,
                     maxItemsNumber: this.maxItemsNumber,
+                    autoPlay: this.autoPlay,
+                    autoPlaySpeed: this.autoPlaySpeed,
+                    loopSlides: this.loopSlides,
                     showCollectionHeader: this.showCollectionHeader,
                     showCollectionLabel: this.showCollectionLabel,
                     collectionBackgroundColor: this.collectionBackgroundColor,
@@ -39,6 +45,9 @@ document.addEventListener("DOMContentLoaded", () => {
             this.searchURL = this.$el.attributes['search-url'] != undefined ? this.$el.attributes['search-url'].value : undefined;
             this.collectionId = this.$el.attributes['collection-id'] != undefined ? this.$el.attributes['collection-id'].value : undefined;
             this.maxItemsNumber = this.$el.attributes['max-items-number'] != undefined ? this.$el.attributes['max-items-number'].value : undefined;
+            this.autoPlay = this.$el.attributes['auto-play'] != undefined ? this.$el.attributes['auto-play'].value == 'true' : false;
+            this.autoPlaySpeed = this.$el.attributes['auto-play-speed'] != undefined ? this.$el.attributes['auto-play-speed'].value : undefined;
+            this.loopSlides = this.$el.attributes['loop-slides'] != undefined ? this.$el.attributes['loop-slides'].value == 'true' : false;
             this.showCollectionHeader = this.$el.attributes['show-collection-header'] != undefined ? this.$el.attributes['show-collection-header'].value == 'true' : false;
             this.showCollectionLabel = this.$el.attributes['show-collection-label'] != undefined ? this.$el.attributes['show-collection-label'].value == 'true' : false;
             this.collectionBackgroundColor = this.$el.attributes['collection-background-color'] != undefined ? this.$el.attributes['collection-background-color'].value : undefined;

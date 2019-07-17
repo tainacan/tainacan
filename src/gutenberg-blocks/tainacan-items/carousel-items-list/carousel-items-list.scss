@@ -159,8 +159,13 @@
 
         .swiper-button-prev, .swiper-button-next {
             top: initial;
-            bottom: 50%;
-            background-image: none;
+            bottom: calc(50% - 10px);
+            background: none;
+            border: none;
+            width: 42px;
+            height: 42px;
+            padding: 0;
+            margin: 0 -4px;
 
             svg {
                 fill: #298596;

@@ -84,32 +84,32 @@
                         </a>
                     </swiper-slide>
                 </swiper>
-                <i 
+                <button 
                         class="swiper-button-prev" 
                         slot="button-prev">
                     <svg
-                            width="52"
-                            height="52"
-                            viewBox="0 2 24 24">
+                            width="42"
+                            height="42"
+                            viewBox="0 0 24 24">
                         <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
                         <path
                                 d="M0 0h24v24H0z"
                                 fill="none"/>                         
                     </svg>
-                </i>
-                <i 
+                </button>
+                <button 
                         class="swiper-button-next" 
                         slot="button-next">
                     <svg
-                            width="52"
-                            height="52"
-                            viewBox="0 2 24 24">
+                            width="42"
+                            height="42"
+                            viewBox="0 0 24 24">
                         <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
                         <path
                                 d="M0 0h24v24H0z"
                                 fill="none"/>                        
                     </svg>
-                </i>
+                </button>
             </div>
             <div
                     v-else
@@ -151,17 +151,20 @@ export default {
                 slidesPerGroup: 1,
                 spaceBetween: 32,
                 slideToClickedSlide: true,
+                autoHeight: true,
                 navigation: {
                     nextEl: '.swiper-button-next',
                     prevEl: '.swiper-button-prev',
                 },
                 breakpoints: {
-                    320: { slidesPerView: 2 },
+                    490: { slidesPerView: 2 },
                     768: { slidesPerView: 3 },
                     1024: { slidesPerView: 4 },
                     1366: { slidesPerView: 5 },
-                    1406: { slidesPerView: 6 },
-                }
+                    1600: { slidesPerView: 6 },
+                },
+                autoplay: this.autoPlay ? { delay: this.autoPlaySpeed*1000 } : false,
+                loop: this.loopSlides
             },
         }
     },
@@ -173,6 +176,9 @@ export default {
         collectionId: String,  
         searchURL: String,
         maxItemsNumber: Number,
+        autoPlay: false,
+        autoPlaySpeed: Number,
+        loopSlides: Boolean,
         showCollectionHeader: Boolean,
         showCollectionLabel: Boolean,
         collectionBackgroundColor: String,
