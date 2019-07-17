@@ -174,8 +174,8 @@
     }
 
     // Grid View Mode ----------------------------------------------------
-    ul.items-list.items-list-without-margin,
-    ul.items-list-edit.items-list-without-margin {
+    ul.items-list,
+    ul.items-list-edit {
         grid-template-columns: repeat(auto-fill, 185px);
         justify-content: center !important;
         grid-template-rows: auto !important;
@@ -271,8 +271,8 @@
     }
     @media only screen and (max-width: 498px) { 
         
-        ul.items-list.items-layout-grid,
-        ul.items-list-edit.items-layout-grid {
+        ul.items-list,
+        ul.items-list-edit {
             grid-template-columns: repeat(auto-fill, 100%);
 
             li.item-list-item { 
@@ -282,48 +282,4 @@
         }
     }
 
-    // List View Mode ----------------------------------------------------
-    ul.items-list.items-layout-list,
-    ul.items-list-edit.items-layout-list {
-        padding: 0;
-        display: block;
-        list-style-type: none;
-
-        li.item-list-item {
-            position: relative;
-            display: inline-block;
-            margin: 12px 12px 24px 12px;
-            margin-bottom: 12px;
-            min-height: 54px;
-            min-width: 22%;
-            width: 22%;
-
-            a { 
-                color: #454647; 
-                // overflow: hidden;
-                // text-overflow: ellipsis;
-                // white-space: nowrap;
-                display: flex;
-                align-items: center;
-                height: 54px;
-            }
-
-            img {
-                height: auto;
-                width: 54px;
-                min-width: 54px;
-                padding: 0px;
-                margin-right: 20px;
-            }
-
-            a.item-without-image img {
-                display: none;
-            }
-
-            &:hover a { 
-                color: #454647; 
-                text-decoration: none;
-            }
-        }
-    }
 }
