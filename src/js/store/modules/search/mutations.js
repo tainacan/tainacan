@@ -188,3 +188,7 @@ export const cleanFetchOnly = (state) => {
 export const setFacets = (state, facets) => {
     state.facets = facets;
 }
+
+export const setHighlightedItem = (state, itemId) => {
+    state.highlightedItem = itemId;
+}

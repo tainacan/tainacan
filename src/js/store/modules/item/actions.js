@@ -134,14 +134,10 @@ export const updateItem = ({ commit }, item) => {
     }); 
 };
  
-export const duplicateItem = ({ commit }, { item, attachment }) => {
-    delete item['id'];
-    
-    if (item['terms'] == null)
-        item['terms'] = [];
+export const duplicateItem = ({ commit }, { collectionId, itemId }) => {
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.post('/collection/' + item.collection_id + '/items/', item)
+        axios.tainacan.post('/collection/' + collectionId + '/items/' + itemId + '/duplicate')
             .then( res => {
                 resolve( res.data );
             }).catch( error => { 
