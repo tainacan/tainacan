@@ -98,6 +98,17 @@ class REST_Items_Controller extends REST_Controller {
 				),
 			)
 		);
+		register_rest_route(
+			$this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<item_id>[\d]+)/duplicate',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array($this, 'duplicate_item'),
+					'permission_callback' => array($this, 'create_item_permissions_check'),
+					'args'                => $this->get_collection_params(),
+				),
+			)
+		);
 	}
 
 	/**
@@ -175,6 +186,11 @@ class REST_Items_Controller extends REST_Controller {
 				$item_arr['document_as_html'] = $item->get_document_as_html($img_size);
 				$item_arr['exposer_urls'] = \Tainacan\Exposers_Handler::get_exposer_urls(rest_url("{$this->namespace}/{$this->rest_base}/{$item->get_id()}/"));
 				$item_arr = $this->add_metadata_to_item( $item, $item_arr );
+				
+				if ( $request->get_method() != 'GET') {
+					$item_arr['thumbnail'] = $item->get_thumbnail();
+				}
+				
 			} else {
 				
 				$attributes_to_filter = $request['fetch_only'];
@@ -621,6 +637,68 @@ class REST_Items_Controller extends REST_Controller {
 		}
 
 		return false;
+	}
+	
+	/**
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public function duplicate_item( $request ) {
+		$item_id = $request['item_id'];
+
+		$item = $this->items_repository->fetch($item_id);
+		if ($item) {
+			
+			$new_item = new Entities\Item();
+			$items_repo = Repositories\Items::get_instance();
+			
+			$new_item->set_title( $item->get_title() );
+			$new_item->set_description( $item->get_description() );
+			$new_item->set_status( $item->get_status() );
+			$new_item->set_collection_id( $item->get_collection_id() );
+			
+			if ( $new_item->validate() ) {
+				
+				$new_item = $items_repo->insert($new_item);
+				
+				$metadata = $item->get_metadata();
+				
+				$errors = [];
+				
+				foreach ($metadata as $item_metadatum) {
+					
+					$new_item_metadatum = new Entities\Item_Metadata_Entity( $new_item, $item_metadatum->get_metadatum() );
+					$new_item_metadatum->set_value( $item_metadatum->get_value() );
+					
+					if ( $new_item_metadatum->validate() ) {
+						Repositories\Item_Metadata::get_instance()->insert( $new_item_metadatum );
+					} else {
+						$errors[] = $new_item_metadatum->get_errors();
+					}
+					
+				}
+				
+			} else {
+				return new \WP_REST_Response([
+					'error_message' => __('Error duplicating item', 'tainacan'),
+					'errors'        => $new_item->get_errors(),
+					'item'          => $this->prepare_item_for_response($item, $request)
+				], 400);
+			}
+			
+			
+			do_action('tainacan-api-item-duplicated', $item, $new_item);
+			
+			return new \WP_REST_Response($this->prepare_item_for_response($new_item, $request), 201);
+			
+		}
+
+		return new \WP_REST_Response([
+			'error_message' => __('An item with this ID was not found', 'tainacan' ),
+			'item_id'       => $item_id
+		], 400);
+
 	}
 
 

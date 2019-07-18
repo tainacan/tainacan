@@ -415,6 +415,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_duplicate_item'                           => __( 'Duplicate item', 'tainacan' ),
 	'label_create_another_item'                      => __( 'Create another item', 'tainacan' ),
 	'label_recent_collections'	                     => __( 'Recent Collections', 'tainacan' ),
+	'label_duplicating_item'                         => __( 'Duplicating item', 'tainacan' ),
+	'label_item_duplication_success'                 => __( 'The item was duplicated with success!', 'tainacan' ),
+	'label_item_duplication_failure'                 => __( 'Something wrong happened... Item duplication failed!', 'tainacan' ),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -625,6 +628,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_send_email'				 				 => __('The exporter may take a while. Check this option to receive an e-mail when the process is done. You can also check the process status visiting the', 'tainacan'),
 	'info_tainacan_api'				 				 => __('Tainacan API on JSON format.', 'tainacan'),
 	'info_items_hidden_due_sorting'					 => __('When ordering by metadata value, items that have no value for the chosen metadata will not be listed. This list may have less elements than the total existing for current search criteria.', 'tainacan'),
+	'info_sorting_by_metadata_value_%s'				 => __('Showing only items that have value for metadata %s.', 'tainacan'),
+	'info_sorting_by_metadata_value_%s_empty_list'   => __('No item found, but only items with values for metadata %s are shown. Try sorting by other metatada.', 'tainacan'),
+	'info_await_while_item_duplication'  			 => __('Please wait while item is being duplicated...', 'tainacan'),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),

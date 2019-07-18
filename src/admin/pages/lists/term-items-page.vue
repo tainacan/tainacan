@@ -678,6 +678,34 @@
                     <!-- <skeleton-items-list v-if="!isOnTheme"/>          -->
                 </div>  
                 
+               <!-- Alert if custom metada is being used for sorting -->
+                <div 
+                        v-if="hasAnOpenAlert &&
+                            isSortingByCustomMetadata &&
+                            !showLoading &&
+                            ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
+                        class="metadata-alert">
+                    <p class="text">
+                        {{ 
+                            totalItems > 0 ? 
+                                $i18n.getWithVariables('info_sorting_by_metadata_value_%s', [orderByName]) :
+                                $i18n.getWithVariables('info_sorting_by_metadata_value_%s_empty_list', [orderByName])
+                        }}
+                    </p> 
+                    <div>
+                        <button
+                                @click="openMetatadaSortingWarningDialog({ offerCheckbox: false })"
+                                class="button">
+                            {{ $i18n.get('label_view_more') }}
+                        </button>
+                        <button 
+                                @click="hasAnOpenAlert = false"
+                                class="button icon">
+                            <i class="tainacan-icon tainacan-icon-close"/>
+                        </button>
+                    </div>
+                </div>
+                
                 <!-- Admin View Modes-->
                 <items-list
                         v-if="!isOnTheme && 
@@ -858,7 +886,9 @@
                 searchControlHeight: 0,
                 sortingMetadata: [],
                 isFilterModalActive: false,
-                customFilters: []
+                customFilters: [],
+                hasAnOpenModal: false,
+                hasAnOpenAlert: true
             }
         },
         props: {
@@ -951,6 +981,10 @@
                 } else {
                     this.$eventBusSearch.clearAllFilters();
                 }
+            },
+            orderByName() {
+                if (this.isSortingByCustomMetadata)
+                    this.hasAnOpenAlert = true;
             }
         },
         methods: {
@@ -1337,14 +1371,18 @@
                         this.isLoadingMetadata = false;
                     });
             },
-            showItemsHiddingDueSorting() {
+            showItemsHiddingDueSortingDialog() {
 
                 if (this.isSortingByCustomMetadata &&
                     this.$userPrefs.get('neverShowItemsHiddenDueSortingDialog') != true) {     
 
                     this.hasAnOpenModal = true;
 
-                    this.$modal.open({
+                    this.openMetatadaSortingWarningDialog({ offerCheckbox: true });
+                }
+            },
+            openMetatadaSortingWarningDialog({ offerCheckbox }) {
+                this.$modal.open({
                         parent: this,
                         component: CustomDialog,
                         props: {
@@ -1355,11 +1393,10 @@
                                 this.hasAnOpenModal = false;
                             },
                             hideCancel: true,
-                            showNeverShowAgainOption: tainacan_plugin.user_caps != undefined && tainacan_plugin.user_caps.length != undefined && tainacan_plugin.user_caps.length > 0,
+                            showNeverShowAgainOption: offerCheckbox && tainacan_plugin.user_caps != undefined && tainacan_plugin.user_caps.length != undefined && tainacan_plugin.user_caps.length > 0,
                             messageKeyForUserPrefs: 'ItemsHiddenDueSorting'
                         }
                     });
-                }
             },
             adjustSearchControlHeight: _.debounce( function() {
                 this.$nextTick(() => {
