@@ -477,6 +477,9 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
         $this->assertEquals(201, $response->get_status());
     }
 	
+	/**
+	 * @group duplicate
+	 */
 	function test_duplicate() {
 		
 		$collection = $this->tainacan_entity_factory->create_entity(
@@ -523,6 +526,16 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			true
 		);
 		
+		$taxonomy2 = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'         => 'taxonomy_public2',
+				'description'  => 'taxonomy_public2',
+				'status' => 'publish'
+			),
+			true
+		);
+		
 		$tax_meta = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
@@ -535,6 +548,22 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 					'taxonomy_id' => $taxonomy->get_id()
 				],
 				'multiple' => 'yes'
+			),
+			true
+		);
+		
+		$tax_meta_single = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'   => 'metadata-public-single',
+				'status' => 'publish',
+				'collection' => $collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
+				'metadata_type_options' => [
+					'allow_new_terms' => 'yes',
+					'taxonomy_id' => $taxonomy2->get_id()
+				],
+				'multiple' => 'no'
 			),
 			true
 		);
@@ -564,6 +593,11 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		
 		$newMeta = new \Tainacan\Entities\Item_Metadata_Entity($item1, $tax_meta);
 		$newMeta->set_value(['blue', 'red']);
+		$newMeta->validate();
+		$itemMetaRepo->insert($newMeta);
+		
+		$newMeta = new \Tainacan\Entities\Item_Metadata_Entity($item1, $tax_meta_single);
+		$newMeta->set_value('test term');
 		$newMeta->validate();
 		$itemMetaRepo->insert($newMeta);
 		
