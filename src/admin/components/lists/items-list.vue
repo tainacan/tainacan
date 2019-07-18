@@ -948,7 +948,7 @@ export default {
             allSelected = !this.selectedItems.some(item => item === false);
 
             this.selectedItems.map((item, index) => {
-                if(item === false){
+                if (item === false){
                     this.selectedItemsIDs.splice(index, 1, false);
                     this.queryAllItemsSelected = {};
                 } else if(item === true) {
@@ -962,6 +962,8 @@ export default {
             
             this.allItemsOnPageSelected = allSelected;
             this.isSelectingItems = isSelecting;
+
+            this.$router.replace({ query: Object.assign(this.$route.query, { selected: this.selectedItemsIDs.filter((item) => item != false) }) });
         },
     },
     methods: {
