@@ -1026,7 +1026,7 @@
                     this.$eventBusSearch.clearAllFilters();
                 }
             },
-            orderBy() {
+            orderByName() {
                 if (this.isSortingByCustomMetadata)
                     this.hasAnOpenAlert = true;
             }
