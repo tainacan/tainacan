@@ -8,11 +8,15 @@
             <hr>
         </div>
     
+        <b-loading
+                :is-full-page="false"
+                :active.sync="isLoading" />
+
         <!-- Name -------------- -->
         <b-field
                 :addons="false"
                 :type="((formErrors.name !== '' || formErrors.repeated !== '') && (formErrors.name !== undefined || formErrors.repeated !== undefined )) ? 'is-danger' : ''"
-                :message="formErrors.name ? formErrors : formErrors.repeated">
+                :message="formErrors.name ? formErrors.name : formErrors.repeated">
             <label class="label is-inline">
                 {{ $i18n.get('label_name') }}
                 <span class="required-term-asterisk">*</span>
@@ -217,7 +221,8 @@
                 hasParent: false,
                 hasChangedParent: false,
                 initialParentId: undefined,
-                entityName: 'term'
+                entityName: 'term',
+                isLoading: false,
             }
         },
         props: {
@@ -245,6 +250,7 @@
                         header_image: this.editForm.header_image,
                     };
                     this.fillExtraFormData(data);
+                    this.isLoading = true;
                     this.sendChildTerm({
                         taxonomyId: this.taxonomyId,
                         term: data
@@ -253,6 +259,7 @@
                             this.$emit('onEditionFinished', {term: term, hasChangedParent: this.hasChangedParent });
                             this.editForm = {};
                             this.formErrors = {};
+                            this.isLoading = false;
                         })
                         .catch((errors) => {
                             for (let error of errors.errors) {
@@ -260,6 +267,7 @@
                                     this.$set(this.formErrors, metadatum, (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + error[metadatum] + '\n');
                                 }
                             }
+                            this.isLoading = false;
                             this.$emit('onErrorFound');
                         });
 
@@ -274,6 +282,7 @@
                         header_image: this.editForm.header_image,
                     }
                     this.fillExtraFormData(data);
+                    this.isLoading = true;
                     this.updateChildTerm({
                         taxonomyId: this.taxonomyId,
                         term: data
@@ -288,6 +297,7 @@
                                     this.$set(this.formErrors, metadatum, (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + error[metadatum] + '\n');
                                 }
                             }
+                            this.isLoading = false;
                             this.$emit('onErrorFound');
                         });
                 }
