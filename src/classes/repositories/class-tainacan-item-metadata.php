@@ -176,7 +176,12 @@ class Item_Metadata extends Repository {
 				
 				$insert = [];
 				foreach ( (array) $new_terms as $new_term ) {
-					$exists = Terms::get_instance()->term_exists($new_term, $taxonomy, null, true);
+					if ( \is_object($new_term) && $new_term instanceof Entities\Term ) {
+						$exists = $new_term->WP_Term;
+					} else {
+						$exists = Terms::get_instance()->term_exists($new_term, $taxonomy, null, true);
+					}
+					
 					if ( $exists ) {
 						$insert[] = $exists->term_id;
 					} else {
