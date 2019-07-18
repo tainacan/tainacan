@@ -626,6 +626,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_tainacan_api'				 				 => __('Tainacan API on JSON format.', 'tainacan'),
 	'info_items_hidden_due_sorting'					 => __('When ordering by metadata value, items that have no value for the chosen metadata will not be listed. This list may have less elements than the total existing for current search criteria.', 'tainacan'),
 	'info_sorting_by_metadata_value_%s'				 => __('Showing only items that have value for metadata %s.'),
+	'info_sorting_by_metadata_value_%s_empty_list'   => __('No item found, but only items with values for metadata %s are shown. Try sorting by other metatada.'),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),

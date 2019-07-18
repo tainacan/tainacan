@@ -708,7 +708,13 @@
                             !showLoading &&
                             ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
                         class="metadata-alert">
-                    <p class="text">{{ $i18n.getWithVariables('info_sorting_by_metadata_value_%s', [orderByName]) }}</p> 
+                    <p class="text">
+                        {{ 
+                            totalItems > 0 ? 
+                                $i18n.getWithVariables('info_sorting_by_metadata_value_%s', [orderByName]) :
+                                $i18n.getWithVariables('info_sorting_by_metadata_value_%s_empty_list', [orderByName])
+                        }}
+                    </p> 
                     <div>
                         <button
                                 @click="openMetatadaSortingWarningDialog({ offerCheckbox: false })"
@@ -916,7 +922,7 @@
         },
         computed: {
             isSortingByCustomMetadata() {
-                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'date'); 
+                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'date');
             },
             repositoryTotalItems(){
                 let collections = this.getCollections();
@@ -1019,6 +1025,10 @@
                 } else {
                     this.$eventBusSearch.clearAllFilters();
                 }
+            },
+            orderBy() {
+                if (this.isSortingByCustomMetadata)
+                    this.hasAnOpenAlert = true;
             }
         },
         methods: {
