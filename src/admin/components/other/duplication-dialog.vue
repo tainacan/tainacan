@@ -83,7 +83,9 @@
                 .then((duplicatedItem) => {
                     this.isLoading = false;
                     this.message = this.$i18n.get('label_item_duplication_success');
-                    this.duplicatedItemId = duplicatedItem.id; 
+                    
+                    if (duplicatedItem.id)
+                        this.duplicatedItemId = duplicatedItem.id; 
                 })
                 .catch((error) => {
                     this.$console.error('Error fetching item for duplicate ' + error);
