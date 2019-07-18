@@ -16,7 +16,8 @@ const state = {
         fetch_only: 'thumbnail,creation_date,author_name',
         fetch_only_meta: '',
         view_mode: 'table',
-        admin_view_mode: 'table'
+        admin_view_mode: 'table',
+        selecteditems: []
     },
     filter_tags: [],
     totalItems: 0,

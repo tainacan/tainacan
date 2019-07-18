@@ -167,6 +167,10 @@ export const cleanFetchOnly = ({ commit }) => {
     commit('cleanFetchOnly');
 };
 
+export const setSelectedItems = ({ commit }, selectedItems ) => {
+    commit('setSelectedItems', selectedItems);
+};
+
 export const highlightsItem = ({ commit }, itemId ) => {
     commit('setHighlightedItem', itemId);
 };

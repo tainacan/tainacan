@@ -47,7 +47,7 @@ export default {
             },
             watch: {
                 '$route'  (to, from) {
-                    
+                    console.log(to)
                     // Should set Collection ID from URL only when in admin.
                     if (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage')
                         this.collectionId = !this.$route.params.collectionId ? this.$route.params.collectionId : parseInt(this.$route.params.collectionId);
@@ -303,8 +303,12 @@ export default {
                     this.$store.dispatch('search/setAdminViewMode', adminViewMode);
                     this.updateURLQueries();  
                 },
+                setSelectedItemsForIframe(selectedItems) {
+                    this.$store.dispatch('search/setSelectedItems', selectedItems);
+                },
                 highlightsItem(itemId) {
                     this.$store.dispatch('search/highlightsItem', itemId);
+                    this.updateURLQueries();
                 },
                 updateURLQueries() {
                     this.$router.replace({ query: {} });

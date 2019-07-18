@@ -950,6 +950,9 @@ export default {
     computed: {
         highlightedItem () {
             return this.getHighlightedItem();
+        },
+        selectedItemsFromStore() {
+            return this.getSelectedItems();
         }
     },
     watch: {
@@ -975,7 +978,7 @@ export default {
             this.allItemsOnPageSelected = allSelected;
             this.isSelectingItems = isSelecting;
 
-            this.$router.replace({ query: Object.assign(this.$route.query, { selected: this.selectedItemsIDs.filter((item) => item != false) }) });
+            this.$eventBusSearch.setSelectedItemsForIframe(this.selectedItemsIDs.filter((item) => item != false));
         },
     },
     methods: {
@@ -997,6 +1000,7 @@ export default {
         ...mapGetters('search', [
             'getOrder',
             'getOrderBy',
+            'getSelectedItems',
             'getHighlightedItem'
         ]),
         openBulkEditionModal(){

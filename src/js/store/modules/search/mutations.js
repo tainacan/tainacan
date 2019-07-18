@@ -189,6 +189,10 @@ export const setFacets = (state, facets) => {
     state.facets = facets;
 }
 
+export const setSelectedItems = (state, selectedItems) => {
+    Vue.set(state.postquery, 'selecteditems', selectedItems);
+}
+
 export const setHighlightedItem = (state, itemId) => {
     state.highlightedItem = itemId;
 }
