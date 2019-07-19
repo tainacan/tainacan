@@ -673,7 +673,7 @@
             
                 </div>
             </masonry>
-
+            <pre>{{ selectedItemsFromStore }}</pre>
             <!-- TABLE VIEW MODE -->
             <table 
                     v-if="viewMode == 'table'"
@@ -713,7 +713,7 @@
                 <tbody>
                     <tr     
                             :class="{ 
-                                'selected-row': selectedItems[index],   
+                                'selected-row': getSelectedItemChecked(item.id) == true,   
                                 'highlighted-item': highlightedItem == item.id  
                             }"
                             :key="index"
@@ -726,7 +726,8 @@
                                 class="checkbox-cell">
                             <b-checkbox 
                                     size="is-small"
-                                    v-model="selectedItems[index]"/> 
+                                    :value="getSelectedItemChecked(item.id)"
+                                    @input="setSelectedItemChecked(item.id)"/>
                         </td>
 
                         <!-- Item Displayed Metadata -->
@@ -914,7 +915,6 @@ export default {
             allItemsOnPageSelected: false,
             isAllItemsSelected: false,
             isSelectingItems: false,
-            selectedItems: [],
             selectedItemsIDs: [],
             queryAllItemsSelected: {},
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
@@ -936,14 +936,15 @@ export default {
         viewMode: 'card'
     },
     mounted() {
-        this.selectedItems = [];
+        this.cleanSelectedItems();
+/*        this.selectedItems = [];
         this.selectedItemsIDs = [];
 
         for (let i = 0; i < this.items.length; i++) {
             this.selectedItemsIDs.push(false);
             this.selectedItems.push(false);
         }
-
+*/
         if (this.highlightsItem)
             setTimeout(() => this.$eventBusSearch.highlightsItem(null), 3000);
     },
@@ -953,6 +954,9 @@ export default {
         },
         selectedItemsFromStore() {
             return this.getSelectedItems();
+        },
+        selectedItems () {
+            return this.getSelectedItems();
         }
     },
     watch: {
@@ -960,7 +964,7 @@ export default {
             let allSelected = true;
             let isSelecting = false;
 
-            allSelected = !this.selectedItems.some(item => item === false);
+            allSelected = this.allItemsOnPageAreSelected();
 
             this.selectedItems.map((item, index) => {
                 if (item === false){
@@ -977,8 +981,6 @@ export default {
             
             this.allItemsOnPageSelected = allSelected;
             this.isSelectingItems = isSelecting;
-
-            this.$eventBusSearch.setSelectedItemsForIframe(this.selectedItemsIDs.filter((item) => item != false));
         },
     },
     methods: {
@@ -997,12 +999,27 @@ export default {
         ...mapActions('item', [
             'fetchItem'
         ]),
+        ...mapActions('search', [
+            'setSeletecItems',
+            'cleanSelectedItems',
+            'addSelectedItem',
+            'removeSelectedItem'
+        ]),
         ...mapGetters('search', [
             'getOrder',
             'getOrderBy',
             'getSelectedItems',
             'getHighlightedItem'
         ]),
+        setSelectedItemChecked(itemId) {
+            if (this.selectedItems.find((item) => item == itemId) != undefined)
+                this.removeSelectedItem(itemId);
+            else
+                this.addSelectedItem(itemId);
+        },
+        getSelectedItemChecked(itemId) {
+            return this.selectedItems.find(item => item == itemId) != undefined;
+        },
         openBulkEditionModal(){
             this.$modal.open({
                 parent: this,
@@ -1029,13 +1046,18 @@ export default {
             });
         },
         selectAllItemsOnPage() {
-            for (let i = 0; i < this.selectedItems.length; i++) {
-                this.selectedItems.splice(i, 1, !this.allItemsOnPageSelected);
+
+            if (this.allItemsOnPageSelected)
+                this.cleanSelectedItems();
+            else {
+                for (let item of this.items)
+                    this.setSelectedItemChecked(this.item.id);
             }
+            
             if (!this.allItemsOnPageSelected)
                 this.queryAllItemsSelected = {};
         },
-        selectAllItems(){
+        selectAllItems() {
             this.isAllItemsSelected = !this.isAllItemsSelected;
             this.queryAllItemsSelected = this.$route.query;
 
@@ -1257,6 +1279,13 @@ export default {
         getLimitedDescription(description) {
             let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 100 : 210;
             return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
+        },
+        allItemsOnPageAreSelected(){
+            for (var i = 0; i < this.items.length; i++){
+                if (this.selectedItems.indexOf(this.items[i].id) === -1)
+                    return false;
+            }
+            return true;
         }
     }
 }

@@ -190,7 +190,27 @@ export const setFacets = (state, facets) => {
 }
 
 export const setSelectedItems = (state, selectedItems) => {
-    Vue.set(state.postquery, 'selecteditems', selectedItems);
+    for (let selecteditem of selectedItems) {
+        let index = state.selecteditems.findIndex( item => item == selecteditem);
+        if ( index < 0 )
+            state.selecteditems.push(selecteditem);
+    }
+}
+
+export const cleanSelectedItems = (state) => {
+    state.selecteditems = [];
+}
+
+export const addSelectedItem = (state, selectedItem) => {
+    let index = state.selecteditems.findIndex( item => item == selectedItem);
+    if ( index < 0 )
+        state.selecteditems.push(selectedItem);
+}
+
+export const removeSelectedItem = (state, selectedItem) => {
+    let index = state.selecteditems.findIndex( item => item == selectedItem);
+    if ( index >= 0 )
+        state.selecteditems.splice(index, 1);
 }
 
 export const setHighlightedItem = (state, itemId) => {

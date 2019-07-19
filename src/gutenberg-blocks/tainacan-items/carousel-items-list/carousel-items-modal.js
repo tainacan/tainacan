@@ -142,7 +142,13 @@ export default class CarouselItemsModal extends React.Component {
     }
 
     applySelectedSearchURL() {    
-        console.log(document.getElementById("itemsFrame").contentWindow.location.href)
+        let params = new URLSearchParams(window.location.search);
+        let selecteditems = params.getAll('selecteditems');
+        params.delete('selecteditems')
+
+        let newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + params.toString();
+        window.history.pushState({ path: newurl}, '', newurl);
+        console.log(selecteditems)
         this.props.onApplySearchURL(document.getElementById("itemsFrame").contentWindow.location.href);
     }
 

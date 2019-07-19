@@ -85,9 +85,8 @@ export const getFacets = state => {
 };
 
 export const getSelectedItems = state => {
-    return state.postquery.selecteditems;
+    return state.selecteditems;
 };
-
 
 export const getHighlightedItem = state => {
     return state.highlightedItem;

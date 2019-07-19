@@ -16,8 +16,7 @@ const state = {
         fetch_only: 'thumbnail,creation_date,author_name',
         fetch_only_meta: '',
         view_mode: 'table',
-        admin_view_mode: 'table',
-        selecteditems: []
+        admin_view_mode: 'table'
     },
     filter_tags: [],
     totalItems: 0,
@@ -25,6 +24,7 @@ const state = {
     itemsPerPage: 12, // Not the same as postquery.perpage as API may have limited it's value
     facets: {},
     orderByName: '',
+    selecteditems: [],
     highlightedItem: null
 };
 
