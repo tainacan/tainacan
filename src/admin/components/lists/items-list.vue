@@ -18,9 +18,8 @@
                         style="margin-left: 10px"
                         v-if="enableSelectAllItemsPages == true && allItemsOnPageSelected && items.length > 1">
                     <b-checkbox
-                            @click.native.prevent="selectAllItems()"
                             v-model="isAllItemsSelected">
-                        {{ `${$i18n.getWithVariables('label_select_all_%s_items', [totalItems])}` }}
+                        {{ $i18n.getWithVariables('label_select_all_%s_items', [totalItems]) }}
                     </b-checkbox>
                 </span>
             </div>
@@ -30,7 +29,7 @@
                         :mobile-modal="true"
                         position="is-bottom-left"
                         v-if="items.length > 0 && items[0].current_user_can_edit"
-                        :disabled="selectedItemsIDs.every(id => id === false) || this.selectedItemsIDs.filter(item => item !== false).length <= 1"
+                        :disabled="selectedItems.length <= 1"
                         id="bulk-actions-dropdown"
                         aria-role="list">
                     <button
@@ -674,6 +673,7 @@
                 </div>
             </masonry>
             <pre>{{ selectedItemsFromStore }}</pre>
+            <pre>{{ queryAllItemsSelected }}</pre>
             <!-- TABLE VIEW MODE -->
             <table 
                     v-if="viewMode == 'table'"
@@ -912,10 +912,7 @@ export default {
     name: 'ItemsList',
     data(){
         return {
-            allItemsOnPageSelected: false,
             isAllItemsSelected: false,
-            isSelectingItems: false,
-            selectedItemsIDs: [],
             queryAllItemsSelected: {},
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
             cursorPosX: -1,
@@ -937,14 +934,7 @@ export default {
     },
     mounted() {
         this.cleanSelectedItems();
-/*        this.selectedItems = [];
-        this.selectedItemsIDs = [];
 
-        for (let i = 0; i < this.items.length; i++) {
-            this.selectedItemsIDs.push(false);
-            this.selectedItems.push(false);
-        }
-*/
         if (this.highlightsItem)
             setTimeout(() => this.$eventBusSearch.highlightsItem(null), 3000);
     },
@@ -957,31 +947,34 @@ export default {
         },
         selectedItems () {
             return this.getSelectedItems();
+        },
+        isSelectingItems () {
+            return this.selectedItems.length > 0;
+        },
+        allItemsOnPageSelected() {
+            for (var i = 0; i < this.items.length; i++){
+                if (this.selectedItems.indexOf(this.items[i].id) === -1)
+                    return false;
+            }
+            return true;
         }
     },
     watch: {
-        selectedItems() {
-            let allSelected = true;
-            let isSelecting = false;
+        isAllItemsSelected(value) {
 
-            allSelected = this.allItemsOnPageAreSelected();
-
-            this.selectedItems.map((item, index) => {
-                if (item === false){
-                    this.selectedItemsIDs.splice(index, 1, false);
-                    this.queryAllItemsSelected = {};
-                } else if(item === true) {
-                    isSelecting = true;
-                    this.selectedItemsIDs.splice(index, 1, this.items[index].id);
-                }
-            });
-
-            if (!allSelected)
-                this.isAllItemsSelected = allSelected;
-            
-            this.allItemsOnPageSelected = allSelected;
-            this.isSelectingItems = isSelecting;
+            if (!value) {
+                this.cleanSelectedItems();
+                this.queryAllItemsSelected = {};
+            } else {
+                this.queryAllItemsSelected = this.$route.query;
+                for (let item of this.items)
+                    this.addSelectedItem(item.id);
+            }
         },
+        allItemsOnPageSelected(value) {
+            if (!value)
+                this.queryAllItemsSelected = {};
+        }
     },
     methods: {
         ...mapActions('collection', [
@@ -1026,8 +1019,8 @@ export default {
                 component: BulkEditionModal,
                 props: {
                     modalTitle: this.$i18n.get('info_editing_items_in_bulk'),
-                    totalItems: Object.keys(this.queryAllItemsSelected).length ? this.totalItems : this.selectedItemsIDs.filter(item => item !== false).length,
-                    selectedForBulk: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItemsIDs.filter(item => item !== false),
+                    totalItems: Object.keys(this.queryAllItemsSelected).length ? this.totalItems : this.selectedItems.length,
+                    selectedForBulk: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItems,
                     objectType: this.$i18n.get('items'),
                     collectionID: this.$route.params.collectionId,
                 },
@@ -1036,7 +1029,7 @@ export default {
         },
         sequenceEditSelectedItems() {
             this.createEditGroup({
-                object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItemsIDs.filter(item => item !== false),
+                object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItems,
                 collectionID: this.collectionId,
                 order: this.getOrder(),
                 orderBy: this.getOrderBy()
@@ -1046,23 +1039,13 @@ export default {
             });
         },
         selectAllItemsOnPage() {
-
+            this.isAllItemsSelected = false;
+            
             if (this.allItemsOnPageSelected)
                 this.cleanSelectedItems();
             else {
                 for (let item of this.items)
-                    this.setSelectedItemChecked(this.item.id);
-            }
-            
-            if (!this.allItemsOnPageSelected)
-                this.queryAllItemsSelected = {};
-        },
-        selectAllItems() {
-            this.isAllItemsSelected = !this.isAllItemsSelected;
-            this.queryAllItemsSelected = this.$route.query;
-
-            for (let i = 0; i < this.selectedItems.length; i++) {
-                this.selectedItems.splice(i, 1, this.isAllItemsSelected);
+                    this.addSelectedItem(item.id);
             }
         },
         duplicateOneItem(itemId) {
@@ -1152,7 +1135,7 @@ export default {
 
                         this.createEditGroup({
                             collectionID: this.collectionId,
-                            object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItemsIDs.filter(item => item !== false)
+                            object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItems
                         }).then(() => {
                             let groupID = this.getGroupID();
 
@@ -1181,7 +1164,7 @@ export default {
 
                         this.createEditGroup({
                             collectionID: this.collectionId,
-                            object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItemsIDs.filter(item => item !== false)
+                            object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItems
                         }).then(() => {
                             let groupID = this.getGroupID();
 
@@ -1279,13 +1262,6 @@ export default {
         getLimitedDescription(description) {
             let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 100 : 210;
             return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
-        },
-        allItemsOnPageAreSelected(){
-            for (var i = 0; i < this.items.length; i++){
-                if (this.selectedItems.indexOf(this.items[i].id) === -1)
-                    return false;
-            }
-            return true;
         }
     }
 }
