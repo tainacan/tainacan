@@ -53,7 +53,7 @@
             <span class="text">{{ $i18n.get('filters') }}</span>
         </button>
 
-        <!-- Side bar with search and filters -->
+        <!-- Sidebar with search and filters -->
         <!-- <transition name="filters-menu"> -->
         <aside
                 :aria-busy="isLoadingFilters"
@@ -148,18 +148,70 @@
 
         </aside>
         <!-- </transition> -->
+
         <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
         <div 
                 id="items-list-area"
                 class="items-list-area"
                 :class="{ 'spaced-to-right': !isFiltersMenuCompressed && !openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)}">
 
+            <!-- ADVANCED SEARCH -->
+            <div
+                    id="advanced-search-container"
+                    role="search"
+                    v-if="openAdvancedSearch">
+
+                <div class="tnc-advanced-search-close"> 
+                    <div class="advanced-search-criteria-title">
+                        <div class="is-flex">
+                            <h1>{{ $i18n.get('info_search_criteria') }}</h1>
+                            <div
+                                    :style="{'margin-bottom': 'auto'}"
+                                    class="field is-grouped">
+                                <a 
+                                        class="back-link"
+                                        @click="openAdvancedSearch = false">
+                                    {{ $i18n.get('back') }}
+                                </a>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+
+                </div>
+                <advanced-search
+                        :collection-id="collectionId"
+                        :is-repository-level="isRepositoryLevel"
+                        :advanced-search-results="advancedSearchResults"
+                        :open-form-advanced-search="openFormAdvancedSearch"
+                        :is-do-search="isDoSearch"/>
+
+                <div class="advanced-search-form-submit">
+                    <p
+                            v-if="advancedSearchResults"
+                            class="control">
+                        <button
+                                aria-controls="items-list-results"
+                                @click="advancedSearchResults = !advancedSearchResults"
+                                class="button is-outlined">{{ $i18n.get('edit_search') }}</button>
+                    </p>
+                    <p
+                            v-if="advancedSearchResults"
+                            class="control">
+                        <button
+                                aria-controls="items-list-results"
+                                @click="isDoSearch = !isDoSearch"
+                                class="button is-success">{{ $i18n.get('search') }}</button>
+                    </p>
+                </div>
+            </div>
+
             <!-- SEARCH CONTROL ------------------------- -->
             <div
                     aria-labelledby="search-control-landmark"
                     role="region"
                     ref="search-control"
-                    v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
+                    v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen) && ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
                     class="search-control">
 
                 <h3 
@@ -174,7 +226,9 @@
                 <!-- Item Creation Dropdown, only on Admin -->
                 <div 
                         class="search-control-item"
-                        v-if="!isOnTheme && !$route.query.iframemode">
+                        v-if="!isOnTheme && 
+                              !$route.query.iframemode &&
+                              !openAdvancedSearch">
                     <b-dropdown 
                             :mobile-modal="true"
                             id="item-creation-options-dropdown"
@@ -560,58 +614,7 @@
                     </div>
                 </div>
             </div>
-
-            <!-- ADVANCED SEARCH -->
-            <div
-                    id="advanced-search-container"
-                    role="search"
-                    v-if="openAdvancedSearch">
-
-                <div class="tnc-advanced-search-close"> 
-                    <div class="advanced-search-criteria-title">
-                        <div class="is-flex">
-                            <h1>{{ $i18n.get('info_search_criteria') }}</h1>
-                            <div
-                                    :style="{'margin-bottom': 'auto'}"
-                                    class="field is-grouped">
-                                <a 
-                                        class="back-link"
-                                        @click="openAdvancedSearch = false">
-                                    {{ $i18n.get('back') }}
-                                </a>
-                            </div>
-                        </div>
-                        <hr>
-                    </div>
-
-                </div>
-                <advanced-search
-                        :collection-id="collectionId"
-                        :is-repository-level="isRepositoryLevel"
-                        :advanced-search-results="advancedSearchResults"
-                        :open-form-advanced-search="openFormAdvancedSearch"
-                        :is-do-search="isDoSearch"/>
-
-                <div class="advanced-search-form-submit">
-                    <p
-                            v-if="advancedSearchResults"
-                            class="control">
-                        <button
-                                aria-controls="items-list-results"
-                                @click="advancedSearchResults = !advancedSearchResults"
-                                class="button is-outlined">{{ $i18n.get('edit_search') }}</button>
-                    </p>
-                    <p
-                            v-if="advancedSearchResults"
-                            class="control">
-                        <button
-                                aria-controls="items-list-results"
-                                @click="isDoSearch = !isDoSearch"
-                                class="button is-success">{{ $i18n.get('search') }}</button>
-                    </p>
-                </div>
-            </div>
-
+            
             <!-- STATUS TABS, only on Admin -------- -->
             <div 
                     v-if="!isOnTheme && !openAdvancedSearch"
