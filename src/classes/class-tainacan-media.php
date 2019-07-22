@@ -161,6 +161,22 @@ class Media {
 	}
 	
 	/**
+	 * Add support to get mime type content even when mime_content_type function is not available
+	 * @param  string $filename The file name to check the mime type
+	 * @return string mime type           @see \mime_content_type()
+	 */
+	function get_mime_content_type( $filename ){
+		if (function_exists( 'mime_content_type' )) {
+			return mime_content_type($filename);
+		} else {
+			$finfo = finfo_open( FILEINFO_MIME_TYPE );
+			$mime_type = finfo_file( $finfo, $filename );
+			finfo_close( $finfo );
+			return $mime_type;
+		}
+	}
+	
+	/**
 	 * Extract an image from the first page of a pdf file
 	 * 
 	 * @param  string $filepath The pdf filepath in the server
@@ -176,7 +192,7 @@ class Media {
 			return null;
 		}
 		
-		if ( mime_content_type($filepath) != 'application/pdf') {
+		if ( $this->get_mime_content_type($filepath) != 'application/pdf') {
 			return null;
 		}
 
