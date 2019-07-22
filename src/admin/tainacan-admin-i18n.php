@@ -418,6 +418,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_duplicating_item'                         => __( 'Duplicating item', 'tainacan' ),
 	'label_item_duplication_success'                 => __( 'The item was duplicated with success!', 'tainacan' ),
 	'label_item_duplication_failure'                 => __( 'Something wrong happened... Item duplication failed!', 'tainacan' ),
+	'label_create_another_taxonomy'                  => __( 'Create another Taxonomy', 'tainacan' ),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

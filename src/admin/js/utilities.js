@@ -305,8 +305,8 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getFilterEditPath(id) {
             return '/filters/' + id + '/edit';
         },
-        getTaxonomyEditPath(id) {
-            return '/taxonomies/' + id + '/edit';
+        getTaxonomyEditPath(id, isRecent) {
+            return isRecent != undefined ? '/taxonomies/' + id + '/edit?recent=true'  : '/taxonomies/' + id + '/edit';
         },
         getTermEditPath(taxonomyId, termId) {
             return '/taxonomies/' + taxonomyId + '/terms/' + termId + '/edit';
