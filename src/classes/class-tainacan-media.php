@@ -37,7 +37,13 @@ class Media {
             return false;
         }
 
-		return $this->insert_attachment_from_blob(fopen($filename,'r'), basename($url), $post_id);
+		$file = fopen($filename,'r');
+		
+		if (false === $file) {
+			return false;
+		}
+
+		return $this->insert_attachment_from_blob($file, basename($url), $post_id);
 		
 	}
 
