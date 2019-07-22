@@ -32,11 +32,11 @@ class Media {
 	 */
 	public function insert_attachment_from_url($url, $post_id = null) {
 		$filename = $this->save_remote_file($url);
-
-        if( !file_exists($filename) ) {
-            return false;
-        }
-
+		
+		if( !file_exists($filename) ) {
+			return false;
+		}
+		
 		$file = fopen($filename,'r');
 		
 		if (false === $file) {
@@ -131,11 +131,11 @@ class Media {
 		}
 
 		if( @filesize($upload['file']) == 0 && is_resource($blob) ){
-            $file_wordpress_stream = fopen( $upload['file'], 'r+');
-            stream_copy_to_stream($blob, $file_wordpress_stream);
-
-            if( file_exists(self::$file_name) ) unlink(self::$file_name);
-        }
+			$file_wordpress_stream = fopen( $upload['file'], 'r+');
+			stream_copy_to_stream($blob, $file_wordpress_stream);
+			
+			if( file_exists(self::$file_name) ) unlink(self::$file_name);
+		}
 
 		$file_path = $upload['file'];
 		$file_name = basename( $file_path );
