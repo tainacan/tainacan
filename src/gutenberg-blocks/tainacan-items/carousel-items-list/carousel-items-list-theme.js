@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
         data: {
             collectionId: '',  
             searchURL: '',
+            selectedItems: [],
             maxItemsNumber: 12,
             autoPlay: false,
             autoPlaySpeed: 3,
@@ -26,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 props: {
                     collectionId: this.collectionId,  
                     searchURL: this.searchURL,
+                    selectedItems: this.selectedItems,
                     maxItemsNumber: this.maxItemsNumber,
                     autoPlay: this.autoPlay,
                     autoPlaySpeed: this.autoPlaySpeed,
@@ -43,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
         beforeMount () {
             this.className = this.$el.attributes.class != undefined ? this.$el.attributes.class.value : undefined;
             this.searchURL = this.$el.attributes['search-url'] != undefined ? this.$el.attributes['search-url'].value : undefined;
+            this.selectedItems = this.$el.attributes['selected-items'] != undefined ? this.$el.attributes['selected-items'].value : undefined;
             this.collectionId = this.$el.attributes['collection-id'] != undefined ? this.$el.attributes['collection-id'].value : undefined;
             this.maxItemsNumber = this.$el.attributes['max-items-number'] != undefined ? this.$el.attributes['max-items-number'].value : undefined;
             this.autoPlay = this.$el.attributes['auto-play'] != undefined ? this.$el.attributes['auto-play'].value == 'true' : false;

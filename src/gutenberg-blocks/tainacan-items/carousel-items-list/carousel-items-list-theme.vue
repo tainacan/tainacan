@@ -151,7 +151,7 @@ export default {
                 slidesPerGroup: 1,
                 spaceBetween: 32,
                 slideToClickedSlide: true,
-                autoHeight: true,
+                autoHeight: this.autoPlay ? false : true,
                 navigation: {
                     nextEl: '.swiper-button-next',
                     prevEl: '.swiper-button-prev',
@@ -190,7 +190,6 @@ export default {
     methods: {
         fetchItems() {
  
-            this.items = [];
             this.isLoading = true;
             
             if (this.itemsRequestSource != undefined && typeof this.itemsRequestSource == 'function')
@@ -198,49 +197,70 @@ export default {
 
             this.itemsRequestSource = axios.CancelToken.source();
 
-            let endpoint = '/collection' + this.searchURL.split('#')[1].split('/collections')[1];
-            let query = endpoint.split('?')[1];
-            let queryObject = qs.parse(query);
+            if (this.searchURL != undefined && this.searchURL != '') {
 
-            // Set up max items to be shown
-            if (this.maxItemsNumber != undefined && Number(this.maxItemsNumber) > 0)
-                queryObject.perpage = this.maxItemsNumber;
-            else if (queryObject.perpage != undefined && queryObject.perpage > 0)
-                this.localMaxItemsNumber = queryObject.perpage;
-            else {
-                queryObject.perpage = 12;
-                this.localMaxItemsNumber = 12;
+                this.items = [];
+
+                let endpoint = '/collection' + this.searchURL.split('#')[1].split('/collections')[1];
+                let query = endpoint.split('?')[1];
+                let queryObject = qs.parse(query);
+
+                // Set up max items to be shown
+                if (this.maxItemsNumber != undefined && Number(this.maxItemsNumber) > 0)
+                    queryObject.perpage = this.maxItemsNumber;
+                else if (queryObject.perpage != undefined && queryObject.perpage > 0)
+                    this.localMaxItemsNumber = queryObject.perpage;
+                else {
+                    queryObject.perpage = 12;
+                    this.localMaxItemsNumber = 12;
+                }
+
+                // Set up paging
+                if (this.paged != undefined)
+                    queryObject.paged = this.paged;
+                else if (queryObject.paged != undefined)
+                    this.paged = queryObject.paged;
+                else
+                    this.paged = 1;
+
+                // Remove unecessary queries
+                delete queryObject.readmode;
+                delete queryObject.iframemode;
+                delete queryObject.admin_view_mode;
+                delete queryObject.fetch_only_meta;
+                
+                endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
+                
+                this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
+                    .then(response => {
+
+                        for (let item of response.data.items)
+                            this.items.push(item);
+
+                        this.isLoading = false;
+                        this.totalItems = response.headers['x-wp-total'];
+
+                    }).catch(() => { 
+                        this.isLoading = false;
+                        // console.log(error);
+                    });
+            } else {
+                let endpoint = '/collection/' + this.collectionId + '/items' + qs.stringify({ postin: this.selectedItems });
+                
+                this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
+                    .then(response => {
+
+                        for (let item of response.data.items)
+                            this.items.push(item);
+
+                        this.isLoading = false;
+                        this.totalItems = response.headers['x-wp-total'];
+
+                    }).catch(() => { 
+                        this.isLoading = false;
+                        // console.log(error);
+                    });
             }
-
-            // Set up paging
-            if (this.paged != undefined)
-                queryObject.paged = this.paged;
-            else if (queryObject.paged != undefined)
-                this.paged = queryObject.paged;
-            else
-                this.paged = 1;
-
-            // Remove unecessary queries
-            delete queryObject.readmode;
-            delete queryObject.iframemode;
-            delete queryObject.admin_view_mode;
-            delete queryObject.fetch_only_meta;
-            
-            endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
-            
-            this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
-                .then(response => {
-
-                    for (let item of response.data.items)
-                        this.items.push(item);
-
-                    this.isLoading = false;
-                    this.totalItems = response.headers['x-wp-total'];
-
-                }).catch(() => { 
-                    this.isLoading = false;
-                    // console.log(error);
-                });
         },
         fetchCollectionForHeader() {
             if (this.showCollectionHeader) {

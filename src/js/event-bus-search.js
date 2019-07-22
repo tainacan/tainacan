@@ -308,14 +308,14 @@ export default {
  
                     let currentSelectedItems = this.$store.getters['search/getSelectedItems'];
 
-                    if (parent.history.pushState) {
-                        let searchParams = new URLSearchParams(parent.location.search);
+                    if (window.history.pushState) {
+                        let searchParams = new URLSearchParams(window.location.search);
                         searchParams.delete('selecteditems');
                         for (let selectedItem of currentSelectedItems)
                             searchParams.append('selecteditems', selectedItem);
-                        
-                        let newurl = parent.location.protocol + "//" + parent.location.host + parent.location.pathname + '?' + searchParams.toString();
-                        parent.history.pushState({path: newurl}, '', newurl);
+
+                        let newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + searchParams.toString() + window.location.hash;
+                        window.history.pushState({path: newurl}, '', newurl);
                     }      
                 },
                 highlightsItem(itemId) {

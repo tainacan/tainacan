@@ -133,6 +133,9 @@
     justify-content: space-between;
     padding: 16px 16px 0 16px;
     margin: 0 -16px; }
+    .wp-block-tainacan-modal .modal-footer-area p {
+      padding: 0 12px;
+      color: #454647; }
 
 .wp-block-tainacan-collections-list {
   margin: 2rem 0px; }

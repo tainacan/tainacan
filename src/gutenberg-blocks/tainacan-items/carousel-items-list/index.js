@@ -47,6 +47,10 @@ registerBlockType('tainacan/carousel-items-list', {
             type: String,
             default: undefined
         },
+        selectedItems: {
+            type: Array,
+            default: []
+        },
         itemsRequestSource: {
             type: String,
             default: undefined
@@ -87,10 +91,6 @@ registerBlockType('tainacan/carousel-items-list', {
             type: Object,
             value: undefined
         },
-        searchString: {
-            type: String,
-            default: undefined
-        },
         blockId: {
             type: String,
             default: undefined
@@ -117,7 +117,7 @@ registerBlockType('tainacan/carousel-items-list', {
             searchURL,
             itemsRequestSource,
             maxItemsNumber,
-            searchString,
+            selectedItems,
             isLoading,
             autoPlay,
             autoPlaySpeed,
@@ -163,53 +163,72 @@ registerBlockType('tainacan/carousel-items-list', {
 
         function setContent(){
 
-            items = [];
             isLoading = true;
-            
-            if (itemsRequestSource != undefined && typeof itemsRequestSource == 'function')
-                itemsRequestSource.cancel('Previous items search canceled.');
 
-            itemsRequestSource = axios.CancelToken.source();
-            
             setAttributes({
                 isLoading: isLoading
             });
 
-            let endpoint = '/collection' + searchURL.split('#')[1].split('/collections')[1];
-            let query = endpoint.split('?')[1];
-            let queryObject = qs.parse(query);
+            if (itemsRequestSource != undefined && typeof itemsRequestSource == 'function')
+                itemsRequestSource.cancel('Previous items search canceled.');
 
-            // Set up max items to be shown
-            if (maxItemsNumber != undefined && maxItemsNumber > 0)
-                queryObject.perpage = maxItemsNumber;
-            else if (queryObject.perpage != undefined && queryObject.perpage > 0)
-                setAttributes({ maxItemsNumber: queryObject.perpage });
-            else {
-                queryObject.perpage = 12;
-                setAttributes({ maxItemsNumber: 12 });
-            }
+            itemsRequestSource = axios.CancelToken.source();
 
-            // Remove unecessary queries
-            delete queryObject.readmode;
-            delete queryObject.iframemode;
-            delete queryObject.admin_view_mode;
-            delete queryObject.fetch_only_meta;
-            
-            endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
-            
-            tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
-                .then(response => {
+            if (searchURL != undefined && searchURL != '') {
+                items = [];
 
-                    for (let item of response.data.items)
-                        items.push(prepareItem(item));
+                let endpoint = '/collection' + searchURL.split('#')[1].split('/collections')[1];
+                let query = endpoint.split('?')[1];
+                let queryObject = qs.parse(query);
 
-                    setAttributes({
-                        content: <div></div>,
-                        items: items,
-                        isLoading: false,
-                        itemsRequestSource: itemsRequestSource
+                // Set up max items to be shown
+                if (maxItemsNumber != undefined && maxItemsNumber > 0)
+                    queryObject.perpage = maxItemsNumber;
+                else if (queryObject.perpage != undefined && queryObject.perpage > 0)
+                    setAttributes({ maxItemsNumber: queryObject.perpage });
+                else {
+                    queryObject.perpage = 12;
+                    setAttributes({ maxItemsNumber: 12 });
+                }
+
+                // Remove unecessary queries
+                delete queryObject.readmode;
+                delete queryObject.iframemode;
+                delete queryObject.admin_view_mode;
+                delete queryObject.fetch_only_meta;
+                
+                endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
+                
+                tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
+                    .then(response => {
+
+                        for (let item of response.data.items)
+                            items.push(prepareItem(item));
+
+                        setAttributes({
+                            content: <div></div>,
+                            items: items,
+                            isLoading: false,
+                            itemsRequestSource: itemsRequestSource
+                        });
                     });
-                });
+            } else {
+                let endpoint = '/collection/' + collectionId + '/items?'+ qs.stringify({ postin: selectedItems });
+
+                tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
+                    .then(response => {
+
+                        for (let item of response.data.items)
+                            items.push(prepareItem(item));
+
+                        setAttributes({
+                            content: <div></div>,
+                            items: items,
+                            isLoading: false,
+                            itemsRequestSource: itemsRequestSource
+                        });
+                    });
+            }
         }
 
         function fetchCollectionForHeader() {
@@ -397,11 +416,20 @@ registerBlockType('tainacan/carousel-items-list', {
                                     setAttributes({ collectionId: collectionId });
                                     fetchCollectionForHeader();
                                 }}
-                                onApplySearchURL={ (aSearchURL) =>{
+                                onApplySearchURL={ (aSearchURL) => {
                                     searchURL = aSearchURL
                                     setAttributes({
                                         searchURL: searchURL,
                                         isModalOpen: false
+                                    });
+                                    setContent();
+                                }}
+                                onApplySelectedItems={ (aSelectionOfItems) => {
+                                    selectedItems = aSelectionOfItems
+                                    setAttributes({
+                                        selectedItems: selectedItems,
+                                        isModalOpen: false,
+                                        searchURL: ''
                                     });
                                     setContent();
                                 }}
@@ -568,6 +596,7 @@ registerBlockType('tainacan/carousel-items-list', {
             blockId,
             collectionId,  
             searchURL,
+            selectedItems,
             maxItemsNumber,
             autoPlay,
             autoPlaySpeed,
@@ -580,6 +609,7 @@ registerBlockType('tainacan/carousel-items-list', {
         
         return <div 
                     search-url={ searchURL }
+                    selected-items={ selectedItems }
                     className={ className }
                     collection-id={ collectionId }  
                     auto-play={ '' + autoPlay }

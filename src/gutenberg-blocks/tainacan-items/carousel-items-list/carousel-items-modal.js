@@ -23,6 +23,7 @@ export default class CarouselItemsModal extends React.Component {
             collections: [],
             collectionsRequestSource: undefined,
             searchURL: '',
+            itemsPerPage: 12,
         };
         
         // Bind events
@@ -32,6 +33,7 @@ export default class CarouselItemsModal extends React.Component {
         this.fetchModalCollections = this.fetchModalCollections.bind(this);
         this.fetchCollection = this.fetchCollection.bind(this);
         this.applySelectedSearchURL = this.applySelectedSearchURL.bind(this);
+        this.applySelectedItems = this.applySelectedItems.bind(this);
     }
 
     componentWillMount() {
@@ -142,14 +144,20 @@ export default class CarouselItemsModal extends React.Component {
     }
 
     applySelectedSearchURL() {    
-        let params = new URLSearchParams(window.location.search);
-        let selecteditems = params.getAll('selecteditems');
-        params.delete('selecteditems')
+        let iframe = document.getElementById("itemsFrame");
+        if (iframe) {
+            this.props.onApplySearchURL(iframe.contentWindow.location.href);
+        }
+    }
 
-        let newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + params.toString();
-        window.history.pushState({ path: newurl}, '', newurl);
-        console.log(selecteditems)
-        this.props.onApplySearchURL(document.getElementById("itemsFrame").contentWindow.location.href);
+    applySelectedItems() {
+        let iframe = document.getElementById("itemsFrame");
+        if (iframe) {
+            let params = new URLSearchParams(iframe.contentWindow.location.search);
+            let selectedItems = params.getAll('selecteditems');
+            params.delete('selecteditems')
+            this.props.onApplySelectedItems(selectedItems);
+        }
     }
 
     resetCollections() {
@@ -188,6 +196,13 @@ export default class CarouselItemsModal extends React.Component {
                         onClick={ () => { this.resetCollections() }}>
                         {__('Switch collection', 'tainacan')}
                     </Button>
+                    <Button
+                        style={{ marginLeft: 'auto' }} 
+                        isPrimary
+                        onClick={ () => this.applySelectedItems() }>
+                        {__('Add the selected items', 'tainacan')}
+                    </Button>
+                    <p>{__('or', 'tainacan')}</p>
                     <Button 
                         isPrimary
                         onClick={ () => this.applySelectedSearchURL() }>

@@ -948,6 +948,7 @@ export default {
             return this.getSelectedItems();
         },
         selectedItems () {
+            this.$eventBusSearch.setSelectedItemsForIframe(this.getSelectedItems());
             return this.getSelectedItems();
         },
         isSelectingItems () {
