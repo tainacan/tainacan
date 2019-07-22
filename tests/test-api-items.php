@@ -609,17 +609,93 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 
 		$data = $response->get_data();
 
-		$this->assertEquals('Lean Startup', $data['title']);
+		$this->assertEquals('Lean Startup', $data['items'][0]['title']);
 		
 		$metadata_1 = $item1->get_metadata();
 		
-		$duplicated = \Tainacan\Repositories\Items::get_instance()->fetch( (int) $data['id'] );
+		$duplicated = \Tainacan\Repositories\Items::get_instance()->fetch( (int) $data['items'][0]['id'] );
 		
 		$metadata_2 = $duplicated->get_metadata();
 		
 		foreach( $metadata_1 as $k => $m ) {
 			$this->assertEquals( $m->get_value(), $metadata_2[$k]->get_value() );
 		}
+		
+		
+		$request  = new \WP_REST_Request('POST', $this->namespace . '/collection/' . $collection->get_id() . '/items/' . $item1->get_id() . '/duplicate');
+
+		$params = json_encode([
+			'copies' => 4,
+			'status' => 'publish'
+		]);
+		
+		$request->set_body($params);
+
+		$response = $this->server->dispatch($request);
+		
+		$data = $response->get_data();
+		
+		$this->assertEquals(4, count($data['items']));
+		
+		foreach ( $data['items'] as $created_item ) {
+			$duplicated = \Tainacan\Repositories\Items::get_instance()->fetch( (int) $created_item['id'] );
+			
+			$this->assertEquals('publish', $created_item['status']);
+			
+			$metadata_2 = $duplicated->get_metadata();
+			
+			foreach( $metadata_1 as $k => $m ) {
+				$this->assertEquals( $m->get_value(), $metadata_2[$k]->get_value() );
+			}
+		}
+		
+		
+		// Create a required metadata 
+		$required_meta = $this->tainacan_entity_factory->create_entity(
+		    'metadatum',
+		    array(
+			    'name'   => 'required_meta',
+			    'collection' => $collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+				'multiple' => 'no',
+				'required' => 'yes',
+				'status' => 'publish'
+		    ),
+		    true
+		);
+		
+		// $metas = \Tainacan\Repositories\Metadata::get_instance()->fetch_by_collection($collection, [], 'OBJECT');
+		// 
+		// foreach ($metas as $m) {
+		// 	var_dump($m->get_name());
+		// }
+		
+		$request  = new \WP_REST_Request('POST', $this->namespace . '/collection/' . $collection->get_id() . '/items/' . $item1->get_id() . '/duplicate');
+
+		$params = json_encode([
+			'copies' => 3,
+			'status' => 'publish'
+		]);
+		
+		$request->set_body($params);
+
+		$response = $this->server->dispatch($request);
+		
+		$data = $response->get_data();
+		
+		$this->assertEquals(3, count($data['items']));
+		
+		foreach ( $data['items'] as $created_item ) {
+			$duplicated = \Tainacan\Repositories\Items::get_instance()->fetch( (int) $created_item['id'] );
+			
+			// item does not validate because required meta is empty and stays draft
+			$this->assertEquals('draft', $duplicated->get_status());
+			$this->assertEquals('draft', $created_item['status']);
+
+		}
+		
+		
+		
 		
 	}
 	
