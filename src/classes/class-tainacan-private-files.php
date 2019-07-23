@@ -21,7 +21,11 @@ class Private_Files {
 	
 	protected function __construct() {
 		add_filter('wp_handle_upload_prefilter', [$this, 'pre_upload']);
+		add_filter('wp_handle_sideload_prefilter', [$this, 'pre_upload']);
 		add_filter('wp_handle_upload', [$this, 'post_upload']);
+		
+		add_action('tainacan-pre-insert-attachment', [$this, 'pre_tainacan_upload'], 10, 3);
+		add_action('tainacan-post-insert-attachment', [$this, 'post_tainacan_upload'], 10, 3);
 		
 		add_action('template_redirect', [$this, 'template_redirect']);
 		add_filter('image_get_intermediate_size', [$this, 'image_get_intermediate_size'], 10, 3);
@@ -33,7 +37,19 @@ class Private_Files {
 		
 		
 	}
-
+	
+	function pre_tainacan_upload($blob, $filename, $post_id) {
+		if (is_numeric($post_id)) {
+			global $TAINACAN_UPLOADING_ATTACHMENT_TO_POST;
+			$TAINACAN_UPLOADING_ATTACHMENT_TO_POST = $post_id;
+			add_filter('upload_dir', [$this, 'change_upload_dir']);
+		}
+	}
+	
+	function post_tainacan_upload($attach_id, $attach_data, $post_id) {
+		remove_filter('upload_dir', [$this, 'change_upload_dir']);
+	}
+	
 	/**
 	 * Adds a filter to the upload_dir hook when uploading a new file 
 	 * 
@@ -90,7 +106,25 @@ class Private_Files {
 	 * 
 	 */
 	function change_upload_dir($path) {
-		$post_id = isset($_REQUEST['post_id']) ? $_REQUEST['post_id'] : false;
+		$post_id = false;
+		
+		// regular ajax uploads via Admin Panel will send post_id
+		if ( isset($_REQUEST['post_id']) && $_REQUEST['post_id'] ) {
+			$post_id = $_REQUEST['post_id'];
+		}
+		
+		// API requests to media endpoint will send post
+		if ( false === $post_id && isset($_REQUEST['post']) && is_numeric($_REQUEST['post']) ) {
+			$post_id = $_REQUEST['post'];
+		}
+		
+		// tainacan internals, scripts and tests, will set this global 
+		if (false === $post_id) {
+			global $TAINACAN_UPLOADING_ATTACHMENT_TO_POST;
+			if ( isset($TAINACAN_UPLOADING_ATTACHMENT_TO_POST) && is_numeric($TAINACAN_UPLOADING_ATTACHMENT_TO_POST) ) {
+				$post_id = $TAINACAN_UPLOADING_ATTACHMENT_TO_POST;
+			}
+		}
 		
 		if (false === $post_id) {
 			return $path;

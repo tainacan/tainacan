@@ -120,6 +120,8 @@ class Media {
 	 */
 	public function insert_attachment_from_blob($blob, $filename, $post_id = null) {
 
+		do_action('tainacan-pre-insert-attachment', $blob, $filename, $post_id);
+		
 		$upload = wp_upload_bits( $filename, null, $blob );
 		if( !empty( $upload['error'] ) ) {
 			return false;
@@ -157,7 +159,9 @@ class Media {
 
 		// Assign metadata to attachment
 		wp_update_attachment_metadata( $attach_id,  $attach_data );
-
+		
+		do_action('tainacan-post-insert-attachment', $attach_id,  $attach_data, $post_id);
+		
 		return $attach_id;
 	}
 	
