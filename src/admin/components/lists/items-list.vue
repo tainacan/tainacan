@@ -108,9 +108,9 @@
                         {{ $i18n.getFrom('items','edit_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
-                            @click="duplicateOneItem(contextMenuItem.id)"
+                            @click="makeCopiesOfOneItem(contextMenuItem.id)"
                             v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$route.query.iframemode">
-                        {{ $i18n.get('label_duplicate_item') }}
+                        {{ $i18n.get('label_make_copies_of_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="deleteOneItem(contextMenuItem.id)"
@@ -712,10 +712,7 @@
                 </thead>
                 <tbody>
                     <tr     
-                            :class="{ 
-                                'selected-row': selectedItems[index],   
-                                'highlighted-item': highlightedItem == item.id  
-                            }"
+                            :class="{ 'selected-row': selectedItems[index] }"
                             :key="index"
                             v-for="(item, index) of items">
                         <!-- Checking list -->
@@ -903,7 +900,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import CustomDialog from '../other/custom-dialog.vue';
-import DuplicationDialog from '../other/duplication-dialog.vue';
+import ItemCopyDialog from '../other/item-copy-dialog.vue';
 import BulkEditionModal from '../bulk-edition/bulk-edition-modal.vue';
 import { dateInter } from "../../../admin/js/mixins";
 
@@ -942,14 +939,6 @@ export default {
         for (let i = 0; i < this.items.length; i++) {
             this.selectedItemsIDs.push(false);
             this.selectedItems.push(false);
-        }
-
-        if (this.highlightsItem)
-            setTimeout(() => this.$eventBusSearch.highlightsItem(null), 3000);
-    },
-    computed: {
-        highlightedItem () {
-            return this.getHighlightedItem();
         }
     },
     watch: {
@@ -994,8 +983,7 @@ export default {
         ]),
         ...mapGetters('search', [
             'getOrder',
-            'getOrderBy',
-            'getHighlightedItem'
+            'getOrderBy'
         ]),
         openBulkEditionModal(){
             this.$modal.open({
@@ -1037,21 +1025,20 @@ export default {
                 this.selectedItems.splice(i, 1, this.isAllItemsSelected);
             }
         },
-        duplicateOneItem(itemId) {
+        makeCopiesOfOneItem(itemId) {
                          
             this.$modal.open({
                 parent: this,
-                component: DuplicationDialog,
+                component: ItemCopyDialog,
                 canCancel: false,
                 props: {
                     icon: 'items',
                     collectionId: this.collectionId,
                     itemId: itemId,
-                    onConfirm: (duplicatedItemId) => {
-                        if (duplicatedItemId != null && duplicatedItemId != undefined)
-                            this.$eventBusSearch.highlightsItem(duplicatedItemId);
-
-                        this.$eventBusSearch.loadItems();
+                    onConfirm: (newItems) => {
+                        if (newItems != null && newItems != undefined && newItems.length > 0) {
+                            this.$eventBusSearch.loadItems();
+                        }
                     }
                 }
             });
@@ -1297,23 +1284,6 @@ export default {
             height: 100vh;
             z-index: 9999999;
         }
-    }
-
-    @keyframes highlight {
-        from {
-            background-color: $blue1; 
-        }
-        to {
-            background-color: initial; 
-        }
-    }
-
-
-    .highlighted-item {
-        transition: background-color 0.5s; 
-        animation-name: highlight;
-        animation-duration: 1s;
-        animation-iteration-count: 2;   
     }
 
 </style>

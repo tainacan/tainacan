@@ -412,13 +412,15 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_view_collections_list'                    => __( 'View collections list', 'tainacan' ),
 	'label_comparator'								 => __( 'Comparator', 'tainacan' ),
 	'label_table_of_items'                           => __( 'Table of Items', 'tainacan' ),
-	'label_duplicate_item'                           => __( 'Duplicate item', 'tainacan' ),
 	'label_create_another_item'                      => __( 'Create another item', 'tainacan' ),
 	'label_recent_collections'	                     => __( 'Recent Collections', 'tainacan' ),
-	'label_duplicating_item'                         => __( 'Duplicating item', 'tainacan' ),
-	'label_item_duplication_success'                 => __( 'The item was duplicated with success!', 'tainacan' ),
-	'label_item_duplication_failure'                 => __( 'Something wrong happened... Item duplication failed!', 'tainacan' ),
+	'label_%s_items_copy_success'       		     => __( '%s item copies were created with success!', 'tainacan' ),
+	'label_one_item_copy_success'       		     => __( 'The item copy was created with success!', 'tainacan' ),
+	'label_item_copy_failure'		                 => __( 'Something wrong happened... Item copy failed!', 'tainacan' ),
 	'label_create_another_taxonomy'                  => __( 'Create another Taxonomy', 'tainacan' ),
+	'label_make_copies_of_item'		                 => __( 'Make copies of item', 'tainacan' ),
+	'label_number_of_copies'		                 => __( 'Number of copies', 'tainacan' ),
+	'label_return_to_list'		            		 => __( 'Return to list', 'tainacan' ),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -464,6 +466,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_drag_and_drop_filter_sort'	     	 => __( 'Drag and drop to change filter order', 'tainacan' ),
 	'instruction_drag_and_drop_metadatum_sort'     	 => __( 'Drag and drop to change metadatum order', 'tainacan' ),
 	'instruction_select_a_date' 				     => __( 'Select a date', 'tainacan' ),
+	'instruction_select_the_amount_of_copies'		 => __( 'Select the amount of copies of the item that you want to create', 'tainacan'),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every published item, including those visible only to editors.', 'tainacan' ),
@@ -631,7 +634,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_items_hidden_due_sorting'					 => __('When ordering by metadata value, items that have no value for the chosen metadata will not be listed. This list may have less elements than the total existing for current search criteria.', 'tainacan'),
 	'info_sorting_by_metadata_value_%s'				 => __('Showing only items that have value for metadata %s.', 'tainacan'),
 	'info_sorting_by_metadata_value_%s_empty_list'   => __('No item found, but only items with values for metadata %s are shown. Try sorting by other metatada.', 'tainacan'),
-	'info_await_while_item_duplication'  			 => __('Please wait while item is being duplicated...', 'tainacan'),
+	'info_await_while_item_copy'  			 		 => __('Please wait while copy is being created...', 'tainacan'),
+	'info_await_while_item_copies'  			 	 => __('Please wait while copies are being created. This may take a while...', 'tainacan'),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),

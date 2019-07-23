@@ -303,9 +303,6 @@ export default {
                     this.$store.dispatch('search/setAdminViewMode', adminViewMode);
                     this.updateURLQueries();  
                 },
-                highlightsItem(itemId) {
-                    this.$store.dispatch('search/highlightsItem', itemId);
-                },
                 updateURLQueries() {
                     this.$router.replace({ query: {} });
                     this.$router.replace({ query: this.$store.getters['search/getPostQuery'] });

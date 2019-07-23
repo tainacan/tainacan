@@ -84,6 +84,3 @@ export const getFacets = state => {
     return state.facets;
 };
 
-export const getHighlightedItem = state => {
-    return state.highlightedItem;
-};
