@@ -175,6 +175,8 @@ export default {
     props: {
         collectionId: String,  
         searchURL: String,
+        selectedItems: Array,
+        loadStrategy: String,
         maxItemsNumber: Number,
         autoPlay: false,
         autoPlaySpeed: Number,
@@ -197,7 +199,23 @@ export default {
 
             this.itemsRequestSource = axios.CancelToken.source();
 
-            if (this.searchURL != undefined && this.searchURL != '') {
+            if (this.loadStrategy == 'search') {
+                let endpoint = '/collection/' + this.collectionId + '/items' + qs.stringify({ postin: this.selectedItems });
+                
+                this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
+                    .then(response => {
+
+                        for (let item of response.data.items)
+                            this.items.push(item);
+
+                        this.isLoading = false;
+                        this.totalItems = response.headers['x-wp-total'];
+
+                    }).catch(() => { 
+                        this.isLoading = false;
+                        // console.log(error);
+                    });
+            } else {
 
                 this.items = [];
 
@@ -230,22 +248,6 @@ export default {
                 delete queryObject.fetch_only_meta;
                 
                 endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
-                
-                this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
-                    .then(response => {
-
-                        for (let item of response.data.items)
-                            this.items.push(item);
-
-                        this.isLoading = false;
-                        this.totalItems = response.headers['x-wp-total'];
-
-                    }).catch(() => { 
-                        this.isLoading = false;
-                        // console.log(error);
-                    });
-            } else {
-                let endpoint = '/collection/' + this.collectionId + '/items' + qs.stringify({ postin: this.selectedItems });
                 
                 this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
                     .then(response => {

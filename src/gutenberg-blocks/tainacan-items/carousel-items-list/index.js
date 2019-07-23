@@ -67,6 +67,10 @@ registerBlockType('tainacan/carousel-items-list', {
             type: Boolean,
             value: false
         },
+        loadStrategy: {
+            type: String,
+            value: 'search'
+        },
         autoPlay: {
             type: Boolean,
             value: false
@@ -119,6 +123,7 @@ registerBlockType('tainacan/carousel-items-list', {
             maxItemsNumber,
             selectedItems,
             isLoading,
+            loadStrategy,
             autoPlay,
             autoPlaySpeed,
             loopSlides,
@@ -142,6 +147,13 @@ registerBlockType('tainacan/carousel-items-list', {
                         id={ isNaN(item.id) ? item.id : 'item-id-' + item.id }
                         href={ item.url } 
                         target="_blank">
+                        { loadStrategy == 'selection' ?
+                            <IconButton
+                                onClick={ () => removeItemOfId(item.id) }
+                                icon="no-alt"
+                                label={__('Remove', 'tainacan')}/> 
+                            :null
+                        }
                         <img
                             src={ 
                                 item.thumbnail && item.thumbnail['tainacan-medium'][0] && item.thumbnail['tainacan-medium'][0] 
@@ -174,7 +186,23 @@ registerBlockType('tainacan/carousel-items-list', {
 
             itemsRequestSource = axios.CancelToken.source();
 
-            if (searchURL != undefined && searchURL != '') {
+            if (loadStrategy == 'selection') {
+                let endpoint = '/collection/' + collectionId + '/items?'+ qs.stringify({ postin: selectedItems }) + '&fetch_only=title,url,thumbnail';
+
+                tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
+                    .then(response => {
+
+                        for (let item of response.data.items)
+                            items.push(prepareItem(item));
+
+                        setAttributes({
+                            content: <div></div>,
+                            items: items,
+                            isLoading: false,
+                            itemsRequestSource: itemsRequestSource
+                        });
+                    });
+            } else {
                 items = [];
 
                 let endpoint = '/collection' + searchURL.split('#')[1].split('/collections')[1];
@@ -212,23 +240,7 @@ registerBlockType('tainacan/carousel-items-list', {
                             itemsRequestSource: itemsRequestSource
                         });
                     });
-            } else {
-                let endpoint = '/collection/' + collectionId + '/items?'+ qs.stringify({ postin: selectedItems });
-
-                tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
-                    .then(response => {
-
-                        for (let item of response.data.items)
-                            items.push(prepareItem(item));
-
-                        setAttributes({
-                            content: <div></div>,
-                            items: items,
-                            isLoading: false,
-                            itemsRequestSource: itemsRequestSource
-                        });
-                    });
-            }
+            }  
         }
 
         function fetchCollectionForHeader() {
@@ -270,6 +282,16 @@ registerBlockType('tainacan/carousel-items-list', {
             setAttributes( { 
                 isModalOpen: isModalOpen
             } );
+        }
+
+        function removeItemOfId(itemId) {
+
+            let existingItemIndex = selectedItems.findIndex((existingItem) => existingItem.id == itemId);
+
+            if (existingItemIndex >= 0)
+                selectedItems.splice(existingItemIndex, 1);
+
+            setContent();
         }
 
         // Executed only on the first load of page
@@ -383,24 +405,27 @@ registerBlockType('tainacan/carousel-items-list', {
                             </div>                           
                         </PanelBody>
 
-                        <PanelBody
-                                title={__('Items', 'tainacan')}
-                                initialOpen={ true }
-                            >
-                            <div>
-                                <RangeControl
-                                    label={__('Maximum number of items', 'tainacan')}
-                                    value={ maxItemsNumber }
-                                    onChange={ ( aMaxItemsNumber ) => {
-                                        maxItemsNumber = aMaxItemsNumber;
-                                        setAttributes( { maxItemsNumber: aMaxItemsNumber } ) 
-                                        setContent();
-                                    }}
-                                    min={ 1 }
-                                    max={ 96 }
-                                />
-                            </div>                           
-                        </PanelBody>
+                        { loadStrategy == 'search' ?
+                            <PanelBody
+                                    title={__('Items', 'tainacan')}
+                                    initialOpen={ true }
+                                >
+                                <div>
+                                    <RangeControl
+                                        label={__('Maximum number of items', 'tainacan')}
+                                        value={ maxItemsNumber }
+                                        onChange={ ( aMaxItemsNumber ) => {
+                                            maxItemsNumber = aMaxItemsNumber;
+                                            setAttributes( { maxItemsNumber: aMaxItemsNumber } ) 
+                                            setContent();
+                                        }}
+                                        min={ 1 }
+                                        max={ 96 }
+                                    />
+                                </div>                           
+                            </PanelBody>
+                            :null
+                        }
                     </InspectorControls>
                 </div>
 
@@ -413,23 +438,27 @@ registerBlockType('tainacan/carousel-items-list', {
                                 existingSearchURL={ searchURL } 
                                 onSelectCollection={ (selectedCollectionId) => {
                                     collectionId = selectedCollectionId;
-                                    setAttributes({ collectionId: collectionId });
-                                    fetchCollectionForHeader();
+                                    setAttributes({ 
+                                        collectionId: collectionId
+                                    });
                                 }}
                                 onApplySearchURL={ (aSearchURL) => {
-                                    searchURL = aSearchURL
+                                    searchURL = aSearchURL;
+                                    loadStrategy = 'search';
                                     setAttributes({
                                         searchURL: searchURL,
+                                        loadStrategy: loadStrategy,
                                         isModalOpen: false
                                     });
                                     setContent();
                                 }}
                                 onApplySelectedItems={ (aSelectionOfItems) => {
-                                    selectedItems = aSelectionOfItems
+                                    selectedItems = aSelectionOfItems;
+                                    loadStrategy = 'selection';
                                     setAttributes({
                                         selectedItems: selectedItems,
-                                        isModalOpen: false,
-                                        searchURL: ''
+                                        loadStrategy: loadStrategy,
+                                        isModalOpen: false
                                     });
                                     setContent();
                                 }}
@@ -597,6 +626,7 @@ registerBlockType('tainacan/carousel-items-list', {
             collectionId,  
             searchURL,
             selectedItems,
+            loadStrategy,
             maxItemsNumber,
             autoPlay,
             autoPlaySpeed,
@@ -608,9 +638,10 @@ registerBlockType('tainacan/carousel-items-list', {
         } = attributes;
         
         return <div 
+                    className={ className }
                     search-url={ searchURL }
                     selected-items={ selectedItems }
-                    className={ className }
+                    load-strategy={ loadStrategy }
                     collection-id={ collectionId }  
                     auto-play={ '' + autoPlay }
                     auto-play-speed={ autoPlaySpeed }
