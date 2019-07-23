@@ -24,6 +24,7 @@ export default class CarouselItemsModal extends React.Component {
             collectionsRequestSource: undefined,
             searchURL: '',
             itemsPerPage: 12,
+            loadStrategy: 'search'
         };
         
         // Bind events
@@ -44,7 +45,7 @@ export default class CarouselItemsModal extends React.Component {
          
         if (this.props.existingCollectionId != null && this.props.existingCollectionId != undefined) {
             this.fetchCollection(this.props.existingCollectionId);
-            this.setState({ searchURL: this.props.existingSearchURL ? this.props.existingSearchURL : tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#/collections/'+ this.props.existingCollectionId + '/items/?iframemode=true' });
+            this.setState({ searchURL: this.props.existingSearchURL ? this.props.existingSearchURL : tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#/collections/'+ this.props.existingCollectionId +  (this.props.loadStrategy == 'search' ? '/items/?iframemode=true&readmode=true' : '/items/?iframemode=true') });
         } else {
             this.setState({ collectionPage: 1 });
             this.fetchModalCollections();
@@ -102,7 +103,7 @@ export default class CarouselItemsModal extends React.Component {
     selectCollection(selectedCollectionId) {
         this.setState({
             collectionId: selectedCollectionId,
-            searchURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#/collections/' + selectedCollectionId + '/items/?iframemode=true'
+            searchURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#/collections/' + selectedCollectionId + (this.props.loadStrategy == 'search' ? '/items/?iframemode=true&readmode=true' : '/items/?iframemode=true')
         });
 
         this.props.onSelectCollection(selectedCollectionId);
@@ -196,18 +197,23 @@ export default class CarouselItemsModal extends React.Component {
                         onClick={ () => { this.resetCollections() }}>
                         {__('Switch collection', 'tainacan')}
                     </Button>
-                    <Button
-                        style={{ marginLeft: 'auto' }} 
-                        isPrimary
-                        onClick={ () => this.applySelectedItems() }>
-                        {__('Add the selected items', 'tainacan')}
-                    </Button>
-                    <p>{__('or', 'tainacan')}</p>
-                    <Button 
-                        isPrimary
-                        onClick={ () => this.applySelectedSearchURL() }>
-                        {__('Use this search', 'tainacan')}
-                    </Button>
+                    { this.props.loadStrategy == 'selection' ? 
+                        <Button
+                            style={{ marginLeft: 'auto' }} 
+                            isPrimary
+                            onClick={ () => this.applySelectedItems() }>
+                            {__('Add the selected items', 'tainacan')}
+                        </Button>
+                        : null
+                    }
+                    { this.props.loadStrategy == 'search' ? 
+                        <Button 
+                            isPrimary
+                            onClick={ () => this.applySelectedSearchURL() }>
+                            {__('Use this search', 'tainacan')}
+                        </Button>
+                    : null
+                    }
                 </div>
         </Modal>
     ) : (

@@ -278,10 +278,12 @@ registerBlockType('tainacan/carousel-items-list', {
             }
         }
 
-        function openDynamicItemsModal() {
+        function openDynamicItemsModal(aLoadStrategy) {
+            loadStrategy = aLoadStrategy;
             isModalOpen = true;
             setAttributes( { 
-                isModalOpen: isModalOpen
+                isModalOpen: isModalOpen,
+                loadStrategy: loadStrategy
             } );
         }
 
@@ -443,6 +445,7 @@ registerBlockType('tainacan/carousel-items-list', {
                     <div>
                         { isModalOpen ? 
                             <CarouselItemsModal
+                                loadStrategy={ loadStrategy }
                                 existingCollectionId={ collectionId } 
                                 existingSearchURL={ searchURL } 
                                 onSelectCollection={ (selectedCollectionId) => {
@@ -490,7 +493,14 @@ registerBlockType('tainacan/carousel-items-list', {
                                 <Button
                                     isPrimary
                                     type="submit"
-                                    onClick={ () => openDynamicItemsModal() }>
+                                    onClick={ () => openDynamicItemsModal('selection') }>
+                                    {__('Select Items', 'tainacan')}
+                                </Button> 
+                                <p style={{ margin: '0 12px' }}>{__('or', 'tainacan')}</p>
+                                <Button
+                                    isPrimary
+                                    type="submit"
+                                    onClick={ () => openDynamicItemsModal('search') }>
                                     {__('Configure search', 'tainacan')}
                                 </Button>    
                             </div>
@@ -572,9 +582,16 @@ registerBlockType('tainacan/carousel-items-list', {
                         <Button
                             isPrimary
                             type="submit"
-                            onClick={ () => openDynamicItemsModal() }>
-                            {__('Select items', 'tainacan')}
-                        </Button>   
+                            onClick={ () => openDynamicItemsModal('selection') }>
+                            {__('Select Items', 'tainacan')}
+                        </Button> 
+                        <p style={{ margin: '0 12px' }}>{__('or', 'tainacan')}</p>
+                        <Button
+                            isPrimary
+                            type="submit"
+                            onClick={ () => openDynamicItemsModal('search') }>
+                            {__('Configure search', 'tainacan')}
+                        </Button>    
                     </Placeholder>
                     ) : null
                 }

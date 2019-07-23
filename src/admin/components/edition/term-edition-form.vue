@@ -292,7 +292,6 @@
                             this.$emit('onEditionFinished', { term: term, hasChangedParent: this.hasChangedParent });
                         })
                         .catch((errors) => {
-                            console.log(errors.errors)
                             for (let error of errors.errors) {
                                 for (let metadatum of Object.keys(error)) {
                                     this.$set(this.formErrors, metadatum, (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + error[metadatum] + '\n');
