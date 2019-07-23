@@ -525,7 +525,7 @@
 
     .highlighted-process {
         &>.process-handler {
-            transition: background-color 0.5s; 
+            transition: background-color 0.8s; 
             animation-name: highlight;
             animation-duration: 1s;
             animation-iteration-count: 2; 

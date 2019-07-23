@@ -160,7 +160,18 @@
 
                         <!-- Submit -->
                         <div class="field is-grouped form-submit">
-                            <div class="control">
+                            <div
+                                    v-if="$route.query.recent"
+                                    class="control">
+                                <button
+                                        id="button-another-taxonomy-creation"
+                                        @click.prevent="goToCreateAnotherTaxonomy()"
+                                        class="button is-secondary">{{ $i18n.get('label_create_another_taxonomy') }}</button>
+                            </div>
+                            <div    
+                                    v-if="!$route.query.recent"
+                                    style="margin-right: auto;"
+                                    class="control">
                                 <button
                                         id="button-cancel-taxonomy-creation"
                                         class="button is-outlined"
@@ -186,7 +197,8 @@
                 
                 <b-tab-item :label="$i18n.get('terms')">
                     <!-- Terms List -->    
-                    <terms-list 
+                    <terms-list
+                            :key="shouldReloadTermsList ? 'termslistreloaded' : 'termslist'" 
                             @isEditingTermUpdate="isEditingTermUpdate"
                             :taxonomy-id="taxonomyId"/>
                 </b-tab-item>
@@ -215,7 +227,7 @@
                 taxonomy: null,
                 isLoadingTaxonomy: false,
                 isUpdatingSlug: false,
-                isEditinTerm: false,
+                isEditingTerm: false,
                 form: {
                     name: String,
                     status: String,
@@ -228,7 +240,8 @@
                 editFormErrors: {},
                 formErrorMessage: '',
                 entityName: 'taxonomy',
-                updatedAt: undefined
+                updatedAt: undefined,
+                shouldReloadTermsList: false
             }
         },
         components: {
@@ -263,7 +276,7 @@
                         }
                     }
                 });  
-            } else if (this.isEditinTerm) {
+            } else if (this.isEditingTerm) {
                 this.$modal.open({
                     parent: this,
                     component: CustomDialog,
@@ -335,6 +348,10 @@
                         // Updates saved at message
                         let now = new Date();
                         this.updatedAt = now.toLocaleString();
+
+                        if (this.$route.name == 'TaxonomyCreationForm') {                    
+                            this.$router.push(this.$routerHelper.getTaxonomyEditPath(this.taxonomyId, true));
+                        }
                     })
                     .catch((errors) => {
                         for (let error of errors.errors) {
@@ -398,6 +415,7 @@
                         this.form.status = 'publish';
 
                         this.isLoadingTaxonomy = false;
+                        this.shouldReloadTermsList = false;
 
                     })
                     .catch(error => this.$console.error(error));
@@ -412,7 +430,31 @@
                 return ( this.form.allowInsert === 'yes' ) ? this.$i18n.get('label_yes') : this.$i18n.get('label_no');
             },
             isEditingTermUpdate (value) {
-                this.isEditinTerm = value;
+                this.isEditingTerm = value;
+            },
+            goToCreateAnotherTaxonomy() {
+                this.$router.push(this.$routerHelper.getNewTaxonomyPath());                            
+                
+                this.taxonomyId = undefined;
+                this.taxonomy = null;
+                this.isUpdatingSlug = false;
+                this.isEditingTerm = false,
+                this.form = {
+                    name: String,
+                    status: String,
+                    description: String,
+                    slug: String,
+                    allowInsert: String,
+                    enabledPostTypes: Array
+                };
+                this.editFormErrors = {};
+                this.formErrorMessage = '';
+                this.updatedAt = undefined;
+
+                // Forces terms list to reload
+                this.shouldReloadTermsList = true;
+
+                this.createNewTaxonomy();
             }
         },
         mounted(){
@@ -420,9 +462,9 @@
             if (this.$route.query.tab == 'terms')
                 this.tabIndex = 1;
 
-            if (this.$route.path.split("/").pop() === "new") {
+            if (this.$route.name == "TaxonomyCreationForm") {
                 this.createNewTaxonomy();
-            } else if (this.$route.path.split("/").pop() === "edit") {
+            } else if (this.$route.name == "TaxonomyEditionForm") {
 
                 this.isLoadingTaxonomy = true;
 

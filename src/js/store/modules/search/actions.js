@@ -166,3 +166,7 @@ export const cleanTaxQueries = ({ commit }) => {
 export const cleanFetchOnly = ({ commit }) => {
     commit('cleanFetchOnly');
 };
+
+export const highlightsItem = ({ commit }, itemId ) => {
+    commit('setHighlightedItem', itemId);
+};

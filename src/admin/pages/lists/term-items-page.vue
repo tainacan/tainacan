@@ -52,7 +52,7 @@
             <span class="text">{{ $i18n.get('filters') }}</span>
         </button>
 
-        <!-- Side bar with search and filters -->
+        <!-- Sidebar with search and filters -->
         <aside
                 :aria-busy="isLoadingFilters"
                 id="filters-desktop-aside"
@@ -152,12 +152,64 @@
                 class="items-list-area"
                 :class="{ 'spaced-to-right': !isFiltersMenuCompressed && !openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)}">
 
+            <!-- ADVANCED SEARCH -->
+            <div 
+                    id="advanced-search-container"
+                    role="search"
+                    v-if="openAdvancedSearch">
+
+                <div class="tnc-advanced-search-close"> 
+                    <div class="advanced-search-criteria-title">
+                        <div class="is-flex">
+                            <h1>{{ $i18n.get('info_search_criteria') }}</h1>
+                            <div
+                                    :style="{'margin-bottom': 'auto'}"
+                                    class="field is-grouped">
+                                <a
+                                        class="back-link"
+                                        @click="openAdvancedSearch = false">
+                                    {{ $i18n.get('back') }}
+                                </a>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                </div>
+
+                <advanced-search
+                        :is-repository-level="isRepositoryLevel"
+                        :collection-id="collectionId"
+                        :advanced-search-results="advancedSearchResults"
+                        :open-form-advanced-search="openFormAdvancedSearch"
+                        :is-do-search="isDoSearch"
+                        :metadata="metadata"/>
+
+                <div class="advanced-searh-form-submit">
+                    <p
+                            v-if="advancedSearchResults"
+                            class="control">
+                        <button
+                                aria-controls="items-list-results"
+                                @click="advancedSearchResults = !advancedSearchResults"
+                                class="button is-outlined">{{ $i18n.get('edit_search') }}</button>
+                    </p>
+                    <p
+                            v-if="advancedSearchResults"
+                            class="control">
+                        <button
+                                aria-controls="items-list-results"
+                                @click="isDoSearch = !isDoSearch"
+                                class="button is-success">{{ $i18n.get('search') }}</button>
+                    </p>
+                </div>
+            </div>
+
             <!-- SEARCH CONTROL ------------------------- -->
             <div
                     :aria-label="$i18n.get('label_sort_visualization')"
                     role="region"
                     ref="search-control"
-                    v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
+                    v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen) && ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
                     class="search-control">
                 <!-- <b-loading
                         :is-full-page="false"
@@ -165,7 +217,9 @@
                 <!-- Item Creation Dropdown, only on Admin -->
                 <div 
                         class="search-control-item"
-                        v-if="!isOnTheme && !$route.query.iframemode">
+                        v-if="!isOnTheme && 
+                              !$route.query.iframemode &&
+                              !openAdvancedSearch">
                     <b-dropdown 
                             :mobile-modal="true"
                             id="item-creation-options-dropdown"
@@ -538,58 +592,6 @@
                 </div>
             </div>
 
-            <!-- ADVANCED SEARCH -->
-            <div 
-                    id="advanced-search-container"
-                    role="search"
-                    v-if="openAdvancedSearch">
-
-                <div class="tnc-advanced-search-close"> 
-                    <div class="advanced-search-criteria-title">
-                        <div class="is-flex">
-                            <h1>{{ $i18n.get('info_search_criteria') }}</h1>
-                            <div
-                                    :style="{'margin-bottom': 'auto'}"
-                                    class="field is-grouped">
-                                <a
-                                        class="back-link"
-                                        @click="openAdvancedSearch = false">
-                                    {{ $i18n.get('back') }}
-                                </a>
-                            </div>
-                        </div>
-                        <hr>
-                    </div>
-                </div>
-
-                <advanced-search
-                        :is-repository-level="isRepositoryLevel"
-                        :collection-id="collectionId"
-                        :advanced-search-results="advancedSearchResults"
-                        :open-form-advanced-search="openFormAdvancedSearch"
-                        :is-do-search="isDoSearch"
-                        :metadata="metadata"/>
-
-                <div class="advanced-searh-form-submit">
-                    <p
-                            v-if="advancedSearchResults"
-                            class="control">
-                        <button
-                                aria-controls="items-list-results"
-                                @click="advancedSearchResults = !advancedSearchResults"
-                                class="button is-outlined">{{ $i18n.get('edit_search') }}</button>
-                    </p>
-                    <p
-                            v-if="advancedSearchResults"
-                            class="control">
-                        <button
-                                aria-controls="items-list-results"
-                                @click="isDoSearch = !isDoSearch"
-                                class="button is-success">{{ $i18n.get('search') }}</button>
-                    </p>
-                </div>
-            </div>
-
             <!-- STATUS TABS, only on Admin -------- -->
             <div 
                     v-if="!isOnTheme && !openAdvancedSearch"
@@ -677,6 +679,34 @@
                     <!-- Admin view modes skeleton -->
                     <!-- <skeleton-items-list v-if="!isOnTheme"/>          -->
                 </div>  
+                
+               <!-- Alert if custom metada is being used for sorting -->
+                <div 
+                        v-if="hasAnOpenAlert &&
+                            isSortingByCustomMetadata &&
+                            !showLoading &&
+                            ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
+                        class="metadata-alert">
+                    <p class="text">
+                        {{ 
+                            totalItems > 0 ? 
+                                $i18n.getWithVariables('info_sorting_by_metadata_value_%s', [orderByName]) :
+                                $i18n.getWithVariables('info_sorting_by_metadata_value_%s_empty_list', [orderByName])
+                        }}
+                    </p> 
+                    <div>
+                        <button
+                                @click="openMetatadaSortingWarningDialog({ offerCheckbox: false })"
+                                class="button">
+                            {{ $i18n.get('label_view_more') }}
+                        </button>
+                        <button 
+                                @click="hasAnOpenAlert = false"
+                                class="button icon">
+                            <i class="tainacan-icon tainacan-icon-close"/>
+                        </button>
+                    </div>
+                </div>
                 
                 <!-- Admin View Modes-->
                 <items-list
@@ -858,7 +888,9 @@
                 searchControlHeight: 0,
                 sortingMetadata: [],
                 isFilterModalActive: false,
-                customFilters: []
+                customFilters: [],
+                hasAnOpenModal: false,
+                hasAnOpenAlert: true
             }
         },
         props: {
@@ -951,6 +983,10 @@
                 } else {
                     this.$eventBusSearch.clearAllFilters();
                 }
+            },
+            orderByName() {
+                if (this.isSortingByCustomMetadata)
+                    this.hasAnOpenAlert = true;
             }
         },
         methods: {
@@ -1337,14 +1373,18 @@
                         this.isLoadingMetadata = false;
                     });
             },
-            showItemsHiddingDueSorting() {
+            showItemsHiddingDueSortingDialog() {
 
                 if (this.isSortingByCustomMetadata &&
                     this.$userPrefs.get('neverShowItemsHiddenDueSortingDialog') != true) {     
 
                     this.hasAnOpenModal = true;
 
-                    this.$modal.open({
+                    this.openMetatadaSortingWarningDialog({ offerCheckbox: true });
+                }
+            },
+            openMetatadaSortingWarningDialog({ offerCheckbox }) {
+                this.$modal.open({
                         parent: this,
                         component: CustomDialog,
                         props: {
@@ -1355,11 +1395,10 @@
                                 this.hasAnOpenModal = false;
                             },
                             hideCancel: true,
-                            showNeverShowAgainOption: tainacan_plugin.user_caps != undefined && tainacan_plugin.user_caps.length != undefined && tainacan_plugin.user_caps.length > 0,
+                            showNeverShowAgainOption: offerCheckbox && tainacan_plugin.user_caps != undefined && tainacan_plugin.user_caps.length != undefined && tainacan_plugin.user_caps.length > 0,
                             messageKeyForUserPrefs: 'ItemsHiddenDueSorting'
                         }
                     });
-                }
             },
             adjustSearchControlHeight: _.debounce( function() {
                 this.$nextTick(() => {

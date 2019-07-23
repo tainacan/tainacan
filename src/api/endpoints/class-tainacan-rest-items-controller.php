@@ -80,7 +80,7 @@ class REST_Items_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'delete_item_permissions_check'),
 					'args'                => array(
 						'permanently' => array(
-							'description' => __('To delete permanently, you can pass \'permanently\' as true. By default this will only trash collection'),
+							'description' => __('To delete permanently, you can pass \'permanently\' as true. By default this will only trash collection', 'tainacan'),
 							'default'     => 'false'
 						),
 					)
@@ -95,6 +95,27 @@ class REST_Items_Controller extends REST_Controller {
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
 					'args'                => $this->get_collection_params(),
+				),
+			)
+		);
+		register_rest_route(
+			$this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<item_id>[\d]+)/duplicate',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array($this, 'duplicate_item'),
+					'permission_callback' => array($this, 'create_item_permissions_check'),
+					'args'                => array(
+						'copies' => array(
+							'description' => __('Number of copies to be created', 'tainacan'),
+							'default'     => 1,
+							'type'        => 'integer'
+						),
+						'status' => array(
+							'description' => __('Try to assign the informed status to the duplicates if they validate. By default it will save them as drafts.', 'tainacan'),
+							'type'        => 'string'
+						),
+					)
 				),
 			)
 		);
@@ -626,6 +647,104 @@ class REST_Items_Controller extends REST_Controller {
 		}
 
 		return false;
+	}
+	
+	/**
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public function duplicate_item( $request ) {
+		$item_id = $request['item_id'];
+
+		$item = $this->items_repository->fetch($item_id);
+		
+		$defaults = [
+			'copies' => 1,
+			'status' => 'draft'
+		];
+		
+		$body = json_decode($request->get_body(), true);
+		
+		if (!is_array($body)) {
+			$body = [];
+		}
+		
+		$args = array_merge($defaults, $body);
+		
+		if ($item) {
+			
+			$response = [
+				'items' => []
+			];
+			
+			for ($i=1; $i<=$args['copies']; $i++) {
+				
+				$new_item = new Entities\Item();
+				$items_repo = Repositories\Items::get_instance();
+				
+				$new_item->set_status( 'draft' );
+				
+				$new_item->set_title( $item->get_title() );
+				$new_item->set_description( $item->get_description() );
+				$new_item->set_collection_id( $item->get_collection_id() );
+				
+				if ( $new_item->validate() ) {
+					
+					$new_item = $items_repo->insert($new_item);
+					
+					$metadata = $item->get_metadata();
+					
+					$errors = [];
+					
+					foreach ($metadata as $item_metadatum) {
+						
+						$new_item_metadatum = new Entities\Item_Metadata_Entity( $new_item, $item_metadatum->get_metadatum() );
+						$new_item_metadatum->set_value( $item_metadatum->get_value() );
+						
+						if ( $new_item_metadatum->validate() ) {
+							Repositories\Item_Metadata::get_instance()->insert( $new_item_metadatum );
+						} else {
+							$errors[] = $new_item_metadatum->get_errors();
+						}
+						
+					}
+					
+					if ($args['status'] != 'draft') {
+						
+						$new_item->set_status( $args['status'] );
+						
+						if ( $new_item->validate() ) { 
+							$new_item = $items_repo->insert($new_item);
+						} else {
+							$new_item->set_status( 'draft' );
+						}
+						
+					}
+					
+					$response['items'][] = $this->prepare_item_for_response($new_item, $request);
+					
+					do_action('tainacan-api-item-duplicated', $item, $new_item);
+					
+				} else {
+					return new \WP_REST_Response([
+						'error_message' => __('Error duplicating item', 'tainacan'),
+						'errors'        => $new_item->get_errors(),
+						'item'          => $this->prepare_item_for_response($item, $request)
+					], 400);
+				}
+				
+			}
+			
+			return new \WP_REST_Response($response, 201);
+			
+		}
+
+		return new \WP_REST_Response([
+			'error_message' => __('An item with this ID was not found', 'tainacan' ),
+			'item_id'       => $item_id
+		], 400);
+
 	}
 
 

@@ -476,6 +476,229 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
         //$this->assertEquals(403, $response->get_status());
         $this->assertEquals(201, $response->get_status());
     }
+	
+	/**
+	 * @group duplicate
+	 */
+	function test_duplicate() {
+		
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Agile',
+				'description' => 'Agile methods',
+                'status'      => 'publish'
+			),
+			true
+		);
+
+		
+		$public_meta = $this->tainacan_entity_factory->create_entity(
+		    'metadatum',
+		    array(
+			    'name'   => 'public_meta',
+			    'collection' => $collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+				'status' => 'publish'
+		    ),
+		    true
+		);
+		
+		$multiple_meta = $this->tainacan_entity_factory->create_entity(
+		    'metadatum',
+		    array(
+			    'name'   => 'public_meta',
+			    'collection' => $collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+				'multiple' => 'yes',
+				'status' => 'publish'
+		    ),
+		    true
+		);
+		
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'         => 'taxonomy_public',
+				'description'  => 'taxonomy_public',
+				'status' => 'publish'
+			),
+			true
+		);
+		
+		$taxonomy2 = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'         => 'taxonomy_public2',
+				'description'  => 'taxonomy_public2',
+				'status' => 'publish'
+			),
+			true
+		);
+		
+		$tax_meta = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'   => 'metadata-public',
+				'status' => 'publish',
+				'collection' => $collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
+				'metadata_type_options' => [
+					'allow_new_terms' => 'yes',
+					'taxonomy_id' => $taxonomy->get_id()
+				],
+				'multiple' => 'yes'
+			),
+			true
+		);
+		
+		$tax_meta_single = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'   => 'metadata-public-single',
+				'status' => 'publish',
+				'collection' => $collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
+				'metadata_type_options' => [
+					'allow_new_terms' => 'yes',
+					'taxonomy_id' => $taxonomy2->get_id()
+				],
+				'multiple' => 'no'
+			),
+			true
+		);
+		
+		$item1 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'Lean Startup',
+				'description' => 'Um processo ágil de criação de novos negócios.',
+				'collection'  => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$itemMetaRepo = \Tainacan\Repositories\Item_Metadata::get_instance();
+
+		$newMeta = new \Tainacan\Entities\Item_Metadata_Entity($item1, $public_meta);
+		$newMeta->set_value('test');
+		$newMeta->validate();
+		$itemMetaRepo->insert($newMeta);
+		
+		$newMeta = new \Tainacan\Entities\Item_Metadata_Entity($item1, $multiple_meta);
+		$newMeta->set_value(['test1', 'test2']);
+		$newMeta->validate();
+		$itemMetaRepo->insert($newMeta);
+		
+		$newMeta = new \Tainacan\Entities\Item_Metadata_Entity($item1, $tax_meta);
+		$newMeta->set_value(['blue', 'red']);
+		$newMeta->validate();
+		$itemMetaRepo->insert($newMeta);
+		
+		$newMeta = new \Tainacan\Entities\Item_Metadata_Entity($item1, $tax_meta_single);
+		$newMeta->set_value('test term');
+		$newMeta->validate();
+		$itemMetaRepo->insert($newMeta);
+		
+		$request  = new \WP_REST_Request('POST', $this->namespace . '/collection/' . $collection->get_id() . '/items/' . $item1->get_id() . '/duplicate');
+
+		$response = $this->server->dispatch($request);
+
+		$this->assertEquals(201, $response->get_status());
+
+		$data = $response->get_data();
+
+		$this->assertEquals('Lean Startup', $data['items'][0]['title']);
+		
+		$metadata_1 = $item1->get_metadata();
+		
+		$duplicated = \Tainacan\Repositories\Items::get_instance()->fetch( (int) $data['items'][0]['id'] );
+		
+		$metadata_2 = $duplicated->get_metadata();
+		
+		foreach( $metadata_1 as $k => $m ) {
+			$this->assertEquals( $m->get_value(), $metadata_2[$k]->get_value() );
+		}
+		
+		
+		$request  = new \WP_REST_Request('POST', $this->namespace . '/collection/' . $collection->get_id() . '/items/' . $item1->get_id() . '/duplicate');
+
+		$params = json_encode([
+			'copies' => 4,
+			'status' => 'publish'
+		]);
+		
+		$request->set_body($params);
+
+		$response = $this->server->dispatch($request);
+		
+		$data = $response->get_data();
+		
+		$this->assertEquals(4, count($data['items']));
+		
+		foreach ( $data['items'] as $created_item ) {
+			$duplicated = \Tainacan\Repositories\Items::get_instance()->fetch( (int) $created_item['id'] );
+			
+			$this->assertEquals('publish', $created_item['status']);
+			
+			$metadata_2 = $duplicated->get_metadata();
+			
+			foreach( $metadata_1 as $k => $m ) {
+				$this->assertEquals( $m->get_value(), $metadata_2[$k]->get_value() );
+			}
+		}
+		
+		
+		// Create a required metadata 
+		$required_meta = $this->tainacan_entity_factory->create_entity(
+		    'metadatum',
+		    array(
+			    'name'   => 'required_meta',
+			    'collection' => $collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+				'multiple' => 'no',
+				'required' => 'yes',
+				'status' => 'publish'
+		    ),
+		    true
+		);
+		
+		// $metas = \Tainacan\Repositories\Metadata::get_instance()->fetch_by_collection($collection, [], 'OBJECT');
+		// 
+		// foreach ($metas as $m) {
+		// 	var_dump($m->get_name());
+		// }
+		
+		$request  = new \WP_REST_Request('POST', $this->namespace . '/collection/' . $collection->get_id() . '/items/' . $item1->get_id() . '/duplicate');
+
+		$params = json_encode([
+			'copies' => 3,
+			'status' => 'publish'
+		]);
+		
+		$request->set_body($params);
+
+		$response = $this->server->dispatch($request);
+		
+		$data = $response->get_data();
+		
+		$this->assertEquals(3, count($data['items']));
+		
+		foreach ( $data['items'] as $created_item ) {
+			$duplicated = \Tainacan\Repositories\Items::get_instance()->fetch( (int) $created_item['id'] );
+			
+			// item does not validate because required meta is empty and stays draft
+			$this->assertEquals('draft', $duplicated->get_status());
+			$this->assertEquals('draft', $created_item['status']);
+
+		}
+		
+		
+		
+		
+	}
+	
 }
 
 ?>
