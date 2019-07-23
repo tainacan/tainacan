@@ -2,9 +2,9 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, ColorPicker, ColorPalette, BaseControl, Panel, PanelBody, PanelRow } = wp.components;
+const { RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, IconButton, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls } = wp.editor;
+const { InspectorControls } = wp.editor;
 
 import CarouselItemsModal from './carousel-items-modal.js';
 import tainacan from '../../api-client/axios.js';
@@ -142,18 +142,18 @@ registerBlockType('tainacan/carousel-items-list', {
             return (
                 <li 
                     key={ item.id }
-                    className="item-list-item">      
+                    className="item-list-item">   
+                    { loadStrategy == 'selection' ?
+                        <IconButton
+                            onClick={ () => removeItemOfId(item.id) }
+                            icon="no-alt"
+                            label={__('Remove', 'tainacan')}/> 
+                        :null
+                    }   
                     <a 
                         id={ isNaN(item.id) ? item.id : 'item-id-' + item.id }
                         href={ item.url } 
                         target="_blank">
-                        { loadStrategy == 'selection' ?
-                            <IconButton
-                                onClick={ () => removeItemOfId(item.id) }
-                                icon="no-alt"
-                                label={__('Remove', 'tainacan')}/> 
-                            :null
-                        }
                         <img
                             src={ 
                                 item.thumbnail && item.thumbnail['tainacan-medium'][0] && item.thumbnail['tainacan-medium'][0] 
@@ -186,6 +186,8 @@ registerBlockType('tainacan/carousel-items-list', {
 
             itemsRequestSource = axios.CancelToken.source();
 
+            items = [];
+
             if (loadStrategy == 'selection') {
                 let endpoint = '/collection/' + collectionId + '/items?'+ qs.stringify({ postin: selectedItems }) + '&fetch_only=title,url,thumbnail';
 
@@ -203,7 +205,6 @@ registerBlockType('tainacan/carousel-items-list', {
                         });
                     });
             } else {
-                items = [];
 
                 let endpoint = '/collection' + searchURL.split('#')[1].split('/collections')[1];
                 let query = endpoint.split('?')[1];
@@ -286,12 +287,20 @@ registerBlockType('tainacan/carousel-items-list', {
 
         function removeItemOfId(itemId) {
 
-            let existingItemIndex = selectedItems.findIndex((existingItem) => existingItem.id == itemId);
-
+            let existingItemIndex = items.findIndex((existingItem) => existingItem.key == itemId);
             if (existingItemIndex >= 0)
-                selectedItems.splice(existingItemIndex, 1);
+                items.splice(existingItemIndex, 1);
 
-            setContent();
+            let existingSelectedItemIndex = selectedItems.findIndex((existingSelectedItem) => existingSelectedItem == itemId);
+            if (existingSelectedItemIndex >= 0)
+                selectedItems.splice(existingSelectedItemIndex, 1);
+        
+            setAttributes({ 
+                selectedItems: selectedItems,
+                items: items,
+                content: <div></div> 
+            });
+
         }
 
         // Executed only on the first load of page
@@ -453,7 +462,7 @@ registerBlockType('tainacan/carousel-items-list', {
                                     setContent();
                                 }}
                                 onApplySelectedItems={ (aSelectionOfItems) => {
-                                    selectedItems = aSelectionOfItems;
+                                    selectedItems = selectedItems.concat(aSelectionOfItems); 
                                     loadStrategy = 'selection';
                                     setAttributes({
                                         selectedItems: selectedItems,
@@ -558,7 +567,7 @@ registerBlockType('tainacan/carousel-items-list', {
                                     width="24px">
                                 <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
                             </svg>
-                            {__('List items on a Carousel', 'tainacan')}
+                            {__('List items on a Carousel, using search or item selection.', 'tainacan')}
                         </p>
                         <Button
                             isPrimary
@@ -575,45 +584,50 @@ registerBlockType('tainacan/carousel-items-list', {
                         <Spinner />
                     </div> :
                     <div>
-                        { isSelected ? 
+                        { isSelected && items.length ? 
                             <div class="preview-warning">{__('Warning: this is just a demonstration. To see the carousel in action, either preview or publish your post.', 'tainacan')}</div>
                             : null
                         }
-                        <button 
-                                class="swiper-button-prev" 
-                                slot="button-prev"
-                                style={{ cursor: 'not-allowed' }}>
-                            <svg
-                                    width="42"
-                                    height="42"
-                                    viewBox="0 0 24 24">
-                                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-                                <path
-                                        d="M0 0h24v24H0z"
-                                        fill="none"/>                         
-                            </svg>
-                        </button>
-                        <ul 
-                            style={{ 
-                                marginTop: showCollectionHeader ? '1.5rem' : '0px'
-                            }}
-                            className={'items-list-edit'}>
-                            { items }
-                        </ul>
-                        <button 
-                                class="swiper-button-next" 
-                                slot="button-next"
-                                style={{ cursor: 'not-allowed' }}>
-                            <svg
-                                    width="42"
-                                    height="42"
-                                    viewBox="0 0 24 24">
-                                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-                                <path
-                                        d="M0 0h24v24H0z"
-                                        fill="none"/>                        
-                            </svg>
-                        </button>
+                        {  items.length ? (
+                            <div>
+                                <button 
+                                        class="swiper-button-prev" 
+                                        slot="button-prev"
+                                        style={{ cursor: 'not-allowed' }}>
+                                    <svg
+                                            width="42"
+                                            height="42"
+                                            viewBox="0 0 24 24">
+                                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                                        <path
+                                                d="M0 0h24v24H0z"
+                                                fill="none"/>                         
+                                    </svg>
+                                </button>
+                                <ul 
+                                    style={{ 
+                                        marginTop: showCollectionHeader ? '1.5rem' : '0px'
+                                    }}
+                                    className={'items-list-edit'}>
+                                    { items }
+                                </ul>
+                                <button 
+                                        class="swiper-button-next" 
+                                        slot="button-next"
+                                        style={{ cursor: 'not-allowed' }}>
+                                    <svg
+                                            width="42"
+                                            height="42"
+                                            viewBox="0 0 24 24">
+                                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                                        <path
+                                                d="M0 0h24v24H0z"
+                                                fill="none"/>                        
+                                    </svg>
+                                </button>
+                            </div>
+                        ):null
+                        }
                     </div>
                 }
             </div>
