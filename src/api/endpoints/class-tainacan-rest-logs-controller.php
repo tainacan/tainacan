@@ -228,7 +228,7 @@ class REST_Logs_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
-		return $this->logs_repository->can_read($this->log);
+		return current_user_can('read');
 	}
 
 	/**
