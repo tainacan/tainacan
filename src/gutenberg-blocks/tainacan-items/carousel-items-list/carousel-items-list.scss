@@ -172,7 +172,7 @@
     // Next and previous buttons
     .swiper-button-prev, .swiper-button-next {
         top: initial;
-        bottom: calc(50% - 10px);
+        bottom: calc(50% + 10px);
         background: none;
         border: none;
         width: 42px;
@@ -186,6 +186,27 @@
     }
 
     // Carousel placeholder on editor side  ----------------------------------------------------
+    .items-list-edit-container,
+    .tainacan-carousel {
+        position: relative;
+
+        &.has-arrows-none .swiper-button-prev,
+        &.has-arrows-none .swiper-button-next {
+            display: none;
+        }
+        &.has-arrows-left .swiper-button-next {
+            left: 10px;
+            right: auto;
+            bottom: calc(50% + 24px);
+        }
+        &.has-arrows-right .swiper-button-prev {
+            right: 10px;
+            left: auto;
+        }
+        &.has-arrows-right .swiper-button-next {
+            bottom: calc(50% + 24px);
+        }
+    }
     ul.items-list-edit {
         display: flex;
         align-items: flex-start;

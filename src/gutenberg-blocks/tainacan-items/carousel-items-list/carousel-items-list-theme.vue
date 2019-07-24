@@ -48,7 +48,7 @@
         </div>
         <div v-if="!isLoading">
             <div  
-                    class="tainacan-carousel"
+                    :class="'tainacan-carousel has-arrows-' + arrowsPosition"
                     v-if="items.length > 0">
                 <swiper 
                         role="list"
@@ -178,6 +178,7 @@ export default {
         selectedItems: Array,
         loadStrategy: String,
         maxItemsNumber: Number,
+        arrowsPosition: String,
         autoPlay: false,
         autoPlaySpeed: Number,
         loopSlides: Boolean,

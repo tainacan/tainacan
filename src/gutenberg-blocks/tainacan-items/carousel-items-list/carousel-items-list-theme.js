@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
             selectedItems: [],
             loadStrategy: 'search',
             maxItemsNumber: 12,
+            arrowsPosition: 'around',
             autoPlay: false,
             autoPlaySpeed: 3,
             loopSlides: false,
@@ -32,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     selectedItems: this.selectedItems,
                     loadStrategy: this.loadStrategy,
                     maxItemsNumber: this.maxItemsNumber,
+                    arrowsPosition: this.arrowsPosition,
                     autoPlay: this.autoPlay,
                     autoPlaySpeed: this.autoPlaySpeed,
                     loopSlides: this.loopSlides,
@@ -53,6 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
             this.loadStrategy = this.$el.attributes['load-strategy'] != undefined ? this.$el.attributes['load-strategy'].value : undefined;
             this.collectionId = this.$el.attributes['collection-id'] != undefined ? this.$el.attributes['collection-id'].value : undefined;
             this.maxItemsNumber = this.$el.attributes['max-items-number'] != undefined ? this.$el.attributes['max-items-number'].value : undefined;
+            this.arrowsPosition = this.$el.attributes['arrows-position'] != undefined ? this.$el.attributes['arrows-position'].value : undefined;
             this.autoPlay = this.$el.attributes['auto-play'] != undefined ? this.$el.attributes['auto-play'].value == 'true' : false;
             this.autoPlaySpeed = this.$el.attributes['auto-play-speed'] != undefined ? this.$el.attributes['auto-play-speed'].value : undefined;
             this.loopSlides = this.$el.attributes['loop-slides'] != undefined ? this.$el.attributes['loop-slides'].value == 'true' : false;

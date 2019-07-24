@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, IconButton, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
+const { RangeControl, Spinner, Button, ToggleControl, SelectControl, Placeholder, IconButton, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
 
 const { InspectorControls } = wp.editor;
 
@@ -71,6 +71,10 @@ registerBlockType('tainacan/carousel-items-list', {
             type: String,
             value: 'search'
         },
+        arrowsPosition: {
+            type: String,
+            value: 'search'
+        },
         autoPlay: {
             type: Boolean,
             value: false
@@ -128,6 +132,7 @@ registerBlockType('tainacan/carousel-items-list', {
             selectedItems,
             isLoading,
             loadStrategy,
+            arrowsPosition,
             autoPlay,
             autoPlaySpeed,
             loopSlides,
@@ -429,6 +434,19 @@ registerBlockType('tainacan/carousel-items-list', {
                                         />
                                     : null
                                 }
+                                <SelectControl
+                                    label={__('Arrows', 'tainacan')}
+                                    value={ arrowsPosition }
+                                    options={ [
+                                        { label: __('Around', 'tainacan'), value: 'around' },
+                                        { label: __('Left', 'tainacan'), value: 'left' },
+                                        { label: __('Right', 'tainacan'), value: 'right' },
+                                        { label: __('None', 'tainacan'), value: 'none' },
+                                    ] }
+                                    onChange={ ( aPosition ) => { 
+                                        arrowsPosition = aPosition;
+                                        setAttributes({ arrowsPosition: arrowsPosition }); 
+                                    }}/>
                             </div>                           
                         </PanelBody>
 
@@ -628,7 +646,8 @@ registerBlockType('tainacan/carousel-items-list', {
                             : null
                         }
                         {  items.length ? (
-                            <div style={{ position: 'relative' }}>
+                            <div
+                                    className={'items-list-edit-container has-arrows-' + arrowsPosition}>
                                 <button 
                                         class="swiper-button-prev" 
                                         slot="button-prev"
@@ -679,6 +698,7 @@ registerBlockType('tainacan/carousel-items-list', {
             collectionId,  
             searchURL,
             selectedItems,
+            arrowsPosition,
             loadStrategy,
             maxItemsNumber,
             autoPlay,
@@ -694,6 +714,7 @@ registerBlockType('tainacan/carousel-items-list', {
                     className={ className }
                     search-url={ searchURL }
                     selected-items={ JSON.stringify(selectedItems) }
+                    arrows-position={ arrowsPosition }
                     load-strategy={ loadStrategy }
                     collection-id={ collectionId }  
                     auto-play={ '' + autoPlay }
