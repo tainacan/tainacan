@@ -45,7 +45,8 @@ export default class CarouselItemsModal extends React.Component {
          
         if (this.props.existingCollectionId != null && this.props.existingCollectionId != undefined) {
             this.fetchCollection(this.props.existingCollectionId);
-            this.setState({ searchURL: this.props.existingSearchURL ? this.props.existingSearchURL : tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#/collections/'+ this.props.existingCollectionId +  (this.props.loadStrategy == 'search' ? '/items/?iframemode=true&readmode=true' : '/items/?iframemode=true') });
+            this.setState({ 
+                searchURL: this.props.existingSearchURL ? this.props.existingSearchURL : tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#/collections/'+ this.props.existingCollectionId +  (this.props.loadStrategy == 'search' ? '/items/?iframemode=true&readmode=true' : '/items/?iframemode=true') });
         } else {
             this.setState({ collectionPage: 1 });
             this.fetchModalCollections();

@@ -278,7 +278,7 @@ registerBlockType('tainacan/carousel-items-list', {
             }
         }
 
-        function openDynamicItemsModal(aLoadStrategy) {
+        function openCarouseltemsModal(aLoadStrategy) {
             loadStrategy = aLoadStrategy;
             isModalOpen = true;
             setAttributes( { 
@@ -447,7 +447,7 @@ registerBlockType('tainacan/carousel-items-list', {
                             <CarouselItemsModal
                                 loadStrategy={ loadStrategy }
                                 existingCollectionId={ collectionId } 
-                                existingSearchURL={ searchURL } 
+                                existingSearchURL={ loadStrategy == 'search' ? searchURL : false } 
                                 onSelectCollection={ (selectedCollectionId) => {
                                     collectionId = selectedCollectionId;
                                     setAttributes({ 
@@ -493,14 +493,14 @@ registerBlockType('tainacan/carousel-items-list', {
                                 <Button
                                     isPrimary
                                     type="submit"
-                                    onClick={ () => openDynamicItemsModal('selection') }>
+                                    onClick={ () => openCarouseltemsModal('selection') }>
                                     {__('Select Items', 'tainacan')}
                                 </Button> 
                                 <p style={{ margin: '0 12px' }}>{__('or', 'tainacan')}</p>
                                 <Button
                                     isPrimary
                                     type="submit"
-                                    onClick={ () => openDynamicItemsModal('search') }>
+                                    onClick={ () => openCarouseltemsModal('search') }>
                                     {__('Configure search', 'tainacan')}
                                 </Button>    
                             </div>
@@ -522,7 +522,7 @@ registerBlockType('tainacan/carousel-items-list', {
                             <a
                                     href={ collection.url ? collection.url : '' }
                                     target="_blank"
-                                    class="dynamic-items-collection-header">
+                                    class="carousel-items-collection-header">
                                 <div
                                         style={{
                                             backgroundColor: collectionBackgroundColor ? collectionBackgroundColor : '', 
@@ -582,14 +582,14 @@ registerBlockType('tainacan/carousel-items-list', {
                         <Button
                             isPrimary
                             type="submit"
-                            onClick={ () => openDynamicItemsModal('selection') }>
+                            onClick={ () => openCarouseltemsModal('selection') }>
                             {__('Select Items', 'tainacan')}
                         </Button> 
                         <p style={{ margin: '0 12px' }}>{__('or', 'tainacan')}</p>
                         <Button
                             isPrimary
                             type="submit"
-                            onClick={ () => openDynamicItemsModal('search') }>
+                            onClick={ () => openCarouseltemsModal('search') }>
                             {__('Configure search', 'tainacan')}
                         </Button>    
                     </Placeholder>
@@ -606,7 +606,7 @@ registerBlockType('tainacan/carousel-items-list', {
                             : null
                         }
                         {  items.length ? (
-                            <div>
+                            <div style={{ position: 'relative' }}>
                                 <button 
                                         class="swiper-button-prev" 
                                         slot="button-prev"
@@ -667,11 +667,10 @@ registerBlockType('tainacan/carousel-items-list', {
             collectionBackgroundColor,
             collectionTextColor
         } = attributes;
-        
         return <div 
                     className={ className }
                     search-url={ searchURL }
-                    selected-items={ selectedItems }
+                    selected-items={ JSON.stringify(selectedItems) }
                     load-strategy={ loadStrategy }
                     collection-id={ collectionId }  
                     auto-play={ '' + autoPlay }
