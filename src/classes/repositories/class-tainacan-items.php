@@ -593,7 +593,7 @@ class Items extends Repository {
 	}
 	
 	/**
-	 * Check if $user can read the item
+	 * Check if $user can read the item based on the colletion
 	 *
 	 * @param Entities\Entity $entity
 	 * @param int|\WP_User|null $user default is null for the current user
@@ -607,6 +607,7 @@ class Items extends Repository {
 			throw new InvalidArgumentException('Items::can_read() expects an Item entity as the first parameter');
 		}
 		
+		// can read the item looking only to the item
 		$can_read = parent::can_read($entity, $user);
 		
 		if ( $can_read ) {
@@ -616,10 +617,13 @@ class Items extends Repository {
 			if ( $status_obj->public ) {
 				return $can_read;
 			}
-			
 		}
 		
-		if ( is_null( $user ) ) {
+		if ( is_null($user) ) {
+			$user = get_current_user_id();
+		}
+		
+		if ( ! $user ) {
 			return false;
 		} elseif ( is_object( $user ) ) {
 			$user = $user->ID;
