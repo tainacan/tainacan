@@ -197,14 +197,14 @@
         &.has-arrows-left .swiper-button-next {
             left: 10px;
             right: auto;
-            bottom: calc(50% + 24px);
+            bottom: calc(50% + 36px);
         }
         &.has-arrows-right .swiper-button-prev {
             right: 10px;
             left: auto;
         }
         &.has-arrows-right .swiper-button-next {
-            bottom: calc(50% + 24px);
+            bottom: calc(50% + 36px);
         }
     }
     ul.items-list-edit {
