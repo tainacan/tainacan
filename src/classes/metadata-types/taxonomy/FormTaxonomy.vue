@@ -97,43 +97,64 @@
         created(){
             this.fetchTaxonomies();
 
-            if ( this.value ) {
-                this.taxonomy_id = this.value.taxonomy_id;
-            }
-
-            if( this.value ) {
-                this.allow_new_terms = ( this.value.allow_new_terms ) ? this.value.allow_new_terms : 'no';
-            }
-
             this.single_types['tainacan-taxonomy-radio'] = 'Radio';
             this.multiple_types['tainacan-taxonomy-tag-input'] = 'Tag Input';
             this.multiple_types['tainacan-taxonomy-checkbox'] = 'Checkbox';
 
-            this.isReady = true;
-        },
-        watch: {
-            input_type(val, oldValue) {
-                if (val != oldValue) {
-                    this.emitValues();
-                }
-            }
-        },
-        computed: {
-            listInputType(){
-                if( this.metadatum && this.metadatum.multiple === 'no' ){
+            if (this.value) {
+
+                this.taxonomy_id = this.value.taxonomy_id;
+                this.allow_new_terms = ( this.value.allow_new_terms ) ? this.value.allow_new_terms : 'no';
+                
+                if (this.metadatum && this.metadatum.multiple === 'no') {
                     let types = Object.keys( this.single_types );
                     let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
                     this.setInputType( ( hasValue ) ? this.value.input_type : 'tainacan-taxonomy-radio' );
-                    return true;
                 } else {
                     let types = Object.keys( this.multiple_types );
                     let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
                     this.setInputType( ( hasValue ) ? this.value.input_type : 'tainacan-taxonomy-checkbox' );
+                }
+            }
+
+            this.isReady = true;
+        },
+        watch: {
+            input_type:{
+                handler(val, oldValue) {
+                    if (val != oldValue) {
+                        this.emitValues();
+                    }
+                }
+            }
+        },
+        computed: {
+            listInputType() {
+                if ( this.metadatum && this.metadatum.multiple === 'no' ){
+                    let types = Object.keys( this.single_types );
+                    let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
+                    
+                    if (hasValue)
+                        this.setInputType(this.value.input_type)
+                    else {
+                        this.setInputType('tainacan-taxonomy-radio');
+                        this.emitValues();
+                    }
+
+                    return true;
+                } else {
+                    let types = Object.keys( this.multiple_types );
+                    let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
+                    if (hasValue)
+                        this.setInputType(this.value.input_type)
+                    else
+                        this.setInputType('tainacan-taxonomy-checkbox');
+                        
                     return false;
                 }
             },
             setError(){
-                if( this.errors && this.errors.taxonomy_id !== '' ){
+                if (this.errors && this.errors.taxonomy_id !== '') {
                     this.setErrorsAttributes( 'is-danger', this.errors.taxonomy_id );
                 } else {
                     this.setErrorsAttributes( '', '' );

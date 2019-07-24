@@ -148,9 +148,9 @@
             .button.is-success {
                 border: none;
             }
-            .button:not(.is-success) {
+            .button:not(.is-success):not(.is-secondary) {
                 background-color: white;
-                color: $blue5;
+                color: $secondary;
                 border: 1px solid $gray4;
             }
         }

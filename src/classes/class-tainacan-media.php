@@ -32,12 +32,18 @@ class Media {
 	 */
 	public function insert_attachment_from_url($url, $post_id = null) {
 		$filename = $this->save_remote_file($url);
+		
+		if( !file_exists($filename) ) {
+			return false;
+		}
+		
+		$file = fopen($filename,'r');
+		
+		if (false === $file) {
+			return false;
+		}
 
-        if( !file_exists($filename) ) {
-            return false;
-        }
-
-		return $this->insert_attachment_from_blob(fopen($filename,'r'), basename($url), $post_id);
+		return $this->insert_attachment_from_blob($file, basename($url), $post_id);
 		
 	}
 
@@ -125,11 +131,11 @@ class Media {
 		}
 
 		if( @filesize($upload['file']) == 0 && is_resource($blob) ){
-            $file_wordpress_stream = fopen( $upload['file'], 'r+');
-            stream_copy_to_stream($blob, $file_wordpress_stream);
-
-            if( file_exists(self::$file_name) ) unlink(self::$file_name);
-        }
+			$file_wordpress_stream = fopen( $upload['file'], 'r+');
+			stream_copy_to_stream($blob, $file_wordpress_stream);
+			
+			if( file_exists(self::$file_name) ) unlink(self::$file_name);
+		}
 
 		$file_path = $upload['file'];
 		$file_name = basename( $file_path );
@@ -161,6 +167,22 @@ class Media {
 	}
 	
 	/**
+	 * Add support to get mime type content even when mime_content_type function is not available
+	 * @param  string $filename The file name to check the mime type
+	 * @return string mime type           @see \mime_content_type()
+	 */
+	function get_mime_content_type( $filename ){
+		if (function_exists( 'mime_content_type' )) {
+			return mime_content_type($filename);
+		} else {
+			$finfo = finfo_open( FILEINFO_MIME_TYPE );
+			$mime_type = finfo_file( $finfo, $filename );
+			finfo_close( $finfo );
+			return $mime_type;
+		}
+	}
+	
+	/**
 	 * Extract an image from the first page of a pdf file
 	 * 
 	 * @param  string $filepath The pdf filepath in the server
@@ -176,7 +198,7 @@ class Media {
 			return null;
 		}
 		
-		if ( mime_content_type($filepath) != 'application/pdf') {
+		if ( $this->get_mime_content_type($filepath) != 'application/pdf') {
 			return null;
 		}
 

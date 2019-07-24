@@ -175,7 +175,10 @@ class Item_Metadata extends Repository {
 				// $success = wp_set_object_terms( $item_metadata->get_item()->get_id(), $new_terms, $taxonomy->get_db_identifier() );
 				
 				$insert = [];
-				foreach ( (array) $new_terms as $new_term ) {
+				if ( !is_array($new_terms) ) {
+					$new_terms = [ $new_terms ];
+				}
+				foreach ( $new_terms as $new_term ) {
 					if ( \is_object($new_term) && $new_term instanceof Entities\Term ) {
 						$exists = $new_term->WP_Term;
 					} else {
