@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
             autoPlay: false,
             autoPlaySpeed: 3,
             loopSlides: false,
+            hideTitle: true,
             showCollectionHeader: false,
             showCollectionLabel: false,
             collectionBackgroundColor: '#454647',
@@ -34,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     autoPlay: this.autoPlay,
                     autoPlaySpeed: this.autoPlaySpeed,
                     loopSlides: this.loopSlides,
+                    hideTitle: this.hideTitle,
                     showCollectionHeader: this.showCollectionHeader,
                     showCollectionLabel: this.showCollectionLabel,
                     collectionBackgroundColor: this.collectionBackgroundColor,
@@ -54,6 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
             this.autoPlay = this.$el.attributes['auto-play'] != undefined ? this.$el.attributes['auto-play'].value == 'true' : false;
             this.autoPlaySpeed = this.$el.attributes['auto-play-speed'] != undefined ? this.$el.attributes['auto-play-speed'].value : undefined;
             this.loopSlides = this.$el.attributes['loop-slides'] != undefined ? this.$el.attributes['loop-slides'].value == 'true' : false;
+            this.hideTitle = this.$el.attributes['hide-title'] != undefined ? this.$el.attributes['hide-title'].value == 'true' : false;
             this.showCollectionHeader = this.$el.attributes['show-collection-header'] != undefined ? this.$el.attributes['show-collection-header'].value == 'true' : false;
             this.showCollectionLabel = this.$el.attributes['show-collection-label'] != undefined ? this.$el.attributes['show-collection-label'].value == 'true' : false;
             this.collectionBackgroundColor = this.$el.attributes['collection-background-color'] != undefined ? this.$el.attributes['collection-background-color'].value : undefined;

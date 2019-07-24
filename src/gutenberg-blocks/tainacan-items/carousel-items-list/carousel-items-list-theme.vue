@@ -80,7 +80,7 @@
                                     `${tainacanBaseUrl}/admin/images/placeholder_square.png`)
                                 "
                                 :alt="item.title ? item.title : $root.__('Thumbnail', 'tainacan')">
-                            <span>{{ item.title ? item.title : '' }}</span>
+                            <span v-if="!hideTitle">{{ item.title ? item.title : '' }}</span>
                         </a>
                     </swiper-slide>
                 </swiper>
@@ -181,6 +181,7 @@ export default {
         autoPlay: false,
         autoPlaySpeed: Number,
         loopSlides: Boolean,
+        hideTitle: Boolean,
         showCollectionHeader: Boolean,
         showCollectionLabel: Boolean,
         collectionBackgroundColor: String,

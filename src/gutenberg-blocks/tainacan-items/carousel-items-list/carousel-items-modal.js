@@ -186,9 +186,9 @@ export default class CarouselItemsModal extends React.Component {
             // Items modal
         <Modal
                 className="wp-block-tainacan-modal dynamic-modal"
-                title={__('Configure the items search to be used on block', 'tainacan')}
+                title={ this.props.loadStrategy == 'selection' ? __('Select items to add on block', 'tainacan') : __('Configure the items search to be used on block', 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
-                contentLabel={__('Configure your items search to be shown on block', 'tainacan')}>
+                contentLabel={ this.props.loadStrategy == 'selection' ? __('Select items that will be added on block', 'tainacan') : __('Configure your items search that will load items on block', 'tainacan')}>
                 <iframe
                         id="itemsFrame"
                         src={ this.state.searchURL } />
@@ -310,7 +310,7 @@ export default class CarouselItemsModal extends React.Component {
                         isPrimary
                         disabled={ this.state.temporaryCollectionId == undefined || this.state.temporaryCollectionId == null || this.state.temporaryCollectionId == ''}
                         onClick={ () => { this.selectCollection(this.state.temporaryCollectionId);  } }>
-                        {__('Configure search', 'tainacan')}
+                        { this.props.loadStrategy == 'selection' ? __('Select items', 'tainacan') : __('Configure search', 'tainacan')}
                     </Button>
                 </div>
             </div>

@@ -1,5 +1,8 @@
 // COMMON TO MOST BLOCKS
 // Control and placeholder region ----------------------------------------------------
+[data-align='full'] .block-control {
+    width: calc(100% + 14px);
+}
 .block-control {
     display: flex;
     flex-direction: row;

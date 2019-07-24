@@ -1,3 +1,6 @@
+[data-align='full'] .block-control {
+  width: calc(100% + 14px); }
+
 .block-control {
   display: flex;
   flex-direction: row;
