@@ -18,9 +18,15 @@ class Cli_Move_Attachments {
 	 *
 	 * See (URL to docs) for more information
 	 *
+	 * ## OPTIONS 
+	 *
+	 * [--dry-run]
+	 * : Look for attachments but don't move them, just output a report 
 	 *  
 	 */
 	public function __invoke($args, $assoc_args) {
+		
+		$dry_run = isset($assoc_args['dry-run']);
 		
 		global $wpdb;
 		
@@ -38,27 +44,34 @@ class Cli_Move_Attachments {
 		]);
 		
 		$PF = \Tainacan\Private_Files::get_instance();
-
+		
+		$progress = \WP_CLI\Utils\make_progress_bar( 'Moving attachments', $attachments->found_posts );
+		$results = [];
+		
 		foreach ($attachments->posts as $att) {
+			
+			$progress->tick();
 			
 			if ( $item = $this->is_item_attachment($att) ) {
 				
 				$meta = wp_get_attachment_metadata($att->ID);
 				
-				// $meta['file'] = str_replace('2222/07', '2019/07', $meta['file']);
-				// 
-				// wp_update_attachment_metadata($att->ID, $meta);
-				
 				$current_url = get_post_meta($att->ID, '_wp_attached_file', true);
 				$filename = basename($current_url);
-				
 				$collection = $item->get_collection();
+				if ( ! $collection instanceof \Tainacan\Entities\Collection ) {
+					continue;
+				}
 				$col_id = $collection->get_id();
 				$item_id = $item->get_id();
 				
 				$new_url = $PF->get_items_uploads_folder() . '/' . $col_id . '/' . $item_id . '/' . $filename;
 				
+				if ($current_url == $new_url) {
+					continue;
+				}
 				$current_path = get_attached_file($att->ID);
+				$current_base_path = dirname($current_path);
 				
 				$upload_base = wp_get_upload_dir();
 				$upload_base = $upload_base['basedir'];
@@ -72,18 +85,49 @@ class Cli_Move_Attachments {
 				if ( ! $item_status->public ) {
 					$item_id = $PF->get_private_folder_prefix() . $item_id;
 				}
-				
 				$new_path_base = $upload_base . DIRECTORY_SEPARATOR . $PF->get_items_uploads_folder() . DIRECTORY_SEPARATOR . $col_id . '/' . $item_id;
 				
 				$new_path = $new_path_base . DIRECTORY_SEPARATOR . $filename;
 				
-				var_dump($current_url, $new_url, $current_path, $new_path);
+				if (!$dry_run) {
+					
+					if ( isset($meta['file']) ) {
+						$meta['file'] = \str_replace($current_url, $new_url, $meta['file']);
+					}
+					
+					if ( isset($meta['sizes']) && is_array($meta['sizes']) ) {
+						foreach ($meta['sizes'] as $size) {
+							rename($current_base_path . DIRECTORY_SEPARATOR . $size['file'], $new_path_base . DIRECTORY_SEPARATOR . $size['file']);
+						}
+					}
+					
+					if ( ! wp_mkdir_p( $new_path_base ) ) {
+						\WP_CLI::error( "Unable to create destinatino directory: " . $new_path_base );
+					}
+					
+					rename($current_path, $new_path);
+					$wpdb->query("UPDATE $wpdb->posts SET post_parent = {$item->get_id()}, guid = REPLACE(guid, '$current_url', '$new_url') WHERE ID = {$att->ID}");
+					wp_update_attachment_metadata($att->ID, $meta);
+					update_post_meta($att->ID, '_wp_attached_file', $new_url);
+					
+				}
 				
-				die;
+				$results[] = [
+					'Attachment' => $current_url, 
+					'Moved to' => $new_url
+				];
 				
 			}
 			
 		}
+		
+		$progress->finish();
+		
+		\WP_CLI\Utils\format_items( 'table', $results, ['Attachment', 'Moved to'] );
+		
+		$message = $dry_run ? ' to be moved' : ' moved';
+		
+		\WP_CLI::success( count($results) . $message );
 		
 	}
 	

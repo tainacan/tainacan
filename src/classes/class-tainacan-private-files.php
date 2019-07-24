@@ -225,11 +225,12 @@ class Private_Files {
 			if ($existing_file) {
 				
 				$item = \Tainacan\Repositories\Items::get_instance()->fetch( (int) $item_id, (int) $collection_id );
+				$mime_type = \Tainacan\Media::get_instance()->get_mime_content_type($existing_file);
 				
 				if ($item instanceof \Tainacan\Entities\Item && $item->can_read()) {
 					//header('Content-Description: File Transfer');
 					//header('Content-Type: application/octet-stream');
-					header("Content-type: " . mime_content_type($existing_file));
+					header("Content-type: " . $mime_type);
 					//header('Content-Disposition: attachment; filename="'.basename($file).'"');
 					// header('Expires: 0');
 					// header('Cache-Control: must-revalidate');
@@ -239,7 +240,6 @@ class Private_Files {
 					
 					die;
 				}
-				
 				
 			}
 			
