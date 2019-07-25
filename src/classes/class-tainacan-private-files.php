@@ -218,7 +218,7 @@ class Private_Files {
 			}
 			// private both 
 			$prefixed_both = str_replace( DIRECTORY_SEPARATOR . $collection_id . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR . $this->get_private_folder_prefix() . $collection_id . DIRECTORY_SEPARATOR, $prefixed_file);
-			if ( !$existing_file && \file_exists( $prefixed_collection ) ) {
+			if ( !$existing_file && \file_exists( $prefixed_both ) ) {
 				$existing_file = $prefixed_both;
 			}
 			
