@@ -153,17 +153,30 @@ registerBlockType('tainacan/search-bar', {
             setAttributes({
                 content: (
                     <div class="tainacan-search-container">
-                        <form action={ tainacan_plugin.site_url + '/' + collectionSlug + '/#/' } method='get'>
+                        <form
+                                id="taincan-search-bar-block"
+                                action={ tainacan_plugin.site_url + '/' + collectionSlug + '/#/' }
+                                method='get'>
                             <input
-                                label="Additional CSS Class"
+                                id="taincan-search-bar-block_input"
+                                label={ __('Search', 'taincan')}
                                 name='search'
                             />
                             <button type="submit">{ __('Search', 'tainacan') }</button>
                         </form>
                     </div>
-                )
-            });
-                
+                )            
+            });  
+            jQuery( document ).ready(function() {
+                jQuery('.editor-writing-flow').on('submit','form', (function(e) {
+                    e.preventDefault();
+                    var val = jQuery('#taincan-search-bar-block_input').val();
+                    if (val) {
+                        window.location.href = e.target.action + '?search=' + val;
+                    }
+                    return;
+                }));
+            });              
         }
 
         function fetchCollectionForHeader() {
