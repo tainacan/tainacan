@@ -450,7 +450,7 @@
                 return JSON.parse(JSON.stringify(this.getMetadata()));
             },
             attachmentsList() {
-                return this.getAttachments();
+                return this.getAttachments().filter((attachment) => attachment.id != this.item.document);
             },
             metadatum_mappers: {
                 get() {

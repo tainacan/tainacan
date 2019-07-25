@@ -738,7 +738,7 @@ export default {
             return JSON.parse(JSON.stringify(this.getMetadata()));
         },
         attachmentsList(){
-            return this.getAttachments();
+            return this.getAttachments().filter((attachment) => attachment.id != this.item.document && attachment.id != this.form.document);
         },
         lastUpdated() {
             return this.getLastUpdated();
@@ -996,7 +996,18 @@ export default {
             this.urlLink = '';
             this.form.document_type = 'empty';
             this.form.document = '';
-            this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type });
+            this.updateItemDocument({ 
+                item_id: this.itemId, 
+                document: this.form.document, 
+                document_type: this.form.document_type 
+            }).catch((errors) => {
+                    for (let error of errors.errors) {
+                        for (let metadatum of Object.keys(error)){
+                        eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                        }
+                    }
+                    this.formErrorMessage = errors.error_message;
+            });
         },
         deleteThumbnail() {
             this.updateThumbnail({itemId: this.itemId, thumbnailId: 0})
