@@ -106,6 +106,15 @@
                     v-if="selectedExposer != undefined"
                     class="exposer-item-container"
                     role="list">
+                <div class="exposed-metadata-control">
+                    <b-checkbox
+                            v-tooltip="{
+                                content: $i18n.get('info_expose_only_displayed_metadata'),
+                                autoHide: true,
+                                placement: 'bottom'
+                            }" 
+                            v-model="shouldRespectFetchOnly">{{ $i18n.get('label_expose_only_displayed_metadata') }}</b-checkbox>
+                </div>
                 <b-field 
                         :addons="false"
                         class="exposer-item"
@@ -258,7 +267,8 @@ export default {
             siteLinkCopied: false,
             selectedExposer: undefined,
             selectedExposerMappers: [],
-            maxItemsPerPage: tainacan_plugin.api_max_items_per_page
+            maxItemsPerPage: tainacan_plugin.api_max_items_per_page,
+            shouldRespectFetchOnly: false
         }
     },
     computed: {
@@ -267,11 +277,15 @@ export default {
         },
         exposerBaseURL() {
             let baseURL = this.collectionId != undefined ? '/collection/' + this.collectionId + '/items/' : '/items/';
-            let currentParams = this.$route.query;
+            let currentParams = JSON.parse(JSON.stringify(this.$route.query));
 
             // Removes Fetch Only
-            if (currentParams.fetch_only != undefined)
+            if (currentParams.fetch_only != undefined && this.shouldRespectFetchOnly == false)
                 delete currentParams.fetch_only;
+
+            // Removes Fetch Only Meta
+            if (currentParams.fetch_only_meta != undefined && this.shouldRespectFetchOnly == false)
+                delete currentParams.fetch_only_meta;
 
             // Removes View Mode
             if (currentParams.view_mode != undefined)
@@ -523,6 +537,15 @@ export default {
             //     max-height: 50vh;
             //     overflow: auto;
             // }
+        }
+    }
+
+    .exposed-metadata-control {
+        display: flex;
+        justify-content: flex-end;
+
+        .checkbox {
+            width: auto;
         }
     }
 

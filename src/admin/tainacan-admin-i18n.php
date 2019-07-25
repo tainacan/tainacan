@@ -421,7 +421,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_make_copies_of_item'		                 => __( 'Make copies of item', 'tainacan' ),
 	'label_number_of_copies'		                 => __( 'Number of copies', 'tainacan' ),
 	'label_return_to_list'		            		 => __( 'Return to list', 'tainacan' ),
-	
+	'label_expose_only_displayed_metadata'			 => __( 'Expose only displayed metadata', 'tainacan' ),
+
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),
@@ -628,14 +629,15 @@ return apply_filters( 'tainacan-admin-i18n', [
     'info_warning_process_cancelled'                 => __( 'Are you sure? This process will be cancelled', 'tainacan' ),
 	'info_empty'                                     => __( 'empty', 'tainacan' ),
 	'info_url_copied'	         	    	    	 => __( 'URL link copied', 'tainacan' ),
-	'info_other_item_listing_options'				 => __('Other items listing options: ', 'tainacan'),
-	'info_send_email'				 				 => __('The exporter may take a while. Check this option to receive an e-mail when the process is done. You can also check the process status visiting the', 'tainacan'),
-	'info_tainacan_api'				 				 => __('Tainacan API on JSON format.', 'tainacan'),
-	'info_items_hidden_due_sorting'					 => __('When ordering by metadata value, items that have no value for the chosen metadata will not be listed. This list may have less elements than the total existing for current search criteria.', 'tainacan'),
-	'info_sorting_by_metadata_value_%s'				 => __('Showing only items that have value for metadata %s.', 'tainacan'),
-	'info_sorting_by_metadata_value_%s_empty_list'   => __('No item found, but only items with values for metadata %s are shown. Try sorting by other metatada.', 'tainacan'),
-	'info_await_while_item_copy'  			 		 => __('Please wait while copy is being created...', 'tainacan'),
-	'info_await_while_item_copies'  			 	 => __('Please wait while copies are being created. This may take a while...', 'tainacan'),
+	'info_other_item_listing_options'				 => __( 'Other items listing options: ', 'tainacan'),
+	'info_send_email'				 				 => __( 'The exporter may take a while. Check this option to receive an e-mail when the process is done. You can also check the process status visiting the', 'tainacan'),
+	'info_tainacan_api'				 				 => __( 'Tainacan API on JSON format.', 'tainacan'),
+	'info_items_hidden_due_sorting'					 => __( 'When ordering by metadata value, items that have no value for the chosen metadata will not be listed. This list may have less elements than the total existing for current search criteria.', 'tainacan'),
+	'info_sorting_by_metadata_value_%s'				 => __( 'Showing only items that have value for metadata %s.', 'tainacan'),
+	'info_sorting_by_metadata_value_%s_empty_list'   => __( 'No item found, but only items with values for metadata %s are shown. Try sorting by other metatada.', 'tainacan'),
+	'info_await_while_item_copy'  			 		 => __( 'Please wait while copy is being created...', 'tainacan'),
+	'info_await_while_item_copies'  			 	 => __( 'Please wait while copies are being created. This may take a while...', 'tainacan'),
+	'info_expose_only_displayed_metadata'			 => __( 'By checking this option, only metatada that are displayed on the current list will be exposed', 'tainacan' ),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),
