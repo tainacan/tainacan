@@ -246,10 +246,13 @@ class Logs extends Repository {
 				// was added a normal attachment
 
 				// get all attachments except the new
-				$old_attachments = $tainacan_post->get_attachments( $post_ID );
+				$old_attachments_objects = $tainacan_post->get_attachments( $post_ID );
 
 				// get all attachments
-				$new_attachments = $tainacan_post->get_attachments();
+				$new_attachments_objects = $tainacan_post->get_attachments();
+				
+				$old_attachments = $this->prepare_attachments($old_attachments_objects);
+				$new_attachments = $this->prepare_attachments($new_attachments_objects);
 
 				$array_diff_with_index = array_map( 'unserialize',
 					array_diff_assoc( array_map( 'serialize', $new_attachments ), array_map( 'serialize', $old_attachments ) ) );
@@ -265,6 +268,24 @@ class Logs extends Repository {
 			}
 		}
 
+	}
+	
+	private function prepare_attachments($attachments) {
+		$attachments_prepared = [];
+		if ( is_array($attachments) ) {
+			foreach ( $attachments as $attachment ) {
+				$prepared = [
+					'id'          => $attachment->ID,
+					'title'       => $attachment->post_title,
+					'description' => $attachment->post_content,
+					'mime_type'   => $attachment->post_mime_type,
+					'url'         => $attachment->guid,
+				];
+
+				array_push( $attachments_prepared, $prepared );
+			}
+		}
+		return $attachments_prepared;
 	}
 
 	/**

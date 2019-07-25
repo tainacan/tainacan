@@ -192,9 +192,8 @@ export default {
 		 */
 		initFrame: function() {
 
-			// We don't want document file to be listed as an attachment of item
 			wp.media.view.settings.post = {
-                id: null
+                id: this.params.relatedPostId
 			}
 
 			this.frame = wp.media({

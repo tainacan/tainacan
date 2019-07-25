@@ -80,7 +80,7 @@ class CSV extends Exporter {
 		$attachments = $item->get_attachments();
 		
 		$attachments_urls = array_map(function($a) {
-			if (isset($a['url'])) return $a['url'];
+			if (isset($a->guid)) return $a->guid;
 		}, $attachments);
 		
 		return implode( $this->get_option('multivalued_delimiter'), $attachments_urls );

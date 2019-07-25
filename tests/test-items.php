@@ -24,6 +24,7 @@ class Items extends TAINACAN_UnitTestCase {
 			'collection',
 			array(
 				'name'   => 'testePerm',
+				'status' => 'publish'
 			),
 			true
 		);
