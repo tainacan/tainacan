@@ -9,12 +9,12 @@
             <h2 
                     id="exposers-modal-title"
                     v-if="selectedExposer == undefined">
-                {{ this.$i18n.get('label_urls_for_items_list') }}
+                {{ itemId ? $i18n.get('label_urls_for_item_page') : $i18n.get('label_urls_for_items_list') }}
             </h2>
             <h2 
                     id="exposers-modal-title"
                     v-if="selectedExposer != undefined">
-                {{ this.$i18n.get('label_urls_for_items_list') + " - " + selectedExposer.name }}
+                {{ (itemId ? $i18n.get('label_urls_for_item_page') : $i18n.get('label_urls_for_items_list')) + " - " + selectedExposer.name }}
             </h2>
             <a 
                     @click="selectedExposerMappers = []; selectedExposer = undefined;"
@@ -31,7 +31,7 @@
                 <div class="exposer-item-link">
                     <span>
                         <p>
-                            {{ $i18n.get('label_items_list_on_website') }}
+                            {{ itemId ? $i18n.get('label_item_page_on_website') : $i18n.get('label_items_list_on_website') }}
                         </p>
                     </span>
                     <span class="exposer-item-actions">
@@ -46,7 +46,7 @@
                                     placement: 'bottom'
                                 }" 
                                 target="_blank"
-                                @click="siteLinkCopied = true; copyTextToClipboard(collectionURL)">
+                                @click="siteLinkCopied = true; copyTextToClipboard(itemURL ? itemURL : collectionURL)">
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
                             </span>
@@ -66,7 +66,7 @@
                                     readonly
                                     autofocus
                                     type="text"
-                                    :value="collectionURL">
+                                    :value="itemURL ? itemURL : collectionURL">
                         </div>
                         <a 
                                 v-tooltip="{
@@ -79,14 +79,14 @@
                                     placement: 'bottom'
                                 }" 
                                 target="_blank"
-                                :href="collectionURL">
+                                :href="itemURL ? itemURL : collectionURL">
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>
                             </span>
                         </a>
                     </span>
                 </div>
-                <p>{{ $i18n.get('info_other_item_listing_options') }}</p>
+                <p>{{ itemId ? $i18n.get('info_other_options') : $i18n.get('info_other_item_listing_options') }}</p>
                 <div 
                         role="list"
                         class="exposer-types-list">
@@ -106,7 +106,9 @@
                     v-if="selectedExposer != undefined"
                     class="exposer-item-container"
                     role="list">
-                <div class="exposed-metadata-control">
+                <div
+                        v-if="itemId == undefined || itemId == null"
+                        class="exposed-metadata-control">
                     <b-checkbox
                             v-tooltip="{
                                 content: $i18n.get('info_expose_only_displayed_metadata'),
@@ -155,19 +157,10 @@
                                     class="exposer-item-link">
                                 <span>
                                     <p>
-                                        {{ $i18n.get('label_page') + " " + 
-                                            pagedLink + " (" + 
-                                            $i18n.get('items') + " " + 
-                                            getFirstItemNumber(pagedLink) + " " +
-                                            $i18n.get('info_to') + " " + 
-                                            getLastItemNumber(pagedLink) + " " + 
-                                            $i18n.get('info_of') + " " + 
-                                            totalItems + ")" 
-                                        }}
+                                        {{ getItemPageLabel(pagedLink) }}
                                     </p>
                                 </span>
                                 <span class="exposer-item-actions">
-                                    
                                     <a 
                                             v-tooltip="{
                                                 delay: {
@@ -178,7 +171,7 @@
                                                 autoHide: false,
                                                 placement: 'bottom'
                                             }"
-                                            @click="exposerMapper.linkCopied = pagedLink; copyTextToClipboard(selectedExposer.slug != 'tainacan-api' ? (exposerBaseURL + '&exposer=' + selectedExposer.slug + '&mapper=' + exposerMapper.name + '&paged=' + pagedLink) : exposerBaseURL + '&paged=' + pagedLink)">
+                                            @click="exposerMapper.linkCopied = pagedLink; copyTextToClipboard(getExposerFullURL(pagedLink, exposerMapper))">
                                         <span class="icon">
                                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
                                         </span>
@@ -199,7 +192,7 @@
                                                 readonly
                                                 autofocus
                                                 type="text"
-                                                :value="selectedExposer.slug != 'tainacan-api' ? (exposerBaseURL + '&exposer=' + selectedExposer.slug + '&mapper=' + exposerMapper.name + '&paged=' + pagedLink) : exposerBaseURL + '&paged=' + pagedLink">
+                                                :value="getExposerFullURL(pagedLink, exposerMapper)">
                                     </div>
                                     <a 
                                             :download="(collectionId != undefined ? collectionName : $i18n.get('repository')) + ' ' + $i18n.get('items') + ' ' + $i18n.get('label_page') + ' ' + pagedLink"
@@ -212,7 +205,7 @@
                                                 autoHide: false,
                                                 placement: 'bottom'
                                             }" 
-                                            :href="selectedExposer.slug != 'tainacan-api' ? (exposerBaseURL + '&exposer=' + selectedExposer.slug + '&mapper=' + exposerMapper.name + '&paged=' + pagedLink) : exposerBaseURL + '&paged=' + pagedLink">
+                                            :href="getExposerFullURL(pagedLink, exposerMapper)">
                                         <span class="icon">
                                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>
                                         </span>
@@ -249,7 +242,9 @@ export default {
     name: 'ExposersModal',
     props: {
         collectionId: Number,
-        totalItems: Number
+        totalItems: Number,
+        itemId: Number,
+        itemURL: String
     },
     directives: {
         focus: {
@@ -297,7 +292,10 @@ export default {
             
             // Handles pagination of this link
             delete currentParams.paged;
-            currentParams.perpage = this.maxItemsPerPage;
+            if (this.itemId != null && this.itemId != undefined)
+                delete currentParams.perpage;
+            else 
+                currentParams.perpage = this.maxItemsPerPage;
 
             return tainacan_plugin.tainacan_api_url + baseURL + '?' + qs.stringify(currentParams);
         },
@@ -363,6 +361,35 @@ export default {
                     linkCopied: false
                 });
             }
+        },
+        getExposerFullURL(pagedLink, exposerMapper) {
+
+            let params = {};
+
+            if (this.selectedExposer.slug != 'tainacan-api')
+                params.exposer = this.selectedExposer.slug;
+                
+            if (exposerMapper.name != undefined)
+                params.mapper = exposerMapper.name;
+
+            if (this.itemId != undefined && this.itemId != null)
+                params.id = this.itemId;
+
+            if (pagedLink && (this.itemId == undefined || this.itemId == null))
+                params.paged = pagedLink;
+
+            return this.exposerBaseURL + '&' + qs.stringify(params);
+        },
+        getItemPageLabel(pagedLink) {
+            if (this.itemId != undefined && this.itemId != null) {
+                return this.$i18n.get('label_item_page');
+            } else {
+                return  this.$i18n.get('label_page') + " " + pagedLink + " (" + 
+                        this.$i18n.get('items') + " " + this.getFirstItemNumber(pagedLink) + " " +
+                        this.$i18n.get('info_to') + " " + this.getLastItemNumber(pagedLink) + " " + 
+                        this.$i18n.get('info_of') + " " + this.totalItems + ")";
+            }
+
         },
         fallbackCopyTextToClipboard(text) {
             let textArea = document.createElement("textarea");
@@ -436,6 +463,9 @@ export default {
         if (this.collectionId != undefined) {
             this.fetchCollectionNameAndURL(this.collectionId);
         }
+
+        if (this.itemId)
+            this.shouldRespectFetchOnly = false;
     }
 }
 </script>

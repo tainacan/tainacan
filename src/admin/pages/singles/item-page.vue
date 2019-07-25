@@ -127,71 +127,7 @@
                             <p v-if="attachmentsList.length <= 0"><br>{{
                                 $i18n.get('info_no_attachments_on_item_yet') }}</p>
                         </div>
-                    </div>
-                    <!-- Exposers --------------------------------------------- -->
-                    <!-- <div>
-                        <b-loading :active.sync="isLoadingMetadatumMappers"/>
-                        <div v-if="!isLoadingMetadatumMappers">
-                            <b-collapse :open="false">
-                                <div
-                                        class="section-label"
-                                        slot="trigger"
-                                        slot-scope="session_props">
-                                    <label>
-                                        {{ $i18n.get('label_exposer_urls') }}
-                                        <span class="icon">
-                                    <i
-                                            :class="{ 'tainacan-icon-arrowdown' : session_props.open, 'tainacan-icon-arrowright' : !session_props.open }"
-                                            class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
-                                </span>
-                                    </label>
-                                </div>
-                                <br>
-                                <a
-                                        class="collapse-all"
-                                        @click="urls_open = !urls_open">
-                                    {{ urls_open ? $i18n.get('label_collapse_all') :
-                                    $i18n.get('label_expand_all') }}
-                                    <span class="icon">
-                                <i
-                                        :class="{ 'tainacan-icon-arrowdown' : urls_open, 'tainacan-icon-arrowright' : !urls_open }"
-                                        class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
-                            </span>
-                                </a>
-                                <div>
-                                    <div
-                                            v-for="(exposer, index) of item.exposer_urls"
-                                            :key="index"
-                                            class="field">
-                                        <b-collapse :open="urls_open">
-                                            <label
-                                                    class="label"
-                                                    slot="trigger"
-                                                    slot-scope="props">
-                                        <span class="icon">
-                                            <i
-                                                    :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open }"
-                                                    class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
-                                        </span>
-                                                {{ index }}
-                                            </label>
-                                            <div
-                                                    v-for="(url, index2) of exposer"
-                                                    :key="index2">
-                                                <div>
-                                                    <a
-                                                            :href="url"
-                                                            target="_blank">
-                                                        {{ extractExposerLabel(url, index) }}
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </b-collapse>
-                                    </div>
-                                </div>
-                            </b-collapse>
-                        </div>
-                    </div> -->
+                    </div>                  
 
                     <!-- Hook for extra Form options -->
                     <template
@@ -240,7 +176,7 @@
                             </div>
                         </div>
                         <div class="column">
-                                <!-- Collection -------------------------------- -->
+                            <!-- Collection -------------------------------- -->
                             <div class="section-label">
                                 <label>{{ $i18n.get('collection') }}</label>
                             </div>
@@ -250,6 +186,24 @@
                                         {{ collectionName }}
                                     </span>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <!-- Exposers -------------------------------- -->
+                            <div class="section-label">
+                                <label>{{ $i18n.get('label_exposer_urls') }}</label>
+                            </div>
+                            <div class="section-status">
+                                <button 
+                                        class="button is-white"
+                                        :aria-label="$i18n.get('label_urls')"
+                                        :disabled="isLoading"
+                                        @click="openExposersModal()">
+                                    <span class="gray-icon">
+                                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                                    </span>
+                                    <span class="is-hidden-touch">{{ $i18n.get('label_urls') }}</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -370,10 +324,17 @@
     import DocumentItem from '../../components/other/document-item.vue';
     import {formHooks} from '../../js/mixins';
     import ActivitiesPage from '../lists/activities-page.vue';
+    import ExposersModal from '../../components/other/exposers-modal.vue';
 
     export default {
         name: 'ItemPage',
         mixins: [formHooks],
+        components: {
+            FileItem,
+            DocumentItem,
+            ActivitiesPage,
+            ExposersModal
+        },
         data() {
             return {
                 collectionId: Number,
@@ -388,10 +349,24 @@
                 activeTab: 0,
             }
         },
-        components: {
-            FileItem,
-            DocumentItem,
-            ActivitiesPage
+        computed: {
+            item() {
+                // Fills hook forms with it's real values 
+                this.updateExtraFormData(this.getItem());
+
+                return this.getItem();
+            },
+            metadatumList() {
+                return JSON.parse(JSON.stringify(this.getMetadata()));
+            },
+            attachmentsList() {
+                return this.getAttachments().filter((attachment) => attachment.id != this.item.document);
+            },
+            metadatum_mappers: {
+                get() {
+                    return this.getMetadatumMappers();
+                }
+            },
         },
         methods: {
             ...mapActions('item', [
@@ -420,43 +395,19 @@
                     this.isLoading = false;
                 });
             },
-            extractExposerLabel(urlString, typeSlug) {
-                let url = new URL(urlString);
-                let mapperParam = url.searchParams.get(tainacan_plugin.exposer_mapper_param);
-                if (mapperParam != 'undefined' && mapperParam != null) {
-                    let mapper = this.metadatum_mappers.find(obj => {
-                        return obj.slug === mapperParam;
-                    });
-                    if (mapper != 'undefined' && mapper != null) {
-                        return this.$i18n.get('label_exposer') + ": " + typeSlug + ', ' + this.$i18n.get('label_mapper') + ": " + mapper.name;
-                    } else {
-                        if (mapperParam == 'value') {
-                            return this.$i18n.get('label_exposer') + ": " + typeSlug + ', ' + this.$i18n.get('label_exposer_mapper_values');
-                        }
+            openExposersModal() {
+                this.$modal.open({
+                    parent: this,
+                    component: ExposersModal,
+                    hasModalCard: true,
+                    props: { 
+                        collectionId: this.collectionId,
+                        itemId: this.itemId,
+                        itemURL: this.item.url,
+                        totalItems: 1,
                     }
-                }
-                return this.$i18n.get('label_exposer') + ": " + typeSlug;
-            },
-
-        },
-        computed: {
-            item() {
-                // Fills hook forms with it's real values 
-                this.updateExtraFormData(this.getItem());
-
-                return this.getItem();
-            },
-            metadatumList() {
-                return JSON.parse(JSON.stringify(this.getMetadata()));
-            },
-            attachmentsList() {
-                return this.getAttachments().filter((attachment) => attachment.id != this.item.document);
-            },
-            metadatum_mappers: {
-                get() {
-                    return this.getMetadatumMappers();
-                }
-            },
+                })
+            }
         },
         created() {
             // Obtains item and collection ID
