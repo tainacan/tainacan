@@ -199,8 +199,10 @@
                                         :aria-label="$i18n.get('label_urls')"
                                         :disabled="isLoading"
                                         @click="openExposersModal()">
-                                    <span class="gray-icon">
-                                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                                    <span
+                                            style="padding: 0 8px;"
+                                            class="gray-icon">
+                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
                                     </span>
                                     <span class="is-hidden-touch">{{ $i18n.get('label_urls') }}</span>
                                 </button>
