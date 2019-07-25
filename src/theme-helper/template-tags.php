@@ -274,6 +274,24 @@ function tainacan_the_term_description() {
 }
 
 /**
+ * To be used inside The Loop
+ * 
+ * Return the list of attachments of the current item (by default, excluding the document and the thumbnail)
+ *
+ * @param string|array IDs of attachments to be excluded (by default this function already excludes the document and the thumbnail)
+ * @return array      Array of WP_Post objects. @see https://developer.wordpress.org/reference/functions/get_children/
+ */
+function tainacan_get_the_attachments($exclude = null) {
+	$item = tainacan_get_item();
+	
+	if (!$item)
+		return [];
+	
+	return apply_filters('tainacan-get-the-attachments', $item->get_attachments(), $item);
+	
+}
+
+/**
  * @see \Tainacan\Theme_Helper->register_view_mode()
  */
 function tainacan_register_view_mode($slug, $args = []) {
