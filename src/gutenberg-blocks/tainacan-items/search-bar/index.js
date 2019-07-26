@@ -8,8 +8,6 @@ const { InspectorControls } = wp.editor;
 
 import SearchBarModal from './search-bar-modal.js';
 import tainacan from '../../api-client/axios.js';
-import axios from 'axios';
-import qs from 'qs';
 
 registerBlockType('tainacan/search-bar', {
     title: __('Tainacan Search Bar', 'tainacan'),
@@ -149,7 +147,7 @@ registerBlockType('tainacan/search-bar', {
         setAttributes({ blockId: clientId });
         
         function setContent(){
-
+ 
             setAttributes({
                 content: (
                     <div class="tainacan-search-container">
@@ -162,7 +160,11 @@ registerBlockType('tainacan/search-bar', {
                                 label={ __('Search', 'taincan')}
                                 name='search'
                             />
-                            <button type="submit">{ __('Search', 'tainacan') }</button>
+                            <button 
+                                    class="button"
+                                    type="submit">
+                                { __('Search', 'tainacan') }
+                            </button>
                         </form>
                     </div>
                 )            

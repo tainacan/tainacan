@@ -19,6 +19,7 @@ module.exports = {
         gutenberg_carousel_items_list_theme: './src/gutenberg-blocks/tainacan-items/carousel-items-list/carousel-items-list-theme.js',
         
         gutenberg_search_bar: './src/gutenberg-blocks/tainacan-items/search-bar/index.js',
+        gutenberg_search_bar_script: './src/gutenberg-blocks/tainacan-items/search-bar/search-bar-theme-script.js',
         
         gutenberg_collections_list: './src/gutenberg-blocks/tainacan-collections/collections-list/index.js',
         

@@ -178,6 +178,12 @@ function tainacan_blocks_register_tainacan_carousel_items_list(){
 function tainacan_blocks_register_tainacan_search_bar(){
 	global $TAINACAN_BASE_URL;
 
+	wp_enqueue_script(
+		'search-bar-theme-script',
+		$TAINACAN_BASE_URL . '/assets/gutenberg_search_bar_script-components.js',
+		array('wp-components')
+	);
+
 	wp_register_script(
 		'search-bar',
 		$TAINACAN_BASE_URL . '/assets/gutenberg_search_bar-components.js',
