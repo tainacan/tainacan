@@ -137,7 +137,7 @@
                                                         metadatum.collection_id != collectionId
                                                         ? 'hidden' : 'visible'
                                                     }" 
-                                                @click.prevent="editMetadatum(metadatum)">
+                                                @click.prevent="toggleMetadatumEdition(metadatum.id)">
                                             <span 
                                                     v-tooltip="{
                                                         content: $i18n.get('edit'),
@@ -495,6 +495,18 @@ export default {
             }
         }
     },
+    watch: {
+        '$route.query': {
+            handler(newQuery) {
+                if (newQuery.edit != undefined) {
+                    let existingMetadataIndex = this.activeMetadatumList.findIndex((metadatum) => metadatum.id == newQuery.edit);
+                    if (existingMetadataIndex >= 0)
+                        this.editMetadatum(this.activeMetadatumList[existingMetadataIndex])                        
+                }
+            },
+            immediate: true
+        }
+    },
     beforeRouteLeave ( to, from, next ) {
         let hasUnsavedForms = false;
         for (let editForm in this.editForms) {
@@ -586,7 +598,7 @@ export default {
                 if (!this.isRepositoryLevel)
                     this.updateMetadataOrder();
 
-                this.editMetadatum(metadatum);
+                this.toggleMetadatumEdition(metadatum.id)
                 this.hightlightedMetadatum = '';
             })
             .catch((error) => {
@@ -613,38 +625,43 @@ export default {
                 }
             }); 
         },
-        editMetadatum(metadatum) {
+        toggleMetadatumEdition(metadatumId) {
             // Closing collapse
-            if (this.openedMetadatumId == metadatum.id) {
+            if (this.openedMetadatumId == metadatumId) {
                 this.openedMetadatumId = '';
+                this.$router.push({ query: {}});
 
             // Opening collapse
             } else {
-
-                this.openedMetadatumId = metadatum.id;
-                
-                // First time opening
-                if (this.editForms[this.openedMetadatumId] == undefined) {
-                    this.editForms[this.openedMetadatumId] = JSON.parse(JSON.stringify(metadatum));
-                    this.editForms[this.openedMetadatumId].saved = true;
-
-                    // Metadatum inserted now
-                    if (this.editForms[this.openedMetadatumId].status == 'auto-draft') {
-                        this.editForms[this.openedMetadatumId].status = 'publish';
-                        this.editForms[this.openedMetadatumId].saved = false;
-                    }
-                }     
+                this.$router.push({ query: { edit: metadatumId}})
             }
+        },
+        editMetadatum(metadatum) {
+            this.openedMetadatumId = metadatum.id;
+            
+            // First time opening
+            if (this.editForms[this.openedMetadatumId] == undefined) {
+                this.editForms[this.openedMetadatumId] = JSON.parse(JSON.stringify(metadatum));
+                this.editForms[this.openedMetadatumId].saved = true;
+
+                // Metadatum inserted now
+                if (this.editForms[this.openedMetadatumId].status == 'auto-draft') {
+                    this.editForms[this.openedMetadatumId].status = 'publish';
+                    this.editForms[this.openedMetadatumId].saved = false;
+                }
+            }      
         },
         onEditionFinished() {
             this.formWithErrors = '';
             delete this.editForms[this.openedMetadatumId];
             this.openedMetadatumId = '';
+            this.$router.push({ query: {}});
         },
         onEditionCanceled() {
             this.formWithErrors = '';
             delete this.editForms[this.openedMetadatumId];
             this.openedMetadatumId = '';
+            this.$router.push({ query: {}});
         },
         onSelectMetadataMapper(metadatum_mapper) {
 
@@ -838,6 +855,13 @@ export default {
             this.fetchMetadata({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true, includeDisabled: true})
                 .then(() => {
                     this.isLoadingMetadata = false;
+                    
+                    // Checks URL as router watcher would not wait for list to load
+                    if (this.$route.query.edit != undefined) {
+                        let existingMetadataIndex = this.activeMetadatumList.findIndex((metadatum) => metadatum.id == this.$route.query.edit);
+                        if (existingMetadataIndex >= 0)
+                            this.editMetadatum(this.activeMetadatumList[existingMetadataIndex]);                        
+                    }
                 })
                 .catch(() => {
                     this.isLoadingMetadata = false;
@@ -1157,7 +1181,7 @@ export default {
             }
 
             .available-metadatum-item {
-                padding: 0.7em;
+                padding: 0.6rem;
                 margin: 4px 4px 4px 1.2rem;
                 background-color: white;
                 cursor: pointer;
@@ -1171,7 +1195,7 @@ export default {
                 
                 .grip-icon { 
                     color: $gray3;
-                    top: -4px;
+                    top: -6px;
                     position: relative;
                     display: inline-block;
                 }
@@ -1188,6 +1212,7 @@ export default {
                     overflow-x: hidden;
                     white-space: nowrap;
                     font-weight: bold;
+                    line-height: normal;
                     margin-left: 0.4rem;
                     display: inline-block;
                     max-width: 180px;

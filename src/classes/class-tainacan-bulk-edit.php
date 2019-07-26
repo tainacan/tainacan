@@ -231,8 +231,14 @@ class Bulk_Edit  {
 		$select_q = $this->_build_select( 'post_id' );
 		
 		$query = $wpdb->prepare("UPDATE $wpdb->posts SET post_status = %s WHERE ID IN ($select_q)", $value);
-
-		return $wpdb->query($query);
+		
+		$run = $wpdb->query($query);
+		
+		if ($run) {
+			do_action('tainacan-bulk-edit-set-status', $value, $this->get_id(), $select_q, $query);
+		}
+		
+		return $run;
 
 	}
 

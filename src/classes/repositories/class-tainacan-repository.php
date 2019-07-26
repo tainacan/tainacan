@@ -693,7 +693,7 @@ abstract class Repository {
 	 * @return boolean
 	 * @throws \Exception
 	 */
-	public function can_read( $entity, $user = null ) {
+	public function can_read( Entities\Entity $entity, $user = null ) {
 
 		if ( is_null( $user ) ) {
 			$user = get_current_user_id();
@@ -707,7 +707,7 @@ abstract class Repository {
 		}
 		$entity     = self::get_entity_by_post( $entity );
 		$entity_cap = $entity->get_capabilities();
-
+		
 		if ( ! isset( $entity_cap->read ) ) {
 			if ( $entity->get_post_type() === false ) { // Allow read of not post entities
 				return true;
@@ -716,7 +716,7 @@ abstract class Repository {
 			return false;
 		}
 
-		return user_can( $user, $entity_cap->read, $entity->get_id() );
+		return user_can( $user, $entity_cap->read_post, $entity->get_id() );
 	}
 
 	/**

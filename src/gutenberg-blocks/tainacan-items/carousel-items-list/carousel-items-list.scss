@@ -189,6 +189,11 @@
     .items-list-edit-container,
     .tainacan-carousel {
         position: relative;
+        
+        & .skeleton {
+            min-height: 150px;
+            max-height: 150px;
+        }
 
         &.has-arrows-none .swiper-button-prev,
         &.has-arrows-none .swiper-button-next {
@@ -232,10 +237,6 @@
 
                 padding: 0px;
                 margin-bottom: 0.5rem;
-            }
-
-            a.item-without-title span {
-                display: none;
             }
 
             &:hover a { 

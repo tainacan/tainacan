@@ -17,11 +17,6 @@ class Media {
 
         return self::$instance;
     }
-	
-	protected function __construct() {
-		
-		
-	}
 
 	/**
 	 * Insert an attachment from an URL address.
@@ -125,6 +120,8 @@ class Media {
 	 */
 	public function insert_attachment_from_blob($blob, $filename, $post_id = null) {
 
+		do_action('tainacan-pre-insert-attachment', $blob, $filename, $post_id);
+		
 		$upload = wp_upload_bits( $filename, null, $blob );
 		if( !empty( $upload['error'] ) ) {
 			return false;
@@ -162,7 +159,9 @@ class Media {
 
 		// Assign metadata to attachment
 		wp_update_attachment_metadata( $attach_id,  $attach_data );
-
+		
+		do_action('tainacan-post-insert-attachment', $attach_id,  $attach_data, $post_id);
+		
 		return $attach_id;
 	}
 	
@@ -228,4 +227,5 @@ class Media {
 		if( $this->THROW_EXCPTION_ON_FATAL_ERROR ) 
 			throw new \Exception("fatal error");
 	}
+		
 }
