@@ -699,6 +699,175 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		
 	}
 	
+	/*
+	* @group tax_query
+	 */
+	function test_support_tax_query_like() {
+		
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Agile',
+				'description' => 'Agile methods',
+                'status'      => 'publish'
+			),
+			true
+		);
+
+		
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'         => 'taxonomy_public',
+				'description'  => 'taxonomy_public',
+				'status' => 'publish'
+			),
+			true
+		);
+		
+		$tax_meta = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'   => 'metadata-public',
+				'status' => 'publish',
+				'collection' => $collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
+				'metadata_type_options' => [
+					'allow_new_terms' => 'yes',
+					'taxonomy_id' => $taxonomy->get_id()
+				],
+				'multiple' => 'yes'
+			),
+			true
+		);
+		
+		$item1 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'Lean Startup',
+				'description' => 'Um processo ágil de criação de novos negócios.',
+				'collection'  => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$itemMetaRepo = \Tainacan\Repositories\Item_Metadata::get_instance();
+
+		$newMeta = new \Tainacan\Entities\Item_Metadata_Entity($item1, $tax_meta);
+		$newMeta->set_value(['blue', 'mellon']);
+		$newMeta->validate();
+		$itemMetaRepo->insert($newMeta);
+		
+		$item2 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'XXLean Startup',
+				'description' => 'Um processo ágil de criação de novos negócios.',
+				'collection'  => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$newMeta = new \Tainacan\Entities\Item_Metadata_Entity($item2, $tax_meta);
+		$newMeta->set_value(['red', 'watermellon']);
+		$newMeta->validate();
+		$itemMetaRepo->insert($newMeta);
+		
+		$item3 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'XXLean Startup',
+				'description' => 'Um processo ágil de criação de novos negócios.',
+				'collection'  => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$newMeta = new \Tainacan\Entities\Item_Metadata_Entity($item3, $tax_meta);
+		$newMeta->set_value(['red', 'blue']);
+		$newMeta->validate();
+		$itemMetaRepo->insert($newMeta);
+		
+		
+		####################################################
+		
+		$request  = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collection->get_id() . '/items');
+		
+		$attributes = [
+			'taxquery' => [
+				[
+					'taxonomy' => $taxonomy->get_db_identifier(),
+					'operator' => 'LIKE',
+					'terms' => 'mellon'
+				]
+			]
+		];
+		
+		$request->set_query_params($attributes);
+		$response = $this->server->dispatch($request);
+
+		$this->assertEquals(200, $response->get_status());
+		$data = $response->get_data()['items'];
+		
+		$this->assertEquals(2, count($data));
+		$ids = array_map(function($e) { return $e['id']; }, $data);
+		$this->assertContains($item1->get_id(), $ids);
+		$this->assertContains($item2->get_id(), $ids);
+		
+		####################################################
+		
+		$request  = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collection->get_id() . '/items');
+		
+		$attributes = [
+			'taxquery' => [
+				[
+					'taxonomy' => $taxonomy->get_db_identifier(),
+					'operator' => 'LIKE',
+					'terms' => 'red'
+				]
+			]
+		];
+		
+		$request->set_query_params($attributes);
+		$response = $this->server->dispatch($request);
+
+		$this->assertEquals(200, $response->get_status());
+		$data = $response->get_data()['items'];
+		
+		$this->assertEquals(2, count($data));
+		$ids = array_map(function($e) { return $e['id']; }, $data);
+		$this->assertContains($item2->get_id(), $ids);
+		$this->assertContains($item3->get_id(), $ids);
+		
+		####################################################
+		
+		$request  = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collection->get_id() . '/items');
+		
+		$attributes = [
+			'taxquery' => [
+				[
+					'taxonomy' => $taxonomy->get_db_identifier(),
+					'operator' => 'LIKE',
+					'terms' => 'water'
+				]
+			]
+		];
+		
+		$request->set_query_params($attributes);
+		$response = $this->server->dispatch($request);
+
+		$this->assertEquals(200, $response->get_status());
+		$data = $response->get_data()['items'];
+		
+		$this->assertEquals(1, count($data));
+		$ids = array_map(function($e) { return $e['id']; }, $data);
+		$this->assertContains($item2->get_id(), $ids);
+		
+	}
+	
 }
 
 ?>
