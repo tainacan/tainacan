@@ -220,7 +220,7 @@ class Taxonomy extends Metadata_Type {
 				if ( $term instanceof \Tainacan\Entities\Term ) {
 					$return .= $prefix;
 					
-					$return .= $term->_toHtml();
+					$return .= $this->get_term_hierarchy_html($term);
 					
 					$return .= $suffix;
 					
@@ -241,6 +241,23 @@ class Taxonomy extends Metadata_Type {
 		}
 		
 		return $return;
+		
+	}
+	
+	private function get_term_hierarchy_html( \Tainacan\Entities\Term $term ) {
+		
+		$terms = [];
+		
+		$terms[] = $term->_toHtml();
+		
+		while ($term->get_parent() > 0) {
+			$term = \Tainacan\Repositories\Terms::get_instance()->fetch( (int) $term->get_parent(), $term->get_taxonomy() );
+			$terms[] = $term->_toHtml();
+		}
+		
+		$terms = \array_reverse($terms);
+		
+		return \implode(' > ', $terms);
 		
 	}
 	
