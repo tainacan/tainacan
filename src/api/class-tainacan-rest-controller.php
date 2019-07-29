@@ -11,6 +11,7 @@ class REST_Controller extends \WP_REST_Controller {
 	public function __construct() {
 		$this->namespace = TAINACAN_REST_NAMESPACE;
 		add_action('rest_api_init', array($this, 'register_routes'));
+		add_filter('tainacan-api-prepare-items-args', array($this, 'add_support_to_tax_query_like'));
 	}
 
 	/**
@@ -144,7 +145,43 @@ class REST_Controller extends \WP_REST_Controller {
 
 		$args['perm'] = 'readable';
 
+		return apply_filters('tainacan-api-prepare-items-args', $args, $request);
+	}
+	
+	public function add_support_to_tax_query_like($args) {
+		
+		if (!isset($args['tax_query']) || !is_array($args['tax_query'])) {
+			return $args;
+		}
+		
+		$new_tax_query = [];
+		
+		foreach ($args['tax_query'] as $index => $tax_query) {
+			
+			if ( isset($tax_query['operator']) && $tax_query['operator'] == 'LIKE' &&
+		 		isset($tax_query['terms']) && is_string($tax_query['terms']) ) {
+				
+				$terms = get_terms([
+					'taxonomy' => $tax_query['taxonomy'],
+					'fields' => 'ids',
+					'search' => $tax_query['terms']
+				]);
+				
+				$new_tax_query[] = [
+					'taxonomy' => $tax_query['taxonomy'],
+					'terms' => $terms,
+				];
+				
+			} else {
+				$new_tax_query[] = $tax_query;
+			}
+
+		}
+		
+		$args['tax_query'] = $new_tax_query;
+		
 		return $args;
+		
 	}
 
 	/**
