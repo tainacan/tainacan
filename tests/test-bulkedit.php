@@ -1431,7 +1431,138 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 		
 	}
 	
-	
+	function test_set_multiple_tax_meta() {
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+
+		$query = [
+			'meta_query' => [
+				[
+					'key' => $this->metadatum->get_id(),
+					'value' => 'even'
+				]
+			],
+			'posts_per_page' => 5
+		];
+		
+		$bulk = new \Tainacan\Bulk_Edit([
+			'query' => $query,
+			'collection_id' => $this->collection->get_id()
+		]);
+
+
+
+
+		$bulk->set_value($this->category, ['super', 'dooper']);
+
+
+
+
+		$items = $Tainacan_Items->fetch([
+			'tax_query' => [
+				[
+					'taxonomy' => $this->taxonomy->get_db_identifier(),
+					'field' => 'name',
+					'terms' => 'bad'
+				]
+			],
+			'posts_per_page' => -1
+		]);
+
+		$this->assertEquals(35, $items->found_posts);
+
+		$items = $Tainacan_Items->fetch([
+			'tax_query' => [
+				[
+					'taxonomy' => $this->taxonomy->get_db_identifier(),
+					'field' => 'name',
+					'terms' => 'good'
+				]
+			],
+			'posts_per_page' => -1
+		]);
+
+		$this->assertEquals(35, $items->found_posts);
+
+		$items = $Tainacan_Items->fetch([
+			'tax_query' => [
+				[
+					'taxonomy' => $this->taxonomy->get_db_identifier(),
+					'field' => 'name',
+					'terms' => 'super'
+				]
+			],
+			'posts_per_page' => -1
+		]);
+
+		$this->assertEquals(5, $items->found_posts);
+		
+		$items = $Tainacan_Items->fetch([
+			'tax_query' => [
+				[
+					'taxonomy' => $this->taxonomy->get_db_identifier(),
+					'field' => 'name',
+					'terms' => 'dooper'
+				]
+			],
+			'posts_per_page' => -1
+		]);
+
+		$this->assertEquals(5, $items->found_posts);
+
+
+
+	}
+
+	function test_set_regular_multiple_meta() {
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+
+		$query = [
+			'meta_query' => [
+				[
+					'key' => $this->metadatum->get_id(),
+					'value' => 'even'
+				]
+			],
+			'posts_per_page' => 5
+		];
+		
+		$bulk = new \Tainacan\Bulk_Edit([
+			'query' => $query,
+			'collection_id' => $this->collection->get_id()
+		]);
+
+		// single valued metadatum dont accept array
+		$error = $bulk->set_value($this->metadatum, ['super', 'dooper']);
+		$this->assertTrue(is_wp_error($error));
+		
+		$bulk->set_value($this->multiple_meta, ['super', 'dooper']);
+
+
+		$items = $Tainacan_Items->fetch([
+			'meta_query' => [
+				[
+					'key' => $this->multiple_meta->get_id(),
+					'value' => 'super'
+				]
+			],
+			'posts_per_page' => -1
+		]);
+
+		$this->assertEquals(5, $items->found_posts);
+		
+		$items = $Tainacan_Items->fetch([
+			'meta_query' => [
+				[
+					'key' => $this->multiple_meta->get_id(),
+					'value' => 'dooper'
+				]
+			],
+			'posts_per_page' => -1
+		]);
+
+		$this->assertEquals(5, $items->found_posts);
+
+	}
 
 
 }

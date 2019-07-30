@@ -296,7 +296,10 @@ class Bulk_Edit  {
 		$dummyItem = new Entities\Item();
 		$dummyItem->set_status('publish');
 		$checkItemMetadata = new Entities\Item_Metadata_Entity($dummyItem, $metadatum);
-		$checkItemMetadata->set_value( $metadatum->is_multiple() ? [$value] : $value );
+		if ( $metadatum->is_multiple() && !is_array($value)) {
+			$value = [$value];
+		}
+		$checkItemMetadata->set_value( $value );
 
 		if ($checkItemMetadata->validate()) {
 			$this->_remove_values($metadatum);
@@ -455,26 +458,38 @@ class Bulk_Edit  {
 
 			if ($tax instanceof Entities\Taxonomy) {
 
-				$term = $taxRepo->term_exists($tax, $value, 0, true);
-				$term_id = false;
-
-				if (false === $term) {
-					$term = wp_insert_term($value, $tax->get_db_identifier());
-					if (is_WP_Error($term) || !isset($term['term_taxonomy_id'])) {
-						return new \WP_Error( 'error', __( 'Error adding term', 'tainacan' ) );
-					}
-					$term_id = $term['term_taxonomy_id'];
-				} else {
-					$term_id = $term->term_taxonomy_id;
+				if ( !is_array($value) ) {
+					$value = [$value];
 				}
+				
+				foreach ($value as $v) {
+					
+					$term = $taxRepo->term_exists($tax, $v, 0, true);
+					$term_id = false;
+
+					if (false === $term) {
+						$term = wp_insert_term($v, $tax->get_db_identifier());
+						if (is_WP_Error($term) || !isset($term['term_taxonomy_id'])) {
+							return new \WP_Error( 'error', __( 'Error adding term', 'tainacan' ) );
+						}
+						$term_id = $term['term_taxonomy_id'];
+					} else {
+						$term_id = $term->term_taxonomy_id;
+					}
+
+					
+
+					$insert_q = $this->_build_select( $wpdb->prepare("post_id, %d", $term_id) );
+
+					$query = "INSERT IGNORE INTO $wpdb->term_relationships (object_id, term_taxonomy_id) $insert_q";
+					
+					$return = $wpdb->query($query);
+					
+				}
+				
+				return $return;
 
 				
-
-				$insert_q = $this->_build_select( $wpdb->prepare("post_id, %d", $term_id) );
-
-				$query = "INSERT IGNORE INTO $wpdb->term_relationships (object_id, term_taxonomy_id) $insert_q";
-
-				return $wpdb->query($query);
 
 				//TODO update term count
 
@@ -484,27 +499,38 @@ class Bulk_Edit  {
 		} else {
 
 			global $wpdb;
-
-			$insert_q = $this->_build_select( $wpdb->prepare("post_id, %s, %s", $metadatum->get_id(), $value) );
-
-			$query = "INSERT IGNORE INTO $wpdb->postmeta (post_id, meta_key, meta_value) $insert_q";
-
-			$affected = $wpdb->query($query);
-
-			if ($type->get_core()) {
-				$field = $type->get_related_mapped_prop();
-				$map_field = [
-					'title' => 'post_title',
-					'description' => 'post_content'
-				];
-				$column = $map_field[$field];
-				$update_q = $this->_build_select( "post_id" );
-				$core_query = $wpdb->prepare( "UPDATE $wpdb->posts SET $column = %s WHERE ID IN ($update_q)", $value );
-
-				$wpdb->query($core_query);
+			
+			if ( !is_array($value) ) {
+				$value = [$value];
 			}
+			
+			foreach ($value as $v) {
+				
+				$insert_q = $this->_build_select( $wpdb->prepare("post_id, %s, %s", $metadatum->get_id(), $v) );
 
-			return $affected;
+				$query = "INSERT IGNORE INTO $wpdb->postmeta (post_id, meta_key, meta_value) $insert_q";
+
+				$affected = $wpdb->query($query);
+
+				if ($type->get_core()) {
+					$field = $type->get_related_mapped_prop();
+					$map_field = [
+						'title' => 'post_title',
+						'description' => 'post_content'
+					];
+					$column = $map_field[$field];
+					$update_q = $this->_build_select( "post_id" );
+					$core_query = $wpdb->prepare( "UPDATE $wpdb->posts SET $column = %s WHERE ID IN ($update_q)", $v );
+
+					$wpdb->query($core_query);
+				}
+
+				$return = $affected;
+				
+			}
+			
+			return $return; // return last value
+			
 
 		}
 
