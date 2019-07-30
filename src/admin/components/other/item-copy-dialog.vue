@@ -169,7 +169,7 @@
                 }).then((group) => {
                     let groupId = group.id;
                     this.isCreatingBulkEditGroup = false;
-                    this.$router.push(this.$routerHelper.getItemMetadataBulkAddPath(this.collectionId, groupId));
+                    this.$router.push({ path: this.$routerHelper.getItemMetadataBulkAddPath(this.collectionId, groupId), query: { loadCopy: true }});
                     this.$parent.close();
                 }); 
             },
