@@ -1092,7 +1092,7 @@ class Metadata extends Repository {
 				$count_query = $wpdb->prepare("SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", $r->term_id);
 				$total_children = $wpdb->get_var($count_query);
 				
-				$label = $r->name;
+				$label = wp_specialchars_decode($r->name);
 				$total_items = null;
 				
 				if ( $args['count_items'] ) {
