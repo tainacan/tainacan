@@ -32,8 +32,8 @@ class CSV extends Exporter {
 		
 		$line[] = $item->get_id();
 		
-		add_filter('tainacan-item-metadata-get-multivalue-separator', [$this, 'filter_multivalue_separator']);
-		add_filter('tainacan-terms-hierarchy-html-separator', [$this, 'filter_hierarchy_separator']);
+		add_filter('tainacan-item-metadata-get-multivalue-separator', [$this, 'filter_multivalue_separator'], 20);
+		add_filter('tainacan-terms-hierarchy-html-separator', [$this, 'filter_hierarchy_separator'], 20);
 		
 		foreach ($metadata as $meta_key => $meta) {
 			
