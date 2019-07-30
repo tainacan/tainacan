@@ -136,11 +136,6 @@
                             </transition>
                         </b-field>
                     </template>
-
-                    <b-loading 
-                            :is-full-page="false"
-                            :active.sync="isLoadingMetadata"
-                            :can-cancel="false"/>
                 </div>
             </div>
             <footer class="footer">

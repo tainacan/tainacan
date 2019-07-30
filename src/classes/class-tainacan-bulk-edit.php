@@ -219,7 +219,7 @@ class Bulk_Edit  {
 			return new \WP_Error( 'no_id', __( 'Bulk Edit group not initialized', 'tainacan' ) );
 		}
 		
-		$possible_values = ['draft', 'publish', 'private'];
+		$possible_values = ['trash', 'draft', 'publish', 'private'];
 
 		// Specific validation
 		if (!in_array($value, $possible_values)) {
