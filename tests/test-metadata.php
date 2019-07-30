@@ -369,6 +369,62 @@ class Metadata extends TAINACAN_UnitTestCase {
         $this->assertFalse($invalidMetadatum->validate());
 
     }
+	
+	function test_metadata_type_option_index() {
+
+        $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+        
+        $collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test',
+			),
+			true
+		);
+		
+		$tax = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_test',
+				'collections' => [$collection],
+				'status' => 'publish'
+			),
+			true
+		);
+        
+        $metadatum = $this->tainacan_entity_factory->create_entity(
+        	'metadatum',
+	        array(
+	        	'name' => 'meta',
+		        'description' => 'description',
+		        'collection' => $collection,
+		        'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'	 => 'publish',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax->get_id(),
+					'allow_new_terms' => 'no'
+				]
+	        ),
+	        true
+        );
+        
+		$test_meta = get_post_meta($metadatum->get_id(), '_option_taxonomy_id', true);
+		$this->assertEquals( $tax->get_id(), $test_meta );
+		
+		$fetch = $Tainacan_Metadata->fetch([
+			'meta_query' => [
+				[
+					'key' => '_option_taxonomy_id',
+					'value' => $tax->get_id()
+				]
+			]
+		], 'OBJECT');
+		
+		$this->assertEquals(1, count($fetch));
+		
+		$this->assertEquals($metadatum->get_id(), $fetch[0]->get_id());
+		
+    }
 }
 
 /**
