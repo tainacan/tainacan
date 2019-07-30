@@ -245,7 +245,7 @@ export default {
 
             let newTerm = {
                 taxonomyId: this.taxonomyId,
-                name: this.$i18n.get('label_term_without_name'),
+                name: '',
                 description: '',
                 parent: parent,
                 id: 'new',

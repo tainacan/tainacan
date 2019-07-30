@@ -25,6 +25,7 @@
                         :message="$i18n.get('info_help_term_name')"/>
             </label>
             <b-input
+                    :placeholder="$i18n.get('label_term_without_name')"
                     v-model="editForm.name"
                     name="name"
                     @focus="clearErrors({ name: 'name', repeated: 'repeated' })"/>
