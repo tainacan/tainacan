@@ -275,4 +275,23 @@ class Taxonomy extends Metadata_Type {
 		
 	}
 	
+	/**
+	 * Get related taxonomy object 
+	 * @return \Tainacan\Entities\Taxonomy|false The Taxonomy object or false
+	 */
+	public function get_taxonomy() {
+		
+		$taxonomy_id = $this->get_option('taxonomy_id');
+		
+		if ( is_numeric($taxonomy_id) ) {
+			$taxonomy = \Tainacan\Repositories\Taxonomies::get_instance()->fetch( (int) $taxonomy_id );
+			if ( $taxonomy instanceof \Tainacan\Entities\Taxonomy ) {
+				return $taxonomy;
+			}
+		}
+		
+		return false;
+		
+	}
+	
 }

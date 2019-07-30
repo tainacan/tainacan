@@ -652,5 +652,52 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 		
 		
 	}
+	
+	function test_get_taxonomy_method() {
+
+        $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+        
+        $collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test',
+			),
+			true
+		);
+		
+		$tax = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_test',
+				'collections' => [$collection],
+				'status' => 'publish'
+			),
+			true
+		);
+		
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'meta',
+				'description' => 'description',
+				'collection' => $collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'	 => 'publish',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax->get_id(),
+					'allow_new_terms' => 'no'
+					]
+				),
+				true
+		);
+		
+		$object = $metadatum->get_metadata_type_object();
+		
+		$taxCheck = $object->get_taxonomy();
+		
+		$this->assertTrue( $taxCheck instanceof \Tainacan\Entities\Taxonomy );
+		$this->assertEquals($tax->get_id(), $taxCheck->get_id());
+
+    }
     
 }
