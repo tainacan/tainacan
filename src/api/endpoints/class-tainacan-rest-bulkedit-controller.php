@@ -119,8 +119,8 @@ class REST_Bulkedit_Controller extends REST_Controller {
                             'description' => __( 'The metadatum ID', 'tainacan' ),
                         ],
                         'value' => [
-                            'type'        => 'string/integer',
-                            'description' => __( 'The value to be added', 'tainacan' ),
+                            'type'        => 'string/integer/array',
+                            'description' => __( 'The value to be set', 'tainacan' ),
                         ],
                     ],
 				),
