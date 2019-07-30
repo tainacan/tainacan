@@ -257,7 +257,9 @@ class Taxonomy extends Metadata_Type {
 		
 		$terms = \array_reverse($terms);
 		
-		return \implode(' > ', $terms);
+		$glue = apply_filters('tainacan-terms-hierarchy-html-separator', '<span class="hierarchy-separator"> > </span>');
+		
+		return \implode($glue, $terms);
 		
 	}
 	
