@@ -71,29 +71,20 @@
                                 :value="advancedSearchQuery.metaquery[searchCriterion].value"
                         />
                         <input
-                            v-else-if="advancedSearchQuery.metaquery[searchCriterion] &&
-                             advancedSearchQuery.metaquery[searchCriterion].ptype == 'date'"
-                            class="input"
-                            :value="parseDateToNavigatorLanguage(advancedSearchQuery.metaquery[searchCriterion].value)"
-                            v-mask="dateMask"
-                            @focus="addValueToAdvancedSearchQueryWithoutDelay($event, '', searchCriterion)"
-                            @input="addValueToAdvancedSearchQueryWithoutDelay($event, 'value', searchCriterion)"
-                            :placeholder="dateFormat" 
-                            type="text">
-                        <b-taginput
+                                v-else-if="advancedSearchQuery.metaquery[searchCriterion] &&
+                                advancedSearchQuery.metaquery[searchCriterion].ptype == 'date'"
+                                class="input"
+                                :value="parseDateToNavigatorLanguage(advancedSearchQuery.metaquery[searchCriterion].value)"
+                                v-mask="dateMask"
+                                @focus="addValueToAdvancedSearchQueryWithoutDelay($event, '', searchCriterion)"
+                                @input="addValueToAdvancedSearchQueryWithoutDelay($event, 'value', searchCriterion)"
+                                :placeholder="dateFormat" 
+                                type="text">
+                        <b-input
                                 v-else-if="advancedSearchQuery.taxquery[searchCriterion]"
-                                :data="terms"
-                                :value="advancedSearchQuery.taxquery[searchCriterion] &&
-                                        Array.isArray(advancedSearchQuery.taxquery[searchCriterion].btags) ?
-                                        Array.from(new Set(advancedSearchQuery.taxquery[searchCriterion].btags)) : []"
-                                autocomplete
-                                :loading="advancedSearchQuery.taxquery[searchCriterion].isFetching == true"
-                                attached
-                                ellipsis
-                                @remove="removeValueOf($event, searchCriterion)"
-                                @add="addValueToAdvancedSearchQuery($event, 'terms', searchCriterion)"
-                                @typing="autoCompleteTerm($event, searchCriterion)"
-                                />
+                                :value="advancedSearchQuery.taxquery[searchCriterion].terms"
+                                @input="addValueToAdvancedSearchQuery($event, 'term_value', searchCriterion)"
+                                type="text" />
                         <b-input
                                 v-else
                                 type="text"
@@ -180,10 +171,7 @@
                                 @close="removeThis(searchCriterion)"
                                 attached 
                                 closable>
-                                {{ Array.isArray(advancedSearchQuery.taxquery[searchCriterion].terms) &&
-                                Array.isArray(advancedSearchQuery.taxquery[searchCriterion].btags) ?
-                                 advancedSearchQuery.taxquery[searchCriterion].btags.toString() :
-                                  advancedSearchQuery.taxquery[searchCriterion].btags }}
+                                {{ advancedSearchQuery.taxquery[searchCriterion].terms }}
                         </b-tag>
                         <b-tag 
                                 v-else-if="advancedSearchQuery.metaquery[searchCriterion] && advancedSearchQuery.metaquery[searchCriterion].value"
@@ -344,7 +332,7 @@
                     'NOT LIKE': this.$i18n.get('not_contains'),
                 },
                 taxqueryOperators: {
-                    'IN': this.$i18n.get('contains'),
+                    'LIKE': this.$i18n.get('contains'),
                     'NOT IN': this.$i18n.get('not_contains')
                 },
                 searchCriteria: [1],
@@ -360,50 +348,9 @@
             }
         },
         methods: {
-            ...mapActions('taxonomy', [
-                'fetchTerms'
-            ]),
             ...mapActions('metadata', [
                 'fetchMetadata'
             ]),
-            autoCompleteTerm: _.debounce( function(value, searchCriterion){
-                if(!value){
-                    return;
-                }
-
-                this.termList = [];
-                this.terms = [];
-                this.$set(this.advancedSearchQuery.taxquery[searchCriterion], 'isFetching', 1);
-
-                this.fetchTerms({ 
-                    taxonomyId: this.advancedSearchQuery.taxquery[searchCriterion].taxonomy_id,
-                    fetchOnly: { 
-                        fetch_only: {
-                            0: 'name',
-                            1: 'id'
-                        }
-                    },
-                    search: { 
-                        searchterm: value
-                    },
-                    all: true,
-                    order: 'asc',
-                    offset: 0,
-                    number: 100,
-                }).then((res) => {
-                    this.termList = res.terms;
-
-                    for(let term in this.termList){
-                        this.terms.push(this.termList[term].name);
-                        this.termList[term].i = this.terms.length - 1;
-                    }
-
-                    this.$set(this.advancedSearchQuery.taxquery[searchCriterion], 'isFetching', 0);
-                }).catch((error) => {
-                    this.$set(this.advancedSearchQuery.taxquery[searchCriterion], 'isFetching', 0);
-                    throw error;
-                });
-            }, 300),
             isRelationship(metadatum, metadatumIndex){
                 if(!metadatum){
                     return false;
@@ -439,18 +386,6 @@
                     delete this.advancedSearchQuery.taxquery[searchCriterion];
                 } else if(this.advancedSearchQuery.metaquery[searchCriterion]){
                     delete this.advancedSearchQuery.metaquery[searchCriterion];
-                }
-            },
-            removeValueOf(value, searchCriterion){
-                if(this.advancedSearchQuery.taxquery[searchCriterion]){
-                    let tagIndex = this.advancedSearchQuery.taxquery[searchCriterion].btags.findIndex((element) => {
-                        return element == value;
-                    });
-
-                    this.advancedSearchQuery.taxquery[searchCriterion].btags.splice(tagIndex, 1);
-                    this.advancedSearchQuery.taxquery[searchCriterion].terms.splice(tagIndex, 1);
-                } else if(this.advancedSearchQuery.metaquery[searchCriterion]){
-                    this.$set(this.advancedSearchQuery.metaquery[searchCriterion], 'value', '');
                 }
             },
             // hasTagIn(value, searchCriterion){
@@ -573,7 +508,7 @@
                     return;
                 }
 
-                if(type == 'metadatum'){
+                if(type == 'metadatum') {
                     const criteriaKey = value.split('-');
                     
                     if(criteriaKey[1] != 'undefined'){
@@ -581,10 +516,7 @@
                         this.advancedSearchQuery.taxquery = Object.assign({}, this.advancedSearchQuery.taxquery, {
                             [`${searchCriterion}`]: {
                                 taxonomy: criteriaKey[1],
-                                terms: [],
-                                btags: [],
-                                field: 'term_id',
-                                operator: 'IN',
+                                operator: 'LIKE',
                                 originalMeta: value,
                                 taxonomy_id: Number(criteriaKey[1].match(/[\d]+/)),
                                 isFetching: 0,
@@ -612,16 +544,8 @@
 
                         this.$set(this.advancedSearchQuery.metaquery[searchCriterion], 'ptype', criteriaKey[2]);
                     }
-                } else if(type == 'terms'){
-                    let termIndex = this.terms.findIndex((element, index) => {
-                        if(element == value && index == this.termList[index].i){
-                            return true;
-                        }
-                    });
-
-                    this.advancedSearchQuery.taxquery[searchCriterion].terms.push(this.termList[termIndex].id);
-                    this.advancedSearchQuery.taxquery[searchCriterion].btags.push(value);
-                    this.terms = [];
+                } else if(type == "term_value") {
+                    this.$set(this.advancedSearchQuery.taxquery[searchCriterion], 'terms', value);
                 } else if(type == 'value'){
                     this.$set(this.advancedSearchQuery.metaquery[searchCriterion], 'value', value);
                 } else if(type == 'comparator'){
