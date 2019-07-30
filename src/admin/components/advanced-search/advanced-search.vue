@@ -333,7 +333,7 @@
                 },
                 taxqueryOperators: {
                     'LIKE': this.$i18n.get('contains'),
-                    'NOT IN': this.$i18n.get('not_contains')
+                    'NOT LIKE': this.$i18n.get('not_contains')
                 },
                 searchCriteria: [1],
                 advancedSearchQuery: {
