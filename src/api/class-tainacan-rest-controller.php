@@ -172,6 +172,23 @@ class REST_Controller extends \WP_REST_Controller {
 					'terms' => $terms,
 				];
 				
+			} elseif ( isset($tax_query['operator']) && $tax_query['operator'] == 'NOT LIKE' &&
+		 		isset($tax_query['terms']) && is_string($tax_query['terms']) ) {
+				
+				$terms = get_terms([
+					'taxonomy' => $tax_query['taxonomy'],
+					'fields' => 'ids',
+					'search' => $tax_query['terms']
+				]);
+				if ($terms) {
+					$new_tax_query[] = [
+						'taxonomy' => $tax_query['taxonomy'],
+						'terms' => $terms,
+						'operator' => 'NOT IN'
+					];
+				}
+				
+				
 			} else {
 				$new_tax_query[] = $tax_query;
 			}

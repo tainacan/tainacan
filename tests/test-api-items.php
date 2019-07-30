@@ -866,6 +866,74 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		$ids = array_map(function($e) { return $e['id']; }, $data);
 		$this->assertContains($item2->get_id(), $ids);
 		
+		####################################################
+		
+		$request  = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collection->get_id() . '/items');
+		
+		$attributes = [
+			'taxquery' => [
+				[
+					'taxonomy' => $taxonomy->get_db_identifier(),
+					'operator' => 'NOT LIKE',
+					'terms' => 'mellon'
+				]
+			]
+		];
+		
+		$request->set_query_params($attributes);
+		$response = $this->server->dispatch($request);
+
+		$this->assertEquals(200, $response->get_status());
+		$data = $response->get_data()['items'];
+		
+		$this->assertEquals(1, count($data));
+		$ids = array_map(function($e) { return $e['id']; }, $data);
+		$this->assertContains($item3->get_id(), $ids);
+		
+		####################################################
+		
+		$request  = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collection->get_id() . '/items');
+		
+		$attributes = [
+			'taxquery' => [
+				[
+					'taxonomy' => $taxonomy->get_db_identifier(),
+					'operator' => 'NOT LIKE',
+					'terms' => '__does_not_exists'
+				]
+			]
+		];
+		
+		$request->set_query_params($attributes);
+		$response = $this->server->dispatch($request);
+
+		$this->assertEquals(200, $response->get_status());
+		$data = $response->get_data()['items'];
+		
+		$this->assertEquals(3, count($data));
+		
+		####################################################
+		
+		$request  = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collection->get_id() . '/items');
+		
+		$attributes = [
+			'taxquery' => [
+				[
+					'taxonomy' => $taxonomy->get_db_identifier(),
+					'operator' => 'LIKE',
+					'terms' => '__does_not_exists'
+				]
+			]
+		];
+		
+		$request->set_query_params($attributes);
+		$response = $this->server->dispatch($request);
+
+		$this->assertEquals(200, $response->get_status());
+		$data = $response->get_data()['items'];
+		
+		$this->assertEquals(0, count($data));
+		
 	}
 	
 }
