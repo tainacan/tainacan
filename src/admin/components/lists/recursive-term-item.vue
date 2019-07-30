@@ -34,8 +34,8 @@
         </span>
         <span 
                 class="term-name" 
-                :class="{'is-danger': formWithErrors == term.id }">
-            {{ term.name }}
+                :class="{'is-danger': formWithErrors == term.id, 'is-italic': !term.name }">
+            {{ term.name ? term.name : $i18n.get('label_term_without_name') }}
         </span>
         <span 
                 v-if="term.id == 'new'"
