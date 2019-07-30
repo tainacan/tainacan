@@ -425,6 +425,50 @@ class Metadata extends TAINACAN_UnitTestCase {
 		$this->assertEquals($metadatum->get_id(), $fetch[0]->get_id());
 		
     }
+	
+	function test_relatioship_get_collection_method() {
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+		
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name' => 'teste'
+			),
+			true
+		);
+		
+		$collection2 = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name' => 'teste2'
+			),
+			true
+		);
+		
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'meta',
+				'description' => 'description',
+				'collection' => $collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Relationship',
+				'status'	 => 'publish',
+				'metadata_type_options' => [
+					'collection_id' => $collection2->get_id(),
+					'search' => [$collection2->get_core_title_metadatum()->get_id()]
+					]
+				),
+				true
+		);
+			
+		$object = $metadatum->get_metadata_type_object();
+		
+		$colCheck = $object->get_collection();
+		
+		$this->assertTrue( $colCheck instanceof \Tainacan\Entities\Collection );
+		$this->assertEquals($collection2->get_id(), $colCheck->get_id());
+		
+	}
 }
 
 /**

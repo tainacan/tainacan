@@ -174,4 +174,23 @@ class Relationship extends Metadata_Type {
 		
 	}
 	
+	/**
+	 * Get related Collection object 
+	 * @return \Tainacan\Entities\Collection|false The Collection object or false
+	 */
+	public function get_collection() {
+		
+		$collection_id = $this->get_option('collection_id');
+		
+		if ( is_numeric($collection_id) ) {
+			$collection = \Tainacan\Repositories\Collections::get_instance()->fetch( (int) $collection_id );
+			if ( $collection instanceof \Tainacan\Entities\Collection ) {
+				return $collection;
+			}
+		}
+		
+		return false;
+		
+	}
+	
 }
