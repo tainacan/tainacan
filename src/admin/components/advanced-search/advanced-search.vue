@@ -341,8 +341,6 @@
                     metaquery: {},
                     taxquery: {}
                 },
-                termList: [],
-                terms: [],
                 metadataIsLoading: false,
                 metadata: [],
             }
