@@ -53,21 +53,17 @@ registerBlockType('tainacan/search-bar', {
             type: Boolean,
             default: false
         },
-        gridMargin: {
-            type: Number,
-            default: 0
-        },
         searchURL: {
-            type: String,
-            default: undefined
-        },
-        itemsRequestSource: {
             type: String,
             default: undefined
         },
         maxItemsNumber: {
             type: Number,
             value: undefined
+        },
+        maxWidth: {
+            type: Number,
+            value: 80
         },
         isLoading: {
             type: Boolean,
@@ -115,7 +111,7 @@ registerBlockType('tainacan/search-bar', {
         }
     },
     supports: {
-        align: ['full', 'wide'],
+        align: ['full', 'wide', 'left', 'center', 'right'],
         html: false,
     },
     styles: [
@@ -126,6 +122,9 @@ registerBlockType('tainacan/search-bar', {
         },{
             name: 'alternate',
             label: __('alternate', 'tainacan'),
+        },{
+            name: 'stylish',
+            label: __('stylish', 'tainacan'),
         }
     ],
     edit({ attributes, setAttributes, className, isSelected, clientId }){
@@ -137,12 +136,11 @@ registerBlockType('tainacan/search-bar', {
             showImage,
             showName,
             isModalOpen,
-            gridMargin,
             searchURL,
-            itemsRequestSource,
             maxItemsNumber,
+            maxWidth,
             order,
-            searchString,
+            searchString, 
             isLoading,
             showSearchBar,
             showCollectionHeader,
@@ -162,6 +160,7 @@ registerBlockType('tainacan/search-bar', {
                 content: (
                     <div class="tainacan-search-container">
                         <form
+                                style={{ maxWidth: maxWidth + '%' }}
                                 id="taincan-search-bar-block"
                                 action={ tainacan_plugin.site_url + '/' + collectionSlug + '/#/' }
                                 method='get'>
@@ -339,25 +338,19 @@ registerBlockType('tainacan/search-bar', {
                                 }
                             />
                         </PanelBody>
-                        <PanelBody
-                                title={__('Items', 'tainacan')}
-                                initialOpen={ true }
-                            >
-                            <div>
-                                <RangeControl
-                                    label={__('Maximum number of items', 'tainacan')}
-                                    value={ maxItemsNumber }
-                                    onChange={ ( aMaxItemsNumber ) => {
-                                        maxItemsNumber = aMaxItemsNumber;
-                                        setAttributes( { maxItemsNumber: aMaxItemsNumber } ) 
-                                        setContent();
-                                    }}
-                                    min={ 1 }
-                                    max={ 96 }
-                                />
-                            </div>
-                            
-                        </PanelBody>
+                        <div>
+                            <RangeControl
+                                label={__('Maximum width size (%)', 'tainacan')}
+                                value={ maxWidth ? maxWidth : 80 }
+                                onChange={ ( aMaxWidth ) => {
+                                    maxWidth = aMaxWidth;
+                                    setAttributes( { maxWidth: aMaxWidth } ) 
+                                    setContent();
+                                }}
+                                min={ 25 }
+                                max={ 100 }
+                            />
+                        </div>
                     </InspectorControls>
                 </div>
 

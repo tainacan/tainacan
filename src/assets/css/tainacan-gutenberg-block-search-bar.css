@@ -143,7 +143,6 @@
 .wp-block-tainacan-search-bar {
   margin: 2rem 0px; }
   .wp-block-tainacan-search-bar .tainacan-search-container form#taincan-search-bar-block {
-    width: 800px;
     height: 32px;
     max-width: 100%;
     display: flex;
@@ -165,6 +164,7 @@
       display: flex;
       align-items: center;
       border: none;
+      box-shadow: none;
       border-radius: 0;
       background: #f2f2f2;
       padding: 4px 1rem;
@@ -172,6 +172,8 @@
       transition: background ease 0.3s; }
       .wp-block-tainacan-search-bar .tainacan-search-container form#taincan-search-bar-block button:hover {
         background: #dbdbdb; }
+        .wp-block-tainacan-search-bar .tainacan-search-container form#taincan-search-bar-block button:hover .icon svg {
+          fill: #545758; }
       .wp-block-tainacan-search-bar .tainacan-search-container form#taincan-search-bar-block button .icon {
         height: 28px; }
         .wp-block-tainacan-search-bar .tainacan-search-container form#taincan-search-bar-block button .icon svg {
@@ -203,8 +205,6 @@
       .wp-block-tainacan-search-bar.is-style-alternate form#taincan-search-bar-block button .icon svg {
         fill: #cbcbcb;
         transition: fill 0.4s ease; }
-      .wp-block-tainacan-search-bar.is-style-alternate form#taincan-search-bar-block button:hover .icon svg {
-        fill: #545758; }
     @media only screen and (max-width: 768px) {
       .wp-block-tainacan-search-bar.is-style-alternate form#taincan-search-bar-block {
         flex-wrap: wrap; }
@@ -213,6 +213,62 @@
           position: absolute;
           margin-top: 37px; }
         .wp-block-tainacan-search-bar.is-style-alternate form#taincan-search-bar-block input {
+          width: 100% !important;
+          order: 5;
+          margin-top: 8px;
+          margin-left: 0px !important;
+          padding-left: 4px !important;
+          border-color: #dbdbdb !important; } }
+  .wp-block-tainacan-search-bar.is-style-stylish form#taincan-search-bar-block {
+    width: 100%;
+    height: 53px;
+    display: flex;
+    flex-direction: row;
+    border: none; }
+    .wp-block-tainacan-search-bar.is-style-stylish form#taincan-search-bar-block:hover input#taincan-search-bar-block_input {
+      width: 100%;
+      padding-right: 52px;
+      padding-left: 24px;
+      border: none !important;
+      box-shadow: 0px 4px 17px -9px black; }
+    .wp-block-tainacan-search-bar.is-style-stylish form#taincan-search-bar-block input#taincan-search-bar-block_input {
+      width: 0%;
+      border-radius: 28px;
+      margin-right: -56px;
+      padding-right: 27px;
+      padding-left: 26px;
+      font-size: 1rem;
+      border: none;
+      box-shadow: 0px 3px 12px -7px black;
+      background: rgba(250, 250, 250, 0.8);
+      transition: width 0.5s ease-in, box-shadow 0.5s ease; }
+      .wp-block-tainacan-search-bar.is-style-stylish form#taincan-search-bar-block input#taincan-search-bar-block_input:focus, .wp-block-tainacan-search-bar.is-style-stylish form#taincan-search-bar-block input#taincan-search-bar-block_input:active, .wp-block-tainacan-search-bar.is-style-stylish form#taincan-search-bar-block input#taincan-search-bar-block_input:hover {
+        width: 100%;
+        padding-right: 52px;
+        padding-left: 24px;
+        border: none !important;
+        box-shadow: 0px 3px 16px -9px black; }
+    .wp-block-tainacan-search-bar.is-style-stylish form#taincan-search-bar-block button {
+      margin-left: 0.75rem;
+      padding: 0 0.35rem;
+      min-height: 28px;
+      z-index: 2;
+      border: none;
+      background: transparent;
+      cursor: pointer; }
+      .wp-block-tainacan-search-bar.is-style-stylish form#taincan-search-bar-block button .icon svg {
+        fill: black;
+        transition: fill 0.4s ease; }
+      .wp-block-tainacan-search-bar.is-style-stylish form#taincan-search-bar-block button:hover {
+        background: transparent; }
+    @media only screen and (max-width: 768px) {
+      .wp-block-tainacan-search-bar.is-style-stylish form#taincan-search-bar-block {
+        flex-wrap: wrap; }
+        .wp-block-tainacan-search-bar.is-style-stylish form#taincan-search-bar-block .search-button {
+          order: 4;
+          position: absolute;
+          margin-top: 37px; }
+        .wp-block-tainacan-search-bar.is-style-stylish form#taincan-search-bar-block input {
           width: 100% !important;
           order: 5;
           margin-top: 8px;
