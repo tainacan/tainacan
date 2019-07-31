@@ -735,14 +735,14 @@
                 <!-- Admin View Modes-->
                 <items-list
                         v-if="!isOnTheme && 
-                              !isLoadingItems &&
+                              !showLoading &&
                               totalItems > 0 &&
                               ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
                         :collection-id="collectionId"
                         :table-metadata="displayedMetadata"
                         :items="items"
                         :total-items="totalItems"
-                        :is-loading="isLoadingItems"
+                        :is-loading="showLoading"
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"
                         @updateIsLoading="newIsLoading => isLoadingItems = newIsLoading"/>
