@@ -447,7 +447,7 @@ export default {
         }
     },
     created() {
-        if (this.taxonomyId !== String) {
+        if (this.taxonomyId != undefined && this.taxonomyId !== String) {
             this.loadTerms(0);
         }
         this.$root.$on('onChildTermDeleted', this.eventOnChildTermDeleted);
