@@ -938,7 +938,8 @@ abstract class Importer {
 		$supported_types = array_map('strtolower', $supported_types);
 		
 		if ( ! \in_array($type, $supported_types) ) {
-			$this->add_log( __('Unknown Metadata type "' . $type . '" for '.$name.'. Considering text type.', 'tainacan') );
+			// translators: Warning on import logs. Invalid metadata type passed, using text type as fallback. 1 is the invalid type; 2 the name of the metadata. Ex: Unknown Metadata type "Hexadecimal" for Color. Considering text type.
+			$this->add_log( sprintf(__('Unknown Metadata type "%1$s" for %2$s. Considering text type.', 'tainacan'), $type, $name) );
 			$type = 'text';
 		}
 		
