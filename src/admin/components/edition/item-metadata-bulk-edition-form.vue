@@ -2,7 +2,7 @@
     <div>
         <b-loading
                 :is-full-page="false"
-                :active.sync="isLoadingMetadata"
+                :active.sync="showLoading"
                 :can-cancel="false"/>
         <div class="tainacan-page-title">
             <h1><span class="status-tag">{{ $i18n.get('status_' + status) }}</span>{{ $i18n.get('label_bulk_edit_items') }}</h1>
@@ -98,7 +98,8 @@
                     </a>
 
                     <template 
-                                v-for="(metadatum, index) of metadata">
+                            v-if="!showLoading"
+                            v-for="(metadatum, index) of metadata">
                         <b-field
                                 :key="index"
                                 :addons="false"
@@ -129,6 +130,7 @@
                                             :id="metadatum.metadata_type_object.component + '-' + metadatum.slug"
                                             :is="metadatum.metadata_type_object.component"
                                             :metadatum="{ metadatum: metadatum }"
+                                            :value="itemMetadata[index].value"
                                             @input="clearErrorMessage(metadatum.id); bulkEdit($event, metadatum)"/>
                                             <!-- :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
                                             :disabled="bulkEditionProcedures[criterion].isDone || bulkEditionProcedures[criterion].isExecuting" -->
@@ -157,11 +159,19 @@
                 </div>  
                 <div class="form-submission-footer">
                     <button 
+                            v-if="status != 'trash'"
                             @click="onSubmit('trash')"
                             type="button"
                             :class="{ 'is-loading': isTrashingItems }"
-                            class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>        
+                            class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>       
                     <button 
+                            v-if="status == 'trash'"
+                            class="button is-secondary" 
+                            :class="{'is-loading': isCreatingSequenceEditGroup || isTrashingItems }"
+                            @click.prevent="status = previousStatus; changeStatus(previousStatus)"
+                            type="submit">{{ $i18n.get('label_recover_from_trash') }}</button>      
+                    <button 
+                            :disabled="status == 'trash'"
                             class="button is-secondary" 
                             :class="{'is-loading': isCreatingSequenceEditGroup }"
                             @click.prevent="sequenceEditGroup()"
@@ -189,6 +199,7 @@ export default {
             collectionId: '',
             isLoadingItems: false,
             isLoadingMetadata: false,
+            isLoadingItemMetadata: false,
             isLoadingGroupInfo: false,
             isExecutingBulkEdit: false,
             isCreatingSequenceEditGroup: false,
@@ -198,10 +209,13 @@ export default {
             collapseAll: true,
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
             metadatumCollapses: [],
+            itemMetadata: [],
             formErrors: {},
             status: 'draft',
+            previousStatus: 'draft',
             groupID: null,
-            formErrorMessage: ''
+            formErrorMessage: '',
+            copyItemId: null
         }
     },
     computed: {
@@ -216,12 +230,16 @@ export default {
         },
         bulkEditGroup() {
             return this.getGroup();
+        },
+        showLoading() {
+            return this.isLoadingMetadata || this.isLoadingItemMetadata;
         }
     },
     methods: {
-        ...mapActions('item', [
-            'updateItem'
-        ]),
+        ...mapActions('item', {
+            'updateItem': 'updateItem',
+            'fetchItemMetadata':'fetchMetadata'
+        }),
         ...mapActions('metadata', [
             'fetchMetadata',
         ]),
@@ -257,30 +275,23 @@ export default {
             this.metadatumCollapses.splice(index, 1, event);
         },
         bulkEdit: _.debounce(function(newValue, metadatum) {
-            let values = [];
-            if (!(Array.isArray(newValue)))
-                values.push(newValue);
-            else
-                values = newValue;
 
-            for (let value of values) {
-                this.isExecutingBulkEdit = true;
-                this.setValueInBulk({
-                    collectionID: this.collectionId,
-                    groupID: this.groupID,
-                    bodyParams: {
-                        metadatum_id: metadatum.id,
-                        value: value,
-                    }
-                }).then(() => {
-                    this.isExecutingBulkEdit = false;
+            this.isExecutingBulkEdit = true;
+            this.setValueInBulk({
+                collectionID: this.collectionId,
+                groupID: this.groupID,
+                bodyParams: {
+                    metadatum_id: metadatum.id,
+                    value: newValue,
+                }
+            }).then(() => {
+                this.isExecutingBulkEdit = false;
 
-                }).catch(() => this.isExecutingBulkEdit = false);
-            }
-
+            }).catch(() => this.isExecutingBulkEdit = false);
         }, 1000),
         onSubmit(status) {
             this.isExecutingBulkEdit = true;
+            this.previousStatus = status;
 
             if (status != 'trash') {
                 this.status = status;
@@ -336,46 +347,54 @@ export default {
         changeStatus(status) {
             this.isPublishingItems = true;
 
-            // Gets an item from the bulk group
-            this.fetchItemIdInSequence({ collectionId: this.collectionId, sequenceId: this.groupID, itemPosition: 1 })
-                .then((itemId) => {
+            if (!this.copyItemId){
+                // Gets an item from the bulk group
+                this.fetchItemIdInSequence({ collectionId: this.collectionId, sequenceId: this.groupID, itemPosition: 1 })
+                    .then((itemId) => {
+                        this.copyItemId = itemId;
+                        this.updateItemStatus(status);
+                    })
+                    .catch(() => {
+                        this.isPublishingItems = false;
+                        this.isExecutingBulkEdit = false;
+                    });
+            } else {
+                this.updateItemStatus(status);
+            }
+        },
+        updateItemStatus(status) {
 
-                    // Test if this item can be set to this status
-                    this.updateItem({ id: itemId, status: status })
-                        .then(() => {
+            // Test if this item can be set to this status
+            this.updateItem({ id: this.copyItemId, status: status })
+                .then(() => {
 
-                            // The status can be applied to everyone.
-                            this.setStatusInBulk({
-                                groupID: this.groupID,
-                                collectionID: this.collectionId,
-                                bodyParams: { value: status }
-                            }).then(() => {
-                            
-                                this.status = status;
-                                this.isPublishingItems = false;
-                                this.isExecutingBulkEdit = false;
-                                
-                            }).catch(() => {
-                                this.isPublishingItems = false;
-                                this.isExecutingBulkEdit = false;
-                            });
-                        })
-                        .catch((errors) => {
-                            // The status can not be applied.
-                            this.isPublishingItems = false;
-                            this.isExecutingBulkEdit = false;
-
-                            for (let error of errors.errors) {
-                                for (let metadatum of Object.keys(error)){
-                                    this.formErrors[metadatum] = error[metadatum];
-                                }
-                            }
-                            this.formErrorMessage = errors.error_message;
-                        });
+                    // The status can be applied to everyone.
+                    this.setStatusInBulk({
+                        groupID: this.groupID,
+                        collectionID: this.collectionId,
+                        bodyParams: { value: status }
+                    }).then(() => {
+                    
+                        this.status = status;
+                        this.isPublishingItems = false;
+                        this.isExecutingBulkEdit = false;
+                        
+                    }).catch(() => {
+                        this.isPublishingItems = false;
+                        this.isExecutingBulkEdit = false;
+                    });
                 })
-                .catch(() => {
+                .catch((errors) => {
+                    // The status can not be applied.
                     this.isPublishingItems = false;
                     this.isExecutingBulkEdit = false;
+
+                    for (let error of errors.errors) {
+                        for (let metadatum of Object.keys(error)){
+                            this.formErrors[metadatum] = error[metadatum];
+                        }
+                    }
+                    this.formErrorMessage = errors.error_message;
                 });
         },
         clearErrorMessage(metadatumId) {
@@ -402,6 +421,19 @@ export default {
             } 
             return msg;
         },
+        loadItemMetadata() {
+            this.isLoadingItemMetadata = true;
+            // Gets an item from the bulk group
+            this.fetchItemIdInSequence({ collectionId: this.collectionId, sequenceId: this.groupID, itemPosition: 1 })
+                .then((itemId) => {
+                    this.copyItemId = itemId;
+                    this.fetchItemMetadata(this.copyItemId)
+                        .then((metadata) => {
+                            this.itemMetadata = metadata;
+                            this.isLoadingItemMetadata = false;
+                        });
+                });
+        }
     },
     created() {
         // Obtains collection ID
@@ -426,6 +458,7 @@ export default {
                 this.metadatumCollapses.push(false);
                 this.metadatumCollapses[i] = true;
             }
+            this.loadItemMetadata();
         });
 
         this.isLoadingGroupInfo = true;
