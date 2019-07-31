@@ -779,7 +779,7 @@
                                 <i class="tainacan-icon tainacan-icon-36px tainacan-icon-items" />
                             </span>
                         </p>
-                        <p v-if="status == undefined || status == ''">{{ hasFiltered ? (isSortingByCustomMetadata ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_found_filter')) : $i18n.get('info_no_item_created') }}</p>
+                        <p v-if="status == undefined || status == ''">{{ hasFiltered ? $i18n.get('info_no_item_found_filter') : (isSortingByCustomMetadata ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_created')) }}</p>
                         <p
                                 v-for="(statusOption, index) of $statusHelper.getStatuses()"
                                 :key="index"
