@@ -1,8 +1,8 @@
-const { registerBlockType, registerBlockStyle } = wp.blocks;
+const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, TextControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, ColorPicker, ColorPalette, BaseControl, Panel, PanelBody, PanelRow } = wp.components;
+const { RangeControl, TextControl, Spinner, Button, ToggleControl, Placeholder, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
 
 const { InspectorControls } = wp.editor;
 
@@ -14,12 +14,18 @@ registerBlockType('tainacan/search-bar', {
     icon:
         <svg
                 xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
+                viewBox="-2 -2 20 20"
                 height="24px"
                 width="24px">
-            <path
+            <path 
                 fill="#298596"
-                d="M14,2V4H7v7.24A5.33,5.33,0,0,0,5.5,11a4.07,4.07,0,0,0-.5,0V4A2,2,0,0,1,7,2Zm7,10v8a2,2,0,0,1-2,2H12l1-1-2.41-2.41A5.56,5.56,0,0,0,11,16.53a5.48,5.48,0,0,0-2-4.24V8a2,2,0,0,1,2-2h4Zm-2.52,0L14,7.5V12ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1-.5-7,2.74,2.74,0,0,1,.5,0,3.41,3.41,0,0,1,1.5.34,3.5,3.5,0,0,1,2,3.16,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,0,0,5.5,15a1.39,1.39,0,0,0-.5.09A1.5,1.5,0,0,0,5.5,18a1.48,1.48,0,0,0,1.42-1A1.5,1.5,0,0,0,7,16.53Z"/>
+                d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
+                c0.7,0.3,1.3,0.7,1.8,1.2s0.9,1.1,1.2,1.8c0.5,1.2,0.5,2.5,0.2,3.7c0,0.2-0.1,0.4-0.2,0.6c0,0.1-0.2,0.6-0.2,0.6
+                c0.6,0.6,1.3,1.3,1.9,1.9c0.7,0.7,1.3,1.3,2,2c0,0,0.3,0.2,0.3,0.3c0,0.3-0.1,0.7-0.3,1c-0.2,0.6-0.8,1-1.4,1.2
+                c-0.1,0-0.6,0.2-0.6,0.1c0,0-4.2-4.2-4.2-4.2c0,0-0.8,0.3-0.8,0.4c-1.3,0.4-2.8,0.5-4.1-0.1c-0.7-0.3-1.3-0.7-1.8-1.2
+                C1.2,9.3,0.8,8.7,0.5,8S0,6.6,0,5.8z M1.6,5.8c0,0.4,0.1,0.9,0.2,1.3C2.1,8.2,3,9.2,4.1,9.6c0.5,0.2,1,0.3,1.6,0.3
+                c0.6,0,1.1-0.1,1.6-0.3C8.7,9,9.7,7.6,9.8,6c0.1-1.5-0.6-3.1-2-3.9c-0.9-0.5-2-0.6-3-0.4C4.6,1.8,4.4,1.9,4.1,2
+                c-0.5,0.2-1,0.5-1.4,0.9C2,3.7,1.6,4.7,1.6,5.8z"/>
         </svg>,
     category: 'tainacan-blocks',
     keywords: [ __( 'items', 'tainacan' ), __( 'search', 'tainacan' ), __( 'bar', 'tainacan' ) ],
@@ -37,10 +43,6 @@ registerBlockType('tainacan/search-bar', {
             type: String,
             default: undefined
         },
-        items: {
-            type: Array,
-            default: []
-        },
         showImage: {
             type: Boolean,
             default: true
@@ -53,27 +55,19 @@ registerBlockType('tainacan/search-bar', {
             type: Boolean,
             default: false
         },
-        searchURL: {
-            type: String,
-            default: undefined
-        },
-        maxItemsNumber: {
-            type: Number,
-            value: undefined
-        },
         maxWidth: {
             type: Number,
             value: 80
+        },
+        placeholderText: {
+            type: String,
+            default: __('Search', 'taincan')
         },
         isLoading: {
             type: Boolean,
             value: false
         },
         isLoadingCollection: {
-            type: Boolean,
-            value: false
-        },
-        showSearchBar: {
             type: Boolean,
             value: false
         },
@@ -89,18 +83,6 @@ registerBlockType('tainacan/search-bar', {
             type: Object,
             value: undefined
         },
-        searchString: {
-            type: String,
-            default: undefined
-        },
-        order: {
-            type: String,
-            default: undefined
-        },
-        blockId: {
-            type: String,
-            default: undefined
-        },
         collectionBackgroundColor: {
             type: String,
             default: "#454647"
@@ -112,7 +94,7 @@ registerBlockType('tainacan/search-bar', {
     },
     supports: {
         align: ['full', 'wide', 'left', 'center', 'right'],
-        html: false,
+        html: false
     },
     styles: [
         {
@@ -129,20 +111,15 @@ registerBlockType('tainacan/search-bar', {
     ],
     edit({ attributes, setAttributes, className, isSelected, clientId }){
         let {
-            items, 
             content, 
             collectionId,  
             collectionSlug,
             showImage,
             showName,
+            placeholderText,
             isModalOpen,
-            searchURL,
-            maxItemsNumber,
             maxWidth,
-            order,
-            searchString, 
             isLoading,
-            showSearchBar,
             showCollectionHeader,
             showCollectionLabel,
             isLoadingCollection,
@@ -168,7 +145,7 @@ registerBlockType('tainacan/search-bar', {
                                 id="taincan-search-bar-block_input"
                                 label={ __('Search', 'taincan')}
                                 name='search'
-                                placeholder={ __('Search', 'taincan')}
+                                placeholder={ placeholderText }
                             />
                             <button 
                                     class="button"
@@ -176,7 +153,7 @@ registerBlockType('tainacan/search-bar', {
                                 <span class="icon">
                                     <i>
                                         <svg width="24" height="24" viewBox="-2 -4 20 20">
-                                        <path class="st0" d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
+                                        <path d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
                                             c0.7,0.3,1.3,0.7,1.8,1.2s0.9,1.1,1.2,1.8c0.5,1.2,0.5,2.5,0.2,3.7c0,0.2-0.1,0.4-0.2,0.6c0,0.1-0.2,0.6-0.2,0.6
                                             c0.6,0.6,1.3,1.3,1.9,1.9c0.7,0.7,1.3,1.3,2,2c0,0,0.3,0.2,0.3,0.3c0,0.3-0.1,0.7-0.3,1c-0.2,0.6-0.8,1-1.4,1.2
                                             c-0.1,0-0.6,0.2-0.6,0.1c0,0-4.2-4.2-4.2-4.2c0,0-0.8,0.3-0.8,0.4c-1.3,0.4-2.8,0.5-4.1-0.1c-0.7-0.3-1.3-0.7-1.8-1.2
@@ -244,17 +221,6 @@ registerBlockType('tainacan/search-bar', {
             } );
         }
 
-        function applySearchString(event) {
-
-            let value = event.target.value;
-
-            if (searchString != value) {
-                searchString = value;
-                setAttributes({ searchString: searchString });
-                setContent();
-            }
-        }
-
         // Executed only on the first load of page
         if(content && content.length && content[0].type)
             setContent();
@@ -264,7 +230,31 @@ registerBlockType('tainacan/search-bar', {
 
                 <div>
                     <InspectorControls>
-                        
+                        <hr />
+                        <div style={{ marginTop: '24px' }}>
+                            <TextControl
+                                label={ __('Placeholder text', 'tainacan') }
+                                value={ placeholderText }
+                                onChange={ ( aPlaceholderText ) => {
+                                    placeholderText = aPlaceholderText
+                                    setAttributes( { placeholderText: placeholderText } );
+                                    setContent(); 
+                                }}
+                            />
+                        </div>
+                        <div style={{ marginBottom: '12px' }}>
+                            <RangeControl
+                                label={__('Maximum width size (%)', 'tainacan')}
+                                value={ maxWidth ? maxWidth : 80 }
+                                onChange={ ( aMaxWidth ) => {
+                                    maxWidth = aMaxWidth;
+                                    setAttributes( { maxWidth: aMaxWidth } ) 
+                                    setContent();
+                                }}
+                                min={ 25 }
+                                max={ 100 }
+                            />
+                        </div>
                         <PanelBody
                                 title={__('Collection header', 'tainacan')}
                                 initialOpen={ false }
@@ -323,34 +313,6 @@ registerBlockType('tainacan/search-bar', {
                                 : null
                                 }
                         </PanelBody> 
-                        <PanelBody
-                                title={__('Search bar', 'tainacan')}
-                                initialOpen={ true }
-                            >
-                            <ToggleControl
-                                label={__('Display bar', 'tainacan')}
-                                help={ showSearchBar ? __('Toggle to show search bar on block', 'tainacan') : __('Do not show search bar', 'tainacan')}
-                                checked={ showSearchBar }
-                                onChange={ ( isChecked ) => {
-                                        showSearchBar = isChecked;
-                                        setAttributes({ showSearchBar: showSearchBar });
-                                    } 
-                                }
-                            />
-                        </PanelBody>
-                        <div>
-                            <RangeControl
-                                label={__('Maximum width size (%)', 'tainacan')}
-                                value={ maxWidth ? maxWidth : 80 }
-                                onChange={ ( aMaxWidth ) => {
-                                    maxWidth = aMaxWidth;
-                                    setAttributes( { maxWidth: aMaxWidth } ) 
-                                    setContent();
-                                }}
-                                min={ 25 }
-                                max={ 100 }
-                            />
-                        </div>
                     </InspectorControls>
                 </div>
 
@@ -376,23 +338,29 @@ registerBlockType('tainacan/search-bar', {
                             : null
                         }
                         
-                        { items.length ? (
+                        { collectionId ? (
                             <div className="block-control">
                                 <p>
-                                    <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            height="24px"
-                                            width="24px">
-                                        <path d="M14,2V4H7v7.24A5.33,5.33,0,0,0,5.5,11a4.07,4.07,0,0,0-.5,0V4A2,2,0,0,1,7,2Zm7,10v8a2,2,0,0,1-2,2H12l1-1-2.41-2.41A5.56,5.56,0,0,0,11,16.53a5.48,5.48,0,0,0-2-4.24V8a2,2,0,0,1,2-2h4Zm-2.52,0L14,7.5V12ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1-.5-7,2.74,2.74,0,0,1,.5,0,3.41,3.41,0,0,1,1.5.34,3.5,3.5,0,0,1,2,3.16,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,0,0,5.5,15a1.39,1.39,0,0,0-.5.09A1.5,1.5,0,0,0,5.5,18a1.48,1.48,0,0,0,1.42-1A1.5,1.5,0,0,0,7,16.53Z"/>
-                                    </svg>
-                                    {__('Dynamically list items from a Tainacan items search', 'tainacan')}
+                                <span class="icon">
+                                    <i>
+                                        <svg width="24" height="24" viewBox="-2 -2 20 20">
+                                                <path d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
+                                                    c0.7,0.3,1.3,0.7,1.8,1.2s0.9,1.1,1.2,1.8c0.5,1.2,0.5,2.5,0.2,3.7c0,0.2-0.1,0.4-0.2,0.6c0,0.1-0.2,0.6-0.2,0.6
+                                                    c0.6,0.6,1.3,1.3,1.9,1.9c0.7,0.7,1.3,1.3,2,2c0,0,0.3,0.2,0.3,0.3c0,0.3-0.1,0.7-0.3,1c-0.2,0.6-0.8,1-1.4,1.2
+                                                    c-0.1,0-0.6,0.2-0.6,0.1c0,0-4.2-4.2-4.2-4.2c0,0-0.8,0.3-0.8,0.4c-1.3,0.4-2.8,0.5-4.1-0.1c-0.7-0.3-1.3-0.7-1.8-1.2
+                                                    C1.2,9.3,0.8,8.7,0.5,8S0,6.6,0,5.8z M1.6,5.8c0,0.4,0.1,0.9,0.2,1.3C2.1,8.2,3,9.2,4.1,9.6c0.5,0.2,1,0.3,1.6,0.3
+                                                    c0.6,0,1.1-0.1,1.6-0.3C8.7,9,9.7,7.6,9.8,6c0.1-1.5-0.6-3.1-2-3.9c-0.9-0.5-2-0.6-3-0.4C4.6,1.8,4.4,1.9,4.1,2
+                                                    c-0.5,0.2-1,0.5-1.4,0.9C2,3.7,1.6,4.7,1.6,5.8z"/>       
+                                                </svg>
+                                            </i> 
+                                        </span>
+                                    {__('Set up a custom search bar to redirect to an item\'s list', 'tainacan')}
                                 </p>
                                 <Button
                                     isPrimary
                                     type="submit"
                                     onClick={ () => openSearchBarModal() }>
-                                    {__('Configure search', 'tainacan')}
+                                    {__('Configure search source', 'tainacan')}
                                 </Button>    
                             </div>
                             ): null
@@ -452,98 +420,6 @@ registerBlockType('tainacan/search-bar', {
                     : null
                 }
 
-                {
-                    showSearchBar ?
-                    <div class="search-bar-search-bar">
-                        <Button
-                            onClick={ () => { order = 'asc'; setAttributes({ order: order }); setContent(); }}
-                            className={order == 'asc' ? 'sorting-button-selected' : ''}
-                            label={__('Sort ascending', 'tainacan')}>
-                            <span class="icon">
-                                <i>
-                                    <svg width="24" height="24" viewBox="-2 -4 20 20">
-                                    <path d="M6.7,10.8l-3.3,3.3L0,10.8h2.5V0h1.7v10.8H6.7z M11.7,0.8H8.3v1.7h3.3V0.8z M14.2,5.8H8.3v1.7h5.8V5.8z M16.7,10.8H8.3v1.7	h8.3V10.8z"/>       
-                                    </svg>
-                                </i>
-                            </span>
-                        </Button>  
-                        <Button
-                            onClick={ () => { order = 'desc'; setAttributes({ order: order }); setContent(); }}
-                            className={order == 'desc' ? 'sorting-button-selected' : ''}
-                            label={__('Sort descending', 'tainacan')}>
-                            <span class="icon">
-                                <i>
-                                    <svg width="24" height="24" viewBox="-2 -4 20 20">
-                                    <path d="M6.7,3.3H4.2v10.8H2.5V3.3H0L3.3,0L6.7,3.3z M11.6,2.5H8.3v1.7h3.3V2.5z M14.1,7.5H8.3v1.7h5.8V7.5z M16.6,12.5H8.3v1.7 h8.3V12.5z"/>
-                                    </svg>
-                                </i>
-                            </span>
-                        </Button>  
-                        <Button
-                            onClick={ () => { setContent(); }}
-                            label={__('Search', 'tainacan')}>
-                            <span class="icon">
-                                <i>
-                                    <svg width="24" height="24" viewBox="-2 -4 20 20">
-                                    <path class="st0" d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
-                                        c0.7,0.3,1.3,0.7,1.8,1.2s0.9,1.1,1.2,1.8c0.5,1.2,0.5,2.5,0.2,3.7c0,0.2-0.1,0.4-0.2,0.6c0,0.1-0.2,0.6-0.2,0.6
-                                        c0.6,0.6,1.3,1.3,1.9,1.9c0.7,0.7,1.3,1.3,2,2c0,0,0.3,0.2,0.3,0.3c0,0.3-0.1,0.7-0.3,1c-0.2,0.6-0.8,1-1.4,1.2
-                                        c-0.1,0-0.6,0.2-0.6,0.1c0,0-4.2-4.2-4.2-4.2c0,0-0.8,0.3-0.8,0.4c-1.3,0.4-2.8,0.5-4.1-0.1c-0.7-0.3-1.3-0.7-1.8-1.2
-                                        C1.2,9.3,0.8,8.7,0.5,8S0,6.6,0,5.8z M1.6,5.8c0,0.4,0.1,0.9,0.2,1.3C2.1,8.2,3,9.2,4.1,9.6c0.5,0.2,1,0.3,1.6,0.3
-                                        c0.6,0,1.1-0.1,1.6-0.3C8.7,9,9.7,7.6,9.8,6c0.1-1.5-0.6-3.1-2-3.9c-0.9-0.5-2-0.6-3-0.4C4.6,1.8,4.4,1.9,4.1,2
-                                        c-0.5,0.2-1,0.5-1.4,0.9C2,3.7,1.6,4.7,1.6,5.8z"/>       
-                                    </svg>
-                                </i>
-                            </span>
-                        </Button>
-                        <input
-                                value={ searchString }
-                                onChange={ (value) =>  { _.debounce(applySearchString(value), 300); } }
-                                type="text"/>
-                        <Tooltip text={__('If necessary, pagination will be available on post or page.', 'tainacan')}>
-                            <button
-                                    class="previous-button"
-                                    disabled
-                                    label={__('Previous page', 'tainacan')}>
-                                <span class="icon">
-                                    <i>
-                                        <svg
-                                                width="30"
-                                                height="30"
-                                                viewBox="0 2 20 20">
-                                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-                                            <path
-                                                    d="M0 0h24v24H0z"
-                                                    fill="none"/>                        
-                                        </svg>
-                                    </i>
-                                </span>
-                            </button>
-                        </Tooltip> 
-                        <Tooltip text={__('If necessary, pagination will be available on post or page.', 'tainacan')}>
-                            <button
-                                    class="next-button"
-                                    disabled
-                                    label={__('Next page', 'tainacan')}>
-                                <span class="icon">
-                                    <i>
-                                        <svg
-                                                width="30"
-                                                height="30"
-                                                viewBox="0 2 20 20">
-                                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-                                            <path
-                                                    d="M0 0h24v24H0z"
-                                                    fill="none"/>                        
-                                        </svg>
-                                    </i>
-                                </span>
-                            </button>   
-                        </Tooltip>
-                    </div>
-                : null
-                }
-
                 { !collectionId && !isLoading ? (
                     <Placeholder
                         icon={(
@@ -553,20 +429,26 @@ registerBlockType('tainacan/search-bar', {
                                 alt="Tainacan Logo"/>
                         )}>
                         <p>
-                        <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                height="24px"
-                                width="24px">
-                            <path d="M14,2V4H7v7.24A5.33,5.33,0,0,0,5.5,11a4.07,4.07,0,0,0-.5,0V4A2,2,0,0,1,7,2Zm7,10v8a2,2,0,0,1-2,2H12l1-1-2.41-2.41A5.56,5.56,0,0,0,11,16.53a5.48,5.48,0,0,0-2-4.24V8a2,2,0,0,1,2-2h4Zm-2.52,0L14,7.5V12ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1-.5-7,2.74,2.74,0,0,1,.5,0,3.41,3.41,0,0,1,1.5.34,3.5,3.5,0,0,1,2,3.16,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,0,0,5.5,15a1.39,1.39,0,0,0-.5.09A1.5,1.5,0,0,0,5.5,18a1.48,1.48,0,0,0,1.42-1A1.5,1.5,0,0,0,7,16.53Z"/>
-                        </svg>
-                            {__('Dynamically list items from a Tainacan items search', 'tainacan')}
+                            <span class="icon">
+                                <i>
+                                    <svg width="24" height="24" viewBox="-2 -2 20 20">
+                                    <path d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
+                                        c0.7,0.3,1.3,0.7,1.8,1.2s0.9,1.1,1.2,1.8c0.5,1.2,0.5,2.5,0.2,3.7c0,0.2-0.1,0.4-0.2,0.6c0,0.1-0.2,0.6-0.2,0.6
+                                        c0.6,0.6,1.3,1.3,1.9,1.9c0.7,0.7,1.3,1.3,2,2c0,0,0.3,0.2,0.3,0.3c0,0.3-0.1,0.7-0.3,1c-0.2,0.6-0.8,1-1.4,1.2
+                                        c-0.1,0-0.6,0.2-0.6,0.1c0,0-4.2-4.2-4.2-4.2c0,0-0.8,0.3-0.8,0.4c-1.3,0.4-2.8,0.5-4.1-0.1c-0.7-0.3-1.3-0.7-1.8-1.2
+                                        C1.2,9.3,0.8,8.7,0.5,8S0,6.6,0,5.8z M1.6,5.8c0,0.4,0.1,0.9,0.2,1.3C2.1,8.2,3,9.2,4.1,9.6c0.5,0.2,1,0.3,1.6,0.3
+                                        c0.6,0,1.1-0.1,1.6-0.3C8.7,9,9.7,7.6,9.8,6c0.1-1.5-0.6-3.1-2-3.9c-0.9-0.5-2-0.6-3-0.4C4.6,1.8,4.4,1.9,4.1,2
+                                        c-0.5,0.2-1,0.5-1.4,0.9C2,3.7,1.6,4.7,1.6,5.8z"/>       
+                                    </svg>
+                                </i> 
+                            </span>
+                            {__('Set up a custom search bar to redirect to an item\'s list', 'tainacan')}
                         </p>
                         <Button
                             isPrimary
                             type="submit"
                             onClick={ () => openSearchBarModal() }>
-                            {__('Select items', 'tainacan')}
+                            {__('Select search source', 'tainacan')}
                         </Button>   
                     </Placeholder>
                     ) : null
