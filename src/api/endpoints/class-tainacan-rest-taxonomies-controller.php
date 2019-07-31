@@ -168,8 +168,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 	 */
 	public function prepare_item_for_database( $request ) {
 		foreach ($request as $key => $value){
-			$set_ = 'set_' . $key;
-			$this->taxonomy->$set_($value);
+			$this->taxonomy->set($key, $value);
 		}
 	}
 
