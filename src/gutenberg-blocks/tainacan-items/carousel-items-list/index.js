@@ -440,11 +440,11 @@ registerBlockType('tainacan/carousel-items-list', {
                                     options={ [
                                         { label: __('Around', 'tainacan'), value: 'around' },
                                         { label: __('Left', 'tainacan'), value: 'left' },
-                                        { label: __('Right', 'tainacan'), value: 'right' },
-                                        { label: __('None', 'tainacan'), value: 'none' },
+                                        { label: __('Right', 'tainacan'), value: 'right' }
                                     ] }
                                     onChange={ ( aPosition ) => { 
                                         arrowsPosition = aPosition;
+
                                         setAttributes({ arrowsPosition: arrowsPosition }); 
                                     }}/>
                             </div>                           
