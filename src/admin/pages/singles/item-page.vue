@@ -107,27 +107,7 @@
                                 v-model="item.comment_status"
                                 disabled/> -->
                         <span style="font-size: 0.875rem; top: -0.15rem; position: relative;">{{ item.comment_status == 'open' ? $i18n.get('label_yes') : $i18n.get('label_no') }}</span>
-                    </b-field>
-                    <br>
-
-                    <!-- Attachments ------------------------------------------ -->
-                    <div class="section-label">
-                        <label>{{ $i18n.get('label_attachments') }}</label>
-                    </div>
-                    <div class="section-box section-attachments">
-                        <div class="uploaded-files">
-                            <file-item
-                                    :style="{ margin: 15 + 'px'}"
-                                    v-if="attachmentsList.length > 0"
-                                    v-for="(attachment, index) in attachmentsList"
-                                    :key="index"
-                                    :show-name="true"
-                                    :modal-on-click="true"
-                                    :file="attachment"/>
-                            <p v-if="attachmentsList.length <= 0"><br>{{
-                                $i18n.get('info_no_attachments_on_item_yet') }}</p>
-                        </div>
-                    </div>                  
+                    </b-field>           
 
                     <!-- Hook for extra Form options -->
                     <template
@@ -247,11 +227,11 @@
                                                 class="label"
                                                 slot="trigger"
                                                 slot-scope="props">
-                                    <span class="icon">
-                                            <i
-                                                    :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open }"
-                                                    class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
-                                        </span>
+                                            <span class="icon">
+                                                <i
+                                                        :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open }"
+                                                        class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                                            </span>
                                             {{ metadatum.metadatum.name }}
                                         </label>
                                         <div
@@ -288,6 +268,34 @@
                             </div>
                             <br>
                             <activities-page />
+                        </b-tab-item>
+
+                        <b-tab-item>
+                            <template slot="header">
+                                <span class="icon has-text-gray4">
+                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments"/>
+                                </span>
+                                <span>{{ $i18n.get('label_attachments') }}</span>
+                            </template>
+                            
+                            <div class="section-label">
+                                <label>{{ $i18n.get('label_attachments') }}</label>
+                            </div>
+                            <br>
+                            <div class="section-box section-attachments">
+                                <div class="uploaded-files">
+                                    <file-item
+                                            :style="{ margin: 15 + 'px'}"
+                                            v-if="attachmentsList.length > 0"
+                                            v-for="(attachment, index) in attachmentsList"
+                                            :key="index"
+                                            :show-name="true"
+                                            :modal-on-click="true"
+                                            :file="attachment"/>
+                                    <p v-if="attachmentsList.length <= 0"><br>{{
+                                        $i18n.get('info_no_attachments_on_item_yet') }}</p>
+                                </div>
+                            </div>  
                         </b-tab-item>
 
                     </b-tabs>
@@ -547,6 +555,10 @@
         .collapse .collapse-content {
             margin-left: 30px;
         }
+    
+        .tab-content {
+            overflow-x: hidden !important;
+        }
     }
 
     .metadata-area {
@@ -635,12 +647,7 @@
     }
 
     .section-attachments {
-        border: 1px solid $gray2;
-        height: 250px;
-        max-width: 100%;
-        resize: vertical;
-        overflow: auto;
-
+        margin-top: 0;
         p {
             margin: 4px 15px
         }
