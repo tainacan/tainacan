@@ -47,7 +47,7 @@
                         class="button"
                         :disabled="isLoading"
                         @click="onConfirm(newItems); $parent.close();">
-                    {{ $i18n.get('label_return_to_list') }}
+                    {{ hasCopied ? $i18n.get('label_return_to_list') : $i18n.get('cancel') }}
                 </button>
                 <button 
                         v-if="!hasCopied"
