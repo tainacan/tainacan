@@ -30,22 +30,19 @@ export default class SearchBarModal extends React.Component {
         this.selectCollection = this.selectCollection.bind(this);
         this.fetchCollections = this.fetchCollections.bind(this);
         this.fetchModalCollections = this.fetchModalCollections.bind(this);
-        this.fetchCollection = this.fetchCollection.bind(this);
     }
 
     componentWillMount() {
-        
+
         this.setState({ 
+            temporaryCollectionId: this.props.existingCollectionId,
             collectionId: this.props.existingCollectionId,
             collectionSlug: this.props.existingCollectionSlug
         });
          
-        if (this.props.existingCollectionId != null && this.props.existingCollectionId != undefined) {
-            this.fetchCollection(this.props.existingCollectionId);
-        } else {
-            this.setState({ collectionPage: 1 });
-            this.fetchModalCollections();
-        }
+        this.setState({ collectionPage: 1 });
+        this.fetchModalCollections();
+        
     }
 
     // COLLECTIONS RELATED --------------------------------------------------
@@ -85,15 +82,6 @@ export default class SearchBarModal extends React.Component {
             })
             .catch(error => {
                 console.log('Error trying to fetch collections: ' + error);
-            });
-    }
-
-    fetchCollection(collectionId) {
-        tainacan.get('/collections/' + collectionId)
-            .then((response) => {
-                this.setState({ collectionName: response.data.name });
-            }).catch(error => {
-                console.log('Error trying to fetch collection: ' + error);
             });
     }
 
@@ -172,7 +160,7 @@ export default class SearchBarModal extends React.Component {
     render() {
         return <Modal
                 className="wp-block-tainacan-modal"
-                title={__('Select a search source fetch items from', 'tainacan')}
+                title={__('Select a search source to fetch items from', 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
                 contentLabel={__('Select search source', 'tainacan')}>
                 <div>

@@ -2,9 +2,9 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, TextControl, Spinner, Button, ToggleControl, Placeholder, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
+const { RangeControl, TextControl, Toolbar, Spinner, SelectControl, Button, ToggleControl, Placeholder, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
 
-const { InspectorControls } = wp.editor;
+const { InspectorControls, BlockControls } = wp.editor;
 
 import SearchBarModal from './search-bar-modal.js';
 import tainacan from '../../api-client/axios.js';
@@ -43,13 +43,13 @@ registerBlockType('tainacan/search-bar', {
             type: String,
             default: undefined
         },
-        showImage: {
-            type: Boolean,
-            default: true
+        alignment: {
+            type: String,
+            default: 'center'
         },
-        showName: {
-            type: Boolean,
-            default: true
+        expandAlignment: {
+            type: String,
+            default: 'center'
         },
         isModalOpen: {
             type: Boolean,
@@ -63,10 +63,6 @@ registerBlockType('tainacan/search-bar', {
             type: String,
             default: __('Search', 'taincan')
         },
-        isLoading: {
-            type: Boolean,
-            value: false
-        },
         isLoadingCollection: {
             type: Boolean,
             value: false
@@ -79,6 +75,10 @@ registerBlockType('tainacan/search-bar', {
             type: Boolean,
             value: false
         },
+        collectionHeaderHeight: {
+            type: Number,
+            value: 165
+        },
         collection: {
             type: Object,
             value: undefined
@@ -90,6 +90,10 @@ registerBlockType('tainacan/search-bar', {
         collectionTextColor: {
             type: String,
             default: "#ffffff"
+        },
+        collectionTextSize: {
+            type: Number,
+            default: 2
         }
     },
     supports: {
@@ -114,12 +118,13 @@ registerBlockType('tainacan/search-bar', {
             content, 
             collectionId,  
             collectionSlug,
-            showImage,
-            showName,
+            collectionHeaderHeight,
+            collectionTextSize,
+            alignment,
+            expandAlignment,
             placeholderText,
             isModalOpen,
             maxWidth,
-            isLoading,
             showCollectionHeader,
             showCollectionLabel,
             isLoadingCollection,
@@ -137,7 +142,13 @@ registerBlockType('tainacan/search-bar', {
                 content: (
                     <div class="tainacan-search-container">
                         <form
-                                style={{ maxWidth: maxWidth + '%' }}
+                                style={{ maxWidth: maxWidth ? maxWidth + '%' : '80%' }}
+                                className={ 
+                                    (alignment == 'left' ? ' is-aligned-left' : '') + 
+                                    (alignment == 'right' ? ' is-aligned-right' : '') +
+                                    (expandAlignment == 'left' ? ' is-expanded-aligned-left' : '') +
+                                    (expandAlignment == 'right' ? ' is-expanded-aligned-right' : '')
+                                }
                                 id="taincan-search-bar-block"
                                 action={ tainacan_plugin.site_url + '/' + collectionSlug + '/#/' }
                                 method='get'>
@@ -204,12 +215,12 @@ registerBlockType('tainacan/search-bar', {
                             collectionTextColor = '#ffffff';
 
                         setAttributes({
-                            content: <div></div>,
                             collection: collection,
                             isLoadingCollection: isLoadingCollection,
                             collectionBackgroundColor: collectionBackgroundColor,
                             collectionTextColor: collectionTextColor
                         });
+                        setContent();
                     });
             }
         }
@@ -221,12 +232,71 @@ registerBlockType('tainacan/search-bar', {
             } );
         }
 
+        function updateAlignment(newAlignment) {
+            alignment = newAlignment;
+            setAttributes({ alignment: alignment });
+            setContent();
+        }
+
+        function updateExpandAlignment(newAlignment) {
+            expandAlignment = newAlignment;
+            setAttributes({ expandAlignment: expandAlignment });
+            setContent();
+        }
+
         // Executed only on the first load of page
         if(content && content.length && content[0].type)
             setContent();
 
+        const alignmentControls = [
+            {
+                icon: 'editor-alignleft',
+                title: __( 'Left' ),
+                onClick: () => updateAlignment('left'),
+                isActive: alignment === 'left',
+            },            
+            {
+                icon: 'editor-aligncenter',
+                title: __( 'Center' ),
+                onClick: () => updateAlignment('center'),
+                isActive: alignment === 'center',
+            },
+            {
+                icon: 'editor-alignright',
+                title: __( 'Right' ),
+                onClick: () => updateAlignment('right'),
+                isActive: alignment === 'right',
+            },
+        ];
+        const expandAlignmentControls = [
+            {
+                icon: 'editor-alignleft',
+                title: __( 'Left' ),
+                onClick: () => updateExpandAlignment('left'),
+                isActive: expandAlignment === 'left',
+            },            
+            {
+                icon: 'editor-aligncenter',
+                title: __( 'Center' ),
+                onClick: () => updateExpandAlignment('center'),
+                isActive: expandAlignment === 'center',
+            },
+            {
+                icon: 'editor-alignright',
+                title: __( 'Right' ),
+                onClick: () => updateExpandAlignment('right'),
+                isActive: expandAlignment === 'right',
+            },
+        ];
+
         return (
             <div className={className}>
+
+                <div>
+                    <BlockControls>
+                        <Toolbar controls={ alignmentControls } />
+                    </BlockControls>
+                </div>
 
                 <div>
                     <InspectorControls>
@@ -242,6 +312,7 @@ registerBlockType('tainacan/search-bar', {
                                 }}
                             />
                         </div>
+                        <br />
                         <div style={{ marginBottom: '12px' }}>
                             <RangeControl
                                 label={__('Maximum width size (%)', 'tainacan')}
@@ -251,9 +322,21 @@ registerBlockType('tainacan/search-bar', {
                                     setAttributes( { maxWidth: aMaxWidth } ) 
                                     setContent();
                                 }}
-                                min={ 25 }
+                                min={ 15 }
                                 max={ 100 }
                             />
+                        </div>
+                        <br />
+                        
+                        <div style={{ marginBottom: '12px' }}>
+                            <BaseControl
+                                id="expanded-alignment-buttons"
+                                label={__('Input alignment when not expanded')}
+                                help={__('This is the alignment of the input field for "alternate" and "stylish" styles when it is not expanded.', 'tainacan')}
+                            >
+                                <Toolbar controls={ expandAlignmentControls } />
+                            </BaseControl>
+                            
                         </div>
                         <PanelBody
                                 title={__('Collection header', 'tainacan')}
@@ -272,6 +355,17 @@ registerBlockType('tainacan/search-bar', {
                                 />
                                 { showCollectionHeader ?
                                     <div style={{ margin: '6px' }}>
+
+                                        <RangeControl
+                                            label={__('Header height (px)', 'tainacan')}
+                                            value={ collectionHeaderHeight ? collectionHeaderHeight : 165 }
+                                            onChange={ ( aHeight ) => {
+                                                collectionHeaderHeight = aHeight;
+                                                setAttributes( { collectionHeaderHeight: collectionHeaderHeight } ) 
+                                                setContent();
+                                            }}
+                                            min={ 165 }
+                                            max={ 400 } />
 
                                         <ToggleControl
                                             label={__('Display "Collection" label', 'tainacan')}
@@ -309,6 +403,21 @@ registerBlockType('tainacan/search-bar', {
                                                 }} 
                                             />
                                         </BaseControl>
+
+                                        <SelectControl
+                                            label={__('Collection name size', 'tainacan')}
+                                            value={ collectionTextSize ? collectionTextSize : 2 }
+                                            options={ [
+                                                { label: __('Huge', 'tainacan'), value: 3 },
+                                                { label: __('Large', 'tainacan'), value: 2.5 },
+                                                { label: __('Medium', 'tainacan'), value: 2 },
+                                                { label: __('Small', 'tainacan'), value: 1.5 },
+                                            ] }
+                                            onChange={ ( size ) => { 
+                                                collectionTextSize = size;
+                                                setAttributes({ collectionTextSize: collectionTextSize })  
+                                            }}
+                                        />
                                     </div>
                                 : null
                                 }
@@ -371,56 +480,41 @@ registerBlockType('tainacan/search-bar', {
 
                 {
                     showCollectionHeader ?
-                
                     <div> {
                         isLoadingCollection ? 
                             <div class="spinner-container">
                                 <Spinner />
                             </div>
                             :
-                            <a
-                                    href={ collection.url ? collection.url : '' }
-                                    target="_blank"
-                                    class="search-bar-collection-header">
-                                <div
-                                        style={{
-                                            backgroundColor: collectionBackgroundColor ? collectionBackgroundColor : '', 
-                                            paddingRight: collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium']) ? '' : '20px',
-                                            paddingTop: (!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) ? '1rem' : '',
-                                            width: collection && collection.header_image ? '' : '100%'
-                                        }}
-                                        className={ 
-                                            'collection-name ' + 
-                                            ((!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) && (!collection || !collection.header_image) ? 'only-collection-name' : '') 
-                                        }>
-                                    <h3 style={{  color: collectionTextColor ? collectionTextColor : '' }}>
-                                        { showCollectionLabel ? <span class="label">{ __('Collection', 'tainacan') }<br/></span> : null }
-                                        { collection && collection.name ? collection.name : '' }
-                                    </h3>
-                                </div>
-                                {
-                                    collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium']) ? 
-                                        <div   
-                                            class="collection-thumbnail"
-                                            style={{ 
-                                                backgroundImage: 'url(' + (collection.thumbnail['tainacan-medium'] != undefined ? (collection.thumbnail['tainacan-medium'][0]) : (collection.thumbnail['medium'][0])) + ')',
-                                            }}/>
+                            <div
+                                className={ 
+                                    'search-bar-collection-header' + 
+                                    (alignment == 'left' ? ' is-aligned-left' : '') + 
+                                    (alignment == 'right' ? ' is-aligned-right' : '')
+                                }
+                                style={{
+                                    backgroundImage: collection.header_image ? 'url(' + collection.header_image + ')' : '',
+                                    backgroundColor: collectionBackgroundColor,
+                                    height: collectionHeaderHeight ? collectionHeaderHeight + 'px' : '160px'
+                                }}>
+                                <h3 style={{  
+                                    color: collectionTextColor ? collectionTextColor : '',
+                                    fontSize: collectionTextSize ? collectionTextSize + 'rem' : '2rem' 
+                                }}>
+                                    { showCollectionLabel ? <span class="label">{ __('Collection', 'tainacan') }<br/></span> : null }
+                                    { collection && collection.name ? collection.name : '' }
+                                </h3>
+                                { collectionId && collectionSlug ?
+                                    content
                                     : null
-                                }  
-                                <div
-                                        class="collection-header-image"
-                                        style={{
-                                            backgroundImage: collection.header_image ? 'url(' + collection.header_image + ')' : '',
-                                            minHeight: collection && collection.header_image ? '' : '80px',
-                                            display: !(collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium'])) ? collection && collection.header_image ? '' : 'none' : ''  
-                                        }}/>
-                            </a>  
+                                }
+                            </div>
                         }
                     </div>
                     : null
                 }
 
-                { !collectionId && !isLoading ? (
+                { !collectionId ? (
                     <Placeholder
                         icon={(
                             <img
@@ -454,13 +548,11 @@ registerBlockType('tainacan/search-bar', {
                     ) : null
                 }
                 
-                { isLoading ? 
-                    <div class="spinner-container">
-                        <Spinner />
-                    </div> :
+                { collectionId && collectionSlug && !showCollectionHeader?
                     <div>
                         { content }
                     </div>
+                    : null
                 }
             </div>
         );
