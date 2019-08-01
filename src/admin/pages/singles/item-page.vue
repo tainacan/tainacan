@@ -556,8 +556,8 @@
             margin-left: 30px;
         }
     
-        .tab-content {
-            overflow-x: hidden !important;
+        .b-tabs {
+            overflow: hidden !important;
         }
     }
 
