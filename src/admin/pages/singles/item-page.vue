@@ -254,22 +254,7 @@
                                         v-html="formHooks['view-item']['end-right'].join('')"/>
                             </template>
                         </b-tab-item>
-
-                        <b-tab-item>
-                            <template slot="header">
-                                <span class="icon has-text-gray4">
-                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-activities"/>
-                                </span>
-                                <span>{{ $i18n.get('activities') }}</span>
-                            </template>
-                            
-                            <div class="section-label">
-                                <label>{{ $i18n.get('activities') }}</label>
-                            </div>
-                            <br>
-                            <activities-page />
-                        </b-tab-item>
-
+                        
                         <b-tab-item>
                             <template slot="header">
                                 <span class="icon has-text-gray4">
@@ -298,6 +283,20 @@
                             </div>  
                         </b-tab-item>
 
+                        <b-tab-item>
+                            <template slot="header">
+                                <span class="icon has-text-gray4">
+                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-activities"/>
+                                </span>
+                                <span>{{ $i18n.get('activities') }}</span>
+                            </template>
+                            
+                            <div class="section-label">
+                                <label>{{ $i18n.get('activities') }}</label>
+                            </div>
+                            <br>
+                            <activities-page />
+                        </b-tab-item>
                     </b-tabs>
                 </div>
             </div>

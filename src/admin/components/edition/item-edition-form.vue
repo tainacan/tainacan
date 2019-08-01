@@ -356,47 +356,7 @@
                                     :message="$i18n.getHelperMessage('items', 'comment_status')"/>
                         </b-field>
                         <br>
-
-                        <!-- Attachments ------------------------------------------ -->
-                        <div class="section-label">
-                            <label>{{ $i18n.get('label_attachments') }}</label>
-                        </div>
-                        <div class="section-box section-attachments">
-                            <button
-                                    type="button"
-                                    class="button is-secondary"
-                                    @click.prevent="attachmentMediaFrame.openFrame($event)">
-                                {{ $i18n.get("label_edit_attachments") }}
-                            </button>
-
-                            <div class="uploaded-files">
-                                <div
-                                        class="file-item-container"
-                                        v-for="(attachment, index) in attachmentsList"
-                                        :key="index">
-                                    <file-item
-                                            :style="{ margin: 15 + 'px'}"
-                                            v-if="attachmentsList.length > 0"   
-                                            :modal-on-click="true"  
-                                            :show-name="true"
-                                            :file="attachment"/>
-                                    <span class="file-item-control">
-                                        <a 
-                                                @click="deleteAttachment(attachment)"
-                                                v-tooltip="{
-                                                    content: $i18n.get('delete'),
-                                                    autoHide: true,
-                                                    placement: 'bottom'
-                                                }"
-                                                class="icon">
-                                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
-                                        </a>
-                                    </span>
-                                </div>
-                                <p v-if="attachmentsList.length <= 0"><br>{{ $i18n.get('info_no_attachments_on_item_yet') }}</p>
-                            </div>
-                        </div>
-
+            
                         <!-- Hook for extra Form options -->
                         <template 
                                 v-if="formHooks != undefined && 
@@ -466,38 +426,98 @@
                             </div>
                         </div>
 
-                        <!-- Metadata from Collection-------------------------------- -->
-                        <span class="section-label">
-                            <label>{{ $i18n.get('metadata') }}</label>
-                        </span>
-                        <br>
-                        <a
-                                class="collapse-all"
-                                @click="toggleCollapseAll()">
-                            {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                            <span class="icon">
-                                <i 
-                                        :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
-                                        class="tainacan-icon tainacan-icon-20px"/>
-                            </span>
-                        </a>
-                        <tainacan-form-item
-                                v-for="(metadatum, index) of metadatumList"
-                                :key="index"
-                                :metadatum="metadatum"
-                                :is-collapsed="metadataCollapses[index]"
-                                @changeCollapse="onChangeCollapse($event, index)"/>
+                        <b-tabs v-model="activeTab">
 
-                        <!-- Hook for extra Form options -->
-                        <template 
-                                v-if="formHooks != undefined && 
-                                    formHooks['item'] != undefined &&
-                                    formHooks['item']['end-right'] != undefined">  
-                            <form 
-                                id="form-item-end-right"
-                                class="form-hook-region"
-                                v-html="formHooks['item']['end-right'].join('')"/>
-                        </template>
+                            <!-- Metadata from Collection-------------------------------- -->
+                            <b-tab-item>
+                                <template slot="header">
+                                    <span class="icon has-text-gray4">
+                                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata"/>
+                                    </span>
+                                    <span>{{ $i18n.get('metadata') }}</span>
+                                </template>
+                                <span class="section-label">
+                                    <label>{{ $i18n.get('metadata') }}</label>
+                                </span>
+                                <br>
+                                <a
+                                        class="collapse-all"
+                                        @click="toggleCollapseAll()">
+                                    {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
+                                    <span class="icon">
+                                        <i 
+                                                :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
+                                                class="tainacan-icon tainacan-icon-20px"/>
+                                    </span>
+                                </a>
+                                <tainacan-form-item
+                                        v-for="(metadatum, index) of metadatumList"
+                                        :key="index"
+                                        :metadatum="metadatum"
+                                        :is-collapsed="metadataCollapses[index]"
+                                        @changeCollapse="onChangeCollapse($event, index)"/>
+
+                                <!-- Hook for extra Form options -->
+                                <template 
+                                        v-if="formHooks != undefined && 
+                                            formHooks['item'] != undefined &&
+                                            formHooks['item']['end-right'] != undefined">  
+                                    <form 
+                                        id="form-item-end-right"
+                                        class="form-hook-region"
+                                        v-html="formHooks['item']['end-right'].join('')"/>
+                                </template>
+                            </b-tab-item>
+
+                            <!-- Attachments ------------------------------------------ -->
+                            <b-tab-item>
+                                <template slot="header">
+                                    <span class="icon has-text-gray4">
+                                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments"/>
+                                    </span>
+                                    <span>{{ $i18n.get('label_attachments') }}</span>
+                                </template>
+                                <div class="section-label">
+                                    <label>{{ $i18n.get('label_attachments') }}</label>
+                                </div>
+                                <div class="section-box section-attachments">
+                                    <button
+                                            type="button"
+                                            class="button is-secondary"
+                                            @click.prevent="attachmentMediaFrame.openFrame($event)">
+                                        {{ $i18n.get("label_edit_attachments") }}
+                                    </button>
+
+                                    <div class="uploaded-files">
+                                        <div
+                                                class="file-item-container"
+                                                v-for="(attachment, index) in attachmentsList"
+                                                :key="index">
+                                            <file-item
+                                                    :style="{ margin: 15 + 'px'}"
+                                                    v-if="attachmentsList.length > 0"   
+                                                    :modal-on-click="true"  
+                                                    :show-name="true"
+                                                    :file="attachment"/>
+                                            <span class="file-item-control">
+                                                <a 
+                                                        @click="deleteAttachment(attachment)"
+                                                        v-tooltip="{
+                                                            content: $i18n.get('delete'),
+                                                            autoHide: true,
+                                                            placement: 'bottom'
+                                                        }"
+                                                        class="icon">
+                                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
+                                                </a>
+                                            </span>
+                                        </div>
+                                        <p v-if="attachmentsList.length <= 0"><br>{{ $i18n.get('info_no_attachments_on_item_yet') }}</p>
+                                    </div>
+                                </div>
+
+                            </b-tab-item>
+                        </b-tabs>
                     </div>
                 </div>
                 
@@ -730,7 +750,8 @@ export default {
             isUpdatingValues: false,
             collectionName: '',
             collectionAllowComments: '',
-            entityName: 'item'
+            entityName: 'item',
+            activeTab: 0,
         }
     },
     computed: {
@@ -1380,9 +1401,10 @@ export default {
                 padding-left: $page-side-padding;
                 max-width: 100%;
             }
-
         }
-
+        .b-tabs {
+            overflow: hidden !important;
+        }
     }
 
     .section-label {
@@ -1442,12 +1464,7 @@ export default {
         }
     }
     .section-attachments {
-        border: 1px solid $gray2;
-        height: 250px;
-        max-width: 100%;
-        resize: vertical;
-        overflow: auto;
-
+        margin-top: 0px; 
         p { margin: 4px 15px }
     }
 
