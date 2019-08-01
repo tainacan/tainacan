@@ -254,13 +254,20 @@
                                         v-html="formHooks['view-item']['end-right'].join('')"/>
                             </template>
                         </b-tab-item>
-                        
+
                         <b-tab-item>
                             <template slot="header">
                                 <span class="icon has-text-gray4">
                                     <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments"/>
                                 </span>
-                                <span>{{ $i18n.get('label_attachments') }}</span>
+                                <span>
+                                    {{ $i18n.get('label_attachments') }}
+                                    <span
+                                            v-if="attachmentsList && attachmentsList.length"
+                                            class="has-text-gray">
+                                        ({{ attachmentsList.length }})
+                                    </span>
+                                </span>
                             </template>
                             
                             <div class="section-label">

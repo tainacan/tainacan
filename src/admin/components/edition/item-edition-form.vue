@@ -475,7 +475,14 @@
                                     <span class="icon has-text-gray4">
                                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments"/>
                                     </span>
-                                    <span>{{ $i18n.get('label_attachments') }}</span>
+                                    <span>
+                                        {{ $i18n.get('label_attachments') }}
+                                        <span
+                                                v-if="attachmentsList && attachmentsList.length"
+                                                class="has-text-gray">
+                                            ({{ attachmentsList.length }})
+                                        </span>
+                                    </span>
                                 </template>
                                 <div class="section-label">
                                     <label>{{ $i18n.get('label_attachments') }}</label>
@@ -515,8 +522,8 @@
                                         <p v-if="attachmentsList.length <= 0"><br>{{ $i18n.get('info_no_attachments_on_item_yet') }}</p>
                                     </div>
                                 </div>
-
                             </b-tab-item>
+
                         </b-tabs>
                     </div>
                 </div>
