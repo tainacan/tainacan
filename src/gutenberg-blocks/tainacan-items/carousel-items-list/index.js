@@ -114,11 +114,16 @@ registerBlockType('tainacan/carousel-items-list', {
         collectionTextColor: {
             type: String,
             default: "#ffffff"
+        },
+        extraParams: {
+            type: Object,
+            default: {}
         }
     },
     supports: {
         align: ['full', 'wide'],
         html: false,
+        multiple: false
     },
     edit({ attributes, setAttributes, className, isSelected, clientId }){
         let {
@@ -142,7 +147,8 @@ registerBlockType('tainacan/carousel-items-list', {
             isLoadingCollection,
             collection,
             collectionBackgroundColor,
-            collectionTextColor
+            collectionTextColor,
+            extraParams
         } = attributes;
 
         // Obtains block's client id to render it on save function
@@ -184,7 +190,6 @@ registerBlockType('tainacan/carousel-items-list', {
         }
 
         function setContent(){
-
             isLoading = true;
 
             setAttributes({
@@ -708,7 +713,8 @@ registerBlockType('tainacan/carousel-items-list', {
             showCollectionHeader,
             showCollectionLabel,
             collectionBackgroundColor,
-            collectionTextColor
+            collectionTextColor,
+            extraParams
         } = attributes;
         return <div 
                     className={ className }
@@ -728,6 +734,7 @@ registerBlockType('tainacan/carousel-items-list', {
                     max-items-number={ maxItemsNumber }
                     tainacan-api-root={ tainacan_plugin.root }
                     tainacan-base-url={ tainacan_plugin.base_url }
+                    extraParams={ JSON.stringify(extraParams)  }
                     id={ 'wp-block-tainacan-carousel-items-list_' + blockId }>
                         { content }
                 </div>
