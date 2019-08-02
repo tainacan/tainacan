@@ -506,6 +506,31 @@ class System_Check {
 			}
 		}
 	}
+	
+	public function check_protected_upload_folders() {
+		
+		$privateFiles = \Tainacan\Private_Files::get_instance();
+		
+		$upload_dir = wp_get_upload_dir();
+		$base_url = $upload_dir['baseurl'];
+
+		$url = $base_url . '/' . $privateFiles->get_items_uploads_folder() . '/' . $privateFiles->get_private_folder_prefix() . '0000/0000/test.jpg';
+		
+		$response = wp_remote_get( $url );
+		
+		$code = wp_remote_retrieve_response_code( $response );
+		
+		if ( $code != 403 ) {
+			$text = __('Your private folders are not protected. Please check our documentation on how to protect them.', 'tainacan'); 
+			$class = 'warning';
+		} else {
+			$text = __('Your private folders are protected!', 'tainacan'); 
+			$class = 'good';
+		}
+		
+		printf( '<span class="%1$s"></span> %2$s', esc_attr( $class ), esc_html( $text ) );
+		
+	}
 
 }
 
