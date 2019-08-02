@@ -89,6 +89,16 @@
 			</tr>
 			
 			<tr>
+				<th scope="row"><?php _e('Protecting private uploads folders', 'tainacan'); ?></th>
+				<td>
+					<?php $this->check_protected_upload_folders(); ?>
+					<p class="description">
+						<?php _e('When files are attached to private items or collections, they are saved in special folders and the direct URL to them are never visible. However, it is recommended to block access to these folders in the server.', 'tainacan'); ?>
+					</p>
+				</td>
+			</tr>
+			
+			<tr>
 				<th scope="row"><?php _e('Cron', 'tainacan'); ?></th>
 				<td>
 					<?php _e('It is strongly recommended that you configure a cron job in your server as described <a href="https://developer.wordpress.org/plugins/cron/hooking-wp-cron-into-the-system-task-scheduler/">here</a>.', 'tainacan'); ?>
