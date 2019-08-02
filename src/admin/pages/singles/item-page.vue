@@ -92,22 +92,7 @@
                                         :src="thumbPlaceholderPath">
                             </figure>
                         </div>
-                    </div>
-
-                    <!-- Comment Status ------------------------ -->
-                    <b-field
-                            :addons="true"
-                            :label="$i18n.get('label_comment_status') + ': '"
-                            v-if="collectionAllowComments == 'open'">
-                        <!-- <b-switch
-                                id="tainacan-checkbox-comment-status"
-                                size="is-small"
-                                true-value="open"
-                                false-value="closed"
-                                v-model="item.comment_status"
-                                disabled/> -->
-                        <span style="font-size: 0.875rem; top: -0.15rem; position: relative;">{{ item.comment_status == 'open' ? $i18n.get('label_yes') : $i18n.get('label_no') }}</span>
-                    </b-field>           
+                    </div>        
 
                     <!-- Hook for extra Form options -->
                     <template
@@ -134,9 +119,30 @@
                                 v-html="formHooks['view-item']['begin-right'].join('')"/>
                     </template>
 
-                    <div class="columns">
-                        <div class="column">
-                            <!-- Visibility (status public or private) -------------------------------- -->
+                    <div
+                            style="flex-wrap: wrap"
+                            class="columns">
+
+                        <!-- Collection -------------------------------- -->
+                        <div class="column is-narrow">
+                            <div class="section-label">
+                                <label>{{ $i18n.get('collection') }}</label>
+                            </div>
+                            <div class="section-status">
+                                <div class="field has-addons">
+                                    <span>
+                                        <span class="icon">
+                                            <i class="tainacan-icon tainacan-icon-collection"/>
+                                        </span>
+                                        {{ collectionName }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visibility (status public or private) -------------------------------- -->
+                        <div class="column is-narrow">
+                            
                             <div class="section-label">
                                 <label>{{ $i18n.get('label_visibility') }}</label>
                             </div>
@@ -155,37 +161,30 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="column">
-                            <!-- Collection -------------------------------- -->
+
+                        <!-- Comment Status ------------------------ -->
+                        <div
+                                v-if="collectionAllowComments == 'open'"
+                                class="column is-narrow">
                             <div class="section-label">
-                                <label>{{ $i18n.get('collection') }}</label>
+                                <label>{{ $i18n.get('label_comments') }}</label>
                             </div>
                             <div class="section-status">
                                 <div class="field has-addons">
                                     <span>
-                                        {{ collectionName }}
+                                        <span
+                                                v-if="item.comment_status != 'open'"
+                                                class="icon">
+                                            <i class="tainacan-icon tainacan-icon-close"/>
+                                        </span>
+                                        <span
+                                                v-if="item.comment_status == 'open'"
+                                                class="icon">
+                                            <i class="tainacan-icon tainacan-icon-approved"/>
+                                        </span>
+                                        {{ item.comment_status == 'open' ? $i18n.get('label_allowed') : $i18n.get('label_not_allowed') }}
                                     </span>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="column">
-                            <!-- Exposers -------------------------------- -->
-                            <div class="section-label">
-                                <label>{{ $i18n.get('label_exposer_urls') }}</label>
-                            </div>
-                            <div class="section-status">
-                                <button 
-                                        class="button is-white"
-                                        :aria-label="$i18n.get('label_urls')"
-                                        :disabled="isLoading"
-                                        @click="openExposersModal()">
-                                    <span
-                                            style="padding: 0 8px;"
-                                            class="gray-icon">
-                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
-                                    </span>
-                                    <span class="is-hidden-touch">{{ $i18n.get('label_urls') }}</span>
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -200,46 +199,17 @@
                             </template>
 
                             <!-- Metadata -------------------------------- -->
-                            <div class="section-label">
-                                <label>{{ $i18n.get('metadata') }}</label>
-                            </div>
-                            <br>
-                            <a
-                                    class="collapse-all"
-                                    @click="open = !open">
-                                {{ open ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                                <span class="icon">
-                                    <i
-                                            :class="{ 'tainacan-icon-arrowdown' : open, 'tainacan-icon-arrowright' : !open }"
-                                            class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
-                                </span>
-                            </a>
                             <div class="metadata-area">
                                 <div
                                         v-for="(metadatum, index) of metadatumList"
                                         :key="index"
                                         class="field">
-                                    <b-collapse
-                                            :aria-id="'metadatum-collapse-' + metadatum.id" 
-                                            animation="filter-item"
-                                            :open="open">
-                                        <label
-                                                class="label"
-                                                slot="trigger"
-                                                slot-scope="props">
-                                            <span class="icon">
-                                                <i
-                                                        :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open }"
-                                                        class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
-                                            </span>
-                                            {{ metadatum.metadatum.name }}
-                                        </label>
-                                        <div
-                                                :class="{ 'metadata-type-textarea': metadatum.metadatum.metadata_type_object.component == 'tainacan-textarea' }"
-                                                class="content">
-                                            <p v-html="metadatum.value_as_html != '' ? metadatum.value_as_html : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
-                                        </div>
-                                    </b-collapse>
+                                    <label class="label">{{ metadatum.metadatum.name }}</label>
+                                    <div
+                                            :class="{ 'metadata-type-textarea': metadatum.metadatum.metadata_type_object.component == 'tainacan-textarea' }"
+                                            class="content">
+                                        <p v-html="metadatum.value_as_html != '' ? metadatum.value_as_html : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                    </div>
                                 </div>
                             </div>
 
@@ -270,10 +240,6 @@
                                 </span>
                             </template>
                             
-                            <div class="section-label">
-                                <label>{{ $i18n.get('label_attachments') }}</label>
-                            </div>
-                            <br>
                             <div class="section-box section-attachments">
                                 <div class="uploaded-files">
                                     <file-item
@@ -298,10 +264,6 @@
                                 <span>{{ $i18n.get('activities') }}</span>
                             </template>
                             
-                            <div class="section-label">
-                                <label>{{ $i18n.get('activities') }}</label>
-                            </div>
-                            <br>
                             <activities-page />
                         </b-tab-item>
                     </b-tabs>
@@ -314,19 +276,38 @@
                             class="button is-secondary"
                             style="margin-right: auto;"
                             :to="{ path: $routerHelper.getNewItemPath(collectionId)}">
-                        {{ $i18n.get('label_create_another_item') }}
+                        <!-- <span class="icon is-large">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-add"/>
+                        </span> -->
+                        <span>{{ $i18n.get('label_create_another_item') }}</span>
                     </router-link>
                     <router-link
                             v-if="item.current_user_can_edit"
-                            class="button is-secondary"
+                            class="button sequence-button"
                             :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
-                        {{ $i18n.getFrom('items','edit_item') }}
+                        <span class="icon is-large">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
+                        </span>
+                        <span>{{ $i18n.getFrom('items','edit_item') }}</span>
                     </router-link>
+                    <button 
+                            class="button sequence-button"
+                            :aria-label="$i18n.get('label_urls')"
+                            :disabled="isLoading"
+                            @click="openExposersModal()">
+                        <span class="icon is-large">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                        </span>
+                        <span class="is-hidden-touch">{{ $i18n.get('label_urls') }}</span>
+                    </button>
                     <a
                             target="_blank"
-                            class="button is-success is-pulled-right"
+                            class="button sequence-button is-pulled-right"
                             :href="item.url">
-                        {{ $i18n.get('label_item_page_on_website') }}
+                        <span class="icon is-large">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+                        </span>
+                        <span>{{ $i18n.get('label_item_page_on_website') }}</span>
                     </a>
                 </div>
             </div>
@@ -356,7 +337,6 @@
                 collectionId: Number,
                 itemId: Number,
                 isLoading: false,
-                isLoadingMetadatumMappers: false,
                 open: true,
                 collectionName: '',
                 thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
@@ -378,11 +358,6 @@
             attachmentsList() {
                 return this.getAttachments().filter((attachment) => attachment.id != this.item.document);
             },
-            metadatum_mappers: {
-                get() {
-                    return this.getMetadatumMappers();
-                }
-            },
         },
         methods: {
             ...mapActions('item', [
@@ -398,12 +373,6 @@
                 'getItem',
                 'getMetadata',
                 'getAttachments'
-            ]),
-            ...mapGetters('metadata', [
-                'getMetadatumMappers'
-            ]),
-            ...mapActions('metadata', [
-                'fetchMetadatumMappers',
             ]),
             loadMetadata() {
                 // Obtains Item Metadatum
@@ -432,15 +401,6 @@
 
             // Puts loading on Item Loading
             this.isLoading = true;
-
-            this.isLoadingMetadatumMappers = true;
-            this.fetchMetadatumMappers()
-                .then(() => {
-                    this.isLoadingMetadatumMappers = false;
-                })
-                .catch(() => {
-                    this.isLoadingMetadatumMappers = false;
-                });
 
             // Obtains Item
             this.fetchItem({ 
@@ -535,6 +495,8 @@
 
         .tainacan-form > .columns {
             margin-bottom: 70px;
+            margin-left: $page-side-padding;
+            margin-right: $page-side-padding;
         }
 
         .column.is-5 {
@@ -549,8 +511,13 @@
             padding-left: 0;
             padding-right: $page-side-padding;
 
-            .field {
-                padding: 10px 0 14px 30px;
+            .columns .column {
+                padding: 1rem $page-side-padding 0 24px;
+            }
+
+            .field { 
+                padding: 10px 0 14px 0px;
+                margin-left: -3px;
             }
 
             @media screen and (max-width: 769px) {
@@ -558,12 +525,10 @@
                 width: 100%;
             }
         }
-        .collapse .collapse-content {
-            margin-left: 30px;
-        }
     
         .b-tabs {
             overflow: hidden !important;
+            margin-top: -15px;
         }
     }
 
@@ -571,6 +536,7 @@
         .field {
             border-bottom: 1px solid $gray2;
             padding: 10px 25px;
+            margin-left: 0px !important;
 
             .label {
                 font-size: 14px;
@@ -584,6 +550,16 @@
                 }
             }
         }
+
+        @media screen and (min-width: 1367px){
+            column-count: 2;
+            column-gap: $page-side-padding;
+
+            .field {
+                break-inside: avoid;
+            }
+        }   
+        
     }
 
     .section-label {
@@ -596,22 +572,11 @@
         }
     }
 
-    .collapse-all {
-        font-size: 12px;
-        display: inline-flex;
-        align-items: center;
-
-        .icon {
-            vertical-align: bottom;
-        }
-    }
-
     .section-box {
-
         background-color: white;
-        padding: 26px;
-        margin-top: 16px;
-        margin-bottom: 38px;
+        padding: 0 $page-side-padding 0 0;
+        margin-top: 18px;
+        margin-bottom: 32px;
 
         ul {
             display: flex;
@@ -711,6 +676,16 @@
             .button.is-outlined {
                 margin-left: 0px;
                 margin-right: auto;
+            }
+        }
+
+        .sequence-button {
+            background-color: transparent;
+            color: $turquoise5;
+            border: none;
+
+            .icon {
+                margin-right: 5px !important;
             }
         }
     }

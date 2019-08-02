@@ -225,7 +225,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_empty_header_image'                       => __( 'Empty Header Image', 'tainacan' ),
 	'label_enable_cover_page'                        => __( 'Enable Cover Page', 'tainacan' ),
 	'label_cover_page'                               => __( 'Cover Page', 'tainacan' ),
-	'label_comment_status'                           => __( 'Allow Comments', 'tainacan' ),
+	'label_allow_comments'                           => __( 'Allow comments', 'tainacan' ),
+	'label_comments'                           		 => __( 'Comments', 'tainacan' ),
 	'label_default_displayed_metadata'               => __( 'Default Displayed Metadata', 'tainacan' ),
 	'label_display'                                  => __( 'Display on Listing', 'tainacan' ),
 	'label_display_default'                          => __( 'Display by default', 'tainacan' ),
@@ -426,6 +427,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_number_of_copies'		                 => __( 'Number of copies', 'tainacan' ),
 	'label_return_to_list'		            		 => __( 'Return to list', 'tainacan' ),
 	'label_expose_only_displayed_metadata'			 => __( 'Expose only displayed metadata', 'tainacan' ),
+	'label_allowed'						 			 => __( 'Allowed', 'tainacan' ),
+	'label_not_allowed'						 		 => __( 'Not allowed', 'tainacan' ),
+	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),
