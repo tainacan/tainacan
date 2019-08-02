@@ -171,6 +171,10 @@
     right: 100px;
     background-color: white;
     z-index: 99999999999 !important;
+
+    .media-toolbar button{
+        margin-top: 1rem !important
+    }
 }
 // .media-modal {
 //     left: 100px;
