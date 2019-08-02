@@ -326,7 +326,7 @@
                             target="_blank"
                             class="button is-success is-pulled-right"
                             :href="item.url">
-                        {{ $i18n.getFrom('items', 'view_item') }}
+                        {{ $i18n.get('label_item_page_on_website') }}
                     </a>
                 </div>
             </div>

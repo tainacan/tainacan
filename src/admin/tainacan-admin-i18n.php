@@ -425,7 +425,6 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_number_of_copies'		                 => __( 'Number of copies', 'tainacan' ),
 	'label_return_to_list'		            		 => __( 'Return to list', 'tainacan' ),
 	'label_expose_only_displayed_metadata'			 => __( 'Expose only displayed metadata', 'tainacan' ),
-
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),
