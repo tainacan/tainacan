@@ -340,23 +340,6 @@
                             </div>
                         </div>
 
-                        <!-- Comment Status ------------------------ --> 
-                        <b-field
-                                :addons="false"
-                                v-if="collectionAllowComments == 'open'">
-                            <label class="label">{{ $i18n.get('label_comment_status') }}</label>
-                            <b-switch
-                                    id="tainacan-checkbox-comment-status" 
-                                    size="is-small"
-                                    true-value="open" 
-                                    false-value="closed"
-                                    v-model="form.comment_status" />
-                            <help-button 
-                                    :title="$i18n.getHelperTitle('items', 'comment_status')" 
-                                    :message="$i18n.getHelperMessage('items', 'comment_status')"/>
-                        </b-field>
-                        <br>
-            
                         <!-- Hook for extra Form options -->
                         <template 
                                 v-if="formHooks != undefined && 
@@ -382,50 +365,88 @@
                                 v-html="formHooks['item']['begin-right'].join('')"/>
                         </template>
 
+                        <div class="columns">
+
+                            <!-- Collection -------------------------------- -->
+                            <div class="column is-narrow">
+                                <div class="section-label">
+                                    <label>{{ $i18n.get('collection') }}</label>
+                                </div>
+                                <div class="section-status">
+                                    <div class="field has-addons">
+                                        <span>
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-collection"/>
+                                            </span>
+                                            {{ collectionName }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Visibility (status public or private) -------------------------------- -->
+                            <div
+                                    style="flex-wrap: wrap"
+                                    class="column is-narrow">
+                                <div class="section-label">
+                                    <label>{{ $i18n.get('label_visibility') }}</label>
+                                    <span class="required-metadatum-asterisk">*</span>
+                                    <help-button
+                                            :title="$i18n.get('label_visibility')"
+                                            :message="$i18n.get('info_visibility_helper')"/>
+                                </div>
+                                <div class="section-status">
+                                    <div
+                                            style="display: flex; flex-direction: column;"
+                                            class="field has-addons">
+                                        <b-radio
+                                                v-model="visibility"
+                                                value="publish"
+                                                native-value="publish">
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-public"/>
+                                            </span>
+                                            {{ $i18n.get('publish_visibility') }}
+                                        </b-radio>
+                                        <b-radio
+                                                v-model="visibility"
+                                                value="private"
+                                                native-value="private">
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-private"/>
+                                            </span>
+                                            {{ $i18n.get('private_visibility') }}
+                                        </b-radio>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Comment Status ------------------------ --> 
+                            <div 
+                                    class="column is-narrow"
+                                    v-if="collectionAllowComments == 'open'">
+                                <div class="section-label">
+                                    <label>{{ $i18n.get('label_comments') }}</label>
+                                    <help-button 
+                                                :title="$i18n.getHelperTitle('items', 'comment_status')" 
+                                                :message="$i18n.getHelperMessage('items', 'comment_status')"/>
+                                </div>
+                                <div class="section-status">
+                                    <div class="field has-addons">
+                                        <b-switch
+                                                id="tainacan-checkbox-comment-status" 
+                                                size="is-small"
+                                                true-value="open" 
+                                                false-value="closed"
+                                                v-model="form.comment_status">
+                                            {{ $i18n.get('label_allow_comments') }}
+                                        </b-switch>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
                         
-                        <!-- Visibility (status public or private) -------------------------------- -->
-                        <div class="section-label">
-                            <label>{{ $i18n.get('label_visibility') }}</label>
-                            <span class="required-metadatum-asterisk">*</span>
-                            <help-button
-                                    :title="$i18n.get('label_visibility')"
-                                    :message="$i18n.get('info_visibility_helper')"/>
-                        </div>
-                        <div class="section-status">
-                            <div class="field has-addons">
-                                <b-radio
-                                        v-model="visibility"
-                                        value="publish"
-                                        native-value="publish">
-                                    <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-public"/>
-                                    </span>
-                                    {{ $i18n.get('publish_visibility') }}
-                                </b-radio>
-                                <b-radio
-                                        v-model="visibility"
-                                        value="private"
-                                        native-value="private">
-                                    <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-private"/>
-                                    </span>
-                                    {{ $i18n.get('private_visibility') }}
-                                </b-radio>
-                            </div>
-                        </div>
-
-                        <!-- Collection -------------------------------- -->
-                        <div class="section-label">
-                            <label>{{ $i18n.get('collection') }}</label>
-                        </div>
-                        <div class="section-collection">
-                            <div class="field has-addons">
-                                <p>
-                                    {{ collectionName }}
-                                </p>
-                            </div>
-                        </div>
-
                         <b-tabs v-model="activeTab">
 
                             <!-- Metadata from Collection-------------------------------- -->
@@ -436,10 +457,7 @@
                                     </span>
                                     <span>{{ $i18n.get('metadata') }}</span>
                                 </template>
-                                <span class="section-label">
-                                    <label>{{ $i18n.get('metadata') }}</label>
-                                </span>
-                                <br>
+             
                                 <a
                                         class="collapse-all"
                                         @click="toggleCollapseAll()">
@@ -484,9 +502,7 @@
                                         </span>
                                     </span>
                                 </template>
-                                <div class="section-label">
-                                    <label>{{ $i18n.get('label_attachments') }}</label>
-                                </div>
+      
                                 <div class="section-box section-attachments">
                                     <button
                                             type="button"
@@ -663,7 +679,7 @@
                         v-if="!isOnSequenceEdit || (group != null && group.items_count != undefined && group.items_count == itemPosition)"
                         @click="onSubmit('draft')"
                         type="button"
-                        class="button is-secondary">{{ $i18n.get('label_return_to_draft') }}</button>
+                        class="button is-secondary">{{ isOnSequenceEdit ? $i18n.get('label_save_as_draft') : $i18n.get('label_return_to_draft') }}</button>
                 <button 
                         v-else
                         @click="onSubmit('draft', 'next')"
@@ -1389,6 +1405,11 @@ export default {
             }
         }
 
+        .tainacan-form > .columns {
+            margin-left: $page-side-padding;
+            margin-right: $page-side-padding;
+        }
+
         .column.is-5 {
             padding-left: $page-side-padding;
             padding-right: $page-side-padding;
@@ -1400,6 +1421,10 @@ export default {
         .column.is-7 {
             padding-left: 0;
             padding-right: $page-side-padding;
+
+            .columns .column {
+                padding: 1rem $page-side-padding 0 24px;
+            }
 
             .field {
                 padding: 10px 0px 14px 60px;
@@ -1433,11 +1458,10 @@ export default {
     }
 
     .section-box {
-       
         background-color: white;
-        padding: 26px;
-        margin-top: 16px;
-        margin-bottom: 38px;
+        padding: 0 $page-side-padding 0 0;
+        margin-top: 14px;
+        margin-bottom: 32px;
 
         ul {
             display: flex;
@@ -1461,10 +1485,17 @@ export default {
             }
         }
     }
-    .section-status{
-        padding: 16px 0;     
-        .field .b-radio {
-            margin-right: 24px;
+    .section-status {
+        padding-bottom: 16px; 
+        font-size: 0.75rem; 
+        
+        .field {
+            padding: 10px 0 14px 0px !important;
+
+            .b-radio {
+                margin-right: 24px;
+                margin-left: 0;
+            }
             .icon  {
                 font-size: 18px !important; 
                 color: $gray3;

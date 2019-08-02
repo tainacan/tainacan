@@ -258,7 +258,7 @@
                     <!-- Comment Status ------------------------ --> 
                     <b-field
                             :addons="false" 
-                            :label="$i18n.get('label_comment_status')">
+                            :label="$i18n.get('label_allow_comments')">
                         <b-switch
                                 id="tainacan-checkbox-comment-status" 
                                 size="is-small"
