@@ -35,9 +35,11 @@
                             horizontal
                             :label="$i18n.get('label_number_of_copies') + ':'">
                         <b-numberinput
+                                ref="copy-count-numerbinput"
                                 min="1" 
-                                v-model="copyCount"
-                                step="1"/>
+                                :value="copyCount"
+                                step="1"
+                                @input.native="copyCount = $event.target.value"/>
                     </b-field>
                 </div>
             </section>

@@ -565,69 +565,17 @@
                     class="form-submission-footer"
                     v-if="form.status == 'trash'">
                 <button 
-                        v-if="isOnSequenceEdit && itemPosition > 1"
-                        @click="onPrevInSequence()"
-                        type="button"
-                        class="button sequence-button">
-                    <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-previous"/>
-                    </span>
-                    <span>{{ $i18n.get('previous') }}</span>
-                </button>
-                <button 
                         @click="onDeletePermanently()"
                         type="button"
                         class="button is-outlined">{{ $i18n.get('label_delete_permanently') }}</button>
                 <button 
-                        v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count > itemPosition)"
-                        @click="onNextInSequence();"
-                        type="button"
-                        class="button is-outlined">
-                    <span>{{ $i18n.get('label_keep_on_trash' ) }}</span>
-                    <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
-                    </span>
-                </button>
-                <button 
-                        v-if="!isOnSequenceEdit || (group != null && group.items_count != undefined && group.items_count < itemPosition)"
                         @click="onSubmit('draft')"
                         type="button"
                         class="button is-secondary">{{ $i18n.get('label_save_as_draft') }}</button>
                 <button 
-                        v-else
-                        @click="onSubmit('draft', 'next')"
-                        type="button"
-                        class="button is-secondary">
-                    <span>{{ $i18n.get('label_save_as_draft') }}</span>
-                    <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
-                    </span>
-                </button>
-                <button 
-                        v-if="!isOnSequenceEdit || (group != null && group.items_count != undefined && group.items_count < itemPosition)"
                         @click="onSubmit(visibility)"
                         type="button"
                         class="button is-success">{{ $i18n.get('label_publish') }}</button>
-                <button 
-                        v-else
-                        @click="onSubmit(visibility, 'next')"
-                        type="button"
-                        class="button is-success">
-                    <span>{{ $i18n.get('label_publish') }}</span>
-                    <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
-                    </span>
-                </button>
-                <button 
-                        v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count == itemPosition)"
-                        @click="$router.push($routerHelper.getCollectionPath(form.collectionId))"
-                        type="button"
-                        class="button sequence-button">
-                    <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approved"/>
-                    </span>
-                    <span>{{ $i18n.get('finish') }}</span>
-                </button>
             </div>
             <div 
                     class="form-submission-footer"
@@ -643,7 +591,7 @@
                     <span>{{ $i18n.get('previous') }}</span>
                 </button>
                 <button 
-                        v-if="form.status == 'draft'"
+                        v-if="form.status == 'draft' && !isOnSequenceEdit"
                         @click="onSubmit('trash')"
                         type="button"
                         class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
@@ -707,6 +655,7 @@
                     <span>{{ $i18n.get('previous') }}</span>
                 </button>
                 <button 
+                        v-if="!isOnSequenceEdit"
                         @click="onSubmit('trash')"
                         type="button"
                         class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
