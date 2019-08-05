@@ -444,7 +444,7 @@ class Flickr_Importer extends Importer {
 
         if( isset( $image_url ) && $image_url ){
             $TainacanMedia = \Tainacan\Media::get_instance();
-            $id = $TainacanMedia->insert_attachment_from_url( $image_url, $inserted_item->get_id());
+            $id = $TainacanMedia->insert_attachment_from_url( $image_url, $inserted_item->get_id() );
             $inserted_item->set__thumbnail_id( $id );
 
             $inserted_item->set_document( $id );

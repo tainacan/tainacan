@@ -411,7 +411,7 @@ class CSV extends Importer {
         } else if( strpos($column_value,'file:') === 0 ) {
             $correct_value = trim(substr($column_value, 5));
             if( filter_var($correct_value, FILTER_VALIDATE_URL) ) {
-                $id = $TainacanMedia->insert_attachment_from_url($correct_value);
+                $id = $TainacanMedia->insert_attachment_from_url($correct_value, $item_inserted->get_id());
 
                 if(!$id){
                     $this->add_error_log('Error in Document file imported from URL ' . $correct_value);
@@ -427,7 +427,7 @@ class CSV extends Importer {
                 }
             } else {
                 $server_path_files = trailingslashit($this->get_option('server_path'));
-                $id = $TainacanMedia->insert_attachment_from_file($server_path_files . $correct_value);
+                $id = $TainacanMedia->insert_attachment_from_file($server_path_files . $correct_value, $item_inserted->get_id());
 
                 if(!$id) {
                     $this->add_error_log('Error in Document file imported from server ' . $correct_value);
