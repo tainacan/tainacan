@@ -47,10 +47,6 @@ registerBlockType('tainacan/search-bar', {
             type: String,
             default: 'center'
         },
-        expandAlignment: {
-            type: String,
-            default: 'center'
-        },
         isModalOpen: {
             type: Boolean,
             default: false
@@ -121,7 +117,6 @@ registerBlockType('tainacan/search-bar', {
             collectionHeaderHeight,
             collectionTextSize,
             alignment,
-            expandAlignment,
             placeholderText,
             isModalOpen,
             maxWidth,
@@ -145,25 +140,28 @@ registerBlockType('tainacan/search-bar', {
                                 style={{ maxWidth: maxWidth ? maxWidth + '%' : '80%' }}
                                 className={ 
                                     (alignment == 'left' ? ' is-aligned-left' : '') + 
-                                    (alignment == 'right' ? ' is-aligned-right' : '') +
-                                    (expandAlignment == 'left' ? ' is-expanded-aligned-left' : '') +
-                                    (expandAlignment == 'right' ? ' is-expanded-aligned-right' : '')
+                                    (alignment == 'right' ? ' is-aligned-right' : '') 
                                 }
                                 id="taincan-search-bar-block"
                                 action={ tainacan_plugin.site_url + '/' + collectionSlug + '/#/' }
                                 method='get'>
-                            <input
+                            <input  
+                                style={{ borderColor: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}
                                 id="taincan-search-bar-block_input"
                                 label={ __('Search', 'taincan')}
                                 name='search'
                                 placeholder={ placeholderText }
-                            />
+                            /> 
                             <button 
                                     class="button"
-                                    type="submit">
+                                    type="submit">  
                                 <span class="icon">
                                     <i>
-                                        <svg width="24" height="24" viewBox="-2 -4 20 20">
+                                        <svg
+                                            style={{ fill: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}    
+                                            width="24" 
+                                            height="24"
+                                            viewBox="-2 -4 20 20">
                                         <path d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
                                             c0.7,0.3,1.3,0.7,1.8,1.2s0.9,1.1,1.2,1.8c0.5,1.2,0.5,2.5,0.2,3.7c0,0.2-0.1,0.4-0.2,0.6c0,0.1-0.2,0.6-0.2,0.6
                                             c0.6,0.6,1.3,1.3,1.9,1.9c0.7,0.7,1.3,1.3,2,2c0,0,0.3,0.2,0.3,0.3c0,0.3-0.1,0.7-0.3,1c-0.2,0.6-0.8,1-1.4,1.2
@@ -238,12 +236,6 @@ registerBlockType('tainacan/search-bar', {
             setContent();
         }
 
-        function updateExpandAlignment(newAlignment) {
-            expandAlignment = newAlignment;
-            setAttributes({ expandAlignment: expandAlignment });
-            setContent();
-        }
-
         // Executed only on the first load of page
         if(content && content.length && content[0].type)
             setContent();
@@ -267,37 +259,17 @@ registerBlockType('tainacan/search-bar', {
                 onClick: () => updateAlignment('right'),
                 isActive: alignment === 'right',
             },
-        ];
-        const expandAlignmentControls = [
-            {
-                icon: 'editor-alignleft',
-                title: __( 'Left' ),
-                onClick: () => updateExpandAlignment('left'),
-                isActive: expandAlignment === 'left',
-            },            
-            {
-                icon: 'editor-aligncenter',
-                title: __( 'Center' ),
-                onClick: () => updateExpandAlignment('center'),
-                isActive: expandAlignment === 'center',
-            },
-            {
-                icon: 'editor-alignright',
-                title: __( 'Right' ),
-                onClick: () => updateExpandAlignment('right'),
-                isActive: expandAlignment === 'right',
-            },
-        ];
-
+        ]; 
+ 
         return (
             <div className={className}>
 
                 <div>
                     <BlockControls>
                         <Toolbar controls={ alignmentControls } />
-                    </BlockControls>
+                    </BlockControls> 
                 </div>
-
+ 
                 <div>
                     <InspectorControls>
                         <hr />
@@ -328,16 +300,6 @@ registerBlockType('tainacan/search-bar', {
                         </div>
                         <br />
                         
-                        <div style={{ marginBottom: '12px' }}>
-                            <BaseControl
-                                id="expanded-alignment-buttons"
-                                label={__('Input alignment when not expanded')}
-                                help={__('This is the alignment of the input field for "alternate" and "stylish" styles when it is not expanded.', 'tainacan')}
-                            >
-                                <Toolbar controls={ expandAlignmentControls } />
-                            </BaseControl>
-                            
-                        </div>
                         <PanelBody
                                 title={__('Collection header', 'tainacan')}
                                 initialOpen={ false }
@@ -354,18 +316,18 @@ registerBlockType('tainacan/search-bar', {
                                     }
                                 />
                                 { showCollectionHeader ?
-                                    <div style={{ margin: '6px' }}>
-
+                                    <div style={{ margin: '5px' }}>
+  
                                         <RangeControl
                                             label={__('Header height (px)', 'tainacan')}
-                                            value={ collectionHeaderHeight ? collectionHeaderHeight : 165 }
+                                            value={ collectionHeaderHeight ? collectionHeaderHeight : 125 }
                                             onChange={ ( aHeight ) => {
                                                 collectionHeaderHeight = aHeight;
                                                 setAttributes( { collectionHeaderHeight: collectionHeaderHeight } ) 
                                                 setContent();
                                             }}
-                                            min={ 165 }
-                                            max={ 400 } />
+                                            min={ 100 }
+                                            max={ 300 } />
 
                                         <ToggleControl
                                             label={__('Display "Collection" label', 'tainacan')}
@@ -420,7 +382,7 @@ registerBlockType('tainacan/search-bar', {
                                         />
                                     </div>
                                 : null
-                                }
+                                }  
                         </PanelBody> 
                     </InspectorControls>
                 </div>
@@ -493,10 +455,10 @@ registerBlockType('tainacan/search-bar', {
                                         backgroundImage: collection.header_image ? 'url(' + collection.header_image + ')' : '',
                                         height: collectionHeaderHeight ? collectionHeaderHeight + 'px' : '160px'
                                     }}>
-                                </div> 
+                                </div>
                                 <div
                                     className={ 
-                                        'search-bar-collection-header-container' + 
+                                        (showCollectionHeader ? 'search-bar-collection-header-container' : '') + 
                                         (alignment == 'left' ? ' is-aligned-left' : '') + 
                                         (alignment == 'right' ? ' is-aligned-right' : '')
                                     }

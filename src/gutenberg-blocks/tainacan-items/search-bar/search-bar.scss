@@ -22,14 +22,10 @@
 
             &.is-aligned-left {
                 margin-left: 0;
+                justify-content: flex-start;
             }
             &.is-aligned-right {
                 margin-right: 0;
-            }
-            &.is-expanded-aligned-left {
-                justify-content: flex-start;
-            }
-            &.is-expanded-aligned-right {
                 justify-content: flex-end;
             }
 
@@ -74,20 +70,30 @@
             flex-direction: row-reverse;
             border: none;
 
+            &.is-aligned-left {
+                margin-left: 0;
+                justify-content: flex-end;
+            }
+            &.is-aligned-right {
+                margin-right: 0;
+                justify-content: flex-start;
+            }            
+
             input#taincan-search-bar-block_input  {
                 width: 35%;
                 border-radius: 0;
                 margin-left: -52px;
                 padding-left: 52px;
                 border: 1px solid transparent;
-                background: rgba(250, 250, 250, 0.6);
-                transition: border-color 0.7s ease, width 0.5s ease-in, background-color 0.5s ease;
+                background: rgba(250, 250, 250, 0.2);
+                transition: border-color 0.4s ease, width 0.5s ease-in, background-color 0.3s ease, color 0.3 ease;
 
                 &:focus,
                 &:active,
                 &:hover {
                     width: 100%;
                     border: 1px solid white;
+                    background:rgba(250, 250, 250, 1);
                     box-shadow: none;
                 }
             }
@@ -130,6 +136,41 @@
                 }
             } 
         }
+
+        // This style has particular alignments properties.
+        .search-bar-collection-header-container {
+            .tainacan-search-container form#taincan-search-bar-block {
+                &:focus,
+                &:active,
+                &:hover {
+                    input::placeholder { color: #454647; }
+                    button .icon {
+                        svg { 
+                            fill: #cbcbcb !important; 
+                        }
+                    }
+                }
+
+                input#taincan-search-bar-block_input {
+                    &::placeholder { color: white; }
+
+                    &:focus,
+                    &:active,
+                    &:hover,
+                    &:focus::placeholder,
+                    &:active::placeholder,
+                    &:hover::placeholder {
+                        color: #454647;
+                    }
+
+                }
+                button .icon {
+                    svg { 
+                        fill: #dbdbdb !important; 
+                    }
+                }
+            }
+        }
     }
 
     &.is-style-stylish {
@@ -144,7 +185,7 @@
                 width: 100%;
                 padding-right: 52px;
                 padding-left: 24px;
-                border: none !important;
+                border-width: 0;
             }
 
             input#taincan-search-bar-block_input {
@@ -155,8 +196,8 @@
                 padding-right: 27px;
                 padding-left: 26px;
                 font-size: 1rem;
-                border: none;
-                background: rgba(250, 250, 250, 0.9);
+                border-width: 0;
+                background: #f2f2f2;
                 transition: width 0.5s ease-in;
 
                 &:focus,
@@ -165,7 +206,7 @@
                     width: 100%;
                     padding-right: 52px;
                     padding-left: 24px;
-                    border: none !important;
+                    border-width: 0;
                 }
             }
 
@@ -206,41 +247,98 @@
                     border-color: #dbdbdb !important;
                 }
             } 
+            
+        }
+
+        // This style has particular alignments properties.
+        .search-bar-collection-header-container {
+
+            &:not(.is-aligned-right):not(.is-aligned-left) {
+                .tainacan-search-container {
+                    width: calc(100% - 4.1667% - 26px);
+                    width: calc(100% - 4.1667vw - 26px);
+                    bottom: calc(-50% + 38px);
+                    position: absolute;
+                }
+                h3 {
+                    margin-bottom: 26px;
+                }
+            }
+            &.is-aligned-right {
+                .tainacan-search-container {
+                    width: calc(100% - 4.1667% - 26px);
+                    width: calc(100% - 4.1667vw - 26px);
+                    top: calc(-50% + 26px);
+                    right: calc(4.1667% + 26px);
+                    right: calc(4.1667vw + 26px);
+                    position: absolute;
+                }
+            }
+
+            &.is-aligned-left {
+                .tainacan-search-container {
+                    width: calc(100% - 1rem - 26px);
+                    top: calc(-50% + 26px);
+                    left: calc(4.1667% + 26px);
+                    left: calc(4.1667vw + 26px);
+                    position: absolute;
+                }
+            }
+
+            .tainacan-search-container form#taincan-search-bar-block input#taincan-search-bar-block_input {
+                background: white;
+                border-width: 3px;
+                border-style: solid;
+                margin-right: -56px;
+                padding-right: 24px;
+                padding-left: 24px;
+
+                &:hover {
+                    border-width: 3px !important;
+                }
+            }
         }
     }
 
     // Collection header
     .search-bar-collection-header-image {
         width: 100%;
-        min-width: 150px;
-        min-height: 165px;
+        min-width: 160px;
+        min-height: 125px;
         background-size: cover;
         background-position: center;
         background-color: #dbdbdb;
-
     }
     .search-bar-collection-header-container {
         width: 100%;
-        min-height: 165px;
+        min-height: 125px;
+        position: relative;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         flex-grow: 2;
-        padding: 1rem;
+        padding: 1rem 4.1667%;
+        padding: 1rem 4.1667vw;
         text-align: center;
         text-decoration: none !important;
 
         &.is-aligned-left {
+            min-height: 100px;
             text-align: left;
-            flex-direction: row;
-            flex-wrap: nowrap;
-            justify-content: space-between;
-        }
-        &.is-aligned-right {
-            text-align: right;
             flex-direction: row-reverse;
             flex-wrap: nowrap;
             justify-content: space-between;
+
+            h3 { text-align: right; }
+        }
+        &.is-aligned-right {
+            min-height: 100px;
+            text-align: right;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+
+            h3 { text-align: left; }
         }
 
         h3 { 
