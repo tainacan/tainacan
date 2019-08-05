@@ -31,7 +31,6 @@ class Cli_Move_Attachments {
 		global $wpdb;
 		
 		$dry_run = isset($assoc_args['dry-run']);
-		$deep = isset($assoc_args['deep']);
 		
 		$items_repo = Repositories\Items::get_instance();
 		$collections_repo = Repositories\Collections::get_instance();
@@ -44,6 +43,17 @@ class Cli_Move_Attachments {
 		]);
 		
 		$PF = \Tainacan\Private_Files::get_instance();
+		
+		$upload_base = wp_get_upload_dir();
+		$upload_base = $upload_base['basedir'];
+		
+		$base_upload_path = $upload_base . DIRECTORY_SEPARATOR . $PF->get_items_uploads_folder();
+		
+		if (!file_exists($base_upload_path)) {
+			if ( !wp_mkdir_p($base_upload_path) ) {
+				\WP_CLI::error( "Unable to create uploads directory: " . $base_upload_path );
+			}
+		}
 		
 		$progress = \WP_CLI\Utils\make_progress_bar( 'Moving attachments', $attachments->found_posts );
 		$results = [];
@@ -73,9 +83,6 @@ class Cli_Move_Attachments {
 				$current_path = get_attached_file($att->ID);
 				$current_base_path = dirname($current_path);
 				
-				$upload_base = wp_get_upload_dir();
-				$upload_base = $upload_base['basedir'];
-				
 				$col_status = get_post_status_object($collection->get_status());
 				$item_status = get_post_status_object($item->get_status());
 				
@@ -85,11 +92,15 @@ class Cli_Move_Attachments {
 				if ( ! $item_status->public ) {
 					$item_id = $PF->get_private_folder_prefix() . $item_id;
 				}
-				$new_path_base = $upload_base . DIRECTORY_SEPARATOR . $PF->get_items_uploads_folder() . DIRECTORY_SEPARATOR . $col_id . '/' . $item_id;
+				$new_path_base = $base_upload_path . DIRECTORY_SEPARATOR . $col_id . '/' . $item_id;
 				
 				$new_path = $new_path_base . DIRECTORY_SEPARATOR . $filename;
 				
 				if (!$dry_run) {
+					
+					if ( ! wp_mkdir_p( $new_path_base ) ) {
+						\WP_CLI::error( "Unable to create destination directory: " . $new_path_base );
+					}
 					
 					if ( isset($meta['file']) ) {
 						$meta['file'] = \str_replace($current_url, $new_url, $meta['file']);
@@ -99,10 +110,6 @@ class Cli_Move_Attachments {
 						foreach ($meta['sizes'] as $size) {
 							rename($current_base_path . DIRECTORY_SEPARATOR . $size['file'], $new_path_base . DIRECTORY_SEPARATOR . $size['file']);
 						}
-					}
-					
-					if ( ! wp_mkdir_p( $new_path_base ) ) {
-						\WP_CLI::error( "Unable to create destinatino directory: " . $new_path_base );
 					}
 					
 					rename($current_path, $new_path);
