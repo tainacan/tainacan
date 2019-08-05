@@ -133,9 +133,9 @@ class Cli_Move_Attachments {
 	
 	private function is_item_attachment($att) {
 		$ThemeHelper = \Tainacan\Theme_Helper::get_instance();
-		if ($att->parent > 0) {
+		if ($att->post_parent > 0) {
 			
-			$post = get_post($att->parent);
+			$post = get_post($att->post_parent);
 			if ($post instanceof \WP_Post) {
 				if ($ThemeHelper->is_post_an_item($post)) {
 					return new \Tainacan\Entities\Item($post);
