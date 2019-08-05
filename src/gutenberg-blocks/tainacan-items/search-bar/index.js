@@ -485,29 +485,36 @@ registerBlockType('tainacan/search-bar', {
                             <div class="spinner-container">
                                 <Spinner />
                             </div>
-                            :
-                            <div
-                                className={ 
-                                    'search-bar-collection-header' + 
-                                    (alignment == 'left' ? ' is-aligned-left' : '') + 
-                                    (alignment == 'right' ? ' is-aligned-right' : '')
-                                }
-                                style={{
-                                    backgroundImage: collection.header_image ? 'url(' + collection.header_image + ')' : '',
-                                    backgroundColor: collectionBackgroundColor,
-                                    height: collectionHeaderHeight ? collectionHeaderHeight + 'px' : '160px'
-                                }}>
-                                <h3 style={{  
-                                    color: collectionTextColor ? collectionTextColor : '',
-                                    fontSize: collectionTextSize ? collectionTextSize + 'rem' : '2rem' 
-                                }}>
-                                    { showCollectionLabel ? <span class="label">{ __('Collection', 'tainacan') }<br/></span> : null }
-                                    { collection && collection.name ? collection.name : '' }
-                                </h3>
-                                { collectionId && collectionSlug ?
-                                    content
-                                    : null
-                                }
+                            : 
+                            <div>
+                                <div
+                                    className={ 'search-bar-collection-header-image' }
+                                    style={{
+                                        backgroundImage: collection.header_image ? 'url(' + collection.header_image + ')' : '',
+                                        height: collectionHeaderHeight ? collectionHeaderHeight + 'px' : '160px'
+                                    }}>
+                                </div> 
+                                <div
+                                    className={ 
+                                        'search-bar-collection-header-container' + 
+                                        (alignment == 'left' ? ' is-aligned-left' : '') + 
+                                        (alignment == 'right' ? ' is-aligned-right' : '')
+                                    }
+                                    style={{
+                                        backgroundColor: collectionBackgroundColor
+                                    }}>
+                                    <h3 style={{  
+                                        color: collectionTextColor ? collectionTextColor : '',
+                                        fontSize: collectionTextSize ? collectionTextSize + 'rem' : '2rem' 
+                                    }}>
+                                        { showCollectionLabel ? <span class="label">{ __('Collection', 'tainacan') }<br/></span> : null }
+                                        { collection && collection.name ? collection.name : '' }
+                                    </h3>
+                                    { collectionId && collectionSlug ?
+                                        content
+                                        : null
+                                    }
+                                </div>
                             </div>
                         }
                     </div>
