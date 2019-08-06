@@ -36,7 +36,7 @@ class Cli_Collection {
 	 */
 	public function list() {
 		$response = [];
-		$collections = $this->collection_repository->fetch(['per-page'=>-1], 'OBJECT');
+		$collections = $this->collection_repository->fetch(['posts_per_page'=>-1], 'OBJECT');
 		foreach ($collections as $collection) {
 			array_push($response, ['ID' => $collection->get_id(), 'title'=> $collection->get_name()]);
 		}
@@ -83,7 +83,7 @@ class Cli_Collection {
 			$this->dry_run = true;
 		}
 
-		$per_page = 50; $page = 0;
+		$per_page = 50; $page = 1;
 		$args = [
 			'posts_per_page'=> $per_page,
 			'paged' => $page,
@@ -95,7 +95,7 @@ class Cli_Collection {
 		$last_page = ceil($total/$per_page);
 
 		$progress = \WP_CLI\Utils\make_progress_bar( "cleaning collection items:", $total );
-		while ($page <= $last_page) {
+		while ($page++ <= $last_page) {
 			if ($collection_items->have_posts()) {
 				while ( $collection_items->have_posts() ) {
 					$collection_items->the_post();
@@ -104,7 +104,7 @@ class Cli_Collection {
 					$progress->tick();
 				}
 			}
-			$args['paged'] = $page++;
+			if($this->dry_run) $args['paged'] = $page;
 			$collection_items = $this->items_repository->fetch($args, $collection_id, 'WP_Query');
 		}
 		$progress->finish();
