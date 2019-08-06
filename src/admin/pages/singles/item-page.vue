@@ -233,27 +233,16 @@
                                 <span>
                                     {{ $i18n.get('label_attachments') }}
                                     <span
-                                            v-if="attachmentsList && attachmentsList.length"
+                                            v-if="totalAttachments != null && totalAttachments != undefined"
                                             class="has-text-gray">
-                                        ({{ attachmentsList.length }})
+                                        ({{ totalAttachments }})
                                     </span>
                                 </span>
                             </template>
-                            
-                            <div class="section-box section-attachments">
-                                <div class="uploaded-files">
-                                    <file-item
-                                            :style="{ margin: 15 + 'px'}"
-                                            v-if="attachmentsList.length > 0"
-                                            v-for="(attachment, index) in attachmentsList"
-                                            :key="index"
-                                            :show-name="true"
-                                            :modal-on-click="true"
-                                            :file="attachment"/>
-                                    <p v-if="attachmentsList.length <= 0"><br>{{
-                                        $i18n.get('info_no_attachments_on_item_yet') }}</p>
-                                </div>
-                            </div>  
+                        
+                            <attachments-list
+                                    v-if="item != undefined && item.id != undefined"
+                                    :item="item" />    
                         </b-tab-item>
 
                         <b-tab-item>
@@ -322,6 +311,7 @@
     import {formHooks} from '../../js/mixins';
     import ActivitiesPage from '../lists/activities-page.vue';
     import ExposersModal from '../../components/other/exposers-modal.vue';
+    import AttachmentsList from '../../components/lists/attachments-list.vue';
 
     export default {
         name: 'ItemPage',
@@ -330,7 +320,8 @@
             FileItem,
             DocumentItem,
             ActivitiesPage,
-            ExposersModal
+            ExposersModal,
+            AttachmentsList
         },
         data() {
             return {
@@ -355,14 +346,13 @@
             metadatumList() {
                 return JSON.parse(JSON.stringify(this.getMetadata()));
             },
-            attachmentsList() {
-                return this.getAttachments().filter((attachment) => attachment.id != this.item.document);
-            },
+            totalAttachments() {
+                return this.getTotalAttachments();
+            }
         },
         methods: {
             ...mapActions('item', [
                 'fetchItem',
-                'fetchAttachments',
                 'fetchMetadata',
             ]),
             ...mapActions('collection', [
@@ -372,7 +362,7 @@
             ...mapGetters('item', [
                 'getItem',
                 'getMetadata',
-                'getAttachments'
+                'getTotalAttachments'
             ]),
             loadMetadata() {
                 // Obtains Item Metadatum
@@ -416,15 +406,12 @@
                 this.loadMetadata();
             });
 
-        // Obtains collection name
-        if (!this.isRepositoryLevel) {
-            this.fetchCollectionName(this.collectionId).then((collectionName) => {
-                this.collectionName = collectionName;
-            });
-        }
-
-            // Get attachments
-            this.fetchAttachments(this.itemId);
+            // Obtains collection name
+            if (!this.isRepositoryLevel) {
+                this.fetchCollectionName(this.collectionId).then((collectionName) => {
+                    this.collectionName = collectionName;
+                });
+            }
 
             // Obtains collection Comment Status
             this.fetchCollectionAllowComments(this.collectionId).then((collectionAllowComments) => {

@@ -496,47 +496,28 @@
                                     <span>
                                         {{ $i18n.get('label_attachments') }}
                                         <span
-                                                v-if="attachmentsList && attachmentsList.length"
+                                                v-if="totalAttachments != null && totalAttachments != undefined"
                                                 class="has-text-gray">
-                                            ({{ attachmentsList.length }})
+                                            ({{ totalAttachments }})
                                         </span>
                                     </span>
                                 </template>
       
-                                <div class="section-box section-attachments">
+                                <div v-if="item != undefined && item.id != undefined">
+                                    <br>
                                     <button
+                                            style="margin-left: calc(4.666667% + 12px)"
                                             type="button"
                                             class="button is-secondary"
                                             @click.prevent="attachmentMediaFrame.openFrame($event)">
                                         {{ $i18n.get("label_edit_attachments") }}
                                     </button>
 
-                                    <div class="uploaded-files">
-                                        <div
-                                                class="file-item-container"
-                                                v-for="(attachment, index) in attachmentsList"
-                                                :key="index">
-                                            <file-item
-                                                    :style="{ margin: 15 + 'px'}"
-                                                    v-if="attachmentsList.length > 0"   
-                                                    :modal-on-click="true"  
-                                                    :show-name="true"
-                                                    :file="attachment"/>
-                                            <span class="file-item-control">
-                                                <a 
-                                                        @click="deleteAttachment(attachment)"
-                                                        v-tooltip="{
-                                                            content: $i18n.get('delete'),
-                                                            autoHide: true,
-                                                            placement: 'bottom'
-                                                        }"
-                                                        class="icon">
-                                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
-                                                </a>
-                                            </span>
-                                        </div>
-                                        <p v-if="attachmentsList.length <= 0"><br>{{ $i18n.get('info_no_attachments_on_item_yet') }}</p>
-                                    </div>
+                                    <attachments-list
+                                            v-if="item != undefined && item.id != undefined"
+                                            :item="item"
+                                            :is-editable="true"
+                                            @onDeleteAttachment="deleteAttachment($event)"/>    
                                 </div>
                             </b-tab-item>
 
@@ -729,6 +710,7 @@ import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
 import DocumentItem from '../other/document-item.vue';
 import CustomDialog from '../other/custom-dialog.vue';
+import AttachmentsList from '../lists/attachments-list.vue';
 import { formHooks } from '../../js/mixins';
 
 export default {
@@ -777,9 +759,6 @@ export default {
         metadatumList() {
             return JSON.parse(JSON.stringify(this.getMetadata()));
         },
-        attachmentsList(){
-            return this.getAttachments().filter((attachment) => attachment.id != this.item.document && attachment.id != this.form.document);
-        },
         lastUpdated() {
             return this.getLastUpdated();
         },
@@ -788,11 +767,15 @@ export default {
         },
         itemIdInSequence() {
             return this.getItemIdInSequence();
+        },
+        totalAttachments() {
+            return this.getTotalAttachments();
         }
     },
     components: {
         FileItem,
-        DocumentItem
+        DocumentItem,
+        AttachmentsList
     },
     watch: {
         '$route.params.itemPosition'(newItemPosition, oldItemPosition) {
@@ -835,15 +818,15 @@ export default {
             'fetchItem',
             'cleanMetadata',
             'sendAttachments',
-            'updateThumbnail',
             'fetchAttachments',
+            'updateThumbnail',
             'cleanLastUpdated',
             'setLastUpdated',
             'removeAttachmentFromItem'
         ]),
         ...mapGetters('item',[
             'getMetadata',
-            'getAttachments',
+            'getTotalAttachments',
             'getLastUpdated'
         ]),
         ...mapActions('collection', [
@@ -945,7 +928,7 @@ export default {
                 this.form.comment_status = this.item.comment_status;
 
                 this.loadMetadata();
-                this.fetchAttachments(this.itemId);
+                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId });
 
             })
             .catch(error => this.$console.error(error));
@@ -1045,13 +1028,17 @@ export default {
                 item_id: this.itemId, 
                 document: this.form.document, 
                 document_type: this.form.document_type 
-            }).catch((errors) => {
-                    for (let error of errors.errors) {
-                        for (let metadatum of Object.keys(error)){
-                        eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
-                        }
+            })
+            .then(() => {
+                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document });
+            })
+            .catch((errors) => {
+                for (let error of errors.errors) {
+                    for (let metadatum of Object.keys(error)){
+                    eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
                     }
-                    this.formErrorMessage = errors.error_message;
+                }
+                this.formErrorMessage = errors.error_message;
             });
         },
         deleteThumbnail() {
@@ -1064,7 +1051,6 @@ export default {
                 });
         },
         deleteAttachment(attachment) {
-
             this.$modal.open({
                 parent: this,
                 component: CustomDialog,
@@ -1074,7 +1060,9 @@ export default {
                     message: this.$i18n.get('info_warning_attachment_delete'),
                     onConfirm: () => {
                         this.removeAttachmentFromItem(attachment.id)
-                            .then(() => { })
+                            .then(() => { 
+                                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document });
+                            })
                             .catch((error) => {
                                 this.$console.error(error);
                             });
@@ -1144,7 +1132,7 @@ export default {
                     relatedPostId: this.itemId,
                     onSave: () => {
                         // Fetch current existing attachments
-                        this.fetchAttachments(this.itemId);
+                        this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document });
                     }
                 }
             );
@@ -1232,7 +1220,7 @@ export default {
             });
 
             // Fetch current existing attachments
-            this.fetchAttachments(this.itemId);
+            this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document });
         },
         onNextInSequence() {
             this.sequenceRightDirection = true; 
@@ -1502,48 +1490,8 @@ export default {
             }
         }
     }
-    .section-attachments {
-        margin-top: 0px; 
-        p { margin: 4px 15px }
-    }
-
-    .uploaded-files {
-        display: flex;
-        flex-flow: wrap;
-        margin-left: -15px;
-        margin-right: -15px;
-
-        .file-item-container {
-            position: relative;
-
-            &:hover .file-item-control {
-                display: block;
-                visibility: visible;
-                opacity: 1;
-            }
-
-            .file-item-control {
-                position: absolute;
-                background-color: $gray1;
-                width: 112px;
-                margin: 15px;
-                bottom: 0px;
-                padding: 2px 8px 4px 8px;
-                text-align: right;
-                display: none;
-                visibility: hidden;
-                opacity: 0;
-                transition: opacity ease 0.2s, visibility ease 0.2s, display ease 0.2s;
-
-                .icon {
-                    cursor: pointer;
-                }
-            }
-        }
-    }
 
     .document-field {  
-
         .document-buttons-row {
             text-align: right;
             top: -21px;
