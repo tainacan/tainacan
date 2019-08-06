@@ -10,7 +10,8 @@ const state = {
     attachment: {},
     attachments: [],
     lastUpdated: '',
-    comment_status: ''
+    comment_status: '',
+    totalAttachments: 0
 };
 
 
