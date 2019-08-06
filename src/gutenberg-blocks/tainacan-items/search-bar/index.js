@@ -145,7 +145,7 @@ registerBlockType('tainacan/search-bar', {
                                 id="taincan-search-bar-block"
                                 action={ tainacan_plugin.site_url + '/' + collectionSlug + '/#/' }
                                 method='get'>
-                            <input  
+                            <input 
                                 style={{ borderColor: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}
                                 id="taincan-search-bar-block_input"
                                 label={ __('Search', 'taincan')}
@@ -318,16 +318,18 @@ registerBlockType('tainacan/search-bar', {
                                 { showCollectionHeader ?
                                     <div style={{ margin: '5px' }}>
   
-                                        <RangeControl
-                                            label={__('Header height (px)', 'tainacan')}
-                                            value={ collectionHeaderHeight ? collectionHeaderHeight : 125 }
-                                            onChange={ ( aHeight ) => {
-                                                collectionHeaderHeight = aHeight;
-                                                setAttributes( { collectionHeaderHeight: collectionHeaderHeight } ) 
-                                                setContent();
-                                            }}
-                                            min={ 100 }
-                                            max={ 300 } />
+                                        { collection && collection.header_image ? 
+                                            <RangeControl
+                                                label={__('Header image height (px)', 'tainacan')}
+                                                value={ collectionHeaderHeight ? collectionHeaderHeight : 125 }
+                                                onChange={ ( aHeight ) => {
+                                                    collectionHeaderHeight = aHeight;
+                                                    setAttributes( { collectionHeaderHeight: collectionHeaderHeight } ) 
+                                                    setContent();
+                                                }}
+                                                min={ 100 }
+                                                max={ 300 } /> : null
+                                        }
 
                                         <ToggleControl
                                             label={__('Display "Collection" label', 'tainacan')}
@@ -449,13 +451,15 @@ registerBlockType('tainacan/search-bar', {
                             </div>
                             : 
                             <div>
-                                <div
-                                    className={ 'search-bar-collection-header-image' }
-                                    style={{
-                                        backgroundImage: collection.header_image ? 'url(' + collection.header_image + ')' : '',
-                                        height: collectionHeaderHeight ? collectionHeaderHeight + 'px' : '160px'
-                                    }}>
-                                </div>
+                                { collection.header_image ? 
+                                    <div
+                                        className={ 'search-bar-collection-header-image' }
+                                        style={{
+                                            backgroundImage: collection.header_image ? 'url(' + collection.header_image + ')' : '',
+                                            height: collectionHeaderHeight ? collectionHeaderHeight + 'px' : '160px'
+                                        }}>
+                                    </div> : null 
+                                } 
                                 <div
                                     className={ 
                                         (showCollectionHeader ? 'search-bar-collection-header-container' : '') + 
@@ -465,13 +469,15 @@ registerBlockType('tainacan/search-bar', {
                                     style={{
                                         backgroundColor: collectionBackgroundColor
                                     }}>
-                                    <h3 style={{  
-                                        color: collectionTextColor ? collectionTextColor : '',
-                                        fontSize: collectionTextSize ? collectionTextSize + 'rem' : '2rem' 
-                                    }}>
-                                        { showCollectionLabel ? <span class="label">{ __('Collection', 'tainacan') }<br/></span> : null }
-                                        { collection && collection.name ? collection.name : '' }
-                                    </h3>
+                                    <div class="search-bar-collection-header-title">
+                                        { showCollectionLabel ? <span class="label">{ __('Collection', 'tainacan') }</span> : null }
+                                        <h3 style={{  
+                                            color: collectionTextColor ? collectionTextColor : '',
+                                            fontSize: collectionTextSize ? collectionTextSize + 'rem' : '2rem' 
+                                        }}>
+                                            { collection && collection.name ? collection.name : '' }
+                                        </h3>
+                                    </div>
                                     { collectionId && collectionSlug ?
                                         content
                                         : null
