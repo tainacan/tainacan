@@ -283,13 +283,13 @@
                     </router-link>
                     <button 
                             class="button sequence-button"
-                            :aria-label="$i18n.get('label_urls')"
+                            :aria-label="$i18n.get('label_view_as')"
                             :disabled="isLoading"
                             @click="openExposersModal()">
                         <span class="icon is-large">
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
                         </span>
-                        <span class="is-hidden-touch">{{ $i18n.get('label_urls') }}</span>
+                        <span class="is-hidden-touch">{{ $i18n.get('label_view_as') }}</span>
                     </button>
                     <a
                             target="_blank"

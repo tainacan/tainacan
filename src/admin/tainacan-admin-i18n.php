@@ -430,6 +430,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_expose_only_displayed_metadata'			 => __( 'Expose only displayed metadata', 'tainacan' ),
 	'label_allowed'						 			 => __( 'Allowed', 'tainacan' ),
 	'label_not_allowed'						 		 => __( 'Not allowed', 'tainacan' ),
+	'label_view_as'							 		 => __( 'View as...', 'tainacan' ),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
