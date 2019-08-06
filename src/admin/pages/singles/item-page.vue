@@ -199,7 +199,9 @@
                             </template>
 
                             <!-- Metadata -------------------------------- -->
-                            <div class="metadata-area">
+                            <div 
+                                    :style="metadatumList.length == 1 ? 'column-count: 1;' : ''"
+                                    class="metadata-area">
                                 <div
                                         v-for="(metadatum, index) of metadatumList"
                                         :key="index"
