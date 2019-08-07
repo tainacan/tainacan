@@ -1,4 +1,4 @@
-const { registerBlockType } = wp.blocks;
+const { registerBlockType, getBlockStyles, getBlockAttributes } = wp.blocks;
 
 const { __ } = wp.i18n;
 
@@ -90,7 +90,7 @@ registerBlockType('tainacan/search-bar', {
         collectionTextSize: {
             type: Number,
             default: 2
-        }
+        },
     },
     supports: {
         align: ['full', 'wide', 'left', 'center', 'right'],
@@ -236,6 +236,18 @@ registerBlockType('tainacan/search-bar', {
             setContent();
         }
 
+        function getCurrentStyle() {
+            if (isSelected) {  
+                if (className.split(' ').find((aClass) => aClass == 'is-style-alternate')) {
+                    return 'alternate'
+                } else if (className.split(' ').find((aClass) => aClass == 'is-style-stylish')) {
+                    return 'stylish'
+                }
+            } 
+            return 'default'
+        }
+ 
+
         // Executed only on the first load of page
         if(content && content.length && content[0].type)
             setContent();
@@ -260,7 +272,7 @@ registerBlockType('tainacan/search-bar', {
                 isActive: alignment === 'right',
             },
         ]; 
- 
+
         return (
             <div className={className}>
 
@@ -310,8 +322,10 @@ registerBlockType('tainacan/search-bar', {
                                     checked={ showCollectionHeader }
                                     onChange={ ( isChecked ) => {
                                             showCollectionHeader = isChecked;
-                                            if (isChecked) fetchCollectionForHeader();
+                                            if (isChecked) 
+                                                fetchCollectionForHeader();
                                             setAttributes({ showCollectionHeader: showCollectionHeader });
+                                            setContent();
                                         } 
                                     }
                                 />
@@ -338,6 +352,7 @@ registerBlockType('tainacan/search-bar', {
                                             onChange={ ( isChecked ) => {
                                                     showCollectionLabel = isChecked;
                                                     setAttributes({ showCollectionLabel: showCollectionLabel });
+                                                    setContent();
                                                 } 
                                             }
                                         />
@@ -349,7 +364,8 @@ registerBlockType('tainacan/search-bar', {
                                                 color={ collectionBackgroundColor }
                                                 onChangeComplete={ ( value ) => {
                                                     collectionBackgroundColor = value.hex;
-                                                    setAttributes({ collectionBackgroundColor: collectionBackgroundColor }) 
+                                                    setAttributes({ collectionBackgroundColor: collectionBackgroundColor }) ;
+                                                    setContent();
                                                 }}
                                                 disableAlpha
                                                 />
@@ -363,7 +379,8 @@ registerBlockType('tainacan/search-bar', {
                                                 value={ collectionTextColor }
                                                 onChange={ ( color ) => {
                                                     collectionTextColor = color;
-                                                    setAttributes({ collectionTextColor: collectionTextColor }) 
+                                                    setAttributes({ collectionTextColor: collectionTextColor });
+                                                    setContent(); 
                                                 }} 
                                             />
                                         </BaseControl>
@@ -372,14 +389,13 @@ registerBlockType('tainacan/search-bar', {
                                             label={__('Collection name size', 'tainacan')}
                                             value={ collectionTextSize ? collectionTextSize : 2 }
                                             options={ [
-                                                { label: __('Huge', 'tainacan'), value: 3 },
                                                 { label: __('Large', 'tainacan'), value: 2.5 },
                                                 { label: __('Medium', 'tainacan'), value: 2 },
                                                 { label: __('Small', 'tainacan'), value: 1.5 },
                                             ] }
                                             onChange={ ( size ) => { 
                                                 collectionTextSize = size;
-                                                setAttributes({ collectionTextSize: collectionTextSize })  
+                                                setAttributes({ collectionTextSize: collectionTextSize });
                                             }}
                                         />
                                     </div>
@@ -469,12 +485,11 @@ registerBlockType('tainacan/search-bar', {
                                     style={{
                                         backgroundColor: collectionBackgroundColor
                                     }}>
-                                    <div class="search-bar-collection-header-title">
+                                    <div 
+                                        style={{ color: collectionTextColor ? collectionTextColor : '' }}
+                                        class="search-bar-collection-header-title">
                                         { showCollectionLabel ? <span class="label">{ __('Collection', 'tainacan') }</span> : null }
-                                        <h3 style={{  
-                                            color: collectionTextColor ? collectionTextColor : '',
-                                            fontSize: collectionTextSize ? collectionTextSize + 'rem' : '2rem' 
-                                        }}>
+                                        <h3 style={{ fontSize: collectionTextSize ? collectionTextSize + 'rem' : '2rem' }}>
                                             { collection && collection.name ? collection.name : '' }
                                         </h3>
                                     </div>

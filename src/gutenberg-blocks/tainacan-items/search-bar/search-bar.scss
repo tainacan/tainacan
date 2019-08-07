@@ -28,6 +28,11 @@
                 margin-right: 0;
                 justify-content: flex-end;
             }
+            &:hover,
+            &:focus,
+            &:active {
+                border: 1px solid #545758;
+            }
 
             input#taincan-search-bar-block_input {
                 width: 100%;
@@ -36,11 +41,6 @@
                 border: none;
                 padding: 4px 0.75rem;
                 text-overflow: ellipsis;
-                &:focus,
-                &:active {
-                    border: 1px solid #545758;
-                    border-right: none;
-                }
             }
             button {
                 height: auto;
@@ -78,7 +78,11 @@
                 margin-right: 0;
                 justify-content: flex-start;
             }            
-
+            &:focus,
+            &:active,
+            &:hover {
+                border: none;
+            }
             input#taincan-search-bar-block_input  {
                 width: 35%;
                 border-radius: 0;
@@ -143,6 +147,7 @@
                 &:focus,
                 &:active,
                 &:hover {
+                    input,
                     input::placeholder { 
                         color: #454647; 
                         border-width: 0;
@@ -155,6 +160,7 @@
                 }
 
                 input#taincan-search-bar-block_input {
+                    color: white;
                     &::placeholder { color: white; }
 
                     &:focus,
@@ -183,6 +189,12 @@
             display: flex;
             flex-direction: row;
             border: none;
+
+            &:focus,
+            &:active,
+            &:hover {
+                border: none;
+            }
 
             &:hover input#taincan-search-bar-block_input {
                 width: 100%;
@@ -258,8 +270,8 @@
 
             &:not(.is-aligned-right):not(.is-aligned-left) {
                 .tainacan-search-container {
-                    width: calc(100% - 4.1667% - 26px);
-                    width: calc(100% - 4.1667vw - 26px);
+                    width: calc(100% - 4.1667% - 53px);
+                    width: calc(100% - 4.1667vw - 53px);
                     bottom: calc(-50% + 38px);
                     position: absolute;
                 }
@@ -320,8 +332,8 @@
         flex-wrap: wrap;
         align-items: center;
         flex-grow: 2;
-        padding: 1rem 4.1667%;
-        padding: 1rem 4.1667vw;
+        padding: 0.5rem 4.1667%;
+        padding: 0.5rem 4.1667vw;
         text-align: center;
         text-decoration: none !important;
 
@@ -346,14 +358,15 @@
 
         .search-bar-collection-header-title {
             width: 100%; 
+            color: white;
             
             h3 { 
                 margin: 0 auto;
-                color: white; 
                 text-decoration: none;
                 font-size: 1.3rem;
                 line-height: 1.5rem;
                 text-overflow: ellipsis;
+                color: inherit;
                 &:hover {
                     text-decoration: none;
                 }
@@ -364,7 +377,6 @@
                 margin-top: -12px;
                 font-weight: normal; 
                 font-size: 1rem;
-                color: white;
             }
         }
         

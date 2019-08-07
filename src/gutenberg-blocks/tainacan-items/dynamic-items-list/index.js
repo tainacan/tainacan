@@ -140,7 +140,6 @@ registerBlockType('tainacan/dynamic-items-list', {
             showCollectionHeader,
             showCollectionLabel,
             isLoadingCollection,
-            collection,
             collectionBackgroundColor,
             collectionTextColor
         } = attributes;
