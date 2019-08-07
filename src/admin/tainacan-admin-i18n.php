@@ -323,7 +323,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_max_options_to_show'                      => __( 'Max options to show', 'tainacan' ),
 	'label_unamed_process'                           => __( 'Unamed process', 'tainacan' ),
 	'label_semantic_uri'                             => __( 'Semantic Uri', 'tainacan' ),
-	'label_view_collection'                          => __( 'View collection', 'tainacan' ),
+	'label_view_collection_on_website'               => __( 'View collection on website', 'tainacan' ),
 	'label_view_more'                                => __( 'View more', 'tainacan' ),
 	'label_log_file'                                 => __( 'Log file', 'tainacan' ),
 	'label_error_log_file'                           => __( 'Error Log file', 'tainacan' ),

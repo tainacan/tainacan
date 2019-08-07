@@ -211,12 +211,18 @@
 
         .level-left {
             margin-left: -12px;
-            .home-area {
+            
+            .home-area { 
                 font-size: 24px;
                 width: 50px;
                 height: $header-height;
                 background-color: $gray1;
                 padding-bottom: 0.4rem;
+                transition: background-color 0.2s ease;
+
+                &:hover {
+                    background-color: $gray2;
+                }
             }
             .logo-area {
                 height: $header-height;

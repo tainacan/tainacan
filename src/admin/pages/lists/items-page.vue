@@ -570,7 +570,7 @@
                         <span class="is-hidden-touch">{{ registeredViewModes[viewModeOption].label }}</span>
                     </button>
                 </div>
-
+ 
                 <!-- Exposers or alternative links modal button -->
                 <div 
                         v-if="!$route.query.iframemode"

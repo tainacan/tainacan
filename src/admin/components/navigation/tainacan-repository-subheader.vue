@@ -34,7 +34,7 @@
                                 show: 500,
                                 hide: 300,
                             },
-                            content: $i18n.get('label_view_collection'),
+                            content: $i18n.get('label_view_collection_on_website'),
                             autoHide: false,
                             placement: 'bottom-end',
                             classes: ['header-tooltips']
@@ -48,7 +48,7 @@
                 <span class="icon">
                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
                 </span>
-                    <!-- {{ $i18n.get('label_view_collection') }} -->
+                    <!-- {{ $i18n.get('label_view_collection_on_website') }} -->
                 </a>
             </li>
             <li     
@@ -71,7 +71,7 @@
                 <span class="icon">
                     <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
                 </span>
-                    <!-- {{ $i18n.get('label_view_collection') }} -->
+                    <!-- {{ $i18n.get('label_view_collection_on_website') }} -->
                 </a>
             </li>
         </ul>

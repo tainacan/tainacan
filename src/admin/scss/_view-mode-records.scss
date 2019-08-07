@@ -30,6 +30,7 @@
         cursor: pointer;
         text-decoration: none;
         display: block;
+        transition: background-color 0.2s ease;
 
         &:hover {
             background-color: $gray1 !important;
@@ -93,6 +94,7 @@
             white-space: nowrap;
             overflow: hidden;
             color: black;
+            transition: background-color 0.3s ease;
 
             p {
                 line-height: 1.7;
@@ -113,6 +115,7 @@
         .media {
             width: 100%;
             display: flex;
+            transition: background-color 0.2s ease;
 
             .list-metadata {
                 padding: 25px;

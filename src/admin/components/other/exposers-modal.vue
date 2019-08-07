@@ -498,7 +498,7 @@ export default {
         p {
             font-size: 0.875rem;
             color: $gray5;
-            padding: 0rem 1rem;
+            padding: 0rem 1.25rem;
             margin-top: 0.75rem;
             margin-bottom: 0;
         }
@@ -514,6 +514,7 @@ export default {
                 cursor: pointer;
                 max-width: 50%;
                 flex-grow: 1;
+                transition: border 0.3s ease;
 
                 h4 {
                     font-size: 1rem;
@@ -525,6 +526,10 @@ export default {
                     color: $gray5;
                     padding: 0rem 0.5rem;
                     margin-bottom: 0;
+                }
+
+                &:hover {
+                    border: 1px solid $gray3;
                 }
             }
         }
