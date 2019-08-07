@@ -23,8 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
             collectionTextColor: '#ffffff',
             tainacanApiRoot: '',
             tainacanBaseUrl: '',
-            className: '',
-            extraParams: {}
+            className: ''
         },
         render(h){ 
             return h(CarouselItemsListTheme, {
@@ -45,8 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     collectionTextColor: this.collectionTextColor,
                     tainacanApiRoot: this.tainacanApiRoot,
                     tainacanBaseUrl: this.tainacanBaseUrl,
-                    className: this.className,
-                    extraParams: this.extraParams    
+                    className: this.className
                 }
             });
         },
@@ -68,7 +66,6 @@ document.addEventListener("DOMContentLoaded", () => {
             this.collectionTextColor = this.$el.attributes['collection-text-color'] != undefined ? this.$el.attributes['collection-text-color'].value : undefined;
             this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
             this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
-            this.extraParams = this.$el.attributes['extra-params'] != undefined ? JSON.parse(this.$el.attributes['extra-params'].value) : undefined;
         },
         methods: {
             __(text, domain) {
