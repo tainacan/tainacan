@@ -227,5 +227,31 @@ class Media {
 		if( $this->THROW_EXCPTION_ON_FATAL_ERROR ) 
 			throw new \Exception("fatal error");
 	}
+	
+	public index_pdf_content($file, $item_id) {
+		
+		if ( ! \file_exists($file) ) {
+			return false;
+		}
+		
+		// Allow plugins to implement other approach to index pdf contents 
+		$alternate = apply_filters('tainacan-index-pdf', null, $file, $item_id);
+		if ( ! \is_null($alternate) ) {
+			return $alternate;
+		}
+		
+		require_once( TAINACAN_CLASSES_DIR . '/lib/class-pdf2text.php' );
+		
+		$PDF2Text = new PDF2Text();
+		$PDF2Text->setFilename($file);
+		
+		try {
+			$PDF2Text->decodePDF();
+			update_post_meta( $item_id, '_pdf_index', $PDF2Text->output() );
+		} catch($e) {
+			return false;
+		}
+		
+	}
 		
 }
