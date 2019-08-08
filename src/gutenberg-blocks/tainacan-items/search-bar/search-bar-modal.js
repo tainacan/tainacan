@@ -68,7 +68,10 @@ export default class SearchBarModal extends React.Component {
                     otherModalCollections.push({ 
                         name: collection.name, 
                         id: collection.id,
-                        slug: collection.slug
+                        slug: collection.slug,
+                        header_image: collection.header_image,
+                        tainacan_theme_collection_background_color: collection.tainacan_theme_collection_background_color,
+                        tainacan_theme_collection_color: collection.tainacan_theme_collection_color
                     });
                 }
 
@@ -89,13 +92,18 @@ export default class SearchBarModal extends React.Component {
 
         let selectedCollection;
         if (selectedCollectionId == 'default')
-            selectedCollection = { label: __('Repository items', 'tainacan'), id: 'default', slug: tainacan_plugin.theme_items_list_url.split('/')[tainacan_plugin.theme_items_list_url.split('/').length - 1] };
+            selectedCollection = { 
+                label: __('Repository items', 'tainacan'), 
+                name: __('Repository items', 'tainacan'), 
+                id: 'default', 
+                slug: tainacan_plugin.theme_items_list_url.split('/')[tainacan_plugin.theme_items_list_url.split('/').length - 1] 
+            };
         else {
             selectedCollection = this.state.modalCollections.find((collection) => collection.id == selectedCollectionId)
             if (selectedCollection == undefined)
                 selectedCollection = this.state.collections.find((collection) => collection.id == selectedCollectionId)
         }
-
+        console.log(selectedCollection)
         this.setState({
             collectionId: selectedCollection.id,
             collectionSlug: selectedCollection.slug      
@@ -124,7 +132,14 @@ export default class SearchBarModal extends React.Component {
 
         tainacan.get(endpoint, { cancelToken: aCollectionRequestSource.token })
             .then(response => {
-                let someCollections = response.data.map((collection) => ({ name: collection.name, id: collection.id + '' }));
+                let someCollections = response.data.map((collection) => ({ 
+                    name: collection.name, 
+                    id: collection.id + '', 
+                    header_image: collection.header_image,
+                    slug: collection.slug,
+                    tainacan_theme_collection_background_color: collection.tainacan_theme_collection_background_color,
+                    tainacan_theme_collection_color: collection.tainacan_theme_collection_color
+                }));
 
                 this.setState({ 
                     isLoadingCollections: false, 

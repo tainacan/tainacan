@@ -210,6 +210,21 @@
                                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>
                                         </span>
                                     </a>
+                                    <a 
+                                            v-tooltip="{
+                                                delay: {
+                                                    show: 500,
+                                                    hide: 300,
+                                                },
+                                                content: $i18n.get('label_open_externally'),
+                                                autoHide: false,
+                                                placement: 'bottom'
+                                            }" 
+                                            @click="openFile(getExposerFullURL(pagedLink, exposerMapper), (collectionId != undefined ? collectionName : $i18n.get('repository')) + ' ' + $i18n.get('items') + ' ' + $i18n.get('label_page') + ' ' + pagedLink)">
+                                        <span class="icon">
+                                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>
+                                        </span>
+                                    </a>
                                 </span>  
                             </div>
                         </div>      
@@ -416,6 +431,19 @@ export default {
             }
 
             document.body.removeChild(textArea);
+        },
+        openFile(url, name){
+            let xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function (data) {
+                if (this.readyState == 4 && this.status == 200 && data.target && data.target.response) {
+                    let blob = new Blob([data.target.response]);
+                    let newWindow = window.open(window.URL.createObjectURL(blob), name);
+                    newWindow.focus();
+                }
+            };
+            xhttp.open("GET", url, true);
+            xhttp.setRequestHeader("X-WP-Nonce", tainacan_plugin.nonce);
+            xhttp.send();
         },
         copyTextToClipboard(text) {
 
