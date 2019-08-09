@@ -10,6 +10,7 @@
                 autocomplete
                 attached
                 :loading="loading"
+                :aria-close-label="$i18n.get('remove_value')"
                 :class="{'has-selected': selected != undefined && selected != []}"
                 field="label"
                 @typing="search"/>

@@ -16,6 +16,7 @@
                     @input="emitValues()"
                     @focus="clear()"
                     attached
+                    :aria-close-label="$i18n.get('remove_value')"
                     :class="{'has-selected': options != undefined && options != []}"
                     :placeholder="$i18n.get('new') + ', ...'"/>
         </b-field>
