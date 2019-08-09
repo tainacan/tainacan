@@ -252,6 +252,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import qs from 'qs';
+import axios from 'axios';
 
 export default {
     name: 'ExposersModal',
@@ -432,20 +433,21 @@ export default {
 
             document.body.removeChild(textArea);
         },
-        openFile(url, name){
-            let xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function (data) {
-                if (this.readyState == 4 && this.status == 200 && data.target && data.target.response) {
-                    let blob = new window.Blob([data.target.response]);
-                    let newWindow = window.open(window.URL.createObjectURL(blob), name);
-                    if (newWindow)
-                        newWindow.focus();
+        openFile(url, name) {
+            axios.get(url, {
+                responseType: 'blob',
+                headers: {
+                    'X-WP-Nonce': tainacan_plugin.nonce
                 }
-            };
-            xhttp.responseType = 'blob';
-            xhttp.open("GET", url, true);
-            xhttp.setRequestHeader("X-WP-Nonce", tainacan_plugin.nonce);
-            xhttp.send();
+            }).then((response) => {
+                let blob = new window.Blob([response.data]);
+                let newWindow = window.open(window.URL.createObjectURL(blob), name);
+                if (newWindow)
+                    newWindow.focus();
+
+            }).catch((error) => {
+                this.$console.log(error)
+            });
         },
         copyTextToClipboard(text) {
 
