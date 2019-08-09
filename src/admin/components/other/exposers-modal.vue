@@ -210,21 +210,6 @@
                                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>
                                         </span>
                                     </a>
-                                    <a 
-                                            v-tooltip="{
-                                                delay: {
-                                                    show: 500,
-                                                    hide: 300,
-                                                },
-                                                content: $i18n.get('label_open_externally'),
-                                                autoHide: false,
-                                                placement: 'bottom'
-                                            }" 
-                                            @click="openFile(getExposerFullURL(pagedLink, exposerMapper), (collectionId != undefined ? collectionName : $i18n.get('repository')) + ' ' + $i18n.get('items') + ' ' + $i18n.get('label_page') + ' ' + pagedLink)">
-                                        <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>
-                                        </span>
-                                    </a>
                                 </span>  
                             </div>
                         </div>      
@@ -252,7 +237,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import qs from 'qs';
-import axios from 'axios';
 
 export default {
     name: 'ExposersModal',
@@ -394,6 +378,9 @@ export default {
             if (pagedLink && (this.itemId == undefined || this.itemId == null))
                 params.paged = pagedLink;
 
+            if (tainacan_plugin.nonce)
+                params._wpnonce = tainacan_plugin.nonce;
+
             return this.exposerBaseURL + '&' + qs.stringify(params);
         },
         getItemPageLabel(pagedLink) {
@@ -432,22 +419,6 @@ export default {
             }
 
             document.body.removeChild(textArea);
-        },
-        openFile(url, name) {
-            axios.get(url, {
-                responseType: 'blob',
-                headers: {
-                    'X-WP-Nonce': tainacan_plugin.nonce
-                }
-            }).then((response) => {
-                let blob = new window.Blob([response.data]);
-                let newWindow = window.open(window.URL.createObjectURL(blob), name);
-                if (newWindow)
-                    newWindow.focus();
-
-            }).catch((error) => {
-                this.$console.log(error)
-            });
         },
         copyTextToClipboard(text) {
 
