@@ -371,7 +371,7 @@
                 });
             },
             openExposersModal() {
-                this.$modal.open({
+                this.$buefy.modal.open({
                     parent: this,
                     component: ExposersModal,
                     hasModalCard: true,

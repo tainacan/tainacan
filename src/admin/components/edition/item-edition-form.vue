@@ -1051,7 +1051,7 @@ export default {
                 });
         },
         deleteAttachment(attachment) {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
@@ -1149,7 +1149,7 @@ export default {
             this.metadataCollapses.splice(index, 1, event);
         },
         onDeletePermanently() {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
@@ -1315,7 +1315,7 @@ export default {
     },
     beforeRouteLeave ( to, from, next ) {
         if (this.item.status == 'auto-draft') {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {

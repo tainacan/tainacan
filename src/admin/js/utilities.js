@@ -14,7 +14,7 @@ ConsolePlugin.install = function (Vue, options = { visual: false }) {
     Vue.prototype.$console = {
         log(something) {
             if (options.visual) {
-                Vue.prototype.$snackbar.open({
+                Vue.prototype.$buefy.snackbar.open({
                     message: something,
                     type: 'is-secondary',
                     position: 'is-bottom-right',
@@ -27,7 +27,7 @@ ConsolePlugin.install = function (Vue, options = { visual: false }) {
         },
         info(someInfo) {
             if (options.visual) {
-                Vue.prototype.$snackbar.open({
+                Vue.prototype.$buefy.snackbar.open({
                     message: someInfo,
                     type: 'is-primary',
                     position: 'is-bottom-right',
@@ -40,7 +40,7 @@ ConsolePlugin.install = function (Vue, options = { visual: false }) {
         },
         error(someError) {
             if (options.visual) {
-                Vue.prototype.$snackbar.open({
+                Vue.prototype.$buefy.snackbar.open({
                     message: someError,
                     type: 'is-danger',
                     position: 'is-bottom-right',

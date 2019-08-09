@@ -514,7 +514,7 @@ export default {
                 hasUnsavedForms = true;
         }
         if ((this.openedMetadatumId != '' && this.openedMetadatumId != undefined) || hasUnsavedForms ) {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
@@ -606,7 +606,7 @@ export default {
             });
         },
         removeMetadatum(removedMetadatum) {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {

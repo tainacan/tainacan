@@ -357,7 +357,7 @@ export default {
                 hasUnsavedForms = true;
         }
         if ((this.openedFilterId != '' && this.openedFilterId != undefined) || hasUnsavedForms ) {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
