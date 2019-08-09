@@ -238,7 +238,7 @@
                 });
             },
             openCheckboxModal(parent) {
-                this.$modal.open({
+                this.$buefy.modal.open({
                     parent: this,
                     component: CheckboxRadioModal,
                     props: {

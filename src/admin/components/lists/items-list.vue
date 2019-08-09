@@ -1017,7 +1017,7 @@ export default {
             return this.selectedItems.find(item => item == itemId) != undefined;
         },
         openBulkEditionModal(){
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: BulkEditionModal,
                 props: {
@@ -1053,7 +1053,7 @@ export default {
         },
         makeCopiesOfOneItem(itemId) {
                          
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: ItemCopyDialog,
                 canCancel: false,
@@ -1072,7 +1072,7 @@ export default {
             this.clearContextMenu();
         },
         untrashOneItem(itemId) {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
@@ -1101,7 +1101,7 @@ export default {
             });
         },
         deleteOneItem(itemId) {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
@@ -1124,7 +1124,7 @@ export default {
             this.clearContextMenu();
         },
         untrashSelectedItems(){
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
@@ -1153,7 +1153,7 @@ export default {
             });
         },
         deleteSelectedItems() {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
@@ -1217,7 +1217,7 @@ export default {
                     this.setSelectedItemChecked(item.id)
                 } else if (!this.$route.query.iframemode && !this.$route.query.readmode) {
                     if(this.isOnTrash){
-                        this.$toast.open({
+                        this.$buefy.toast.open({
                             duration: 3000,
                             message: this.$i18n.get('info_warning_remove_from_trash_first'),
                             position: 'is-bottom',

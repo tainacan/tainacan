@@ -263,7 +263,7 @@ export default {
                                     this.uploadedItems.splice(index, 1);
 
                                 item.errorMessage = error.data.message;
-                                this.$toast.open({
+                                this.$buefy.toast.open({
                                     message: item.errorMessage + ": " + file.name,
                                     type: 'is-danger',
                                     position: 'is-bottom',
@@ -321,7 +321,7 @@ export default {
             }); 
         },
         deleteOneItem(itemId, index) {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
