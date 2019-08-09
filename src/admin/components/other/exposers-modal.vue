@@ -436,11 +436,13 @@ export default {
             let xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function (data) {
                 if (this.readyState == 4 && this.status == 200 && data.target && data.target.response) {
-                    let blob = new Blob([data.target.response]);
+                    let blob = new window.Blob([data.target.response]);
                     let newWindow = window.open(window.URL.createObjectURL(blob), name);
-                    newWindow.focus();
+                    if (newWindow)
+                        newWindow.focus();
                 }
             };
+            xhttp.responseType = 'blob';
             xhttp.open("GET", url, true);
             xhttp.setRequestHeader("X-WP-Nonce", tainacan_plugin.nonce);
             xhttp.send();
