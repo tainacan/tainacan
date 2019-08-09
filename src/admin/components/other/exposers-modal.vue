@@ -378,6 +378,9 @@ export default {
             if (pagedLink && (this.itemId == undefined || this.itemId == null))
                 params.paged = pagedLink;
 
+            if (tainacan_plugin.nonce)
+                params._wpnonce = tainacan_plugin.nonce;
+
             return this.exposerBaseURL + '&' + qs.stringify(params);
         },
         getItemPageLabel(pagedLink) {
