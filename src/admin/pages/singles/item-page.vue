@@ -199,9 +199,7 @@
                             </template>
 
                             <!-- Metadata -------------------------------- -->
-                            <div 
-                                    :style="metadatumList.length == 1 ? 'column-count: 1;' : ''"
-                                    class="metadata-area">
+                            <div class="metadata-area">
                                 <div
                                         v-for="(metadatum, index) of metadatumList"
                                         :key="index"
@@ -538,16 +536,7 @@
                     margin-right: 18px;
                 }
             }
-        }
-
-        @media screen and (min-width: 1367px){
-            column-count: 2;
-            column-gap: $page-side-padding;
-
-            .field {
-                break-inside: avoid;
-            }
-        }   
+        } 
         
     }
 
