@@ -6,7 +6,7 @@ const { RangeControl, Spinner, Button, ToggleControl, SelectControl, Placeholder
 
 const { InspectorControls } = wp.editor;
 
-import CarouselCollectionsModal from '../collections-list/carousel-collections-modal.js';
+import CarouselCollectionsModal from './carousel-collections-modal.js';
 import tainacan from '../../api-client/axios.js';
 import axios from 'axios';
 import qs from 'qs';
@@ -75,7 +75,7 @@ registerBlockType('tainacan/carousel-collections-list', {
             type: Boolean,
             value: false
         },
-        hideTitle: {
+        hideName: {
             type: Boolean,
             value: true
         },
@@ -125,7 +125,7 @@ registerBlockType('tainacan/carousel-collections-list', {
             autoPlay,
             autoPlaySpeed,
             loopSlides,
-            hideTitle
+            hideName
         } = attributes;
 
         // Obtains block's client id to render it on save function
@@ -156,8 +156,8 @@ registerBlockType('tainacan/carousel-collections-list', {
                                     : 
                                 `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
                             }
-                            alt={ collection.title ? collection.title : __( 'Thumbnail', 'tainacan' ) }/>
-                        { !hideTitle ? <span>{ collection.title ? collection.title : '' }</span> : null }
+                            alt={ collection.name ? collection.name : __( 'Thumbnail', 'tainacan' ) }/>
+                        { !hideName ? <span>{ collection.name ? collection.name : '' }</span> : null }
                     </a>
                 </li>
             );
@@ -177,11 +177,11 @@ registerBlockType('tainacan/carousel-collections-list', {
 
             collections = [];
 
-            let endpoint = '/collections?'+ qs.stringify({ postin: selectedCollections }) + '&fetch_only=title,url,thumbnail';
+            let endpoint = '/collections?'+ qs.stringify({ postin: selectedCollections }) + '&fetch_only=name,url,thumbnail';
             tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
                 .then(response => {
 
-                    for (let collection of response.data.collections)
+                    for (let collection of response)
                         collections.push(prepareItem(collection));
 
                     setAttributes({
@@ -234,12 +234,12 @@ registerBlockType('tainacan/carousel-collections-list', {
                             >
                             <div>
                                 <ToggleControl
-                                        label={__('Hide title', 'tainacan')}
-                                        help={ !hideTitle ? __('Toggle to hide collection\'s title', 'tainacan') : __('Do not hide collection\'s title', 'tainacan')}
-                                        checked={ hideTitle }
+                                        label={__('Hide name', 'tainacan')}
+                                        help={ !hideName ? __('Toggle to hide collection\'s name', 'tainacan') : __('Do not hide collection\'s name', 'tainacan')}
+                                        checked={ hideName }
                                         onChange={ ( isChecked ) => {
-                                                hideTitle = isChecked;
-                                                setAttributes({ hideTitle: hideTitle });
+                                                hideName = isChecked;
+                                                setAttributes({ hideName: hideName });
                                                 setContent();
                                             } 
                                         }
@@ -300,7 +300,7 @@ registerBlockType('tainacan/carousel-collections-list', {
                     (
                     <div>
                         { isModalOpen ? 
-                            <CollectionsModal
+                            <CarouselCollectionsModal
                                 selectedCollectionsObject={ selectedCollections }
                                 onApplySelection={ (aSelectionOfCollections) => {
                                     selectedCollections = selectedCollections.concat(aSelectionOfCollections.map((collection) => { return collection.id; })); 
@@ -428,7 +428,7 @@ registerBlockType('tainacan/carousel-collections-list', {
             autoPlay,
             autoPlaySpeed,
             loopSlides,
-            hideTitle,
+            hideName,
             extraParams
         } = attributes;
         return <div 
@@ -438,7 +438,7 @@ registerBlockType('tainacan/carousel-collections-list', {
                     auto-play={ '' + autoPlay }
                     auto-play-speed={ autoPlaySpeed }
                     loop-slides={ '' + loopSlides }
-                    hide-title={ '' + hideTitle }
+                    hide-name={ '' + hideName }
                     max-collections-number={ maxCollectionsNumber }
                     tainacan-api-root={ tainacan_plugin.root }
                     tainacan-base-url={ tainacan_plugin.base_url }

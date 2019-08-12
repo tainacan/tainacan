@@ -28,8 +28,8 @@
                                         : 
                                     `${tainacanBaseUrl}/admin/images/placeholder_square.png`)
                                 "
-                                :alt="collection.title ? collection.title : $root.__('Thumbnail', 'tainacan')">
-                            <span v-if="!hideTitle">{{ collection.title ? collection.title : '' }}</span>
+                                :alt="collection.name ? collection.name : $root.__('Thumbnail', 'tainacan')">
+                            <span v-if="!hideName">{{ collection.name ? collection.name : '' }}</span>
                         </a>
                     </swiper-slide>
                 </swiper>
@@ -79,7 +79,7 @@
                             class="collection-list-item skeleton">      
                         <a>
                             <img>
-                            <span v-if="!hideTitle" />
+                            <span v-if="!hideName" />
                         </a>
                     </swiper-slide>
                 </swiper>
@@ -173,7 +173,7 @@ export default {
         autoPlay: false,
         autoPlaySpeed: Number,
         loopSlides: Boolean,
-        hideTitle: Boolean,
+        hideName: Boolean,
         tainacanApiRoot: String,
         tainacanBaseUrl: String,
         className: String
@@ -188,12 +188,12 @@ export default {
 
             this.itemsRequestSource = axios.CancelToken.source();
 
-            let endpoint = '/collection/' + this.collectionId + '/collections?' + qs.stringify({ postin: this.selectedCollections }) + '&fetch_only=title,url,thumbnail';
+            let endpoint = '/collection/' + this.collectionId + '/collections?' + qs.stringify({ postin: this.selectedCollections }) + '&fetch_only=name,url,thumbnail';
             
             this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
                 .then(response => {
 
-                    for (let collection of response.data.collections)
+                    for (let collection of response.data)
                         this.collections.push(collection);
 
                     this.isLoading = false;

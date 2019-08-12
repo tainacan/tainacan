@@ -46,13 +46,12 @@ export default class CollectionsModal extends React.Component {
     }
 
     selectTemporaryCollection(collection) {
-        let existingCollectionIndex = this.state.temporarySelectedCollections.findIndex((existingCollection) => (existingCollection.id == 'collection-id-' + collection.id) || (existingCollection.id == collection.id));
+        let existingCollectionIndex = this.state.temporarySelectedCollections.findIndex((existingCollection) => existingCollection.id == collection.id);
 
         if (existingCollectionIndex < 0) {
-            let collectionId = isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id;
             let aTemporarySelectedCollections = this.state.temporarySelectedCollections;
             aTemporarySelectedCollections.push({
-                id: collectionId,
+                id: collection.id,
                 name: collection.name,
                 url: collection.url,
                 thumbnail: collection.thumbnail
@@ -63,7 +62,7 @@ export default class CollectionsModal extends React.Component {
 
     removeTemporaryCollectionOfId(collectionId) {
 
-        let existingCollectionIndex = this.state.temporarySelectedCollections.findIndex((existingCollection) => ((existingCollection.id == 'collection-id-' + collectionId) || (existingCollection.id == collectionId)));
+        let existingCollectionIndex = this.state.temporarySelectedCollections.findIndex((existingCollection) => existingCollection.id == collectionId);
 
         if (existingCollectionIndex >= 0) {
             let aTemporarySelectedCollections = this.state.temporarySelectedCollections;
@@ -78,7 +77,7 @@ export default class CollectionsModal extends React.Component {
     }
 
     isTemporaryCollectionSelected(collectionId) {
-        return this.state.temporarySelectedCollections.findIndex(collection => (collection.id == collectionId) || (collection.id == 'collection-id-' + collectionId)) >= 0;
+        return this.state.temporarySelectedCollections.findIndex(collection => collection.id == collectionId) >= 0;
     }
 
     toggleSelectTemporaryCollection(collection, isChecked) {
