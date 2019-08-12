@@ -2,12 +2,11 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, TextControl, Toolbar, Spinner, SelectControl, Button, ToggleControl, Placeholder, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
+const { RangeControl, TextControl, Toolbar, SelectControl, Button, ToggleControl, Placeholder, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
 import SearchBarModal from './search-bar-modal.js';
-import tainacan from '../../api-client/axios.js';
 
 registerBlockType('tainacan/search-bar', {
     title: __('Tainacan Search Bar', 'tainacan'),
@@ -173,23 +172,22 @@ registerBlockType('tainacan/search-bar', {
                         </form>
                 </div> )
             });  
-            jQuery( document ).ready(function() {
-                jQuery('.editor-writing-flow').on('submit','form', (function(e) {
-                    e.preventDefault();
-                    var val = jQuery('#taincan-search-bar-block_input').val();
-                    if (val) {
-                        window.location.href = e.target.action + '?search=' + val;
-                    }
-                    return;
-                }));
-            });              
+
+            document.addEventListener("DOMContentLoaded",() => {
+                    document.getElementById('#taincan-search-bar-block').addEventListener('submit', (function(e) {
+                        e.preventDefault();
+                        var val = document.getElementById('#taincan-search-bar-block_input').val();
+                        if (val)
+                            window.location.href = e.target.action + '?search=' + val;
+                        return;
+                    })) 
+                }
+            , false);         
         }
 
         function openSearchBarModal() {
             isModalOpen = true;
-            setAttributes( { 
-                isModalOpen: isModalOpen
-            } );
+            setAttributes({ isModalOpen: isModalOpen });
         }
 
         function updateAlignment(newAlignment) {
@@ -198,16 +196,16 @@ registerBlockType('tainacan/search-bar', {
             setContent();
         }
 
-        function getCurrentStyle() {
-            if (isSelected) {  
-                if (className.split(' ').find((aClass) => aClass == 'is-style-alternate')) {
-                    return 'alternate'
-                } else if (className.split(' ').find((aClass) => aClass == 'is-style-stylish')) {
-                    return 'stylish'
-                }
-            } 
-            return 'default'
-        }
+        // function getCurrentStyle() {
+        //     if (isSelected) {  
+        //         if (className.split(' ').find((aClass) => aClass == 'is-style-alternate')) {
+        //             return 'alternate'
+        //         } else if (className.split(' ').find((aClass) => aClass == 'is-style-stylish')) {
+        //             return 'stylish'
+        //         }
+        //     } 
+        //     return 'default'
+        // }
  
 
         // Executed only on the first load of page
