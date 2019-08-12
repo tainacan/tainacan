@@ -103,7 +103,7 @@ export default class SearchBarModal extends React.Component {
             if (selectedCollection == undefined)
                 selectedCollection = this.state.collections.find((collection) => collection.id == selectedCollectionId)
         }
-        console.log(selectedCollection)
+        
         this.setState({
             collectionId: selectedCollection.id,
             collectionSlug: selectedCollection.slug      
