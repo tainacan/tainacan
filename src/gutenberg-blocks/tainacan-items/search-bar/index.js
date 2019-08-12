@@ -171,18 +171,7 @@ registerBlockType('tainacan/search-bar', {
                             </button>
                         </form>
                 </div> )
-            });  
-
-            document.addEventListener("DOMContentLoaded",() => {
-                    document.getElementById('#taincan-search-bar-block').addEventListener('submit', (function(e) {
-                        e.preventDefault();
-                        var val = document.getElementById('#taincan-search-bar-block_input').val();
-                        if (val)
-                            window.location.href = e.target.action + '?search=' + val;
-                        return;
-                    })) 
-                }
-            , false);         
+            });   
         }
 
         function openSearchBarModal() {
