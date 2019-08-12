@@ -2,11 +2,11 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, ToggleControl, SelectControl, Placeholder, IconButton, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
+const { RangeControl, Spinner, Button, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody } = wp.components;
 
 const { InspectorControls } = wp.editor;
 
-import CarouselCollectionsModal from './carousel-collections-modal.js';
+import CarouselCollectionsModal from '../collections-list/carousel-collections-modal.js';
 import tainacan from '../../api-client/axios.js';
 import axios from 'axios';
 import qs from 'qs';
@@ -30,10 +30,6 @@ registerBlockType('tainacan/carousel-collections-list', {
             type: 'array',
             source: 'children',
             selector: 'div'
-        },
-        collectionId: {
-            type: String,
-            default: undefined
         },
         collections: {
             type: Array,
@@ -121,7 +117,6 @@ registerBlockType('tainacan/carousel-collections-list', {
         let {
             collections, 
             content, 
-            collectionId,  
             isModalOpen,
             itemsRequestSource,
             selectedCollections,
@@ -182,7 +177,7 @@ registerBlockType('tainacan/carousel-collections-list', {
 
             collections = [];
 
-            let endpoint = '/collection/' + collectionId + '/collections?'+ qs.stringify({ postin: selectedCollections }) + '&fetch_only=title,url,thumbnail';
+            let endpoint = '/collections?'+ qs.stringify({ postin: selectedCollections }) + '&fetch_only=title,url,thumbnail';
             tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
                 .then(response => {
 
@@ -221,7 +216,6 @@ registerBlockType('tainacan/carousel-collections-list', {
                 collections: collections,
                 content: <div></div> 
             });
-
         }
 
         // Executed only on the first load of page
@@ -306,9 +300,10 @@ registerBlockType('tainacan/carousel-collections-list', {
                     (
                     <div>
                         { isModalOpen ? 
-                            <CarouselCollectionsModal
-                                onApplySelectedCollections={ (aSelectionOfCollections) => {
-                                    selectedCollections = selectedCollections.concat(aSelectionOfCollections); 
+                            <CollectionsModal
+                                selectedCollectionsObject={ selectedCollections }
+                                onApplySelection={ (aSelectionOfCollections) => {
+                                    selectedCollections = selectedCollections.concat(aSelectionOfCollections.map((collection) => { return collection.id; })); 
                                     setAttributes({
                                         selectedCollections: selectedCollections,
                                         isModalOpen: false
@@ -427,7 +422,6 @@ registerBlockType('tainacan/carousel-collections-list', {
         const {
             content, 
             blockId,
-            collectionId,  
             selectedCollections,
             arrowsPosition,
             maxCollectionsNumber,
@@ -441,7 +435,6 @@ registerBlockType('tainacan/carousel-collections-list', {
                     className={ className }
                     selected-collections={ JSON.stringify(selectedCollections) }
                     arrows-position={ arrowsPosition }
-                    collection-id={ collectionId }  
                     auto-play={ '' + autoPlay }
                     auto-play-speed={ autoPlaySpeed }
                     loop-slides={ '' + loopSlides }

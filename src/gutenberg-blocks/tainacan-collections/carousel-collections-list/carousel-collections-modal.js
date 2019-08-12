@@ -3,141 +3,186 @@ import axios from 'axios';
 
 const { __ } = wp.i18n;
 
-const { TextControl, Button, Modal, RadioControl, Spinner } = wp.components;
+const { TextControl, Button, Modal, CheckboxControl, Spinner } = wp.components;
 
-export default class CarouselCollectionsModal extends React.Component {
+export default class CollectionsModal extends React.Component {
     constructor(props) {
         super(props);
 
         // Initialize state
         this.state = {
-            collectionsPerPage: 24,
-            collectionId: undefined,  
-            collectionName: '', 
+            searchCollectionName: '',
+            collectionsRequestSource: undefined,
+            collections: [],
+            temporarySelectedCollections: [], 
             isLoadingCollections: false, 
             modalCollections: [],
-            totalModalCollections: 0, 
-            collectionPage: 1,
-            temporaryCollectionId: '',
-            searchCollectionName: '',
-            collections: [],
-            collectionsRequestSource: undefined,
-            searchURL: '',
-            itemsPerPage: 12,
-            loadStrategy: 'search'
+            totalModalCollections: 0,
+            collectionsPerPage: 24,
+            collectionsPage: 1,
         };
         
         // Bind events
-        this.resetCollections = this.resetCollections.bind(this);
+        this.selectTemporaryCollection = this.selectTemporaryCollection.bind(this);
+        this.removeTemporaryCollectionOfId = this.removeTemporaryCollectionOfId.bind(this);
+        this.applySelectedCollections = this.applySelectedCollections.bind(this);
+        this.isTemporaryCollectionSelected = this.isTemporaryCollectionSelected.bind(this);
+        this.toggleSelectTemporaryCollection = this.toggleSelectTemporaryCollection.bind(this);
+        this.cancelSelection = this.cancelSelection.bind(this);
         this.selectCollection = this.selectCollection.bind(this);
-        this.fetchCollections = this.fetchCollections.bind(this);
         this.fetchModalCollections = this.fetchModalCollections.bind(this);
-        this.fetchCollection = this.fetchCollection.bind(this);
-        this.applySelectedSearchURL = this.applySelectedSearchURL.bind(this);
-        this.applySelectedItems = this.applySelectedItems.bind(this);
+        this.fetchCollections = this.fetchCollections.bind(this);
     }
 
     componentWillMount() {
+
+        this.fetchModalCollections();
         
-        this.setState({ 
-            collectionId: this.props.existingCollectionId
-        });
-         
-        if (this.props.existingCollectionId != null && this.props.existingCollectionId != undefined) {
-            this.fetchCollection(this.props.existingCollectionId);
-            this.setState({ 
-                searchURL: this.props.existingSearchURL ? this.props.existingSearchURL : tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#/collections/'+ this.props.existingCollectionId +  (this.props.loadStrategy == 'search' ? '/items/?iframemode=true&readmode=true' : '/items/?iframemode=true') });
-        } else {
-            this.setState({ collectionPage: 1 });
-            this.fetchModalCollections();
+        this.setState( { 
+            collections: [], 
+            collectionsPage: 1,
+            temporarySelectedCollections: JSON.parse(JSON.stringify(this.props.selectedCollectionsObject))
+        } );
+    }
+
+    selectTemporaryCollection(collection) {
+        let existingCollectionIndex = this.state.temporarySelectedCollections.findIndex((existingCollection) => (existingCollection.id == 'collection-id-' + collection.id) || (existingCollection.id == collection.id));
+
+        if (existingCollectionIndex < 0) {
+            let collectionId = isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id;
+            let aTemporarySelectedCollections = this.state.temporarySelectedCollections;
+            aTemporarySelectedCollections.push({
+                id: collectionId,
+                name: collection.name,
+                url: collection.url,
+                thumbnail: collection.thumbnail
+            });
+            this.setState({ temporarySelectedCollections: aTemporarySelectedCollections });
         }
     }
 
-    // COLLECTIONS RELATED --------------------------------------------------
+    removeTemporaryCollectionOfId(collectionId) {
+
+        let existingCollectionIndex = this.state.temporarySelectedCollections.findIndex((existingCollection) => ((existingCollection.id == 'collection-id-' + collectionId) || (existingCollection.id == collectionId)));
+
+        if (existingCollectionIndex >= 0) {
+            let aTemporarySelectedCollections = this.state.temporarySelectedCollections;
+            aTemporarySelectedCollections.splice(existingCollectionIndex, 1);
+            this.setState({ temporarySelectedCollections: aTemporarySelectedCollections });
+        }
+    }
+
+    applySelectedCollections() {
+        let aSelectedCollectionsObject = JSON.parse(JSON.stringify(this.state.temporarySelectedCollections));
+        this.props.onApplySelection(aSelectedCollectionsObject);
+    }
+
+    isTemporaryCollectionSelected(collectionId) {
+        return this.state.temporarySelectedCollections.findIndex(collection => (collection.id == collectionId) || (collection.id == 'collection-id-' + collectionId)) >= 0;
+    }
+
+    toggleSelectTemporaryCollection(collection, isChecked) {
+        if (isChecked)
+            this.selectTemporaryCollection(collection);
+        else
+            this.removeTemporaryCollectionOfId(collection.id);
+    }
+
+    cancelSelection() {
+
+        this.setState({
+            collectionsPage: 1,
+            modalCollections: []
+        });
+
+        this.props.onCancelSelection();
+    }
+
+    selectCollection(selectedCollectionId) {
+
+        this.setState({
+            collectionId: selectedCollectionId
+        });
+        this.fetchCollection();
+        this.fetchModalCollections();
+    }
+
     fetchModalCollections() {
 
-        let someModalCollections = this.state.modalCollections;
-        if (this.state.collectionPage <= 1)
-            someModalCollections = [];
+        let currentModalCollections = this.state.modalCollections;
+        if (this.state.collectionsPage <= 1)
+            currentModalCollections = [];
 
-        let endpoint = '/collections/?orderby=title&order=asc&perpage=' + this.state.collectionsPerPage + '&paged=' + this.state.collectionPage;
-
+        let endpoint = '/collections/?orderby=title&order=asc&perpage=' + this.state.collectionsPerPage + '&paged=' + this.state.collectionsPage;
+        
         this.setState({ 
-            isLoadingCollections: true,
-            collectionPage: this.state.collectionPage + 1, 
-            modalCollections: someModalCollections
+            isLoadingCollections: true, 
+            modalCollections: currentModalCollections,
         });
 
         tainacan.get(endpoint)
             .then(response => {
 
-                let otherModalCollections = this.state.modalCollections;
                 for (let collection of response.data) {
-                    otherModalCollections.push({ 
+                    currentModalCollections.push({ 
                         name: collection.name, 
-                        id: collection.id
+                        id: collection.id,
+                        url: collection.url,
+                        thumbnail: [{
+                            src: collection.thumbnail['tainacan-medium'] != undefined ? collection.thumbnail['tainacan-medium'][0] : collection.thumbnail['medium'][0],
+                            alt: collection.name
+                        }]
                     });
                 }
 
-                this.setState({ 
+                this.setState({
+                    collectionsPage: this.state.collectionsPage + 1,  
                     isLoadingCollections: false, 
-                    modalCollections: otherModalCollections,
+                    modalCollections: currentModalCollections,
                     totalModalCollections: response.headers['x-wp-total']
                 });
-            
-                return otherModalCollections;
+                
+                return currentModalCollections;
             })
             .catch(error => {
                 console.log('Error trying to fetch collections: ' + error);
             });
     }
 
-    fetchCollection(collectionId) {
-        tainacan.get('/collections/' + collectionId)
-            .then((response) => {
-                this.setState({ collectionName: response.data.name });
-            }).catch(error => {
-                console.log('Error trying to fetch collection: ' + error);
-            });
-    }
-
-    selectCollection(selectedCollectionId) {
-        this.setState({
-            collectionId: selectedCollectionId,
-            searchURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#/collections/' + selectedCollectionId + (this.props.loadStrategy == 'search' ? '/items/?iframemode=true&readmode=true' : '/items/?iframemode=true')
-        });
-
-        this.props.onSelectCollection(selectedCollectionId);
-        this.fetchCollection(selectedCollectionId);
-    }
-
     fetchCollections(name) {
-
         if (this.state.collectionsRequestSource != undefined)
             this.state.collectionsRequestSource.cancel('Previous collections search canceled.');
 
         let aCollectionRequestSource = axios.CancelToken.source();
-
-        this.setState({ 
+        this.setState({
             collectionsRequestSource: aCollectionRequestSource,
-            isLoadingCollections: true, 
-            collections: [],
-            items: []
+            isLoadingCollections: true
         });
 
         let endpoint = '/collections/?orderby=title&order=asc&perpage=' + this.state.collectionsPerPage;
+
         if (name != undefined && name != '')
             endpoint += '&search=' + name;
 
         tainacan.get(endpoint, { cancelToken: aCollectionRequestSource.token })
             .then(response => {
-                let someCollections = response.data.map((collection) => ({ name: collection.name, id: collection.id + '' }));
+
+                let someCollections = this.state.collections;
+                someCollections = response.data.map((collection) => ({ 
+                    name: collection.name, 
+                    id: collection.id,
+                    url: collection.url,
+                    thumbnail: [{
+                        src: collection.thumbnail['tainacan-medium'] != undefined ? collection.thumbnail['tainacan-medium'][0] : collection.thumbnail['medium'][0],
+                        alt: collection.name
+                    }]
+                }));
 
                 this.setState({ 
                     isLoadingCollections: false, 
                     collections: someCollections
                 });
-                
+
                 return someCollections;
             })
             .catch(error => {
@@ -145,142 +190,87 @@ export default class CarouselCollectionsModal extends React.Component {
             });
     }
 
-    applySelectedSearchURL() {    
-        let iframe = document.getElementById("itemsFrame");
-        if (iframe) {
-            this.props.onApplySearchURL(iframe.contentWindow.location.href);
-        }
-    }
-
-    applySelectedItems() {
-        let iframe = document.getElementById("itemsFrame");
-        if (iframe) {
-            let params = new URLSearchParams(iframe.contentWindow.location.search);
-            let selectedItems = params.getAll('selecteditems');
-            params.delete('selecteditems')
-            this.props.onApplySelectedItems(selectedItems);
-        }
-    }
-
-    resetCollections() {
-
-        this.setState({
-            collectionId: null,
-            collectionPage: 1,
-            modalCollections: []
-        });
-        this.fetchModalCollections(); 
-    }
-
-    cancelSelection() {
-
-        this.setState({
-            modalCollections: []
-        });
-
-        this.props.onCancelSelection();
-    }
-
     render() {
-        return this.state.collectionId != null && this.state.collectionId != undefined ? (
-        // Items modal
-        <Modal
-                className="wp-block-tainacan-modal dynamic-modal"
-                title={ this.props.loadStrategy == 'selection' ? __('Select items to add on block', 'tainacan') : __('Configure the items search to be used on block', 'tainacan')}
-                onRequestClose={ () => this.cancelSelection() }
-                contentLabel={ this.props.loadStrategy == 'selection' ? __('Select items that will be added on block', 'tainacan') : __('Configure your items search that will load items on block', 'tainacan')}>
-                <iframe
-                        id="itemsFrame"
-                        src={ this.state.searchURL } />
-                <div className="modal-footer-area">
-                    <Button 
-                        isDefault
-                        onClick={ () => { this.resetCollections() }}>
-                        {__('Switch collection', 'tainacan')}
-                    </Button>
-                    { this.props.loadStrategy == 'selection' ? 
-                        <Button
-                            style={{ marginLeft: 'auto' }} 
-                            isPrimary
-                            onClick={ () => this.applySelectedItems() }>
-                            {__('Add the selected items', 'tainacan')}
-                        </Button>
-                        : null
-                    }
-                    { this.props.loadStrategy == 'search' ? 
-                        <Button 
-                            isPrimary
-                            onClick={ () => this.applySelectedSearchURL() }>
-                            {__('Use this search', 'tainacan')}
-                        </Button>
-                    : null
-                    }
-                </div>
-        </Modal>
-    ) : (
-        // Collections modal
-        <Modal
-                className="wp-block-tainacan-modal"
-                title={__('Select a collection to fetch items from', 'tainacan')}
-                onRequestClose={ () => this.cancelSelection() }
-                contentLabel={__('Select items', 'tainacan')}>
+        return (
+            <Modal
+                    className="wp-block-tainacan-modal"
+                    title={__('Select the desired collections from your repository', 'tainacan')}
+                    onRequestClose={ () => this.cancelSelection() }
+                    contentLabel={__('Select collections', 'tainacan')}>
+
                 <div>
                     <div className="modal-search-area">
                         <TextControl 
                                 label={__('Search for a collection', 'tainacan')}
                                 value={ this.state.searchCollectionName }
-                                onChange={(value) => {
+                                onInput={(value) => {
                                     this.setState({ 
-                                        searchCollectionName: value
+                                        searchCollectionName: value.target.value
                                     });
-                                    _.debounce(this.fetchCollections(value), 300);
-                                }}/>
+                                }}
+                                onChange={(value) => this.fetchCollections(value)}/>
                     </div>
                     {(
-                    this.state.searchCollectionName != '' ? (
+                    this.state.searchCollectionName != '' ? ( 
+
                         this.state.collections.length > 0 ?
                         (
                             <div>
-                                <div className="modal-radio-list">
-                                    {
-                                    <RadioControl
-                                        selected={ this.state.temporaryCollectionId }
-                                        options={
-                                            this.state.collections.map((collection) => {
-                                                return { label: collection.name, value: '' + collection.id }
-                                            })
+                                <ul className="modal-checkbox-list">
+                                {
+                                    this.state.collections.map((collection) =>
+                                    <li 
+                                        key={ collection.id }
+                                        className="modal-checkbox-list-item">
+                                        { collection.thumbnail ?
+                                            <img
+                                                aria-hidden
+                                                src={ collection.thumbnail && collection.thumbnail[0] && collection.thumbnail[0].src ? collection.thumbnail[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
+                                                alt={ collection.thumbnail && collection.thumbnail[0] ? collection.thumbnail[0].alt : collection.name }/>
+                                            : null
                                         }
-                                        onChange={ ( aCollectionId ) => { 
-                                            this.setState({ temporaryCollectionId: aCollectionId });
-                                        } } />
-                                    }                                      
-                                </div>
+                                        <CheckboxControl
+                                            label={ collection.name }
+                                            checked={ this.isTemporaryCollectionSelected(collection.id) }
+                                            onChange={ ( isChecked ) => { this.toggleSelectTemporaryCollection(collection, isChecked) } }
+                                        />
+                                    </li>
+                                    )
+                                }                                                
+                                </ul>
+                                { this.state.isLoadingCollections ? <div class="spinner-container"><Spinner /></div> : null }
                             </div>
-                        ) :
-                        this.state.isLoadingCollections ? (
-                            <Spinner />
-                        ) :
+                        )
+                        : this.state.isLoadingCollections ? <div class="spinner-container"><Spinner /></div> :
                         <div className="modal-loadmore-section">
-                            <p>{ __('Sorry, no collection found.', 'tainacan') }</p>
-                        </div> 
-                    ):
+                            <p>{ __('Sorry, no collections found.', 'tainacan') }</p>
+                        </div>
+                    ) : 
                     this.state.modalCollections.length > 0 ? 
                     (   
                         <div>
-                            <div className="modal-radio-list">
-                                {
-                                <RadioControl
-                                    selected={ this.state.temporaryCollectionId }
-                                    options={
-                                        this.state.modalCollections.map((collection) => {
-                                            return { label: collection.name, value: '' + collection.id }
-                                        })
-                                    }
-                                    onChange={ ( aCollectionId ) => { 
-                                        this.setState({ temporaryCollectionId: aCollectionId });
-                                    } } />
-                                }                                     
-                            </div>
+                            <ul className="modal-checkbox-list">
+                            {
+                                this.state.modalCollections.map((collection) =>
+                                    <li 
+                                        key={ collection.id }
+                                        className="modal-checkbox-list-item">
+                                        { collection.thumbnail ?
+                                            <img
+                                                aria-hidden
+                                                src={ collection.thumbnail && collection.thumbnail[0] && collection.thumbnail[0].src ? collection.thumbnail[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
+                                                alt={ collection.thumbnail && collection.thumbnail[0] ? collection.thumbnail[0].alt : collection.name }/>
+                                            : null
+                                        }
+                                        <CheckboxControl
+                                            label={ collection.name }
+                                            checked={ this.isTemporaryCollectionSelected(collection.id) }
+                                            onChange={ ( isChecked ) => { this.toggleSelectTemporaryCollection(collection, isChecked) } } />
+                                    </li>
+                                )
+                            } 
+                            { this.state.isLoadingCollections ? <div class="spinner-container"><Spinner /></div> : null }                                               
+                            </ul>
                             <div className="modal-loadmore-section">
                                 <p>{ __('Showing', 'tainacan') + " " + this.state.modalCollections.length + " " + __('of', 'tainacan') + " " + this.state.totalModalCollections + " " + __('collections', 'tainacan') + "."}</p>
                                 {
@@ -295,26 +285,26 @@ export default class CarouselCollectionsModal extends React.Component {
                                 }
                             </div>
                         </div>
-                    ) : this.state.isLoadingCollections ? <Spinner/> :
+                    ) : this.state.isLoadingCollections ? <Spinner /> :
                     <div className="modal-loadmore-section">
-                        <p>{ __('Sorry, no collection found.', 'tainacan') }</p>
+                        <p>{ __('Sorry, no collections found.', 'tainacan') }</p>
                     </div>
                 )}
                 <div className="modal-footer-area">
-                    <Button 
+                    <Button
                         isDefault
-                        onClick={ () => { this.cancelSelection() }}>
+                        onClick={ () => this.cancelSelection() }>
                         {__('Cancel', 'tainacan')}
                     </Button>
-                    <Button
+                    <Button 
                         isPrimary
-                        disabled={ this.state.temporaryCollectionId == undefined || this.state.temporaryCollectionId == null || this.state.temporaryCollectionId == ''}
-                        onClick={ () => { this.selectCollection(this.state.temporaryCollectionId);  } }>
-                        { this.props.loadStrategy == 'selection' ? __('Select items', 'tainacan') : __('Configure search', 'tainacan')}
+                        type="submit"
+                        onClick={ () => this.applySelectedCollections() }>
+                        {__('Finish', 'tainacan')}
                     </Button>
                 </div>
             </div>
-        </Modal> 
+        </Modal>
         );
     }
 }
