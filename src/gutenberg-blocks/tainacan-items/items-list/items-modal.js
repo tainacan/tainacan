@@ -4,7 +4,7 @@ import qs from 'qs';
 
 const { __ } = wp.i18n;
 
-const { TextControl, Button, Modal, CheckboxControl, RadioControl, Spinner } = wp.components;
+const { TextControl, Button, Modal, SelectControl, RadioControl, Spinner } = wp.components;
 
 export default class ItemsModal extends React.Component {
     constructor(props) {
@@ -22,6 +22,7 @@ export default class ItemsModal extends React.Component {
             modalCollections: [],
             totalModalCollections: 0, 
             collectionPage: 1,
+            collectionOrderBy: 'date',
             temporaryCollectionId: '',
             searchCollectionName: '',
             collections: [],
@@ -120,7 +121,7 @@ export default class ItemsModal extends React.Component {
         if (this.state.collectionPage <= 1)
             someModalCollections = [];
 
-        let endpoint = '/collections/?orderby=title&order=asc&perpage=' + this.state.collectionsPerPage + '&paged=' + this.state.collectionPage;
+        let endpoint = '/collections/?orderby=' + this.state.collectionOrderBy + '&order=asc&perpage=' + this.state.collectionsPerPage + '&paged=' + this.state.collectionPage;
 
         this.setState({ 
             isLoadingCollections: true,
@@ -185,7 +186,7 @@ export default class ItemsModal extends React.Component {
             items: []
         });
 
-        let endpoint = '/collections/?orderby=title&order=asc&perpage=' + this.state.collectionsPerPage;
+        let endpoint = '/collections/?orderby=' + this.state.collectionOrderBy + '&order=asc&perpage=' + this.state.collectionsPerPage;
         if (name != undefined && name != '')
             endpoint += '&search=' + name;
 
@@ -250,6 +251,7 @@ export default class ItemsModal extends React.Component {
                 <div>
                     <div className="modal-search-area">
                         <TextControl 
+                                placeholder={ __('Search by collection\'s name', 'tainacan') }
                                 label={__('Search for a collection', 'tainacan')}
                                 value={ this.state.searchCollectionName }
                                 onChange={(value) => {
@@ -257,6 +259,26 @@ export default class ItemsModal extends React.Component {
                                         searchCollectionName: value
                                     });
                                     _.debounce(this.fetchCollections(value), 300);
+                                }}/>
+                        <SelectControl
+                                label={__('Order by', 'tainacan')}
+                                value={ this.state.collectionOrderBy }
+                                options={ [
+                                    { label: __('Creation date', 'tainacan'), value: 'date' },
+                                    { label: __('Name', 'tainacan'), value: 'title' }
+                                ] }
+                                onChange={ ( aCollectionOrderBy ) => { 
+                                    this.state.collectionOrderBy = aCollectionOrderBy;
+                                    this.state.collectionPage = 1;
+                                    this.setState({ 
+                                        collectionOrderBy: this.state.collectionOrderBy,
+                                        collectionPage: this.state.collectionPage 
+                                    });
+                                    if (this.state.searchCollectionName && this.state.searchCollectionName != '') {
+                                        this.fetchCollections(this.state.searchCollectionName);
+                                    } else {
+                                        this.fetchModalCollections();
+                                    }
                                 }}/>
                     </div>
                     {(

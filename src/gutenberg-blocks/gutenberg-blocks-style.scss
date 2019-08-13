@@ -90,9 +90,17 @@
             width: 60%;
 
             @media only screen and (max-width: 1024px) {  width: 95% }
-
+            &:nth-child(2) {
+                flex-shrink: 2;
+            }
+            .components-base-control__field {
+                flex-wrap: wrap;
+            }
             label {
                 text-align: center;
+            }
+            input.components-text-control__input {
+                padding: 5px 8px;
             }
         }
     }

@@ -73,8 +73,14 @@
       @media only screen and (max-width: 1024px) {
         .wp-block-tainacan-modal .modal-search-area .components-base-control {
           width: 95%; } }
+      .wp-block-tainacan-modal .modal-search-area .components-base-control:nth-child(2) {
+        flex-shrink: 2; }
+      .wp-block-tainacan-modal .modal-search-area .components-base-control .components-base-control__field {
+        flex-wrap: wrap; }
       .wp-block-tainacan-modal .modal-search-area .components-base-control label {
         text-align: center; }
+      .wp-block-tainacan-modal .modal-search-area .components-base-control input.components-text-control__input {
+        padding: 5px 8px; }
   .wp-block-tainacan-modal .modal-radio-area-label {
     font-weight: bold;
     margin-left: 1.75rem; }
