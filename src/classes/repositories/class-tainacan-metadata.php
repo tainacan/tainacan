@@ -46,7 +46,7 @@ class Metadata extends Repository {
 	 * {@inheritDoc}
 	 * @see \Tainacan\Repositories\Repository::get_map()
 	 */
-	public function get_map() {
+  protected function _get_map() {
 		return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
 			'name'                  => [
 				'map'         => 'post_title',
@@ -639,7 +639,7 @@ class Metadata extends Repository {
 	 * @return array
 	 */
 	private function get_data_core_metadata( Entities\Collection $collection ) {
-
+    
 		return $data_core_metadata = [
 			'core_description' => [
 				'name'            => 'Description',

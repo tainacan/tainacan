@@ -413,7 +413,7 @@ class Item_Metadata extends Repository {
 	public function register_post_type() {
 	}
 
-	public function get_map() {
+	protected function _get_map() {
 		return [];
 	}
 
