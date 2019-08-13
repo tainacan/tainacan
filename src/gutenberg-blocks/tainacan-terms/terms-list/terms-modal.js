@@ -1,9 +1,8 @@
 import tainacan from '../../api-client/axios.js';
-import axios from 'axios';
 
 const { __ } = wp.i18n;
 
-const { TextControl, Button, Modal, CheckboxControl, RadioControl, Spinner } = wp.components;
+const { TextControl, Button, Modal, CheckboxControl, SelectControl, RadioControl, Spinner } = wp.components;
 
 export default class TermsModal extends React.Component {
     constructor(props) {
@@ -14,6 +13,7 @@ export default class TermsModal extends React.Component {
             modalTerms: [],
             totalModalTerms: 0,
             termsPerPage: 24,
+            termOrder: 'asc',
             searchTermName: '',
             temporarySelectedTerms: [],
             terms: [],
@@ -22,6 +22,7 @@ export default class TermsModal extends React.Component {
             taxonomyName: '', 
             isLoadingTaxonomies: false, 
             modalTaxonomies: [],
+            taxonomyOrderBy: 'date',
             totalModalTaxonomies: 0, 
             taxonomyPage: 1,
             temporaryTaxonomyId: '',
@@ -120,7 +121,7 @@ export default class TermsModal extends React.Component {
 
     fetchTerms(name) {
 
-        let endpoint = '/taxonomy/'+ this.state.taxonomyId + '/terms/?order=asc&hideempty=0&number=' + this.state.termsPerPage;
+        let endpoint = '/taxonomy/'+ this.state.taxonomyId + '/terms/?order=' + this.state.termOrder + '&hideempty=0&number=' + this.state.termsPerPage;
 
         if (name != undefined && name != '')
             endpoint += '&searchterm=' + name;
@@ -157,7 +158,7 @@ export default class TermsModal extends React.Component {
         if (offset <= 0)
             someModalTerms = [];
 
-        let endpoint = '/taxonomy/'+ taxonomyId + '/terms/?order=asc&hideempty=0&number=' + this.state.termsPerPage + '&offset=' + offset;
+        let endpoint = '/taxonomy/'+ taxonomyId + '/terms/?order=' + this.state.termOrder + '&hideempty=0&number=' + this.state.termsPerPage + '&offset=' + offset;
 
         this.setState({ 
             isLoadingTerms: true, 
@@ -200,7 +201,16 @@ export default class TermsModal extends React.Component {
         if (this.state.taxonomyPage <= 1)
             someModalTaxonomies = [];
 
-        let endpoint = '/taxonomies/?orderby=title&order=asc&perpage=' + this.state.termsPerPage + '&paged=' + this.state.taxonomyPage;
+        let endpoint = '/taxonomies/?perpage=' + this.state.termsPerPage + '&paged=' + this.state.taxonomyPage;
+
+        if (this.state.taxonomyOrderBy == 'date')
+            endpoint += '&orderby=date&order=asc';
+        else if (this.state.taxonomyOrderBy == 'date-desc')
+            endpoint += '&orderby=date&order=desc';
+        else if (this.state.taxonomyOrderBy == 'title')
+            endpoint += '&orderby=title&order=asc';
+        else if (this.state.taxonomyOrderBy == 'title-desc')
+            endpoint += '&orderby=title&order=desc';
 
         this.setState({ 
             isLoadingTaxonomies: true,
@@ -259,9 +269,18 @@ export default class TermsModal extends React.Component {
             terms: []
         });
 
-        let endpoint = '/taxonomies/?orderby=title&order=asc&perpage=' + this.state.termsPerPage;
+        let endpoint = '/taxonomies/?perpage=' + this.state.termsPerPage;
         if (name != undefined && name != '')
             endpoint += '&search=' + name;
+
+        if (this.state.taxonomyOrderBy == 'date')
+            endpoint += '&orderby=date&order=asc';
+        else if (this.state.taxonomyOrderBy == 'date-desc')
+            endpoint += '&orderby=date&order=desc';
+        else if (this.state.taxonomyOrderBy == 'title')
+            endpoint += '&orderby=title&order=asc';
+        else if (this.state.taxonomyOrderBy == 'title-desc')
+            endpoint += '&orderby=title&order=desc';
 
         tainacan.get(endpoint)
             .then(response => {
@@ -300,7 +319,8 @@ export default class TermsModal extends React.Component {
                     
                 <div>
                     <div className="modal-search-area">
-                        <TextControl 
+                        <TextControl
+                                placeholder={ __('Search by term\'s name', 'tainacan') } 
                                 label={__('Search for a term', 'tainacan')}
                                 value={ this.state.searchTermName }
                                 onChange={(value) => {
@@ -308,6 +328,24 @@ export default class TermsModal extends React.Component {
                                         searchTermName: value
                                     });
                                     _.debounce(this.fetchTerms(value), 300);
+                                }}/>
+                        <SelectControl
+                                label={__('Order', 'tainacan')}
+                                value={ this.state.termOrder }
+                                options={ [
+                                    { label: __('Name (A-Z)', 'tainacan'), value: 'asc' },
+                                    { label: __('Name (Z-A)', 'tainacan'), value: 'desc' }
+                                ] }
+                                onChange={ ( atermOrder ) => { 
+                                    this.state.termOrder = atermOrder;
+                                    this.setState({ 
+                                        termOrder: this.state.termOrder
+                                    });
+                                    if (this.state.searchTermName && this.state.searchTermName != '') {
+                                        this.fetchTerms(this.state.searchTermName);
+                                    } else {
+                                        this.fetchModalTerms(0, this.state.taxonomyId);
+                                    }
                                 }}/>
                     </div>
                     {(
@@ -413,7 +451,8 @@ export default class TermsModal extends React.Component {
                 contentLabel={__('Select terms', 'tainacan')}>
                 <div>
                     <div className="modal-search-area">
-                        <TextControl 
+                        <TextControl
+                                placeholder={ __('Search by taxonomy name', 'tainacan') } 
                                 label={__('Search for a taxonomy', 'tainacan')}
                                 value={ this.state.searchTaxonomyName }
                                 onChange={(value) => {
@@ -421,6 +460,28 @@ export default class TermsModal extends React.Component {
                                         searchTaxonomyName: value
                                     });
                                     _.debounce(this.fetchTaxonomies(value), 300);
+                                }}/>
+                        <SelectControl
+                                label={__('Order by', 'tainacan')}
+                                value={ this.state.taxonomyOrderBy }
+                                options={ [
+                                    { label: __('Created recently', 'tainacan'), value: 'date' },
+                                    { label: __('Latest created', 'tainacan'), value: 'date-desc' },
+                                    { label: __('Name (A-Z)', 'tainacan'), value: 'title' },
+                                    { label: __('Name (Z-A)', 'tainacan'), value: 'title-desc' }
+                                ] }
+                                onChange={ ( ataxonomyOrderBy ) => { 
+                                    this.state.taxonomyOrderBy = ataxonomyOrderBy;
+                                    this.state.taxonomyPage = 1;
+                                    this.setState({ 
+                                        taxonomyOrderBy: this.state.taxonomyOrderBy,
+                                        taxonomyPage: this.state.taxonomyPage 
+                                    });
+                                    if (this.state.searchTaxonomyName && this.state.searchTaxonomyName != '') {
+                                        this.fetchTaxonomies(this.state.searchTaxonomyName);
+                                    } else {
+                                        this.fetchModalTaxonomies();
+                                    }
                                 }}/>
                     </div>
                     {(
