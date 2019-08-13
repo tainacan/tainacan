@@ -123,7 +123,7 @@ export default {
         ]),
         openAvailableExportersModal(){
 
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: AvailableExportersModal,
                 hasModalCard: true,

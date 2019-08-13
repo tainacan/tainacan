@@ -210,7 +210,7 @@ export default {
 
             // Checks if user is deleting a term with unsaved info.
             if (this.term.id == 'new') {
-                this.$modal.open({
+                this.$buefy.modal.open({
                     parent: this,
                     component: CustomDialog,
                     props: {
@@ -227,7 +227,7 @@ export default {
         },
         removeTerm() {
 
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {

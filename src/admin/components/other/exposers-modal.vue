@@ -406,7 +406,7 @@ export default {
                 let msg = successful ? 'successful' : 'unsuccessful';
                 this.$console.log('Fallback: Copying text command was ' + msg);
                 if (msg == 'sucessful') {
-                    this.$toast.open({
+                    this.$buefy.toast.open({
                         duration: 3000,
                         message: this.$i18n.get('info_url_copied'),
                         position: 'is-bottom',
@@ -430,7 +430,7 @@ export default {
             navigator.clipboard.writeText(text)
                 .then(() => {
                     this.$console.log('Async: Copying to clipboard was successful!');
-                    this.$toast.open({
+                    this.$buefy.toast.open({
                         duration: 3000,
                         message: this.$i18n.get('info_url_copied'),
                         position: 'is-bottom',

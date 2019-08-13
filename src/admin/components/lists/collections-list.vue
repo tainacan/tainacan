@@ -356,7 +356,7 @@ export default {
             return Number(total_items['publish']) + Number(total_items['private']);
         },
         deleteOneCollection(collectionId) {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
@@ -366,7 +366,7 @@ export default {
                     onConfirm: () => {
                         this.deleteCollection({ collectionId: collectionId, isPermanently: this.isOnTrash })
                         .then(() => {
-                        //     this.$toast.open({
+                        //     this.$buefy.toast.open({
                         //         duration: 3000,
                         //         message: this.$i18n.get('info_collection_deleted'),
                         //         position: 'is-bottom',
@@ -378,7 +378,7 @@ export default {
                                     this.selectedCollections.splice(i, 1);
                             }
                         }).catch(() => {
-                        //     this.$toast.open({
+                        //     this.$buefy.toast.open({
                         //         duration: 3000,
                         //         message: this.$i18n.get('info_error_deleting_collection'),
                         //         position: 'is-bottom',
@@ -393,7 +393,7 @@ export default {
             this.clearContextMenu();
         },
         deleteSelectedCollections() {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
@@ -407,7 +407,7 @@ export default {
                                 this.deleteCollection({ collectionId: this.collections[i].id, isPermanently: this.isOnTrash })
                                 .then(() => {
                                 //     this.loadCollections();
-                                //     this.$toast.open({
+                                //     this.$buefy.toast.open({
                                 //         duration: 3000,
                                 //         message: this.$i18n.get('info_collection_deleted'),
                                 //         position: 'is-bottom',
@@ -415,7 +415,7 @@ export default {
                                 //         queue: false
                                 //     })                            
                                 }).catch(() => { 
-                                //     this.$toast.open({
+                                //     this.$buefy.toast.open({
                                 //         duration: 3000,
                                 //         message: this.$i18n.get('info_error_deleting_collection'),
                                 //         position: 'is-bottom',

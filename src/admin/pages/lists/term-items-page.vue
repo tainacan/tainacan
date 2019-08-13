@@ -1038,7 +1038,7 @@
                 }
             },
             onOpenImportersModal() {
-                this.$modal.open({
+                this.$buefy.modal.open({
                     parent: this,
                     component: AvailableImportersModal,
                     hasModalCard: true,
@@ -1049,7 +1049,7 @@
                 });
             },
             openExposersModal() {
-                this.$modal.open({
+                this.$buefy.modal.open({
                     parent: this,
                     component: ExposersModal,
                     hasModalCard: true,
@@ -1384,7 +1384,7 @@
                 }
             },
             openMetatadaSortingWarningDialog({ offerCheckbox }) {
-                this.$modal.open({
+                this.$buefy.modal.open({
                         parent: this,
                         component: CustomDialog,
                         props: {

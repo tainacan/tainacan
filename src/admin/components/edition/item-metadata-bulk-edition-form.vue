@@ -298,7 +298,7 @@ export default {
                 this.isPublishingItems = false;
                 this.isExecutingBulkEdit = false;
    
-                this.$modal.open({
+                this.$buefy.modal.open({
                     parent: this,
                     component: CustomDialog,
                     props: {
@@ -313,7 +313,7 @@ export default {
                 
             } else if (status == 'trash') {
 
-                this.$modal.open({
+                this.$buefy.modal.open({
                     parent: this,
                     component: CustomDialog,
                     props: {
