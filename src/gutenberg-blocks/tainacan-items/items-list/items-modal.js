@@ -22,7 +22,7 @@ export default class ItemsModal extends React.Component {
             modalCollections: [],
             totalModalCollections: 0, 
             collectionPage: 1,
-            collectionOrderBy: 'date',
+            collectionOrderBy: 'date-desc',
             temporaryCollectionId: '',
             searchCollectionName: '',
             collections: [],
@@ -282,8 +282,8 @@ export default class ItemsModal extends React.Component {
                                 label={__('Order by', 'tainacan')}
                                 value={ this.state.collectionOrderBy }
                                 options={ [
-                                    { label: __('Created recently', 'tainacan'), value: 'date' },
-                                    { label: __('Latest created', 'tainacan'), value: 'date-desc' },
+                                    { label: __('Latest', 'tainacan'), value: 'date-desc' },
+                                    { label: __('Oldest', 'tainacan'), value: 'date' },
                                     { label: __('Name (A-Z)', 'tainacan'), value: 'title' },
                                     { label: __('Name (Z-A)', 'tainacan'), value: 'title-desc' }
                                 ] }

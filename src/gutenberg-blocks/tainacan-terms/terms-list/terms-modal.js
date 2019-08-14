@@ -22,7 +22,7 @@ export default class TermsModal extends React.Component {
             taxonomyName: '', 
             isLoadingTaxonomies: false, 
             modalTaxonomies: [],
-            taxonomyOrderBy: 'date',
+            taxonomyOrderBy: 'date-desc',
             totalModalTaxonomies: 0, 
             taxonomyPage: 1,
             temporaryTaxonomyId: '',
@@ -465,8 +465,8 @@ export default class TermsModal extends React.Component {
                                 label={__('Order by', 'tainacan')}
                                 value={ this.state.taxonomyOrderBy }
                                 options={ [
-                                    { label: __('Created recently', 'tainacan'), value: 'date' },
-                                    { label: __('Latest created', 'tainacan'), value: 'date-desc' },
+                                    { label: __('Latest', 'tainacan'), value: 'date-desc' },
+                                    { label: __('Oldest', 'tainacan'), value: 'date' },
                                     { label: __('Name (A-Z)', 'tainacan'), value: 'title' },
                                     { label: __('Name (Z-A)', 'tainacan'), value: 'title-desc' }
                                 ] }

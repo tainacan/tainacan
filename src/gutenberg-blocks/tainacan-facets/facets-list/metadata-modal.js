@@ -20,7 +20,7 @@ export default class MetadataModal extends React.Component {
             collectionPage: 1,
             temporaryCollectionId: '',
             searchCollectionName: '',
-            collectionOrderBy: 'date',
+            collectionOrderBy: 'date-desc',
             metadatumId: undefined,  
             metadatumType: undefined,  
             isLoadingMetadata: false, 
@@ -317,7 +317,8 @@ export default class MetadataModal extends React.Component {
                 <div>
                     <div className="modal-search-area">
                         <TextControl 
-                                label={__('Search for a collection', 'tainacan')}
+                                label={__('Search for a collection', 'tainacan')} 
+                                placeholder={ __('Search by collection\'s name', 'tainacan') }
                                 value={ this.state.searchCollectionName }
                                 onChange={(value) => {
                                     this.setState({ 
@@ -329,8 +330,8 @@ export default class MetadataModal extends React.Component {
                                 label={__('Order by', 'tainacan')}
                                 value={ this.state.collectionOrderBy }
                                 options={ [
-                                    { label: __('Created recently', 'tainacan'), value: 'date' },
-                                    { label: __('Latest created', 'tainacan'), value: 'date-desc' },
+                                    { label: __('Latest', 'tainacan'), value: 'date-desc' },
+                                    { label: __('Oldest', 'tainacan'), value: 'date' },
                                     { label: __('Name (A-Z)', 'tainacan'), value: 'title' },
                                     { label: __('Name (Z-A)', 'tainacan'), value: 'title-desc' }
                                 ] }

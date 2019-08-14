@@ -81,10 +81,18 @@
         .components-spineer { margin: 8px; }
     }
 
+    .components-modal__header .components-icon-button {
+        padding-right: 0;
+    }
+
+    hr {
+        margin: 5px 0.75rem;
+    }
+
     .modal-search-area {
         display: flex;
         justify-content: center;
-        margin-bottom: 1rem;
+        margin-bottom: 14px;
 
         .components-base-control {
             width: 60%;
@@ -96,7 +104,10 @@
             .components-base-control__field {
                 flex-wrap: wrap;
             }
-            label {
+            label.components-base-control__label {
+                font-weight: 500;
+                color: #454647;
+                font-size: 0.875rem;
                 text-align: center;
             }
             input.components-text-control__input {
@@ -107,7 +118,7 @@
     }
 
     .modal-radio-area-label {
-        font-weight: bold;
+        font-weight: 500;
         margin-left: 1.75rem;
     }
 
@@ -123,6 +134,7 @@
         margin: 12px;
         max-height: 50vh;
         overflow-y: auto;
+        overflow-x: hidden;
 
         .components-base-control {
             overflow: hidden;
