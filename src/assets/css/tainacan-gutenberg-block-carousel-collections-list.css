@@ -218,27 +218,27 @@
     margin: 0 -4px; }
     .wp-block-tainacan-carousel-collections-list .swiper-button-prev svg, .wp-block-tainacan-carousel-collections-list .swiper-button-next svg {
       fill: #298596; }
-  .wp-block-tainacan-carousel-collections-list .items-list-edit-container,
+  .wp-block-tainacan-carousel-collections-list .collections-list-edit-container,
   .wp-block-tainacan-carousel-collections-list .tainacan-carousel {
     position: relative; }
-    .wp-block-tainacan-carousel-collections-list .items-list-edit-container .skeleton,
+    .wp-block-tainacan-carousel-collections-list .collections-list-edit-container .skeleton,
     .wp-block-tainacan-carousel-collections-list .tainacan-carousel .skeleton {
       min-height: 150px;
       max-height: 150px; }
-    .wp-block-tainacan-carousel-collections-list .items-list-edit-container.has-arrows-none .swiper-button-prev, .wp-block-tainacan-carousel-collections-list .items-list-edit-container.has-arrows-none .swiper-button-next,
+    .wp-block-tainacan-carousel-collections-list .collections-list-edit-container.has-arrows-none .swiper-button-prev, .wp-block-tainacan-carousel-collections-list .collections-list-edit-container.has-arrows-none .swiper-button-next,
     .wp-block-tainacan-carousel-collections-list .tainacan-carousel.has-arrows-none .swiper-button-prev,
     .wp-block-tainacan-carousel-collections-list .tainacan-carousel.has-arrows-none .swiper-button-next {
       display: none; }
-    .wp-block-tainacan-carousel-collections-list .items-list-edit-container.has-arrows-left .swiper-button-next,
+    .wp-block-tainacan-carousel-collections-list .collections-list-edit-container.has-arrows-left .swiper-button-next,
     .wp-block-tainacan-carousel-collections-list .tainacan-carousel.has-arrows-left .swiper-button-next {
       left: 10px;
       right: auto;
       bottom: calc(50% + 36px); }
-    .wp-block-tainacan-carousel-collections-list .items-list-edit-container.has-arrows-right .swiper-button-prev,
+    .wp-block-tainacan-carousel-collections-list .collections-list-edit-container.has-arrows-right .swiper-button-prev,
     .wp-block-tainacan-carousel-collections-list .tainacan-carousel.has-arrows-right .swiper-button-prev {
       right: 10px;
       left: auto; }
-    .wp-block-tainacan-carousel-collections-list .items-list-edit-container.has-arrows-right .swiper-button-next,
+    .wp-block-tainacan-carousel-collections-list .collections-list-edit-container.has-arrows-right .swiper-button-next,
     .wp-block-tainacan-carousel-collections-list .tainacan-carousel.has-arrows-right .swiper-button-next {
       bottom: calc(50% + 36px); }
   .wp-block-tainacan-carousel-collections-list ul.items-list-edit {

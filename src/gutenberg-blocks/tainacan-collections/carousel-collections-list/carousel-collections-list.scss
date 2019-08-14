@@ -94,7 +94,7 @@
     }
 
     // Carousel placeholder on editor side  ----------------------------------------------------
-    .items-list-edit-container,
+    .collections-list-edit-container,
     .tainacan-carousel {
         position: relative;
         
@@ -120,7 +120,7 @@
             bottom: calc(50% + 36px);
         }
     }
-    ul.items-list-edit {
+    ul.collections-list-edit {
         display: flex;
         align-items: flex-start;
         overflow-x: scroll;
@@ -186,35 +186,35 @@
     }
     @media only screen and (max-width: 1686px) { 
         
-        ul.items-list-edit li.collection-list-item { 
+        ul.collections-list-edit li.collection-list-item { 
             width: calc(16.666% - 32px); 
             min-width: calc(16.666% - 32px); 
         }
     }
     @media only screen and (max-width: 1452px) { 
         
-        ul.items-list-edit li.collection-list-item { 
+        ul.collections-list-edit li.collection-list-item { 
             width: calc(20% - 32px); 
             min-width: calc(20% - 32px); 
         }
     }
     @media only screen and (max-width: 1118px) { 
         
-        ul.items-list-edit li.collection-list-item { 
+        ul.collections-edit li.collection-list-item { 
             width: calc(25% - 32px); 
             min-width: calc(25% - 32px); 
         }
     }
     @media only screen and (max-width: 854px) { 
         
-        ul.items-list-edit li.collection-list-item { 
+        ul.collections-list-edit li.collection-list-item { 
             width: calc(33.333% - 32px); 
             min-width: calc(33.333% - 32px);
         }
     }
     @media only screen and (max-width: 584px) { 
         
-        ul.items-list-edit li.collection-list-item { 
+        ul.collections-list-edit li.collection-list-item { 
             width: calc(50% - 32px); 
             min-width: calc(50% - 32px);
         }

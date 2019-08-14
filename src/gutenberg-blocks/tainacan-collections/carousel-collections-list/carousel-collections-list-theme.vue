@@ -126,7 +126,7 @@ export default {
         return {
             collections: [],
             collection: undefined,
-            itemsRequestSource: undefined,
+            collectionsRequestSource: undefined,
             isLoading: false,
             isLoadingCollection: false,
             localMaxCollectionsNumber: undefined,
@@ -183,14 +183,14 @@ export default {
  
             this.isLoading = true;
             
-            if (this.itemsRequestSource != undefined && typeof this.itemsRequestSource == 'function')
-                this.itemsRequestSource.cancel('Previous collections search canceled.');
+            if (this.collectionsRequestSource != undefined && typeof this.collectionsRequestSource == 'function')
+                this.collectionsRequestSource.cancel('Previous collections search canceled.');
 
-            this.itemsRequestSource = axios.CancelToken.source();
+            this.collectionsRequestSource = axios.CancelToken.source();
 
-            let endpoint = '/collection/' + this.collectionId + '/collections?' + qs.stringify({ postin: this.selectedCollections }) + '&fetch_only=name,url,thumbnail';
-            
-            this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
+            let endpoint = '/collections?'+ qs.stringify({ postin: this.selectedCollections }) + '&fetch_only=name,url,thumbnail';
+
+            this.tainacanAxios.get(endpoint, { cancelToken: this.collectionsRequestSource.token })
                 .then(response => {
 
                     for (let collection of response.data)

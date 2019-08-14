@@ -268,7 +268,7 @@ registerBlockType('tainacan/carousel-collections-list', {
                                     autoPlay ? 
                                         <RangeControl
                                             label={__('Seconds before translating to next', 'tainacan')}
-                                            value={ autoPlaySpeed }
+                                            value={ autoPlaySpeed ? autoPlaySpeed : 3 }
                                             onChange={ ( aAutoPlaySpeed ) => {
                                                 autoPlaySpeed = aAutoPlaySpeed;
                                                 setAttributes( { autoPlaySpeed: aAutoPlaySpeed } ) 
@@ -376,9 +376,9 @@ registerBlockType('tainacan/carousel-collections-list', {
                             <div class="preview-warning">{__('Warning: this is just a demonstration. To see the carousel in action, either preview or publish your post.', 'tainacan')}</div>
                             : null
                         }
-                        {  collections.length ? (
+                        {  collections.length ? ( 
                             <div
-                                    className={'collections-list-edit-container has-arrows-' + arrowsPosition}>
+                                    className={'collections-list-edit-container ' + (arrowsPosition ? 'has-arrows-' + arrowsPosition : '')}>
                                 <button 
                                         class="swiper-button-prev" 
                                         slot="button-prev"
