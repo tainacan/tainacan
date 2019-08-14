@@ -181,7 +181,7 @@ registerBlockType('tainacan/carousel-collections-list', {
             tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
                 .then(response => {
 
-                    for (let collection of response)
+                    for (let collection of response.data)
                         collections.push(prepareItem(collection));
 
                     setAttributes({
