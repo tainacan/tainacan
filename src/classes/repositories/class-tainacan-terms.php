@@ -29,7 +29,7 @@ class Terms extends Repository {
 		parent::__construct();
 	}
 
-	public function get_map() {
+	protected function _get_map() {
 		return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
 			'term_id'         => [
 				'map'         => 'term_id',

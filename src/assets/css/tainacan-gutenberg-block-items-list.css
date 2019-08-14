@@ -64,19 +64,33 @@
     color: #555758; }
     .wp-block-tainacan-modal .spinner-container .components-spineer {
       margin: 8px; }
+  .wp-block-tainacan-modal .components-modal__header .components-icon-button {
+    padding-right: 0; }
+  .wp-block-tainacan-modal hr {
+    margin: 5px 0.75rem; }
   .wp-block-tainacan-modal .modal-search-area {
     display: flex;
     justify-content: center;
-    margin-bottom: 24px; }
+    margin-bottom: 14px; }
     .wp-block-tainacan-modal .modal-search-area .components-base-control {
       width: 60%; }
       @media only screen and (max-width: 1024px) {
         .wp-block-tainacan-modal .modal-search-area .components-base-control {
           width: 95%; } }
-      .wp-block-tainacan-modal .modal-search-area .components-base-control label {
+      .wp-block-tainacan-modal .modal-search-area .components-base-control:nth-child(2) {
+        flex-shrink: 2; }
+      .wp-block-tainacan-modal .modal-search-area .components-base-control .components-base-control__field {
+        flex-wrap: wrap; }
+      .wp-block-tainacan-modal .modal-search-area .components-base-control label.components-base-control__label {
+        font-weight: 500;
+        color: #454647;
+        font-size: 0.875rem;
         text-align: center; }
+      .wp-block-tainacan-modal .modal-search-area .components-base-control input.components-text-control__input {
+        padding: 5px 8px;
+        height: 28px; }
   .wp-block-tainacan-modal .modal-radio-area-label {
-    font-weight: bold;
+    font-weight: 500;
     margin-left: 1.75rem; }
   .wp-block-tainacan-modal .modal-checkbox-list,
   .wp-block-tainacan-modal .modal-radio-list .components-base-control__field {
@@ -89,7 +103,8 @@
     list-style-type: none;
     margin: 12px;
     max-height: 50vh;
-    overflow-y: auto; }
+    overflow-y: auto;
+    overflow-x: hidden; }
     .wp-block-tainacan-modal .modal-checkbox-list .components-base-control,
     .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-base-control {
       overflow: hidden; }
@@ -181,6 +196,9 @@
         color: #454647;
         font-weight: bold;
         line-height: normal; }
+        .wp-block-tainacan-items-list ul.items-list.items-layout-grid li.item-list-item a span,
+        .wp-block-tainacan-items-list ul.items-list-edit.items-layout-grid li.item-list-item a span {
+          line-height: normal; }
       .wp-block-tainacan-items-list ul.items-list.items-layout-grid li.item-list-item img,
       .wp-block-tainacan-items-list ul.items-list-edit.items-layout-grid li.item-list-item img {
         height: auto;

@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const { __ } = wp.i18n;
 
-const { TextControl, Button, Modal, RadioControl, Spinner } = wp.components;
+const { TextControl, Button, Modal, RadioControl, SelectControl, Spinner } = wp.components;
 
 export default class CarouselItemsModal extends React.Component {
     constructor(props) {
@@ -17,6 +17,7 @@ export default class CarouselItemsModal extends React.Component {
             isLoadingCollections: false, 
             modalCollections: [],
             totalModalCollections: 0, 
+            collectionOrderBy: 'date-desc',
             collectionPage: 1,
             temporaryCollectionId: '',
             searchCollectionName: '',
@@ -60,7 +61,16 @@ export default class CarouselItemsModal extends React.Component {
         if (this.state.collectionPage <= 1)
             someModalCollections = [];
 
-        let endpoint = '/collections/?orderby=title&order=asc&perpage=' + this.state.collectionsPerPage + '&paged=' + this.state.collectionPage;
+        let endpoint = '/collections/?perpage=' + this.state.collectionsPerPage + '&paged=' + this.state.collectionPage;
+        
+        if (this.state.collectionOrderBy == 'date')
+            endpoint += '&orderby=date&order=asc';
+        else if (this.state.collectionOrderBy == 'date-desc')
+            endpoint += '&orderby=date&order=desc';
+        else if (this.state.collectionOrderBy == 'title')
+            endpoint += '&orderby=title&order=asc';
+        else if (this.state.collectionOrderBy == 'title-desc')
+            endpoint += '&orderby=title&order=desc';
 
         this.setState({ 
             isLoadingCollections: true,
@@ -125,9 +135,18 @@ export default class CarouselItemsModal extends React.Component {
             items: []
         });
 
-        let endpoint = '/collections/?orderby=title&order=asc&perpage=' + this.state.collectionsPerPage;
+        let endpoint = '/collections/?perpage=' + this.state.collectionsPerPage;
         if (name != undefined && name != '')
             endpoint += '&search=' + name;
+        
+        if (this.state.collectionOrderBy == 'date')
+            endpoint += '&orderby=date&order=asc';
+        else if (this.state.collectionOrderBy == 'date-desc')
+            endpoint += '&orderby=date&order=desc';
+        else if (this.state.collectionOrderBy == 'title')
+            endpoint += '&orderby=title&order=asc';
+        else if (this.state.collectionOrderBy == 'title-desc')
+            endpoint += '&orderby=title&order=desc';
 
         tainacan.get(endpoint, { cancelToken: aCollectionRequestSource.token })
             .then(response => {
@@ -228,12 +247,35 @@ export default class CarouselItemsModal extends React.Component {
                     <div className="modal-search-area">
                         <TextControl 
                                 label={__('Search for a collection', 'tainacan')}
+                                placeholder={ __('Search by collection\'s name', 'tainacan') }
                                 value={ this.state.searchCollectionName }
                                 onChange={(value) => {
                                     this.setState({ 
                                         searchCollectionName: value
                                     });
                                     _.debounce(this.fetchCollections(value), 300);
+                                }}/>
+                        <SelectControl
+                                label={__('Order by', 'tainacan')}
+                                value={ this.state.collectionOrderBy }
+                                options={ [
+                                    { label: __('Latest', 'tainacan'), value: 'date-desc' },
+                                    { label: __('Oldest', 'tainacan'), value: 'date' },
+                                    { label: __('Name (A-Z)', 'tainacan'), value: 'title' },
+                                    { label: __('Name (Z-A)', 'tainacan'), value: 'title-desc' }
+                                ] }
+                                onChange={ ( aCollectionOrderBy ) => { 
+                                    this.state.collectionOrderBy = aCollectionOrderBy;
+                                    this.state.collectionPage = 1;
+                                    this.setState({ 
+                                        collectionOrderBy: this.state.collectionOrderBy,
+                                        collectionPage: this.state.collectionPage 
+                                    });
+                                    if (this.state.searchCollectionName && this.state.searchCollectionName != '') {
+                                        this.fetchCollections(this.state.searchCollectionName);
+                                    } else {
+                                        this.fetchModalCollections();
+                                    }
                                 }}/>
                     </div>
                     {(

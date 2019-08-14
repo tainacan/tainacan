@@ -27,7 +27,9 @@ abstract class Repository {
 	 *
 	 * @var Repositories\Logs
 	 */
-	protected $logs_repository;
+  protected $logs_repository;
+  
+  private $map = [];
 
 	/**
 	 * Disable creation of logs while inerting and updating entities
@@ -49,8 +51,8 @@ abstract class Repository {
 	 */
 	protected function __construct() {
 		add_action( 'init', array( &$this, 'register_post_type' ) );
-		add_action( 'init', array( &$this, 'init_objects' ) );
-
+    add_action( 'init', array( &$this, 'init_objects' ) );
+    
 		add_filter( 'tainacan-get-map-' . $this->get_name(), array( $this, 'get_default_properties' ) );
 	}
 
@@ -85,7 +87,15 @@ abstract class Repository {
 	 *          'validation' => v::stringType(),
 	 *      ],
 	 */
-	public abstract function get_map();
+  protected abstract function _get_map();
+
+  public function get_map() {
+    if (isset($this->map) && !empty($this->map)) {
+      return $this->map;
+    }
+    $this->map = $this->_get_map();
+    return $this->map;
+  }
 
 	/**
 	 * Return repository name
