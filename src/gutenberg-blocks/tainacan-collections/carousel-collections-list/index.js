@@ -79,11 +79,7 @@ registerBlockType('tainacan/carousel-collections-list', {
             type: Boolean,
             value: true
         },
-        showCollectionHeader: {
-            type: Boolean,
-            value: false
-        },
-        showCollectionLabel: {
+        showCollectionThumbnail: {
             type: Boolean,
             value: false
         },
@@ -102,10 +98,6 @@ registerBlockType('tainacan/carousel-collections-list', {
         collectionTextColor: {
             type: String,
             default: "#ffffff"
-        },
-        extraParams: {
-            type: Object,
-            default: {}
         }
     },
     supports: {
@@ -125,7 +117,8 @@ registerBlockType('tainacan/carousel-collections-list', {
             autoPlay,
             autoPlaySpeed,
             loopSlides,
-            hideName
+            hideName,
+            showCollectionThumbnail
         } = attributes;
 
         // Obtains block's client id to render it on save function
@@ -135,7 +128,7 @@ registerBlockType('tainacan/carousel-collections-list', {
             return (
                 <li 
                     key={ collection.id }
-                    className="collection-list-item">   
+                    className={ 'collection-list-item ' + (!showCollectionThumbnail ? 'collection-list-item-grid' : '')}>   
                     <IconButton
                         onClick={ () => removeItemOfId(collection.id) }
                         icon="no-alt"
@@ -144,19 +137,63 @@ registerBlockType('tainacan/carousel-collections-list', {
                         id={ isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id }
                         href={ collection.url } 
                         target="_blank">
-                        <img
-                            src={ 
-                                collection.thumbnail && collection.thumbnail['tainacan-medium'][0] && collection.thumbnail['tainacan-medium'][0] 
-                                    ?
-                                collection.thumbnail['tainacan-medium'][0] 
-                                    :
-                                (collection.thumbnail && collection.thumbnail['thumbnail'][0] && collection.thumbnail['thumbnail'][0]
-                                    ?    
-                                collection.thumbnail['thumbnail'][0] 
-                                    : 
-                                `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
-                            }
-                            alt={ collection.name ? collection.name : __( 'Thumbnail', 'tainacan' ) }/>
+                        { !showCollectionThumbnail ? 
+                            <div class="collection-items-grid">
+                                <img 
+                                    src={ 
+                                        collection.thumbnail && collection.thumbnail['tainacan-medium'][0] && collection.thumbnail['tainacan-medium'][0] 
+                                            ?
+                                        collection.thumbnail['tainacan-medium'][0] 
+                                            :
+                                        (collection.thumbnail && collection.thumbnail['thumbnail'][0] && collection.thumbnail['thumbnail'][0]
+                                            ?    
+                                        collection.thumbnail['thumbnail'][0] 
+                                            : 
+                                        `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
+                                    }
+                                    alt={ collection.name ? collection.name : __( 'Thumbnail', 'tainacan' ) }/>
+                                <img
+                                    src={ 
+                                        collection.thumbnail && collection.thumbnail['tainacan-medium'][0] && collection.thumbnail['tainacan-medium'][0] 
+                                            ?
+                                        collection.thumbnail['tainacan-medium'][0] 
+                                            :
+                                        (collection.thumbnail && collection.thumbnail['thumbnail'][0] && collection.thumbnail['thumbnail'][0]
+                                            ?    
+                                        collection.thumbnail['thumbnail'][0] 
+                                            : 
+                                        `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
+                                    }
+                                    alt={ collection.name ? collection.name : __( 'Thumbnail', 'tainacan' ) }/>
+                                <img
+                                    src={ 
+                                        collection.thumbnail && collection.thumbnail['tainacan-medium'][0] && collection.thumbnail['tainacan-medium'][0] 
+                                            ?
+                                        collection.thumbnail['tainacan-medium'][0] 
+                                            :
+                                        (collection.thumbnail && collection.thumbnail['thumbnail'][0] && collection.thumbnail['thumbnail'][0]
+                                            ?    
+                                        collection.thumbnail['thumbnail'][0] 
+                                            : 
+                                        `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
+                                    }
+                                    alt={ collection.name ? collection.name : __( 'Thumbnail', 'tainacan' ) }/>
+                            </div>
+                            :
+                            <img
+                                src={ 
+                                    collection.thumbnail && collection.thumbnail['tainacan-medium'][0] && collection.thumbnail['tainacan-medium'][0] 
+                                        ?
+                                    collection.thumbnail['tainacan-medium'][0] 
+                                        :
+                                    (collection.thumbnail && collection.thumbnail['thumbnail'][0] && collection.thumbnail['thumbnail'][0]
+                                        ?    
+                                    collection.thumbnail['thumbnail'][0] 
+                                        : 
+                                    `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
+                                }
+                                alt={ collection.name ? collection.name : __( 'Thumbnail', 'tainacan' ) }/>
+                        }
                         { !hideName ? <span>{ collection.name ? collection.name : '' }</span> : null }
                     </a>
                 </li>
@@ -233,6 +270,17 @@ registerBlockType('tainacan/carousel-collections-list', {
                                 initialOpen={ true }
                             >
                             <div>
+                                <ToggleControl
+                                            label={__('Show collection\'s thumbnail', 'tainacan')}
+                                            help={ !showCollectionThumbnail ? __('Toggle to show items grid instead of collection\'s thumbnail', 'tainacan') : __('Do not show collection\'s thumbnail instead of items grid', 'tainacan')}
+                                            checked={ showCollectionThumbnail ? showCollectionThumbnail : false }
+                                            onChange={ ( isChecked ) => {
+                                                    showCollectionThumbnail = isChecked;
+                                                    setAttributes({ showCollectionThumbnail: showCollectionThumbnail });
+                                                    setContent();
+                                                } 
+                                            }
+                                        />
                                 <ToggleControl
                                         label={__('Hide name', 'tainacan')}
                                         help={ !hideName ? __('Toggle to hide collection\'s name', 'tainacan') : __('Do not hide collection\'s name', 'tainacan')}
