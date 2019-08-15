@@ -156,7 +156,7 @@
                                             column.metadatum !== 'row_author' &&
                                             column.metadatum !== 'row_title' &&
                                             column.metadatum !== 'row_description'"
-                                        v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column, column.metadata_type_object.component) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                        v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
 
                                 <span v-if="column.metadatum == 'row_thumbnail'">
                                     <img 
@@ -190,17 +190,14 @@ export default {
         }
     },
     methods: {
-        renderMetadata(itemMetadata, column, component) {
+        renderMetadata(itemMetadata, column) {
 
             let metadata = (itemMetadata != undefined && itemMetadata[column.slug] != undefined) ? itemMetadata[column.slug] : false;
 
             if (!metadata) {
                 return '';
             } else {
-                if (component != undefined && component == 'tainacan-textarea')
-                    return '<span class="sr-only">' + column.name + ': </span>' + metadata.value_as_string;
-                else
-                    return '<span class="sr-only">' + column.name + ': </span>' + metadata.value_as_html;
+                return '<span class="sr-only">' + column.name + ': </span>' + metadata.value_as_html;
             }
         }
     }
