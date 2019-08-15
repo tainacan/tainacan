@@ -124,7 +124,7 @@ registerBlockType('tainacan/carousel-collections-list', {
         // Obtains block's client id to render it on save function
         setAttributes({ blockId: clientId });
         
-        function prepareItem(collection) {
+        function prepareItem(collection, collectionItems) {
             return (
                 <li 
                     key={ collection.id }
@@ -141,43 +141,43 @@ registerBlockType('tainacan/carousel-collections-list', {
                             <div class="collection-items-grid">
                                 <img 
                                     src={ 
-                                        collection.thumbnail && collection.thumbnail['tainacan-medium'][0] && collection.thumbnail['tainacan-medium'][0] 
+                                        collectionItems[0].thumbnail && collectionItems[0].thumbnail['tainacan-medium'][0] && collectionItems[0].thumbnail['tainacan-medium'][0] 
                                             ?
-                                        collection.thumbnail['tainacan-medium'][0] 
+                                        collectionItems[0].thumbnail['tainacan-medium'][0] 
                                             :
-                                        (collection.thumbnail && collection.thumbnail['thumbnail'][0] && collection.thumbnail['thumbnail'][0]
+                                        (collectionItems[0].thumbnail && collectionItems[0].thumbnail['thumbnail'][0] && collectionItems[0].thumbnail['thumbnail'][0]
                                             ?    
-                                        collection.thumbnail['thumbnail'][0] 
+                                        collectionItems[0].thumbnail['thumbnail'][0] 
                                             : 
                                         `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
                                     }
-                                    alt={ collection.name ? collection.name : __( 'Thumbnail', 'tainacan' ) }/>
+                                    alt={ collectionItems[0].name ? collectionItems[0].name : __( 'Thumbnail', 'tainacan' ) }/>
                                 <img
                                     src={ 
-                                        collection.thumbnail && collection.thumbnail['tainacan-medium'][0] && collection.thumbnail['tainacan-medium'][0] 
+                                        collectionItems[1].thumbnail && collectionItems[1].thumbnail['tainacan-medium'][0] && collectionItems[1].thumbnail['tainacan-medium'][0] 
                                             ?
-                                        collection.thumbnail['tainacan-medium'][0] 
+                                        collectionItems[1].thumbnail['tainacan-medium'][0] 
                                             :
-                                        (collection.thumbnail && collection.thumbnail['thumbnail'][0] && collection.thumbnail['thumbnail'][0]
+                                        (collectionItems[1].thumbnail && collectionItems[1].thumbnail['thumbnail'][0] && collectionItems[1].thumbnail['thumbnail'][0]
                                             ?    
-                                        collection.thumbnail['thumbnail'][0] 
+                                        collectionItems[1].thumbnail['thumbnail'][0] 
                                             : 
                                         `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
                                     }
-                                    alt={ collection.name ? collection.name : __( 'Thumbnail', 'tainacan' ) }/>
+                                    alt={ collectionItems[1].name ? collectionItems[1].name : __( 'Thumbnail', 'tainacan' ) }/>
                                 <img
                                     src={ 
-                                        collection.thumbnail && collection.thumbnail['tainacan-medium'][0] && collection.thumbnail['tainacan-medium'][0] 
+                                        collectionItems[2].thumbnail && collectionItems[2].thumbnail['tainacan-medium'][0] && collectionItems[2].thumbnail['tainacan-medium'][0] 
                                             ?
-                                        collection.thumbnail['tainacan-medium'][0] 
+                                        collectionItems[2].thumbnail['tainacan-medium'][0] 
                                             :
-                                        (collection.thumbnail && collection.thumbnail['thumbnail'][0] && collection.thumbnail['thumbnail'][0]
+                                        (collectionItems[2].thumbnail && collectionItems[2].thumbnail['thumbnail'][0] && collectionItems[2].thumbnail['thumbnail'][0]
                                             ?    
-                                        collection.thumbnail['thumbnail'][0] 
+                                        collectionItems[2].thumbnail['thumbnail'][0] 
                                             : 
                                         `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
                                     }
-                                    alt={ collection.name ? collection.name : __( 'Thumbnail', 'tainacan' ) }/>
+                                    alt={ collectionItems[2].name ? collectionItems[2].name : __( 'Thumbnail', 'tainacan' ) }/>
                             </div>
                             :
                             <img
@@ -218,15 +218,35 @@ registerBlockType('tainacan/carousel-collections-list', {
             tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
                 .then(response => {
 
-                    for (let collection of response.data)
+                    if (showCollectionThumbnail) {
                         collections.push(prepareItem(collection));
-
-                    setAttributes({
-                        content: <div></div>,
-                        collections: collections,
-                        isLoading: false,
-                        itemsRequestSource: itemsRequestSource
-                    });
+                        setAttributes({
+                            content: <div></div>,
+                            collections: collections,
+                            isLoading: false,
+                            itemsRequestSource: itemsRequestSource
+                        });
+                    } else {
+                        let promises = [];
+                        for (let collection of response.data) {  
+                            promises.push(
+                                tainacan.get('/collection/' + collection.id + '/items?perpage=3&fetch_only=name,url,thumbnail')
+                                    .then(response => { return({ collection: collection, collectionItems: response.data.items }) })
+                                    .catch((error) => console.log(error))
+                            );                      
+                        }
+                        axios.all(promises).then((results) => {
+                            for (let result of results) {
+                                collections.push(prepareItem(result.collection, result.collectionItems));
+                            }
+                            setAttributes({
+                                content: <div></div>,
+                                collections: collections,
+                                isLoading: false,
+                                itemsRequestSource: itemsRequestSource
+                            });
+                        })  
+                    }
                 });
             
         }
