@@ -248,7 +248,6 @@ registerBlockType('tainacan/carousel-collections-list', {
                         })  
                     }
                 });
-            
         }
 
         function openCarouselModal() {
@@ -497,7 +496,7 @@ registerBlockType('tainacan/carousel-collections-list', {
             autoPlaySpeed,
             loopSlides,
             hideName,
-            extraParams
+            showCollectionThumbnail
         } = attributes;
         return <div 
                     className={ className }
@@ -510,7 +509,7 @@ registerBlockType('tainacan/carousel-collections-list', {
                     max-collections-number={ maxCollectionsNumber }
                     tainacan-api-root={ tainacan_plugin.root }
                     tainacan-base-url={ tainacan_plugin.base_url }
-                    extraParams={ JSON.stringify(extraParams)  }
+                    showCollectionThumbnail={ '' + showCollectionThumbnail }
                     id={ 'wp-block-tainacan-carousel-collections-list_' + blockId }>
                         { content }
                 </div>

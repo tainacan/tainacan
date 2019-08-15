@@ -11,8 +11,9 @@
                             role="listitem"
                             :key="index"
                             v-for="(collection, index) of collections"
-                            class="collection-list-item">      
+                            :class="'collection-list-item ' + (!showCollectionThumbnail ? 'collection-list-item-grid' : '')">      
                         <a 
+                                v-if="showCollectionThumbnail"
                                 :id="isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id"
                                 :href="collection.url"
                                 target="_blank">
@@ -30,6 +31,53 @@
                                 "
                                 :alt="collection.name ? collection.name : $root.__('Thumbnail', 'tainacan')">
                             <span v-if="!hideName">{{ collection.name ? collection.name : '' }}</span>
+                        </a>
+                        <a 
+                                v-else
+                                :id="isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id"
+                                :href="collection.url"
+                                target="_blank">
+                            <div class="collection-items-grid">
+                                <img 
+                                    :src="
+                                        collectionItems[collectionId][0].thumbnail && collectionItems[collectionId][0].thumbnail['tainacan-medium'][0] && collectionItems[collectionId][0].thumbnail['tainacan-medium'][0] 
+                                            ?
+                                        collectionItems[collectionId][0].thumbnail['tainacan-medium'][0] 
+                                            :
+                                        (collectionItems[collectionId][0].thumbnail && collectionItems[collectionId][0].thumbnail['thumbnail'][0] && collectionItems[collectionId][0].thumbnail['thumbnail'][0]
+                                            ?    
+                                        collectionItems[collectionId][0].thumbnail['thumbnail'][0] 
+                                            : 
+                                        `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
+                                    "
+                                    :alt=" collectionItems[collectionId][0].name ? collectionItems[collectionId][0].name : __( 'Thumbnail', 'tainacan' ) ">
+                                <img
+                                    :src=" 
+                                        collectionItems[collectionId][1].thumbnail && collectionItems[collectionId][1].thumbnail['tainacan-medium'][0] && collectionItems[collectionId][1].thumbnail['tainacan-medium'][0] 
+                                            ?
+                                        collectionItems[collectionId][1].thumbnail['tainacan-medium'][0] 
+                                            :
+                                        (collectionItems[collectionId][1].thumbnail && collectionItems[collectionId][1].thumbnail['thumbnail'][0] && collectionItems[collectionId][1].thumbnail['thumbnail'][0]
+                                            ?    
+                                        collectionItems[collectionId][1].thumbnail['thumbnail'][0] 
+                                            : 
+                                        `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
+                                    "
+                                    :alt=" collectionItems[collectionId][1].name ? collectionItems[collectionId][1].name : __( 'Thumbnail', 'tainacan' ) ">
+                                <img
+                                    :src=" 
+                                        collectionItems[collectionId][2].thumbnail && collectionItems[collectionId][2].thumbnail['tainacan-medium'][0] && collectionItems[collectionId][2].thumbnail['tainacan-medium'][0] 
+                                            ?
+                                        collectionItems[collectionId][2].thumbnail['tainacan-medium'][0] 
+                                            :
+                                        (collectionItems[collectionId][2].thumbnail && collectionItems[collectionId][2].thumbnail['thumbnail'][0] && collectionItems[collectionId][2].thumbnail['thumbnail'][0]
+                                            ?    
+                                        collectionItems[collectionId][2].thumbnail['thumbnail'][0] 
+                                            : 
+                                        `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
+                                    "
+                                    :alt=" collectionItems[collectionId][2].name ? collectionItems[collectionId][2].name : __( 'Thumbnail', 'tainacan' ) ">
+                            </div>
                         </a>
                     </swiper-slide>
                 </swiper>
@@ -125,6 +173,7 @@ export default {
     data() {
         return {
             collections: [],
+            collectionItems: {},
             collection: undefined,
             collectionsRequestSource: undefined,
             isLoading: false,
@@ -174,6 +223,7 @@ export default {
         autoPlaySpeed: Number,
         loopSlides: Boolean,
         hideName: Boolean,
+        showCollectionThumbnail: Boolean,
         tainacanApiRoot: String,
         tainacanBaseUrl: String,
         className: String
@@ -193,10 +243,27 @@ export default {
             this.tainacanAxios.get(endpoint, { cancelToken: this.collectionsRequestSource.token })
                 .then(response => {
 
-                    for (let collection of response.data)
-                        this.collections.push(collection);
+                    if (this.showCollectionThumbnail) {
+                        for (let collection of response.data)
+                            this.collections.push(collection);
 
-                    this.isLoading = false;
+                        this.isLoading = false;
+                    } else {
+                        let promises = [];
+                        for (let collection of response.data) {  
+                            promises.push(
+                                this.tainacanAxios.get('/collection/' + collection.id + '/items?perpage=3&fetch_only=name,url,thumbnail')
+                                    .then(response => { return({ collectionId: collection.id, collectionItems: response.data.items }) })
+                            );                      
+                        }
+                        axios.all(promises).then((results) => {
+                            for (let result of results) {
+                                this.collectionItems[result.collectionId] = result.collectionItems;
+                            }
+                            this.isLoading = false;
+                        }) 
+                    }
+                    
                     this.totalCollections = response.headers['x-wp-total'];
 
                 }).catch(() => { 
