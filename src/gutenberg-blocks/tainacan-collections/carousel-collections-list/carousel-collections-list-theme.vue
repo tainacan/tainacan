@@ -38,46 +38,47 @@
                                 :href="collection.url"
                                 target="_blank">
                             <div class="collection-items-grid">
-                                <img 
+                                <pre>{{ collectionItems[collection.id][0].thumbnail }}</pre>
+                            <!--    <img 
                                     :src="
-                                        collectionItems[collectionId][0].thumbnail && collectionItems[collectionId][0].thumbnail['tainacan-medium'][0] && collectionItems[collectionId][0].thumbnail['tainacan-medium'][0] 
+                                        collectionItems[collection.id][0].thumbnail && collectionItems[collection.id][0].thumbnail['tainacan-medium'][0] && collectionItems[collection.id][0].thumbnail['tainacan-medium'][0] 
                                             ?
-                                        collectionItems[collectionId][0].thumbnail['tainacan-medium'][0] 
+                                        collectionItems[collection.id][0].thumbnail['tainacan-medium'][0] 
                                             :
-                                        (collectionItems[collectionId][0].thumbnail && collectionItems[collectionId][0].thumbnail['thumbnail'][0] && collectionItems[collectionId][0].thumbnail['thumbnail'][0]
+                                        (collectionItems[collection.id][0].thumbnail && collectionItems[collection.id][0].thumbnail['thumbnail'][0] && collectionItems[collection.id][0].thumbnail['thumbnail'][0]
                                             ?    
-                                        collectionItems[collectionId][0].thumbnail['thumbnail'][0] 
+                                        collectionItems[collection.id][0].thumbnail['thumbnail'][0] 
                                             : 
                                         `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
                                     "
-                                    :alt=" collectionItems[collectionId][0].name ? collectionItems[collectionId][0].name : __( 'Thumbnail', 'tainacan' ) ">
+                                    :alt=" collectionItems[collection.id][0].name ? collectionItems[collection.id][0].name : __( 'Thumbnail', 'tainacan' ) ">
                                 <img
                                     :src=" 
-                                        collectionItems[collectionId][1].thumbnail && collectionItems[collectionId][1].thumbnail['tainacan-medium'][0] && collectionItems[collectionId][1].thumbnail['tainacan-medium'][0] 
+                                        collectionItems[collection.id][1].thumbnail && collectionItems[collection.id][1].thumbnail['tainacan-medium'][0] && collectionItems[collection.id][1].thumbnail['tainacan-medium'][0] 
                                             ?
-                                        collectionItems[collectionId][1].thumbnail['tainacan-medium'][0] 
+                                        collectionItems[collection.id][1].thumbnail['tainacan-medium'][0] 
                                             :
-                                        (collectionItems[collectionId][1].thumbnail && collectionItems[collectionId][1].thumbnail['thumbnail'][0] && collectionItems[collectionId][1].thumbnail['thumbnail'][0]
+                                        (collectionItems[collection.id][1].thumbnail && collectionItems[collection.id][1].thumbnail['thumbnail'][0] && collectionItems[collection.id][1].thumbnail['thumbnail'][0]
                                             ?    
-                                        collectionItems[collectionId][1].thumbnail['thumbnail'][0] 
+                                        collectionItems[collection.id][1].thumbnail['thumbnail'][0] 
                                             : 
                                         `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
                                     "
-                                    :alt=" collectionItems[collectionId][1].name ? collectionItems[collectionId][1].name : __( 'Thumbnail', 'tainacan' ) ">
+                                    :alt=" collectionItems[collection.id][1].name ? collectionItems[collection.id][1].name : __( 'Thumbnail', 'tainacan' ) ">
                                 <img
                                     :src=" 
-                                        collectionItems[collectionId][2].thumbnail && collectionItems[collectionId][2].thumbnail['tainacan-medium'][0] && collectionItems[collectionId][2].thumbnail['tainacan-medium'][0] 
+                                        collectionItems[collection.id][2].thumbnail && collectionItems[collection.id][2].thumbnail['tainacan-medium'][0] && collectionItems[collection.id][2].thumbnail['tainacan-medium'][0] 
                                             ?
-                                        collectionItems[collectionId][2].thumbnail['tainacan-medium'][0] 
+                                        collectionItems[collection.id][2].thumbnail['tainacan-medium'][0] 
                                             :
-                                        (collectionItems[collectionId][2].thumbnail && collectionItems[collectionId][2].thumbnail['thumbnail'][0] && collectionItems[collectionId][2].thumbnail['thumbnail'][0]
+                                        (collectionItems[collection.id][2].thumbnail && collectionItems[collection.id][2].thumbnail['thumbnail'][0] && collectionItems[collection.id][2].thumbnail['thumbnail'][0]
                                             ?    
-                                        collectionItems[collectionId][2].thumbnail['thumbnail'][0] 
+                                        collectionItems[collection.id][2].thumbnail['thumbnail'][0] 
                                             : 
                                         `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
                                     "
-                                    :alt=" collectionItems[collectionId][2].name ? collectionItems[collectionId][2].name : __( 'Thumbnail', 'tainacan' ) ">
-                            </div>
+                                    :alt=" collectionItems[collection.id][2].name ? collectionItems[collection.id][2].name : __( 'Thumbnail', 'tainacan' ) ">
+                         -->   </div>
                         </a>
                     </swiper-slide>
                 </swiper>
@@ -254,12 +255,14 @@ export default {
                             promises.push(
                                 this.tainacanAxios.get('/collection/' + collection.id + '/items?perpage=3&fetch_only=name,url,thumbnail')
                                     .then(response => { return({ collectionId: collection.id, collectionItems: response.data.items }) })
-                            );                      
+                            );    
+                            this.collections.push(collection);                  
                         }
                         axios.all(promises).then((results) => {
                             for (let result of results) {
                                 this.collectionItems[result.collectionId] = result.collectionItems;
                             }
+                            
                             this.isLoading = false;
                         }) 
                     }
