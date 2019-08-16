@@ -509,14 +509,16 @@
                                             style="margin-left: calc(4.666667% + 12px)"
                                             type="button"
                                             class="button is-secondary"
-                                            @click.prevent="attachmentMediaFrame.openFrame($event)">
+                                            @click.prevent="attachmentMediaFrame.openFrame($event)"
+                                            :disabled="isLoadingAttachments">
                                         {{ $i18n.get("label_edit_attachments") }}
                                     </button>
-
                                     <attachments-list
                                             v-if="item != undefined && item.id != undefined"
                                             :item="item"
                                             :is-editable="true"
+                                            :is-loading.sync="isLoadingAttachments"
+                                            @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading"
                                             @onDeleteAttachment="deleteAttachment($event)"/>    
                                 </div>
                             </b-tab-item>
@@ -753,6 +755,7 @@ export default {
             collectionAllowComments: '',
             entityName: 'item',
             activeTab: 0,
+            isLoadingAttachments: false
         }
     },
     computed: {
@@ -927,8 +930,12 @@ export default {
                 this.form.document_type = this.item.document_type;
                 this.form.comment_status = this.item.comment_status;
 
+                // Loads metadata and attachments
                 this.loadMetadata();
-                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId });
+                this.isLoadingAttachments = true;
+                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId })
+                    .then(() => this.isLoadingAttachments = false)
+                    .catch(() => this.isLoadingAttachments = false);
 
             })
             .catch(error => this.$console.error(error));
@@ -1030,7 +1037,10 @@ export default {
                 document_type: this.form.document_type 
             })
             .then(() => {
-                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document });
+                this.isLoadingAttachments = true;
+                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
+                    .then(() => this.isLoadingAttachments = false)
+                    .catch(() => this.isLoadingAttachments = false);
             })
             .catch((errors) => {
                 for (let error of errors.errors) {
@@ -1061,7 +1071,10 @@ export default {
                     onConfirm: () => {
                         this.removeAttachmentFromItem(attachment.id)
                             .then(() => { 
-                                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document });
+                                this.isLoadingAttachments = true;
+                                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
+                                    .then(() => this.isLoadingAttachments = false)
+                                    .catch(() => this.isLoadingAttachments = false);
                             })
                             .catch((error) => {
                                 this.$console.error(error);
@@ -1132,7 +1145,10 @@ export default {
                     relatedPostId: this.itemId,
                     onSave: () => {
                         // Fetch current existing attachments
-                        this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document });
+                        this.isLoadingAttachments = true;
+                        this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
+                            .then(() => this.isLoadingAttachments = false)
+                            .catch(() => this.isLoadingAttachments = false);
                     }
                 }
             );

@@ -253,7 +253,9 @@
                                 <span>{{ $i18n.get('activities') }}</span>
                             </template>
                             
-                            <activities-page />
+                            <activities-page
+                                    :is-loading.sync="isLoadingAttachments"
+                                    @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading"/>
                         </b-tab-item>
                     </b-tabs>
                 </div>
@@ -334,6 +336,7 @@
                 urls_open: false,
                 collectionAllowComments: '',
                 activeTab: 0,
+                isLoadingAttachments: false
             }
         },
         computed: {
