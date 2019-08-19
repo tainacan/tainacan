@@ -204,7 +204,8 @@
                                                 content: $i18n.get('label_open_externally'),
                                                 autoHide: false,
                                                 placement: 'bottom'
-                                            }" 
+                                            }"
+                                            target="_blank" 
                                             :href="getExposerFullURL(pagedLink, exposerMapper)">
                                         <span class="icon">
                                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>

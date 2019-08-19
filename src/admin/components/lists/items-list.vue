@@ -948,7 +948,9 @@ export default {
             return this.getSelectedItems();
         },
         selectedItems () {
-            this.$eventBusSearch.setSelectedItemsForIframe(this.getSelectedItems());
+            if (this.$route.query.iframemode)
+                this.$eventBusSearch.setSelectedItemsForIframe(this.getSelectedItems());
+            
             return this.getSelectedItems();
         },
         isSelectingItems () {
@@ -1213,7 +1215,7 @@ export default {
             if ($event.ctrlKey || $event.shiftKey) {
                 this.setSelectedItemChecked(item.id);
             } else {
-                if (!this.$route.query.iframemode && this.$route.query.iframemode) {
+                if (this.$route.query.iframemode && !this.$route.query.readmode) {
                     this.setSelectedItemChecked(item.id)
                 } else if (!this.$route.query.iframemode && !this.$route.query.readmode) {
                     if(this.isOnTrash){
