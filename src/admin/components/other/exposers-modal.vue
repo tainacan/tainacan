@@ -195,7 +195,6 @@
                                                 :value="getExposerFullURL(pagedLink, exposerMapper)">
                                     </div>
                                     <a 
-                                            :download="(collectionId != undefined ? collectionName : $i18n.get('repository')) + ' ' + $i18n.get('items') + ' ' + $i18n.get('label_page') + ' ' + pagedLink"
                                             v-tooltip="{
                                                 delay: {
                                                     show: 500,
