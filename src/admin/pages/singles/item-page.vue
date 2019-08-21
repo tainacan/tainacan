@@ -501,10 +501,14 @@
             padding-left: 0;
             padding-right: $page-side-padding;
 
-            .columns .column {
-                padding: 1rem $page-side-padding 0 24px;
-            }
+            .columns {
+                flex-wrap: wrap;
+                justify-content: space-between;
 
+                .column {
+                    padding: 1rem 12px 0 12px;
+                }
+            }
             .field { 
                 padding: 10px 0 14px 0px;
                 margin-left: -3px;

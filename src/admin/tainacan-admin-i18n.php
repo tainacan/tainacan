@@ -498,8 +498,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_taxonomies_tab_trash'                      => __( 'Taxonomies that were sent to trash.', 'tainacan' ),
 
 	'info_error_invalid_date'                        => __( 'Invalid date', 'tainacan' ),
-	'info_search_results'                            => __( 'Search Results', 'tainacan' ),
-	'info_search_criteria'                           => __( 'Search Criteria', 'tainacan' ),
+	'info_search_results'                            => __( 'Advanced Search Results', 'tainacan' ),
+	'info_search_criteria'                           => __( 'Advanced Search Criteria', 'tainacan' ),
 	'info_name_is_required'                          => __( 'Name is required.', 'tainacan' ),
 	'info_no_collection_created'                     => __( 'No collection was created in this repository.', 'tainacan' ),
 	
