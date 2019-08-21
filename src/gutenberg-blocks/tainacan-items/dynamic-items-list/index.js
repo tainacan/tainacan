@@ -428,7 +428,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                             <div>
                                 <RangeControl
                                     label={__('Maximum number of items', 'tainacan')}
-                                    value={ maxItemsNumber }
+                                    value={ maxItemsNumber ? maxItemsNumber : 12 }
                                     onChange={ ( aMaxItemsNumber ) => {
                                         maxItemsNumber = aMaxItemsNumber;
                                         setAttributes( { maxItemsNumber: aMaxItemsNumber } ) 
