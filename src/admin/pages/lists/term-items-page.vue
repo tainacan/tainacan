@@ -542,7 +542,7 @@
                             :value="viewModeOption"
                             v-if="registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == true ">
                         <span 
-                                class="gray-icon"
+                                class="gray-icon view-mode-icon"
                                 v-html="registeredViewModes[viewModeOption].icon"/>
                         <span class="is-hidden-touch">{{ registeredViewModes[viewModeOption].label }}</span>
                     </button>
@@ -1797,8 +1797,9 @@
         
         .view-mode-icon {
             margin-right: 3px !important;
-            margin-top: 1px;
+            margin-top: -4px;
             margin-left: 6px !important;
+            width: 1.25rem;
         }
 
         .dropdown-menu {
