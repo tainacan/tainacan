@@ -201,6 +201,18 @@
           height: 28px; }
           .wp-block-tainacan-search-bar .tainacan-search-container #taincan-search-bar-block button .icon svg {
             fill: #298596; }
+      @media only screen and (max-width: 768px) {
+        .wp-block-tainacan-search-bar .tainacan-search-container #taincan-search-bar-block {
+          margin-left: 0px;
+          margin-right: 0px;
+          max-width: 100% !important; }
+          .wp-block-tainacan-search-bar .tainacan-search-container #taincan-search-bar-block input#taincan-search-bar-block_input {
+            width: 100% !important; } }
+  @media only screen and (max-width: 768px) {
+    .wp-block-tainacan-search-bar .search-bar-collection-header-container {
+      flex-wrap: wrap !important; }
+      .wp-block-tainacan-search-bar .search-bar-collection-header-container .search-bar-collection-header-title {
+        text-align: center !important; } }
   .wp-block-tainacan-search-bar.is-style-alternate #taincan-search-bar-block {
     width: 100%;
     display: flex;
@@ -242,18 +254,11 @@
         background: transparent; }
     @media only screen and (max-width: 768px) {
       .wp-block-tainacan-search-bar.is-style-alternate #taincan-search-bar-block {
-        flex-wrap: wrap; }
-        .wp-block-tainacan-search-bar.is-style-alternate #taincan-search-bar-block .search-button {
-          order: 4;
-          position: absolute;
-          margin-top: 37px; }
-        .wp-block-tainacan-search-bar.is-style-alternate #taincan-search-bar-block input {
-          width: 100% !important;
-          order: 5;
-          margin-top: 8px;
-          margin-left: 0px !important;
-          padding-left: 4px !important;
-          border-color: #dbdbdb !important; } }
+        margin-left: 0px;
+        margin-right: 0px;
+        max-width: 100% !important; }
+        .wp-block-tainacan-search-bar.is-style-alternate #taincan-search-bar-block input#taincan-search-bar-block_input {
+          width: 100% !important; } }
   .wp-block-tainacan-search-bar.is-style-alternate .search-bar-collection-header-container .tainacan-search-container #taincan-search-bar-block:focus input,
   .wp-block-tainacan-search-bar.is-style-alternate .search-bar-collection-header-container .tainacan-search-container #taincan-search-bar-block:focus input::placeholder, .wp-block-tainacan-search-bar.is-style-alternate .search-bar-collection-header-container .tainacan-search-container #taincan-search-bar-block:active input,
   .wp-block-tainacan-search-bar.is-style-alternate .search-bar-collection-header-container .tainacan-search-container #taincan-search-bar-block:active input::placeholder, .wp-block-tainacan-search-bar.is-style-alternate .search-bar-collection-header-container .tainacan-search-container #taincan-search-bar-block:hover input,
@@ -312,20 +317,6 @@
         transition: fill 0.4s ease; }
       .wp-block-tainacan-search-bar.is-style-stylish #taincan-search-bar-block button:hover {
         background: transparent; }
-    @media only screen and (max-width: 768px) {
-      .wp-block-tainacan-search-bar.is-style-stylish #taincan-search-bar-block {
-        flex-wrap: wrap; }
-        .wp-block-tainacan-search-bar.is-style-stylish #taincan-search-bar-block .search-button {
-          order: 4;
-          position: absolute;
-          margin-top: 37px; }
-        .wp-block-tainacan-search-bar.is-style-stylish #taincan-search-bar-block input {
-          width: 100% !important;
-          order: 5;
-          margin-top: 8px;
-          margin-left: 0px !important;
-          padding-left: 4px !important;
-          border-color: #dbdbdb !important; } }
   .wp-block-tainacan-search-bar.is-style-stylish .search-bar-collection-header-container:not(.is-aligned-right):not(.is-aligned-left) .tainacan-search-container {
     width: calc(100% - 4.1667% - 53px);
     width: calc(100% - 4.1667vw - 53px);
@@ -355,6 +346,14 @@
     padding-left: 24px; }
     .wp-block-tainacan-search-bar.is-style-stylish .search-bar-collection-header-container .tainacan-search-container #taincan-search-bar-block input#taincan-search-bar-block_input:hover {
       border-width: 3px !important; }
+  @media only screen and (max-width: 768px) {
+    .wp-block-tainacan-search-bar.is-style-stylish .search-bar-collection-header-container .tainacan-search-container {
+      width: calc(100% - 4.1667% - 53px) !important;
+      width: calc(100% - 4.1667vw - 53px) !important;
+      bottom: calc(-50% + 38px) !important;
+      position: absolute !important; }
+    .wp-block-tainacan-search-bar.is-style-stylish .search-bar-collection-header-container.is-aligned-right .search-bar-collection-header-title, .wp-block-tainacan-search-bar.is-style-stylish .search-bar-collection-header-container.is-aligned-left .search-bar-collection-header-title {
+      margin-bottom: 0px !important; } }
   .wp-block-tainacan-search-bar .search-bar-collection-header-image {
     width: 100%;
     min-width: 160px;
