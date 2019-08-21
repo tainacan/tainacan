@@ -42,6 +42,10 @@ export const cleanAttachments = (state) => {
     state.attachments = [];
 }
 
+export const setTotalAttachments = ( state, total) => {
+    state.totalAttachments = total;
+}
+
 export const setItemTitle = ( state, itemTitle ) => {
     state.itemTitle = itemTitle;
 }

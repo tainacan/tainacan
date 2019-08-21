@@ -269,13 +269,12 @@ registerBlockType('tainacan/items-list', {
                         { isModalOpen ? 
                             <ItemsModal
                                 existingCollectionId={ collectionId } 
-                                selectedItemsObject={ selectedItemsObject } 
                                 onSelectCollection={ (selectedCollectionId) => {
                                     collectionId = selectedCollectionId;
                                     setAttributes({ collectionId: collectionId });
                                 }}
                                 onApplySelection={ (aSelectedItemsObject) =>{
-                                    selectedItemsObject = aSelectedItemsObject
+                                    selectedItemsObject = selectedItemsObject.concat(aSelectedItemsObject);
                                     setAttributes({
                                         selectedItemsObject: selectedItemsObject,
                                         isModalOpen: false
@@ -299,7 +298,7 @@ registerBlockType('tainacan/items-list', {
                                     isPrimary
                                     type="submit"
                                     onClick={ () => openItemsModal() }>
-                                    {__('Select items', 'tainacan')}
+                                    {__('Add more items', 'tainacan')}
                                 </Button>    
                             </div>
                             ): null

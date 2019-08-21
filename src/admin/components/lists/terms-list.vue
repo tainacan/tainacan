@@ -245,7 +245,7 @@ export default {
 
             let newTerm = {
                 taxonomyId: this.taxonomyId,
-                name: this.$i18n.get('label_term_without_name'),
+                name: '',
                 description: '',
                 parent: parent,
                 id: 'new',
@@ -447,7 +447,7 @@ export default {
         }
     },
     created() {
-        if (this.taxonomyId !== String) {
+        if (this.taxonomyId != undefined && this.taxonomyId !== String) {
             this.loadTerms(0);
         }
         this.$root.$on('onChildTermDeleted', this.eventOnChildTermDeleted);

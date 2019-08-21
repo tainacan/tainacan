@@ -101,7 +101,7 @@
         },
         computed: {
             getComponent() {
-                if(this.forcedComponentType){
+                if (this.forcedComponentType){
                    return this.forcedComponentType;
                 } else if( this.metadatum.metadatum
                     && this.metadatum.metadatum.metadata_type_options && this.metadatum.metadatum.metadata_type_options.input_type ){
@@ -112,7 +112,7 @@
         },
         methods: {
             openCheckboxModal(){
-                this.$modal.open({
+                this.$buefy.modal.open({
                     parent: this,
                     component: CheckboxRadioModal,
                     props: {

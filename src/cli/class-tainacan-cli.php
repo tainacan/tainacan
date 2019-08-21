@@ -27,8 +27,8 @@ class Cli {
 	function add_commands() {
 		
 		\WP_CLI::add_command('tainacan garbage-collector', 'Tainacan\Cli_Garbage_Collector');
-		
-		
+		\WP_CLI::add_command('tainacan move-attachments-to-items-folder', 'Tainacan\Cli_Move_Attachments');
+		\WP_CLI::add_command('tainacan collection', 'Tainacan\Cli_Collection');
 	}
 	
 	

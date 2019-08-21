@@ -148,9 +148,9 @@
             .button.is-success {
                 border: none;
             }
-            .button:not(.is-success) {
+            .button:not(.is-success):not(.is-secondary) {
                 background-color: white;
-                color: $blue5;
+                color: $secondary;
                 border: 1px solid $gray4;
             }
         }
@@ -171,6 +171,10 @@
     right: 100px;
     background-color: white;
     z-index: 99999999999 !important;
+
+    .media-toolbar button{
+        margin-top: 1rem !important
+    }
 }
 // .media-modal {
 //     left: 100px;

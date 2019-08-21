@@ -22,9 +22,29 @@ class Csv extends Exposer {
 	 */
 	public function rest_request_after_callbacks( $response, $handler, $request ) {
 		$response->set_headers( [
-			'Content-Type: text/csv; charset=' . get_option( 'blog_charset' ),
-			'Content-disposition: attachment;filename=tainacan.csv'] // TODO filter/optional 
-		);
+			'Content-Type: text/csv; charset=' . get_option( 'blog_charset' )
+		]);
+		
+		if (isset($request['collection_id'])) {
+			$collection = \Tainacan\Repositories\Collections::get_instance()->fetch( (int) $request['collection_id'] );
+			if ($collection) {
+				$filename = sanitize_title($collection->get_name());
+			}
+		} else {
+			$filename = sanitize_title(get_option('blogname'));
+		}
+		
+		if (empty($filename)) {
+			$filename = sanitize_title( __('items', 'tainacan') );
+		}
+		
+		if ( isset($request['paged']) ) {
+			$filename .= '-' . $request['paged'];
+		}
+		
+		$filename .= '.csv';
+		
+		header('Content-Disposition: attachment; filename="'.$filename.'"');
 		
 		$items = $response->get_data();
 		$items = is_array($items) && isset($items['items']) ? $items['items'] : [];

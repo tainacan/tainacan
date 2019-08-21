@@ -34,8 +34,8 @@
         </span>
         <span 
                 class="term-name" 
-                :class="{'is-danger': formWithErrors == term.id }">
-            {{ term.name }}
+                :class="{'is-danger': formWithErrors == term.id, 'is-italic': !term.name }">
+            {{ term.name ? term.name : $i18n.get('label_term_without_name') }}
         </span>
         <span 
                 v-if="term.id == 'new'"
@@ -210,7 +210,7 @@ export default {
 
             // Checks if user is deleting a term with unsaved info.
             if (this.term.id == 'new') {
-                this.$modal.open({
+                this.$buefy.modal.open({
                     parent: this,
                     component: CustomDialog,
                     props: {
@@ -227,7 +227,7 @@ export default {
         },
         removeTerm() {
 
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {

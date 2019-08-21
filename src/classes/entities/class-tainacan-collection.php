@@ -185,22 +185,7 @@ class Collection extends Entity {
 
 		$attachments = get_posts( $attachments_query );
 
-		$attachments_prepared = [];
-		if ( $attachments ) {
-			foreach ( $attachments as $attachment ) {
-				$prepared = [
-					'id'          => $attachment->ID,
-					'title'       => $attachment->post_title,
-					'description' => $attachment->post_content,
-					'mime_type'   => $attachment->post_mime_type,
-					'url'         => $attachment->guid,
-				];
-
-				array_push( $attachments_prepared, $prepared );
-			}
-		}
-
-		return apply_filters("tainacan-collection-get-attachments", $attachments_prepared, $exclude, $this);
+		return apply_filters("tainacan-collection-get-attachments", $attachments, $exclude, $this);
 	}
 
     /**

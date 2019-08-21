@@ -50,7 +50,9 @@ import termsListBus from './terms-list-bus.js';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, UserCapabilitiesPlugin, StatusHelperPlugin } from './utilities';
 
 // Configure and Register Plugins
-Vue.use(Buefy);
+Vue.use(Buefy, {
+    defaultTooltipAnimated: true   
+});
 Vue.use(VTooltip);
 Vue.use(VueMasonry);
 Vue.use(I18NPlugin);

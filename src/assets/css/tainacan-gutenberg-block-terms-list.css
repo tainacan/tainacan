@@ -1,3 +1,6 @@
+[data-align='full'] .block-control {
+  width: calc(100% + 14px); }
+
 .block-control {
   display: flex;
   flex-direction: row;
@@ -61,19 +64,33 @@
     color: #555758; }
     .wp-block-tainacan-modal .spinner-container .components-spineer {
       margin: 8px; }
+  .wp-block-tainacan-modal .components-modal__header .components-icon-button {
+    padding-right: 0; }
+  .wp-block-tainacan-modal hr {
+    margin: 5px 0.75rem; }
   .wp-block-tainacan-modal .modal-search-area {
     display: flex;
     justify-content: center;
-    margin-bottom: 24px; }
+    margin-bottom: 14px; }
     .wp-block-tainacan-modal .modal-search-area .components-base-control {
       width: 60%; }
       @media only screen and (max-width: 1024px) {
         .wp-block-tainacan-modal .modal-search-area .components-base-control {
           width: 95%; } }
-      .wp-block-tainacan-modal .modal-search-area .components-base-control label {
+      .wp-block-tainacan-modal .modal-search-area .components-base-control:nth-child(2) {
+        flex-shrink: 2; }
+      .wp-block-tainacan-modal .modal-search-area .components-base-control .components-base-control__field {
+        flex-wrap: wrap; }
+      .wp-block-tainacan-modal .modal-search-area .components-base-control label.components-base-control__label {
+        font-weight: 500;
+        color: #454647;
+        font-size: 0.875rem;
         text-align: center; }
+      .wp-block-tainacan-modal .modal-search-area .components-base-control input.components-text-control__input {
+        padding: 5px 8px;
+        height: 28px; }
   .wp-block-tainacan-modal .modal-radio-area-label {
-    font-weight: bold;
+    font-weight: 500;
     margin-left: 1.75rem; }
   .wp-block-tainacan-modal .modal-checkbox-list,
   .wp-block-tainacan-modal .modal-radio-list .components-base-control__field {
@@ -86,7 +103,8 @@
     list-style-type: none;
     margin: 12px;
     max-height: 50vh;
-    overflow-y: auto; }
+    overflow-y: auto;
+    overflow-x: hidden; }
     .wp-block-tainacan-modal .modal-checkbox-list .components-base-control,
     .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-base-control {
       overflow: hidden; }
@@ -133,6 +151,9 @@
     justify-content: space-between;
     padding: 16px 16px 0 16px;
     margin: 0 -16px; }
+    .wp-block-tainacan-modal .modal-footer-area p {
+      padding: 0 12px;
+      color: #454647; }
 
 .wp-block-tainacan-terms-list {
   margin: 2rem 0px; }
@@ -216,23 +237,26 @@
   .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list,
   .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list {
     padding: 0;
-    display: block;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     list-style-type: none; }
     .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item,
     .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item {
       position: relative;
-      display: inline-block;
       margin: 12px 12px 24px 12px;
       margin-bottom: 12px;
       min-height: 54px;
-      min-width: 22%;
-      width: 22%; }
+      min-width: calc(20% - 24px);
+      width: calc(20% - 24px); }
       .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item a,
       .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item a {
         color: #454647;
+        height: auto;
         display: flex;
         align-items: center;
-        height: 54px; }
+        word-break: break-all;
+        word-break: break-word; }
       .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item img,
       .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item img {
         height: auto;
@@ -247,20 +271,25 @@
       .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item:hover a {
         color: #454647;
         text-decoration: none; }
-  @media only screen and (max-width: 1600px) {
-    .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item,
-    .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item {
-      min-width: 30%;
-      width: 30%; } }
-  @media only screen and (max-width: 1024px) {
-    .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item,
-    .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item {
-      min-width: 45%;
-      width: 45%; } }
-  @media only screen and (max-width: 768px) {
-    .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item,
-    .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item {
-      min-width: 100%;
-      width: 100%; } }
+      @media only screen and (max-width: 1600px) {
+        .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item,
+        .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item {
+          min-width: calc(25% - 24px);
+          width: calc(25% - 24px); } }
+      @media only screen and (max-width: 1024px) {
+        .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item,
+        .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item {
+          min-width: calc(33.333% - 24px);
+          width: calc(33.333% - 24px); } }
+      @media only screen and (max-width: 768px) {
+        .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item,
+        .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item {
+          min-width: calc(50% - 24px);
+          width: calc(50% - 24px); } }
+      @media only screen and (max-width: 498px) {
+        .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item,
+        .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item {
+          min-width: calc(100% - 24px);
+          width: calc(100% - 24px); } }
 
 /*# sourceMappingURL=tainacan-gutenberg-block-terms-list.css.map */

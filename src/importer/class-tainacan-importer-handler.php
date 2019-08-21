@@ -79,7 +79,7 @@ class Importer_Handler {
             'manual_mapping' => true,
         ]);
 
-		do_action('tainacan_register_importers');
+		do_action('tainacan-register-importers');
 
 		add_action( 'tainacan-enqueue-admin-scripts', array($this, 'enqueue_scripts') );
 	}

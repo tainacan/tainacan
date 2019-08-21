@@ -8,11 +8,15 @@
             <hr>
         </div>
     
+        <b-loading
+                :is-full-page="false"
+                :active.sync="isLoading" />
+
         <!-- Name -------------- -->
         <b-field
                 :addons="false"
                 :type="((formErrors.name !== '' || formErrors.repeated !== '') && (formErrors.name !== undefined || formErrors.repeated !== undefined )) ? 'is-danger' : ''"
-                :message="formErrors.name ? formErrors : formErrors.repeated">
+                :message="formErrors.name ? formErrors.name : formErrors.repeated">
             <label class="label is-inline">
                 {{ $i18n.get('label_name') }}
                 <span class="required-term-asterisk">*</span>
@@ -21,6 +25,7 @@
                         :message="$i18n.get('info_help_term_name')"/>
             </label>
             <b-input
+                    :placeholder="$i18n.get('label_term_without_name')"
                     v-model="editForm.name"
                     name="name"
                     @focus="clearErrors({ name: 'name', repeated: 'repeated' })"/>
@@ -217,7 +222,8 @@
                 hasParent: false,
                 hasChangedParent: false,
                 initialParentId: undefined,
-                entityName: 'term'
+                entityName: 'term',
+                isLoading: false,
             }
         },
         props: {
@@ -245,6 +251,7 @@
                         header_image: this.editForm.header_image,
                     };
                     this.fillExtraFormData(data);
+                    this.isLoading = true;
                     this.sendChildTerm({
                         taxonomyId: this.taxonomyId,
                         term: data
@@ -253,6 +260,7 @@
                             this.$emit('onEditionFinished', {term: term, hasChangedParent: this.hasChangedParent });
                             this.editForm = {};
                             this.formErrors = {};
+                            this.isLoading = false;
                         })
                         .catch((errors) => {
                             for (let error of errors.errors) {
@@ -260,6 +268,7 @@
                                     this.$set(this.formErrors, metadatum, (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + error[metadatum] + '\n');
                                 }
                             }
+                            this.isLoading = false;
                             this.$emit('onErrorFound');
                         });
 
@@ -274,6 +283,7 @@
                         header_image: this.editForm.header_image,
                     }
                     this.fillExtraFormData(data);
+                    this.isLoading = true;
                     this.updateChildTerm({
                         taxonomyId: this.taxonomyId,
                         term: data
@@ -288,6 +298,7 @@
                                     this.$set(this.formErrors, metadatum, (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + error[metadatum] + '\n');
                                 }
                             }
+                            this.isLoading = false;
                             this.$emit('onErrorFound');
                         });
                 }
@@ -474,7 +485,8 @@
                 margin-right: auto;
                 width: 100%;
                 top: 35%;
-                font-size: 1.25rem;
+                padding: 0 8px;
+                font-size: 95%;
                 font-weight: bold;
                 z-index: 99;
                 text-align: center;

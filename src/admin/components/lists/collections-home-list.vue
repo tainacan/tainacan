@@ -220,9 +220,9 @@
                             <a 
                                     :href="collection.url"
                                     target="_blank" 
-                                    :aria-label="$i18n.get('label_view_collection')">
+                                    :aria-label="$i18n.get('label_view_collection_on_website')">
                                 <b-tooltip 
-                                        :label="$i18n.get('label_view_collection')"
+                                        :label="$i18n.get('label_view_collection_on_website')"
                                         position="is-bottom">
                                     <span class="icon">
                                         <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>

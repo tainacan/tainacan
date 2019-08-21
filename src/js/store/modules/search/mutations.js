@@ -188,3 +188,31 @@ export const cleanFetchOnly = (state) => {
 export const setFacets = (state, facets) => {
     state.facets = facets;
 }
+
+export const setSelectedItems = (state, selectedItems) => {
+    for (let selecteditem of selectedItems) {
+        let index = state.selecteditems.findIndex( item => item == selecteditem);
+        if ( index < 0 )
+            state.selecteditems.push(selecteditem);
+    }
+}
+
+export const cleanSelectedItems = (state) => {
+    state.selecteditems = [];
+}
+
+export const addSelectedItem = (state, selectedItem) => {
+    let index = state.selecteditems.findIndex( item => item == selectedItem);
+    if ( index < 0 )
+        state.selecteditems.push(selectedItem);
+}
+
+export const removeSelectedItem = (state, selectedItem) => {
+    let index = state.selecteditems.findIndex( item => item == selectedItem);
+    if ( index >= 0 )
+        state.selecteditems.splice(index, 1);
+}
+
+export const setHighlightedItem = (state, itemId) => {
+    state.highlightedItem = itemId;
+}

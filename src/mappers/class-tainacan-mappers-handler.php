@@ -21,17 +21,21 @@ class Mappers_Handler {
 	
 	public function __construct() {
 	    self::$instance = $this;
+		
+		add_action('init', array(&$this, 'init'));
 
-		$this->register_mapper('Tainacan\Mappers\Dublin_Core');
-		
-		do_action('tainacan-register-mappers', $this);
-		
 		add_filter( 'tainacan-admin-i18n', [$this, 'mappers_i18n']);
 		
 		add_action('tainacan-api-collection-created', [$this, 'create_mapped_collection'], 10, 2);
 		
 		add_filter('tainacan-api-items-prepare-for-response', [$this, 'filter_item_api_response'], 10, 3);
 		
+	}
+	
+	function init() {
+		$this->register_mapper('Tainacan\Mappers\Dublin_Core');
+		
+		do_action('tainacan-register-mappers', $this);
 	}
 	
 	/**

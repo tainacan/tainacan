@@ -52,7 +52,6 @@ class Item extends Entity {
 	public function _toArray() {
 		$array_item = parent::_toArray();
 
-		$array_item['thumbnail']         = $this->get_thumbnail();
 		$array_item['_thumbnail_id']     = $this->get__thumbnail_id();
 		$array_item['author_name']       = $this->get_author_name();
 		$array_item['url']               = get_permalink( $this->get_id() );
@@ -85,7 +84,10 @@ class Item extends Entity {
 		$item_id = $this->get_id();
 
 		if(!$exclude){
-			$to_exclude = get_post_thumbnail_id( $item_id );
+			$to_exclude = [get_post_thumbnail_id( $item_id )];
+			if ($this->get_document_type() == 'attachment') {
+				$to_exclude[] = $this->get_document();
+			}
 		} else {
 			$to_exclude = $exclude;
 		}
@@ -98,23 +100,9 @@ class Item extends Entity {
 		];
 
 		$attachments = get_posts( $attachments_query );
+		
+		return apply_filters("tainacan-item-get-attachments", $attachments, $exclude, $this);
 
-		$attachments_prepared = [];
-		if ( $attachments ) {
-			foreach ( $attachments as $attachment ) {
-				$prepared = [
-					'id'          => $attachment->ID,
-					'title'       => $attachment->post_title,
-					'description' => $attachment->post_content,
-					'mime_type'   => $attachment->post_mime_type,
-					'url'         => $attachment->guid,
-				];
-
-				array_push( $attachments_prepared, $prepared );
-			}
-		}
-
-		return apply_filters("tainacan-item-get-attachments", $attachments_prepared, $exclude, $this);
 	}
 
 

@@ -175,6 +175,9 @@
         color: $gray4;
         margin: 0 8px;    
     }
+    & .hierarchy-separator {
+        color: $gray4;
+    }
     &.metadata-type-textarea {
         .multivalue-separator {
             display: block;

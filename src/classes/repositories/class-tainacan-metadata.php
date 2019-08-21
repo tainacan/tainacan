@@ -46,7 +46,7 @@ class Metadata extends Repository {
 	 * {@inheritDoc}
 	 * @see \Tainacan\Repositories\Repository::get_map()
 	 */
-	public function get_map() {
+  protected function _get_map() {
 		return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
 			'name'                  => [
 				'map'         => 'post_title',
@@ -535,6 +535,7 @@ class Metadata extends Repository {
 		$new_metadatum = parent::insert( $metadatum );
 
 		$this->update_taxonomy_metadatum( $new_metadatum );
+		$this->update_metadata_type_index( $new_metadatum );
 
 		return $new_metadatum;
 	}
@@ -638,7 +639,7 @@ class Metadata extends Repository {
 	 * @return array
 	 */
 	private function get_data_core_metadata( Entities\Collection $collection ) {
-
+    
 		return $data_core_metadata = [
 			'core_description' => [
 				'name'            => 'Description',
@@ -1092,7 +1093,7 @@ class Metadata extends Repository {
 				$count_query = $wpdb->prepare("SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", $r->term_id);
 				$total_children = $wpdb->get_var($count_query);
 				
-				$label = $r->name;
+				$label = wp_specialchars_decode($r->name);
 				$total_items = null;
 				
 				if ( $args['count_items'] ) {
@@ -1350,6 +1351,34 @@ class Metadata extends Repository {
 			}
 
 		}
+	}
+	
+	/**
+	 * Creates an index with the exploded values of metadata_type_options array. Each option is prefixed with '_option_'
+	 * This is useful to allow metadata to be queried based on a specific value of a metadata type option. 
+	 * For example, fetch all taxonomy metadata which the taxonomy_id metadata type option is equal to 4
+	 *
+	 * $metadata_repository->fetch([
+	 * 		'meta_query' => [
+	 * 			[
+	 * 				'key' => '_option_taxonomy_id',
+	 * 				'value' => 4
+	 * 			]
+	 * 		]
+	 * ])
+	 * 
+	 * @var Entities\Metadatum $metadatum
+	 */
+	private function update_metadata_type_index( Entities\Metadatum $metadatum ) {
+		
+		$options = $this->get_mapped_property($metadatum, 'metadata_type_options');
+		if (!is_array($options)) {
+			return;
+		}
+		foreach ($options as $option => $value) {
+			update_post_meta($metadatum->get_id(), '_option_' . $option, $value);
+		}
+		
 	}
 	
 	/**

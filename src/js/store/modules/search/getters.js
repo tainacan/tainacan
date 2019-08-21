@@ -83,3 +83,11 @@ export const getFilterTags = state => {
 export const getFacets = state => {
     return state.facets;
 };
+
+export const getSelectedItems = state => {
+    return state.selecteditems;
+};
+
+export const getHighlightedItem = state => {
+    return state.highlightedItem;
+};

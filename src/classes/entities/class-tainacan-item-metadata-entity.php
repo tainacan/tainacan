@@ -208,21 +208,31 @@ class Item_Metadata_Entity extends Entity {
 	
 	/**
 	 * Convert the object to an Array
+	 *
+	 * @param bool $formatted_values Whether to add or not values formatted as html and string to the response
+	 * @param bool $cascade Whether to add or not Item and Metadatum Entities as arrays to the response
+	 * 
 	 * @return array the representation of this object as an array
 	 */
-    public function  _toArray(){
+    public function  _toArray( $formatted_values = true, $cascade = false ){
 		$as_array = [];
 		
 		$as_array['value'] = $this->get_value_as_array();
-		$as_array['value_as_html'] = $this->get_value_as_html();
-		$as_array['value_as_string'] = $this->get_value_as_string();
+		
+		if ( $formatted_values ) {
+			$as_array['value_as_html'] = $this->get_value_as_html();
+			$as_array['value_as_string'] = $this->get_value_as_string();
 
-		if($this->get_metadatum()->get_metadata_type_object()->get_primitive_type() === 'date'){
-			$as_array['date_i18n'] = $this->get_date_i18n($this->get_value_as_string());
+			if($this->get_metadatum()->get_metadata_type_object()->get_primitive_type() === 'date'){
+				$as_array['date_i18n'] = $this->get_date_i18n($this->get_value_as_string());
+			}
 		}
-
-	    $as_array['item']  = $this->get_item()->_toArray();
-	    $as_array['metadatum'] = $this->get_metadatum()->_toArray();
+		
+		if ( $cascade ) {
+			$as_array['item']  = $this->get_item()->_toArray();
+		    $as_array['metadatum'] = $this->get_metadatum()->_toArray();
+		}
+	    
 
 		return apply_filters('tainacan-item-metadata-to-array', $as_array, $this);
     }

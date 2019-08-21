@@ -19,6 +19,10 @@ sass -E 'UTF-8' --cache-location .tmp/sass-cache-4 src/gutenberg-blocks/tainacan
 
 sass -E 'UTF-8' --cache-location .tmp/sass-cache-5 src/gutenberg-blocks/tainacan-items/dynamic-items-list/dynamic-items-list.scss:src/assets/css/tainacan-gutenberg-block-dynamic-items-list.css
 
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-5 src/gutenberg-blocks/tainacan-items/search-bar/search-bar.scss:src/assets/css/tainacan-gutenberg-block-search-bar.css
+
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-5 src/gutenberg-blocks/tainacan-items/carousel-items-list/carousel-items-list.scss:src/assets/css/tainacan-gutenberg-block-carousel-items-list.css
+
 sass -E 'UTF-8' --cache-location .tmp/sass-cache-6 src/gutenberg-blocks/tainacan-terms/terms-list/terms-list.scss:src/assets/css/tainacan-gutenberg-block-terms-list.css
 
 sass -E 'UTF-8' --cache-location .tmp/sass-cache-7 src/gutenberg-blocks/tainacan-facets/facets-list/facets-list.scss:src/assets/css/tainacan-gutenberg-block-facets-list.css

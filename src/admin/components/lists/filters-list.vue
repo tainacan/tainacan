@@ -357,7 +357,7 @@ export default {
                 hasUnsavedForms = true;
         }
         if ((this.openedFilterId != '' && this.openedFilterId != undefined) || hasUnsavedForms ) {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
@@ -912,7 +912,7 @@ export default {
             }
 
             .available-metadatum-item {
-                padding: 0.7em;
+                padding: 0.6rem;
                 margin: 4px 4px 4px 1.2rem;
                 background-color: white;
                 cursor: pointer;
@@ -926,7 +926,7 @@ export default {
                 
                 .grip-icon { 
                     color: $gray3;
-                    top: -4px;
+                    top: -6px;
                     position: relative;
                     display: inline-block;
                 }
@@ -939,6 +939,7 @@ export default {
                     overflow-x: hidden;
                     white-space: nowrap;
                     font-weight: bold;
+                    line-height: normal;
                     margin-left: 0.4em;
                     display: inline-block;
                     max-width: 180px;

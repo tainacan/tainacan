@@ -177,6 +177,8 @@ $Tainacan_Importer_Heartbeat = new \Tainacan\Background_Importer_Heartbeat();
 
 $Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();
 
+$TainacanPrivateFiles = \Tainacan\Private_Files::get_instance();
+
 if (class_exists('WP_CLI')) {
 	$Tainacan_Cli = \Tainacan\Cli::get_instance();
 }

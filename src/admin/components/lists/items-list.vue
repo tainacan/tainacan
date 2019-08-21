@@ -18,9 +18,8 @@
                         style="margin-left: 10px"
                         v-if="enableSelectAllItemsPages == true && allItemsOnPageSelected && items.length > 1">
                     <b-checkbox
-                            @click.native.prevent="selectAllItems()"
                             v-model="isAllItemsSelected">
-                        {{ `${$i18n.getWithVariables('label_select_all_%s_items', [totalItems])}` }}
+                        {{ $i18n.getWithVariables('label_select_all_%s_items', [totalItems]) }}
                     </b-checkbox>
                 </span>
             </div>
@@ -30,7 +29,7 @@
                         :mobile-modal="true"
                         position="is-bottom-left"
                         v-if="items.length > 0 && items[0].current_user_can_edit"
-                        :disabled="selectedItemsIDs.every(id => id === false) || this.selectedItemsIDs.filter(item => item !== false).length <= 1"
+                        :disabled="selectedItems.length <= 1"
                         id="bulk-actions-dropdown"
                         aria-role="list">
                     <button
@@ -99,19 +98,19 @@
                     </b-dropdown-item>
                     <b-dropdown-item 
                             @click="selectItem()"
-                            v-if="contextMenuIndex != null">
-                        {{ !selectedItems[contextMenuIndex] ? $i18n.get('label_select_item') : $i18n.get('label_unselect_item') }}
+                            v-if="contextMenuItem != null">
+                        {{ getSelectedItemChecked(contextMenuItem.id) == true ? $i18n.get('label_unselect_item') : $i18n.get('label_select_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="goToItemEditPage(contextMenuItem)"
                             v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$route.query.iframemode">
                         {{ $i18n.getFrom('items','edit_item') }}
                     </b-dropdown-item>
-                    <!-- <b-dropdown-item
-                            @click="duplicateOneItem(contextMenuItem.id)"
+                    <b-dropdown-item
+                            @click="makeCopiesOfOneItem(contextMenuItem.id)"
                             v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$route.query.iframemode">
-                        {{ $i18n.get('label_duplicate_item') }}
-                    </b-dropdown-item> -->
+                        {{ $i18n.get('label_make_copies_of_item') }}
+                    </b-dropdown-item>
                     <b-dropdown-item
                             @click="deleteOneItem(contextMenuItem.id)"
                             v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$route.query.iframemode">
@@ -129,7 +128,7 @@
                         role="listitem"
                         :key="index"
                         v-for="(item, index) of items"
-                        :class="{ 'selected-grid-item': selectedItems[index] }"
+                        :class="{ 'selected-grid-item': getSelectedItemChecked(item.id) == true }"
                         class="tainacan-grid-item">
                     
                     <!-- Checkbox -->
@@ -140,7 +139,8 @@
                             class="grid-item-checkbox">
                         <b-checkbox 
                                 size="is-small"
-                                v-model="selectedItems[index]"/> 
+                                :value="getSelectedItemChecked(item.id)"
+                                @input="setSelectedItemChecked(item.id)"/> 
                     </div>
 
                     <!-- Title -->
@@ -158,8 +158,8 @@
                                     autoHide: false,
                                     placement: 'auto-start'
                                 }"                               
-                                @click.left="onClickItem($event, item, index)"  
-                                @click.right="onRightClickItem($event, item, index)">
+                                @click.left="onClickItem($event, item)"  
+                                @click.right="onRightClickItem($event, item)">
                             {{ item.title != undefined ? item.title : '' }}
                         </p>                            
                     </div>
@@ -167,8 +167,8 @@
                     <!-- Thumbnail -->
                     <a
                             v-if="item.thumbnail != undefined"
-                            @click.left="onClickItem($event, item, index)"
-                            @click.right="onRightClickItem($event, item, index)"
+                            @click.left="onClickItem($event, item)"
+                            @click.right="onRightClickItem($event, item)"
                             class="grid-item-thumbnail"
                             :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)) + ')' }">
                         <img 
@@ -244,7 +244,7 @@
                         :key="index"
                         v-for="(item, index) of items"
                         :class="{
-                            'selected-masonry-item': selectedItems[index], 
+                            'selected-masonry-item': getSelectedItemChecked(item.id) == true, 
                         }"
                         class="tainacan-masonry-item">
 
@@ -259,7 +259,8 @@
                                 class="b-checkbox checkbox is-small">
                             <input 
                                     type="checkbox"
-                                    v-model="selectedItems[index]"> 
+                                    :value="getSelectedItemChecked(item.id)"
+                                    @input="setSelectedItemChecked(item.id)"> 
                                 <span class="check" /> 
                                 <span class="control-label" />
                         </label>
@@ -270,16 +271,16 @@
                             :style="{
                                 'padding-left': !collectionId ? '0 !important' : '1rem'
                             }"
-                            @click.left="onClickItem($event, item, index)"
-                            @click.right="onRightClickItem($event, item, index)"
+                            @click.left="onClickItem($event, item)"
+                            @click.right="onRightClickItem($event, item)"
                             class="metadata-title">
                         <p>{{ item.title != undefined ? item.title : '' }}</p>                             
                     </div>
 
                     <!-- Thumbnail -->  
                     <div 
-                            @click.left="onClickItem($event, item, index)"
-                            @click.right="onRightClickItem($event, item, index)"
+                            @click.left="onClickItem($event, item)"
+                            @click.right="onRightClickItem($event, item)"
                             v-if="item.thumbnail != undefined"
                             class="tainacan-masonry-item-thumbnail"
                             :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)) + ')' }">
@@ -352,7 +353,7 @@
                         role="listitem"
                         :key="index"
                         v-for="(item, index) of items"
-                        :class="{ 'selected-card': selectedItems[index] }"
+                        :class="{ 'selected-card': getSelectedItemChecked(item.id) == true }"
                         class="tainacan-card">
                     
                     <!-- Checkbox -->
@@ -363,7 +364,8 @@
                             class="card-checkbox">
                         <b-checkbox 
                                 size="is-small"
-                                v-model="selectedItems[index]"/> 
+                                :value="getSelectedItemChecked(item.id)"
+                                @input="setSelectedItemChecked(item.id)"/> 
                     </div>
                     
                     <!-- Title -->
@@ -381,8 +383,8 @@
                                     autoHide: false,
                                     placement: 'auto-start'
                                 }"                               
-                                @click.left="onClickItem($event, item, index)"
-                                @click.right="onRightClickItem($event, item, index)">
+                                @click.left="onClickItem($event, item)"
+                                @click.right="onRightClickItem($event, item)">
                             {{ item.title != undefined ? item.title : '' }}
                         </p>                            
                     </div>
@@ -442,8 +444,8 @@
                     <!-- Remaining metadata -->  
                     <div    
                             class="media"
-                            @click.left="onClickItem($event, item, index)"
-                            @click.right="onRightClickItem($event, item, index)">
+                            @click.left="onClickItem($event, item)"
+                            @click.right="onRightClickItem($event, item)">
                         <div 
                                 :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)) + ')' }"
                                 class="card-thumbnail">
@@ -515,7 +517,7 @@
                         role="listitem"
                         :key="index"
                         v-for="(item, index) of items"
-                        :class="{ 'selected-record': selectedItems[index] }"
+                        :class="{ 'selected-record': getSelectedItemChecked(item.id) == true }"
                         class="tainacan-record">
                     
                     <!-- Checkbox -->
@@ -529,7 +531,8 @@
                                 class="b-checkbox checkbox is-small">
                             <input
                                     type="checkbox"
-                                    v-model="selectedItems[index]">
+                                    :value="getSelectedItemChecked(item.id)"
+                                    @input="setSelectedItemChecked(item.id)">
                                 <span class="check" />
                                 <span class="control-label" />
                         </label>
@@ -553,8 +556,8 @@
                                 v-for="(column, columnIndex) in tableMetadata"
                                 :key="columnIndex"
                                 v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                @click.left="onClickItem($event, item, index)"
-                                @click.right="onRightClickItem($event, item, index)"
+                                @click.left="onClickItem($event, item)"
+                                @click.right="onRightClickItem($event, item)"
                                 v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />  
                         <p 
                                 v-tooltip="{
@@ -570,8 +573,8 @@
                                 v-for="(column, columnIndex) in tableMetadata"
                                 :key="columnIndex"
                                 v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                @click.left="onClickItem($event, item, index)"
-                                @click.right="onRightClickItem($event, item, index)"
+                                @click.left="onClickItem($event, item)"
+                                @click.right="onRightClickItem($event, item)"
                                 v-html="item.title != undefined ? item.title : ''" />                             
                     </div>
                     <!-- Actions -->
@@ -630,8 +633,8 @@
                     <!-- Remaining metadata -->  
                     <div    
                             class="media"
-                            @click.left="onClickItem($event, item, index)"
-                            @click.right="onRightClickItem($event, item, index)">
+                            @click.left="onClickItem($event, item)"
+                            @click.right="onRightClickItem($event, item)">
                         <div class="list-metadata media-body">
                             <div class="tainacan-record-thumbnail">
                                 <img 
@@ -670,10 +673,10 @@
                             </span>
                         </div>
                     </div>
-               
+            
                 </div>
             </masonry>
-            
+
             <!-- TABLE VIEW MODE -->
             <table 
                     v-if="viewMode == 'table'"
@@ -712,7 +715,10 @@
                 </thead>
                 <tbody>
                     <tr     
-                            :class="{ 'selected-row': selectedItems[index] }"
+                            :class="{ 
+                                'selected-row': getSelectedItemChecked(item.id) == true,   
+                                'highlighted-item': highlightedItem == item.id  
+                            }"
                             :key="index"
                             v-for="(item, index) of items">
                         <!-- Checking list -->
@@ -723,7 +729,8 @@
                                 class="checkbox-cell">
                             <b-checkbox 
                                     size="is-small"
-                                    v-model="selectedItems[index]"/> 
+                                    :value="getSelectedItemChecked(item.id)"
+                                    @input="setSelectedItemChecked(item.id)"/>
                         </td>
 
                         <!-- Item Displayed Metadata -->
@@ -745,8 +752,8 @@
                                                                                                             column.metadata_type_object.primitive_type == 'compound') : false,
                                         'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' || column.metadata_type_object.related_mapped_prop == 'description') : false,
                                 }"
-                                @click.left="onClickItem($event, item, index)"
-                                @click.right="onRightClickItem($event, item, index)">
+                                @click.left="onClickItem($event, item)"
+                                @click.right="onRightClickItem($event, item)">
 
                             <p
                                     v-tooltip="{
@@ -900,6 +907,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import CustomDialog from '../other/custom-dialog.vue';
+import ItemCopyDialog from '../other/item-copy-dialog.vue';
 import BulkEditionModal from '../bulk-edition/bulk-edition-modal.vue';
 import { dateInter } from "../../../admin/js/mixins";
 
@@ -907,16 +915,11 @@ export default {
     name: 'ItemsList',
     data(){
         return {
-            allItemsOnPageSelected: false,
             isAllItemsSelected: false,
-            isSelectingItems: false,
-            selectedItems: [],
-            selectedItemsIDs: [],
             queryAllItemsSelected: {},
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
             cursorPosX: -1,
             cursorPosY: -1,
-            contextMenuIndex: null,
             contextMenuItem: null,
             enableSelectAllItemsPages: tainacan_plugin.enable_select_all_items_pages
         }
@@ -932,37 +935,51 @@ export default {
         viewMode: 'card'
     },
     mounted() {
-        this.selectedItems = [];
-        this.selectedItemsIDs = [];
+        this.cleanSelectedItems();
 
-        for (let i = 0; i < this.items.length; i++) {
-            this.selectedItemsIDs.push(false);
-            this.selectedItems.push(false);
+        if (this.highlightsItem)
+            setTimeout(() => this.$eventBusSearch.highlightsItem(null), 3000);
+    },
+    computed: {
+        highlightedItem () {
+            return this.getHighlightedItem();
+        },
+        selectedItemsFromStore() {
+            return this.getSelectedItems();
+        },
+        selectedItems () {
+            if (this.$route.query.iframemode)
+                this.$eventBusSearch.setSelectedItemsForIframe(this.getSelectedItems());
+            
+            return this.getSelectedItems();
+        },
+        isSelectingItems () {
+            return this.selectedItems.length > 0;
+        },
+        allItemsOnPageSelected() {
+            for (var i = 0; i < this.items.length; i++){
+                if (this.selectedItems.indexOf(this.items[i].id) === -1)
+                    return false;
+            }
+            return true;
         }
     },
     watch: {
-        selectedItems() {
-            let allSelected = true;
-            let isSelecting = false;
+        isAllItemsSelected(value) {
 
-            allSelected = !this.selectedItems.some(item => item === false);
-
-            this.selectedItems.map((item, index) => {
-                if(item === false){
-                    this.selectedItemsIDs.splice(index, 1, false);
-                    this.queryAllItemsSelected = {};
-                } else if(item === true) {
-                    isSelecting = true;
-                    this.selectedItemsIDs.splice(index, 1, this.items[index].id);
-                }
-            });
-
-            if (!allSelected)
-                this.isAllItemsSelected = allSelected;
-            
-            this.allItemsOnPageSelected = allSelected;
-            this.isSelectingItems = isSelecting;
+            if (!value) {
+                this.cleanSelectedItems();
+                this.queryAllItemsSelected = {};
+            } else {
+                this.queryAllItemsSelected = this.$route.query;
+                for (let item of this.items)
+                    this.addSelectedItem(item.id);
+            }
         },
+        allItemsOnPageSelected(value) {
+            if (!value)
+                this.queryAllItemsSelected = {};
+        }
     },
     methods: {
         ...mapActions('collection', [
@@ -972,27 +989,43 @@ export default {
             'createEditGroup',
             'trashItemsInBulk',
             'deleteItemsInBulk',
-            'untrashItemsInBulk',
+            'untrashItemsInBulk'
         ]),
         ...mapGetters('bulkedition', [
             'getGroupID'
         ]),
         ...mapActions('item', [
-            'fetchItem',
-            'duplicateItem'
+            'fetchItem'
+        ]),
+        ...mapActions('search', [
+            'setSeletecItems',
+            'cleanSelectedItems',
+            'addSelectedItem',
+            'removeSelectedItem'
         ]),
         ...mapGetters('search', [
             'getOrder',
-            'getOrderBy'
+            'getOrderBy',
+            'getSelectedItems',
+            'getHighlightedItem'
         ]),
+        setSelectedItemChecked(itemId) {
+            if (this.selectedItems.find((item) => item == itemId) != undefined)
+                this.removeSelectedItem(itemId);
+            else
+                this.addSelectedItem(itemId);
+        },
+        getSelectedItemChecked(itemId) {
+            return this.selectedItems.find(item => item == itemId) != undefined;
+        },
         openBulkEditionModal(){
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: BulkEditionModal,
                 props: {
                     modalTitle: this.$i18n.get('info_editing_items_in_bulk'),
-                    totalItems: Object.keys(this.queryAllItemsSelected).length ? this.totalItems : this.selectedItemsIDs.filter(item => item !== false).length,
-                    selectedForBulk: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItemsIDs.filter(item => item !== false),
+                    totalItems: Object.keys(this.queryAllItemsSelected).length ? this.totalItems : this.selectedItems.length,
+                    selectedForBulk: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItems,
                     objectType: this.$i18n.get('items'),
                     collectionID: this.$route.params.collectionId,
                 },
@@ -1001,7 +1034,7 @@ export default {
         },
         sequenceEditSelectedItems() {
             this.createEditGroup({
-                object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItemsIDs.filter(item => item !== false),
+                object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItems,
                 collectionID: this.collectionId,
                 order: this.getOrder(),
                 orderBy: this.getOrderBy()
@@ -1011,34 +1044,37 @@ export default {
             });
         },
         selectAllItemsOnPage() {
-            for (let i = 0; i < this.selectedItems.length; i++) {
-                this.selectedItems.splice(i, 1, !this.allItemsOnPageSelected);
-            }
-            if (!this.allItemsOnPageSelected)
-                this.queryAllItemsSelected = {};
-        },
-        selectAllItems(){
-            this.isAllItemsSelected = !this.isAllItemsSelected;
-            this.queryAllItemsSelected = this.$route.query;
+            this.isAllItemsSelected = false;
 
-            for (let i = 0; i < this.selectedItems.length; i++) {
-                this.selectedItems.splice(i, 1, this.isAllItemsSelected);
+            if (this.allItemsOnPageSelected)
+                this.cleanSelectedItems();
+            else {
+                for (let item of this.items)
+                    this.addSelectedItem(item.id);
             }
         },
-        duplicateOneItem(itemId) {
-            this.fetchItem({ itemId: itemId, contextEdit: true })
-                .then((item) => {
-                    this.duplicateItem({ item: item })
-                        .then((duplicatedItem) => {
-                            this.$console.log(duplicatedItem);
-                        })
-                        .catch((error) => this.$console.error(error));
-                })
-                .catch(error => this.$console.error("Error fetching item for duplicate: " + error));    
+        makeCopiesOfOneItem(itemId) {
+                         
+            this.$buefy.modal.open({
+                parent: this,
+                component: ItemCopyDialog,
+                canCancel: false,
+                props: {
+                    icon: 'items',
+                    collectionId: this.collectionId,
+                    itemId: itemId,
+                    onConfirm: (newItems) => {
+                        if (newItems != null && newItems != undefined && newItems.length > 0) {
+                            this.$eventBusSearch.loadItems();
+                        }
+                    }
+                }
+            });
+
             this.clearContextMenu();
         },
         untrashOneItem(itemId) {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
@@ -1067,7 +1103,7 @@ export default {
             });
         },
         deleteOneItem(itemId) {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
@@ -1090,7 +1126,7 @@ export default {
             this.clearContextMenu();
         },
         untrashSelectedItems(){
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
@@ -1103,7 +1139,7 @@ export default {
 
                         this.createEditGroup({
                             collectionID: this.collectionId,
-                            object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItemsIDs.filter(item => item !== false)
+                            object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItems
                         }).then(() => {
                             let groupID = this.getGroupID();
 
@@ -1119,7 +1155,7 @@ export default {
             });
         },
         deleteSelectedItems() {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
@@ -1132,7 +1168,7 @@ export default {
 
                         this.createEditGroup({
                             collectionID: this.collectionId,
-                            object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItemsIDs.filter(item => item !== false)
+                            object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItems
                         }).then(() => {
                             let groupID = this.getGroupID();
 
@@ -1170,20 +1206,20 @@ export default {
             this.clearContextMenu();
         },
         selectItem() {
-            if (this.contextMenuIndex != null) {
-                this.$set(this.selectedItems, this.contextMenuIndex, !this.selectedItems[this.contextMenuIndex]);
+            if (this.contextMenuItem != null) {
+                this.setSelectedItemChecked(this.contextMenuItem.id);
             }
             this.clearContextMenu();
         },
-        onClickItem($event, item, index) {
+        onClickItem($event, item) {
             if ($event.ctrlKey || $event.shiftKey) {
-                this.$set(this.selectedItems, index, !this.selectedItems[index]);
+                this.setSelectedItemChecked(item.id);
             } else {
-                if (!this.$route.query.iframemode && this.$route.query.iframemode) {
-                    this.$set(this.selectedItems, index, !this.selectedItems[index]);
+                if (this.$route.query.iframemode && !this.$route.query.readmode) {
+                    this.setSelectedItemChecked(item.id)
                 } else if (!this.$route.query.iframemode && !this.$route.query.readmode) {
                     if(this.isOnTrash){
-                        this.$toast.open({
+                        this.$buefy.toast.open({
                             duration: 3000,
                             message: this.$i18n.get('info_warning_remove_from_trash_first'),
                             position: 'is-bottom',
@@ -1195,21 +1231,19 @@ export default {
                 }
             }
         },
-        onRightClickItem($event, item, index) {
+        onRightClickItem($event, item) {
             if (!this.$route.query.readmode) {
                 $event.preventDefault();
 
                 this.cursorPosX = $event.clientX;
                 this.cursorPosY = $event.clientY;
                 this.contextMenuItem = item;
-                this.contextMenuIndex = index;
             }
         },
         clearContextMenu() {
             this.cursorPosX = -1;
             this.cursorPosY = -1;
             this.contextMenuItem = null;
-            this.contextMenuIndex = null;
         },
         goToItemEditPage(item) {
             this.$router.push(this.$routerHelper.getItemEditPath(item.collection_id, item.id));

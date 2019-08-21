@@ -23,7 +23,9 @@ const state = {
     totalPages: 0,
     itemsPerPage: 12, // Not the same as postquery.perpage as API may have limited it's value
     facets: {},
-    orderByName: ''
+    orderByName: '',
+    selecteditems: [],
+    highlightedItem: null
 };
 
 export default {

@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, ColorPicker, ColorPalette, BaseControl, Panel, PanelBody, PanelRow } = wp.components;
+const { RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -12,7 +12,7 @@ import axios from 'axios';
 import qs from 'qs';
 
 registerBlockType('tainacan/dynamic-items-list', {
-    title: __('Tainacan Collection\'s items List', 'tainacan'),
+    title: __('Tainacan Collection\'s Items List', 'tainacan'),
     icon:
         <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -140,7 +140,6 @@ registerBlockType('tainacan/dynamic-items-list', {
             showCollectionHeader,
             showCollectionLabel,
             isLoadingCollection,
-            collection,
             collectionBackgroundColor,
             collectionTextColor
         } = attributes;
@@ -429,7 +428,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                             <div>
                                 <RangeControl
                                     label={__('Maximum number of items', 'tainacan')}
-                                    value={ maxItemsNumber }
+                                    value={ maxItemsNumber ? maxItemsNumber : 12 }
                                     onChange={ ( aMaxItemsNumber ) => {
                                         maxItemsNumber = aMaxItemsNumber;
                                         setAttributes( { maxItemsNumber: aMaxItemsNumber } ) 

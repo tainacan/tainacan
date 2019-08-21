@@ -166,3 +166,23 @@ export const cleanTaxQueries = ({ commit }) => {
 export const cleanFetchOnly = ({ commit }) => {
     commit('cleanFetchOnly');
 };
+
+export const setSelectedItems = ({ commit }, selectedItems ) => {
+    commit('setSelectedItems', selectedItems);
+};
+
+export const addSelectedItem = ({ commit }, selectedItem ) => {
+    commit('addSelectedItem', selectedItem);
+};
+
+export const cleanSelectedItems = ({ commit }) => {
+    commit('cleanSelectedItems');
+};
+
+export const removeSelectedItem = ({ commit }, selectedItem ) => {
+    commit('removeSelectedItem', selectedItem);
+};
+
+export const highlightsItem = ({ commit }, itemId ) => {
+    commit('setHighlightedItem', itemId);
+};

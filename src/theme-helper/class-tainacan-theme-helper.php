@@ -27,7 +27,7 @@ class Theme_Helper {
 
 		add_filter( 'the_content', [$this, 'the_content_filter'] );
 		
-		
+
 		// Replace collections permalink to post type archive if cover not enabled
 		add_filter('post_type_link', array($this, 'permalink_filter'), 10, 3);
 

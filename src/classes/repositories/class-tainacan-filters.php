@@ -27,7 +27,7 @@ class Filters extends Repository {
 		add_action( 'tainacan-deleted-tainacan-metadatum', array( &$this, 'hook_delete_when_metadata_deleted' ), 10, 2 );
 	}
 
-	public function get_map() {
+	protected function _get_map() {
 		return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
 			'name'                => [
 				'map'         => 'post_title',

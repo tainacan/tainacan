@@ -418,7 +418,7 @@ export default {
             return last > this.totalCollections ? this.totalCollections : last;
         },
         onOpenImportersModal() {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: AvailableImportersModal,
                 hasModalCard: true

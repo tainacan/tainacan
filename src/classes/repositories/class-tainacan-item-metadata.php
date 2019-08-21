@@ -175,8 +175,16 @@ class Item_Metadata extends Repository {
 				// $success = wp_set_object_terms( $item_metadata->get_item()->get_id(), $new_terms, $taxonomy->get_db_identifier() );
 				
 				$insert = [];
-				foreach ( (array) $new_terms as $new_term ) {
-					$exists = Terms::get_instance()->term_exists($new_term, $taxonomy, null, true);
+				if ( !is_array($new_terms) ) {
+					$new_terms = [ $new_terms ];
+				}
+				foreach ( $new_terms as $new_term ) {
+					if ( \is_object($new_term) && $new_term instanceof Entities\Term ) {
+						$exists = $new_term->WP_Term;
+					} else {
+						$exists = Terms::get_instance()->term_exists($new_term, $taxonomy, null, true);
+					}
+					
 					if ( $exists ) {
 						$insert[] = $exists->term_id;
 					} else {
@@ -405,7 +413,7 @@ class Item_Metadata extends Repository {
 	public function register_post_type() {
 	}
 
-	public function get_map() {
+	protected function _get_map() {
 		return [];
 	}
 

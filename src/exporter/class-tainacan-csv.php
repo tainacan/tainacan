@@ -21,6 +21,10 @@ class CSV extends Exporter {
 	public function filter_multivalue_separator($separator) {
 		return $this->get_option('multivalued_delimiter');
 	}
+	
+	public function filter_hierarchy_separator($separator) {
+		return '>>';
+	}
 
 	public function process_item( $item, $metadata ) {
 		
@@ -28,7 +32,8 @@ class CSV extends Exporter {
 		
 		$line[] = $item->get_id();
 		
-		add_filter('tainacan-item-metadata-get-multivalue-separator', [$this, 'filter_multivalue_separator']);
+		add_filter('tainacan-item-metadata-get-multivalue-separator', [$this, 'filter_multivalue_separator'], 20);
+		add_filter('tainacan-terms-hierarchy-html-separator', [$this, 'filter_hierarchy_separator'], 20);
 		
 		foreach ($metadata as $meta_key => $meta) {
 			
@@ -38,12 +43,16 @@ class CSV extends Exporter {
 				$line[] = '';
 				continue;
 			}
-			
-			$line[] = $meta->get_value_as_string();
+
+			if ($meta->get_metadatum()->get_metadata_type() == 'Tainacan\Metadata_Types\Relationship')
+				$line[] = $meta->get_value();
+			else
+				$line[] = $meta->get_value_as_string();
 			
 		}
 		
 		remove_filter('tainacan-item-metadata-get-multivalue-separator', [$this, 'filter_multivalue_separator']);
+		remove_filter('tainacan-terms-hierarchy-html-separator', [$this, 'filter_hierarchy_separator']);
 		
 		
 		$line[] = $item->get_status();
@@ -80,7 +89,7 @@ class CSV extends Exporter {
 		$attachments = $item->get_attachments();
 		
 		$attachments_urls = array_map(function($a) {
-			if (isset($a['url'])) return $a['url'];
+			if (isset($a->guid)) return $a->guid;
 		}, $attachments);
 		
 		return implode( $this->get_option('multivalued_delimiter'), $attachments_urls );

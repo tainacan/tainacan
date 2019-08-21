@@ -1846,29 +1846,27 @@ var PDFViewerApplication = {
     _boundEvents.windowAfterPrint = null;
   }
 };
-var validateFileURL = void 0;
+var validateViewerURL = void 0;
 {
-  var HOSTED_VIEWER_ORIGINS = ['null', 'http://mozilla.github.io', 'https://mozilla.github.io'];
-  validateFileURL = function validateFileURL(file) {
+  validateViewerURL = function validateViewerURL(file) {
     if (file === undefined) {
       return;
     }
-    try {
-      var viewerOrigin = new URL(window.location.href).origin || 'null';
-      if (HOSTED_VIEWER_ORIGINS.indexOf(viewerOrigin) >= 0) {
-        return;
-      }
-      var fileOrigin = new URL(file, window.location.href).origin;
-      if (fileOrigin !== viewerOrigin) {
-        throw new Error('file origin does not match viewer\'s');
-      }
-    } catch (ex) {
-      var message = ex && ex.message;
-      PDFViewerApplication.l10n.get('loading_error', null, 'An error occurred while loading the PDF.').then(function (loadingErrorMessage) {
-        PDFViewerApplication.error(loadingErrorMessage, { message: message });
-      });
-      throw ex;
+    if (window.self != window.top) {
+        // iframe 
+        var viewerOrigin = window.location.hostname;
+        try {
+            // if parent is in a different domain, it will trigger an error
+            var parentOrigin = window.parent.location.hostname;
+        } catch (e) {
+            var message = 'parent origin does not match viewer\'s';
+            PDFViewerApplication.l10n.get('loading_error', null, 'An error occurred while loading the PDF.').then(function (loadingErrorMessage) {
+              PDFViewerApplication.error(loadingErrorMessage, { message: message });
+            });
+            throw e;
+        }
     }
+    
   };
 }
 function loadAndEnablePDFBug(enabledTabs) {
@@ -1896,7 +1894,7 @@ function webViewerInitialized() {
   var queryString = document.location.search.substring(1);
   var params = (0, _ui_utils.parseQueryString)(queryString);
   file = 'file' in params ? params.file : appConfig.defaultUrl;
-  validateFileURL(file);
+  validateViewerURL(file);
   var waitForBeforeOpening = [];
   var fileInput = document.createElement('input');
   fileInput.id = appConfig.openFileInputName;

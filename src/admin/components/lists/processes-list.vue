@@ -357,7 +357,7 @@
                     this.selected.splice(i, 1, !this.allOnPageSelected);
             },
             deleteOneProcess(processId) {
-                this.$modal.open({
+                this.$buefy.modal.open({
                     parent: this,
                     component: CustomDialog,
                     props: {
@@ -367,7 +367,7 @@
                         onConfirm: () => {
                             this.deleteProcess({ processId: processId })
                                 .then(() => {
-                                    // this.$toast.open({
+                                    // this.$buefy.toast.open({
                                     //     duration: 3000,
                                     //     message: this.$i18n.get('info_taxonomy_deleted'),
                                     //     position: 'is-bottom',
@@ -380,7 +380,7 @@
                                     }
                                 })
                                 .catch(() => {
-                                    // this.$toast.open({
+                                    // this.$buefy.toast.open({
                                     //     duration: 3000,
                                     //     message: this.$i18n.get('info_error_deleting_taxonomy'),
                                     //     position: 'is-bottom',
@@ -393,7 +393,7 @@
                 });
             },
             deleteSelected() {
-                this.$modal.open({
+                this.$buefy.modal.open({
                     parent: this,
                     component: CustomDialog,
                     props: {
@@ -407,7 +407,7 @@
                                     this.deleteTaxonomy({ processId: this.processes[i].id })
                                         .then(() => {
                                             // this.load();
-                                            // this.$toast.open({
+                                            // this.$buefy.toast.open({
                                             //     duration: 3000,
                                             //     message: this.$i18n.get('info_taxonomy_deleted'),
                                             //     position: 'is-bottom',
@@ -415,7 +415,7 @@
                                             //     queue: false
                                             // })
                                         }).catch(() => {
-                                        // this.$toast.open({
+                                        // this.$buefy.toast.open({
                                         //     duration: 3000,
                                         //     message: this.$i18n.get('info_error_deleting_taxonomy'),
                                         //     position: 'is-bottom',
@@ -441,7 +441,7 @@
             },
             pauseProcess(index) {
 
-                this.$modal.open({
+                this.$buefy.modal.open({
                     parent: this,
                     component: CustomDialog,
                     props: {
@@ -525,7 +525,7 @@
 
     .highlighted-process {
         &>.process-handler {
-            transition: background-color 0.5s; 
+            transition: background-color 0.8s; 
             animation-name: highlight;
             animation-duration: 1s;
             animation-iteration-count: 2; 

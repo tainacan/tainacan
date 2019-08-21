@@ -134,18 +134,14 @@ export const updateItem = ({ commit }, item) => {
     }); 
 };
  
-export const duplicateItem = ({ commit }, { item, attachment }) => {
-    delete item['id'];
-    
-    if (item['terms'] == null)
-        item['terms'] = [];
+export const duplicateItem = ({ commit }, { collectionId, itemId, copies }) => {
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.post('/collection/' + item.collection_id + '/items/', item)
+        axios.tainacan.post('/collection/' + collectionId + '/items/' + itemId + '/duplicate', { copies: new Number(copies) })
             .then( res => {
-                resolve( res.data );
+                resolve( res.data.items );
             }).catch( error => { 
-                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+                reject(error);
             });
 
     }); 
@@ -206,14 +202,23 @@ export const removeAttachmentFromItem = ( { commit }, attachmentId) => {
     });
 };
 
-export const fetchAttachments = ({ commit }, item_id) => {
+export const fetchAttachments = ({ commit }, { page, attachmentsPerPage, itemId, documentId }) => {
     commit('cleanAttachments');
+    commit('setTotalAttachments', null);
+
     return new Promise((resolve, reject) => {
-        axios.wp.get('/media/?parent=' + item_id + '&per_page=100&paged=1')
+        axios.wp.get('/media/?parent=' + itemId + '&per_page=' + attachmentsPerPage + '&page=' + page)
         .then(res => {
-            let attachments = res.data;
+            let attachments = res.data.filter((attachment) => attachment.id != documentId);
+            let total = documentId && res.headers['x-wp-total'] > 0 ? res.headers['x-wp-total'] - 1 : res.headers['x-wp-total'];
+
             commit('setAttachments', attachments);
-            resolve( attachments );
+            commit('setTotalAttachments', total);
+
+            resolve( {
+                attachments: attachments,
+                total: total
+            });
         })
         .catch(error => {
             reject( error );

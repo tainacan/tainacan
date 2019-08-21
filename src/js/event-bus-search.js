@@ -303,6 +303,25 @@ export default {
                     this.$store.dispatch('search/setAdminViewMode', adminViewMode);
                     this.updateURLQueries();  
                 },
+                setSelectedItemsForIframe(selectedItems) {
+                    this.$store.dispatch('search/setSelectedItems', selectedItems);    
+ 
+                    let currentSelectedItems = this.$store.getters['search/getSelectedItems'];
+
+                    if (window.history.pushState) {
+                        let searchParams = new URLSearchParams(window.location.search);
+                        searchParams.delete('selecteditems');
+                        for (let selectedItem of currentSelectedItems)
+                            searchParams.append('selecteditems', selectedItem);
+
+                        let newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + searchParams.toString() + window.location.hash;
+                        window.history.pushState({path: newurl}, '', newurl);
+                    }      
+                },
+                highlightsItem(itemId) {
+                    this.$store.dispatch('search/highlightsItem', itemId);
+                    this.updateURLQueries();
+                },
                 updateURLQueries() {
                     this.$router.replace({ query: {} });
                     this.$router.replace({ query: this.$store.getters['search/getPostQuery'] });

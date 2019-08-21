@@ -220,7 +220,7 @@ class Taxonomy extends Metadata_Type {
 				if ( $term instanceof \Tainacan\Entities\Term ) {
 					$return .= $prefix;
 					
-					$return .= $term->_toHtml();
+					$return .= $this->get_term_hierarchy_html($term);
 					
 					$return .= $suffix;
 					
@@ -244,6 +244,25 @@ class Taxonomy extends Metadata_Type {
 		
 	}
 	
+	private function get_term_hierarchy_html( \Tainacan\Entities\Term $term ) {
+		
+		$terms = [];
+		
+		$terms[] = $term->_toHtml();
+		
+		while ($term->get_parent() > 0) {
+			$term = \Tainacan\Repositories\Terms::get_instance()->fetch( (int) $term->get_parent(), $term->get_taxonomy() );
+			$terms[] = $term->_toHtml();
+		}
+		
+		$terms = \array_reverse($terms);
+		
+		$glue = apply_filters('tainacan-terms-hierarchy-html-separator', '<span class="hierarchy-separator"> > </span>');
+		
+		return \implode($glue, $terms);
+		
+	}
+	
 	public function _toArray() {
 		
 		$array = parent::_toArray();
@@ -253,6 +272,25 @@ class Taxonomy extends Metadata_Type {
 		}
 		
 		return $array;
+		
+	}
+	
+	/**
+	 * Get related taxonomy object 
+	 * @return \Tainacan\Entities\Taxonomy|false The Taxonomy object or false
+	 */
+	public function get_taxonomy() {
+		
+		$taxonomy_id = $this->get_option('taxonomy_id');
+		
+		if ( is_numeric($taxonomy_id) ) {
+			$taxonomy = \Tainacan\Repositories\Taxonomies::get_instance()->fetch( (int) $taxonomy_id );
+			if ( $taxonomy instanceof \Tainacan\Entities\Taxonomy ) {
+				return $taxonomy;
+			}
+		}
+		
+		return false;
 		
 	}
 	

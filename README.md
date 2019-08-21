@@ -2,7 +2,7 @@
 
 # Tainacan
 - Tainacan's [plugin](https://wordpress.org/plugins/tainacan/) and [theme](https://wordpress.org/themes/tainacan-interface/) on WordPress.org
-- [Access our homepage](http://tainacan.org)
+- [Access our website](http://tainacan.org)
 - [Read our official documentation](https://wiki.tainacan.org/)
 - [Explore our blog](http://tainacan.org/blog/)
 - [Join our mailing list](https://lists.riseup.net/www/info/tainacan)
@@ -42,7 +42,7 @@ In addition to [our documentation](https://wiki.tainacan.org/) and [instructiona
 
 ### Developers 
 
-Please refer to our [Developers Documentation](docs/index.md) if you want to develop tainacan plugins, themes or if you want to contribute to the core.
+Please refer to our [Developers Documentation](https://tainacan.github.io/tainacan-wiki/#/dev/) if you want to develop tainacan plugins, themes or if you want to contribute to the core.
 
 ### Contributing
 Tainacan is a free, open source software licensed under **GPLv3**. Contributions to the codebase will abide to the same license; other contributions may be under additional or other terms.

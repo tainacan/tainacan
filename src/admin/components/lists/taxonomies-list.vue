@@ -235,7 +235,7 @@
                     this.selected.splice(i, 1, !this.allOnPageSelected);
             },
             deleteOneTaxonomy(taxonomyId) {
-                this.$modal.open({
+                this.$buefy.modal.open({
                     parent: this,
                     component: CustomDialog,
                     props: {
@@ -245,7 +245,7 @@
                         onConfirm: () => {
                             this.deleteTaxonomy({ taxonomyId: taxonomyId, isPermanently: this.isOnTrash })
                                 .then(() => {
-                                    // this.$toast.open({
+                                    // this.$buefy.toast.open({
                                     //     duration: 3000,
                                     //     message: this.$i18n.get('info_taxonomy_deleted'),
                                     //     position: 'is-bottom',
@@ -258,7 +258,7 @@
                                     }
                                 })
                                 .catch(() => {
-                                    // this.$toast.open({
+                                    // this.$buefy.toast.open({
                                     //     duration: 3000,
                                     //     message: this.$i18n.get('info_error_deleting_taxonomy'),
                                     //     position: 'is-bottom',
@@ -271,7 +271,7 @@
                 });
             },
             deleteSelected() {
-                this.$modal.open({
+                this.$buefy.modal.open({
                     parent: this,
                     component: CustomDialog,
                     props: {
@@ -285,7 +285,7 @@
                                     this.deleteTaxonomy({ taxonomyId: this.taxonomies[i].id, isPermanently: this.isOnTrash })
                                         .then(() => {
                                             // this.load();
-                                            // this.$toast.open({
+                                            // this.$buefy.toast.open({
                                             //     duration: 3000,
                                             //     message: this.$i18n.get('info_taxonomy_deleted'),
                                             //     position: 'is-bottom',
@@ -293,7 +293,7 @@
                                             //     queue: false
                                             // })
                                         }).catch(() => {
-                                        // this.$toast.open({
+                                        // this.$buefy.toast.open({
                                         //     duration: 3000,
                                         //     message: this.$i18n.get('info_error_deleting_taxonomy'),
                                         //     position: 'is-bottom',

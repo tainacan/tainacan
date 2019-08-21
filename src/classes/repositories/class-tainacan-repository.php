@@ -27,7 +27,9 @@ abstract class Repository {
 	 *
 	 * @var Repositories\Logs
 	 */
-	protected $logs_repository;
+  protected $logs_repository;
+  
+  private $map = [];
 
 	/**
 	 * Disable creation of logs while inerting and updating entities
@@ -49,8 +51,8 @@ abstract class Repository {
 	 */
 	protected function __construct() {
 		add_action( 'init', array( &$this, 'register_post_type' ) );
-		add_action( 'init', array( &$this, 'init_objects' ) );
-
+    add_action( 'init', array( &$this, 'init_objects' ) );
+    
 		add_filter( 'tainacan-get-map-' . $this->get_name(), array( $this, 'get_default_properties' ) );
 	}
 
@@ -85,7 +87,15 @@ abstract class Repository {
 	 *          'validation' => v::stringType(),
 	 *      ],
 	 */
-	public abstract function get_map();
+  protected abstract function _get_map();
+
+  public function get_map() {
+    if (isset($this->map) && !empty($this->map)) {
+      return $this->map;
+    }
+    $this->map = $this->_get_map();
+    return $this->map;
+  }
 
 	/**
 	 * Return repository name
@@ -693,7 +703,7 @@ abstract class Repository {
 	 * @return boolean
 	 * @throws \Exception
 	 */
-	public function can_read( $entity, $user = null ) {
+	public function can_read( Entities\Entity $entity, $user = null ) {
 
 		if ( is_null( $user ) ) {
 			$user = get_current_user_id();
@@ -707,7 +717,7 @@ abstract class Repository {
 		}
 		$entity     = self::get_entity_by_post( $entity );
 		$entity_cap = $entity->get_capabilities();
-
+		
 		if ( ! isset( $entity_cap->read ) ) {
 			if ( $entity->get_post_type() === false ) { // Allow read of not post entities
 				return true;
@@ -716,7 +726,7 @@ abstract class Repository {
 			return false;
 		}
 
-		return user_can( $user, $entity_cap->read, $entity->get_id() );
+		return user_can( $user, $entity_cap->read_post, $entity->get_id() );
 	}
 
 	/**
