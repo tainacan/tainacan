@@ -1,7 +1,7 @@
 .pagination-area {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: baseline;
     font-size: 0.85em !important;
     font-weight: normal !important;
     border-top: 1px solid $gray3;
@@ -9,6 +9,7 @@
     padding-bottom: 0;
     margin-left: $page-side-padding;
     margin-right: $page-side-padding;
+    margin-bottom: 12px;
     padding-left: 0.75rem;
     padding-right: 0.75rem;
     color: $gray4;
@@ -33,7 +34,7 @@
     
     .items-per-page { 
         flex-grow: 1;
-        margin-top: 0.35em;
+        margin-top: 0.5rem;
 
         @media screen and (max-width: 768px) {
             flex-grow: 2;
@@ -41,28 +42,38 @@
             
             .field { 
                 display: inline-flex; 
-                align-items: baseline;
+                align-items: center;
             }
         }
 
         .field-label {
             flex-grow: 5;
             margin-right: 0.5em;
+            padding-top: 0.3rem;
 
             .label {
                 font-size: 0.85rem !important;
                 font-weight: normal !important;
+                margin-bottom: 0;
                 color: $gray4;
             }
         }
-        select {
-            font-size: 0.85rem;
-            border: none !important;
-        } 
+        .select {
+            select {
+                font-size: 0.85rem;
+                border: none !important;
+            } 
+        }
     }
 
     .pagination { 
         // flex-grow: 1; 
+
+        &.is-small {
+            top: -3px;
+            position: relative;
+            border: none;
+        }
 
         ul {
             margin-bottom: 0px;
@@ -76,10 +87,14 @@
         a[disabled="disabled"] {
             color: $gray4;
         }
+        .pagination-list {
+            flex-wrap: nowrap;
+        }
         .pagination-link, .pagination-previous, .pagination-next {
             background-color: transparent;
             color: $secondary;
             border: none;
+            align-items: inherit;
         }
         .pagination-link:active {
             box-shadow: none;
@@ -114,6 +129,7 @@
         }
         
         @media screen and (max-width: 768px) {
+             &.is-small { top: 0px; }
             .pagination-list { order: 2; }
             .pagination-next { order: 3; }
         }

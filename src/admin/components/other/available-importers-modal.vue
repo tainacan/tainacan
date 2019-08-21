@@ -94,6 +94,7 @@ export default {
             border-bottom: 1px solid $gray2;
             padding: 15px 8.3333333%;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         
             &:first-child {
                 margin-top: 15px;

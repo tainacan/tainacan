@@ -70,6 +70,11 @@
             padding: 15px;
             margin: 20px;
             cursor: pointer;
+            transition: border 0.3s ease;
+
+            &:hover {
+                border: 1px solid $gray3;
+            }
         }
     }
 

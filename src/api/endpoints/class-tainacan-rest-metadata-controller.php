@@ -378,11 +378,26 @@ class REST_Metadata_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function get_items_permissions_check( $request ) {
-		if ( 'edit' === $request['context'] && ! $this->metadatum_repository->can_edit(new Entities\Metadatum()) ) {
-			return false;
+		
+		if(!isset($request['collection_id'])) {
+			if ( 'edit' === $request['context'] && ! $this->metadatum_repository->can_edit( new Entities\Metadatum() ) ) {
+				return false;
+			}
+
+			return true;
 		}
 
-		return true;
+		$collection = $this->collection_repository->fetch($request['collection_id']);
+
+		if($collection instanceof Entities\Collection){
+			if ( 'edit' === $request['context'] && ! $collection->can_read() ) {
+				return false;
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

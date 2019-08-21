@@ -10,7 +10,7 @@
     .tainacan-search-container {
         width: 100%;
 
-        form#taincan-search-bar-block {
+        #taincan-search-bar-block {
             height: 32px;
             max-width: 100%;
             display: flex;
@@ -60,11 +60,30 @@
                     }
                 }
             }
+
+            @media only screen and (max-width: 768px) {
+                margin-left: 0px;
+                margin-right: 0px;
+                max-width: 100% !important;
+                
+                input#taincan-search-bar-block_input  {
+                    width: 100% !important;
+                }
+            } 
+        }
+    }
+    .search-bar-collection-header-container {
+        @media only screen and (max-width: 768px) {
+            flex-wrap: wrap !important;
+
+            .search-bar-collection-header-title {
+                text-align: center !important;
+            }
         }
     }
 
     &.is-style-alternate {
-        form#taincan-search-bar-block {
+        #taincan-search-bar-block {
             width: 100%;
             display: flex;
             flex-direction: row-reverse;
@@ -123,59 +142,53 @@
             }
 
             @media only screen and (max-width: 768px) {
-                flex-wrap: wrap;
+                margin-left: 0px;
+                margin-right: 0px;
+                max-width: 100% !important;
 
-                .search-button {
-                    order: 4;
-                    position: absolute;
-                    margin-top: 37px;
-                }
-                input {
+                input#taincan-search-bar-block_input  {
                     width: 100% !important;
-                    order: 5;
-                    margin-top: 8px;
-                    margin-left: 0px !important;
-                    padding-left: 4px !important;
-                    border-color: #dbdbdb !important;
                 }
             } 
         }
 
         // This style has particular alignments properties.
         .search-bar-collection-header-container {
-            .tainacan-search-container form#taincan-search-bar-block {
-                &:focus,
-                &:active,
-                &:hover {
-                    input,
-                    input::placeholder { 
-                        color: #454647; 
-                        border-width: 0;
+            .tainacan-search-container {
+                #taincan-search-bar-block {
+                    &:focus,
+                    &:active,
+                    &:hover {
+                        input,
+                        input::placeholder { 
+                            color: #454647; 
+                            border-width: 0;
+                        }
+                        button .icon {
+                            svg { 
+                                fill: #cbcbcb !important; 
+                            }
+                        }
+                    }
+
+                    input#taincan-search-bar-block_input {
+                        color: white;
+                        &::placeholder { color: white; }
+
+                        &:focus,
+                        &:active,
+                        &:hover,
+                        &:focus::placeholder,
+                        &:active::placeholder,
+                        &:hover::placeholder {
+                            color: #454647;
+                        }
+
                     }
                     button .icon {
                         svg { 
-                            fill: #cbcbcb !important; 
+                            fill: #dbdbdb !important; 
                         }
-                    }
-                }
-
-                input#taincan-search-bar-block_input {
-                    color: white;
-                    &::placeholder { color: white; }
-
-                    &:focus,
-                    &:active,
-                    &:hover,
-                    &:focus::placeholder,
-                    &:active::placeholder,
-                    &:hover::placeholder {
-                        color: #454647;
-                    }
-
-                }
-                button .icon {
-                    svg { 
-                        fill: #dbdbdb !important; 
                     }
                 }
             }
@@ -183,7 +196,7 @@
     }
 
     &.is-style-stylish {
-        form#taincan-search-bar-block {
+        #taincan-search-bar-block {
             width: 100%;
             height: 53px;
             display: flex;
@@ -246,21 +259,7 @@
             }
 
             @media only screen and (max-width: 768px) {
-                flex-wrap: wrap;
 
-                .search-button {
-                    order: 4;
-                    position: absolute;
-                    margin-top: 37px;
-                }
-                input {
-                    width: 100% !important;
-                    order: 5;
-                    margin-top: 8px;
-                    margin-left: 0px !important;
-                    padding-left: 4px !important;
-                    border-color: #dbdbdb !important;
-                }
             } 
             
         }
@@ -300,7 +299,7 @@
                 }
             }
 
-            .tainacan-search-container form#taincan-search-bar-block input#taincan-search-bar-block_input {
+            .tainacan-search-container #taincan-search-bar-block input#taincan-search-bar-block_input {
                 background: white;
                 border-width: 3px;
                 border-style: solid;
@@ -310,6 +309,21 @@
 
                 &:hover {
                     border-width: 3px !important;
+                }
+            }
+
+            @media only screen and (max-width: 768px) { 
+                .tainacan-search-container {
+                    width: calc(100% - 4.1667% - 53px) !important;
+                    width: calc(100% - 4.1667vw - 53px) !important;
+                    bottom: calc(-50% + 38px) !important;
+                    position: absolute !important;
+                }
+                &.is-aligned-right,
+                &.is-aligned-left {
+                    .search-bar-collection-header-title {
+                        margin-bottom: 0px !important;
+                    }
                 }
             }
         }
@@ -379,10 +393,11 @@
                 font-size: 1rem;
             }
         }
-        
 
         @media only screen and (max-width: 1024px) { 
-            .search-bar-collection-header-title { margin-bottom: 1rem; }
+            .search-bar-collection-header-title { 
+                margin-bottom: 1rem; 
+            }
         }
     }
 }

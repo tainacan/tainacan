@@ -91,6 +91,7 @@
             display: flex;
             justify-content: space-between;
             flex-wrap: nowrap;
+            transition: background-color 0.3s ease;
             
             li {
                 text-align: center;
@@ -100,6 +101,7 @@
                     padding: 0.5em 0.5em;
                     border-radius: 0;
                     transition: none;
+                    transition: background-color 0.3s ease;
                 }
             }
         }

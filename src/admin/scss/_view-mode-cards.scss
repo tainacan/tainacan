@@ -30,6 +30,7 @@
         max-height: 210px;
         cursor: pointer;
         text-decoration: none !important;
+        transition: background-color 0.2s ease;
 
         @media screen and (max-width: 480px) {
             max-width: 100%;
@@ -63,18 +64,28 @@
         .actions-area {
             position: relative;
             float: right;
-            top: -7px;
+            top: -25px;
             padding-right: 12px;
-            //width: 80px;
             display: flex;
             justify-content: space-between;
             visibility: hidden;
             opacity: 0;
-            transition: visibility 0.2s, opacity 0.2s;
+            transition: visibility 0.2s ease, opacity 0.3s ease, top 0.2s ease;
+
+            a {
+                opacity: 0;
+                margin-left: 12px;
+                transition: opacity 0.3s ease;
+            }
         }
         &:hover .actions-area {
             visibility: visible;
             opacity: 1.0;
+            top: -7px;
+
+            a {
+                opacity: 1;
+            }
         }
 
         .card-line {
@@ -108,14 +119,16 @@
         }
         .metadata-title {
             flex-shrink: 0;
-            padding: 0.6rem 4.75rem 0.5rem 2.75rem;
-            margin-bottom: -25px;
+            padding: 0.6rem 5rem 0.5rem 2.75rem;
+            margin-bottom: -26px;
             min-height: 40px;
             font-size: 0.875rem !important; 
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
             color: black !important;
+            transition: background-color 0.3s ease;
+
             p {
                 color: black !important;
                 font-size: 0.875rem !important; 

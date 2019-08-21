@@ -1,5 +1,4 @@
 const { registerBlockType } = wp.blocks;
-import { useEffect } from 'react';
 
 const { __ } = wp.i18n;
 
@@ -94,7 +93,8 @@ registerBlockType('tainacan/search-bar', {
     },
     supports: {
         align: ['full', 'wide', 'left', 'center', 'right'],
-        html: false
+        html: true,
+        multiple: false
     },
     styles: [
         {
@@ -553,15 +553,13 @@ registerBlockType('tainacan/search-bar', {
                                 </div>
                                 { collectionId && collectionSlug ?
                                     <div class="tainacan-search-container">
-                                        <form
+                                        <div
                                                 style={{ maxWidth: maxWidth ? maxWidth + '%' : '80%' }}
                                                 className={ 
                                                     (alignment == 'left' ? ' is-aligned-left' : '') + 
                                                     (alignment == 'right' ? ' is-aligned-right' : '') 
                                                 }
-                                                id="taincan-search-bar-block"
-                                                action={ tainacan_plugin.site_url + '/' + collectionSlug + '/#/' }
-                                                method='get'>
+                                                id="taincan-search-bar-block">
                                             <input 
                                                 style={{ borderColor: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}
                                                 id="taincan-search-bar-block_input"
@@ -571,7 +569,6 @@ registerBlockType('tainacan/search-bar', {
                                             /> 
                                             <button 
                                                     class="button"
-                                                    type="submit"
                                                     onClick={(event) => { event.preventDefault(); return false; }}>  
                                                 <span class="icon">
                                                     <i>
@@ -591,7 +588,7 @@ registerBlockType('tainacan/search-bar', {
                                                     </i> 
                                                 </span>
                                             </button>
-                                        </form>
+                                        </div>
                                     </div>
                                     : null
                                 }
@@ -602,15 +599,13 @@ registerBlockType('tainacan/search-bar', {
                 
                 { collectionId && collectionSlug && !showCollectionHeader ?
                         <div class="tainacan-search-container">
-                            <form
+                            <div
                                     style={{ maxWidth: maxWidth ? maxWidth + '%' : '80%' }}
                                     className={ 
                                         (alignment == 'left' ? ' is-aligned-left' : '') + 
                                         (alignment == 'right' ? ' is-aligned-right' : '') 
                                     }
-                                    id="taincan-search-bar-block"
-                                    action={ tainacan_plugin.site_url + '/' + collectionSlug + '/#/' }
-                                    method='get'>
+                                    id="taincan-search-bar-block">
                                 <input 
                                     style={{ borderColor: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}
                                     id="taincan-search-bar-block_input"
@@ -619,8 +614,7 @@ registerBlockType('tainacan/search-bar', {
                                     placeholder={ placeholderText }
                                 /> 
                                 <button 
-                                        class="button"
-                                        type="submit">  
+                                        class="button">  
                                     <span class="icon">
                                         <i>
                                             <svg
@@ -639,7 +633,7 @@ registerBlockType('tainacan/search-bar', {
                                         </i> 
                                     </span>
                                 </button>
-                            </form>
+                            </div>
                         </div>
                     : null
                 }

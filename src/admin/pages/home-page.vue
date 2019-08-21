@@ -316,6 +316,7 @@ export default {
                 color: $turquoise5;
                 float: right;
                 width: calc(100% - 20px);
+                transition: background-color 0.3s ease;
 
                 @media screen and (min-width: 768px) {
                     width: calc(50% - 20px);
@@ -354,6 +355,7 @@ export default {
                 min-width: 13%;
                 flex-basis: 13%;
                 max-width: 15%;
+                transition: background-color 0.3s ease;
 
                 @media screen and (max-width: 580px) {
                     max-width: calc(100% - 52px);

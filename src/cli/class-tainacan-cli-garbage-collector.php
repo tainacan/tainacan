@@ -12,8 +12,8 @@ class Cli_Garbage_Collector {
 	 *
 	 * ## OPTIONS 
 	 *
-	 * [--dry-run]
-	 * : Look for garbage but do not delete anything, just output a report 
+	 * [--run]
+	 * : By default, this command only looks for garbage and output a report, but does not delete anything. If you want to really delete the garbage, pass --run
 	 *
 	 * [--deep]
 	 * : More aressive approach finding garbage. In some cases it could delete something related to other parts of the website. Currently, deep mode deletes all attachments with broken parent IDs, regardless whether they were uploaded via tainacan or not
@@ -29,12 +29,20 @@ class Cli_Garbage_Collector {
 	 *
 	 * [--skip-metadata]
 	 * : Do not try to find orphan and unused metadata
+	 *
+ 	 * [--yes]
+ 	 * : Skip confirmation before execution
 	 *  
 	 */
 	public function __invoke($args, $assoc_args) {
 		
-		$dry_run = isset($assoc_args['dry-run']);
+		$dry_run =  ! isset($assoc_args['run']);
 		$deep = isset($assoc_args['deep']);
+		
+		if (!$dry_run) {
+			\WP_CLI::warning( 'It is strongly recommended you do a backup before running this command, as there is no way to undo it.' );
+			\WP_CLI::confirm( 'Are you sure you want to look for and DELETE all the garbage? ', $assoc_args );
+		}
 		
 		// delete attachments
 		if (!isset($assoc_args['skip-attachments'])) {
@@ -58,7 +66,11 @@ class Cli_Garbage_Collector {
 		}
 		
 		// delete bulk post meta 
-
+		
+		if ($dry_run) {
+			\WP_CLI::warning( 'Nothing was done. If you want to delete all the found garbage, run the command with --run option.' );
+		}
+		
 		
 	}
 
@@ -268,10 +280,9 @@ class Cli_Garbage_Collector {
 		$orphan_metadata = $wpdb->get_col( "SELECT p.ID FROM $wpdb->postmeta pm JOIN $wpdb->posts p ON p.ID = pm.post_id 
 			WHERE p.post_type = 'tainacan-metadatum' AND 
 			pm.meta_key = 'collection_id' AND 
-			pm.meta_value NOT IN (SELECT ID FROM $wpdb->posts WHERE post_type = 'tainacan-collection')
+			pm.meta_value NOT IN (SELECT ID FROM $wpdb->posts WHERE post_type = 'tainacan-collection') AND 
+			pm.meta_value <> 'default'
 			" );
-		
-		var_dump(count($orphan_metadata));
 		
 		$meta_to_delete = array_merge($deleted_metadata, $orphan_metadata);
 		
