@@ -143,8 +143,7 @@ registerBlockType('tainacan/carousel-items-list', {
             isLoadingCollection,
             collection,
             collectionBackgroundColor,
-            collectionTextColor,
-            extraParams
+            collectionTextColor
         } = attributes;
 
         // Obtains block's client id to render it on save function
