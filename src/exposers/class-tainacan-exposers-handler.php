@@ -29,18 +29,23 @@ class Exposers_Handler {
 	
 	public function __construct() {
 	    self::$instance = $this;
+		
+		add_action('init', array(&$this, 'init'));
+		
+		add_filter( 'rest_request_after_callbacks', [$this, 'rest_request_after_callbacks'], 10, 3 ); //exposer types
+
+		add_filter( 'tainacan-api-get-items-alternate', [$this, 'filter_check_items_request'], 10, 2 );
+		
+	}
+	
+	function init() {
 		//$this->register_exposer('Tainacan\Exposers\Xml');
 		//$this->register_exposer('Tainacan\Exposers\Txt');
 		$this->register_exposer('Tainacan\Exposers\Html');
 		$this->register_exposer('Tainacan\Exposers\Csv');
 		//$this->register_exposer('Tainacan\Exposers\OAI_PMH');
 		//$this->register_exposer('Tainacan\Exposers\JSON_LD');
-		do_action('tainacan-register-exposer', $this);
-		
-		add_filter( 'rest_request_after_callbacks', [$this, 'rest_request_after_callbacks'], 10, 3 ); //exposer types
-
-		add_filter( 'tainacan-api-get-items-alternate', [$this, 'filter_check_items_request'], 10, 2 );
-		
+		do_action('tainacan-register-exposers', $this);
 	}
 	
 	/**

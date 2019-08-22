@@ -495,7 +495,7 @@
         }
     }
 </script>
-<style>
+<style scoped>
     .tab-content {
         overflow: visible !important;
     }

@@ -1,6 +1,11 @@
 <template>
     <div>
-        <div class="table-container">
+        <div
+                style="position: relative;"
+                class="table-container">
+            <b-loading
+                    is-full-page="false" 
+                    :active.sync="isLoading" />
             <div
                     v-if="attachments.length > 0"
                     class="table-wrapper">
@@ -99,14 +104,14 @@
         },
         data() {
             return {
-                isLoading: false,
                 attachmentsPage: 1,
                 attachmentsPerPage: 24
             }
         },
         props: {
             item: Object,
-            isEditable: Boolean
+            isLoading: Boolean,
+            isEditable: Boolean,
         },
         computed: {
             attachments() {
@@ -148,6 +153,7 @@
             },
             loadAttachments() {
                 this.isLoading = true;
+                this.$emit('isLoadingAttachments', true);
 
                 this.fetchAttachments({
                     page: this.attachmentsPage,
@@ -157,10 +163,12 @@
                 })
                     .then((response) => {
                         this.isLoading = false;
+                        this.$emit('isLoadingAttachments', false);
                         this.totalAttachments = response.total;
                     })
                     .catch((error) => {
                         this.isLoading = false;
+                        this.$emit('isLoadingAttachments', false);
                         this.$console.error(error);
                     }) 
             },
@@ -178,10 +186,11 @@
 <style lang="scss" scoped>
 
     .uploaded-files {
-        display: flex;
-        flex-flow: wrap;
+        display: block;
+        text-align: center;
 
         .file-item-container {
+            display: inline-block;
             margin: 15px;
             position: relative;
 

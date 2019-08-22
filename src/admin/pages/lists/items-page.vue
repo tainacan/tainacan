@@ -565,25 +565,25 @@
                             :value="viewModeOption"
                             v-if="registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == true ">
                         <span 
-                                class="gray-icon"
+                                class="gray-icon view-mode-icon"
                                 v-html="registeredViewModes[viewModeOption].icon"/>
                         <span class="is-hidden-touch">{{ registeredViewModes[viewModeOption].label }}</span>
                     </button>
                 </div>
-
+ 
                 <!-- Exposers or alternative links modal button -->
                 <div 
                         v-if="!$route.query.iframemode"
                         class="search-control-item">
                     <button 
                             class="button is-white"
-                            :aria-label="$i18n.get('label_urls')"
+                            :aria-label="$i18n.get('label_view_as')"
                             :disabled="totalItems == undefined || totalItems <= 0"
                             @click="openExposersModal()">
                         <span class="gray-icon">
                                 <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
                         </span>
-                        <span class="is-hidden-touch">{{ $i18n.get('label_urls') }}</span>
+                        <span class="is-hidden-touch">{{ $i18n.get('label_view_as') }}</span>
                     </button>
                 </div>
 
@@ -1864,8 +1864,9 @@
         
         .view-mode-icon {
             margin-right: 3px !important;
-            margin-top: 1px;
+            margin-top: -4px;
             margin-left: 6px !important;
+            width: 1.25rem;
         }
 
         .dropdown-menu {

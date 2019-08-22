@@ -114,10 +114,6 @@ registerBlockType('tainacan/carousel-items-list', {
         collectionTextColor: {
             type: String,
             default: "#ffffff"
-        },
-        extraParams: {
-            type: Object,
-            default: {}
         }
     },
     supports: {
@@ -147,8 +143,7 @@ registerBlockType('tainacan/carousel-items-list', {
             isLoadingCollection,
             collection,
             collectionBackgroundColor,
-            collectionTextColor,
-            extraParams
+            collectionTextColor
         } = attributes;
 
         // Obtains block's client id to render it on save function
@@ -417,7 +412,7 @@ registerBlockType('tainacan/carousel-items-list', {
                                     />
                                 <ToggleControl
                                         label={__('Auto play', 'tainacan')}
-                                        help={ !autoPlay ? __('Toggle to automatically slide to next item', 'tainacan') : __('Do not automatically slide to next item', 'tainacan')}
+                                        help={ !autoPlay ? __('Toggle to automatically slide to the next item', 'tainacan') : __('Do not automatically slide to the next item', 'tainacan')}
                                         checked={ autoPlay }
                                         onChange={ ( isChecked ) => {
                                                 autoPlay = isChecked;
@@ -428,7 +423,7 @@ registerBlockType('tainacan/carousel-items-list', {
                                 { 
                                     autoPlay ? 
                                         <RangeControl
-                                            label={__('Seconds before translating to next', 'tainacan')}
+                                            label={__('Seconds before sliding to the next', 'tainacan')}
                                             value={ autoPlaySpeed }
                                             onChange={ ( aAutoPlaySpeed ) => {
                                                 autoPlaySpeed = aAutoPlaySpeed;
@@ -713,8 +708,7 @@ registerBlockType('tainacan/carousel-items-list', {
             showCollectionHeader,
             showCollectionLabel,
             collectionBackgroundColor,
-            collectionTextColor,
-            extraParams
+            collectionTextColor
         } = attributes;
         return <div 
                     className={ className }
@@ -734,7 +728,6 @@ registerBlockType('tainacan/carousel-items-list', {
                     max-items-number={ maxItemsNumber }
                     tainacan-api-root={ tainacan_plugin.root }
                     tainacan-base-url={ tainacan_plugin.base_url }
-                    extraParams={ JSON.stringify(extraParams)  }
                     id={ 'wp-block-tainacan-carousel-items-list_' + blockId }>
                         { content }
                 </div>

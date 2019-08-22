@@ -210,7 +210,7 @@ export const fetchAttachments = ({ commit }, { page, attachmentsPerPage, itemId,
         axios.wp.get('/media/?parent=' + itemId + '&per_page=' + attachmentsPerPage + '&page=' + page)
         .then(res => {
             let attachments = res.data.filter((attachment) => attachment.id != documentId);
-            let total = documentId ? res.headers['x-wp-total'] - 1 : res.headers['x-wp-total'];
+            let total = (documentId && res.data.length != attachments.length && res.headers['x-wp-total'] > 0) ? res.headers['x-wp-total'] - 1 : res.headers['x-wp-total'];
 
             commit('setAttachments', attachments);
             commit('setTotalAttachments', total);

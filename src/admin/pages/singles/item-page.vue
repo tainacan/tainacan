@@ -253,7 +253,9 @@
                                 <span>{{ $i18n.get('activities') }}</span>
                             </template>
                             
-                            <activities-page />
+                            <activities-page
+                                    :is-loading.sync="isLoadingAttachments"
+                                    @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading"/>
                         </b-tab-item>
                     </b-tabs>
                 </div>
@@ -281,13 +283,13 @@
                     </router-link>
                     <button 
                             class="button sequence-button"
-                            :aria-label="$i18n.get('label_urls')"
+                            :aria-label="$i18n.get('label_view_as')"
                             :disabled="isLoading"
                             @click="openExposersModal()">
                         <span class="icon is-large">
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
                         </span>
-                        <span class="is-hidden-touch">{{ $i18n.get('label_urls') }}</span>
+                        <span class="is-hidden-touch">{{ $i18n.get('label_view_as') }}</span>
                     </button>
                     <a
                             target="_blank"
@@ -334,6 +336,7 @@
                 urls_open: false,
                 collectionAllowComments: '',
                 activeTab: 0,
+                isLoadingAttachments: false
             }
         },
         computed: {
@@ -498,10 +501,14 @@
             padding-left: 0;
             padding-right: $page-side-padding;
 
-            .columns .column {
-                padding: 1rem $page-side-padding 0 24px;
-            }
+            .columns {
+                flex-wrap: wrap;
+                justify-content: space-between;
 
+                .column {
+                    padding: 1rem 12px 0 12px;
+                }
+            }
             .field { 
                 padding: 10px 0 14px 0px;
                 margin-left: -3px;
@@ -536,16 +543,7 @@
                     margin-right: 18px;
                 }
             }
-        }
-
-        @media screen and (min-width: 1367px){
-            column-count: 2;
-            column-gap: $page-side-padding;
-
-            .field {
-                break-inside: avoid;
-            }
-        }   
+        } 
         
     }
 

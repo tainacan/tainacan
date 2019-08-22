@@ -182,8 +182,9 @@ export default {
             }
             .view-mode-icon {
                 margin-right: 0px !important;
-                margin-top: 1px;
+                margin-top: -4px;
                 margin-left: 4px;
+                width: 1.25rem;
 
                 &.icon i::before, .gray-icon i::before {
                     font-size: 1.1875px !important;

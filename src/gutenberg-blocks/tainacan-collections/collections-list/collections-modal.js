@@ -201,6 +201,7 @@ export default class CollectionsModal extends React.Component {
                 <div>
                     <div className="modal-search-area">
                         <TextControl 
+                                placeholder={ __('Search by collection\'s name', 'tainacan') } 
                                 label={__('Search for a collection', 'tainacan')}
                                 value={ this.state.searchCollectionName }
                                 onInput={(value) => {

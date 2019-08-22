@@ -323,7 +323,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_max_options_to_show'                      => __( 'Max options to show', 'tainacan' ),
 	'label_unamed_process'                           => __( 'Unamed process', 'tainacan' ),
 	'label_semantic_uri'                             => __( 'Semantic Uri', 'tainacan' ),
-	'label_view_collection'                          => __( 'View collection', 'tainacan' ),
+	'label_view_collection_on_website'               => __( 'View collection on website', 'tainacan' ),
 	'label_view_more'                                => __( 'View more', 'tainacan' ),
 	'label_log_file'                                 => __( 'Log file', 'tainacan' ),
 	'label_error_log_file'                           => __( 'Error Log file', 'tainacan' ),
@@ -430,6 +430,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_expose_only_displayed_metadata'			 => __( 'Expose only displayed metadata', 'tainacan' ),
 	'label_allowed'						 			 => __( 'Allowed', 'tainacan' ),
 	'label_not_allowed'						 		 => __( 'Not allowed', 'tainacan' ),
+	'label_view_as'							 		 => __( 'View as...', 'tainacan' ),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -497,8 +498,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_taxonomies_tab_trash'                      => __( 'Taxonomies that were sent to trash.', 'tainacan' ),
 
 	'info_error_invalid_date'                        => __( 'Invalid date', 'tainacan' ),
-	'info_search_results'                            => __( 'Search Results', 'tainacan' ),
-	'info_search_criteria'                           => __( 'Search Criteria', 'tainacan' ),
+	'info_search_results'                            => __( 'Advanced Search Results', 'tainacan' ),
+	'info_search_criteria'                           => __( 'Advanced Search Criteria', 'tainacan' ),
 	'info_name_is_required'                          => __( 'Name is required.', 'tainacan' ),
 	'info_no_collection_created'                     => __( 'No collection was created in this repository.', 'tainacan' ),
 	

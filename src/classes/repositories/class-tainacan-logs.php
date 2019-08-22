@@ -32,7 +32,7 @@ class Logs extends Repository {
 		add_action( 'add_attachment', array( $this, 'prepare_attachment_log_before_insert' ), 10 );
 	}
 
-	public function get_map() {
+	protected function _get_map() {
 		return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
 			'title'          => [
 				'map'         => 'post_title',

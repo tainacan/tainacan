@@ -1,5 +1,10 @@
 .select {
     padding-top: 0px !important;
+    
+    &, 
+    &:not(.is-multiple) {
+        height: 30px;
+    }
     select {
         border: none;
         border-radius: 1px !important;
@@ -31,6 +36,7 @@
         color: $secondary !important;
         display: flex !important;
         align-items: initial;
+        margin-top: -10px !important;
     }  
     &.is-loading.is-small::after {
         font-size: 0.875rem;

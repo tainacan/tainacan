@@ -34,7 +34,7 @@ class Collections extends Repository {
 	 * {@inheritDoc}
 	 * @see \Tainacan\Repositories\Repository::get_map()
 	 */
-	public function get_map() {
+  protected function _get_map() {
 		return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
 			'name'                       => [
 				'map'         => 'post_title',
