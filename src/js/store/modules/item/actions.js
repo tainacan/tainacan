@@ -206,11 +206,16 @@ export const fetchAttachments = ({ commit }, { page, attachmentsPerPage, itemId,
     commit('cleanAttachments');
     commit('setTotalAttachments', null);
 
+    let endpoint = '/media/?parent=' + itemId + '&per_page=' + attachmentsPerPage + '&page=' + page;
+
+    if (documentId)
+        endpoint += '&exclude=' + documentId;
+
     return new Promise((resolve, reject) => {
-        axios.wp.get('/media/?parent=' + itemId + '&per_page=' + attachmentsPerPage + '&page=' + page)
+        axios.wp.get(endpoint)
         .then(res => {
-            let attachments = res.data.filter((attachment) => attachment.id != documentId);
-            let total = (documentId && res.data.length != attachments.length && res.headers['x-wp-total'] > 0) ? res.headers['x-wp-total'] - 1 : res.headers['x-wp-total'];
+            let attachments = res.data;
+            let total =  res.headers['x-wp-total'];
 
             commit('setAttachments', attachments);
             commit('setTotalAttachments', total);
