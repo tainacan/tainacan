@@ -65,6 +65,33 @@
             a:hover {
                 text-decoration: none;
             }
+
+            .swiper-slide.collection-list-item-grid {
+                width: calc(20% - 32px); 
+                min-width: calc(20% - 32px);
+                a { 
+                    width: 100%; 
+                    display: block;
+                }
+                .collection-items-grid {
+                    display: grid;
+                    grid-template-columns: 33% 33% 33%;
+                    grid-template-rows: 50% 50%;
+                    width: 100%;
+    
+                    img:first-of-type {
+                        grid-column-start: 1;
+                        grid-column-end: span 2;
+                        grid-row-start: 1;
+                        grid-row-end: span 2;
+                    }
+    
+                    img { 
+                        padding: 2px;
+                        margin-bottom: 0px; 
+                    }
+                }    
+            }
         }
     }
 
@@ -135,8 +162,8 @@
             min-width: calc(14.286% - 32px);
 
             &.collection-list-item-grid {
-                width: calc(16.666% - 32px); 
-                min-width: calc(16.666% - 32px);
+                width: calc(20% - 32px); 
+                min-width: calc(20% - 32px);
             }
 
             a { 
@@ -147,7 +174,6 @@
 
             img {
                 height: auto;
-
                 padding: 0px;
                 margin-bottom: 0.5rem;
             }
@@ -215,9 +241,13 @@
             min-width: calc(16.666% - 32px); 
 
             &.collection-list-item-grid {
-                width: calc(20% - 32px); 
-                min-width: calc(20% - 32px);
+                width: calc(25% - 32px); 
+                min-width: calc(25% - 32px);
             }
+        }
+        .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid  {
+            width: calc(25% - 32px); 
+            min-width: calc(25% - 32px);
         }
     }
     @media only screen and (max-width: 1452px) { 
@@ -227,9 +257,13 @@
             min-width: calc(20% - 32px); 
 
             &.collection-list-item-grid {
-                width: calc(25% - 32px); 
-                min-width: calc(25% - 32px);
+                width: calc(33.333% - 32px); 
+                min-width: calc(33.333% - 32px);
             }
+        }
+        .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid  {
+            width: calc(33.333% - 32px); 
+            min-width: calc(33.333% - 32px);
         }
     }
     @media only screen and (max-width: 1118px) { 
@@ -239,9 +273,13 @@
             min-width: calc(25% - 32px); 
 
             &.collection-list-item-grid {
-                width: calc(33.333% - 32px); 
-                min-width: calc(33.333% - 32px);
+                width: calc(50% - 32px); 
+                min-width: calc(50% - 32px);
             }
+        }
+        .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid  {
+            width: calc(50% - 32px); 
+            min-width: calc(50% - 32px);
         }
     }
     @media only screen and (max-width: 854px) { 
@@ -251,9 +289,13 @@
             min-width: calc(33.333% - 32px);
 
             &.collection-list-item-grid {
-                width: calc(50% - 32px); 
-                min-width: calc(50% - 32px);
+                width: calc(100% - 32px); 
+                min-width: calc(100% - 32px);
             }
+        }
+        .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid  {
+            width: calc(100% - 32px); 
+            min-width: calc(100% - 32px);
         }
     }
     @media only screen and (max-width: 584px) { 
@@ -266,6 +308,10 @@
                 width: calc(100% - 32px); 
                 min-width: calc(100% - 32px);
             }
+        }
+        .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid  {
+            width: calc(100% - 32px); 
+            min-width: calc(100% - 32px);
         }
     }
 

@@ -141,43 +141,43 @@ registerBlockType('tainacan/carousel-collections-list', {
                             <div class="collection-items-grid">
                                 <img 
                                     src={ 
-                                        collectionItems[0].thumbnail && collectionItems[0].thumbnail['tainacan-medium'][0] && collectionItems[0].thumbnail['tainacan-medium'][0] 
+                                        collectionItems[0] && collectionItems[0].thumbnail && collectionItems[0].thumbnail['tainacan-medium'][0] && collectionItems[0].thumbnail['tainacan-medium'][0] 
                                             ?
                                         collectionItems[0].thumbnail['tainacan-medium'][0] 
                                             :
-                                        (collectionItems[0].thumbnail && collectionItems[0].thumbnail['thumbnail'][0] && collectionItems[0].thumbnail['thumbnail'][0]
+                                        (collectionItems[0] && collectionItems[0].thumbnail && collectionItems[0].thumbnail['thumbnail'][0] && collectionItems[0].thumbnail['thumbnail'][0]
                                             ?    
                                         collectionItems[0].thumbnail['thumbnail'][0] 
                                             : 
                                         `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
                                     }
-                                    alt={ collectionItems[0].name ? collectionItems[0].name : __( 'Thumbnail', 'tainacan' ) }/>
+                                    alt={ collectionItems[0] && collectionItems[0].name ? collectionItems[0].name : __( 'Thumbnail', 'tainacan' ) }/>
                                 <img
                                     src={ 
-                                        collectionItems[1].thumbnail && collectionItems[1].thumbnail['tainacan-medium'][0] && collectionItems[1].thumbnail['tainacan-medium'][0] 
+                                        collectionItems[1] && collectionItems[1].thumbnail && collectionItems[1].thumbnail['tainacan-medium'][0] && collectionItems[1].thumbnail['tainacan-medium'][0] 
                                             ?
                                         collectionItems[1].thumbnail['tainacan-medium'][0] 
                                             :
-                                        (collectionItems[1].thumbnail && collectionItems[1].thumbnail['thumbnail'][0] && collectionItems[1].thumbnail['thumbnail'][0]
+                                        (collectionItems[1] && collectionItems[1].thumbnail && collectionItems[1].thumbnail['thumbnail'][0] && collectionItems[1].thumbnail['thumbnail'][0]
                                             ?    
                                         collectionItems[1].thumbnail['thumbnail'][0] 
                                             : 
                                         `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
                                     }
-                                    alt={ collectionItems[1].name ? collectionItems[1].name : __( 'Thumbnail', 'tainacan' ) }/>
+                                    alt={ collectionItems[1] && collectionItems[1].name ? collectionItems[1].name : __( 'Thumbnail', 'tainacan' ) }/>
                                 <img
                                     src={ 
-                                        collectionItems[2].thumbnail && collectionItems[2].thumbnail['tainacan-medium'][0] && collectionItems[2].thumbnail['tainacan-medium'][0] 
+                                        collectionItems[2] && collectionItems[2].thumbnail && collectionItems[2].thumbnail['tainacan-medium'][0] && collectionItems[2].thumbnail['tainacan-medium'][0] 
                                             ?
                                         collectionItems[2].thumbnail['tainacan-medium'][0] 
                                             :
-                                        (collectionItems[2].thumbnail && collectionItems[2].thumbnail['thumbnail'][0] && collectionItems[2].thumbnail['thumbnail'][0]
+                                        (collectionItems[2] && collectionItems[2].thumbnail && collectionItems[2].thumbnail['thumbnail'][0] && collectionItems[2].thumbnail['thumbnail'][0]
                                             ?    
                                         collectionItems[2].thumbnail['thumbnail'][0] 
                                             : 
                                         `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
                                     }
-                                    alt={ collectionItems[2].name ? collectionItems[2].name : __( 'Thumbnail', 'tainacan' ) }/>
+                                    alt={ collectionItems[2] && collectionItems[2].name ? collectionItems[2].name : __( 'Thumbnail', 'tainacan' ) }/>
                             </div>
                             :
                             <img
@@ -219,7 +219,9 @@ registerBlockType('tainacan/carousel-collections-list', {
                 .then(response => {
 
                     if (showCollectionThumbnail) {
-                        collections.push(prepareItem(collection));
+                        for (let collection of response.data) { 
+                            collections.push(prepareItem(collection));
+                        }
                         setAttributes({
                             content: <div></div>,
                             collections: collections,

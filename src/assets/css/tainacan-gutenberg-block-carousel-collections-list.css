@@ -64,19 +64,33 @@
     color: #555758; }
     .wp-block-tainacan-modal .spinner-container .components-spineer {
       margin: 8px; }
+  .wp-block-tainacan-modal .components-modal__header .components-icon-button {
+    padding-right: 0; }
+  .wp-block-tainacan-modal hr {
+    margin: 5px 0.75rem; }
   .wp-block-tainacan-modal .modal-search-area {
     display: flex;
     justify-content: center;
-    margin-bottom: 24px; }
+    margin-bottom: 14px; }
     .wp-block-tainacan-modal .modal-search-area .components-base-control {
       width: 60%; }
       @media only screen and (max-width: 1024px) {
         .wp-block-tainacan-modal .modal-search-area .components-base-control {
           width: 95%; } }
-      .wp-block-tainacan-modal .modal-search-area .components-base-control label {
+      .wp-block-tainacan-modal .modal-search-area .components-base-control:nth-child(2) {
+        flex-shrink: 2; }
+      .wp-block-tainacan-modal .modal-search-area .components-base-control .components-base-control__field {
+        flex-wrap: wrap; }
+      .wp-block-tainacan-modal .modal-search-area .components-base-control label.components-base-control__label {
+        font-weight: 500;
+        color: #454647;
+        font-size: 0.875rem;
         text-align: center; }
+      .wp-block-tainacan-modal .modal-search-area .components-base-control input.components-text-control__input {
+        padding: 5px 8px;
+        height: 28px; }
   .wp-block-tainacan-modal .modal-radio-area-label {
-    font-weight: bold;
+    font-weight: 500;
     margin-left: 1.75rem; }
   .wp-block-tainacan-modal .modal-checkbox-list,
   .wp-block-tainacan-modal .modal-radio-list .components-base-control__field {
@@ -89,7 +103,8 @@
     list-style-type: none;
     margin: 12px;
     max-height: 50vh;
-    overflow-y: auto; }
+    overflow-y: auto;
+    overflow-x: hidden; }
     .wp-block-tainacan-modal .modal-checkbox-list .components-base-control,
     .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-base-control {
       overflow: hidden; }
@@ -200,6 +215,25 @@
         line-height: 1.2rem; }
       .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container a:hover {
         text-decoration: none; }
+      .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid {
+        width: calc(20% - 32px);
+        min-width: calc(20% - 32px); }
+        .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid a {
+          width: 100%;
+          display: block; }
+        .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid .collection-items-grid {
+          display: grid;
+          grid-template-columns: 33% 33% 33%;
+          grid-template-rows: 50% 50%;
+          width: 100%; }
+          .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid .collection-items-grid img:first-of-type {
+            grid-column-start: 1;
+            grid-column-end: span 2;
+            grid-row-start: 1;
+            grid-row-end: span 2; }
+          .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid .collection-items-grid img {
+            padding: 2px;
+            margin-bottom: 0px; }
   .wp-block-tainacan-carousel-collections-list .preview-warning {
     width: 100%;
     font-size: 0.875rem;
@@ -254,8 +288,8 @@
       width: calc(14.286% - 32px);
       min-width: calc(14.286% - 32px); }
       .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item.collection-list-item-grid {
-        width: calc(16.666% - 32px);
-        min-width: calc(16.666% - 32px); }
+        width: calc(20% - 32px);
+        min-width: calc(20% - 32px); }
       .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item a {
         color: #454647;
         font-weight: bold;
@@ -310,35 +344,50 @@
       width: calc(16.666% - 32px);
       min-width: calc(16.666% - 32px); }
       .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item.collection-list-item-grid {
-        width: calc(20% - 32px);
-        min-width: calc(20% - 32px); } }
+        width: calc(25% - 32px);
+        min-width: calc(25% - 32px); }
+    .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid {
+      width: calc(25% - 32px);
+      min-width: calc(25% - 32px); } }
   @media only screen and (max-width: 1452px) {
     .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item {
       width: calc(20% - 32px);
       min-width: calc(20% - 32px); }
       .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item.collection-list-item-grid {
-        width: calc(25% - 32px);
-        min-width: calc(25% - 32px); } }
+        width: calc(33.333% - 32px);
+        min-width: calc(33.333% - 32px); }
+    .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid {
+      width: calc(33.333% - 32px);
+      min-width: calc(33.333% - 32px); } }
   @media only screen and (max-width: 1118px) {
     .wp-block-tainacan-carousel-collections-list ul.collections-edit li.collection-list-item {
       width: calc(25% - 32px);
       min-width: calc(25% - 32px); }
       .wp-block-tainacan-carousel-collections-list ul.collections-edit li.collection-list-item.collection-list-item-grid {
-        width: calc(33.333% - 32px);
-        min-width: calc(33.333% - 32px); } }
+        width: calc(50% - 32px);
+        min-width: calc(50% - 32px); }
+    .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid {
+      width: calc(50% - 32px);
+      min-width: calc(50% - 32px); } }
   @media only screen and (max-width: 854px) {
     .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item {
       width: calc(33.333% - 32px);
       min-width: calc(33.333% - 32px); }
       .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item.collection-list-item-grid {
-        width: calc(50% - 32px);
-        min-width: calc(50% - 32px); } }
+        width: calc(100% - 32px);
+        min-width: calc(100% - 32px); }
+    .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid {
+      width: calc(100% - 32px);
+      min-width: calc(100% - 32px); } }
   @media only screen and (max-width: 584px) {
     .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item {
       width: calc(50% - 32px);
       min-width: calc(50% - 32px); }
       .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item.collection-list-item-grid {
         width: calc(100% - 32px);
-        min-width: calc(100% - 32px); } }
+        min-width: calc(100% - 32px); }
+    .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid {
+      width: calc(100% - 32px);
+      min-width: calc(100% - 32px); } }
 
 /*# sourceMappingURL=tainacan-gutenberg-block-carousel-collections-list.css.map */
