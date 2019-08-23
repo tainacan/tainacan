@@ -48,7 +48,7 @@
     .tainacan-carousel {
         position: relative;
         width: calc(100% + 50px);
-        left: -50px;
+        left: -25px;
 
         .swiper-container {
             margin: 0 50px;
@@ -62,13 +62,16 @@
                 display: block;
                 line-height: 1.2rem;
             }
+            a>img {
+                width: 100%;
+                height: auto;
+            }
             a:hover {
                 text-decoration: none;
             }
 
             .swiper-slide.collection-list-item-grid {
-                width: calc(20% - 32px); 
-                min-width: calc(20% - 32px);
+
                 a { 
                     width: 100%; 
                     display: block;
@@ -87,6 +90,8 @@
                     }
     
                     img { 
+                        width: 100%;
+                        height: auto;
                         padding: 2px;
                         margin-bottom: 0px; 
                     }
@@ -106,8 +111,8 @@
 
     // Next and previous buttons
     .swiper-button-prev, .swiper-button-next {
-        top: initial;
-        bottom: calc(50% + 10px);
+        top: calc(50% - 42px);
+        bottom: initial;
         background: none;
         border: none;
         width: 42px;
@@ -158,12 +163,12 @@
             position: relative;
             display: block;
             margin: 16px;
-            width: calc(14.286% - 32px); 
-            min-width: calc(14.286% - 32px);
+            width: calc(16.666% - 32px); 
+            min-width: calc(16.666% - 32px);
 
             &.collection-list-item-grid {
-                width: calc(20% - 32px); 
-                min-width: calc(20% - 32px);
+                width: calc(25% - 16px); 
+                min-width: calc(25% - 16px);
             }
 
             a { 
@@ -237,79 +242,34 @@
     @media only screen and (max-width: 1686px) { 
         
         ul.collections-list-edit li.collection-list-item { 
-            width: calc(16.666% - 32px); 
-            min-width: calc(16.666% - 32px); 
-
-            &.collection-list-item-grid {
-                width: calc(25% - 32px); 
-                min-width: calc(25% - 32px);
-            }
-        }
-        .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid  {
-            width: calc(25% - 32px); 
-            min-width: calc(25% - 32px);
+            width: calc(20% - 32px); 
+            min-width: calc(20% - 32px); 
         }
     }
     @media only screen and (max-width: 1452px) { 
         
         ul.collections-list-edit li.collection-list-item { 
-            width: calc(20% - 32px); 
-            min-width: calc(20% - 32px); 
-
-            &.collection-list-item-grid {
-                width: calc(33.333% - 32px); 
-                min-width: calc(33.333% - 32px);
-            }
-        }
-        .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid  {
-            width: calc(33.333% - 32px); 
-            min-width: calc(33.333% - 32px);
+            width: calc(25% - 32px); 
+            min-width: calc(25% - 32px); 
         }
     }
     @media only screen and (max-width: 1118px) { 
         
         ul.collections-edit li.collection-list-item { 
-            width: calc(25% - 32px); 
-            min-width: calc(25% - 32px); 
-
-            &.collection-list-item-grid {
-                width: calc(50% - 32px); 
-                min-width: calc(50% - 32px);
-            }
-        }
-        .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid  {
-            width: calc(50% - 32px); 
-            min-width: calc(50% - 32px);
+            width: calc(33.333% - 32px); 
+            min-width: calc(33.333% - 32px); 
         }
     }
     @media only screen and (max-width: 854px) { 
         
         ul.collections-list-edit li.collection-list-item { 
-            width: calc(33.333% - 32px); 
-            min-width: calc(33.333% - 32px);
-
-            &.collection-list-item-grid {
-                width: calc(100% - 32px); 
-                min-width: calc(100% - 32px);
-            }
-        }
-        .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid  {
-            width: calc(100% - 32px); 
-            min-width: calc(100% - 32px);
+            width: calc(50% - 32px); 
+            min-width: calc(50% - 32px);
         }
     }
     @media only screen and (max-width: 584px) { 
         
         ul.collections-list-edit li.collection-list-item { 
-            width: calc(50% - 32px); 
-            min-width: calc(50% - 32px);
-
-            &.collection-list-item-grid {
-                width: calc(100% - 32px); 
-                min-width: calc(100% - 32px);
-            }
-        }
-        .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid  {
             width: calc(100% - 32px); 
             min-width: calc(100% - 32px);
         }

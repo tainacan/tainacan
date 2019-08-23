@@ -511,7 +511,7 @@ registerBlockType('tainacan/carousel-collections-list', {
                     max-collections-number={ maxCollectionsNumber }
                     tainacan-api-root={ tainacan_plugin.root }
                     tainacan-base-url={ tainacan_plugin.base_url }
-                    showCollectionThumbnail={ '' + showCollectionThumbnail }
+                    show-collection-thumbnail={ '' + showCollectionThumbnail }
                     id={ 'wp-block-tainacan-carousel-collections-list_' + blockId }>
                         { content }
                 </div>
