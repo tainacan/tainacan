@@ -1,5 +1,86 @@
 @import '../../gutenberg-blocks-style.scss';
 
+.components-panel__body .collection-carousel-view-modes {
+    display: flex;
+    margin: 12px 0 24px 0;
+
+    button {
+        background: transparent;
+        border: 1px solid #cbcbcb;
+        border-radius: 5px;
+        padding: 2px;
+        margin: 0;
+        width: calc(50% - 6px);
+        flex-shrink: 0;
+        cursor: pointer;
+        transition: border ease 0.5s, opacity ease 0.5;
+
+        &.collection-carousel-view-mode-grid {
+            margin-right: 6px;
+            div {
+                display: grid;
+                grid-template-columns: 33% 33% 33%;
+                grid-template-rows: 50% 50%;
+                grid-column-gap: 2px;
+                grid-row-gap: 2px;
+                width: 60px;
+                height: 40px;
+                margin: 4px auto 8px auto;
+
+                &>div:first-of-type {
+                    grid-column-start: 1;
+                    grid-column-end: span 2;
+                    grid-row-start: 1;
+                    grid-row-end: span 2;
+                    width: 41px;
+                    height: 42px;
+                }
+
+                &>div { 
+                    width: 20px;
+                    height: 20px;
+                    background: #555758;
+                    transition: background-color ease 0.5s; 
+                }
+            }
+        }
+        &.collection-carousel-view-mode-thumbnail {
+            margin-left: 6px;
+
+            div {
+                display: block;
+                height: 40px;
+                width: 40px;
+                background: #555758;
+                margin: 4px auto 8px auto;
+                transition: background-color ease 0.5s;
+            }
+        }
+
+        label {
+            font-size: 0.75rem;
+            color: #555758;
+        }
+
+        &.is-active {
+            border: 2px solid #298596;
+            
+            &.collection-carousel-view-mode-thumbnail div,
+            &.collection-carousel-view-mode-grid div>div {
+                background-color: #298596;
+            }    
+        }
+        &:hover {
+            opacity: 0.9;
+            border-width: 2px;
+            button {
+                background: #f2f2f2;
+            }
+        }
+
+    }
+}
+
 .wp-block-tainacan-carousel-collections-list {
     margin: 2rem 0px;
 
@@ -162,11 +243,12 @@
         li.collection-list-item {
             position: relative;
             display: block;
-            margin: 16px;
+            margin: 16px 32px 16px 0px;
             width: calc(16.666% - 32px); 
             min-width: calc(16.666% - 32px);
 
             &.collection-list-item-grid {
+                margin: 16px;
                 width: calc(25% - 16px); 
                 min-width: calc(25% - 16px);
             }

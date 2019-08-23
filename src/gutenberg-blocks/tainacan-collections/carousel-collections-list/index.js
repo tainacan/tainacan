@@ -291,7 +291,7 @@ registerBlockType('tainacan/carousel-collections-list', {
                                 initialOpen={ true }
                             >
                             <div>
-                                <ToggleControl
+                                {/* <ToggleControl
                                             label={__('Show collection\'s thumbnail', 'tainacan')}
                                             help={ !showCollectionThumbnail ? __('Toggle to show items grid instead of collection\'s thumbnail', 'tainacan') : __('Do not show collection\'s thumbnail instead of items grid', 'tainacan')}
                                             checked={ showCollectionThumbnail ? showCollectionThumbnail : false }
@@ -301,7 +301,35 @@ registerBlockType('tainacan/carousel-collections-list', {
                                                     setContent();
                                                 } 
                                             }
-                                        />
+                                        /> */}
+                                <div className="collection-carousel-view-modes">
+                                    <button
+                                            onClick={ () => {
+                                                    showCollectionThumbnail = false;
+                                                    setAttributes({ showCollectionThumbnail: showCollectionThumbnail });
+                                                    setContent();    
+                                                }
+                                            }
+                                            className={'collection-carousel-view-mode-grid' + (showCollectionThumbnail ? '' : ' is-active')}>
+                                        <div>
+                                            <div />
+                                        <div />
+                                        <div />
+                                        </div>
+                                        <label>{ __('Items\'s grid', 'tainacan') }</label>
+                                    </button>
+                                    <button
+                                            onClick={ () => {
+                                                    showCollectionThumbnail = true;
+                                                    setAttributes({ showCollectionThumbnail: showCollectionThumbnail });
+                                                    setContent();    
+                                                }
+                                            }
+                                            className={'collection-carousel-view-mode-thumbnail' + (showCollectionThumbnail ? ' is-active' : '')}>
+                                        <div />
+                                        <label>{ __('Thumbnail', 'tainacan') }</label>
+                                    </button>
+                                </div>
                                 <ToggleControl
                                         label={__('Hide name', 'tainacan')}
                                         help={ !hideName ? __('Toggle to hide collection\'s name', 'tainacan') : __('Do not hide collection\'s name', 'tainacan')}
