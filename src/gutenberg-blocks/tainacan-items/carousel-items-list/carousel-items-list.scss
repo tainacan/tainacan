@@ -206,14 +206,14 @@
         &.has-arrows-left .swiper-button-next {
             left: 10px;
             right: auto;
-            bottom: calc(50% + 36px);
+            top: calc(50% + 36px);
         }
         &.has-arrows-right .swiper-button-prev {
             right: 10px;
             left: auto;
         }
         &.has-arrows-right .swiper-button-next {
-            bottom: calc(50% + 36px);
+            top: calc(50% + 36px);
         }
     }
     ul.items-list-edit {
@@ -227,8 +227,8 @@
             position: relative;
             display: block;
             margin: 16px;
-            width: calc(16.666% - 32px); 
-            min-width: calc(16.666% - 32px);
+            width: calc(14.285% - 32px); 
+            min-width: calc(14.285% - 32px);
 
             a { 
                 color: #454647; 
@@ -283,36 +283,36 @@
     @media only screen and (max-width: 1686px) { 
         
         ul.items-list-edit li.item-list-item { 
+            width: calc(16.666% - 32px); 
+            min-width: calc(16.666% - 32px); 
+        }
+    }
+    @media only screen and (max-width: 1452px) { 
+        
+        ul.items-list-edit li.item-list-item { 
             width: calc(20% - 32px); 
             min-width: calc(20% - 32px); 
         }
     }
-    @media only screen and (max-width: 1452px) { 
+    @media only screen and (max-width: 1118px) { 
         
         ul.items-list-edit li.item-list-item { 
             width: calc(25% - 32px); 
             min-width: calc(25% - 32px); 
         }
     }
-    @media only screen and (max-width: 1118px) { 
-        
-        ul.items-list-edit li.item-list-item { 
-            width: calc(33.333% - 32px); 
-            min-width: calc(33.333% - 32px); 
-        }
-    }
     @media only screen and (max-width: 854px) { 
         
         ul.items-list-edit li.item-list-item { 
-            width: calc(50% - 32px); 
-            min-width: calc(50% - 32px);
+            width: calc(33.333% - 32px); 
+            min-width: calc(33.333% - 32px);
         }
     }
     @media only screen and (max-width: 584px) { 
         
         ul.items-list-edit li.item-list-item { 
-            width: calc(100% - 32px); 
-            min-width: calc(100% - 32px);
+            width: calc(50% - 32px); 
+            min-width: calc(50% - 32px);
         }
     }
 

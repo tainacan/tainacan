@@ -53,6 +53,7 @@
                 <swiper 
                         role="list"
                         :options="swiperOptions"
+                        ref="myItemSwiper"
                         :style="{
                             marginTop: showCollectionHeader ? '1.35rem' : '0px'
                         }">
@@ -84,6 +85,7 @@
                 </swiper>
                 <button 
                         class="swiper-button-prev" 
+                        :id="blockId + '-prev'" 
                         slot="button-prev">
                     <svg
                             width="42"
@@ -97,6 +99,7 @@
                 </button>
                 <button 
                         class="swiper-button-next" 
+                        :id="blockId + '-next'" 
                         slot="button-next">
                     <svg
                             width="42"
@@ -127,6 +130,7 @@
                     <swiper-slide 
                             role="listitem"
                             :key="index"
+                            ref="myItemSwiper"
                             v-for="(item, index) of 18"
                             class="item-list-item skeleton">      
                         <a>
@@ -137,6 +141,7 @@
                 </swiper>
                 <button 
                         class="swiper-button-prev" 
+                        :id="blockId + '-prev'" 
                         slot="button-prev">
                     <svg
                             width="42"
@@ -150,6 +155,7 @@
                 </button>
                 <button 
                         class="swiper-button-next" 
+                        :id="blockId + '-next'"   
                         slot="button-next">
                     <svg
                             width="42"
@@ -192,20 +198,20 @@ export default {
                 preventInteractionOnTransition: true,
                 allowClick: true,
                 allowTouchMove: true, 
-                slidesPerView: 6,
+                slidesPerView: 7,
                 slidesPerGroup: 1,
                 spaceBetween: 32,
                 slideToClickedSlide: true,
                 navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
+                    nextEl: '#' + this.blockId + '-next',
+                    prevEl: '#' + this.blockId + '-prev',
                 }, 
                 breakpoints: {
-                    498:  { slidesPerView: 1 }, 
-                    768:  { slidesPerView: 2 },
-                    1024: { slidesPerView: 3 },
-                    1366: { slidesPerView: 4 },
-                    1600: { slidesPerView: 5 },
+                    498:  { slidesPerView: 2 }, 
+                    768:  { slidesPerView: 3 },
+                    1024: { slidesPerView: 4 },
+                    1366: { slidesPerView: 5 },
+                    1600: { slidesPerView: 6 },
                 },
                 autoplay: this.autoPlay ? { delay: this.autoPlaySpeed*1000 } : false,
                 loop: this.loopSlides
@@ -217,6 +223,7 @@ export default {
         swiperSlide
     },
     props: {
+        blockId: String,
         collectionId: String,  
         searchURL: String,
         selectedItems: Array,

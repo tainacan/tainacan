@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody } = wp.components;
+const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody } = wp.components;
 
 const { InspectorControls } = wp.editor;
 
@@ -103,7 +103,7 @@ registerBlockType('tainacan/carousel-collections-list', {
     supports: {
         align: ['full', 'wide'],
         html: false,
-        multiple: false
+        multiple: true
     },
     edit({ attributes, setAttributes, className, isSelected, clientId }){
         let {
@@ -302,34 +302,38 @@ registerBlockType('tainacan/carousel-collections-list', {
                                                 } 
                                             }
                                         /> */}
-                                <div className="collection-carousel-view-modes">
-                                    <button
-                                            onClick={ () => {
-                                                    showCollectionThumbnail = false;
-                                                    setAttributes({ showCollectionThumbnail: showCollectionThumbnail });
-                                                    setContent();    
+                                <BaseControl
+                                        id="collection-carousel-view-modes"
+                                        label={ __('Collection layout', 'tainacan')}>
+                                    <div className="collection-carousel-view-modes">
+                                        <button
+                                                onClick={ () => {
+                                                        showCollectionThumbnail = false;
+                                                        setAttributes({ showCollectionThumbnail: showCollectionThumbnail });
+                                                        setContent();    
+                                                    }
                                                 }
-                                            }
-                                            className={'collection-carousel-view-mode-grid' + (showCollectionThumbnail ? '' : ' is-active')}>
-                                        <div>
+                                                className={'collection-carousel-view-mode-grid' + (showCollectionThumbnail ? '' : ' is-active')}>
+                                            <div>
+                                                <div />
                                             <div />
-                                        <div />
-                                        <div />
-                                        </div>
-                                        <label>{ __('Items\'s grid', 'tainacan') }</label>
-                                    </button>
-                                    <button
-                                            onClick={ () => {
-                                                    showCollectionThumbnail = true;
-                                                    setAttributes({ showCollectionThumbnail: showCollectionThumbnail });
-                                                    setContent();    
+                                            <div />
+                                            </div>
+                                            <label>{ __('Items\'s grid', 'tainacan') }</label>
+                                        </button>
+                                        <button
+                                                onClick={ () => {
+                                                        showCollectionThumbnail = true;
+                                                        setAttributes({ showCollectionThumbnail: showCollectionThumbnail });
+                                                        setContent();    
+                                                    }
                                                 }
-                                            }
-                                            className={'collection-carousel-view-mode-thumbnail' + (showCollectionThumbnail ? ' is-active' : '')}>
-                                        <div />
-                                        <label>{ __('Thumbnail', 'tainacan') }</label>
-                                    </button>
-                                </div>
+                                                className={'collection-carousel-view-mode-thumbnail' + (showCollectionThumbnail ? ' is-active' : '')}>
+                                            <div />
+                                            <label>{ __('Thumbnail', 'tainacan') }</label>
+                                        </button>    
+                                    </div>
+                                </BaseControl>
                                 <ToggleControl
                                         label={__('Hide name', 'tainacan')}
                                         help={ !hideName ? __('Toggle to hide collection\'s name', 'tainacan') : __('Do not hide collection\'s name', 'tainacan')}

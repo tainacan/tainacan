@@ -119,7 +119,7 @@ registerBlockType('tainacan/carousel-items-list', {
     supports: {
         align: ['full', 'wide'],
         html: false,
-        multiple: false
+        multiple: true
     },
     edit({ attributes, setAttributes, className, isSelected, clientId }){
         let {

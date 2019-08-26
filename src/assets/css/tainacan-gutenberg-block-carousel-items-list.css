@@ -323,14 +323,14 @@
     .wp-block-tainacan-carousel-items-list .tainacan-carousel.has-arrows-left .swiper-button-next {
       left: 10px;
       right: auto;
-      bottom: calc(50% + 36px); }
+      top: calc(50% + 36px); }
     .wp-block-tainacan-carousel-items-list .items-list-edit-container.has-arrows-right .swiper-button-prev,
     .wp-block-tainacan-carousel-items-list .tainacan-carousel.has-arrows-right .swiper-button-prev {
       right: 10px;
       left: auto; }
     .wp-block-tainacan-carousel-items-list .items-list-edit-container.has-arrows-right .swiper-button-next,
     .wp-block-tainacan-carousel-items-list .tainacan-carousel.has-arrows-right .swiper-button-next {
-      bottom: calc(50% + 36px); }
+      top: calc(50% + 36px); }
   .wp-block-tainacan-carousel-items-list ul.items-list-edit {
     display: flex;
     align-items: flex-start;
@@ -341,8 +341,8 @@
       position: relative;
       display: block;
       margin: 16px;
-      width: calc(16.666% - 32px);
-      min-width: calc(16.666% - 32px); }
+      width: calc(14.285% - 32px);
+      min-width: calc(14.285% - 32px); }
       .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item a {
         color: #454647;
         font-weight: bold;
@@ -382,23 +382,23 @@
         border: 1px solid #cbcbcb !important; }
   @media only screen and (max-width: 1686px) {
     .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item {
+      width: calc(16.666% - 32px);
+      min-width: calc(16.666% - 32px); } }
+  @media only screen and (max-width: 1452px) {
+    .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item {
       width: calc(20% - 32px);
       min-width: calc(20% - 32px); } }
-  @media only screen and (max-width: 1452px) {
+  @media only screen and (max-width: 1118px) {
     .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item {
       width: calc(25% - 32px);
       min-width: calc(25% - 32px); } }
-  @media only screen and (max-width: 1118px) {
+  @media only screen and (max-width: 854px) {
     .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item {
       width: calc(33.333% - 32px);
       min-width: calc(33.333% - 32px); } }
-  @media only screen and (max-width: 854px) {
+  @media only screen and (max-width: 584px) {
     .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item {
       width: calc(50% - 32px);
       min-width: calc(50% - 32px); } }
-  @media only screen and (max-width: 584px) {
-    .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item {
-      width: calc(100% - 32px);
-      min-width: calc(100% - 32px); } }
 
 /*# sourceMappingURL=tainacan-gutenberg-block-carousel-items-list.css.map */

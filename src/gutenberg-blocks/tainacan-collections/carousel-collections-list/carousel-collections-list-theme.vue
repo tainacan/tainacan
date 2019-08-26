@@ -6,6 +6,7 @@
                     v-if="collections.length > 0">
                 <swiper 
                         role="list"
+                        ref="myCollectionSwiper"
                         :options="swiperOptions">
                     <swiper-slide 
                             role="listitem"
@@ -84,6 +85,7 @@
                 </swiper>
                 <button 
                         class="swiper-button-prev" 
+                        :id="blockId + '-prev'" 
                         slot="button-prev">
                     <svg
                             width="42"
@@ -97,6 +99,7 @@
                 </button>
                 <button 
                         class="swiper-button-next" 
+                        :id="blockId + '-next'" 
                         slot="button-next">
                     <svg
                             width="42"
@@ -120,6 +123,7 @@
             <div :class="'tainacan-carousel has-arrows-' + arrowsPosition">
                 <swiper 
                         role="list"
+                        ref="myCollectionSwiper"
                         :options="swiperOptions">
                     <swiper-slide 
                             role="listitem"
@@ -134,6 +138,7 @@
                 </swiper>
                 <button 
                         class="swiper-button-prev" 
+                        :id="blockId + '-prev'" 
                         slot="button-prev">
                     <svg
                             width="42"
@@ -147,6 +152,7 @@
                 </button>
                 <button 
                         class="swiper-button-next" 
+                        :id="blockId + '-next'" 
                         slot="button-next">
                     <svg
                             width="42"
@@ -195,8 +201,8 @@ export default {
                 spaceBetween: this.showCollectionThumbnail ? 32 : 16,
                 slideToClickedSlide: true,
                 navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
+                    nextEl: '#' + this.blockId + '-next',
+                    prevEl: '#' + this.blockId + '-prev',
                 },
                 breakpoints: {
                     498:  { slidesPerView: this.showCollectionThumbnail ? 1 : 1 },
@@ -215,8 +221,7 @@ export default {
         swiperSlide
     },
     props: {
-        collectionId: String,  
-        searchURL: String,
+        blockId: String,
         selectedCollections: Array,
         maxCollectionsNumber: Number,
         arrowsPosition: String,
@@ -278,7 +283,6 @@ export default {
     },
     created() {
         this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
-
         this.fetchCollections();
     },
 }
