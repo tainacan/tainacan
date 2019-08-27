@@ -323,14 +323,14 @@
     .wp-block-tainacan-carousel-items-list .tainacan-carousel.has-arrows-left .swiper-button-next {
       left: 10px;
       right: auto;
-      top: calc(50% + 36px); }
+      top: calc(50% + 12px) !important; }
     .wp-block-tainacan-carousel-items-list .items-list-edit-container.has-arrows-right .swiper-button-prev,
     .wp-block-tainacan-carousel-items-list .tainacan-carousel.has-arrows-right .swiper-button-prev {
       right: 10px;
       left: auto; }
     .wp-block-tainacan-carousel-items-list .items-list-edit-container.has-arrows-right .swiper-button-next,
     .wp-block-tainacan-carousel-items-list .tainacan-carousel.has-arrows-right .swiper-button-next {
-      top: calc(50% + 36px); }
+      top: calc(50% + 12px) !important; }
   .wp-block-tainacan-carousel-items-list ul.items-list-edit {
     display: flex;
     align-items: flex-start;

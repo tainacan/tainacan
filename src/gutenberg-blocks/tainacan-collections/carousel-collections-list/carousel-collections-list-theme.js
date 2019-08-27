@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     autoPlay: false,
                     autoPlaySpeed: 3,
                     loopSlides: false,
-                    hideTitle: true,
+                    hideName: true,
                     showCollectionThumbnail: false,
                     tainacanApiRoot: '',
                     tainacanBaseUrl: '',
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             autoPlay: this.autoPlay,
                             autoPlaySpeed: this.autoPlaySpeed,
                             loopSlides: this.loopSlides,
-                            hideTitle: this.hideTitle,
+                            hideName: this.hideName,
                             showCollectionThumbnail: this.showCollectionThumbnail,
                             tainacanApiRoot: this.tainacanApiRoot,
                             tainacanBaseUrl: this.tainacanBaseUrl,
@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.autoPlay = this.$el.attributes['auto-play'] != undefined ? this.$el.attributes['auto-play'].value == 'true' : false;
                     this.autoPlaySpeed = this.$el.attributes['auto-play-speed'] != undefined ? this.$el.attributes['auto-play-speed'].value : 3;
                     this.loopSlides = this.$el.attributes['loop-slides'] != undefined ? this.$el.attributes['loop-slides'].value == 'true' : false;
-                    this.hideTitle = this.$el.attributes['hide-title'] != undefined ? this.$el.attributes['hide-title'].value == 'true' : false;
+                    this.hideName = this.$el.attributes['hide-name'] != undefined ? this.$el.attributes['hide-name'].value == 'true' : false;
                     this.showCollectionThumbnail = this.$el.attributes['show-collection-thumbnail'] != undefined ? this.$el.attributes['show-collection-thumbnail'].value == 'true' : false;
                     this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
                     this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;

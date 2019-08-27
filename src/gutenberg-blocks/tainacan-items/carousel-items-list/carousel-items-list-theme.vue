@@ -86,7 +86,8 @@
                 <button 
                         class="swiper-button-prev" 
                         :id="blockId + '-prev'" 
-                        slot="button-prev">
+                        slot="button-prev"
+                        :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - 42px)'">
                     <svg
                             width="42"
                             height="42"
@@ -100,7 +101,8 @@
                 <button 
                         class="swiper-button-next" 
                         :id="blockId + '-next'" 
-                        slot="button-next">
+                        slot="button-next"
+                        :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - 42px)'">
                     <svg
                             width="42"
                             height="42"
@@ -119,11 +121,12 @@
             </div>
             <!-- Swiper buttons are hidden as they actually swipe from slide to slide -->
         </div>
-        <div v-else>
+        <div v-else-if="isLoading && !autoPlay">
             <div :class="'tainacan-carousel has-arrows-' + arrowsPosition">
                 <swiper 
                         role="list"
                         :options="swiperOptions"
+                        ref="myItemSwiperSkeleton"
                         :style="{
                             marginTop: showCollectionHeader ? '1.35rem' : '0px'
                         }">
@@ -142,7 +145,8 @@
                 <button 
                         class="swiper-button-prev" 
                         :id="blockId + '-prev'" 
-                        slot="button-prev">
+                        slot="button-prev"
+                        :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - 42px)'">
                     <svg
                             width="42"
                             height="42"
@@ -156,7 +160,8 @@
                 <button 
                         class="swiper-button-next" 
                         :id="blockId + '-next'"   
-                        slot="button-next">
+                        slot="button-next"
+                        :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - 42px)'">
                     <svg
                             width="42"
                             height="42"

@@ -206,14 +206,14 @@
         &.has-arrows-left .swiper-button-next {
             left: 10px;
             right: auto;
-            top: calc(50% + 36px);
+            top: calc(50% + 12px) !important;
         }
         &.has-arrows-right .swiper-button-prev {
             right: 10px;
             left: auto;
         }
         &.has-arrows-right .swiper-button-next {
-            top: calc(50% + 36px);
+            top: calc(50% + 12px) !important;
         }
     }
     ul.items-list-edit {
