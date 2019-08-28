@@ -139,9 +139,12 @@ class Media {
 		$file_type = wp_check_filetype( $file_name, null );
 		$attachment_title = sanitize_file_name( pathinfo( $file_name, PATHINFO_FILENAME ) );
 		$wp_upload_dir = wp_upload_dir();
+		
+		$guid = \str_replace($wp_upload_dir['basedir'], '', $file_path);
+		$guid = $wp_upload_dir['baseurl'] .  $guid;
 
 		$post_info = array(
-			'guid'				=> $wp_upload_dir['url'] . '/' . $file_name, 
+			'guid'				=> $guid, 
 			'post_mime_type'	=> $file_type['type'],
 			'post_title'		=> $attachment_title,
 			'post_content'		=> '',
