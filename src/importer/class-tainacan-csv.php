@@ -145,6 +145,12 @@ class CSV extends Importer {
             $processedItem[ $header ] = ( $metadatum->is_multiple() ) ? 
                 explode( $this->get_option('multivalued_delimiter'), $valueToInsert) : $valueToInsert;
         }
+
+        if( !empty( $this->get_option('document_index') ) ) $processedItem['special_document'] = '';
+        if( !empty( $this->get_option('attachment_index') ) ) $processedItem['special_attachments'] = '';
+        if( !empty( $this->get_option('item_status_index') ) ) $processedItem['special_item_status'] = '';
+        if( !empty( $this->get_option('item_comment_status_index') ) ) $processedItem['special_comment_status'] = '';
+
         $this->add_log('Success to proccess index: ' . $index  );
         return $processedItem;
     }
@@ -593,6 +599,15 @@ class CSV extends Importer {
 
         if( is_array( $processed_item ) ) {
             foreach ( $processed_item as $metadatum_source => $values ) {
+
+                if ( $metadatum_source == 'special_document' ||
+                     $metadatum_source == 'special_attachments' ||
+                     $metadatum_source == 'special_item_status' ||
+                     $metadatum_source == 'special_comment_status') {
+                    $special_columns = true;
+                    continue;
+                }
+
                 $tainacan_metadatum_id = array_search( $metadatum_source, $collection_definition['mapping'] );
                 $metadatum = $Tainacan_Metadata->fetch( $tainacan_metadatum_id );
 
@@ -626,7 +641,7 @@ class CSV extends Importer {
             }
         }
 
-        if( !empty( $itemMetadataArray ) && $collection instanceof Entities\Collection ) {
+        if( (!empty( $itemMetadataArray ) || $special_columns) && $collection instanceof Entities\Collection ) {
             $item->set_collection( $collection );
             if( $item->validate() ) {
                 $insertedItem = $Tainacan_Items->insert( $item );
