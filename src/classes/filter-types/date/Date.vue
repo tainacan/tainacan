@@ -58,11 +58,11 @@
                 &#8804;&nbsp; {{ $i18n.get('before_or_on_day') }}
             </b-dropdown-item>
         </b-dropdown>
-
         <b-datepicker
+                :type="options.type == 'month' ? 'month' : null"
                 position="is-bottom-left"
                 :aria-labelledby="labelId"
-                :placeholder="$i18n.get('instruction_select_a_date')"
+                :placeholder="options.type == 'month' ? $i18n.get('instruction_select_a_date') : $i18n.get('instruction_select_a_month')"
                 v-model="value"
                 @input="emit()"
                 editable
@@ -77,7 +77,21 @@
                     $i18n.get('datepicker_short_wednesday'),
                     $i18n.get('datepicker_short_thursday'),
                     $i18n.get('datepicker_short_friday'),
-                    $i18n.get('datepicker_short_saturday'),
+                    $i18n.get('datepicker_short_saturday')
+                ]"
+                :month-names="[
+                    $i18n.get('datepicker_month_january'),
+                    $i18n.get('datepicker_month_february'),
+                    $i18n.get('datepicker_month_march'),
+                    $i18n.get('datepicker_month_april'),
+                    $i18n.get('datepicker_month_may'),
+                    $i18n.get('datepicker_month_june'),
+                    $i18n.get('datepicker_month_july'),
+                    $i18n.get('datepicker_month_august'),
+                    $i18n.get('datepicker_month_september'),
+                    $i18n.get('datepicker_month_october'),
+                    $i18n.get('datepicker_month_november'),
+                    $i18n.get('datepicker_month_december')
                 ]"/>
     </div>
 </template>
@@ -92,7 +106,7 @@
         created() {
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
             this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : (typeof this.filter.metadatum.metadatum_id == 'object' ? this.filter.metadatum.metadatum_id.metadatum_id : this.filter.metadatum.metadatum_id);
-            // this.options = this.filter.filter_type_options;
+            this.options = this.filter.filter_type_options;
 
             let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 
