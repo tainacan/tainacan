@@ -58,7 +58,16 @@
                 &#8804;&nbsp; {{ $i18n.get('before_or_on_day') }}
             </b-dropdown-item>
         </b-dropdown>
+        <b-numberinput 
+                v-if="options.type == 'year'"
+                :placeholder="$i18n.get('instruction_type_value_year')"
+                :aria-labelledby="labelId"
+                size="is-small"
+                step="1"
+                @input="emitOnlyYear($event)"
+                v-model="yearsOnlyValue"/>
         <b-datepicker
+                v-else
                 :type="options.type == 'month' ? 'month' : null"
                 position="is-bottom-left"
                 :aria-labelledby="labelId"
@@ -151,6 +160,9 @@
             isRepositoryLevel: Boolean,
         },
         computed: {
+            yearsOnlyValue() {
+                return this.value && typeof this.value.getUTCFullYear === 'function' ? this.value.getUTCFullYear() : null
+            },
             comparatorSymbol() {
                 switch(this.comparator) {
                     case '=': return '&#61;';
@@ -173,16 +185,20 @@
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
                     
-                    if ( metadata.value && metadata.value.length > 0)
-                        this.value = Array.isArray(metadata.value) ? new Date(metadata.value[0]) : new Date(metadata.value);
-
                     if ( metadata.compare)
                         this.comparator = metadata.compare;
+                    
+                    if ( metadata.value && metadata.value.length > 0) {
+                        let textValue = Array.isArray(metadata.value) ? metadata.value[0] : metadata.value;
 
-                    if (this.value != undefined) {
+                        while (textValue.split('-')[0].length < 4)
+                            textValue = '0' + textValue;
+                        
+                        this.value = new Date(textValue);
+
                         this.$eventBusSearch.$emit( 'sendValuesToTags', {
                             filterId: this.filter.id,
-                            value: this.comparator + ' ' + this.parseDateToNavigatorLanguage(Array.isArray(metadata.value) ? metadata.value[0] : metadata.value)
+                            value: this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat)
                         });
                     }
 
@@ -216,15 +232,26 @@
             dateParser(dateString) { 
                 return moment(dateString, this.dateFormat).toDate(); 
             },
+            emitOnlyYear(year) {
+                this.value = new Date(year,0,1);
+                
+                this.value.setUTCDate(1);
+                this.value.setUTCMonth(0);
+                this.value.setFullYear(year);
+
+                this.emit();
+            },
             // emit the operation for listeners
             emit() {
-
                 if ( this.value == undefined || this.value == null || this.value === '')
                     this.value = new Date();
 
-                let valueQuery = this.value.getUTCFullYear() + '-' +
+                let valueQuery = (this.value.getUTCFullYear()) + '-' +
                           ('00' + (this.value.getUTCMonth() + 1)).slice(-2) + '-' +
                           ('00' + this.value.getUTCDate()).slice(-2);
+
+                while (valueQuery.split('-')[0].length < 4)
+                    valueQuery = '0' + valueQuery;
 
                 this.$emit('input', {
                     filter: 'date',
@@ -234,10 +261,9 @@
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     value: valueQuery
                 });
-
                 this.$eventBusSearch.$emit( 'sendValuesToTags', {
                     filterId: this.filter.id,
-                    value: this.comparator + ' ' + this.parseDateToNavigatorLanguage(valueQuery)
+                    value: this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat)
                 });
                 
             },

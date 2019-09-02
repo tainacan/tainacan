@@ -13,7 +13,7 @@
                     @input="onUpdateType">
                 <option value="day">{{ $i18n.get('label_day') }}</option>
                 <option value="month">{{ $i18n.get('label_month') }}</option>
-                <!-- <option value="year">{{ $i18n.get('label_year') }}</option> -->
+                <option value="year">{{ $i18n.get('label_year') }}</option>
             </b-select>
         </b-field>
     </div>

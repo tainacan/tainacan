@@ -480,6 +480,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_drag_and_drop_metadatum_sort'     	 => __( 'Drag and drop to change metadatum order', 'tainacan' ),
 	'instruction_select_a_date' 				     => __( 'Select a date', 'tainacan' ),
 	'instruction_select_a_month' 				     => __( 'Select a month', 'tainacan' ),
+	'instruction_type_value_year' 				     => __( 'Type year value', 'tainacan' ),
 	'instruction_select_the_amount_of_copies'		 => __( 'Select the amount of copies of the item that you want to create', 'tainacan'),
 
 	// Info. Other feedback to user.
