@@ -334,7 +334,9 @@ export default {
             availableMetadata: [],
             filterTypes: [],
             currentFilterTypePreview: undefined,
-            columnsTopY: 0        
+            columnsTopY: 0,
+            filtersSearchCancel: undefined,
+            metadataSearchCancel: undefined        
         }
     },
     computed: {
@@ -609,7 +611,7 @@ export default {
             return 190;
         }
     },
-   mounted() {
+    mounted() {
 
         if (!this.isRepositoryLevel)
             this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('filter') }]);
@@ -624,7 +626,6 @@ export default {
         else
             this.collectionId = this.$route.params.collectionId;
 
-        this.isLoadingMetadatumTypes = true;
         this.isLoadingFilters = true;
         this.isLoadingFilterTypes = true;
 
@@ -637,24 +638,57 @@ export default {
                 this.isLoadingFilterTypes = false;
             });        
 
-        this.fetchFilters({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true, includeDisabled: true })
-            .then(() => {
-                this.isLoadingFilters = false;
-                // Needs to be done after activeFilterList exists to compare and remove chosen metadata.
-                this.fetchMetadata({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true })
-                    .then(() => {
-                        this.isLoadingMetadatumTypes = false;
-                        this.updateListOfMetadata();
-                    })
-                    .catch(() => {
-                        this.isLoadingMetadatumTypes = false;
-                    });
-            })
-            .catch(() => {
-                this.isLoadingFilters = false;
-            });
+        // Cancels previous Request
+        if (this.filtersSearchCancel != undefined)
+            this.filtersSearchCancel.cancel('Filters search Canceled.');
 
-        
+        this.fetchFilters({
+                collectionId: this.collectionId,
+                isRepositoryLevel: this.isRepositoryLevel,
+                isContextEdit: !this.isOnTheme,
+                includeDisabled: true,
+            }).then((resp) => {
+                    resp.request
+                        .then(() => {
+                            
+                            this.isLoadingMetadatumTypes = true;
+
+                            // Cancels previous Request
+                            if (this.metadataSearchCancel != undefined)
+                                this.metadataSearchCancel.cancel('Metadata search Canceled.');
+
+                            // Needs to be done after activeFilterList exists to compare and remove chosen metadata.
+                            this.fetchMetadata({
+                                collectionId: this.collectionId, 
+                                isRepositoryLevel: this.isRepositoryLevel, 
+                                isContextEdit: true 
+                            }).then((resp) => {
+                                    resp.request
+                                        .then(() => {
+                                            this.isLoadingMetadatumTypes = false;
+                                            this.updateListOfMetadata();
+                                        })
+                                        .catch(() => {
+                                            this.isLoadingMetadatumTypes = false;
+                                        });
+                                 // Search Request Token for cancelling
+                                this.metadataSearchCancel = resp.source;
+                            })
+                            .catch(() => this.isLoadingMetadatumTypes = false);  
+                        })
+                        .catch(() => this.isLoadingFilters = false);
+
+                    // Search Request Token for cancelling
+                    this.filtersSearchCancel = resp.source;
+                })
+                .catch(() => this.isLoadingFilters = false);
+
+        // On repository level we also fetch collection filters
+        if (this.isRepositoryLevel) {
+            this.fetchRepositoryCollectionFilters()
+                .catch(() => this.isLoadingFilters = false);
+        }
+
         // Obtains collection name
         if (!this.isRepositoryLevel) {
             this.fetchCollectionName(this.collectionId).then((collectionName) => {
@@ -666,6 +700,15 @@ export default {
             this.onCancelFilterTypeSelection();
         }
         
+    },
+    beforeDestroy() {
+        // Cancels previous filters Request
+        if (this.filtersSearchCancel != undefined)
+            this.filtersSearchCancel.cancel('Metadata search Canceled.');
+        
+        // Cancels previous metadata Request
+        if (this.metadataSearchCancel != undefined)
+            this.metadataSearchCancel.cancel('Metadata search Canceled.');
     }
 }
 </script>

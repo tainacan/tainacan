@@ -232,22 +232,36 @@
           }
         },
         mounted(){
-          this.$root.$on('metadatumUpdated', (isRepositoryLevel) => {
-              if(isRepositoryLevel) {
-                  this.metadataIsLoading = true;
+            this.$root.$on('metadatumUpdated', (isRepositoryLevel) => {
 
-                  this.fetchMetadata({
-                      collectionId: this.isRepositoryLevel ? false : this.collectionId,
-                      isRepositoryLevel: this.isRepositoryLevel,
-                      isContextEdit: false,
-                      includeDisabled: false,
-                      isAdvancedSearch: true
-                  }).then((metadata) => {
-                      this.metadata = metadata;
-                      this.metadataIsLoading = false;
-                  });
-              }
-          });
+                if (isRepositoryLevel) {
+                    this.metadataIsLoading = true;
+
+                    // Cancels previous Request
+                    if (this.metadataSearchCancel != undefined)
+                        this.metadataSearchCancel.cancel('Metadata search Canceled.');
+
+                    this.fetchMetadata({
+                        collectionId: this.isRepositoryLevel ? false : this.collectionId,
+                        isRepositoryLevel: this.isRepositoryLevel,
+                        isContextEdit: false,
+                        includeDisabled: false,
+                        isAdvancedSearch: true
+                    }).then((resp) => {
+                            resp.request
+                                .then((metadata) => {
+                                    this.metadata = metadata;
+                                    this.metadataIsLoading = false;
+                                }).catch(() => {
+                                    this.metadataIsLoading = false;
+                                });
+
+                                // Search Request Token for cancelling
+                                this.metadataSearchCancel = resp.source;
+                        })
+                        .catch(() => this.metadataIsLoading = false);  
+                }
+            });
         },
         created(){
 
@@ -259,10 +273,19 @@
                 isContextEdit: false,
                 includeDisabled: false,
                 isAdvancedSearch: true
-            }).then((metadata) => {
-                this.metadata = metadata;
-                this.metadataIsLoading = false;
-            });
+            }).then((resp) => {
+                    resp.request
+                        .then((metadata) => {
+                            this.metadata = metadata;
+                            this.metadataIsLoading = false;
+                        }).catch(() => {
+                            this.metadataIsLoading = false;
+                        });
+
+                        // Search Request Token for cancelling
+                        this.metadataSearchCancel = resp.source;
+                })
+                .catch(() => this.metadataIsLoading = false);  
 
             if ((this.$route.query.metaquery && Object.keys(this.$route.query.metaquery).length > 0) ||
                 (this.$route.query.taxquery && Object.keys(this.$route.query.taxquery).length > 0) ){
@@ -343,6 +366,7 @@
                 },
                 metadataIsLoading: false,
                 metadata: [],
+                metadataSearchCancel: undefined
             }
         },
         methods: {
@@ -557,6 +581,11 @@
         },
         beforeDestroy() {
             this.$root.$off('metadatumUpdated');
+
+            // Cancels previous Request
+            if (this.metadataSearchCancel != undefined)
+                this.metadataSearchCancel.cancel('Metadata search Canceled.');
+
         }
     }
 </script>

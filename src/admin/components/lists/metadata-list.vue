@@ -461,7 +461,8 @@ export default {
             new_metadata_label: '',
             new_metadata_uri: '',
             new_metadata_slug: '',
-            columnsTopY: 0
+            columnsTopY: 0,
+            metadataSearchCancel: undefined
         }
     },
     components: {
@@ -618,8 +619,11 @@ export default {
                             .then(() => {
                                 if (!this.isRepositoryLevel)
                                     this.updateMetadataOrder();
+                                else 
+                                    this.$root.$emit('metadatumUpdated', this.isRepositoryLevel);
                             })
                             .catch(() => {
+                                this.$console.log("Error deleting metadatum.")
                             });
                     },
                 }
@@ -846,26 +850,43 @@ export default {
             return true;
         },
         refreshMetadata() {
+            
+            // Cancels previous Request
+            if (this.metadataSearchCancel != undefined)
+                this.metadataSearchCancel.cancel('Metadata search Canceled.');
+
             this.isRepositoryLevel = this.$route.name == 'MetadataPage' ? true : false;
+            
             if (this.isRepositoryLevel)
                 this.collectionId = 'default';
             else
                 this.collectionId = this.$route.params.collectionId;
-            
-            this.fetchMetadata({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true, includeDisabled: true})
-                .then(() => {
-                    this.isLoadingMetadata = false;
-                    
-                    // Checks URL as router watcher would not wait for list to load
-                    if (this.$route.query.edit != undefined) {
-                        let existingMetadataIndex = this.activeMetadatumList.findIndex((metadatum) => metadatum.id == this.$route.query.edit);
-                        if (existingMetadataIndex >= 0)
-                            this.editMetadatum(this.activeMetadatumList[existingMetadataIndex]);                        
-                    }
+
+            this.fetchMetadata({
+                collectionId: this.collectionId, 
+                isRepositoryLevel: this.isRepositoryLevel, 
+                isContextEdit: true, 
+                includeDisabled: true
+            }).then((resp) => {
+                    resp.request
+                        .then(() => {
+                            this.isLoadingMetadata = false;
+                            
+                            // Checks URL as router watcher would not wait for list to load
+                            if (this.$route.query.edit != undefined) {
+                                let existingMetadataIndex = this.activeMetadatumList.findIndex((metadatum) => metadatum.id == this.$route.query.edit);
+                                if (existingMetadataIndex >= 0)
+                                    this.editMetadatum(this.activeMetadatumList[existingMetadataIndex]);                        
+                            }
+                        })
+                        .catch(() => {
+                            this.isLoadingMetadata = false;
+                        });
+
+                    // Search Request Token for cancelling
+                    this.metadataSearchCancel = resp.source;
                 })
-                .catch(() => {
-                    this.isLoadingMetadata = false;
-                });
+                .catch(() => this.isLoadingMetadata = false);  
         },
         getPreviewTemplateContent(metadatum) {
             return `<div class="metadata-type-preview tainacan-form">
@@ -919,6 +940,13 @@ export default {
                 this.collectionName = collectionName;
             });
         }
+    },
+    beforeDestroy() {
+
+        // Cancels previous Request
+        if (this.metadataSearchCancel != undefined)
+            this.metadataSearchCancel.cancel('Metadata search Canceled.');
+
     }
 }
 </script>

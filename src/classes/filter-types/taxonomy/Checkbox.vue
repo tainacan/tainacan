@@ -157,7 +157,7 @@
                         })
                         .catch( error => {
                             if (isCancel(error)) {
-                                this.$console.log('Request canceled: ', error.message);
+                                this.$console.log('Request canceled: ' + error.message);
                             } else {
                                 this.$console.log('Error on facets request: ', error);
                                 this.isLoading = false;

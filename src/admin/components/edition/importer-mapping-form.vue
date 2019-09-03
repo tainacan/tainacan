@@ -207,7 +207,8 @@ export default {
             isEditingMetadatum: false,
             metadatum: {},
             editedMetadatum: {},
-            backgroundProcess: undefined
+            backgroundProcess: undefined,
+            metadataSearchCancel: undefined
         }
     },
     components: {
@@ -275,22 +276,37 @@ export default {
         loadMetadata() {
             // Generates options for metadata listing
             this.isFetchingCollectionMetadata = true;
-            this.fetchMetadata({collectionId: this.collectionId, isRepositoryLevel: false, isContextEdit: false })
-            .then((metadata) => {
-                this.collectionMetadata = JSON.parse(JSON.stringify(metadata));
-                this.isFetchingCollectionMetadata = false;
 
-                this.fetchMappingImporter({ collection: this.collectionId, sessionId: this.sessionId })
-                    .then(res => {
-                        if( res ) {
-                            this.mappedCollection['mapping'] = res;
-                        }
-                    })
-            })
-            .catch((error) => {
-                this.$console.error(error);
-                this.isFetchingCollectionMetadata = false;
-            }); 
+            // Cancels previous Request
+            if (this.metadataSearchCancel != undefined)
+                this.metadataSearchCancel.cancel('Metadata search Canceled.');
+
+            this.fetchMetadata({
+                collectionId: this.collectionId, 
+                isRepositoryLevel: false, 
+                isContextEdit: false 
+            }).then((resp) => {
+                    resp.request
+                        .then((metadata) => {
+                            this.collectionMetadata = JSON.parse(JSON.stringify(metadata));
+                            this.isFetchingCollectionMetadata = false;
+
+                            this.fetchMappingImporter({ collection: this.collectionId, sessionId: this.sessionId })
+                                .then(res => {
+                                    if( res ) {
+                                        this.mappedCollection['mapping'] = res;
+                                    }
+                                })
+                        })
+                        .catch((error) => {
+                            this.$console.error(error);
+                            this.isFetchingCollectionMetadata = false;
+                        });
+                        
+                        // Search Request Token for cancelling
+                        this.metadataSearchCancel = resp.source;
+                })
+                .catch(() => this.isFetchingCollectionMetadata = false);   
         },
         cancelBack(){
             this.$router.go(-2);
@@ -433,6 +449,11 @@ export default {
 
         this.loadImporter();    
         this.loadMetadata();
+    },
+    beforeDestroy() {
+        // Cancels previous Request
+        if (this.metadataSearchCancel != undefined)
+            this.metadataSearchCancel.cancel('Metadata search Canceled.');
     }
 
 }

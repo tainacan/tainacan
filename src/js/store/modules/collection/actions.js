@@ -107,9 +107,9 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                 .catch((thrown) => {
                     if (axios.isCancel(thrown)) {
                         console.log('Request canceled: ', thrown.message);
-                      } else {
+                    } else {
                         reject(thrown);
-                      }
+                    }
                 }); 
         }),
         source: source

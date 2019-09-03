@@ -3,39 +3,48 @@ import qs from 'qs';
 
 // FILTERS --------------------------------------------------------
 export const fetchFilters = ({ commit }, { collectionId, isRepositoryLevel, isContextEdit, includeDisabled, customFilters }) => {
-    return new Promise((resolve, reject) => {
+    
+    const source = axios.CancelToken.source();
 
-        let endpoint = '';
-        if (!isRepositoryLevel) 
-            endpoint = '/collection/' + collectionId + '/filters/';
-        else
-            endpoint = '/filters/';
+    return new Object({ 
+        request: new Promise((resolve, reject) => {
+            
+            let endpoint = '';
+            if (!isRepositoryLevel) 
+                endpoint = '/collection/' + collectionId + '/filters/';
+            else
+                endpoint = '/filters/';
 
-        endpoint += '?nopaging=1';
+            endpoint += '?nopaging=1';
 
-        if (isContextEdit) {
-            endpoint += '&context=edit';
-        }
+            if (isContextEdit) {
+                endpoint += '&context=edit';
+            }
 
-        if (includeDisabled){
-            endpoint += '&include_disabled=' + includeDisabled;
-        }
+            if (includeDisabled){
+                endpoint += '&include_disabled=' + includeDisabled;
+            }
 
-        if (customFilters != undefined && customFilters.length > 0) {
-            let postin = { 'postin': customFilters };
-            endpoint += '&' + qs.stringify(postin);
-        }
+            if (customFilters != undefined && customFilters.length > 0) {
+                let postin = { 'postin': customFilters };
+                endpoint += '&' + qs.stringify(postin);
+            }
 
-        axios.tainacan.get(endpoint)
-        .then((res) => {
-            let filters= res.data;
-            commit('setFilters', filters);
-            resolve (filters);
-        }) 
-        .catch((error) => {
-            console.log(error);
-            reject(error);
-        });
+            axios.tainacan.get(endpoint, { cancelToken: source.token })
+                .then((res) => {
+                    let filters= res.data;
+                    commit('setFilters', filters);
+                    resolve (filters);
+                }) 
+                .catch((error) => {
+                    if (axios.isCancel(error)) {
+                        console.log('Request canceled: ', error.message);
+                    } else {
+                        reject(error);
+                    }
+                });
+        }),
+        source: source
     });
 };
 
