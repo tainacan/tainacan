@@ -144,7 +144,8 @@
                                 this.$console.error( error );
                         });
                 }
-                
+                // Search Request Token for cancelling
+                this.getOptionsValuesCancel = promise.source;  
             },
             onSelect() {
                 this.$emit('input', {
