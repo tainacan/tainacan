@@ -336,7 +336,8 @@ export default {
             currentFilterTypePreview: undefined,
             columnsTopY: 0,
             filtersSearchCancel: undefined,
-            metadataSearchCancel: undefined        
+            metadataSearchCancel: undefined,
+            collectionNameSearchCancel: undefined           
         }
     },
     computed: {
@@ -691,10 +692,23 @@ export default {
 
         // Obtains collection name
         if (!this.isRepositoryLevel) {
-            this.fetchCollectionName(this.collectionId).then((collectionName) => {
-                this.collectionName = collectionName;
-            });
+
+            // Cancels previous collection name Request
+            if (this.collectionNameSearchCancel != undefined)
+                this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
+
+            this.fetchCollectionName(this.collectionId)
+                .then((resp) => {
+                    resp.request
+                        .then((collectionName) => {
+                            this.collectionName = collectionName;
+                        });
+                    
+                    // Search Request Token for cancelling
+                    this.collectionNameSearchCancel = resp.source;
+                })
         }
+        
         // Sets modal callback function
         this.$refs.filterTypeModal.onCancel = () => {
             this.onCancelFilterTypeSelection();
@@ -709,6 +723,10 @@ export default {
         // Cancels previous metadata Request
         if (this.metadataSearchCancel != undefined)
             this.metadataSearchCancel.cancel('Metadata search Canceled.');
+        
+        // Cancels previous collection name Request
+        if (this.collectionNameSearchCancel != undefined)
+            this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
     }
 }
 </script>

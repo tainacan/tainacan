@@ -462,7 +462,8 @@ export default {
             new_metadata_uri: '',
             new_metadata_slug: '',
             columnsTopY: 0,
-            metadataSearchCancel: undefined
+            metadataSearchCancel: undefined,
+            collectionNameSearchCancel: undefined  
         }
     },
     components: {
@@ -934,11 +935,23 @@ export default {
                 this.isLoadingMetadatumMappers = false;
             });
 
-        // Obtains collection name
+         // Obtains collection name
         if (!this.isRepositoryLevel) {
-            this.fetchCollectionName(this.collectionId).then((collectionName) => {
-                this.collectionName = collectionName;
-            });
+
+            // Cancels previous collection name Request
+            if (this.collectionNameSearchCancel != undefined)
+                this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
+
+            this.fetchCollectionName(this.collectionId)
+                .then((resp) => {
+                    resp.request
+                        .then((collectionName) => {
+                            this.collectionName = collectionName;
+                        });
+                    
+                    // Search Request Token for cancelling
+                    this.collectionNameSearchCancel = resp.source;
+                })
         }
     },
     beforeDestroy() {
@@ -946,6 +959,10 @@ export default {
         // Cancels previous Request
         if (this.metadataSearchCancel != undefined)
             this.metadataSearchCancel.cancel('Metadata search Canceled.');
+        
+        // Cancels previous collection name Request
+        if (this.collectionNameSearchCancel != undefined)
+            this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
 
     }
 }

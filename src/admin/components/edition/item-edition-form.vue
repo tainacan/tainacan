@@ -755,7 +755,8 @@ export default {
             collectionAllowComments: '',
             entityName: 'item',
             activeTab: 0,
-            isLoadingAttachments: false
+            isLoadingAttachments: false,
+            collectionNameSearchCancel: undefined
         }
     },
     computed: {
@@ -1303,9 +1304,21 @@ export default {
 
         // Obtains collection name
         if (!this.isRepositoryLevel) {
-            this.fetchCollectionName(this.collectionId).then((collectionName) => {
-                this.collectionName = collectionName;
-            });
+
+            // Cancels previous collection name Request
+            if (this.collectionNameSearchCancel != undefined)
+                this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
+
+            this.fetchCollectionName(this.collectionId)
+                .then((resp) => {
+                    resp.request
+                        .then((collectionName) => {
+                            this.collectionName = collectionName;
+                        });
+                    
+                    // Search Request Token for cancelling
+                    this.collectionNameSearchCancel = resp.source;
+                })
         }
         
         // Obtains if collection allow items comments
@@ -1328,6 +1341,10 @@ export default {
     beforeDestroy () {
         eventBus.$off('isUpdatingValue');
         eventBus.$off('hasErrorsOnForm');
+
+        // Cancels previous collection name Request
+        if (this.collectionNameSearchCancel != undefined)
+            this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
     },
     beforeRouteLeave ( to, from, next ) {
         if (this.item.status == 'auto-draft') {
