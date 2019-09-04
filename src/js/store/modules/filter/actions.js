@@ -177,7 +177,7 @@ export const fetchRepositoryCollectionFilters = ({ dispatch, commit } ) => {
                     for (let collection of collections ) {
                 
                         let endpoint = '';
-                        endpoint = '/collection/' + collection.id + '/filters/?nopaging=1&include_disabled=no';
+                        endpoint = '/collection/' + collection.id + '/filters/?nopaging=1&include_disabled=false';
 
                         axios.tainacan.get(endpoint)
                             .then((resp) => {
@@ -224,7 +224,7 @@ export const fetchTaxonomyFilters = ({ dispatch, commit }, taxonomyId ) => {
                     for (let collectionId of taxonomy.collections_ids ) {
                 
                         let endpoint = '';
-                        endpoint = '/collection/' + collectionId + '/filters/?nopaging=1&include_disabled=no';
+                        endpoint = '/collection/' + collectionId + '/filters/?nopaging=1&include_disabled=false';
 
                         axios.tainacan.get(endpoint)
                             .then((resp) => {

@@ -336,7 +336,6 @@ export default {
                         this.$emit( 'hasToPrepareMetadataAndFilters', to);
                     } else {  
                         this.$emit( 'isLoadingItems', true);
-                        
                         // Cancels previous Request
                         if (this.searchCancel != undefined)
                             this.searchCancel.cancel('Item search Canceled.');

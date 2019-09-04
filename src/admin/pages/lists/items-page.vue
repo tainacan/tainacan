@@ -1201,7 +1201,7 @@
                     collectionId: this.collectionId,
                     isRepositoryLevel: this.isRepositoryLevel,
                     isContextEdit: !this.isOnTheme,
-                    includeDisabled: 'no',
+                    includeDisabled: false,
                 })
                     .then((resp) => {
                         resp.request
