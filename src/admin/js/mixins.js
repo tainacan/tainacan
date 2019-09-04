@@ -44,7 +44,6 @@ export const dateInter = {
     },
     methods: {
         parseDateToNavigatorLanguage(date) {
-            console.log(date)
             date = new Date(date.replace(/-/g, '/'));
             return moment(date, moment.ISO_8601).format(this.dateFormat);  
         },
