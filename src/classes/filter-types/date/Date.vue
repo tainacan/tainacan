@@ -58,20 +58,18 @@
                 &#8804;&nbsp; {{ $i18n.get('before_or_on_day') }}
             </b-dropdown-item>
         </b-dropdown>
-        <b-numberinput 
+        <!-- <b-numberinput 
                 v-if="options.type == 'year'"
                 :placeholder="$i18n.get('instruction_type_value_year')"
                 :aria-labelledby="labelId"
                 size="is-small"
                 step="1"
                 @input="emitOnlyYear($event)"
-                v-model="yearsOnlyValue"/>
+                v-model="yearsOnlyValue"/> -->
         <b-datepicker
-                v-else
-                :type="options.type == 'month' ? 'month' : null"
                 position="is-bottom-left"
                 :aria-labelledby="labelId"
-                :placeholder="options.type == 'month' ? $i18n.get('instruction_select_a_date') : $i18n.get('instruction_select_a_month')"
+                :placeholder="$i18n.get('instruction_select_a_date')"
                 v-model="value"
                 @input="emit()"
                 editable
@@ -102,6 +100,11 @@
                     $i18n.get('datepicker_month_november'),
                     $i18n.get('datepicker_month_december')
                 ]"/>
+                <!-- OPTIONS FOR TYPE 
+                    v-else
+                    :type="options.type == 'month' ? 'month' : null" 
+                    :placeholder="options.type == 'month' ? $i18n.get('instruction_select_a_date') : $i18n.get('instruction_select_a_month')"
+                --> 
     </div>
 </template>
 
