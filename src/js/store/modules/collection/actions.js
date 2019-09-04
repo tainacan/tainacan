@@ -475,16 +475,25 @@ export const fetchUsers = ({ commit }, { search, exceptions }) => {
 
 // Fetch Collections for choosing Parent Collection
 export const fetchCollectionsForParent = ({ commit }) => {
-    return new Promise((resolve, reject) => { 
-        axios.tainacan.get('/collections/?nopaging=1fetch_only=name,id')
-        .then(res => {
-            let collections = res.data;
-            resolve( collections );
-        })
-        .catch(error => {
-            reject(error);
-        })
-    });
+    const source = axios.CancelToken.source();
+
+    return new Object({ 
+        request: new Promise((resolve, reject) => {
+            axios.tainacan.get('/collections/?nopaging=1fetch_only=name,id', { cancelToken: source.token })
+            .then(res => {
+                let collections = res.data;
+                resolve( collections );
+            })
+            .catch((error) => {
+                if (axios.isCancel(error)) {
+                    console.log('Request canceled: ', error.message);
+                } else {
+                    reject(error);
+                }
+            });
+        }),
+        source: source
+    })
 };
 
 // Send Files to Item Bulk Addition
