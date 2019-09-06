@@ -34,6 +34,7 @@ const DIRS = [
 
 require_once('libs/wp-async-request.php');
 require_once('libs/wp-background-process.php');
+require_once('libs/class-pdf2text.php');
 require_once('class-tainacan-background-process.php');
 require_once('tainacan-utils.php');
 require_once(TAINACAN_IMPORTER_DIR . 'class-tainacan-bg-importer.php');

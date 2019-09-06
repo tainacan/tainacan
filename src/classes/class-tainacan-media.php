@@ -228,10 +228,24 @@ class Media {
 			throw new \Exception("fatal error");
 	}
 	
-	public index_pdf_content($file, $item_id) {
-		
+	public function index_pdf_content($file, $item_id) {
+
+		$content_index_meta = '_pdf_content_index';
+		if (defined('TAINACAN_CONTENT_PDF_INDEX_METADATA')) {
+			$content_index_meta = TAINACAN_CONTENT_PDF_INDEX_METADATA;
+		}
+
+		if ($file == null) {
+			$meta_id = update_post_meta( $item_id, $content_index_meta, null );
+			return true;
+		}
+
 		if ( ! \file_exists($file) ) {
 			return false;
+		}
+
+		if ( $this->get_mime_content_type($file) != 'application/pdf') {
+			return null;
 		}
 		
 		// Allow plugins to implement other approach to index pdf contents 
@@ -240,18 +254,21 @@ class Media {
 			return $alternate;
 		}
 		
-		require_once( TAINACAN_CLASSES_DIR . '/lib/class-pdf2text.php' );
 		
-		$PDF2Text = new PDF2Text();
+
+		$PDF2Text = new \PDF2Text();
 		$PDF2Text->setFilename($file);
-		
 		try {
 			$PDF2Text->decodePDF();
-			update_post_meta( $item_id, '_pdf_index', $PDF2Text->output() );
-		} catch($e) {
+			$content = preg_replace('/[^a-zA-Z0-9_ -]/s','',$PDF2Text->output()); // melhorar essa expresão regular
+			//$content = filter_var ( $PDF2Text->output(), FILTER_SANITIZE_STRING);
+			//$content = iconv('ISO-8859-1', 'UTF-8//TRANSLIT//IGNORE', $PDF2Text->output());
+			//$content = preg_replace('/[\r\n\\n]+/', "\n", $content);
+			$meta_id = update_post_meta( $item_id, $content_index_meta, $content );
+		} catch(Exception $e) {
+			error_log('Caught exception: ' .  $e->getMessage() . "\n");
 			return false;
 		}
-		
 	}
 		
 }
