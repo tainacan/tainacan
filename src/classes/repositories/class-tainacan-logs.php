@@ -16,6 +16,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Logs extends Repository {
 	public $entities_type = '\Tainacan\Entities\Log';
 	private static $instance = null;
+	private $current_diff = null;
 
 	public static function get_instance() {
 		if ( ! isset( self::$instance ) ) {
@@ -30,6 +31,9 @@ class Logs extends Repository {
 		parent::__construct();
 
 		add_action( 'add_attachment', array( $this, 'prepare_attachment_log_before_insert' ), 10 );
+		
+		add_action( 'tainacan-pre-insert', array( $this, 'prepare_diff' ) );
+		add_action( 'tainacan-insert', array( $this, 'insert_entity' ) );
 	}
 
 	protected function _get_map() {
@@ -42,26 +46,19 @@ class Logs extends Repository {
 				'on_error'    => __( 'The title should be a text value and not empty', 'tainacan' ),
 				'validation'  => ''
 			],
-			'log_date'       => [
+			'date'       => [
 				'map'         => 'post_date',
 				'title'       => __( 'Log date', 'tainacan' ),
 				'type'        => 'string',
 				'description' => __( 'The log date', 'tainacan' ),
 			],
-			'order'          => [
-				'map'         => 'menu_order',
-				'title'       => __( 'Menu order', 'tainacan' ),
-				'type'        => 'string',
-				'description' => __( 'Log order' ),
-				'validation'  => ''
-			],
-			'parent'         => [
-				'map'         => 'parent',
-				'title'       => __( 'Parent', 'tainacan' ),
-				'type'        => 'string',
-				'description' => __( 'Log order' ),
-				'validation'  => ''
-			],
+			// 'parent'         => [
+			// 	'map'         => 'parent',
+			// 	'title'       => __( 'Parent', 'tainacan' ),
+			// 	'type'        => 'string',
+			// 	'description' => __( 'Log order' ),
+			// 	'validation'  => ''
+			// ],
 			'description'    => [
 				'map'         => 'post_content',
 				'title'       => __( 'Description', 'tainacan' ),
@@ -77,13 +74,6 @@ class Logs extends Repository {
 				'description' => __( 'The log slug' ),
 				'validation'  => ''
 			],
-			'items_per_page' => [
-				'map'         => 'meta',
-				'title'       => __( 'Items per page', 'tainacan' ),
-				'type'        => 'integer',
-				'description' => __( 'The quantity of items that should be loaded' ),
-				'validation'  => ''
-			],
 			'user_id'        => [
 				'map'         => 'post_author',
 				'title'       => __( 'User ID', 'tainacan' ),
@@ -91,21 +81,14 @@ class Logs extends Repository {
 				'description' => __( 'Unique identifier' ),
 				'validation'  => ''
 			],
-			'blog_id'        => [
-				'map'         => 'meta',
-				'title'       => __( 'Blog ID', 'tainacan' ),
-				'type'        => 'integer',
-				'description' => __( 'Unique identifier' ),
-				'validation'  => ''
-			],
-			'value'          => [
-				'map'         => 'meta',
-				'title'       => __( 'Actual value', 'tainacan' ),
-				'type'        => 'string',
-				'description' => __( 'The actual log value' ),
-				'validation'  => ''
-			],
-			'log_diffs'      => [
+			// 'value'          => [
+			// 	'map'         => 'meta',
+			// 	'title'       => __( 'Actual value', 'tainacan' ),
+			// 	'type'        => 'string',
+			// 	'description' => __( 'The actual log value' ),
+			// 	'validation'  => ''
+			// ],
+			'log_diffs'      => [ // deprecated
 				'map'         => 'meta',
 				'title'       => __( 'Log differences', 'tainacan' ),
 				'description' => __( 'Differences between old and new versions of object', 'tainacan' )
@@ -115,10 +98,23 @@ class Logs extends Repository {
 				'title'       => __( 'Log collection relationship', 'tainacan' ),
 				'description' => __( 'The ID of the collection that this log is related to', 'tainacan' )
 			],
-			'item_id' => [
+			'object_id' => [
 				'map'         => 'meta',
 				'title'       => __( 'Log item relationship', 'tainacan' ),
-				'description' => __( 'The id of the item that this log is related to', 'tainacan' ),
+				'description' => __( 'The id of the object that this log is related to', 'tainacan' ),
+			],
+			'object_type' => [
+				'map'         => 'meta',
+				'title'       => __( 'Log item relationship', 'tainacan' ),
+				'description' => __( 'The type of the object that this log is related to', 'tainacan' ),
+			],
+			'old_value' => [
+				'map'         => 'meta',
+				'title'       => __( 'Old Value', 'tainacan' ),
+			],
+			'new_value' => [
+				'map'         => 'meta',
+				'title'       => __( 'New value', 'tainacan' ),
 			]
 		] );
 	}
@@ -357,6 +353,98 @@ class Logs extends Repository {
 		if ( !empty( $diffs ) || $is_delete || $is_trash) {
 			return Entities\Log::create( $title, $description, $value, $diffs );
 		}
+	}
+	
+	/**
+	 * Compare two repository entities and sets the current_diff property to be used in the insert hook
+	 *
+	 * @param Entity $unsaved The new entity that is going to be saved
+	 *
+	 * @return void
+	 */
+	public function prepare_diff( Entities\Entity $unsaved ) {
+		
+		if ( ! $unsaved->get_repository()->use_logs ) {
+			return;
+		}
+		
+		// do not log a log
+		if ( ( method_exists( $unsaved, 'get_post_type' ) && $unsaved->get_post_type() === 'tainacan-log' ) || $unsaved->get_status() === 'auto-draft' ) {
+			return;
+		}
+		
+		$creating = true;
+		$old = $unsaved->get_repository()->fetch( $unsaved->get_id() );
+		
+		if ( $old instanceof Entities\Entity ) {
+			
+			if ( $old->get_status() !== 'auto-draft' ) {
+				$creating = false;
+			}
+			
+		}
+		
+		$diff = [
+			'old' => [],
+			'new' => []
+		];
+		
+		if ( $creating ) {
+			$diff['new'] = $unsaved->_toArray();
+		} else {
+			$map = $unsaved->get_repository()->get_map();
+			
+			foreach ( $map as $prop => $mapped ) {
+				// I can't verify differences on item, because it attributes are added when item is a auto-draft
+				if ( $old->get( $prop ) != $unsaved->get( $prop ) ) {
+					
+					$diff['old'][$prop] = $old->get( $prop );
+					$diff['new'][$prop] = $unsaved->get( $prop );
+					
+				}
+			}
+		}
+		
+		$diff = apply_filters( 'tainacan-entity-diff', $diff, $unsaved, $old );
+		
+		$this->current_diff = $diff;
+		
+	}
+	
+	public function insert_entity( Entities\Entity $entity ) {
+		
+		if ( ! $entity->get_repository()->use_logs ) {
+			return;
+		}
+		
+		// do not log a log
+		if ( ( method_exists( $entity, 'get_post_type' ) && $entity->get_post_type() === 'tainacan-log' ) || $entity->get_status() === 'auto-draft' ) {
+			return false;
+		}
+		
+		$log = new Entities\Log();
+		
+		$collection_id = method_exists($entity, 'get_collection_id') ? $entity->get_collection_id() : 'default';
+		
+		if ( $entity instanceof Entities\Collection ) {
+			$collection_id = $entity->get_id();
+		}
+		
+		$object_type = get_class($entity);
+		$object_id = $entity->get_id();
+		
+		$diff = $this->current_diff;
+		
+		$log->set_collection_id($collection_id);
+		$log->set_object_type($object_type);
+		$log->set_object_id($object_id);
+		$log->set_old_value($diff['old']);
+		$log->set_new_value($diff['new']);
+		
+		if ( $log->validate() ) {
+			$this->insert($log);
+		}
+				
 	}
 
 	/**

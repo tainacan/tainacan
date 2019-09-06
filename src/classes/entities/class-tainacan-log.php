@@ -12,14 +12,17 @@ class Log extends Entity {
 	protected
 		$title,
 		$order,
-		$parent,
 		$description,
 		$blog_id,
 		$user_id,
-		$log_date,
+		$date,
 		$user_name,
 		$collection_id,
-		$item_id;
+		$item_id,
+		$object_type,
+		$object_id,
+		$old_value,
+		$new_value;
 
 	static $post_type = 'tainacan-log';
 	/**
@@ -34,7 +37,6 @@ class Log extends Entity {
 
 		if ( is_int( $which ) && $which == 0 ) {
 			$this->set_user_id();
-			$this->set_blog_id();
 		}
 	}
 
@@ -89,27 +91,10 @@ class Log extends Entity {
 	 *
 	 * @return mixed|null
 	 */
-	function get_log_date() {
-		return $this->get_mapped_property( 'log_date' );
+	function get_date() {
+		return $this->get_mapped_property( 'date' );
 	}
 
-	/**
-	 * Return the log order type
-	 *
-	 * @return string
-	 */
-	function get_order() {
-		return $this->get_mapped_property( 'order' );
-	}
-
-	/**
-	 * Retun the parent ID
-	 *
-	 * @return integer
-	 */
-	function get_parent() {
-		return $this->get_mapped_property( 'parent' );
-	}
 
 	/**
 	 * Return the Log description
@@ -121,15 +106,6 @@ class Log extends Entity {
 	}
 
 	/**
-	 * Return the ID of blog
-	 *
-	 * @return integer
-	 */
-	function get_blog_id() {
-		return $this->get_mapped_property( 'blog_id' );
-	}
-
-	/**
 	 * Return User Id of who make the action
 	 *
 	 * @return int User Id of logged action
@@ -138,27 +114,28 @@ class Log extends Entity {
 		return $this->get_mapped_property( 'user_id' );
 	}
 
+
 	/**
-	 * Get value of log entry
+	 * Get old value of log entry object
 	 *
 	 * @param mixed $value
 	 *
 	 * @return void
 	 */
-	public function get_value() {
-		return maybe_unserialize( base64_decode( $this->get_mapped_property( 'value' ) ) );
+	public function get_old_value() {
+		return $this->get_mapped_property( 'old_value' );
 	}
-
-//	/**
-//	 * Get old value of log entry object
-//	 *
-//	 * @param mixed $value
-//	 *
-//	 * @return void
-//	 */
-//	public function get_old_value() {
-//		return maybe_unserialize( base64_decode( $this->get_mapped_property( 'old_value' ) ) );
-//	}
+	
+	/**
+	 * Get new value of log entry object
+	 *
+	 * @param mixed $value
+	 *
+	 * @return void
+	 */
+	public function get_new_value() {
+		return $this->get_mapped_property( 'new_value' );
+	}
 
 	/**
 	 * Set log tittle
@@ -167,30 +144,8 @@ class Log extends Entity {
 	 *
 	 * @return void
 	 */
-	function set_title( $value ) {
+	public function set_title( $value ) {
 		$this->set_mapped_property( 'title', $value );
-	}
-
-	/**
-	 * Define the order type
-	 *
-	 * @param [string] $value
-	 *
-	 * @return void
-	 */
-	function set_order( $value ) {
-		$this->set_mapped_property( 'order', $value );
-	}
-
-	/**
-	 * Define the parent ID
-	 *
-	 * @param [integer] $value
-	 *
-	 * @return void
-	 */
-	function set_parent( $value ) {
-		$this->set_mapped_property( 'parent', $value );
 	}
 
 	/**
@@ -200,7 +155,7 @@ class Log extends Entity {
 	 *
 	 * @return void
 	 */
-	function set_description( $value ) {
+	public function set_description( $value ) {
 		$this->set_mapped_property( 'description', $value );
 	}
 
@@ -211,7 +166,7 @@ class Log extends Entity {
 	 *
 	 * @return void
 	 */
-	protected function set_user_id( $value = 0 ) {
+	public function set_user_id( $value = 0 ) {
 		if ( 0 == $value ) {
 			$value = get_current_user_id();
 		}
@@ -219,46 +174,25 @@ class Log extends Entity {
 	}
 
 	/**
-	 * Define the blog ID of log entry
-	 *
-	 * @param [integer] $value
-	 *
-	 * @return void
-	 */
-	protected function set_blog_id( $value = 0 ) {
-		if ( 0 == $value ) {
-			$value = get_current_blog_id();
-		}
-		$this->set_mapped_property( 'blog_id', $value );
-	}
-
-	/**
-	 * Define the value of log entry
+	 * Set old value of log entry
 	 *
 	 * @param [mixed] $value
 	 *
 	 * @return void
 	 */
-	protected function set_value( $value = null ) {
-		$this->set_mapped_property( 'value', base64_encode( maybe_serialize( $value ) ) );
+	public function set_old_value( $value ) {
+		$this->set_mapped_property( 'old_value', $value );
 	}
-
-//	/**
-//	 * Set old value of log entry
-//	 *
-//	 * @param [mixed] $value
-//	 *
-//	 * @return void
-//	 */
-//	protected function set_old_value( $value = null ) {
-//		$this->set_mapped_property( 'old_value', base64_encode( maybe_serialize( $value ) ) );
-//	}
-
+	
 	/**
-	 * @param $diffs
+	 * Set new value of log entry
+	 *
+	 * @param [mixed] $value
+	 *
+	 * @return void
 	 */
-	public function set_log_diffs($diffs){
-		$this->set_mapped_property( 'log_diffs', $diffs );
+	public function set_new_value( $value ) {
+		$this->set_mapped_property( 'new_value', $value );
 	}
 
 	/**
@@ -275,12 +209,11 @@ class Log extends Entity {
 	 * @param null $value
 	 * @param array $diffs
 	 * @param string $status 'publish', 'private', 'pending', 'processing' or 'error'
-	 * @param int $parent
 	 *
 	 * @return \Tainacan\Entities\Log | bool
 	 * @throws \Exception
 	 */
-	public static function create( $message = false, $desc = '', $value = null, $diffs = [], $status = 'publish', $parent = 0 ) {
+	public static function create( $message = false, $desc = '', $value = null, $diffs = [], $status = 'publish' ) {
 
 		$log = new Log();
 
@@ -288,10 +221,6 @@ class Log extends Entity {
 		$log->set_description( $desc );
 		$log->set_status( $status );
 		$log->set_log_diffs( $diffs );
-
-		if($parent > 0) {
-			$log->set_parent($parent);
-		}
 
 		if(is_object($value) || is_string($value)) {
 			if(array_search( 'Tainacan\Traits\Entity_Collection_Relation', class_uses($value))) {
@@ -317,6 +246,22 @@ class Log extends Entity {
 		} else {
 			throw new \Exception( 'Invalid log' );
 		}
+	}
+	
+	public function get_object_type() {
+		$this->get_mapped_property('object_type');
+	}
+	
+	public function set_object_type($value) {
+		$this->set_mapped_property('object_type', $value);
+	}
+	
+	public function get_object_id() {
+		$this->get_mapped_property('object_id');
+	}
+	
+	public function set_object_id($value) {
+		$this->set_mapped_property('object_id', $value);
 	}
 
 	/**

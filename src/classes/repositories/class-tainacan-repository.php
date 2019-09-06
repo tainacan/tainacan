@@ -128,21 +128,9 @@ abstract class Repository {
 		$old       = '';
 
 		$diffs = [];
-
-		if ( $this->use_logs ) {
-			if ( $obj->get_id() ) {
-
-				$old = $obj->get_repository()->fetch( $obj->get_id() );
-
-				if ( method_exists( $old, 'get_status' ) && $old->get_status() === 'auto-draft' ) {
-					$is_update = false;
-				} else {
-					$is_update = true;
-				}
-
-				$diffs = $this->diff( $old, $obj );
-			}
-		}
+		
+		do_action( 'tainacan-pre-insert', $obj );
+		do_action( 'tainacan-pre-insert-' . $obj->get_post_type(), $obj );
 
 		$map = $this->get_map();
 
@@ -184,11 +172,6 @@ abstract class Repository {
 			if ( $mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi' ) {
 				$diffs = $this->insert_metadata( $obj, $prop, $diffs );
 			}
-		}
-
-		// TODO: Logs for header image insert and update
-		if ( $this->use_logs ) {
-			$this->logs_repository->insert_log( $obj, $diffs, $is_update );
 		}
 
 		do_action( 'tainacan-insert', $obj, $diffs, $is_update );
@@ -802,88 +785,6 @@ abstract class Repository {
 		}
 
 		return $temp_array;
-	}
-
-	/**
-	 * Compare two repository entities
-	 *
-	 * @param Entity|integer|\WP_Post $old default ($which = 0) to self compare with stored entity
-	 * @param Entity|integer|\WP_Post $new
-	 *
-	 * @return array List of diff values
-	 * @throws \Exception
-	 */
-	public function diff( $old = 0, $new ) {
-		$old_entity = null;
-
-		if ( $old === 0 || is_array( $old ) && count( $old ) == 0 ) { // self diff or other entity?
-			$id = $new->get_id();
-
-			if ( ! empty( $id ) ) { // there is a repository entity?
-				$old_entity = $this->get_entity_by_post( $new->WP_Post->ID );
-			} else {
-				$entity_type = get_class( $new );
-				$old_entity  = new $entity_type; // there is no saved entity, let compare with a new empty one
-			}
-		} else {
-			if ( $old->get_status() === 'auto-draft' ) {
-				$entity_type = get_class( $new );
-				$old_entity  = new $entity_type;
-			} else {
-				$old_entity = $old;
-			}
-		}
-
-		$new_entity = $new;
-
-		$map = $this->get_map();
-
-		$diff = [];
-
-		foreach ( $map as $prop => $mapped ) {
-			// I can't verify differences on item, because it attributes are added when item is a auto-draft
-			if ( $old_entity->get_mapped_property( $prop ) != $new_entity->get_mapped_property( $prop ) ) {
-
-				if ( $mapped['map'] === 'meta_multi' || ( $mapped['map'] === 'meta' && is_array( $new_entity->get_mapped_property( $prop ) ) ) ) {
-
-					// Array of diffs with index of diff in new array
-					$new_v = $new_entity->get_mapped_property( $prop );
-					$old_v = $old_entity->get_mapped_property( $prop );
-
-					$old_v = ! is_array( $old_v ) && empty( $old_v ) && ! is_string( $old_v ) ? array() : ( ! is_string( $old_v ) ? $old_v : [ $old_v ] );
-
-					$array_diff_with_index = array_map( 'unserialize',
-						array_diff_assoc( array_map( 'serialize', $new_v ), array_map( 'serialize', $old_v ) ) );
-
-					if ( ! empty( $array_diff_with_index ) ) {
-
-						$diff[ $prop ] = [
-							'new'             => $new_entity->get_mapped_property( $prop ),
-							'old'             => $old_entity->get_mapped_property( $prop ),
-							'diff_with_index' => $array_diff_with_index,
-						];
-					}
-				} elseif ( $mapped['map'] !== 'post_modified' ) {
-					$new_as_array = explode( ' ', $new_entity->get_mapped_property( $prop ) );
-					$old_as_array = explode( ' ', $old_entity->get_mapped_property( $prop ) );
-
-					// Array of diffs with index of diff in new array
-					$array_diff_with_index = array_diff_assoc( $new_as_array, $old_as_array );
-
-					$diff[ $prop ] = [
-						'new'             => $new_as_array,
-						'old'             => $old_entity->get_mapped_property( $prop ),
-						'diff_with_index' => $array_diff_with_index,
-					];
-				}
-
-			}
-		}
-
-		unset( $diff['id'], $diff['collection_id'], $diff['author_id'], $diff['creation_date'], $diff['_thumbnail_id'] );
-		$diff = apply_filters( 'tainacan-entity-diff', $diff, $new, $old );
-
-		return $diff;
 	}
 
 	/**
