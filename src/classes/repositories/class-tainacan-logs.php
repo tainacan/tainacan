@@ -32,7 +32,8 @@ class Logs extends Repository {
 
 		add_action( 'add_attachment', array( $this, 'prepare_attachment_log_before_insert' ), 10 );
 		
-		add_action( 'tainacan-pre-insert', array( $this, 'prepare_diff' ) );
+		add_action( 'tainacan-pre-insert', array( $this, 'prepare_entity_diff' ) );
+		
 		add_action( 'tainacan-insert', array( $this, 'insert_entity' ) );
 	}
 
@@ -80,6 +81,11 @@ class Logs extends Repository {
 				'type'        => 'integer',
 				'description' => __( 'Unique identifier' ),
 				'validation'  => ''
+			],
+			'item_id'        => [
+				'map'         => 'meta',
+				'title'       => __( 'Item ID', 'tainacan' ),
+				'type'        => 'integer',
 			],
 			// 'value'          => [
 			// 	'map'         => 'meta',
@@ -362,10 +368,16 @@ class Logs extends Repository {
 	 *
 	 * @return void
 	 */
-	public function prepare_diff( Entities\Entity $unsaved ) {
-		
+	public function prepare_entity_diff( Entities\Entity $unsaved ) {
+
 		if ( ! $unsaved->get_repository()->use_logs ) {
 			return;
+		}
+		
+		if ( $unsaved instanceof Entities\Item_Metadata_Entity ) {
+			return $this->prepare_item_metadata_diff($unsaved);
+		} elseif ( $unsaved instanceof Entities\Term ) {
+			return $this->prepare_term_diff($unsaved);
 		}
 		
 		// do not log a log
@@ -411,10 +423,37 @@ class Logs extends Repository {
 		
 	}
 	
-	public function insert_entity( Entities\Entity $entity ) {
+	private function prepare_item_metadata_diff( Entities\Entity $unsaved ) {
 		
+		$diff = [
+			'old' => [],
+			'new' => []
+		];
+		
+		$old = new Entities\Item_Metadata_Entity($unsaved->get_item(), $unsaved->get_metadatum());
+		
+		if ( $old instanceof Entities\Item_Metadata_Entity ) {
+			$diff['old'] = $old->get_value_as_string();
+		}
+		
+		$diff['new'] = $unsaved->get_value_as_string();
+		
+		$diff = apply_filters( 'tainacan-entity-diff', $diff, $unsaved, $old );
+		
+		$this->current_diff = $diff;
+		
+	}
+	
+	public function insert_entity( Entities\Entity $entity ) {
+
 		if ( ! $entity->get_repository()->use_logs ) {
 			return;
+		}
+		
+		if ( $entity instanceof Entities\Item_Metadata_Entity ) {
+			return $this->insert_item_metadata($entity);
+		} elseif ( $entity instanceof Entities\Term ) {
+			return $this->insert_term($entity);
 		}
 		
 		// do not log a log
@@ -428,6 +467,9 @@ class Logs extends Repository {
 		
 		if ( $entity instanceof Entities\Collection ) {
 			$collection_id = $entity->get_id();
+		}
+		if ( $entity instanceof Entities\Item ) {
+			$log->set_item_id($entity->get_id());
 		}
 		
 		$object_type = get_class($entity);
@@ -445,6 +487,30 @@ class Logs extends Repository {
 			$this->insert($log);
 		}
 				
+	}
+	
+	private function insert_item_metadata( Entities\Item_Metadata_Entity $entity ) {
+		
+		$log = new Entities\Log();
+		
+		$item_id = $entity->get_item()->get_id();
+		$collection_id = $entity->get_item()->get_collection_id();
+		$object_type = get_class($entity);
+		$object_id = $entity->get_metadatum()->get_id();
+		
+		$diff = $this->current_diff;
+		
+		$log->set_collection_id($collection_id);
+		$log->set_object_type($object_type);
+		$log->set_object_id($object_id);
+		$log->set_item_id($item_id);
+		$log->set_old_value($diff['old']);
+		$log->set_new_value($diff['new']);
+		
+		if ( $log->validate() ) {
+			$this->insert($log);
+		}
+		
 	}
 
 	/**

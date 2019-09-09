@@ -217,6 +217,10 @@ class Taxonomy extends Metadata_Type {
 				
 				$count ++;
 				
+				if ( is_integer($term) ) {
+					$term = \Tainacan\Repositories\Terms::get_instance()->fetch($term, $this->get_option('taxonomy_id'));
+				}
+				
 				if ( $term instanceof \Tainacan\Entities\Term ) {
 					$return .= $prefix;
 					
