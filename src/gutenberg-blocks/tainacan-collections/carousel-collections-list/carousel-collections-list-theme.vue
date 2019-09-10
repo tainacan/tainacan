@@ -218,6 +218,7 @@ export default {
                 autoplay: this.autoPlay ? { delay: this.autoPlaySpeed*1000 } : false,
                 loop: this.loopSlides
             },
+            errorMessage: 'No collections found.'
         }
     },
     components: {
@@ -242,6 +243,7 @@ export default {
         fetchCollections() {
  
             this.isLoading = true;
+            this.errorMessage = 'No collections found.';
             
             if (this.collectionsRequestSource != undefined && typeof this.collectionsRequestSource == 'function')
                 this.collectionsRequestSource.cancel('Previous collections search canceled.');
@@ -278,9 +280,11 @@ export default {
                     
                     this.totalCollections = response.headers['x-wp-total'];
 
-                }).catch(() => { 
+                }).catch((error) => { 
                     this.isLoading = false;
-                    // console.log(error);
+                     if (error.response && error.response.status && error.response.status == 401)
+                            this.errorMessage = 'Not allowed to see these collections.'
+
                 });
             
         },
