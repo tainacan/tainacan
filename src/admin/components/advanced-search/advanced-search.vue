@@ -526,7 +526,7 @@
                         if(criteriaKey[2] != 'date' && criteriaKey[2] != 'int' && criteriaKey[2] != 'float'){
                             this.advancedSearchQuery.metaquery = Object.assign({}, this.advancedSearchQuery.metaquery, {
                                 [`${searchCriterion}`]: {
-                                    key: Number(criteriaKey[0]),
+                                    key: criteriaKey[0],
                                     compare: 'LIKE',
                                     originalMeta: value,
                                 }
@@ -534,7 +534,7 @@
                         } else {
                             this.advancedSearchQuery.metaquery = Object.assign({}, this.advancedSearchQuery.metaquery, {
                                 [`${searchCriterion}`]: {
-                                    key: criteriaKey[0],
+                                    key: Number(criteriaKey[0]),
                                     compare: '=',
                                     originalMeta: value,
                                 }
