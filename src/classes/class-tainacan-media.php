@@ -230,7 +230,7 @@ class Media {
 	
 	public function index_pdf_content($file, $item_id) {
 
-		$content_index_meta = '_pdf_content_index';
+    $content_index_meta = '_document_content_index';
 		if (defined('TAINACAN_CONTENT_PDF_INDEX_METADATA')) {
 			$content_index_meta = TAINACAN_CONTENT_PDF_INDEX_METADATA;
 		}
@@ -253,14 +253,13 @@ class Media {
 		if ( ! \is_null($alternate) ) {
 			return $alternate;
 		}
-		
-		
 
 		$PDF2Text = new \PDF2Text();
 		$PDF2Text->setFilename($file);
 		try {
-			$PDF2Text->decodePDF();
-			$content = preg_replace('/[^a-zA-Z0-9_ -]/s','',$PDF2Text->output()); // melhorar essa expresão regular
+      $PDF2Text->decodePDF();
+      //$content = $PDF2Text->output(); // melhorar essa expresão regular
+      $content = preg_replace('/[^a-zA-Z0-9_ -]/s','',$PDF2Text->output()); // melhorar essa expresão regular
 			//$content = filter_var ( $PDF2Text->output(), FILTER_SANITIZE_STRING);
 			//$content = iconv('ISO-8859-1', 'UTF-8//TRANSLIT//IGNORE', $PDF2Text->output());
 			//$content = preg_replace('/[\r\n\\n]+/', "\n", $content);
