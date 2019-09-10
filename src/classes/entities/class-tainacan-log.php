@@ -277,6 +277,14 @@ class Log extends Entity {
 	public function get_item_id(){
 		return $this->get_mapped_property('item_id');
 	}
+	
+	public function get_action() {
+		$this->get_mapped_property('action');
+	}
+	
+	public function set_action($value) {
+		$this->set_mapped_property('action', $value);
+	}
 
 	/**
 	 * {@inheritDoc}

@@ -17,6 +17,8 @@ class Logs extends Repository {
 	public $entities_type = '\Tainacan\Entities\Log';
 	private static $instance = null;
 	private $current_diff = null;
+	private $current_deleting_entity;
+	private $current_action;
 
 	public static function get_instance() {
 		if ( ! isset( self::$instance ) ) {
@@ -35,6 +37,8 @@ class Logs extends Repository {
 		add_action( 'tainacan-pre-insert', array( $this, 'prepare_entity_diff' ) );
 		
 		add_action( 'tainacan-insert', array( $this, 'insert_entity' ) );
+		add_action( 'tainacan-deleted', array( $this, 'delete_entity' ), 10, 2 );
+		add_action( 'tainacan-pre-delete', array( $this, 'pre_delete_entity' ), 10, 2 );
 	}
 
 	protected function _get_map() {
@@ -121,6 +125,10 @@ class Logs extends Repository {
 			'new_value' => [
 				'map'         => 'meta',
 				'title'       => __( 'New value', 'tainacan' ),
+			],
+			'action' => [
+				'map'         => 'meta',
+				'title'       => __( 'Action', 'tainacan' ),
 			]
 		] );
 	}
@@ -420,6 +428,48 @@ class Logs extends Repository {
 		$diff = apply_filters( 'tainacan-entity-diff', $diff, $unsaved, $old );
 		
 		$this->current_diff = $diff;
+		$this->current_action = $creating ? 'create' : 'update';
+		
+	}
+	
+	private function prepare_term_diff( Entities\Term $unsaved ) {
+
+		$creating = true;
+		$old = $unsaved->get_repository()->fetch( $unsaved->get_id(), $unsaved->get_taxonomy() );
+		
+		if ( $old instanceof Entities\Entity ) {
+			
+			if ( $old->get_status() !== 'auto-draft' ) {
+				$creating = false;
+			}
+			
+		}
+		
+		$diff = [
+			'old' => [],
+			'new' => []
+		];
+		
+		if ( $creating ) {
+			$diff['new'] = $unsaved->_toArray();
+		} else {
+			$map = $unsaved->get_repository()->get_map();
+			
+			foreach ( $map as $prop => $mapped ) {
+				// I can't verify differences on item, because it attributes are added when item is a auto-draft
+				if ( $old->get( $prop ) != $unsaved->get( $prop ) ) {
+					
+					$diff['old'][$prop] = $old->get( $prop );
+					$diff['new'][$prop] = $unsaved->get( $prop );
+					
+				}
+			}
+		}
+		
+		$diff = apply_filters( 'tainacan-entity-diff', $diff, $unsaved, $old );
+		
+		$this->current_diff = $diff;
+		$this->current_action = $creating ? 'create' : 'update';
 		
 	}
 	
@@ -441,6 +491,7 @@ class Logs extends Repository {
 		$diff = apply_filters( 'tainacan-entity-diff', $diff, $unsaved, $old );
 		
 		$this->current_diff = $diff;
+		$this->current_action = 'update';
 		
 	}
 	
@@ -453,7 +504,7 @@ class Logs extends Repository {
 		if ( $entity instanceof Entities\Item_Metadata_Entity ) {
 			return $this->insert_item_metadata($entity);
 		} elseif ( $entity instanceof Entities\Term ) {
-			return $this->insert_term($entity);
+			//return $this->insert_term($entity);
 		}
 		
 		// do not log a log
@@ -487,6 +538,81 @@ class Logs extends Repository {
 			$this->insert($log);
 		}
 				
+	}
+	
+	public function pre_delete_entity( Entities\Entity $entity, bool $permanent) {
+		
+		if ( ! $entity->get_repository()->use_logs ) {
+			return;
+		}
+		
+		if ( $entity instanceof Entities\Item_Metadata_Entity ) {
+			//return $this->insert_item_metadata($entity);
+		} elseif ( $entity instanceof Entities\Term ) {
+			//return $this->insert_term($entity);
+		}
+		
+		// do not log a log
+		if ( ( method_exists( $entity, 'get_post_type' ) && $entity->get_post_type() === 'tainacan-log' ) || $entity->get_status() === 'auto-draft' ) {
+			return false;
+		}
+		
+		$log = new Entities\Log();
+		
+		$this->current_deleting_entity = $entity->_toArray();
+		$this->current_action = $permanent ? 'delete' : 'trash';
+		
+	}
+	
+	public function delete_entity( Entities\Entity $entity, bool $permanent) {
+		
+		if ( ! $entity->get_repository()->use_logs ) {
+			return;
+		}
+		
+		if ( $entity instanceof Entities\Item_Metadata_Entity ) {
+			//return $this->insert_item_metadata($entity);
+		} elseif ( $entity instanceof Entities\Term ) {
+			//return $this->insert_term($entity);
+		}
+		
+		// do not log a log
+		if ( ( method_exists( $entity, 'get_post_type' ) && $entity->get_post_type() === 'tainacan-log' ) || $entity->get_status() === 'auto-draft' ) {
+			return false;
+		}
+		
+		$log = new Entities\Log();
+		
+		$collection_id = method_exists($entity, 'get_collection_id') ? $entity->get_collection_id() : 'default';
+		
+		if ( $entity instanceof Entities\Collection ) {
+			$collection_id = $entity->get_id();
+		}
+		if ( $entity instanceof Entities\Item ) {
+			$log->set_item_id($entity->get_id());
+		}
+		
+		$object_type = get_class($entity);
+		$object_id = $entity->get_id();
+		
+		$diff = $this->current_diff;
+		
+		$log->set_collection_id($collection_id);
+		$log->set_object_type($object_type);
+		$log->set_object_id($object_id);
+		
+		if ( $permanent ) {
+			$log->set_old_value( $this->current_deleting_entity );
+		} else {
+			$log->set_old_value( ['status' => $entity->get_status()] );
+			$log->set_new_value( ['status' => 'trash']  );
+		}
+		
+		
+		if ( $log->validate() ) {
+			$this->insert($log);
+		}
+		
 	}
 	
 	private function insert_item_metadata( Entities\Item_Metadata_Entity $entity ) {

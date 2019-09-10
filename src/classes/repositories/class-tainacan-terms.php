@@ -117,16 +117,9 @@ class Terms extends Repository {
 			throw new \Exception( 'Entities must be validated before you can save them' );
 		}
 		
-		$is_update = false;
-		$diffs     = [];
-		if ( $term->get_id() && $this->use_logs) {
-			$is_update = true;
-
-			$old = $this->fetch( $term->get_id(), $term->get_taxonomy() );
-
-			$diffs = $this->diff( $old, $term );
-		}
-
+		do_action( 'tainacan-pre-insert', $term );
+		do_action( 'tainacan-pre-insert-term', $term );
+		
 		// First iterate through the native post properties
 		$map = $this->get_map();
 		foreach ( $map as $prop => $mapped ) {
@@ -169,17 +162,13 @@ class Terms extends Repository {
 				update_term_meta( $term_saved['term_id'], $prop, wp_slash( $term->get_mapped_property( $prop ) ) );
 			}
 		}
+		
+		$new_entity = new Entities\Term( $term_saved['term_id'], $term->get_taxonomy() );
 
-		if($this->use_logs){
-			// TODO: Log header image updates
-			$this->logs_repository->insert_log( $term, $diffs, $is_update );
-		}
+		do_action( 'tainacan-insert', $new_entity );
+		do_action( 'tainacan-insert-term', $new_entity );
 
-
-		do_action( 'tainacan-insert', $term, $diffs, $is_update );
-		do_action( 'tainacan-insert-term', $term );
-
-		return new Entities\Term( $term_saved['term_id'], $term->get_taxonomy() );
+		return $new_entity;
 	}
 	
 	// TODO: Is this workaround ok to avoid getting htmlentities ?

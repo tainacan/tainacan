@@ -607,6 +607,10 @@ abstract class Repository {
 	 * @return mixed|Entity @see https://developer.wordpress.org/reference/functions/wp_delete_post/
 	 */
 	public function delete( Entities\Entity $entity, $permanent = true ) {
+		
+		do_action( 'tainacan-pre-delete', $entity, $permanent );
+		do_action( 'tainacan-pre-delete-' . $entity->get_post_type(), $entity, $permanent );
+		
 		if ($permanent === true) {
 			$return = wp_delete_post( $entity->get_id(), $permanent );
 		} elseif ($permanent === false) {
@@ -614,8 +618,7 @@ abstract class Repository {
 		}
 		
 
-		if ( $return instanceof \WP_Post && $this->use_logs) {
-			$this->logs_repository->insert_log( $entity, [], false, false, true );
+		if ( $return instanceof \WP_Post && $this->use_logs ) {
 			
 			do_action( 'tainacan-deleted', $entity, $permanent );
 			do_action( 'tainacan-deleted-' . $entity->get_post_type(), $entity, $permanent );
