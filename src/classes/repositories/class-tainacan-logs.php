@@ -263,9 +263,11 @@ class Logs extends Repository {
 				
 				if ( $entity instanceof Entities\Collection ) {
 					$collection_id = $entity->get_id();
+					$log->set_title( sprintf( __( 'New file was attached to Collection "%s"', 'tainacan'), $entity->get_name() ) );
 				}
 				if ( $entity instanceof Entities\Item ) {
 					$log->set_item_id($entity->get_id());
+					$log->set_title( sprintf( __( 'New file was attached to Item "%s"', 'tainacan'), $entity->get_title() ) );
 				}
 				
 				$object_type = get_class($entity);
@@ -277,6 +279,8 @@ class Logs extends Repository {
 				$log->set_object_type($object_type);
 				$log->set_object_id($object_id);
 				$log->set_action('new-attachment');
+				
+				$title = __( sprintf('') , 'tainacan');
 				
 				$prepared = [
 					'id'          => $attachment->ID,
@@ -318,9 +322,11 @@ class Logs extends Repository {
 				
 				if ( $entity instanceof Entities\Collection ) {
 					$collection_id = $entity->get_id();
+					$log->set_title( sprintf(__( 'File attached to Collection "%s" was removed', 'tainacan'), $entity->get_name() ) );
 				}
 				if ( $entity instanceof Entities\Item ) {
 					$log->set_item_id($entity->get_id());
+					$log->set_title( sprintf( __( 'File attached to Item "%s" was removed' , 'tainacan'), $entity->get_title() ) );
 				}
 				
 				$object_type = get_class($entity);
@@ -591,17 +597,89 @@ class Logs extends Repository {
 		
 		$collection_id = method_exists($entity, 'get_collection_id') ? $entity->get_collection_id() : 'default';
 		
+		$diff = $this->current_diff;
+		
 		if ( $entity instanceof Entities\Collection ) {
+			
 			$collection_id = $entity->get_id();
-		}
-		if ( $entity instanceof Entities\Item ) {
+			
+			if ($this->current_action == 'update') {
+				$log->set_title( sprintf( __( 'Collection "%s" was updated', 'tainacan'), $entity->get_name() ) );
+			} elseif ($this->current_action == 'create') {
+				$log->set_title( sprintf( __( 'Collection "%s" was created', 'tainacan'), $entity->get_name() ) );
+			}
+			
+		} elseif ( $entity instanceof Entities\Item ) {
+			
 			$log->set_item_id($entity->get_id());
+			
+			if ($this->current_action == 'update') {
+				if (isset($diff['new']['document'])) {
+					$log->set_title( sprintf( __( 'Item "%s" document was updated', 'tainacan'), $entity->get_title() ) );
+				} else {
+					$log->set_title( sprintf( __( 'Item "%s" was updated', 'tainacan'), $entity->get_title() ) );
+				}
+			} elseif ($this->current_action == 'create') {
+				$log->set_title( sprintf( __( 'Item "%1$s" was created with the ID %2$s', 'tainacan'), $entity->get_title(), $entity->get_id() ) );
+			}
+		} elseif ( $entity instanceof Entities\Filter ) {
+			
+			if ( 'default' == $collection_id ) {
+				if ($this->current_action == 'update') {
+					$log->set_title( sprintf( __( 'Filter "%s" was updated in repository level', 'tainacan'), $entity->get_name() ) );
+				} elseif ($this->current_action == 'create') {
+					$log->set_title( sprintf( __( 'Filter "%1$s" was added to the repository', 'tainacan'), $entity->get_name() ) );
+				}
+			} elseif ( is_numeric($collection_id) ) {
+				if ($this->current_action == 'update') {
+					$log->set_title( sprintf( __( 'Filter "%s" was updated in Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
+				} elseif ($this->current_action == 'create') {
+					$log->set_title( sprintf( __( 'Filter "%1$s" was added to Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
+				}
+			}
+			
+		} elseif ( $entity instanceof Entities\Metadatum ) {
+			
+			if ( 'default' == $collection_id ) {
+				if ($this->current_action == 'update') {
+					$log->set_title( sprintf( __( 'Metadatum "%s" was updated in repository level', 'tainacan'), $entity->get_name() ) );
+				} elseif ($this->current_action == 'create') {
+					$log->set_title( sprintf( __( 'Metadatum "%1$s" was added to the repository', 'tainacan'), $entity->get_name() ) );
+				}
+			} elseif ( is_numeric($collection_id) ) {
+				if ($this->current_action == 'update') {
+					$log->set_title( sprintf( __( 'Metadatum "%s" was updated in Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
+				} elseif ($this->current_action == 'create') {
+					$log->set_title( sprintf( __( 'Metadatum "%1$s" was added to Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
+				}
+			}
+			
+		} elseif ( $entity instanceof Entities\Taxonomy ) {
+			
+			if ($this->current_action == 'update') {
+				$log->set_title( sprintf( __( 'Taxonomy "%s" was updated', 'tainacan'), $entity->get_name() ) );
+			} elseif ($this->current_action == 'create') {
+				$log->set_title( sprintf( __( 'Taxonomy "%1$s" was created', 'tainacan'), $entity->get_name() ) );
+			}
+			
+		}  elseif ( $entity instanceof Entities\Term ) {
+			
+			$taxonomy = Taxonomies::get_instance()->fetch_by_db_identifier($entity->get_taxonomy());
+			$tax_name = '';
+			if ($taxonomy instanceof Entities\Taxonomy) {
+				$tax_name = $taxonomy->get_name();
+			}
+			
+			if ($this->current_action == 'update') {
+				$log->set_title( sprintf( __( 'Term "%1$s" was updated in "%2$s" taxonomy', 'tainacan'), $entity->get_name(), $tax_name ) );
+			} elseif ($this->current_action == 'create') {
+				$log->set_title( sprintf( __( 'Term "%1$s" was added to "%2$s" taxonomy', 'tainacan'), $entity->get_name(), $tax_name ) );
+			}
+			
 		}
 		
 		$object_type = get_class($entity);
 		$object_id = $entity->get_id();
-		
-		$diff = $this->current_diff;
 		
 		$log->set_collection_id($collection_id);
 		$log->set_object_type($object_type);
@@ -632,8 +710,6 @@ class Logs extends Repository {
 		if ( ( method_exists( $entity, 'get_post_type' ) && $entity->get_post_type() === 'tainacan-log' ) || $entity->get_status() === 'auto-draft' ) {
 			return false;
 		}
-		
-		$log = new Entities\Log();
 		
 		$this->current_deleting_entity = $entity->_toArray();
 		$this->current_action = $permanent ? 'delete' : 'trash';

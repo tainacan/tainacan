@@ -240,6 +240,14 @@ class Taxonomies extends Repository {
 		return $this->fetch($args, $output);
 
 	}
+	
+	public function fetch_by_db_identifier($db_identifier) {
+		$id = $this->get_id_by_db_identifier($db_identifier);
+		if ($id) {
+			return $this->fetch( (int) $id );
+		}
+		return [];
+	}
 
 	public function update( $object, $new_values = null ) {
 		return $this->insert( $object );
