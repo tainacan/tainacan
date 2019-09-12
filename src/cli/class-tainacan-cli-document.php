@@ -22,8 +22,8 @@ class Cli_Document {
 	 * index content of documents
 	 *
 	 * ## OPTIONS
-	 * [--collection-id=<value>]
-	 * : <value> Specific ID of the collection into which the document content of the items will be indexed, if not informed all collections will be index.
+	 * [--collection=<value>]
+	 * : <value> Specific ID of the collection into which the document content of the items will be indexed, or 'all' to all collections.
 	 * 
 	 * 
 	 * [--dry-run]
@@ -31,13 +31,13 @@ class Cli_Document {
 	 * 
 	 * ## EXAMPLES
 	 * 
-	 * wp tainacan index-content --collection-id=416
+	 * wp tainacan index-content --collection=416
 	 * indexing documents of items to collection 416:  100% [====================================================] 0:00 / 0:00
 	 * Success: 
 	 * 7 items indexed
 	 * 
 	 * 
-	 * wp tainacan index-content
+	 * wp tainacan index-content --collection=all
 	 * indexing documents of items to collection 416:  100% [====================================================] 0:00 / 0:00
 	 * Success: 
 	 * 7 items indexed
@@ -52,11 +52,15 @@ class Cli_Document {
 			$this->dry_run = true;
 		}
 
-		if( empty($assoc_args['collection-id']) ) {
+		if( empty($assoc_args['collection']) ) {
+			\WP_CLI::error( 'Wrong parameters', true );
+		}
+
+		$collection = $assoc_args['collection'];
+		if ($collection == 'all') {
 			$this->index_item_all_collections();
 		} else {
-			$collection_id = $assoc_args['collection-id'];
-			$this->index_item($collection_id);
+			$this->index_item($collection);
 		}
 	}
 

@@ -260,7 +260,11 @@ class Media {
 		try {
 			$PDF2Text->decodePDF();
 			$content = preg_replace('~[[:cntrl:]]~', '', $PDF2Text->output());
-			$content = mb_convert_encoding($content, 'UTF-8', 'ISO-8859-1');
+
+			$wp_charset = get_bloginfo('charset');
+			$content_charset = mb_detect_encoding($content);
+			$content = mb_convert_encoding($content, $wp_charset, $content_charset);
+
 			$meta_id = update_post_meta( $item_id, $content_index_meta, $content );
 		} catch(Exception $e) {
 			error_log('Caught exception: ' .  $e->getMessage() . "\n");
