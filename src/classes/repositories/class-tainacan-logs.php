@@ -32,13 +32,15 @@ class Logs extends Repository {
 	protected function __construct() {
 		parent::__construct();
 
-		add_action( 'add_attachment', array( $this, 'prepare_attachment_log_before_insert' ), 10 );
-		
 		add_action( 'tainacan-pre-insert', array( $this, 'prepare_entity_diff' ) );
 		
 		add_action( 'tainacan-insert', array( $this, 'insert_entity' ) );
 		add_action( 'tainacan-deleted', array( $this, 'delete_entity' ), 10, 2 );
 		add_action( 'tainacan-pre-delete', array( $this, 'pre_delete_entity' ), 10, 2 );
+		
+		add_action( 'add_attachment', array( $this, 'insert_attachment' ) );
+		add_action( 'delete_attachment', array( $this, 'pre_delete_attachment' ) );
+		add_action( 'delete_post', array( $this, 'delete_attachment' ) );
 	}
 
 	protected function _get_map() {
@@ -243,41 +245,114 @@ class Logs extends Repository {
 	}
 
 
-	public function prepare_attachment_log_before_insert( $post_ID ) {
+	public function insert_attachment( $post_ID ) {
 		$attachment = get_post( $post_ID );
 		$post       = $attachment->post_parent;
 
 		if ( $post ) {
 			// was added attachment on a tainacan object
 
-			$tainacan_post = Repository::get_entity_by_post( $post );
+			$entity = Repository::get_entity_by_post( $post );
 
-			if ( $tainacan_post ) {
+			if ( $entity ) {
 				// was added a normal attachment
-
-				// get all attachments except the new
-				$old_attachments_objects = $tainacan_post->get_attachments( $post_ID );
-
-				// get all attachments
-				$new_attachments_objects = $tainacan_post->get_attachments();
 				
-				$old_attachments = $this->prepare_attachments($old_attachments_objects);
-				$new_attachments = $this->prepare_attachments($new_attachments_objects);
-
-				$array_diff_with_index = array_map( 'unserialize',
-					array_diff_assoc( array_map( 'serialize', $new_attachments ), array_map( 'serialize', $old_attachments ) ) );
-
-				$diff['attachments'] = [
-					'new'             => $new_attachments,
-					'old'             => $old_attachments,
-					'diff_with_index' => $array_diff_with_index
+				$log = new Entities\Log();
+				
+				$collection_id = method_exists($entity, 'get_collection_id') ? $entity->get_collection_id() : 'default';
+				
+				if ( $entity instanceof Entities\Collection ) {
+					$collection_id = $entity->get_id();
+				}
+				if ( $entity instanceof Entities\Item ) {
+					$log->set_item_id($entity->get_id());
+				}
+				
+				$object_type = get_class($entity);
+				$object_id = $entity->get_id();
+				
+				$diff = [];
+				
+				$log->set_collection_id($collection_id);
+				$log->set_object_type($object_type);
+				$log->set_object_id($object_id);
+				$log->set_action('new-attachment');
+				
+				$prepared = [
+					'id'          => $attachment->ID,
+					'title'       => $attachment->post_title,
+					'description' => $attachment->post_content,
+					'mime_type'   => $attachment->post_mime_type,
+					'url'         => wp_get_attachment_url($attachment->ID),
+					'thumb'       => wp_get_attachment_image_src($attachment->ID, 'thumbnail'),
 				];
-
-				$this->insert_log( $tainacan_post, $diff, true );
+				
+				$log->set_new_value($prepared);
+				
+				if ( $log->validate() ) {
+					$this->insert($log);
+				}
 
 			}
 		}
 
+	}
+	
+	public function pre_delete_attachment($attachment_id) {
+		
+		$attachment_post = get_post($attachment_id);
+		
+		$entity_post = get_post($attachment_post->post_parent);
+
+		if ( $entity_post ) {
+			// was added attachment on a tainacan object
+
+			$entity = Repository::get_entity_by_post( $entity_post );
+
+			if ( $entity ) {
+				
+				
+				$collection_id = method_exists($entity, 'get_collection_id') ? $entity->get_collection_id() : 'default';
+				
+				$log = new Entities\Log();
+				
+				if ( $entity instanceof Entities\Collection ) {
+					$collection_id = $entity->get_id();
+				}
+				if ( $entity instanceof Entities\Item ) {
+					$log->set_item_id($entity->get_id());
+				}
+				
+				$object_type = get_class($entity);
+				$object_id = $entity->get_id();
+				
+				$preapred = [
+					'id'          => $attachment_id,
+					'title'       => $attachment_post->post_title,
+					'description' => $attachment_post->post_content,
+				];
+				
+				$log->set_collection_id($collection_id);
+				$log->set_object_type($object_type);
+				$log->set_object_id($object_id);
+				$log->set_old_value($preapred);
+				$log->set_action('delete-attachment');
+				
+				$this->current_attachment_delete_log = $log;
+				
+			}
+			
+		}
+	}
+	
+	public function delete_attachment($attachment_id) {
+		if ( isset($this->current_attachment_delete_log) && $this->current_attachment_delete_log instanceof Entities\Log ) {
+			$log = $this->current_attachment_delete_log;
+			$att = $log->get_old_value();
+			if ( is_array($att) && isset($att['id']) && $att['id'] == $attachment_id && $log->validate() ) {
+				$this->insert($log);
+			}
+		}
 	}
 	
 	private function prepare_attachments($attachments) {
@@ -289,7 +364,7 @@ class Logs extends Repository {
 					'title'       => $attachment->post_title,
 					'description' => $attachment->post_content,
 					'mime_type'   => $attachment->post_mime_type,
-					'url'         => $attachment->guid,
+					'url'         => wp_get_attachment_url($attachment->ID),
 				];
 
 				array_push( $attachments_prepared, $prepared );
@@ -533,6 +608,7 @@ class Logs extends Repository {
 		$log->set_object_id($object_id);
 		$log->set_old_value($diff['old']);
 		$log->set_new_value($diff['new']);
+		$log->set_action($this->current_action);
 		
 		if ( $log->validate() ) {
 			$this->insert($log);
@@ -600,6 +676,7 @@ class Logs extends Repository {
 		$log->set_collection_id($collection_id);
 		$log->set_object_type($object_type);
 		$log->set_object_id($object_id);
+		$log->set_action($this->current_action);
 		
 		if ( $permanent ) {
 			$log->set_old_value( $this->current_deleting_entity );
@@ -632,6 +709,7 @@ class Logs extends Repository {
 		$log->set_item_id($item_id);
 		$log->set_old_value($diff['old']);
 		$log->set_new_value($diff['new']);
+		$log->set_action($this->current_action);
 		
 		if ( $log->validate() ) {
 			$this->insert($log);
