@@ -626,13 +626,13 @@ class Logs extends Repository {
 			
 			if ( 'default' == $collection_id ) {
 				if ($this->current_action == 'update') {
-					$log->set_title( sprintf( __( 'Filter "%s" was updated in repository level', 'tainacan'), $entity->get_name() ) );
+					$log->set_title( sprintf( __( 'Filter "%1$s" was updated in repository level', 'tainacan'), $entity->get_name() ) );
 				} elseif ($this->current_action == 'create') {
 					$log->set_title( sprintf( __( 'Filter "%1$s" was added to the repository', 'tainacan'), $entity->get_name() ) );
 				}
 			} elseif ( is_numeric($collection_id) ) {
 				if ($this->current_action == 'update') {
-					$log->set_title( sprintf( __( 'Filter "%s" was updated in Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
+					$log->set_title( sprintf( __( 'Filter "%1$s" was updated in Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
 				} elseif ($this->current_action == 'create') {
 					$log->set_title( sprintf( __( 'Filter "%1$s" was added to Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
 				}
@@ -738,11 +738,80 @@ class Logs extends Repository {
 		$collection_id = method_exists($entity, 'get_collection_id') ? $entity->get_collection_id() : 'default';
 		
 		if ( $entity instanceof Entities\Collection ) {
+			
 			$collection_id = $entity->get_id();
-		}
-		if ( $entity instanceof Entities\Item ) {
+			
+			if ($this->current_action == 'delete') {
+				$log->set_title( sprintf( __( 'Collection "%s" was permanently deleted', 'tainacan'), $entity->get_name() ) );
+			} elseif ($this->current_action == 'trash') {
+				$log->set_title( sprintf( __( 'Collection "%s" was moved to trash', 'tainacan'), $entity->get_name() ) );
+			}
+			
+		} elseif ( $entity instanceof Entities\Item ) {
+			
 			$log->set_item_id($entity->get_id());
+			
+			if ($this->current_action == 'delete') {
+				$log->set_title( sprintf( __( 'Item "%1$s" (ID %2$s) document was updated', 'tainacan'), $entity->get_title(), $entity->get_id() ) );
+			} elseif ($this->current_action == 'trash') {
+				$log->set_title( sprintf( __( 'Item "%1$s" (ID %2$s) was moved to trash', 'tainacan'), $entity->get_title(), $entity->get_id() ) );
+			}
+		} elseif ( $entity instanceof Entities\Filter ) {
+			
+			if ( 'default' == $collection_id ) {
+				if ($this->current_action == 'delete') {
+					$log->set_title( sprintf( __( 'Filter "%s" was permanently deleted from the repository', 'tainacan'), $entity->get_name() ) );
+				} elseif ($this->current_action == 'trash') {
+					$log->set_title( sprintf( __( 'Repository Filter "%1$s" was moved to trash', 'tainacan'), $entity->get_name() ) );
+				}
+			} elseif ( is_numeric($collection_id) ) {
+				if ($this->current_action == 'delete') {
+					$log->set_title( sprintf( __( 'Filter "%1$s" was permanently deleted from Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
+				} elseif ($this->current_action == 'trash') {
+					$log->set_title( sprintf( __( 'Filter "%1$s" was moved to trash in Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
+				}
+			}
+			
+		} elseif ( $entity instanceof Entities\Metadatum ) {
+			
+			if ( 'default' == $collection_id ) {
+				if ($this->current_action == 'delete') {
+					$log->set_title( sprintf( __( 'Metadatum "%s" was permanently deleted from the repository', 'tainacan'), $entity->get_name() ) );
+				} elseif ($this->current_action == 'trash') {
+					$log->set_title( sprintf( __( 'Repository Metadatum "%1$s" was moved to trash', 'tainacan'), $entity->get_name() ) );
+				}
+			} elseif ( is_numeric($collection_id) ) {
+				if ($this->current_action == 'delete') {
+					$log->set_title( sprintf( __( 'Metadatum "%1$s" was permanently deleted from Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
+				} elseif ($this->current_action == 'trash') {
+					$log->set_title( sprintf( __( 'Metadatum "%1$s" was moved to trash in Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
+				}
+			}
+			
+		} elseif ( $entity instanceof Entities\Taxonomy ) {
+			
+			if ($this->current_action == 'delete') {
+				$log->set_title( sprintf( __( 'Taxonomy "%s" was permanently deleted', 'tainacan'), $entity->get_name() ) );
+			} elseif ($this->current_action == 'trash') {
+				$log->set_title( sprintf( __( 'Taxonomy "%1$s" was moved to trash', 'tainacan'), $entity->get_name() ) );
+			}
+			
+		}  elseif ( $entity instanceof Entities\Term ) {
+			
+			$taxonomy = Taxonomies::get_instance()->fetch_by_db_identifier($entity->get_taxonomy());
+			$tax_name = '';
+			if ($taxonomy instanceof Entities\Taxonomy) {
+				$tax_name = $taxonomy->get_name();
+			}
+			
+			if ($this->current_action == 'delete') {
+				$log->set_title( sprintf( __( 'Term "%1$s" was permanently deleted from "%2$s" taxonomy', 'tainacan'), $entity->get_name(), $tax_name ) );
+			} elseif ($this->current_action == 'trash') {
+				$log->set_title( sprintf( __( 'Term "%1$s" was moved to trash in "%2$s" taxonomy', 'tainacan'), $entity->get_name(), $tax_name ) );
+			}
+			
 		}
+		
 		
 		$object_type = get_class($entity);
 		$object_id = $entity->get_id();
@@ -786,6 +855,13 @@ class Logs extends Repository {
 		$log->set_old_value($diff['old']);
 		$log->set_new_value($diff['new']);
 		$log->set_action($this->current_action);
+		
+		$meta_name = $entity->get_metadatum()->get_name();
+		$item_title = $entity->get_item()->get_title();
+		
+		$title = sprintf( __( 'Value for %1$s metadatum was updated in item "%2$s"', 'tainacan' ), $meta_name, $item_title );
+		
+		$log->set_title($title);
 		
 		if ( $log->validate() ) {
 			$this->insert($log);
