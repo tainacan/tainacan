@@ -208,7 +208,7 @@ class Taxonomies extends Repository {
 	 * @param array $args WP_Query args plus disabled_metadata
 	 * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
 	 *
-	 * @return array Entities\Metadatum
+	 * @return array Entities\Taxonomy
 	 * @throws \Exception
 	 */
 	public function fetch_by_collection( Entities\Collection $collection, $args = [], $output = null ) {
@@ -241,6 +241,14 @@ class Taxonomies extends Repository {
 
 	}
 	
+	/**
+	 * fetch taxonomies by DB Identifier
+	 *
+	 * @param string $db_identifier The db Identifier of the taxonomy. This is the internal WordPress taxonomy slug, something like tnc_123_tax
+	 *
+	 * @return Entities\Taxonomy|Array The entity when found. An empty array when nothing was found
+	 * @throws \Exception
+	 */
 	public function fetch_by_db_identifier($db_identifier) {
 		$id = $this->get_id_by_db_identifier($db_identifier);
 		if ($id) {

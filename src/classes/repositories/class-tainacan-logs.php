@@ -32,7 +32,7 @@ class Logs extends Repository {
 	protected function __construct() {
 		parent::__construct();
 
-		add_action( 'tainacan-pre-insert', array( $this, 'prepare_entity_diff' ) );
+		add_action( 'tainacan-pre-insert', array( $this, 'pre_insert_entity' ) );
 		
 		add_action( 'tainacan-insert', array( $this, 'insert_entity' ) );
 		add_action( 'tainacan-deleted', array( $this, 'delete_entity' ), 10, 2 );
@@ -59,13 +59,6 @@ class Logs extends Repository {
 				'type'        => 'string',
 				'description' => __( 'The log date', 'tainacan' ),
 			],
-			// 'parent'         => [
-			// 	'map'         => 'parent',
-			// 	'title'       => __( 'Parent', 'tainacan' ),
-			// 	'type'        => 'string',
-			// 	'description' => __( 'Log order' ),
-			// 	'validation'  => ''
-			// ],
 			'description'    => [
 				'map'         => 'post_content',
 				'title'       => __( 'Description', 'tainacan' ),
@@ -230,7 +223,11 @@ class Logs extends Repository {
 	public function update( $object, $new_values = null ) {
 		return $this->insert( $object );
 	}
-
+	
+	/**
+	 * Feth most recent log
+	 * @return Entities\Log The most recent Log entity
+	 */
 	public function fetch_last() {
 		$args = [
 			'post_type'      => Entities\Log::get_post_type(),
@@ -244,18 +241,18 @@ class Logs extends Repository {
 		return array_pop( $logs );
 	}
 
-
+	/**
+	 * Callback to generate log when attachments are added to any Tainacan entity
+	 */
 	public function insert_attachment( $post_ID ) {
 		$attachment = get_post( $post_ID );
 		$post       = $attachment->post_parent;
 
-		if ( $post ) {
-			// was added attachment on a tainacan object
+		if ( $post ) { // attached to a post
 
 			$entity = Repository::get_entity_by_post( $post );
 
-			if ( $entity ) {
-				// was added a normal attachment
+			if ( $entity ) { // attached to a tainacan entity
 				
 				$log = new Entities\Log();
 				
@@ -302,6 +299,9 @@ class Logs extends Repository {
 
 	}
 	
+	/**
+	 * Callback to generate log when attachments attached to any Tainacan entity are deleted
+	 */
 	public function pre_delete_attachment($attachment_id) {
 		
 		$attachment_post = get_post($attachment_id);
@@ -309,12 +309,10 @@ class Logs extends Repository {
 		$entity_post = get_post($attachment_post->post_parent);
 
 		if ( $entity_post ) {
-			// was added attachment on a tainacan object
 
 			$entity = Repository::get_entity_by_post( $entity_post );
 
 			if ( $entity ) {
-				
 				
 				$collection_id = method_exists($entity, 'get_collection_id') ? $entity->get_collection_id() : 'default';
 				
@@ -351,6 +349,9 @@ class Logs extends Repository {
 		}
 	}
 	
+	/**
+	 * Callback to generate log when attachments attached to any Tainacan entity are deleted
+	 */
 	public function delete_attachment($attachment_id) {
 		if ( isset($this->current_attachment_delete_log) && $this->current_attachment_delete_log instanceof Entities\Log ) {
 			$log = $this->current_attachment_delete_log;
@@ -361,95 +362,6 @@ class Logs extends Repository {
 		}
 	}
 	
-	private function prepare_attachments($attachments) {
-		$attachments_prepared = [];
-		if ( is_array($attachments) ) {
-			foreach ( $attachments as $attachment ) {
-				$prepared = [
-					'id'          => $attachment->ID,
-					'title'       => $attachment->post_title,
-					'description' => $attachment->post_content,
-					'mime_type'   => $attachment->post_mime_type,
-					'url'         => wp_get_attachment_url($attachment->ID),
-				];
-
-				array_push( $attachments_prepared, $prepared );
-			}
-		}
-		return $attachments_prepared;
-	}
-
-	/**
-	 * Insert a log when a new entity is inserted
-	 *
-	 * @param Entity $value
-	 * @param array $diffs
-	 * @param bool $is_update
-	 *
-	 * @param bool $is_delete
-	 * @param bool $is_trash
-	 *
-	 * @return Entities\Log|bool new created log
-	 */
-	public function insert_log( $value, $diffs = [], $is_update = false, $is_delete = false, $is_trash = false ) {
-		$title       = null;
-		$description = null;
-
-		if ( is_object( $value ) ) {
-			// do not log a log
-			if ( ( method_exists( $value, 'get_post_type' ) && $value->get_post_type() === 'tainacan-log' ) || $value->get_status() === 'auto-draft' ) {
-				return false;
-			}
-
-			if ( $value instanceof Entities\Metadatum ) {
-				$type = $value->get_metadata_type();
-
-				if ( $type === 'Tainacan\Metadata_Types\Core_Title' || $type === 'Tainacan\Metadata_Types\Core_Description' ) {
-					return false;
-				}
-			}
-
-			$type       = get_class( $value );
-			$class_name = explode( '\\', $type )[2];
-
-			$name = method_exists( $value, 'get_name' ) ? $value->get_name() :
-				( method_exists( $value, 'get_title' ) ? $value->get_title() : $value->get_metadatum()->get_name() );
-
-			if ( ! $name ) {
-				$name = $value->get_status();
-			}
-
-			if ( $is_update ) {
-				// entity was delete
-				$title         = $this->prepare_event_title( $value, $name, $class_name, 'updated' );
-
-				$description = $title;
-			} elseif ( $is_delete ) {
-				// entity was deleted
-				$title         = $this->prepare_event_title( $value, $name, $class_name, 'deleted' );
-
-				$description = $title;
-			} elseif ( ! empty( $diffs ) ) {
-				// entity was created
-				$title         = $this->prepare_event_title( $value, $name, $class_name, 'created' );
-
-				$description = $title;
-			} elseif ( $is_trash ) {
-				// entity was trashed
-				$title         = $this->prepare_event_title( $value, $name, $class_name, 'trashed' );
-
-				$description = $title;
-			}
-
-			$title       = apply_filters( 'tainacan-insert-log-message-title', $title, $type, $value );
-			$description = apply_filters( 'tainacan-insert-log-description', $description, $type, $value );
-		}
-
-		if ( !empty( $diffs ) || $is_delete || $is_trash) {
-			return Entities\Log::create( $title, $description, $value, $diffs );
-		}
-	}
-	
 	/**
 	 * Compare two repository entities and sets the current_diff property to be used in the insert hook
 	 *
@@ -457,7 +369,7 @@ class Logs extends Repository {
 	 *
 	 * @return void
 	 */
-	public function prepare_entity_diff( Entities\Entity $unsaved ) {
+	public function pre_insert_entity( Entities\Entity $unsaved ) {
 
 		if ( ! $unsaved->get_repository()->use_logs ) {
 			return;
@@ -465,8 +377,6 @@ class Logs extends Repository {
 		
 		if ( $unsaved instanceof Entities\Item_Metadata_Entity ) {
 			return $this->prepare_item_metadata_diff($unsaved);
-		} elseif ( $unsaved instanceof Entities\Term ) {
-			return $this->prepare_term_diff($unsaved);
 		}
 		
 		// do not log a log
@@ -475,7 +385,12 @@ class Logs extends Repository {
 		}
 		
 		$creating = true;
-		$old = $unsaved->get_repository()->fetch( $unsaved->get_id() );
+		
+		if ( $unsaved instanceof Entities\Term ) {
+			$old = $unsaved->get_repository()->fetch( $unsaved->get_id(), $unsaved->get_taxonomy() );
+		} else {
+			$old = $unsaved->get_repository()->fetch( $unsaved->get_id() );
+		}
 		
 		if ( $old instanceof Entities\Entity ) {
 			
@@ -496,7 +411,6 @@ class Logs extends Repository {
 			$map = $unsaved->get_repository()->get_map();
 			
 			foreach ( $map as $prop => $mapped ) {
-				// I can't verify differences on item, because it attributes are added when item is a auto-draft
 				if ( $old->get( $prop ) != $unsaved->get( $prop ) ) {
 					
 					$diff['old'][$prop] = $old->get( $prop );
@@ -513,46 +427,6 @@ class Logs extends Repository {
 		
 	}
 	
-	private function prepare_term_diff( Entities\Term $unsaved ) {
-
-		$creating = true;
-		$old = $unsaved->get_repository()->fetch( $unsaved->get_id(), $unsaved->get_taxonomy() );
-		
-		if ( $old instanceof Entities\Entity ) {
-			
-			if ( $old->get_status() !== 'auto-draft' ) {
-				$creating = false;
-			}
-			
-		}
-		
-		$diff = [
-			'old' => [],
-			'new' => []
-		];
-		
-		if ( $creating ) {
-			$diff['new'] = $unsaved->_toArray();
-		} else {
-			$map = $unsaved->get_repository()->get_map();
-			
-			foreach ( $map as $prop => $mapped ) {
-				// I can't verify differences on item, because it attributes are added when item is a auto-draft
-				if ( $old->get( $prop ) != $unsaved->get( $prop ) ) {
-					
-					$diff['old'][$prop] = $old->get( $prop );
-					$diff['new'][$prop] = $unsaved->get( $prop );
-					
-				}
-			}
-		}
-		
-		$diff = apply_filters( 'tainacan-entity-diff', $diff, $unsaved, $old );
-		
-		$this->current_diff = $diff;
-		$this->current_action = $creating ? 'create' : 'update';
-		
-	}
 	
 	private function prepare_item_metadata_diff( Entities\Entity $unsaved ) {
 		
@@ -576,6 +450,9 @@ class Logs extends Repository {
 		
 	}
 	
+	/**
+	 * Callback to generate log when Tainacan entities are edited
+	 */
 	public function insert_entity( Entities\Entity $entity ) {
 
 		if ( ! $entity->get_repository()->use_logs ) {
@@ -584,9 +461,7 @@ class Logs extends Repository {
 		
 		if ( $entity instanceof Entities\Item_Metadata_Entity ) {
 			return $this->insert_item_metadata($entity);
-		} elseif ( $entity instanceof Entities\Term ) {
-			//return $this->insert_term($entity);
-		}
+		} 
 		
 		// do not log a log
 		if ( ( method_exists( $entity, 'get_post_type' ) && $entity->get_post_type() === 'tainacan-log' ) || $entity->get_status() === 'auto-draft' ) {
@@ -700,12 +575,6 @@ class Logs extends Repository {
 			return;
 		}
 		
-		if ( $entity instanceof Entities\Item_Metadata_Entity ) {
-			//return $this->insert_item_metadata($entity);
-		} elseif ( $entity instanceof Entities\Term ) {
-			//return $this->insert_term($entity);
-		}
-		
 		// do not log a log
 		if ( ( method_exists( $entity, 'get_post_type' ) && $entity->get_post_type() === 'tainacan-log' ) || $entity->get_status() === 'auto-draft' ) {
 			return false;
@@ -720,12 +589,6 @@ class Logs extends Repository {
 		
 		if ( ! $entity->get_repository()->use_logs ) {
 			return;
-		}
-		
-		if ( $entity instanceof Entities\Item_Metadata_Entity ) {
-			//return $this->insert_item_metadata($entity);
-		} elseif ( $entity instanceof Entities\Term ) {
-			//return $this->insert_term($entity);
 		}
 		
 		// do not log a log
@@ -867,47 +730,6 @@ class Logs extends Repository {
 			$this->insert($log);
 		}
 		
-	}
-
-	/**
-	 * This will prepare the event title for objects
-	 *
-	 * @param $object
-	 * @param $name
-	 * @param $class_name
-	 *
-	 * @param $action_message
-	 *
-	 * @return string
-	 */
-	private function prepare_event_title( $object, $name, $class_name, $action_message ) {
-
-		// translators: 1=Object name, 2=Object type, 3=Action. e.g. The "Subject" taxonomy has been created
-		$title_format = __( '"%1$s" %2$s has been %3$s', 'tainacan' );
-
-		if ( $object instanceof Entities\Metadatum || $object instanceof Entities\Item || $object instanceof Entities\Filter ) {
-			$collection = $object->get_collection();
-
-			if ( $collection ) {
-				$parent = sprintf( __('(collection: %s)', 'tainacan'), $collection->get_name() );
-			} else {
-				$parent = __('(on repository level)', 'tainacan');
-			}
-
-			$title = sprintf( $title_format, $name, strtolower( $class_name ), $action_message );
-			$title .= ' ' . $parent . '.';
-		} elseif($object instanceof Entities\Item_Metadata_Entity) {
-			$title = sprintf(
-				$title_format,
-				$name,
-				__('item metadatum', 'tainacan'),
-				$action_message
-			               ) . ' ' . sprintf( __('(item: %s)', 'tainacan'), $object->get_item()->get_title() ) . '.';
-		} else {
-			$title = sprintf( $title_format, $name, strtolower( $class_name ), $action_message ) . '.';
-		}
-
-		return $title;
 	}
 
 	/**

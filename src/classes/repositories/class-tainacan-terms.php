@@ -250,18 +250,23 @@ class Terms extends Repository {
 
 	/**
 	 * @param Entities\Term $term
-	 * @param bool $permanent this parameter is not used by Terms repository
+	 * @param bool $permanent this parameter is not used by Terms repository. Delete is always permanent
 	 *
 	 * @return bool|int|mixed|\WP_Error
 	 */
 	public function delete( Entities\Entity $term, $permanent = true ) {
 		$deleted = $term;
+		
+		$permanent = true; // there is no such option for terms
+		
+		do_action( 'tainacan-pre-delete', $deleted, $permanent );
+		do_action( 'tainacan-pre-delete-term', $deleted, $permanent );
+		
 		$return = wp_delete_term( $term->get_id(), $term->get_taxonomy() );
 
-		if ( $deleted && $this->use_logs ) {
-			$this->logs_repository->insert_log( $deleted, [], false, true );
-			do_action( 'tainacan-deleted', $deleted );
-			do_action( 'tainacan-deleted-term', $deleted );
+		if ( $deleted ) {
+			do_action( 'tainacan-deleted', $deleted, $permanent );
+			do_action( 'tainacan-deleted-term', $deleted, $permanent );
 		}
 
 		return $return;
