@@ -17,12 +17,6 @@ class REST_Logs_Controller extends REST_Controller {
 	public function __construct() {
 		$this->rest_base = 'logs';
 		parent::__construct();
-		add_action('init', array($this, 'init_objects'));
-	}
-
-	public function init_objects(){
-		$this->logs_repository = Repositories\Logs::get_instance();
-		$this->log = new Entities\Log();
 	}
 
 	public function register_routes() {
@@ -32,7 +26,7 @@ class REST_Logs_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_collection_params()
+					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE)
 				)
 			)
 		);
@@ -43,15 +37,6 @@ class REST_Logs_Controller extends REST_Controller {
 					'callback'            => array($this, 'get_item'),
 					'permission_callback' => array($this, 'get_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE)
-				)
-			)
-		);
-		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<log_id>[\d]+)/approve',
-			array(
-				array(
-					'methods'             => \WP_REST_Server::EDITABLE,
-					'callback'            => array($this, 'approve_item'),
-					'permission_callback' => array($this, 'approve_item_permissions_check'),
 				)
 			)
 		);
@@ -75,6 +60,46 @@ class REST_Logs_Controller extends REST_Controller {
 				)
 			)
 		);
+		register_rest_route($this->namespace, '/filter/(?P<filter_id>[\d]+)/' . $this->rest_base,
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_items'),
+					'permission_callback' => array($this, 'get_items_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
+				)
+			)
+		);
+		register_rest_route($this->namespace, '/metadatum/(?P<metadatum_id>[\d]+)/' . $this->rest_base,
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_items'),
+					'permission_callback' => array($this, 'get_items_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
+				)
+			)
+		);
+		register_rest_route($this->namespace, '/taxonomy/(?P<taxonomy_id>[\d]+)/' . $this->rest_base,
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_items'),
+					'permission_callback' => array($this, 'get_items_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
+				)
+			)
+		);
+		register_rest_route($this->namespace, '/term/(?P<term_id>[\d]+)/' . $this->rest_base,
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_items'),
+					'permission_callback' => array($this, 'get_items_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
+				)
+			)
+		);
 	}
 
 	/**
@@ -88,10 +113,6 @@ class REST_Logs_Controller extends REST_Controller {
 
 			if(!isset($request['fetch_only'])) {
 				$item_array = $item->_toArray();
-
-				unset($item_array['value']);
-				unset($item_array['old_value']);
-
 				return $item_array;
 			}
 
@@ -114,91 +135,28 @@ class REST_Logs_Controller extends REST_Controller {
 		$args = $this->prepare_filters( $request );
 
 
-		if ($request['item_id']){
-			$item_id = $request['item_id'];
-
-			$item_repository = Repositories\Items::get_instance();
-
-			$item = $item_repository->fetch($item_id);
-
-			if(!$item){
-				return new \WP_REST_Response([
-					'error_message' => __('An item with this ID does not exist', 'tainacan'),
-					'item_id' => $item
-				], 400);
-			}
-
-			if($args &&
-			   array_key_exists('meta_query', $args) &&
-			   array_key_exists('relation', $args['meta_query'])){
-
-				$metaq = $args['meta_query'];
-
-				unset($args['meta_query']);
-
-				$args['meta_query'][] = $metaq;
-				$args['meta_query']['relation'] = 'AND';
-
-			} elseif($args &&
-			         array_key_exists('meta_query', $args)){
-				$args['meta_query']['relation'] = 'AND';
-			}
-
-			$args = array_merge_recursive(array(
-				'meta_query' => array(
-					'item_clause' => array(
-						'key'     => 'item_id',
-						'value'   => $item_id,
-						'compare' => '='
-					)
-				)
-			), $args);
+		if ($request['item_id']) {
+			$args['item_id'] = $request['item_id'];
+		} elseif ($request['collection_id']) {
+			$args['collection_id'] = $request['collection_id'];
+		} elseif ($request['filter_id']) {
+			$args['object_type'] = 'Tainacan\Entities\Filter';
+			$args['object_id'] = $request['filter_id'];
+		} elseif ($request['metadatum_id']) {
+			$args['object_type'] = 'Tainacan\Entities\Metadatum';
+			$args['object_id'] = $request['metadatum_id'];
+		} elseif ($request['taxonomy_id']) {
+			$args['object_type'] = 'Tainacan\Entities\Taxonomy';
+			$args['object_id'] = $request['taxonomy_id'];
+		} elseif ($request['term_id']) {
+			$args['object_type'] = 'Tainacan\Entities\Term';
+			$args['object_id'] = $request['term_id'];
 		}
 
-		if($request['collection_id']){
-			$collection_id = $request['collection_id'];
-
-			$collection_repository = Repositories\Collections::get_instance();
-
-			$collection = $collection_repository->fetch($collection_id);
-
-			if(!$collection){
-				return new \WP_REST_Response([
-					'error_message' => __('A collection with this ID does not exist', 'tainacan'),
-					'collection_id' => $collection_id
-				], 400);
-			}
-
-			if($args &&
-			   array_key_exists('meta_query', $args) &&
-			   array_key_exists('relation', $args['meta_query'])){
-
-				$metaq = $args['meta_query'];
-
-				unset($args['meta_query']);
-
-				$args['meta_query'][] = $metaq;
-				$args['meta_query']['relation'] = 'AND';
-
-			} elseif($args &&
-			         array_key_exists('meta_query', $args)){
-				$args['meta_query']['relation'] = 'AND';
-			}
-
-			$args = array_merge_recursive(array(
-				'meta_query' => array(
-					'collection_clause' => array(
-						'key'     => 'collection_id',
-						'value'   => $collection_id,
-						'compare' => '='
-					)
-				)
-			), $args);
-		}
-
-		$logs = $this->logs_repository->fetch($args);
-
+		$logs = Repositories\Logs::get_instance()->fetch($args);
+		
 		$response = [];
+		
 		if($logs->have_posts()){
 			while ($logs->have_posts()){
 				$logs->the_post();
@@ -228,6 +186,7 @@ class REST_Logs_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
+		return true;
 		return current_user_can('read');
 	}
 
@@ -239,7 +198,7 @@ class REST_Logs_Controller extends REST_Controller {
 	public function get_item( $request ) {
 		$log_id = $request['log_id'];
 
-		$log = $this->logs_repository->fetch($log_id);
+		$log = Repositories\Logs::get_instance()->fetch($log_id);
 
 		$prepared_log = $this->prepare_item_for_response( $log, $request );
 
@@ -252,7 +211,8 @@ class REST_Logs_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function get_item_permissions_check( $request ) {
-		$log = $this->logs_repository->fetch($request['log_id']);
+		return true;
+		$log = Repositories\Logs::get_instance()->fetch($request['log_id']);
 
 		if(($log instanceof Entities\Log)) {
 			if('edit' === $request['context'] && !$log->can_read()) {
@@ -265,51 +225,7 @@ class REST_Logs_Controller extends REST_Controller {
 		return false;
 	}
 	
-	/**
-	 * @param \WP_REST_Request $request
-	 *
-	 * @return bool|\WP_Error
-	 */
-	public function approve_item_permissions_check( $request ) {
-		$log = $this->logs_repository->fetch($request['log_id']);
-
-		if($log instanceof Entities\Log){
-			if($log->can_read()) {
-				$entity = $log->get_value();
-
-				if($entity instanceof Entities\Entity) {
-					if($entity instanceof Entities\Item_Metadata_Entity) {
-						$item = $entity->get_item();
-						return $item->can_edit();
-					} // TODO for other entities types
-					else {
-						return $entity->can_edit();
-					}
-				}
-
-				return new \WP_Error();
-			}
-		}
-
-		return false;
-	}
 	
-	/**
-	 * approve a logged modification
-	 * @param \WP_REST_Request $request
-	 *
-	 * @return \WP_Error|\WP_REST_Response
-	 */
-	public function approve_item($request) {
-		$log = $this->logs_repository->fetch($request['log_id']);
-
-		if($log instanceof Entities\Log){
-			$entity = $log->approve();
-			$prepared_entity = $this->prepare_item_for_response( $entity, $request );
-			
-			return new \WP_REST_Response($prepared_entity, 200);
-		}
-	}
 
 	/**
 	 * @param string $method
@@ -327,29 +243,6 @@ class REST_Logs_Controller extends REST_Controller {
 		}
 
 		return $endpoint_args;
-	}
-
-	/**
-	 *
-	 * Return the queries supported when getting a collection of objects
-	 *
-	 * @param null $object_name
-	 *
-	 * @return array
-	 */
-	public function get_collection_params($object_name = null) {
-		$query_params['context']['default'] = 'view';
-
-		$query_params = array_merge($query_params, parent::get_collection_params('log'));
-
-		$query_params['title'] = array(
-			'description' => __('Limits the result set to a log with a specific title'),
-			'type'        => 'string',
-		);
-
-		$query_params = array_merge($query_params, parent::get_meta_queries_params());
-
-		return $query_params;
 	}
 }
 
