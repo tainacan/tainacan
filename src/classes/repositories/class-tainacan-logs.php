@@ -410,6 +410,8 @@ class Logs extends Repository {
 			'new' => []
 		];
 		
+		$has_diff = false;
+		
 		if ( $creating ) {
 			$diff['new'] = $unsaved->_toArray();
 		} else {
@@ -420,6 +422,7 @@ class Logs extends Repository {
 					
 					$diff['old'][$prop] = $old->get( $prop );
 					$diff['new'][$prop] = $unsaved->get( $prop );
+					$has_diff = true;
 					
 				}
 			}
@@ -427,7 +430,7 @@ class Logs extends Repository {
 		
 		$diff = apply_filters( 'tainacan-entity-diff', $diff, $unsaved, $old );
 		
-		$this->current_diff = $diff;
+		$this->current_diff = $has_diff ? $diff : false;
 		$this->current_action = $creating ? 'create' : 'update';
 		
 	}
@@ -478,6 +481,10 @@ class Logs extends Repository {
 		$collection_id = method_exists($entity, 'get_collection_id') ? $entity->get_collection_id() : 'default';
 		
 		$diff = $this->current_diff;
+		
+		if (false === $diff) {
+			return;
+		}
 		
 		if ( $entity instanceof Entities\Collection ) {
 			

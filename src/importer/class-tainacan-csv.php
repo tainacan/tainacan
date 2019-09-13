@@ -581,9 +581,13 @@ class CSV extends Importer {
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
         $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 
-        $Tainacan_Items->disable_logs();
-        $Tainacan_Metadata->disable_logs();
-        $Tainacan_Item_Metadata->disable_logs();
+        //$Tainacan_Items->disable_logs();
+        //$Tainacan_Metadata->disable_logs();
+		// When creating a new item, disable log for each metadata to speed things up
+		if ( ! is_numeric($this->get_transient('item_id')) ) {
+			$Tainacan_Item_Metadata->disable_logs();
+		}
+		
 
         $item = new Entities\Item( ( is_numeric($this->get_transient('item_id')) ) ? $this->get_transient('item_id') : 0 );
         $itemMetadataArray = [];

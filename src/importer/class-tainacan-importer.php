@@ -159,7 +159,24 @@ abstract class Importer {
 			}
 		}
 		
+		// add_filter('tainacan-entity-set-property', [$this, 'filter_log_title']);
+		
     }
+	
+	// public function filter_log_title($title, $prop, $entity) {
+	// 	if ($entity instanceof Entities\Log && $prop == 'title') {
+	// 		global $Tainacan_Importer_Handler;
+	// 		$importer = $Tainacan_Importer_Handler->get_importer_by_object($this);
+	// 		if ($importer && isset($importer['name'])) {
+	// 			// translators: %s is the name of the importer. Ex: CSV Importer
+	// 			$_title = sprintf( __('%s Importer'), $importer['name'] );
+	// 		} else {
+	// 			$_title = __('Importer');
+	// 		}
+	// 		$title .= " ($_title)";
+	// 	}
+	// 	return $title;
+	// }
 	
 	public function _to_Array($short = false) {
 		$return = ['id' => $this->get_id()];
