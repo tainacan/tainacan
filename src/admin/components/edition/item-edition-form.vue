@@ -854,7 +854,9 @@ export default {
             let previousStatus = this.form.status;
             this.form.status = status;
 
-            let data = {id: this.itemId, status: this.form.status, comment_status: this.form.comment_status};
+            this.form.comment_status = this.form.comment_status == 'open' ? 'open' : 'closed';
+
+            let data = { id: this.itemId, status: this.form.status, comment_status: this.form.comment_status };
             this.fillExtraFormData(data);
             this.updateItem(data).then(updatedItem => {
 
@@ -887,13 +889,15 @@ export default {
                 }
             })
             .catch((errors) => {
-                for (let error of errors.errors) {
-                    for (let metadatum of Object.keys(error)){
-                       eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                if (errors.errors) {
+                    for (let error of errors.errors) {
+                        for (let metadatum of Object.keys(error)){
+                        eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                        }
+                        
                     }
-                    
+                    this.formErrorMessage = errors.error_message;
                 }
-                this.formErrorMessage = errors.error_message;
                 this.form.status = previousStatus;
                 this.item.status = previousStatus;
 
@@ -914,6 +918,7 @@ export default {
             ]);
 
             // Creates draft Item
+            this.form.comment_status = this.form.comment_status == 'open' ? 'open' : 'closed';
             let data = {collection_id: this.form.collectionId, status: 'auto-draft', comment_status: this.form.comment_status};
             this.fillExtraFormData(data);
             this.sendItem(data).then(res => {
@@ -1015,7 +1020,7 @@ export default {
                 .catch((errors) => {
                     for (let error of errors.errors) {
                         for (let metadatum of Object.keys(error)){
-                        eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                            eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
                         }
                     }
                     this.formErrorMessage = errors.error_message;
@@ -1046,7 +1051,7 @@ export default {
             .catch((errors) => {
                 for (let error of errors.errors) {
                     for (let metadatum of Object.keys(error)){
-                    eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                        eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
                     }
                 }
                 this.formErrorMessage = errors.error_message;
@@ -1111,7 +1116,7 @@ export default {
                         .catch((errors) => {
                             for (let error of errors.errors) {
                                 for (let metadatum of Object.keys(error)){
-                                eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                                    eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
                                 }
                             }
                             this.formErrorMessage = errors.error_message;
