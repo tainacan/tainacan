@@ -386,11 +386,16 @@ class Logs extends Repository {
 		
 		$creating = true;
 		
-		if ( $unsaved instanceof Entities\Term ) {
-			$old = $unsaved->get_repository()->fetch( $unsaved->get_id(), $unsaved->get_taxonomy() );
-		} else {
-			$old = $unsaved->get_repository()->fetch( $unsaved->get_id() );
+		$old = null;
+		
+		if ( is_numeric( $unsaved->get_id() ) ) {
+			if ( $unsaved instanceof Entities\Term ) {
+				$old = $unsaved->get_repository()->fetch( $unsaved->get_id(), $unsaved->get_taxonomy() );
+			} else {
+				$old = $unsaved->get_repository()->fetch( $unsaved->get_id() );
+			}
 		}
+		
 		
 		if ( $old instanceof Entities\Entity ) {
 			
@@ -732,28 +737,4 @@ class Logs extends Repository {
 		
 	}
 
-	/**
-	 *
-	 * @param Entities\Log $log
-	 *
-	 * @return Entities\Entity|boolean return insert/update valeu or false
-	 * @throws \Exception
-	 */
-	public function approve( $log ) {
-		$log = self::get_entity_by_post( $log );
-		if ( $log->get_status() == 'pending' ) {
-			/** @var Entity $value * */
-			$value = $log->get_value();
-
-			$value->set_status( 'publish' ); // TODO check if publish the entity on approve
-
-			$repository = self::get_repository( $value );
-
-			if ( $value->validate() ) {
-				return $repository->insert( $value );
-			}
-		}
-
-		return false;
-	}
 }
