@@ -235,8 +235,8 @@ class Terms extends Repository {
 			}
 
 			return $return;
-		} elseif ( is_numeric( $args ) && ! empty( $cpt ) && ! is_array( $cpt ) ) { // if an id is passed taxonomy cannot be an array
-			$wp_term       = get_term_by( 'id', $args, $cpt );
+		} elseif ( is_numeric( $args ) ) { 
+			$wp_term       = get_term( (int) $args, $cpt );
 			$tainacan_term = new Entities\Term( $wp_term );
 			return $tainacan_term;
 		} else {
