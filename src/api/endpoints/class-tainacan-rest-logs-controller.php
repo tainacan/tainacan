@@ -111,17 +111,88 @@ class REST_Logs_Controller extends REST_Controller {
 	public function prepare_item_for_response( $item, $request ) {
 		if(!empty($item)){
 
-			if(!isset($request['fetch_only'])) {
-				$item_array = $item->_toArray();
-				return $item_array;
-			}
+			
+			if ($request['log_id']) {
+				
+				if ($item->get_log_diffs() && $item->get_value()) {
+					$item_array = $this->prepare_legacy_item_for_response($item, $request);
+				} else {
+					
+					$item_array = $item->_toArray();
+					
+					$related_object = true;
+					
+					if ($item_array['item_id']) {
+						$item = Repositories\Items::get_instance()->fetch( (int) $item_array['item_id'] );
+						if ($item instanceof Entities\Item ) {
+							$item_array['item'] = $item->_toArray();
+						}
+					}
+					if ($item_array['collection_id']) {
+						$collection = Repositories\Collections::get_instance()->fetch( (int) $item_array['collection_id'] );
+						if ($collection instanceof Entities\Item ) {
+							$item_array['collection'] = $collection->_toArray();
+						}
+					}
+					
+					if ( $item_array['object_id'] && 
+						( isset($item_array['collection_id']) && $item_array['object_id'] != $item_array['collection_id'] ) &&
+						( isset($item_array['item_id']) && $item_array['object_id'] != $item_array['item_id'] ) ) {
+						
+						if ( $item_array['object_type'] == 'Tainacan\Entities\Term' ) {
+							$related_entity = Repositories\Terms::get_instance()->fetch( (int) $item_array['object_id'] );
+						} else {
+							$related_post = get_post($item_array['object_id']);
+							$related_entity = Repository::get_entity_by_post( $related_post );
+						}
+						
+						if ($related_entity instanceof Entities\Entity ) {
+							$item_array[ strtolower($related_entity->get_repository()->get_name()) ] = $related_entity->_toArray();
+						}
+						
+					}
+					
+					if ( $item_array['action'] == 'new-attachment' ) {
+						if ( isset($item_array['new_value']['id']) ) {
+							$item_array['new_value']['url'] = wp_get_attachment_url($item_array['new_value']['id']);
+							$item_array['new_value']['thumb'] = wp_get_attachment_image_src($item_array['new_value']['id'], 'thumbnail');
+						}
+					} elseif ( $item_array['action'] == 'update' && isset( $item_array['new_value']['document_type'] ) && $item_array['new_value']['document_type'] == 'attachment' ) {
+						if ( isset($item_array['new_value']['document']) ) { 
+							$item_array['new_value']['url'] = wp_get_attachment_url($item_array['new_value']['document']);
+							$item_array['new_value']['thumb'] = wp_get_attachment_image_src($item_array['new_value']['document'], 'thumbnail');
+						}
+					}
+					
+					
+					
+					
+					return $item_array;
+					
+				}
+				
+				
+			} else {
+				
+				if(!isset($request['fetch_only'])) {
+					$item_array = $item->_toArray();
+					return $item_array;
+				}
 
-			$attributes_to_filter = $request['fetch_only'];
+				$attributes_to_filter = $request['fetch_only'];
+				
+			}
+			
+			
 
 			return $this->filter_object_by_attributes($item, $attributes_to_filter);
 		}
 
 		return $item;
+	}
+	
+	private function prepare_legacy_item_for_response($item, $request) {
+		return $item->_toArray();
 	}
 
 	/**
@@ -186,7 +257,7 @@ class REST_Logs_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
-		return true;
+		//return true;
 		return current_user_can('read');
 	}
 

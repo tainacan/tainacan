@@ -284,8 +284,6 @@ class Logs extends Repository {
 					'title'       => $attachment->post_title,
 					'description' => $attachment->post_content,
 					'mime_type'   => $attachment->post_mime_type,
-					'url'         => wp_get_attachment_url($attachment->ID),
-					'thumb'       => wp_get_attachment_image_src($attachment->ID, 'thumbnail'),
 				];
 				
 				$log->set_new_value($prepared);
@@ -454,7 +452,7 @@ class Logs extends Repository {
 		$diff = apply_filters( 'tainacan-entity-diff', $diff, $unsaved, $old );
 		
 		$this->current_diff = $diff;
-		$this->current_action = 'update';
+		$this->current_action = 'update-metadata-value';
 		
 	}
 	
@@ -477,6 +475,7 @@ class Logs extends Repository {
 		}
 		
 		$log = new Entities\Log();
+		$log->set_action($this->current_action);
 		
 		$collection_id = method_exists($entity, 'get_collection_id') ? $entity->get_collection_id() : 'default';
 		
@@ -503,6 +502,7 @@ class Logs extends Repository {
 			if ($this->current_action == 'update') {
 				if (isset($diff['new']['document'])) {
 					$log->set_title( sprintf( __( 'Item "%s" document was updated', 'tainacan'), $entity->get_title() ) );
+					$log->set_action('update-document');
 				} else {
 					$log->set_title( sprintf( __( 'Item "%s" was updated', 'tainacan'), $entity->get_title() ) );
 				}
@@ -573,7 +573,7 @@ class Logs extends Repository {
 		$log->set_object_id($object_id);
 		$log->set_old_value($diff['old']);
 		$log->set_new_value($diff['new']);
-		$log->set_action($this->current_action);
+		
 		
 		if ( $log->validate() ) {
 			$this->insert($log);
