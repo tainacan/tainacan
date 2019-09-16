@@ -858,7 +858,14 @@ export default {
 
             let data = { id: this.itemId, status: this.form.status, comment_status: this.form.comment_status };
             this.fillExtraFormData(data);
-            this.updateItem(data).then(updatedItem => {
+
+            let promise = null;
+            if (status == 'trash')
+                promise = this.deleteItem({ itemId: this.itemId, isPermanently: false });
+            else
+                promise = this.updateItem(data);
+            
+            promise.then(updatedItem => {
 
                 this.item = updatedItem;
 
@@ -866,7 +873,7 @@ export default {
                 this.updateExtraFormData(this.item);
 
                 // Fill this.form data with current data.
-                this.form.status = this.item.status;
+                this.form.status = status == 'trash' ? status : this.item.status;
                 this.form.document = this.item.document;
                 this.form.document_type = this.item.document_type;
                 this.form.comment_status = this.item.comment_status;

@@ -127,12 +127,12 @@ export const deleteItem = ({ commit }, { itemId, isPermanently }) => {
         }
 
         axios.tainacan.delete(endpoint)
-        .then( res => {
-            commit('deleteItem', { id: itemId });
-            resolve( res );
-        }).catch((error) => { 
-            reject( error );
-        });
+            .then( res => {
+                commit('deleteItem', { id: itemId });
+                resolve( res );
+            }).catch((error) => { 
+                reject( error );
+            });
 
     });
 };
