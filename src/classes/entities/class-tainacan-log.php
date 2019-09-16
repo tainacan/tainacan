@@ -201,52 +201,6 @@ class Log extends Entity {
 	public function get_log_diffs(){
 		return $this->get_mapped_property('log_diffs');
 	}
-
-	/**
-	 *
-	 * @param bool $message
-	 * @param string $desc
-	 * @param null $value
-	 * @param array $diffs
-	 * @param string $status 'publish', 'private', 'pending', 'processing' or 'error'
-	 *
-	 * @return \Tainacan\Entities\Log | bool
-	 * @throws \Exception
-	 */
-	public static function create( $message = false, $desc = '', $value = null, $diffs = [], $status = 'publish' ) {
-
-		$log = new Log();
-
-		$log->set_title( $message );
-		$log->set_description( $desc );
-		$log->set_status( $status );
-		$log->set_log_diffs( $diffs );
-
-		if(is_object($value) || is_string($value)) {
-			if(array_search( 'Tainacan\Traits\Entity_Collection_Relation', class_uses($value))) {
-				$log->set_collection_id( $value->get_collection_id() );
-			} elseif($value instanceof Collection){
-				$log->set_collection_id( $value->get_id());
-			} elseif($value instanceof Item_Metadata_Entity){
-				$log->set_item_id($value->get_item()->get_id());
-				$log->set_collection_id($value->get_item()->get_collection_id());
-			}
-		}
-
-		if ( ! is_null( $value ) ) {
-			$log->set_value( $value );
-		} elseif ( $message === false ) {
-			throw new \Exception( 'Message or value is needed to log' );
-		}
-
-		$Tainacan_Logs = \Tainacan\Repositories\Logs::get_instance();
-
-		if ( $log->validate() ) {
-			return $Tainacan_Logs->insert( $log );
-		} else {
-			throw new \Exception( 'Invalid log' );
-		}
-	}
 	
 	public function get_object_type() {
 		$this->get_mapped_property('object_type');
