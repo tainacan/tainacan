@@ -823,6 +823,7 @@ export default {
             'cleanMetadata',
             'sendAttachments',
             'fetchAttachments',
+            'deletePermanentlyAttachment',
             'updateThumbnail',
             'cleanLastUpdated',
             'setLastUpdated',
@@ -1085,9 +1086,13 @@ export default {
                         this.removeAttachmentFromItem(attachment.id)
                             .then(() => { 
                                 this.isLoadingAttachments = true;
+                                
                                 this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
                                     .then(() => this.isLoadingAttachments = false)
                                     .catch(() => this.isLoadingAttachments = false);
+                                
+                                this.deletePermanentlyAttachment(attachment.id)
+                                    .catch((error) => this.$console.log(error));
                             })
                             .catch((error) => {
                                 this.$console.error(error);

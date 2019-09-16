@@ -202,6 +202,19 @@ export const removeAttachmentFromItem = ( { commit }, attachmentId) => {
     });
 };
 
+export const deletePermanentlyAttachment = ( { commit }, attachmentId) => {
+    return new Promise(( resolve, reject ) => {
+        axios.wp.delete('/media/' + attachmentId + '?force=true')
+            .then( res => {
+                let attachment = res.data;
+                resolve( attachment );
+            })
+            .catch(error => {
+                reject( error.response );
+            });
+    });
+};
+
 export const fetchAttachments = ({ commit }, { page, attachmentsPerPage, itemId, documentId }) => {
     commit('cleanAttachments');
     commit('setTotalAttachments', null);
