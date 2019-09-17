@@ -95,11 +95,12 @@
                                 <div
                                         v-else-if="attributeName == 'metadata_type_options'"
                                         class="content">
-                                    <p class="tainacan-p-break">
-                                        {{ attributeValue ?
-                                        `Taxonomy ID: ${attributeValue.taxonomy_id};
-                                        Input type: ${attributeValue.input_type};
-                                        Allow new terms: ${attributeValue.allow_new_terms}` : infoEmpty }}
+                                    <p 
+                                            :key="innerIndex"
+                                            v-for="(innerValue, innerName, innerIndex) of attributeValue"
+                                            class="tainacan-p-break">
+                                        <strong>{{ innerName + ': ' }}</strong>{{ innerValue ? innerValue : infoEmpty }}
+                                        <br>
                                     </p>
                                 </div>
 
@@ -199,10 +200,12 @@
                                 <div
                                         v-else-if="attributeName == 'metadata_type_options'"
                                         class="content">
-                                    <p class="tainacan-p-break">
-                                        {{ `Taxonomy ID: ${attributeValue.taxonomy_id};
-                                            Input type: ${attributeValue.input_type};
-                                            Allow new terms: ${attributeValue.allow_new_terms}` }}
+                                    <p 
+                                            :key="innerIndex"
+                                            v-for="(innerValue, innerName, innerIndex) of attributeValue"
+                                            class="tainacan-p-break">
+                                        <strong>{{ innerName + ': ' }}</strong>{{ innerValue ? innerValue : infoEmpty }}
+                                        <br>
                                     </p>
                                 </div>
 
