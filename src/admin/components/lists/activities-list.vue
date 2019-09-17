@@ -70,19 +70,19 @@
                             class="table-creation column-small-width"
                             @click="openActivityDetailsModal(activity)"
                             :label="$i18n.get('label_activity_date')"
-                            :aria-label="$i18n.get('label_activity_date') + ': ' + activity.log_date">
+                            :aria-label="$i18n.get('label_activity_date') + ': ' + activity.date">
                         <p
                                 v-tooltip="{
                                     delay: {
                                         show: 500,
                                         hide: 300,
                                     },
-                                    content: activity.log_date,
+                                    content: activity.date,
                                     autoHide: false,
                                     classes: ['tooltip', 'repository-tooltip'],
                                     placement: 'auto-start'
                                 }"
-                                v-html="activity.log_date"/>
+                                v-html="activity.date"/>
                     </td>
                     <!-- Approbation -->
                     <!--<td-->

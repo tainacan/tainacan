@@ -53,6 +53,7 @@ export const fetchItemActivities = ({ commit }, { page, activitiesPerPage, itemI
 };
 
 export const fetchActivity = ({ commit }, activityId) => {
+    commit('clearActivity');
     return new Promise((resolve, reject) => {
        axios.tainacan.get(`/logs/${activityId}?context=edit`)
            .then(res => {
