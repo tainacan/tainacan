@@ -135,9 +135,7 @@ class REST_Logs_Controller extends REST_Controller {
 						}
 					}
 					
-					if ( $item_array['object_id'] && 
-						( isset($item_array['collection_id']) && $item_array['object_id'] != $item_array['collection_id'] ) &&
-						( isset($item_array['item_id']) && $item_array['object_id'] != $item_array['item_id'] ) ) {
+					if ( $item_array['object_id'] ) {
 						
 						if ( $item_array['object_type'] == 'Tainacan\Entities\Term' ) {
 							$related_entity = Repositories\Terms::get_instance()->fetch( (int) $item_array['object_id'] );
@@ -165,6 +163,25 @@ class REST_Logs_Controller extends REST_Controller {
 					}
 					
 					
+					// translate 
+					if (isset($related_entity) && $related_entity instanceof Entities\Entity ) {
+						
+						$map = $related_entity->get_repository()->get_map();
+						
+						foreach ( $map as $slug => $m ) {
+							
+							if ( isset($item_array['new_value'][$slug]) ) {
+								$item_array['new_value'][$m['title']] = $item_array['new_value'][$slug];
+								unset($item_array['new_value'][$slug]);
+							}
+							if ( isset($item_array['old_value'][$slug]) ) {
+								$item_array['old_value'][$m['title']] = $item_array['old_value'][$slug];
+								unset($item_array['old_value'][$slug]);
+							}
+							
+						}
+						
+					}
 					
 					
 					return $item_array;
@@ -257,7 +274,7 @@ class REST_Logs_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
-		//return true;
+		return true;
 		return current_user_can('read');
 	}
 
