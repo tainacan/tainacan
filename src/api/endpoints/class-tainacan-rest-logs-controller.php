@@ -112,7 +112,7 @@ class REST_Logs_Controller extends REST_Controller {
 		if(!empty($item)){
 
 			// Hanle logs created before 1.0
-			if ($item->get_log_diffs() && $item->get_value()) {
+			if ( !empty( get_post_meta($item->get_id(), 'value', true) ) &&  !empty( get_post_meta($item->get_id(), 'log_diffs', true) ) ) {
 				return $this->prepare_legacy_item_for_response($item, $request);
 			}
 			
