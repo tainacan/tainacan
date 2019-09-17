@@ -21,23 +21,23 @@
                     <!-- OLD -->
                     <div class="column is-6">
 
-                        <!-- Thumbnail -->
-                        <!-- <div
-                                class="content"
-                                v-if="attributeName == 'thumbnail'">
-                            <p class="is-capitalized has-text-blue5 has-text-weight-bold">
-                                {{ attributeName }}
+                        <div
+                                v-if="activity.action == 'update-thumbnail'"
+                                class="content">
+                             <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                                {{ $i18n.get('label_thumbnail') }}
                                 <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
                             </p>
-                            <div>
-                                <picture>
-                                    <img
-                                            width="150px"
-                                            :src="attributeValue ? attributeValue : placeholderSquareImage"
-                                            :alt="attributeName">
-                                </picture>
-                            </div>
-                        </div> -->
+                            <p 
+                                    v-if="activity.old_value && activity.old_value.thumb && activity.old_value.thumb[0]"
+                                    class="tainacan-p-break">
+                                <img 
+                                        style="margin: 12px 0; max-width: 150px;"
+                                        :alt="$i18n.get('label_thumbnail')"
+                                        :src="activity.old_value.thumb[0]" >
+                            </p>
+                            <p v-else>{{ infoEmpty }}</p>
+                        </div>
 
                         <div
                                 v-if="activity.action == 'new-attachment'"
@@ -148,23 +148,24 @@
                     <!-- NEW -->
                     <div class="column is-6">
 
-                        <!-- Thumbnail -->
-                        <!-- <div
-                                class="content"
-                                v-if="attributeName == 'thumbnail'">
-                            <p class="is-capitalized has-text-blue5">
-                                {{ attributeName }}
+                        <div
+                                v-if="activity.action == 'update-thumbnail'"
+                                class="content">
+                             <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                                {{ $i18n.get('label_thumbnail') }}
                                 <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
                             </p>
-                            <div>
-                                <picture>
-                                    <img
-                                            width="150px"
-                                            :src="attributeValue ? attributeValue : placeholderSquareImage"
-                                            :alt="attributeName">
-                                </picture>
-                            </div>
-                        </div> -->
+                            <p 
+                                    v-if="activity.new_value && activity.new_value.thumb && activity.new_value.thumb[0]"
+                                    class="tainacan-p-break">
+                                <img 
+                                        style="margin: 12px 0; max-width: 150px;"
+                                        :alt="$i18n.get('label_thumbnail')"
+                                        :src="activity.new_value.thumb[0]" >
+                            </p>
+                            <p v-else>{{ infoEmpty }}</p>
+                        </div>
+
                         <div
                                 v-if="activity.action == 'new-attachment'"
                                 class="content">
@@ -268,7 +269,7 @@
                                 v-if="activity.action == 'update-metadata-value'">
                             <p class="is-capitalized has-text-blue5 has-text-weight-bold">
                                 {{ activity.metadata && activity.metadata.name ? activity.metadata.name : $i18n.get('metadatum') }}
-                                <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
+                                <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
                             </p>
                             <p
                                 class="tainacan-p-break"
