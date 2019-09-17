@@ -1,7 +1,7 @@
 <template>
     <div class="tainacan-modal-content">
         <header class="tainacan-modal-title">
-            <h2>{{ $i18n.get('activity') + ': ' + activity.title }}</h2>
+            <h2>{{ activity.title ? activity.title : $i18n.get('activity') }}</h2>
             <hr>
         </header>
         <b-loading 
@@ -109,8 +109,20 @@
                                         v-html="(!attributeValue || (attributeValue instanceof Array && !attributeValue.length)) ? infoEmpty : (attributeValue instanceof Array ? attributeValue.join(`<span class='multivalue-separator'>|</span>`) : attributeValue)" />
                             </div>
                         </div>
+
+                        <div
+                                class="content"
+                                v-if="activity.action == 'update-metadata-value'">
+                            <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                                {{ activity.metadata && activity.metadata.name ? activity.metadata.name : $i18n.get('metadatum') }}
+                                <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
+                            </p>
+                            <p
+                                class="tainacan-p-break"
+                                v-html="!activity.old_value ? infoEmpty : (activity.old_value.split(' | ') instanceof Array ? activity.old_value.split(' | ').join(`<span class='multivalue-separator'>|</span>`) : activity.old_value)" />
+                        </div>
                     </div>
-                    
+
                     <!-- NEW -->
                     <div class="column is-6">
 
@@ -199,6 +211,18 @@
                                         v-else
                                         v-html="(!attributeValue || (attributeValue instanceof Array && !attributeValue.length)) ? infoEmpty : (attributeValue instanceof Array ? attributeValue.join(`<span class='multivalue-separator'>|</span>`) : attributeValue)" />
                             </div>
+                        </div>
+                        
+                        <div
+                                class="content"
+                                v-if="activity.action == 'update-metadata-value'">
+                            <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                                {{ activity.metadata && activity.metadata.name ? activity.metadata.name : $i18n.get('metadatum') }}
+                                <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
+                            </p>
+                            <p
+                                class="tainacan-p-break"
+                                v-html="!activity.new_value ? infoEmpty : (activity.new_value.split(' | ') instanceof Array ? activity.new_value.split(' | ').join(`<span class='multivalue-separator'>|</span>`) : activity.new_value)" />
                         </div>
                     </div>
                 </div>
