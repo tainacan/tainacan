@@ -511,6 +511,9 @@ class Logs extends Repository {
 				if (isset($diff['new']['document'])) {
 					$log->set_title( sprintf( __( 'Item "%s" document was updated', 'tainacan'), $entity->get_title() ) );
 					$log->set_action('update-document');
+				} elseif (isset($diff['new']['_thumbnail_id'])) {
+					$log->set_title( sprintf( __( 'Item "%s" thumbnail was updated', 'tainacan'), $entity->get_title() ) );
+					$log->set_action('update-thumbnail');
 				} else {
 					$log->set_title( sprintf( __( 'Item "%s" was updated', 'tainacan'), $entity->get_title() ) );
 				}
@@ -635,7 +638,7 @@ class Logs extends Repository {
 			$log->set_item_id($entity->get_id());
 			
 			if ($this->current_action == 'delete') {
-				$log->set_title( sprintf( __( 'Item "%1$s" (ID %2$s) document was updated', 'tainacan'), $entity->get_title(), $entity->get_id() ) );
+				$log->set_title( sprintf( __( 'Item "%1$s" (ID %2$s) was updated', 'tainacan'), $entity->get_title(), $entity->get_id() ) );
 			} elseif ($this->current_action == 'trash') {
 				$log->set_title( sprintf( __( 'Item "%1$s" (ID %2$s) was moved to trash', 'tainacan'), $entity->get_title(), $entity->get_id() ) );
 			}
