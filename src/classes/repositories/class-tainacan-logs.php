@@ -443,17 +443,25 @@ class Logs extends Repository {
 		
 		$old = new Entities\Item_Metadata_Entity($unsaved->get_item(), $unsaved->get_metadatum());
 		
+		add_filter('tainacan-item-metadata-get-multivalue-separator', [$this, '__temporary_multivalue_separator']);
+		
 		if ( $old instanceof Entities\Item_Metadata_Entity ) {
-			$diff['old'] = $old->get_value_as_string();
+			$diff['old'] = \explode($this->__temporary_multivalue_separator(''), $old->get_value_as_string());
 		}
 		
-		$diff['new'] = $unsaved->get_value_as_string();
+		$diff['new'] = \explode($this->__temporary_multivalue_separator(''), $unsaved->get_value_as_string());
+		
+		remove_filter('tainacan-item-metadata-get-multivalue-separator', [$this, '__temporary_multivalue_separator']);
 		
 		$diff = apply_filters( 'tainacan-entity-diff', $diff, $unsaved, $old );
 		
 		$this->current_diff = $diff;
 		$this->current_action = 'update-metadata-value';
 		
+	}
+	
+	public function __temporary_multivalue_separator($sep) {
+		return '--xx--';
 	}
 	
 	/**
