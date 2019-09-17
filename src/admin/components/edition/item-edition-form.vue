@@ -1083,16 +1083,13 @@ export default {
                     title: this.$i18n.get('label_warning'),
                     message: this.$i18n.get('info_warning_attachment_delete'),
                     onConfirm: () => {
-                        this.removeAttachmentFromItem(attachment.id)
+                        this.deletePermanentlyAttachment(attachment.id)
                             .then(() => { 
                                 this.isLoadingAttachments = true;
                                 
                                 this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
                                     .then(() => this.isLoadingAttachments = false)
                                     .catch(() => this.isLoadingAttachments = false);
-                                
-                                this.deletePermanentlyAttachment(attachment.id)
-                                    .catch((error) => this.$console.log(error));
                             })
                             .catch((error) => {
                                 this.$console.error(error);
