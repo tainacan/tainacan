@@ -111,96 +111,93 @@ class REST_Logs_Controller extends REST_Controller {
 	public function prepare_item_for_response( $item, $request ) {
 		if(!empty($item)){
 
+			// Hanle logs created before 1.0
+			if ($item->get_log_diffs() && $item->get_value()) {
+				return $this->prepare_legacy_item_for_response($item, $request);
+			}
 			
 			if ($request['log_id']) {
 				
-				if ($item->get_log_diffs() && $item->get_value()) {
-					$item_array = $this->prepare_legacy_item_for_response($item, $request);
-				} else {
-					
-					$item_array = $item->_toArray();
-					
-					$related_object = true;
-					
-					if ($item_array['item_id']) {
-						$item = Repositories\Items::get_instance()->fetch( (int) $item_array['item_id'] );
-						if ($item instanceof Entities\Item ) {
-							$item_array['item'] = $item->_toArray();
-						}
+			
+				$item_array = $item->_toArray();
+				
+				$related_object = true;
+				
+				if ($item_array['item_id']) {
+					$item = Repositories\Items::get_instance()->fetch( (int) $item_array['item_id'] );
+					if ($item instanceof Entities\Item ) {
+						$item_array['item'] = $item->_toArray();
 					}
-					if ($item_array['collection_id']) {
-						$collection = Repositories\Collections::get_instance()->fetch( (int) $item_array['collection_id'] );
-						if ($collection instanceof Entities\Item ) {
-							$item_array['collection'] = $collection->_toArray();
-						}
+				}
+				if ($item_array['collection_id']) {
+					$collection = Repositories\Collections::get_instance()->fetch( (int) $item_array['collection_id'] );
+					if ($collection instanceof Entities\Item ) {
+						$item_array['collection'] = $collection->_toArray();
 					}
+				}
+				
+				if ( $item_array['object_id'] ) {
 					
-					if ( $item_array['object_id'] ) {
-						
-						if ( $item_array['object_type'] == 'Tainacan\Entities\Term' ) {
-							$related_entity = Repositories\Terms::get_instance()->fetch( (int) $item_array['object_id'] );
-						} else {
-							$related_post = get_post($item_array['object_id']);
-							$related_entity = Repository::get_entity_by_post( $related_post );
-						}
-						
-						if ($related_entity instanceof Entities\Entity ) {
-							$item_array[ strtolower($related_entity->get_repository()->get_name()) ] = $related_entity->_toArray();
-						}
-						
+					if ( $item_array['object_type'] == 'Tainacan\Entities\Term' ) {
+						$related_entity = Repositories\Terms::get_instance()->fetch( (int) $item_array['object_id'] );
+					} else {
+						$related_post = get_post($item_array['object_id']);
+						$related_entity = Repository::get_entity_by_post( $related_post );
 					}
 					
-					if ( $item_array['action'] == 'new-attachment' ) {
-						if ( isset($item_array['new_value']['id']) ) {
-							$item_array['new_value']['url'] = wp_get_attachment_url($item_array['new_value']['id']);
-							$item_array['new_value']['thumb'] = wp_get_attachment_image_src($item_array['new_value']['id'], 'thumbnail');
-						}
-					} elseif ( $item_array['action'] == 'update-document' ) {
-						if ( isset( $item_array['new_value']['document_type'] ) && $item_array['new_value']['document_type'] == 'attachment' && isset($item_array['new_value']['document']) ) { 
-							$item_array['new_value']['url'] = wp_get_attachment_url($item_array['new_value']['document']);
-							$item_array['new_value']['thumb'] = wp_get_attachment_image_src($item_array['new_value']['document'], 'thumbnail');
-						}
-						if ( isset( $item_array['old_value']['document_type'] ) && $item_array['old_value']['document_type'] == 'attachment' && isset($item_array['old_value']['document']) ) { 
-							$item_array['old_value']['url'] = wp_get_attachment_url($item_array['old_value']['document']);
-							$item_array['old_value']['thumb'] = wp_get_attachment_image_src($item_array['old_value']['document'], 'thumbnail');
-						}
-					} elseif ( $item_array['action'] == 'update-thumbnail' ) {
-						if ( isset( $item_array['new_value']['_thumbnail_id'] ) ) { 
-							$item_array['new_value']['url'] = wp_get_attachment_url($item_array['new_value']['_thumbnail_id']);
-							$item_array['new_value']['thumb'] = wp_get_attachment_image_src($item_array['new_value']['_thumbnail_id'], 'thumbnail');
-						}
-						if ( isset( $item_array['old_value']['_thumbnail_id'] ) ) { 
-							$item_array['old_value']['url'] = wp_get_attachment_url($item_array['old_value']['_thumbnail_id']);
-							$item_array['old_value']['thumb'] = wp_get_attachment_image_src($item_array['old_value']['_thumbnail_id'], 'thumbnail');
-						}
+					if ($related_entity instanceof Entities\Entity ) {
+						$item_array[ strtolower($related_entity->get_repository()->get_name()) ] = $related_entity->_toArray();
 					}
-					
-					
-					// translate 
-					if (isset($related_entity) && $related_entity instanceof Entities\Entity ) {
-						
-						$map = $related_entity->get_repository()->get_map();
-						
-						foreach ( $map as $slug => $m ) {
-							
-							if ( isset($item_array['new_value'][$slug]) ) {
-								$item_array['new_value'][$m['title']] = $item_array['new_value'][$slug];
-								unset($item_array['new_value'][$slug]);
-							}
-							if ( isset($item_array['old_value'][$slug]) ) {
-								$item_array['old_value'][$m['title']] = $item_array['old_value'][$slug];
-								unset($item_array['old_value'][$slug]);
-							}
-							
-						}
-						
-					}
-					
-					
-					return $item_array;
 					
 				}
 				
+				if ( $item_array['action'] == 'new-attachment' ) {
+					if ( isset($item_array['new_value']['id']) ) {
+						$item_array['new_value']['url'] = wp_get_attachment_url($item_array['new_value']['id']);
+						$item_array['new_value']['thumb'] = wp_get_attachment_image_src($item_array['new_value']['id'], 'thumbnail');
+					}
+				} elseif ( $item_array['action'] == 'update-document' ) {
+					if ( isset( $item_array['new_value']['document_type'] ) && $item_array['new_value']['document_type'] == 'attachment' && isset($item_array['new_value']['document']) ) { 
+						$item_array['new_value']['url'] = wp_get_attachment_url($item_array['new_value']['document']);
+						$item_array['new_value']['thumb'] = wp_get_attachment_image_src($item_array['new_value']['document'], 'thumbnail');
+					}
+					if ( isset( $item_array['old_value']['document_type'] ) && $item_array['old_value']['document_type'] == 'attachment' && isset($item_array['old_value']['document']) ) { 
+						$item_array['old_value']['url'] = wp_get_attachment_url($item_array['old_value']['document']);
+						$item_array['old_value']['thumb'] = wp_get_attachment_image_src($item_array['old_value']['document'], 'thumbnail');
+					}
+				} elseif ( $item_array['action'] == 'update-thumbnail' ) {
+					if ( isset( $item_array['new_value']['_thumbnail_id'] ) ) { 
+						$item_array['new_value']['url'] = wp_get_attachment_url($item_array['new_value']['_thumbnail_id']);
+						$item_array['new_value']['thumb'] = wp_get_attachment_image_src($item_array['new_value']['_thumbnail_id'], 'thumbnail');
+					}
+					if ( isset( $item_array['old_value']['_thumbnail_id'] ) ) { 
+						$item_array['old_value']['url'] = wp_get_attachment_url($item_array['old_value']['_thumbnail_id']);
+						$item_array['old_value']['thumb'] = wp_get_attachment_image_src($item_array['old_value']['_thumbnail_id'], 'thumbnail');
+					}
+				}
+				
+				
+				// translate 
+				if (isset($related_entity) && $related_entity instanceof Entities\Entity ) {
+					
+					$map = $related_entity->get_repository()->get_map();
+					
+					foreach ( $map as $slug => $m ) {
+						
+						if ( isset($item_array['new_value'][$slug]) ) {
+							$item_array['new_value'][$m['title']] = $item_array['new_value'][$slug];
+							unset($item_array['new_value'][$slug]);
+						}
+						if ( isset($item_array['old_value'][$slug]) ) {
+							$item_array['old_value'][$m['title']] = $item_array['old_value'][$slug];
+							unset($item_array['old_value'][$slug]);
+						}
+						
+					}
+					
+				}
+				
+				return $item_array;
 				
 			} else {
 				
@@ -212,8 +209,6 @@ class REST_Logs_Controller extends REST_Controller {
 				$attributes_to_filter = $request['fetch_only'];
 				
 			}
-			
-			
 
 			return $this->filter_object_by_attributes($item, $attributes_to_filter);
 		}
@@ -222,7 +217,20 @@ class REST_Logs_Controller extends REST_Controller {
 	}
 	
 	private function prepare_legacy_item_for_response($item, $request) {
-		return $item->_toArray();
+		if(!isset($request['fetch_only'])) {
+			$item_array = $item->_toArray();
+
+			unset($item_array['value']);
+			unset($item_array['old_value']);
+			
+			$item_array['legacy'] = true;
+
+			return $item_array;
+		}
+
+		$attributes_to_filter = $request['fetch_only'];
+
+		return $this->filter_object_by_attributes($item, $attributes_to_filter);
 	}
 
 	/**
