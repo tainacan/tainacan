@@ -125,7 +125,7 @@
 </template>
 
 <script>
-    import {mapActions} from 'vuex';
+    import { mapActions } from 'vuex';
 
     import ActivityDetailsModal from '../other/activity/activity-details-modal.vue';
     import ThreeStateToggleButton from '../other/three-state-toggle-button.vue';
@@ -172,7 +172,7 @@
                     parent: this,
                     component: ActivityDetailsModal,
                     props: {
-                        activity: activity,
+                        activityId: activity.id,
                     },
                     events: {
                         approveActivity: (activityId) => this.approveActivity(activityId),

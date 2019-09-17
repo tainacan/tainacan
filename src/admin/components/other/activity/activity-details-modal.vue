@@ -4,7 +4,13 @@
             <h2>{{ $i18n.get('activity') }}</h2>
             <hr>
         </header>
-        <div class="modal-card-body">
+        <b-loading 
+                :is-full-page="false"
+                :active.sync="isLoadingActivity" 
+                :can-cancel="false"/>
+        <div
+                v-if="!isLoadingActivity"
+                class="modal-card-body">
             <div class="content">
                 <p><strong>{{ $i18n.get('label_activity_description') }}:</strong> {{ activity.description }}</p>
                 <p><strong>{{ $i18n.get('label_activity_creation_date') }}:</strong> {{ activityCreationDate }}</p>
@@ -294,13 +300,14 @@
 </template>
 
 <script>
+    import { mapActions, mapGetters } from 'vuex';
     import moment from 'moment';
     import FileItem from '../file-item.vue';
 
     export default {
         name: "ActivityDetailsModal",
         props: {
-            activity: Object
+            activityId: String
         },
         data() {
             return {
@@ -308,31 +315,27 @@
                 dateFormat: '',
                 activityCreationDate: '',
                 placeholderSquareImage: `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`,
+                isLoadingActivity: false
             }
         },
         components: {
             FileItem
         },
-        created() {
-
-            let locale = navigator.language;
-
-            moment.locale(locale);
-
-            let localeData = moment.localeData();
-            this.dateFormat = localeData.longDateFormat('lll');
-
-            let logDate = this.activity.log_date;
-
-            let date = moment(logDate).format(this.dateFormat);
-
-            if (date != 'Invalid date') {
-                this.activityCreationDate = date;
-            } else {
-                this.activityCreationDate = this.$i18n.get('info_unknown_date');
+        computed: {
+            activity() {
+                return this.getActivity();
             }
         },
+        created() {
+            this.loadActivity();
+        },
         methods: {
+            ...mapActions('activity', [
+                'fetchActivity'
+            ]),
+            ...mapGetters('activity', [
+                'getActivity'
+            ]),
             approveActivity(){
                 this.$emit('approveActivity', this.activity.id);
             },
@@ -341,6 +344,31 @@
             },
             undo(){
 
+            },
+            loadActivity() {
+                this.isLoadingActivity = true;
+                this.fetchActivity(this.activityId)
+                    .then(() => {
+                        this.isLoadingActivity = false;
+
+                        let locale = navigator.language;
+
+                        moment.locale(locale);
+
+                        let localeData = moment.localeData();
+                        this.dateFormat = localeData.longDateFormat('lll');
+
+                        let logDate = this.activity.log_date;
+
+                        let date = moment(logDate).format(this.dateFormat);
+
+                        if (date != 'Invalid date') {
+                            this.activityCreationDate = date;
+                        } else {
+                            this.activityCreationDate = this.$i18n.get('info_unknown_date');
+                        }
+                    })
+                    .catch(() => this.isLoadingActivity = false);
             }
         }
     }
