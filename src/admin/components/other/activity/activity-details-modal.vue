@@ -220,18 +220,8 @@
                                     <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
                                 </p>
 
-                                <!-- Is array with length 1 -->
-                                <p
-                                        class="tainacan-p-break"
-                                        v-if="(attributeValue instanceof Array) &&
-                                            (attributeValue.length == 1) &&
-                                            !(attributeValue[0] instanceof Object)">
-                                    {{ attributeValue.toString() }}
-                                </p>
-
-
                                 <div
-                                        v-else-if="attributeName == 'metadata_order' || attributeName == 'filters_order'"
+                                        v-if="attributeName == 'metadata_order' || attributeName == 'filters_order'"
                                         class="content">
                                     <p
                                             class="tainacan-p-break"
@@ -249,6 +239,20 @@
                                             class="tainacan-p-break">
                                         <strong>{{ innerName + ': ' }}</strong>{{ innerValue ? innerValue : infoEmpty }}
                                         <br>
+                                    </p>
+                                </div>
+
+                                <div
+                                        v-else-if="attributeName == 'header_image_id'"
+                                        class="content">
+                                    <p class="tainacan-p-break">
+                                        {{ attributeValue ? attributeValue : infoEmpty }}
+                                        <br>
+                                        <img 
+                                                style="margin: 12px 0; max-width: 160px;"
+                                                v-if="activity.terms && activity.terms.header_image"
+                                                :alt="$i18n.get('label_header_image')"
+                                                :src="activity.terms.header_image" >
                                     </p>
                                 </div>
 
