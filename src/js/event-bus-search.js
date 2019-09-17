@@ -351,7 +351,7 @@ export default {
                                 this.$emit( 'isLoadingItems', false);
                                 this.$emit( 'hasFiltered', res.hasFiltered);
                                 
-                                if(res.advancedSearchResults){
+                                if (res.advancedSearchResults){
                                     this.$emit('advancedSearchResults', res.advancedSearchResults);
                                 }
                             })

@@ -117,7 +117,7 @@
             <div
                     v-else
                     class="spinner-container">
-                {{ $root.__('No items found.', 'tainacan') }}
+                {{ $root.__(errorMessage, 'tainacan') }}
             </div>
             <!-- Swiper buttons are hidden as they actually swipe from slide to slide -->
         </div>
@@ -221,6 +221,7 @@ export default {
                 autoplay: this.autoPlay ? { delay: this.autoPlaySpeed*1000 } : false,
                 loop: this.loopSlides
             },
+            errorMessage: 'No items found.'
         }
     },
     components: {
@@ -251,6 +252,7 @@ export default {
         fetchItems() {
  
             this.isLoading = true;
+            this.errorMessage = 'No items found.';
             
             if (this.itemsRequestSource != undefined && typeof this.itemsRequestSource == 'function')
                 this.itemsRequestSource.cancel('Previous items search canceled.');
@@ -269,9 +271,10 @@ export default {
                         this.isLoading = false;
                         this.totalItems = response.headers['x-wp-total'];
 
-                    }).catch(() => { 
+                    }).catch((error) => { 
                         this.isLoading = false;
-                        // console.log(error);
+                        if (error.response && error.response.status && error.response.status == 401)
+                            this.errorMessage = 'Not allowed to see these items.'
                     });
             } else {
 
@@ -316,9 +319,10 @@ export default {
                         this.isLoading = false;
                         this.totalItems = response.headers['x-wp-total'];
 
-                    }).catch(() => { 
+                    }).catch((error) => { 
                         this.isLoading = false;
-                        // console.log(error);
+                        if (error.response && error.response.status && error.response.status == 401)
+                            this.errorMessage = 'Not allowed to see these items.'
                     });
             }
         },

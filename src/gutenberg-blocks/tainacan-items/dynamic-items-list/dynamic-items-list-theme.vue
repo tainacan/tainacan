@@ -203,7 +203,7 @@
             <div
                     v-else
                     class="spinner-container">
-                {{ $root.__('No items found.', 'tainacan') }}
+                {{ $root.__(errorMessage, 'tainacan') }}
             </div>
         </div>
     </div>
@@ -228,7 +228,8 @@ export default {
             localOrder: undefined,
             tainacanAxios: undefined,
             paged: undefined,
-            totalItems: 0
+            totalItems: 0,
+            errorMessage: 'No items found.'
         }
     },
     props: {
@@ -264,6 +265,7 @@ export default {
 
             this.items = [];
             this.isLoading = true;
+            this.errorMessage = 'No items found.';
             
             if (this.itemsRequestSource != undefined && typeof this.itemsRequestSource == 'function')
                 this.itemsRequestSource.cancel('Previous items search canceled.');
@@ -329,9 +331,10 @@ export default {
                     this.isLoading = false;
                     this.totalItems = response.headers['x-wp-total'];
 
-                }).catch(() => { 
+                }).catch((error) => { 
                     this.isLoading = false;
-                    // console.log(error);
+                    if (error.response && error.response.status && error.response.status == 401)
+                        this.errorMessage = 'Not allowed to see these items.'
                 });
         },
         fetchCollectionForHeader() {

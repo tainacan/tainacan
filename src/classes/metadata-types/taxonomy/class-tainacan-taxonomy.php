@@ -239,7 +239,7 @@ class Taxonomy extends Metadata_Type {
 		} else {
 			
 			if ( $value instanceof \Tainacan\Entities\Term ) {
-				$return .= $value->_toHtml();
+				$return .= $this->get_term_hierarchy_html($value);
 			}
 			
 		}

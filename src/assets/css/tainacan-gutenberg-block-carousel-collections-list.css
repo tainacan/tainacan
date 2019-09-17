@@ -259,8 +259,8 @@
     animation: skeleton-animation 1.8s ease infinite; }
   .wp-block-tainacan-carousel-collections-list .tainacan-carousel {
     position: relative;
-    width: calc(100% + 50px);
-    left: -25px; }
+    width: calc(100% + 40px);
+    left: -20px; }
     .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container {
       margin: 0 50px; }
       .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container a > span,

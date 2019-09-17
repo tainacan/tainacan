@@ -916,6 +916,7 @@
                 collection: undefined,
                 hasAnOpenModal: false,
                 hasAnOpenAlert: true,
+                repositoryFiltersSearchCancel: undefined,
                 filtersSearchCancel: undefined,
                 metadataSearchCancel: undefined
             }
@@ -1196,7 +1197,6 @@
                     this.filtersSearchCancel.cancel('Filters search Canceled.');
 
                 this.isLoadingFilters = true;
-
                 this.fetchFilters({
                     collectionId: this.collectionId,
                     isRepositoryLevel: this.isRepositoryLevel,
@@ -1215,8 +1215,15 @@
 
                 // On repository level we also fetch collection filters
                 if (this.isRepositoryLevel) {
+                    
+                    // Cancels previous Request
+                    if (this.repositoryFiltersSearchCancel != undefined)
+                        this.repositoryFiltersSearchCancel.cancel('Repository Collection Filters search Canceled.');
+
                     this.fetchRepositoryCollectionFilters()
-                        .catch(() => this.isLoadingFilters = false);
+                        .then((source) => {
+                            this.repositoryFiltersSearchCancel = source;
+                        });
                 }
 
             },
@@ -1532,7 +1539,6 @@
                 /* This condition is to prevent an incorrect fetch by filter or metadata when we coming from items
                  * at collection level to items page at repository level
                  */
-                
                 if (this.isOnTheme || this.collectionId == to.params.collectionId || to.query.fromBreadcrumb) {
                     this.prepareMetadata();
                     this.prepareFilters();
@@ -1548,7 +1554,7 @@
             });
 
         },
-        mounted() {  
+        mounted() {
             this.prepareFilters();
             this.prepareMetadata();
             this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
@@ -1615,6 +1621,10 @@
             // Cancels previous Items Request
             if (this.$eventBusSearch.searchCancel != undefined)
                 this.$eventBusSearch.searchCancel.cancel('Item search Canceled.');
+
+            // Cancels previous Repository Filters Request
+            if (this.repositoryFiltersSearchCancel != undefined)
+                this.repositoryFiltersSearchCancel.cancel('Repository Collection Filters search Canceled.');
 
         }
     }

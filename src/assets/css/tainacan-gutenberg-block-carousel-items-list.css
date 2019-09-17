@@ -273,8 +273,8 @@
           background-color: transparent; } }
   .wp-block-tainacan-carousel-items-list .tainacan-carousel {
     position: relative;
-    width: calc(100% + 50px);
-    left: -25px; }
+    width: calc(100% + 40px);
+    left: -20px; }
     .wp-block-tainacan-carousel-items-list .tainacan-carousel .swiper-container {
       margin: 0 50px; }
       .wp-block-tainacan-carousel-items-list .tainacan-carousel .swiper-container a > span,

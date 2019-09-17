@@ -259,7 +259,7 @@
                                 class="b-checkbox checkbox is-small">
                             <input 
                                     type="checkbox"
-                                    :value="getSelectedItemChecked(item.id)"
+                                    :checked="getSelectedItemChecked(item.id)"
                                     @input="setSelectedItemChecked(item.id)"> 
                                 <span class="check" /> 
                                 <span class="control-label" />
@@ -531,7 +531,7 @@
                                 class="b-checkbox checkbox is-small">
                             <input
                                     type="checkbox"
-                                    :value="getSelectedItemChecked(item.id)"
+                                    :checked="getSelectedItemChecked(item.id)"
                                     @input="setSelectedItemChecked(item.id)">
                                 <span class="check" />
                                 <span class="control-label" />

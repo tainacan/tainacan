@@ -387,14 +387,19 @@ export default {
             // Generates options for target collection
             this.isFetchingCollections = true;
             this.fetchCollectionsForParent()
-            .then((collections) => {
-                this.collections = collections;
-                this.isFetchingCollections = false;
-            })
-            .catch((error) => {
-                this.$console.error(error);
-                this.isFetchingCollections = false;
-            }); 
+                .then((resp) => {
+                    resp.request.then((collections) => {
+                        this.collections = collections;
+                        this.isFetchingCollections = false;
+                    })
+                    .catch((error) => {
+                        this.$console.error(error);
+                        this.isFetchingCollections = false;
+                    }); 
+                })
+                .catch(() => {
+                    this.isFetchingCollections = false;
+                }); 
         },
         onSelectCollection(collectionId) {
             this.collectionId = collectionId;
