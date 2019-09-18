@@ -140,7 +140,7 @@
                         </div>
                     </b-modal>
                     <a
-                            v-if="collectionId != null && collectionId != undefined"
+                            v-if="collectionId != null && collectionId != undefined && importerSourceInfo.source_metadata.length > 0"
                             class="is-inline is-pulled-right add-link has-text-secondary"
                             @click="createNewMetadatum()">
                         <span class="icon">
