@@ -229,7 +229,7 @@ class Media {
 	}
 	
 	public function index_pdf_content($file, $item_id) {
-
+		
 		$content_index_meta = '_document_content_index';
 		if (defined('TAINACAN_CONTENT_PDF_INDEX_METADATA')) {
 			$content_index_meta = TAINACAN_CONTENT_PDF_INDEX_METADATA;
@@ -239,7 +239,7 @@ class Media {
 			$meta_id = update_post_meta( $item_id, $content_index_meta, null );
 			return true;
 		}
-
+		
 		if ( ! \file_exists($file) ) {
 			return false;
 		}
@@ -254,12 +254,9 @@ class Media {
 			return $alternate;
 		}
 
-		$PDF2Text = new \PDF2Text();
-		$PDF2Text->setUnicode(true);
-		$PDF2Text->setFilename($file);
 		try {
-			$PDF2Text->decodePDF();
-			$content = preg_replace('~[[:cntrl:]]~', '', $PDF2Text->output());
+			$parser = new \Smalot\PdfParser\Parser();
+			$content    = $parser->parseFile($file)->getText();
 
 			$wp_charset = get_bloginfo('charset');
 			$content_charset = mb_detect_encoding($content);
