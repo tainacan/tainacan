@@ -41,6 +41,8 @@ class Logs extends Repository {
 		add_action( 'add_attachment', array( $this, 'insert_attachment' ) );
 		add_action( 'delete_attachment', array( $this, 'pre_delete_attachment' ) );
 		add_action( 'delete_post', array( $this, 'delete_attachment' ) );
+		
+		add_filter('tainacan-log-set-title', [$this, 'filter_log_title']);
 	}
 
 	protected function _get_map() {
@@ -412,6 +414,7 @@ class Logs extends Repository {
 		
 		if ( $creating ) {
 			$diff['new'] = $unsaved->_toArray();
+			$has_diff = true;
 		} else {
 			$map = $unsaved->get_repository()->get_map();
 			
@@ -753,6 +756,14 @@ class Logs extends Repository {
 			$this->insert($log);
 		}
 		
+	}
+	
+	public function filter_log_title($title) {
+		if (defined('TAINACAN_DOING_IMPORT') && true === TAINACAN_DOING_IMPORT) {
+			$_title = __('Importer', 'tainacan');
+			$title .= " ($_title)";
+		}
+		return $title;
 	}
 
 }

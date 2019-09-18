@@ -145,7 +145,7 @@ class Log extends Entity {
 	 * @return void
 	 */
 	public function set_title( $value ) {
-		$this->set_mapped_property( 'title', $value );
+		$this->set_mapped_property( 'title', apply_filters('tainacan-log-set-title', $value) );
 	}
 
 	/**
