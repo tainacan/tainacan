@@ -198,7 +198,8 @@
         line-height: normal; }
         .wp-block-tainacan-items-list ul.items-list.items-layout-grid li.item-list-item a span,
         .wp-block-tainacan-items-list ul.items-list-edit.items-layout-grid li.item-list-item a span {
-          line-height: normal; }
+          line-height: normal;
+          display: block; }
       .wp-block-tainacan-items-list ul.items-list.items-layout-grid li.item-list-item img,
       .wp-block-tainacan-items-list ul.items-list-edit.items-layout-grid li.item-list-item img {
         height: auto;
