@@ -145,7 +145,7 @@
                             </p>
                             <p
                                 class="tainacan-p-break"
-                                v-html="!activity.old_value ? infoEmpty : (activity.old_value.split(' | ') instanceof Array ? activity.old_value.split(' | ').join(`<span class='multivalue-separator'>|</span>`) : activity.old_value)" />
+                                v-html="!activity.old_value ? infoEmpty : (activity.old_value instanceof Array ? activity.old_value.join(`<span class='multivalue-separator'>|</span>`) : activity.old_value)" />
                         </div>
                     </div>
 
@@ -281,7 +281,7 @@
                             </p>
                             <p
                                 class="tainacan-p-break"
-                                v-html="!activity.new_value ? infoEmpty : (activity.new_value.split(' | ') instanceof Array ? activity.new_value.split(' | ').join(`<span class='multivalue-separator'>|</span>`) : activity.new_value)" />
+                                v-html="!activity.new_value ? infoEmpty : (activity.new_value instanceof Array ? activity.new_value.join(`<span class='multivalue-separator'>|</span>`) : activity.new_value)" />
                         </div>
                     </div>
                 </div>
