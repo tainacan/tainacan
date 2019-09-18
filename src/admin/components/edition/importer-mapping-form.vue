@@ -45,6 +45,7 @@
                     <p class="mapping-header-label is-inline">{{ $i18n.get('label_from_source_collection') }}</p>
                     <p class="mapping-header-label is-pulled-right">{{ $i18n.get('label_to_target_collection') }}</p>
                     <div
+                            v-if="importerSourceInfo.source_metadata.length > 0"
                             class="source-metadatum"
                             v-for="(source_metadatum, index) of importerSourceInfo.source_metadata"
                             :key="index"><p>{{ source_metadatum }}</p>
@@ -76,6 +77,9 @@
                             </option>
                         </b-select>
                         <p v-if="collectionMetadata == undefined || collectionMetadata.length <= 0">{{ $i18n.get('info_select_collection_to_list_metadata') }}</p>
+                    </div>
+                    <div v-if="importerSourceInfo.source_metadata.length <= 0">
+                        <p>{{ $i18n.get('info_no_metadata_source_file') }}</p>
                     </div>
                     <b-modal 
                             @close="onMetadatumEditionCanceled()"

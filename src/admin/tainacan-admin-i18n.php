@@ -595,6 +595,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_choose_your_metadata'                      => __( 'Choose your metadata.', 'tainacan' ),
 	'info_target_collection_helper'                  => __( 'The collection where imported item will be added.', 'tainacan' ),
 	'info_source_file_upload'                        => __( 'The file containing the data to be imported.', 'tainacan' ),
+	'info_no_metadata_source_file'                   => __( 'No metadata was found from the source file.', 'tainacan' ),
 	'info_metadata_mapping_helper'                   => __( 'Map each file metadata with the corresponding one in selected collection.', 'tainacan' ),
 	'info_upload_a_source_to_see_metadata'           => __( 'Upload a source file to load metadata.', 'tainacan' ),
 	'info_select_collection_to_list_metadata'        => __( 'Select a target collection to list metadata.', 'tainacan' ),
