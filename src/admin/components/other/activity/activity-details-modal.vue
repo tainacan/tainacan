@@ -69,18 +69,22 @@
                                 {{ $i18n.get('label_document') }}
                                 <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
                             </p>
-                            <p 
-                                    v-if="activity.old_value && activity.old_value.document_type == 'attachment'"
-                                    v-html="activity.old_value.document ? $i18n.get('label_file') + ': ' + activity.old_value.document : infoEmpty"
-                                    class="tainacan-p-break" />
-                            <p 
-                                    v-else-if="activity.old_value && activity.old_value.document_type == 'url'"
-                                    v-html="activity.old_value.document ? (`<a href='` + activity.old_value.document + `'>` + activity.old_value.document + `</a>`) : infoEmpty"
-                                    class="tainacan-p-break" />
-                            <p 
-                                    v-else
-                                    v-html="activity.old_value.document ? activity.old_value.document : infoEmpty"
-                                    class="tainacan-p-break" />
+                            <div
+                                    :key="index"
+                                    v-for="(attributeValue, attributeName, index) of activity.old_value">
+                                <p 
+                                        v-if="attributeName == 'thumb' && attributeValue[0]"
+                                        class="tainacan-p-break">                                                          
+                                    <img 
+                                            style="margin: 12px 0; max-width: 150px;"
+                                            :alt="$i18n.get('label_document')"
+                                            :src="attributeValue[0]" >
+                                </p>
+                                <p 
+                                        v-else
+                                        v-html="`<strong>` + attributeName + `: </strong>` + (attributeValue ? attributeValue : infoEmpty)"
+                                        class="tainacan-p-break" />
+                            </div>
                         </div>
 
                         <div
@@ -196,18 +200,22 @@
                                 {{ $i18n.get('label_document') }}
                                 <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
                             </p>
-                            <p 
-                                    v-if="activity.new_value && activity.new_value.document_type == 'attachment'"
-                                    v-html="activity.new_value.document ? $i18n.get('label_file') + ': ' + activity.new_value.document : infoEmpty"
-                                    class="tainacan-p-break" />
-                            <p 
-                                    v-else-if="activity.new_value && activity.new_value.document_type == 'url'"
-                                    v-html="activity.new_value.document ? (`<a href='` + activity.new_value.document + `'>` + activity.new_value.document + `</a>`) : infoEmpty"
-                                    class="tainacan-p-break" />
-                            <p 
-                                    v-else
-                                    v-html="activity.new_value.document ? activity.new_value.document : infoEmpty"
-                                    class="tainacan-p-break" />
+                            <div
+                                    :key="index"
+                                    v-for="(attributeValue, attributeName, index) of activity.new_value">
+                                <p 
+                                        v-if="attributeName == 'thumb' && attributeValue[0]"
+                                        class="tainacan-p-break">                                                          
+                                    <img 
+                                            style="margin: 12px 0; max-width: 150px;"
+                                            :alt="$i18n.get('label_document')"
+                                            :src="attributeValue[0]" >
+                                </p>
+                                <p 
+                                        v-else
+                                        v-html="`<strong>` + attributeName + `: </strong>` + (attributeValue ? attributeValue : infoEmpty)"
+                                        class="tainacan-p-break" />
+                            </div>
                         </div>
 
                         <div 
