@@ -615,8 +615,7 @@ class CSV extends Importer {
 		
 		if ( is_numeric($this->get_transient('item_id')) ) {
 			$item = $Tainacan_Items->fetch( (int) $this->get_transient('item_id') );
-		}
-		if ( ! $item instanceof Entities\Item ) {
+		} else {
 			$item = new Entities\Item();
 		}
 		
