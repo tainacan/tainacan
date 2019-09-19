@@ -72,10 +72,9 @@ class CSV extends Importer {
 
             if( $rawColumns ) {
                 foreach( $rawColumns as $index => $rawColumn ) {
-                    if( $rawColumn !== 'special_item_id' )
-                        if( strpos($rawColumn,'special_') === 0 ) {
-                            $columns[] = $rawColumn;
-                        }
+                    if( strpos($rawColumn,'special_') === 0 ) {
+                        $columns[] = $rawColumn;
+                    }
                 }
                 if( !empty($columns) )
                     return $columns;
