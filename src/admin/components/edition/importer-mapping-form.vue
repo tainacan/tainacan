@@ -79,7 +79,9 @@
                         <p v-if="collectionMetadata == undefined || collectionMetadata.length <= 0">{{ $i18n.get('info_select_collection_to_list_metadata') }}</p>
                     </div>
                     <div v-if="importerSourceInfo.source_metadata.length <= 0">
+                        <br>
                         <p>{{ $i18n.get('info_no_metadata_source_file') }}</p>
+                        <p>{{ $i18n.get('info_special_fields_available') }}</p>
                     </div>
                     <b-modal 
                             @close="onMetadatumEditionCanceled()"
@@ -153,7 +155,6 @@
                             importerSourceInfo == null">
                     <p>{{ $i18n.get('info_upload_a_source_to_see_metadata') }}</p>
                 </div>
-            
             </b-field>
 
             <!-- Form submit -------------------------------- --> 
@@ -513,6 +514,13 @@ export default {
 
     .field {
         position: relative;
+    }
+
+    .tainacan-form {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 247px;
     }
 
     .form-submit {
