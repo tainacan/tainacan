@@ -476,7 +476,9 @@ class Items extends Repository {
 			}
 
 		}
-		$this->generate_index_content( $updated_item );
+		if (defined('TAINACAN_CONTENT_PDF_INDEX_ACTIVED') && TAINACAN_CONTENT_PDF_INDEX_ACTIVED === true) {
+			$this->generate_index_content( $updated_item );
+		}
 	}
 
 	/**
