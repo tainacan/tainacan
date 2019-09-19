@@ -60,6 +60,30 @@ class CSV extends Importer {
         return [];
     }
 
+    public function get_source_special_fields() {
+        if (($handle = fopen($this->tmp_file, "r")) !== false) {
+            if( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ) {
+                $rawColumns = $this->handle_enclosure( $handle );
+            } else {
+                $rawColumns = fgetcsv($handle, 0, $this->get_option('delimiter'));
+            }
+
+            $columns = [];
+
+            if( $rawColumns ) {
+                foreach( $rawColumns as $index => $rawColumn ) {
+                    if( $rawColumn !== 'special_item_id' )
+                        if( strpos($rawColumn,'special_') === 0 ) {
+                            $columns[] = $rawColumn;
+                        }
+                }
+                if( !empty($columns) )
+                    return $columns;
+            }
+        }
+        return false;
+    }
+
     /**
      * 
      * returns all header including special
