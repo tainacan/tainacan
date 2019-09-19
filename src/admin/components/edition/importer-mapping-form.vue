@@ -42,47 +42,58 @@
                 <div 
                         v-if="importerSourceInfo != undefined && 
                             importerSourceInfo != null">
-                    <p class="mapping-header-label is-inline">{{ $i18n.get('label_from_source_collection') }}</p>
-                    <p class="mapping-header-label is-pulled-right">{{ $i18n.get('label_to_target_collection') }}</p>
-                    <div
-                            v-if="importerSourceInfo.source_metadata.length > 0"
-                            class="source-metadatum"
-                            v-for="(source_metadatum, index) of importerSourceInfo.source_metadata"
-                            :key="index"><p>{{ source_metadatum }}</p>
-                    
-                        <b-select
-                                v-if="collectionMetadata != undefined &&
-                                      collectionMetadata.length > 0 &&
-                                      !isFetchingCollectionMetadata"
-                                :value="checkCurrentSelectedCollectionMetadatum(source_metadatum)"
-                                @input="onSelectCollectionMetadata($event, source_metadatum)"
-                                :placeholder="$i18n.get('label_select_metadatum')">
-                            <option :value="undefined">
-                                {{ $i18n.get('label_select_metadatum') }}
-                            </option>
-                            <option :value="'create_metadata' + index">
-                                {{ $i18n.get('label_create_metadatum') }}
-                            </option>
-                            <option
-                                    v-for="(metadatum, index) of collectionMetadata"
-                                    :key="index"
-                                    :value="metadatum.id"
-                                    :disabled="checkIfMetadatumIsAvailable(metadatum.id)">
-                                <span class="metadatum-name">
-                                    {{ metadatum.name }}
-                                </span>
-                                <span class="label-details">  
-                                    ({{ $i18n.get(metadatum.metadata_type_object.component) }}) <em>{{ (metadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
-                                </span>
-                            </option>
-                        </b-select>
-                        <p v-if="collectionMetadata == undefined || collectionMetadata.length <= 0">{{ $i18n.get('info_select_collection_to_list_metadata') }}</p>
-                    </div>
-                    <div v-if="importerSourceInfo.source_metadata.length <= 0">
+                    <template v-if="importerSourceInfo.source_metadata.length > 0">
+                        <p class="mapping-header-label is-inline">{{ $i18n.get('label_from_source_collection') }}</p>
+                        <p class="mapping-header-label is-pulled-right">{{ $i18n.get('label_to_target_collection') }}</p>
+                        <div
+                                class="source-metadatum"
+                                v-for="(source_metadatum, index) of importerSourceInfo.source_metadata"
+                                :key="index">
+                            <p>{{ source_metadatum }}</p>
+                            <b-select
+                                    v-if="collectionMetadata != undefined &&
+                                        collectionMetadata.length > 0 &&
+                                        !isFetchingCollectionMetadata"
+                                    :value="checkCurrentSelectedCollectionMetadatum(source_metadatum)"
+                                    @input="onSelectCollectionMetadata($event, source_metadatum)"
+                                    :placeholder="$i18n.get('label_select_metadatum')">
+                                <option :value="undefined">
+                                    {{ $i18n.get('label_select_metadatum') }}
+                                </option>
+                                <option :value="'create_metadata' + index">
+                                    {{ $i18n.get('label_create_metadatum') }}
+                                </option>
+                                <option
+                                        v-for="(metadatum, index) of collectionMetadata"
+                                        :key="index"
+                                        :value="metadatum.id"
+                                        :disabled="checkIfMetadatumIsAvailable(metadatum.id)">
+                                    <span class="metadatum-name">
+                                        {{ metadatum.name }}
+                                    </span>
+                                    <span class="label-details">  
+                                        ({{ $i18n.get(metadatum.metadata_type_object.component) }}) <em>{{ (metadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
+                                    </span>
+                                </option>
+                            </b-select>
+                            <p v-if="collectionMetadata == undefined || collectionMetadata.length <= 0">{{ $i18n.get('info_select_collection_to_list_metadata') }}</p>
+                        </div>
+                    </template>
+                    <template v-if="importerSourceInfo.source_metadata.length <= 0 && !isLoading">
                         <br>
                         <p>{{ $i18n.get('info_no_metadata_source_file') }}</p>
-                        <p>{{ $i18n.get('info_special_fields_available') }}</p>
-                    </div>
+                        <p v-if="importerSourceInfo.source_special_fields && importerSourceInfo.source_special_fields.length > 0">
+                            {{ $i18n.get('info_special_fields_available') }}
+                            <ul style="list-style: disc; margin-left: 1rem; font-style: italic;">
+                                <li 
+                                        :key="specialFieldIndex"
+                                        v-for="(specialField, specialFieldIndex) of importerSourceInfo.source_special_fields">
+                                    {{ specialField }}
+                                </li>
+                            </ul>
+                        </p>
+                        <p v-else>{{ $i18n.get('info_no_special_fields_available') }}</p>
+                    </template>
                     <b-modal 
                             @close="onMetadatumEditionCanceled()"
                             :active.sync="isNewMetadatumModalActive">
