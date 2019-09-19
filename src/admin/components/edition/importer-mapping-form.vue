@@ -82,7 +82,17 @@
                     <template v-if="importerSourceInfo.source_metadata.length <= 0 && !isLoading">
                         <br>
                         <p>{{ $i18n.get('info_no_metadata_source_file') }}</p>
-                        <p>{{ $i18n.get('info_special_fields_available') }}</p>
+                        <p v-if="importerSourceInfo.source_special_fields && importerSourceInfo.source_special_fields.length > 0">
+                            {{ $i18n.get('info_special_fields_available') }}
+                            <ul style="list-style: disc; margin-left: 1rem; font-style: italic;">
+                                <li 
+                                        :key="specialFieldIndex"
+                                        v-for="(specialField, specialFieldIndex) of importerSourceInfo.source_special_fields">
+                                    {{ specialField }}
+                                </li>
+                            </ul>
+                        </p>
+                        <p v-else>{{ $i18n.get('info_no_special_fields_available') }}</p>
                     </template>
                     <b-modal 
                             @close="onMetadatumEditionCanceled()"
