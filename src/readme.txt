@@ -32,7 +32,7 @@ Tainacan is a powerful and flexible repository platform for WordPress. Manage an
 
 After installation, you will see a new menu item in your admin panel called "Tainacan". Click on it to open the Tainacan admin interface.
 
-To get an overview of the main concepts of Tainacan, please visit [this page](https://github.com/tainacan/tainacan/blob/develop/docs/key-concepts.md).
+To get an overview of the main concepts of Tainacan, please visit [this page](https://tainacan.github.io/tainacan-wiki//#/general-concepts).
 
 = Create a collection = 
 
