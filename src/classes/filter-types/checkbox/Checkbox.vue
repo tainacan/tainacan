@@ -137,14 +137,15 @@
                         .then(() => {
                             this.selectedValues();
                         })
-                        .catch( error => {
-                            if (isCancel(error))
-                                this.$console.log('Request canceled: ', error.message);
-                            else
+                        .catch( (error) => {
+                            if (isCancel(error)) {
+                                this.$console.log('Request canceled: ' + error.message);
+                            }else
                                 this.$console.error( error );
                         });
                 }
-                
+                // Search Request Token for cancelling
+                this.getOptionsValuesCancel = promise.source;  
             },
             onSelect() {
                 this.$emit('input', {

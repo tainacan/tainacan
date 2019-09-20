@@ -336,7 +336,8 @@
                 urls_open: false,
                 collectionAllowComments: '',
                 activeTab: 0,
-                isLoadingAttachments: false
+                isLoadingAttachments: false,
+                collectionNameSearchCancel: undefined
             }
         },
         computed: {
@@ -411,15 +412,32 @@
 
             // Obtains collection name
             if (!this.isRepositoryLevel) {
-                this.fetchCollectionName(this.collectionId).then((collectionName) => {
-                    this.collectionName = collectionName;
-                });
+
+                // Cancels previous collection name Request
+                if (this.collectionNameSearchCancel != undefined)
+                    this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
+
+                this.fetchCollectionName(this.collectionId)
+                    .then((resp) => {
+                        resp.request
+                            .then((collectionName) => {
+                                this.collectionName = collectionName;
+                            });
+                        
+                        // Search Request Token for cancelling
+                        this.collectionNameSearchCancel = resp.source;
+                    })
             }
 
             // Obtains collection Comment Status
             this.fetchCollectionAllowComments(this.collectionId).then((collectionAllowComments) => {
                 this.collectionAllowComments = collectionAllowComments;
             });
+        },
+        beforeDestroy() {
+            // Cancels previous collection name Request
+            if (this.collectionNameSearchCancel != undefined)
+                this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
         }
     }
 </script>

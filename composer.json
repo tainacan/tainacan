@@ -3,7 +3,8 @@
     "description": "Transforme seu site wordpress em um repositório digital.",
     "type": "wordpress-plugin",
     "require": {
-        "respect/validation": "^1.1"
+        "respect/validation": "^1.1",
+        "smalot/pdfparser": "*"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^2.2 || ^3.0.2",

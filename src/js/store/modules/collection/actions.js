@@ -107,9 +107,9 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                 .catch((thrown) => {
                     if (axios.isCancel(thrown)) {
                         console.log('Request canceled: ', thrown.message);
-                      } else {
+                    } else {
                         reject(thrown);
-                      }
+                    }
                 }); 
         }),
         source: source
@@ -127,12 +127,12 @@ export const deleteItem = ({ commit }, { itemId, isPermanently }) => {
         }
 
         axios.tainacan.delete(endpoint)
-        .then( res => {
-            commit('deleteItem', { id: itemId });
-            resolve( res );
-        }).catch((error) => { 
-            reject( error );
-        });
+            .then( res => {
+                commit('deleteItem', { id: itemId });
+                resolve( res );
+            }).catch((error) => { 
+                reject( error );
+            });
 
     });
 };
@@ -197,16 +197,25 @@ export const fetchCollection = ({ commit }, id) => {
 
 export const fetchCollectionName = ({ commit }, id) => {
 
-    return new Promise ((resolve, reject) => {
-        axios.tainacan.get('/collections/' + id + '?fetch_only=name')
-        .then(res => {
-            let collectionName = res.data;
-            commit('setCollectionName', collectionName.name);
-            resolve( collectionName.name );
-        })
-        .catch(error => {
-            reject(error);
-        })
+    const source = axios.CancelToken.source();
+
+    return new Object({ 
+        request: new Promise((resolve, reject) => {
+            axios.tainacan.get('/collections/' + id + '?fetch_only=name', { cancelToken: source.token })
+            .then(res => {
+                let collectionName = res.data;
+                commit('setCollectionName', collectionName.name);
+                resolve( collectionName.name );
+            })
+            .catch(error => {
+                if (axios.isCancel(error)) {
+                    console.log('Request canceled: ', error.message);
+                } else {
+                    reject(error);
+                }
+            })
+        }),
+        source: source
     });
 };
 
@@ -466,16 +475,25 @@ export const fetchUsers = ({ commit }, { search, exceptions }) => {
 
 // Fetch Collections for choosing Parent Collection
 export const fetchCollectionsForParent = ({ commit }) => {
-    return new Promise((resolve, reject) => { 
-        axios.tainacan.get('/collections/?nopaging=1fetch_only=name,id')
-        .then(res => {
-            let collections = res.data;
-            resolve( collections );
-        })
-        .catch(error => {
-            reject(error);
-        })
-    });
+    const source = axios.CancelToken.source();
+
+    return new Object({ 
+        request: new Promise((resolve, reject) => {
+            axios.tainacan.get('/collections/?nopaging=1fetch_only=name,id', { cancelToken: source.token })
+            .then(res => {
+                let collections = res.data;
+                resolve( collections );
+            })
+            .catch((error) => {
+                if (axios.isCancel(error)) {
+                    console.log('Request canceled: ', error.message);
+                } else {
+                    reject(error);
+                }
+            });
+        }),
+        source: source
+    })
 };
 
 // Send Files to Item Bulk Addition

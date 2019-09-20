@@ -167,7 +167,7 @@
                         this.$console.log(error);
                     });
             },
-            fetchMetadataFromCollection( value ){
+            fetchMetadataFromCollection(value) {
                 this.loadingMetadata = true;
                 this.hasMetadata = false;
 

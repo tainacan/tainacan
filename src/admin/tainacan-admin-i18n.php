@@ -431,6 +431,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_allowed'						 			 => __( 'Allowed', 'tainacan' ),
 	'label_not_allowed'						 		 => __( 'Not allowed', 'tainacan' ),
 	'label_view_as'							 		 => __( 'View as...', 'tainacan' ),
+	'label_day'								 		 => __( 'Day', 'tainacan' ),
+	'label_month'							 		 => __( 'Month', 'tainacan' ),
+	'label_year'							 		 => __( 'Year', 'tainacan' ),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -476,6 +479,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_drag_and_drop_filter_sort'	     	 => __( 'Drag and drop to change filter order', 'tainacan' ),
 	'instruction_drag_and_drop_metadatum_sort'     	 => __( 'Drag and drop to change metadatum order', 'tainacan' ),
 	'instruction_select_a_date' 				     => __( 'Select a date', 'tainacan' ),
+	'instruction_select_a_month' 				     => __( 'Select a month', 'tainacan' ),
+	'instruction_type_value_year' 				     => __( 'Type year value', 'tainacan' ),
 	'instruction_select_the_amount_of_copies'		 => __( 'Select the amount of copies of the item that you want to create', 'tainacan'),
 
 	// Info. Other feedback to user.
@@ -590,6 +595,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_choose_your_metadata'                      => __( 'Choose your metadata.', 'tainacan' ),
 	'info_target_collection_helper'                  => __( 'The collection where imported item will be added.', 'tainacan' ),
 	'info_source_file_upload'                        => __( 'The file containing the data to be imported.', 'tainacan' ),
+	'info_no_metadata_source_file'                   => __( 'No metadata was found from the source file.', 'tainacan' ),
+	'info_no_special_fields_available'               => __( 'No special field was found.', 'tainacan' ),
+	'info_special_fields_mapped_default'             => __( 'Mapped to default field on collection.', 'tainacan' ),
 	'info_metadata_mapping_helper'                   => __( 'Map each file metadata with the corresponding one in selected collection.', 'tainacan' ),
 	'info_upload_a_source_to_see_metadata'           => __( 'Upload a source file to load metadata.', 'tainacan' ),
 	'info_select_collection_to_list_metadata'        => __( 'Select a target collection to list metadata.', 'tainacan' ),
@@ -672,6 +680,20 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'tainacan-filter-taxonomy-checkbox'              => __( 'Taxonomy Check Box', 'tainacan' ),
 	'tainacan-filter-taxonomy-selectbox'             => __( 'Taxonomy Select Box', 'tainacan' ),
 
+	// Datepicker months
+	'datepicker_month_january'			=> __( 'January', 'tainacan' ),
+	'datepicker_month_february'			=> __( 'February', 'tainacan' ),
+	'datepicker_month_march'			=> __( 'March', 'tainacan' ),
+	'datepicker_month_april'			=> __( 'April', 'tainacan' ),
+	'datepicker_month_may'				=> __( 'May', 'tainacan' ),
+	'datepicker_month_june'				=> __( 'June', 'tainacan' ),
+	'datepicker_month_july'				=> __( 'July', 'tainacan' ),
+	'datepicker_month_august'			=> __( 'August', 'tainacan' ),
+	'datepicker_month_september'		=> __( 'September', 'tainacan' ),
+	'datepicker_month_october'			=> __( 'October', 'tainacan' ),
+	'datepicker_month_november'			=> __( 'November', 'tainacan' ),
+	'datepicker_month_december'			=> __( 'December', 'tainacan' ),
+
 	// Datepicker week days
 	/* translators: This refers to the short label that will appear on datepickers for Sunday */
 	'datepicker_short_sunday'			=> __( 'Su', 'tainacan' ),
@@ -687,5 +709,6 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'datepicker_short_friday'			=> __( 'F', 'tainacan' ),
 	/* translators: This refers to the short label that will appear on datepickers for Saturday */
 	'datepicker_short_saturday'			=> __( 'Sa', 'tainacan' )
+	
 ] );
 ?>

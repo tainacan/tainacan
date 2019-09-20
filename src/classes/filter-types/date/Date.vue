@@ -58,7 +58,14 @@
                 &#8804;&nbsp; {{ $i18n.get('before_or_on_day') }}
             </b-dropdown-item>
         </b-dropdown>
-
+        <!-- <b-numberinput 
+                v-if="options.type == 'year'"
+                :placeholder="$i18n.get('instruction_type_value_year')"
+                :aria-labelledby="labelId"
+                size="is-small"
+                step="1"
+                @input="emitOnlyYear($event)"
+                v-model="yearsOnlyValue"/> -->
         <b-datepicker
                 position="is-bottom-left"
                 :aria-labelledby="labelId"
@@ -77,8 +84,27 @@
                     $i18n.get('datepicker_short_wednesday'),
                     $i18n.get('datepicker_short_thursday'),
                     $i18n.get('datepicker_short_friday'),
-                    $i18n.get('datepicker_short_saturday'),
+                    $i18n.get('datepicker_short_saturday')
+                ]"
+                :month-names="[
+                    $i18n.get('datepicker_month_january'),
+                    $i18n.get('datepicker_month_february'),
+                    $i18n.get('datepicker_month_march'),
+                    $i18n.get('datepicker_month_april'),
+                    $i18n.get('datepicker_month_may'),
+                    $i18n.get('datepicker_month_june'),
+                    $i18n.get('datepicker_month_july'),
+                    $i18n.get('datepicker_month_august'),
+                    $i18n.get('datepicker_month_september'),
+                    $i18n.get('datepicker_month_october'),
+                    $i18n.get('datepicker_month_november'),
+                    $i18n.get('datepicker_month_december')
                 ]"/>
+                <!-- OPTIONS FOR TYPE 
+                    v-else
+                    :type="options.type == 'month' ? 'month' : null" 
+                    :placeholder="options.type == 'month' ? $i18n.get('instruction_select_a_date') : $i18n.get('instruction_select_a_month')"
+                --> 
     </div>
 </template>
 
@@ -92,7 +118,7 @@
         created() {
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
             this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : (typeof this.filter.metadatum.metadatum_id == 'object' ? this.filter.metadatum.metadatum_id.metadatum_id : this.filter.metadatum.metadatum_id);
-            // this.options = this.filter.filter_type_options;
+            this.options = this.filter.filter_type_options;
 
             let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 
@@ -137,6 +163,9 @@
             isRepositoryLevel: Boolean,
         },
         computed: {
+            yearsOnlyValue() {
+                return this.value && typeof this.value.getUTCFullYear === 'function' ? this.value.getUTCFullYear() : null
+            },
             comparatorSymbol() {
                 switch(this.comparator) {
                     case '=': return '&#61;';
@@ -159,16 +188,20 @@
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
                     
-                    if ( metadata.value && metadata.value.length > 0)
-                        this.value = Array.isArray(metadata.value) ? new Date(metadata.value[0]) : new Date(metadata.value);
-
                     if ( metadata.compare)
                         this.comparator = metadata.compare;
+                    
+                    if ( metadata.value && metadata.value.length > 0) {
+                        let textValue = Array.isArray(metadata.value) ? metadata.value[0] : metadata.value;
 
-                    if (this.value != undefined) {
+                        while (textValue.split('-')[0].length < 4)
+                            textValue = '0' + textValue;
+                        
+                        this.value = new Date(textValue);
+
                         this.$eventBusSearch.$emit( 'sendValuesToTags', {
                             filterId: this.filter.id,
-                            value: this.comparator + ' ' + this.parseDateToNavigatorLanguage(Array.isArray(metadata.value) ? metadata.value[0] : metadata.value)
+                            value: this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat)
                         });
                     }
 
@@ -202,15 +235,26 @@
             dateParser(dateString) { 
                 return moment(dateString, this.dateFormat).toDate(); 
             },
+            emitOnlyYear(year) {
+                this.value = new Date(year,0,1);
+                
+                this.value.setUTCDate(1);
+                this.value.setUTCMonth(0);
+                this.value.setFullYear(year);
+
+                this.emit();
+            },
             // emit the operation for listeners
             emit() {
-
                 if ( this.value == undefined || this.value == null || this.value === '')
                     this.value = new Date();
 
-                let valueQuery = this.value.getUTCFullYear() + '-' +
+                let valueQuery = (this.value.getUTCFullYear()) + '-' +
                           ('00' + (this.value.getUTCMonth() + 1)).slice(-2) + '-' +
                           ('00' + this.value.getUTCDate()).slice(-2);
+
+                while (valueQuery.split('-')[0].length < 4)
+                    valueQuery = '0' + valueQuery;
 
                 this.$emit('input', {
                     filter: 'date',
@@ -220,10 +264,9 @@
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     value: valueQuery
                 });
-
                 this.$eventBusSearch.$emit( 'sendValuesToTags', {
                     filterId: this.filter.id,
-                    value: this.comparator + ' ' + this.parseDateToNavigatorLanguage(valueQuery)
+                    value: this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat)
                 });
                 
             },

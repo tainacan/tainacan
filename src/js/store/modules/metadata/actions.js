@@ -2,31 +2,40 @@ import axios from '../../../axios/axios';
 
 export const fetchMetadata = ({commit}, {collectionId, isRepositoryLevel, isContextEdit, includeDisabled, isAdvancedSearch}) => {
 
-    return new Promise((resolve, reject) => {
-        let endpoint = '';
-        if (!isRepositoryLevel)
-            endpoint = '/collection/' + collectionId + '/metadata/';
-        else
-            endpoint = '/metadata/';
+    const source = axios.CancelToken.source();
 
-        endpoint += '?nopaging=1';
-        
-        if (isContextEdit)
-            endpoint += '&context=edit';
+    return new Object({ 
+        request: new Promise((resolve, reject) => {
+            let endpoint = '';
+            if (!isRepositoryLevel)
+                endpoint = '/collection/' + collectionId + '/metadata/';
+            else
+                endpoint = '/metadata/';
 
-        if (includeDisabled)
-            endpoint += '&include_disabled=' + includeDisabled;
+            endpoint += '?nopaging=1';
+            
+            if (isContextEdit)
+                endpoint += '&context=edit';
 
-        axios.tainacan.get(endpoint)
-            .then((res) => {
-                let metadata = res.data;
-                if (!isAdvancedSearch)
-                    commit('setMetadata', metadata);
-                resolve(metadata);
-            })
-            .catch((error) => {
-                reject(error);
-            });
+            if (includeDisabled)
+                endpoint += '&include_disabled=' + includeDisabled;
+
+            axios.tainacan.get(endpoint, { cancelToken: source.token })
+                .then((res) => {
+                    let metadata = res.data;
+                    if (!isAdvancedSearch)
+                        commit('setMetadata', metadata);
+                    resolve(metadata);
+                })
+                .catch((error) => {
+                    if (axios.isCancel(error)) {
+                        console.log('Request canceled: ', error.message);
+                    } else {
+                        reject(error);
+                    }
+                });
+        }),
+        source: source
     });
 };
 

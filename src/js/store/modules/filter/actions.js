@@ -3,39 +3,48 @@ import qs from 'qs';
 
 // FILTERS --------------------------------------------------------
 export const fetchFilters = ({ commit }, { collectionId, isRepositoryLevel, isContextEdit, includeDisabled, customFilters }) => {
-    return new Promise((resolve, reject) => {
+    
+    const source = axios.CancelToken.source();
 
-        let endpoint = '';
-        if (!isRepositoryLevel) 
-            endpoint = '/collection/' + collectionId + '/filters/';
-        else
-            endpoint = '/filters/';
+    return new Object({ 
+        request: new Promise((resolve, reject) => {
+            
+            let endpoint = '';
+            if (!isRepositoryLevel) 
+                endpoint = '/collection/' + collectionId + '/filters/';
+            else
+                endpoint = '/filters/';
 
-        endpoint += '?nopaging=1';
+            endpoint += '?nopaging=1';
 
-        if (isContextEdit) {
-            endpoint += '&context=edit';
-        }
+            if (isContextEdit) {
+                endpoint += '&context=edit';
+            }
 
-        if (includeDisabled){
-            endpoint += '&include_disabled=' + includeDisabled;
-        }
+            if (includeDisabled){
+                endpoint += '&include_disabled=' + includeDisabled;
+            }
 
-        if (customFilters != undefined && customFilters.length > 0) {
-            let postin = { 'postin': customFilters };
-            endpoint += '&' + qs.stringify(postin);
-        }
+            if (customFilters != undefined && customFilters.length > 0) {
+                let postin = { 'postin': customFilters };
+                endpoint += '&' + qs.stringify(postin);
+            }
 
-        axios.tainacan.get(endpoint)
-        .then((res) => {
-            let filters= res.data;
-            commit('setFilters', filters);
-            resolve (filters);
-        }) 
-        .catch((error) => {
-            console.log(error);
-            reject(error);
-        });
+            axios.tainacan.get(endpoint, { cancelToken: source.token })
+                .then((res) => {
+                    let filters= res.data;
+                    commit('setFilters', filters);
+                    resolve (filters);
+                }) 
+                .catch((error) => {
+                    if (axios.isCancel(error)) {
+                        console.log('Request canceled: ', error.message);
+                    } else {
+                        reject(error);
+                    }
+                });
+        }),
+        source: source
     });
 };
 
@@ -159,42 +168,53 @@ export const fetchRepositoryCollectionFilters = ({ dispatch, commit } ) => {
     return new Promise((resolve, reject) => {
 
         dispatch('collection/fetchCollectionsForParent', { } ,{ root: true })
-            .then((res) => {
-                let collections = res;
-                if (collections != undefined && collections.length != undefined) {
+            .then((resp) => {
+                resp.request
+                    .then((res) => {
+                        let collections = res;
+                        if (collections != undefined && collections.length != undefined) {
 
-                    let amountOfCollectionsLoaded = 0;
+                            let promises = [];
 
-                    for (let collection of collections ) {
-                
-                        let endpoint = '';
-                        endpoint = '/collection/' + collection.id + '/filters/?nopaging=1&include_disabled=no';
+                            for (let collection of collections ) {
+                                
+                                let endpoint = '';
+                                endpoint = '/collection/' + collection.id + '/filters/?nopaging=1&include_disabled=false';
 
-                        axios.tainacan.get(endpoint)
-                            .then((resp) => {
-                                let repositoryFilters = resp.data.filter((filter) => { 
-                                    return (filter.collection_id == 'default' || filter.collection_id == 'filter_in_repository')
-                                });
-                                let collectionFilters = resp.data.filter((filter) => {
-                                    return (filter.collection_id != 'default' && filter.collection_id != 'filter_in_repository')
-                                });
-                                commit('setRepositoryCollectionFilters', { collectionName: collection.id, repositoryCollectionFilters: collectionFilters });
-                                commit('setRepositoryCollectionFilters', { collectionName: undefined, repositoryCollectionFilters: repositoryFilters });
-                                amountOfCollectionsLoaded++;
-
-                                if (amountOfCollectionsLoaded == collections.length) {
-                                    resolve();
+                                promises.push(
+                                    axios.tainacan.get(endpoint)
+                                        .then((resp) => { return { filter: resp.data, collectionId: collection.id } }) 
+                                        .catch((error) => {
+                                            reject(error);
+                                        })
+                                );
+                            }
+                            axios.all(promises).then((results) => {
+                                for (let resp of results) {
+                                    let repositoryFilters = resp.filter.filter((filter) => { 
+                                        return (filter.collection_id == 'default' || filter.collection_id == 'filter_in_repository')
+                                    });
+                                    let collectionFilters = resp.filter.filter((filter) => {
+                                        return (filter.collection_id != 'default' && filter.collection_id != 'filter_in_repository')
+                                    });
+                                    commit('setRepositoryCollectionFilters', { collectionName: resp.collectionId, repositoryCollectionFilters: collectionFilters });
+                                    commit('setRepositoryCollectionFilters', { collectionName: undefined, repositoryCollectionFilters: repositoryFilters });
                                 }
-                            }) 
+
+                                resolve();
+                            })  
                             .catch((error) => {
                                 console.log(error);
                                 reject(error);
-                            });    
-                    }
-                }
-            })
-            .error(() => {
-                reject();
+                            })   
+                        }
+                    })
+                    .catch(() => {
+                        reject();
+                    });
+
+                    // Search Request Token for cancelling
+                    resolve(resp.source);
             });
     });
 };
@@ -215,7 +235,7 @@ export const fetchTaxonomyFilters = ({ dispatch, commit }, taxonomyId ) => {
                     for (let collectionId of taxonomy.collections_ids ) {
                 
                         let endpoint = '';
-                        endpoint = '/collection/' + collectionId + '/filters/?nopaging=1&include_disabled=no';
+                        endpoint = '/collection/' + collectionId + '/filters/?nopaging=1&include_disabled=false';
 
                         axios.tainacan.get(endpoint)
                             .then((resp) => {
