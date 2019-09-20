@@ -233,10 +233,11 @@ class Media {
 	
 	public function index_pdf_content($file, $item_id) {
 		
-		$content_index_meta = '_document_content_index';
-		if (defined('TAINACAN_CONTENT_PDF_INDEX_METADATA')) {
-			$content_index_meta = TAINACAN_CONTENT_PDF_INDEX_METADATA;
+		if ( ! defined('TAINACAN_INDEX_PDF_CONTENT') || true !== TAINACAN_INDEX_PDF_CONTENT ) {
+			return;
 		}
+		
+		$content_index_meta = '_document_content_index';
 
 		if ($file == null) {
 			$meta_id = update_post_meta( $item_id, $content_index_meta, null );
