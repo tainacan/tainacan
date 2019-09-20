@@ -66,6 +66,7 @@
                     height: 100%; 
                     display: flex;
                     justify-content: center;
+                    transition: background-color 0.15s ease;
                 }
                 .b-checkbox.checkbox .control-label {
                     display: none;
@@ -161,11 +162,13 @@
                 tr {
                     cursor: pointer;
                     background-color: transparent;
+                    transition: background-color 0.15s ease;
     
                     &.selected-row { 
                         background-color: $turquoise1; 
-                        .checkbox-cell .checkbox, .actions-cell .actions-container {
-                            background-color: $turquoise2;
+                        .checkbox-cell .checkbox, 
+                        .actions-cell .actions-container {
+                            transition: background-color 0.15s ease;
                         }
                     }
                     td {
@@ -193,7 +196,7 @@
                             text-overflow: ellipsis;
                             overflow: hidden;
                             white-space: nowrap;
-                            max-height: 1.25rem;
+                            max-height: 1.125rem;
                         }
                         a:hover {
                             text-decoration: none !important;
@@ -224,6 +227,7 @@
                             float: right;
                             justify-content: center;
                             align-items: center;
+                            transition: background-color 0.15s ease;
                         }
     
                         a {

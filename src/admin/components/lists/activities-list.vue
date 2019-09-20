@@ -168,7 +168,7 @@
                 this.notApprove(activity.id);
             },
             openActivityDetailsModal(activity) {
-                this.$modal.open({
+                this.$buefy.modal.open({
                     parent: this,
                     component: ActivityDetailsModal,
                     props: {

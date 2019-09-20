@@ -1,0 +1,424 @@
+[data-align='full'] .block-control {
+  width: calc(100% + 14px); }
+
+.block-control {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  position: relative;
+  top: -14px;
+  left: -14px;
+  width: calc(100% + 28px);
+  background: #f2f2f2; }
+  .block-control p {
+    font-size: 0.875rem !important;
+    margin: 12px 1.5rem 16px 0;
+    fill: #555758; }
+    .block-control p svg {
+      top: 4px;
+      margin-right: 0.75rem;
+      position: relative;
+      fill: #555758; }
+
+.components-placeholder__fieldset p {
+  font-size: 0.875rem !important;
+  margin-top: -2px;
+  fill: #555758; }
+  .components-placeholder__fieldset p svg {
+    margin-right: 1rem;
+    top: 4px;
+    position: relative;
+    fill: #555758; }
+
+.wp-block-tainacan-modal {
+  width: 50%; }
+  @media only screen and (max-width: 1024px) {
+    .wp-block-tainacan-modal {
+      width: 75%; } }
+  @media only screen and (max-width: 768px) {
+    .wp-block-tainacan-modal {
+      width: 100%; } }
+  .wp-block-tainacan-modal.dynamic-modal {
+    width: 90%;
+    height: 90%;
+    width: 80vw;
+    height: 80vh; }
+    .wp-block-tainacan-modal.dynamic-modal iframe {
+      width: calc(100% + 32px);
+      height: calc(100% - 128px);
+      margin-left: -16px; }
+    .wp-block-tainacan-modal.dynamic-modal .modal-footer-area {
+      height: 68px;
+      width: calc(100% + 32px);
+      margin-left: -16px !important;
+      padding: 1.2rem 1.2rem !important;
+      border-top: 1px solid #cbcbcb; }
+  .wp-block-tainacan-modal .spinner-container {
+    min-height: 56px;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #555758; }
+    .wp-block-tainacan-modal .spinner-container .components-spineer {
+      margin: 8px; }
+  .wp-block-tainacan-modal .components-modal__header .components-icon-button {
+    padding-right: 0; }
+  .wp-block-tainacan-modal hr {
+    margin: 5px 0.75rem; }
+  .wp-block-tainacan-modal .modal-search-area {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 14px; }
+    .wp-block-tainacan-modal .modal-search-area .components-base-control {
+      width: 60%; }
+      @media only screen and (max-width: 1024px) {
+        .wp-block-tainacan-modal .modal-search-area .components-base-control {
+          width: 95%; } }
+      .wp-block-tainacan-modal .modal-search-area .components-base-control:nth-child(2) {
+        flex-shrink: 2; }
+      .wp-block-tainacan-modal .modal-search-area .components-base-control .components-base-control__field {
+        flex-wrap: wrap; }
+      .wp-block-tainacan-modal .modal-search-area .components-base-control label.components-base-control__label {
+        font-weight: 500;
+        color: #454647;
+        font-size: 0.875rem;
+        text-align: center; }
+      .wp-block-tainacan-modal .modal-search-area .components-base-control input.components-text-control__input {
+        padding: 5px 8px;
+        height: 28px; }
+  .wp-block-tainacan-modal .modal-radio-area-label {
+    font-weight: 500;
+    margin-left: 1.75rem; }
+  .wp-block-tainacan-modal .modal-checkbox-list,
+  .wp-block-tainacan-modal .modal-radio-list .components-base-control__field {
+    padding: 0;
+    display: -ms-grid;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 250px);
+    grid-gap: 0px;
+    justify-content: space-evenly;
+    list-style-type: none;
+    margin: 12px;
+    max-height: 50vh;
+    overflow-y: auto;
+    overflow-x: hidden; }
+    .wp-block-tainacan-modal .modal-checkbox-list .components-base-control,
+    .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-base-control {
+      overflow: hidden; }
+    .wp-block-tainacan-modal .modal-checkbox-list .modal-checkbox-list-item,
+    .wp-block-tainacan-modal .modal-checkbox-list .components-radio-control__option,
+    .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .modal-checkbox-list-item,
+    .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-radio-control__option {
+      display: flex;
+      justify-content: flex-start; }
+      .wp-block-tainacan-modal .modal-checkbox-list .modal-checkbox-list-item img,
+      .wp-block-tainacan-modal .modal-checkbox-list .components-radio-control__option img,
+      .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .modal-checkbox-list-item img,
+      .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-radio-control__option img {
+        width: 24px;
+        height: 24px;
+        margin-right: 10px; }
+      .wp-block-tainacan-modal .modal-checkbox-list .modal-checkbox-list-item label,
+      .wp-block-tainacan-modal .modal-checkbox-list .components-radio-control__option label,
+      .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .modal-checkbox-list-item label,
+      .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-radio-control__option label {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        display: inline-block;
+        max-width: 85%; }
+        @media only screen and (max-width: 768px) {
+          .wp-block-tainacan-modal .modal-checkbox-list .modal-checkbox-list-item label,
+          .wp-block-tainacan-modal .modal-checkbox-list .components-radio-control__option label,
+          .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .modal-checkbox-list-item label,
+          .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-radio-control__option label {
+            max-width: 80%; } }
+  .wp-block-tainacan-modal .modal-loadmore-section {
+    display: flex;
+    align-items: baseline;
+    justify-content: center; }
+    .wp-block-tainacan-modal .modal-loadmore-section p {
+      color: #555758;
+      margin-right: 12px;
+      margin-top: 2px; }
+  .wp-block-tainacan-modal .modal-footer-area {
+    border-top: 1px solid #e2e4e7;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 16px 16px 0 16px;
+    margin: 0 -16px; }
+    .wp-block-tainacan-modal .modal-footer-area p {
+      padding: 0 12px;
+      color: #454647; }
+
+.components-panel__body .collection-carousel-view-modes {
+  display: flex;
+  margin: 12px 0 24px 0; }
+  .components-panel__body .collection-carousel-view-modes button {
+    background: transparent;
+    border: 1px solid #cbcbcb;
+    border-radius: 5px;
+    padding: 2px;
+    margin: 0;
+    width: calc(50% - 6px);
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: border ease 0.5s, opacity ease 0.5; }
+    .components-panel__body .collection-carousel-view-modes button.collection-carousel-view-mode-grid {
+      margin-right: 6px; }
+      .components-panel__body .collection-carousel-view-modes button.collection-carousel-view-mode-grid div {
+        display: grid;
+        grid-template-columns: 33% 33% 33%;
+        grid-template-rows: 50% 50%;
+        grid-column-gap: 2px;
+        grid-row-gap: 2px;
+        width: 60px;
+        height: 40px;
+        margin: 4px auto 8px auto; }
+        .components-panel__body .collection-carousel-view-modes button.collection-carousel-view-mode-grid div > div:first-of-type {
+          grid-column-start: 1;
+          grid-column-end: span 2;
+          grid-row-start: 1;
+          grid-row-end: span 2;
+          width: 41px;
+          height: 42px; }
+        .components-panel__body .collection-carousel-view-modes button.collection-carousel-view-mode-grid div > div {
+          width: 20px;
+          height: 20px;
+          background: #555758;
+          transition: background-color ease 0.5s; }
+    .components-panel__body .collection-carousel-view-modes button.collection-carousel-view-mode-thumbnail {
+      margin-left: 6px; }
+      .components-panel__body .collection-carousel-view-modes button.collection-carousel-view-mode-thumbnail div {
+        display: block;
+        height: 40px;
+        width: 40px;
+        background: #555758;
+        margin: 4px auto 8px auto;
+        transition: background-color ease 0.5s; }
+    .components-panel__body .collection-carousel-view-modes button label {
+      font-size: 0.75rem;
+      color: #555758; }
+    .components-panel__body .collection-carousel-view-modes button.is-active {
+      border: 2px solid #298596; }
+      .components-panel__body .collection-carousel-view-modes button.is-active.collection-carousel-view-mode-thumbnail div, .components-panel__body .collection-carousel-view-modes button.is-active.collection-carousel-view-mode-grid div > div {
+        background-color: #298596; }
+    .components-panel__body .collection-carousel-view-modes button:hover {
+      opacity: 0.9;
+      border-width: 2px; }
+      .components-panel__body .collection-carousel-view-modes button:hover button {
+        background: #f2f2f2; }
+
+.wp-block-tainacan-carousel-collections-list {
+  margin: 2rem 0px; }
+  .wp-block-tainacan-carousel-collections-list .spinner-container {
+    min-height: 56px;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #555758; }
+@-webkit-keyframes skeleton-animation {
+  0% {
+    opacity: 1.0; }
+  50% {
+    opacity: 0.2; }
+  100% {
+    opacity: 1.0; } }
+@-moz-keyframes skeleton-animation {
+  0% {
+    opacity: 1.0; }
+  50% {
+    opacity: 0.2; }
+  100% {
+    opacity: 1.0; } }
+@-o-keyframes skeleton-animation {
+  0% {
+    opacity: 1.0; }
+  50% {
+    opacity: 0.2; }
+  100% {
+    opacity: 1.0; } }
+@keyframes skeleton-animation {
+  0% {
+    opacity: 1.0; }
+  50% {
+    opacity: 0.2; }
+  100% {
+    opacity: 1.0; } }
+  .wp-block-tainacan-carousel-collections-list .skeleton {
+    border-radius: 2px;
+    background: #f2f2f2;
+    -webkit-animation: skeleton-animation 1.8s ease infinite;
+    -moz-animation: skeleton-animation 1.8s ease infinite;
+    -o-animation: skeleton-animation 1.8s ease infinite;
+    animation: skeleton-animation 1.8s ease infinite; }
+  .wp-block-tainacan-carousel-collections-list .tainacan-carousel {
+    position: relative;
+    width: calc(100% + 40px);
+    left: -20px; }
+    .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container {
+      margin: 0 50px; }
+      .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container a > span,
+      .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container a:hover > span {
+        color: black;
+        font-weight: bold;
+        text-decoration: none;
+        padding: 8px 16px;
+        display: block;
+        line-height: 1.2rem; }
+      .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container a > img {
+        width: 100%;
+        height: auto; }
+      .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container a:hover {
+        text-decoration: none; }
+      .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid a {
+        width: 100%;
+        display: block; }
+      .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid .collection-items-grid {
+        display: grid;
+        grid-template-columns: 33% 33% 33%;
+        grid-template-rows: 50% 50%;
+        width: 100%; }
+        .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid .collection-items-grid img:first-of-type {
+          grid-column-start: 1;
+          grid-column-end: span 2;
+          grid-row-start: 1;
+          grid-row-end: span 2; }
+        .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid .collection-items-grid img {
+          width: 100%;
+          height: auto;
+          padding: 2px;
+          margin-bottom: 0px; }
+  .wp-block-tainacan-carousel-collections-list .preview-warning {
+    width: 100%;
+    font-size: 0.875rem;
+    font-style: italic;
+    color: #898d8f;
+    text-align: center;
+    margin: 4px auto; }
+  .wp-block-tainacan-carousel-collections-list .swiper-button-prev, .wp-block-tainacan-carousel-collections-list .swiper-button-next {
+    top: calc(50% - 42px);
+    bottom: initial;
+    background: none;
+    border: none;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    margin: 0 -4px; }
+    .wp-block-tainacan-carousel-collections-list .swiper-button-prev svg, .wp-block-tainacan-carousel-collections-list .swiper-button-next svg {
+      fill: #298596; }
+  .wp-block-tainacan-carousel-collections-list .collections-list-edit-container,
+  .wp-block-tainacan-carousel-collections-list .tainacan-carousel {
+    position: relative; }
+    .wp-block-tainacan-carousel-collections-list .collections-list-edit-container .skeleton,
+    .wp-block-tainacan-carousel-collections-list .tainacan-carousel .skeleton {
+      min-height: 150px;
+      max-height: 150px; }
+    .wp-block-tainacan-carousel-collections-list .collections-list-edit-container.has-arrows-none .swiper-button-prev, .wp-block-tainacan-carousel-collections-list .collections-list-edit-container.has-arrows-none .swiper-button-next,
+    .wp-block-tainacan-carousel-collections-list .tainacan-carousel.has-arrows-none .swiper-button-prev,
+    .wp-block-tainacan-carousel-collections-list .tainacan-carousel.has-arrows-none .swiper-button-next {
+      display: none; }
+    .wp-block-tainacan-carousel-collections-list .collections-list-edit-container.has-arrows-left .swiper-button-next,
+    .wp-block-tainacan-carousel-collections-list .tainacan-carousel.has-arrows-left .swiper-button-next {
+      left: 10px;
+      right: auto;
+      top: calc(50% + 12px) !important; }
+    .wp-block-tainacan-carousel-collections-list .collections-list-edit-container.has-arrows-right .swiper-button-prev,
+    .wp-block-tainacan-carousel-collections-list .tainacan-carousel.has-arrows-right .swiper-button-prev {
+      right: 10px;
+      left: auto; }
+    .wp-block-tainacan-carousel-collections-list .collections-list-edit-container.has-arrows-right .swiper-button-next,
+    .wp-block-tainacan-carousel-collections-list .tainacan-carousel.has-arrows-right .swiper-button-next {
+      top: calc(50% + 12px) !important; }
+  .wp-block-tainacan-carousel-collections-list ul.collections-list-edit {
+    display: flex;
+    align-items: flex-start;
+    overflow-x: scroll;
+    list-style: none;
+    margin: 0 36px; }
+    .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item {
+      position: relative;
+      display: block;
+      margin: 16px 32px 16px 0px;
+      width: calc(16.666% - 32px);
+      min-width: calc(16.666% - 32px); }
+      .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item.collection-list-item-grid {
+        margin: 16px;
+        width: calc(25% - 16px);
+        min-width: calc(25% - 16px); }
+      .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item a {
+        color: #454647;
+        font-weight: bold;
+        line-height: normal; }
+      .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item img {
+        height: auto;
+        padding: 0px;
+        margin-bottom: 0.5rem; }
+      .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item:hover a {
+        color: #454647;
+        text-decoration: none; }
+      .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item button {
+        position: absolute !important;
+        background-color: rgba(255, 255, 255, 0.75);
+        color: #454647;
+        padding: 2px;
+        margin-left: 5px;
+        min-width: 14px;
+        visibility: hidden;
+        position: relative;
+        opacity: 0;
+        right: -14px;
+        top: 0px;
+        justify-content: center;
+        z-index: 999; }
+      .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item:hover button {
+        visibility: visible;
+        background-color: white !important;
+        opacity: 1;
+        right: -8px;
+        top: -8px;
+        border: 1px solid #cbcbcb;
+        border-radius: 12px;
+        transition: opacity linear 0.15s, right linear 0.15s; }
+      .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item:hover button:hover {
+        background-color: white !important;
+        border: 1px solid #cbcbcb !important; }
+      .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item .collection-items-grid {
+        display: grid;
+        grid-template-columns: 33% 33% 33%;
+        grid-template-rows: 50% 50%; }
+        .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item .collection-items-grid img:first-of-type {
+          grid-column-start: 1;
+          grid-column-end: span 2;
+          grid-row-start: 1;
+          grid-row-end: span 2; }
+        .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item .collection-items-grid img {
+          padding: 2px;
+          margin-bottom: 0px; }
+  @media only screen and (max-width: 1686px) {
+    .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item {
+      width: calc(20% - 32px);
+      min-width: calc(20% - 32px); } }
+  @media only screen and (max-width: 1452px) {
+    .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item {
+      width: calc(25% - 32px);
+      min-width: calc(25% - 32px); } }
+  @media only screen and (max-width: 1118px) {
+    .wp-block-tainacan-carousel-collections-list ul.collections-edit li.collection-list-item {
+      width: calc(33.333% - 32px);
+      min-width: calc(33.333% - 32px); } }
+  @media only screen and (max-width: 854px) {
+    .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item {
+      width: calc(50% - 32px);
+      min-width: calc(50% - 32px); } }
+  @media only screen and (max-width: 584px) {
+    .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item {
+      width: calc(100% - 32px);
+      min-width: calc(100% - 32px); } }
+
+/*# sourceMappingURL=tainacan-gutenberg-block-carousel-collections-list.css.map */

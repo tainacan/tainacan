@@ -509,14 +509,16 @@
                                             style="margin-left: calc(4.666667% + 12px)"
                                             type="button"
                                             class="button is-secondary"
-                                            @click.prevent="attachmentMediaFrame.openFrame($event)">
+                                            @click.prevent="attachmentMediaFrame.openFrame($event)"
+                                            :disabled="isLoadingAttachments">
                                         {{ $i18n.get("label_edit_attachments") }}
                                     </button>
-
                                     <attachments-list
                                             v-if="item != undefined && item.id != undefined"
                                             :item="item"
                                             :is-editable="true"
+                                            :is-loading.sync="isLoadingAttachments"
+                                            @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading"
                                             @onDeleteAttachment="deleteAttachment($event)"/>    
                                 </div>
                             </b-tab-item>
@@ -753,6 +755,8 @@ export default {
             collectionAllowComments: '',
             entityName: 'item',
             activeTab: 0,
+            isLoadingAttachments: false,
+            collectionNameSearchCancel: undefined
         }
     },
     computed: {
@@ -819,6 +823,7 @@ export default {
             'cleanMetadata',
             'sendAttachments',
             'fetchAttachments',
+            'deletePermanentlyAttachment',
             'updateThumbnail',
             'cleanLastUpdated',
             'setLastUpdated',
@@ -850,9 +855,18 @@ export default {
             let previousStatus = this.form.status;
             this.form.status = status;
 
-            let data = {id: this.itemId, status: this.form.status, comment_status: this.form.comment_status};
+            this.form.comment_status = this.form.comment_status == 'open' ? 'open' : 'closed';
+
+            let data = { id: this.itemId, status: this.form.status, comment_status: this.form.comment_status };
             this.fillExtraFormData(data);
-            this.updateItem(data).then(updatedItem => {
+
+            let promise = null;
+            if (status == 'trash')
+                promise = this.deleteItem({ itemId: this.itemId, isPermanently: false });
+            else
+                promise = this.updateItem(data);
+            
+            promise.then(updatedItem => {
 
                 this.item = updatedItem;
 
@@ -860,7 +874,7 @@ export default {
                 this.updateExtraFormData(this.item);
 
                 // Fill this.form data with current data.
-                this.form.status = this.item.status;
+                this.form.status = status == 'trash' ? status : this.item.status;
                 this.form.document = this.item.document;
                 this.form.document_type = this.item.document_type;
                 this.form.comment_status = this.item.comment_status;
@@ -883,13 +897,15 @@ export default {
                 }
             })
             .catch((errors) => {
-                for (let error of errors.errors) {
-                    for (let metadatum of Object.keys(error)){
-                       eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                if (errors.errors) {
+                    for (let error of errors.errors) {
+                        for (let metadatum of Object.keys(error)){
+                        eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                        }
+                        
                     }
-                    
+                    this.formErrorMessage = errors.error_message;
                 }
-                this.formErrorMessage = errors.error_message;
                 this.form.status = previousStatus;
                 this.item.status = previousStatus;
 
@@ -910,6 +926,7 @@ export default {
             ]);
 
             // Creates draft Item
+            this.form.comment_status = this.form.comment_status == 'open' ? 'open' : 'closed';
             let data = {collection_id: this.form.collectionId, status: 'auto-draft', comment_status: this.form.comment_status};
             this.fillExtraFormData(data);
             this.sendItem(data).then(res => {
@@ -927,8 +944,12 @@ export default {
                 this.form.document_type = this.item.document_type;
                 this.form.comment_status = this.item.comment_status;
 
+                // Loads metadata and attachments
                 this.loadMetadata();
-                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId });
+                this.isLoadingAttachments = true;
+                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId })
+                    .then(() => this.isLoadingAttachments = false)
+                    .catch(() => this.isLoadingAttachments = false);
 
             })
             .catch(error => this.$console.error(error));
@@ -1007,7 +1028,7 @@ export default {
                 .catch((errors) => {
                     for (let error of errors.errors) {
                         for (let metadatum of Object.keys(error)){
-                        eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                            eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
                         }
                     }
                     this.formErrorMessage = errors.error_message;
@@ -1030,12 +1051,15 @@ export default {
                 document_type: this.form.document_type 
             })
             .then(() => {
-                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document });
+                this.isLoadingAttachments = true;
+                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
+                    .then(() => this.isLoadingAttachments = false)
+                    .catch(() => this.isLoadingAttachments = false);
             })
             .catch((errors) => {
                 for (let error of errors.errors) {
                     for (let metadatum of Object.keys(error)){
-                    eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                        eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
                     }
                 }
                 this.formErrorMessage = errors.error_message;
@@ -1051,7 +1075,7 @@ export default {
                 });
         },
         deleteAttachment(attachment) {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
@@ -1059,9 +1083,13 @@ export default {
                     title: this.$i18n.get('label_warning'),
                     message: this.$i18n.get('info_warning_attachment_delete'),
                     onConfirm: () => {
-                        this.removeAttachmentFromItem(attachment.id)
+                        this.deletePermanentlyAttachment(attachment.id)
                             .then(() => { 
-                                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document });
+                                this.isLoadingAttachments = true;
+                                
+                                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
+                                    .then(() => this.isLoadingAttachments = false)
+                                    .catch(() => this.isLoadingAttachments = false);
                             })
                             .catch((error) => {
                                 this.$console.error(error);
@@ -1097,7 +1125,7 @@ export default {
                         .catch((errors) => {
                             for (let error of errors.errors) {
                                 for (let metadatum of Object.keys(error)){
-                                eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                                    eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
                                 }
                             }
                             this.formErrorMessage = errors.error_message;
@@ -1132,7 +1160,10 @@ export default {
                     relatedPostId: this.itemId,
                     onSave: () => {
                         // Fetch current existing attachments
-                        this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document });
+                        this.isLoadingAttachments = true;
+                        this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
+                            .then(() => this.isLoadingAttachments = false)
+                            .catch(() => this.isLoadingAttachments = false);
                     }
                 }
             );
@@ -1149,7 +1180,7 @@ export default {
             this.metadataCollapses.splice(index, 1, event);
         },
         onDeletePermanently() {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
@@ -1287,9 +1318,21 @@ export default {
 
         // Obtains collection name
         if (!this.isRepositoryLevel) {
-            this.fetchCollectionName(this.collectionId).then((collectionName) => {
-                this.collectionName = collectionName;
-            });
+
+            // Cancels previous collection name Request
+            if (this.collectionNameSearchCancel != undefined)
+                this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
+
+            this.fetchCollectionName(this.collectionId)
+                .then((resp) => {
+                    resp.request
+                        .then((collectionName) => {
+                            this.collectionName = collectionName;
+                        });
+                    
+                    // Search Request Token for cancelling
+                    this.collectionNameSearchCancel = resp.source;
+                })
         }
         
         // Obtains if collection allow items comments
@@ -1312,10 +1355,14 @@ export default {
     beforeDestroy () {
         eventBus.$off('isUpdatingValue');
         eventBus.$off('hasErrorsOnForm');
+
+        // Cancels previous collection name Request
+        if (this.collectionNameSearchCancel != undefined)
+            this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
     },
     beforeRouteLeave ( to, from, next ) {
         if (this.item.status == 'auto-draft') {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
@@ -1410,8 +1457,13 @@ export default {
             padding-left: 0;
             padding-right: $page-side-padding;
 
-            .columns .column {
-                padding: 1rem $page-side-padding 0 24px;
+            .columns {
+                flex-wrap: wrap;
+                justify-content: space-between;
+
+                .column {
+                    padding: 1rem 12px 0 12px;
+                }
             }
 
             .field {

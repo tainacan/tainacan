@@ -12,6 +12,7 @@
                 field="label"
                 attached
                 @typing="search"
+                :aria-close-label="$i18n.get('remove_value')"
                 :aria-labelledby="labelId"
                 :placeholder="(type == 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_add_metadata')">
             <template slot-scope="props">
@@ -136,7 +137,7 @@
                 promise.request
                     .catch( error => {
                         if (isCancel(error))
-                            this.$console.log('Request canceled: ', error.message);
+                            this.$console.log('Request canceled: ' + error.message);
                         else
                             this.$console.error( error );
                     });

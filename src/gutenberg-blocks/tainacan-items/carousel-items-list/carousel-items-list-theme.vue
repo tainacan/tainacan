@@ -53,6 +53,7 @@
                 <swiper 
                         role="list"
                         :options="swiperOptions"
+                        ref="myItemSwiper"
                         :style="{
                             marginTop: showCollectionHeader ? '1.35rem' : '0px'
                         }">
@@ -84,7 +85,9 @@
                 </swiper>
                 <button 
                         class="swiper-button-prev" 
-                        slot="button-prev">
+                        :id="blockId + '-prev'" 
+                        slot="button-prev"
+                        :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - 42px)'">
                     <svg
                             width="42"
                             height="42"
@@ -97,7 +100,9 @@
                 </button>
                 <button 
                         class="swiper-button-next" 
-                        slot="button-next">
+                        :id="blockId + '-next'" 
+                        slot="button-next"
+                        :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - 42px)'">
                     <svg
                             width="42"
                             height="42"
@@ -112,21 +117,23 @@
             <div
                     v-else
                     class="spinner-container">
-                {{ $root.__('No items found.', 'tainacan') }}
+                {{ $root.__(errorMessage, 'tainacan') }}
             </div>
             <!-- Swiper buttons are hidden as they actually swipe from slide to slide -->
         </div>
-        <div v-else>
+        <div v-else-if="isLoading && !autoPlay">
             <div :class="'tainacan-carousel has-arrows-' + arrowsPosition">
                 <swiper 
                         role="list"
                         :options="swiperOptions"
+                        ref="myItemSwiperSkeleton"
                         :style="{
                             marginTop: showCollectionHeader ? '1.35rem' : '0px'
                         }">
                     <swiper-slide 
                             role="listitem"
                             :key="index"
+                            ref="myItemSwiper"
                             v-for="(item, index) of 18"
                             class="item-list-item skeleton">      
                         <a>
@@ -137,7 +144,9 @@
                 </swiper>
                 <button 
                         class="swiper-button-prev" 
-                        slot="button-prev">
+                        :id="blockId + '-prev'" 
+                        slot="button-prev"
+                        :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - 42px)'">
                     <svg
                             width="42"
                             height="42"
@@ -150,7 +159,9 @@
                 </button>
                 <button 
                         class="swiper-button-next" 
-                        slot="button-next">
+                        :id="blockId + '-next'"   
+                        slot="button-next"
+                        :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - 42px)'">
                     <svg
                             width="42"
                             height="42"
@@ -197,11 +208,11 @@ export default {
                 spaceBetween: 32,
                 slideToClickedSlide: true,
                 navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
+                    nextEl: '#' + this.blockId + '-next',
+                    prevEl: '#' + this.blockId + '-prev',
+                }, 
                 breakpoints: {
-                    498:  { slidesPerView: 2 },
+                    498:  { slidesPerView: 2 }, 
                     768:  { slidesPerView: 3 },
                     1024: { slidesPerView: 4 },
                     1366: { slidesPerView: 5 },
@@ -210,6 +221,7 @@ export default {
                 autoplay: this.autoPlay ? { delay: this.autoPlaySpeed*1000 } : false,
                 loop: this.loopSlides
             },
+            errorMessage: 'No items found.'
         }
     },
     components: {
@@ -217,6 +229,7 @@ export default {
         swiperSlide
     },
     props: {
+        blockId: String,
         collectionId: String,  
         searchURL: String,
         selectedItems: Array,
@@ -239,6 +252,7 @@ export default {
         fetchItems() {
  
             this.isLoading = true;
+            this.errorMessage = 'No items found.';
             
             if (this.itemsRequestSource != undefined && typeof this.itemsRequestSource == 'function')
                 this.itemsRequestSource.cancel('Previous items search canceled.');
@@ -257,9 +271,10 @@ export default {
                         this.isLoading = false;
                         this.totalItems = response.headers['x-wp-total'];
 
-                    }).catch(() => { 
+                    }).catch((error) => { 
                         this.isLoading = false;
-                        // console.log(error);
+                        if (error.response && error.response.status && error.response.status == 401)
+                            this.errorMessage = 'Not allowed to see these items.'
                     });
             } else {
 
@@ -304,9 +319,10 @@ export default {
                         this.isLoading = false;
                         this.totalItems = response.headers['x-wp-total'];
 
-                    }).catch(() => { 
+                    }).catch((error) => { 
                         this.isLoading = false;
-                        // console.log(error);
+                        if (error.response && error.response.status && error.response.status == 401)
+                            this.errorMessage = 'Not allowed to see these items.'
                     });
             }
         },

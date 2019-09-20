@@ -171,6 +171,19 @@
                     color: white !important;
                     background-color: $turquoise5 !important;
                 }
+
+                .datepicker-months {
+                    width: auto;
+
+                    .datepicker-cell {
+                        height: 2rem;
+                        width: 50%;
+                        padding: 0.3rem 0.25rem !important;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        display: block;
+                    }
+                }
             }
 
             @media screen and (min-width: 1024px) {

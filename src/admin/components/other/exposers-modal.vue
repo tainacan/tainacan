@@ -195,7 +195,6 @@
                                                 :value="getExposerFullURL(pagedLink, exposerMapper)">
                                     </div>
                                     <a 
-                                            :download="(collectionId != undefined ? collectionName : $i18n.get('repository')) + ' ' + $i18n.get('items') + ' ' + $i18n.get('label_page') + ' ' + pagedLink"
                                             v-tooltip="{
                                                 delay: {
                                                     show: 500,
@@ -204,7 +203,8 @@
                                                 content: $i18n.get('label_open_externally'),
                                                 autoHide: false,
                                                 placement: 'bottom'
-                                            }" 
+                                            }"
+                                            target="_blank" 
                                             :href="getExposerFullURL(pagedLink, exposerMapper)">
                                         <span class="icon">
                                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>
@@ -378,6 +378,9 @@ export default {
             if (pagedLink && (this.itemId == undefined || this.itemId == null))
                 params.paged = pagedLink;
 
+            if (tainacan_plugin.nonce)
+                params._wpnonce = tainacan_plugin.nonce;
+
             return this.exposerBaseURL + '&' + qs.stringify(params);
         },
         getItemPageLabel(pagedLink) {
@@ -403,7 +406,7 @@ export default {
                 let msg = successful ? 'successful' : 'unsuccessful';
                 this.$console.log('Fallback: Copying text command was ' + msg);
                 if (msg == 'sucessful') {
-                    this.$toast.open({
+                    this.$buefy.toast.open({
                         duration: 3000,
                         message: this.$i18n.get('info_url_copied'),
                         position: 'is-bottom',
@@ -427,7 +430,7 @@ export default {
             navigator.clipboard.writeText(text)
                 .then(() => {
                     this.$console.log('Async: Copying to clipboard was successful!');
-                    this.$toast.open({
+                    this.$buefy.toast.open({
                         duration: 3000,
                         message: this.$i18n.get('info_url_copied'),
                         position: 'is-bottom',
@@ -498,7 +501,7 @@ export default {
         p {
             font-size: 0.875rem;
             color: $gray5;
-            padding: 0rem 1rem;
+            padding: 0rem 1.25rem;
             margin-top: 0.75rem;
             margin-bottom: 0;
         }
@@ -514,6 +517,7 @@ export default {
                 cursor: pointer;
                 max-width: 50%;
                 flex-grow: 1;
+                transition: border 0.3s ease;
 
                 h4 {
                     font-size: 1rem;
@@ -525,6 +529,10 @@ export default {
                     color: $gray5;
                     padding: 0rem 0.5rem;
                     margin-bottom: 0;
+                }
+
+                &:hover {
+                    border: 1px solid $gray3;
                 }
             }
         }

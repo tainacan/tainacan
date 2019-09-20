@@ -400,7 +400,7 @@ class REST_Filters_Controller extends REST_Controller {
 	 */
 	public function get_items_permissions_check( $request ) {
 		if(!isset($request['collection_id'])) {
-			if ( 'edit' === $request['context'] && ! $this->filter_repository->can_read( new Entities\Filter() ) ) {
+			if ( 'edit' === $request['context'] && ! $this->filter_repository->can_edit( new Entities\Filter() ) ) {
 				return false;
 			}
 

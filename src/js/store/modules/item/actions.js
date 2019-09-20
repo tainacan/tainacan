@@ -202,15 +202,33 @@ export const removeAttachmentFromItem = ( { commit }, attachmentId) => {
     });
 };
 
+export const deletePermanentlyAttachment = ( { commit }, attachmentId) => {
+    return new Promise(( resolve, reject ) => {
+        axios.wp.delete('/media/' + attachmentId + '?force=true')
+            .then( res => {
+                let attachment = res.data;
+                resolve( attachment );
+            })
+            .catch(error => {
+                reject( error.response );
+            });
+    });
+};
+
 export const fetchAttachments = ({ commit }, { page, attachmentsPerPage, itemId, documentId }) => {
     commit('cleanAttachments');
     commit('setTotalAttachments', null);
 
+    let endpoint = '/media/?parent=' + itemId + '&per_page=' + attachmentsPerPage + '&page=' + page;
+
+    if (documentId)
+        endpoint += '&exclude=' + documentId;
+
     return new Promise((resolve, reject) => {
-        axios.wp.get('/media/?parent=' + itemId + '&per_page=' + attachmentsPerPage + '&page=' + page)
+        axios.wp.get(endpoint)
         .then(res => {
-            let attachments = res.data.filter((attachment) => attachment.id != documentId);
-            let total = documentId ? res.headers['x-wp-total'] - 1 : res.headers['x-wp-total'];
+            let attachments = res.data;
+            let total =  res.headers['x-wp-total'];
 
             commit('setAttachments', attachments);
             commit('setTotalAttachments', total);

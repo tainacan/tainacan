@@ -29,7 +29,7 @@ class Export_Handler {
             'manual_collection' => false
         ]);
 		
-		do_action('tainacan_register_exporters');
+		do_action('tainacan-register-exporters');
 
 		add_action( 'tainacan-enqueue-admin-scripts', array($this, 'enqueue_scripts') );
 	}

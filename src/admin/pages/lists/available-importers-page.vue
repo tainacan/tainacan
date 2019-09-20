@@ -73,6 +73,11 @@ export default {
             max-width: 20%;
             flex-grow: 1;
             flex-basis: 20%;
+            transition: border 0.3s ease;
+
+            &:hover {
+                border: 1px solid $gray3;
+            }
         }
     }
 

@@ -35,6 +35,7 @@ import FilterTaxonomyCheckbox from '../../classes/filter-types/taxonomy/Checkbox
 import FilterTaxonomyTaginput from '../../classes/filter-types/taxonomy/Taginput.vue';
 
 import FormNumeric from '../../classes/filter-types/numeric/FormNumeric.vue';
+// import FormDate from '../../classes/filter-types/date/FormDate.vue';
 
 import TainacanFormItem from '../../classes/metadata-types/tainacan-form-item.vue';
 import TainacanFiltersList from '../../classes/filter-types/tainacan-filter-item.vue';
@@ -50,7 +51,9 @@ import termsListBus from './terms-list-bus.js';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, UserCapabilitiesPlugin, StatusHelperPlugin } from './utilities';
 
 // Configure and Register Plugins
-Vue.use(Buefy);
+Vue.use(Buefy, {
+    defaultTooltipAnimated: true   
+});
 Vue.use(VTooltip);
 Vue.use(VueMasonry);
 Vue.use(I18NPlugin);
@@ -88,6 +91,7 @@ Vue.component('tainacan-filter-taxonomy-checkbox', FilterTaxonomyCheckbox);
 Vue.component('tainacan-filter-taxonomy-taginput', FilterTaxonomyTaginput);
 /* Filter Metadata Option forms */
 Vue.component('tainacan-filter-form-numeric', FormNumeric);
+// Vue.component('tainacan-filter-form-date', FormDate);
 
 /* Others */
 Vue.component('help-button', HelpButton);

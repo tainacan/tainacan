@@ -218,19 +218,19 @@ export default {
         .separator {
             height: 2px;
             background-color: transparent;
-            width: 100%;
+            width: 100%; 
             margin: 24px 0;
         }
         li {
-            a {
+            a { 
                 color: white;
                 white-space: nowrap;
                 overflow: hidden;
                 padding: 9px 15px;
                 line-height: 1.5em;
                 border-radius: 0px;
-                -webkit-transition: padding 0.2s linear; /* Safari */
-                transition: padding 0.2s linear;
+                -webkit-transition: padding 0.2s linear, background-color 0.3s ease; /* Safari */
+                transition: padding 0.2s linear, background-color 0.3s ease;
 
                 .icon {
                     height: auto;

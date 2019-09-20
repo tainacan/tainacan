@@ -166,7 +166,7 @@
             error_message(){
                 if ( !this.isTouched ) return false;
 
-                this.$toast.open({
+                this.$buefy.toast.open({
                     duration: 3000,
                     message: this.$i18n.get('info_error_first_value_greater'),
                     position: 'is-bottom',

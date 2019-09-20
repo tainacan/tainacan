@@ -30,7 +30,7 @@ class Items extends Repository {
 		add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 10, 4 );
 	}
 
-	public function get_map() {
+	protected function _get_map() {
 		return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
 			'title'             => [
 				'map'         => 'post_title',

@@ -259,7 +259,7 @@
                                 class="b-checkbox checkbox is-small">
                             <input 
                                     type="checkbox"
-                                    :value="getSelectedItemChecked(item.id)"
+                                    :checked="getSelectedItemChecked(item.id)"
                                     @input="setSelectedItemChecked(item.id)"> 
                                 <span class="check" /> 
                                 <span class="control-label" />
@@ -531,7 +531,7 @@
                                 class="b-checkbox checkbox is-small">
                             <input
                                     type="checkbox"
-                                    :value="getSelectedItemChecked(item.id)"
+                                    :checked="getSelectedItemChecked(item.id)"
                                     @input="setSelectedItemChecked(item.id)">
                                 <span class="check" />
                                 <span class="control-label" />
@@ -804,7 +804,7 @@
                                           column.metadatum !== 'row_author' &&
                                           column.metadatum !== 'row_title' &&
                                           column.metadatum !== 'row_description'"
-                                    v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column, column.metadata_type_object.component) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                    v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
 
                             <span v-if="column.metadatum == 'row_thumbnail'">
                                 <img 
@@ -948,7 +948,9 @@ export default {
             return this.getSelectedItems();
         },
         selectedItems () {
-            this.$eventBusSearch.setSelectedItemsForIframe(this.getSelectedItems());
+            if (this.$route.query.iframemode)
+                this.$eventBusSearch.setSelectedItemsForIframe(this.getSelectedItems());
+            
             return this.getSelectedItems();
         },
         isSelectingItems () {
@@ -1017,7 +1019,7 @@ export default {
             return this.selectedItems.find(item => item == itemId) != undefined;
         },
         openBulkEditionModal(){
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: BulkEditionModal,
                 props: {
@@ -1053,7 +1055,7 @@ export default {
         },
         makeCopiesOfOneItem(itemId) {
                          
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: ItemCopyDialog,
                 canCancel: false,
@@ -1072,7 +1074,7 @@ export default {
             this.clearContextMenu();
         },
         untrashOneItem(itemId) {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
@@ -1101,7 +1103,7 @@ export default {
             });
         },
         deleteOneItem(itemId) {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
@@ -1124,7 +1126,7 @@ export default {
             this.clearContextMenu();
         },
         untrashSelectedItems(){
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
@@ -1153,7 +1155,7 @@ export default {
             });
         },
         deleteSelectedItems() {
-            this.$modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
@@ -1213,11 +1215,11 @@ export default {
             if ($event.ctrlKey || $event.shiftKey) {
                 this.setSelectedItemChecked(item.id);
             } else {
-                if (!this.$route.query.iframemode && this.$route.query.iframemode) {
+                if (this.$route.query.iframemode && !this.$route.query.readmode) {
                     this.setSelectedItemChecked(item.id)
                 } else if (!this.$route.query.iframemode && !this.$route.query.readmode) {
                     if(this.isOnTrash){
-                        this.$toast.open({
+                        this.$buefy.toast.open({
                             duration: 3000,
                             message: this.$i18n.get('info_warning_remove_from_trash_first'),
                             position: 'is-bottom',
@@ -1246,17 +1248,14 @@ export default {
         goToItemEditPage(item) {
             this.$router.push(this.$routerHelper.getItemEditPath(item.collection_id, item.id));
         },
-        renderMetadata(itemMetadata, column, component) {
+        renderMetadata(itemMetadata, column) {
 
             let metadata = (itemMetadata != undefined && itemMetadata[column.slug] != undefined) ? itemMetadata[column.slug] : false;
 
             if (!metadata || itemMetadata == undefined) {
                 return '';
             } else {
-                if ((component != undefined && component == 'tainacan-textarea') || this.$route.query.iframemode)
-                    return this.viewMode == 'table' ? ('<span class="sr-only">' + column.name + ': </span>' + metadata.value_as_string) : metadata.value_as_string;
-                else
-                    return this.viewMode == 'table' ? ('<span class="sr-only">' + column.name + ': </span>' + metadata.value_as_html) : metadata.value_as_html;
+                return this.viewMode == 'table' ? ('<span class="sr-only">' + column.name + ': </span>' + metadata.value_as_html) : metadata.value_as_html;
             }
         },
         getLimitedDescription(description) {

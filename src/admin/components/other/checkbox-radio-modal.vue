@@ -271,7 +271,7 @@
 
 <script>
     import qs from 'qs';
-    import { tainacan as axios } from '../../../js/axios/axios';
+    import { tainacan as axios, isCancel } from '../../../js/axios/axios';
     import { filter_type_mixin } from '../../../classes/filter-types/filter-types-mixin';
 
     export default {
@@ -461,7 +461,10 @@
                         }
                     })
                     .catch(error => {
-                        this.$console.log(error);
+                        if (isCancel(error))
+                            this.$console.log('Request canceled: ' + error.message);
+                        else
+                            this.$console.error( error );
                     })
 
                 // Search Request Token for cancelling
@@ -694,6 +697,11 @@
 
                 this.$emit('appliedCheckBoxModal');
             }
+        },
+        beforeDestroy() {
+            // Cancels previous Request
+            if (this.getOptionsValuesCancel != undefined)
+                this.getOptionsValuesCancel.cancel('Get options request canceled.');
         }
     }
 </script>

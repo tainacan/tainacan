@@ -598,9 +598,6 @@ export default {
             'fetchUsers',
             'fetchCollectionsForParent'
         ]),
-        ...mapActions('metadata', [
-            'fetchMetadata'
-        ]),
         updateSlug: _.debounce(function() {
             if(!this.form.name || this.form.name.length <= 0){
                 return;
@@ -928,14 +925,19 @@ export default {
                 // Generates options for parent collection
                 this.isFetchingCollections = true;
                 this.fetchCollectionsForParent()
-                .then((collections) => {
-                    this.collections = collections;
-                    this.isFetchingCollections = false;
-                })
-                .catch((error) => {
-                    this.$console.error(error);
-                    this.isFetchingCollections = false;
-                }); 
+                    .then((resp) => {
+                        resp.request.then((collections) => {
+                            this.collections = collections;
+                            this.isFetchingCollections = false;
+                        })
+                        .catch((error) => {
+                            this.$console.error(error);
+                            this.isFetchingCollections = false;
+                        }); 
+                    })
+                    .catch(() => {
+                        this.isFetchingCollections = false;
+                    }); 
 
                 this.isLoading = false; 
             });
@@ -957,7 +959,7 @@ export default {
 
     @import "../../scss/_variables.scss";
 
-    @media screen and (max-width: 1024px) {
+    @media screen and (min-width: 1024px) {
         .column:last-of-type {
             padding-left: $page-side-padding !important;
         }

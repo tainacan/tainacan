@@ -39,7 +39,7 @@
                                 min="1" 
                                 :value="copyCount"
                                 step="1"
-                                @input.native="copyCount = $event.target.value"/>
+                                @input="copyCount = $event"/>
                     </b-field>
                 </div>
             </section>

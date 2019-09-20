@@ -32,7 +32,9 @@ import eventBusSearch from '../../js/event-bus-search';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, StatusHelperPlugin } from './utilities';
 
 // Configure and Register Plugins
-Vue.use(Buefy);
+Vue.use(Buefy, {
+    defaultTooltipAnimated: true   
+});
 Vue.use(VTooltip);
 Vue.use(VueMasonry);
 Vue.use(I18NPlugin);

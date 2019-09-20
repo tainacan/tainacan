@@ -47,18 +47,18 @@ class Cli_Collection {
 	 * remove items of specific collection.
 	 *
 	 * ## OPTIONS
-	 * [--collection-id=<value>]
-	 * : <value> ID of specifies the collection that will have your items removed.
+	 * <collection_id>
+	 * : specifies the collection that will have your items removed.
 	 * 
 	 * [--permanently]
-   * : if items do not need to be trashed, if present permanently deletes items.
+	 * : skip trash and permanently delete items.
 	 * 
 	 * [--dry-run]
 	 * : only count the total of item which will remove, just output a report 
 	 * 
 	 * ## EXAMPLES
 	 * 
-	 * wp tainacan collection clean --collection-id=1201 --permanently
+	 * wp tainacan collection clean 1201 --permanently
 	 * 
 	 * cleaning collection items 
 	 * 100% [============================================================================================] 0:00 / 0:00
@@ -69,10 +69,10 @@ class Cli_Collection {
 	 */
 	public function clean($args, $assoc_args) {
 		$permanently = false;
-		if( empty($assoc_args['collection-id']) ) {
+		if( empty($args[0]) || !is_numeric($args[0]) ) {
 			\WP_CLI::error( 'Wrong parameters', true );
 		}
-		$collection_id = $assoc_args['collection-id'];
+		$collection_id = $args[0];
 
 		if( !empty($assoc_args['permanently']) ) {
 			$permanently = true; 

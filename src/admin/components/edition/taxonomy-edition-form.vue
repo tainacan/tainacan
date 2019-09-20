@@ -264,7 +264,7 @@
                 formNotSaved = true;
 
             if (formNotSaved) {
-                this.$modal.open({
+                this.$buefy.modal.open({
                     parent: this,
                     component: CustomDialog,
                     props: {
@@ -277,7 +277,7 @@
                     }
                 });  
             } else if (this.isEditingTerm) {
-                this.$modal.open({
+                this.$buefy.modal.open({
                     parent: this,
                     component: CustomDialog,
                     props: {
@@ -495,7 +495,7 @@
         }
     }
 </script>
-<style>
+<style scoped>
     .tab-content {
         overflow: visible !important;
     }

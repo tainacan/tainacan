@@ -60,6 +60,29 @@ class CSV extends Importer {
         return [];
     }
 
+    public function get_source_special_fields() {
+        if (($handle = fopen($this->tmp_file, "r")) !== false) {
+            if( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ) {
+                $rawColumns = $this->handle_enclosure( $handle );
+            } else {
+                $rawColumns = fgetcsv($handle, 0, $this->get_option('delimiter'));
+            }
+
+            $columns = [];
+
+            if( $rawColumns ) {
+                foreach( $rawColumns as $index => $rawColumn ) {
+                    if( strpos($rawColumn,'special_') === 0 ) {
+                        $columns[] = $rawColumn;
+                    }
+                }
+                if( !empty($columns) )
+                    return $columns;
+            }
+        }
+        return false;
+    }
+
     /**
      * 
      * returns all header including special
@@ -145,6 +168,12 @@ class CSV extends Importer {
             $processedItem[ $header ] = ( $metadatum->is_multiple() ) ? 
                 explode( $this->get_option('multivalued_delimiter'), $valueToInsert) : $valueToInsert;
         }
+
+        if( !empty( $this->get_option('document_index') ) ) $processedItem['special_document'] = '';
+        if( !empty( $this->get_option('attachment_index') ) ) $processedItem['special_attachments'] = '';
+        if( !empty( $this->get_option('item_status_index') ) ) $processedItem['special_item_status'] = '';
+        if( !empty( $this->get_option('item_comment_status_index') ) ) $processedItem['special_comment_status'] = '';
+
         $this->add_log('Success to proccess index: ' . $index  );
         return $processedItem;
     }
@@ -578,13 +607,26 @@ class CSV extends Importer {
         $Tainacan_Items->disable_logs();
         $Tainacan_Metadata->disable_logs();
         $Tainacan_Item_Metadata->disable_logs();
-
-        $item = new Entities\Item( ( is_numeric($this->get_transient('item_id')) ) ? $this->get_transient('item_id') : 0 );
-        $itemMetadataArray = [];
-
-        if( is_numeric($this->get_transient('item_id')) ) {
-            $this->add_log('item will be updated ID:' . $item->get_id() );
-        }
+		
+		$itemMetadataArray = [];
+		
+		$updating_item = false;
+		
+		if ( is_numeric($this->get_transient('item_id')) ) {
+			$item = $Tainacan_Items->fetch( (int) $this->get_transient('item_id') );
+		} else {
+			$item = new Entities\Item();
+		}
+		
+		if( is_numeric($this->get_transient('item_id')) ) {
+			if ( $item->get_id() == $this->get_transient('item_id') ) {
+				$this->add_log('item will be updated ID:' . $item->get_id() );
+				$updating_item = true;
+			} else {
+				$this->add_log('item with ID ' . $item->get_id() . ' not found. Unable to update. Creating a new one.' );
+			}
+			
+		}
 
         if( $this->get_transient('item_id') && $item && is_numeric($item->get_id()) && $item->get_id() > 0 && $this->get_transient('item_action') == 'ignore' ){
             $this->add_log('Repeated Item');
@@ -593,6 +635,15 @@ class CSV extends Importer {
 
         if( is_array( $processed_item ) ) {
             foreach ( $processed_item as $metadatum_source => $values ) {
+
+                if ( $metadatum_source == 'special_document' ||
+                     $metadatum_source == 'special_attachments' ||
+                     $metadatum_source == 'special_item_status' ||
+                     $metadatum_source == 'special_comment_status') {
+                    $special_columns = true;
+                    continue;
+                }
+
                 $tainacan_metadatum_id = array_search( $metadatum_source, $collection_definition['mapping'] );
                 $metadatum = $Tainacan_Metadata->fetch( $tainacan_metadatum_id );
 
@@ -626,7 +677,7 @@ class CSV extends Importer {
             }
         }
 
-        if( !empty( $itemMetadataArray ) && $collection instanceof Entities\Collection ) {
+        if( (!empty( $itemMetadataArray ) || $special_columns) && $collection instanceof Entities\Collection ) {
             $item->set_collection( $collection );
             if( $item->validate() ) {
                 $insertedItem = $Tainacan_Items->insert( $item );
@@ -655,7 +706,10 @@ class CSV extends Importer {
                 //}
             }
 
-            $insertedItem->set_status('publish' );
+			if ( ! $updating_item ) {
+				$insertedItem->set_status('publish' );
+			}
+			
             if($insertedItem->validate()) {
                 $insertedItem = $Tainacan_Items->update( $insertedItem );
                 $this->after_inserted_item(  $insertedItem, $collection_index );

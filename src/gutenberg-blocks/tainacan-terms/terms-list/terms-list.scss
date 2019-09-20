@@ -103,26 +103,26 @@
     ul.terms-list.terms-layout-list,
     ul.terms-list-edit.terms-layout-list {
         padding: 0;
-        display: block;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
         list-style-type: none;
 
         li.term-list-item {
             position: relative;
-            display: inline-block;
             margin: 12px 12px 24px 12px;
             margin-bottom: 12px;
             min-height: 54px;
-            min-width: 22%;
-            width: 22%;
+            min-width: calc(20% - 24px);
+            width: calc(20% - 24px);
 
             a { 
                 color: #454647; 
-                // overflow: hidden;
-                // text-overflow: ellipsis;
-                // white-space: nowrap;
+                height: auto;
                 display: flex;
                 align-items: center;
-                height: 54px;
+                word-break: break-all;
+                word-break: break-word;
             }
 
             img {
@@ -141,30 +141,26 @@
                 color: #454647; 
                 text-decoration: none;
             }
-        }
-    }
-   
-    @media only screen and (max-width: 1600px) {  
-        ul.terms-list.terms-layout-list li.term-list-item,
-        ul.terms-list-edit.terms-layout-list li.term-list-item  {        
-            min-width: 30%;
-            width: 30%;
-        }
-    }
 
-    @media only screen and (max-width: 1024px) {  
-        ul.terms-list.terms-layout-list li.term-list-item,
-        ul.terms-list-edit.terms-layout-list li.term-list-item  {        
-            min-width: 45%;
-            width: 45%;
-        }
-    }
+            @media only screen and (max-width: 1600px) { 
+                min-width: calc(25% - 24px);
+                width: calc(25% - 24px);
+            }
 
-    @media only screen and (max-width: 768px) {  
-        ul.terms-list.terms-layout-list li.term-list-item,
-        ul.terms-list-edit.terms-layout-list li.term-list-item {       
-            min-width: 100%;
-            width: 100%;
+            @media only screen and (max-width: 1024px) { 
+                min-width: calc(33.333% - 24px);
+                width: calc(33.333% - 24px);
+            }
+    
+            @media only screen and (max-width: 768px) { 
+                min-width: calc(50% - 24px);
+                width: calc(50% - 24px);
+            }
+    
+            @media only screen and (max-width: 498px) { 
+                min-width: calc(100% - 24px);
+                width: calc(100% - 24px);
+            }
         }
     }
 

@@ -380,7 +380,7 @@ registerBlockType('tainacan/facets-list', {
                             <div>
                                 <RangeControl
                                     label={__('Maximum number of facets', 'tainacan')}
-                                    value={ maxFacetsNumber }
+                                    value={ maxFacetsNumber ? maxFacetsNumber : 12}
                                     onChange={ ( aMaxFacetsNumber ) => {
                                         maxFacetsNumber = aMaxFacetsNumber;
                                         setAttributes( { maxFacetsNumber: aMaxFacetsNumber } ) 

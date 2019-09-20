@@ -197,7 +197,7 @@
             },
             save(){
                 if( this.name.trim() === ''){
-                    this.$toast.open({
+                    this.$buefy.toast.open({
                         duration: 2000,
                         message: this.$i18n.get('info_name_is_required'),
                         position: 'is-bottom',

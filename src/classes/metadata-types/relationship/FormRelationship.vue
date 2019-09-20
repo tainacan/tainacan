@@ -167,7 +167,7 @@
                         this.$console.log(error);
                     });
             },
-            fetchMetadataFromCollection( value ){
+            fetchMetadataFromCollection(value) {
                 this.loadingMetadata = true;
                 this.hasMetadata = false;
 
@@ -190,7 +190,7 @@
                         } else {
                             this.metadata = [];
                             this.hasMetadata = false;
-                            this.$toast.open({
+                            this.$buefy.toast.open({
                                 duration: 4000,
                                 message: this.$i18n.get('info_warning_no_metadata_found'),
                                 position: 'is-bottom',

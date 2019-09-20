@@ -5,18 +5,27 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 
 module.exports = {
     entry: {
-        //dev_admin: './src/js/main.js',\
         user_search: './src/admin/js/theme-main.js',
         user_admin: './src/admin/js/main.js',
-        //gutenberg_collections_carousel: './src/gutenberg-blocks/tainacan-collections/collections-carousel/index.js',
-        // gutenberg_items_grid: './src/gutenberg-blocks/tainacan-items/items-grid/index.js',
+
         gutenberg_terms_list: './src/gutenberg-blocks/tainacan-terms/terms-list/index.js',
+        
         gutenberg_items_list: './src/gutenberg-blocks/tainacan-items/items-list/index.js',
+        
         gutenberg_dynamic_items_list: './src/gutenberg-blocks/tainacan-items/dynamic-items-list/index.js',
         gutenberg_dynamic_items_list_theme: './src/gutenberg-blocks/tainacan-items/dynamic-items-list/dynamic-items-list-theme.js',
+        
         gutenberg_carousel_items_list: './src/gutenberg-blocks/tainacan-items/carousel-items-list/index.js',
         gutenberg_carousel_items_list_theme: './src/gutenberg-blocks/tainacan-items/carousel-items-list/carousel-items-list-theme.js',
+        
+        gutenberg_search_bar: './src/gutenberg-blocks/tainacan-items/search-bar/index.js',
+        gutenberg_search_bar_script: './src/gutenberg-blocks/tainacan-items/search-bar/search-bar-theme-script.js',
+        
         gutenberg_collections_list: './src/gutenberg-blocks/tainacan-collections/collections-list/index.js',
+        
+        gutenberg_carousel_collections_list: './src/gutenberg-blocks/tainacan-collections/carousel-collections-list/index.js',
+        gutenberg_carousel_collections_list_theme: './src/gutenberg-blocks/tainacan-collections/carousel-collections-list/carousel-collections-list-theme.js',
+        
         gutenberg_facets_list: './src/gutenberg-blocks/tainacan-facets/facets-list/index.js',
         gutenberg_facets_list_theme: './src/gutenberg-blocks/tainacan-facets/facets-list/facets-list-theme.js'
     },

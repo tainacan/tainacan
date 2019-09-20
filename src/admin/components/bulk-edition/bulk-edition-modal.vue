@@ -320,20 +320,30 @@
             collectionID: Number,
         },
         created(){
-            if(!this.collectionID){
-                // is repository level
-
-            } else {
+            if (this.collectionID){
                 this.metadataIsLoading = true;
+
+                // Cancels previous Request
+                if (this.metadataSearchCancel != undefined)
+                    this.metadataSearchCancel.cancel('Metadata search Canceled.');
 
                 this.fetchMetadata({
                     collectionId: this.collectionID,
                     isRepositoryLevel: false,
                     isContextEdit: true,
-                    includeDisabled: false,
-                }).then(() => {
-                    this.metadataIsLoading = false;
-                });
+                    includeDisabled: false
+                }).then((resp) => {
+                        resp.request
+                            .then(() => {
+                                this.metadataIsLoading = false;
+                            }).catch(() => {
+                                this.metadataIsLoading = false;
+                            });
+
+                            // Search Request Token for cancelling
+                            this.metadataSearchCancel = resp.source;
+                    })
+                    .catch(() => this.metadataIsLoading = false); 
             }
 
             this.createEditGroup({
@@ -378,6 +388,7 @@
                 groupID: null,
                 dones: [false],
                 metadataIsLoading: false,
+                metadataSearchCancel: undefined
             }
         },
         methods: {
@@ -552,6 +563,12 @@
                 }
             }
         },
+        beforeDestroy() {
+            // Cancels previous Request
+            if (this.metadataSearchCancel != undefined)
+                this.metadataSearchCancel.cancel('Metadata search Canceled.');
+
+        }
     }
 </script>
 

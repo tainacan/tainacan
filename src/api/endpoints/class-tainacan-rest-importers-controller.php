@@ -248,7 +248,8 @@ class REST_Importers_Controller extends REST_Controller {
 
         $response = [
             'source_metadata' => false,
-            'source_total_items' => false
+            'source_total_items' => false,
+            'source_special_fields' => false
         ];
 
         if ( method_exists($importer, 'get_source_metadata') ) {
@@ -257,6 +258,10 @@ class REST_Importers_Controller extends REST_Controller {
 
         if ( method_exists($importer, 'get_source_number_of_items') ) {
             $response['source_total_items'] = $importer->get_source_number_of_items();
+        }
+
+        if ( method_exists($importer, 'get_source_special_fields') ) {
+            $response['source_special_fields'] = $importer->get_source_special_fields();
         }
 
         return new \WP_REST_Response( $response, 200 );

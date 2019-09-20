@@ -139,8 +139,8 @@
     // Tainacan Carousel
     .tainacan-carousel {
         position: relative;
-        width: calc(100% + 50px);
-        left: -50px;
+        width: calc(100% + 40px);
+        left: -20px;
 
         .swiper-container {
             margin: 0 50px;
@@ -153,6 +153,10 @@
                 padding: 8px 16px;
                 display: block;
                 line-height: 1.2rem;
+            }
+            a>img {
+                width: 100%;
+                height: auto;
             }
             a:hover {
                 text-decoration: none;
@@ -171,8 +175,8 @@
 
     // Next and previous buttons
     .swiper-button-prev, .swiper-button-next {
-        top: initial;
-        bottom: calc(50% + 10px);
+        top: calc(50% - 42px);
+        bottom: initial;
         background: none;
         border: none;
         width: 42px;
@@ -202,14 +206,14 @@
         &.has-arrows-left .swiper-button-next {
             left: 10px;
             right: auto;
-            bottom: calc(50% + 36px);
+            top: calc(50% + 12px) !important;
         }
         &.has-arrows-right .swiper-button-prev {
             right: 10px;
             left: auto;
         }
         &.has-arrows-right .swiper-button-next {
-            bottom: calc(50% + 36px);
+            top: calc(50% + 12px) !important;
         }
     }
     ul.items-list-edit {
@@ -223,8 +227,8 @@
             position: relative;
             display: block;
             margin: 16px;
-            width: calc(14.286% - 32px); 
-            min-width: calc(14.286% - 32px);
+            width: calc(14.285% - 32px); 
+            min-width: calc(14.285% - 32px);
 
             a { 
                 color: #454647; 

@@ -485,7 +485,8 @@
                 margin-right: auto;
                 width: 100%;
                 top: 35%;
-                font-size: 1.25rem;
+                padding: 0 8px;
+                font-size: 95%;
                 font-weight: bold;
                 z-index: 99;
                 text-align: center;

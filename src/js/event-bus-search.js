@@ -336,7 +336,6 @@ export default {
                         this.$emit( 'hasToPrepareMetadataAndFilters', to);
                     } else {  
                         this.$emit( 'isLoadingItems', true);
-                        
                         // Cancels previous Request
                         if (this.searchCancel != undefined)
                             this.searchCancel.cancel('Item search Canceled.');
@@ -352,7 +351,7 @@ export default {
                                 this.$emit( 'isLoadingItems', false);
                                 this.$emit( 'hasFiltered', res.hasFiltered);
                                 
-                                if(res.advancedSearchResults){
+                                if (res.advancedSearchResults){
                                     this.$emit('advancedSearchResults', res.advancedSearchResults);
                                 }
                             })

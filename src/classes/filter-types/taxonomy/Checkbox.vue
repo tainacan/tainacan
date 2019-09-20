@@ -47,7 +47,7 @@
 
 <script>
     import qs from 'qs';
-    import { tainacan as axios } from '../../../js/axios/axios';
+    import { tainacan as axios, CancelToken, isCancel } from '../../../js/axios/axios';
     import { mapGetters } from 'vuex';
     import CheckboxRadioModal from '../../../admin/components/other/checkbox-radio-modal.vue';
 
@@ -82,6 +82,7 @@
                 selected: [],
                 taxonomy: '',
                 taxonomy_id: Number,
+                getOptionsValuesCancel: undefined,
                 isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
             }
         },
@@ -117,6 +118,12 @@
             ]),
             loadOptions(skipSelected) {
                 if (!this.isUsingElasticSearch) {
+                    let promise = null;
+                    const source = CancelToken.source();
+
+                    // Cancels previous Request
+                    if (this.getOptionsValuesCancel != undefined)
+                        this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
                     this.isLoading = true;
                     let query_items = { 'current_query': this.query };
@@ -130,15 +137,36 @@
 
                     this.options = [];
 
-                    axios.get(route)
-                        .then( res => {
+                    promise = new Object({
+                        request:
+                            new Promise((resolve, reject) => {
+                                axios.get(route, { cancelToken: source.token})
+                                    .then( res => {
+                                        resolve(res)
+                                    })
+                                    .catch(error => {
+                                        reject(error)
+                                    });
+                            }),
+                        source: source
+                    });
+                    promise.request
+                        .then((res) => {
                             this.prepareOptionsForTaxonomy(res.data.values ? res.data.values : res.data, skipSelected);
                             this.isLoading = false;
                         })
-                        .catch(error => {
-                            this.$console.log(error);
-                            this.isLoading = false;
+                        .catch( error => {
+                            if (isCancel(error)) {
+                                this.$console.log('Request canceled: ' + error.message);
+                            } else {
+                                this.$console.log('Error on facets request: ', error);
+                                this.isLoading = false;
+                            }
                         });
+                    
+                    // Search Request Token for cancelling
+                    this.getOptionsValuesCancel = promise.source;  
+
                 } else {
 
                     for (const facet in this.facetsFromItemSearch) {
@@ -238,7 +266,7 @@
                 });
             },
             openCheckboxModal(parent) {
-                this.$modal.open({
+                this.$buefy.modal.open({
                     parent: this,
                     component: CheckboxRadioModal,
                     props: {
@@ -333,6 +361,10 @@
         beforeDestroy() {
             this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
             
+            // Cancels previous Request
+            if (this.getOptionsValuesCancel != undefined)
+                this.getOptionsValuesCancel.cancel('Facet search Canceled.');
+ 
             if (this.isUsingElasticSearch)
                 this.$eventBusSearch.$off('isLoadingItems', this.updatesIsLoading);
         }
