@@ -54,6 +54,7 @@
                                     :value="`${metadatum.id}-${metadatum.metadata_type_options.taxonomy}-${metadatum.metadata_type_object.primitive_type}`"
                                     :key="metadatum.id"
                             >{{ metadatum.name }}</option>
+                            <option value="_document_content_index-undefined-string">Documento</option>
                         </b-select>
                     </b-field>
 
@@ -549,7 +550,7 @@
                         if(criteriaKey[2] != 'date' && criteriaKey[2] != 'int' && criteriaKey[2] != 'float'){
                             this.advancedSearchQuery.metaquery = Object.assign({}, this.advancedSearchQuery.metaquery, {
                                 [`${searchCriterion}`]: {
-                                    key: Number(criteriaKey[0]),
+                                    key: criteriaKey[0],
                                     compare: 'LIKE',
                                     originalMeta: value,
                                 }

@@ -376,6 +376,25 @@ class Items extends Repository {
 		return $where;
 	}
 	
+	/**
+	 * generate a content of document to index.
+	 *
+	 * @param  Entities\Item $item The item
+	 *
+	 * @return boolean
+	 */
+	public function generate_index_content(Entities\Item $item) {
+		$TainacanMedia = \Tainacan\Media::get_instance();
+		if ( empty( $item->get_document() ) ) {
+			$TainacanMedia->index_pdf_content( null, $item->get_ID() );
+		} elseif ( $item->get_document_type() == 'attachment' ) {
+			if (! wp_attachment_is_image( $item->get_document() ) ) {
+				$filepath = get_attached_file( $item->get_document() );
+				$TainacanMedia->index_pdf_content( $filepath, $item->get_ID() );
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * Get a default thumbnail ID from the item document.
@@ -452,13 +471,14 @@ class Items extends Repository {
 		) {
 
 			$thumb_id = $this->get_thumbnail_id_from_document( $updated_item );
-
 			if ( ! is_null( $thumb_id ) ) {
 				set_post_thumbnail( $updated_item->get_id(), (int) $thumb_id );
 			}
 
 		}
-
+		if (defined('TAINACAN_CONTENT_PDF_INDEX_ACTIVED') && TAINACAN_CONTENT_PDF_INDEX_ACTIVED === true) {
+			$this->generate_index_content( $updated_item );
+		}
 	}
 
 	/**
