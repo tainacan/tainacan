@@ -41,18 +41,21 @@
    
                 <div 
                         v-if="importerSourceInfo != undefined && 
-                            importerSourceInfo != null">
-                    <p class="mapping-header-label is-inline">{{ $i18n.get('label_from_source_collection') }}</p>
-                    <p class="mapping-header-label is-pulled-right">{{ $i18n.get('label_to_target_collection') }}</p>
+                              importerSourceInfo != null &&
+                              !isLoading">
+                    <template v-if="importerSourceInfo.source_metadata.length > 0 || (importerSourceInfo.source_special_fields && importerSourceInfo.source_special_fields.length > 0)">
+                        <p class="mapping-header-label is-inline">{{ $i18n.get('label_from_source_collection') }}</p>
+                        <p class="mapping-header-label is-pulled-right">{{ $i18n.get('label_to_target_collection') }}</p>
+                    </template>
                     <div
                             class="source-metadatum"
                             v-for="(source_metadatum, index) of importerSourceInfo.source_metadata"
-                            :key="index"><p>{{ source_metadatum }}</p>
-                    
+                            :key="index">
+                        <p>{{ source_metadatum }}</p>
                         <b-select
                                 v-if="collectionMetadata != undefined &&
-                                      collectionMetadata.length > 0 &&
-                                      !isFetchingCollectionMetadata"
+                                    collectionMetadata.length > 0 &&
+                                    !isFetchingCollectionMetadata"
                                 :value="checkCurrentSelectedCollectionMetadatum(source_metadatum)"
                                 @input="onSelectCollectionMetadata($event, source_metadatum)"
                                 :placeholder="$i18n.get('label_select_metadatum')">
@@ -77,6 +80,16 @@
                         </b-select>
                         <p v-if="collectionMetadata == undefined || collectionMetadata.length <= 0">{{ $i18n.get('info_select_collection_to_list_metadata') }}</p>
                     </div>
+                    <div
+                            v-if="importerSourceInfo.source_special_fields && importerSourceInfo.source_special_fields.length > 0"
+                            class="source-metadatum"
+                            :key="specialFieldIndex"
+                            v-for="(specialField, specialFieldIndex) of importerSourceInfo.source_special_fields">
+                        <p style="font-style: italic">{{ specialField }}</p>
+                        <p>{{ $i18n.get('info_special_fields_mapped_default') }}</p>
+                    </div>
+                    <p v-if="importerSourceInfo.source_metadata.length <= 0">{{ $i18n.get('info_no_metadata_source_file') }}<br></p>
+                    <p v-if="(!importerSourceInfo.source_special_fields || importerSourceInfo.source_special_fields.length <= 0)">{{ $i18n.get('info_no_special_fields_available') }}<br></p>
                     <b-modal 
                             @close="onMetadatumEditionCanceled()"
                             :active.sync="isNewMetadatumModalActive">
@@ -136,7 +149,7 @@
                         </div>
                     </b-modal>
                     <a
-                            v-if="collectionId != null && collectionId != undefined"
+                            v-if="collectionId != null && collectionId != undefined && importerSourceInfo.source_metadata.length > 0"
                             class="is-inline is-pulled-right add-link has-text-secondary"
                             @click="createNewMetadatum()">
                         <span class="icon">
@@ -149,7 +162,6 @@
                             importerSourceInfo == null">
                     <p>{{ $i18n.get('info_upload_a_source_to_see_metadata') }}</p>
                 </div>
-            
             </b-field>
 
             <!-- Form submit -------------------------------- --> 
@@ -509,6 +521,13 @@ export default {
 
     .field {
         position: relative;
+    }
+
+    .tainacan-form {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 247px;
     }
 
     .form-submit {

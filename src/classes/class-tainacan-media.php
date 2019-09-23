@@ -10,13 +10,13 @@ class Media {
 	private static $file_handle = null;
 	private static $file_name = null;
 
-    public static function get_instance() {
-        if(!isset(self::$instance)) {
-            self::$instance = new self();
-        }
+		public static function get_instance() {
+				if(!isset(self::$instance)) {
+						self::$instance = new self();
+				}
 
-        return self::$instance;
-    }
+				return self::$instance;
+		}
 
 	/**
 	 * Insert an attachment from an URL address.
@@ -59,58 +59,58 @@ class Media {
 		
 	}
 
-    /**
-     * Avoid memory overflow problems with large files (Exceeded maximum memory limit of PHP)
-     *
-     * @param $url
-     * @return string the file path
-     */
-    public function save_remote_file($url) {
+		/**
+		 * Avoid memory overflow problems with large files (Exceeded maximum memory limit of PHP)
+		 *
+		 * @param $url
+		 * @return string the file path
+		 */
+		public function save_remote_file($url) {
 
-        set_time_limit(0);
+				set_time_limit(0);
 
-        $filename = tempnam(sys_get_temp_dir(), basename($url));
+				$filename = tempnam(sys_get_temp_dir(), basename($url));
 
-        # Open the file for writing...
-        self::$file_handle = fopen($filename, 'w+');
-        self::$file_name = $filename;
+				# Open the file for writing...
+				self::$file_handle = fopen($filename, 'w+');
+				self::$file_name = $filename;
 
-        $callback = function ($ch, $str)  {
-            $len = fwrite(self::$file_handle, $str);
-            return $len;
-        };
+				$callback = function ($ch, $str)  {
+						$len = fwrite(self::$file_handle, $str);
+						return $len;
+				};
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_FILE, self::$file_handle);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); # optional
-        curl_setopt($ch, CURLOPT_TIMEOUT, -1); # optional: -1 = unlimited, 3600 = 1 hour
-        curl_setopt($ch, CURLOPT_VERBOSE, false); # Set to true to see all the innards
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_URL, $url);
+				curl_setopt($ch, CURLOPT_FILE, self::$file_handle);
+				curl_setopt($ch, CURLOPT_HEADER, 0);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
+				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); # optional
+				curl_setopt($ch, CURLOPT_TIMEOUT, -1); # optional: -1 = unlimited, 3600 = 1 hour
+				curl_setopt($ch, CURLOPT_VERBOSE, false); # Set to true to see all the innards
 
-        # Only if you need to bypass SSL certificate validation
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+				# Only if you need to bypass SSL certificate validation
+				curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
-        # Assign a callback function to the CURL Write-Function
-        curl_setopt($ch, CURLOPT_WRITEFUNCTION, $callback);
+				# Assign a callback function to the CURL Write-Function
+				curl_setopt($ch, CURLOPT_WRITEFUNCTION, $callback);
 
-        # Exceute the download - note we DO NOT put the result into a variable!
-        curl_exec($ch);
+				# Exceute the download - note we DO NOT put the result into a variable!
+				curl_exec($ch);
 
-        # Close CURL
-        curl_close($ch);
+				# Close CURL
+				curl_close($ch);
 
-        # Close the file pointer
-        fclose(self::$file_handle);
+				# Close the file pointer
+				fclose(self::$file_handle);
 
-        return $filename;
-    }
+				return $filename;
+		}
 
 
-    /**
+		/**
 	 * Insert an attachment from an URL address.
 	 *
 	 * @param  blob $blob bitstream of the attachment
@@ -229,6 +229,48 @@ class Media {
 	public function shutdown_function() {
 		if( $this->THROW_EXCPTION_ON_FATAL_ERROR ) 
 			throw new \Exception("fatal error");
+	}
+	
+	public function index_pdf_content($file, $item_id) {
+		
+		if ( ! defined('TAINACAN_INDEX_PDF_CONTENT') || true !== TAINACAN_INDEX_PDF_CONTENT ) {
+			return;
+		}
+		
+		$content_index_meta = '_document_content_index';
+
+		if ($file == null) {
+			$meta_id = update_post_meta( $item_id, $content_index_meta, null );
+			return true;
+		}
+		
+		if ( ! \file_exists($file) ) {
+			return false;
+		}
+
+		if ( $this->get_mime_content_type($file) != 'application/pdf') {
+			return null;
+		}
+		
+		// Allow plugins to implement other approach to index pdf contents 
+		$alternate = apply_filters('tainacan-index-pdf', null, $file, $item_id);
+		if ( ! \is_null($alternate) ) {
+			return $alternate;
+		}
+
+		try {
+			$parser = new \Smalot\PdfParser\Parser();
+			$content    = $parser->parseFile($file)->getText();
+
+			$wp_charset = get_bloginfo('charset');
+			$content_charset = mb_detect_encoding($content);
+			$content = mb_convert_encoding($content, $wp_charset, $content_charset);
+
+			$meta_id = update_post_meta( $item_id, $content_index_meta, $content );
+		} catch(Exception $e) {
+			error_log('Caught exception: ' .  $e->getMessage() . "\n");
+			return false;
+		}
 	}
 		
 }
