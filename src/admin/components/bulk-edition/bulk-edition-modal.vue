@@ -370,10 +370,10 @@
                     add: this.$i18n.get('add_value'),
                     redefine: this.$i18n.get('set_new_value'),
                     remove: this.$i18n.get('remove_value'),
-                    replace: this.$i18n.get('replace_value'),
+                    replace: this.$i18n.get('replace_value')
                 },
                 editionActionsForNotMultiple: {
-                    redefine: this.$i18n.get('set_new_value'),
+                    redefine: this.$i18n.get('set_new_value')
                 },
                 bulkEditionProcedures: {
                     1: {
