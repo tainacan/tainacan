@@ -217,20 +217,6 @@ export default {
                     this.$store.dispatch('search/remove_fetch_only_meta', metadatum );
                     this.updateURLQueries();             
                 },
-                getErrors( filter_id ){
-                    let error = this.errors.find( errorItem => errorItem.metadatum_id === filter_id );
-                    return ( error ) ? error.errors : false;
-                },
-                // listener(){
-                //     const components = this.getAllComponents();
-                //     for (let eventElement of components){
-                //         eventElement.addEventListener('input', (event) => {
-                //             if( event.detail ) {
-                //                 this.add_metaquery( event.detail[0] );
-                //             }
-                //         });
-                //     }
-                // },
                 setPage(page) {
                     this.$store.dispatch('search/setPage', page);
                     this.updateURLQueries();

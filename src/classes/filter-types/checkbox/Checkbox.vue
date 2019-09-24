@@ -3,12 +3,6 @@
             :style="{ 'height': isLoadingOptions ? (Number(filter.max_options)*28) + 'px' : 'auto' }"
             :class="{ 'skeleton': isLoadingOptions }"
             class="block">
-        <!-- <span 
-                v-if="isLoadingOptions"
-                style="width: 100%; position: absolute;"
-                class="icon has-text-centered loading-icon">
-            <div class="control has-icons-right is-loading is-clearfix" />
-        </span> -->
         <div
                 v-for="(option, index) in options.slice(0, filter.max_options)"
                 v-if="!isLoadingOptions"
@@ -29,15 +23,6 @@
                                 class="has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
                     </span>
             </label>
-            <!-- <b-checkbox
-                    v-if="index <= filter.max_options - 1"
-                    v-model="selected"
-                    :native-value="option.value">
-                <span class="checkbox-label-text">{{ option.label }}</span> 
-                <span 
-                        v-if="option.total_items != undefined"
-                        class="has-text-gray">{{ "(" + option.total_items + ")" }}</span>
-            </b-checkbox> -->
             <button
                     class="view-all-button link-style"
                     v-if="option.showViewAllButton && index == options.slice(0, filter.max_options).length - 1"
