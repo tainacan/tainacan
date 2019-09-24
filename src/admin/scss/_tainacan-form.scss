@@ -132,8 +132,14 @@
             &:focus>option:checked, &:focus>option:hover {
                 background-color: $turquoise1 !important;
             }
-        }   
+            &[disabled=disabled] {
+                border: 1px solid $gray1 !important;
+            }
+        } 
     }
+    .hidden-select-arrow .select::after {
+        color: transparent !important;
+    }   
     .dropdown {
         width: 100%;
         .dropdown-trigger { width: 100% }

@@ -17,7 +17,7 @@
 
                     <b-select
                             :loading="metadataIsLoading"
-                            :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
+                            :class="{'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': !!bulkEditionProcedures[criterion].metadatumID}"
                             :disabled="!!bulkEditionProcedures[criterion].metadatumID || metadataIsLoading"
                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                             :placeholder="$i18n.get('instruction_select_a_metadatum')"
@@ -40,7 +40,7 @@
                     </b-select>
 
                     <b-select
-                            :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
+                            :class="{'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': !!bulkEditionProcedures[criterion].action }"
                             v-if="bulkEditionProcedures[criterion] &&
                             bulkEditionProcedures[criterion].metadatumID"
                             :disabled="!!bulkEditionProcedures[criterion].action"
@@ -118,7 +118,7 @@
                             v-else-if="bulkEditionProcedures[criterion] &&
                              bulkEditionProcedures[criterion].metadatumID == 'status'">
                         <b-select
-                                :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
+                                :class="{'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': bulkEditionProcedures[criterion].isDone}"
                                 :disabled="bulkEditionProcedures[criterion].isDone"
                                 class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
                                 :placeholder="$i18n.get('instruction_select_a_status2')"
@@ -432,7 +432,7 @@
                 let index = this.editionCriteria.indexOf(criterion);
 
                 this.dones[index] = !withError;
-
+ 
                 this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', false);
             },
             executeBulkEditionProcedure(criterion){
