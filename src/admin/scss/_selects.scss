@@ -22,7 +22,7 @@
             box-shadow: none !important;
             text-decoration: none !important;
         }
-        &[disabled] {
+        &[disabled=disabled] {
             background-color: white !important;
         }
     }

@@ -123,8 +123,9 @@
             </button>
             <div
                     v-else
-                    class="spinner-container">
-                {{ facets.length > 0 ? '' : $root.__('Nothing found.', 'tainacan') }}
+                    class="spinner-container"
+                    :style="{ display: facets.length > 0 ? 'none' : 'flex'}">
+                {{ $root.__('Nothing found.', 'tainacan') }}
             </div>
         </div>
     </div>

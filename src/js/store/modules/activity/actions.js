@@ -3,7 +3,7 @@ import axios from '../../../axios/axios'
 
 export const fetchActivities = ({ commit }, { page, activitiesPerPage } ) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(`/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit`)
+        axios.tainacan.get(`/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit&orderby=id&order=desc`)
             .then(res => {
                 let activities = res.data;
 
@@ -20,7 +20,7 @@ export const fetchActivities = ({ commit }, { page, activitiesPerPage } ) => {
 
 export const fetchCollectionActivities = ({ commit }, { page, activitiesPerPage, collectionId }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(`/collection/${collectionId}/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit`)
+        axios.tainacan.get(`/collection/${collectionId}/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit&orderby=id&order=desc`)
             .then(res => {
                 let activities = res.data;
 
@@ -37,7 +37,7 @@ export const fetchCollectionActivities = ({ commit }, { page, activitiesPerPage,
 
 export const fetchItemActivities = ({ commit }, { page, activitiesPerPage, itemId }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(`/item/${itemId}/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit`)
+        axios.tainacan.get(`/item/${itemId}/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit&orderby=id&order=desc`)
             .then(res => {
                 let activities = res.data;
 
