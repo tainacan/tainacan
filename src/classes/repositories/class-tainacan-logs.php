@@ -501,7 +501,15 @@ class Logs extends Repository {
 			$collection_id = $entity->get_id();
 			
 			if ($this->current_action == 'update') {
-				$log->set_title( sprintf( __( 'Collection "%s" was updated', 'tainacan'), $entity->get_name() ) );
+				if (isset($diff['new']['metadata_order'])) {
+					$log->set_title( sprintf( __( 'Collection "%s" metadata order was updated', 'tainacan'), $entity->get_name() ) );
+					$log->set_action('update-metadata-order');
+				} elseif (isset($diff['new']['filters_order'])) {
+					$log->set_title( sprintf( __( 'Collection "%s" filters order was updated', 'tainacan'), $entity->get_name() ) );
+					$log->set_action('update-filters-order');
+				} else {
+					$log->set_title( sprintf( __( 'Collection "%s" was updated', 'tainacan'), $entity->get_name() ) );
+				}
 			} elseif ($this->current_action == 'create') {
 				$log->set_title( sprintf( __( 'Collection "%s" was created', 'tainacan'), $entity->get_name() ) );
 			}
