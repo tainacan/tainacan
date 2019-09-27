@@ -146,7 +146,7 @@ class REST_Logs_Controller extends REST_Controller {
 					}
 					
 					if ($related_entity instanceof Entities\Entity ) {
-						$item_array[ strtolower($related_entity->get_repository()->get_name()) ] = $related_entity->_toArray();
+						$item_array[ 'object' ] = $related_entity->_toArray();
 					}
 					
 				}
