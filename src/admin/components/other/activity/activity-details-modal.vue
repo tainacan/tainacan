@@ -12,7 +12,7 @@
                 v-if="!isLoadingActivity"
                 class="modal-card-body">
             <div class="content">
-                <p><strong>{{ $i18n.get('label_activity_description') }}:</strong> {{ activity.description ? activity.description : $i18n.get('info_no_description_provided') }}</p>
+                <p v-if="activity.description"><strong>{{ $i18n.get('label_activity_description') }}:</strong> {{ activity.description }}</p>
                 <p><strong>{{ $i18n.get('label_activity_creation_date') }}:</strong> {{ activityCreationDate }}</p>
                 <p><strong>{{ $i18n.get('label_activity_author') }}:</strong> {{ activity.user_name }}</p>
             </div>
@@ -30,9 +30,9 @@
                             <div
                                     class="content"
                                     v-if="attributeName == 'thumbnail'">
-                                <p class="is-capitalized has-text-blue5">
+                                <p class="is-capitalized has-text-blue5 has-text-weight-bold">
                                     {{ attributeName }}
-                                    <small class="has-text-gray4"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
+                                    <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
                                 </p>
                                 <div>
                                     <picture>
@@ -47,9 +47,9 @@
                             <div
                                     v-if="attributeName == 'attachments'"
                                     class="content">
-                                <p class="is-capitalized has-text-blue5">
+                                <p class="is-capitalized has-text-blue5 has-text-weight-bold">
                                     {{ attributeName }}
-                                    <small class="has-text-gray4"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
+                                    <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
                                 </p>
                                 <div
                                         class="tainacan-attachments-in-modal"
@@ -75,9 +75,9 @@
                             <div
                                     class="content"
                                     v-if="!['thumbnail', 'attachments'].includes(attributeName)">
-                                <p class="is-capitalized has-text-blue5">
+                                <p class="is-capitalized has-text-blue5 has-text-weight-bold">
                                     {{ attributeName.replace(/_/g, ' ') }}
-                                    <small class="has-text-gray4"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
+                                    <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
                                 </p>
 
                                 <!-- Is array with length 1 -->
@@ -139,9 +139,9 @@
                             <div
                                     class="content"
                                     v-if="attributeName == 'thumbnail'">
-                                <p class="is-capitalized has-text-blue5">
+                                <p class="is-capitalized has-text-blue5 has-text-weight-bold">
                                     {{ attributeName }}
-                                    <small class="has-text-gray4"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
+                                    <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
                                 </p>
                                 <div>
                                     <picture>
@@ -156,9 +156,9 @@
                             <div
                                     v-if="attributeName == 'attachments'"
                                     class="content">
-                                <p class="is-capitalized has-text-blue5">
+                                <p class="is-capitalized has-text-blue5 has-text-weight-bold">
                                     {{ attributeName }}
-                                    <small class="has-text-gray4"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
+                                    <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
                                 </p>
                                 <div
                                         class="tainacan-attachments-in-modal"
@@ -184,9 +184,9 @@
                             <div
                                     class="content"
                                     v-if="!['thumbnail', 'attachments'].includes(attributeName)">
-                                <p class="is-capitalized has-text-blue5">
+                                <p class="is-capitalized has-text-blue5 has-text-weight-bold">
                                     {{ attributeName.replace(/_/g, ' ') }}
-                                    <small class="has-text-gray4"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
+                                    <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
                                 </p>
 
                                 <!-- Is array with length 1 -->
@@ -243,6 +243,7 @@
                     </div>
                 </template>
             </div>
+
             <!-- NEW LOG API RETURN -->
             <div v-else>
                 <div class="columns">
@@ -295,7 +296,7 @@
                                 class="content">
                             <p class="is-capitalized has-text-blue5 has-text-weight-bold">
                                 {{ $i18n.get('label_document') }}
-                                <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
+                                <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
                             </p>
                             <div
                                     :key="index"
