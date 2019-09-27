@@ -157,11 +157,11 @@ class REST_Logs_Controller extends REST_Controller {
 						$item_array['new_value']['thumb'] = wp_get_attachment_image_src($item_array['new_value']['id'], 'thumbnail');
 					}
 				} elseif ( $item_array['action'] == 'update-document' ) {
-					if ( isset( $item_array['new_value']['document_type'] ) && $item_array['new_value']['document_type'] == 'attachment' && isset($item_array['new_value']['document']) ) { 
+					if ( isset( $item_array['new_value']['document'] ) && is_numeric( $item_array['new_value']['document'] ) ) { 
 						$item_array['new_value']['url'] = wp_get_attachment_url($item_array['new_value']['document']);
 						$item_array['new_value']['thumb'] = wp_get_attachment_image_src($item_array['new_value']['document'], 'thumbnail');
 					}
-					if ( isset( $item_array['old_value']['document_type'] ) && $item_array['old_value']['document_type'] == 'attachment' && isset($item_array['old_value']['document']) ) { 
+					if ( isset( $item_array['old_value']['document'] ) && is_numeric( $item_array['old_value']['document'] ) ) { 
 						$item_array['old_value']['url'] = wp_get_attachment_url($item_array['old_value']['document']);
 						$item_array['old_value']['thumb'] = wp_get_attachment_image_src($item_array['old_value']['document'], 'thumbnail');
 					}
