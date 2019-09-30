@@ -5,7 +5,7 @@
                     'repository-level-page': isRepositoryLevel,
                     'page-container': isRepositoryLevel
                 }">
-            <tainacan-title 
+            <tainacan-title
                     v-if="!isItemLevel"
                     :bread-crumb-items="[{ path: '', label: this.$i18n.get('activities') }]"/>
             <div :class="{ 'above-subheader': isRepositoryLevel }">
@@ -14,16 +14,16 @@
                         v-if="isRepositoryLevel"
                         class="tabs">
                     <ul>
-                        <li 
+                        <li
                                 @click="onChangeTab('')"
                                 :class="{ 'is-active': tab == undefined || tab == ''}"><a>{{ $i18n.get('activities') }}</a></li>
-                        <li 
+                        <li
                                 @click="onChangeTab('processes')"
                                 :class="{ 'is-active': tab == 'processes'}"><a>{{ $i18n.get('processes') }}</a></li>
                     </ul>
                 </div>
 
-                <b-loading 
+                <b-loading
                         :is-full-page="false"
                         :active.sync="isLoading" 
                         :can-cancel="false"/>
@@ -37,7 +37,7 @@
                                 ref="datepicker"
                                 :placeholder="$i18n.get('instruction_filter_activities_date')"
                                 v-model="searchDates"
-                                range 
+                                range
                                 @input="searchActivities()"
                                 :date-formatter="(date) => dateFormatter(date)"
                                 :date-parser="(date) => dateParser(date)"
@@ -66,13 +66,12 @@
                                     $i18n.get('datepicker_month_november'),
                                     $i18n.get('datepicker_month_december')
                                 ]"/>
-
-                        <p 
+                        <p
                                 class="control"
-                                v-if="searchDates.length != 0">
+                                v-if="searchDates && searchDates.length != 0">
                             <button 
                                     class="button"
-                                    @click="searchDates=[]">
+                                    @click="clearSearchDates()">
                                 <span class="icon"><i class="tainacan-icon tainacan-icon-close"/></span>
                             </button>
                         </p>
@@ -308,8 +307,8 @@
             loadActivities() {
                 this.isLoading = true;
 
-                let dataInit = this.searchDates[0] ? moment(this.searchDates[0]).format('YYYY-MM-DD') : null; 
-                let dataEnd = this.searchDates[1] ? moment(this.searchDates[1]).format('YYYY-MM-DD') : null; 
+                let dataInit = this.searchDates && this.searchDates[0] ? moment(this.searchDates[0]).format('YYYY-MM-DD') : null; 
+                let dataEnd = this.searchDates && this.searchDates[1] ? moment(this.searchDates[1]).format('YYYY-MM-DD') : null; 
 
                 if(this.isRepositoryLevel) {
                     this.fetchActivities({
@@ -385,9 +384,13 @@
                 this.activitiesPage = 1;
                 this.loadActivities();
             },
+            clearSearchDates() {
+                this.searchDates = null;
+                this.searchActivities();
+            },
             dateFormatter(dateObject) {
-                if (dateObject.length == 0 )
-                    return ""
+                if (dateObject == null || dateObject.length == 0 || dateObject[0] == null || dateObject[1] == null)
+                    return "";
                 return moment(dateObject[0], moment.ISO_8601).format(this.dateFormat) + " - " + moment(dateObject[1], moment.ISO_8601).format(this.dateFormat);
             },
             dateParser(dateString) { 
