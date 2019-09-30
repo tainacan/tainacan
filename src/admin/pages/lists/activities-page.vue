@@ -32,7 +32,7 @@
                         v-if="tab != 'processes'"
                         class="sub-header">
 
-                    <b-field>
+                    <b-field class="header-item">
                         <b-datepicker
                                 ref="datepicker"
                                 :placeholder="$i18n.get('instruction_filter_activities_date')"
@@ -77,21 +77,23 @@
                         </p>
                     </b-field>
 
-                    <div class="control has-icons-right  is-small is-clearfix">
-                        <input
-                                class="input is-small"
-                                :placeholder="$i18n.get('instruction_search')"
-                                type="search"
-                                :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
-                                autocomplete="on"
-                                v-model="searchQuery"
-                                @keyup.enter="searchActivities()">
-                        <span
-                                @click="searchActivities()"
-                                class="icon is-right">
-                            <i class="tainacan-icon tainacan-icon-search" />
-                        </span>
-                    </div>
+                    <b-field class="header-item">
+                        <div class="control has-icons-right  is-small is-clearfix">
+                            <input
+                                    class="input is-small"
+                                    :placeholder="$i18n.get('instruction_search')"
+                                    type="search"
+                                    :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
+                                    autocomplete="on"
+                                    v-model="searchQuery"
+                                    @keyup.enter="searchActivities()">
+                            <span
+                                    @click="searchActivities()"
+                                    class="icon is-right">
+                                <i class="tainacan-icon tainacan-icon-search" />
+                            </span>
+                        </div>
+                    </b-field>
                 </div>
 
                 <activities-list
@@ -466,6 +468,7 @@
         width: 100%;
 
         .header-item {
+            margin-bottom: 0 !important;
 
             &:not(:last-child) {
                 padding-right: 0.5em;
@@ -482,6 +485,7 @@
             .button {
                 display: flex;
                 align-items: center;
+                border-radius: 0 !important;
             }
             
             .field {
@@ -496,6 +500,15 @@
             .gray-icon i::before {
                 font-size: 1.3125rem !important;
                 max-width: 26px;
+            }
+
+            .icon {
+                pointer-events: all;
+                cursor: pointer;
+                color: $blue5;
+                height: 27px;
+                font-size: 18px !important;
+                height: 1.85rem !important;
             }
         }
 
