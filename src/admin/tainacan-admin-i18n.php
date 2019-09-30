@@ -434,6 +434,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_day'								 		 => __( 'Day', 'tainacan' ),
 	'label_month'							 		 => __( 'Month', 'tainacan' ),
 	'label_year'							 		 => __( 'Year', 'tainacan' ),
+	'label_related_to'							 	 => __( 'Related to', 'tainacan' ),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

@@ -227,9 +227,6 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getFiltersPath(query) {
             return '/filters/?' + qs.stringify(query);
         },
-        getMetadataPath(query) {
-            return '/metadata/?' + qs.stringify(query);
-        },
         getActivitiesPath(query) {
             return '/activities/?' + qs.stringify(query);
         },
@@ -302,14 +299,23 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getItemEditPath(collectionId, itemId) {
             return '/collections/' + collectionId + '/items/' + itemId + '/edit';
         },
-        getFilterEditPath(id) {
-            return '/filters/' + id + '/edit';
+        getMetadataEditPath(metadatumId) {
+            return '/metadata/?edit=' + metadatumId;
+        },
+        getFilterEditPath(filterId) {
+            return '/filters/?edit=' + filterId;
+        },
+        getCollectionMetadataEditPath(collectionId, metadatumId) {
+            return '/collections/' + collectionId + '/metadata/?edit=' + metadatumId;
+        },
+        getCollectionFilterEditPath(collectionId, filterId) {
+            return '/collections/' + collectionId + '/filters/?edit=' + filterId;
         },
         getTaxonomyEditPath(id, isRecent) {
             return isRecent != undefined ? '/taxonomies/' + id + '/edit?recent=true'  : '/taxonomies/' + id + '/edit';
         },
         getTermEditPath(taxonomyId, termId) {
-            return '/taxonomies/' + taxonomyId + '/terms/' + termId + '/edit';
+            return '/taxonomies/' + taxonomyId + '/edit?tab=terms';
         },
         getImporterEditionPath(importerType) {
             return '/importers/' + importerType;
