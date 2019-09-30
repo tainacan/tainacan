@@ -365,7 +365,7 @@ class Filters extends Repository {
 		$parents[] = $collection_id;
 
 		//search for default metadatum
-		$parents[] = 'filter_in_repository';
+		$parents[] = 'default';
 
 		$meta_query = array(
 			'key'     => 'collection_id',
@@ -416,7 +416,7 @@ class Filters extends Repository {
 		$parents[] = $collection_id;
 
 		//search for default metadatum
-		$parents[] = 'filter_in_repository';
+		$parents[] = 'default';
 
 		$meta_query = array(
 			'key'     => 'collection_id',

@@ -178,7 +178,7 @@ class Filters extends TAINACAN_UnitTestCase {
         	'filter',
 	        array(
 	        	'name'              => 'filter default',
-		        'collection_id'     => 'filter_in_repository',
+		        'collection_id'     => 'default',
 		        'filter_type'  => 'Tainacan\Filter_Types\Selectbox',
 				'metadatum_id'    => $meta_repo->get_id(),
 		        'status'            => 'publish'
