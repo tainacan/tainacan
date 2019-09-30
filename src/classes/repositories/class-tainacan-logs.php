@@ -533,7 +533,7 @@ class Logs extends Repository {
 			}
 		} elseif ( $entity instanceof Entities\Filter ) {
 			
-			if ( 'default' == $collection_id ) {
+			if ( 'filter_in_repository' == $collection_id ) {
 				if ($this->current_action == 'update') {
 					$log->set_title( sprintf( __( 'Filter "%1$s" was updated in repository level', 'tainacan'), $entity->get_name() ) );
 				} elseif ($this->current_action == 'create') {
