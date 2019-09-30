@@ -249,6 +249,7 @@
 
             &.is-selectable.is-first-hovered,
             &.is-selectable.is-last-hovered {
+                color: $gray4 !important;
                 background-color: $gray3 !important;
             }
             &.is-today,
