@@ -601,7 +601,7 @@
 <script>
     import { mapActions, mapGetters } from 'vuex';
     import moment from 'moment';
-    import FileItem from '../file-item.vue';
+    import FileItem from './file-item.vue';
 
     export default {
         name: "ActivityDetailsModal",

@@ -486,6 +486,7 @@
                 display: flex;
                 align-items: center;
                 border-radius: 0 !important;
+                height: 1.95rem !important;
             }
             
             .field {
@@ -508,7 +509,7 @@
                 color: $blue5;
                 height: 27px;
                 font-size: 18px !important;
-                height: 1.85rem !important;
+                height: 1.5rem !important;
             }
         }
 
