@@ -318,6 +318,27 @@
 
                         <div
                                 class="content"
+                                v-if="activity.action == 'update-metadata-order' || activity.action == 'update-filters-order'">
+                            <div 
+                                    :key="index"
+                                    v-for="(attributeValue, attributeName, index) in activity.old_value">
+                                <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                                    {{ attributeName }}
+                                    <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
+                                </p>
+
+                                <div class="content">
+                                    <p
+                                            class="tainacan-p-break"
+                                            v-for="(diffContent, diffTitle) in attributeValue"
+                                            :key="diffTitle"
+                                            v-html="attributeValue ? `ID: ${diffContent.id} <span class='is-italic'>(${diffContent.enabled ? $i18n.get('label_enabled') : $i18n.get('label_disabled')})</span>` : infoEmpty " />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                                class="content"
                                 v-if="activity.action == 'update'">
                             <div 
                                     :key="index"
@@ -335,16 +356,6 @@
                                             !(attributeValue[0] instanceof Object)">
                                     {{ attributeValue.toString() }}
                                 </p>
-
-                                <div
-                                        v-else-if="attributeName == 'metadata_order' || attributeName == 'filters_order'"
-                                        class="content">
-                                    <p
-                                            class="tainacan-p-break"
-                                            v-for="(diffContent, diffTitle) in attributeValue"
-                                            :key="diffTitle"
-                                            v-html="attributeValue ? `ID: ${diffContent.id}<span class='multivalue-separator'>|</span>${diffContent.enabled}` : infoEmpty " />
-                                </div>
 
                                 <div
                                         v-else-if="attributeName == 'metadata_type_options'"
@@ -447,6 +458,27 @@
                             </div>
                         </div>
 
+                        <div
+                                class="content"
+                                v-if="activity.action == 'update-metadata-order' || activity.action == 'update-filters-order'">
+                            <div 
+                                    :key="index"
+                                    v-for="(attributeValue, attributeName, index) in activity.new_value">
+                                <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                                    {{ attributeName }}
+                                    <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
+                                </p>
+
+                                <div class="content">
+                                    <p
+                                            class="tainacan-p-break"
+                                            v-for="(diffContent, diffTitle) in attributeValue"
+                                            :key="diffTitle"
+                                            v-html="attributeValue ? `ID: ${diffContent.id} <span class='is-italic'>(${diffContent.enabled ? $i18n.get('label_enabled') : $i18n.get('label_disabled')})</span>` : infoEmpty " />
+                                </div>
+                            </div>
+                        </div>
+
                         <div 
                                 :key="index"
                                 v-for="(attributeValue, attributeName, index) in activity.new_value">
@@ -459,17 +491,7 @@
                                 </p>
 
                                 <div
-                                        v-if="attributeName == 'metadata_order' || attributeName == 'filters_order'"
-                                        class="content">
-                                    <p
-                                            class="tainacan-p-break"
-                                            v-for="(diffContent, diffTitle) in attributeValue"
-                                            :key="diffTitle"
-                                            v-html="attributeValue ? `ID: ${diffContent.id}<span class='multivalue-separator'>|</span>${diffContent.enabled}` : infoEmpty"/>
-                                </div>
-
-                                <div
-                                        v-else-if="attributeName == 'metadata_type_options'"
+                                        v-if="attributeName == 'metadata_type_options'"
                                         class="content">
                                     <p 
                                             :key="innerIndex"
