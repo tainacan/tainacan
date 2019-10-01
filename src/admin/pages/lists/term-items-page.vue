@@ -1066,7 +1066,7 @@
             },  
             onChangeOrderBy(metadatum) {
                 this.$eventBusSearch.setOrderBy(metadatum);
-                this.showItemsHiddingDueSorting();
+                this.showItemsHiddingDueSortingDialog();
             },
             onChangeOrder() {
                 this.order == 'DESC' ? this.$eventBusSearch.setOrder('ASC') : this.$eventBusSearch.setOrder('DESC');
@@ -1535,7 +1535,7 @@
                 }
             }
 
-            this.showItemsHiddingDueSorting();
+            this.showItemsHiddingDueSortingDialog();
 
             // Watches window resize to adjust filter's top position and compression on mobile 
             this.adjustSearchControlHeight();
