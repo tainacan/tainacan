@@ -651,7 +651,7 @@
                                 <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-20px tainacan-icon-filters"/></span>`;
                     case 'Tainacan\\Entities\\Term':
                         return `${ this.$i18n.get('term') } 
-                                <a href="${ this.adminFullURL + this.$routerHelper.getTermEditPath(this.activity.object.taxonomy.split('tnc_tax_')[1], this.activity.object_id) }">${ this.activity.object.name }</a>
+                                <a href="${ this.adminFullURL + this.$routerHelper.getTermEditPath(this.activity.object.taxonomy.replace( /^\D+/g, ''), this.activity.object_id) }">${ this.activity.object.name }</a>
                                 <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-20px tainacan-icon-terms"/></span>`;
                     case 'Tainacan\\Entities\\Item':
                         return `${ this.$i18n.get('item') } 
