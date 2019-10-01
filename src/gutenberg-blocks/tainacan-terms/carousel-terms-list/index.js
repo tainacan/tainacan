@@ -6,7 +6,7 @@ const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl
 
 const { InspectorControls } = wp.editor;
 
-import CarouselTermsModal from './carousel-terms-modal.js';
+import TermsModal from '../terms-list/terms-modal.js';
 import tainacan from '../../api-client/axios.js';
 import axios from 'axios';
 import qs from 'qs';
@@ -98,6 +98,10 @@ registerBlockType('tainacan/carousel-terms-list', {
         termTextColor: {
             type: String,
             default: "#ffffff"
+        },
+        taxonomyId: {
+            type: String,
+            default: undefined
         }
     },
     supports: {
@@ -118,7 +122,8 @@ registerBlockType('tainacan/carousel-terms-list', {
             autoPlaySpeed,
             loopSlides,
             hideName,
-            showTermThumbnail
+            showTermThumbnail,
+            taxonomyId
         } = attributes;
 
         // Obtains block's client id to render it on save function
@@ -214,7 +219,7 @@ registerBlockType('tainacan/carousel-terms-list', {
 
             terms = [];
 
-            let endpoint = '/terms?'+ qs.stringify({ postin: selectedTerms }) + '&fetch_only=name,url,thumbnail';
+            let endpoint = '/taxonomy/' + taxonomyId + '/terms/?'+ qs.stringify({ postin: selectedTerms }) + '&fetch_only=name,url,header_image';
             tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
                 .then(response => {
 
@@ -401,18 +406,23 @@ registerBlockType('tainacan/carousel-terms-list', {
                     (
                     <div>
                         { isModalOpen ? 
-                            <CarouselTermsModal
-                                selectedTermsObject={ selectedTerms }
-                                onApplySelection={ (aSelectionOfTerms) => {
-                                    selectedTerms = selectedTerms.concat(aSelectionOfTerms.map((term) => { return term.id; })); 
-                                    setAttributes({
-                                        selectedTerms: selectedTerms,
-                                        isModalOpen: false
-                                    });
-                                    setContent();
-                                }}
-                                onCancelSelection={ () => setAttributes({ isModalOpen: false }) }/> 
-                            : null
+                                <TermsModal
+                                    existingTaxonomyId={ taxonomyId } 
+                                    selectedTermsObject={ selectedTerms } 
+                                    onSelectTaxonomy={ (selectedTaxonomyId) => {
+                                        taxonomyId = selectedTaxonomyId;
+                                        setAttributes({ taxonomyId: taxonomyId });
+                                    }}
+                                    onApplySelection={ (aSelectionOfTerms) =>{
+                                        selectedTerms = selectedTerms.concat(aSelectionOfTerms.map((term) => { return term.id; })); 
+                                        setAttributes({
+                                            selectedTerms: selectedTerms,
+                                            isModalOpen: false
+                                        });
+                                        setContent();
+                                    }}
+                                    onCancelSelection={ () => setAttributes({ isModalOpen: false }) }/> 
+                                : null
                         }
                         
                         { terms.length ? (
@@ -530,7 +540,8 @@ registerBlockType('tainacan/carousel-terms-list', {
             autoPlaySpeed,
             loopSlides,
             hideName,
-            showTermThumbnail
+            showTermThumbnail,
+            taxonomyId
         } = attributes;
         return <div 
                     className={ className }
@@ -541,6 +552,7 @@ registerBlockType('tainacan/carousel-terms-list', {
                     loop-slides={ '' + loopSlides }
                     hide-name={ '' + hideName }
                     max-terms-number={ maxTermsNumber }
+                    taxonomy-id={ taxonomyId }
                     tainacan-api-root={ tainacan_plugin.root }
                     tainacan-base-url={ tainacan_plugin.base_url }
                     show-term-thumbnail={ '' + showTermThumbnail }
