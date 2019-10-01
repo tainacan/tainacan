@@ -25,7 +25,7 @@ registerBlockType('tainacan/carousel-terms-list', {
         </svg>,
     category: 'tainacan-blocks',
     keywords: [ __( 'terms', 'tainacan' ), __( 'carousel', 'tainacan' ), __( 'slider', 'tainacan' ),  __( 'taxonomy', 'tainacan' ) ],
-    description: __('List terms on a Carousel, showing their thumbnails or a preview of items.'),
+    description: __('List terms on a Carousel, showing their thumbnails or a preview of items.', 'tainacan'),
     attributes: {
         content: {
             type: 'array',
