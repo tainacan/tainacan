@@ -488,7 +488,7 @@
 
                     let route = `/collection/${this.collection_id}/facets/${this.metadatum_id}${query}`;
 
-                    if(this.collection_id == 'default' || this.collection_id == 'filter_in_repository'){
+                    if(this.collection_id == 'default'){
                         route = `/facets/${this.metadatum_id}${query}`
                     }
 
@@ -611,7 +611,7 @@
 
                 let route = `/collection/${this.collection_id}/facets/${this.metadatum_id}${query}`;
 
-                if(this.collection_id == 'default' || this.collection_id == 'filter_in_repository'){
+                if (this.collection_id == 'default'){
                     route = `/facets/${this.metadatum_id}${query}`
                 }
                 
@@ -648,7 +648,7 @@
 
                     let route = `/collection/${this.collection_id}/facets/${this.metadatum_id}${query}`;
 
-                    if(this.collection_id == 'default' || this.collection_id == 'filter_in_repository'){
+                    if (this.collection_id == 'default'){
                         route = `/facets/${this.metadatum_id}${query}`
                     }
 

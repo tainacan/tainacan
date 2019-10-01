@@ -81,7 +81,7 @@
 
             let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 
-            if (this.isRepositoryLevel || this.collection == 'filter_in_repository')
+            if (this.isRepositoryLevel || this.collection == 'default')
                 in_route = '/metadata/'+ this.metadatum;
         
             axios.get(in_route)

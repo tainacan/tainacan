@@ -647,7 +647,7 @@
                                 <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-20px tainacan-icon-metadata"/></span>`;
                     case 'Tainacan\\Entities\\Filter':
                         return `${ this.$i18n.get('filter') } 
-                                <a href="${ this.adminFullURL + (this.activity.object.collection_id == 'default' || this.activity.object.collection_id == 'filter_in_repository' ? this.$routerHelper.getFilterEditPath(this.activity.object_id) : this.$routerHelper.getCollectionFilterEditPath(this.activity.object.collection_id, this.activity.object_id)) }">${ this.activity.object.name }</a>
+                                <a href="${ this.adminFullURL + (this.activity.object.collection_id == 'default' ? this.$routerHelper.getFilterEditPath(this.activity.object_id) : this.$routerHelper.getCollectionFilterEditPath(this.activity.object.collection_id, this.activity.object_id)) }">${ this.activity.object.name }</a>
                                 <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-20px tainacan-icon-filters"/></span>`;
                     case 'Tainacan\\Entities\\Term':
                         return `${ this.$i18n.get('term') } 

@@ -130,7 +130,7 @@
 
                     let route = '';
                     
-                    if(this.collection == 'filter_in_repository')
+                    if (this.collection == 'default')
                         route = `/facets/${this.metadatum}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
                     else
                         route = `/collection/${this.collection}/facets/${this.metadatum}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
@@ -224,7 +224,7 @@
 
                         // let route = '';
                         
-                        // if (this.collection == 'filter_in_repository')
+                        // if (this.collection == 'default')
                         //     route = '/facets/' + this.metadatum +`?term_id=${selected}&fetch_only=name,id`;
                         // else
                         //     route = '/collection/'+ this.collection +'/facets/' + this.metadatum +`?term_id=${selected}&fetch_only=name,id`;
