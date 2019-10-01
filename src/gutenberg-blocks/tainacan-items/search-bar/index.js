@@ -28,6 +28,7 @@ registerBlockType('tainacan/search-bar', {
         </svg>,
     category: 'tainacan-blocks',
     keywords: [ __( 'items', 'tainacan' ), __( 'search', 'tainacan' ), __( 'bar', 'tainacan' ) ],
+    description: __('Set up a custom search bar to redirect to an item\'s list', 'tainacan'),
     attributes: {
         content: {
             type: 'array',

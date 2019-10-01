@@ -153,7 +153,37 @@ export default {
                 }
             }
         }
+        .metadata-alert {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 6px $page-side-padding;
+            border-radius: 3px;
+            padding: 4px 12px;
+            color: $yellow2;
+            background: $yellow1;
+            animation-name: appear;
+            animation-duration: 0.5s;
 
+            p {
+                margin: 0 auto;
+            }
+            
+            &>div {
+                display: flex;
+                
+                .button,
+                .button:hover,
+                .button:active,
+                .button:focus {
+                    background: none;
+                    color:$yellow2;
+                    font-weight: bold;
+                    border: none;
+                    cursor: pointer;
+                }
+            }
+        }
         .search-control {   
             justify-content: flex-start !important;
 

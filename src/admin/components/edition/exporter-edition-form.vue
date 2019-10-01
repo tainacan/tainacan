@@ -142,10 +142,12 @@
             ...mapActions('collection', [
                 'fetchCollections'
             ]),
-            updateExporterOptions(){
+            runExporter(){
+                this.runButtonLoading = true;
+
                 let formElement = document.getElementById('exporterOptionsForm');
                 let formData = new FormData(formElement);
-
+ 
                 let options = {};
 
                 for (let [key, value] of formData.entries())
@@ -153,21 +155,9 @@
 
                 let exporterSessionUpdated = {
                     body: {
-                        options: options,
-                    },
-                    id: this.exporterSession.id,
-                };
-
-                return this.updateExporterSession(exporterSessionUpdated)
-                    .then(exporterSessionUpdated => this.verifyError(exporterSessionUpdated));
-            },
-            runExporter(){
-                this.runButtonLoading = true;
-
-                let exporterSessionUpdated = {
-                    body: {
-                        mapping_selected: this.selectedMapping ? this.selectedMapping : this.selectedMapping,
-                        send_email: this.sendEmail
+                        mapping_selected: this.selectedMapping,
+                        send_email: this.sendEmail,
+                        options: options
                     },
                     id: this.exporterSession.id,
                 };
@@ -176,26 +166,28 @@
                     exporterSessionUpdated['body']['collection'] = {
                         id: this.selectedCollection
                     };
-                }                
+                }             
 
                 this.updateExporterSession(exporterSessionUpdated)
-                    .then(exporterSessionUpdated => {
-                        this.verifyError(exporterSessionUpdated);
+                    .then(() => {
 
-                        this.updateExporterOptions().then(() => {
-                            if(!this.formErrorMessage) {
-                                this.runExporterSession(this.exporterSession.id)
-                                    .then((bgp) => {
-                                        this.runButtonLoading = false;
-                                        this.$router.push(this.$routerHelper.getProcessesPage(bgp.bg_process_id));
-                                    })
-                                    .catch(() => {
-                                        this.runButtonLoading = false;
-                                    });
-                            }
-                        });
+                        if (!this.formErrorMessage) {
+                            this.runExporterSession(this.exporterSession.id)
+                                .then((bgp) => {
+                                    this.runButtonLoading = false;
+                                    this.$router.push(this.$routerHelper.getProcessesPage(bgp.bg_process_id));
+                                })
+                                .catch((error) => {
+                                    this.formErrorMessage = error.error_message;
+                                    this.runButtonLoading = false;
+                                });
+                        }
+
                     })
-                    .catch(() => this.runButtonLoading = false); 
+                    .catch((error) => {
+                        this.formErrorMessage = error.error_message;
+                        this.runButtonLoading = false;
+                    }); 
             },
             formIsValid(){
                 return (
@@ -204,15 +196,6 @@
                         this.exporterSession.accept_no_mapping) &&
                     !this.formErrorMessage
                 );
-            },
-            verifyError(response){
-                if(response.constructor.name === 'Object' &&
-                    (response.data && response.data.status &&
-                        response.data.status.toString().split('')[0] != 2) || response.error_message) {
-                    this.formErrorMessage = response.data.error_message;
-                } else {
-                    this.exporterSession = response.data;
-                }
             }
         },
         created(){

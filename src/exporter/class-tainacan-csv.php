@@ -112,10 +112,18 @@ class CSV extends Exporter {
 				
 				$metadata = $collection->get_metadata();
 				foreach ($metadata as $meta) {
-					$line[] = $meta->get_name();
+					$meta_type =  explode('\\', $meta->get_metadata_type()) ;
+					$meta_type = strtolower($meta_type[sizeof($meta_type)-1]);
+
+					$desc_title_meta = $meta->get_name() .
+						($meta->is_multiple() ? '|multiple': '') .
+						($meta->is_required() ? '|required': '') .
+						('|display_' . $meta->get_display()) .
+						($meta->is_collection_key() ? '|collection_key_yes' : '') .
+						('|' . $meta_type);
+
+					$line[] = $desc_title_meta;
 				}
-				
-				
 			}
 		}
 		

@@ -12,9 +12,9 @@ import FilterSelectbox from '../../classes/filter-types/selectbox/Selectbox.vue'
 import FilterAutocomplete from '../../classes/filter-types/autocomplete/Autocomplete.vue';
 import FilterCheckbox from '../../classes/filter-types/checkbox/Checkbox.vue';
 import FilterTaginput from '../../classes/filter-types/taginput/Taginput.vue';
-
 import FilterTaxonomyCheckbox from '../../classes/filter-types/taxonomy/Checkbox.vue';
 import FilterTaxonomyTaginput from '../../classes/filter-types/taxonomy/Taginput.vue';
+import FilterNumericInterval from '../../classes/filter-types/numeric-interval/NumericInterval.vue';
 
 import TaincanFiltersList from '../../classes/filter-types/tainacan-filter-item.vue';
 import ItemsPage from '../pages/lists/items-page.vue';
@@ -56,6 +56,7 @@ Vue.component('tainacan-filter-checkbox', FilterCheckbox);
 Vue.component('tainacan-filter-taginput', FilterTaginput);
 Vue.component('tainacan-filter-taxonomy-checkbox', FilterTaxonomyCheckbox);
 Vue.component('tainacan-filter-taxonomy-taginput', FilterTaxonomyTaginput);
+Vue.component('tainacan-filter-numeric-interval', FilterNumericInterval);
 
 /* Others */
 Vue.component('items-page', ItemsPage);

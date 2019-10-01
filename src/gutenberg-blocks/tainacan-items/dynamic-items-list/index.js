@@ -25,6 +25,7 @@ registerBlockType('tainacan/dynamic-items-list', {
         </svg>,
     category: 'tainacan-blocks',
     keywords: [ __( 'items', 'tainacan' ), __( 'search', 'tainacan' ), __( 'collection', 'tainacan' ) ],
+    description: __('Dynamically list items from a Tainacan items search', 'tainacan'),
     attributes: {
         content: {
             type: 'array',
