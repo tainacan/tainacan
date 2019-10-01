@@ -23,10 +23,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     autoPlaySpeed: 3,
                     loopSlides: false,
                     hideName: true,
-                    showCollectionThumbnail: false,
+                    showTermThumbnail: false,
                     tainacanApiRoot: '',
                     tainacanBaseUrl: '',
-                    className: ''
+                    className: '',
+                    taxonomyId: ''
                 },
                 render(h){ 
                     return h(CarouselTermsListTheme, {
@@ -39,10 +40,11 @@ document.addEventListener("DOMContentLoaded", () => {
                             autoPlaySpeed: this.autoPlaySpeed,
                             loopSlides: this.loopSlides,
                             hideName: this.hideName,
-                            showCollectionThumbnail: this.showCollectionThumbnail,
+                            showTermThumbnail: this.showTermThumbnail,
                             tainacanApiRoot: this.tainacanApiRoot,
                             tainacanBaseUrl: this.tainacanBaseUrl,
                             className: this.className,
+                            taxonomyId: this.taxonomyId
                         }
                     });
                 },
@@ -55,7 +57,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.autoPlaySpeed = this.$el.attributes['auto-play-speed'] != undefined ? this.$el.attributes['auto-play-speed'].value : 3;
                     this.loopSlides = this.$el.attributes['loop-slides'] != undefined ? this.$el.attributes['loop-slides'].value == 'true' : false;
                     this.hideName = this.$el.attributes['hide-name'] != undefined ? this.$el.attributes['hide-name'].value == 'true' : false;
-                    this.showCollectionThumbnail = this.$el.attributes['show-collection-thumbnail'] != undefined ? this.$el.attributes['show-collection-thumbnail'].value == 'true' : false;
+                    this.taxonomyId = this.$el.attributes['taxonomy-id'] != undefined ? this.$el.attributes['taxonomy-id'].value : undefined;
+                    this.showTermThumbnail = this.$el.attributes['show-term-thumbnail'] != undefined ? this.$el.attributes['show-term-thumbnail'].value == 'true' : false;
                     this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
                     this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
                 },

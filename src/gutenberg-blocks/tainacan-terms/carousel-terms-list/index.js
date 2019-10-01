@@ -21,10 +21,11 @@ registerBlockType('tainacan/carousel-terms-list', {
                 width="24px">
             <path
                 fill="#298596"
-                d="M18,17v2H12a5.65,5.65,0,0,0-.36-2ZM2,7v7.57a5.74,5.74,0,0,1,2-1.2V7ZM20,6H15L13,4H8A2,2,0,0,0,6,6v7a6,6,0,0,1,5.19,3H20a2,2,0,0,0,2-2V8A2,2,0,0,0,20,6ZM7,16.05v6.06l3.06-3.06ZM5,22.11V16.05L1.94,19.11Z"/>
+                d="M21.43,14.64,19.32,17a2.57,2.57,0,0,1-2,1H12.05a6,6,0,0,0-6-6H6V10.64A2.59,2.59,0,0,1,8.59,8H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,14.64ZM4,4A2,2,0,0,0,2,6v7.63a5.74,5.74,0,0,1,2-1.2V6H16V4ZM7,15.05v6.06l3.06-3.06ZM5,21.11V15.05L1.94,18.11Z"/>
         </svg>,
     category: 'tainacan-blocks',
     keywords: [ __( 'terms', 'tainacan' ), __( 'carousel', 'tainacan' ), __( 'slider', 'tainacan' ),  __( 'taxonomy', 'tainacan' ) ],
+    description: __('List terms on a Carousel, showing their thumbnails or a preview of items.'),
     attributes: {
         content: {
             type: 'array',
@@ -186,18 +187,8 @@ registerBlockType('tainacan/carousel-terms-list', {
                             </div>
                             :
                             <img
-                                src={ 
-                                    term.thumbnail && term.thumbnail['tainacan-medium'][0] && term.thumbnail['tainacan-medium'][0] 
-                                        ?
-                                    term.thumbnail['tainacan-medium'][0] 
-                                        :
-                                    (term.thumbnail && term.thumbnail['thumbnail'][0] && term.thumbnail['thumbnail'][0]
-                                        ?    
-                                    term.thumbnail['thumbnail'][0] 
-                                        : 
-                                    `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
-                                }
-                                alt={ term.name ? term.name : __( 'Thumbnail', 'tainacan' ) }/>
+                                src={ term.header_image ? term.header_image : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
+                                alt={ term.name ? term.name : __( 'Thumbnail', 'tainacan' )}/>
                         }
                         { !hideName ? <span>{ term.name ? term.name : '' }</span> : null }
                     </a>
@@ -237,7 +228,7 @@ registerBlockType('tainacan/carousel-terms-list', {
                         let promises = [];
                         for (let term of response.data) {  
                             promises.push(
-                                tainacan.get('/term/' + term.id + '/items?perpage=3&fetch_only=name,url,thumbnail')
+                                tainacan.get('/items/?perpage=3&fetch_only=name,url,thumbnailt&taxquery[0][taxonomy]=tnc_tax_' + taxonomyId + '&taxquery[0][terms][0]=' + term.id + '&taxquery[0][compare]=IN')
                                     .then(response => { return({ term: term, termItems: response.data.items }) })
                                     .catch((error) => console.log(error))
                             );                      
@@ -407,6 +398,7 @@ registerBlockType('tainacan/carousel-terms-list', {
                     <div>
                         { isModalOpen ? 
                                 <TermsModal
+                                    replaceTermId={ false } // The Terms modal adds `term-id-` string to terms ids. Here we dont' need it
                                     existingTaxonomyId={ taxonomyId } 
                                     selectedTermsObject={ selectedTerms } 
                                     onSelectTaxonomy={ (selectedTaxonomyId) => {
@@ -414,7 +406,7 @@ registerBlockType('tainacan/carousel-terms-list', {
                                         setAttributes({ taxonomyId: taxonomyId });
                                     }}
                                     onApplySelection={ (aSelectionOfTerms) =>{
-                                        selectedTerms = selectedTerms.concat(aSelectionOfTerms.map((term) => { return term.id; })); 
+                                        selectedTerms = selectedTerms.concat(aSelectionOfTerms.map((term) => { return term.id; }));
                                         setAttributes({
                                             selectedTerms: selectedTerms,
                                             isModalOpen: false
@@ -433,7 +425,7 @@ registerBlockType('tainacan/carousel-terms-list', {
                                             viewBox="0 0 24 24"
                                             height="24px"
                                             width="24px">
-                                        <path d="M18,17v2H12a5.65,5.65,0,0,0-.36-2ZM2,7v7.57a5.74,5.74,0,0,1,2-1.2V7ZM20,6H15L13,4H8A2,2,0,0,0,6,6v7a6,6,0,0,1,5.19,3H20a2,2,0,0,0,2-2V8A2,2,0,0,0,20,6ZM7,16.05v6.06l3.06-3.06ZM5,22.11V16.05L1.94,19.11Z"/>
+                                        <path d="M21.43,14.64,19.32,17a2.57,2.57,0,0,1-2,1H12.05a6,6,0,0,0-6-6H6V10.64A2.59,2.59,0,0,1,8.59,8H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,14.64ZM4,4A2,2,0,0,0,2,6v7.63a5.74,5.74,0,0,1,2-1.2V6H16V4ZM7,15.05v6.06l3.06-3.06ZM5,21.11V15.05L1.94,18.11Z"/>
                                     </svg>
                                     {__('List terms on a Carousel', 'tainacan')}
                                 </p>
@@ -464,9 +456,9 @@ registerBlockType('tainacan/carousel-terms-list', {
                                     viewBox="0 0 24 24"
                                     height="24px"
                                     width="24px">
-                                <path d="M18,17v2H12a5.65,5.65,0,0,0-.36-2ZM2,7v7.57a5.74,5.74,0,0,1,2-1.2V7ZM20,6H15L13,4H8A2,2,0,0,0,6,6v7a6,6,0,0,1,5.19,3H20a2,2,0,0,0,2-2V8A2,2,0,0,0,20,6ZM7,16.05v6.06l3.06-3.06ZM5,22.11V16.05L1.94,19.11Z"/>
+                                <path d="M21.43,14.64,19.32,17a2.57,2.57,0,0,1-2,1H12.05a6,6,0,0,0-6-6H6V10.64A2.59,2.59,0,0,1,8.59,8H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,14.64ZM4,4A2,2,0,0,0,2,6v7.63a5.74,5.74,0,0,1,2-1.2V6H16V4ZM7,15.05v6.06l3.06-3.06ZM5,21.11V15.05L1.94,18.11Z"/>
                             </svg>
-                            {__('List terms on a Carousel, using search or term selection.', 'tainacan')}
+                            {__('List terms on a Carousel, showing their thumbnails or a preview of items.', 'tainacan')}
                         </p>
                         <Button
                             isPrimary

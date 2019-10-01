@@ -66,7 +66,7 @@ export default class TermsModal extends React.Component {
         let existingTermIndex = this.state.temporarySelectedTerms.findIndex((existingTerm) => (existingTerm.id == 'term-id-' + term.id) || (existingTerm.id == term.id));
 
         if (existingTermIndex < 0) {
-            let termId = isNaN(term.id) ? term.id : 'term-id-' + term.id;
+            let termId = this.props.replaceTermId ? (isNaN(term.id) ? term.id : 'term-id-' + term.id ) : term.id;
             let aTemporarySelectedTerms = this.state.temporarySelectedTerms;
             aTemporarySelectedTerms.push({
                 id: termId,

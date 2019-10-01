@@ -19,18 +19,8 @@
                                 :href="term.url"
                                 target="_blank">
                             <img
-                                :src=" 
-                                    term.thumbnail && term.thumbnail['tainacan-medium'][0] && term.thumbnail['tainacan-medium'][0] 
-                                        ?
-                                    term.thumbnail['tainacan-medium'][0] 
-                                        :
-                                    (term.thumbnail && term.thumbnail['thumbnail'][0] && term.thumbnail['thumbnail'][0]
-                                        ?    
-                                    term.thumbnail['thumbnail'][0] 
-                                        : 
-                                    `${tainacanBaseUrl}/admin/images/placeholder_square.png`)
-                                "
-                                :alt="term.name ? term.name : $root.__('Thumbnail', 'tainacan')">
+                                :src="term.header_image ? term.header_image : `${tainacanBaseUrl}/admin/images/placeholder_square.png`"
+                                :alt="term.name ? term.name : $root.__('Thumbnail', 'tainacan')" >
                             <span v-if="!hideName">{{ term.name ? term.name : '' }}</span>
                         </a>
                         <a 
@@ -237,11 +227,11 @@ export default {
         showTermThumbnail: Boolean,
         tainacanApiRoot: String,
         tainacanBaseUrl: String,
-        className: String
+        className: String,
+        taxonomyId: String
     },
     methods: {
         fetchTerms() {
- 
             this.isLoading = true;
             this.errorMessage = 'No terms found.';
             
@@ -250,7 +240,7 @@ export default {
 
             this.termsRequestSource = axios.CancelToken.source();
 
-            let endpoint = '/terms?'+ qs.stringify({ postin: this.selectedTerms }) + '&fetch_only=name,url,thumbnail';
+            let endpoint = '/taxonomy/' + this.taxonomyId + '/terms/?'+ qs.stringify({ postin: this.selectedTerms }) + '&fetch_only=name,url,header_image';
 
             this.tainacanAxios.get(endpoint, { cancelToken: this.termsRequestSource.token })
                 .then(response => {
@@ -264,7 +254,7 @@ export default {
                         let promises = [];
                         for (let term of response.data) {  
                             promises.push(
-                                this.tainacanAxios.get('/term/' + term.id + '/items?perpage=3&fetch_only=name,url,thumbnail')
+                                this.tainacanAxios.get('/items/?perpage=3&fetch_only=name,url,thumbnail&taxquery[0][taxonomy]=tnc_tax_' + this.taxonomyId + '&taxquery[0][terms][0]=' + term.id + '&taxquery[0][compare]=IN')
                                     .then(response => { return({ termId: term.id, termItems: response.data.items }) })
                             );    
                             this.terms.push(term);                  

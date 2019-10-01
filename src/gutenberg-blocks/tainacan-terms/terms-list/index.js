@@ -244,6 +244,7 @@ registerBlockType('tainacan/terms-list', {
                     <div>
                         { isModalOpen ? 
                             <TermsModal
+                                replaceTermId={ true }
                                 existingTaxonomyId={ taxonomyId } 
                                 selectedTermsObject={ selectedTermsObject } 
                                 onSelectTaxonomy={ (selectedTaxonomyId) => {
