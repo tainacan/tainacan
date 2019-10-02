@@ -679,6 +679,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'tainacan-filter-taxonomy-taginput'              => __( 'Taxonomy Tag Input', 'tainacan' ),
 	'tainacan-filter-taxonomy-checkbox'              => __( 'Taxonomy Check Box', 'tainacan' ),
 	'tainacan-filter-taxonomy-selectbox'             => __( 'Taxonomy Select Box', 'tainacan' ),
+	'tainacan-filter-numeric-interval'             => __( 'Numeric Interval', 'tainacan' ),
 
 	// Datepicker months
 	'datepicker_month_january'			=> __( 'January', 'tainacan' ),
