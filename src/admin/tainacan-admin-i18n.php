@@ -133,9 +133,10 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'title_exporter_page'                            => __( 'Exporter', 'tainacan'),
 
 	// Labels (used mainly on Aria Labels and Inputs)
+	'label'                                          => __( 'label', 'tainacan' ),
 	'label_clean'                                    => __( 'Clear', 'tainacan' ),
 	'label_clear_filters'                            => __( 'Clear filters', 'tainacan' ),
-	'label_and'                                    => __( 'and', 'tainacan' ),
+	'label_and'                                      => __( 'and', 'tainacan' ),
 	'label_selected'                                 => __( 'Selected', 'tainacan' ),
 	'label_relationship_new_search'                  => __( 'New Search', 'tainacan' ),
 	'label_relationship_items_found'                 => __( 'Items found', 'tainacan' ),
@@ -482,6 +483,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_select_a_month' 				     => __( 'Select a month', 'tainacan' ),
 	'instruction_type_value_year' 				     => __( 'Type year value', 'tainacan' ),
 	'instruction_select_the_amount_of_copies'		 => __( 'Select the amount of copies of the item that you want to create', 'tainacan'),
+	'instruction_select_a_interval'		 => __( 'Select a interval', 'tainacan'),
+	
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every published item, including those visible only to editors.', 'tainacan' ),
@@ -644,7 +647,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_process_status_cancelled' 				 => __('Cancelled', 'tainacan'),
 	'info_process_status_paused' 				 	 => __('Paused', 'tainacan'),
 	'info_process_status_running' 				 	 => __('Running', 'tainacan'),
-    'info_warning_process_cancelled'                 => __( 'Are you sure? This process will be cancelled', 'tainacan' ),
+  'info_warning_process_cancelled'                 => __( 'Are you sure? This process will be cancelled', 'tainacan' ),
 	'info_empty'                                     => __( 'empty', 'tainacan' ),
 	'info_url_copied'	         	    	    	 => __( 'URL link copied', 'tainacan' ),
 	'info_other_options'				 			 => __( 'Other options: ', 'tainacan'),
@@ -657,6 +660,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_await_while_item_copy'  			 		 => __( 'Please wait while copy is being created...', 'tainacan'),
 	'info_await_while_item_copies'  			 	 => __( 'Please wait while copies are being created. This may take a while...', 'tainacan'),
 	'info_expose_only_displayed_metadata'			 => __( 'By checking this option, only metatada that are displayed on the current list will be exposed', 'tainacan' ),
+	'info_initial_value'                             => __( 'Initial value', 'tainacan' ),
+	'info_final_value'                               => __( 'Final value', 'tainacan' ),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),

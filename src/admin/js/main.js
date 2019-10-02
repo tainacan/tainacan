@@ -52,6 +52,10 @@ import eventBusSearch from '../../js/event-bus-search';
 import termsListBus from './terms-list-bus.js';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, UserCapabilitiesPlugin, StatusHelperPlugin } from './utilities';
 
+import FilterNumericListInterval from '../../classes/filter-types/numeric-list-interval/NumericListInterval.vue';
+import FormNumericListInterval from '../../classes/filter-types/numeric-list-interval/FormNumericListInterval.vue';
+
+
 // Configure and Register Plugins
 Vue.use(Buefy, {
     defaultTooltipAnimated: true   
@@ -92,9 +96,12 @@ Vue.component('tainacan-filter-taginput', FilterTaginput);
 Vue.component('tainacan-filter-taxonomy-checkbox', FilterTaxonomyCheckbox);
 Vue.component('tainacan-filter-taxonomy-taginput', FilterTaxonomyTaginput);
 Vue.component('tainacan-filter-numeric-interval', FilterNumericInterval);
+Vue.component('tainacan-filter-numeric-list-interval', FilterNumericListInterval);
+
 /* Filter Metadata Option forms */
 Vue.component('tainacan-filter-form-numeric', FormNumeric);
 Vue.component('tainacan-filter-form-numeric-interval', FormNumericInterval);
+Vue.component('tainacan-filter-form-numeric-list-interval', FormNumericListInterval);
 // Vue.component('tainacan-filter-form-date', FormDate);
 
 /* Others */
