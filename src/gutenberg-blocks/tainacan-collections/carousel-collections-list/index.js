@@ -25,6 +25,7 @@ registerBlockType('tainacan/carousel-collections-list', {
         </svg>,
     category: 'tainacan-blocks',
     keywords: [ __( 'collections', 'tainacan' ), __( 'carousel', 'tainacan' ), __( 'slider', 'tainacan' ) ],
+    description: __('List collections on a Carousel, using search or collection selection.', 'tainacan'),
     attributes: {
         content: {
             type: 'array',

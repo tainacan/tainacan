@@ -1,33 +1,19 @@
 <template>
     <div>
-        <template v-if="options.inputMode == 'custom'">
-            <b-numberinput
-                    :aria-labelledby="labelId"
-                    size="is-small"
-                    @input="validate_values()"
-                    :step="options.step"
-                    v-model="valueInit"/>
-            <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
-            <b-numberinput
-                    :aria-labelledby="labelId"
-                    size="is-small"
-                    @input="validate_values()"
-                    :step="options.step"
-                    v-model="valueEnd"/>
-        </template>
-        <template v-if="options.inputMode == 'list'">
-            <b-select 
-                    placeholder="Select a name"
-                    @input="changeInterval"
-                    v-model="selectedInterval">
-                <option
-                        v-for="(interval, index) in options.intervals"
-                        :value="index"
-                        :key="index">
-                    {{ interval.label }} 
-                </option>
-            </b-select>
-        </template>
+        <b-numberinput
+                :aria-labelledby="labelId"
+                size="is-small"
+                @input="validate_values()"
+                :step="options.step"
+                v-model="valueInit"/>
+        <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
+        <b-numberinput
+                :aria-labelledby="labelId"
+                size="is-small"
+                @input="validate_values()"
+                :step="options.step"
+                v-model="valueEnd"/>
+        
     </div>
 </template>
 
@@ -38,7 +24,7 @@
             this.collectionId = this.filter.collection_id;
             this.metadatumId = this.filter.metadatum.metadatum_id;
             this.options = this.filter.filter_type_options;
-            console.log(this.options);
+
             this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
         },
         data(){
@@ -49,18 +35,13 @@
                 collectionId: '',
                 metadatum: '',
                 options: [],
-                selectedInterval: ''
             }
         },
         props: {
-            filter: {
-                type: Object // concentrate all attributes metadatum id and type
-            },
+            filter: Object,
             labelId: '',
             query: Object,
-            isRepositoryLevel: Boolean,
-            inputMode: String,
-            step: Number
+            isRepositoryLevel: Boolean
         },
         methods: {
             // only validate if the first value is higher than first
@@ -70,7 +51,7 @@
                     //this.error_message();
                     return;
                 }
-                console.log('pssou');
+
                 this.emit();
             }, 600),
             // message for error
@@ -89,16 +70,6 @@
                 if (filterTag.filterId == this.filter.id)
                     this.clearSearch();
             },
-            changeInterval() {
-                if (this.selectedInterval !== '') {
-                    this.valueInit = this.options.intervals[this.selectedInterval].from;
-                    this.valueEnd = this.options.intervals[this.selectedInterval].to;
-                    this.emit();
-                } else {
-                    this.clearSearch();
-                }
-                
-            },
             clearSearch(){
 
                 this.$emit('input', {
@@ -115,9 +86,8 @@
             // emit the operation for listeners
             emit() {
                 let values =  [ this.valueInit, this.valueEnd ];
-                let type = ! Number.isInteger( this.valueInit ) || ! Number.isInteger( this.valueEnd ) ? 'DECIMAL' : 'NUMERIC';
-                console.log(values);
-                console.log(type, Number.isInteger( this.valueInit ), Number.isInteger( this.valueEnd ));
+                let type = ! Number.isInteger( this.valueInit ) || ! Number.isInteger( this.valueEnd ) ? 'DECIMAL(20,3)' : 'NUMERIC';
+
                 this.$emit('input', {
                     type: type,
                     //filter: 'range',
@@ -151,12 +121,6 @@
                             filterId: this.filter.id,
                             value: this.valueInit + ' - ' + this.valueEnd
                         });
-                    }
-                    
-                    if (this.options.inputMode == 'list') {
-                        this.selectedInterval = this.options.intervals.findIndex(
-                            anInterval => anInterval.from == this.valueInit && anInterval.to == this.valueEnd
-                        );
                     }
 
                 } else {
