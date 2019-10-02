@@ -116,8 +116,8 @@
     export default {
         mixins: [ wpAjax, dateInter ],
         created() {
-            this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : (typeof this.filter.metadatum.metadatum_id == 'object' ? this.filter.metadatum.metadatum_id.metadatum_id : this.filter.metadatum.metadatum_id);
+            this.collection = this.filter.collection_id;
+            this.metadatum = (typeof this.filter.metadatum.metadatum_id == 'object' ? this.filter.metadatum.metadatum_id.metadatum_id : this.filter.metadatum.metadatum_id);
             this.options = this.filter.filter_type_options;
 
             let endpoint = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
@@ -153,11 +153,7 @@
             }
         },
         props: {
-            filter: {
-                type: Object // concentrate all attributes metadatum id and type
-            },
-            metadatum_id: [Number], // not required, but overrides the filter metadatum id if is set
-            collection_id: [Number], // not required, but overrides the filter metadatum id if is set
+            filter: Object,
             labelId: '',
             query: Object,
             isRepositoryLevel: Boolean,

@@ -46,8 +46,8 @@
 
     export default {
         created(){
-            this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id;
+            this.collection = this.filter.collection_id;
+            this.metadatum = this.filter.metadatum.metadatum_id;
             const vm = this;
 
             let endpoint = '/collection/' + this.collection + '/metadata/' +  this.metadatum;

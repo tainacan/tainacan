@@ -53,14 +53,10 @@
             }
         },
         props: {
-            filter: {
-                type: Object // concentrate all attributes metadatum id and type
-            },
+            filter: Object,
             labelId: '',
             query: Object,
-            isRepositoryLevel: Boolean,
-            inputMode: String,
-            step: Number
+            isRepositoryLevel: Boolean
         },
         methods: {
             // only validate if the first value is higher than first
