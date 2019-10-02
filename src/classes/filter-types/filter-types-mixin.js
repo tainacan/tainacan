@@ -13,7 +13,6 @@ export const filter_type_mixin = {
     },
     props: {
         filter: Object,
-        id: '',
         query: {}
     },
     created() {

@@ -27,7 +27,6 @@
                 type: Object
             },
             value: [String, Number, Array],
-            id: '',
             disabled: false,
         },
         data() {
