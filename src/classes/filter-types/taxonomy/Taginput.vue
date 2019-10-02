@@ -45,13 +45,13 @@
             this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id ;
             this.type = this.filter.metadatum.metadata_type;
 
-            let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
+            let endpoint = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 
             if(this.isRepositoryLevel || this.collection == 'filter_in_repository'){
-                in_route = '/metadata/'+ this.metadatum;
+                endpoint = '/metadata/'+ this.metadatum;
             }
 
-            axios.get(in_route)
+            axios.get(endpoint)
                 .then( res => {
                     let metadatum = res.data;
                     this.selectedValues( metadatum.metadata_type_options.taxonomy_id );

@@ -38,7 +38,7 @@
             this.collectionId = this.filter.collection_id;
             this.metadatumId = this.filter.metadatum.metadatum_id;
             this.options = this.filter.filter_type_options;
-            console.log(this.options);
+
             this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
         },
         data(){
@@ -70,7 +70,7 @@
                     //this.error_message();
                     return;
                 }
-                console.log('pssou');
+
                 this.emit();
             }, 600),
             // message for error
@@ -116,8 +116,7 @@
             emit() {
                 let values =  [ this.valueInit, this.valueEnd ];
                 let type = ! Number.isInteger( this.valueInit ) || ! Number.isInteger( this.valueEnd ) ? 'DECIMAL' : 'NUMERIC';
-                console.log(values);
-                console.log(type, Number.isInteger( this.valueInit ), Number.isInteger( this.valueEnd ));
+
                 this.$emit('input', {
                     type: type,
                     //filter: 'range',
