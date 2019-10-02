@@ -119,20 +119,16 @@
                 let query = [];
 
                 if ( this.metadatum.metadatum.metadata_type_options &&
-                    this.metadatum.metadatum.metadata_type_options.search &&
-                    this.metadatum.metadatum.metadata_type_options.search.length > 0)
+                    this.metadatum.metadatum.metadata_type_options.search)
                 {
                     query['metaquery'] = [];
-                    const metaquery = query['metaquery'];
-                    metaquery['relation'] = 'OR'
-                    for ( let i = 0; i < this.metadatum.metadatum.metadata_type_options.search.length; i++ ){
-                        metaquery[i] = {
-                            key: this.metadatum.metadatum.metadata_type_options.search[i],
-                            value: search,
-                            compare: 'LIKE'
-                        }
+                    
+                    query['metaquery'][0] = {
+                        key: this.metadatum.metadatum.metadata_type_options.search,
+                        value: search,
+                        compare: 'LIKE'
                     }
-                    query['metaquery'] = metaquery;
+                    
                 } else {
                     query['search'] = search;
                 }

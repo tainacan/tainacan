@@ -348,6 +348,23 @@ class Migrations {
 		
 	}
 	
+	static function update_relationship_metadata_search_option() {
+		global $wpdb;
+		
+		$q = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = 'metadata_type' AND meta_value = 'Tainacan\\\\Metadata_Types\\\\Relationship'";
+		
+		$ids = $wpdb->get_col($q);
+
+		foreach ($ids as $id) {
+			$meta = get_post_meta($id, 'metadata_type_options', true);
+			if ( is_array($meta) && isset($meta['search']) && is_array($meta['search']) && isset($meta['search'][0]) && is_numeric($meta['search'][0]) ) {
+				$meta['search'] = $meta['search'][0];
+				update_post_meta($id, 'metadata_type_options', $meta);
+			}
+		}
+		
+	}
+	
 }
 
 

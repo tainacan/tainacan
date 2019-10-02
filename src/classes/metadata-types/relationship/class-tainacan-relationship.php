@@ -93,10 +93,10 @@ class Relationship extends Metadata_Type {
                 'collection_id' => __('The related collection is required','tainacan')
             ];
         }
-		
-		if  ( !is_array($this->get_option('search')) ) {
+		// empty is ok
+		if  ( !empty($this->get_option('search')) && !is_numeric($this->get_option('search')) ) {
 			return [
-                'search' => __('Search option must be an array','tainacan')
+                'search' => __('Search option must be a numeric Metadatum ID','tainacan')
             ];
 		}
 		
