@@ -15,8 +15,7 @@ class Numeric_Interval extends Filter_Type {
         $this->set_form_component('tainacan-filter-form-numeric-interval');
         $this->set_use_max_options(false);
         $this->set_default_options([
-            'step' => 1,
-            'input-mode' => 'custom'
+            'step' => 1
         ]);
         $this->set_preview_template('
             <div>
