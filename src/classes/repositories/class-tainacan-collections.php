@@ -141,18 +141,18 @@ class Collections extends Repository {
 			],
 			'metadata_order'             => [
 				'map'         => 'meta',
-				'title'       => __( 'Ordination metadata', 'tainacan' ),
+				'title'       => __( 'Metadata order', 'tainacan' ),
 				'type'        => 'array/object/string',
 				'items'       => [ 'type' => 'array/string/integer/object' ],
-				'description' => __( 'Collection metadata ordination', 'tainacan' ),
+				'description' => __( 'The order of the metadata in the collection', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
 			'filters_order'              => [
 				'map'         => 'meta',
-				'title'       => __( 'Ordination filters', 'tainacan' ),
+				'title'       => __( 'Filters order', 'tainacan' ),
 				'type'        => 'array/object/string',
 				'items'       => [ 'type' => 'array/string/integer/object' ],
-				'description' => __( 'Collection filters ordination', 'tainacan' ),
+				'description' => __( 'The order of the filters in the collection', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
 			'enable_cover_page'          => [

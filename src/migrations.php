@@ -348,6 +348,17 @@ class Migrations {
 		
 	}
 	
+	static function update_repository_filters_meta() {
+		global $wpdb;
+		
+		$wpdb->query( "UPDATE $wpdb->postmeta SET meta_value = 'default' WHERE
+			post_id IN (
+				SELECT ID FROM $wpdb->posts WHERE post_type = 'tainacan-filter'
+			) AND meta_key = 'collection_id' AND meta_value = 'filter_in_repository'" 
+		);
+
+	}
+
 	static function update_relationship_metadata_search_option() {
 		global $wpdb;
 		

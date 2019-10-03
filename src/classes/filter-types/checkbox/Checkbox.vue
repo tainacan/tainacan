@@ -50,7 +50,7 @@
 
             let route = '/collection/' + this.collection + '/metadata/' +  this.metadatum +'?nopaging=1';
 
-            if (this.isRepositoryLevel || this.collection == 'filter_in_repository')
+            if (this.isRepositoryLevel || this.collection == 'default')
                 route = '/metadata?nopaging=1';
 
             axios.get(route)

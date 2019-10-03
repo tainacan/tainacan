@@ -117,16 +117,9 @@ class Terms extends Repository {
 			throw new \Exception( 'Entities must be validated before you can save them' );
 		}
 		
-		$is_update = false;
-		$diffs     = [];
-		if ( $term->get_id() && $this->use_logs) {
-			$is_update = true;
-
-			$old = $this->fetch( $term->get_id(), $term->get_taxonomy() );
-
-			$diffs = $this->diff( $old, $term );
-		}
-
+		do_action( 'tainacan-pre-insert', $term );
+		do_action( 'tainacan-pre-insert-term', $term );
+		
 		// First iterate through the native post properties
 		$map = $this->get_map();
 		foreach ( $map as $prop => $mapped ) {
@@ -169,17 +162,13 @@ class Terms extends Repository {
 				update_term_meta( $term_saved['term_id'], $prop, wp_slash( $term->get_mapped_property( $prop ) ) );
 			}
 		}
+		
+		$new_entity = new Entities\Term( $term_saved['term_id'], $term->get_taxonomy() );
 
-		if($this->use_logs){
-			// TODO: Log header image updates
-			$this->logs_repository->insert_log( $term, $diffs, $is_update );
-		}
+		do_action( 'tainacan-insert', $new_entity );
+		do_action( 'tainacan-insert-term', $new_entity );
 
-
-		do_action( 'tainacan-insert', $term, $diffs, $is_update );
-		do_action( 'tainacan-insert-term', $term );
-
-		return new Entities\Term( $term_saved['term_id'], $term->get_taxonomy() );
+		return $new_entity;
 	}
 	
 	// TODO: Is this workaround ok to avoid getting htmlentities ?
@@ -246,8 +235,8 @@ class Terms extends Repository {
 			}
 
 			return $return;
-		} elseif ( is_numeric( $args ) && ! empty( $cpt ) && ! is_array( $cpt ) ) { // if an id is passed taxonomy cannot be an array
-			$wp_term       = get_term_by( 'id', $args, $cpt );
+		} elseif ( is_numeric( $args ) ) { 
+			$wp_term       = get_term( (int) $args, $cpt );
 			$tainacan_term = new Entities\Term( $wp_term );
 			return $tainacan_term;
 		} else {
@@ -261,18 +250,23 @@ class Terms extends Repository {
 
 	/**
 	 * @param Entities\Term $term
-	 * @param bool $permanent this parameter is not used by Terms repository
+	 * @param bool $permanent this parameter is not used by Terms repository. Delete is always permanent
 	 *
 	 * @return bool|int|mixed|\WP_Error
 	 */
 	public function delete( Entities\Entity $term, $permanent = true ) {
 		$deleted = $term;
+		
+		$permanent = true; // there is no such option for terms
+		
+		do_action( 'tainacan-pre-delete', $deleted, $permanent );
+		do_action( 'tainacan-pre-delete-term', $deleted, $permanent );
+		
 		$return = wp_delete_term( $term->get_id(), $term->get_taxonomy() );
 
-		if ( $deleted && $this->use_logs ) {
-			$this->logs_repository->insert_log( $deleted, [], false, true );
-			do_action( 'tainacan-deleted', $deleted );
-			do_action( 'tainacan-deleted-term', $deleted );
+		if ( $deleted ) {
+			do_action( 'tainacan-deleted', $deleted, $permanent );
+			do_action( 'tainacan-deleted-term', $deleted, $permanent );
 		}
 
 		return $return;

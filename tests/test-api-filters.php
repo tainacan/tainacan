@@ -321,7 +321,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 
 		$data = $response_create->get_data();
 
-		$this->assertEquals('filter_in_repository', $data['collection_id']);
+		$this->assertEquals('default', $data['collection_id']);
 
 
 		#### CREATE A FILTER IN COLLECTION WITHOUT METADATUM ASSOCIATION ####

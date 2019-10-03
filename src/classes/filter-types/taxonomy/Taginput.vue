@@ -47,7 +47,7 @@
 
             let endpoint = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 
-            if (this.isRepositoryLevel || this.collection == 'filter_in_repository'){
+            if (this.isRepositoryLevel || this.collection == 'default'){
                 endpoint = '/metadata/'+ this.metadatum;
             }
 

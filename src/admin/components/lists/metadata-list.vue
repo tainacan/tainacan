@@ -594,7 +594,14 @@ export default {
 
         },
         addNewMetadatum(newMetadatum, newIndex) {
-            this.sendMetadatum({collectionId: this.collectionId, name: newMetadatum.name, metadatumType: newMetadatum.className, status: 'auto-draft', isRepositoryLevel: this.isRepositoryLevel, newIndex: newIndex})
+            this.sendMetadatum({
+                collectionId: this.collectionId, 
+                name: newMetadatum.name, 
+                metadatumType: newMetadatum.className, 
+                status: 'auto-draft', 
+                isRepositoryLevel: this.isRepositoryLevel, 
+                newIndex: newIndex
+            })
             .then((metadatum) => {
 
                 if (!this.isRepositoryLevel)

@@ -70,19 +70,19 @@
                             class="table-creation column-small-width"
                             @click="openActivityDetailsModal(activity)"
                             :label="$i18n.get('label_activity_date')"
-                            :aria-label="$i18n.get('label_activity_date') + ': ' + activity.log_date">
+                            :aria-label="$i18n.get('label_activity_date') + ': ' + activity.date">
                         <p
                                 v-tooltip="{
                                     delay: {
                                         show: 500,
                                         hide: 300,
                                     },
-                                    content: activity.log_date,
+                                    content: activity.date,
                                     autoHide: false,
                                     classes: ['tooltip', 'repository-tooltip'],
                                     placement: 'auto-start'
                                 }"
-                                v-html="activity.log_date"/>
+                                v-html="activity.date"/>
                     </td>
                     <!-- Approbation -->
                     <!--<td-->
@@ -125,9 +125,9 @@
 </template>
 
 <script>
-    import {mapActions} from 'vuex';
+    import { mapActions } from 'vuex';
 
-    import ActivityDetailsModal from '../other/activity/activity-details-modal.vue';
+    import ActivityDetailsModal from '../other/activity-details-modal.vue';
     import ThreeStateToggleButton from '../other/three-state-toggle-button.vue';
 
     export default {
@@ -172,7 +172,7 @@
                     parent: this,
                     component: ActivityDetailsModal,
                     props: {
-                        activity: activity,
+                        activityId: activity.id,
                     },
                     events: {
                         approveActivity: (activityId) => this.approveActivity(activityId),

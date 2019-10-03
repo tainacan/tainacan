@@ -435,6 +435,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_day'								 		 => __( 'Day', 'tainacan' ),
 	'label_month'							 		 => __( 'Month', 'tainacan' ),
 	'label_year'							 		 => __( 'Year', 'tainacan' ),
+	'label_related_to'							 	 => __( 'Related to', 'tainacan' ),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -474,16 +475,17 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_select_an_exporter_type'            => __( 'Select an exporter from the options below:', 'tainacan'),
 	'instruction_select_a_collection'                => __( 'Select a collection', 'tainacan' ),
 	'instruction_hover_a_filter_type_to_preview'     => __( 'Hover a filter type to preview', 'tainacan' ),
-	'instruction_never_show_message_again'     		 => __( 'Never show me this message again', 'tainacan' ),
-	'instruction_click_or_drag_filter_create'	     => __( 'Click or drag and drop to create a new filter', 'tainacan' ),
+	'instruction_never_show_message_again'           => __( 'Never show me this message again', 'tainacan' ),
+	'instruction_click_or_drag_filter_create'	       => __( 'Click or drag and drop to create a new filter', 'tainacan' ),
 	'instruction_click_or_drag_metadatum_create'     => __( 'Click or drag and drop to create a new metadatum', 'tainacan' ),
-	'instruction_drag_and_drop_filter_sort'	     	 => __( 'Drag and drop to change filter order', 'tainacan' ),
+	'instruction_drag_and_drop_filter_sort'	     	   => __( 'Drag and drop to change filter order', 'tainacan' ),
 	'instruction_drag_and_drop_metadatum_sort'     	 => __( 'Drag and drop to change metadatum order', 'tainacan' ),
+	'instruction_filter_activities_date'             => __( 'Range of dates', 'tainacan'),
 	'instruction_select_a_date' 				     => __( 'Select a date', 'tainacan' ),
 	'instruction_select_a_month' 				     => __( 'Select a month', 'tainacan' ),
 	'instruction_type_value_year' 				     => __( 'Type year value', 'tainacan' ),
 	'instruction_select_the_amount_of_copies'		 => __( 'Select the amount of copies of the item that you want to create', 'tainacan'),
-	'instruction_select_a_interval'		 => __( 'Select a interval', 'tainacan'),
+	'instruction_select_a_interval'		 			 => __( 'Select an interval', 'tainacan'),
 	
 
 	// Info. Other feedback to user.

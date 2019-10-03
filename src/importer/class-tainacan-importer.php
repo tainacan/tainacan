@@ -159,7 +159,8 @@ abstract class Importer {
 			}
 		}
 		
-    }
+		
+	}
 	
 	public function _to_Array($short = false) {
 		$return = ['id' => $this->get_id()];

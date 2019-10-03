@@ -117,7 +117,7 @@
                                         @input="onChangeEnable($event, index)"/>
                                 <a 
                                         :style="{ visibility: filter.collection_id != collectionId && !isRepositoryLevel? 'hidden' : 'visible' }"
-                                        @click.prevent="editFilter(filter)">
+                                        @click.prevent="toggleFilterEdition(filter.id)">
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
@@ -353,6 +353,18 @@ export default {
     components: {
         FilterEditionForm
     },
+    watch: {
+        '$route.query': {
+            handler(newQuery) {
+                if (newQuery.edit != undefined) {
+                    let existingFilterIndex = this.activeFilterList.findIndex((filter) => filter.id == newQuery.edit);
+                    if (existingFilterIndex >= 0)
+                        this.editFilter(this.activeFilterList[existingFilterIndex])                        
+                }
+            },
+            immediate: true
+        }
+    },
     beforeRouteLeave ( to, from, next ) {
         let hasUnsavedForms = false;
         for (let editForm in this.editForms) {
@@ -524,7 +536,7 @@ export default {
                 this.selectedFilterType = {}
                 this.allowedFilterTypes = [];
 
-                this.editFilter(filter);
+                this.toggleFilterEdition(filter.id);
             })
             .catch((error) => {
                 this.$console.error(error);
@@ -559,46 +571,43 @@ export default {
             // this.deleteTemporaryFilter(this.newFilterIndex);
             this.newFilterIndex = 0;
         },
-        editFilter(filter) {
+        toggleFilterEdition(filterId) {
             // Closing collapse
-            if (this.openedFilterId == filter.id) {                
+            if (this.openedFilterId == filterId) {
                 this.openedFilterId = '';
+                this.$router.push({ query: {}});
 
             // Opening collapse
             } else {
-                
-                if (this.openedFilterId == '' && this.choosenMetadatum.id != undefined) {
-                    this.availableMetadata.push(this.choosenMetadatum);
-                    this.choosenMetadatum = {};
-                    this.allowedFilterTypes = [];
-                    this.selectedFilterType = {};
-                    // this.deleteTemporaryFilter(this.newFilterIndex);
-                    this.newFilterIndex = 0;
-                }
-                this.openedFilterId = filter.id;
+                this.$router.push({ query: { edit: filterId}})
+            }
+        },
+        editFilter(filter) {
+            this.openedFilterId = filter.id;
 
-                // First time opening
-                if (this.editForms[this.openedFilterId] == undefined) {
-                    this.editForms[this.openedFilterId] = JSON.parse(JSON.stringify(filter));
-                    this.editForms[this.openedFilterId].saved = true;
-                    
-                    // Filter inserted now
-                    if (this.editForms[this.openedFilterId].status == 'auto-draft') {
-                        this.editForms[this.openedFilterId].status = 'publish'; 
-                        this.editForms[this.openedFilterId].saved = false;
-                    }
-                }      
-            }   
+            // First time opening
+            if (this.editForms[this.openedFilterId] == undefined) {
+                this.editForms[this.openedFilterId] = JSON.parse(JSON.stringify(filter));
+                this.editForms[this.openedFilterId].saved = true;
+                
+                // Filter inserted now
+                if (this.editForms[this.openedFilterId].status == 'auto-draft') {
+                    this.editForms[this.openedFilterId].status = 'publish'; 
+                    this.editForms[this.openedFilterId].saved = false;
+                }
+            }      
         },
         onEditionFinished() {
             this.formWithErrors = '';
             delete this.editForms[this.openedFilterId];
             this.openedFilterId = '';
+            this.$router.push({ query: {}});
         },
         onEditionCanceled() {
             this.formWithErrors = '';
             delete this.editForms[this.openedFilterId];
             this.openedFilterId = '';
+            this.$router.push({ query: {}});
         },
         getProperPreviewMinHeight() {
             for (let filterType of this.allowedFilterTypes) {
@@ -610,6 +619,55 @@ export default {
                 }
             }
             return 190;
+        },
+        refreshFilters() {
+            this.fetchFilters({
+                collectionId: this.collectionId,
+                isRepositoryLevel: this.isRepositoryLevel,
+                isContextEdit: !this.isOnTheme,
+                includeDisabled: true,
+            }).then((resp) => {
+                resp.request
+                    .then(() => {
+                        
+                        this.isLoadingMetadatumTypes = true;
+
+                        // Checks URL as router watcher would not wait for list to load
+                        if (this.$route.query.edit != undefined) {
+                            let existingFilterIndex = this.activeFilterList.findIndex((filter) => filter.id == this.$route.query.edit);
+                            if (existingFilterIndex >= 0)
+                                this.editFilter(this.activeFilterList[existingFilterIndex]);                        
+                        }
+
+                        // Cancels previous Request
+                        if (this.metadataSearchCancel != undefined)
+                            this.metadataSearchCancel.cancel('Metadata search Canceled.');
+
+                        // Needs to be done after activeFilterList exists to compare and remove chosen metadata.
+                        this.fetchMetadata({
+                            collectionId: this.collectionId, 
+                            isRepositoryLevel: this.isRepositoryLevel, 
+                            isContextEdit: true 
+                        }).then((resp) => {
+                                resp.request
+                                    .then(() => {
+                                        this.isLoadingMetadatumTypes = false;
+                                        this.updateListOfMetadata();
+                                    })
+                                    .catch(() => {
+                                        this.isLoadingMetadatumTypes = false;
+                                    });
+                                // Search Request Token for cancelling
+                            this.metadataSearchCancel = resp.source;
+                        })
+                        .catch(() => this.isLoadingMetadatumTypes = false);  
+                    })
+                    .catch(() => this.isLoadingFilters = false);
+
+                // Search Request Token for cancelling
+                this.filtersSearchCancel = resp.source;
+            })
+            .catch(() => this.isLoadingFilters = false);
         }
     },
     mounted() {
@@ -643,46 +701,8 @@ export default {
         if (this.filtersSearchCancel != undefined)
             this.filtersSearchCancel.cancel('Filters search Canceled.');
 
-        this.fetchFilters({
-                collectionId: this.collectionId,
-                isRepositoryLevel: this.isRepositoryLevel,
-                isContextEdit: !this.isOnTheme,
-                includeDisabled: true,
-            }).then((resp) => {
-                    resp.request
-                        .then(() => {
-                            
-                            this.isLoadingMetadatumTypes = true;
-
-                            // Cancels previous Request
-                            if (this.metadataSearchCancel != undefined)
-                                this.metadataSearchCancel.cancel('Metadata search Canceled.');
-
-                            // Needs to be done after activeFilterList exists to compare and remove chosen metadata.
-                            this.fetchMetadata({
-                                collectionId: this.collectionId, 
-                                isRepositoryLevel: this.isRepositoryLevel, 
-                                isContextEdit: true 
-                            }).then((resp) => {
-                                    resp.request
-                                        .then(() => {
-                                            this.isLoadingMetadatumTypes = false;
-                                            this.updateListOfMetadata();
-                                        })
-                                        .catch(() => {
-                                            this.isLoadingMetadatumTypes = false;
-                                        });
-                                 // Search Request Token for cancelling
-                                this.metadataSearchCancel = resp.source;
-                            })
-                            .catch(() => this.isLoadingMetadatumTypes = false);  
-                        })
-                        .catch(() => this.isLoadingFilters = false);
-
-                    // Search Request Token for cancelling
-                    this.filtersSearchCancel = resp.source;
-                })
-                .catch(() => this.isLoadingFilters = false);
+        // Loads Filters
+        this.refreshFilters();
 
         // Obtains collection name
         if (!this.isRepositoryLevel) {

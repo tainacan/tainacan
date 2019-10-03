@@ -31,7 +31,7 @@ class Private_Files {
 		add_filter('image_get_intermediate_size', [$this, 'image_get_intermediate_size'], 10, 3);
 		add_filter('wp_get_attachment_url', [$this, 'wp_get_attachment_url'], 10, 2);
 		
-		add_action('tainacan-insert', [$this, 'update_item_and_collection'], 10, 3);
+		add_action('tainacan-insert', [$this, 'update_item_and_collection']);
 		
 		add_action('tainacan-bulk-edit-set-status', [$this, 'bulk_edit'], 10, 4);
 		
@@ -276,61 +276,57 @@ class Private_Files {
 	 * if the items upload directory mus be renamed to add or remove the 
 	 * private folder prefix 
 	 */
-	function update_item_and_collection($obj, $diffs, $is_update) {
+	function update_item_and_collection($obj) {
 		
-		// updating collection or item
-		if ( $is_update ) {
+		$folder = DIRECTORY_SEPARATOR;
+		$check_folder = DIRECTORY_SEPARATOR;
+		$check = false;
+		
+		if ( $obj instanceof \Tainacan\Entities\Collection ) {
 			
-			$folder = DIRECTORY_SEPARATOR;
-			$check_folder = DIRECTORY_SEPARATOR;
-			$check = false;
+			$status_obj = get_post_status_object($obj->get_status());
 			
-			if ( $obj instanceof \Tainacan\Entities\Collection ) {
-				
-				$status_obj = get_post_status_object($obj->get_status());
-				
-				$folder .= $status_obj->public ? $obj->get_id() : $this->get_private_folder_prefix() . $obj->get_id();
-				$check_folder .= ! $status_obj->public ? $obj->get_id() : $this->get_private_folder_prefix() . $obj->get_id();
-				
-				$check = true;
-				
-			}
+			$folder .= $status_obj->public ? $obj->get_id() : $this->get_private_folder_prefix() . $obj->get_id();
+			$check_folder .= ! $status_obj->public ? $obj->get_id() : $this->get_private_folder_prefix() . $obj->get_id();
 			
-			if ( $obj instanceof \Tainacan\Entities\Item ) {
-				
-				$collection = $obj->get_collection();
-				$col_status_object = get_post_status_object($collection->get_status());
-				
-				$folder 	  .= $col_status_object->public ? $collection->get_id() : $this->get_private_folder_prefix() . $collection->get_id() . DIRECTORY_SEPARATOR;
-				$check_folder .= $col_status_object->public ? $collection->get_id() : $this->get_private_folder_prefix() . $collection->get_id() . DIRECTORY_SEPARATOR;
-				
-				$folder 	  .= DIRECTORY_SEPARATOR;
-				$check_folder .= DIRECTORY_SEPARATOR;
-				
-				$status_obj = get_post_status_object($obj->get_status());
-				
-				$folder .= $status_obj->public ? $obj->get_id() : $this->get_private_folder_prefix() . $obj->get_id();
-				$check_folder .= ! $status_obj->public ? $obj->get_id() : $this->get_private_folder_prefix() . $obj->get_id();
-				
-				$check = true;
-				
-			}
+			$check = true;
 			
-			if ($check) {
-				
-				$upload_dir = wp_get_upload_dir();
-				$base_dir = $upload_dir['basedir'];
-				$full_path = $base_dir . DIRECTORY_SEPARATOR . $this->get_items_uploads_folder() . $folder;
-				$full_path_check = $base_dir . DIRECTORY_SEPARATOR . $this->get_items_uploads_folder() . $check_folder;
-				
-				if (\file_exists($full_path_check)) {
-					rename($full_path_check, $full_path);
-					do_action('tainacan-upload-folder-renamed', $full_path_check, $full_path);
-				}
-				
+		}
+		
+		if ( $obj instanceof \Tainacan\Entities\Item ) {
+			
+			$collection = $obj->get_collection();
+			$col_status_object = get_post_status_object($collection->get_status());
+			
+			$folder 	  .= $col_status_object->public ? $collection->get_id() : $this->get_private_folder_prefix() . $collection->get_id() . DIRECTORY_SEPARATOR;
+			$check_folder .= $col_status_object->public ? $collection->get_id() : $this->get_private_folder_prefix() . $collection->get_id() . DIRECTORY_SEPARATOR;
+			
+			$folder 	  .= DIRECTORY_SEPARATOR;
+			$check_folder .= DIRECTORY_SEPARATOR;
+			
+			$status_obj = get_post_status_object($obj->get_status());
+			
+			$folder .= $status_obj->public ? $obj->get_id() : $this->get_private_folder_prefix() . $obj->get_id();
+			$check_folder .= ! $status_obj->public ? $obj->get_id() : $this->get_private_folder_prefix() . $obj->get_id();
+			
+			$check = true;
+			
+		}
+		
+		if ($check) {
+			
+			$upload_dir = wp_get_upload_dir();
+			$base_dir = $upload_dir['basedir'];
+			$full_path = $base_dir . DIRECTORY_SEPARATOR . $this->get_items_uploads_folder() . $folder;
+			$full_path_check = $base_dir . DIRECTORY_SEPARATOR . $this->get_items_uploads_folder() . $check_folder;
+			
+			if (\file_exists($full_path_check)) {
+				rename($full_path_check, $full_path);
+				do_action('tainacan-upload-folder-renamed', $full_path_check, $full_path);
 			}
 			
 		}
+			
 		
 	}
 	

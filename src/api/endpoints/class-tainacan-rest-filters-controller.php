@@ -148,7 +148,7 @@ class REST_Filters_Controller extends REST_Controller {
 
 			$filter_obj->set_metadatum_id($body['metadatum_id']);
 		} else {
-			$filter_obj->set_collection_id( 'filter_in_repository' );
+			$filter_obj->set_collection_id( 'default' );
 
 			if(!isset($body['metadatum_id'])){
 				throw new \InvalidArgumentException('You need provide a metadatum id');
@@ -375,7 +375,7 @@ class REST_Filters_Controller extends REST_Controller {
 		if(!isset($request['collection_id'])) {
 			$args['meta_query'][] = [
 				'key'     => 'collection_id',
-				'value'   => 'filter_in_repository',
+				'value'   => 'default',
 				'compare' => '='
 			];
 
