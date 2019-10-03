@@ -1,11 +1,20 @@
 <template>
     <b-field :addons="false">
         <label class="label is-inline">
-            {{ $i18n.getHelperTitle('tainacan-filter-numeric-list-interval', 'predefined_intervals') }}<span>&nbsp;</span>
+            {{ $i18n.getHelperTitle('tainacan-filter-numeric-list-interval', 'intervals') }}<span>&nbsp;</span>
             <help-button
-                    :title="$i18n.getHelperTitle('tainacan-filter-numeric-list-interval', 'predefined_intervals')"
-                    :message="$i18n.getHelperMessage('tainacan-filter-numeric-list-interval', 'predefined_intervals')"/>
+                    :title="$i18n.getHelperTitle('tainacan-filter-numeric-list-interval', 'intervals')"
+                    :message="$i18n.getHelperMessage('tainacan-filter-numeric-list-interval', 'intervals')"/>
         </label>
+
+        <div>
+            <b-field>
+                <b-checkbox v-model="showIntervalOnTag">
+                    {{ $i18n.get('info_show_interval_on_tag') }}
+                </b-checkbox>
+            </b-field>
+        </div>
+
         <div v-if="intervals.length == 0" >
             <br>
             <a
@@ -27,19 +36,21 @@
                 <b-input
                         expanded="true"
                         :placeholder="$i18n.get('label')"
-                        @input="onUpdate"
+                        @input="onUpdate(interval)"
                         v-model="interval.label" />
             </b-field>
             <b-field>
                 <b-input
                         type="number"
+                        step="0.01"
                         :placeholder="$i18n.get('info_initial_value')"
-                        @input="onUpdate"
+                        @input="onUpdate(interval)"
                         v-model="interval.from" />
                 <b-input
                         type="number"
+                        step="0.01"
                         :placeholder="$i18n.get('info_final_value')"
-                        @input="onUpdate"
+                        @input="onUpdate(interval)"
                         v-model="interval.to" />
             </b-field>
             <p class="control">
@@ -84,14 +95,35 @@
         },
         data() {
             return {
+                showIntervalOnTag: true,
                 intervals: [],
+                isValid: true,
             }
         },
         methods: {
-            onUpdate() {
-                this.$emit('input', {
-                    intervals: this.intervals,
-                });
+            onUpdate(interval) {
+                if (interval.to == null || interval.from == null ||
+                    interval.to == "" || interval.from == "" ||
+                    Number(interval.to) < Number(interval.from)) {
+                    if(this.isValid) {
+                        this.isValid = false;
+                        this.error_message()
+                    }
+                } else {
+                    this.isValid = true;
+                    this.$emit('input', {
+                        intervals: this.intervals,
+                        showIntervalOnTag: this.showIntervalOnTag
+                    });
+                }
+            },
+            error_message() {
+                this.$buefy.toast.open({
+                    duration: 3000,
+                    message: this.$i18n.get('info_error_first_value_greater'),
+                    position: 'is-bottom',
+                    type: 'is-danger'
+                })
             },
             removeInterval(index) {
                 this.intervals.splice(index, 1);
@@ -114,6 +146,7 @@
         },
         created() {
             this.intervals = this.value && this.value.intervals ? this.value.intervals : [];
+            this.showIntervalOnTag = this.value && this.value.showIntervalOnTag != undefined ? this.value.showIntervalOnTag : true;
         }
     }
 </script>

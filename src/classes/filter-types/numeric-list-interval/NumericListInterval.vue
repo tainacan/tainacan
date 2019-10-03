@@ -4,6 +4,9 @@
                 :placeholder="$i18n.get('instruction_select_a_interval')"
                 @input="changeInterval"
                 v-model="selectedInterval">
+            <option value="">
+                {{ $i18n.get('label_clean') }}
+            </option>
             <option
                     v-for="(interval, index) in options.intervals"
                     :value="index"
@@ -29,7 +32,7 @@
                 valueEnd: 10,
                 isValid: false,
                 collectionId: '',
-                metadatum: '',
+                metadatumId: '',
                 options: [],
                 selectedInterval: ''
             }
@@ -81,10 +84,10 @@
                 });
 
                 if (values[0] != undefined && values[1] != undefined) {
+                    let labelValue = this.options.intervals[this.selectedInterval].label + (this.options.showIntervalOnTag ? `(${values[0]}-${values[1]})` : '');
                     this.$eventBusSearch.$emit( 'sendValuesToTags', {
                         filterId: this.filter.id,
-                        value: this.options.intervals[this.selectedInterval].label + `(${values[0]}-${values[1]})`
-                        //value: values[0] + ' - ' + values[1]
+                        value: labelValue
                     });
                 }
             },
@@ -109,9 +112,10 @@
                         anInterval => anInterval.from == this.valueInit && anInterval.to == this.valueEnd
                     );
 
+                    let labelValue = this.options.intervals[this.selectedInterval].label + (this.options.showIntervalOnTag ? `(${this.valueInit}-${this.valueEnd})` : '');
                     this.$eventBusSearch.$emit( 'sendValuesToTags', {
                         filterId: this.filter.id,
-                        value: this.options.intervals[this.selectedInterval].label + `(${this.valueInit}-${this.valueEnd})`
+                        value: labelValue
                     });
                 } else {
                     return false;

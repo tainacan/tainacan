@@ -662,6 +662,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_expose_only_displayed_metadata'			 => __( 'By checking this option, only metatada that are displayed on the current list will be exposed', 'tainacan' ),
 	'info_initial_value'                             => __( 'Initial value', 'tainacan' ),
 	'info_final_value'                               => __( 'Final value', 'tainacan' ),
+	'info_show_interval_on_tag'                      => __( 'Show interval on tag', 'tainacan' ),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),
@@ -684,7 +685,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'tainacan-filter-taxonomy-taginput'              => __( 'Taxonomy Tag Input', 'tainacan' ),
 	'tainacan-filter-taxonomy-checkbox'              => __( 'Taxonomy Check Box', 'tainacan' ),
 	'tainacan-filter-taxonomy-selectbox'             => __( 'Taxonomy Select Box', 'tainacan' ),
-	'tainacan-filter-numeric-interval'             => __( 'Numeric Interval', 'tainacan' ),
+	'tainacan-filter-numeric-interval'               => __( 'Numeric Interval', 'tainacan' ),
+	'tainacan-filter-numeric-list-interval'          => __( 'Numeric Interval List', 'tainacan' ),
 
 	// Datepicker months
 	'datepicker_month_january'			=> __( 'January', 'tainacan' ),
