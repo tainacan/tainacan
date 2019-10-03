@@ -765,11 +765,11 @@
     }
 
     p.is-capitalized {
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.125rem;
     }
     .tainacan-p-break {
         word-break: break-word;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
     }
 
     .tainacan-figure {
