@@ -5,7 +5,8 @@
                 size="is-small"
                 @input="validate_values()"
                 :step="options.step"
-                v-model="valueInit"/>
+                v-model="valueInit"
+                />
         <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
         <b-numberinput
                 :aria-labelledby="labelId"
@@ -35,6 +36,7 @@
                 collectionId: '',
                 metadatum: '',
                 options: [],
+                withError: false
             }
         },
         props: {
@@ -48,16 +50,15 @@
             validate_values: _.debounce( function (){
                 if ( parseFloat( this.valueInit ) > parseFloat( this.valueEnd )) {
                     //this.valueEnd = parseFloat( this.valueInit ) + 1;
-                    //this.error_message();
+                    //this.withError = true;
+                    
                     return;
                 }
-
+                //this.withError = false;
                 this.emit();
             }, 600),
             // message for error
             error_message(){
-                if ( !this.isTouched ) return false;
-
                 this.$buefy.toast.open({
                     duration: 3000,
                     message: this.$i18n.get('info_error_first_value_greater'),
