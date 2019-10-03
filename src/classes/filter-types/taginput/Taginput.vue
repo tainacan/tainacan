@@ -56,7 +56,7 @@
             let endpoint = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 
             if (this.isRepositoryLevel || this.collection == 'default'){
-                in_route = '/metadata/'+ this.metadatum + '?nopaging=1';
+                endpoint = '/metadata/'+ this.metadatum + '?nopaging=1';
             }
 
             axios.get(endpoint)

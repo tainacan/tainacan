@@ -79,7 +79,7 @@
             let endpoint = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 
             if (this.isRepositoryLevel || this.collection == 'default'){
-                in_route = '/metadata/'+ this.metadatum;
+                endpoint = '/metadata/'+ this.metadatum;
             }
             
             axios.get(endpoint)
