@@ -19,6 +19,7 @@ registerBlockType('tainacan/collections-list', {
         </svg>,
     category: 'tainacan-blocks',
     keywords: [ __( 'Tainacan', 'tainacan' ), __( 'collections', 'tainacan' ), __( 'repository', 'tainacan' ) ],
+    description: __('Expose collections from your Tainacan repository', 'tainacan'),
     attributes: {
         selectedCollectionsObject: {
             type: 'array',

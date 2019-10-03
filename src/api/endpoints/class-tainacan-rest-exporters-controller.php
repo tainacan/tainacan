@@ -68,7 +68,7 @@ class REST_Exporters_Controller extends REST_Controller {
 					],
 					'options' => [
 						'type'        => 'array/object',
-						'description' => __( 'The importer options', 'tainacan' ),
+						'description' => __( 'The exporter options', 'tainacan' ),
 					]
 				],
 			),
@@ -172,7 +172,7 @@ class REST_Exporters_Controller extends REST_Controller {
 			}
 
 			return new \WP_REST_Response([
-				'error_message' => __('Importer Session not found', 'tainacan' ),
+				'error_message' => __('Exporter Session not found', 'tainacan' ),
 				'session_id' => $session_id
 			], 400);
 		}

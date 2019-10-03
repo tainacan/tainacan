@@ -41,17 +41,17 @@
 
     export default {
         created(){
-            this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id ;
+            this.collection = this.filter.collection_id;
+            this.metadatum = this.filter.metadatum.metadatum_id;
             this.type = this.filter.metadatum.metadata_type;
 
-            let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
+            let endpoint = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 
-            if(this.isRepositoryLevel || this.collection == 'default'){
-                in_route = '/metadata/'+ this.metadatum;
+            if (this.isRepositoryLevel || this.collection == 'default'){
+                endpoint = '/metadata/'+ this.metadatum;
             }
 
-            axios.get(in_route)
+            axios.get(endpoint)
                 .then( res => {
                     let metadatum = res.data;
                     this.selectedValues( metadatum.metadata_type_options.taxonomy_id );
@@ -73,11 +73,7 @@
             }
         },
         props: {
-            filter: {
-                type: Object // concentrate all attributes metadatum id and type
-            },
-            metadatum_id: [Number], // not required, but overrides the filter metadatum id if is set
-            collection_id: [Number], // not required, but overrides the filter metadatum id if is set
+            filter: Object,
             labelId: '',
             query: {
                 type: Object // concentrate all attributes metadatum id and type

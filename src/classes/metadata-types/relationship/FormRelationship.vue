@@ -44,12 +44,12 @@
                         v-for="(option, index) in metadata"
                         :key="index"
                         class="field">
-                        <b-checkbox
-                                name="metadata_type_relationship[search][]"
+                        <b-radio
+                                name="metadata_type_relationship[search]"
                                 v-model="modelSearch"
                                 :native-value="option.id">
                             {{ option.name }}
-                        </b-checkbox>
+                        </b-radio>
                     </div>
             </b-field>
 
@@ -98,7 +98,7 @@
                 hasMetadata: false,
                 loadingMetadata: false,
                 modelRepeated: 'yes',
-                modelSearch:[],
+                modelSearch:'',
                 collectionType: '',
                 collectionMessage: ''
             }
@@ -111,7 +111,7 @@
                 } else {
                     this.metadata = [];
                     this.hasMetadata = false;
-                    this.modelSearch = [];
+                    this.modelSearch = '';
 
                     this.emitValues();
                 }
@@ -180,7 +180,7 @@
                             this.metadata = [];
 
                             for (let metadatum of metadata) {
-                               if (metadatum.metadata_type !== "Tainacan\\Metadata_Types\\Relationship" && metadatum.metadata_type !== "Tainacan\\Metadata_Types\\Taxonomy") {
+                               if (metadatum.metadata_type !== "Tainacan\\Metadata_Types\\Relationship") {
                                    this.metadata.push( metadatum );
                                    this.hasMetadata = true;
                                    this.checkMetadata()
@@ -207,14 +207,14 @@
 
             },
             checkMetadata(){
-                if( this.value && this.value.search.length > 0 ){
+                if( this.value && this.value.search ){
                     this.modelSearch = this.value.search;
                 } else {
                     try {
                         const json = JSON.parse( this.search );
                         this.modelSearch = json;
                     } catch(e){
-                        this.modelSearch = [];
+                        this.modelSearch = '';
                     }
                 }
             },

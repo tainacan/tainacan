@@ -704,12 +704,6 @@ export default {
         // Loads Filters
         this.refreshFilters();
 
-        // On repository level we also fetch collection filters
-        if (this.isRepositoryLevel) {
-            this.fetchRepositoryCollectionFilters()
-                .catch(() => this.isLoadingFilters = false);
-        }
-
         // Obtains collection name
         if (!this.isRepositoryLevel) {
 

@@ -53,8 +53,8 @@
 
     export default {
         created(){
-            this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id ;
+            this.collection = this.filter.collection_id;
+            this.metadatum = this.filter.metadatum.metadatum_id ;
             this.type = this.filter.metadatum.metadata_type;
 
             this.loadOptions();
@@ -87,15 +87,9 @@
             }
         },
         props: {
-            filter: {
-                type: Object // concentrate all attributes metadatum id and type
-            },
-            metadatum_id: [Number], // not required, but overrides the filter metadatum id if is set
-            collection_id: [Number], // not required, but overrides the filter metadatum id if is set
+            filter: Object,
             labelId: '',
-            query: {
-                type: Object // concentrate all attributes metadatum id and type
-            }
+            query: Object
         },
         watch: {
             selected: function(){

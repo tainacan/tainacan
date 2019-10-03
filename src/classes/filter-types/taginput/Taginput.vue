@@ -49,17 +49,17 @@
 
     export default {
         created(){
-            this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id;
+            this.collection = this.filter.collection_id;
+            this.metadatum = this.filter.metadatum.metadatum_id;
             const vm = this;
 
-            let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
+            let endpoint = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 
-            if(this.isRepositoryLevel || this.collection == 'default'){
+            if (this.isRepositoryLevel || this.collection == 'default'){
                 in_route = '/metadata/'+ this.metadatum + '?nopaging=1';
             }
 
-            axios.get(in_route)
+            axios.get(endpoint)
                 .then( res => {
                     let result = res.data;
                     if( result && result.metadata_type ){

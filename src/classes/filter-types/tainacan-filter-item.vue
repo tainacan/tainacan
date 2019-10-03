@@ -1,8 +1,6 @@
 <template>
     <b-field
-            class="filter-item-forms"
-            :message="getErrorMessage"
-            :type="filterTypeMessage">
+            class="filter-item-forms">
         <b-collapse
                 class="show" 
                 :open.sync="open"
@@ -48,8 +46,6 @@
 </template>
 
 <script>
-    import { mapActions } from 'vuex';
-
     export default {
         name: 'TainacanFilterItem',
         props: {
@@ -61,33 +57,11 @@
         data(){
             return {
                 inputs: [],
-                filterTypeMessage:''
-            }
-        },
-        computed: {
-            getErrorMessage() {
-                let msg = '';
-                let errors = this.$eventBusSearch.getErrors( this.filter.id );
-                if ( errors) {
-                    this.setFilterTypeMessage('is-danger');
-                    for (let index in errors) {
-                        msg += errors[index] + '\n';
-                    }
-                } else {
-                    this.setFilterTypeMessage('');
-                }
-                return msg;
             }
         },
         methods: {
-            ...mapActions('search', [
-                'setPage'
-            ]),
             listen( inputEvent ){
                 this.$eventBusSearch.$emit( 'input', ( inputEvent.metadatum_id ) ?  inputEvent :  inputEvent.detail[0] );
-            },
-            setFilterTypeMessage( message ){
-                this.filterTypeMessage = message;
             }
         }
     }

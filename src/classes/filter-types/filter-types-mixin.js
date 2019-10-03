@@ -12,11 +12,7 @@ export const filter_type_mixin = {
         }
     },
     props: {
-        filter: {
-            type: Object // concentrate all attributes metadatum id and type
-        },
-        metadatum_id: [Number], // not required, but overrides the filter metadatum id if is set
-        collection_id: [Number], // not required, but overrides the filter metadatum id if is set
+        filter: Object,
         id: '',
         query: {}
     },
@@ -54,7 +50,7 @@ export const filter_type_mixin = {
                 if (isRepositoryLevel  || this.filter.collection_id == 'default')
                     url = `/facets/${metadatumId}?getSelected=${getSelected}&`;
                 else
-                    url = `/collection/${this.collection}/facets/${metadatumId}?getSelected=${getSelected}&`;
+                    url = `/collection/${this.filter.collection_id}/facets/${metadatumId}?getSelected=${getSelected}&`;
 
                 if (offset != undefined && number != undefined) {
                     if (!this.isUsingElasticSearch)
