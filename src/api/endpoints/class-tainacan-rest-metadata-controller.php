@@ -63,7 +63,6 @@ class REST_Metadata_Controller extends REST_Controller {
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE),
 				),
 				'schema'                  => [$this, 'get_schema']
-
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base,
@@ -602,10 +601,6 @@ class REST_Metadata_Controller extends REST_Controller {
 		// $item_metadata_scheme = parent::get_repository_schema( $this->item_metadata_repository );
 		// $item_scheme = parent::get_repository_schema( $this->item_repository );
 		// $collection_scheme = parent::get_repository_schema( $this->collection_repository );
-		
-		// transformation done in $this->prepare_item_for_response()
-		$main_schema['moderators'] = $main_schema['moderators_ids'];
-		$main_schema['moderators']['contex'] = 'edit';
 		
 		$schema['properties'] = array_merge(
 			parent::get_base_properties_schema(),
