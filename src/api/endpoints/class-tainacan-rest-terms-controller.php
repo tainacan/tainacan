@@ -44,7 +44,7 @@ class REST_Terms_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_collection_params()
+					'args'                => $this->get_wp_query_params()
 				)
 			)
 		);
@@ -449,10 +449,10 @@ class REST_Terms_Controller extends REST_Controller {
 	 *
 	 * @return array
 	 */
-	public function get_collection_params($object_name = null) {
+	public function get_wp_query_params() {
 		$query_params['context']['default'] = 'view';
 
-		$query_params = array_merge($query_params, parent::get_collection_params('term'));
+		$query_params = array_merge($query_params, parent::get_wp_query_params());
 
 		$query_params['name'] = array(
 			'description' => __('Limits the result set to terms with a specific name'),

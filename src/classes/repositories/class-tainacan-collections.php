@@ -187,7 +187,7 @@ class Collections extends Repository {
 				'title'       => __( 'Moderators', 'tainacan' ),
 				'type'        => 'array/object/string',
 				'items'       => [ 'type' => 'array/string/integer/object' ],
-				'description' => __( 'To assign users as Moderators of this collection', 'tainacan' ),
+				'description' => __( 'Moderators of this collection', 'tainacan' ),
 				'validation'  => ''
 			],
 			'_thumbnail_id'              => [

@@ -259,6 +259,23 @@ class REST_Controller extends \WP_REST_Controller {
 
 		return false;
 	}
+	
+	/**
+	 * Return the fetch_only param
+	 *
+	 * @param string $object_name
+	 *
+	 * @return array|void
+	 */
+	public function get_fetch_only_param(){
+		return [
+			'fetch_only' => [
+				'type'        => 'string/array',
+				'description' => __( 'Fetch only specific attribute. The specifics attributes are the same in schema.', 'tainacan' ),
+				//TODO: explicar o fetch only meta.. cabe aqui?
+			]
+		];
+	}
 
 	/**
 	 * Return the common params
@@ -267,21 +284,21 @@ class REST_Controller extends \WP_REST_Controller {
 	 *
 	 * @return array|void
 	 */
-	public function get_collection_params($object_name = null){
+	public function get_wp_query_params(){
 		$query_params['id'] = array(
-			'description' => __("Limit result to $object_name with specific id."),
+			'description' => __("Limit result to objects with specific id.", 'tainacan'),
 			'type'        => 'integer',
 		);
 
 		$query_params['search'] = array(
-			'description'        => __( 'Limit results to those matching a string.' ),
+			'description'        => __( 'Limit results to those matching a string.', 'tainacan' ),
 			'type'               => 'string',
 			'sanitize_callback'  => 'sanitize_text_field',
 			'validate_callback'  => 'rest_validate_request_arg',
 		);
 
 		$query_params['authorid'] = array(
-			'description' => __("Limit result set to $object_name assigned to specific authors by id."),
+			'description' => __("Limit result set to objects assigned to specific authors by id.", 'tainacan'),
 			'type'        => 'array',
 			'items'       => array(
 				'type'    => 'integer',
@@ -289,12 +306,12 @@ class REST_Controller extends \WP_REST_Controller {
 		);
 
 		$query_params['authorname'] = array(
-			'description' => __("Limit result set to $object_name assigned to specific authors by name"),
+			'description' => __("Limit result set to objects assigned to specific authors by name", 'tainacan'),
 			'type'        => 'string',
 		);
 
 		$query_params['status'] = array(
-			'description' => __("Limit result set to $object_name assigned one or more statuses."),
+			'description' => __("Limit result set to objects assigned one or more statuses.", 'tainacan'),
 			'type'        => 'array',
 			'items'       => array(
 				'enum'    => array_merge(array_keys(get_post_stati()), array('any')),
@@ -303,19 +320,19 @@ class REST_Controller extends \WP_REST_Controller {
 		);
 
 		$query_params['offset'] = array(
-			'description'        => __( "Offset the result set by a specific number of $object_name." ),
+			'description'        => __( "Offset the result set by a specific number of objects.", 'tainacan' ),
 			'type'               => 'integer',
 		);
 
 		$query_params['order'] = array(
-			'description'        => __( 'Order sort attribute ascending or descending.' ),
+			'description'        => __( 'Order sort attribute ascending or descending.', 'tainacan' ),
 			'type'               => 'string/array',
 			'default'            => 'desc',
 			'enum'               => array( 'asc', 'desc' ),
 		);
 
 		$query_params['orderby'] = array(
-			'description'        => __( "Sort $object_name by object attribute." ),
+			'description'        => __( "Sort objects by object attribute.", 'tainacan' ),
 			'type'               => 'string/array',
 			'default'            => 'date',
 			'enum'               => array(
@@ -335,13 +352,13 @@ class REST_Controller extends \WP_REST_Controller {
 		);
 
 		$query_params['perpage'] = array(
-			'description'        => __( "Maximum number of $object_name to be returned in result set." ),
+			'description'        => __( "Maximum number of objects to be returned in result set.", 'tainacan' ),
 			'type'               => 'numeric',
 			'default'            => 10,
 		);
 
 		$query_params['paged'] = array(
-			'description' => __("Show the $object_name that would normally show up just on page X"),
+			'description' => __("The results page to be return.", 'tainacan'),
 			'type'        => 'integer',
 		);
 
@@ -492,6 +509,54 @@ class REST_Controller extends \WP_REST_Controller {
 			),
 		);
 	}
+	
+	function get_repository_schema( \Tainacan\Repositories\Repository $repository ) {
+		
+		$schema = [];
+		
+		$map = $repository->get_map();
+
+		foreach ($map as $mapped => $value){
+			$schema[$mapped] = [
+				'description' => $value['description'],
+				'type' => $value['type']
+			];
+		}
+		
+		return $schema;
+		
+	}
+	
+	
+	function get_permissions_schema() {
+		
+		return [
+			'current_user_can_edit' => [
+				'description' => esc_html__('Whether current user can edit this object', 'tainacan'),
+				'type' => 'boolean',
+				'context' => 'edit'
+			],
+			'current_user_can_delete' => [
+				'description' => esc_html__('Whether current user can delete this object', 'tainacan'),
+				'type' => 'boolean',
+				'context' => 'edit'
+			]
+		];
+		
+	}
+	
+	function get_base_properties_schema() {
+		return [
+			
+			'id' => [
+				'description'  => esc_html__( 'Unique identifier for the object.', 'tainacan' ),
+				'type'         => 'integer',
+				'context'      => array( 'view', 'edit' ),
+				'readonly'     => true
+			]
+		];
+	}
+	
 }
 
 ?>
