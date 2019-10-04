@@ -612,7 +612,6 @@ class REST_Metadata_Controller extends REST_Controller {
 		);
 		
 		return $schema;
-		
 	}
 }
 
