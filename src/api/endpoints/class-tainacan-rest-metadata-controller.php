@@ -587,7 +587,6 @@ class REST_Metadata_Controller extends REST_Controller {
 		return $endpoint_args;
 	}
 
-
 	function get_schema() {
 		$schema = [
 			'$schema'  => 'http://json-schema.org/draft-04/schema#',
