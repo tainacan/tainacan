@@ -3,7 +3,8 @@
          <b-dropdown
                 :mobile-modal="true"
                 @input="onChangeComparator($event)"
-                aria-role="list">
+                aria-role="list"
+                trap-focus>
             <button
                     :aria-label="$i18n.get('label_comparator')"
                     class="button is-white"

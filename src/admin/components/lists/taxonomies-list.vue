@@ -17,7 +17,8 @@
                         v-if="$userCaps.hasCapability('delete_tainacan-taxonomies')"
                         :disabled="!isSelecting"
                         id="bulk-actions-dropdown"
-                        aria-role="list">
+                        aria-role="list"
+                        trap-focus>
                     <button
                             class="button is-white"
                             slot="trigger">
@@ -267,7 +268,8 @@
                                     // });
                                 });
                         }
-                    }
+                    },
+                    trapFocus: true
                 });
             },
             deleteSelected() {
@@ -305,7 +307,8 @@
                             }
                             this.allOnPageSelected = false;
                         }
-                    }
+                    },
+                    trapFocus: true
                 });
             },
             onClickTaxonomy($event, taxonomyId, index) {

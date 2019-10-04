@@ -1,5 +1,11 @@
 <template>
-    <div class="tainacan-modal-content">
+    <div 
+            autofocus
+            role="dialog"
+            class="tainacan-modal-content"
+            tabindex="-1"
+            aria-modal
+            ref="activityDetailsModal">
         <header 
                 v-if="!isLoadingActivity"
                 class="tainacan-modal-title">
@@ -666,6 +672,10 @@
         },
         created() {
             this.loadActivity();
+        },
+        mounted() {
+            if (this.$refs.activityDetailsModal)
+                this.$refs.activityDetailsModal.focus()
         },
         methods: {
             ...mapActions('activity', [

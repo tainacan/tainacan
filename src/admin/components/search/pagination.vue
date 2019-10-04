@@ -69,7 +69,8 @@
                 <b-dropdown 
                         position="is-top-right"
                         @change="onPageChange"
-                        aria-role="list">
+                        aria-role="list"
+                        trap-focus>
                     <button
                             aria-labelledby="go-to-page-dropdown"
                             class="button is-white"

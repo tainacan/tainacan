@@ -1,10 +1,13 @@
 <template>
     <div 
             aria-labelledby="exposers-modal-title"
+            autofocus
             role="dialog"
-            aria-modal="true"
+            tabindex="-1"
+            aria-modal
             class="tainacan-modal-content" 
-            style="width: auto">
+            style="width: auto"
+            ref="exposersModal">
         <header class="tainacan-modal-title">
             <h2 
                     id="exposers-modal-title"
@@ -469,6 +472,9 @@ export default {
 
         if (this.itemId)
             this.shouldRespectFetchOnly = false;
+
+        if (this.$refs.exposersModal)
+            this.$refs.exposersModal.focus()
     }
 }
 </script>

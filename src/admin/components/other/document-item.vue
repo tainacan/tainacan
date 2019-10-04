@@ -11,7 +11,8 @@
         <!-- Preview Modal ----------------- -->
         <b-modal
                 :active.sync="isPreviewModalActive"
-                scroll="keep">
+                scroll="keep"
+                trap-focus>
             <!-- <div class="tainacan-modal-content">
                 <div class="tainacan-modal-title">
                     <h2>{{ $i18n.get('label_document') }}</h2>
@@ -20,7 +21,11 @@
                             class="back-link">{{ $i18n.get('exit') }}</a>
                     <hr>
                 </div> -->
-                <div    
+                <div     
+                        autofocus
+                        role="dialog"
+                        tabindex="-1"
+                        aria-modal
                         class="is-flex rendered-content"
                         v-html="documentHtml" />
             <!-- </div> -->
@@ -32,9 +37,13 @@
 export default {
     name: 'DocumentItem',
     props: {
-        documentHtml: String,
-        isSelected: false,
-        isPreviewModalActive: false
+        documentHtml: String
+    },
+    data() {
+        return {
+            isSelected: false,
+            isPreviewModalActive: false
+        }
     }
 }
 </script>

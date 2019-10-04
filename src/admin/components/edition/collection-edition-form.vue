@@ -204,7 +204,8 @@
                                     ref="enabledViewModesDropdown"
                                     :mobile-modal="true"
                                     :disabled="Object.keys(registeredViewModes).length < 0"
-                                    aria-role="list">
+                                    aria-role="list"
+                                    trap-focus>
                                 <button
                                         class="button is-white"
                                         slot="trigger"

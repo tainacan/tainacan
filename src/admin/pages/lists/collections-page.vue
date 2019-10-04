@@ -11,7 +11,8 @@
             <div class="header-item">
                 <b-dropdown 
                         aria-role="list"
-                        id="collection-creation-options-dropdown">
+                        id="collection-creation-options-dropdown"
+                        trap-focus>
                     <button
                             class="button is-secondary"
                             slot="trigger">
@@ -62,7 +63,8 @@
                         :mobile-modal="true"
                         :disabled="collections.length <= 0 || isLoading"
                         @input="onChangeOrder(order == 'asc' ? 'desc' : 'asc')"
-                        aria-role="list">
+                        aria-role="list"
+                        trap-focus>
                     <button
                             :aria-label="$i18n.get('label_sorting_direction')"
                             class="button is-white"
@@ -195,7 +197,8 @@
                                 <b-dropdown 
                                         :disabled="isLoadingMetadatumMappers"
                                         id="collection-creation-options-dropdown"
-                                        aria-role="list">
+                                        aria-role="list"
+                                        trap-focus>
                                     <button
                                             class="button is-secondary"
                                             slot="trigger">
@@ -421,7 +424,8 @@ export default {
             this.$buefy.modal.open({
                 parent: this,
                 component: AvailableImportersModal,
-                hasModalCard: true
+                hasModalCard: true,
+                trapFocus: true
             });
         }
     },

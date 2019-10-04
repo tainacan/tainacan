@@ -1,5 +1,11 @@
 <template>
-    <div class="tainacan-modal-content">
+    <div 
+            autofocus
+            role="dialog"
+            class="tainacan-modal-content"
+            tabindex="-1"
+            aria-modal
+            ref="checkboxRadioModal">
         <header class="tainacan-modal-title">
             <h2 v-if="isFilter">{{ $i18n.get('filter') }} <em>{{ filter.name }}</em></h2>
             <h2 v-else>{{ $i18n.get('metadatum') }} <em>{{ metadatum.name }}</em></h2>
@@ -344,6 +350,10 @@
 
                 this.getOptions(0);
             }
+        },
+        mounted() {
+            if (this.$refs.checkboxRadioModal)
+                this.$refs.checkboxRadioModal.focus()
         },
         methods: {
             fetchSelectedLabels() {

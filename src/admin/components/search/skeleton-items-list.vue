@@ -9,7 +9,8 @@
         <div class="field is-pulled-right">
             <b-dropdown
                     position="is-bottom-left"
-                    disabled>
+                    disabled
+                    trap-focus>
                 <button
                         class="button is-white"
                         slot="trigger">

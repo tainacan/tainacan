@@ -372,8 +372,13 @@
                         </section>
                         <b-modal
                                 @close="onCancelNewMetadataMapperMetadata"
-                                :active.sync="isMapperMetadataCreating">
+                                :active.sync="isMapperMetadataCreating"
+                                trap-focus>
                             <div 
+                                    autofocus
+                                    role="dialog"
+                                    tabindex="-1"
+                                    aria-modal
                                     class="tainacan-modal-content">
                                 <div class="tainacan-modal-title">
                                     <h2>{{ $i18n.get('instruction_insert_mapper_metadatum_info') }}</h2>
@@ -527,7 +532,8 @@ export default {
                         this.onEditionCanceled();
                         next();
                     },
-                }
+                },
+                trapFocus: true
             });  
         } else {
             next()
@@ -633,8 +639,9 @@ export default {
                             .catch(() => {
                                 this.$console.log("Error deleting metadatum.")
                             });
-                    },
-                }
+                    }
+                },
+                trapFocus: true
             }); 
         },
         toggleMetadatumEdition(metadatumId) {

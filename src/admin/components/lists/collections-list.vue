@@ -16,7 +16,8 @@
                         v-if="$userCaps.hasCapability('delete_tainacan-collections')"
                         :disabled="!isSelectingCollections"
                         id="bulk-actions-dropdown"
-                        aria-role="list">
+                        aria-role="list"
+                        trap-focus>
                     <button
                             class="button is-white"
                             slot="trigger">
@@ -54,7 +55,8 @@
 
                 <b-dropdown 
                         inline
-                        :style="{ top: cursorPosY + 'px', left: cursorPosX + 'px' }">
+                        :style="{ top: cursorPosY + 'px', left: cursorPosX + 'px' }"
+                        trap-focus>
                     <b-dropdown-item
                             @click="openCollection()" 
                             v-if="!isOnTrash">
@@ -387,8 +389,8 @@ export default {
                         //     })
                         });
                     }
-                
-                }
+                },
+                trapFocus: true
             });
             this.clearContextMenu();
         },
@@ -426,8 +428,9 @@ export default {
                             }
                         }
                         this.allCollectionsOnPageSelected = false;
-                    },
-                }
+                    }
+                },
+                trapFocus: true
             });
         },
         openCollection() {

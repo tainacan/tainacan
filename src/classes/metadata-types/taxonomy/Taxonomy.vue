@@ -134,6 +134,7 @@
                         }
                     },
                     width: 'calc(100% - 8.333333333%)',
+                    trapFocus: true
                 });
             },
             getTermsFromTaxonomy(){

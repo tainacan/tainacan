@@ -92,60 +92,67 @@
                     <p v-if="(!importerSourceInfo.source_special_fields || importerSourceInfo.source_special_fields.length <= 0)">{{ $i18n.get('info_no_special_fields_available') }}<br></p>
                     <b-modal 
                             @close="onMetadatumEditionCanceled()"
-                            :active.sync="isNewMetadatumModalActive">
-                         <b-loading 
-                                :is-full-page="isFullPage" 
-                                :active.sync="isLoadingMetadatumTypes"/>
+                            :active.sync="isNewMetadatumModalActive"
+                            trap-focus>
                         <div 
-                                v-if="selectedMetadatumType == undefined && !isEditingMetadatum"
-                                class="tainacan-modal-content">
-                            <div class="tainacan-modal-title">
-                                <h2>{{ $i18n.get('instruction_select_metadatum_type') }}</h2>
-                                <hr>
-                            </div>
-                            <section class="tainacan-form">
-                                <div class="metadata-types-container">
-                                    <div
-                                            class="metadata-type"
-                                            v-for="(metadatumType, index) of metadatumTypes"
-                                            :key="index"
-                                            @click="onSelectMetadatumType(metadatumType)">
-                                        <h4>{{ metadatumType.name }}</h4>           
-                                    </div>
+                                autofocus="true"
+                                tabindex="-1"
+                                role="dialog"
+                                aria-modal>
+                            <b-loading 
+                                    :is-full-page="isFullPage" 
+                                    :active.sync="isLoadingMetadatumTypes"/>
+                            <div 
+                                    v-if="selectedMetadatumType == undefined && !isEditingMetadatum"
+                                    class="tainacan-modal-content">
+                                <div class="tainacan-modal-title">
+                                    <h2>{{ $i18n.get('instruction_select_metadatum_type') }}</h2>
+                                    <hr>
                                 </div>
-                                <div class="field is-grouped form-submit">
-                                    <div class="control">
-                                        <button
-                                                id="button-cancel-importer-edition"
-                                                class="button is-outlined"
-                                                type="button"
-                                                @click="onMetadatumEditionCanceled(); isNewMetadatumModalActive = false">
-                                            {{ $i18n.get('cancel') }}</button>
+                                <section class="tainacan-form">
+                                    <div class="metadata-types-container">
+                                        <div
+                                                class="metadata-type"
+                                                v-for="(metadatumType, index) of metadatumTypes"
+                                                :key="index"
+                                                @click="onSelectMetadatumType(metadatumType)">
+                                            <h4>{{ metadatumType.name }}</h4>           
+                                        </div>
                                     </div>
-                                </div>
-                            </section>
-                        </div>
-                        <div 
-                                v-if="isEditingMetadatum"
-                                class="tainacan-modal-content">
-                            <div class="tainacan-modal-title">
-                                <h2>{{ $i18n.get('instruction_configure_new_metadatum') }}</h2>
-                                <a 
-                                        class="back-link" 
-                                        @click="isEditingMetadatum = false">
-                                    {{ $i18n.get('back') }}
-                                </a>
-                                <hr>
+                                    <div class="field is-grouped form-submit">
+                                        <div class="control">
+                                            <button
+                                                    id="button-cancel-importer-edition"
+                                                    class="button is-outlined"
+                                                    type="button"
+                                                    @click="onMetadatumEditionCanceled(); isNewMetadatumModalActive = false">
+                                                {{ $i18n.get('cancel') }}</button>
+                                        </div>
+                                    </div>
+                                </section>
                             </div>
-                            <metadatum-edition-form
-                                    :collection-id="collectionId"
-                                    :is-repository-level="false"
-                                    @onEditionFinished="onMetadatumEditionFinished()"
-                                    @onEditionCanceled="onMetadatumEditionCanceled()"
-                                    :index="0"
-                                    :original-metadatum="metadatum"
-                                    :edited-metadatum="editedMetadatum"
-                                    :is-on-modal="true"/>
+                            <div 
+                                    v-if="isEditingMetadatum"
+                                    class="tainacan-modal-content">
+                                <div class="tainacan-modal-title">
+                                    <h2>{{ $i18n.get('instruction_configure_new_metadatum') }}</h2>
+                                    <a 
+                                            class="back-link" 
+                                            @click="isEditingMetadatum = false">
+                                        {{ $i18n.get('back') }}
+                                    </a>
+                                    <hr>
+                                </div>
+                                <metadatum-edition-form
+                                        :collection-id="collectionId"
+                                        :is-repository-level="false"
+                                        @onEditionFinished="onMetadatumEditionFinished()"
+                                        @onEditionCanceled="onMetadatumEditionCanceled()"
+                                        :index="0"
+                                        :original-metadatum="metadatum"
+                                        :edited-metadatum="editedMetadatum"
+                                        :is-on-modal="true"/>
+                            </div>
                         </div>
                     </b-modal>
                     <a

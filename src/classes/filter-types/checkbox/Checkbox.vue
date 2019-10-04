@@ -193,7 +193,8 @@
                         appliedCheckBoxModal: () => {
                             this.loadOptions();
                         } 
-                    }
+                    },
+                    trapFocus: true
                 });
             },
             cleanSearchFromTags(filterTag) {

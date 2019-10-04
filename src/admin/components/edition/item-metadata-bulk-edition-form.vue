@@ -308,7 +308,8 @@ export default {
                         onConfirm: () => {
                             this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
                         }
-                    }
+                    },
+                    trapFocus: true
                 });
                 
             } else if (status == 'trash') {
@@ -336,7 +337,8 @@ export default {
                                     this.isTrashingItems = false;
                                 });
                         }
-                    }
+                    },
+                    trapFocus: true
                 });            
             }
         },
