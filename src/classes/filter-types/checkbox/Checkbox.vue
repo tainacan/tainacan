@@ -153,10 +153,7 @@
                     }
                 }
 
-                this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                    filterId: this.filter.id,
-                    value: onlyLabels.length ? onlyLabels : this.selected,
-                });
+                this.$emit( 'sendValuesToTags', onlyLabels.length ? onlyLabels : this.selected);
             },
             selectedValues() {
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
@@ -220,10 +217,7 @@
                             value: this.selected
                         });
 
-                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                            filterId: this.filter.id,
-                            value: this.selected
-                        });
+                        this.$emit( 'sendValuesToTags', this.selected);
 
                         this.selectedValues();
                     }

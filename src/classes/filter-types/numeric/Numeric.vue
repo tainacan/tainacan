@@ -147,12 +147,8 @@
                     if ( metadata.compare)
                         this.comparator = metadata.compare;
 
-                    if (this.value != undefined) {
-                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                            filterId: this.filter.id,
-                            value: this.comparator + ' ' + this.value
-                        });
-                    }
+                    if (this.value != undefined)
+                        this.$emit('sendValuesToTags', this.comparator + ' ' + this.value);
 
                 } else {
                     return false;
@@ -193,10 +189,7 @@
                     type: 'NUMERIC'
                 });
 
-                this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                    filterId: this.filter.id,
-                    value: this.comparator + ' ' + this.value
-                });
+                this.$emit('sendValuesToTags', this.comparator + ' ' + this.value);
                 
             },
             onChangeComparator(newComparator) {

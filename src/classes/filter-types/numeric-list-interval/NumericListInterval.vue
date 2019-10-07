@@ -85,10 +85,7 @@
 
                 if (values[0] != undefined && values[1] != undefined) {
                     let labelValue = this.filterTypeOptions.intervals[this.selectedInterval].label + (this.filterTypeOptions.showIntervalOnTag ? `(${values[0]}-${values[1]})` : '');
-                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                        filterId: this.filter.id,
-                        value: labelValue
-                    });
+                    this.$emit( 'sendValuesToTags', labelValue);
                 }
             },
             selectedValues(){
@@ -113,10 +110,7 @@
                     );
 
                     let labelValue = this.filterTypeOptions.intervals[this.selectedInterval].label + (this.filterTypeOptions.showIntervalOnTag ? `(${this.valueInit}-${this.valueEnd})` : '');
-                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                        filterId: this.filter.id,
-                        value: labelValue
-                    });
+                    this.$emit( 'sendValuesToTags', labelValue);
                 } else {
                     return false;
                 }

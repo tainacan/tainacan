@@ -39,7 +39,8 @@
                         :filter="filter"
                         :query="query"
                         :is-repository-level="isRepositoryLevel"
-                        @input="listen( $event )"/>
+                        @input="onInput"
+                        @sendValuesToTags="onSendValuesToTags"/>
             </div>
         </b-collapse>
     </b-field>
@@ -60,8 +61,16 @@
             }
         },
         methods: {
-            listen( inputEvent ){
-                this.$eventBusSearch.$emit( 'input', ( inputEvent.metadatum_id ) ?  inputEvent :  inputEvent.detail[0] );
+            onInput(inputEvent){
+                this.$eventBusSearch.$emit(
+                    'input', ( inputEvent.metadatum_id ) ?  inputEvent :  inputEvent.detail[0] 
+                );
+            },
+            onSendValuesToTags(values) {
+                this.$eventBusSearch.$emit('sendValuesToTags', {
+                    filterId: this.filter.id,
+                    value: values
+                });
             }
         }
     }

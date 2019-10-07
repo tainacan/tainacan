@@ -196,10 +196,7 @@
                         
                         this.value = new Date(textValue);
 
-                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                            filterId: this.filter.id,
-                            value: this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat)
-                        });
+                        this.$emit('sendValuesToTags', this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat));
                     }
 
                 } else {
@@ -261,10 +258,7 @@
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     value: valueQuery
                 });
-                this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                    filterId: this.filter.id,
-                    value: this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat)
-                });
+                this.$emit('sendValuesToTags', this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat));
                 
             },
             onChangeComparator(newComparator) {

@@ -98,12 +98,8 @@
                     value: values
                 });
 
-                if (values[0] != undefined && values[1] != undefined) {
-                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                        filterId: this.filter.id,
-                        value: values[0] + ' - ' + values[1]
-                    });
-                }
+                if (values[0] != undefined && values[1] != undefined)
+                    this.$emit('sendValuesToTags', values[0] + ' - ' + values[1]);
             },
             selectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
@@ -117,12 +113,8 @@
                         this.valueEnd = metaquery.value[1];
                     }
 
-                    if (metaquery.value[0] != undefined && metaquery.value[1] != undefined) {
-                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                            filterId: this.filter.id,
-                            value: this.valueInit + ' - ' + this.valueEnd
-                        });
-                    }
+                    if (metaquery.value[0] != undefined && metaquery.value[1] != undefined)
+                        this.$emit( 'sendValuesToTags', this.valueInit + ' - ' + this.valueEnd);
 
                 } else {
                     return false;

@@ -110,10 +110,7 @@
                     value: values
                 });
 
-                this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                    filterId: this.filter.id,
-                    value: labels
-                });
+                this.$emit( 'sendValuesToTags', labels);
             }
         },
         methods: {
@@ -205,10 +202,7 @@
                             value: values
                         });
 
-                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                            filterId: this.filter.id,
-                            value: labels
-                        });
+                        this.$emit( 'sendValuesToTags',  labels);
                     }
                 }
             }

@@ -58,7 +58,7 @@
             this.type = this.filter.metadatum.metadata_type;
 
             this.loadOptions();
-            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTag);
+            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
 
             if (this.isUsingElasticSearch)
                 this.$eventBusSearch.$on('isLoadingItems', this.updatesIsLoading);
@@ -254,10 +254,7 @@
                     }
                 }
 
-                this.$eventBusSearch.$emit("sendValuesToTags", {
-                    filterId: this.filter.id,
-                    value: onlyLabels
-                });
+                this.$emit("sendValuesToTags", onlyLabels);
             },
             openCheckboxModal(parent) {
                 this.$buefy.modal.open({
@@ -283,7 +280,7 @@
                     trapFocus: true
                 });
             },
-            cleanSearchFromTag(filterTag) {
+            cleanSearchFromTags(filterTag) {
                 if (filterTag.filterId == this.filter.id) {
 
                     let selectedOption = this.options.find(option => option.label == filterTag.singleValue);
@@ -304,10 +301,7 @@
                                 terms: this.selected
                             });
 
-                            this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                                filterId: this.filter.id,
-                                value: this.selected
-                            });
+                            this.$emit( 'sendValuesToTags', this.selected);
 
                             this.selectedValues();
                         }

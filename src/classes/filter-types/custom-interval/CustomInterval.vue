@@ -193,12 +193,8 @@
                         this.isValid = true;
                     }
 
-                    if (metadata.value[0] != undefined && metadata.value[1] != undefined) {
-                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                            filterId: this.filter.id,
-                            value: this.parseDateToNavigatorLanguage(metadata.value[0]) + ' - ' + this.parseDateToNavigatorLanguage(metadata.value[1])
-                        });
-                    }
+                    if (metadata.value[0] != undefined && metadata.value[1] != undefined)
+                        this.$emit( 'sendValuesToTags', this.parseDateToNavigatorLanguage(metadata.value[0]) + ' - ' + this.parseDateToNavigatorLanguage(metadata.value[1]));
 
                 } else {
                     return false;
@@ -302,12 +298,8 @@
                     value: values
                 });
 
-                if (values[0] != undefined && values[1] != undefined) {
-                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                        filterId: this.filter.id,
-                        value: this.parseDateToNavigatorLanguage(values[0]) + ' - ' + this.parseDateToNavigatorLanguage(values[1])
-                    });
-                }
+                if (values[0] != undefined && values[1] != undefined)
+                    this.$emit( 'sendValuesToTags', this.parseDateToNavigatorLanguage(values[0]) + ' - ' + this.parseDateToNavigatorLanguage(values[1]));
             }
         },
         beforeDestroy() {

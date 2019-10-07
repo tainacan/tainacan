@@ -78,12 +78,8 @@
         mixins: [filter_type_mixin],
         watch: {
             selected(value) {
-                if (value) {
-                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                        filterId: this.filter.id,
-                        value: value
-                    });
-                }
+                if (value)
+                    this.$emit('sendValuesToTags', value);
             }
         },
         computed: {

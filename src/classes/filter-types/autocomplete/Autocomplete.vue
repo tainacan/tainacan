@@ -155,10 +155,7 @@
                                 instance.label = item.title;
                                 instance.selected = item.title;
          
-                                this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                                    filterId: instance.filter.id,
-                                    value: instance.label
-                                });
+                                this.$emit( 'sendValuesToTags', instance.label);
                             })
                             .catch(error => {
                                 this.$console.log(error);
@@ -168,10 +165,7 @@
                         instance.label = metadata.value;
                         instance.selected = metadata.value;
 
-                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                            filterId: instance.filter.id,
-                            value: metadata.value
-                        });
+                        this.$emit( 'sendValuesToTags', metadata.value);
                     }
                 } else {
                     return false;

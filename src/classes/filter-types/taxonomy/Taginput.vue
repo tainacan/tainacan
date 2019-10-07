@@ -57,7 +57,7 @@
                     this.selectedValues( metadatum.metadata_type_options.taxonomy_id );
                 });
             
-            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTag);
+            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
         },
         data(){
             return {
@@ -101,10 +101,7 @@
                     terms: values
                 });
 
-                this.$eventBusSearch.$emit("sendValuesToTags", {
-                    filterId: this.filter.id,
-                    value: labels
-                });
+                this.$emit("sendValuesToTags", labels);
             }
         },
         methods: {
@@ -185,7 +182,7 @@
                         this.$console.log(error);
                     });
             },
-            cleanSearchFromTag(filterTag) {
+            cleanSearchFromTags(filterTag) {
                                
                 if (filterTag.filterId == this.filter.id) {
 
@@ -209,10 +206,7 @@
                             collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                             terms: values
                         });
-                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                            filterId: this.filter.id,
-                            value: labels
-                        });
+                        this.$emit( 'sendValuesToTags', labels);
                    }
                 }
             }
