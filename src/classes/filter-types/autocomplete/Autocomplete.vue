@@ -120,7 +120,7 @@
                     this.getOptionsValuesCancel = promise.source;
                 
                 } else {
-                    this.cleanSearch();
+                    this.clearSearch();
                 }
             }, 500),
             selectedValues(){
@@ -161,11 +161,11 @@
                     return false;
                 }
             },
-            cleanSearchFromTags(filterTag) {
+            clearSearchFromTags(filterTag) {
                 if (filterTag.filterId == this.filter.id)
-                    this.cleanSearch();
+                    this.clearSearch();
             },
-            cleanSearch(){
+            clearSearch(){
                 this.results = '';
                 this.label = '';
                 this.selected = '';

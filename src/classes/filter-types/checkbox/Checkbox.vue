@@ -185,6 +185,7 @@
                 });
             },
             cleanSearchFromTags(filterTag) {
+
                 if (filterTag.filterId == this.filter.id) {
 
                     let selectedIndex = this.selected.findIndex(option => option == filterTag.singleValue);

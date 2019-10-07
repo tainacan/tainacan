@@ -105,7 +105,6 @@
         data(){
             return {
                 value: null,
-                clear: false,
                 filterTypeOptions: [],
                 metadatum_object: {},
                 comparator: '=' // =, !=, >, >=, <, <=
@@ -153,8 +152,6 @@
                     this.clearSearch();
             },
             clearSearch(){
-
-                this.clear = true;
 
                 this.$emit('input', {
                     filter: 'numeric',

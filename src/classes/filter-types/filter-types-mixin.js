@@ -19,15 +19,16 @@ export const filterTypeMixin = {
         isRepositoryLevel: Boolean
     },
     created() {
+        this.collectionId = this.filter.collection_id ? this.filter.collection_id : this.collectionId;
+        this.metadatumId = this.filter.metadatum.metadatum_id ? this.filter.metadatum.metadatum_id : this.metadatumId;
+    },
+    mounted() {
         this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
 
         // We listen to event, but reload event if hasFiltered is negative, as 
         // an empty query also demands filters reloading.
         if (this.options != undefined)
             this.$eventBusSearch.$on('hasFiltered', this.reloadOptionsDueToFiltering);
-
-        this.collectionId = this.filter.collection_id ? this.filter.collection_id : this.collectionId;
-        this.metadatumId = this.filter.metadatum.metadatum_id ? this.filter.metadatum.metadatum_id : this.metadatumId;
     },
     computed: {
         facetsFromItemSearch() {
