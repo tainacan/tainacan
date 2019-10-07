@@ -18,11 +18,10 @@ export default {
                 this.$on('input', data => {
                     this.$store.dispatch('search/setPage', 1);
 
-                    if( data.taxonomy ){
+                    if (data.taxonomy)
                         this.add_taxquery(data);
-                    } else {
+                    else
                         this.add_metaquery(data);
-                    }
                     
                     this.updateURLQueries();
                 });

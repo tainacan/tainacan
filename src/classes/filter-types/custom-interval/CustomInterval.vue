@@ -171,7 +171,7 @@
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
-                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatumId );
+                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
                     if( metadata.value && metadata.value.length > 0 && this.type === 'numeric'){

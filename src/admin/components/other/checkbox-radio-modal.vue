@@ -683,21 +683,21 @@
             applyFilter() {
                 this.$parent.close();
 
-                if(this.isTaxonomy && this.isFilter){
+                if (this.isTaxonomy && this.isFilter) {
                     this.$eventBusSearch.$emit('input', {
                         filter: 'checkbox',
                         taxonomy: this.taxonomy,
                         compare: 'IN',
-                        metadatumId: this.metadatumId ? this.metadatumId : this.filter.metatadum_id,
-                        collectionId: this.collectionId ? this.collectionId : this.filter.collection_id,
+                        metadatum_id: this.metadatumId ? this.metadatumId : this.filter.metatadum_id,
+                        collection_id: this.collectionId ? this.collectionId : this.filter.collection_id,
                         terms: this.selected
                     });         
                 } else if(this.isFilter) {
                     this.$eventBusSearch.$emit('input', {
                         filter: 'checkbox',
                         compare: 'IN',
-                        metadatumId: this.metadatumId ? this.metadatumId : this.filter.metatadum_id,
-                        collectionId: this.collectionId ? this.collectionId : this.filter.collection_id,
+                        metadatum_id: this.metadatumId ? this.metadatumId : this.filter.metatadum_id,
+                        collection_id: this.collectionId ? this.collectionId : this.filter.collection_id,
                         value: this.selected,
                     });
                 } else {
