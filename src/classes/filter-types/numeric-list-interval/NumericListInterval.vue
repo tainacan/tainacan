@@ -8,7 +8,7 @@
                 {{ $i18n.get('label_clean') }}
             </option>
             <option
-                    v-for="(interval, index) in options.intervals"
+                    v-for="(interval, index) in filterTypeOptions.intervals"
                     :value="index"
                     :key="index">
                 {{ interval.label }}
@@ -23,7 +23,7 @@
         created() {
             this.collectionId = this.filter.collection_id;
             this.metadatumId = this.filter.metadatum.metadatum_id;
-            this.options = this.filter.filter_type_options;
+            this.filterTypeOptions = this.filter.filter_type_options;
             this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
         },
         data() {
@@ -33,7 +33,7 @@
                 isValid: false,
                 collectionId: '',
                 metadatumId: '',
-                options: [],
+                filterTypeOptions: [],
                 selectedInterval: ''
             }
         },
@@ -52,8 +52,8 @@
             },
             changeInterval() {
                 if (this.selectedInterval !== '') {
-                    this.valueInit = this.options.intervals[this.selectedInterval].from;
-                    this.valueEnd = this.options.intervals[this.selectedInterval].to;
+                    this.valueInit = this.filterTypeOptions.intervals[this.selectedInterval].from;
+                    this.valueEnd = this.filterTypeOptions.intervals[this.selectedInterval].to;
                     this.emit();
                 } else {
                     this.clearSearch();
@@ -84,7 +84,7 @@
                 });
 
                 if (values[0] != undefined && values[1] != undefined) {
-                    let labelValue = this.options.intervals[this.selectedInterval].label + (this.options.showIntervalOnTag ? `(${values[0]}-${values[1]})` : '');
+                    let labelValue = this.filterTypeOptions.intervals[this.selectedInterval].label + (this.filterTypeOptions.showIntervalOnTag ? `(${values[0]}-${values[1]})` : '');
                     this.$eventBusSearch.$emit( 'sendValuesToTags', {
                         filterId: this.filter.id,
                         value: labelValue
@@ -108,11 +108,11 @@
                     this.valueInit = metaquery.value[0];
                     this.valueEnd = metaquery.value[1];
 
-                    this.selectedInterval = this.options.intervals.findIndex(
+                    this.selectedInterval = this.filterTypeOptions.intervals.findIndex(
                         anInterval => anInterval.from == this.valueInit && anInterval.to == this.valueEnd
                     );
 
-                    let labelValue = this.options.intervals[this.selectedInterval].label + (this.options.showIntervalOnTag ? `(${this.valueInit}-${this.valueEnd})` : '');
+                    let labelValue = this.filterTypeOptions.intervals[this.selectedInterval].label + (this.filterTypeOptions.showIntervalOnTag ? `(${this.valueInit}-${this.valueEnd})` : '');
                     this.$eventBusSearch.$emit( 'sendValuesToTags', {
                         filterId: this.filter.id,
                         value: labelValue

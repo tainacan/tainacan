@@ -4,7 +4,7 @@
                 :aria-labelledby="labelId"
                 size="is-small"
                 @input="validate_values()"
-                :step="options.step"
+                :step="filterTypeOptions.step"
                 v-model="valueInit"
                 />
         <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
@@ -12,7 +12,7 @@
                 :aria-labelledby="labelId"
                 size="is-small"
                 @input="validate_values()"
-                :step="options.step"
+                :step="filterTypeOptions.step"
                 v-model="valueEnd"/>
         
     </div>
@@ -24,7 +24,7 @@
         created() {
             this.collectionId = this.filter.collection_id;
             this.metadatumId = this.filter.metadatum.metadatum_id;
-            this.options = this.filter.filter_type_options;
+            this.filterTypeOptions = this.filter.filter_type_options;
 
             this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
         },
@@ -35,7 +35,7 @@
                 isValid: false,
                 collectionId: '',
                 metadatum: '',
-                options: [],
+                filterTypeOptions: [],
                 withError: false
             }
         },

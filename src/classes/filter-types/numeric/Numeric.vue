@@ -63,7 +63,7 @@
         <b-numberinput
                 :aria-labelledby="labelId"
                 size="is-small"
-                :step="Number(options.step)"
+                :step="Number(filterTypeOptions.step)"
                 @input="emit()"
                 v-model="value"/>
     </div>
@@ -78,7 +78,7 @@
         created() {
             this.collection = this.filter.collection_id;
             this.metadatum = (typeof this.filter.metadatum.metadatum_id == 'object' ? this.filter.metadatum.metadatum_id.metadatum_id : this.filter.metadatum.metadatum_id);
-            this.options = this.filter.filter_type_options;
+            this.filterTypeOptions = this.filter.filter_type_options;
 
             let endpoint = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 
@@ -105,7 +105,7 @@
             return {
                 value: null,
                 clear: false,
-                options: [],
+                filterTypeOptions: [],
                 collection: '',
                 metadatum: '',
                 metadatum_object: {},

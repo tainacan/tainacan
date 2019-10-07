@@ -60,7 +60,7 @@
             </b-dropdown-item>
         </b-dropdown>
         <!-- <b-numberinput 
-                v-if="options.type == 'year'"
+                v-if="filterTypeOptions.type == 'year'"
                 :placeholder="$i18n.get('instruction_type_value_year')"
                 :aria-labelledby="labelId"
                 size="is-small"
@@ -101,10 +101,10 @@
                     $i18n.get('datepicker_month_november'),
                     $i18n.get('datepicker_month_december')
                 ]"/>
-                <!-- OPTIONS FOR TYPE 
+                <!-- filterTypeOptions FOR TYPE 
                     v-else
-                    :type="options.type == 'month' ? 'month' : null" 
-                    :placeholder="options.type == 'month' ? $i18n.get('instruction_select_a_date') : $i18n.get('instruction_select_a_month')"
+                    :type="filterTypeOptions.type == 'month' ? 'month' : null" 
+                    :placeholder="filterTypeOptions.type == 'month' ? $i18n.get('instruction_select_a_date') : $i18n.get('instruction_select_a_month')"
                 --> 
     </div>
 </template>
@@ -119,7 +119,7 @@
         created() {
             this.collection = this.filter.collection_id;
             this.metadatum = (typeof this.filter.metadatum.metadatum_id == 'object' ? this.filter.metadatum.metadatum_id.metadatum_id : this.filter.metadatum.metadatum_id);
-            this.options = this.filter.filter_type_options;
+            this.filterTypeOptions = this.filter.filter_type_options;
 
             let endpoint = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 
@@ -146,7 +146,7 @@
             return {
                 value: null,
                 clear: false,
-                options: [],
+                filterTypeOptions: [],
                 collection: '',
                 metadatum: '',
                 metadatum_object: {},
