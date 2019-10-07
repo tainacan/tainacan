@@ -112,10 +112,15 @@
 <script>
     import { tainacan as axios } from '../../../js/axios/axios';
     import { wpAjax, dateInter } from "../../../admin/js/mixins";
+    import { filterTypeMixin } from '../filter-types-mixin';
     import moment from 'moment';
 
     export default {
-        mixins: [ wpAjax, dateInter ],
+        mixins: [
+            wpAjax,
+            dateInter,
+            filterTypeMixin
+        ],
         created() {
             this.collection = this.filter.collection_id;
             this.metadatum = (typeof this.filter.metadatum.metadatum_id == 'object' ? this.filter.metadatum.metadatum_id.metadatum_id : this.filter.metadatum.metadatum_id);
@@ -137,7 +142,6 @@
                 .catch(error => {
                     this.$console.log(error);
                 });
-            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
         },
         mounted() {
             this.selectedValues();
@@ -265,9 +269,6 @@
                 this.comparator = newComparator;
                 this.emit();
             }
-        },
-        beforeDestroy() {
-            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
         }
     }
 </script>

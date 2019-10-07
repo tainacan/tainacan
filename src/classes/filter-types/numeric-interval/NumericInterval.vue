@@ -19,14 +19,13 @@
 </template>
 
 <script>
-
+    import { filterTypeMixin } from '../filter-types-mixin';
     export default {
+        mixins: [ filterTypeMixin ],
         created() {
             this.collectionId = this.filter.collection_id;
             this.metadatumId = this.filter.metadatum.metadatum_id;
             this.filterTypeOptions = this.filter.filter_type_options;
-
-            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
         },
         data(){
             return {
@@ -123,9 +122,6 @@
         },
         mounted() {
             this.selectedValues();
-        },
-        beforeDestroy() {
-            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
         }
     }
 </script>

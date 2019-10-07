@@ -2,7 +2,7 @@ import qs from 'qs';
 import axios from '../../js/axios/axios';
 import { mapGetters } from 'vuex';
 
-export const filter_type_mixin = {
+export const filterTypeMixin = {
     data () {
         return {
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
@@ -16,9 +16,12 @@ export const filter_type_mixin = {
         query: {}
     },
     created() {
+        this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
+
         // We listen to event, but reload event if hasFiltered is negative, as 
         // an empty query also demands filters reloading.
-        this.$eventBusSearch.$on('hasFiltered', this.reloadOptionsDueToFiltering);
+        if (this.options != undefined)
+            this.$eventBusSearch.$on('hasFiltered', this.reloadOptionsDueToFiltering);
     },
     computed: {
         facetsFromItemSearch() {
@@ -318,6 +321,7 @@ export const filter_type_mixin = {
         if (this.getOptionsValuesCancel != undefined)
             this.getOptionsValuesCancel.cancel('Facet search Canceled.');
     
+        this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
         this.$eventBusSearch.$off('hasFiltered', this.reloadOptionsDueToFiltering);
     },
 };

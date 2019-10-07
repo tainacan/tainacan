@@ -41,7 +41,7 @@
 
 <script>
     import { tainacan as axios, isCancel } from '../../../js/axios/axios'
-    import { filter_type_mixin } from '../filter-types-mixin'
+    import { filterTypeMixin } from '../filter-types-mixin';
     // import qs from 'qs';
 
     export default {
@@ -68,8 +68,6 @@
                 .catch(error => {
                     this.$console.log(error);
                 });
-
-            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
         },
         data(){
             return {
@@ -87,7 +85,7 @@
             isRepositoryLevel: Boolean,
             labelId: String
         },
-        mixins: [filter_type_mixin],
+        mixins: [filterTypeMixin],
         methods: {
             setResults(option){
                 if(!option)
@@ -186,9 +184,6 @@
                     value: ''
                 });
             },
-        },
-        beforeDestroy() {
-            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
         }
     }
 </script>

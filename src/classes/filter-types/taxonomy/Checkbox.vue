@@ -50,15 +50,16 @@
     import { tainacan as axios, CancelToken, isCancel } from '../../../js/axios/axios';
     import { mapGetters } from 'vuex';
     import CheckboxRadioModal from '../../../admin/components/other/checkbox-radio-modal.vue';
-
+    import { filterTypeMixin } from '../filter-types-mixin';
+    
     export default {
+        mixins: [ filterTypeMixin ],
         created(){
             this.collection = this.filter.collection_id;
             this.metadatum = this.filter.metadatum.metadatum_id ;
             this.type = this.filter.metadatum.metadata_type;
 
             this.loadOptions();
-            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
 
             if (this.isUsingElasticSearch)
                 this.$eventBusSearch.$on('isLoadingItems', this.updatesIsLoading);
@@ -348,7 +349,6 @@
             }
         },
         beforeDestroy() {
-            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
             
             // Cancels previous Request
             if (this.getOptionsValuesCancel != undefined)

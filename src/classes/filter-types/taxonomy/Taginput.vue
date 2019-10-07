@@ -38,8 +38,10 @@
 <script>
     import qs from 'qs';
     import { tainacan as axios } from '../../../js/axios/axios';
-
+    import { filterTypeMixin } from '../filter-types-mixin';
+    
     export default {
+        mixins: [ filterTypeMixin ],
         created(){
             this.collection = this.filter.collection_id;
             this.metadatum = this.filter.metadatum.metadatum_id;
@@ -56,8 +58,6 @@
                     let metadatum = res.data;
                     this.selectedValues( metadatum.metadata_type_options.taxonomy_id );
                 });
-            
-            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
         },
         data(){
             return {
@@ -210,9 +210,6 @@
                    }
                 }
             }
-        },
-        beforeDestroy() {
-            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
         }
     }
 </script>

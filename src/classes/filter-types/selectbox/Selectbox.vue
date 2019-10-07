@@ -26,7 +26,7 @@
 
 <script>
     import { tainacan as axios, isCancel } from '../../../js/axios/axios';
-    import { filter_type_mixin } from '../filter-types-mixin'
+    import { filterTypeMixin } from '../filter-types-mixin';
 
     export default {
         created(){
@@ -54,8 +54,6 @@
                 .catch(error => {
                     this.$console.error(error);
                 });
-            
-            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
 
             if (this.isUsingElasticSearch) {
                 this.$eventBusSearch.$on('isLoadingItems', isLoading => {
@@ -75,7 +73,7 @@
                 metadatum: ''
             }
         },
-        mixins: [filter_type_mixin],
+        mixins: [filterTypeMixin],
         watch: {
             selected(value) {
                 if (value)
@@ -131,8 +129,6 @@
             }
         },
         beforeDestroy() {
-            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
-
             if (this.isUsingElasticSearch)
                 this.$eventBusSearch.$off('isLoadingItems');
         }

@@ -278,11 +278,11 @@
 <script>
     import qs from 'qs';
     import { tainacan as axios, isCancel } from '../../../js/axios/axios';
-    import { filter_type_mixin } from '../../../classes/filter-types/filter-types-mixin';
+    import { filterTypeMixin } from '../../../classes/filter-types/filter-types-mixin';
 
     export default {
         name: 'CheckboxFilterModal',
-        mixins: [ filter_type_mixin ],
+        mixins: [ filterTypeMixin ],
         props: {
             isFilter: {
                 type: Boolean,

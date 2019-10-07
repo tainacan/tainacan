@@ -40,7 +40,7 @@
 
 <script>
     import { tainacan as axios, isCancel } from '../../../js/axios/axios';
-    import { filter_type_mixin } from '../filter-types-mixin';
+    import { filterTypeMixin } from '../filter-types-mixin';
     import CheckboxRadioModal from '../../../admin/components/other/checkbox-radio-modal.vue';
 
     export default {
@@ -69,8 +69,6 @@
                     this.$console.log(error);
                 });
 
-            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
-
             if (this.isUsingElasticSearch) {
                 this.isLoadingOptions = false;
                 this.$eventBusSearch.$on('isLoadingItems', this.updatesIsLoading);
@@ -89,7 +87,7 @@
                 metadatum_object: {}
             }
         },
-        mixins: [filter_type_mixin],
+        mixins: [filterTypeMixin],
         watch: {
             selected: function(){
                 //this.selected = val;
@@ -228,8 +226,7 @@
             }
         },
         beforeDestroy() {
-            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
-            
+          
             if (this.isUsingElasticSearch)
                 this.$eventBusSearch.$off('isLoadingItems', this.updatesIsLoading);
         }
