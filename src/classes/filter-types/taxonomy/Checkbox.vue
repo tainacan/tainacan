@@ -55,8 +55,6 @@
     export default {
         mixins: [ filterTypeMixin ],
         created(){
-            this.collection = this.filter.collection_id;
-            this.metadatum = this.filter.metadatum.metadatum_id ;
             this.type = this.filter.metadatum.metadata_type;
 
             this.loadOptions();
@@ -78,19 +76,12 @@
                 isLoading: true,
                 options: [],
                 type: '',
-                collection: '',
-                metadatum: '',
                 selected: [],
                 taxonomy: '',
                 taxonomy_id: Number,
                 getOptionsValuesCancel: undefined,
                 isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
             }
-        },
-        props: {
-            filter: Object,
-            labelId: '',
-            query: Object
         },
         watch: {
             selected: function(){
@@ -125,10 +116,10 @@
 
                     let route = '';
                     
-                    if (this.collection == 'default')
-                        route = `/facets/${this.metadatum}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
+                    if (this.collectionId == 'default')
+                        route = `/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
                     else
-                        route = `/collection/${this.collection}/facets/${this.metadatum}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
+                        route = `/collection/${this.collectionId}/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
 
                     this.options = [];
 
@@ -194,8 +185,8 @@
                     filter: 'checkbox',
                     taxonomy: this.taxonomy,
                     compare: 'IN',
-                    metadatum_id: this.metadatum,
-                    collection_id: this.collection,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
                     terms: this.selected
                 });
                 
@@ -219,10 +210,10 @@
 
                         // let route = '';
                         
-                        // if (this.collection == 'default')
-                        //     route = '/facets/' + this.metadatum +`?term_id=${selected}&fetch_only=name,id`;
+                        // if (this.collectionId == 'default')
+                        //     route = '/facets/' + this.metadatumId +`?term_id=${selected}&fetch_only=name,id`;
                         // else
-                        //     route = '/collection/'+ this.collection +'/facets/' + this.metadatum +`?term_id=${selected}&fetch_only=name,id`;
+                        //     route = '/collection/'+ this.collectionId +'/facets/' + this.metadatumId +`?term_id=${selected}&fetch_only=name,id`;
                         
                         // axios.get(route)
                         //     .then( res => {
@@ -266,9 +257,9 @@
                         filter: this.filter,
                         taxonomy_id: this.taxonomy_id,
                         selected: this.selected,
-                        metadatum_id: this.metadatum,
+                        metadatumId: this.metadatumId,
                         taxonomy: this.taxonomy,
-                        collection_id: this.collection,
+                        collectionId: this.collectionId,
                         isTaxonomy: true,
                         query: this.query
                     },                    
@@ -297,8 +288,8 @@
                                 filter: 'checkbox',
                                 compare: 'IN',
                                 taxonomy: this.taxonomy,
-                                metadatum_id: this.metadatum,
-                                collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                                metadatum_id: this.metadatumId,
+                                collection_id: this.collectionId,
                                 terms: this.selected
                             });
 

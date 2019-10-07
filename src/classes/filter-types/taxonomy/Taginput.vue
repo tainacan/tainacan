@@ -12,7 +12,7 @@
                 field="label"
                 attached
                 :aria-close-label="$i18n.get('remove_value')"
-                :aria-labelledby="labelId"
+                :aria-labelledby="'filter-label-id-' + filter.id"
                 :class="{'has-selected': selected != undefined && selected != []}"
                 @typing="search"
                 :placeholder="$i18n.get('info_type_to_add_terms')">
@@ -43,14 +43,12 @@
     export default {
         mixins: [ filterTypeMixin ],
         created(){
-            this.collection = this.filter.collection_id;
-            this.metadatum = this.filter.metadatum.metadatum_id;
             this.type = this.filter.metadatum.metadata_type;
 
-            let endpoint = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
+            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
 
-            if (this.isRepositoryLevel || this.collection == 'default'){
-                endpoint = '/metadata/'+ this.metadatum;
+            if (this.isRepositoryLevel || this.collectionId == 'default'){
+                endpoint = '/metadata/' + this.metadatumId;
             }
 
             axios.get(endpoint)
@@ -66,19 +64,9 @@
                 options: [],
                 isLoading: false,
                 type: '',
-                collection: '',
-                metadatum: '',
                 taxonomy: '',
                 isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
             }
-        },
-        props: {
-            filter: Object,
-            labelId: '',
-            query: {
-                type: Object // concentrate all attributes metadatum id and type
-            },
-            isRepositoryLevel: Boolean,
         },
         watch: {
             selected( value ){
@@ -96,8 +84,8 @@
                     filter: 'taginput',
                     compare: 'IN',
                     taxonomy: this.taxonomy,
-                    metadatum_id: ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
                     terms: values
                 });
 
@@ -114,7 +102,7 @@
                     'search': query
                 };
 
-                let endpoint = this.isRepositoryLevel ? '/facets/' + this.metadatum : '/collection/'+ this.collection +'/facets/' + this.metadatum;
+                let endpoint = this.isRepositoryLevel ? '/facets/' + this.metadatumId : '/collection/'+ this.collectionId +'/facets/' + this.metadatumId;
 
                 endpoint += '?order=asc&' + qs.stringify(query_items);
                 let valuesToIgnore = [];
@@ -202,8 +190,8 @@
                             filter: 'taginput',
                             compare: 'IN',
                             taxonomy: this.taxonomy,
-                            metadatum_id: ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum,
-                            collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                            metadatum_id: this.metadatumId,
+                            collection_id: this.collectionId,
                             terms: values
                         });
                         this.$emit( 'sendValuesToTags', labels);

@@ -3,7 +3,7 @@
         <!-- Date -->
         <div v-if="type === 'date'">
             <b-datepicker
-                    :aria-labelledby="labelId"
+                    :aria-labelledby="'filter-label-id-' + filter.id"
                     :placeholder="$i18n.get('label_selectbox_init')"
                     v-model="date_init"
                     size="is-small"
@@ -24,7 +24,7 @@
                     ]"/>
             <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
             <b-datepicker
-                    :aria-labelledby="labelId"
+                    :aria-labelledby="'filter-label-id-' + filter.id"
                     :placeholder="$i18n.get('label_selectbox_init')"
                     v-model="date_end"
                     size="is-small"
@@ -48,14 +48,14 @@
         <!-- Numeric -->
         <div v-else>
             <b-numberinput
-                    :aria-labelledby="labelId"
+                    :aria-labelledby="'filter-label-id-' + filter.id"
                     size="is-small"
                     step="any"
                     @input="validate_values()"
                     v-model="value_init"/>
             <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
             <b-numberinput
-                    :aria-labelledby="labelId"
+                    :aria-labelledby="'filter-label-id-' + filter.id"
                     size="is-small"
                     step="any"
                     @input="validate_values()"
@@ -78,13 +78,10 @@
             filterTypeMixin
         ],
         created() {
-            this.collection = this.filter.collection_id;
-            this.metadatum = this.filter.metadatum.metadatum_id;
+            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
 
-            let endpoint = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
-
-            if (this.isRepositoryLevel || this.collection == 'default'){
-                endpoint = '/metadata/'+ this.metadatum;
+            if (this.isRepositoryLevel || this.collectionId == 'default'){
+                endpoint = '/metadata/'+ this.metadatumId;
             }
             
             axios.get(endpoint)
@@ -110,16 +107,8 @@
                 isValid: false,
                 clear: false,
                 type: 'numeric',
-                collection: '',
-                metadatum: '',
                 metadatum_object: {}
             }
-        },
-        props: {
-            filter:  Object,
-            labelId: '',
-            query: Object,
-            isRepositoryLevel: Boolean,
         },
         watch: {
             isTouched( val ){
@@ -182,7 +171,7 @@
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
-                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
+                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatumId );
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
                     if( metadata.value && metadata.value.length > 0 && this.type === 'numeric'){
@@ -228,8 +217,8 @@
                 this.$emit('input', {
                     filter: 'range',
                     compare: 'BETWEEN',
-                    metadatum_id: this.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
                     value: ''
                 });
 
@@ -296,8 +285,8 @@
                     filter: 'range',
                     type: type,
                     compare: 'BETWEEN',
-                    metadatum_id: this.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
                     value: values
                 });
 

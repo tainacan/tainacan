@@ -5,7 +5,7 @@
         <b-select
                 v-if="!isLoadingOptions"
                 :value="selected"
-                :aria-labelledby="labelId"
+                :aria-labelledby="'filter-label-id-' + filter.id"
                 @input="onSelect($event)"
                 :placeholder="$i18n.get('label_selectbox_init')"
                 expanded>
@@ -30,14 +30,12 @@
 
     export default {
         created(){
-            this.collection = this.filter.collection_id;
-            this.metadatum = this.filter.metadatum.metadatum_id;
             const vm = this;
 
-            let endpoint = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
+            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
 
-            if (this.isRepositoryLevel || this.collection == 'default'){
-                endpoint = '/metadata/'+ this.metadatum;
+            if (this.isRepositoryLevel || this.collectionId == 'default'){
+                endpoint = '/metadata/'+ this.metadatumId;
             }
 
             axios.get(endpoint)
@@ -61,16 +59,10 @@
                 });
             }
         },
-        props: {
-            isRepositoryLevel: Boolean,
-            labelId: String
-        },
         data(){
             return {
                 options: [],
-                type: '',
-                collection: '',
-                metadatum: ''
+                type: ''
             }
         },
         mixins: [filterTypeMixin],
@@ -84,7 +76,7 @@
             selected() {
                 if ( this.query && this.query.metaquery && Array.isArray( this.query.metaquery ) ) {
 
-                    let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
+                    let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatumId );
                     if ( index >= 0){
                         let metadata = this.query.metaquery[ index ];
                         return metadata.value;
@@ -100,7 +92,7 @@
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
                 let promise = null;
-                promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel );
+                promise = this.getValuesPlainText( this.metadatumId, null, this.isRepositoryLevel );
                 promise.request
                     .then(() => {
                     })
@@ -118,8 +110,8 @@
                 //this.selected = value;
                 this.$emit('input', {
                     filter: 'selectbox',
-                    metadatum_id: this.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
                     value: ( value ) ? value : ''
                 });
             },

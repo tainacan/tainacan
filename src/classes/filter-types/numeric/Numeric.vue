@@ -61,7 +61,7 @@
         </b-dropdown>
 
         <b-numberinput
-                :aria-labelledby="labelId"
+                :aria-labelledby="'filter-label-id-' + filter.id"
                 size="is-small"
                 :step="Number(filterTypeOptions.step)"
                 @input="emit()"
@@ -80,14 +80,12 @@
             filterTypeMixin
         ],
         created() {
-            this.collection = this.filter.collection_id;
-            this.metadatum = (typeof this.filter.metadatum.metadatum_id == 'object' ? this.filter.metadatum.metadatum_id.metadatum_id : this.filter.metadatum.metadatum_id);
             this.filterTypeOptions = this.filter.filter_type_options;
 
-            let endpoint = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
+            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
 
-            if (this.isRepositoryLevel || this.collection == 'default')
-                endpoint = '/metadata/'+ this.metadatum;
+            if (this.isRepositoryLevel || this.collectionId == 'default')
+                endpoint = '/metadata/'+ this.metadatumId;
         
             axios.get(endpoint)
                 .then( res => {
@@ -109,17 +107,9 @@
                 value: null,
                 clear: false,
                 filterTypeOptions: [],
-                collection: '',
-                metadatum: '',
                 metadatum_object: {},
                 comparator: '=' // =, !=, >, >=, <, <=
             }
-        },
-        props: {
-            filter: Object,
-            labelId: '',
-            query: Object,
-            isRepositoryLevel: Boolean,
         },
         computed: {
             comparatorSymbol() {
@@ -139,7 +129,7 @@
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
-                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
+                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatumId );
                 
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
@@ -169,8 +159,8 @@
                 this.$emit('input', {
                     filter: 'numeric',
                     compare: this.comparator,
-                    metadatum_id: this.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
                     value: '',
                     type: 'NUMERIC'
                 });
@@ -186,8 +176,8 @@
                 this.$emit('input', {
                     filter: 'numeric',
                     compare: this.comparator,
-                    metadatum_id: this.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
                     value: this.value,
                     type: 'NUMERIC'
                 });

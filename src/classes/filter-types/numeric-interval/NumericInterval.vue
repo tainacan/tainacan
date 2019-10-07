@@ -1,7 +1,7 @@
 <template>
     <div>
         <b-numberinput
-                :aria-labelledby="labelId"
+                :aria-labelledby="'filter-label-id-' + filter.id"
                 size="is-small"
                 @input="validate_values()"
                 :step="filterTypeOptions.step"
@@ -9,7 +9,7 @@
                 />
         <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
         <b-numberinput
-                :aria-labelledby="labelId"
+                :aria-labelledby="'filter-label-id-' + filter.id"
                 size="is-small"
                 @input="validate_values()"
                 :step="filterTypeOptions.step"
@@ -23,8 +23,6 @@
     export default {
         mixins: [ filterTypeMixin ],
         created() {
-            this.collectionId = this.filter.collection_id;
-            this.metadatumId = this.filter.metadatum.metadatum_id;
             this.filterTypeOptions = this.filter.filter_type_options;
         },
         data(){
@@ -32,17 +30,9 @@
                 valueInit: 0,
                 valueEnd: 10,
                 isValid: false,
-                collectionId: '',
-                metadatum: '',
                 filterTypeOptions: [],
                 withError: false
             }
-        },
-        props: {
-            filter: Object,
-            labelId: '',
-            query: Object,
-            isRepositoryLevel: Boolean
         },
         methods: {
             // only validate if the first value is higher than first

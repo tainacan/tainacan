@@ -62,14 +62,14 @@
         <!-- <b-numberinput 
                 v-if="filterTypeOptions.type == 'year'"
                 :placeholder="$i18n.get('instruction_type_value_year')"
-                :aria-labelledby="labelId"
+                :aria-labelledby="'filter-label-id-' + filter.id"
                 size="is-small"
                 step="1"
                 @input="emitOnlyYear($event)"
                 v-model="yearsOnlyValue"/> -->
         <b-datepicker
                 position="is-bottom-left"
-                :aria-labelledby="labelId"
+                :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="$i18n.get('instruction_select_a_date')"
                 v-model="value"
                 @input="emit()"
@@ -122,14 +122,12 @@
             filterTypeMixin
         ],
         created() {
-            this.collection = this.filter.collection_id;
-            this.metadatum = (typeof this.filter.metadatum.metadatum_id == 'object' ? this.filter.metadatum.metadatum_id.metadatum_id : this.filter.metadatum.metadatum_id);
             this.filterTypeOptions = this.filter.filter_type_options;
 
-            let endpoint = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
+            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
 
-            if (this.isRepositoryLevel || this.collection == 'default')
-                endpoint = '/metadata/'+ this.metadatum;
+            if (this.isRepositoryLevel || this.collectionId == 'default')
+                endpoint = '/metadata/'+ this.metadatumId;
         
             axios.get(endpoint)
                 .then( res => {
@@ -151,17 +149,9 @@
                 value: null,
                 clear: false,
                 filterTypeOptions: [],
-                collection: '',
-                metadatum: '',
                 metadatum_object: {},
                 comparator: '=', // =, !=, >, >=, <, <=
             }
-        },
-        props: {
-            filter: Object,
-            labelId: '',
-            query: Object,
-            isRepositoryLevel: Boolean,
         },
         computed: {
             yearsOnlyValue() {
@@ -184,7 +174,7 @@
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
-                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
+                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatumId );
                 
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
@@ -220,8 +210,8 @@
                     filter: 'date',
                     type: 'DATE',
                     compare: this.comparator,
-                    metadatum_id: this.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
                     value: ''
                 });
 
@@ -258,8 +248,8 @@
                     filter: 'date',
                     type: 'DATE',
                     compare: this.comparator,
-                    metadatum_id: this.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
                     value: valueQuery
                 });
                 this.$emit('sendValuesToTags', this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat));

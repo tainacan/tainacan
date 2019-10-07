@@ -8,12 +8,15 @@ export const filterTypeMixin = {
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
             getOptionsValuesCancel: undefined,
             isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
-            isLoadingOptions: false
+            isLoadingOptions: false,
+            collectionId: '',
+            metadatumId: ''
         }
     },
     props: {
         filter: Object,
-        query: {}
+        query: Object,
+        isRepositoryLevel: Boolean
     },
     created() {
         this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
@@ -22,6 +25,9 @@ export const filterTypeMixin = {
         // an empty query also demands filters reloading.
         if (this.options != undefined)
             this.$eventBusSearch.$on('hasFiltered', this.reloadOptionsDueToFiltering);
+
+        this.collectionId = this.filter.collection_id ? this.filter.collection_id : this.collectionId;
+        this.metadatumId = this.filter.metadatum.metadatum_id ? this.filter.metadatum.metadatum_id : this.metadatumId;
     },
     computed: {
         facetsFromItemSearch() {

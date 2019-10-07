@@ -22,8 +22,6 @@
     export default {
         mixins: [ filterTypeMixin ],
         created() {
-            this.collectionId = this.filter.collection_id;
-            this.metadatumId = this.filter.metadatum.metadatum_id;
             this.filterTypeOptions = this.filter.filter_type_options;
         },
         data() {
@@ -31,19 +29,9 @@
                 valueInit: 0,
                 valueEnd: 10,
                 isValid: false,
-                collectionId: '',
-                metadatumId: '',
                 filterTypeOptions: [],
                 selectedInterval: ''
             }
-        },
-        props: {
-            filter: {
-                type: Object // concentrate all attributes metadatum id and type
-            },
-            labelId: '',
-            query: Object,
-            isRepositoryLevel: Boolean,
         },
         methods: {
             cleanSearchFromTags(filterTag) {

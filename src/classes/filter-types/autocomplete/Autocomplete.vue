@@ -3,7 +3,7 @@
         <b-autocomplete
                 icon="magnify"
                 size="is-small"
-                :aria-labelledby="labelId"
+                :aria-labelledby="'filter-label-id-' + filter.id"
                 v-model="selected"
                 :data="options"
                 expanded
@@ -46,14 +46,12 @@
 
     export default {
         created(){
-            this.collection = this.filter.collection_id;
-            this.metadatum = this.filter.metadatum.metadatum_id;
             const vm = this;
 
-            let endpoint = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
+            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
 
-            if (this.isRepositoryLevel || this.collection == 'default'){
-                endpoint = '/metadata/'+ this.metadatum;
+            if (this.isRepositoryLevel || this.collectionId == 'default'){
+                endpoint = '/metadata/'+ this.metadatumId;
             }
 
             axios.get(endpoint)
@@ -75,15 +73,9 @@
                 selected:'',
                 options: [],
                 type: '',
-                collection: '',
-                metadatum: '',
                 metadatum_object: {},
                 label: ''
             }
-        },
-        props: {
-            isRepositoryLevel: Boolean,
-            labelId: String
         },
         mixins: [filterTypeMixin],
         methods: {
@@ -97,8 +89,8 @@
             onSelect(){
                 this.$emit('input', {
                     filter: 'autocomplete',
-                    metadatum_id: this.metadatum,
-                    collection_id: this.collection,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
                     value: this.results
                 });
                 this.selectedValues();
@@ -115,7 +107,7 @@
                     if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' )
                         promise = this.getValuesRelationship( query, this.isRepositoryLevel );
                     else
-                        promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel );
+                        promise = this.getValuesPlainText( this.metadatumId, query, this.isRepositoryLevel );
                     
                     promise.request.catch( error => {
                         if (isCancel(error))
@@ -136,7 +128,7 @@
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
-                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
+                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatumId );
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
                     // let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
@@ -179,8 +171,8 @@
                 this.selected = '';
                 this.$emit('input', {
                     filter: 'autocomplete',
-                    metadatum_id: this.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
                     value: ''
                 });
             },

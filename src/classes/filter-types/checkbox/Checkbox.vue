@@ -45,12 +45,9 @@
 
     export default {
         created(){
-            this.collection = this.filter.collection_id;
-            this.metadatum = this.filter.metadatum.metadatum_id;
+            let route = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId +'?nopaging=1';
 
-            let route = '/collection/' + this.collection + '/metadata/' +  this.metadatum +'?nopaging=1';
-
-            if (this.isRepositoryLevel || this.collection == 'default')
+            if (this.isRepositoryLevel || this.collectionId == 'default')
                 route = '/metadata?nopaging=1';
 
             axios.get(route)
@@ -74,15 +71,10 @@
                 this.$eventBusSearch.$on('isLoadingItems', this.updatesIsLoading);
             }
         },
-        props: {
-            isRepositoryLevel: Boolean,
-        },
         data(){
             return {
                 options: [],
                 type: '',
-                collection: '',
-                metadatum: '',
                 selected: [],
                 metadatum_object: {}
             }
@@ -105,7 +97,7 @@
                 if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' )
                     promise = this.getValuesRelationship( null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1');
                 else
-                    promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1' );
+                    promise = this.getValuesPlainText( this.metadatumId, null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1' );
                 
                 if (skipSelected != undefined && skipSelected == true) {
                     promise.request
@@ -134,8 +126,8 @@
                 this.$emit('input', {
                     filter: 'checkbox',
                     compare: 'IN',
-                    metadatum_id: this.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
                     value: this.selected
                 });
 
@@ -157,7 +149,7 @@
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
-                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
+                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatumId );
                 if ( index >= 0){
                     let query = this.query.metaquery.slice();
                     this.selected = query[ index ].value;
@@ -176,9 +168,9 @@
                         filter: this.filter,
                         //taxonomy_id: this.taxonomy_id,
                         selected: this.selected,
-                        metadatum_id: this.metadatum,
+                        metadatumId: this.metadatumId,
                         //taxonomy: this.taxonomy,
-                        collection_id: this.collection,
+                        collectionId: this.collectionId,
                         metadatum_type: this.type,
                         metadatum_object: this.metadatum_object,
                         isRepositoryLevel: this.isRepositoryLevel,
@@ -210,8 +202,8 @@
                         this.$emit('input', {
                             filter: 'checkbox',
                             compare: 'IN',
-                            metadatum_id: this.metadatum,
-                            collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                            metadatum_id: this.metadatumId,
+                            collection_id: this.collectionId,
                             value: this.selected
                         });
 

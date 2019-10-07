@@ -34,7 +34,6 @@
             <div
                     :id="'filter-input-id-' + filter.id">
                 <component
-                        :label-id="'filter-label-id-' + filter.id"
                         :is="filter.filter_type_object.component"
                         :filter="filter"
                         :query="query"
