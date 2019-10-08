@@ -93,7 +93,7 @@ class Metadata extends Repository {
 				'map'         => 'meta',
 				'title'       => __( 'Type', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'The metadata type', 'tainacan' ),
+				'description' => __( 'The metadata type class name, such as Tainacan\Metadata_Types\Core_Title', 'tainacan' ),
 				'on_error'    => __( 'Metadata type is empty', 'tainacan' ),
 				'validation'  => v::stringType()->notEmpty(),
 			],

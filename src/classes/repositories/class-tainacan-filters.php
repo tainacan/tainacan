@@ -64,7 +64,7 @@ class Filters extends Repository {
 				'map'         => 'meta',
 				'title'       => __( 'Type', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'The filter type', 'tainacan' ),
+				'description' => __( 'The filter type class name, such as filter_type: Tainacan\Filter_Types\Checkbox', 'tainacan' ),
 				'validation'  => ''
 			],
 			'collection_id'       => [

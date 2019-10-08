@@ -50,46 +50,23 @@
     import { tainacan as axios, CancelToken, isCancel } from '../../../js/axios/axios';
     import { mapGetters } from 'vuex';
     import CheckboxRadioModal from '../../../admin/components/other/checkbox-radio-modal.vue';
-
+    import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
+    
     export default {
+        mixins: [ filterTypeMixin, dynamicFilterTypeMixin ],
         created(){
-            this.collection = this.filter.collection_id;
-            this.metadatum = this.filter.metadatum.metadatum_id ;
-            this.type = this.filter.metadatum.metadata_type;
-
             this.loadOptions();
-            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTag);
-
-            if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$on('isLoadingItems', this.updatesIsLoading);
-            
         },    
-        mounted(){
-            // We listen to event, but reload event if hasFiltered is negative, as 
-            // an empty query also demands filters reloading.
-            this.$eventBusSearch.$on('hasFiltered', () => {
-                if (typeof this.loadOptions == "function")
-                    this.loadOptions(true);
-            });
-        },        
         data(){
             return {
                 isLoading: true,
                 options: [],
-                type: '',
-                collection: '',
-                metadatum: '',
                 selected: [],
                 taxonomy: '',
                 taxonomy_id: Number,
                 getOptionsValuesCancel: undefined,
                 isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
             }
-        },
-        props: {
-            filter: Object,
-            labelId: '',
-            query: Object
         },
         watch: {
             selected: function(){
@@ -124,10 +101,10 @@
 
                     let route = '';
                     
-                    if (this.collection == 'default')
-                        route = `/facets/${this.metadatum}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
+                    if (this.collectionId == 'default')
+                        route = `/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
                     else
-                        route = `/collection/${this.collection}/facets/${this.metadatum}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
+                        route = `/collection/${this.collectionId}/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
 
                     this.options = [];
 
@@ -193,8 +170,8 @@
                     filter: 'checkbox',
                     taxonomy: this.taxonomy,
                     compare: 'IN',
-                    metadatum_id: this.metadatum,
-                    collection_id: this.collection,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
                     terms: this.selected
                 });
                 
@@ -218,10 +195,10 @@
 
                         // let route = '';
                         
-                        // if (this.collection == 'default')
-                        //     route = '/facets/' + this.metadatum +`?term_id=${selected}&fetch_only=name,id`;
+                        // if (this.collectionId == 'default')
+                        //     route = '/facets/' + this.metadatumId +`?term_id=${selected}&fetch_only=name,id`;
                         // else
-                        //     route = '/collection/'+ this.collection +'/facets/' + this.metadatum +`?term_id=${selected}&fetch_only=name,id`;
+                        //     route = '/collection/'+ this.collectionId +'/facets/' + this.metadatumId +`?term_id=${selected}&fetch_only=name,id`;
                         
                         // axios.get(route)
                         //     .then( res => {
@@ -254,10 +231,7 @@
                     }
                 }
 
-                this.$eventBusSearch.$emit("sendValuesToTags", {
-                    filterId: this.filter.id,
-                    value: onlyLabels
-                });
+                this.$emit("sendValuesToTags", onlyLabels);
             },
             openCheckboxModal(parent) {
                 this.$buefy.modal.open({
@@ -268,9 +242,9 @@
                         filter: this.filter,
                         taxonomy_id: this.taxonomy_id,
                         selected: this.selected,
-                        metadatum_id: this.metadatum,
+                        metadatumId: this.metadatumId,
                         taxonomy: this.taxonomy,
-                        collection_id: this.collection,
+                        collectionId: this.collectionId,
                         isTaxonomy: true,
                         query: this.query
                     },                    
@@ -283,7 +257,7 @@
                     trapFocus: true
                 });
             },
-            cleanSearchFromTag(filterTag) {
+            cleanSearchFromTags(filterTag) {
                 if (filterTag.filterId == this.filter.id) {
 
                     let selectedOption = this.options.find(option => option.label == filterTag.singleValue);
@@ -295,21 +269,7 @@
 
                             this.selected.splice(selectedIndex, 1); 
 
-                            this.$emit('input', {
-                                filter: 'checkbox',
-                                compare: 'IN',
-                                taxonomy: this.taxonomy,
-                                metadatum_id: this.metadatum,
-                                collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
-                                terms: this.selected
-                            });
-
-                            this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                                filterId: this.filter.id,
-                                value: this.selected
-                            });
-
-                            this.selectedValues();
+                            this.onSelect();
                         }
                     }
                 }
@@ -354,14 +314,10 @@
             }
         },
         beforeDestroy() {
-            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
             
             // Cancels previous Request
             if (this.getOptionsValuesCancel != undefined)
                 this.getOptionsValuesCancel.cancel('Facet search Canceled.');
- 
-            if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$off('isLoadingItems', this.updatesIsLoading);
         }
     }
 </script>

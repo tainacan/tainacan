@@ -62,6 +62,7 @@ class REST_Metadata_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'get_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE),
 				),
+				'schema'                  => [$this, 'get_schema']
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base,
@@ -78,6 +79,7 @@ class REST_Metadata_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'create_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE),
 				),
+				'schema'                  => [$this, 'get_schema']
 			)
 		);
 		register_rest_route($this->namespace, '/' . $this->rest_base,
@@ -93,7 +95,8 @@ class REST_Metadata_Controller extends REST_Controller {
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
 					'args'                => $this->get_wp_query_params(),
-				)
+				),
+				'schema'                  => [$this, 'get_schema'],
 			)
 		);
 		register_rest_route($this->namespace, '/'. $this->rest_base . '/(?P<metadatum_id>[\d]+)',
@@ -115,7 +118,8 @@ class REST_Metadata_Controller extends REST_Controller {
 					'callback'            => array($this, 'get_item'),
 					'permission'          => array($this, 'get_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE)
-				)
+				),
+				'schema'                  => [$this, 'get_schema'],
 			)
 		);
 	}
@@ -581,6 +585,32 @@ class REST_Metadata_Controller extends REST_Controller {
 		}
 
 		return $endpoint_args;
+	}
+
+	function get_schema() {
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => 'metadatum',
+			'type' => 'object'
+		];
+		
+		$main_schema = parent::get_repository_schema( $this->metadatum_repository );
+		$permissions_schema = parent::get_permissions_schema();
+		
+		// $item_metadata_scheme = parent::get_repository_schema( $this->item_metadata_repository );
+		// $item_scheme = parent::get_repository_schema( $this->item_repository );
+		// $collection_scheme = parent::get_repository_schema( $this->collection_repository );
+		
+		$schema['properties'] = array_merge(
+			parent::get_base_properties_schema(),
+			$main_schema,
+			$permissions_schema
+			// $item_metadata_scheme,
+			// $item_scheme,
+			// $collection_scheme
+		);
+		
+		return $schema;
 	}
 }
 

@@ -8,7 +8,7 @@
                 {{ $i18n.get('label_clean') }}
             </option>
             <option
-                    v-for="(interval, index) in options.intervals"
+                    v-for="(interval, index) in filterTypeOptions.intervals"
                     :value="index"
                     :key="index">
                 {{ interval.label }}
@@ -18,32 +18,16 @@
 </template>
 
 <script>
-
+    import { filterTypeMixin } from '../filter-types-mixin';
     export default {
-        created() {
-            this.collectionId = this.filter.collection_id;
-            this.metadatumId = this.filter.metadatum.metadatum_id;
-            this.options = this.filter.filter_type_options;
-            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
-        },
+        mixins: [ filterTypeMixin ],
         data() {
             return {
                 valueInit: 0,
                 valueEnd: 10,
                 isValid: false,
-                collectionId: '',
-                metadatumId: '',
-                options: [],
                 selectedInterval: ''
             }
-        },
-        props: {
-            filter: {
-                type: Object // concentrate all attributes metadatum id and type
-            },
-            labelId: '',
-            query: Object,
-            isRepositoryLevel: Boolean,
         },
         methods: {
             cleanSearchFromTags(filterTag) {
@@ -52,8 +36,8 @@
             },
             changeInterval() {
                 if (this.selectedInterval !== '') {
-                    this.valueInit = this.options.intervals[this.selectedInterval].from;
-                    this.valueEnd = this.options.intervals[this.selectedInterval].to;
+                    this.valueInit = this.filterTypeOptions.intervals[this.selectedInterval].from;
+                    this.valueEnd = this.filterTypeOptions.intervals[this.selectedInterval].to;
                     this.emit();
                 } else {
                     this.clearSearch();
@@ -84,11 +68,8 @@
                 });
 
                 if (values[0] != undefined && values[1] != undefined) {
-                    let labelValue = this.options.intervals[this.selectedInterval].label + (this.options.showIntervalOnTag ? `(${values[0]}-${values[1]})` : '');
-                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                        filterId: this.filter.id,
-                        value: labelValue
-                    });
+                    let labelValue = this.filterTypeOptions.intervals[this.selectedInterval].label + (this.filterTypeOptions.showIntervalOnTag ? `(${values[0]}-${values[1]})` : '');
+                    this.$emit( 'sendValuesToTags', labelValue);
                 }
             },
             selectedValues(){
@@ -108,15 +89,12 @@
                     this.valueInit = metaquery.value[0];
                     this.valueEnd = metaquery.value[1];
 
-                    this.selectedInterval = this.options.intervals.findIndex(
+                    this.selectedInterval = this.filterTypeOptions.intervals.findIndex(
                         anInterval => anInterval.from == this.valueInit && anInterval.to == this.valueEnd
                     );
 
-                    let labelValue = this.options.intervals[this.selectedInterval].label + (this.options.showIntervalOnTag ? `(${this.valueInit}-${this.valueEnd})` : '');
-                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                        filterId: this.filter.id,
-                        value: labelValue
-                    });
+                    let labelValue = this.filterTypeOptions.intervals[this.selectedInterval].label + (this.filterTypeOptions.showIntervalOnTag ? `(${this.valueInit}-${this.valueEnd})` : '');
+                    this.$emit( 'sendValuesToTags', labelValue);
                 } else {
                     return false;
                 }
@@ -124,9 +102,6 @@
         },
         mounted() {
             this.selectedValues();
-        },
-        beforeDestroy() {
-            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
         }
     }
 </script>

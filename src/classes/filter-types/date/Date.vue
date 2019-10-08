@@ -60,16 +60,16 @@
             </b-dropdown-item>
         </b-dropdown>
         <!-- <b-numberinput 
-                v-if="options.type == 'year'"
+                v-if="filterTypeOptions.type == 'year'"
                 :placeholder="$i18n.get('instruction_type_value_year')"
-                :aria-labelledby="labelId"
+                :aria-labelledby="'filter-label-id-' + filter.id"
                 size="is-small"
                 step="1"
                 @input="emitOnlyYear($event)"
                 v-model="yearsOnlyValue"/> -->
         <b-datepicker
                 position="is-bottom-left"
-                :aria-labelledby="labelId"
+                :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="$i18n.get('instruction_select_a_date')"
                 v-model="value"
                 @input="emit()"
@@ -101,10 +101,10 @@
                     $i18n.get('datepicker_month_november'),
                     $i18n.get('datepicker_month_december')
                 ]"/>
-                <!-- OPTIONS FOR TYPE 
+                <!-- filterTypeOptions FOR TYPE 
                     v-else
-                    :type="options.type == 'month' ? 'month' : null" 
-                    :placeholder="options.type == 'month' ? $i18n.get('instruction_select_a_date') : $i18n.get('instruction_select_a_month')"
+                    :type="filterTypeOptions.type == 'month' ? 'month' : null" 
+                    :placeholder="filterTypeOptions.type == 'month' ? $i18n.get('instruction_select_a_date') : $i18n.get('instruction_select_a_month')"
                 --> 
     </div>
 </template>
@@ -112,19 +112,20 @@
 <script>
     import { tainacan as axios } from '../../../js/axios/axios';
     import { wpAjax, dateInter } from "../../../admin/js/mixins";
+    import { filterTypeMixin } from '../filter-types-mixin';
     import moment from 'moment';
 
     export default {
-        mixins: [ wpAjax, dateInter ],
+        mixins: [
+            wpAjax,
+            dateInter,
+            filterTypeMixin
+        ],
         created() {
-            this.collection = this.filter.collection_id;
-            this.metadatum = (typeof this.filter.metadatum.metadatum_id == 'object' ? this.filter.metadatum.metadatum_id.metadatum_id : this.filter.metadatum.metadatum_id);
-            this.options = this.filter.filter_type_options;
+            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
 
-            let endpoint = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
-
-            if (this.isRepositoryLevel || this.collection == 'default')
-                endpoint = '/metadata/'+ this.metadatum;
+            if (this.isRepositoryLevel || this.collectionId == 'default')
+                endpoint = '/metadata/'+ this.metadatumId;
         
             axios.get(endpoint)
                 .then( res => {
@@ -137,7 +138,6 @@
                 .catch(error => {
                     this.$console.log(error);
                 });
-            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
         },
         mounted() {
             this.selectedValues();
@@ -145,19 +145,9 @@
         data(){
             return {
                 value: null,
-                clear: false,
-                options: [],
-                collection: '',
-                metadatum: '',
                 metadatum_object: {},
                 comparator: '=', // =, !=, >, >=, <, <=
             }
-        },
-        props: {
-            filter: Object,
-            labelId: '',
-            query: Object,
-            isRepositoryLevel: Boolean,
         },
         computed: {
             yearsOnlyValue() {
@@ -180,7 +170,7 @@
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
-                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
+                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
                 
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
@@ -196,10 +186,7 @@
                         
                         this.value = new Date(textValue);
 
-                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                            filterId: this.filter.id,
-                            value: this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat)
-                        });
+                        this.$emit('sendValuesToTags', this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat));
                     }
 
                 } else {
@@ -213,14 +200,12 @@
             },
             clearSearch(){
 
-                this.clear = true;
-
                 this.$emit('input', {
                     filter: 'date',
                     type: 'DATE',
                     compare: this.comparator,
-                    metadatum_id: this.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
                     value: ''
                 });
 
@@ -257,23 +242,17 @@
                     filter: 'date',
                     type: 'DATE',
                     compare: this.comparator,
-                    metadatum_id: this.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
                     value: valueQuery
                 });
-                this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                    filterId: this.filter.id,
-                    value: this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat)
-                });
+                this.$emit('sendValuesToTags', this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat));
                 
             },
             onChangeComparator(newComparator) {
                 this.comparator = newComparator;
                 this.emit();
             }
-        },
-        beforeDestroy() {
-            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
         }
     }
 </script>

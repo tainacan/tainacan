@@ -31,15 +31,14 @@
                 </span>
                 <span class="collapse-label">{{ filter.name }}</span>
             </button>
-            <div
-                    :id="'filter-input-id-' + filter.id">
+            <div :id="'filter-input-id-' + filter.id">
                 <component
-                        :label-id="'filter-label-id-' + filter.id"
                         :is="filter.filter_type_object.component"
                         :filter="filter"
                         :query="query"
                         :is-repository-level="isRepositoryLevel"
-                        @input="listen( $event )"/>
+                        @input="onInput"
+                        @sendValuesToTags="onSendValuesToTags"/>
             </div>
         </b-collapse>
     </b-field>
@@ -54,14 +53,15 @@
             isRepositoryLevel: Boolean,
             open: true,
         },
-        data(){
-            return {
-                inputs: [],
-            }
-        },
         methods: {
-            listen( inputEvent ){
-                this.$eventBusSearch.$emit( 'input', ( inputEvent.metadatum_id ) ?  inputEvent :  inputEvent.detail[0] );
+            onInput(inputEvent){
+                this.$eventBusSearch.$emit('input', inputEvent);
+            },
+            onSendValuesToTags(values) {
+                this.$eventBusSearch.$emit('sendValuesToTags', {
+                    filterId: this.filter.id,
+                    value: values
+                });
             }
         }
     }

@@ -1,49 +1,34 @@
 <template>
     <div>
         <b-numberinput
-                :aria-labelledby="labelId"
+                :aria-labelledby="'filter-label-id-' + filter.id"
                 size="is-small"
                 @input="validate_values()"
-                :step="options.step"
+                :step="filterTypeOptions.step"
                 v-model="valueInit"
                 />
         <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
         <b-numberinput
-                :aria-labelledby="labelId"
+                :aria-labelledby="'filter-label-id-' + filter.id"
                 size="is-small"
                 @input="validate_values()"
-                :step="options.step"
+                :step="filterTypeOptions.step"
                 v-model="valueEnd"/>
         
     </div>
 </template>
 
 <script>
-
+    import { filterTypeMixin } from '../filter-types-mixin';
     export default {
-        created() {
-            this.collectionId = this.filter.collection_id;
-            this.metadatumId = this.filter.metadatum.metadatum_id;
-            this.options = this.filter.filter_type_options;
-
-            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
-        },
+        mixins: [ filterTypeMixin ],
         data(){
             return {
                 valueInit: 0,
                 valueEnd: 10,
                 isValid: false,
-                collectionId: '',
-                metadatum: '',
-                options: [],
                 withError: false
             }
-        },
-        props: {
-            filter: Object,
-            labelId: '',
-            query: Object,
-            isRepositoryLevel: Boolean
         },
         methods: {
             // only validate if the first value is higher than first
@@ -98,12 +83,8 @@
                     value: values
                 });
 
-                if (values[0] != undefined && values[1] != undefined) {
-                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                        filterId: this.filter.id,
-                        value: values[0] + ' - ' + values[1]
-                    });
-                }
+                if (values[0] != undefined && values[1] != undefined)
+                    this.$emit('sendValuesToTags', values[0] + ' - ' + values[1]);
             },
             selectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
@@ -117,12 +98,8 @@
                         this.valueEnd = metaquery.value[1];
                     }
 
-                    if (metaquery.value[0] != undefined && metaquery.value[1] != undefined) {
-                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                            filterId: this.filter.id,
-                            value: this.valueInit + ' - ' + this.valueEnd
-                        });
-                    }
+                    if (metaquery.value[0] != undefined && metaquery.value[1] != undefined)
+                        this.$emit( 'sendValuesToTags', this.valueInit + ' - ' + this.valueEnd);
 
                 } else {
                     return false;
@@ -131,9 +108,6 @@
         },
         mounted() {
             this.selectedValues();
-        },
-        beforeDestroy() {
-            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
         }
     }
 </script>

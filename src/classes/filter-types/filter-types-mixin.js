@@ -2,7 +2,46 @@ import qs from 'qs';
 import axios from '../../js/axios/axios';
 import { mapGetters } from 'vuex';
 
-export const filter_type_mixin = {
+export const filterTypeMixin = {
+    data () {
+        return {
+            collectionId: '',
+            metadatumId: '',
+            metadatumType: '',
+            filterTypeOptions: [],
+            isRepositoryLevel: Boolean
+        }
+    },
+    props: {
+        filter: Object,
+        query: Object
+    },
+    created() {
+        this.collectionId = this.filter.collection_id ? this.filter.collection_id : this.collectionId;
+        this.metadatumId = this.filter.metadatum.metadatum_id ? this.filter.metadatum.metadatum_id : this.metadatumId;
+        this.filterTypeOptions = this.filter.filter_type_options ? this.filter.filter_type_options : this.filterTypeOptions;
+        this.metadatumType = this.filter.metadatum.metadata_type_object.className ? this.filter.metadatum.metadata_type_object.className : this.metadatumType;
+    },
+    mounted() {
+        this.$eventBusSearch.$on('removeFromFilterTag', this.cleanFromTags );
+    },
+    computed: {
+        facetsFromItemSearch() {
+            return this.getFacets();
+        }
+    },
+    methods: {
+        cleanFromTags(filterTag) {
+            if (typeof this.cleanSearchFromTags === 'function')
+                this.cleanSearchFromTags(filterTag)
+        }
+    },
+    beforeDestroy() {    
+        this.$eventBusSearch.$off('removeFromFilterTag', this.cleanFromTags);
+    },
+};
+
+export const dynamicFilterTypeMixin = {
     data () {
         return {
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
@@ -11,14 +50,16 @@ export const filter_type_mixin = {
             isLoadingOptions: false
         }
     },
-    props: {
-        filter: Object,
-        query: {}
-    },
-    created() {
+    mounted() {
         // We listen to event, but reload event if hasFiltered is negative, as 
         // an empty query also demands filters reloading.
         this.$eventBusSearch.$on('hasFiltered', this.reloadOptionsDueToFiltering);
+
+        if (this.isUsingElasticSearch) {
+            this.$eventBusSearch.$on('isLoadingItems', isLoading => {
+                this.isLoadingOptions = isLoading;
+            });
+        }
     },
     computed: {
         facetsFromItemSearch() {
@@ -295,7 +336,7 @@ export const filter_type_mixin = {
                 this.noMorePage = 1;
             
 
-            if(this.options.length < this.maxNumOptionsCheckboxList)
+            if (this.options.length < this.maxNumOptionsCheckboxList)
                 this.noMorePage = 1;
             
             if (this.filter.max_options && this.options.length >= this.filter.max_options) {
@@ -309,7 +350,7 @@ export const filter_type_mixin = {
             }
         },
         reloadOptionsDueToFiltering() {
-            if (typeof this.loadOptions == "function")
+            if (typeof this.loadOptions === "function")
                 this.loadOptions(true);
         }
     },
@@ -317,7 +358,11 @@ export const filter_type_mixin = {
         // Cancels previous Request
         if (this.getOptionsValuesCancel != undefined)
             this.getOptionsValuesCancel.cancel('Facet search Canceled.');
-    
+
         this.$eventBusSearch.$off('hasFiltered', this.reloadOptionsDueToFiltering);
+
+        if (this.isUsingElasticSearch)
+            this.$eventBusSearch.$off('isLoadingItems');
+
     },
 };

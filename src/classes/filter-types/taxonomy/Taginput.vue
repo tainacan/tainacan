@@ -12,7 +12,7 @@
                 field="label"
                 attached
                 :aria-close-label="$i18n.get('remove_value')"
-                :aria-labelledby="labelId"
+                :aria-labelledby="'filter-label-id-' + filter.id"
                 :class="{'has-selected': selected != undefined && selected != []}"
                 @typing="search"
                 :placeholder="$i18n.get('info_type_to_add_terms')">
@@ -38,17 +38,15 @@
 <script>
     import qs from 'qs';
     import { tainacan as axios } from '../../../js/axios/axios';
-
+    import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
+    
     export default {
+        mixins: [ filterTypeMixin, dynamicFilterTypeMixin ],
         created(){
-            this.collection = this.filter.collection_id;
-            this.metadatum = this.filter.metadatum.metadatum_id;
-            this.type = this.filter.metadatum.metadata_type;
+            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
 
-            let endpoint = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
-
-            if (this.isRepositoryLevel || this.collection == 'default'){
-                endpoint = '/metadata/'+ this.metadatum;
+            if (this.isRepositoryLevel || this.collectionId == 'default'){
+                endpoint = '/metadata/' + this.metadatumId;
             }
 
             axios.get(endpoint)
@@ -56,8 +54,6 @@
                     let metadatum = res.data;
                     this.selectedValues( metadatum.metadata_type_options.taxonomy_id );
                 });
-            
-            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTag);
         },
         data(){
             return {
@@ -65,20 +61,9 @@
                 selected:[],
                 options: [],
                 isLoading: false,
-                type: '',
-                collection: '',
-                metadatum: '',
                 taxonomy: '',
                 isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
             }
-        },
-        props: {
-            filter: Object,
-            labelId: '',
-            query: {
-                type: Object // concentrate all attributes metadatum id and type
-            },
-            isRepositoryLevel: Boolean,
         },
         watch: {
             selected( value ){
@@ -96,15 +81,12 @@
                     filter: 'taginput',
                     compare: 'IN',
                     taxonomy: this.taxonomy,
-                    metadatum_id: ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
                     terms: values
                 });
 
-                this.$eventBusSearch.$emit("sendValuesToTags", {
-                    filterId: this.filter.id,
-                    value: labels
-                });
+                this.$emit("sendValuesToTags", labels);
             }
         },
         methods: {
@@ -117,7 +99,7 @@
                     'search': query
                 };
 
-                let endpoint = this.isRepositoryLevel ? '/facets/' + this.metadatum : '/collection/'+ this.collection +'/facets/' + this.metadatum;
+                let endpoint = this.isRepositoryLevel ? '/facets/' + this.metadatumId : '/collection/'+ this.collectionId +'/facets/' + this.metadatumId;
 
                 endpoint += '?order=asc&' + qs.stringify(query_items);
                 let valuesToIgnore = [];
@@ -185,7 +167,7 @@
                         this.$console.log(error);
                     });
             },
-            cleanSearchFromTag(filterTag) {
+            cleanSearchFromTags(filterTag) {
                                
                 if (filterTag.filterId == this.filter.id) {
 
@@ -205,20 +187,14 @@
                             filter: 'taginput',
                             compare: 'IN',
                             taxonomy: this.taxonomy,
-                            metadatum_id: ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum,
-                            collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                            metadatum_id: this.metadatumId,
+                            collection_id: this.collectionId,
                             terms: values
                         });
-                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                            filterId: this.filter.id,
-                            value: labels
-                        });
+                        this.$emit( 'sendValuesToTags', labels);
                    }
                 }
             }
-        },
-        beforeDestroy() {
-            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
         }
     }
 </script>

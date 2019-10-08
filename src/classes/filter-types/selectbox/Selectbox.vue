@@ -5,7 +5,7 @@
         <b-select
                 v-if="!isLoadingOptions"
                 :value="selected"
-                :aria-labelledby="labelId"
+                :aria-labelledby="'filter-label-id-' + filter.id"
                 @input="onSelect($event)"
                 :placeholder="$i18n.get('label_selectbox_init')"
                 expanded>
@@ -26,71 +26,46 @@
 
 <script>
     import { tainacan as axios, isCancel } from '../../../js/axios/axios';
-    import { filter_type_mixin } from '../filter-types-mixin'
+    import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
 
     export default {
         created(){
-            this.collection = this.filter.collection_id;
-            this.metadatum = this.filter.metadatum.metadatum_id;
-            const vm = this;
+            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
 
-            let endpoint = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
-
-            if (this.isRepositoryLevel || this.collection == 'default'){
-                endpoint = '/metadata/'+ this.metadatum;
-            }
+            if (this.isRepositoryLevel || this.collectionId == 'default')
+                endpoint = '/metadata/'+ this.metadatumId;
 
             axios.get(endpoint)
                 .then( res => {
                     let result = res.data;
                     if( result && result.metadata_type ){
-                        vm.metadatum_object = result;
-                        vm.type = result.metadata_type;
+                        this.metadatum_object = result;
                         
                         if (!this.isUsingElasticSearch)
-                            vm.loadOptions();
+                            this.loadOptions();
                     }
                 })
                 .catch(error => {
                     this.$console.error(error);
                 });
-            
-            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
-
-            if (this.isUsingElasticSearch) {
-                this.$eventBusSearch.$on('isLoadingItems', isLoading => {
-                    this.isLoadingOptions = isLoading;
-                });
-            }
-        },
-        props: {
-            isRepositoryLevel: Boolean,
-            labelId: String
         },
         data(){
             return {
-                options: [],
-                type: '',
-                collection: '',
-                metadatum: ''
+                options: []
             }
         },
-        mixins: [filter_type_mixin],
+        mixins: [filterTypeMixin, dynamicFilterTypeMixin],
         watch: {
             selected(value) {
-                if (value) {
-                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                        filterId: this.filter.id,
-                        value: value
-                    });
-                }
+                if (value)
+                    this.$emit('sendValuesToTags', value);
             }
         },
         computed: {
             selected() {
                 if ( this.query && this.query.metaquery && Array.isArray( this.query.metaquery ) ) {
 
-                    let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
+                    let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
                     if ( index >= 0){
                         let metadata = this.query.metaquery[ index ];
                         return metadata.value;
@@ -106,7 +81,7 @@
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
                 let promise = null;
-                promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel );
+                promise = this.getValuesPlainText( this.metadatumId, null, this.isRepositoryLevel );
                 promise.request
                     .then(() => {
                     })
@@ -124,8 +99,8 @@
                 //this.selected = value;
                 this.$emit('input', {
                     filter: 'selectbox',
-                    metadatum_id: this.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
                     value: ( value ) ? value : ''
                 });
             },
@@ -133,12 +108,6 @@
                 if (filterTag.filterId == this.filter.id)
                     this.onSelect();
             }
-        },
-        beforeDestroy() {
-            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
-
-            if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$off('isLoadingItems');
         }
     }
 </script>
