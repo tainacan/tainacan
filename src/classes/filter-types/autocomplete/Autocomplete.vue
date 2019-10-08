@@ -45,24 +45,7 @@
     // import qs from 'qs';
 
     export default {
-        created(){
-            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
-
-            if (this.isRepositoryLevel || this.collectionId == 'default')
-                endpoint = '/metadata/'+ this.metadatumId;
-
-            axios.get(endpoint)
-                .then( res => {
-                    let result = res.data;
-                    if( result && result.metadata_type ){
-                        this.metadatum_object = result;
-                        this.selectedValues();
-                    }
-                })
-                .catch(error => {
-                    this.$console.log(error);
-                });
-        },
+        mixins: [filterTypeMixin, dynamicFilterTypeMixin],
         data(){
             return {
                 results:'',
@@ -72,7 +55,9 @@
                 label: ''
             }
         },
-        mixins: [filterTypeMixin, dynamicFilterTypeMixin],
+        mounted() {
+            this.selectedValues();
+        },
         methods: {
             setResults(option){
                 if(!option)
@@ -115,40 +100,37 @@
                     this.getOptionsValuesCancel = promise.source;
                 
                 } else {
-                    this.clearSearch();
+                    this.cleanSearch();
                 }
             }, 500),
             selectedValues(){
-                const instance = this;
-                if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
+
+                if (!this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ))
                     return false;
 
-                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
-                if ( index >= 0){
+                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId);
+                if (index >= 0) {
                     let metadata = this.query.metaquery[ index ];
-                    // let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
-                        // this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
 
-                    if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' ) {
-                        // let query = qs.stringify({ postin: metadata.value  });
+                    if (this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship') {
                         
                         axios.get('/items/' + metadata.value)
                             .then( res => {
       
                                 let item = res.data;
-                                instance.results = item.title;
-                                instance.label = item.title;
-                                instance.selected = item.title;
+                                this.results = item.title;
+                                this.label = item.title;
+                                this.selected = item.title;
          
-                                this.$emit( 'sendValuesToTags', instance.label);
+                                this.$emit( 'sendValuesToTags', this.label);
                             })
                             .catch(error => {
                                 this.$console.log(error);
                             });
                     } else {
-                        instance.results = metadata.value;
-                        instance.label = metadata.value;
-                        instance.selected = metadata.value;
+                        this.results = metadata.value;
+                        this.label = metadata.value;
+                        this.selected = metadata.value;
 
                         this.$emit( 'sendValuesToTags', metadata.value);
                     }
