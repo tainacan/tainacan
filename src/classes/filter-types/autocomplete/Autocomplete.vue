@@ -156,11 +156,11 @@
                     return false;
                 }
             },
-            clearSearchFromTags(filterTag) {
+            cleanSearchFromTags(filterTag) {
                 if (filterTag.filterId == this.filter.id)
-                    this.clearSearch();
+                    this.cleanSearch();
             },
-            clearSearch(){
+            cleanSearch(){
                 this.results = '';
                 this.label = '';
                 this.selected = '';

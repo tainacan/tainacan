@@ -68,7 +68,6 @@
         data(){
             return {
                 options: [],
-                type: '',
                 selected: [],
                 metadatum_object: {}
             }
