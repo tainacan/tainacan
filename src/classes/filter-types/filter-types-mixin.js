@@ -19,15 +19,21 @@ export const filterTypeMixin = {
         this.metadatumId = this.filter.metadatum.metadatum_id ? this.filter.metadatum.metadatum_id : this.metadatumId;
     },
     mounted() {
-        this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
+        this.$eventBusSearch.$on('removeFromFilterTag', this.cleanFromTags );
     },
     computed: {
         facetsFromItemSearch() {
             return this.getFacets();
         }
     },
+    methods: {
+        cleanFromTags(filterTag) {
+            if (typeof this.cleanSearchFromTags === 'function')
+                this.cleanSearchFromTags(filterTag)
+        }
+    },
     beforeDestroy() {    
-        this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
+        this.$eventBusSearch.$off('removeFromFilterTag', this.cleanFromTags);
     },
 };
 
@@ -334,7 +340,7 @@ export const dynamicFilterTypeMixin = {
             }
         },
         reloadOptionsDueToFiltering() {
-            if (typeof this.loadOptions == "function")
+            if (typeof this.loadOptions === "function")
                 this.loadOptions(true);
         }
     },
