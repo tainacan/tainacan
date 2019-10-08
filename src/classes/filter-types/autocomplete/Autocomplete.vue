@@ -41,7 +41,7 @@
 
 <script>
     import { tainacan as axios, isCancel } from '../../../js/axios/axios'
-    import { filterTypeMixin } from '../filter-types-mixin';
+    import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
     // import qs from 'qs';
 
     export default {
@@ -77,7 +77,7 @@
                 label: ''
             }
         },
-        mixins: [filterTypeMixin],
+        mixins: [filterTypeMixin, dynamicFilterTypeMixin],
         methods: {
             setResults(option){
                 if(!option)

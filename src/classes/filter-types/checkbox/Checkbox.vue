@@ -40,7 +40,7 @@
 
 <script>
     import { tainacan as axios, isCancel } from '../../../js/axios/axios';
-    import { filterTypeMixin } from '../filter-types-mixin';
+    import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
     import CheckboxRadioModal from '../../../admin/components/other/checkbox-radio-modal.vue';
 
     export default {
@@ -79,7 +79,7 @@
                 metadatum_object: {}
             }
         },
-        mixins: [filterTypeMixin],
+        mixins: [filterTypeMixin, dynamicFilterTypeMixin],
         watch: {
             selected: function(){
                 //this.selected = val;
@@ -115,7 +115,8 @@
                         .catch( (error) => {
                             if (isCancel(error)) {
                                 this.$console.log('Request canceled: ' + error.message);
-                            }else
+                                this.selectedValues();
+                            } else
                                 this.$console.error( error );
                         });
                 }
@@ -132,11 +133,10 @@
                 });
 
                 let onlyLabels = [];
-
                 if(!isNaN(this.selected[0])){
                     for (let aSelected of this.selected) {
                         let valueIndex = this.options.findIndex(option => option.value == aSelected);
-                        
+
                         if (valueIndex >= 0) {
                             onlyLabels.push(this.options[valueIndex].label);
                         }
@@ -153,7 +153,6 @@
                 if ( index >= 0){
                     let query = this.query.metaquery.slice();
                     this.selected = query[ index ].value;
-
                 } else {
                     this.selected = [];
                     return false;
@@ -187,30 +186,18 @@
             cleanSearchFromTags(filterTag) {
 
                 if (filterTag.filterId == this.filter.id) {
-
                     let selectedIndex = this.selected.findIndex(option => option == filterTag.singleValue);
                     let optionIndex = this.options.findIndex(option => option.label == filterTag.singleValue);
+                    
                     let alternativeIndex;
-
-                    if (optionIndex >= 0) {
+                    if (optionIndex >= 0)
                         alternativeIndex = this.selected.findIndex(option => this.options[optionIndex].value == option);
-                    }
 
                     if (selectedIndex >= 0 || alternativeIndex >= 0) {
 
                         selectedIndex >= 0 ? this.selected.splice(selectedIndex, 1) : this.selected.splice(alternativeIndex, 1); 
 
-                        this.$emit('input', {
-                            filter: 'checkbox',
-                            compare: 'IN',
-                            metadatum_id: this.metadatumId,
-                            collection_id: this.collectionId,
-                            value: this.selected
-                        });
-
-                        this.$emit( 'sendValuesToTags', this.selected);
-
-                        this.selectedValues();
+                        this.onSelect();
                     }
                 }
             },

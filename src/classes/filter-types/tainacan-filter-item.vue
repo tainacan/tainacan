@@ -31,8 +31,7 @@
                 </span>
                 <span class="collapse-label">{{ filter.name }}</span>
             </button>
-            <div
-                    :id="'filter-input-id-' + filter.id">
+            <div :id="'filter-input-id-' + filter.id">
                 <component
                         :is="filter.filter_type_object.component"
                         :filter="filter"
@@ -54,16 +53,9 @@
             isRepositoryLevel: Boolean,
             open: true,
         },
-        data(){
-            return {
-                inputs: [],
-            }
-        },
         methods: {
             onInput(inputEvent){
-                this.$eventBusSearch.$emit(
-                    'input', ( inputEvent.metadatum_id ) ?  inputEvent :  inputEvent.detail[0] 
-                );
+                this.$eventBusSearch.$emit('input', inputEvent);
             },
             onSendValuesToTags(values) {
                 this.$eventBusSearch.$emit('sendValuesToTags', {

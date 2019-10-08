@@ -44,7 +44,7 @@
 
 <script>
     import { tainacan as axios, isCancel } from '../../../js/axios/axios';
-    import { filterTypeMixin } from '../filter-types-mixin';
+    import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
     import qs from 'qs';
 
     export default {
@@ -79,7 +79,7 @@
                 metadatum_object: {}
             }
         },
-        mixins: [filterTypeMixin],
+        mixins: [filterTypeMixin, dynamicFilterTypeMixin],
         watch: {
             selected( value ){
                 this.selected = value;

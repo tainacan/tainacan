@@ -87,8 +87,6 @@ export const removeFetchOnlyMeta = ( state, metadatum ) => {
         fetch_meta.splice(index, 1);
 
         state.postquery.fetch_only_meta = fetch_meta.toString();
-
-        console.info(state.postquery.fetch_only_meta);
     }
 };
 
@@ -149,24 +147,20 @@ export const setOrderByName = ( state, orderByName ) => {
 
 export const addFilterTag = ( state, filterTag ) => {
     state.filter_tags = ( ! state.filter_tags) ? [] : state.filter_tags;
-
     let index = state.filter_tags.findIndex( tag => tag.filterId == filterTag.filterId);
-
-    if ( index >= 0 ) {
+    if (index >= 0)
         Vue.set(state.filter_tags, index, filterTag);
-    } else {
+    else
         state.filter_tags.push(filterTag);
-    }
 };
 
 export const removeFilterTag = ( state, filterTag ) => {
     state.filter_tags = ( ! state.filter_tags ) ? [] : state.filter_tags;
-
     let index = state.filter_tags.findIndex( tag => tag.filterId == filterTag.filterId);
 
-    if (index >= 0) {
+    if (index >= 0)
         state.filter_tags.splice(index, 1);
-    }
+
 };
 
 export const cleanFilterTags = ( state ) => {

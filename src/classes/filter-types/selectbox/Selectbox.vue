@@ -26,7 +26,7 @@
 
 <script>
     import { tainacan as axios, isCancel } from '../../../js/axios/axios';
-    import { filterTypeMixin } from '../filter-types-mixin';
+    import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
 
     export default {
         created(){
@@ -65,7 +65,7 @@
                 type: ''
             }
         },
-        mixins: [filterTypeMixin],
+        mixins: [filterTypeMixin, dynamicFilterTypeMixin],
         watch: {
             selected(value) {
                 if (value)

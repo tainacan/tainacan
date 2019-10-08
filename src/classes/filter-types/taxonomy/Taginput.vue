@@ -38,10 +38,10 @@
 <script>
     import qs from 'qs';
     import { tainacan as axios } from '../../../js/axios/axios';
-    import { filterTypeMixin } from '../filter-types-mixin';
+    import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
     
     export default {
-        mixins: [ filterTypeMixin ],
+        mixins: [ filterTypeMixin, dynamicFilterTypeMixin ],
         created(){
             this.type = this.filter.metadatum.metadata_type;
 

@@ -5,18 +5,14 @@ import { mapGetters } from 'vuex';
 export const filterTypeMixin = {
     data () {
         return {
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
-            getOptionsValuesCancel: undefined,
-            isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
-            isLoadingOptions: false,
             collectionId: '',
-            metadatumId: ''
+            metadatumId: '',
+            isRepositoryLevel: Boolean
         }
     },
     props: {
         filter: Object,
-        query: Object,
-        isRepositoryLevel: Boolean
+        query: Object
     },
     created() {
         this.collectionId = this.filter.collection_id ? this.filter.collection_id : this.collectionId;
@@ -24,11 +20,30 @@ export const filterTypeMixin = {
     },
     mounted() {
         this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
+    },
+    computed: {
+        facetsFromItemSearch() {
+            return this.getFacets();
+        }
+    },
+    beforeDestroy() {    
+        this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
+    },
+};
 
+export const dynamicFilterTypeMixin = {
+    data () {
+        return {
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
+            getOptionsValuesCancel: undefined,
+            isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
+            isLoadingOptions: false
+        }
+    },
+    mounted() {
         // We listen to event, but reload event if hasFiltered is negative, as 
         // an empty query also demands filters reloading.
-        if (this.options != undefined)
-            this.$eventBusSearch.$on('hasFiltered', this.reloadOptionsDueToFiltering);
+        this.$eventBusSearch.$on('hasFiltered', this.reloadOptionsDueToFiltering);
     },
     computed: {
         facetsFromItemSearch() {
@@ -305,7 +320,7 @@ export const filterTypeMixin = {
                 this.noMorePage = 1;
             
 
-            if(this.options.length < this.maxNumOptionsCheckboxList)
+            if (this.options.length < this.maxNumOptionsCheckboxList)
                 this.noMorePage = 1;
             
             if (this.filter.max_options && this.options.length >= this.filter.max_options) {
@@ -327,8 +342,7 @@ export const filterTypeMixin = {
         // Cancels previous Request
         if (this.getOptionsValuesCancel != undefined)
             this.getOptionsValuesCancel.cancel('Facet search Canceled.');
-    
-        this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
+
         this.$eventBusSearch.$off('hasFiltered', this.reloadOptionsDueToFiltering);
     },
 };
