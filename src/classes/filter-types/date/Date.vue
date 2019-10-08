@@ -122,8 +122,6 @@
             filterTypeMixin
         ],
         created() {
-            this.filterTypeOptions = this.filter.filter_type_options;
-
             let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
 
             if (this.isRepositoryLevel || this.collectionId == 'default')
@@ -147,7 +145,6 @@
         data(){
             return {
                 value: null,
-                filterTypeOptions: [],
                 metadatum_object: {},
                 comparator: '=', // =, !=, >, >=, <, <=
             }

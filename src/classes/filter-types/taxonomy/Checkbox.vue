@@ -55,27 +55,12 @@
     export default {
         mixins: [ filterTypeMixin, dynamicFilterTypeMixin ],
         created(){
-            this.type = this.filter.metadatum.metadata_type;
-
             this.loadOptions();
-
-            if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$on('isLoadingItems', this.updatesIsLoading);
-            
         },    
-        mounted(){
-            // We listen to event, but reload event if hasFiltered is negative, as 
-            // an empty query also demands filters reloading.
-            this.$eventBusSearch.$on('hasFiltered', () => {
-                if (typeof this.loadOptions == "function")
-                    this.loadOptions(true);
-            });
-        },        
         data(){
             return {
                 isLoading: true,
                 options: [],
-                type: '',
                 selected: [],
                 taxonomy: '',
                 taxonomy_id: Number,
@@ -333,9 +318,6 @@
             // Cancels previous Request
             if (this.getOptionsValuesCancel != undefined)
                 this.getOptionsValuesCancel.cancel('Facet search Canceled.');
- 
-            if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$off('isLoadingItems', this.updatesIsLoading);
         }
     }
 </script>

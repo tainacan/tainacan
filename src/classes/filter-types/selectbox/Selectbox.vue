@@ -30,39 +30,28 @@
 
     export default {
         created(){
-            const vm = this;
-
             let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
 
-            if (this.isRepositoryLevel || this.collectionId == 'default'){
+            if (this.isRepositoryLevel || this.collectionId == 'default')
                 endpoint = '/metadata/'+ this.metadatumId;
-            }
 
             axios.get(endpoint)
                 .then( res => {
                     let result = res.data;
                     if( result && result.metadata_type ){
-                        vm.metadatum_object = result;
-                        vm.type = result.metadata_type;
+                        this.metadatum_object = result;
                         
                         if (!this.isUsingElasticSearch)
-                            vm.loadOptions();
+                            this.loadOptions();
                     }
                 })
                 .catch(error => {
                     this.$console.error(error);
                 });
-
-            if (this.isUsingElasticSearch) {
-                this.$eventBusSearch.$on('isLoadingItems', isLoading => {
-                    this.isLoadingOptions = isLoading;
-                });
-            }
         },
         data(){
             return {
-                options: [],
-                type: ''
+                options: []
             }
         },
         mixins: [filterTypeMixin, dynamicFilterTypeMixin],
@@ -119,10 +108,6 @@
                 if (filterTag.filterId == this.filter.id)
                     this.onSelect();
             }
-        },
-        beforeDestroy() {
-            if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$off('isLoadingItems');
         }
     }
 </script>

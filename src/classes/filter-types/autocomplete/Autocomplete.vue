@@ -11,7 +11,7 @@
                 @input="search"
                 field="label"
                 @select="option => setResults(option) "
-                :placeholder="(type == 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_search_metadata')">
+                :placeholder="(metadatumType === 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_search_metadata')">
             <template slot-scope="props">
                 <div class="media">
                     <div
@@ -46,21 +46,17 @@
 
     export default {
         created(){
-            const vm = this;
-
             let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
 
-            if (this.isRepositoryLevel || this.collectionId == 'default'){
+            if (this.isRepositoryLevel || this.collectionId == 'default')
                 endpoint = '/metadata/'+ this.metadatumId;
-            }
 
             axios.get(endpoint)
                 .then( res => {
                     let result = res.data;
                     if( result && result.metadata_type ){
-                        vm.metadatum_object = result;
-                        vm.type = result.metadata_type;
-                        vm.selectedValues();
+                        this.metadatum_object = result;
+                        this.selectedValues();
                     }
                 })
                 .catch(error => {
@@ -72,7 +68,6 @@
                 results:'',
                 selected:'',
                 options: [],
-                type: '',
                 metadatum_object: {},
                 label: ''
             }
@@ -104,7 +99,7 @@
                     if (this.getOptionsValuesCancel != undefined)
                         this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                    if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' )
+                    if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' )
                         promise = this.getValuesRelationship( query, this.isRepositoryLevel );
                     else
                         promise = this.getValuesPlainText( this.metadatumId, query, this.isRepositoryLevel );
@@ -134,7 +129,7 @@
                     // let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
                         // this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
 
-                    if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
+                    if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' ) {
                         // let query = qs.stringify({ postin: metadata.value  });
                         
                         axios.get('/items/' + metadata.value)

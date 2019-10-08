@@ -43,8 +43,6 @@
     export default {
         mixins: [ filterTypeMixin, dynamicFilterTypeMixin ],
         created(){
-            this.type = this.filter.metadatum.metadata_type;
-
             let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
 
             if (this.isRepositoryLevel || this.collectionId == 'default'){
@@ -63,7 +61,6 @@
                 selected:[],
                 options: [],
                 isLoading: false,
-                type: '',
                 taxonomy: '',
                 isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
             }

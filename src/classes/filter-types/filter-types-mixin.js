@@ -7,6 +7,8 @@ export const filterTypeMixin = {
         return {
             collectionId: '',
             metadatumId: '',
+            metadatumType: '',
+            filterTypeOptions: [],
             isRepositoryLevel: Boolean
         }
     },
@@ -17,6 +19,8 @@ export const filterTypeMixin = {
     created() {
         this.collectionId = this.filter.collection_id ? this.filter.collection_id : this.collectionId;
         this.metadatumId = this.filter.metadatum.metadatum_id ? this.filter.metadatum.metadatum_id : this.metadatumId;
+        this.filterTypeOptions = this.filter.filter_type_options ? this.filter.filter_type_options : this.filterTypeOptions;
+        this.metadatumType = this.filter.metadatum.metadata_type_object.className ? this.filter.metadatum.metadata_type_object.className : this.metadatumType;
     },
     mounted() {
         this.$eventBusSearch.$on('removeFromFilterTag', this.cleanFromTags );
@@ -50,6 +54,12 @@ export const dynamicFilterTypeMixin = {
         // We listen to event, but reload event if hasFiltered is negative, as 
         // an empty query also demands filters reloading.
         this.$eventBusSearch.$on('hasFiltered', this.reloadOptionsDueToFiltering);
+
+        if (this.isUsingElasticSearch) {
+            this.$eventBusSearch.$on('isLoadingItems', isLoading => {
+                this.isLoadingOptions = isLoading;
+            });
+        }
     },
     computed: {
         facetsFromItemSearch() {
@@ -350,5 +360,9 @@ export const dynamicFilterTypeMixin = {
             this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
         this.$eventBusSearch.$off('hasFiltered', this.reloadOptionsDueToFiltering);
+
+        if (this.isUsingElasticSearch)
+            this.$eventBusSearch.$off('isLoadingItems');
+
     },
 };

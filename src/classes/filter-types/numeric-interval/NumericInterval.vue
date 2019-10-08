@@ -22,15 +22,11 @@
     import { filterTypeMixin } from '../filter-types-mixin';
     export default {
         mixins: [ filterTypeMixin ],
-        created() {
-            this.filterTypeOptions = this.filter.filter_type_options;
-        },
         data(){
             return {
                 valueInit: 0,
                 valueEnd: 10,
                 isValid: false,
-                filterTypeOptions: [],
                 withError: false
             }
         },

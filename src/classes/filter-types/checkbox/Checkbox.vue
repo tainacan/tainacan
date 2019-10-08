@@ -45,17 +45,16 @@
 
     export default {
         created(){
-            let route = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId +'?nopaging=1';
+            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId +'?nopaging=1';
 
             if (this.isRepositoryLevel || this.collectionId == 'default')
-                route = '/metadata?nopaging=1';
+                endpoint = '/metadata?nopaging=1';
 
-            axios.get(route)
+            axios.get(endpoint)
                 .then( res => {
                     let result = res.data;
                     if ( result && result.metadata_type ){
                         this.metadatum_object = result;
-                        this.type = result.metadata_type;
                     
                         if (!this.isUsingElasticSearch)
                             this.loadOptions();
@@ -65,11 +64,6 @@
                 .catch(error => {
                     this.$console.log(error);
                 });
-
-            if (this.isUsingElasticSearch) {
-                this.isLoadingOptions = false;
-                this.$eventBusSearch.$on('isLoadingItems', this.updatesIsLoading);
-            }
         },
         data(){
             return {
@@ -94,7 +88,7 @@
                 if (this.getOptionsValuesCancel != undefined)
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' )
+                if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' )
                     promise = this.getValuesRelationship( null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1');
                 else
                     promise = this.getValuesPlainText( this.metadatumId, null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1' );
@@ -170,7 +164,7 @@
                         metadatumId: this.metadatumId,
                         //taxonomy: this.taxonomy,
                         collectionId: this.collectionId,
-                        metadatum_type: this.type,
+                        metadatum_type: this.metadatumType,
                         metadatum_object: this.metadatum_object,
                         isRepositoryLevel: this.isRepositoryLevel,
                         query: this.query
@@ -204,11 +198,6 @@
             updatesIsLoading(isLoading) {
                 this.isLoadingOptions = isLoading;
             }
-        },
-        beforeDestroy() {
-          
-            if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$off('isLoadingItems', this.updatesIsLoading);
         }
     }
 </script>
