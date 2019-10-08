@@ -5,7 +5,7 @@
  * @package WP-Background-Processing
  */
 
-if ( ! class_exists( 'WP_Background_Process' ) ) {
+//if ( ! class_exists( 'WP_Background_Process' ) ) {
 
 	/**
 	 * Abstract WP_Background_Process class.
@@ -13,7 +13,7 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 	 * @abstract
 	 * @extends WP_Async_Request
 	 */
-	abstract class WP_Background_Process extends WP_Async_Request {
+	abstract class Tainacan_WP_Background_Process extends Tainacan_WP_Async_Request {
 
 		/**
 		 * Action
@@ -554,4 +554,4 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		}
 
 	}
-}
+//}
