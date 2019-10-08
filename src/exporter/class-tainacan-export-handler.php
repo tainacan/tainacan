@@ -103,6 +103,34 @@ class Export_Handler {
 		}
 		return false;
 	}
+	
+	/**
+	 * Save exporter instance to the database
+	 * @param  Tainacan\Exporter\Exporter $exporter The Importer object
+	 * @return void
+	 */
+	public function save_exporter_instance(\Tainacan\Exporter\Exporter $exporter) {
+		update_option('tnc_transient_' . $exporter->get_id(), $exporter);
+	}
+	
+	/**
+	 * Retrieves an Importer instance from the database based on its session_id
+	 * @param  string $session_id The Importer ID
+	 * @return \Tainacan\Exporter\Exporter|false The Importer object, if found. False otherwise
+	 */
+	public function get_exporter_instance_by_session_id($session_id) {
+		$exporter = get_option('tnc_transient_' . $session_id);
+		return $exporter;
+	}
+	
+	/**
+	 * Deletes this exporter instance from the database
+	 * @param  Tainacan\Exporter\Exporter $exporter The Importer object
+	 * @return bool True, if exporter is successfully deleted. False on failure.
+	 */
+	public function delete_exporter_instance(\Tainacan\Exporter\Exporter $exporter) {
+		return delete_option('tnc_transient_' . $exporter->get_id());
+	}
 }
 
 global $Tainacan_Exporter_Handler;
