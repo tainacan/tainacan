@@ -39,45 +39,26 @@
 </template>
 
 <script>
-    import { tainacan as axios, isCancel } from '../../../js/axios/axios';
+    import { isCancel } from '../../../js/axios/axios';
     import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
     import CheckboxRadioModal from '../../../admin/components/other/checkbox-radio-modal.vue';
 
     export default {
-        created(){
-            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId +'?nopaging=1';
-
-            if (this.isRepositoryLevel || this.collectionId == 'default')
-                endpoint = '/metadata?nopaging=1';
-
-            axios.get(endpoint)
-                .then( res => {
-                    let result = res.data;
-                    if ( result && result.metadata_type ){
-                        this.metadatum_object = result;
-                    
-                        if (!this.isUsingElasticSearch)
-                            this.loadOptions();
-
-                    }
-                })
-                .catch(error => {
-                    this.$console.log(error);
-                });
-        },
+        mixins: [filterTypeMixin, dynamicFilterTypeMixin],
         data(){
             return {
                 options: [],
-                selected: [],
-                metadatum_object: {}
+                selected: []
             }
         },
-        mixins: [filterTypeMixin, dynamicFilterTypeMixin],
         watch: {
             selected: function(){
-                //this.selected = val;
                 this.onSelect();
             }
+        },
+        mounted() {
+            if (!this.isUsingElasticSearch)
+                this.loadOptions();
         },
         methods: {
             loadOptions(skipSelected) {
@@ -164,7 +145,6 @@
                         //taxonomy: this.taxonomy,
                         collectionId: this.collectionId,
                         metadatum_type: this.metadatumType,
-                        metadatum_object: this.metadatum_object,
                         isRepositoryLevel: this.isRepositoryLevel,
                         query: this.query
                     },

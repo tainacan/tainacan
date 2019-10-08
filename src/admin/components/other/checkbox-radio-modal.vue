@@ -301,7 +301,7 @@
                 default: false,
             },
             metadatum_type: String,
-            metadatum_object: Object,
+            query: Object,
             isRepositoryLevel: Boolean,
             isCheckbox: {
                 type: Boolean,

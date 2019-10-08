@@ -79,26 +79,6 @@
             wpAjax,
             filterTypeMixin
         ],
-        created() {
-            this.filterTypeOptions = this.filter.filter_type_options;
-
-            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
-
-            if (this.isRepositoryLevel || this.collectionId == 'default')
-                endpoint = '/metadata/'+ this.metadatumId;
-        
-            axios.get(endpoint)
-                .then( res => {
-                    let result = res.data;
-                    if ( result && result.metadata_type ){
-                        this.metadatum_object = result;
-                        this.selectedValues();
-                    }
-                })
-                .catch(error => {
-                    this.$console.log(error);
-                });
-        },
         mounted() {
             this.selectedValues();
         },
@@ -106,7 +86,6 @@
             return {
                 value: null,
                 filterTypeOptions: [],
-                metadatum_object: {},
                 comparator: '=' // =, !=, >, >=, <, <=
             }
         },

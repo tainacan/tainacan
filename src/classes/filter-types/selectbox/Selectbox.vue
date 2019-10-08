@@ -29,32 +29,12 @@
     import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
 
     export default {
-        created(){
-            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
-
-            if (this.isRepositoryLevel || this.collectionId == 'default')
-                endpoint = '/metadata/'+ this.metadatumId;
-
-            axios.get(endpoint)
-                .then( res => {
-                    let result = res.data;
-                    if( result && result.metadata_type ){
-                        this.metadatum_object = result;
-                        
-                        if (!this.isUsingElasticSearch)
-                            this.loadOptions();
-                    }
-                })
-                .catch(error => {
-                    this.$console.error(error);
-                });
-        },
+        mixins: [filterTypeMixin, dynamicFilterTypeMixin],
         data(){
             return {
                 options: []
             }
         },
-        mixins: [filterTypeMixin, dynamicFilterTypeMixin],
         watch: {
             selected(value) {
                 if (value)
@@ -74,6 +54,10 @@
                 return undefined;
             }
         }, 
+        mounted(){           
+            if (!this.isUsingElasticSearch)
+                this.loadOptions();
+        },
         methods: {
             loadOptions(){
                 // Cancels previous Request

@@ -75,7 +75,7 @@ export const dynamicFilterTypeMixin = {
             if (isInCheckboxModal || search || !this.isUsingElasticSearch) {
 
                 const source = axios.CancelToken.source();
-
+ 
                 let currentQuery  = JSON.parse(JSON.stringify(this.query));
                 if (currentQuery.fetch_only != undefined) {
                     delete currentQuery.fetch_only;

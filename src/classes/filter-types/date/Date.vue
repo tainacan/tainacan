@@ -121,31 +121,12 @@
             dateInter,
             filterTypeMixin
         ],
-        created() {
-            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
-
-            if (this.isRepositoryLevel || this.collectionId == 'default')
-                endpoint = '/metadata/'+ this.metadatumId;
-        
-            axios.get(endpoint)
-                .then( res => {
-                    let result = res.data;
-                    if ( result && result.metadata_type ){
-                        this.metadatum_object = result;
-                        this.selectedValues();
-                    }
-                })
-                .catch(error => {
-                    this.$console.log(error);
-                });
-        },
         mounted() {
             this.selectedValues();
         },
         data(){
             return {
                 value: null,
-                metadatum_object: {},
                 comparator: '=', // =, !=, >, >=, <, <=
             }
         },

@@ -51,7 +51,6 @@
                 results:'',
                 selected:'',
                 options: [],
-                metadatum_object: {},
                 label: ''
             }
         },
