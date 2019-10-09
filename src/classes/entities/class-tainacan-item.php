@@ -93,10 +93,10 @@ class Item extends Entity {
 		}
 
 		$attachments_query = [
-			'post_type'     => 'attachment',
-			'post_per_page' => -1,
-			'post_parent'   => $item_id,
-			'exclude'       => $to_exclude,
+			'post_type'     	=> 'attachment',
+			'posts_per_page' 	=> -1,
+			'post_parent'   	=> $item_id,
+			'exclude'       	=> $to_exclude,
 		];
 
 		$attachments = get_posts( $attachments_query );
