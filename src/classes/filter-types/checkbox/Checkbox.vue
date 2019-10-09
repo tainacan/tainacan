@@ -52,7 +52,7 @@
             }
         },
         watch: {
-            selected: function(){
+            selected(){
                 this.onSelect();
             }
         },
@@ -174,8 +174,8 @@
                     }
                 }
             },
-            updatesIsLoading(isLoading) {
-                this.isLoadingOptions = isLoading;
+            updatesIsLoading(isLoadingOptions) {
+                this.isLoadingOptions = isLoadingOptions;
             }
         }
     }

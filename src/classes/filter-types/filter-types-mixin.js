@@ -9,12 +9,14 @@ export const filterTypeMixin = {
             metadatumId: '',
             metadatumType: '',
             filterTypeOptions: [],
-            isRepositoryLevel: Boolean
         }
     },
     props: {
         filter: Object,
-        query: Object
+        query: Object,
+        isRepositoryLevel: Boolean,
+        isUsingElasticSearch: Boolean,
+        isLoadingItems: Boolean
     },
     created() {
         this.collectionId = this.filter.collection_id ? this.filter.collection_id : this.collectionId;
@@ -24,11 +26,6 @@ export const filterTypeMixin = {
     },
     mounted() {
         this.$eventBusSearch.$on('removeFromFilterTag', this.cleanFromTags );
-    },
-    computed: {
-        facetsFromItemSearch() {
-            return this.getFacets();
-        }
     },
     methods: {
         cleanFromTags(filterTag) {
@@ -46,7 +43,6 @@ export const dynamicFilterTypeMixin = {
         return {
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
             getOptionsValuesCancel: undefined,
-            isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
             isLoadingOptions: false
         }
     },
@@ -54,16 +50,15 @@ export const dynamicFilterTypeMixin = {
         // We listen to event, but reload event if hasFiltered is negative, as 
         // an empty query also demands filters reloading.
         this.$eventBusSearch.$on('hasFiltered', this.reloadOptionsDueToFiltering);
-
-        if (this.isUsingElasticSearch) {
-            this.$eventBusSearch.$on('isLoadingItems', isLoading => {
-                this.isLoadingOptions = isLoading;
-            });
-        }
     },
     computed: {
         facetsFromItemSearch() {
             return this.getFacets();
+        }
+    },
+    watch: {
+        isLoadingItems() {
+            this.isLoadingOptions = this.isLoadingItems;
         }
     },
     methods: {
@@ -360,9 +355,6 @@ export const dynamicFilterTypeMixin = {
             this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
         this.$eventBusSearch.$off('hasFiltered', this.reloadOptionsDueToFiltering);
-
-        if (this.isUsingElasticSearch)
-            this.$eventBusSearch.$off('isLoadingItems');
 
     },
 };

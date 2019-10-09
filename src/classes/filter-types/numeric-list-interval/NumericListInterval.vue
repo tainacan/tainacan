@@ -29,6 +29,9 @@
                 selectedInterval: ''
             }
         },
+        mounted() {
+            this.selectedValues();
+        },
         methods: {
             cleanSearchFromTags(filterTag) {
                 if (filterTag.filterId == this.filter.id)
@@ -99,9 +102,6 @@
                     return false;
                 }
             },
-        },
-        mounted() {
-            this.selectedValues();
         }
     }
 </script>

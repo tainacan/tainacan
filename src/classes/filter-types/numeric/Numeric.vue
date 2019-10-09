@@ -70,8 +70,7 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios/axios';
-    import { wpAjax } from "../../../admin/js/mixins";
+    import { wpAjax } from '../../../admin/js/mixins';
     import { filterTypeMixin } from '../filter-types-mixin';
 
     export default {

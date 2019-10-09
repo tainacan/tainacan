@@ -37,6 +37,8 @@
                         :filter="filter"
                         :query="query"
                         :is-repository-level="isRepositoryLevel"
+                        :is-loading-items.sync="isLoadingItems"
+                        :is-using-elastic-search="isUsingElasticSearch"
                         @input="onInput"
                         @sendValuesToTags="onSendValuesToTags"/>
             </div>
@@ -51,7 +53,20 @@
             filter: Object,
             query: Object,
             isRepositoryLevel: Boolean,
-            open: true,
+            open: true
+        },
+        data() {
+            return {
+                isLoadingItems: Boolean,
+                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
+            }
+        },
+        mounted() {
+            if (this.isUsingElasticSearch) {
+                this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
+                    this.isLoadingOptions = isLoadingItems;
+                });
+            }
         },
         methods: {
             onInput(inputEvent){
@@ -63,6 +78,10 @@
                     value: values
                 });
             }
+        },
+        beforeDestroy() {
+            if (this.isUsingElasticSearch)
+                this.$eventBusSearch.$off('isLoadingItems');
         }
     }
 </script>

@@ -6,7 +6,7 @@
                 v-model="selected"
                 :data="options"
                 autocomplete
-                :loading="isLoading"
+                :loading="isLoadingOptions"
                 expanded
                 :remove-on-keys="[]"
                 field="label"
@@ -27,7 +27,7 @@
                 </div>
             </template>
             <template 
-                    v-if="!isLoading" 
+                    v-if="!isLoadingOptions" 
                     slot="empty">
                 {{ $i18n.get('info_no_options_found'	) }}
             </template>
@@ -60,38 +60,17 @@
                 results:'',
                 selected:[],
                 options: [],
-                isLoading: false,
-                taxonomy: '',
-                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
+                taxonomy: ''
             }
         },
         watch: {
-            selected( value ){
-                this.selected = value;
-
-                let values = [];
-                let labels = [];
-                if( this.selected.length > 0 ){
-                    for(let val of this.selected){
-                        values.push( val.value );
-                        labels.push( val.label );
-                    }
-                }
-                this.$emit('input', {
-                    filter: 'taginput',
-                    compare: 'IN',
-                    taxonomy: this.taxonomy,
-                    metadatum_id: this.metadatumId,
-                    collection_id: this.collectionId,
-                    terms: values
-                });
-
-                this.$emit("sendValuesToTags", labels);
+            selected(){
+                this.onSelect();
             }
         },
         methods: {
             search: _.debounce( function(query) {
-                this.isLoading = true;
+                this.isLoadingOptions = true;
                 this.options = [];
                 
                 let query_items = { 
@@ -133,10 +112,10 @@
                             }
                         }                                       
                     }
-                    this.isLoading = false;
+                    this.isLoadingOptions = false;
                 })
                 .catch(error => {
-                    this.isLoading = false;
+                    this.isLoadingOptions = false;
                     this.$console.log(error);
                 });
             }, 500),
@@ -156,6 +135,26 @@
                 } else {
                     return false;
                 }
+            },
+            onSelect() {
+                let values = [];
+                let labels = [];
+                if( this.selected.length > 0 ){
+                    for(let val of this.selected){
+                        values.push( val.value );
+                        labels.push( val.label );
+                    }
+                }
+                this.$emit('input', {
+                    filter: 'taginput',
+                    compare: 'IN',
+                    taxonomy: this.taxonomy,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
+                    terms: values
+                });
+
+                this.$emit("sendValuesToTags", labels);
             },
             getTerm( taxonomy, id ){
                 //getting a specific value from api, does not need be in fecat api

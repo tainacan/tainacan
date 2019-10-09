@@ -25,7 +25,7 @@
 </template>
 
 <script>
-    import { tainacan as axios, isCancel } from '../../../js/axios/axios';
+    import { isCancel } from '../../../js/axios/axios';
     import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
 
     export default {
@@ -80,7 +80,6 @@
                 this.getOptionsValuesCancel = promise.source;
             },
             onSelect(value){
-                //this.selected = value;
                 this.$emit('input', {
                     filter: 'selectbox',
                     metadatum_id: this.metadatumId,

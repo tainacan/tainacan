@@ -30,6 +30,9 @@
                 withError: false
             }
         },
+        mounted() {
+            this.selectedValues();
+        },
         methods: {
             // only validate if the first value is higher than first
             validate_values: _.debounce( function (){
@@ -105,9 +108,6 @@
                     return false;
                 }
             },
-        },
-        mounted() {
-            this.selectedValues();
         }
     }
 </script>

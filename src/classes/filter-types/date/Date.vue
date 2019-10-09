@@ -110,7 +110,6 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios/axios';
     import { wpAjax, dateInter } from "../../../admin/js/mixins";
     import { filterTypeMixin } from '../filter-types-mixin';
     import moment from 'moment';
