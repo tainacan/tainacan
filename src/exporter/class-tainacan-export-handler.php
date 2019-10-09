@@ -110,7 +110,7 @@ class Export_Handler {
 	 * @return void
 	 */
 	public function save_exporter_instance(\Tainacan\Exporter\Exporter $exporter) {
-		update_option('tnc_transient_' . $exporter->get_id(), $exporter);
+		update_option('tnc_transient_' . $exporter->get_id(), $exporter, false);
 	}
 	
 	/**

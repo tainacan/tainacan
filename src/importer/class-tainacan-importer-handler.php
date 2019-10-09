@@ -193,7 +193,7 @@ class Importer_Handler {
 	 * @return void
 	 */
 	public function save_importer_instance(\Tainacan\Importer\Importer $importer) {
-		update_option('tnc_transient_' . $importer->get_id(), $importer);
+		update_option('tnc_transient_' . $importer->get_id(), $importer, false);
 	}
 	
 	/**
