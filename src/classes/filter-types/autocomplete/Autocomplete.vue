@@ -113,15 +113,14 @@
 
                     if (this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship') {
                         
-                        axios.get('/items/' + metadata.value)
+                        axios.get('/items/' + metadata.value + '?fetch_only=title,thumbnail')
                             .then( res => {
-      
                                 let item = res.data;
                                 this.results = item.title;
                                 this.label = item.title;
                                 this.selected = item.title;
          
-                                this.$emit( 'sendValuesToTags', this.label);
+                                this.$emit( 'sendValuesToTags', { label: this.label, value: this.results });
                             })
                             .catch(error => {
                                 this.$console.log(error);
@@ -131,7 +130,7 @@
                         this.label = metadata.value;
                         this.selected = metadata.value;
 
-                        this.$emit( 'sendValuesToTags', metadata.value);
+                        this.$emit( 'sendValuesToTags', { label: this.label, value: this.results });
                     }
                 } else {
                     return false;

@@ -223,7 +223,7 @@
                     }
                 }
 
-                this.$emit("sendValuesToTags", onlyLabels);
+                this.$emit('sendValuesToTags', { label: onlyLabels, taxonomy: this.taxonomy, value: this.selected });
             },
             openCheckboxModal(parent) {
                 this.$buefy.modal.open({

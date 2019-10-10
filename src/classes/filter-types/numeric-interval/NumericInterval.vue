@@ -87,7 +87,7 @@
                 });
 
                 if (values[0] != undefined && values[1] != undefined)
-                    this.$emit('sendValuesToTags', values[0] + ' - ' + values[1]);
+                    this.$emit('sendValuesToTags', { label: values[0] + ' - ' + values[1], value: values });
             },
             selectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
@@ -102,7 +102,7 @@
                     }
 
                     if (metaquery.value[0] != undefined && metaquery.value[1] != undefined)
-                        this.$emit( 'sendValuesToTags', this.valueInit + ' - ' + this.valueEnd);
+                        this.$emit('sendValuesToTags', { label: this.valueInit + ' - ' + this.valueEnd, value: metaquery.values });
 
                 } else {
                     return false;

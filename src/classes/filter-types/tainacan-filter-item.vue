@@ -34,11 +34,11 @@
             <div :id="'filter-input-id-' + filter.id">
                 <component
                         :is="filter.filter_type_object.component"
+                        :key="reloadDueFiltering"
                         :filter="filter"
                         :query="query"
                         :is-repository-level="isRepositoryLevel"
                         :is-loading-items.sync="isLoadingItems"
-                        :is-using-elastic-search="isUsingElasticSearch"
                         @input="onInput"
                         @sendValuesToTags="onSendValuesToTags"/>
             </div>
@@ -59,6 +59,7 @@
             return {
                 isLoadingItems: Boolean,
                 isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
+                reloadOptionsDueFiltering: Boolean
             }
         },
         mounted() {
@@ -67,21 +68,36 @@
                     this.isLoadingOptions = isLoadingItems;
                 });
             }
+            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanFromTags );
+            // We listen to event, but reload event if hasFiltered is negative, as 
+            // an empty query also demands filters reloading.
+            this.$eventBusSearch.$on('hasFiltered', this.reloadFilter);
         },
         methods: {
             onInput(inputEvent){
                 this.$eventBusSearch.$emit('input', inputEvent);
             },
-            onSendValuesToTags(values) {
-                this.$eventBusSearch.$emit('sendValuesToTags', {
+            onSendValuesToTags($event) {
+                this.$eventBusSearch.$emit('sendValuesToTags', { 
                     filterId: this.filter.id,
-                    value: values
+                    label: $event.label,
+                    value: $event.value,
+                    taxonomy: $event.taxonomy,
+                    metadatumId: this.filter.metadatum_id
                 });
-            }
-        },
+            },
+            reloadFilter() {
+                this.reloadDueFiltering = !this.reloadDueFiltering;
+            },
+            cleanFromTags() {
+            },
+        },    
         beforeDestroy() {
             if (this.isUsingElasticSearch)
                 this.$eventBusSearch.$off('isLoadingItems');
+        
+            this.$eventBusSearch.$off('hasFiltered', this.reloadFilter);
+            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanFromTags);
         }
     }
 </script>

@@ -17,13 +17,10 @@ export default {
             created() {
                 this.$on('input', data => {
                     this.$store.dispatch('search/setPage', 1);
-
                     if (data.taxonomy)
-                        this.add_taxquery(data);
+                        this.addTaxquery(data);
                     else
-                        this.add_metaquery(data);
-                    
-                    this.updateURLQueries();
+                        this.addMetaquery(data);
                 });
 
                 this.$on('sendValuesToTags', data => {
@@ -173,24 +170,38 @@ export default {
                     this.$store.dispatch('search/set_advanced_query', data);
                     this.updateURLQueries();
                 },
-                add_metaquery( data ){
+                addMetaquery( data ){
                     if ( data && data.collection_id ){
                         this.$store.dispatch('search/add_metaquery', data );
                     }
-                },
-                removeMetaQuery(query) {
-                    this.$store.dispatch('search/remove_metaquery', query );
                     this.updateURLQueries();
                 },
-                removeMetaFromFilterTag(filterTag) {
-                    this.$emit('removeFromFilterTag', filterTag);
-                    if (filterTag.singleValue == undefined)
-                        this.$store.dispatch('search/removeFilterTag', filterTag);
-                },
-                add_taxquery( data ){
+                addTaxquery( data ){
                     if ( data && data.collection_id ){
                         this.$store.dispatch('search/add_taxquery', data );
                     }
+                    this.updateURLQueries();
+                },
+                removeMetaFromFilterTag(filterTag) {
+
+                    if (filterTag.singleLabel != undefined) {
+
+                        if (filterTag.taxonomy)
+                            this.$store.dispatch('search/remove_taxquery', {
+                                filterId: filterTag.filterId,
+                                label: filterTag.singleLabel,
+                                taxonomy: filterTag.taxonomy,
+                                value: filterTag.value
+                            });
+                        else
+                            this.$store.dispatch('search/remove_metaquery', {
+                                filterId: filterTag.filterId,
+                                label: filterTag.singleLabel,
+                                metadatum_id: filterTag.metadatumId,
+                                value: filterTag.value
+                            });
+                    }
+                    this.updateURLQueries();
                 },
                 addFetchOnly( metadatum, ignorePrefs, metadatumIDs ){
                     

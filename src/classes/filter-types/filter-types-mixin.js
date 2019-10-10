@@ -25,7 +25,7 @@ export const filterTypeMixin = {
         this.metadatumType = this.filter.metadatum.metadata_type_object.className ? this.filter.metadatum.metadata_type_object.className : this.metadatumType;
     },
     mounted() {
-        this.$eventBusSearch.$on('removeFromFilterTag', this.cleanFromTags );
+        
     },
     methods: {
         cleanFromTags(filterTag) {
@@ -35,7 +35,7 @@ export const filterTypeMixin = {
     },
     beforeDestroy() {    
         this.$eventBusSearch.$off('removeFromFilterTag', this.cleanFromTags);
-    },
+    }
 };
 
 export const dynamicFilterTypeMixin = {
@@ -43,13 +43,8 @@ export const dynamicFilterTypeMixin = {
         return {
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
             getOptionsValuesCancel: undefined,
-            isLoadingOptions: false
+            isLoadingOptions: false,
         }
-    },
-    mounted() {
-        // We listen to event, but reload event if hasFiltered is negative, as 
-        // an empty query also demands filters reloading.
-        this.$eventBusSearch.$on('hasFiltered', this.reloadOptionsDueToFiltering);
     },
     computed: {
         facetsFromItemSearch() {
@@ -344,17 +339,10 @@ export const dynamicFilterTypeMixin = {
                 }
             }
         },
-        reloadOptionsDueToFiltering() {
-            if (typeof this.loadOptions === "function")
-                this.loadOptions(true);
-        }
     },
     beforeDestroy() {
         // Cancels previous Request
         if (this.getOptionsValuesCancel != undefined)
             this.getOptionsValuesCancel.cancel('Facet search Canceled.');
-
-        this.$eventBusSearch.$off('hasFiltered', this.reloadOptionsDueToFiltering);
-
     },
 };

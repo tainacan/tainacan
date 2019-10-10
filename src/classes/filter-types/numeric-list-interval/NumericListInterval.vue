@@ -72,7 +72,7 @@
 
                 if (values[0] != undefined && values[1] != undefined) {
                     let labelValue = this.filterTypeOptions.intervals[this.selectedInterval].label + (this.filterTypeOptions.showIntervalOnTag ? `(${values[0]}-${values[1]})` : '');
-                    this.$emit( 'sendValuesToTags', labelValue);
+                    this.$emit('sendValuesToTags', { label: labelValue, value: values });
                 }
             },
             selectedValues(){
@@ -97,7 +97,7 @@
                     );
 
                     let labelValue = this.filterTypeOptions.intervals[this.selectedInterval].label + (this.filterTypeOptions.showIntervalOnTag ? `(${this.valueInit}-${this.valueEnd})` : '');
-                    this.$emit( 'sendValuesToTags', labelValue);
+                    this.$emit('sendValuesToTags', { label: labelValue, value: [ this.valueInit, this.valueEnd ] });
                 } else {
                     return false;
                 }

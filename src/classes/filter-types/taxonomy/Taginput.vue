@@ -154,7 +154,7 @@
                     terms: values
                 });
 
-                this.$emit("sendValuesToTags", labels);
+                this.$emit('sendValuesToTags', { label: labels, taxonomy: this.taxonomy, value: values });
             },
             getTerm( taxonomy, id ){
                 //getting a specific value from api, does not need be in fecat api
@@ -190,7 +190,7 @@
                             collection_id: this.collectionId,
                             terms: values
                         });
-                        this.$emit( 'sendValuesToTags', labels);
+                        this.$emit('sendValuesToTags', { label: labels, taxonomy: this.taxonomy });
                    }
                 }
             }

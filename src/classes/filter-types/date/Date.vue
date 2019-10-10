@@ -166,7 +166,10 @@
                         
                         this.value = new Date(textValue);
 
-                        this.$emit('sendValuesToTags', this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat));
+                        this.$emit('sendValuesToTags', { 
+                            label: this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat), 
+                            value: this.value
+                        });
                     }
 
                 } else {
@@ -226,7 +229,10 @@
                     collection_id: this.collectionId,
                     value: valueQuery
                 });
-                this.$emit('sendValuesToTags', this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat));
+                this.$emit('sendValuesToTags', { 
+                    label: this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat), 
+                    value: valueQuery
+                });
                 
             },
             onChangeComparator(newComparator) {

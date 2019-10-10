@@ -38,7 +38,7 @@
         watch: {
             selected(value) {
                 if (value)
-                    this.$emit('sendValuesToTags', value);
+                    this.$emit('sendValuesToTags', { label: value, value: value });
             }
         },
         computed: {

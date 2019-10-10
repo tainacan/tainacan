@@ -167,7 +167,10 @@
                     }
 
                     if (metadata.value[0] != undefined && metadata.value[1] != undefined)
-                        this.$emit( 'sendValuesToTags', this.parseDateToNavigatorLanguage(metadata.value[0]) + ' - ' + this.parseDateToNavigatorLanguage(metadata.value[1]));
+                        this.$emit('sendValuesToTags', { 
+                            label: this.parseDateToNavigatorLanguage(metadata.value[0]) + ' - ' + this.parseDateToNavigatorLanguage(metadata.value[1]),
+                            value: [metadata.value[0], metadata.value[1]]
+                        });
 
                 } else {
                     return false;
@@ -272,7 +275,10 @@
                 });
 
                 if (values[0] != undefined && values[1] != undefined)
-                    this.$emit( 'sendValuesToTags', this.parseDateToNavigatorLanguage(values[0]) + ' - ' + this.parseDateToNavigatorLanguage(values[1]));
+                    this.$emit( 'sendValuesToTags', { 
+                        label: this.parseDateToNavigatorLanguage(values[0]) + ' - ' + this.parseDateToNavigatorLanguage(values[1]), 
+                        value: [ values[0], values[1] ]
+                    });
             }
         }
     }

@@ -117,7 +117,7 @@
                     }
                 }
 
-                this.$emit( 'sendValuesToTags', onlyLabels.length ? onlyLabels : this.selected);
+                this.$emit( 'sendValuesToTags', { label: onlyLabels.length ? onlyLabels : this.selected, value: this.selected });
             },
             selectedValues() {
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )

@@ -50,6 +50,10 @@ export const remove_metaquery = ( { commit }, filter  ) => {
     commit('removeMetaQuery', filter  );
 };
 
+export const remove_taxquery = ( { commit }, filter  ) => {
+    commit('removeTaxQuery', filter  );
+};
+
 // Pagination queries
 export const setTotalItems = ({ commit }, total ) => {
     commit('setTotalItems', total);
