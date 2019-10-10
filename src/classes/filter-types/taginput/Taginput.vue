@@ -95,7 +95,7 @@
                 
             }, 500),
             selectedValues(){
-                const instance = this;
+
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
@@ -104,13 +104,17 @@
                     let metadata = this.query.metaquery[ index ];
 
                     if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' ) {
-                        let query = qs.stringify({ postin: metadata.value  });
+                        let query = qs.stringify({ postin: metadata.value, fetch_only: 'title,thumbnail', fetch_only_meta: '' });
 
                         axios.get('/items?' + query)
                             .then( res => {
                                 if (res.data.items) {
-                                    for (let item of res.data) {
-                                        instance.selected.push({ label: item.title, value: item.id, img: item.thumbnail.thumbnail[0] });
+                                    for (let item of res.data.items) {
+                                        this.selected.push({ 
+                                            label: item.title, 
+                                            value: item.id, 
+                                            img: item.thumbnail && item.thumbnail.thumbnail && item.thumbnail.thumbnail[0] ? item.thumbnail.thumbnail[0] : null 
+                                        });
                                     }
                                 }
                             })
@@ -119,7 +123,7 @@
                             });
                     } else {
                         for (let item of metadata.value) {
-                            instance.selected.push({ label: item, value: item, img: '' });
+                            this.selected.push({ label: item, value: item, img: null });
                         }
                     }
                 } else {
@@ -143,7 +147,7 @@
                     value: values
                 });
 
-                this.$emit( 'sendValuesToTags', labels);
+                this.$emit( 'sendValuesToTags', { label: labels, value: values });
             },
             cleanSearchFromTags(filterTag) {
                                
@@ -169,7 +173,7 @@
                             value: values
                         });
 
-                        this.$emit( 'sendValuesToTags',  labels);
+                        this.$emit('sendValuesToTags', { label: labels, value: values });
                     }
                 }
             }
