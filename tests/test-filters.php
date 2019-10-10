@@ -458,4 +458,97 @@ class Filters extends TAINACAN_UnitTestCase {
 		
 	}
 	
+	function test_private_metadatum() {
+		
+		$Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+		
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Collection filtered',
+				'description' => 'Is filtered',
+			),
+			true
+		);
+		
+		$metadatum2 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'Other filtered',
+				'description'   => 'Is filtered',
+				'metadata_type'    => 'Tainacan\Metadata_Types\Text',
+				'status' => 'private',
+				'collection_id' => $collection->get_id()
+			),
+			true
+		);
+		
+		$filter = new \Tainacan\Entities\Filter();
+		$filter->set_name('teste');
+		$filter->set_metadatum($metadatum2);
+		$filter->set_status('publish');
+		
+		$this->assertFalse($filter->validate());
+		$this->assertArrayHasKey('status', $filter->get_errors()[0]);
+		
+		$filter->set_status('private');
+		
+		$this->assertTrue($filter->validate());
+		
+		
+	}
+
+	function test_private_metadatum_update() {
+		
+		$Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+		
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Collection filtered',
+				'description' => 'Is filtered',
+			),
+			true
+		);
+		
+		$metadatum2 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'Other filtered',
+				'description'   => 'Is filtered',
+				'metadata_type'    => 'Tainacan\Metadata_Types\Text',
+				'status' => 'publish',
+				'collection_id' => $collection->get_id()
+			),
+			true
+		);
+		
+		$filter = $this->tainacan_entity_factory->create_entity(
+			'filter',
+			array(
+				'name'        => 'filtro',
+				'collection'  => $collection,
+				'description' => 'descricao',
+				'metadatum'       => $metadatum2,
+				'status' => 'publish',
+				'filter_type' => 'Tainacan\Filter_Types\Autocomplete'
+			),
+			true
+		);
+		
+		$this->assertEquals('publish', $filter->get_status());
+		
+		$metadatum2->set_status('private');
+		$metadatum2->validate();
+		$Tainacan_Metadata->insert($metadatum2);
+		
+		$check_filter = $Tainacan_Filters->fetch( $filter->get_id() );
+		
+		$this->assertEquals('private', $check_filter->get_status());
+		
+	}
+
+	
 }
