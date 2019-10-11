@@ -143,7 +143,9 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
         $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
         $file_name = 'demosaved.csv';
-        $csv_importer = new Importer\CSV();
+        global $Tainacan_Importer_Handler;
+        $csv_importer = $Tainacan_Importer_Handler->initialize_importer('csv');
+        $Tainacan_Importer_Handler->save_importer_instance($csv_importer);
         $id = $csv_importer->get_id();
 
         // open the file "demosaved.csv" for writing
@@ -169,16 +171,17 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         // Close the file
         fclose($file);
 
-        $_SESSION['tainacan_importer'][$id]->set_tmp_file( $file_name );
+        $importer_instance = $Tainacan_Importer_Handler->get_importer_instance_by_session_id($id); 
+        $importer_instance->set_tmp_file( $file_name );
 		
         // file isset on importer
-        $this->assertTrue( !empty( $_SESSION['tainacan_importer'][$id]->get_tmp_file() ) );
+        $this->assertTrue( !empty( $importer_instance->get_tmp_file() ) );
 
         // count size of csv
-        $this->assertEquals( 5, $_SESSION['tainacan_importer'][$id]->get_source_number_of_items() );
+        $this->assertEquals( 5, $importer_instance->get_source_number_of_items() );
 
         // get metadata to mapping
-        $headers =  $_SESSION['tainacan_importer'][$id]->get_source_metadata();
+        $headers =  $importer_instance->get_source_metadata();
         $this->assertEquals( $headers[4], 'Column 5' );
 
         // inserting the collection
@@ -195,7 +198,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		
 		$collection_definition = [
 			'id' => $collection->get_id(),
-			'total_items' => $_SESSION['tainacan_importer'][$id]->get_source_number_of_items(),
+			'total_items' => $importer_instance->get_source_number_of_items(),
 		];
 		
         // get collection metadata to map
@@ -210,19 +213,19 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		$collection_definition['mapping'] = $map;
 
         // add the collection
-        $_SESSION['tainacan_importer'][$id]->add_collection( $collection_definition );
+        $importer_instance->add_collection( $collection_definition );
 
         //execute the process
-		$this->assertEquals(1, $_SESSION['tainacan_importer'][$id]->run(), 'first step should import 1 item');
-		$this->assertEquals(2, $_SESSION['tainacan_importer'][$id]->run(), 'second step should import 2 items');
-		$this->assertEquals(3, $_SESSION['tainacan_importer'][$id]->run(), 'third step should import 3 items');
-		$this->assertEquals(4, $_SESSION['tainacan_importer'][$id]->run(), 'third step should import 4 items');
-		$this->assertEquals(false, $_SESSION['tainacan_importer'][$id]->run(), '5 items and return false because its finished');
-		$this->assertEquals(false, $_SESSION['tainacan_importer'][$id]->run(), 'if call run again after finish, do nothing');
+		$this->assertEquals(1, $importer_instance->run(), 'first step should import 1 item');
+		$this->assertEquals(2, $importer_instance->run(), 'second step should import 2 items');
+		$this->assertEquals(3, $importer_instance->run(), 'third step should import 3 items');
+		$this->assertEquals(4, $importer_instance->run(), 'third step should import 4 items');
+		$this->assertEquals(false, $importer_instance->run(), '5 items and return false because its finished');
+		$this->assertEquals(false, $importer_instance->run(), 'if call run again after finish, do nothing');
 
         $items = $Tainacan_Items->fetch( [], $collection, 'OBJECT' );
 
-        $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_source_number_of_items(), count( $items ) );
+        $this->assertEquals( $importer_instance->get_source_number_of_items(), count( $items ) );
     }
 
     /**
@@ -250,8 +253,11 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
         $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
         $file_name = 'demosaved.csv';
-        $csv_importer = new Importer\CSV();
+        global $Tainacan_Importer_Handler;
+        $csv_importer = $Tainacan_Importer_Handler->initialize_importer('csv');
+        $Tainacan_Importer_Handler->save_importer_instance($csv_importer);
         $id = $csv_importer->get_id();
+        $importer_instance = $Tainacan_Importer_Handler->get_importer_instance_by_session_id($id);
 
         // open the file "demosaved.csv" for writing
         $file = fopen($file_name, 'w');
@@ -280,16 +286,16 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         // Close the file
         fclose($file);
 
-        $_SESSION['tainacan_importer'][$id]->set_tmp_file( $file_name );
+        $importer_instance->set_tmp_file( $file_name );
 		
         // file isset on importer
-        $this->assertTrue( !empty( $_SESSION['tainacan_importer'][$id]->get_tmp_file() ) );
+        $this->assertTrue( !empty( $importer_instance->get_tmp_file() ) );
 
         // count size of csv
-        $this->assertEquals( 5, $_SESSION['tainacan_importer'][$id]->get_source_number_of_items() );
+        $this->assertEquals( 5, $importer_instance->get_source_number_of_items() );
 
         // get metadata to mapping
-        $headers =  $_SESSION['tainacan_importer'][$id]->get_source_metadata();
+        $headers =  $importer_instance->get_source_metadata();
         $this->assertEquals( $headers[4], 'Column 5' );
 
         // inserting the collection
@@ -354,7 +360,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		
 		$collection_definition = [
 			'id' => $collection->get_id(),
-			'total_items' => $_SESSION['tainacan_importer'][$id]->get_source_number_of_items(),
+			'total_items' => $importer_instance->get_source_number_of_items(),
 		];
 		
         // get collection metadata to map
@@ -374,21 +380,20 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		$collection_definition['mapping'] = $map;
 
         // add the collection
-        $_SESSION['tainacan_importer'][$id]->add_collection( $collection_definition );
-        $_SESSION['tainacan_importer'][$id]->set_option('encode','iso88591');
-        //$_SESSION['tainacan_importer'][$id]->set_option('encode','utf8');
+        $importer_instance->add_collection( $collection_definition );
+        $importer_instance->set_option('encode','iso88591');
 
         //execute the process
-		$this->assertEquals(1, $_SESSION['tainacan_importer'][$id]->run(), 'first step should import 1 item');
-		$this->assertEquals(2, $_SESSION['tainacan_importer'][$id]->run(), 'second step should import 2 items');
-		$this->assertEquals(3, $_SESSION['tainacan_importer'][$id]->run(), 'third step should import 3 items');
-		$this->assertEquals(4, $_SESSION['tainacan_importer'][$id]->run(), 'third step should import 4 items');
-		$this->assertEquals(false, $_SESSION['tainacan_importer'][$id]->run(), '5 items and return false because its finished');
-		$this->assertEquals(false, $_SESSION['tainacan_importer'][$id]->run(), 'if call run again after finish, do nothing');
+		$this->assertEquals(1, $importer_instance->run(), 'first step should import 1 item');
+		$this->assertEquals(2, $importer_instance->run(), 'second step should import 2 items');
+		$this->assertEquals(3, $importer_instance->run(), 'third step should import 3 items');
+		$this->assertEquals(4, $importer_instance->run(), 'third step should import 4 items');
+		$this->assertEquals(false, $importer_instance->run(), '5 items and return false because its finished');
+		$this->assertEquals(false, $importer_instance->run(), 'if call run again after finish, do nothing');
 
         $items = $Tainacan_Items->fetch( ['order'=> 'ASC','orderby' => 'date'], $collection, 'OBJECT' );
 
-        $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_source_number_of_items(), count( $items ) );
+        $this->assertEquals( $importer_instance->get_source_number_of_items(), count( $items ) );
     }
 
     /**
@@ -409,8 +414,11 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
         $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
         $file_name = 'demosaved.csv';
-        $csv_importer = new Importer\CSV();
+        global $Tainacan_Importer_Handler;
+        $csv_importer = $Tainacan_Importer_Handler->initialize_importer('csv');
+        $Tainacan_Importer_Handler->save_importer_instance($csv_importer);
         $id = $csv_importer->get_id();
+        $importer_instance = $Tainacan_Importer_Handler->get_importer_instance_by_session_id($id);
 
         // open the file "demosaved.csv" for writing
         $file = fopen($file_name, 'w');
@@ -440,20 +448,20 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         // Close the file
         fclose($file);
 
-        $_SESSION['tainacan_importer'][$id]->set_tmp_file( $file_name );
+        $importer_instance->set_tmp_file( $file_name );
 		
         // file isset on importer
-        $this->assertTrue( !empty( $_SESSION['tainacan_importer'][$id]->get_tmp_file() ) );
+        $this->assertTrue( !empty( $importer_instance->get_tmp_file() ) );
 
         // count total items
-        $this->assertEquals( 5, $_SESSION['tainacan_importer'][$id]->get_source_number_of_items() );
+        $this->assertEquals( 5, $importer_instance->get_source_number_of_items() );
 
         // get metadata to mapping AVOIDING special fields
-        $headers =  $_SESSION['tainacan_importer'][$id]->get_source_metadata();
+        $headers =  $importer_instance->get_source_metadata();
         $this->assertEquals( $headers[1], 'Column 3' );
 
-        $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_option('attachment_index'), 3 );
-        $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_option('document_index'), 4 );
+        $this->assertEquals( $importer_instance->get_option('attachment_index'), 3 );
+        $this->assertEquals( $importer_instance->get_option('document_index'), 4 );
 
         // inserting the collection
         $collection = $this->tainacan_entity_factory->create_entity(
@@ -495,7 +503,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		
 		$collection_definition = [
 			'id' => $collection->get_id(),
-			'total_items' => $_SESSION['tainacan_importer'][$id]->get_source_number_of_items(),
+			'total_items' => $importer_instance->get_source_number_of_items(),
         ];
         
         // get collection metadata to map
@@ -511,16 +519,16 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $collection_definition['mapping'] = $map;
 
         // add the collection
-        $_SESSION['tainacan_importer'][$id]->add_collection( $collection_definition );
-        $_SESSION['tainacan_importer'][$id]->set_option('encode','iso88591');
-
-        while($_SESSION['tainacan_importer'][$id]->run()){
+        $importer_instance->add_collection( $collection_definition );
+        $importer_instance->set_option('encode','iso88591');
+        
+        while($importer_instance->run()) {
             continue;
         }
 
         $items = $Tainacan_Items->fetch( ['order'=> 'ASC', 'orderby' => 'ID'], $collection, 'OBJECT' );
 
-        $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_source_number_of_items(), count( $items ) );
+        $this->assertEquals( $importer_instance->get_source_number_of_items(), count( $items ) );
 
         // test rows
         $document_id = $items[0]->get_document();
@@ -549,12 +557,14 @@ class ImporterTests extends TAINACAN_UnitTestCase {
      * @group importer_csv_special_fields
      */
     public function test_special_fields_status_and_id(){
+        global $Tainacan_Importer_Handler;
         $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
         $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
         $file_name = 'demosaved.csv';
-        $csv_importer = new Importer\CSV();
+        $csv_importer = $Tainacan_Importer_Handler->initialize_importer('csv');
+        $Tainacan_Importer_Handler->save_importer_instance($csv_importer);
         $id = $csv_importer->get_id();
-
+        $importer_instance = $Tainacan_Importer_Handler->get_importer_instance_by_session_id($id);
         // open the file "demosaved.csv" for writing
         $file = fopen($file_name, 'w');
 
@@ -578,19 +588,19 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         // Close the file
         fclose($file);
 
-        $_SESSION['tainacan_importer'][$id]->set_tmp_file( $file_name );
+        $importer_instance->set_tmp_file( $file_name );
 		
         // file isset on importer
-        $this->assertTrue( !empty( $_SESSION['tainacan_importer'][$id]->get_tmp_file() ) );
+        $this->assertTrue( !empty( $importer_instance->get_tmp_file() ) );
 
         // count total items
-        $this->assertEquals( 5, $_SESSION['tainacan_importer'][$id]->get_source_number_of_items() );
+        $this->assertEquals( 5, $importer_instance->get_source_number_of_items() );
   
         // get metadata to mapping AVOIDING special fields
-        $headers =  $_SESSION['tainacan_importer'][$id]->get_source_metadata();
+        $headers =  $importer_instance->get_source_metadata();
         $this->assertEquals( $headers[1], 'Unknow Column' );
   
-        $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_option('item_status_index'), 1 );
+        $this->assertEquals( $importer_instance->get_option('item_status_index'), 1 );
   
         // inserting the collection
         $collection = $this->tainacan_entity_factory->create_entity(
@@ -632,7 +642,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
           
           $collection_definition = [
               'id' => $collection->get_id(),
-              'total_items' => $_SESSION['tainacan_importer'][$id]->get_source_number_of_items(),
+              'total_items' => $importer_instance->get_source_number_of_items(),
           ];
 
           // get collection metadata to map
@@ -648,9 +658,9 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $collection_definition['mapping'] = $map;
 
         // add the collection
-        $_SESSION['tainacan_importer'][$id]->add_collection( $collection_definition );
+        $importer_instance->add_collection( $collection_definition );
 
-        while($_SESSION['tainacan_importer'][$id]->run()){
+        while($importer_instance->run()){
             continue;
         }
 
