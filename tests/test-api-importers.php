@@ -33,12 +33,8 @@ class TAINACAN_REST_Importers_Controller extends TAINACAN_UnitApiTestCase {
 	public function test_update() {
 		global $Tainacan_Importer_Handler;
 		$slug='csv';
-		if ($importer = $Tainacan_Importer_Handler->initialize_importer($slug)) {
-				$response = $importer->_to_Array();
-				$Tainacan_Importer_Handler->save_importer_instance($importer);
-		} else {
-			$this->assertFalse(true);
-		}
+		$importer = $Tainacan_Importer_Handler->initialize_importer($slug);
+		$Tainacan_Importer_Handler->save_importer_instance($importer);
 		$session_id = $importer->get_id();
 
 		$params = json_encode([
