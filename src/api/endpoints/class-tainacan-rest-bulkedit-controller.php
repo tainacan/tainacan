@@ -457,7 +457,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 	public function get_create_params($object_name = null) {
 		$query_params['context']['default'] = 'view';
 
-		array_merge($query_params, parent::get_collection_params('item'));
+		array_merge($query_params, parent::get_wp_query_params());
 
 		$query_params['title'] = array(
 			'description' => __('Limits the result set to items with a specific title'),

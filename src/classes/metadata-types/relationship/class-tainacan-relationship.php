@@ -56,8 +56,8 @@ class Relationship extends Metadata_Type {
                'description' => __( 'Select the collection to fetch items', 'tainacan' ),
            ],
            'search' => [
-               'title' => __( 'Metadata to search', 'tainacan' ),
-               'description' => __( 'Select the metadata to use as search criteria in the target collection', 'tainacan' ),
+               'title' => __( 'Related Metadatum', 'tainacan' ),
+               'description' => __( 'Select the metadata to use as search criteria in the target collection and as a label when representing the relationship', 'tainacan' ),
            ],
            'repeated' => [
                'title' =>__( 'Allow repeated items', 'tainacan' ),
@@ -93,10 +93,10 @@ class Relationship extends Metadata_Type {
                 'collection_id' => __('The related collection is required','tainacan')
             ];
         }
-		
-		if  ( !is_array($this->get_option('search')) ) {
+		// empty is ok
+		if  ( !empty($this->get_option('search')) && !is_numeric($this->get_option('search')) ) {
 			return [
-                'search' => __('Search option must be an array','tainacan')
+                'search' => __('Search option must be a numeric Metadatum ID','tainacan')
             ];
 		}
 		
@@ -137,7 +137,7 @@ class Relationship extends Metadata_Type {
 						
 						$return .= $prefix;
 						
-						$return .= $item->_toHtml();
+						$return .= $this->get_item_html($item);
 						
 						$return .= $suffix;
 						
@@ -161,7 +161,7 @@ class Relationship extends Metadata_Type {
 				$item = new \Tainacan\Entities\Item($value);
 				
 				if ( $item instanceof \Tainacan\Entities\Item ) {
-					$return .= $item->_toHtml();
+					$return .= $this->get_item_html($item);
 				}
 				
 			} catch (Exception $e) {
@@ -170,6 +170,46 @@ class Relationship extends Metadata_Type {
 			
 		}
 		
+		return $return;
+		
+	}
+	
+	private function get_item_html($item) {
+		
+		$return = '';
+		$id = $item->get_id();
+		
+		$search_meta_id = $this->get_option('search');
+		
+		if ( $id && $search_meta_id ) {
+			
+			$link = get_permalink( (int) $id );
+			
+			$search_meta_id = $this->get_option('search');
+			
+			$metadatum = \Tainacan\Repositories\Metadata::get_instance()->fetch((int) $search_meta_id);
+			
+			$label = '';
+			
+			if ($metadatum instanceof \Tainacan\Entities\Metadatum) {
+				$item_meta = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum);
+				$label = $item_meta->get_value_as_string();
+			}
+			
+			if ( empty($label) ) {
+				$label = $item->get_title();
+			}
+			
+			if (is_string($link)) {
+				
+				$return = "<a data-linkto='item' data-id='$id' href='$link'>";
+				$return.= $label;
+				$return .= "</a>";
+				
+			}
+			
+		}
+
 		return $return;
 		
 	}

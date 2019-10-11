@@ -232,7 +232,8 @@
                     <b-dropdown 
                             :mobile-modal="true"
                             id="item-creation-options-dropdown"
-                            aria-role="list">
+                            aria-role="list"
+                            trap-focus>
                         <button
                                 class="button is-secondary"
                                 slot="trigger">
@@ -306,7 +307,8 @@
                             :mobile-modal="true"
                             :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry'"
                             class="show metadata-options-dropdown"
-                            aria-role="list">
+                            aria-role="list"
+                            trap-focus>
                         <button
                                 :aria-label="$i18n.get('label_displayed_metadata')"
                                 class="button is-white"
@@ -348,7 +350,8 @@
                         <b-dropdown
                                 :mobile-modal="true"
                                 @input="onChangeOrder()"
-                                aria-role="list">
+                                aria-role="list"
+                                trap-focus>
                             <button
                                     :aria-label="$i18n.get('label_sorting_direction')"
                                     class="button is-white"
@@ -395,7 +398,8 @@
                         <b-dropdown
                                 :mobile-modal="true"
                                 @input="onChangeOrderBy($event)"
-                                aria-role="list">
+                                aria-role="list"
+                                trap-focus>
                             <button
                                     :aria-label="$i18n.get('label_sorting')"
                                     class="button is-white"
@@ -431,7 +435,8 @@
                                 :mobile-modal="true"
                                 position="is-bottom-left"
                                 :aria-label="$i18n.get('label_view_mode')"
-                                aria-role="list">
+                                aria-role="list"
+                                trap-focus>
                             <button 
                                     :aria-label="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : $i18n.get('label_visualization')"
                                     class="button is-white" 
@@ -472,7 +477,8 @@
                                 :mobile-modal="true"
                                 position="is-bottom-left"
                                 :aria-label="$i18n.get('label_view_mode')"
-                                aria-role="list">
+                                aria-role="list"
+                                trap-focus>
                             <button
                                     :aria-label="$i18n.get('label_view_mode')"
                                     class="button is-white"
@@ -811,12 +817,18 @@
                 role="region"
                 aria-labelledby="filters-label-landmark-modal"
                 id="filters-mobile-modal"
-                ref="filters-mobile-modal"
                 class="tainacan-form is-hidden-tablet"                
                 :active.sync="isFilterModalActive"
                 :width="736"
-                animation="slide-menu">
-            <div class="modal-inner-content">
+                animation="slide-menu"
+                trap-focus>
+            <div 
+                    ref="filters-mobile-modal"
+                    class="modal-inner-content"
+                    autofocus="true"
+                    tabindex="-1"
+                    aria-modal
+                    role="dialog">
                 <h3 
                         id="filters-label-landmark-modal"
                         class="has-text-weight-semibold">
@@ -1035,6 +1047,14 @@
             orderByName() {
                 if (this.isSortingByCustomMetadata)
                     this.hasAnOpenAlert = true;
+            },
+            isFilterModalActive() {
+                if (this.isFilterModalActive) {
+                    setTimeout(() => {
+                        if (this.$refs['filters-mobile-modal'])
+                            this.$refs['filters-mobile-modal'].focus();
+                    }, 800);
+                }
             }
         },
         methods: {
@@ -1097,7 +1117,8 @@
                     props: { 
                         targetCollection: this.collectionId,
                         hideWhenManualCollection: true
-                    }
+                    },
+                    trapFocus: true
                 });
             },
             openExposersModal() {
@@ -1108,14 +1129,16 @@
                     props: { 
                         collectionId: this.collectionId,
                         totalItems: this.totalItems
-                    }
+                    },
+                    trapFocus: true
                 })
             },
             onOpenCollectionsModal() {
                 this.$buefy.modal.open({
                     parent: this,
                     component: CollectionsModal,
-                    hasModalCard: true
+                    hasModalCard: true,
+                    trapFocus: true
                 });
             },
             updateSearch() {
@@ -1489,7 +1512,8 @@
                             hideCancel: true,
                             showNeverShowAgainOption: offerCheckbox && tainacan_plugin.user_caps != undefined && tainacan_plugin.user_caps.length != undefined && tainacan_plugin.user_caps.length > 0,
                             messageKeyForUserPrefs: 'ItemsHiddenDueSorting'
-                        }
+                        },
+                        trapFocus: true
                     });
             },
             adjustSearchControlHeight: _.debounce( function() {

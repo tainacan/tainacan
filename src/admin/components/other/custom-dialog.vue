@@ -1,9 +1,11 @@
 <template>
     <div 
             aria-labelledby="alert-dialog-title"
-            aria-modal="true"
+            aria-modal
+            autofocus
             role="alertdialog"
-            class="tainacan-form dialog">
+            class="tainacan-form dialog"
+            ref="customDialog">
         <div    
                 class="modal-card" 
                 style="width: auto">
@@ -87,6 +89,10 @@
             changeNeverShowMessageAgain($event) {
                 this.$userPrefs.set('neverShow' + this.messageKeyForUserPrefs + 'Dialog', $event);
             }
+        },
+        mounted() {
+            if (this.$refs.customDialog)
+                this.$refs.customDialog.focus();
         }
     }
 </script>

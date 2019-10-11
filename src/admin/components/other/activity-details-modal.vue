@@ -1,5 +1,11 @@
 <template>
-    <div class="tainacan-modal-content">
+    <div 
+            autofocus
+            role="dialog"
+            class="tainacan-modal-content"
+            tabindex="-1"
+            aria-modal
+            ref="activityDetailsModal">
         <header 
                 v-if="!isLoadingActivity"
                 class="tainacan-modal-title">
@@ -647,7 +653,7 @@
                                 <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-20px tainacan-icon-metadata"/></span>`;
                     case 'Tainacan\\Entities\\Filter':
                         return `${ this.$i18n.get('filter') } 
-                                <a href="${ this.adminFullURL + (this.activity.object.collection_id == 'default' || this.activity.object.collection_id == 'filter_in_repository' ? this.$routerHelper.getFilterEditPath(this.activity.object_id) : this.$routerHelper.getCollectionFilterEditPath(this.activity.object.collection_id, this.activity.object_id)) }">${ this.activity.object.name }</a>
+                                <a href="${ this.adminFullURL + (this.activity.object.collection_id == 'default' ? this.$routerHelper.getFilterEditPath(this.activity.object_id) : this.$routerHelper.getCollectionFilterEditPath(this.activity.object.collection_id, this.activity.object_id)) }">${ this.activity.object.name }</a>
                                 <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-20px tainacan-icon-filters"/></span>`;
                     case 'Tainacan\\Entities\\Term':
                         return `${ this.$i18n.get('term') } 
@@ -666,6 +672,10 @@
         },
         created() {
             this.loadActivity();
+        },
+        mounted() {
+            if (this.$refs.activityDetailsModal)
+                this.$refs.activityDetailsModal.focus()
         },
         methods: {
             ...mapActions('activity', [
@@ -765,11 +775,11 @@
     }
 
     p.is-capitalized {
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.125rem;
     }
     .tainacan-p-break {
         word-break: break-word;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
     }
 
     .tainacan-figure {

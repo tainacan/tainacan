@@ -61,7 +61,8 @@
                         ref="advancedSearchShortcut"
                         class="advanced-search-header-dropdown"
                         position="is-bottom-left"
-                        aria-role="list">
+                        aria-role="list"
+                        trap-focus>
                     <a
                             class="advanced-search-text"
                             slot="trigger">

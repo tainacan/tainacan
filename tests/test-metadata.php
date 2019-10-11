@@ -455,7 +455,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 				'status'	 => 'publish',
 				'metadata_type_options' => [
 					'collection_id' => $collection2->get_id(),
-					'search' => [$collection2->get_core_title_metadatum()->get_id()]
+					'search' => $collection2->get_core_title_metadatum()->get_id()
 					]
 				),
 				true

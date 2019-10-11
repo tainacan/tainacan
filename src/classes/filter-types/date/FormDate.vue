@@ -27,7 +27,6 @@
                 type: Object
             },
             value: [String, Number, Array],
-            id: '',
             disabled: false,
         },
         data() {
@@ -39,9 +38,6 @@
             onUpdateType(type) {
                 this.$emit('input', { type: type });
             },
-        },
-        created() {
-            this.type = this.type && this.value.type ? this.value.type : 'day';
         }
     }
 </script>

@@ -36,14 +36,15 @@ class REST_Taxonomies_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_collection_params()
+					'args'                => $this->get_wp_query_params()
 				),
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'create_item'),
 					'permission_callback' => array($this, 'create_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE)
-				)
+				),
+				'schema'                  => [$this, 'get_schema']
 			)
 		);
 		register_rest_route(
@@ -71,7 +72,8 @@ class REST_Taxonomies_Controller extends REST_Controller {
 					'callback'            => array($this, 'update_item'),
 					'permission_callback' => array($this, 'update_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE)
-				)
+				),
+				'schema'                  => [$this, 'get_schema']
 			)
 		);
 		register_rest_route(
@@ -82,7 +84,8 @@ class REST_Taxonomies_Controller extends REST_Controller {
 					'callback'            => array($this, 'update_item'),
 					'permission_callback' => array($this, 'update_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE)
-				)
+				),
+				'schema'                  => [$this, 'get_schema']
 			)
 		);
 	}
@@ -485,10 +488,10 @@ class REST_Taxonomies_Controller extends REST_Controller {
 	 *
 	 * @return array
 	 */
-	public function get_collection_params($object_name = null) {
+	public function get_wp_query_params() {
 		$query_params['context']['default'] = 'view';
 
-		$query_params = array_merge($query_params, parent::get_collection_params('tax'));
+		$query_params = array_merge($query_params, parent::get_wp_query_params());
 
 		$query_params['name'] = array(
 			'description' => __('Limits the result set to a taxonomy with a specific name.'),
@@ -498,6 +501,26 @@ class REST_Taxonomies_Controller extends REST_Controller {
 		$query_params = array_merge($query_params, parent::get_meta_queries_params());
 
 		return $query_params;
+	}
+
+	function get_schema() {
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => 'taxonomy',
+			'type' => 'object'
+		];
+		
+		$main_schema = parent::get_repository_schema( $this->taxonomy_repository );
+		$permissions_schema = parent::get_permissions_schema();
+		
+		$schema['properties'] = array_merge(
+			parent::get_base_properties_schema(),
+			$main_schema,
+			$permissions_schema
+		);
+		
+		return $schema;
+		
 	}
 }
 

@@ -1,5 +1,12 @@
 <template>
-    <div class="tainacan-modal-content this-tainacan-modal-content">
+    <div 
+            aria-labelledby="alert-dialog-title"
+            autofocus
+            role="alertdialog"
+            tabindex="-1"
+            aria-modal
+            class="tainacan-modal-content this-tainacan-modal-content"
+            ref="bulkEditionModal">
         <header class="tainacan-modal-title">
             <h2>{{ modalTitle }}
                 <small class="tainacan-total-objects-info">
@@ -352,6 +359,10 @@
             }).then(() => {
                 this.groupID = this.getGroupID();
             });
+        },
+        mounted() {
+            if (this.$refs.bulkEditionModal)
+                this.$refs.bulkEditionModal.focus();
         },
         computed: {
             metadata() {

@@ -28,6 +28,9 @@ class REST_Filter_Types_Controller extends REST_Controller {
 								'className'       => [
 									'type' => 'string'
 								],
+								'name'       => [
+									'type' => 'string'
+								],
 								'component'       => [
 									'type' => 'string'
 								],

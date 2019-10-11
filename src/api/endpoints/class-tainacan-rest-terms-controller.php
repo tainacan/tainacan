@@ -44,8 +44,9 @@ class REST_Terms_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_collection_params()
-				)
+					'args'                => $this->get_wp_query_params()
+				),
+				'schema'                  => [$this, 'get_schema']
 			)
 		);
 		register_rest_route($this->namespace,'/taxonomy/(?P<taxonomy_id>[\d]+)/'. $this->rest_base . '/(?P<term_id>[\d]+)' ,
@@ -71,7 +72,8 @@ class REST_Terms_Controller extends REST_Controller {
 					'callback'            => array($this, 'get_item'),
 					'permission_callback' => array($this, 'get_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE)
-				)
+				),
+				'schema'                  => [$this, 'get_schema']
 			)
 		);
 	}
@@ -449,10 +451,10 @@ class REST_Terms_Controller extends REST_Controller {
 	 *
 	 * @return array
 	 */
-	public function get_collection_params($object_name = null) {
+	public function get_wp_query_params() {
 		$query_params['context']['default'] = 'view';
 
-		$query_params = array_merge($query_params, parent::get_collection_params('term'));
+		$query_params = array_merge($query_params, parent::get_wp_query_params());
 
 		$query_params['name'] = array(
 			'description' => __('Limits the result set to terms with a specific name'),
@@ -462,6 +464,28 @@ class REST_Terms_Controller extends REST_Controller {
 		$query_params = array_merge($query_params, parent::get_meta_queries_params());
 
 		return $query_params;
+	}
+
+	function get_schema() {
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => 'term',
+			'type' => 'object'
+		];
+		
+		$main_schema = parent::get_repository_schema( $this->terms_repository );
+		$permissions_schema = parent::get_permissions_schema();
+		
+		// $taxonomy_scheme = parent::get_repository_schema( $this->taxonomy_repository );
+		
+		$schema['properties'] = array_merge(
+			parent::get_base_properties_schema(),
+			$main_schema,
+			$permissions_schema
+			// $taxonomy_scheme
+		);
+		
+		return $schema;
 	}
 }
 

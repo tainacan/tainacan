@@ -17,6 +17,7 @@ class REST_Logs_Controller extends REST_Controller {
 	public function __construct() {
 		$this->rest_base = 'logs';
 		parent::__construct();
+		$this->logs_repository = Repositories\Logs::get_instance();
 	}
 
 	public function register_routes() {
@@ -27,7 +28,8 @@ class REST_Logs_Controller extends REST_Controller {
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE)
-				)
+				),
+				'schema'                  => [$this, 'get_schema']
 			)
 		);
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<log_id>[\d]+)',
@@ -37,7 +39,8 @@ class REST_Logs_Controller extends REST_Controller {
 					'callback'            => array($this, 'get_item'),
 					'permission_callback' => array($this, 'get_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE)
-				)
+				),
+				'schema'                  => [$this, 'get_schema']
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base,
@@ -47,7 +50,8 @@ class REST_Logs_Controller extends REST_Controller {
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
-				)
+				),
+				'schema'                  => [$this, 'get_schema']
 			)
 		);
 		register_rest_route($this->namespace, '/item/(?P<item_id>[\d]+)/' . $this->rest_base,
@@ -57,7 +61,8 @@ class REST_Logs_Controller extends REST_Controller {
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
-				)
+				),
+				'schema'                  => [$this, 'get_schema']
 			)
 		);
 		register_rest_route($this->namespace, '/filter/(?P<filter_id>[\d]+)/' . $this->rest_base,
@@ -67,7 +72,8 @@ class REST_Logs_Controller extends REST_Controller {
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
-				)
+				),
+				'schema'                  => [$this, 'get_schema']
 			)
 		);
 		register_rest_route($this->namespace, '/metadatum/(?P<metadatum_id>[\d]+)/' . $this->rest_base,
@@ -77,7 +83,8 @@ class REST_Logs_Controller extends REST_Controller {
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
-				)
+				),
+				'schema'                  => [$this, 'get_schema']
 			)
 		);
 		register_rest_route($this->namespace, '/taxonomy/(?P<taxonomy_id>[\d]+)/' . $this->rest_base,
@@ -87,7 +94,8 @@ class REST_Logs_Controller extends REST_Controller {
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
-				)
+				),
+				'schema'                  => [$this, 'get_schema']
 			)
 		);
 		register_rest_route($this->namespace, '/term/(?P<term_id>[\d]+)/' . $this->rest_base,
@@ -97,7 +105,8 @@ class REST_Logs_Controller extends REST_Controller {
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
-				)
+				),
+				'schema'                  => [$this, 'get_schema']
 			)
 		);
 	}
@@ -333,8 +342,6 @@ class REST_Logs_Controller extends REST_Controller {
 
 		return false;
 	}
-	
-	
 
 	/**
 	 * @param string $method
@@ -352,6 +359,25 @@ class REST_Logs_Controller extends REST_Controller {
 		}
 
 		return $endpoint_args;
+	}
+
+	function get_schema() {
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => 'log',
+			'type' => 'object'
+		];
+		
+		$main_schema = parent::get_repository_schema( $this->logs_repository );
+		$permissions_schema = parent::get_permissions_schema();
+			
+		$schema['properties'] = array_merge(
+			parent::get_base_properties_schema(),
+			$main_schema,
+			$permissions_schema
+		);
+		
+		return $schema;
 	}
 }
 

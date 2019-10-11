@@ -1,9 +1,12 @@
 <template>
     <div 
             aria-labelledby="alert-dialog-title"
-            aria-modal="true"
+            autofocus
             role="alertdialog"
-            class="tainacan-form dialog">
+            tabindex="-1"
+            aria-modal
+            class="tainacan-form dialog"
+            ref="itemCopyDialog">
         <div    
                 class="modal-card" 
                 style="width: auto">
@@ -183,6 +186,10 @@
             this.isCreatingBulkEditGroup = false;
             this.isCreatingSequenceEditGroup = false;
             this.copyCount = 1;
+        },
+        mounted() {
+            if (this.$refs.itemCopyDialog)
+            this.$refs.itemCopyDialog.focus();
         }
     }
 </script>

@@ -2,32 +2,46 @@ import qs from 'qs';
 import axios from '../../js/axios/axios';
 import { mapGetters } from 'vuex';
 
-export const filter_type_mixin = {
+export const filterTypeMixin = {
+    data () {
+        return {
+            collectionId: '',
+            metadatumId: '',
+            metadatumType: '',
+            filterTypeOptions: [],
+        }
+    },
+    props: {
+        filter: Object,
+        query: Object,
+        isRepositoryLevel: Boolean,
+        isUsingElasticSearch: Boolean,
+        isLoadingItems: Boolean
+    },
+    created() {
+        this.collectionId = this.filter.collection_id ? this.filter.collection_id : this.collectionId;
+        this.metadatumId = this.filter.metadatum.metadatum_id ? this.filter.metadatum.metadatum_id : this.metadatumId;
+        this.filterTypeOptions = this.filter.filter_type_options ? this.filter.filter_type_options : this.filterTypeOptions;
+        this.metadatumType = this.filter.metadatum.metadata_type_object.className ? this.filter.metadatum.metadata_type_object.className : this.metadatumType;
+    }
+};
+
+export const dynamicFilterTypeMixin = {
     data () {
         return {
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
             getOptionsValuesCancel: undefined,
-            isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
-            isLoadingOptions: false
+            isLoadingOptions: false,
         }
-    },
-    props: {
-        filter: {
-            type: Object // concentrate all attributes metadatum id and type
-        },
-        metadatum_id: [Number], // not required, but overrides the filter metadatum id if is set
-        collection_id: [Number], // not required, but overrides the filter metadatum id if is set
-        id: '',
-        query: {}
-    },
-    created() {
-        // We listen to event, but reload event if hasFiltered is negative, as 
-        // an empty query also demands filters reloading.
-        this.$eventBusSearch.$on('hasFiltered', this.reloadOptionsDueToFiltering);
     },
     computed: {
         facetsFromItemSearch() {
             return this.getFacets();
+        }
+    },
+    watch: {
+        isLoadingItems() {
+            this.isLoadingOptions = this.isLoadingItems;
         }
     },
     methods: {
@@ -39,7 +53,7 @@ export const filter_type_mixin = {
             if (isInCheckboxModal || search || !this.isUsingElasticSearch) {
 
                 const source = axios.CancelToken.source();
-
+ 
                 let currentQuery  = JSON.parse(JSON.stringify(this.query));
                 if (currentQuery.fetch_only != undefined) {
                     delete currentQuery.fetch_only;
@@ -51,10 +65,10 @@ export const filter_type_mixin = {
                 let query_items = { 'current_query': currentQuery };
 
                 let url = '';
-                if (isRepositoryLevel  || this.filter.collection_id == 'filter_in_repository')
+                if (isRepositoryLevel  || this.filter.collection_id == 'default')
                     url = `/facets/${metadatumId}?getSelected=${getSelected}&`;
                 else
-                    url = `/collection/${this.collection}/facets/${metadatumId}?getSelected=${getSelected}&`;
+                    url = `/collection/${this.filter.collection_id}/facets/${metadatumId}?getSelected=${getSelected}&`;
 
                 if (offset != undefined && number != undefined) {
                     if (!this.isUsingElasticSearch)
@@ -130,7 +144,7 @@ export const filter_type_mixin = {
                 let query_items = { 'current_query': currentQuery };
 
                 let url = '';
-                if (isRepositoryLevel  || this.filter.collection_id == 'filter_in_repository')
+                if (isRepositoryLevel  || this.filter.collection_id == 'default')
                     url =  '/facets/' + this.filter.metadatum.metadatum_id + `?getSelected=${getSelected}&`; 
                 else
                     url =  '/collection/' + this.filter.collection_id + '/facets/' + this.filter.metadatum.metadatum_id + `?getSelected=${getSelected}&`;
@@ -300,7 +314,7 @@ export const filter_type_mixin = {
                 this.noMorePage = 1;
             
 
-            if(this.options.length < this.maxNumOptionsCheckboxList)
+            if (this.options.length < this.maxNumOptionsCheckboxList)
                 this.noMorePage = 1;
             
             if (this.filter.max_options && this.options.length >= this.filter.max_options) {
@@ -313,16 +327,10 @@ export const filter_type_mixin = {
                 }
             }
         },
-        reloadOptionsDueToFiltering() {
-            if (typeof this.loadOptions == "function")
-                this.loadOptions(true);
-        }
     },
     beforeDestroy() {
         // Cancels previous Request
         if (this.getOptionsValuesCancel != undefined)
             this.getOptionsValuesCancel.cancel('Facet search Canceled.');
-    
-        this.$eventBusSearch.$off('hasFiltered', this.reloadOptionsDueToFiltering);
     },
 };

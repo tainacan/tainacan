@@ -5,7 +5,7 @@
         <b-select
                 v-if="!isLoadingOptions"
                 :value="selected"
-                :aria-labelledby="labelId"
+                :aria-labelledby="'filter-label-id-' + filter.id"
                 @input="onSelect($event)"
                 :placeholder="$i18n.get('label_selectbox_init')"
                 expanded>
@@ -25,72 +25,27 @@
 </template>
 
 <script>
-    import { tainacan as axios, isCancel } from '../../../js/axios/axios';
-    import { filter_type_mixin } from '../filter-types-mixin'
+    import { isCancel } from '../../../js/axios/axios';
+    import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
 
     export default {
-        created(){
-            this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id;
-            const vm = this;
-
-            let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
-
-            if(this.isRepositoryLevel || this.collection == 'filter_in_repository'){
-                in_route = '/metadata/'+ this.metadatum;
-            }
-
-            axios.get(in_route)
-                .then( res => {
-                    let result = res.data;
-                    if( result && result.metadata_type ){
-                        vm.metadatum_object = result;
-                        vm.type = result.metadata_type;
-                        
-                        if (!this.isUsingElasticSearch)
-                            vm.loadOptions();
-                    }
-                })
-                .catch(error => {
-                    this.$console.error(error);
-                });
-            
-            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
-
-            if (this.isUsingElasticSearch) {
-                this.$eventBusSearch.$on('isLoadingItems', isLoading => {
-                    this.isLoadingOptions = isLoading;
-                });
-            }
-        },
-        props: {
-            isRepositoryLevel: Boolean,
-            labelId: String
-        },
+        mixins: [filterTypeMixin, dynamicFilterTypeMixin],
         data(){
             return {
-                options: [],
-                type: '',
-                collection: '',
-                metadatum: ''
+                options: []
             }
         },
-        mixins: [filter_type_mixin],
         watch: {
             selected(value) {
-                if (value) {
-                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                        filterId: this.filter.id,
-                        value: value
-                    });
-                }
+                if (value)
+                    this.$emit('sendValuesToTags', { label: value, value: value });
             }
         },
         computed: {
             selected() {
                 if ( this.query && this.query.metaquery && Array.isArray( this.query.metaquery ) ) {
 
-                    let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
+                    let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
                     if ( index >= 0){
                         let metadata = this.query.metaquery[ index ];
                         return metadata.value;
@@ -99,6 +54,10 @@
                 return undefined;
             }
         }, 
+        mounted(){           
+            if (!this.isUsingElasticSearch)
+                this.loadOptions();
+        },
         methods: {
             loadOptions(){
                 // Cancels previous Request
@@ -106,7 +65,7 @@
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
                 let promise = null;
-                promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel );
+                promise = this.getValuesPlainText( this.metadatumId, null, this.isRepositoryLevel );
                 promise.request
                     .then(() => {
                     })
@@ -121,24 +80,13 @@
                 this.getOptionsValuesCancel = promise.source;
             },
             onSelect(value){
-                //this.selected = value;
                 this.$emit('input', {
                     filter: 'selectbox',
-                    metadatum_id: this.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
                     value: ( value ) ? value : ''
                 });
-            },
-            cleanSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id)
-                    this.onSelect();
             }
-        },
-        beforeDestroy() {
-            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
-
-            if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$off('isLoadingItems');
         }
     }
 </script>

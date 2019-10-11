@@ -39,62 +39,35 @@
 </template>
 
 <script>
-    import { tainacan as axios, isCancel } from '../../../js/axios/axios';
-    import { filter_type_mixin } from '../filter-types-mixin';
+    import { isCancel } from '../../../js/axios/axios';
+    import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
     import CheckboxRadioModal from '../../../admin/components/other/checkbox-radio-modal.vue';
 
     export default {
-        created(){
-            this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id;
-
-            let route = '/collection/' + this.collection + '/metadata/' +  this.metadatum +'?nopaging=1';
-
-            if (this.isRepositoryLevel || this.collection == 'filter_in_repository')
-                route = '/metadata?nopaging=1';
-
-            axios.get(route)
-                .then( res => {
-                    let result = res.data;
-                    if ( result && result.metadata_type ){
-                        this.metadatum_object = result;
-                        this.type = result.metadata_type;
-                    
-                        if (!this.isUsingElasticSearch)
-                            this.loadOptions();
-
-                    }
-                })
-                .catch(error => {
-                    this.$console.log(error);
-                });
-
-            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
-
-            if (this.isUsingElasticSearch) {
-                this.isLoadingOptions = false;
-                this.$eventBusSearch.$on('isLoadingItems', this.updatesIsLoading);
-            }
-        },
-        props: {
-            isRepositoryLevel: Boolean,
-        },
+        mixins: [filterTypeMixin, dynamicFilterTypeMixin],
         data(){
             return {
                 options: [],
-                type: '',
-                collection: '',
-                metadatum: '',
-                selected: [],
-                metadatum_object: {}
+                selected: []
             }
         },
-        mixins: [filter_type_mixin],
         watch: {
-            selected: function(){
-                //this.selected = val;
-                this.onSelect();
+            selected(newVal, oldVal) {
+                const isEqual = (newVal.length == oldVal.length) && newVal.every((element, index) => {
+                    return element === oldVal[index]; 
+                });
+
+                if (!isEqual)
+                    this.onSelect();
+            },
+            'query.metaquery'() {
+                if (!this.isUsingElasticSearch)
+                    this.loadOptions();
             }
+        },
+        mounted() {
+            if (!this.isUsingElasticSearch)
+                this.loadOptions();
         },
         methods: {
             loadOptions(skipSelected) {
@@ -104,11 +77,11 @@
                 if (this.getOptionsValuesCancel != undefined)
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' )
+                if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' )
                     promise = this.getValuesRelationship( null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1');
                 else
-                    promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1' );
-                
+                    promise = this.getValuesPlainText( this.metadatumId, null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1' );
+     
                 if (skipSelected != undefined && skipSelected == true) {
                     promise.request
                         .then(() => {
@@ -125,7 +98,8 @@
                         .catch( (error) => {
                             if (isCancel(error)) {
                                 this.$console.log('Request canceled: ' + error.message);
-                            }else
+                                this.selectedValues();
+                            } else
                                 this.$console.error( error );
                         });
                 }
@@ -136,41 +110,36 @@
                 this.$emit('input', {
                     filter: 'checkbox',
                     compare: 'IN',
-                    metadatum_id: this.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
                     value: this.selected
-                });
-
-                let onlyLabels = [];
-
-                if(!isNaN(this.selected[0])){
-                    for (let aSelected of this.selected) {
-                        let valueIndex = this.options.findIndex(option => option.value == aSelected);
-                        
-                        if (valueIndex >= 0) {
-                            onlyLabels.push(this.options[valueIndex].label);
-                        }
-                    }
-                }
-
-                this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                    filterId: this.filter.id,
-                    value: onlyLabels.length ? onlyLabels : this.selected,
                 });
             },
             selectedValues() {
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
-                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
+                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
+
                 if ( index >= 0){
                     let query = this.query.metaquery.slice();
                     this.selected = query[ index ].value;
-
                 } else {
                     this.selected = [];
-                    return false;
                 }
+
+                let onlyLabels = [];
+                if (!isNaN(this.selected[0])){
+                    for (let aSelected of this.selected) {
+                        let valueIndex = this.options.findIndex(option => option.value == aSelected);
+
+                        if (valueIndex >= 0) {
+                            onlyLabels.push(this.options[valueIndex].label);
+                        }
+                    }
+                }
+
+                this.$emit( 'sendValuesToTags', { label: onlyLabels.length ? onlyLabels : this.selected, value: this.selected });
             },
             openCheckboxModal() {
                 this.$buefy.modal.open({
@@ -181,11 +150,10 @@
                         filter: this.filter,
                         //taxonomy_id: this.taxonomy_id,
                         selected: this.selected,
-                        metadatum_id: this.metadatum,
+                        metadatumId: this.metadatumId,
                         //taxonomy: this.taxonomy,
-                        collection_id: this.collection,
-                        metadatum_type: this.type,
-                        metadatum_object: this.metadatum_object,
+                        collectionId: this.collectionId,
+                        metadatum_type: this.metadatumType,
                         isRepositoryLevel: this.isRepositoryLevel,
                         query: this.query
                     },
@@ -193,50 +161,13 @@
                         appliedCheckBoxModal: () => {
                             this.loadOptions();
                         } 
-                    }
+                    },
+                    trapFocus: true
                 });
             },
-            cleanSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id) {
-
-                    let selectedIndex = this.selected.findIndex(option => option == filterTag.singleValue);
-                    let optionIndex = this.options.findIndex(option => option.label == filterTag.singleValue);
-                    let alternativeIndex;
-
-                    if (optionIndex >= 0) {
-                        alternativeIndex = this.selected.findIndex(option => this.options[optionIndex].value == option);
-                    }
-
-                    if (selectedIndex >= 0 || alternativeIndex >= 0) {
-
-                        selectedIndex >= 0 ? this.selected.splice(selectedIndex, 1) : this.selected.splice(alternativeIndex, 1); 
-
-                        this.$emit('input', {
-                            filter: 'checkbox',
-                            compare: 'IN',
-                            metadatum_id: this.metadatum,
-                            collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
-                            value: this.selected
-                        });
-
-                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                            filterId: this.filter.id,
-                            value: this.selected
-                        });
-
-                        this.selectedValues();
-                    }
-                }
-            },
-            updatesIsLoading(isLoading) {
-                this.isLoadingOptions = isLoading;
+            updatesIsLoading(isLoadingOptions) {
+                this.isLoadingOptions = isLoadingOptions;
             }
-        },
-        beforeDestroy() {
-            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
-            
-            if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$off('isLoadingItems', this.updatesIsLoading);
         }
     }
 </script>

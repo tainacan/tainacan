@@ -31,15 +31,15 @@
                 </span>
                 <span class="collapse-label">{{ filter.name }}</span>
             </button>
-            <div
-                    :id="'filter-input-id-' + filter.id">
+            <div :id="'filter-input-id-' + filter.id">
                 <component
-                        :label-id="'filter-label-id-' + filter.id"
                         :is="filter.filter_type_object.component"
                         :filter="filter"
                         :query="query"
                         :is-repository-level="isRepositoryLevel"
-                        @input="listen( $event )"/>
+                        :is-loading-items.sync="isLoadingItems"
+                        @input="onInput"
+                        @sendValuesToTags="onSendValuesToTags"/>
             </div>
         </b-collapse>
     </b-field>
@@ -52,17 +52,47 @@
             filter: Object,
             query: Object,
             isRepositoryLevel: Boolean,
-            open: true,
+            open: true
         },
-        data(){
+        data() {
             return {
-                inputs: [],
+                isLoadingItems: Boolean,
+                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
+                reloadDueFiltering: Boolean
             }
+        },
+        mounted() {
+            if (this.isUsingElasticSearch) {
+                this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
+                    this.isLoadingOptions = isLoadingItems;
+                });
+            }
+            // We listen to event, but reload event if hasFiltered is negative, as 
+            // an empty query also demands filters reloading.
+            this.$eventBusSearch.$on('hasFiltered', this.reloadFilter);
         },
         methods: {
-            listen( inputEvent ){
-                this.$eventBusSearch.$emit( 'input', ( inputEvent.metadatum_id ) ?  inputEvent :  inputEvent.detail[0] );
+            onInput(inputEvent){
+                this.$eventBusSearch.$emit('input', inputEvent);
+            },
+            onSendValuesToTags($event) {
+                this.$eventBusSearch.$emit('sendValuesToTags', { 
+                    filterId: this.filter.id,
+                    label: $event.label,
+                    value: $event.value,
+                    taxonomy: $event.taxonomy,
+                    metadatumId: this.filter.metadatum_id
+                });
+            },
+            reloadFilter() {
+                this.reloadDueFiltering = !this.reloadDueFiltering;
             }
+        },    
+        beforeDestroy() {
+            if (this.isUsingElasticSearch)
+                this.$eventBusSearch.$off('isLoadingItems');
+        
+            this.$eventBusSearch.$off('hasFiltered', this.reloadFilter);
         }
     }
 </script>

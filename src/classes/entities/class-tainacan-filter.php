@@ -275,6 +275,21 @@ class Filter extends Entity {
         if (false === $is_valid)
             return false;
 
+
+        $status = $this->get_status();
+        $status_obj = get_post_status_object($status);
+        
+        if ($status_obj->public) {
+            $metadatum = $this->get_metadatum();
+            if ($metadatum) {
+                $metadatum_status_obj = get_post_status_object($metadatum->get_status());
+                if ( ! $metadatum_status_obj->public ) {
+                    $this->add_error('status', __('Filter can not be public because the related metadatum is private', 'tainacan'));
+                    return false;
+                }
+            }
+        }
+
         $fto = $this->get_filter_type_object();
         if (is_object($fto)) {
             $is_valid = $fto->validate_options( $this );

@@ -10,6 +10,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Numeric extends Filter_Type {
 
     function __construct(){
+        $this->set_name('Numeric');
         $this->set_supported_types(['float']);
         $this->set_component('tainacan-filter-numeric');
         $this->set_form_component('tainacan-filter-form-numeric');

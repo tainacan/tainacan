@@ -25,6 +25,7 @@ class Filters extends Repository {
 	protected function __construct() {
 		parent::__construct();
 		add_action( 'tainacan-deleted-tainacan-metadatum', array( &$this, 'hook_delete_when_metadata_deleted' ), 10, 2 );
+		add_action( 'tainacan-insert-tainacan-metadatum', array( &$this, 'hook_update_when_metadata_saved_as_private' ), 10, 2 );
 	}
 
 	protected function _get_map() {
@@ -64,7 +65,7 @@ class Filters extends Repository {
 				'map'         => 'meta',
 				'title'       => __( 'Type', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'The filter type', 'tainacan' ),
+				'description' => __( 'The filter type class name, such as filter_type: Tainacan\Filter_Types\Checkbox', 'tainacan' ),
 				'validation'  => ''
 			],
 			'collection_id'       => [
@@ -365,7 +366,7 @@ class Filters extends Repository {
 		$parents[] = $collection_id;
 
 		//search for default metadatum
-		$parents[] = 'filter_in_repository';
+		$parents[] = 'default';
 
 		$meta_query = array(
 			'key'     => 'collection_id',
@@ -416,7 +417,7 @@ class Filters extends Repository {
 		$parents[] = $collection_id;
 
 		//search for default metadatum
-		$parents[] = 'filter_in_repository';
+		$parents[] = 'default';
 
 		$meta_query = array(
 			'key'     => 'collection_id',
@@ -508,10 +509,10 @@ class Filters extends Repository {
 		return $result;
 	}
 	
-	public function hook_delete_when_metadata_deleted($filter, $permanent) {
+	public function hook_delete_when_metadata_deleted($metadatum, $permanent) {
 		
-		if ( $filter instanceof Entities\Metadatum ) {
-			$metadatum_id = $filter->get_id();
+		if ( $metadatum instanceof Entities\Metadatum ) {
+			$metadatum_id = $metadatum->get_id();
 			$filters = $this->fetch(['metadatum_id' => $metadatum_id, 'post_status' => 'any'], 'OBJECT');
 			foreach ($filters as $filter) {
 				if ($permanent) {
@@ -521,6 +522,35 @@ class Filters extends Repository {
 				}
 				
 			}
+		}
+		
+	}
+	
+	public function hook_update_when_metadata_saved_as_private($metadatum) {
+		
+		if ( $metadatum instanceof Entities\Metadatum ) {
+			
+			$status_obj = get_post_status_object( $metadatum->get_status() );
+			
+			if ( ! $status_obj->public ) {
+				
+				$stati = get_post_stati(['public' => true]);
+				
+				$metadatum_id = $metadatum->get_id();
+				
+				$filters = $this->fetch(['metadatum_id' => $metadatum_id, 'post_status' => $stati], 'OBJECT');
+				
+				foreach ($filters as $filter) {
+					$filter->set_status( $metadatum->get_status() );
+					if ( $filter->validate() ) {
+						$this->insert($filter);
+					}
+					
+				}
+				
+			}
+			
+			
 		}
 		
 	}

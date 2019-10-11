@@ -26,7 +26,7 @@
                     <b-checkbox
                             v-model="collectionsIdsToFilter"
                             :native-value="collection.id"
-                            @input="apply_filter">
+                            @input="applyFilter">
                         {{ collection.name }}
                     </b-checkbox>
                 </div>
@@ -60,7 +60,7 @@
                 Array.isArray(routeQueries.metaquery[0].value)){
                 this.collectionsIdsToFilter = routeQueries.metaquery[0].value;
 
-                this.apply_filter();
+                this.applyFilter();
             }
         },
         data(){
@@ -84,7 +84,7 @@
             ...mapGetters('collection', [
                 'getCollections',
             ]),
-            apply_filter(){
+            applyFilter(){
                 this.$eventBusSearch.$emit( 'input', {
                     filter: 'checkbox',
                     metadatum_id: 'collection_id',

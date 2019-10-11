@@ -26,11 +26,12 @@
             let collectionId = ( this.metadatum && this.metadatum.metadatum.metadata_type_options.collection_id ) ? this.metadatum.metadatum.metadata_type_options.collection_id : this.collection_id;
             if ( this.metadatum.value && (Array.isArray( this.metadatum.value ) ? this.metadatum.value.length > 0 : true )){
                 let query = qs.stringify({ postin: ( Array.isArray( this.metadatum.value ) ) ? this.metadatum.value : [ this.metadatum.value ]  });
+                query += this.metadatum.metadatum.metadata_type_options.search ? '&fetch_only_meta=' + this.metadatum.metadatum.metadata_type_options.search : '';
                 axios.get('/collection/'+collectionId+'/items?' + query + '&nopaging=1&fetch_only=title,thumbnail')
                     .then( res => {
                         if (res.data.items) {
                             for (let item of res.data.items) {
-                                this.selected.push({ label: item.title, value: item.id, img: item.thumbnail && item.thumbnail['tainacan-small'] && item.thumbnail['tainacan-small'][0] ? item.thumbnail['tainacan-small'][0] : '' });
+                                this.selected.push({ label: this.getItemLabel(item), value: item.id, img: item.thumbnail && item.thumbnail['tainacan-small'] && item.thumbnail['tainacan-small'][0] ? item.thumbnail['tainacan-small'][0] : '' });
                             }
                         }
                     })
@@ -104,7 +105,7 @@
 
                             if (result.items) {
                                 for (let item of result.items) {
-                                    this.options.push({ label: item.title, value: item.id })
+                                    this.options.push({ label: this.getItemLabel(item), value: item.id })
                                 }
                             }
                         })
@@ -115,28 +116,39 @@
                     this.options = [];
                 }
             }, 500),
+            getItemLabel(item) {
+                let label = '';
+                for (let m in item.metadata) {
+                    if (item.metadata[m].id == this.metadatum.metadatum.metadata_type_options.search) {
+                        label = item.metadata[m].value_as_string;
+                    }
+                }
+                if (label != '' && label != item.title && item.title != '') {
+                    label += ' (' + item.title + ')';
+                } else if (label == '') {
+                    label = item.title;
+                }
+                return label;
+            },
             mountQuery( search ) {
                 let query = [];
 
                 if ( this.metadatum.metadatum.metadata_type_options &&
-                    this.metadatum.metadatum.metadata_type_options.search &&
-                    this.metadatum.metadatum.metadata_type_options.search.length > 0)
+                    this.metadatum.metadatum.metadata_type_options.search)
                 {
                     query['metaquery'] = [];
-                    const metaquery = query['metaquery'];
-                    metaquery['relation'] = 'OR'
-                    for ( let i = 0; i < this.metadatum.metadatum.metadata_type_options.search.length; i++ ){
-                        metaquery[i] = {
-                            key: this.metadatum.metadatum.metadata_type_options.search[i],
-                            value: search,
-                            compare: 'LIKE'
-                        }
+                    
+                    query['metaquery'][0] = {
+                        key: this.metadatum.metadatum.metadata_type_options.search,
+                        value: search,
+                        compare: 'LIKE'
                     }
-                    query['metaquery'] = metaquery;
+                    
                 } else {
                     query['search'] = search;
                 }
                 query['fetch_only'] = 'title,thumbnail';
+                query['fetch_only_meta'] = this.metadatum.metadatum.metadata_type_options.search;
 
                 return query;
             }

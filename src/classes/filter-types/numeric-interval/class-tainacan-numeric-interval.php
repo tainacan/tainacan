@@ -10,14 +10,13 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Numeric_Interval extends Filter_Type {
 
     function __construct(){
+        $this->set_name('Numeric Interval');
         $this->set_supported_types(['float']);
         $this->set_component('tainacan-filter-numeric-interval');
         $this->set_form_component('tainacan-filter-form-numeric-interval');
         $this->set_use_max_options(false);
         $this->set_default_options([
-            'step' => 1,
-            'input-mode' => 'custom',
-            'intervals' => []
+            'step' => 1
         ]);
         $this->set_preview_template('
             <div>
@@ -68,14 +67,9 @@ class Numeric_Interval extends Filter_Type {
         return [
             'step' => [
                 'title' => __( 'Step', 'tainacan' ),
-                'description' => __( 'The amount to be increased or decreased when clicking on filter control buttons.', 'tainacan' ),
-            ],
-            'input-mode' => [
-                'title' =>  __( 'Input mode', 'tainacan' ),
-                'description' =>  __( 'Input mode', 'tainacan' ),
+                'description' => __( 'The amount to be increased or decreased when clicking on filter control buttons. This alo defines whether the input accepts decimal numbers.', 'tainacan' ),
             ],
             'custom' => ['title' => __('Custom interval','tainacan')],
-            'list' => ['title' => __('Predefined intervals','tainacan')],
         ];
     }
 

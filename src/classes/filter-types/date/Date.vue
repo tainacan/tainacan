@@ -3,7 +3,8 @@
          <b-dropdown
                 :mobile-modal="true"
                 @input="onChangeComparator($event)"
-                aria-role="list">
+                aria-role="list"
+                trap-focus>
             <button
                     :aria-label="$i18n.get('label_comparator')"
                     class="button is-white"
@@ -59,16 +60,16 @@
             </b-dropdown-item>
         </b-dropdown>
         <!-- <b-numberinput 
-                v-if="options.type == 'year'"
+                v-if="filterTypeOptions.type == 'year'"
                 :placeholder="$i18n.get('instruction_type_value_year')"
-                :aria-labelledby="labelId"
+                :aria-labelledby="'filter-label-id-' + filter.id"
                 size="is-small"
                 step="1"
                 @input="emitOnlyYear($event)"
                 v-model="yearsOnlyValue"/> -->
         <b-datepicker
                 position="is-bottom-left"
-                :aria-labelledby="labelId"
+                :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="$i18n.get('instruction_select_a_date')"
                 v-model="value"
                 @input="emit()"
@@ -100,67 +101,38 @@
                     $i18n.get('datepicker_month_november'),
                     $i18n.get('datepicker_month_december')
                 ]"/>
-                <!-- OPTIONS FOR TYPE 
+                <!-- filterTypeOptions FOR TYPE 
                     v-else
-                    :type="options.type == 'month' ? 'month' : null" 
-                    :placeholder="options.type == 'month' ? $i18n.get('instruction_select_a_date') : $i18n.get('instruction_select_a_month')"
+                    :type="filterTypeOptions.type == 'month' ? 'month' : null" 
+                    :placeholder="filterTypeOptions.type == 'month' ? $i18n.get('instruction_select_a_date') : $i18n.get('instruction_select_a_month')"
                 --> 
     </div>
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios/axios';
     import { wpAjax, dateInter } from "../../../admin/js/mixins";
+    import { filterTypeMixin } from '../filter-types-mixin';
     import moment from 'moment';
 
     export default {
-        mixins: [ wpAjax, dateInter ],
-        created() {
-            this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : (typeof this.filter.metadatum.metadatum_id == 'object' ? this.filter.metadatum.metadatum_id.metadatum_id : this.filter.metadatum.metadatum_id);
-            this.options = this.filter.filter_type_options;
-
-            let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
-
-            if (this.isRepositoryLevel || this.collection == 'filter_in_repository')
-                in_route = '/metadata/'+ this.metadatum;
-        
-            axios.get(in_route)
-                .then( res => {
-                    let result = res.data;
-                    if ( result && result.metadata_type ){
-                        this.metadatum_object = result;
-                        this.selectedValues();
-                    }
-                })
-                .catch(error => {
-                    this.$console.log(error);
-                });
-            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
-        },
+        mixins: [
+            wpAjax,
+            dateInter,
+            filterTypeMixin
+        ],
         mounted() {
             this.selectedValues();
         },
         data(){
             return {
                 value: null,
-                clear: false,
-                options: [],
-                collection: '',
-                metadatum: '',
-                metadatum_object: {},
                 comparator: '=', // =, !=, >, >=, <, <=
             }
         },
-        props: {
-            filter: {
-                type: Object // concentrate all attributes metadatum id and type
-            },
-            metadatum_id: [Number], // not required, but overrides the filter metadatum id if is set
-            collection_id: [Number], // not required, but overrides the filter metadatum id if is set
-            labelId: '',
-            query: Object,
-            isRepositoryLevel: Boolean,
+        watch: {
+            'query.metaquery'() {
+                this.selectedValues();
+            }
         },
         computed: {
             yearsOnlyValue() {
@@ -183,8 +155,8 @@
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
-                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
-                
+                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
+
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
                     
@@ -199,35 +171,15 @@
                         
                         this.value = new Date(textValue);
 
-                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                            filterId: this.filter.id,
-                            value: this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat)
+                        this.$emit('sendValuesToTags', { 
+                            label: this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat), 
+                            value: textValue
                         });
                     }
 
                 } else {
-                    return false;
+                    this.value = null;
                 }
-
-            },
-            cleanSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id)
-                    this.clearSearch();
-            },
-            clearSearch(){
-
-                this.clear = true;
-
-                this.$emit('input', {
-                    filter: 'date',
-                    type: 'DATE',
-                    compare: this.comparator,
-                    metadatum_id: this.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
-                    value: ''
-                });
-
-                this.value = null;
             },
             dateFormatter(dateObject) { 
                 return moment(dateObject, moment.ISO_8601).format(this.dateFormat);
@@ -260,13 +212,13 @@
                     filter: 'date',
                     type: 'DATE',
                     compare: this.comparator,
-                    metadatum_id: this.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
                     value: valueQuery
                 });
-                this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                    filterId: this.filter.id,
-                    value: this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat)
+                this.$emit('sendValuesToTags', { 
+                    label: this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat), 
+                    value: valueQuery
                 });
                 
             },
@@ -274,9 +226,6 @@
                 this.comparator = newComparator;
                 this.emit();
             }
-        },
-        beforeDestroy() {
-            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
         }
     }
 </script>

@@ -3,15 +3,15 @@
         <b-autocomplete
                 icon="magnify"
                 size="is-small"
-                :aria-labelledby="labelId"
+                :aria-labelledby="'filter-label-id-' + filter.id"
                 v-model="selected"
                 :data="options"
                 expanded
                 :loading="isLoadingOptions"
                 @input="search"
                 field="label"
-                @select="option => setResults(option) "
-                :placeholder="(type == 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_search_metadata')">
+                @select="onSelect"
+                :placeholder="(metadatumType === 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_search_metadata')">
             <template slot-scope="props">
                 <div class="media">
                     <div
@@ -41,83 +41,54 @@
 
 <script>
     import { tainacan as axios, isCancel } from '../../../js/axios/axios'
-    import { filter_type_mixin } from '../filter-types-mixin'
-    // import qs from 'qs';
+    import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
 
     export default {
-        created(){
-            this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id;
-            const vm = this;
-
-            let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
-
-            if(this.isRepositoryLevel || this.collection == 'filter_in_repository'){
-                in_route = '/metadata/'+ this.metadatum;
-            }
-
-            axios.get(in_route)
-                .then( res => {
-                    let result = res.data;
-                    if( result && result.metadata_type ){
-                        vm.metadatum_object = result;
-                        vm.type = result.metadata_type;
-                        vm.selectedValues();
-                    }
-                })
-                .catch(error => {
-                    this.$console.log(error);
-                });
-
-            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
-        },
+        mixins: [filterTypeMixin, dynamicFilterTypeMixin],
         data(){
             return {
-                results:'',
                 selected:'',
                 options: [],
-                type: '',
-                collection: '',
-                metadatum: '',
-                metadatum_object: {},
                 label: ''
             }
         },
-        props: {
-            isRepositoryLevel: Boolean,
-            labelId: String
+        watch: {
+            'query.metaquery'() {
+                this.selectedValues();
+            },
         },
-        mixins: [filter_type_mixin],
+        mounted() {
+            this.selectedValues();
+        },
         methods: {
-            setResults(option){
+            onSelect(option){
+                
                 if(!option)
                     return;
-                this.results = option.value;
+                this.selected = option.value;
                 this.label = option.label;
-                this.onSelect()
-            },
-            onSelect(){
+
                 this.$emit('input', {
                     filter: 'autocomplete',
-                    metadatum_id: this.metadatum,
-                    collection_id: this.collection,
-                    value: this.results
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
+                    value: this.selected
                 });
                 this.selectedValues();
             },
             search: _.debounce( function(query) {
+
                 if (query != '') {
                     let promise = null;
                     this.options = [];
-
                     // Cancels previous Request
                     if (this.getOptionsValuesCancel != undefined)
                         this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                    if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' )
+                    if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' )
                         promise = this.getValuesRelationship( query, this.isRepositoryLevel );
                     else
-                        promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel );
+                        promise = this.getValuesPlainText( this.metadatumId, query, this.isRepositoryLevel );
                     
                     promise.request.catch( error => {
                         if (isCancel(error))
@@ -130,71 +101,48 @@
                     this.getOptionsValuesCancel = promise.source;
                 
                 } else {
-                    this.cleanSearch();
+                    this.label = '';
+                    this.selected = '';
+                    this.$emit('input', {
+                        filter: 'autocomplete',
+                        metadatum_id: this.metadatumId,
+                        collection_id: this.collectionId,
+                        value: this.selected
+                    });
                 }
             }, 500),
             selectedValues(){
-                const instance = this;
-                if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
+
+                if (!this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ))
                     return false;
 
-                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
-                if ( index >= 0){
+                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId);
+                if (index >= 0) {
                     let metadata = this.query.metaquery[ index ];
-                    // let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
-                        // this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
 
-                    if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
-                        // let query = qs.stringify({ postin: metadata.value  });
+                    if (this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship') {
                         
-                        axios.get('/items/' + metadata.value)
+                        axios.get('/items/' + metadata.value + '?fetch_only=title,thumbnail')
                             .then( res => {
-      
                                 let item = res.data;
-                                instance.results = item.title;
-                                instance.label = item.title;
-                                instance.selected = item.title;
+                                this.label = item.title;
+                                this.selected = item.title;
          
-                                this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                                    filterId: instance.filter.id,
-                                    value: instance.label
-                                });
+                                this.$emit( 'sendValuesToTags', { label: this.label, value: this.selected });
                             })
                             .catch(error => {
                                 this.$console.log(error);
                             });
                     } else {
-                        instance.results = metadata.value;
-                        instance.label = metadata.value;
-                        instance.selected = metadata.value;
+                        this.label = metadata.value;
+                        this.selected = metadata.value;
 
-                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                            filterId: instance.filter.id,
-                            value: metadata.value
-                        });
+                        this.$emit( 'sendValuesToTags', { label: this.label, value: this.selected });
                     }
                 } else {
                     return false;
                 }
-            },
-            cleanSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id)
-                    this.cleanSearch();
-            },
-            cleanSearch(){
-                this.results = '';
-                this.label = '';
-                this.selected = '';
-                this.$emit('input', {
-                    filter: 'autocomplete',
-                    metadatum_id: this.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
-                    value: ''
-                });
-            },
-        },
-        beforeDestroy() {
-            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
+            }
         }
     }
 </script>

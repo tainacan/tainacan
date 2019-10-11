@@ -234,8 +234,13 @@
         <b-modal 
                 ref="filterTypeModal"
                 :width="680"
-                :active.sync="isSelectingFilterType">
+                :active.sync="isSelectingFilterType"
+                trap-focus>
             <div 
+                    autofocus
+                    role="dialog"
+                    tabindex="-1"
+                    aria-modal
                     class="tainacan-modal-content" 
                     style="width: auto">
                 <header class="tainacan-modal-title">
@@ -383,7 +388,8 @@ export default {
                         this.onEditionCanceled();
                         next();
                     },
-                }
+                },
+                trapFocus: true
             });  
         } else {
             next()

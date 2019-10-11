@@ -16,7 +16,8 @@
                     :mobile-modal="true"
                     :disabled="localTerms.length <= 0 || isLoadingTerms || isEditingTerm"
                     @input="onChangeOrder(order == 'asc' ? 'desc' : 'asc')"
-                    aria-role="list">
+                    aria-role="list"
+                    trap-focus>
                 <button
                             :aria-label="$i18n.get('label_sorting_direction')"
                             class="button is-white"

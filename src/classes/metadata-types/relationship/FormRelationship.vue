@@ -40,17 +40,20 @@
                             :title="$i18n.getHelperTitle('tainacan-relationship', 'search')"
                             :message="$i18n.getHelperMessage('tainacan-relationship', 'search')"/>
                 </label>
-                    <div
-                        v-for="(option, index) in metadata"
-                        :key="index"
-                        class="field">
-                        <b-checkbox
-                                name="metadata_type_relationship[search][]"
-                                v-model="modelSearch"
-                                :native-value="option.id">
+                    <b-select
+                            name="metadata_type_relationship[search]"
+                            v-model="modelSearch">
+                        
+                        <option
+                                v-for="(option, index) in metadata"
+                                :key="index"
+                                :value="option.id"
+                                class="field">
                             {{ option.name }}
-                        </b-checkbox>
-                    </div>
+                        </option>
+                        
+                    </b-select>
+                    
             </b-field>
 
         </transition>
@@ -98,7 +101,7 @@
                 hasMetadata: false,
                 loadingMetadata: false,
                 modelRepeated: 'yes',
-                modelSearch:[],
+                modelSearch:'',
                 collectionType: '',
                 collectionMessage: ''
             }
@@ -111,7 +114,7 @@
                 } else {
                     this.metadata = [];
                     this.hasMetadata = false;
-                    this.modelSearch = [];
+                    this.modelSearch = '';
 
                     this.emitValues();
                 }
@@ -180,7 +183,7 @@
                             this.metadata = [];
 
                             for (let metadatum of metadata) {
-                               if (metadatum.metadata_type !== "Tainacan\\Metadata_Types\\Relationship" && metadatum.metadata_type !== "Tainacan\\Metadata_Types\\Taxonomy") {
+                               if (metadatum.metadata_type !== "Tainacan\\Metadata_Types\\Relationship") {
                                    this.metadata.push( metadatum );
                                    this.hasMetadata = true;
                                    this.checkMetadata()
@@ -207,14 +210,14 @@
 
             },
             checkMetadata(){
-                if( this.value && this.value.search.length > 0 ){
+                if( this.value && this.value.search ){
                     this.modelSearch = this.value.search;
                 } else {
                     try {
                         const json = JSON.parse( this.search );
                         this.modelSearch = json;
                     } catch(e){
-                        this.modelSearch = [];
+                        this.modelSearch = '';
                     }
                 }
             },

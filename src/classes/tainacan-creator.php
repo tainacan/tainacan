@@ -142,6 +142,7 @@ $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Checkbox');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomyTaginput');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomyCheckbox');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Numeric_Interval');
+$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Numeric_List_Interval');
 
 $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
 

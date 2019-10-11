@@ -348,6 +348,34 @@ class Migrations {
 		
 	}
 	
+	static function update_repository_filters_meta() {
+		global $wpdb;
+		
+		$wpdb->query( "UPDATE $wpdb->postmeta SET meta_value = 'default' WHERE
+			post_id IN (
+				SELECT ID FROM $wpdb->posts WHERE post_type = 'tainacan-filter'
+			) AND meta_key = 'collection_id' AND meta_value = 'filter_in_repository'" 
+		);
+
+	}
+
+	static function update_relationship_metadata_search_option() {
+		global $wpdb;
+		
+		$q = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = 'metadata_type' AND meta_value = 'Tainacan\\\\Metadata_Types\\\\Relationship'";
+		
+		$ids = $wpdb->get_col($q);
+
+		foreach ($ids as $id) {
+			$meta = get_post_meta($id, 'metadata_type_options', true);
+			if ( is_array($meta) && isset($meta['search']) && is_array($meta['search']) && isset($meta['search'][0]) && is_numeric($meta['search'][0]) ) {
+				$meta['search'] = $meta['search'][0];
+				update_post_meta($id, 'metadata_type_options', $meta);
+			}
+		}
+		
+	}
+	
 }
 
 

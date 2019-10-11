@@ -30,6 +30,9 @@ class Cli_Garbage_Collector {
 	 * [--skip-metadata]
 	 * : Do not try to find orphan and unused metadata
 	 *
+	 * [--skip-transients]
+	 * : Do not try to find tainacan transients
+ 	 *
  	 * [--yes]
  	 * : Skip confirmation before execution
 	 *  
@@ -63,6 +66,10 @@ class Cli_Garbage_Collector {
 		// delete trashed metadata values 
 		if (!isset($assoc_args['skip-metadata'])) {
 			$this->delete_metadata($dry_run, $deep);
+		}
+		
+		if (!isset($assoc_args['skip-transients'])) {
+			$this->delete_transients($dry_run, $deep);
 		}
 		
 		// delete bulk post meta 
@@ -342,6 +349,22 @@ class Cli_Garbage_Collector {
 			$progress->finish();
 			
 			WP_CLI::success( "Metadata deleted!" );
+		}
+		
+	}
+	
+	private function delete_transients($dry_run) {
+		
+		global $wpdb;
+		
+		$count = $wpdb->get_var( "SELECT COUNT(option_id) FROM $wpdb->options WHERE option_name LIKE 'tnc_transient%'" );
+		
+		WP_CLI::line( "Found $count tainacan transients records in the Options table" );
+		
+		if (!$dry_run) {
+			WP_CLI::line( "Deleting transients..." );
+			$wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE 'tnc_transient%'" );
+			WP_CLI::success( "Transients deleted!" );
 		}
 		
 	}

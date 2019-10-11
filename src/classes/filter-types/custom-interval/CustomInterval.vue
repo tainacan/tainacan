@@ -1,9 +1,9 @@
 <template>
     <div>
         <!-- Date -->
-        <div v-if="type === 'date'">
+        <div v-if="metadatumType === 'Tainacan\\Metadata_Types\\Date'">
             <b-datepicker
-                    :aria-labelledby="labelId"
+                    :aria-labelledby="'filter-label-id-' + filter.id"
                     :placeholder="$i18n.get('label_selectbox_init')"
                     v-model="date_init"
                     size="is-small"
@@ -24,7 +24,7 @@
                     ]"/>
             <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
             <b-datepicker
-                    :aria-labelledby="labelId"
+                    :aria-labelledby="'filter-label-id-' + filter.id"
                     :placeholder="$i18n.get('label_selectbox_init')"
                     v-model="date_end"
                     size="is-small"
@@ -47,18 +47,20 @@
 
         <!-- Numeric -->
         <div v-else>
-            <b-numberinput
-                    :aria-labelledby="labelId"
+            <b-input
+                    type="number"
+                    :aria-labelledby="'filter-label-id-' + filter.id"
                     size="is-small"
                     step="any"
-                    @input="validate_values()"
+                    @input="validate_values"
                     v-model="value_init"/>
             <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
-            <b-numberinput
-                    :aria-labelledby="labelId"
+            <b-input
+                    type="number"
+                    :aria-labelledby="'filter-label-id-' + filter.id"
                     size="is-small"
                     step="any"
-                    @input="validate_values()"
+                    @input="validate_values"
                     @focus="isTouched = true"
                     v-model="value_end"/>
         </div>
@@ -66,61 +68,30 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios/axios';
     import { wpAjax, dateInter } from "../../../admin/js/mixins";
+    import { filterTypeMixin } from '../filter-types-mixin';
     import moment from 'moment';
 
     export default {
-        mixins: [ wpAjax, dateInter ],
-        created() {
-            this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id;
-
-            let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
-
-            if(this.isRepositoryLevel || this.collection == 'filter_in_repository'){
-                in_route = '/metadata/'+ this.metadatum;
-            }
-
-            axios.get(in_route)
-                .then( res => {
-                    let result = res.data;
-                    if( result && result.metadata_type ){
-                        this.metadatum_object = result;
-                        this.type = ( result.metadata_type === 'Tainacan\\Metadata_Types\\Date') ? 'date' : 'numeric';
-                        this.selectedValues();
-                    }
-                })
-                .catch(error => {
-                    this.$console.log(error);
-                });
-
-            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
+        mixins: [ 
+            wpAjax,
+            dateInter, 
+            filterTypeMixin
+        ],
+        mounted() {
+            this.selectedValues();
         },
         data(){
             return {
-                value_init: null,
-                value_end: null,
+                value_init: '',
+                value_end: '',
                 date_init: undefined,
                 date_end: undefined,
                 isTouched: false,
                 isValid: false,
                 clear: false,
-                type: 'numeric',
-                collection: '',
-                metadatum: '',
-                metadatum_object: {}
+                type: 'DECIMAL'
             }
-        },
-        props: {
-            filter: {
-                type: Object // concentrate all attributes metadatum id and type
-            },
-            metadatum_id: [Number], // not required, but overrides the filter metadatum id if is set
-            collection_id: [Number], // not required, but overrides the filter metadatum id if is set
-            labelId: '',
-            query: Object,
-            isRepositoryLevel: Boolean,
         },
         watch: {
             isTouched( val ){
@@ -129,39 +100,46 @@
 
               if ( val && this.date_end === null)
                   this.date_end =  new Date();
-
-              this.isTouched = val;
+            },
+            'query.metaquery'() {
+                this.selectedValues();
             }
         },
         methods: {
             // only validate if the first value is higher than first
             validate_values: _.debounce( function (){
-                if( this.type === 'date' ){
-                    if (this.date_init ===  undefined)
+               
+                if( this.metadatumType === 'Tainacan\\Metadata_Types\\Date' ){
+                    if (this.date_init === undefined)
                         this.date_init = new Date();
 
                     if (this.date_end === undefined)
                         this.date_end =  new Date();
 
                     if ( this.date_init > this.date_end ) {
-                        let result = this.date_init;
-                        result.setDate(result.getDate() + 1);
-                        this.date_end = result;
-
-                        result.setDate(result.getDate() - 1);
-                        this.date_init = result;
-                        //this.error_message();
+                        this.error_message();
+                        return
                     }
-
                 } else {
-                    if ( parseFloat( this.value_init ) > parseFloat( this.value_end )) {
-                        //this.value_end = parseFloat( this.value_init ) + 1;
-                        //this.error_message();
+                    if (this.value_init.constructor == Number)
+                        this.value_init = this.value_init.valueOf();
+
+                    if (this.value_end.constructor == Number)
+                        this.value_end = this.value_end.valueOf();
+                        
+                    this.value_init = parseFloat(this.value_init);
+                    this.value_end = parseFloat(this.value_end);
+
+                    if (isNaN(this.value_init) || isNaN(this.value_end))
+                        return
+
+                    if (this.value_init > this.value_end) {                     
+                        this.error_message();
                         return;
                     }
                 }
                 this.emit();
-            }, 1000),
+            }, 800),
             // message for error
             error_message(){
                 if ( !this.isTouched ) return false;
@@ -173,91 +151,56 @@
                     type: 'is-danger'
                 })
             },
-            dateFormatter(dateObject) { 
+            dateFormatter(dateObject){ 
                 return moment(dateObject, moment.ISO_8601).format(this.dateFormat);
             },
-            dateParser(dateString) { 
+            dateParser(dateString){ 
                 return moment(dateString, this.dateFormat).toDate(); 
             },
             selectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
-                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
-                if ( index >= 0){
+                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId);
+
+                if (index >= 0) {
                     let metadata = this.query.metaquery[ index ];
-                    if( metadata.value && metadata.value.length > 0 && this.type === 'numeric'){
-                        this.value_init = metadata.value[0];
-                        this.value_end = metadata.value[1];
+                    
+                    if( metadata.value && metadata.value.length > 0 && this.metadatumType === 'Tainacan\\Metadata_Types\\Numeric'){
+                        this.value_init = parseFloat(metadata.value[0]);
+                        this.value_end = parseFloat(metadata.value[1]);
                         this.isValid = true;
                     } else if( metadata.value && metadata.value.length > 0 ){
-                        this.date_init = new Date( metadata.value[0] );
-                        this.date_end = new Date( metadata.value[1] );
-
+                        this.date_init = new Date(metadata.value[0]);
+                        this.date_end = new Date(metadata.value[1]);
                         this.isValid = true;
                     }
 
-                    if (metadata.value[0] != undefined && metadata.value[1] != undefined) {
-                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                            filterId: this.filter.id,
-                            value: this.parseDateToNavigatorLanguage(metadata.value[0]) + ' - ' + this.parseDateToNavigatorLanguage(metadata.value[1])
+                    if (metadata.value[0] != undefined && metadata.value[1] != undefined)
+                        this.$emit('sendValuesToTags', { 
+                            label: (this.metadatumType === 'Tainacan\\Metadata_Types\\Numeric' ? (metadata.value[0] + ' - ' + metadata.value[1]) : this.parseDateToNavigatorLanguage(metadata.value[0]) + ' - ' + this.parseDateToNavigatorLanguage(metadata.value[1])),
+                            value: [metadata.value[0], metadata.value[1]]
                         });
-                    }
-
                 } else {
-                    return false;
-                }
-            },
-            showSearch(){
-                if( this.type === 'date' ){
-
-                    if( this.date_init === null || this.date_end === null ){
-                        this.clear = true;
-                        return '';
+                    if (this.metadatumType === 'Tainacan\\Metadata_Types\\Numeric') {
+                        this.value_init = '';
+                        this.value_end = '';
+                    } else {
+                        this.date_init = null;
+                        this.date_end = null;
                     }
-
-                    return this.date_init.toLocaleString().split(' ')[0] + ' - ' + this.date_end.toLocaleString().split(' ')[0];
-                }
-                // else {
-                //     return this.value_init + ' - ' +this.value_end;
-                // }
-            },
-            cleanSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id)
-                    this.clearSearch();
-            },
-            clearSearch(){
-
-                this.clear = true;
-
-                this.$emit('input', {
-                    filter: 'range',
-                    compare: 'BETWEEN',
-                    metadatum_id: this.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
-                    value: ''
-                });
-
-                if( this.type === 'date' ){
-                    this.date_init =  null;
-                    this.date_end = null;
-                    this.isTouched = false;
-                } else {
-                    this.value_end = null;
-                    this.value_init = null;
-                    this.isTouched = false;
+                    
                 }
             },
             // emit the operation for listeners
             emit() {
                 let values = [];
-                let type = '';
+                
+                if (this.metadatumType === 'Tainacan\\Metadata_Types\\Date') {
 
-                if( this.type === 'date' ){
-
-                    if( this.date_init === null && this.date_end === null ){
+                    if (this.date_init === null && this.date_end === null) {
                       values = [];
-                      type = 'DATE';
+                      this.type = 'DATE';
                       this.isValid = false;
                       this.clear = true;
                     } else {
@@ -268,29 +211,29 @@
                           ('00' + (this.date_end.getUTCMonth() + 1)).slice(-2) + '-' +
                           ('00' + this.date_end.getUTCDate()).slice(-2);
                       values = [ date_init, date_end ];
-                      type = 'DATE';
+                      this.type = 'DATE';
                       this.isValid = true;
                       this.clear = false;
                     }
                 } else {
-                    if( this.value_init === null || this.value_end === null
+                    if (this.value_init === null || this.value_end === null
                       || this.value_init === '' || this.value_end === ''){
                         return;
                     } else {
                         values =  [ this.value_init, this.value_end ];
 
                         if(this.value_init !== this.value_end && (this.value_init % 1 !== 0 && this.value_end % 1 == 0)) {
-                            type = 'DECIMAL';
+                            this.type = 'DECIMAL';
                         } else if(this.value_init !== this.value_end &&
                             this.value_init % 1 !== 0 &&
                             this.value_end % 1 !== 0) {
 
-                            type = '';
+                            this.type = '';
                         } else if(this.value_init !== this.value_end &&
                             !(this.value_init % 1 == 0 && this.value_end % 1 !== 0)){
-                            type = 'DECIMAL';
+                            this.type = 'DECIMAL';
                         } else {
-                            type = '';
+                            this.type = '';
                         }
                         //this.isValid = true;
                         //this.clear = false;
@@ -299,23 +242,19 @@
 
                 this.$emit('input', {
                     filter: 'range',
-                    type: type,
+                    type: this.type,
                     compare: 'BETWEEN',
-                    metadatum_id: this.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
                     value: values
                 });
 
-                if (values[0] != undefined && values[1] != undefined) {
-                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                        filterId: this.filter.id,
-                        value: this.parseDateToNavigatorLanguage(values[0]) + ' - ' + this.parseDateToNavigatorLanguage(values[1])
+                if (values[0] != undefined && values[1] != undefined)
+                    this.$emit( 'sendValuesToTags', { 
+                        label: (this.metadatumType === 'Tainacan\\Metadata_Types\\Numeric' ? (values[0] + ' - ' + values[1]) : this.parseDateToNavigatorLanguage(values[0]) + ' - ' + this.parseDateToNavigatorLanguage(values[1])),
+                        value: [ values[0], values[1] ]
                     });
-                }
             }
-        },
-        beforeDestroy() {
-            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
         }
     }
 </script>
