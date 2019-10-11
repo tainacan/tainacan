@@ -13,7 +13,7 @@ export const set_advanced_query = ({commit}, advancedSearchQuery) => {
 };
 
 // Meta Queries from filters
-export const add_metaquery = ( { commit }, filter  ) => {
+export const add_metaquery = ( { commit }, filter ) => {
     if (filter && (filter.value == undefined || filter.value == null || filter.value.length === 0 || filter.value == '')) {
         commit('removeMetaQuery', filter  );
     } else {
@@ -48,6 +48,10 @@ export const add_taxquery = ( { commit }, filter  ) => {
 
 export const remove_metaquery = ( { commit }, filter  ) => {
     commit('removeMetaQuery', filter  );
+};
+
+export const remove_taxquery = ( { commit }, filter  ) => {
+    commit('removeTaxQuery', filter  );
 };
 
 // Pagination queries

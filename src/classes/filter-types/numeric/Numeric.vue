@@ -70,8 +70,7 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios/axios';
-    import { wpAjax } from "../../../admin/js/mixins";
+    import { wpAjax } from '../../../admin/js/mixins';
     import { filterTypeMixin } from '../filter-types-mixin';
 
     export default {
@@ -119,29 +118,12 @@
                         this.comparator = metadata.compare;
 
                     if (this.value != undefined)
-                        this.$emit('sendValuesToTags', this.comparator + ' ' + this.value);
+                        this.$emit('sendValuesToTags', { label: this.comparator + ' ' + this.value, value: this.value });
 
                 } else {
                     return false;
                 }
 
-            },
-            cleanSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id)
-                    this.clearSearch();
-            },
-            clearSearch(){
-
-                this.$emit('input', {
-                    filter: 'numeric',
-                    compare: this.comparator,
-                    metadatum_id: this.metadatumId,
-                    collection_id: this.collectionId,
-                    value: '',
-                    type: 'NUMERIC'
-                });
-
-                this.value = null;
             },
             // emit the operation for listeners
             emit() {
@@ -158,7 +140,7 @@
                     type: 'NUMERIC'
                 });
 
-                this.$emit('sendValuesToTags', this.comparator + ' ' + this.value);
+                this.$emit('sendValuesToTags', { label: this.comparator + ' ' + this.value, value: this.value });
                 
             },
             onChangeComparator(newComparator) {

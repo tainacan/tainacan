@@ -1,17 +1,17 @@
 <template>
     <div 
-            :style="{ 'height': isLoading ? (Number(filter.max_options)*28) + 'px' : 'auto' }"
-            :class="{ 'skeleton': isLoading }"
+            :style="{ 'height': isLoadingOptions ? (Number(filter.max_options)*28) + 'px' : 'auto' }"
+            :class="{ 'skeleton': isLoadingOptions }"
             class="block">
         <!-- <span 
-                v-if="isLoading"
+                v-if="isLoadingOptions"
                 style="width: 100%"
                 class="icon has-text-centered loading-icon">
             <div class="control has-icons-right is-loading is-clearfix" />
         </span> -->
         <div
                 v-for="(option, index) in options.slice(0, filter.max_options)"
-                v-if="!isLoading"
+                v-if="!isLoadingOptions"
                 :key="index"
                 :value="index"
                 class="control">
@@ -38,7 +38,7 @@
             </button>
         </div>
         <p 
-                v-if="!isLoading && options.length != undefined && options.length <= 0"
+                v-if="!isLoadingOptions && options.length != undefined && options.length <= 0"
                 class="no-options-placeholder">
             {{ $i18n.get('info_no_options_avialable_filtering') }}
         </p>
@@ -53,36 +53,36 @@
     import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
     
     export default {
-        mixins: [ filterTypeMixin, dynamicFilterTypeMixin ],
-        created(){
-            this.loadOptions();
-        },    
+        mixins: [ filterTypeMixin, dynamicFilterTypeMixin ],   
         data(){
             return {
-                isLoading: true,
+                isLoadingOptions: true,
                 options: [],
                 selected: [],
                 taxonomy: '',
-                taxonomy_id: Number,
-                getOptionsValuesCancel: undefined,
-                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
+                taxonomy_id: Number
             }
         },
         watch: {
-            selected: function(){
-                //this.selected = val;
-                this.onSelect();
+            selected(newVal, oldVal) {
+                const isEqual = (newVal.length == oldVal.length) && newVal.every((element, index) => {
+                    return element === oldVal[index]; 
+                });
+
+                if (!isEqual)
+                    this.onSelect();
             },
             facetsFromItemSearch() {
                 if (this.isUsingElasticSearch)
                     this.loadOptions();
+            },
+            'query.taxquery'() {
+                this.loadOptions();
             }
         },    
-        computed: {
-            facetsFromItemSearch() {
-                return this.getFacets();
-            }
-        },
+        mounted(){
+            this.loadOptions();
+        }, 
         methods: {
             ...mapGetters('search', [
                 'getFacets'
@@ -96,7 +96,7 @@
                     if (this.getOptionsValuesCancel != undefined)
                         this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                    this.isLoading = true;
+                    this.isLoadingOptions = true;
                     let query_items = { 'current_query': this.query };
 
                     let route = '';
@@ -124,14 +124,14 @@
                     promise.request
                         .then((res) => {
                             this.prepareOptionsForTaxonomy(res.data.values ? res.data.values : res.data, skipSelected);
-                            this.isLoading = false;
+                            this.isLoadingOptions = false;
                         })
                         .catch( error => {
                             if (isCancel(error)) {
                                 this.$console.log('Request canceled: ' + error.message);
                             } else {
                                 this.$console.log('Error on facets request: ', error);
-                                this.isLoading = false;
+                                this.isLoadingOptions = false;
                             }
                         });
                     
@@ -148,14 +148,13 @@
                                 this.prepareOptionsForTaxonomy(Object.values(this.facetsFromItemSearch[facet]), skipSelected);
                         }    
                     }
-
                 }
             },
             selectedValues(){
                 
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;
-                
+                    
                 let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == this.taxonomy );
                 if ( index >= 0){
                     let metadata = this.query.taxquery[ index ];
@@ -164,16 +163,7 @@
                     this.selected = [];
                     return false;
                 }
-            },
-            onSelect(){
-                this.$emit('input', {
-                    filter: 'checkbox',
-                    taxonomy: this.taxonomy,
-                    compare: 'IN',
-                    metadatum_id: this.metadatumId,
-                    collection_id: this.collectionId,
-                    terms: this.selected
-                });
+
                 
                 let onlyLabels = [];
 
@@ -231,7 +221,17 @@
                     }
                 }
 
-                this.$emit("sendValuesToTags", onlyLabels);
+                this.$emit('sendValuesToTags', { label: onlyLabels, taxonomy: this.taxonomy, value: this.selected });
+            },
+            onSelect(){
+                this.$emit('input', {
+                    filter: 'checkbox',
+                    taxonomy: this.taxonomy,
+                    compare: 'IN',
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
+                    terms: this.selected
+                });
             },
             openCheckboxModal(parent) {
                 this.$buefy.modal.open({
@@ -253,26 +253,9 @@
                             this.loadOptions();
                         } 
                     },
-                    width: 'calc(100% - 8.333333333%)',
+                    width: 'calc(100% - 16.6666%)',
                     trapFocus: true
                 });
-            },
-            cleanSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id) {
-
-                    let selectedOption = this.options.find(option => option.label == filterTag.singleValue);
-
-                    if (selectedOption) {
-                    
-                        let selectedIndex = this.selected.findIndex(option => option == selectedOption.value);
-                        if (selectedIndex >= 0) {
-
-                            this.selected.splice(selectedIndex, 1); 
-
-                            this.onSelect();
-                        }
-                    }
-                }
             },
             prepareOptionsForTaxonomy(items, skipSelected) {
 
@@ -304,13 +287,12 @@
                         }
                     }
                 }
-
                 if (skipSelected == undefined || skipSelected == false) {
                     this.selectedValues();
                 }
             },
-            updatesIsLoading(isLoading) {
-                this.isLoading = isLoading;
+            updatesIsLoading(isLoadingOptions) {
+                this.isLoadingOptions = isLoadingOptions;
             }
         },
         beforeDestroy() {

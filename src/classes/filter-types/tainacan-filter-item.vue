@@ -37,6 +37,7 @@
                         :filter="filter"
                         :query="query"
                         :is-repository-level="isRepositoryLevel"
+                        :is-loading-items.sync="isLoadingItems"
                         @input="onInput"
                         @sendValuesToTags="onSendValuesToTags"/>
             </div>
@@ -51,18 +52,47 @@
             filter: Object,
             query: Object,
             isRepositoryLevel: Boolean,
-            open: true,
+            open: true
+        },
+        data() {
+            return {
+                isLoadingItems: Boolean,
+                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
+                reloadDueFiltering: Boolean
+            }
+        },
+        mounted() {
+            if (this.isUsingElasticSearch) {
+                this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
+                    this.isLoadingOptions = isLoadingItems;
+                });
+            }
+            // We listen to event, but reload event if hasFiltered is negative, as 
+            // an empty query also demands filters reloading.
+            this.$eventBusSearch.$on('hasFiltered', this.reloadFilter);
         },
         methods: {
             onInput(inputEvent){
                 this.$eventBusSearch.$emit('input', inputEvent);
             },
-            onSendValuesToTags(values) {
-                this.$eventBusSearch.$emit('sendValuesToTags', {
+            onSendValuesToTags($event) {
+                this.$eventBusSearch.$emit('sendValuesToTags', { 
                     filterId: this.filter.id,
-                    value: values
+                    label: $event.label,
+                    value: $event.value,
+                    taxonomy: $event.taxonomy,
+                    metadatumId: this.filter.metadatum_id
                 });
+            },
+            reloadFilter() {
+                this.reloadDueFiltering = !this.reloadDueFiltering;
             }
+        },    
+        beforeDestroy() {
+            if (this.isUsingElasticSearch)
+                this.$eventBusSearch.$off('isLoadingItems');
+        
+            this.$eventBusSearch.$off('hasFiltered', this.reloadFilter);
         }
     }
 </script>

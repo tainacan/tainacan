@@ -9,36 +9,21 @@ export const filterTypeMixin = {
             metadatumId: '',
             metadatumType: '',
             filterTypeOptions: [],
-            isRepositoryLevel: Boolean
         }
     },
     props: {
         filter: Object,
-        query: Object
+        query: Object,
+        isRepositoryLevel: Boolean,
+        isUsingElasticSearch: Boolean,
+        isLoadingItems: Boolean
     },
     created() {
         this.collectionId = this.filter.collection_id ? this.filter.collection_id : this.collectionId;
         this.metadatumId = this.filter.metadatum.metadatum_id ? this.filter.metadatum.metadatum_id : this.metadatumId;
         this.filterTypeOptions = this.filter.filter_type_options ? this.filter.filter_type_options : this.filterTypeOptions;
         this.metadatumType = this.filter.metadatum.metadata_type_object.className ? this.filter.metadatum.metadata_type_object.className : this.metadatumType;
-    },
-    mounted() {
-        this.$eventBusSearch.$on('removeFromFilterTag', this.cleanFromTags );
-    },
-    computed: {
-        facetsFromItemSearch() {
-            return this.getFacets();
-        }
-    },
-    methods: {
-        cleanFromTags(filterTag) {
-            if (typeof this.cleanSearchFromTags === 'function')
-                this.cleanSearchFromTags(filterTag)
-        }
-    },
-    beforeDestroy() {    
-        this.$eventBusSearch.$off('removeFromFilterTag', this.cleanFromTags);
-    },
+    }
 };
 
 export const dynamicFilterTypeMixin = {
@@ -46,24 +31,17 @@ export const dynamicFilterTypeMixin = {
         return {
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
             getOptionsValuesCancel: undefined,
-            isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
-            isLoadingOptions: false
-        }
-    },
-    mounted() {
-        // We listen to event, but reload event if hasFiltered is negative, as 
-        // an empty query also demands filters reloading.
-        this.$eventBusSearch.$on('hasFiltered', this.reloadOptionsDueToFiltering);
-
-        if (this.isUsingElasticSearch) {
-            this.$eventBusSearch.$on('isLoadingItems', isLoading => {
-                this.isLoadingOptions = isLoading;
-            });
+            isLoadingOptions: false,
         }
     },
     computed: {
         facetsFromItemSearch() {
             return this.getFacets();
+        }
+    },
+    watch: {
+        isLoadingItems() {
+            this.isLoadingOptions = this.isLoadingItems;
         }
     },
     methods: {
@@ -349,20 +327,10 @@ export const dynamicFilterTypeMixin = {
                 }
             }
         },
-        reloadOptionsDueToFiltering() {
-            if (typeof this.loadOptions === "function")
-                this.loadOptions(true);
-        }
     },
     beforeDestroy() {
         // Cancels previous Request
         if (this.getOptionsValuesCancel != undefined)
             this.getOptionsValuesCancel.cancel('Facet search Canceled.');
-
-        this.$eventBusSearch.$off('hasFiltered', this.reloadOptionsDueToFiltering);
-
-        if (this.isUsingElasticSearch)
-            this.$eventBusSearch.$off('isLoadingItems');
-
     },
 };

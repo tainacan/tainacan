@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- Date -->
-        <div v-if="type === 'Tainacan\\Metadata_Types\\Date'">
+        <div v-if="metadatumType === 'Tainacan\\Metadata_Types\\Date'">
             <b-datepicker
                     :aria-labelledby="'filter-label-id-' + filter.id"
                     :placeholder="$i18n.get('label_selectbox_init')"
@@ -47,18 +47,20 @@
 
         <!-- Numeric -->
         <div v-else>
-            <b-numberinput
+            <b-input
+                    type="number"
                     :aria-labelledby="'filter-label-id-' + filter.id"
                     size="is-small"
                     step="any"
-                    @input="validate_values()"
+                    @input="validate_values"
                     v-model="value_init"/>
             <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
-            <b-numberinput
+            <b-input
+                    type="number"
                     :aria-labelledby="'filter-label-id-' + filter.id"
                     size="is-small"
                     step="any"
-                    @input="validate_values()"
+                    @input="validate_values"
                     @focus="isTouched = true"
                     v-model="value_end"/>
         </div>
@@ -66,7 +68,6 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios/axios';
     import { wpAjax, dateInter } from "../../../admin/js/mixins";
     import { filterTypeMixin } from '../filter-types-mixin';
     import moment from 'moment';
@@ -82,14 +83,14 @@
         },
         data(){
             return {
-                value_init: null,
-                value_end: null,
+                value_init: '',
+                value_end: '',
                 date_init: undefined,
                 date_end: undefined,
                 isTouched: false,
                 isValid: false,
                 clear: false,
-                type: 'numeric'
+                type: 'DECIMAL'
             }
         },
         watch: {
@@ -99,39 +100,46 @@
 
               if ( val && this.date_end === null)
                   this.date_end =  new Date();
-
-              this.isTouched = val;
+            },
+            'query.metaquery'() {
+                this.selectedValues();
             }
         },
         methods: {
             // only validate if the first value is higher than first
             validate_values: _.debounce( function (){
-                if( this.metadatumType === 'date' ){
-                    if (this.date_init ===  undefined)
+               
+                if( this.metadatumType === 'Tainacan\\Metadata_Types\\Date' ){
+                    if (this.date_init === undefined)
                         this.date_init = new Date();
 
                     if (this.date_end === undefined)
                         this.date_end =  new Date();
 
                     if ( this.date_init > this.date_end ) {
-                        let result = this.date_init;
-                        result.setDate(result.getDate() + 1);
-                        this.date_end = result;
-
-                        result.setDate(result.getDate() - 1);
-                        this.date_init = result;
-                        //this.error_message();
+                        this.error_message();
+                        return
                     }
-
                 } else {
-                    if ( parseFloat( this.value_init ) > parseFloat( this.value_end )) {
-                        //this.value_end = parseFloat( this.value_init ) + 1;
-                        //this.error_message();
+                    if (this.value_init.constructor == Number)
+                        this.value_init = this.value_init.valueOf();
+
+                    if (this.value_end.constructor == Number)
+                        this.value_end = this.value_end.valueOf();
+                        
+                    this.value_init = parseFloat(this.value_init);
+                    this.value_end = parseFloat(this.value_end);
+
+                    if (isNaN(this.value_init) || isNaN(this.value_end))
+                        return
+
+                    if (this.value_init > this.value_end) {                     
+                        this.error_message();
                         return;
                     }
                 }
                 this.emit();
-            }, 1000),
+            }, 800),
             // message for error
             error_message(){
                 if ( !this.isTouched ) return false;
@@ -143,87 +151,56 @@
                     type: 'is-danger'
                 })
             },
-            dateFormatter(dateObject) { 
+            dateFormatter(dateObject){ 
                 return moment(dateObject, moment.ISO_8601).format(this.dateFormat);
             },
-            dateParser(dateString) { 
+            dateParser(dateString){ 
                 return moment(dateString, this.dateFormat).toDate(); 
             },
             selectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
-                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
-                if ( index >= 0){
+                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId);
+
+                if (index >= 0) {
                     let metadata = this.query.metaquery[ index ];
-                    if( metadata.value && metadata.value.length > 0 && this.metadatumType === 'numeric'){
-                        this.value_init = metadata.value[0];
-                        this.value_end = metadata.value[1];
+                    
+                    if( metadata.value && metadata.value.length > 0 && this.metadatumType === 'Tainacan\\Metadata_Types\\Numeric'){
+                        this.value_init = parseFloat(metadata.value[0]);
+                        this.value_end = parseFloat(metadata.value[1]);
                         this.isValid = true;
                     } else if( metadata.value && metadata.value.length > 0 ){
-                        this.date_init = new Date( metadata.value[0] );
-                        this.date_end = new Date( metadata.value[1] );
-
+                        this.date_init = new Date(metadata.value[0]);
+                        this.date_end = new Date(metadata.value[1]);
                         this.isValid = true;
                     }
 
                     if (metadata.value[0] != undefined && metadata.value[1] != undefined)
-                        this.$emit( 'sendValuesToTags', this.parseDateToNavigatorLanguage(metadata.value[0]) + ' - ' + this.parseDateToNavigatorLanguage(metadata.value[1]));
-
+                        this.$emit('sendValuesToTags', { 
+                            label: (this.metadatumType === 'Tainacan\\Metadata_Types\\Numeric' ? (metadata.value[0] + ' - ' + metadata.value[1]) : this.parseDateToNavigatorLanguage(metadata.value[0]) + ' - ' + this.parseDateToNavigatorLanguage(metadata.value[1])),
+                            value: [metadata.value[0], metadata.value[1]]
+                        });
                 } else {
-                    return false;
-                }
-            },
-            showSearch(){
-                if( this.metadatumType === 'date' ){
-
-                    if( this.date_init === null || this.date_end === null ){
-                        this.clear = true;
-                        return '';
+                    if (this.metadatumType === 'Tainacan\\Metadata_Types\\Numeric') {
+                        this.value_init = '';
+                        this.value_end = '';
+                    } else {
+                        this.date_init = null;
+                        this.date_end = null;
                     }
-
-                    return this.date_init.toLocaleString().split(' ')[0] + ' - ' + this.date_end.toLocaleString().split(' ')[0];
-                }
-                // else {
-                //     return this.value_init + ' - ' +this.value_end;
-                // }
-            },
-            cleanSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id)
-                    this.clearSearch();
-            },
-            clearSearch(){
-
-                this.clear = true;
-
-                this.$emit('input', {
-                    filter: 'range',
-                    compare: 'BETWEEN',
-                    metadatum_id: this.metadatumId,
-                    collection_id: this.collectionId,
-                    value: ''
-                });
-
-                if( this.metadatumType === 'date' ){
-                    this.date_init =  null;
-                    this.date_end = null;
-                    this.isTouched = false;
-                } else {
-                    this.value_end = null;
-                    this.value_init = null;
-                    this.isTouched = false;
+                    
                 }
             },
             // emit the operation for listeners
             emit() {
                 let values = [];
-                let type = '';
-
+                
                 if (this.metadatumType === 'Tainacan\\Metadata_Types\\Date') {
 
                     if (this.date_init === null && this.date_end === null) {
                       values = [];
-                      type = 'DATE';
+                      this.type = 'DATE';
                       this.isValid = false;
                       this.clear = true;
                     } else {
@@ -234,7 +211,7 @@
                           ('00' + (this.date_end.getUTCMonth() + 1)).slice(-2) + '-' +
                           ('00' + this.date_end.getUTCDate()).slice(-2);
                       values = [ date_init, date_end ];
-                      type = 'DATE';
+                      this.type = 'DATE';
                       this.isValid = true;
                       this.clear = false;
                     }
@@ -246,17 +223,17 @@
                         values =  [ this.value_init, this.value_end ];
 
                         if(this.value_init !== this.value_end && (this.value_init % 1 !== 0 && this.value_end % 1 == 0)) {
-                            type = 'DECIMAL';
+                            this.type = 'DECIMAL';
                         } else if(this.value_init !== this.value_end &&
                             this.value_init % 1 !== 0 &&
                             this.value_end % 1 !== 0) {
 
-                            type = '';
+                            this.type = '';
                         } else if(this.value_init !== this.value_end &&
                             !(this.value_init % 1 == 0 && this.value_end % 1 !== 0)){
-                            type = 'DECIMAL';
+                            this.type = 'DECIMAL';
                         } else {
-                            type = '';
+                            this.type = '';
                         }
                         //this.isValid = true;
                         //this.clear = false;
@@ -265,7 +242,7 @@
 
                 this.$emit('input', {
                     filter: 'range',
-                    type: type,
+                    type: this.type,
                     compare: 'BETWEEN',
                     metadatum_id: this.metadatumId,
                     collection_id: this.collectionId,
@@ -273,7 +250,10 @@
                 });
 
                 if (values[0] != undefined && values[1] != undefined)
-                    this.$emit( 'sendValuesToTags', this.parseDateToNavigatorLanguage(values[0]) + ' - ' + this.parseDateToNavigatorLanguage(values[1]));
+                    this.$emit( 'sendValuesToTags', { 
+                        label: (this.metadatumType === 'Tainacan\\Metadata_Types\\Numeric' ? (values[0] + ' - ' + values[1]) : this.parseDateToNavigatorLanguage(values[0]) + ' - ' + this.parseDateToNavigatorLanguage(values[1])),
+                        value: [ values[0], values[1] ]
+                    });
             }
         }
     }

@@ -25,6 +25,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'description'   => 'Is filtered',
 				'collection_id' => $collection->get_id(),
 				'metadata_type'    => 'Tainacan\Metadata_Types\Numeric',
+				'status'      => 'publish'
 			),
 			true,
 			true
@@ -69,6 +70,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'description' => 'Is filtered',
 				'collection_id' => $collection->get_id(),
 				'metadata_type'    => 'Tainacan\Metadata_Types\Numeric',
+				'status'      => 'publish'
 			),
 			true
 		);
@@ -134,6 +136,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			array(
 				'name'        => 'Metadatum filtered',
 				'description' => 'Is filtered',
+				'status' => 'publish',
 				'collection_id' => $collection->get_id(),
 				'metadata_type'    => 'Tainacan\Metadata_Types\Numeric',
 			),
@@ -187,6 +190,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			array(
 				'name'          => 'Metadatum filtered',
 				'description'   => 'Is filtered',
+				'status' => 'publish',
 				'collection_id' => $collection->get_id(),
 				'metadata_type'    => 'Tainacan\Metadata_Types\Numeric'
 			),
@@ -199,7 +203,8 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'          => 'Other filtered',
 				'description'   => 'Is filtered',
 				'collection_id' => $collection->get_id(),
-				'metadata_type'    => 'Tainacan\Metadata_Types\Numeric'
+				'metadata_type'    => 'Tainacan\Metadata_Types\Numeric',
+				'status'      => 'publish'
 			),
 			true
 		);
@@ -276,7 +281,8 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'          => 'Metadatum filtered',
 				'description'   => 'Is filtered',
 				'collection_id' => $collection->get_id(),
-				'metadata_type'    => 'Tainacan\Metadata_Types\Text'
+				'metadata_type'    => 'Tainacan\Metadata_Types\Text',
+				'status'      => 'publish'
 			),
 			true
 		);
@@ -287,7 +293,8 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'          => 'Metadatum filtered',
 				'description'   => 'Is filtered',
 				'collection_id' => 'default',
-				'metadata_type'    => 'Tainacan\Metadata_Types\Text'
+				'metadata_type'    => 'Tainacan\Metadata_Types\Text',
+				'status'      => 'publish'
 			),
 			true
 		);

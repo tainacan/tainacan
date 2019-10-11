@@ -30,6 +30,9 @@
                 withError: false
             }
         },
+        mounted() {
+            this.selectedValues();
+        },
         methods: {
             // only validate if the first value is higher than first
             validate_values: _.debounce( function (){
@@ -51,24 +54,6 @@
                     type: 'is-danger'
                 })
             },
-            
-            cleanSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id)
-                    this.clearSearch();
-            },
-            clearSearch(){
-
-                this.$emit('input', {
-                    filter: 'range',
-                    compare: 'BETWEEN',
-                    metadatum_id: this.metadatumId,
-                    collection_id: this.collectionId,
-                    value: ''
-                });
-                this.valueEnd = null;
-                this.valueInit = null;
-                
-            },
             // emit the operation for listeners
             emit() {
                 let values =  [ this.valueInit, this.valueEnd ];
@@ -84,7 +69,7 @@
                 });
 
                 if (values[0] != undefined && values[1] != undefined)
-                    this.$emit('sendValuesToTags', values[0] + ' - ' + values[1]);
+                    this.$emit('sendValuesToTags', { label: values[0] + ' - ' + values[1], value: values });
             },
             selectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
@@ -99,15 +84,12 @@
                     }
 
                     if (metaquery.value[0] != undefined && metaquery.value[1] != undefined)
-                        this.$emit( 'sendValuesToTags', this.valueInit + ' - ' + this.valueEnd);
+                        this.$emit('sendValuesToTags', { label: this.valueInit + ' - ' + this.valueEnd, value: metaquery.values });
 
                 } else {
                     return false;
                 }
             },
-        },
-        mounted() {
-            this.selectedValues();
         }
     }
 </script>
