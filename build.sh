@@ -72,6 +72,7 @@ rsync -axz --exclude='vendor/bin/phpc*' --exclude='vendor/squizlabs' --exclude='
  --exclude='vendor/respect/validation/docs' --exclude='vendor/respect/validation/tests' \
  --exclude='pdf-viewer/pdfjs-dist/web/compressed.tracemonkey-pldi-09.pdf' \
  --exclude='vendor/tecnickcom/tcpdf/fonts' \
+ --exclude='vendor/smalot/pdfparser/src/Smalot/PdfParser/Tests/' \
   src/* $wp_plugin_dir/
 
 rm -rf $wp_plugin_dir/scss
