@@ -240,7 +240,7 @@ export default {
 
             this.termsRequestSource = axios.CancelToken.source();
 
-            let endpoint = '/taxonomy/' + this.taxonomyId + '/terms/?'+ qs.stringify({ postin: this.selectedTerms }) + '&fetch_only=name,url,header_image';
+            let endpoint = '/taxonomy/' + this.taxonomyId + '/terms/?'+ qs.stringify({ include: this.selectedTerms }) + '&fetch_only=name,url,header_image';
 
             this.tainacanAxios.get(endpoint, { cancelToken: this.termsRequestSource.token })
                 .then(response => {
