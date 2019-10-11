@@ -92,7 +92,8 @@ class REST_Controller extends \WP_REST_Controller {
 			'metatype'     => 'meta_type',
 			'hierarchical' => 'hierarchical',
 			'exclude'      => 'exclude',
-			'excludetree'  => 'exclude_tree'
+			'excludetree'  => 'exclude_tree',
+			'include'      => 'include'
 		];
 
 		$meta_query = [
