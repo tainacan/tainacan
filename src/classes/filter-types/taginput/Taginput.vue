@@ -14,7 +14,7 @@
                 @typing="search"
                 :aria-close-label="$i18n.get('remove_value')"
                 :aria-labelledby="'filter-label-id-' + filter.id"
-                :placeholder="(metadatumType == 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_add_metadata')">
+                :placeholder="(metadatumType == 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_add_items') : $i18n.get('info_type_to_add_metadata')">
             <template slot-scope="props">
                 <div class="media">
                     <div
@@ -57,8 +57,13 @@
             }
         },
         watch: {
-            selected(){
-                this.onSelect();
+            selected(newVal, oldVal) {
+                const isEqual = (newVal.length == oldVal.length) && newVal.every((element, index) => {
+                    return element === oldVal[index]; 
+                });
+
+                if (!isEqual)
+                    this.onSelect();
             }
         },
         mounted() {
@@ -148,34 +153,6 @@
                 });
 
                 this.$emit( 'sendValuesToTags', { label: labels, value: values });
-            },
-            cleanSearchFromTags(filterTag) {
-                               
-                if (filterTag.filterId == this.filter.id) {
-
-                    let selectedIndex = this.selected.findIndex(option => option.label == filterTag.singleValue);
-                    if (selectedIndex >= 0) {
-
-                        this.selected.splice(selectedIndex, 1);
-
-                        let values = [];
-                        let labels = [];  
-                        for(let val of this.selected){
-                            values.push( val.value );
-                            labels.push( val.label );
-                        }
-                        
-                        this.$emit('input', {
-                            filter: 'taginput',
-                            compare: 'IN',
-                            metadatum_id: this.metadatumId,
-                            collection_id: this.collectionId,
-                            value: values
-                        });
-
-                        this.$emit('sendValuesToTags', { label: labels, value: values });
-                    }
-                }
             }
         }
     }

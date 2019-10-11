@@ -52,8 +52,17 @@
             }
         },
         watch: {
-            selected(){
-                this.onSelect();
+            selected(newVal, oldVal) {
+                const isEqual = (newVal.length == oldVal.length) && newVal.every((element, index) => {
+                    return element === oldVal[index]; 
+                });
+
+                if (!isEqual)
+                    this.onSelect();
+            },
+            'query.metaquery'() {
+                if (!this.isUsingElasticSearch)
+                    this.loadOptions();
             }
         },
         mounted() {
@@ -72,7 +81,7 @@
                     promise = this.getValuesRelationship( null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1');
                 else
                     promise = this.getValuesPlainText( this.metadatumId, null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1' );
-                
+     
                 if (skipSelected != undefined && skipSelected == true) {
                     promise.request
                         .then(() => {
@@ -105,9 +114,22 @@
                     collection_id: this.collectionId,
                     value: this.selected
                 });
+            },
+            selectedValues() {
+                if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
+                    return false;
+
+                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
+
+                if ( index >= 0){
+                    let query = this.query.metaquery.slice();
+                    this.selected = query[ index ].value;
+                } else {
+                    this.selected = [];
+                }
 
                 let onlyLabels = [];
-                if(!isNaN(this.selected[0])){
+                if (!isNaN(this.selected[0])){
                     for (let aSelected of this.selected) {
                         let valueIndex = this.options.findIndex(option => option.value == aSelected);
 
@@ -118,19 +140,6 @@
                 }
 
                 this.$emit( 'sendValuesToTags', { label: onlyLabels.length ? onlyLabels : this.selected, value: this.selected });
-            },
-            selectedValues() {
-                if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
-                    return false;
-
-                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
-                if ( index >= 0){
-                    let query = this.query.metaquery.slice();
-                    this.selected = query[ index ].value;
-                } else {
-                    this.selected = [];
-                    return false;
-                }
             },
             openCheckboxModal() {
                 this.$buefy.modal.open({
@@ -155,24 +164,6 @@
                     },
                     trapFocus: true
                 });
-            },
-            cleanSearchFromTags(filterTag) {
-
-                if (filterTag.filterId == this.filter.id) {
-                    let selectedIndex = this.selected.findIndex(option => option == filterTag.singleValue);
-                    let optionIndex = this.options.findIndex(option => option.label == filterTag.singleValue);
-                    
-                    let alternativeIndex;
-                    if (optionIndex >= 0)
-                        alternativeIndex = this.selected.findIndex(option => this.options[optionIndex].value == option);
-
-                    if (selectedIndex >= 0 || alternativeIndex >= 0) {
-
-                        selectedIndex >= 0 ? this.selected.splice(selectedIndex, 1) : this.selected.splice(alternativeIndex, 1); 
-
-                        this.onSelect();
-                    }
-                }
             },
             updatesIsLoading(isLoadingOptions) {
                 this.isLoadingOptions = isLoadingOptions;

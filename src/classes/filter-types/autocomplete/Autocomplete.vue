@@ -10,7 +10,7 @@
                 :loading="isLoadingOptions"
                 @input="search"
                 field="label"
-                @select="option => setResults(option) "
+                @select="onSelect"
                 :placeholder="(metadatumType === 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_search_metadata')">
             <template slot-scope="props">
                 <div class="media">
@@ -42,43 +42,45 @@
 <script>
     import { tainacan as axios, isCancel } from '../../../js/axios/axios'
     import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
-    // import qs from 'qs';
 
     export default {
         mixins: [filterTypeMixin, dynamicFilterTypeMixin],
         data(){
             return {
-                results:'',
                 selected:'',
                 options: [],
                 label: ''
             }
         },
+        watch: {
+            'query.metaquery'() {
+                this.selectedValues();
+            },
+        },
         mounted() {
             this.selectedValues();
         },
         methods: {
-            setResults(option){
+            onSelect(option){
+                
                 if(!option)
                     return;
-                this.results = option.value;
+                this.selected = option.value;
                 this.label = option.label;
-                this.onSelect()
-            },
-            onSelect(){
+
                 this.$emit('input', {
                     filter: 'autocomplete',
                     metadatum_id: this.metadatumId,
                     collection_id: this.collectionId,
-                    value: this.results
+                    value: this.selected
                 });
                 this.selectedValues();
             },
             search: _.debounce( function(query) {
+
                 if (query != '') {
                     let promise = null;
                     this.options = [];
-
                     // Cancels previous Request
                     if (this.getOptionsValuesCancel != undefined)
                         this.getOptionsValuesCancel.cancel('Facet search Canceled.');
@@ -99,7 +101,14 @@
                     this.getOptionsValuesCancel = promise.source;
                 
                 } else {
-                    this.cleanSearch();
+                    this.label = '';
+                    this.selected = '';
+                    this.$emit('input', {
+                        filter: 'autocomplete',
+                        metadatum_id: this.metadatumId,
+                        collection_id: this.collectionId,
+                        value: this.selected
+                    });
                 }
             }, 500),
             selectedValues(){
@@ -116,41 +125,24 @@
                         axios.get('/items/' + metadata.value + '?fetch_only=title,thumbnail')
                             .then( res => {
                                 let item = res.data;
-                                this.results = item.title;
                                 this.label = item.title;
                                 this.selected = item.title;
          
-                                this.$emit( 'sendValuesToTags', { label: this.label, value: this.results });
+                                this.$emit( 'sendValuesToTags', { label: this.label, value: this.selected });
                             })
                             .catch(error => {
                                 this.$console.log(error);
                             });
                     } else {
-                        this.results = metadata.value;
                         this.label = metadata.value;
                         this.selected = metadata.value;
 
-                        this.$emit( 'sendValuesToTags', { label: this.label, value: this.results });
+                        this.$emit( 'sendValuesToTags', { label: this.label, value: this.selected });
                     }
                 } else {
                     return false;
                 }
-            },
-            cleanSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id)
-                    this.cleanSearch();
-            },
-            cleanSearch(){
-                this.results = '';
-                this.label = '';
-                this.selected = '';
-                this.$emit('input', {
-                    filter: 'autocomplete',
-                    metadatum_id: this.metadatumId,
-                    collection_id: this.collectionId,
-                    value: ''
-                });
-            },
+            }
         }
     }
 </script>

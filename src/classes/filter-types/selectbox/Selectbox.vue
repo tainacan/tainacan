@@ -86,10 +86,6 @@
                     collection_id: this.collectionId,
                     value: ( value ) ? value : ''
                 });
-            },
-            cleanSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id)
-                    this.onSelect();
             }
         }
     }

@@ -64,12 +64,20 @@
             }
         },
         watch: {
-            selected(){
-                this.onSelect();
+            selected(newVal, oldVal) {
+                const isEqual = (newVal.length == oldVal.length) && newVal.every((element, index) => {
+                    return element === oldVal[index]; 
+                });
+
+                if (!isEqual)
+                    this.onSelect();
             },
             facetsFromItemSearch() {
                 if (this.isUsingElasticSearch)
                     this.loadOptions();
+            },
+            'query.taxquery'() {
+                this.loadOptions();
             }
         },    
         mounted(){
@@ -140,14 +148,13 @@
                                 this.prepareOptionsForTaxonomy(Object.values(this.facetsFromItemSearch[facet]), skipSelected);
                         }    
                     }
-
                 }
             },
             selectedValues(){
                 
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;
-                
+                    
                 let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == this.taxonomy );
                 if ( index >= 0){
                     let metadata = this.query.taxquery[ index ];
@@ -156,16 +163,7 @@
                     this.selected = [];
                     return false;
                 }
-            },
-            onSelect(){
-                this.$emit('input', {
-                    filter: 'checkbox',
-                    taxonomy: this.taxonomy,
-                    compare: 'IN',
-                    metadatum_id: this.metadatumId,
-                    collection_id: this.collectionId,
-                    terms: this.selected
-                });
+
                 
                 let onlyLabels = [];
 
@@ -225,6 +223,16 @@
 
                 this.$emit('sendValuesToTags', { label: onlyLabels, taxonomy: this.taxonomy, value: this.selected });
             },
+            onSelect(){
+                this.$emit('input', {
+                    filter: 'checkbox',
+                    taxonomy: this.taxonomy,
+                    compare: 'IN',
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
+                    terms: this.selected
+                });
+            },
             openCheckboxModal(parent) {
                 this.$buefy.modal.open({
                     parent: this,
@@ -248,23 +256,6 @@
                     width: 'calc(100% - 16.6666%)',
                     trapFocus: true
                 });
-            },
-            cleanSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id) {
-
-                    let selectedOption = this.options.find(option => option.label == filterTag.singleValue);
-
-                    if (selectedOption) {
-                    
-                        let selectedIndex = this.selected.findIndex(option => option == selectedOption.value);
-                        if (selectedIndex >= 0) {
-
-                            this.selected.splice(selectedIndex, 1); 
-
-                            this.onSelect();
-                        }
-                    }
-                }
             },
             prepareOptionsForTaxonomy(items, skipSelected) {
 
@@ -296,7 +287,6 @@
                         }
                     }
                 }
-
                 if (skipSelected == undefined || skipSelected == false) {
                     this.selectedValues();
                 }

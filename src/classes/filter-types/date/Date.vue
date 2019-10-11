@@ -129,6 +129,11 @@
                 comparator: '=', // =, !=, >, >=, <, <=
             }
         },
+        watch: {
+            'query.metaquery'() {
+                this.selectedValues();
+            }
+        },
         computed: {
             yearsOnlyValue() {
                 return this.value && typeof this.value.getUTCFullYear === 'function' ? this.value.getUTCFullYear() : null
@@ -151,7 +156,7 @@
                     return false;
 
                 let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
-                
+
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
                     
@@ -168,31 +173,13 @@
 
                         this.$emit('sendValuesToTags', { 
                             label: this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat), 
-                            value: this.value
+                            value: textValue
                         });
                     }
 
                 } else {
-                    return false;
+                    this.value = null;
                 }
-
-            },
-            cleanSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id)
-                    this.clearSearch();
-            },
-            clearSearch(){
-
-                this.$emit('input', {
-                    filter: 'date',
-                    type: 'DATE',
-                    compare: this.comparator,
-                    metadatum_id: this.metadatumId,
-                    collection_id: this.collectionId,
-                    value: ''
-                });
-
-                this.value = null;
             },
             dateFormatter(dateObject) { 
                 return moment(dateObject, moment.ISO_8601).format(this.dateFormat);

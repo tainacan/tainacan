@@ -23,18 +23,6 @@ export const filterTypeMixin = {
         this.metadatumId = this.filter.metadatum.metadatum_id ? this.filter.metadatum.metadatum_id : this.metadatumId;
         this.filterTypeOptions = this.filter.filter_type_options ? this.filter.filter_type_options : this.filterTypeOptions;
         this.metadatumType = this.filter.metadatum.metadata_type_object.className ? this.filter.metadatum.metadata_type_object.className : this.metadatumType;
-    },
-    mounted() {
-        
-    },
-    methods: {
-        cleanFromTags(filterTag) {
-            if (typeof this.cleanSearchFromTags === 'function')
-                this.cleanSearchFromTags(filterTag)
-        }
-    },
-    beforeDestroy() {    
-        this.$eventBusSearch.$off('removeFromFilterTag', this.cleanFromTags);
     }
 };
 

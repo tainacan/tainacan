@@ -63,11 +63,6 @@
                 taxonomy: ''
             }
         },
-        watch: {
-            selected(){
-                this.onSelect();
-            }
-        },
         methods: {
             search: _.debounce( function(query) {
                 this.isLoadingOptions = true;
@@ -165,34 +160,6 @@
                     .catch(error => {
                         this.$console.log(error);
                     });
-            },
-            cleanSearchFromTags(filterTag) {
-                               
-                if (filterTag.filterId == this.filter.id) {
-
-                    let selectedIndex = this.selected.findIndex(option => option.label == filterTag.singleValue);
-                    if (selectedIndex >= 0) {
-
-                        this.selected.splice(selectedIndex, 1);
-
-                        let values = [];
-                        let labels = [];
-                        for(let val of this.selected){
-                            values.push( val.value );
-                            labels.push( val.label );
-                        }
-                        
-                        this.$emit('input', {
-                            filter: 'taginput',
-                            compare: 'IN',
-                            taxonomy: this.taxonomy,
-                            metadatum_id: this.metadatumId,
-                            collection_id: this.collectionId,
-                            terms: values
-                        });
-                        this.$emit('sendValuesToTags', { label: labels, taxonomy: this.taxonomy });
-                   }
-                }
             }
         }
     }

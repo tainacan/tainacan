@@ -33,30 +33,23 @@
             this.selectedValues();
         },
         methods: {
-            cleanSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id)
-                    this.clearSearch();
-            },
             changeInterval() {
                 if (this.selectedInterval !== '') {
                     this.valueInit = this.filterTypeOptions.intervals[this.selectedInterval].from;
                     this.valueEnd = this.filterTypeOptions.intervals[this.selectedInterval].to;
                     this.emit();
                 } else {
-                    this.clearSearch();
+                    this.$emit('input', {
+                        filter: 'range',
+                        compare: 'BETWEEN',
+                        metadatum_id: this.metadatumId,
+                        collection_id: this.collectionId,
+                        value: ''
+                    });
+                    this.valueEnd = null;
+                    this.valueInit = null;
                 }
                 
-            },
-            clearSearch(){
-                this.$emit('input', {
-                    filter: 'range',
-                    compare: 'BETWEEN',
-                    metadatum_id: this.metadatumId,
-                    collection_id: this.collectionId,
-                    value: ''
-                });
-                this.valueEnd = null;
-                this.valueInit = null;
             },
             // emit the operation for listeners
             emit() {

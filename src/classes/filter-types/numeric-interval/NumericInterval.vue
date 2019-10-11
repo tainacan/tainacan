@@ -54,24 +54,6 @@
                     type: 'is-danger'
                 })
             },
-            
-            cleanSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id)
-                    this.clearSearch();
-            },
-            clearSearch(){
-
-                this.$emit('input', {
-                    filter: 'range',
-                    compare: 'BETWEEN',
-                    metadatum_id: this.metadatumId,
-                    collection_id: this.collectionId,
-                    value: ''
-                });
-                this.valueEnd = null;
-                this.valueInit = null;
-                
-            },
             // emit the operation for listeners
             emit() {
                 let values =  [ this.valueInit, this.valueEnd ];

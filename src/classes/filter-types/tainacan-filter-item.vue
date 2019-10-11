@@ -34,7 +34,6 @@
             <div :id="'filter-input-id-' + filter.id">
                 <component
                         :is="filter.filter_type_object.component"
-                        :key="reloadDueFiltering"
                         :filter="filter"
                         :query="query"
                         :is-repository-level="isRepositoryLevel"
@@ -59,7 +58,7 @@
             return {
                 isLoadingItems: Boolean,
                 isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
-                reloadOptionsDueFiltering: Boolean
+                reloadDueFiltering: Boolean
             }
         },
         mounted() {
@@ -68,7 +67,6 @@
                     this.isLoadingOptions = isLoadingItems;
                 });
             }
-            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanFromTags );
             // We listen to event, but reload event if hasFiltered is negative, as 
             // an empty query also demands filters reloading.
             this.$eventBusSearch.$on('hasFiltered', this.reloadFilter);
@@ -88,16 +86,13 @@
             },
             reloadFilter() {
                 this.reloadDueFiltering = !this.reloadDueFiltering;
-            },
-            cleanFromTags() {
-            },
+            }
         },    
         beforeDestroy() {
             if (this.isUsingElasticSearch)
                 this.$eventBusSearch.$off('isLoadingItems');
         
             this.$eventBusSearch.$off('hasFiltered', this.reloadFilter);
-            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanFromTags);
         }
     }
 </script>

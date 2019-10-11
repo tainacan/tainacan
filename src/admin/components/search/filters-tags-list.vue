@@ -46,22 +46,14 @@
                 'getFilterTags'
             ]),
             removeMetaQuery({ filterId, value, singleLabel, label, taxonomy, metadatumId }) {
-                if (singleLabel != undefined)
-                    this.$eventBusSearch.removeMetaFromFilterTag({ 
-                        filterId: filterId,
-                        singleLabel: singleLabel,
-                        value: value, 
-                        taxonomy: taxonomy,
-                        metadatumId: metadatumId 
-                    });
-                else
-                    this.$eventBusSearch.removeMetaFromFilterTag({ 
-                        filterId: filterId, 
-                        label: label, 
-                        value: value, 
-                        taxonomy: taxonomy, 
-                        metadatumId: metadatumId 
-                    });
+                this.$eventBusSearch.removeMetaFromFilterTag({ 
+                    filterId: filterId,
+                    singleLabel: singleLabel,
+                    label: label,
+                    value: value, 
+                    taxonomy: taxonomy,
+                    metadatumId: metadatumId 
+                });
             },
             clearAllFilters() {
                 // this.$eventBusSearch.clearAllFilters();
