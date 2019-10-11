@@ -8,28 +8,19 @@ namespace Tainacan\Tests;
 class TAINACAN_REST_Importers_Controller extends TAINACAN_UnitApiTestCase {
 
 	public function test_create(){
-        
-        $params = json_encode([
+		$params = json_encode([
 			'importer_slug'       => 'csv'
 		]);
 
-
 		$request  = new \WP_REST_Request('POST', $this->namespace . '/importers/session');
 		$request->set_body($params);
-
 		$response = $this->server->dispatch($request);
-
 		$this->assertEquals(201, $response->get_status());
-
 		$data = $response->get_data();
+		$this->assertTrue( isset($data['id']) );
+		$this->assertTrue( is_string($data['id']) );
+	}
 
-
-        $this->assertTrue( isset($data['id']) );
-        $this->assertTrue( is_string($data['id']) );
-
-        
-    }
-    
 	public function test_update() {
 		global $Tainacan_Importer_Handler;
 		$slug='csv';
