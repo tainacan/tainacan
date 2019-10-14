@@ -6,7 +6,7 @@
                 @input="changeInterval"
                 v-model="selectedInterval">
             <option value="">
-                {{ $i18n.get('label_none') }}
+                {{ $i18n.get('label_selectbox_init') }}...
             </option>
             <option
                     v-for="(interval, index) in filterTypeOptions.intervals"
@@ -69,7 +69,7 @@
                     value: values
                 });
 
-                if (values[0] != undefined && values[1] != undefined) {
+                if (values[0] != undefined && values[1] != undefined && this.selectedInterval !== '') {
                     let labelValue = this.filterTypeOptions.intervals[this.selectedInterval].label + (this.filterTypeOptions.showIntervalOnTag ? ` (${values[0]}-${values[1]})` : '');
                     this.$emit('sendValuesToTags', { label: labelValue, value: values });
                 }
@@ -94,9 +94,12 @@
                     this.selectedInterval = this.filterTypeOptions.intervals.findIndex(
                         anInterval => anInterval.from == this.valueInit && anInterval.to == this.valueEnd
                     );
+                    this.selectedInterval = this.selectedInterval >= 0 ? this.selectedInterval : '';
 
-                    let labelValue = this.filterTypeOptions.intervals[this.selectedInterval].label + (this.filterTypeOptions.showIntervalOnTag ? ` (${this.valueInit}-${this.valueEnd})` : '');
-                    this.$emit('sendValuesToTags', { label: labelValue, value: [ this.valueInit, this.valueEnd ] });
+                    if (this.selectedInterval !== '') {
+                        let labelValue = this.filterTypeOptions.intervals[this.selectedInterval].label + (this.filterTypeOptions.showIntervalOnTag ? ` (${this.valueInit}-${this.valueEnd})` : '');
+                        this.$emit('sendValuesToTags', { label: labelValue, value: [ this.valueInit, this.valueEnd ] });
+                    }
                 } else {
                     this.valueInit = null;
                     this.valueEnd = null;
