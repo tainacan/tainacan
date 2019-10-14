@@ -135,6 +135,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	// Labels (used mainly on Aria Labels and Inputs)
 	'label'                                          => __( 'label', 'tainacan' ),
 	'label_clean'                                    => __( 'Clear', 'tainacan' ),
+	'label_none'                                     => __( 'None', 'tainacan' ),
 	'label_clear_filters'                            => __( 'Clear filters', 'tainacan' ),
 	'label_and'                                      => __( 'and', 'tainacan' ),
 	'label_selected'                                 => __( 'Selected', 'tainacan' ),

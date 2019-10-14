@@ -1,11 +1,12 @@
 <template>
     <div>
         <b-select
+                expanded
                 :placeholder="$i18n.get('instruction_select_a_interval')"
                 @input="changeInterval"
                 v-model="selectedInterval">
             <option value="">
-                {{ $i18n.get('label_clean') }}
+                {{ $i18n.get('label_none') }}
             </option>
             <option
                     v-for="(interval, index) in filterTypeOptions.intervals"
@@ -32,6 +33,11 @@
         mounted() {
             this.selectedValues();
         },
+        watch: {
+            'query.metaquery'() {
+                this.selectedValues();
+            }
+        },
         methods: {
             changeInterval() {
                 if (this.selectedInterval !== '') {
@@ -40,16 +46,16 @@
                     this.emit();
                 } else {
                     this.$emit('input', {
-                        filter: 'range',
+                        type: 'DECIMAL',
                         compare: 'BETWEEN',
                         metadatum_id: this.metadatumId,
                         collection_id: this.collectionId,
-                        value: ''
+                        value: [null, null]
                     });
                     this.valueEnd = null;
                     this.valueInit = null;
+                    this.$emit('sendValuesToTags', { label: '', value: null });
                 }
-                
             },
             // emit the operation for listeners
             emit() {
@@ -64,7 +70,7 @@
                 });
 
                 if (values[0] != undefined && values[1] != undefined) {
-                    let labelValue = this.filterTypeOptions.intervals[this.selectedInterval].label + (this.filterTypeOptions.showIntervalOnTag ? `(${values[0]}-${values[1]})` : '');
+                    let labelValue = this.filterTypeOptions.intervals[this.selectedInterval].label + (this.filterTypeOptions.showIntervalOnTag ? ` (${values[0]}-${values[1]})` : '');
                     this.$emit('sendValuesToTags', { label: labelValue, value: values });
                 }
             },
@@ -89,10 +95,12 @@
                         anInterval => anInterval.from == this.valueInit && anInterval.to == this.valueEnd
                     );
 
-                    let labelValue = this.filterTypeOptions.intervals[this.selectedInterval].label + (this.filterTypeOptions.showIntervalOnTag ? `(${this.valueInit}-${this.valueEnd})` : '');
+                    let labelValue = this.filterTypeOptions.intervals[this.selectedInterval].label + (this.filterTypeOptions.showIntervalOnTag ? ` (${this.valueInit}-${this.valueEnd})` : '');
                     this.$emit('sendValuesToTags', { label: labelValue, value: [ this.valueInit, this.valueEnd ] });
                 } else {
-                    return false;
+                    this.valueInit = null;
+                    this.valueEnd = null;
+                    this.selectedInterval = '';
                 }
             },
         }
