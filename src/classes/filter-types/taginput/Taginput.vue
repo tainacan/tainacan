@@ -11,6 +11,7 @@
                 :remove-on-keys="[]"
                 field="label"
                 attached
+                @input="onSelect"
                 @typing="search"
                 :aria-close-label="$i18n.get('remove_value')"
                 :aria-labelledby="'filter-label-id-' + filter.id"
@@ -57,13 +58,8 @@
             }
         },
         watch: {
-            selected(newVal, oldVal) {
-                const isEqual = (newVal.length == oldVal.length) && newVal.every((element, index) => {
-                    return element === oldVal[index]; 
-                });
-
-                if (!isEqual)
-                    this.onSelect();
+            'query.metaquery'() {
+                this.selectedValues();
             }
         },
         mounted() {
@@ -99,7 +95,7 @@
                 this.getOptionsValuesCancel = promise.source;
                 
             }, 500),
-            selectedValues(){
+            selectedValues() {
 
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
@@ -110,39 +106,58 @@
 
                     if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' ) {
                         let query = qs.stringify({ postin: metadata.value, fetch_only: 'title,thumbnail', fetch_only_meta: '' });
-
+            
                         axios.get('/items?' + query)
                             .then( res => {
                                 if (res.data.items) {
+                                    this.selected = [];
                                     for (let item of res.data.items) {
-                                        this.selected.push({ 
-                                            label: item.title, 
-                                            value: item.id, 
-                                            img: item.thumbnail && item.thumbnail.thumbnail && item.thumbnail.thumbnail[0] ? item.thumbnail.thumbnail[0] : null 
-                                        });
+                                        let existingItem = this.selected.findIndex((anItem) => item.id == anItem.id);
+                                        if (existingItem < 0) {
+                                            this.selected.push({ 
+                                                label: item.title, 
+                                                value: item.id, 
+                                                img: item.thumbnail && item.thumbnail.thumbnail && item.thumbnail.thumbnail[0] ? item.thumbnail.thumbnail[0] : null 
+                                            });
+                                        }
                                     }
+                                    let values = [];
+                                    let labels = [];
+                                    if (this.selected.length > 0) {
+                                        for(let val of this.selected){
+                                            values.push( val.value );
+                                            labels.push( val.label );
+                                        }
+                                    }
+                                    this.$emit( 'sendValuesToTags', { label: labels, value: values });
                                 }
                             })
                             .catch(error => {
                                 this.$console.log(error);
                             });
                     } else {
+                        this.selected = [];
                         for (let item of metadata.value) {
                             this.selected.push({ label: item, value: item, img: null });
                         }
+                        let values = [];
+                        let labels = [];
+                        if (this.selected.length > 0) {
+                            for(let val of this.selected){
+                                values.push( val.value );
+                                labels.push( val.label );
+                            }
+                        }
+                        this.$emit( 'sendValuesToTags', { label: labels, value: values });
                     }
                 } else {
-                    return false;
+                    this.selected = [];
                 }
             },
             onSelect() {
                 let values = [];
-                let labels = [];
-                if( this.selected.length > 0 ){
-                    for(let val of this.selected){
-                        values.push( val.value );
-                        labels.push( val.label );
-                    }
+                for(let val of this.selected){
+                    values.push( val.value );
                 }
                 this.$emit('input', {
                     filter: 'taginput',
@@ -151,8 +166,6 @@
                     collection_id: this.collectionId,
                     value: values
                 });
-
-                this.$emit( 'sendValuesToTags', { label: labels, value: values });
             }
         }
     }
