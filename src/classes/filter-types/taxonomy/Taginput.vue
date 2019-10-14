@@ -15,6 +15,7 @@
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :class="{'has-selected': selected != undefined && selected != []}"
                 @typing="search"
+                @input="onSelect"
                 :placeholder="$i18n.get('info_type_to_add_terms')">
             <template slot-scope="props">
                 <div class="media">
@@ -52,15 +53,23 @@
             axios.get(endpoint)
                 .then( res => {
                     let metadatum = res.data;
-                    this.selectedValues( metadatum.metadata_type_options.taxonomy_id );
+                    this.taxonomyId = metadatum.metadata_type_options.taxonomy_id
+                    this.selectedValues();
                 });
+        },
+        watch: {
+            'query.taxquery'() {
+                if (this.taxonomyId != '')
+                    this.selectedValues();
+            }
         },
         data(){
             return {
                 results:'',
                 selected:[],
                 options: [],
-                taxonomy: ''
+                taxonomy: '',
+                taxonomyId: ''
             }
         },
         methods: {
@@ -80,7 +89,6 @@
                 for(let val of this.selected){
                     valuesToIgnore.push( val.value );
                 }
-
                 return axios.get(endpoint).then( res => {
                     for (let term of res.data.values) {   
                           
@@ -114,30 +122,40 @@
                     this.$console.log(error);
                 });
             }, 500),
-            selectedValues( taxonomyId ){
+            selectedValues(){
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;
 
-                this.taxonomy = 'tnc_tax_' + taxonomyId;
-
+                this.taxonomy = 'tnc_tax_' + this.taxonomyId;
+            
                 let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == this.taxonomy );
                 if ( index >= 0){
                     let metadata = this.query.taxquery[ index ];
+                    this.selected = [];
 
                     for ( let id of metadata.terms ){
-                       this.getTerm( taxonomyId, id );
+                       this.getTerm( this.taxonomyId, id );
                     }
+
+                    let values = [];
+                    let labels = [];
+                    if (this.selected.length > 0){
+                        for(let val of this.selected){
+                            values.push( val.value );
+                            labels.push( val.label );
+                        }
+                    }
+
+                    this.$emit('sendValuesToTags', { label: labels, taxonomy: this.taxonomy, value: values });
                 } else {
-                    return false;
+                    this.selected = [];
                 }
             },
             onSelect() {
                 let values = [];
-                let labels = [];
-                if( this.selected.length > 0 ){
+                if (this.selected.length > 0){
                     for(let val of this.selected){
                         values.push( val.value );
-                        labels.push( val.label );
                     }
                 }
                 this.$emit('input', {
@@ -149,10 +167,9 @@
                     terms: values
                 });
 
-                this.$emit('sendValuesToTags', { label: labels, taxonomy: this.taxonomy, value: values });
             },
             getTerm( taxonomy, id ){
-                //getting a specific value from api, does not need be in fecat api
+                //getting a specific value from api, does not need be in facets api
                 return axios.get('/taxonomy/' + taxonomy + '/terms/' + id + '?order=asc' )
                     .then( res => {
                         this.selected.push({ label: res.data.name, value: res.data.id });
