@@ -24,8 +24,8 @@
         mixins: [ filterTypeMixin ],
         data(){
             return {
-                valueInit: 0,
-                valueEnd: 10,
+                valueInit: null,
+                valueEnd: null,
                 isValid: false,
                 withError: false
             }
@@ -33,15 +33,34 @@
         mounted() {
             this.selectedValues();
         },
+        watch: {
+            'query.metaquery'() {
+                this.selectedValues();
+            }
+        },
         methods: {
             // only validate if the first value is higher than first
-            validate_values: _.debounce( function (){
-                if ( parseFloat( this.valueInit ) > parseFloat( this.valueEnd )) {
-                    //this.valueEnd = parseFloat( this.valueInit ) + 1;
-                    //this.withError = true;
-                    
+            validate_values: _.debounce( function () {
+                if (this.valueInit == null || this.valueEnd == null)
+                    return
+
+                if (this.valueInit.constructor == Number)
+                    this.valueInit = this.valueInit.valueOf();
+
+                if (this.valueEnd.constructor == Number)
+                    this.valueEnd = this.valueEnd.valueOf();
+                
+                this.valueInit = parseFloat(this.valueInit);
+                this.valueEnd = parseFloat(this.valueEnd);
+
+                if (isNaN(this.valueInit) || isNaN(this.valueEnd))
+                    return
+
+                if (this.valueInit > this.valueEnd) {                     
+                    this.error_message();
                     return;
                 }
+
                 //this.withError = false;
                 this.emit();
             }, 600),
@@ -79,15 +98,16 @@
                 if ( index >= 0 ){
                     let metaquery = this.query.metaquery[ index ];
                     if ( metaquery.value && metaquery.value.length > 1 ) {
-                        this.valueInit = metaquery.value[0];
-                        this.valueEnd = metaquery.value[1];
+                        this.valueInit = new Number(metaquery.value[0]);
+                        this.valueEnd = new Number(metaquery.value[1]);
                     }
 
                     if (metaquery.value[0] != undefined && metaquery.value[1] != undefined)
-                        this.$emit('sendValuesToTags', { label: this.valueInit + ' - ' + this.valueEnd, value: metaquery.values });
+                        this.$emit('sendValuesToTags', { label: this.valueInit + ' - ' + this.valueEnd, value: metaquery.value });
 
                 } else {
-                    return false;
+                    this.valueInit = null;
+                    this.valueEnd = null;
                 }
             },
         }
