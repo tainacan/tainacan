@@ -101,6 +101,11 @@
                 }
             }
         },
+        watch: {
+            'query.metaquery'() {
+                this.selectedValues();
+            }
+        },
         methods: {
             selectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
@@ -121,7 +126,7 @@
                         this.$emit('sendValuesToTags', { label: this.comparator + ' ' + this.value, value: this.value });
 
                 } else {
-                    return false;
+                    this.value = null;
                 }
 
             },
@@ -130,7 +135,7 @@
 
                 if ( this.value === null || this.value === '')
                     return;
-
+                    
                 this.$emit('input', {
                     filter: 'numeric',
                     compare: this.comparator,

@@ -14,7 +14,8 @@ export const set_advanced_query = ({commit}, advancedSearchQuery) => {
 
 // Meta Queries from filters
 export const add_metaquery = ( { commit }, filter ) => {
-    if (filter && (filter.value == undefined || filter.value == null || filter.value.length === 0 || filter.value == '')) {
+    console.log(filter)
+    if (filter && (filter.value === undefined || filter.value === null || filter.value.length === 0 || filter.value === '')) {
         commit('removeMetaQuery', filter  );
     } else {
         commit('addMetaQuery', filter  );

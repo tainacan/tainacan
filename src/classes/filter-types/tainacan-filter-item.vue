@@ -72,7 +72,7 @@
             this.$eventBusSearch.$on('hasFiltered', this.reloadFilter);
         },
         methods: {
-            onInput(inputEvent){
+            onInput(inputEvent) {
                 this.$eventBusSearch.$emit('input', inputEvent);
             },
             onSendValuesToTags($event) {

@@ -16,7 +16,7 @@ export default {
             },
             created() {
                 this.$on('input', data => {
-                    console.log("inputei")
+                    
                     this.$store.dispatch('search/setPage', 1);
                     if (data.taxonomy)
                         this.addTaxquery(data);
@@ -187,7 +187,7 @@ export default {
 
                     if (filterTag.singleLabel != undefined || filterTag.label != undefined) {
                         
-                        if (filterTag.taxonomy)
+                        if (filterTag.taxonomy) {
                             this.$store.dispatch('search/remove_taxquery', {
                                 filterId: filterTag.filterId,
                                 label: filterTag.singleLabel ? filterTag.singleLabel : filterTag.label,
@@ -195,7 +195,7 @@ export default {
                                 taxonomy: filterTag.taxonomy,
                                 value: filterTag.value
                             });
-                        else
+                        } else {
                             this.$store.dispatch('search/remove_metaquery', {
                                 filterId: filterTag.filterId,
                                 label: filterTag.singleLabel ? filterTag.singleLabel : filterTag.label,
@@ -203,6 +203,8 @@ export default {
                                 metadatum_id: filterTag.metadatumId,
                                 value: filterTag.value
                             });
+                        }
+                        this.$store.dispatch('search/removeFilterTag', filterTag);
                     }
                     this.updateURLQueries();
                 },
