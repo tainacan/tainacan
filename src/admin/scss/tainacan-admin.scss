@@ -78,12 +78,14 @@ body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, bod
     border: none;
     border-radius: 0;
     animation: none;
-    height: 50px;
-    width: 50px;
+    height: 46px;
+    width: 46px;
+    background-size: initial;
 }
 .loading-overlay.is-full-page .loading-icon::after {
-    height: 50px;
-    width: 50px;
+    height: 46px;
+    width: 46px;
+    background-size: initial;
     top: calc(50% - 25px);
     left: calc(50% - 25px);
 }

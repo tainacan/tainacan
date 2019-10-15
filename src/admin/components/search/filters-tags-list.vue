@@ -1,22 +1,24 @@
 <template>
-    <div 
-            class="is-inline-flex"
-            v-if="filterTags != undefined && filterTags.length > 0">
-        <b-tag            
-                v-for="(filterTag, index) of filterTags"
-                :key="index"       
-                attached
-                closable
-                @close="removeMetaQuery(filterTag)">
-            {{ filterTag.singleLabel != undefined ? filterTag.singleLabel : filterTag.label }}
-        </b-tag>
-        <button 
-                @click="clearAllFilters()"
-                id="button-clear-all"
-                class="button is-outlined">
-            {{ $i18n.get('label_clear_filters') }}
-        </button>
-    </div>
+    <transition name="filter-item">
+        <div 
+                class="is-inline-flex"
+                v-if="filterTags != undefined && filterTags.length > 0">
+            <b-tag            
+                    v-for="(filterTag, index) of filterTags"
+                    :key="index"       
+                    attached
+                    closable
+                    @close="removeMetaQuery(filterTag)">
+                {{ filterTag.singleLabel != undefined ? filterTag.singleLabel : filterTag.label }}
+            </b-tag>
+            <button 
+                    @click="clearAllFilters()"
+                    id="button-clear-all"
+                    class="button is-outlined">
+                {{ $i18n.get('label_clear_filters') }}
+            </button>
+        </div>
+    </transition>
 </template>
 <script>
     import { mapGetters } from 'vuex';
