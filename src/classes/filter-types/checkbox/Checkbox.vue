@@ -84,12 +84,12 @@
      
                 promise.request
                     .then(() => {
-                        this.selectedValues();
+                        this.updateSelectedValues();
                     })
                     .catch( (error) => {
                         if (isCancel(error)) {
                             this.$console.log('Request canceled: ' + error.message);
-                            this.selectedValues();
+                            this.updateSelectedValues();
                         } else
                             this.$console.error( error );
                     });
@@ -106,7 +106,7 @@
                     value: this.selected
                 });
             },
-            selectedValues() {
+            updateSelectedValues() {
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 

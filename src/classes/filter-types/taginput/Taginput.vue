@@ -59,11 +59,11 @@
         },
         watch: {
             'query.metaquery'() {
-                this.selectedValues();
+                this.updateSelectedValues();
             }
         },
         mounted() {
-            this.selectedValues();
+            this.updateSelectedValues();
         },
         methods: {
             search: _.debounce( function(query) {
@@ -95,7 +95,7 @@
                 this.getOptionsValuesCancel = promise.source;
                 
             }, 500),
-            selectedValues() {
+            updateSelectedValues() {
 
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;

@@ -54,11 +54,11 @@
         },
         watch: {
             'query.metaquery'() {
-                this.selectedValues();
+                this.updateSelectedValues();
             },
         },
         mounted() {
-            this.selectedValues();
+            this.updateSelectedValues();
         },
         methods: {
             onSelect(option){
@@ -74,7 +74,7 @@
                     collection_id: this.collectionId,
                     value: this.selected
                 });
-                this.selectedValues();
+                this.updateSelectedValues();
             },
             search: _.debounce( function(query) {
 
@@ -111,7 +111,7 @@
                     });
                 }
             }, 500),
-            selectedValues(){
+            updateSelectedValues(){
 
                 if (!this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ))
                     return false;

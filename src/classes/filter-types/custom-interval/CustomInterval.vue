@@ -79,7 +79,7 @@
             filterTypeMixin
         ],
         mounted() {
-            this.selectedValues();
+            this.updateSelectedValues();
         },
         data(){
             return {
@@ -102,7 +102,7 @@
                   this.date_end =  new Date();
             },
             'query.metaquery'() {
-                this.selectedValues();
+                this.updateSelectedValues();
             }
         },
         methods: {
@@ -157,7 +157,7 @@
             dateParser(dateString){ 
                 return moment(dateString, this.dateFormat).toDate(); 
             },
-            selectedValues(){
+            updateSelectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 

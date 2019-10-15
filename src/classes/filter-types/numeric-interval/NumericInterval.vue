@@ -31,11 +31,11 @@
             }
         },
         mounted() {
-            this.selectedValues();
+            this.updateSelectedValues();
         },
         watch: {
             'query.metaquery'() {
-                this.selectedValues();
+                this.updateSelectedValues();
             }
         },
         methods: {
@@ -90,7 +90,7 @@
                 if (values[0] != undefined && values[1] != undefined)
                     this.$emit('sendValuesToTags', { label: values[0] + ' - ' + values[1], value: values });
             },
-            selectedValues(){
+            updateSelectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 

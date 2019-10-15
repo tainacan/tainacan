@@ -31,11 +31,11 @@
             }
         },
         mounted() {
-            this.selectedValues();
+            this.updateSelectedValues();
         },
         watch: {
             'query.metaquery'() {
-                this.selectedValues();
+                this.updateSelectedValues();
             }
         },
         methods: {
@@ -74,7 +74,7 @@
                     this.$emit('sendValuesToTags', { label: labelValue, value: values });
                 }
             },
-            selectedValues(){
+            updateSelectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 

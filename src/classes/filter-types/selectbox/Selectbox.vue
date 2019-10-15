@@ -55,7 +55,7 @@
                 promise = this.getValuesPlainText( this.metadatumId, null, this.isRepositoryLevel );
                 promise.request
                     .then(() => {
-                        this.selectedValues();
+                        this.updateSelectedValues();
                     })
                     .catch( error => {
                         if (isCancel(error))
@@ -67,7 +67,7 @@
                 // Search Request Token for cancelling
                 this.getOptionsValuesCancel = promise.source;
             },
-            selectedValues() {
+            updateSelectedValues() {
                 if ( this.query && this.query.metaquery && Array.isArray( this.query.metaquery ) ) {
 
                     let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
@@ -93,7 +93,7 @@
                 });
                 this.$emit('sendValuesToTags', { label: value, value: value })
 
-                this.selectedValues();
+                this.updateSelectedValues();
             }
         }
     }

@@ -150,7 +150,7 @@
                     }
                 }
             },
-            selectedValues(){
+            updateSelectedValues(){
                 
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;
@@ -286,7 +286,7 @@
                         }
                     }
                 }
-                this.selectedValues();
+                this.updateSelectedValues();
             },
             updatesIsLoading(isLoadingOptions) {
                 this.isLoadingOptions = isLoadingOptions;

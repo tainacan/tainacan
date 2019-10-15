@@ -133,7 +133,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'title_exporter_page'                            => __( 'Exporter', 'tainacan'),
 
 	// Labels (used mainly on Aria Labels and Inputs)
-	'label'                                          => __( 'label', 'tainacan' ),
+	'label'                                          => __( 'Label', 'tainacan' ),
 	'label_clean'                                    => __( 'Clear', 'tainacan' ),
 	'label_none'                                     => __( 'None', 'tainacan' ),
 	'label_clear_filters'                            => __( 'Clear filters', 'tainacan' ),
@@ -665,7 +665,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_expose_only_displayed_metadata'			 => __( 'By checking this option, only metatada that are displayed on the current list will be exposed', 'tainacan' ),
 	'info_initial_value'                             => __( 'Initial value', 'tainacan' ),
 	'info_final_value'                               => __( 'Final value', 'tainacan' ),
-	'info_show_interval_on_tag'                      => __( 'Show interval on tag', 'tainacan' ),
+	'info_show_interval_on_tag'                      => __( 'Show applied interval on tags', 'tainacan' ),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),

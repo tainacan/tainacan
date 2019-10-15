@@ -54,13 +54,13 @@
                 .then( res => {
                     let metadatum = res.data;
                     this.taxonomyId = metadatum.metadata_type_options.taxonomy_id
-                    this.selectedValues();
+                    this.updateSelectedValues();
                 });
         },
         watch: {
             'query.taxquery'() {
                 if (this.taxonomyId != '')
-                    this.selectedValues();
+                    this.updateSelectedValues();
             }
         },
         data(){
@@ -122,7 +122,7 @@
                     this.$console.log(error);
                 });
             }, 500),
-            selectedValues(){
+            updateSelectedValues(){
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;
 

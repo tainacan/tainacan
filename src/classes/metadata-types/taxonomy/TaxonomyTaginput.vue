@@ -99,7 +99,7 @@
                     throw error;
                 });
             }, 500),
-            selectedValues(){
+            updateSelectedValues(){
                 let selected = [];
 
                 for( let term of this.value){

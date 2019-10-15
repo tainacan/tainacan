@@ -121,7 +121,7 @@
             filterTypeMixin
         ],
         mounted() {
-            this.selectedValues();
+            this.updateSelectedValues();
         },
         data(){
             return {
@@ -131,7 +131,7 @@
         },
         watch: {
             'query.metaquery'() {
-                this.selectedValues();
+                this.updateSelectedValues();
             }
         },
         computed: {
@@ -151,7 +151,7 @@
             }
         },
         methods: {
-            selectedValues(){
+            updateSelectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
