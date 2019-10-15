@@ -26,7 +26,6 @@
             return {
                 valueInit: 0,
                 valueEnd: 10,
-                isValid: false,
                 selectedInterval: ''
             }
         },

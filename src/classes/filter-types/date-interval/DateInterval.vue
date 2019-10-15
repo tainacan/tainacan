@@ -3,10 +3,10 @@
         <b-datepicker
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="$i18n.get('label_selectbox_init')"
-                v-model="date_init"
+                v-model="dateInit"
                 size="is-small"
                 @focus="isTouched = true"
-                @input="validate_values()"
+                @input="validadeValues()"
                 editable
                 :date-formatter="(date) => dateFormatter(date)"
                 :date-parser="(date) => dateParser(date)"
@@ -24,9 +24,9 @@
         <b-datepicker
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="$i18n.get('label_selectbox_init')"
-                v-model="date_end"
+                v-model="dateEnd"
                 size="is-small"
-                @input="validate_values()"
+                @input="validadeValues()"
                 @focus="isTouched = true"
                 editable
                 :date-formatter="(date) => dateFormatter(date)"
@@ -55,49 +55,46 @@
             dateInter, 
             filterTypeMixin
         ],
-        mounted() {
-            this.updateSelectedValues();
-        },
         data(){
             return {
-                date_init: undefined,
-                date_end: undefined,
-                isTouched: false,
-                isValid: false,
-                clear: false
+                dateInit: undefined,
+                dateEnd: undefined,
+                isTouched: false
             }
         },
         watch: {
             isTouched( val ){
-              if ( val && this.date_init === null)
-                  this.date_init = new Date();
+              if ( val && this.dateInit === null)
+                  this.dateInit = new Date();
 
-              if ( val && this.date_end === null)
-                  this.date_end =  new Date();
+              if ( val && this.dateEnd === null)
+                  this.dateEnd =  new Date();
             },
             'query.metaquery'() {
                 this.updateSelectedValues();
             }
         },
+        mounted() {
+            this.updateSelectedValues();
+        },
         methods: {
             // only validate if the first value is higher than first
-            validate_values: _.debounce( function (){
+            validadeValues: _.debounce( function (){
                
-                if (this.date_init === undefined)
-                    this.date_init = new Date();
+                if (this.dateInit === undefined)
+                    this.dateInit = new Date();
 
-                if (this.date_end === undefined)
-                    this.date_end =  new Date();
+                if (this.dateEnd === undefined)
+                    this.dateEnd = new Date();
 
-                if ( this.date_init > this.date_end ) {
-                    this.error_message();
+                if (this.dateInit > this.dateEnd) {
+                    this.showErrorMessage();
                     return
                 }
                
                 this.emit();
             }, 800),
-            // message for error
-            error_message(){
+            showErrorMessage(){
                 if ( !this.isTouched ) return false;
 
                 this.$buefy.toast.open({
@@ -123,9 +120,8 @@
                     let metadata = this.query.metaquery[ index ];
                     
                     if (metadata.value && metadata.value.length > 0){
-                        this.date_init = new Date(metadata.value[0]);
-                        this.date_end = new Date(metadata.value[1]);
-                        this.isValid = true;
+                        this.dateInit = new Date(metadata.value[0]);
+                        this.dateEnd = new Date(metadata.value[1]);
                     }
 
                     if (metadata.value[0] != undefined && metadata.value[1] != undefined)
@@ -134,28 +130,24 @@
                             value: [metadata.value[0], metadata.value[1]]
                         });
                 } else {
-                    this.date_init = null;
-                    this.date_end = null; 
+                    this.dateInit = null;
+                    this.dateEnd = null; 
                 }
             },
             // emit the operation for listeners
             emit() {
                 let values = [];
 
-                if (this.date_init === null && this.date_end === null) {
+                if (this.dateInit === null && this.dateEnd === null) {
                     values = [];
-                    this.isValid = false;
-                    this.clear = true;
                 } else {
-                    let date_init = this.date_init.getUTCFullYear() + '-' +
-                        ('00' + (this.date_init.getUTCMonth() + 1)).slice(-2) + '-' +
-                        ('00' + this.date_init.getUTCDate()).slice(-2);
-                    let date_end = this.date_end.getUTCFullYear() + '-' +
-                        ('00' + (this.date_end.getUTCMonth() + 1)).slice(-2) + '-' +
-                        ('00' + this.date_end.getUTCDate()).slice(-2);
-                    values = [ date_init, date_end ];
-                    this.isValid = true;
-                    this.clear = false;
+                    let dateInit = this.dateInit.getUTCFullYear() + '-' +
+                        ('00' + (this.dateInit.getUTCMonth() + 1)).slice(-2) + '-' +
+                        ('00' + this.dateInit.getUTCDate()).slice(-2);
+                    let dateEnd = this.dateEnd.getUTCFullYear() + '-' +
+                        ('00' + (this.dateEnd.getUTCMonth() + 1)).slice(-2) + '-' +
+                        ('00' + this.dateEnd.getUTCDate()).slice(-2);
+                    values = [ dateInit, dateEnd ];
                 }
 
                 this.$emit('input', {

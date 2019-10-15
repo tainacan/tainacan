@@ -3,7 +3,7 @@
         <b-numberinput
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 size="is-small"
-                @input="validate_values()"
+                @input="validadeValues()"
                 :step="filterTypeOptions.step"
                 v-model="valueInit"
                 />
@@ -11,7 +11,7 @@
         <b-numberinput
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 size="is-small"
-                @input="validate_values()"
+                @input="validadeValues()"
                 :step="filterTypeOptions.step"
                 v-model="valueEnd"/>
         
@@ -25,9 +25,7 @@
         data(){
             return {
                 valueInit: null,
-                valueEnd: null,
-                isValid: false,
-                withError: false
+                valueEnd: null
             }
         },
         mounted() {
@@ -40,7 +38,7 @@
         },
         methods: {
             // only validate if the first value is higher than first
-            validate_values: _.debounce( function () {
+            validadeValues: _.debounce( function () {
                 if (this.valueInit == null || this.valueEnd == null)
                     return
 
@@ -57,15 +55,14 @@
                     return
 
                 if (this.valueInit > this.valueEnd) {                     
-                    this.error_message();
+                    this.showErrorMessage();
                     return;
                 }
 
-                //this.withError = false;
                 this.emit();
             }, 600),
             // message for error
-            error_message(){
+            showErrorMessage(){
                 this.$buefy.toast.open({
                     duration: 3000,
                     message: this.$i18n.get('info_error_first_value_greater'),
@@ -80,7 +77,6 @@
 
                 this.$emit('input', {
                     type: type,
-                    //filter: 'range',
                     compare: 'BETWEEN',
                     metadatum_id: this.metadatumId,
                     collection_id: this.collectionId,

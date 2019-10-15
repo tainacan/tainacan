@@ -105,7 +105,7 @@
                 ) {
                     if (this.isValid) {
                         this.isValid = false;
-                        this.error_message()
+                        this.showErrorMessage()
                     }
                 } else {
                     this.isValid = true;
@@ -115,7 +115,7 @@
                     });
                 }
             }, 600),
-            error_message() {
+            showErrorMessage() {
                 this.$buefy.toast.open({
                     duration: 3000,
                     message: this.$i18n.get('info_error_first_value_greater'),

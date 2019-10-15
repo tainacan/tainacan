@@ -5,10 +5,10 @@
             <b-datepicker
                     :aria-labelledby="'filter-label-id-' + filter.id"
                     :placeholder="$i18n.get('label_selectbox_init')"
-                    v-model="date_init"
+                    v-model="dateInit"
                     size="is-small"
                     @focus="isTouched = true"
-                    @input="validate_values()"
+                    @input="validadeValues()"
                     editable
                     :date-formatter="(date) => dateFormatter(date)"
                     :date-parser="(date) => dateParser(date)"
@@ -26,9 +26,9 @@
             <b-datepicker
                     :aria-labelledby="'filter-label-id-' + filter.id"
                     :placeholder="$i18n.get('label_selectbox_init')"
-                    v-model="date_end"
+                    v-model="dateEnd"
                     size="is-small"
-                    @input="validate_values()"
+                    @input="validadeValues()"
                     @focus="isTouched = true"
                     editable
                     :date-formatter="(date) => dateFormatter(date)"
@@ -52,17 +52,17 @@
                     :aria-labelledby="'filter-label-id-' + filter.id"
                     size="is-small"
                     step="any"
-                    @input="validate_values"
-                    v-model="value_init"/>
+                    @input="validadeValues"
+                    v-model="valueInit"/>
             <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
             <b-input
                     type="number"
                     :aria-labelledby="'filter-label-id-' + filter.id"
                     size="is-small"
                     step="any"
-                    @input="validate_values"
+                    @input="validadeValues"
                     @focus="isTouched = true"
-                    v-model="value_end"/>
+                    v-model="valueEnd"/>
         </div>
     </div>
 </template>
@@ -83,23 +83,21 @@
         },
         data(){
             return {
-                value_init: '',
-                value_end: '',
-                date_init: undefined,
-                date_end: undefined,
+                valueInit: '',
+                valueEnd: '',
+                dateInit: undefined,
+                dateEnd: undefined,
                 isTouched: false,
-                isValid: false,
-                clear: false,
                 type: 'DECIMAL'
             }
         },
         watch: {
             isTouched( val ){
-              if ( val && this.date_init === null)
-                  this.date_init = new Date();
+              if ( val && this.dateInit === null)
+                  this.dateInit = new Date();
 
-              if ( val && this.date_end === null)
-                  this.date_end =  new Date();
+              if ( val && this.dateEnd === null)
+                  this.dateEnd =  new Date();
             },
             'query.metaquery'() {
                 this.updateSelectedValues();
@@ -107,41 +105,41 @@
         },
         methods: {
             // only validate if the first value is higher than first
-            validate_values: _.debounce( function (){
+            validadeValues: _.debounce( function (){
                
                 if( this.metadatumType === 'Tainacan\\Metadata_Types\\Date' ){
-                    if (this.date_init === undefined)
-                        this.date_init = new Date();
+                    if (this.dateInit === undefined)
+                        this.dateInit = new Date();
 
-                    if (this.date_end === undefined)
-                        this.date_end =  new Date();
+                    if (this.dateEnd === undefined)
+                        this.dateEnd =  new Date();
 
-                    if ( this.date_init > this.date_end ) {
-                        this.error_message();
+                    if ( this.dateInit > this.dateEnd ) {
+                        this.showErrorMessage();
                         return
                     }
                 } else {
-                    if (this.value_init.constructor == Number)
-                        this.value_init = this.value_init.valueOf();
+                    if (this.valueInit.constructor == Number)
+                        this.valueInit = this.valueInit.valueOf();
 
-                    if (this.value_end.constructor == Number)
-                        this.value_end = this.value_end.valueOf();
+                    if (this.valueEnd.constructor == Number)
+                        this.valueEnd = this.valueEnd.valueOf();
                         
-                    this.value_init = parseFloat(this.value_init);
-                    this.value_end = parseFloat(this.value_end);
+                    this.valueInit = parseFloat(this.valueInit);
+                    this.valueEnd = parseFloat(this.valueEnd);
 
-                    if (isNaN(this.value_init) || isNaN(this.value_end))
+                    if (isNaN(this.valueInit) || isNaN(this.valueEnd))
                         return
 
-                    if (this.value_init > this.value_end) {                     
-                        this.error_message();
+                    if (this.valueInit > this.valueEnd) {                     
+                        this.showErrorMessage();
                         return;
                     }
                 }
                 this.emit();
             }, 800),
             // message for error
-            error_message(){
+            showErrorMessage(){
                 if ( !this.isTouched ) return false;
 
                 this.$buefy.toast.open({
@@ -167,13 +165,11 @@
                     let metadata = this.query.metaquery[ index ];
                     
                     if( metadata.value && metadata.value.length > 0 && this.metadatumType === 'Tainacan\\Metadata_Types\\Numeric'){
-                        this.value_init = parseFloat(metadata.value[0]);
-                        this.value_end = parseFloat(metadata.value[1]);
-                        this.isValid = true;
+                        this.valueInit = parseFloat(metadata.value[0]);
+                        this.valueEnd = parseFloat(metadata.value[1]);
                     } else if( metadata.value && metadata.value.length > 0 ){
-                        this.date_init = new Date(metadata.value[0]);
-                        this.date_end = new Date(metadata.value[1]);
-                        this.isValid = true;
+                        this.dateInit = new Date(metadata.value[0]);
+                        this.dateEnd = new Date(metadata.value[1]);
                     }
 
                     if (metadata.value[0] != undefined && metadata.value[1] != undefined)
@@ -183,11 +179,11 @@
                         });
                 } else {
                     if (this.metadatumType === 'Tainacan\\Metadata_Types\\Numeric') {
-                        this.value_init = '';
-                        this.value_end = '';
+                        this.valueInit = '';
+                        this.valueEnd = '';
                     } else {
-                        this.date_init = null;
-                        this.date_end = null;
+                        this.dateInit = null;
+                        this.dateEnd = null;
                     }
                     
                 }
@@ -198,45 +194,39 @@
                 
                 if (this.metadatumType === 'Tainacan\\Metadata_Types\\Date') {
 
-                    if (this.date_init === null && this.date_end === null) {
+                    if (this.dateInit === null && this.dateEnd === null) {
                       values = [];
                       this.type = 'DATE';
-                      this.isValid = false;
-                      this.clear = true;
                     } else {
-                      let date_init = this.date_init.getUTCFullYear() + '-' +
-                          ('00' + (this.date_init.getUTCMonth() + 1)).slice(-2) + '-' +
-                          ('00' + this.date_init.getUTCDate()).slice(-2);
-                      let date_end = this.date_end.getUTCFullYear() + '-' +
-                          ('00' + (this.date_end.getUTCMonth() + 1)).slice(-2) + '-' +
-                          ('00' + this.date_end.getUTCDate()).slice(-2);
-                      values = [ date_init, date_end ];
+                      let dateInit = this.dateInit.getUTCFullYear() + '-' +
+                          ('00' + (this.dateInit.getUTCMonth() + 1)).slice(-2) + '-' +
+                          ('00' + this.dateInit.getUTCDate()).slice(-2);
+                      let dateEnd = this.dateEnd.getUTCFullYear() + '-' +
+                          ('00' + (this.dateEnd.getUTCMonth() + 1)).slice(-2) + '-' +
+                          ('00' + this.dateEnd.getUTCDate()).slice(-2);
+                      values = [ dateInit, dateEnd ];
                       this.type = 'DATE';
-                      this.isValid = true;
-                      this.clear = false;
                     }
                 } else {
-                    if (this.value_init === null || this.value_end === null
-                      || this.value_init === '' || this.value_end === ''){
+                    if (this.valueInit === null || this.valueEnd === null
+                      || this.valueInit === '' || this.valueEnd === ''){
                         return;
                     } else {
-                        values =  [ this.value_init, this.value_end ];
+                        values =  [ this.valueInit, this.valueEnd ];
 
-                        if(this.value_init !== this.value_end && (this.value_init % 1 !== 0 && this.value_end % 1 == 0)) {
+                        if(this.valueInit !== this.valueEnd && (this.valueInit % 1 !== 0 && this.valueEnd % 1 == 0)) {
                             this.type = 'DECIMAL';
-                        } else if(this.value_init !== this.value_end &&
-                            this.value_init % 1 !== 0 &&
-                            this.value_end % 1 !== 0) {
+                        } else if(this.valueInit !== this.valueEnd &&
+                            this.valueInit % 1 !== 0 &&
+                            this.valueEnd % 1 !== 0) {
 
                             this.type = '';
-                        } else if(this.value_init !== this.value_end &&
-                            !(this.value_init % 1 == 0 && this.value_end % 1 !== 0)){
+                        } else if(this.valueInit !== this.valueEnd &&
+                            !(this.valueInit % 1 == 0 && this.valueEnd % 1 !== 0)){
                             this.type = 'DECIMAL';
                         } else {
                             this.type = '';
                         }
-                        //this.isValid = true;
-                        //this.clear = false;
                     }
                 }
 
