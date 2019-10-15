@@ -38,7 +38,7 @@
 
 <script>
     import qs from 'qs';
-    import { tainacan as axios } from '../../../js/axios/axios';
+    import { tainacan as axios, all } from '../../../js/axios/axios';
     import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
     
     export default {
@@ -127,26 +127,26 @@
                     return false;
 
                 this.taxonomy = 'tnc_tax_' + this.taxonomyId;
-            
+                console.log(this.taxonomy)
                 let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == this.taxonomy );
                 if ( index >= 0){
                     let metadata = this.query.taxquery[ index ];
                     this.selected = [];
 
-                    for ( let id of metadata.terms ){
-                       this.getTerm( this.taxonomyId, id );
+                    if (metadata.terms && metadata.terms.length) {
+                        this.getTerms(metadata)
+                            .then(() => {
+                                let values = [];
+                                let labels = [];
+                                if (this.selected.length > 0){
+                                    for(let val of this.selected){
+                                        values.push( val.value );
+                                        labels.push( val.label );
+                                    }
+                                }
+                                this.$emit('sendValuesToTags', { label: labels, taxonomy: this.taxonomy, value: values });
+                            });
                     }
-
-                    let values = [];
-                    let labels = [];
-                    if (this.selected.length > 0){
-                        for(let val of this.selected){
-                            values.push( val.value );
-                            labels.push( val.label );
-                        }
-                    }
-
-                    this.$emit('sendValuesToTags', { label: labels, taxonomy: this.taxonomy, value: values });
                 } else {
                     this.selected = [];
                 }
@@ -168,15 +168,23 @@
                 });
 
             },
-            getTerm( taxonomy, id ){
-                //getting a specific value from api, does not need be in facets api
-                return axios.get('/taxonomy/' + taxonomy + '/terms/' + id + '?order=asc' )
-                    .then( res => {
-                        this.selected.push({ label: res.data.name, value: res.data.id });
-                    })
-                    .catch(error => {
-                        this.$console.log(error);
-                    });
+            getTerms(metadata) {
+                let promises = [];
+                for ( let id of metadata.terms ) {
+                    console.log(id)
+                    //getting a specific value from api, does not need be in facets api
+                    promises.push(
+                        axios.get('/taxonomy/' + this.taxonomyId + '/terms/' + id + '?order=asc' )
+                            .then( res => {
+                                this.selected.push({ label: res.data.name, value: res.data.id });
+                                console.log("passei aqyui")
+                            })
+                            .catch(error => {
+                                this.$console.log(error);
+                            })
+                    );
+                }
+                return all(promises);
             }
         }
     }

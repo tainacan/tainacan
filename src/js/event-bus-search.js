@@ -25,6 +25,7 @@ export default {
                 });
 
                 this.$on('sendValuesToTags', data => {
+                    console.log(data)
                    this.$store.dispatch('search/addFilterTag', data);
                 });
 
