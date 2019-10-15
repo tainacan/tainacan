@@ -210,7 +210,7 @@ registerBlockType('tainacan/carousel-terms-list', {
 
             terms = [];
 
-            let endpoint = '/taxonomy/' + taxonomyId + '/terms/?'+ qs.stringify({ include: selectedTerms }) + '&fetch_only=name,url,header_image';
+            let endpoint = '/taxonomy/' + taxonomyId + '/terms/?'+ qs.stringify({ include: selectedTerms }) + '&fetch_only=id,name,url,header_image';
             tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
                 .then(response => {
 
@@ -227,8 +227,9 @@ registerBlockType('tainacan/carousel-terms-list', {
                     } else {
                         let promises = [];
                         for (let term of response.data) {  
+                            console.log(term)
                             promises.push(
-                                tainacan.get('/items/?perpage=3&fetch_only=name,url,thumbnailt&taxquery[0][taxonomy]=tnc_tax_' + taxonomyId + '&taxquery[0][terms][0]=' + term.id + '&taxquery[0][compare]=IN')
+                                tainacan.get('/items/?perpage=3&fetch_only=name,url,thumbnail&taxquery[0][taxonomy]=tnc_tax_' + taxonomyId + '&taxquery[0][terms][0]=' + term.id + '&taxquery[0][compare]=IN')
                                     .then(response => { return({ term: term, termItems: response.data.items }) })
                                     .catch((error) => console.log(error))
                             );                      
