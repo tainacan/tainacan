@@ -127,7 +127,7 @@
                     return false;
 
                 this.taxonomy = 'tnc_tax_' + this.taxonomyId;
-                console.log(this.taxonomy)
+
                 let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == this.taxonomy );
                 if ( index >= 0){
                     let metadata = this.query.taxquery[ index ];
@@ -171,13 +171,11 @@
             getTerms(metadata) {
                 let promises = [];
                 for ( let id of metadata.terms ) {
-                    console.log(id)
                     //getting a specific value from api, does not need be in facets api
                     promises.push(
                         axios.get('/taxonomy/' + this.taxonomyId + '/terms/' + id + '?order=asc' )
                             .then( res => {
                                 this.selected.push({ label: res.data.name, value: res.data.id });
-                                console.log("passei aqyui")
                             })
                             .catch(error => {
                                 this.$console.log(error);

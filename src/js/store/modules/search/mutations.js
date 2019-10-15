@@ -160,14 +160,12 @@ export const setOrderByName = ( state, orderByName ) => {
 
 export const addFilterTag = ( state, filterTag ) => {
     state.filter_tags = ( ! state.filter_tags) ? [] : state.filter_tags;    
-    console.log(state.filter_tags)
     let index = state.filter_tags.findIndex( tag => tag.filterId == filterTag.filterId);
 
     if (index >= 0)
         Vue.set(state.filter_tags, index, filterTag);
     else
         state.filter_tags.push(filterTag);
-    console.log(state.filter_tags)
 };
 
 export const removeFilterTag = ( state, filterTag ) => {

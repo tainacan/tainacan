@@ -87,7 +87,7 @@
             ...mapGetters('search', [
                 'getFacets'
             ]),
-            loadOptions(skipSelected) {
+            loadOptions() {
                 if (!this.isUsingElasticSearch) {
                     let promise = null;
                     const source = CancelToken.source();
@@ -123,7 +123,7 @@
                     });
                     promise.request
                         .then((res) => {
-                            this.prepareOptionsForTaxonomy(res.data.values ? res.data.values : res.data, skipSelected);
+                            this.prepareOptionsForTaxonomy(res.data.values ? res.data.values : res.data);
                             this.isLoadingOptions = false;
                         })
                         .catch( error => {
@@ -143,9 +143,9 @@
                     for (const facet in this.facetsFromItemSearch) {
                         if (facet == this.filter.id) {
                             if (Array.isArray(this.facetsFromItemSearch[facet]))
-                                this.prepareOptionsForTaxonomy(this.facetsFromItemSearch[facet], skipSelected);
+                                this.prepareOptionsForTaxonomy(this.facetsFromItemSearch[facet]);
                             else
-                                this.prepareOptionsForTaxonomy(Object.values(this.facetsFromItemSearch[facet]), skipSelected);
+                                this.prepareOptionsForTaxonomy(Object.values(this.facetsFromItemSearch[facet]));
                         }    
                     }
                 }
@@ -164,7 +164,6 @@
                     return false;
                 }
 
-                
                 let onlyLabels = [];
 
                 for (let selected of this.selected) {
@@ -257,7 +256,7 @@
                     trapFocus: true
                 });
             },
-            prepareOptionsForTaxonomy(items, skipSelected) {
+            prepareOptionsForTaxonomy(items) {
 
                 if (items[0] != undefined) {
                     this.taxonomy = items[0].taxonomy;
@@ -287,9 +286,7 @@
                         }
                     }
                 }
-                if (skipSelected == undefined || skipSelected == false) {
-                    this.selectedValues();
-                }
+                this.selectedValues();
             },
             updatesIsLoading(isLoadingOptions) {
                 this.isLoadingOptions = isLoadingOptions;

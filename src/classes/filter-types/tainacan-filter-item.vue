@@ -57,8 +57,7 @@
         data() {
             return {
                 isLoadingItems: Boolean,
-                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
-                reloadDueFiltering: Boolean
+                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
             }
         },
         mounted() {
@@ -67,9 +66,6 @@
                     this.isLoadingOptions = isLoadingItems;
                 });
             }
-            // We listen to event, but reload event if hasFiltered is negative, as 
-            // an empty query also demands filters reloading.
-            this.$eventBusSearch.$on('hasFiltered', this.reloadFilter);
         },
         methods: {
             onInput(inputEvent) {
@@ -83,16 +79,11 @@
                     taxonomy: $event.taxonomy,
                     metadatumId: this.filter.metadatum_id
                 });
-            },
-            reloadFilter() {
-                this.reloadDueFiltering = !this.reloadDueFiltering;
             }
         },    
         beforeDestroy() {
             if (this.isUsingElasticSearch)
                 this.$eventBusSearch.$off('isLoadingItems');
-        
-            this.$eventBusSearch.$off('hasFiltered', this.reloadFilter);
         }
     }
 </script>
