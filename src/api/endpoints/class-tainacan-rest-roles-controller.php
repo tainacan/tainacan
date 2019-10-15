@@ -26,18 +26,6 @@ class REST_Roles_Controller extends REST_Controller {
 		
 		//add_action('init', array(&$this, 'init_objects'), 11);
 	}
-	
-	/**
-	 * Initialize objects after post_type register
-	 */
-	// public function init_objects() {
-	// 	$this->collection = new Entities\Collection();
-	// 	$this->collection_repository = Repositories\Collections::get_instance();
-	// 	
-	// 	$this->metadatum_repository = Repositories\Metadata::get_instance();
-	// 	
-	// 	$this->filter_repository = Repositories\Filters::get_instance();
-	// }
 
 	public function register_routes() {
 		register_rest_route($this->namespace, '/' . $this->rest_base, array(
@@ -71,13 +59,28 @@ class REST_Roles_Controller extends REST_Controller {
 				'methods'             => \WP_REST_Server::EDITABLE,
 				'callback'            => array($this, 'update_item'),
 				'permission_callback' => array($this, 'update_item_permissions_check'),
-				'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE)
+				'args'                => array(
+					'name' => array(
+						'description' => __('New role name', 'tainacan'),
+						'type' => 'string',
+						'required' => false
+					),
+					'add_cap' => array(
+						'description' => __('Slug of the capability to be added to the role', 'tainacan'),
+						'type' => 'string',
+						'required' => false
+					),
+					'remove_cap' => array(
+						'description' => __('Slug of the capability to be removed from the role', 'tainacan'),
+						'type' => 'string',
+						'required' => false
+					),
+				)
 			),
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_item'),
 				'permission_callback' => array($this, 'get_item_permissions_check'),
-				'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE)
 			),
 			'schema'                  => [$this, 'get_schema']
 		));
@@ -122,7 +125,7 @@ class REST_Roles_Controller extends REST_Controller {
 		$new_role = add_role($role_slug, $name);
 		
 		if ($new_role instanceof \WP_Role) {
-			return new \WP_REST_Response($this->_prepare_item_for_response($role_slug, $new_role, $request), 201);
+			return new \WP_REST_Response($this->_prepare_item_for_response($role_slug, $name, $new_role->capabilities, $request), 201);
 		}
 
 		return new \WP_REST_Response([
@@ -147,24 +150,32 @@ class REST_Roles_Controller extends REST_Controller {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function delete_item( $request ) {
-		$permanently = $request['permanently'];
 		
-		$filter = $this->filter_repository->fetch($request['filter_id']);
-
-		if (! $filter instanceof Entities\Filter) {
+		$role_slug = $request['role'];
+		
+		// avoid confusion ...
+		if ( in_array($role_slug, $this->core_roles) ) {
 			return new \WP_REST_Response([
-		    	'error_message' => __('A filter with this ID was not found', 'tainacan' ),
-			    'filter_id' => $filter_id
-		    ], 400);
+				'error_message' => __('This role name is protected.', 'tainacan'),
+				'error'         => $name
+			], 400);
 		}
-
-		if($permanently == true) {
-			$filter = $this->filter_repository->delete($filter);
-		} else {
-			$filter = $this->filter_repository->trash($filter);
+		
+		// ... even though it could work 
+		$role_slug = 0 === \strpos($role_slug, 'tainacan-') ? $role_slug : 'tainacan-' . $role_slug;
+		
+		// check if role exists
+		$role = get_role($role_slug);
+		if ( ! $role ) {
+			return new \WP_REST_Response([
+				'error_message' => __('Role not found.', 'tainacan'),
+				'error'         => $role_slug
+			], 400);
 		}
-
-		return new \WP_REST_Response($this->prepare_item_for_response($filter, $request), 200);
+		
+		\remove_role($role_slug);
+		
+		return new \WP_REST_Response($role_slug, 200);
 	}
 
 	/**
@@ -182,46 +193,52 @@ class REST_Roles_Controller extends REST_Controller {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function update_item( $request ) {
-		$filter_id = $request['filter_id'];
-
-		$body = json_decode($request->get_body(), true);
-
-		if(!empty($body)){
-			$attributes = [];
-
-			foreach ($body as $att => $value){
-				$attributes[$att] = $value;
-			}
-
-			$filter = $this->filter_repository->fetch($filter_id);
-
-			if($filter) {
-				$prepared_filter = $this->prepare_item_for_updating($filter, $attributes);
-
-				if($prepared_filter->validate()) {
-					$updated_filter = $this->filter_repository->update( $prepared_filter );
-
-					return new \WP_REST_Response($this->prepare_item_for_response($updated_filter, $request), 200);
-				}
-
-				return new \WP_REST_Response([
-					'error_message' => __('Please verify, invalid value(s).', 'tainacan'),
-					'errors'        => $prepared_filter->get_errors(),
-					'filters'       => $this->prepare_item_for_response($prepared_filter, $request)
-				], 400);
-			}
-
+		
+		$role_slug = $request['role'];
+		
+		// avoid confusion ...
+		if ( in_array($role_slug, $this->core_roles) ) {
 			return new \WP_REST_Response([
-				'error_message' => __('A filter with this ID was not found', 'tainacan' ),
-				'filter_id'     => $filter_id
+				'error_message' => __('This role name is protected.', 'tainacan'),
+				'error'         => $name
 			], 400);
-
 		}
-
-		return new \WP_REST_Response([
-			'error_message' => __('The body could not be empty', 'tainacan'),
-			'body'          => $body
-		], 400);
+		
+		// ... even though it could work 
+		$role_slug = 0 === \strpos($role_slug, 'tainacan-') ? $role_slug : 'tainacan-' . $role_slug;
+		
+		// check if role exists
+		// get the role from roles array that contains the display_name
+		$roles = \wp_roles()->roles;
+		if ( ! isset($roles[$role_slug]) ) {
+			return new \WP_REST_Response([
+				'error_message' => __('Role not found.', 'tainacan'),
+				'error'         => $role_slug
+			], 400);
+		}
+		
+		$role = $roles[$role_slug];
+		
+		if ( isset($request['name']) ) {
+			$name = esc_html( esc_sql( $request['name'] ) );
+			// the slug remains the same
+			\wp_roles()->roles[$role_slug]['name'] = $name;
+			update_option( \wp_roles()->role_key, \wp_roles()->roles );
+			\wp_roles()->role_names[$role_slug] = $name;
+			
+		}
+		
+		if ( isset($request['add_cap']) ) {
+			// validate that we only deal with tainacan capabilities 
+			\wp_roles()->add_cap($role_slug, $request['add_cap']);
+		}
+		
+		if ( isset($request['remove_cap']) ) {
+			// validate that we only deal with tainacan capabilities 
+			\wp_roles()->remove_cap($role_slug, $request['remove_cap']);
+		}
+		
+		return new \WP_REST_Response($this->_prepare_item_for_response($role_slug, \wp_roles()->roles[$role_slug]['name'], \wp_roles()->roles[$role_slug]['capabilities'], $request), 200);
 
 	}
 
@@ -240,9 +257,12 @@ class REST_Roles_Controller extends REST_Controller {
 	 *
 	 * @return array|mixed|\WP_Error|\WP_REST_Response
 	 */
-	public function _prepare_item_for_response( $slug, $role, $request ) {
-		$return = [];
-		$return[$slug] = $role;
+	public function _prepare_item_for_response( $slug, $name, $caps, $request ) {
+		$return = [
+			'slug' => $slug,
+			'name' => translate_user_role($name),
+			'capabilities' => $caps
+		];
 		return $return;
 	}
 
@@ -258,10 +278,10 @@ class REST_Roles_Controller extends REST_Controller {
 
 		$response = [];
 		foreach ( $roles as $slug => $role ) {
-			array_push( $response, $this->prepare_item_for_response( $slug, $role, $request ) );
+			$response[$slug] = $this->_prepare_item_for_response( $slug, $role['name'], $role['capabilities'], $request );
 		}
 
-		return new \WP_REST_Response($roles, 200);
+		return new \WP_REST_Response($response, 200);
 	}
 
 	/**
@@ -279,18 +299,21 @@ class REST_Roles_Controller extends REST_Controller {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function get_item( $request ) {
-		$filter_id = $request['filter_id'];
-
-		$filter = $this->filter_repository->fetch($filter_id);
 		
-		if(! $filter instanceof Entities\Filter) {
+		$role_slug = $request['role'];
+		
+		// check if role exists
+		// get the role from roles array that contains the display_name
+		$roles = \wp_roles()->roles;
+		if ( ! isset($roles[$role_slug]) ) {
 			return new \WP_REST_Response([
-		    	'error_message' => __('A filter with this ID was not found', 'tainacan' ),
-			    'filter_id' => $filter_id
-		    ], 400);
+				'error_message' => __('Role not found.', 'tainacan'),
+				'error'         => $role_slug
+			], 400);
 		}
 		
-		return new \WP_REST_Response($this->prepare_item_for_response($filter, $request), 200);
+		return new \WP_REST_Response($this->_prepare_item_for_response($role_slug, $roles[$role_slug]['name'], $roles[$role_slug]['capabilities'], $request), 200);
+
 	}
 
 	/**
@@ -302,16 +325,6 @@ class REST_Roles_Controller extends REST_Controller {
 		return current_user_can('edit_tainacan_users');
 	}
 
-	/**
-	 * @param string $method
-	 *
-	 * @return array|mixed
-	 */
-	public function get_endpoint_args_for_item_schema( $method = null ) {
-		return [];
-	}
-
-	
 
 	function get_schema() {
 		$schema = [
