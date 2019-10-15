@@ -101,7 +101,7 @@
                     return false;
 
                 let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
-                if ( index >= 0){
+                if (index >= 0) {
                     let metadata = this.query.metaquery[ index ];
 
                     if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' ) {
@@ -121,15 +121,10 @@
                                             });
                                         }
                                     }
-                                    let values = [];
-                                    let labels = [];
-                                    if (this.selected.length > 0) {
-                                        for(let val of this.selected){
-                                            values.push( val.value );
-                                            labels.push( val.label );
-                                        }
-                                    }
-                                    this.$emit( 'sendValuesToTags', { label: labels, value: values });
+                                    this.$emit( 'sendValuesToTags', { 
+                                        label: this.selected.map((option) => option.label), 
+                                        value: this.selected.map((option) => option.value)
+                                    });
                                 }
                             })
                             .catch(error => {
@@ -137,34 +132,25 @@
                             });
                     } else {
                         this.selected = [];
-                        for (let item of metadata.value) {
+                        for (let item of metadata.value)
                             this.selected.push({ label: item, value: item, img: null });
-                        }
-                        let values = [];
-                        let labels = [];
-                        if (this.selected.length > 0) {
-                            for(let val of this.selected){
-                                values.push( val.value );
-                                labels.push( val.label );
-                            }
-                        }
-                        this.$emit( 'sendValuesToTags', { label: labels, value: values });
+                        
+                        this.$emit( 'sendValuesToTags', { 
+                            label: this.selected.map((option) => option.label), 
+                            value: this.selected.map((option) => option.value)
+                        });
                     }
                 } else {
                     this.selected = [];
                 }
             },
             onSelect() {
-                let values = [];
-                for(let val of this.selected){
-                    values.push( val.value );
-                }
                 this.$emit('input', {
                     filter: 'taginput',
                     compare: 'IN',
                     metadatum_id: this.metadatumId,
                     collection_id: this.collectionId,
-                    value: values
+                    value: this.selected.map((option) => option.value)
                 });
             }
         }

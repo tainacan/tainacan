@@ -85,10 +85,11 @@
                 let endpoint = this.isRepositoryLevel ? '/facets/' + this.metadatumId : '/collection/'+ this.collectionId +'/facets/' + this.metadatumId;
 
                 endpoint += '?order=asc&' + qs.stringify(query_items);
+                
                 let valuesToIgnore = [];
-                for(let val of this.selected){
+                for(let val of this.selected)
                     valuesToIgnore.push( val.value );
-                }
+                
                 return axios.get(endpoint).then( res => {
                     for (let term of res.data.values) {   
                           
@@ -128,7 +129,8 @@
 
                 this.taxonomy = 'tnc_tax_' + this.taxonomyId;
 
-                let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == this.taxonomy );
+                let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == this.taxonomy);
+
                 if ( index >= 0){
                     let metadata = this.query.taxquery[ index ];
                     this.selected = [];
@@ -136,15 +138,11 @@
                     if (metadata.terms && metadata.terms.length) {
                         this.getTerms(metadata)
                             .then(() => {
-                                let values = [];
-                                let labels = [];
-                                if (this.selected.length > 0){
-                                    for(let val of this.selected){
-                                        values.push( val.value );
-                                        labels.push( val.label );
-                                    }
-                                }
-                                this.$emit('sendValuesToTags', { label: labels, taxonomy: this.taxonomy, value: values });
+                                this.$emit( 'sendValuesToTags', { 
+                                    label: this.selected.map((option) => option.label), 
+                                    value: this.selected.map((option) => option.value),
+                                    taxonomy: this.taxonomy
+                                });
                             });
                     }
                 } else {
@@ -152,25 +150,18 @@
                 }
             },
             onSelect() {
-                let values = [];
-                if (this.selected.length > 0){
-                    for(let val of this.selected){
-                        values.push( val.value );
-                    }
-                }
                 this.$emit('input', {
                     filter: 'taginput',
                     compare: 'IN',
                     taxonomy: this.taxonomy,
                     metadatum_id: this.metadatumId,
                     collection_id: this.collectionId,
-                    terms: values
+                    terms: this.selected.map((option) => option.value)
                 });
-
             },
             getTerms(metadata) {
                 let promises = [];
-                for ( let id of metadata.terms ) {
+                for (let id of metadata.terms) {
                     //getting a specific value from api, does not need be in facets api
                     promises.push(
                         axios.get('/taxonomy/' + this.taxonomyId + '/terms/' + id + '?order=asc' )
