@@ -650,7 +650,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_process_status_cancelled' 				 => __('Cancelled', 'tainacan'),
 	'info_process_status_paused' 				 	 => __('Paused', 'tainacan'),
 	'info_process_status_running' 				 	 => __('Running', 'tainacan'),
-  'info_warning_process_cancelled'                 => __( 'Are you sure? This process will be cancelled', 'tainacan' ),
+  	'info_warning_process_cancelled'                 => __( 'Are you sure? This process will be cancelled', 'tainacan' ),
 	'info_empty'                                     => __( 'empty', 'tainacan' ),
 	'info_url_copied'	         	    	    	 => __( 'URL link copied', 'tainacan' ),
 	'info_other_options'				 			 => __( 'Other options: ', 'tainacan'),
@@ -689,6 +689,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'tainacan-filter-taxonomy-checkbox'              => __( 'Taxonomy Check Box', 'tainacan' ),
 	'tainacan-filter-taxonomy-selectbox'             => __( 'Taxonomy Select Box', 'tainacan' ),
 	'tainacan-filter-numeric-interval'               => __( 'Numeric Interval', 'tainacan' ),
+	'tainacan-filter-date-interval'               	 => __( 'Date Interval', 'tainacan' ),
 	'tainacan-filter-numeric-list-interval'          => __( 'Numeric Interval List', 'tainacan' ),
 
 	// Datepicker months
