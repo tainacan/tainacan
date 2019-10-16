@@ -154,9 +154,9 @@
                 'approve',
                 'notApprove'
             ]),
-            getThis(){
-                return this;
-            },
+            // getThis(){
+            //     return this;
+            // },
             approveActivity(activity) {
                 this.approve(activity.id)
                     .then(data => {
