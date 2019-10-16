@@ -122,8 +122,10 @@
                     </option>
                 </b-select>
             </b-field>
+
+            <!-- Textual Search -------------->
             <b-field class="header-item">
-                <div class="control has-icons-right  is-small is-clearfix">
+                <div class="control has-icons-right is-small is-clearfix">
                     <input
                             class="input is-small"
                             :placeholder="$i18n.get('instruction_search')"
@@ -496,14 +498,15 @@ export default {
     @import '../../scss/_variables.scss';
 
     .sub-header {
-        min-height: $subheader-height;
-        height: $header-height;
+        min-height: $header-height;
+        height: auto;
         padding-left: 0;
         padding-right: 0;
         border-bottom: 1px solid #ddd;
         display: inline-flex;
         justify-content: space-between;
         align-items: center;
+        flex-wrap: wrap;
         width: 100%;
 
         .header-item {
@@ -558,7 +561,7 @@ export default {
         }
 
         @media screen and (max-width: 769px) {
-            height: 60px;
+            height: 120px;
             margin-top: -0.5em;
             padding-top: 0.9em;
 

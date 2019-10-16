@@ -45,7 +45,7 @@ export const updateTaxonomy = ({ commit }, taxonomy) => {
     });
 };
 
-export const fetch = ({ commit }, { page, taxonomiesPerPage, status, order, orderby } ) => {
+export const fetch = ({ commit }, { page, taxonomiesPerPage, status, order, orderby, search } ) => {
     return new Promise((resolve, reject) => {
         let endpoint = `/taxonomies?paged=${page}&perpage=${taxonomiesPerPage}&context=edit`;
 
@@ -54,6 +54,9 @@ export const fetch = ({ commit }, { page, taxonomiesPerPage, status, order, orde
         
         if (order != undefined && order != '' && orderby != undefined && orderby != '')
             endpoint = endpoint + '&order=' + order + '&orderby=' + orderby;
+        
+        if (search != undefined && search != '')
+            endpoint = endpoint + '&search=' + search;
 
         axios.tainacan.get(endpoint)
             .then(res => {
