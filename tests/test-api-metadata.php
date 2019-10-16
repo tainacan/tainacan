@@ -149,7 +149,8 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			'collection',
 			array(
 				'name'        => 'Statement',
-				'description' => 'No Statement'
+				'description' => 'No Statement',
+				'status' => 'publish'
 			),
 			true
 		);
@@ -222,7 +223,8 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			'collection',
 			array(
 				'name'        => 'Statement',
-				'description' => 'No Statement'
+				'description' => 'No Statement',
+				'status' => 'publish'
 			),
 			true
 		);
@@ -402,6 +404,175 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$this->assertEquals($metadatum->get_id(), $data['id']);
 		$this->assertEquals('No name', $data['name']);
+	}
+	
+	public function test_return_metadata_type_options_in_get_item() {
+		
+		$collection1 = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test_col',
+				'status' => 'publish'
+			),
+			true
+		);
+		
+		$collection2 = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test_col',
+				'status' => 'publish'
+			),
+			true
+		);
+		
+		$core1 = $collection1->get_core_title_metadatum();
+		
+		$meta_relationship = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'   => 'relationship',
+				'status' => 'publish',
+				'collection' => $collection2,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Relationship',
+				'metadata_type_options' => [
+					'repeated' => 'yes',
+					'collection_id' => $collection1->get_id(),
+					'search' => $core1->get_id()
+				]
+			),
+			true
+		);
+		
+		$request = new \WP_REST_Request(
+			'GET',
+			$this->namespace . '/metadata/' . $meta_relationship->get_id()
+		);
+
+		$response = $this->server->dispatch($request);
+
+		$data = $response->get_data();
+
+		$this->assertEquals($meta_relationship->get_id(), $data['id']);
+		$this->assertEquals('relationship', $data['name']);
+		$this->assertEquals('yes', $data['metadata_type_options']['repeated']);
+		$this->assertEquals($collection1->get_id(), $data['metadata_type_options']['collection_id']);
+		$this->assertEquals($core1->get_id(), $data['metadata_type_options']['search']);
+		
+	}
+	
+	public function test_return_metadata_type_options_in_get_items() {
+		
+		$collection1 = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test_col',
+				'status' => 'publish'
+			),
+			true
+		);
+		
+		$collection2 = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test_col',
+				'status' => 'publish'
+			),
+			true
+		);
+		
+		$core1 = $collection1->get_core_title_metadatum();
+		
+		$meta_relationship = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'   => 'relationship',
+				'status' => 'publish',
+				'collection' => $collection2,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Relationship',
+				'metadata_type_options' => [
+					'repeated' => 'yes',
+					'collection_id' => $collection1->get_id(),
+					'search' => $core1->get_id()
+				]
+			),
+			true
+		);
+		
+		$request = new \WP_REST_Request(
+			'GET',
+			$this->namespace . '/collection/' . $collection2->get_id() . '/metadata'
+		);
+
+		$response = $this->server->dispatch($request);
+
+		$data = $response->get_data();
+		
+		//var_dump($data, $this->namespace . '/collection/' . $collection2->get_id() . '/metadata/');
+		foreach ($data as $d) {
+			if ($d['id'] == $meta_relationship->get_id()) {
+				$meta = $d;
+				break;
+			}
+		}
+		
+		$this->assertEquals($meta_relationship->get_id(), $meta['id']);
+		$this->assertEquals('relationship', $meta['name']);
+		$this->assertEquals('yes', $meta['metadata_type_options']['repeated']);
+		$this->assertEquals($collection1->get_id(), $meta['metadata_type_options']['collection_id']);
+		$this->assertEquals($core1->get_id(), $meta['metadata_type_options']['search']);
+		
+	}
+	
+	public function test_return_metadata_type_options_in_get_item_default_option() {
+		
+		$collection1 = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test_col',
+				'status' => 'publish'
+			),
+			true
+		);
+		
+		$tax = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_test',
+				'collections' => [$collection1],
+				'status' => 'publish'
+			),
+			true
+		);
+		
+		$meta = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'   => 'tax',
+				'status' => 'publish',
+				'collection' => $collection1,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax->get_id(),
+				]
+			),
+			true
+		);
+		
+		$request = new \WP_REST_Request(
+			'GET',
+			$this->namespace . '/metadata/' . $meta->get_id()
+		);
+
+		$response = $this->server->dispatch($request);
+
+		$data = $response->get_data();
+
+		$this->assertEquals($meta->get_id(), $data['id']);
+		$this->assertEquals('tax', $data['name']);
+		$this->assertEquals($tax->get_id(), $data['metadata_type_options']['taxonomy_id']);
+		$this->assertEquals('no', $data['metadata_type_options']['allow_new_terms']);
+		
 	}
 
 }
