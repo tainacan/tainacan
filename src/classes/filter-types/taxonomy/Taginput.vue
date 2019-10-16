@@ -43,24 +43,19 @@
     
     export default {
         mixins: [ filterTypeMixin, dynamicFilterTypeMixin ],
-        created(){
-            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
-
-            if (this.isRepositoryLevel || this.collectionId == 'default'){
-                endpoint = '/metadata/' + this.metadatumId;
-            }
-
-            axios.get(endpoint)
-                .then( res => {
-                    let metadatum = res.data;
-                    this.taxonomyId = metadatum.metadata_type_options.taxonomy_id
-                    this.updateSelectedValues();
-                });
+        created() {
+            if (this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' && 
+                this.filter.metadatum && 
+                this.filter.metadatum.metadata_type_object && 
+                this.filter.metadatum.metadata_type_object.options &&
+                this.filter.metadatum.metadata_type_object.options.taxonomy_id) {
+                    this.taxonomyId = this.filter.metadatum.metadata_type_object.options.taxonomy_id;
+                    this.taxonomy = 'tnc_tax_' + this.taxonomyId;
+                }
         },
         watch: {
             'query.taxquery'() {
-                if (this.taxonomyId != '')
-                    this.updateSelectedValues();
+                this.updateSelectedValues();
             }
         },
         data(){
@@ -92,8 +87,6 @@
                 
                 return axios.get(endpoint).then( res => {
                     for (let term of res.data.values) {   
-                          
-                        this.taxonomy = term.taxonomy;
 
                         if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {
                             let indexToIgnore = valuesToIgnore.findIndex(value => value == term.value);
@@ -126,8 +119,6 @@
             updateSelectedValues(){
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;
-
-                this.taxonomy = 'tnc_tax_' + this.taxonomyId;
 
                 let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == this.taxonomy);
 
