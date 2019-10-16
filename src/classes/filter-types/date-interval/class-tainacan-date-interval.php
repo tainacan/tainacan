@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Date_Interval extends Filter_Type {
 
     function __construct(){
-        $this->set_name('Date Interval');
+        $this->set_name( __('Date Interval', 'tainacan') );
         $this->set_supported_types(['date']);
         $this->set_component('tainacan-filter-date-interval');
         $this->set_use_max_options(false);

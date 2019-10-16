@@ -481,9 +481,9 @@ export default {
             // Removes element from filters list
             this.activeFilterList.splice(this.newFilterIndex, 1);
         },
-        handleChangeOnMetadata($event) {    
+        handleChangeOnMetadata($event) {
             if ($event.removed) {
-                this.oldMetadatumIndex = $event.removed.oldIndex; 
+                this.oldMetadatumIndex = $event.removed.oldIndex;
             }
         },
         updateFiltersOrder() {
@@ -527,7 +527,7 @@ export default {
                 collectionId: this.collectionId, 
                 metadatumId: this.choosenMetadatum.id,
                 name: this.choosenMetadatum.name,
-                filterType: this.selectedFilterType.name, 
+                filterType: this.selectedFilterType.filter_type, 
                 status: 'auto-draft', 
                 isRepositoryLevel: this.isRepositoryLevel,
                 newIndex: this.newFilterIndex

@@ -9,7 +9,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class TaxonomyTaginput extends Filter_Type {
 
     function __construct(){
-        $this->set_name('Taxonomy Tag Input');
+        $this->set_name( __('Taxonomy Tag Input', 'tainacan') );
         $this->set_supported_types(['term']);
         $this->set_component('tainacan-filter-taxonomy-taginput');
         $this->set_use_max_options(false);
