@@ -116,12 +116,12 @@
 
                     if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' ) {
                         let query = qs.stringify({ postin: metadata.value, fetch_only: 'title,thumbnail', fetch_only_meta: '' });
-                        let endpoint = '/items/' + metadata.value;
+                        let endpoint = '/items/';
 
                         if (this.relatedCollectionId != '')
                             endpoint = '/collection/' + this.relatedCollectionId + endpoint; 
 
-                        axios.get(endpoint + query)
+                        axios.get(endpoint + '?' + query)
                             .then( res => {
                                 if (res.data.items) {
                                     this.selected = [];

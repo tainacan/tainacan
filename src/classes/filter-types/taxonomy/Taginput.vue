@@ -44,13 +44,13 @@
     export default {
         mixins: [ filterTypeMixin, dynamicFilterTypeMixin ],
         created() {
-            if (this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' && 
-                this.filter.metadatum && 
+            if (this.filter.metadatum && 
                 this.filter.metadatum.metadata_type_object && 
                 this.filter.metadatum.metadata_type_object.options &&
+                this.filter.metadatum.metadata_type_object.options.taxonomy &&
                 this.filter.metadatum.metadata_type_object.options.taxonomy_id) {
                     this.taxonomyId = this.filter.metadatum.metadata_type_object.options.taxonomy_id;
-                    this.taxonomy = 'tnc_tax_' + this.taxonomyId;
+                    this.taxonomy = this.filter.metadatum.metadata_type_object.options.taxonomy;
                 }
         },
         watch: {
