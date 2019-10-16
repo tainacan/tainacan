@@ -130,6 +130,7 @@ abstract class Filter_Type {
         $attributes['preview_template'] = $this->get_preview_template();
         $attributes['use_max_options']  = $this->get_use_max_options();
         $attributes['form_component']   = $this->get_form_component();
+        $attributes['filter_type']      = $this->get_filter_type();
 
         return $attributes;
     }
@@ -227,5 +228,9 @@ abstract class Filter_Type {
      */
     public function set_form_component($form_component){
     	$this->form_component = $form_component;
+    }
+
+    public function get_filter_type() {
+        return str_replace( 'Tainacan\Filter_Types\\', '', get_class($this) );
     }
 }
