@@ -9,7 +9,9 @@
             </label>
             <div>
                 <b-field>
-                    <b-checkbox v-model="showIntervalOnTag">
+                    <b-checkbox
+                            v-model="showIntervalOnTag"
+                            @input="onUpdateShowIntervalOnTag()">
                         {{ $i18n.get('info_show_interval_on_tag') }}
                     </b-checkbox>
                 </b-field>
@@ -115,6 +117,14 @@
                     });
                 }
             }, 600),
+            onUpdateShowIntervalOnTag() {
+                if (this.isValid) {
+                    this.$emit('input', {
+                        intervals: this.intervals,
+                        showIntervalOnTag: this.showIntervalOnTag
+                    });
+                }
+            },
             showErrorMessage() {
                 this.$buefy.toast.open({
                     duration: 3000,
