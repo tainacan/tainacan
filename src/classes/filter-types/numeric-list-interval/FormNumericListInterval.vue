@@ -154,7 +154,7 @@
         },
         created() {
             this.intervals = 
-                this.value && this.value.intervals ? 
+                this.value && this.value.intervals && this.value.intervals.length > 0 ? 
                     this.value.intervals : 
                     [{
                         label: '',
