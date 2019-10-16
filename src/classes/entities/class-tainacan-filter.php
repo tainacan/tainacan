@@ -152,7 +152,7 @@ class Filter extends Entity {
 		}
 
         $object_type = new $class_name();
-        $object_type->set_options(  $this->get_filter_type_options() );
+        $object_type->set_options(  $this->get_mapped_property('filter_type_options') );
         return $object_type;
     }
 
@@ -171,6 +171,10 @@ class Filter extends Entity {
      * @return array Configurations for the filter type object
      */
     function get_filter_type_options(){
+        $object = $this->get_filter_type_object();
+        if ($object) {
+            return $object->get_options(); // merge with dedault filter type options
+        }
         return $this->get_mapped_property('filter_type_options');
     }
 
