@@ -33,7 +33,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 
 		$request_body = json_encode(
 			array(
-				'filter_type'   => 'custom_interval',
+				'filter_type'   => '\Tainacan\Filter_Types\Custom_Interval',
 				'filter'        => [
 					'name'        => 'Filter name',
 					'description' => 'This is CUSTOM INTERVAL!',
@@ -300,7 +300,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 		);
 
 		$filter_attr = json_encode([
-			'filter_type' => 'autocomplete',
+			'filter_type' => '\Tainacan\Filter_Types\Autocomplete',
 			'filter'      => [
 				'name'        => '2x Filter',
 				'description' => 'Description of 2x Filter',
@@ -310,7 +310,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 		]);
 
 		$filter_attr2 = json_encode([
-			'filter_type' => 'autocomplete',
+			'filter_type' => '\Tainacan\Filter_Types\Autocomplete',
 			'filter'      => [
 				'name'        => '4x Filter',
 				'description' => 'Description of 4x Filter',
