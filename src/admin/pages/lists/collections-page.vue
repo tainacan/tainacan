@@ -141,11 +141,11 @@
                         </a>
                     </li>
                     <li 
-                            v-for="(statusOption, index) of $statusHelper.getStatuses()"
+                            v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
                             :key="index"
                             @click="onChangeTab(statusOption.slug)"
                             :class="{ 'is-active': status == statusOption.slug}"
-                            :style="{ marginRight: statusOption.slug == 'private' ? 'auto' : '', marginLeft: statusOption.slug == 'draft' ? 'auto' : '' }"
+                            :style="{ marginRight: statusOption.slug == 'private' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"
                             v-tooltip="{
                                 content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('collections')]),
                                 autoHide: true,

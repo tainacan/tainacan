@@ -36,7 +36,6 @@ export const addMetaQuery = ( state, filter ) => {
             compare: filter.compare,
             type: filter.type
         });
-        console.log(state.postquery.metaquery);
     }
 };
 

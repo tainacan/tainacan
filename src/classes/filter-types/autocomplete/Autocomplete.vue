@@ -49,13 +49,23 @@
             return {
                 selected:'',
                 options: [],
-                label: ''
+                label: '',
+                relatedCollectionId: ''
             }
         },
         watch: {
             'query.metaquery'() {
                 this.updateSelectedValues();
             },
+        },
+        created() {
+            if (this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' && 
+                this.filter.metadatum && 
+                this.filter.metadatum.metadata_type_object && 
+                this.filter.metadatum.metadata_type_object.options &&
+                this.filter.metadatum.metadata_type_object.options.collection_id) {
+                    this.relatedCollectionId = this.filter.metadatum.metadata_type_object.options.collection_id;
+                }
         },
         mounted() {
             this.updateSelectedValues();
@@ -122,7 +132,12 @@
 
                     if (this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship') {
                         
-                        axios.get('/items/' + metadata.value + '?fetch_only=title,thumbnail')
+                        let endpoint = '/items/' + metadata.value + '?fetch_only=title,thumbnail';
+
+                        if (this.relatedCollectionId != '')
+                            endpoint = '/collection/' + this.relatedCollectionId + endpoint; 
+
+                        axios.get(endpoint)
                             .then( res => {
                                 let item = res.data;
                                 this.label = item.title;
