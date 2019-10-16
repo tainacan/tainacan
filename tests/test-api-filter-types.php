@@ -22,7 +22,7 @@ class TAINACAN_REST_Filter_Types_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals(count($filter_types), count($data));
 
 		foreach ($data as $ftype){
-			$this->assertContains($ftype['name'], $filter_types);
+			$this->assertContains($ftype['filter_type'], $filter_types);
 		}
 	}
 }
