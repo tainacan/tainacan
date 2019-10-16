@@ -6,7 +6,6 @@ export default {
             router: options.router,
             store: options.store,
             data: {
-                componentsTag: [],
                 errors : [],
                 query: {},
                 collectionId: undefined,
@@ -381,26 +380,7 @@ export default {
                     this.$store.dispatch('search/cleanMetaQueries');
                     this.$store.dispatch('search/cleanTaxQueries');
                     this.updateURLQueries();
-                },
-                 /* Dev interfaces methods */
-        
-                registerComponent( name ){
-                    if (this.componentsTag.indexOf(name) < 0) {
-                        this.componentsTag.push( name );
-                    }
-                },
-                getAllComponents(){
-                    const components = [];
-                    for( let component of this.componentsTag ){
-                        const eventElements = document.getElementsByTagName( component );
-                        if( eventElements ) {
-                            for (let eventElement of eventElements){
-                                components.push( eventElement );
-                            }
-                        }
-                    }
-                    return components;
-                },
+                }
             }
         });
     }

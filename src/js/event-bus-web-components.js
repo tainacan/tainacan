@@ -4,14 +4,10 @@ import store from './store/store'
 export const eventBus = new Vue({
     store,
     data: {
-        componentsTag: [],
         errors : []
     },
-    created(){
-        if( tainacan_plugin.components ){
-            this.componentsTag = tainacan_plugin.components;
-        }
-        this.$on('input', this.updateValue );
+    created() {
+        this.$on('input', this.updateValue);
     },
     watch: {
         errors() {
@@ -19,26 +15,6 @@ export const eventBus = new Vue({
         }
     },
     methods : {
-        registerComponent( name ){
-            if (this.componentsTag.indexOf(name) < 0) {
-                this.componentsTag.push( name );
-            }
-        },
-        // listener(){
-        //     const components = this.getAllComponents();
-        //     for (let eventElement of components){
-        //         eventElement.addEventListener('input', (event) => {
-
-        //             if (event.detail && event.detail[0] ){
-        //                 this.updateValue({
-        //                     item_id: $(eventElement).attr("item_id"),
-        //                     metadatum_id: $(eventElement).attr("metadatum_id"),
-        //                     values: event.detail
-        //                 })
-        //             }
-        //         });
-        //     }
-        // }, 
         updateValue(data){
             
             this.$emit('isUpdatingValue', true);
@@ -86,51 +62,12 @@ export const eventBus = new Vue({
             let error = this.errors.find( errorItem => errorItem.metadatum_id == metadatum_id );
             return ( error ) ? error.errors : false
         },
-        clearAllErrors(){
+        clearAllErrors() {
            this.errors = [];
-        },
-        setValues(){
-            const metadatum = this.$store.getters['item/getMetadata'];
-            if( metadatum ){
-                for(let singleMetadata of metadatum){
-                    const eventElement = this.getComponentById( singleMetadata.metadatum_id );
-                    eventElement.value =  singleMetadata.values;
-                }
-            }
-        },
-        getAllComponents(){
-            const components = [];
-            for( let component of this.componentsTag ){
-                const eventElements = document.getElementsByTagName( component );
-                if( eventElements ) {
-                    for (let eventElement of eventElements){
-                        components.push( eventElement );
-                    }
-                }
-            }
-            let elements = document.querySelectorAll('[web-component="true"]');
-            if( elements ) {
-                for (let eventElement of elements){
-                    components.push( eventElement );
-                }
-            }
-            return components;
-        },
-        getComponentById( metadatum_id ){
-            for( let component of this.componentsTag ){
-                const eventElements = document.getElementsByTagName( component );
-                if( eventElements ) {
-                    for (let eventElement of eventElements){
-                        if( eventElement.metadatum_id === metadatum_id ){
-                            return eventElement;
-                        }
-                    }
-                }
-            }
         }
     },
     beforeUpdate() {
-        this.$off('input', this.updateValue );
+        this.$off('input', this.updateValue);
     }
 
 });

@@ -456,7 +456,7 @@
 <style lang="scss" scoped>
     @import '../../scss/_variables.scss';
 
-     .sub-header {
+    .sub-header {
         min-height: $subheader-height;
         height: $header-height;
         padding-left: 0;
@@ -509,7 +509,7 @@
                 color: $blue5;
                 height: 27px;
                 font-size: 18px !important;
-                height: 1.5rem !important;
+                height: 1.75rem !important;
             }
         }
 
