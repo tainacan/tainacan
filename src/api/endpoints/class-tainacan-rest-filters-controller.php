@@ -122,12 +122,10 @@ class REST_Filters_Controller extends REST_Controller {
 		if(empty($received_type)){
 			throw new \InvalidArgumentException('The type can\'t be empty');
 		} elseif(!strrchr($received_type, '_')){
-			$received_type = ucfirst(strtolower($received_type));
+			$type = ucfirst(strtolower($received_type));
 		} else {
-			$received_type = ucwords(strtolower($received_type), '_');
+			$type = ucwords(strtolower($received_type), '_\\');
 		}
-
-		$type = "Tainacan\Filter_Types\\$received_type";
 
 		$filter_type = new $type();
 

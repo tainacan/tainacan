@@ -130,7 +130,6 @@ abstract class Filter_Type {
         $attributes['preview_template'] = $this->get_preview_template();
         $attributes['use_max_options']  = $this->get_use_max_options();
         $attributes['form_component']   = $this->get_form_component();
-        $attributes['filter_type']      = $this->get_filter_type();
 
         return $attributes;
     }

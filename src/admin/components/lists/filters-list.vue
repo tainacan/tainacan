@@ -527,7 +527,7 @@ export default {
                 collectionId: this.collectionId, 
                 metadatumId: this.choosenMetadatum.id,
                 name: this.choosenMetadatum.name,
-                filterType: this.selectedFilterType.filter_type, 
+                filterType: this.selectedFilterType.className,
                 status: 'auto-draft', 
                 isRepositoryLevel: this.isRepositoryLevel,
                 newIndex: this.newFilterIndex
