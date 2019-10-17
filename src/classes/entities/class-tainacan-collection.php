@@ -145,21 +145,35 @@ class Collection extends Entity {
 	/**
 	 * Get the capabilities list for the post type of the items of this collection
 	 *
-	 * @uses get_post_type_capabilities to get the list.
-	 *
 	 * This method is usefull for getting the capabilities of the collection's items post type
 	 * regardless if it has been already registered or not.
 	 *
 	 * @return object Object with all the capabilities as member variables.
 	 */
 	function get_items_capabilities() {
-		$args = [
-			'map_meta_cap'    => true,
-			'capability_type' => $this->get_db_identifier(),
-			'capabilities'    => array()
-		];
+		
+		$id = $this->get_id();
 
-		return get_post_type_capabilities( (object) $args );
+		return (object) [
+			// meta
+			'edit_post' => "tnc_col_{$id}_edit_item",
+			'read_post' => "tnc_col_{$id}_edit_item",
+			'delete_post' => "tnc_col_{$id}_edit_item",
+			
+			// primitive
+			'edit_posts' => "tnc_col_{$id}_edit_items",
+			'edit_others_posts' => "tnc_col_{$id}_edit_others_items",
+			'publish_posts' => "tnc_col_{$id}_publish_items",
+			'read_private_posts' => "tnc_col_{$id}_read_private_items",
+			'read' => "read",
+			'delete_posts' => "tnc_col_{$id}_edit_items",
+			'delete_private_posts' => "tnc_col_{$id}_edit_items",
+			'delete_published_posts' => "tnc_col_{$id}_edit_published_items",
+			'delete_others_posts' => "tnc_col_{$id}_edit_others_items",
+			'edit_private_posts' => "tnc_col_{$id}_edit_others_items",
+			'edit_published_posts' => "tnc_col_{$id}_edit_published_items",
+			'create_posts' => "tnc_col_{$id}_edit_items"
+		];
 	}
 
 	/**
