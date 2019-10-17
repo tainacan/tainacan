@@ -24,7 +24,6 @@ class REST_Roles_Controller extends REST_Controller {
 			'subscriber'
 		];
 		
-		//add_action('init', array(&$this, 'init_objects'), 11);
 	}
 
 	public function register_routes() {
