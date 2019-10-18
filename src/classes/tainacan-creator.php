@@ -187,5 +187,6 @@ if (class_exists('WP_CLI')) {
 	$Tainacan_Cli = \Tainacan\Cli::get_instance();
 }
 
+include_once('tainacan-loaders.php');
 
 ?>

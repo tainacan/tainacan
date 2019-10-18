@@ -157,8 +157,8 @@ class Collection extends Entity {
 		return (object) [
 			// meta
 			'edit_post' => "tnc_col_{$id}_edit_item",
-			'read_post' => "tnc_col_{$id}_edit_item",
-			'delete_post' => "tnc_col_{$id}_edit_item",
+			'read_post' => "tnc_col_{$id}_read_item",
+			'delete_post' => "tnc_col_{$id}_delete_item",
 			
 			// primitive
 			'edit_posts' => "tnc_col_{$id}_edit_items",
@@ -174,6 +174,31 @@ class Collection extends Entity {
 			'edit_published_posts' => "tnc_col_{$id}_edit_published_items",
 			'create_posts' => "tnc_col_{$id}_edit_items"
 		];
+	}
+
+	public function get_capabilities() {
+
+		return (object) [
+			// meta
+			'edit_post' => "tnc_col_edit_item",
+			'read_post' => "tnc_col_edit_item",
+			'delete_post' => "tnc_col_edit_item",
+			
+			// primitive
+			'edit_posts' => "tnc_rep_edit_collections",
+			'edit_others_posts' => "manage_tainacan",
+			'publish_posts' => "tnc_rep_edit_collections",
+			'read_private_posts' => "tnc_rep_read_private_collections",
+			'read' => "read",
+			'delete_posts' => "tnc_rep_edit_collections",
+			'delete_private_posts' => "tnc_rep_edit_collections",
+			'delete_published_posts' => "tnc_rep_edit_collections",
+			'delete_others_posts' => "manage_tainacan",
+			'edit_private_posts' => "tnc_rep_edit_collections",
+			'edit_published_posts' => "tnc_rep_edit_collections",
+			'create_posts' => "tnc_rep_edit_collections"
+		];
+		
 	}
 
 	/**

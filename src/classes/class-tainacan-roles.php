@@ -43,11 +43,11 @@ class Roles {
 				'display_name' => __('Manage Users', 'tainacan'),
 				'description' => __('Manage users roles and permissions', 'tainacan')
 			],
-			'tnc_rep_create_collections' => [
+			'tnc_rep_edit_collections' => [
 				'display_name' => __('Create Collections', 'tainacan'),
 				'description' => __('Create new collections to the repository', 'tainacan')
 			],
-			'tnc_rep_create_taxonomies' => [
+			'tnc_rep_edit_taxonomies' => [
 				'display_name' => __('Create and edit taxonomies', 'tainacan'),
 				'description' => __('Create new taxonomies and edit its terms', 'tainacan')
 			],
@@ -154,6 +154,7 @@ class Roles {
 		];
 		
 		add_filter( 'user_has_cap', [$this, 'user_has_cap_filter'], 10, 4 );
+		add_filter( 'map_meta_cap', [$this, 'map_meta_cap'], 10, 4 );
 		
 	}
 	
@@ -187,6 +188,14 @@ class Roles {
 					
 					if ( $user->has_cap('manage_tainacan_collection_' . $col_id) ) {
 						$allcaps = array_merge($allcaps, [ $cap => true ]);
+					} else {
+						// check if the user is the owner
+						$collection = tainacan_collections()->fetch( (int) $col_id );
+						if ( $collection instanceof \Tainacan\Entities\Collection ) {
+							if ( $collection->get_author_id() == $user->ID ) {
+								$allcaps = array_merge($allcaps, [ $cap => true ]);
+							}
+						}
 					}
 					
 				}
@@ -235,7 +244,147 @@ class Roles {
 		return false;
 	}
 		
-	
+	public function map_meta_cap( $caps, $cap, $user_id, $args ) {
+		$meta_caps = new \Tainacan\Entities\Metadatum();
+		$meta_caps = $meta_caps->get_capabilities();
+		
+		$filters_caps = new \Tainacan\Entities\Filter();
+		$filters_caps = $filters_caps->get_capabilities();
+		
+		$edit_meta = [
+			$meta_caps->edit_posts,
+			$meta_caps->edit_others_posts,
+			$meta_caps->publish_posts,
+			$meta_caps->delete_posts,
+			$meta_caps->delete_private_posts,
+			$meta_caps->delete_published_posts,
+			$meta_caps->delete_others_posts,
+			$meta_caps->edit_private_posts,
+			$meta_caps->edit_published_posts,
+			$meta_caps->create_posts,
+		];
+		
+		$read_private_meta = [
+			$meta_caps->read_private_posts
+		];
+		
+		$edit_filters = [
+			$filters_caps->edit_posts,
+			$filters_caps->edit_others_posts,
+			$filters_caps->publish_posts,
+			$filters_caps->delete_posts,
+			$filters_caps->delete_private_posts,
+			$filters_caps->delete_published_posts,
+			$filters_caps->delete_others_posts,
+			$filters_caps->edit_private_posts,
+			$filters_caps->edit_published_posts,
+			$filters_caps->create_posts,
+		];
+		
+		$read_private_filters = [
+			$filters_caps->read_private_posts
+		];
+		
+		if ( !is_array( $args ) || !array_key_exists( 0, $args ) ) {
+			return $caps;
+		}
+		
+		$object = $args[0];
+		
+		switch ($cap) {
+			case 'edit_post':
+			case 'delete_post':
+				
+				
+				foreach ($caps as $i => $c) {
+					
+					// Handle edit metadata
+					if ( in_array($c, $edit_meta) ) {
+						if (is_numeric($object)) {
+							$object = tainacan_metadata()->fetch ( (int) $object );
+						}
+						if ( $object instanceof \Tainacan\Entities\Metadatum ) {
+							if ( $object->get_collection_id() == 'default' ) {
+								unset($caps[$i]);
+								$caps[] = 'tnc_rep_manage_metadata';
+							} elseif ( is_numeric($object->get_collection_id()) ) {
+								unset($caps[$i]);
+								$caps[] = 'tnc_col_' . $object->get_collection_id() . '_manage_metadata';
+							}
+						}
+					}
+					
+					
+					// Handle edit filters
+					if ( in_array($c, $edit_filters) ) {
+						if (is_numeric($object)) {
+							$object = tainacan_filters()->fetch ( (int) $object );
+						}
+						if ( $object instanceof \Tainacan\Entities\Filter ) {
+							if ( $object->get_collection_id() == 'default' ) {
+								unset($caps[$i]);
+								$caps[] = 'tnc_rep_manage_filters';
+							} elseif ( is_numeric($object->get_collection_id()) ) {
+								unset($caps[$i]);
+								$caps[] = 'tnc_col_' . $object->get_collection_id() . '_manage_filters';
+							}
+						}
+					}
+					
+				}
+				
+				
+				break;
+			
+			case 'read_post': 
+			
+				foreach ($caps as $i => $c) {
+					
+					// Handle read private metadata
+					if ( in_array($c, $read_private_meta) ) {
+						if (is_numeric($object)) {
+							$object = tainacan_metadata()->fetch ( (int) $object );
+						}
+						if ( $object instanceof \Tainacan\Entities\Metadatum ) {
+							if ( $object->get_collection_id() == 'default' ) {
+								unset($caps[$i]);
+								$caps[] = 'tnc_rep_read_private_metadata';
+							} elseif ( is_numeric($object->get_collection_id()) ) {
+								unset($caps[$i]);
+								$caps[] = 'tnc_col_' . $object->get_collection_id() . '_read_private_metadata';
+							}
+						}
+					}
+					
+					// Handle read private filters
+					if ( in_array($c, $read_private_filters) ) {
+						if (is_numeric($object)) {
+							$object = tainacan_filters()->fetch ( (int) $object );
+						}
+						if ( $object instanceof \Tainacan\Entities\Filter ) {
+							if ( $object->get_collection_id() == 'default' ) {
+								unset($caps[$i]);
+								$caps[] = 'tnc_rep_read_private_filters';
+							} elseif ( is_numeric($object->get_collection_id()) ) {
+								unset($caps[$i]);
+								$caps[] = 'tnc_col_' . $object->get_collection_id() . '_read_private_filters';
+							}
+						}
+					}
+					
+				}
+				
+				
+				break;
+			
+			default:
+				# code...
+				break;
+		}
+		
+		return $caps;
+		
+	}
 		
 		
 }

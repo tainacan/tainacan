@@ -125,7 +125,7 @@ class Taxonomies extends Repository {
 			'rewrite'             => true,
 			'map_meta_cap'        => true,
 			'show_in_nav_menus'   => false,
-			'capability_type'     => Entities\Taxonomy::get_capability_type(),
+			'capabilities'        => (array) $this->get_capabilities(),
 			'supports'            => [
 				'title',
 				'editor',

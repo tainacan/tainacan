@@ -664,7 +664,6 @@ abstract class Repository {
 		} elseif ( is_object( $user ) ) {
 			$user = $user->ID;
 		}
-		$entity     = self::get_entity_by_post( $entity );
 		$entity_cap = $entity->get_capabilities();
 
 		if ( ! isset( $entity_cap->edit_post ) ) {
@@ -701,7 +700,6 @@ abstract class Repository {
 		} elseif ( is_object( $user ) ) {
 			$user = $user->ID;
 		}
-		$entity     = self::get_entity_by_post( $entity );
 		$entity_cap = $entity->get_capabilities();
 		
 		if ( ! isset( $entity_cap->read ) ) {
@@ -730,7 +728,6 @@ abstract class Repository {
 		} elseif ( is_object( $user ) ) {
 			$user = $user->ID;
 		}
-		$entity     = self::get_entity_by_post( $entity );
 		$entity_cap = $entity->get_capabilities();
 
 		if ( ! isset( $entity_cap->delete_post ) ) {
@@ -738,31 +735,6 @@ abstract class Repository {
 		}
 
 		return user_can( $user, $entity_cap->delete_post, $entity->get_id() );
-	}
-
-	/**
-	 * Check if $user can publish the entity
-	 *
-	 * @param Entities\Entity $entity
-	 * @param int|\WP_User|null $user default is null for the current user
-	 *
-	 * @return boolean
-	 * @throws \Exception
-	 */
-	public function can_publish( $entity, $user = null ) {
-		if ( is_null( $user ) ) {
-			$user = get_current_user_id();
-		} elseif ( is_object( $user ) ) {
-			$user = $user->ID;
-		}
-		$entity     = self::get_entity_by_post( $entity );
-		$entity_cap = $entity->get_capabilities();
-
-		if ( ! isset( $entity_cap->publish_posts ) ) {
-			return false;
-		}
-
-		return user_can( $user, $entity_cap->publish_posts, $entity->get_id() );
 	}
 
 	/**
@@ -881,6 +853,23 @@ abstract class Repository {
 		}
 		
 		return $children;
+		
+	}
+	
+	/**
+	 * Get the capabilities list for the post type of the entity
+	 *
+	 * @uses get_post_type_capabilities to get the list.
+	 *
+	 * This method is usefull for getting the capabilities of the entity post type
+	 * regardless if it has been already registered or not.
+	 *
+	 * @return object Object with all the capabilities as member variables.
+	 */
+	public function get_capabilities() {
+		
+		$entity = new $this->entities_type();
+		return $entity->get_capabilities();
 		
 	}
 	

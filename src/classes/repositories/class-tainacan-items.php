@@ -505,7 +505,7 @@ class Items extends Repository {
 	 */
 	public function map_meta_cap( $caps, $cap, $user_id, $args ) {
 
-		// Filters meta caps edit_tainacan-collection and check if user is moderator
+		// Even if the item is public, user must have read_private_posts if the collection is private
 		
 		if ( $cap == 'read_post' && is_array( $args ) && array_key_exists( 0, $args ) ) { 
 			

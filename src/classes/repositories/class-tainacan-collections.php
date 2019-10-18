@@ -255,7 +255,7 @@ class Collections extends Repository {
 			'can_export'          => true,
 			/* Translators: The Collections slug - will be the URL for the collections archive */
 			'rewrite'             => ['slug' => sanitize_title(_x('collections', 'Slug: the string that will be used to build the URL', 'tainacan'))],
-			'capability_type'     => Entities\Collection::get_capability_type(),
+			'capabilities'        => (array) $this->get_capabilities(),
 			'map_meta_cap'        => true,
 			'supports'            => [
 				'title',
