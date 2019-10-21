@@ -250,8 +250,7 @@ class REST_Collections_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function get_items_permissions_check($request){
-        $dummy = new Entities\Collection();
-        if ( 'edit' === $request['context'] && ! current_user_can($dummy->get_capabilities()->edit_posts) ) {
+		if ( 'edit' === $request['context'] && ! current_user_can($this->collections_repository->get_capabilities()->edit_posts) ) {
 			return false;
 		}
 
@@ -269,11 +268,11 @@ class REST_Collections_Controller extends REST_Controller {
 		$collection = $this->collections_repository->fetch($request['collection_id']);
 
 		if(($collection instanceof Entities\Collection)) {
-			if('edit' === $request['context'] && !$collection->can_read()) {
+			if('edit' === $request['context'] && !$collection->can_edit()) {
 				return false;
 			}
 
-			return true;
+			return $collection->can_read();
 		} 
 
 		return false;
@@ -331,8 +330,7 @@ class REST_Collections_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function create_item_permissions_check( $request ) {
-	    $dummy = new Entities\Collection();
-	    return  current_user_can($dummy->get_capabilities()->edit_posts);
+	    return  current_user_can($this->collections_repository->get_capabilities()->edit_posts);
     }
 
 	/**
