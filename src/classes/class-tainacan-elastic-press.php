@@ -140,7 +140,7 @@ class Elastic_Press {
 				
 				if ($col) {
 					
-					$metadata = $Tainacan_Metadata->fetch_by_collection($col, ['posts_per_page' => -1], 'OBJECT');
+					$metadata = $Tainacan_Metadata->fetch_by_collection($col, ['posts_per_page' => -1]);
 
 					foreach ($metadata as $meta) {
 						$meta_ids[] = $meta->get_id();
@@ -200,7 +200,7 @@ class Elastic_Press {
 				
 				foreach ( $args['post_type'] as $cpt ) {
 					$col = $Tainacan_Collections->fetch_by_db_identifier($cpt);
-					$_filters = $Tainacan_Filters->fetch_by_collection($col, ['posts_per_page' => -1], 'OBJECT');
+					$_filters = $Tainacan_Filters->fetch_by_collection($col, ['posts_per_page' => -1]);
 					foreach ($_filters as $filter) {
 						$include = [];
 						$filter_id = $filter->get_id();

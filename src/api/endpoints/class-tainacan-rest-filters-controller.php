@@ -201,24 +201,20 @@ class REST_Filters_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function create_item_permissions_check( $request ) {
-		if(isset($request['collection_id']) && isset($request['metadatum_id'])) {
-			$metadata   = $this->metadatum_repository->fetch( $request['metadatum_id'] );
-			$collection = $this->collection_repository->fetch( $request['collection_id'] );
-
-			if ( ( $metadata instanceof Entities\Metadatum ) && ( $collection instanceof Entities\Collection ) ) {
-				return $this->filter_repository->can_edit( new Entities\Filter() ) && $metadata->can_edit() && $collection->can_edit();
-			}
-
-		} elseif (isset($request['collection_id'])){
+		if( isset($request['collection_id']) ) {
 			$collection = $this->collection_repository->fetch( $request['collection_id'] );
 
 			if ( $collection instanceof Entities\Collection ) {
-				return $collection->can_edit();
+				return current_user_can( 'tnc_col_' . $collection->get_id() . '_manage_filters' );
 			}
+
+		} else {
+			
+			return current_user_can( 'tnc_rep_manage_filters' );
 
 		}
 
-		return $this->filter_repository->can_edit(new Entities\Metadatum());
+		return false;
 	}
 
 	/**
@@ -386,7 +382,7 @@ class REST_Filters_Controller extends REST_Controller {
 			$filters = $this->filter_repository->fetch( $args, 'OBJECT' );
 		} else {
 			$collection = $this->collection_repository->fetch($request['collection_id']);
-			$filters = $this->filter_repository->fetch_by_collection($collection, $args, 'OBJECT');
+			$filters = $this->filter_repository->fetch_by_collection($collection, $args);
 		}
 
 		$response = [];

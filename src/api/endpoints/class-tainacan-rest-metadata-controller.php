@@ -352,7 +352,7 @@ class REST_Metadata_Controller extends REST_Controller {
 
 			$collection = new Entities\Collection( $collection_id );
 
-			$result = $this->metadatum_repository->fetch_by_collection( $collection, $args, 'OBJECT' );
+			$result = $this->metadatum_repository->fetch_by_collection( $collection, $args );
 		} else {
 			$args = [
 				'meta_query' => [

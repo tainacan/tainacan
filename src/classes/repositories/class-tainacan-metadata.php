@@ -364,41 +364,87 @@ class Metadata extends Repository {
 	 *
 	 * @param Entities\Collection $collection
 	 * @param array $args WP_Query args plus disabled_metadata
-	 * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
 	 *
 	 * @return array Entities\Metadatum
 	 * @throws \Exception
 	 */
-	public function fetch_by_collection( Entities\Collection $collection, $args = [], $output = null ) {
+	public function fetch_by_collection( Entities\Collection $collection, $args = [] ) {
 		$collection_id = $collection->get_id();
 
 		//get parent collections
 		$parents = get_post_ancestors( $collection_id );
-
+		
 		//insert the actual collection
-		$parents[] = $collection_id;
-
+		if ( is_numeric($collection_id) ) {
+			$parents[] = $collection_id;
+		}
+		
 		//search for default metadatum
 		$parents[] = $this->get_default_metadata_attribute();
-
-		$meta_query = array(
-			'key'     => 'collection_id',
-			'value'   => $parents,
-			'compare' => 'IN',
-		);
-
+		
+		$results = [];
+		
 		$args = array_merge( [
 			'parent' => 0
 		], $args );
+		
+		$original_meta_q = isset( $args['meta_query'] ) ? $args['meta_query'] : [];
+		
+		/**
+		 * Since we introduced roles & capabalities management, we can not rely 
+		 * on WordPress behavior when handling default post status values.
+		 * WordPress checks if the current user can read_priva_posts, but this is 
+		 * not enough for us. We have to handle this ourselves to mimic WordPress behavior 
+		 * considering how tainacan manages metadata capabilities 
+		 */
+		if ( ! isset($args['post_status']) ) {
+			
+			foreach ( $parents as $parent_id ) {
+				
+				// Add public states.
+				$statuses = get_post_stati( array( 'public' => true ) );
+				
+				$read_private_cap = $this->get_default_metadata_attribute() == $parent_id ? 'tnc_rep_read_private_metadata' : 'tnc_col_' . $parent_id . '_read_private_metadata';
+				if ( current_user_can($read_private_cap) ) {
+					$statuses = array_merge( $statuses, get_post_stati( array( 'private' => true ) ) );
+				}
+				
+				$args['post_status'] = $statuses;
 
-		if ( isset( $args['meta_query'] ) ) {
+				$meta_query = array(
+					'key'     => 'collection_id',
+					'value'   => $parent_id,
+				);
+				
+				$args['meta_query'] = $original_meta_q;
+				$args['meta_query'][] = $meta_query;
+				
+				//var_dump($args);
+				$results = array_merge($results, $this->fetch( $args, 'OBJECT' ));
+				
+			}
+			
+		} else {
+			$meta_query = array(
+				'key'     => 'collection_id',
+				'value'   => $parents,
+				'compare' => 'IN',
+			);
+
+			$args = array_merge( [
+				'parent' => 0
+			], $args );
+			
+			$args['meta_query'] = $original_meta_q;
 			$args['meta_query'][] = $meta_query;
-		} elseif ( is_array( $args ) ) {
-			$args['meta_query'] = array( $meta_query );
+			
+			$results = $this->fetch( $args, 'OBJECT' );
 		}
-
+		
+		
+		
 		return $this->order_result(
-			$this->fetch( $args, $output ),
+			$results,
 			$collection,
 			isset( $args['include_disabled'] ) ? $args['include_disabled'] : false
 		);
@@ -427,28 +473,72 @@ class Metadata extends Repository {
 		$parents = get_post_ancestors( $collection_id );
 
 		//insert the actual collection
-		$parents[] = $collection_id;
-
+		if ( is_numeric($collection_id) ) {
+			$parents[] = $collection_id;
+		}
+		
 		//search for default metadatum
 		$parents[] = $this->get_default_metadata_attribute();
-
-		$meta_query = array(
-			'key'     => 'collection_id',
-			'value'   => $parents,
-			'compare' => 'IN',
-		);
-
+		
+		$results = [];
+		
 		$args = array_merge( [
 			'parent' => 0
 		], $args );
+		
+		$original_meta_q = isset( $args['meta_query'] ) ? $args['meta_query'] : [];
+		
+		/**
+		 * Since we introduced roles & capabalities management, we can not rely 
+		 * on WordPress behavior when handling default post status values.
+		 * WordPress checks if the current user can read_priva_posts, but this is 
+		 * not enough for us. We have to handle this ourselves to mimic WordPress behavior 
+		 * considering how tainacan manages metadata capabilities 
+		 */
+		if ( ! isset($args['post_status']) ) {
+			
+			foreach ( $parents as $parent_id ) {
+				
+				// Add public states.
+				$statuses = get_post_stati( array( 'public' => true ) );
+				
+				$read_private_cap = $this->get_default_metadata_attribute() == $parent_id ? 'tnc_rep_read_private_metadata' : 'tnc_col_' . $parent_id . '_read_private_metadata';
+				if ( current_user_can($read_private_cap) ) {
+					$statuses = array_merge( $statuses, get_post_stati( array( 'private' => true ) ) );
+				}
+				
+				$args['post_status'] = $statuses;
 
-		if ( isset( $args['meta_query'] ) ) {
+				$meta_query = array(
+					'key'     => 'collection_id',
+					'value'   => $parent_id,
+				);
+				
+				$args['meta_query'] = $original_meta_q;
+				$args['meta_query'][] = $meta_query;
+				
+				$results = array_merge($results, $this->fetch_ids( $args ));
+				
+			}
+			
+		} else {
+			$meta_query = array(
+				'key'     => 'collection_id',
+				'value'   => $parents,
+				'compare' => 'IN',
+			);
+
+			$args = array_merge( [
+				'parent' => 0
+			], $args );
+			
+			$args['meta_query'] = $original_meta_q;
 			$args['meta_query'][] = $meta_query;
-		} elseif ( is_array( $args ) ) {
-			$args['meta_query'] = array( $meta_query );
+			
+			$results = $this->fetch_ids( $args );
 		}
 
-		return $this->fetch_ids( $args );
+		return $results;
 	}
 
 	/**
@@ -456,11 +546,11 @@ class Metadata extends Repository {
 	 * metadata not ordinated appear on the end of the list
 	 *
 	 *
-	 * @param \WP_Query|array $result Response from method fetch
+	 * @param array $result Response from method fetch_by_collection
 	 * @param Entities\Collection $collection
 	 * @param bool $include_disabled Wether to include disabled metadata in the results or not
 	 *
-	 * @return array or WP_Query ordinate
+	 * @return array 
 	 */
 	public function order_result( $result, Entities\Collection $collection, $include_disabled = false ) {
 		$order = $collection->get_metadata_order();
@@ -495,29 +585,8 @@ class Metadata extends Repository {
 				$result_ordinate = array_merge( $result_ordinate, $not_ordinate );
 
 				return $result_ordinate;
-			} // if the result is a wp query object
-			else {
-				$posts           = $result->posts;
-				$result_ordinate = [];
-				$not_ordinate    = [];
+			} 
 
-				foreach ( $posts as $item ) {
-					$id    = $item->ID;
-					$index = array_search( $id, array_column( $order, 'id' ) );
-
-					if ( $index !== false ) {
-						$result_ordinate[ $index ] = $item;
-					} else {
-						$not_ordinate[] = $item;
-					}
-				}
-
-				ksort( $result_ordinate );
-				$result->posts = $result_ordinate;
-				$result->posts = array_merge( $result->posts, $not_ordinate );
-
-				return $result;
-			}
 		}
 
 		return $result;
@@ -761,7 +830,7 @@ class Metadata extends Repository {
 				]
 			],
 			'include_disabled' => true
-		], 'OBJECT' );
+		] );
 
 	}
 
@@ -783,7 +852,7 @@ class Metadata extends Repository {
 				]
 			],
 			'posts_per_page' => 1
-		], 'OBJECT' );
+		] );
 
 		if ( is_array( $results ) && sizeof( $results ) == 1 && $results[0] instanceof \Tainacan\Entities\Metadatum ) {
 			return $results[0];
@@ -810,7 +879,7 @@ class Metadata extends Repository {
 				]
 			],
 			'posts_per_page' => 1
-		], 'OBJECT' );
+		] );
 
 		if ( is_array( $results ) && sizeof( $results ) == 1 && $results[0] instanceof \Tainacan\Entities\Metadatum ) {
 			return $results[0];

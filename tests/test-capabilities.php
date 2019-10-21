@@ -18,6 +18,26 @@ class Capabilities extends TAINACAN_UnitTestCase {
 	function setUp() {
 		parent::setUp();
 		
+		/**
+		 * Test fixtures: 
+		 * 
+		 * Repo 
+		 * - public_taxonomy
+		 * - private_taxonomy
+		 * - public_repo_metadatum
+		 * - private_repo_metadatum
+		 * - public_repo_filter
+		 * - private_repo_filter
+		 * - public_collection (5 items)
+		 * --- (Core Title adn Description)
+		 * --- public_metadatum
+		 * --- private_metadatum 
+		 * --- public_filter 
+		 * --- private_filter 
+		 * - private_collection (5 items)
+		 * --- (Core Title adn Description)
+		 * --- meta_relationshipt (with public collection)
+		 */
 		$subscriber = $this->factory()->user->create(array( 'role' => 'subscriber' ));
 		$this->subscriber = get_userdata( $subscriber );
 		
@@ -26,7 +46,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$collection1 = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
-				'name'   => 'test_col',
+				'name'   => 'Public Col',
 				'status' => 'publish'
 			),
 			true
@@ -36,7 +56,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$collection2 = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
-				'name'   => 'test_col',
+				'name'   => 'Private Col',
 				'status' => 'private'
 			),
 			true
@@ -46,7 +66,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$taxonomy = $this->tainacan_entity_factory->create_entity(
 			'taxonomy',
 			array(
-				'name'         => 'genero',
+				'name'         => 'Public Tax',
 				'description'  => 'tipos de musica',
 				'allow_insert' => 'yes',
 				'status' => 'publish'
@@ -59,10 +79,10 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$taxonomy2 = $this->tainacan_entity_factory->create_entity(
 			'taxonomy',
 			array(
-				'name'         => 'genero2',
+				'name'         => 'Private Tax',
 				'description'  => 'tipos de musica2',
 				'allow_insert' => 'yes',
-				'status' => 'publish'
+				'status' => 'private'
 			),
 			true
 		);
@@ -97,7 +117,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$metadatum_text = $this->tainacan_entity_factory->create_entity(
 		    'metadatum',
 		    array(
-			    'name'   => 'text',
+			    'name'   => 'Public meta',
 			    'status' => 'publish',
 			    'collection' => $collection1,
 				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
@@ -110,7 +130,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$metadatum_repo = $this->tainacan_entity_factory->create_entity(
 		    'metadatum',
 		    array(
-			    'name'   => 'repo',
+			    'name'   => 'Public Repo Meta',
 			    'status' => 'publish',
 			    'collection_id' => 'default',
 				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
@@ -123,7 +143,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$metadatum_text2 = $this->tainacan_entity_factory->create_entity(
 		    'metadatum',
 		    array(
-			    'name'   => 'text',
+			    'name'   => 'Private Meta',
 			    'status' => 'private',
 			    'collection' => $collection1,
 				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
@@ -136,7 +156,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$metadatum_repo2 = $this->tainacan_entity_factory->create_entity(
 		    'metadatum',
 		    array(
-			    'name'   => 'repo',
+			    'name'   => 'Private Repo Meta',
 			    'status' => 'private',
 			    'collection_id' => 'default',
 				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
@@ -167,7 +187,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$filter = $this->tainacan_entity_factory->create_entity(
 			'filter',
 			array(
-				'name'       => 'filtro',
+				'name'       => 'Public filter',
 				'collection' => $collection1,
 				'description' => 'Teste Filtro',
 				'status' => 'publish',
@@ -181,7 +201,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$filter = $this->tainacan_entity_factory->create_entity(
 			'filter',
 			array(
-				'name'       => 'filtro',
+				'name'       => 'Public repo filter',
 				'collection_id' => 'default',
 				'description' => 'Teste Filtro',
 				'status' => 'publish',
@@ -195,7 +215,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$filter = $this->tainacan_entity_factory->create_entity(
 			'filter',
 			array(
-				'name'       => 'filtro',
+				'name'       => 'Private Filter',
 				'collection' => $collection1,
 				'description' => 'Teste Filtro',
 				'status' => 'private',
@@ -209,7 +229,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$filter = $this->tainacan_entity_factory->create_entity(
 			'filter',
 			array(
-				'name'       => 'filtro',
+				'name'       => 'Private repo filter',
 				'collection_id' => 'default',
 				'description' => 'Teste Filtro',
 				'status' => 'private',
@@ -260,7 +280,6 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( user_can($this->subscriber, 'tnc_rep_manage_taxonomies') );
 		
 		$this->subscriber->add_cap('manage_tainacan');
-		$this->subscriber->get_role_caps();
 		
 		$this->assertTrue( user_can($this->subscriber, 'tnc_rep_manage_taxonomies') );
 		
@@ -271,7 +290,6 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( user_can($this->subscriber, 'tnc_col_25_read_private_filters') );
 		
 		$this->subscriber->add_cap('manage_tainacan_collection_25');
-		$this->subscriber->get_role_caps();
 		
 		$this->assertTrue( user_can($this->subscriber, 'tnc_col_25_read_private_filters') );
 		$this->assertFalse( user_can($this->subscriber, 'tnc_col_36_read_private_filters') );
@@ -283,11 +301,17 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( user_can($this->subscriber, 'tnc_col_25_read_private_filters') );
 		
 		$this->subscriber->add_cap('tnc_col_all_read_private_filters');
-		$this->subscriber->get_role_caps();
 		
 		$this->assertTrue( user_can($this->subscriber, 'tnc_col_25_read_private_filters') );
 		$this->assertTrue( user_can($this->subscriber, 'tnc_col_36_read_private_filters') );
 		$this->assertFalse( user_can($this->subscriber, 'tnc_col_25_edit_posts') );
+		
+		$this->assertFalse( user_can($this->subscriber2, 'tnc_col_25_read_private_filters') );
+		
+		$this->subscriber2->add_cap('manage_tainacan_collection_all');
+		
+		$this->assertTrue( user_can($this->subscriber2, 'tnc_col_25_read_private_filters') );
+		$this->assertTrue( user_can($this->subscriber2, 'tnc_col_36_read_private_filters') );
 		
 	}
 	
@@ -332,6 +356,97 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertTrue( $this->public_repo_metadatum->can_edit() );
 		$this->assertTrue( $this->private_metadatum->can_edit() );
 		$this->assertTrue( $this->private_repo_metadatum->can_edit() );
+		
+		
+	}
+	
+	/**
+	 * @group filters
+	 */
+	function test_filters_metacap() {
+		
+		wp_set_current_user($this->subscriber2->ID);
+		
+		$this->assertFalse( $this->public_filter->can_edit() );
+		$this->assertFalse( $this->public_repo_filter->can_edit() );
+		$this->assertFalse( $this->private_filter->can_edit() );
+		$this->assertFalse( $this->private_repo_filter->can_edit() );
+		
+		$this->subscriber2->add_cap( 'tnc_rep_manage_filters' );
+		
+		$this->assertFalse( $this->public_filter->can_edit() );
+		$this->assertTrue( $this->public_repo_filter->can_edit() );
+		$this->assertFalse( $this->private_filter->can_edit() );
+		$this->assertTrue( $this->private_repo_filter->can_edit() );
+		
+		$this->subscriber2->add_cap( 'tnc_col_' . $this->public_collection->get_id() . '_manage_filters' );
+		
+		$this->assertTrue( $this->public_filter->can_edit() );
+		$this->assertTrue( $this->public_repo_filter->can_edit() );
+		$this->assertTrue( $this->private_filter->can_edit() );
+		$this->assertTrue( $this->private_repo_filter->can_edit() );
+		
+		
+	}
+	
+	/**
+	 * @group fetch_by_collection
+	 */
+	function test_fetch_meta_by_collection() {
+		global $current_user;
+		wp_set_current_user($this->subscriber2->ID);
+		
+		$meta = tainacan_metadata()->fetch_by_collection($this->public_collection);
+		$this->AssertEquals(4, sizeof($meta));
+		$meta = tainacan_metadata()->fetch_ids_by_collection($this->public_collection);
+		$this->AssertEquals(4, sizeof($meta));
+		
+		$this->subscriber2->add_cap( 'tnc_col_' . $this->public_collection->get_id() . '_read_private_metadata' );
+		$current_user = $this->subscriber2; // force update current user object with new capabilities
+		
+		$meta = tainacan_metadata()->fetch_by_collection($this->public_collection);
+		$this->AssertEquals(5, sizeof($meta));
+		$meta = tainacan_metadata()->fetch_ids_by_collection($this->public_collection);
+		$this->AssertEquals(5, sizeof($meta));
+		
+		$this->subscriber2->add_cap( 'tnc_rep_read_private_metadata' );
+		$current_user = $this->subscriber2; // force update current user object with new capabilities
+		
+		$meta = tainacan_metadata()->fetch_by_collection($this->public_collection);
+		$this->AssertEquals(6, sizeof($meta));
+		$meta = tainacan_metadata()->fetch_ids_by_collection($this->public_collection);
+		$this->AssertEquals(6, sizeof($meta));
+		
+		
+	}
+	
+	/**
+	 * @group fetch_by_collection
+	 */
+	function test_fetch_filter_by_collection() {
+		global $current_user;
+		wp_set_current_user($this->subscriber2->ID);
+		
+		$meta = tainacan_filters()->fetch_by_collection($this->public_collection);
+		$this->AssertEquals(2, sizeof($meta));
+		$meta = tainacan_filters()->fetch_ids_by_collection($this->public_collection);
+		$this->AssertEquals(2, sizeof($meta));
+		
+		$this->subscriber2->add_cap( 'tnc_col_' . $this->public_collection->get_id() . '_read_private_filters' );
+		$current_user = $this->subscriber2; // force update current user object with new capabilities
+		
+		$meta = tainacan_filters()->fetch_by_collection($this->public_collection);
+		$this->AssertEquals(3, sizeof($meta));
+		$meta = tainacan_filters()->fetch_ids_by_collection($this->public_collection);
+		$this->AssertEquals(3, sizeof($meta));
+		
+		$this->subscriber2->add_cap( 'tnc_rep_read_private_filters' );
+		$current_user = $this->subscriber2; // force update current user object with new capabilities
+		
+		$meta = tainacan_filters()->fetch_by_collection($this->public_collection);
+		$this->AssertEquals(4, sizeof($meta));
+		$meta = tainacan_filters()->fetch_ids_by_collection($this->public_collection);
+		$this->AssertEquals(4, sizeof($meta));
 		
 		
 	}

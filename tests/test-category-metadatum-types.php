@@ -525,16 +525,16 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 	        true
         );
 		
-		$taxonomies_1 = $Tainacan_Taxonomies->fetch_by_collection($collection, [], 'OBJECT');
+		$taxonomies_1 = $Tainacan_Taxonomies->fetch_by_collection($collection);
 		$this->assertEquals(2, sizeof($taxonomies_1));
 		
-		$taxonomies_2 = $Tainacan_Taxonomies->fetch_by_collection($collection2, [], 'OBJECT');
+		$taxonomies_2 = $Tainacan_Taxonomies->fetch_by_collection($collection2);
 		$this->assertEquals(2, sizeof($taxonomies_2));
 		
-		$taxonomies_3 = $Tainacan_Taxonomies->fetch_by_collection($collection2_c, [], 'OBJECT');
+		$taxonomies_3 = $Tainacan_Taxonomies->fetch_by_collection($collection2_c);
 		$this->assertEquals(3, sizeof($taxonomies_3));
 		
-		$taxonomies_4 = $Tainacan_Taxonomies->fetch_by_collection($collection2_gc, [], 'OBJECT');
+		$taxonomies_4 = $Tainacan_Taxonomies->fetch_by_collection($collection2_gc);
 		$this->assertEquals(3, sizeof($taxonomies_4));
 		
 		
