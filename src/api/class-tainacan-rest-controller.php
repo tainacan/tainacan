@@ -295,7 +295,10 @@ class REST_Controller extends \WP_REST_Controller {
 		$query_params['context'] = array(
 			'type'    => 'string',
 			'default' => 'view',
-			'items'   => array( 'view, edit' )
+			'enum'    => array(
+				'view',
+				'edit'
+			),
 		);
 
 		$query_params['search'] = array(
