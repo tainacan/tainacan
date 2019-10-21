@@ -186,7 +186,14 @@ class Roles {
 					
 					$col_id = preg_replace('/[a-z_]+(\d+)[a-z_]+?$/', '$1', $cap );
 					
-					if ( $user->has_cap('manage_tainacan_collection_' . $col_id) ) {
+					if ( ! is_numeric($col_id) ) {
+						continue;
+					}
+					
+					// check for tnc_col_all_* capabilities
+					$all_collections_cap = preg_replace('/([a-z_]+)(\d+)([a-z_]+?)$/', '${1}all${3}', $cap );
+					
+					if ( $user->has_cap('manage_tainacan_collection_' . $col_id) || $user->has_cap($all_collections_cap) ) {
 						$allcaps = array_merge($allcaps, [ $cap => true ]);
 					} else {
 						// check if the user is the owner

@@ -278,6 +278,19 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		
 	}
 	
+	function test_super_all_collection () {
+		
+		$this->assertFalse( user_can($this->subscriber, 'tnc_col_25_read_private_filters') );
+		
+		$this->subscriber->add_cap('tnc_col_all_read_private_filters');
+		$this->subscriber->get_role_caps();
+		
+		$this->assertTrue( user_can($this->subscriber, 'tnc_col_25_read_private_filters') );
+		$this->assertTrue( user_can($this->subscriber, 'tnc_col_36_read_private_filters') );
+		$this->assertFalse( user_can($this->subscriber, 'tnc_col_25_edit_posts') );
+		
+	}
+	
 	// function test_items_capabilities() {
 	// 	
 	// 	$collection = $this->tainacan_entity_factory->create_entity(
