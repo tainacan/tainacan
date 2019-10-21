@@ -270,8 +270,8 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 
 		if($method === \WP_REST_Server::READABLE) {
 			$endpoint_args = array_merge(
-                $endpoint_args, 
-                parent::get_wp_query_params()
+				$endpoint_args,
+				$this->get_wp_query_params()
             );
 		} elseif ($method === \WP_REST_Server::EDITABLE) {
 			$endpoint_args['values'] = [
@@ -295,7 +295,15 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 	 * @return array
 	 */
 	public function get_wp_query_params() {
-		$query_params['context']['default'] = 'view';
+		$query_params['context'] = array(
+			'type'    	  => 'string',
+			'default' 	  => 'view',
+			'description' => 'The context in which the request is made.',
+			'enum'    	  => array(
+				'view',
+				'edit'
+			),
+		);
 
 		return $query_params;
 	}
