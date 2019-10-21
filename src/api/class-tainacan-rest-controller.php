@@ -397,8 +397,26 @@ class REST_Controller extends \WP_REST_Controller {
 			),
 			'metacompare'  => array(
 				'type'        => 'string',
-				'description' => __('Operator to test the meta_value. Possible values are =, !=, >, >=, <, <=, LIKE, NOT LIKE, IN, NOT IN, BETWEEN, NOT BETWEEN, NOT EXISTS, REGEXP, NOT REGEXP or RLIKE.'),
+				'description' => __('Operator to test the metavalue'),
 				'default'     => '=',
+				'enum'        => array(
+					'=',
+					'!=',
+					'>',
+					'>=',
+					'<',
+					'<=',
+					'LIKE',
+					'NOT LIKE',
+					'IN',
+					'NOT IN',
+					'BETWEEN',
+					'NOT BETWEEN',
+					'NOT EXISTS',
+					'REGEXP',
+					'NOT REGEXP',
+					'RLIKE'
+				)
 			),
 			'metaquery'    => array(
 				'description' => __('Limits result set to items that have specific custom metadata'),
