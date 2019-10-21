@@ -478,12 +478,6 @@ class REST_Collections_Controller extends REST_Controller {
 		$endpoint_args = [];
 		if($method === \WP_REST_Server::READABLE) {
             
-			$endpoint_args['context'] = array(
-				'type'    => 'string',
-				'default' => 'view',
-				'items'   => array( 'view, edit' )
-			);
-            
             $endpoint_args['name'] = array(
     	    	'description' => __('Limits the result set to collections with a specific name'),
     		    'type'        => 'string',

@@ -286,9 +286,16 @@ class REST_Controller extends \WP_REST_Controller {
 	 * @return array|void
 	 */
 	public function get_wp_query_params(){
+
 		$query_params['id'] = array(
 			'description' => __("Limit result to objects with specific id.", 'tainacan'),
 			'type'        => 'integer',
+		);
+
+		$query_params['context'] = array(
+			'type'    => 'string',
+			'default' => 'view',
+			'items'   => array( 'view, edit' )
 		);
 
 		$query_params['search'] = array(

@@ -351,11 +351,6 @@ class REST_Logs_Controller extends REST_Controller {
 	public function get_endpoint_args_for_item_schema( $method = null ) {
 		$endpoint_args = [];
 		if($method === \WP_REST_Server::READABLE) {
-			$endpoint_args['context'] = array(
-				'type'    => 'string',
-				'default' => 'view',
-				'items'   => array( 'view' )
-			);
 			$endpoint_args = array_merge(
                 $endpoint_args, 
                 parent::get_wp_query_params()

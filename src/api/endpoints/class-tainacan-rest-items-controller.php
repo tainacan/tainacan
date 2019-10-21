@@ -761,12 +761,6 @@ class REST_Items_Controller extends REST_Controller {
 				'type'        => 'string/array',
 				'description' => __( 'Fetch only specific attribute. The specifics attributes are the same in schema.' ),
 			);
-
-			$endpoint_args['context'] = array(
-				'type'    => 'string',
-				'default' => 'view',
-				'items'   => array( 'view, edit' )
-			);
 		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
 			$map = $this->items_repository->get_map();
 

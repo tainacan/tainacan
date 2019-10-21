@@ -269,11 +269,6 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 		$endpoint_args = [];
 
 		if($method === \WP_REST_Server::READABLE) {
-			$endpoint_args['context'] = array(
-				'type'    => 'string',
-				'default' => 'view',
-				'items'   => array( 'view, edit' )
-			);
 			$endpoint_args = array_merge(
                 $endpoint_args, 
                 parent::get_wp_query_params()
