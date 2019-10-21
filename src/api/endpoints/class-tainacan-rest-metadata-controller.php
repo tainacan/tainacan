@@ -50,7 +50,6 @@ class REST_Metadata_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'update_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE)
 				),
-				// ENDPOINT X. THIS ENDPOINT DO THE SAME THING OF ENDPOINT Z. I hope in a brief future it function changes.
 				array(
 					'methods'             => \WP_REST_Server::DELETABLE,
 					'callback'            => array($this, 'delete_item'),

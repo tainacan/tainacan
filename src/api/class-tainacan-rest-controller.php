@@ -293,9 +293,10 @@ class REST_Controller extends \WP_REST_Controller {
 		);
 
 		$query_params['context'] = array(
-			'type'    => 'string',
-			'default' => 'view',
-			'enum'    => array(
+			'type'    	  => 'string',
+			'default' 	  => 'view',
+			'description' => 'The context in which the request is made.',
+			'enum'    	  => array(
 				'view',
 				'edit'
 			),
@@ -339,7 +340,7 @@ class REST_Controller extends \WP_REST_Controller {
 			'description'        => __( 'Order sort attribute ascending or descending.', 'tainacan' ),
 			'type'               => 'string/array',
 			'default'            => 'desc',
-			'enum'               => array( 'asc', 'desc' ),
+			'enum'               => array( 'asc', 'desc', 'ASC', 'DESC' ),
 		);
 
 		$query_params['orderby'] = array(
