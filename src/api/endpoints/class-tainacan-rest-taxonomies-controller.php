@@ -452,16 +452,16 @@ class REST_Taxonomies_Controller extends REST_Controller {
 	public function get_endpoint_args_for_item_schema( $method = null ) {
 		$endpoint_args = [];
 		if($method === \WP_REST_Server::READABLE) {
-			$endpoint_args['fetch_only'] = array(
-				'type'        => 'string/array',
-				'description' => __( 'Fetch only specific attribute. The specifics attributes are the same in schema.' ),
-			);
-
 			$endpoint_args['context'] = array(
 				'type'    => 'string',
 				'default' => 'view',
 				'items'   => array( 'view, edit' )
 			);
+			$endpoint_args = array_merge(
+                $endpoint_args, 
+				parent::get_wp_query_params(),
+                parent::get_fetch_only_param()
+            );
 		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
 			$map = $this->taxonomy_repository->get_map();
 

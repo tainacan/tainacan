@@ -356,6 +356,10 @@ class REST_Logs_Controller extends REST_Controller {
 				'default' => 'view',
 				'items'   => array( 'view' )
 			);
+			$endpoint_args = array_merge(
+                $endpoint_args, 
+                parent::get_wp_query_params()
+            );
 		}
 
 		return $endpoint_args;

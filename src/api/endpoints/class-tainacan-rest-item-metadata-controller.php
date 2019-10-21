@@ -56,7 +56,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_wp_query_params(),
+					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE),
 				)
 			)
 		);
@@ -268,7 +268,17 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 	public function get_endpoint_args_for_item_schema( $method = null ) {
 		$endpoint_args = [];
 
-		if ($method === \WP_REST_Server::EDITABLE) {
+		if($method === \WP_REST_Server::READABLE) {
+			$endpoint_args['context'] = array(
+				'type'    => 'string',
+				'default' => 'view',
+				'items'   => array( 'view, edit' )
+			);
+			$endpoint_args = array_merge(
+                $endpoint_args, 
+                parent::get_wp_query_params()
+            );
+		} elseif ($method === \WP_REST_Server::EDITABLE) {
 			$endpoint_args['values'] = [
 				'type'        => 'array/string/object/integer',
 				'items'       => [

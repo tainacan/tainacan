@@ -569,6 +569,10 @@ class REST_Metadata_Controller extends REST_Controller {
 				'default' => 'view',
 				'items'   => array( 'view, edit' )
 			);
+			$endpoint_args = array_merge(
+                $endpoint_args, 
+                parent::get_wp_query_params()
+            );
 		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
 			$map = $this->metadatum_repository->get_map();
 

@@ -43,7 +43,7 @@ class REST_Collections_Controller extends REST_Controller {
                 'methods'             => \WP_REST_Server::READABLE,
                 'callback'            => array($this, 'get_items'),
                 'permission_callback' => array($this, 'get_items_permissions_check'),
-	            'args'                => $this->get_wp_query_params(),
+	            'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE),
             ),
 	        array(
 		        'methods'             => \WP_REST_Server::CREATABLE,
@@ -58,7 +58,7 @@ class REST_Collections_Controller extends REST_Controller {
                 'methods'             => \WP_REST_Server::READABLE,
                 'callback'            => array($this, 'get_item'),
                 'permission_callback' => array($this, 'get_item_permissions_check'),
-	            'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE),
+	            'args'                => $this->get_wp_query_params(),
 				
             ),
             array(

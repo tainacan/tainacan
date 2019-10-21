@@ -66,7 +66,7 @@ class REST_Controller extends \WP_REST_Controller {
 			'name'         => 'title',
 			'title'        => 'title',
 			'id'           => 'p',
-			'authorid'     => 'author_id',
+			'authorid'     => 'author',
 			'authorname'   => 'author_name',
 			'search'       => 's',
 			'searchterm'   => 'search',
