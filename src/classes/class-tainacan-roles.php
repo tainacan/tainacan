@@ -83,17 +83,19 @@ class Roles {
 				'display_name' => __('View Logs', 'tainacan'),
 				'description' => __('Access to activities logs. Note that activity logs might contain information on private collections, items and metadata.', 'tainacan')
 			],
-			'tnc_rep_bulk_edit' => [
-				'display_name' => __('Bulk edit items', 'tainacan'),
-				'description' => __('Access to the Bulk edit items feature.', 'tainacan')
-			],
+			
 			/**
 			 * Collections capabilities
-			 * There is a set of this capabilities for each collection, suffixed with collection ID
+			 * There is a set of this capabilities for each collection, where %d is collection ID
+			 * If %d is "all" then the user will have this capability to all collections
 			 */
 			'manage_tainacan_collection_%d' => [
 				'display_name' => __('Manage Collection', 'tainacan'),
 				'description' => __('Manage all collection settings, items, metadata, filters, etc.', 'tainacan')
+			],
+			'tnc_col_%d_bulk_edit' => [
+				'display_name' => __('Bulk edit items', 'tainacan'),
+				'description' => __('Access to the Bulk edit items feature.', 'tainacan')
 			],
 			'tnc_col_%d_edit' => [
 				'display_name' => __('Manage Collection settings', 'tainacan'),
