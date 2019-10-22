@@ -49,23 +49,13 @@
             return {
                 selected:'',
                 options: [],
-                label: '',
-                relatedCollectionId: ''
+                label: ''
             }
         },
         watch: {
             'query.metaquery'() {
                 this.updateSelectedValues();
             },
-        },
-        created() {
-            if (this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' && 
-                this.filter.metadatum && 
-                this.filter.metadatum.metadata_type_object && 
-                this.filter.metadatum.metadata_type_object.options &&
-                this.filter.metadatum.metadata_type_object.options.collection_id) {
-                    this.relatedCollectionId = this.filter.metadatum.metadata_type_object.options.collection_id;
-                }
         },
         mounted() {
             this.updateSelectedValues();
@@ -131,14 +121,12 @@
                     let metadata = this.query.metaquery[ index ];
 
                     if (this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship') {
-                        
-                        let endpoint = '/items/' + metadata.value + '?fetch_only=title,thumbnail';
 
-                        if (this.relatedCollectionId != '')
-                            endpoint = '/collection/' + this.relatedCollectionId + endpoint; 
+                        let endpoint = '/items/' + metadata.value + '?fetch_only=title,thumbnail';
 
                         axios.get(endpoint)
                             .then( res => {
+
                                 let item = res.data;
                                 this.label = item.title;
                                 this.selected = item.title;
