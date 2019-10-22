@@ -112,11 +112,10 @@
                 let val = this.selected;
                 let results = [];
 
-                if (val.length > 0){
-                    for( let term of val ){
+                if (val.length > 0) {
+                    for (let term of val)
                         results.push( term.value );
-                    }
-
+                
                     this.$emit('input', results);
                     this.$emit('blur');
                 }
@@ -125,9 +124,8 @@
                 let val = this.selected;
                 let results = [];
 
-                for( let term of val ){
-                    results.push( term.value );
-                }
+                for (let term of val)
+                    results.push(term.value);
 
                 this.$emit('input', results);
                 this.$emit('blur');
