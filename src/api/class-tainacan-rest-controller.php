@@ -295,9 +295,10 @@ class REST_Controller extends \WP_REST_Controller {
 		);
 
 		$query_params['context'] = array(
-			'type'    => 'string',
-			'default' => 'view',
-			'enum'    => array(
+			'type'    	  => 'string',
+			'default' 	  => 'view',
+			'description' => 'The context in which the request is made.',
+			'enum'    	  => array(
 				'view',
 				'edit'
 			),
@@ -341,7 +342,7 @@ class REST_Controller extends \WP_REST_Controller {
 			'description'        => __( 'Order sort attribute ascending or descending.', 'tainacan' ),
 			'type'               => 'string/array',
 			'default'            => 'desc',
-			'enum'               => array( 'asc', 'desc' ),
+			'enum'               => array( 'asc', 'desc', 'ASC', 'DESC' ),
 		);
 
 		$query_params['orderby'] = array(
@@ -399,8 +400,26 @@ class REST_Controller extends \WP_REST_Controller {
 			),
 			'metacompare'  => array(
 				'type'        => 'string',
-				'description' => __('Operator to test the meta_value. Possible values are =, !=, >, >=, <, <=, LIKE, NOT LIKE, IN, NOT IN, BETWEEN, NOT BETWEEN, NOT EXISTS, REGEXP, NOT REGEXP or RLIKE.'),
+				'description' => __('Operator to test the metavalue'),
 				'default'     => '=',
+				'enum'        => array(
+					'=',
+					'!=',
+					'>',
+					'>=',
+					'<',
+					'<=',
+					'LIKE',
+					'NOT LIKE',
+					'IN',
+					'NOT IN',
+					'BETWEEN',
+					'NOT BETWEEN',
+					'NOT EXISTS',
+					'REGEXP',
+					'NOT REGEXP',
+					'RLIKE'
+				)
 			),
 			'metaquery'    => array(
 				'description' => __('Limits result set to items that have specific custom metadata'),
@@ -418,8 +437,24 @@ class REST_Controller extends \WP_REST_Controller {
 						),
 						'compare'  => array(
 							'type'        => 'string',
-							'description' => __('Operator to test. Possible values are =, !=, >, >=, <, <=, LIKE, NOT LIKE, IN, NOT IN, BETWEEN, NOT BETWEEN, EXISTS and NOT EXISTS.'),
-							'default'     => '='
+							'description' => __('Operator to test.'),
+							'default'     => '=',
+							'enum'		  => array(
+								'=',
+								'!=',
+								'>',
+								'>=',
+								'<',
+								'<=',
+								'LIKE',
+								'NOT LIKE',
+								'IN',
+								'NOT IN',
+								'BETWEEN',
+								'NOT BETWEEN',
+								'EXISTS',
+								'NOT EXISTS'
+							)
 						),
 						'relation' => array(
 							'type'        => 'string',
@@ -469,8 +504,24 @@ class REST_Controller extends \WP_REST_Controller {
 						),
 						'compare'   => array(
 							'type'        => 'string',
-							'description' => __('Operator to test. Possible values are =, !=, >, >=, <, <=, LIKE, NOT LIKE, IN, NOT IN, BETWEEN, NOT BETWEEN, EXISTS and NOT EXISTS.'),
-							'default'     => '='
+							'description' => __('Operator to test.'),
+							'default'     => '=',
+							'enum'        => array(
+								'=',
+								'!=',
+								'>',
+								'>=',
+								'<',
+								'<=',
+								'LIKE',
+								'NOT LIKE',
+								'IN',
+								'NOT IN',
+								'BETWEEN',
+								'NOT BETWEEN',
+								'EXISTS',
+								'NOT EXISTS'
+							)
 						),
 						'dayofweek' => array('type' => 'array'),
 						'inclusive' => array(
@@ -500,7 +551,14 @@ class REST_Controller extends \WP_REST_Controller {
 						),
 						'metadatum'    => array(
 							'type'        => 'string',
-							'description' => __('Select taxonomy term by. Possible values are term_id, name, slug or term_taxonomy_id. Default value is term_id.')
+							'default'	  => 'term_id',
+							'description' => __('Select taxonomy term by'),
+							'enum'		  => array(
+								'term_id',
+								'name',
+								'slug',
+								'term_taxonomy_id'
+							)
 						),
 						'terms'    => array(
 							'type'        => 'int/string/array',
@@ -508,13 +566,24 @@ class REST_Controller extends \WP_REST_Controller {
 						),
 						'operator' => array(
 							'type'        => 'string',
-							'description' => __('Operator to test. Possible values are IN, NOT IN, AND, EXISTS and NOT EXISTS'),
-							'default'     => 'IN'
+							'description' => __('Operator to test.'),
+							'default'     => 'IN',
+							'enum'        => array(
+								'IN',
+								'NOT IN',
+								'AND',
+								'EXISTS',
+								'NOT EXISTS'
+							)
 						),
 						'relation' => array(
 							'type'        => 'string',
-							'description' => __('The logical relationship between each inner taxonomy array when there is more than one. Possible values are AND, OR. Do not use with a single inner taxonomy array.'),
-							'default'     => 'AND'
+							'description' => __('The logical relationship between each inner taxonomy array when there is more than one. Do not use with a single inner taxonomy array.'),
+							'default'     => 'AND',
+							'enum'		  => array(
+								'AND',
+								'OR'
+							)
 						),
 					),
 					'type'     => 'array'

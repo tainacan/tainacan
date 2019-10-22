@@ -56,8 +56,9 @@ class REST_Terms_Controller extends REST_Controller {
 					'callback'            => array($this, 'delete_item'),
 					'permission_callback' => array($this, 'delete_item_permissions_check'),
 					'args'                => [
-						'info' => [
-							'description' => __('Delete term permanently.')
+						'permanently' => [
+							'description' => __('Delete term permanently.'),
+							'default'     => '1'
 						]
 					]
 				),

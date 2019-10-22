@@ -62,8 +62,8 @@ class REST_Taxonomies_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'delete_item_permissions_check'),
 					'args'                => array(
 						'permanently' => array(
-							'description' => __('To delete permanently, you can pass \'permanently\' as true. By default this will only trash collection'),
-							'default'     => 'false',
+							'description' => __('To delete permanently, you can pass \'permanently\' as 1. By default this will only trash collection'),
+							'default'     => '0',
 						),
 					)
 				),

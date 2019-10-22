@@ -83,8 +83,8 @@ class REST_Filters_Controller extends REST_Controller {
 				'permission_callback' => array($this, 'delete_item_permissions_check'),
 				'args'                => array(
 	            	'permanently' => array(
-		                'description' => __('To delete permanently, you can pass \'permanently\' as true. By default this will only trash collection'),
-			            'default'     => 'false'
+		                'description' => __('To delete permanently, you can pass \'permanently\' as 1. By default this will only trash collection'),
+			            'default'     => '0'
 		            ),
 	            )
 			),
@@ -497,16 +497,17 @@ class REST_Filters_Controller extends REST_Controller {
 	 * @return array|void
 	 */
 	public function get_wp_query_params() {
-		$query_params['context']['default'] = 'view';
-
-		$query_params = array_merge($query_params, parent::get_wp_query_params());
 
 		$query_params['name'] = array(
 			'description' => __('Limits the result set to filters with a specific name'),
 			'type'        => 'string',
 		);
 
-		$query_params = array_merge($query_params, parent::get_meta_queries_params());
+		$query_params = array_merge(
+			$query_params, 
+			parent::get_wp_query_params(),
+			parent::get_meta_queries_params()
+		);
 
 		return $query_params;
 	}
