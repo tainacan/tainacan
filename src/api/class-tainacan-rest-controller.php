@@ -165,7 +165,7 @@ class REST_Controller extends \WP_REST_Controller {
 				$terms = get_terms([
 					'taxonomy' => $tax_query['taxonomy'],
 					'fields' => 'ids',
-					'hide_empty' => false,
+					'hide_empty' => isset($args['hide_empty']) ? $args['hide_empty'] : true,
 					'search' => $tax_query['terms']
 				]);
 				
@@ -180,7 +180,7 @@ class REST_Controller extends \WP_REST_Controller {
 				$terms = get_terms([
 					'taxonomy' => $tax_query['taxonomy'],
 					'fields' => 'ids',
-					'hide_empty' => false,
+					'hide_empty' => isset($args['hide_empty']) ? $args['hide_empty'] : true,
 					'search' => $tax_query['terms']
 				]);
 				if ($terms) {
