@@ -45,6 +45,22 @@ class REST_Metadata_Controller extends REST_Controller {
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<metadatum_id>[\d]+)',
 			array(
 				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_item'),
+					'permission_callback' => array($this, 'get_item_permissions_check'),
+					'args'                => array(
+						'context' => array(
+							'type'    	  => 'string',
+							'default' 	  => 'view',
+							'description' => 'The context in which the request is made.',
+							'enum'    	  => array(
+								'view',
+								'edit'
+							)
+						),
+					),
+				),
+				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
 					'callback'            => array($this, 'update_item'),
 					'permission_callback' => array($this, 'update_item_permissions_check'),
@@ -54,12 +70,6 @@ class REST_Metadata_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::DELETABLE,
 					'callback'            => array($this, 'delete_item'),
 					'permission_callback' => array($this, 'delete_item_permissions_check'),
-				),
-				array(
-					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => array($this, 'get_item'),
-					'permission_callback' => array($this, 'get_item_permissions_check'),
-					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE),
 				),
 				'schema'                  => [$this, 'get_schema']
 			)
@@ -84,27 +94,37 @@ class REST_Metadata_Controller extends REST_Controller {
 		register_rest_route($this->namespace, '/' . $this->rest_base,
 			array(
 				array(
-					'methods'             => \WP_REST_Server::CREATABLE,
-					'callback'            => array($this, 'create_item'),
-					'permission_callback' => array($this, 'create_item_permissions_check'),
-					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE),
-				),
-				array(
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
 					'args'                => $this->get_wp_query_params(),
+				),
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array($this, 'create_item'),
+					'permission_callback' => array($this, 'create_item_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE),
 				),
 				'schema'                  => [$this, 'get_schema'],
 			)
 		);
 		register_rest_route($this->namespace, '/'. $this->rest_base . '/(?P<metadatum_id>[\d]+)',
 			array(
-				// ENDPOINT Z.
 				array(
-					'methods'             => \WP_REST_Server::DELETABLE,
-					'callback'            => array($this, 'delete_item'),
-					'permission_callback' => array($this, 'delete_item_permissions_check')
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_item'),
+					'permission'          => array($this, 'get_item_permissions_check'),
+					'args'                => array(
+						'context' => array(
+							'type'    	  => 'string',
+							'default' 	  => 'view',
+							'description' => 'The context in which the request is made.',
+							'enum'    	  => array(
+								'view',
+								'edit'
+							)
+						),
+					),
 				),
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
@@ -113,10 +133,9 @@ class REST_Metadata_Controller extends REST_Controller {
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE)
 				),
 				array(
-					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => array($this, 'get_item'),
-					'permission'          => array($this, 'get_item_permissions_check'),
-					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE)
+					'methods'             => \WP_REST_Server::DELETABLE,
+					'callback'            => array($this, 'delete_item'),
+					'permission_callback' => array($this, 'delete_item_permissions_check')
 				),
 				'schema'                  => [$this, 'get_schema'],
 			)

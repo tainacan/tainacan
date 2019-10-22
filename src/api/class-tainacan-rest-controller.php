@@ -272,11 +272,11 @@ class REST_Controller extends \WP_REST_Controller {
 	 */
 	public function get_fetch_only_param(){
 		return [
-			'fetch_only' => [
+			'fetch_only' => array(
 				'type'        => 'string/array',
 				'description' => __( 'Fetch only specific attribute. The specifics attributes are the same in schema.', 'tainacan' ),
 				//TODO: explicar o fetch only meta.. cabe aqui?
-			]
+			)
 		];
 	}
 

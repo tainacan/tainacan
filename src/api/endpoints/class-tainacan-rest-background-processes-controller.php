@@ -42,23 +42,33 @@ class REST_Background_Processes_Controller extends REST_Controller {
                     ],
                     'all_users' => [
                         'type'        => 'bool',
-                        'description' => __( 'Whether to return processes from all users (if current user is admin). Default false.', 'tainacan' ),
+                        'description' => __( 'Whether to return processes from all users (if current user is admin).', 'tainacan' ),
+                        'default'     => false,
                     ],
                     'status' => [
                         'type'        => 'string',
-                        'description' => __( '"open" returns only processes currently running. "closed" returns only finished or aborted. "all" returns all. Default "all"', 'tainacan' ),
+                        'description' => __( '"open" returns only processes currently running. "closed" returns only finished or aborted. "all" returns all.', 'tainacan' ),
+                        'default'     => 'all',
+                        'enum'        => array(
+                            'open',
+                            'closed',
+                            'all'
+                        )
                     ],
                     'perpage' => [
                         'type'        => 'integer',
-                        'description' => __( 'Number of processes to return per page. Default 10', 'tainacan' ),
+                        'description' => __( 'Number of processes to return per page', 'tainacan' ),
+                        'default'     => 10,
                     ],
                     'paged' => [
                         'type'        => 'integer',
-                        'description' => __( 'Page to retrieve. Default 1', 'tainacan' ),
+                        'description' => __( 'Page to retrieve', 'tainacan' ),
+                        'default'     => 1
                     ],
 					'recent' => [
                         'type'        => 'bool',
                         'description' => __( 'Returns only processes created or updated recently', 'tainacan' ),
+                        'default' => false
                     ],
                 ],
 	        ),
@@ -82,6 +92,10 @@ class REST_Background_Processes_Controller extends REST_Controller {
                     'status' => [
                         'type'        => 'string',
                         'description' => __( '"open" or "closed" ', 'tainacan' ),
+                        'enum'    	  => array(
+                            'open',
+                            'closed'
+                        )
                     ]
                 ],
             ),

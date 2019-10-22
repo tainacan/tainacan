@@ -54,7 +54,21 @@ class REST_Taxonomies_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_item'),
 					'permission_callback' => array($this, 'get_item_permissions_check'),
-					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE)
+					'args'				  => array(
+						'context' => array(
+							'type'    	  => 'string',
+							'default' 	  => 'view',
+							'description' => 'The context in which the request is made.',
+							'enum'    	  => array(
+								'view',
+								'edit'
+							)
+						),
+						'fetch_only' => array(
+							'type'        => 'string/array',
+							'description' => __( 'Fetch only specific attribute. The specifics attributes are the same in schema.', 'tainacan' ),
+						)
+					)
 				),
 				array(
 					'methods'             => \WP_REST_Server::DELETABLE,
