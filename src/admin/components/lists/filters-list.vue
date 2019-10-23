@@ -1172,6 +1172,10 @@ export default {
                     font-size: 1rem;
                     margin-left: -16px;
                 }
+                
+                .field .collapse-handle {
+                    display: flex;
+                }
 
                 input, select, textarea, 
                 .input, .tags, .tag  {
