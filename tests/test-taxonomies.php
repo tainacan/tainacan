@@ -416,4 +416,171 @@ class Taxonomies extends TAINACAN_UnitTestCase {
 		
 	}
 	
+	function test_metadata_taxonomy_term_count() {
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+
+		$collection_1 = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array( 'name'   => 'test-1' ),
+			true
+		);
+
+		$collection_2 = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array( 'name'   => 'test-2' ),
+			true
+		);
+
+		$tax = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_test',
+				'status' => 'publish',
+				'enabled_post_types' => [$collection_1->get_db_identifier(), $collection_2->get_db_identifier()]
+			),
+			true
+		);
+
+		$tax_repository = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_test_repository',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$t1 = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $tax->get_db_identifier(),
+				'name'     => 'term',
+				'user'     => get_current_user_id(),
+			),
+			true
+		);
+
+		$t2 = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $tax_repository->get_db_identifier(),
+				'name'     => 'term_repository'
+			),
+			true
+		);
+		
+		$metadatum_1 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'meta-1',
+				'description' => 'description-1',
+				'collection' => $collection_1,
+				'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'	 => 'publish',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax->get_id(),
+					'allow_new_terms' => 'no'
+				]
+			),
+			true
+		);
+
+		$metadatum_2 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'meta-2',
+				'description' => 'description-2',
+				'collection' => $collection_2,
+				'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'	 => 'publish',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax->get_id(),
+					'allow_new_terms' => 'no'
+				]
+			),
+			true
+		);
+
+		$metadatum_repository = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'meta-1',
+				'description' => 'description-1',
+				'collection_id' => $Tainacan_Metadata->get_default_metadata_attribute(),
+				'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'	 => 'publish',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax_repository->get_id(),
+					'allow_new_terms' => 'no'
+				]
+			),
+			true
+		);
+
+		$i1 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'item teste',
+				'description' => 'adasdasdsa',
+				'collection'  => $collection_1
+			),
+			true
+		);
+		$itemMeta1 = new \Tainacan\Entities\Item_Metadata_Entity($i1, $metadatum_1);
+		$itemMeta1->set_value('term');
+		$itemMeta1->validate();
+		$Tainacan_Item_Metadata->insert($itemMeta1);
+		
+		$itemMeta1_repo = new \Tainacan\Entities\Item_Metadata_Entity($i1, $metadatum_repository);
+		$itemMeta1_repo->set_value('term_repository');
+		$itemMeta1_repo->validate();
+		$Tainacan_Item_Metadata->insert($itemMeta1_repo);
+
+
+		$i2 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'item teste',
+				'description' => 'adasdasdsa',
+				'collection'  => $collection_2
+			),
+			true
+		);
+		$itemMeta2 = new \Tainacan\Entities\Item_Metadata_Entity($i2, $metadatum_2);
+		$itemMeta2->set_value('term');
+		$itemMeta2->validate();
+		$Tainacan_Item_Metadata->insert($itemMeta2);
+
+		$itemMeta2_repo = new \Tainacan\Entities\Item_Metadata_Entity($i2, $metadatum_repository);
+		$itemMeta2_repo->set_value('term_repository');
+		$itemMeta2_repo->validate();
+		$Tainacan_Item_Metadata->insert($itemMeta2_repo);
+
+		$terms = get_terms([
+			'taxonomy' => $tax->get_db_identifier(),
+			//'hide_empty' => false,
+		]);
+		$this->assertEquals(1, count($terms));
+
+		wp_update_term_count($t1->get_term_id(), $tax->get_db_identifier());
+		wp_update_term_count($t2->get_term_id(), $tax_repository->get_db_identifier());		
+
+		$term = get_term($t1->get_term_id());
+		$term_repo = get_term($t2->get_term_id());
+		$tax_used = get_object_taxonomies( [$collection_1->get_db_identifier(), $collection_2->get_db_identifier()]);
+		
+		$tax = get_taxonomy($tax->get_db_identifier());
+		$tax_repository = get_taxonomy($tax_repository->get_db_identifier());
+
+		$this->assertContains($collection_1->get_db_identifier(), $tax->object_type);
+		$this->assertContains($collection_2->get_db_identifier(), $tax->object_type);
+
+		$this->assertContains($collection_1->get_db_identifier(), $tax_repository->object_type);
+		$this->assertContains($collection_2->get_db_identifier(), $tax_repository->object_type);
+
+		$this->assertEquals(2, $term->count);
+		$this->assertEquals(2, $term_repo->count);
+	}
+
 }
