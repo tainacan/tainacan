@@ -31,19 +31,21 @@
                         :key="index">
                     <b-field>
                         <b-input
-                                expanded="true"
+                                expanded
                                 :placeholder="$i18n.get('label')"
                                 @input="onUpdate(interval)"
                                 v-model="interval.label" />
                     </b-field>
                     <b-field>
                         <b-input
+                                expanded
                                 type="number"
                                 step="0.01"
                                 :placeholder="$i18n.get('info_initial_value')"
                                 @input="onUpdate(interval, true)"
                                 v-model="interval.from" />
                         <b-input
+                                expanded
                                 type="number"
                                 step="0.01"
                                 :placeholder="$i18n.get('info_final_value')"
@@ -105,10 +107,10 @@
                      interval.to == "" || interval.from == "" ||
                      Number(interval.to) < Number(interval.from))
                 ) {
-                    if (this.isValid) {
-                        this.isValid = false;
+                    this.isValid = false;
+                    
+                    if (interval.to != '' && interval.from != '' && interval.to != null && interval.from != null)
                         this.showErrorMessage()
-                    }
                 } else {
                     this.isValid = true;
                     this.$emit('input', {
@@ -181,6 +183,12 @@
         }
         .field.has-addons {
             margin-bottom: 0.125rem;
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            &>.control {
+                flex-basis: 50%;
+            }
         }
     }
 
