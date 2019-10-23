@@ -139,11 +139,11 @@
                     } else {
                         this.label = metadata.value;
                         this.selected = metadata.value;
-
                         this.$emit( 'sendValuesToTags', { label: this.label, value: this.selected });
                     }
                 } else {
-                    return false;
+                    this.label = '';
+                    this.selected = '';
                 }
             }
         }
