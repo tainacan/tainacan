@@ -203,7 +203,7 @@
         }
 
         .datepicker {
-            @media screen and (min-width: 1024px) {
+            @media screen and (min-width: 768px) {
 
                 .datepicker-header {
 
@@ -211,20 +211,19 @@
                         max-width: 165px !important;
                     }
                     .pagination .pagination-list .control {
-                        width: 74px !important;
+                        width: 77px !important; 
 
                         .select {
-                            min-width: 100% !important;     
+                            min-width: 100% !important;    
 
                             select {
                                 padding-left: 1px !important;
                                 font-size: 0.75rem !important;
                                 height: 24px !important;
                                 min-width: 100% !important;
-
-                                &:not(.is-loading)::after {
-                                    margin-top: -13px !important;
-                                }
+                            }
+                            &:not(.is-loading)::after {
+                                margin-top: -13px !important;
                             }
                         }
                     }
