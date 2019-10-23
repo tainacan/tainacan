@@ -74,7 +74,7 @@
                                     {{ metadatum.name }}
                                 </span>
                                 <span class="label-details">  
-                                    ({{ $i18n.get(metadatum.metadata_type_object.component) }}) <em>{{ (metadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
+                                    ({{ metadatum.metadata_type_object.name }}) <em>{{ (metadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
                                 </span>
                             </option>
                         </b-select>

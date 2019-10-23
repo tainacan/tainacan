@@ -96,7 +96,7 @@
                             <span   
                                 v-if="filter.filter_type_object != undefined"
                                 class="label-details">  
-                                ({{ $i18n.get(filter.filter_type_object.component) }})  
+                                ({{ filter.filter_type_object.name }})  
                                     <span 
                                             class="not-saved" 
                                             v-if="(editForms[filter.id] != undefined && editForms[filter.id].saved != true) ||filter.status == 'auto-draft'"> 

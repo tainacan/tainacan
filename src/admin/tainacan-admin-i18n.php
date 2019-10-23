@@ -667,31 +667,6 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_final_value'                               => __( 'Final value', 'tainacan' ),
 	'info_show_interval_on_tag'                      => __( 'Show applied interval on tags', 'tainacan' ),
 
-	// Tainacan Metadatum Types
-	'tainacan-text'                                  => __( 'Text', 'tainacan' ),
-	'tainacan-textarea'                              => __( 'Text area', 'tainacan' ),
-	'tainacan-date'                                  => __( 'Date', 'tainacan' ),
-	'tainacan-numeric'                               => __( 'Numeric', 'tainacan' ),
-	'tainacan-selectbox'                             => __( 'Select box', 'tainacan' ),
-	'tainacan-relationship'                          => __( 'Relationship', 'tainacan' ),
-	'tainacan-taxonomy'                              => __( 'Taxonomy', 'tainacan' ),
-	'tainacan-compound'                              => __( 'Compound', 'tainacan' ),
-
-	// Tainacan Filter Types
-	'tainacan-filter-custom-interval'                => __( 'Custom Interval', 'tainacan' ),
-	'tainacan-filter-numeric'		                 => __( 'Numeric', 'tainacan' ),
-	'tainacan-filter-date'			                 => __( 'Date', 'tainacan' ),
-	'tainacan-filter-selectbox'                      => __( 'Select Box', 'tainacan' ),
-	'tainacan-filter-autocomplete'                   => __( 'Autocomplete', 'tainacan' ),
-	'tainacan-filter-taginput'                       => __( 'Tag Input', 'tainacan' ),
-	'tainacan-filter-checkbox'                       => __( 'Check Box', 'tainacan' ),
-	'tainacan-filter-taxonomy-taginput'              => __( 'Taxonomy Tag Input', 'tainacan' ),
-	'tainacan-filter-taxonomy-checkbox'              => __( 'Taxonomy Check Box', 'tainacan' ),
-	'tainacan-filter-taxonomy-selectbox'             => __( 'Taxonomy Select Box', 'tainacan' ),
-	'tainacan-filter-numeric-interval'               => __( 'Numeric Interval', 'tainacan' ),
-	'tainacan-filter-date-interval'               	 => __( 'Date Interval', 'tainacan' ),
-	'tainacan-filter-numeric-list-interval'          => __( 'Numeric Interval List', 'tainacan' ),
-
 	// Datepicker months
 	'datepicker_month_january'			=> __( 'January', 'tainacan' ),
 	'datepicker_month_february'			=> __( 'February', 'tainacan' ),

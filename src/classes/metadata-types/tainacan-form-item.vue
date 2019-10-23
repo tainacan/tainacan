@@ -28,7 +28,7 @@
                     v-if="metadatum.metadatum.required == 'yes'"
                     class="required-metadatum-asterisk"
                     :class="metadatumTypeMessage">*</span>
-            <span class="metadata-type">({{ $i18n.get(metadatum.metadatum.metadata_type_object.component) }})</span>
+            <span class="metadata-type">({{ metadatum.metadatum.metadata_type_object.name }})</span>
             <help-button 
                     :title="metadatum.metadatum.name"
                     :message="metadatum.metadatum.description"/>

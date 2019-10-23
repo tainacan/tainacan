@@ -98,19 +98,17 @@
                                             {{ metadatum.name }}
                                     </span>
                                     <span   
-                                            v-if="metadatum.id != undefined"
+                                            v-if="metadatum.id != undefined && metadatum.metadata_type_object"
                                             class="label-details">  
-                                        ({{ $i18n.get(metadatum.metadata_type_object.component) }}) 
+                                        ({{ metadatum.metadata_type_object.name }}) 
                                         <em v-if="metadatum.collection_id != collectionId">{{ $i18n.get('label_inherited') }}</em>
                                         <em 
-                                                v-if="metadatum.metadata_type_object && 
-                                                    metadatum.metadata_type_object.core && 
+                                                v-if="metadatum.metadata_type_object.core && 
                                                     metadatum.metadata_type_object.related_mapped_prop == 'title'">
                                                 {{ $i18n.get('label_core_title') }}
                                         </em>
                                         <em 
-                                                v-if="metadatum.metadata_type_object && 
-                                                    metadatum.metadata_type_object.core && 
+                                                v-if="metadatum.metadata_type_object.core && 
                                                     metadatum.metadata_type_object.related_mapped_prop == 'description'">
                                                 {{ $i18n.get('label_core_description') }}
                                         </em>
