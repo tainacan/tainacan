@@ -818,7 +818,9 @@
                 :active.sync="isFilterModalActive"
                 :width="736"
                 animation="slide-menu"
-                trap-focus>
+                trap-focus
+                aria-modal
+                aria-role="dialog">
             <div 
                     ref="filters-mobile-modal"
                     class="modal-inner-content"

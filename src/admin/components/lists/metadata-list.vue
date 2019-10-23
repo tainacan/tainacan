@@ -371,7 +371,9 @@
                         <b-modal
                                 @close="onCancelNewMetadataMapperMetadata"
                                 :active.sync="isMapperMetadataCreating"
-                                trap-focus>
+                                trap-focus
+                                aria-modal
+                                aria-role="dialog">
                             <div 
                                     autofocus
                                     role="dialog"

@@ -59,7 +59,7 @@ import FormNumericListInterval from '../../classes/filter-types/numeric-list-int
 
 // Configure and Register Plugins
 Vue.use(Buefy, {
-    defaultTooltipAnimated: true   
+    defaultTooltipAnimated: true  
 });
 Vue.use(VTooltip);
 Vue.use(VueMasonry);

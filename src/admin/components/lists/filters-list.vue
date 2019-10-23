@@ -235,7 +235,9 @@
                 ref="filterTypeModal"
                 :width="680"
                 :active.sync="isSelectingFilterType"
-                trap-focus>
+                trap-focus
+                aria-modal
+                aria-role="dialog">
             <div 
                     autofocus
                     role="dialog"

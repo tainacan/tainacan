@@ -93,7 +93,9 @@
                     <b-modal 
                             @close="onMetadatumEditionCanceled()"
                             :active.sync="isNewMetadatumModalActive"
-                            trap-focus>
+                            trap-focus
+                            aria-modal
+                            aria-role="dialog">
                         <div 
                                 autofocus="true"
                                 tabindex="-1"
