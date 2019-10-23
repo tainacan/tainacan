@@ -5,6 +5,15 @@
             @submit.prevent="saveEdition(editForm)">
         <div class="tainacan-page-title">
             <h2>{{ $i18n.get("title_term_edition") }}</h2>
+            <a
+                    v-if="editForm && editForm.url != undefined && editForm.url!= ''"
+                    target="_blank"
+                    :href="editForm.url">
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+                </span>
+                <span class="menu-text">{{ $i18n.get('label_view_on_theme') }}</span>
+            </a>
             <hr>
         </div>
     
@@ -180,16 +189,6 @@
                         slot="trigger">
                     {{ $i18n.get('cancel') }}
                 </button>
-            </div>
-            <div class="control">
-                <a
-                        type="button"
-                        v-if="editForm.url != undefined && editForm.url!= ''"
-                        class="button is-secondary"
-                        target="_blank"
-                        :href="editForm.url">
-                    {{ $i18n.get('label_view_term') }}
-                </a>
             </div>
             <div class="control">
                 <button
@@ -443,16 +442,21 @@
         animation-duration: 0.5s;
 
         .tainacan-page-title {
-            margin-bottom: 35px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
 
             h2 {
                 font-size: 20px;
                 font-weight: 500;
                 color: $blue5;
                 display: inline-block;
+                margin-right: auto;
             }
-            hr{
+            hr {
                 margin: 3px 0px 4px 0px; 
+                width: 100%;
                 height: 1px;
                 background-color: $secondary;
             }
