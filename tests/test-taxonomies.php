@@ -437,7 +437,7 @@ class Taxonomies extends TAINACAN_UnitTestCase {
 			array(
 				'name'   => 'tax_test',
 				'status' => 'publish',
-				'enabled_post_types' => [$collection_1->get_db_identifier(), $collection_2->get_db_identifier()]
+				//'enabled_post_types' => [$collection_1->get_db_identifier(), $collection_2->get_db_identifier()]
 			),
 			true
 		);
