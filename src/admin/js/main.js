@@ -23,7 +23,6 @@ import FormRelationship from '../../classes/metadata-types/relationship/FormRela
 import FormTaxonomy from '../../classes/metadata-types/taxonomy/FormTaxonomy.vue';
 import FormSelectbox from '../../classes/metadata-types/selectbox/FormSelectbox.vue';
 
-import FilterCustomInterval from '../../classes/filter-types/custom-interval/CustomInterval.vue';
 import FilterNumeric from '../../classes/filter-types/numeric/Numeric.vue';
 import FilterDate from '../../classes/filter-types/date/Date.vue';
 import FilterSelectbox from '../../classes/filter-types/selectbox/Selectbox.vue';
@@ -59,7 +58,7 @@ import FormNumericListInterval from '../../classes/filter-types/numeric-list-int
 
 // Configure and Register Plugins
 Vue.use(Buefy, {
-    defaultTooltipAnimated: true  
+    defaultTooltipAnimated: true
 });
 Vue.use(VTooltip);
 Vue.use(VueMasonry);
@@ -87,7 +86,6 @@ Vue.component('tainacan-form-item', TainacanFormItem);
 Vue.component('tainacan-filter-item', TainacanFiltersList);
 
 /* Filters */
-Vue.component('tainacan-filter-custom-interval', FilterCustomInterval);
 Vue.component('tainacan-filter-numeric', FilterNumeric);
 Vue.component('tainacan-filter-date', FilterDate);
 Vue.component('tainacan-filter-selectbox', FilterSelectbox);
@@ -128,7 +126,7 @@ new Vue({
     render: h => h(AdminPage)
 });
 
-// Display Icons only once everything is loaded 
+// Display Icons only once everything is loaded
 function listen(evnt, elem, func) {
     if (elem.addEventListener)  // W3C DOM
         elem.addEventListener(evnt,func,false);
