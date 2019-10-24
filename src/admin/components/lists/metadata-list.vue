@@ -233,7 +233,7 @@
                 </div>
             </b-tab-item>
 
-            <!-- Exposer --------------- -->
+            <!-- Mapping --------------- -->
             <b-tab-item :label="$i18n.get('mapping')">
                 <div>
                     <section 
@@ -245,11 +245,10 @@
                                     <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
                                 </span>
                             </p>
-                            <p>{{ $i18n.get('info_there_is_no_metadatum') }}</p>  
-                            <p>{{ $i18n.get('info_create_metadata') }}</p>
+                            <p>{{ $i18n.get('info_there_is_no_metadatum') }}</p>
                         </div>
                     </section>
-                    <section>
+                    <section v-else>
                         <div class="field is-grouped form-submit">
                             <b-select
                                     id="mappers-options-dropdown"

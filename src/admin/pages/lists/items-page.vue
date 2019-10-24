@@ -791,13 +791,20 @@
                         </p>
 
                         <router-link
-                                v-if="!isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$route.query.iframemode"
+                                v-if="!isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$route.query.iframemode"
                                 id="button-create-item"
                                 tag="button"
                                 class="button is-secondary"
                                 :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
                             {{ $i18n.getFrom('items', 'add_new') }}
                         </router-link> 
+                        <button
+                                v-else-if="isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$route.query.iframemode"
+                                id="button-create-item"
+                                class="button is-secondary"
+                                @click="onOpenCollectionsModal">
+                            {{ $i18n.get('add_one_item') }}
+                        </button>
                     </div>
                 </section>
 
