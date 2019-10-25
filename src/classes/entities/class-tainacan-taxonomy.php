@@ -22,28 +22,28 @@ class Taxonomy extends Entity {
 	 * @var string
 	 */
     static $post_type = 'tainacan-taxonomy';
-    
+
     /**
 	 * {@inheritDoc}
      * @see \Tainacan\Entities\Entity::capability_type
 	 * @var string
 	 */
     protected static $capability_type = ['tainacan-taxonomy', 'tainacan-taxonomies'];
-    
+
     /**
      * {@inheritDoc}
      * @see \Tainacan\Entities\Entity::repository
      * @var string
      */
     protected $repository = 'Taxonomies';
-	
+
 	/**
 	 * Prefix used to create the db_identifier
 	 *
 	 * @var string
 	 */
 	static $db_identifier_prefix = 'tnc_tax_';
-	
+
 	public function  __toString(){
 		return apply_filters("tainacan-taxonomy-to-string", $this->get_name(), $this);
 	}
@@ -67,7 +67,7 @@ class Taxonomy extends Entity {
             'new_item_name'     => __( 'New Genre term', 'tainacan' ),
             'menu_name'         => $this->get_name(),
         );
-		
+
 		$enabled_post_types = $this->get_enabled_post_types();
         $enabled_post_types = sizeof($enabled_post_types) ? $enabled_post_types : null;
 		$show_ui = is_array($enabled_post_types) ? true : false;
@@ -82,19 +82,19 @@ class Taxonomy extends Entity {
                 'slug' => $this->get_slug()
             ],
         );
-        
+
         if (taxonomy_exists($this->get_db_identifier())){
             unregister_taxonomy($this->get_db_identifier());
         }
-        
-        
-        
-        register_taxonomy( 
-            $this->get_db_identifier(), 
-            $enabled_post_types, 
-            $args 
+
+
+
+        register_taxonomy(
+            $this->get_db_identifier(),
+            $enabled_post_types,
+            $args
         );
-        
+
         return true;
     }
 
@@ -103,9 +103,9 @@ class Taxonomy extends Entity {
 		return (object) [
 			// meta
 			'edit_post' => "tnc_rep_edit_taxonomy",
-			'read_post' => "tnc_rep_edit_taxonomy",
-			'delete_post' => "tnc_rep_edit_taxonomy",
-			
+			'read_post' => "tnc_rep_read_taxonomy",
+			'delete_post' => "tnc_rep_delete_taxonomy",
+
 			// primitive
 			'edit_posts' => "tnc_rep_edit_taxonomies",
 			'edit_others_posts' => "tnc_rep_manage_taxonomies",
@@ -120,7 +120,7 @@ class Taxonomy extends Entity {
 			'edit_published_posts' => "tnc_rep_edit_taxonomies",
 			'create_posts' => "tnc_rep_edit_taxonomies"
 		];
-		
+
 	}
 
     // Getters
@@ -160,7 +160,7 @@ class Taxonomy extends Entity {
 	function get_slug() {
         return $this->get_mapped_property('slug');
     }
-    
+
     /**
 	 * Return the enabled post types
 	 *
@@ -169,7 +169,7 @@ class Taxonomy extends Entity {
 	function get_enabled_post_types() {
         return $this->get_mapped_property('enabled_post_types');
     }
-    
+
     // special Getters
 
 	/**
@@ -219,7 +219,7 @@ class Taxonomy extends Entity {
 	function set_allow_insert($value) {
         $this->set_mapped_property('allow_insert', $value);
     }
-    
+
     /**
 	 * Sets enabled post types
 	 *
@@ -246,15 +246,15 @@ class Taxonomy extends Entity {
 		return parent::validate();
 
 	}
-	
+
 	/**
-	* Check if a term already exists 
+	* Check if a term already exists
 	*
-	* @param string $term_name The term name 
-	* @param int|null $parent The ID of the parent term to look for children or null to look for terms in any hierarchical position. Default is null 
-	* @param bool $return_term wether to return the term object if it exists. default is to false 
-	* 
-	* @return bool|WP_Term return boolean indicating if term exists. If $return_term is true and term exists, return WP_Term object 
+	* @param string $term_name The term name
+	* @param int|null $parent The ID of the parent term to look for children or null to look for terms in any hierarchical position. Default is null
+	* @param bool $return_term wether to return the term object if it exists. default is to false
+	*
+	* @return bool|WP_Term return boolean indicating if term exists. If $return_term is true and term exists, return WP_Term object
 	*/
 	function term_exists($term_name, $parent = null, $return_term = false) {
 		$repo = $this->get_repository();
