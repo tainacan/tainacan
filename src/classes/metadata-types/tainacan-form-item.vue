@@ -46,7 +46,7 @@
                 <div v-if="metadatum.metadatum.multiple == 'yes'">
                     <div 
                             v-if="index > 0" 
-                            v-for="(input, index) in inputsList " 
+                            v-for="(input, index) in inputs" 
                             :key="index" 
                             class="multiple-inputs">
                         <component 
@@ -98,39 +98,33 @@
     export default {
         name: 'TainacanFormItem',
         props: {
-            metadatum: {
-                type: Object
-            },
-            isCollapsed: true // Metadatum Collapses
+            metadatum: Object,
+            isCollapsed: true
         },
         data(){
             return {
                 inputs: [],
-                metadatumTypeMessage:''
+                metadatumTypeMessage: ''
             }
         },
         computed: {
-            inputsList() {
-                return this.inputs;
-            },
             getErrorMessage() {
-                
-                let msg = '';
+                let errorMessage = '';
                 let errors = eventBus.getErrors(this.metadatum.metadatum.id);
 
-                if ( errors) {
+                if (errors) {
                     this.setMetadatumTypeMessage('is-danger');
                     for (let error of errors) { 
                         for (let index of Object.keys(error)) {
                             // this.$console.log(index);
-                            msg += error[index] + '\n';
+                            errorMessage += error[index] + '\n';
                         }
                     }
                 } else {
                     this.setMetadatumTypeMessage('');
                 }
 
-                return msg;
+                return errorMessage;
             }
         },
         created(){
@@ -142,53 +136,41 @@
             },
             changeValue: _.debounce(function() {
                 
-                if(this.metadatum.value != this.inputs){
+                if (this.metadatum.value != this.inputs) {
 
-                    if(this.inputs.length > 0 && this.inputs[0].value){
-                        let terms = [];
+                    if (this.inputs.length > 0 && this.inputs[0].value) {
+                        let terms = this.inputs.map(term => term.value)
+                        
+                        if (this.metadatum.value instanceof Array){
+                            let equal = [];
 
-                        for(let term of this.inputs){
-                            terms.push(term.value);
-                        }
-
-                        if(this.metadatum.value instanceof Array){
-                            let eq = [];
-
-                            for(let meta of terms){
-                                let found = this.metadatum.value.find((element) => {
-                                    return meta == element.id;
-                                });
-
-                                if(found){
-                                    eq.push(found);
-                                }
+                            for (let meta of terms) {
+                                let foundIndex = this.metadatum.value.findIndex(element => meta == element.id);
+                                if (foundIndex >= 0)
+                                    equal.push(this.metadatum.value[foundIndex]);
                             }
 
-                            if(eq.length == terms.length && this.metadatum.value.length <= eq.length){
+                            if (equal.length == terms.length && this.metadatum.value.length <= equal.length)
                                 return;
-                            }
-                        }
-                    } else if(this.metadatum.value.constructor.name == 'Object'){
 
-                        if(this.metadatum.value.id == this.inputs){
+                        }
+                    } else if (this.metadatum.value.constructor.name == 'Object') {
+
+                        if (this.metadatum.value.id == this.inputs)
                             return;
-                        }
-                    } else if(this.metadatum.value instanceof Array){                        
-                        let eq = [];
+                        
+                    } else if (this.metadatum.value instanceof Array) {                        
+                        let equal = [];
 
-                        for(let meta of this.inputs){
-                            let found = this.metadatum.value.find((element) => {
-                                return meta == element.id;
-                            });
+                        for (let meta of this.inputs) {
+                            let foundIndex = this.metadatum.value.findIndex(element => meta == element.id);
 
-                            if(found){
-                                eq.push(found);
-                            }
+                            if (foundIndex >= 0)
+                                equal.push(this.metadatum.value[foundIndex]);
                         }
 
-                        if(eq.length == this.inputs.length && this.metadatum.value.length <= eq.length){
+                        if (equal.length == this.inputs.length && this.metadatum.value.length <= equal.length)
                             return;
-                        }
                     } 
 
                     eventBus.$emit('input', { item_id: this.metadatum.item.id, metadatum_id: this.metadatum.metadatum.id, values: this.inputs } );
@@ -198,9 +180,9 @@
                 if (this.metadatum.value instanceof Array) {
                     this.inputs = this.metadatum.value.slice(0);
                     
-                    if (this.inputs.length === 0){
+                    if (this.inputs.length === 0)
                         this.inputs.push('');
-                    }
+                    
                 } else {
                     this.metadatum.value == null || this.metadatum.value == undefined ? this.inputs.push('') : this.inputs.push(this.metadatum.value);
                 }
@@ -213,11 +195,11 @@
                 this.inputs.splice(index, 1);
                 this.changeValue();
             },
-            isTextInputComponent( component ){
+            isTextInputComponent(component){
                 let array = ['tainacan-relationship','tainacan-taxonomy'];
                 return !( array.indexOf( component ) >= 0 );
             },
-            setMetadatumTypeMessage( message ){
+            setMetadatumTypeMessage(message){
                 this.metadatumTypeMessage = message;
             }
         }

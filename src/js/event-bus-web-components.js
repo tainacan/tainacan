@@ -19,42 +19,41 @@ export const eventBus = new Vue({
             
             this.$emit('isUpdatingValue', true);
 
-            if ( data.item_id ){
+            if (data.item_id) {
 
-                if(data.values.length > 0 && data.values[0].value){
+                if (data.values.length > 0 && data.values[0].value) {
                     let val = [];
-                    for(let i of data.values){
+                    for (let i of data.values)
                         val.push(i.value);
-                    }
-
+                    
                     data.values = val;
                 }  
 
                 let values = ( Array.isArray( data.values[0] ) ) ? data.values[0] : data.values ;
-                const promisse = this.$store.dispatch('item/updateMetadata',
-                    { item_id: data.item_id, metadatum_id: data.metadatum_id, values: values });
 
-                promisse.then( () => {
-                    this.$emit('isUpdatingValue', false);
-                    let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == data.metadatum_id );
-                    if ( index >= 0){
-                        this.errors.splice( index, 1);
-                    }
+                this.$store.dispatch('item/updateMetadata', { 
+                    item_id: data.item_id, 
+                    metadatum_id: data.metadatum_id, 
+                    values: values 
                 })
-                .catch((error) => {
-                    this.$emit('isUpdatingValue', false);
-                    let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == data.metadatum_id );
-                    let messages = [];
+                    .then(() => {
+                        this.$emit('isUpdatingValue', false);
+                        let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == data.metadatum_id );
+                        if ( index >= 0)
+                            this.errors.splice( index, 1);
+                    })
+                    .catch((error) => {
+                        this.$emit('isUpdatingValue', false);
+                        let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == data.metadatum_id );
+                        let messages = [];
 
-                    for (let index in error) {
-                        messages.push(error[index]);
-                    }
+                        for (let index in error)
+                            messages.push(error[index]);
 
-                    if ( index >= 0){
-                        Vue.set( this.errors, index, { metadatum_id: data.metadatum_id, errors: messages });
-                    } else {
-                        this.errors.push( { metadatum_id: data.metadatum_id, errors: messages } );
-                    }
+                        if ( index >= 0)
+                            Vue.set( this.errors, index, { metadatum_id: data.metadatum_id, errors: messages });
+                        else
+                            this.errors.push( { metadatum_id: data.metadatum_id, errors: messages } );
                 });
             }
         },
