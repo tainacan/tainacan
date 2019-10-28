@@ -613,7 +613,7 @@ class Elastic_Press {
 					$field_relationship_label = "$field_relationship_label[0].$field_relationship_label[1].relationship_label";
 					//$formatted_args['query']['bool']['must'][] = ["wildcard"=>["$field" => "*$search*"]];
 					$formatted_args['query']['bool']['must'][] = ["bool"=>["should"=>[
-						["wildcard"=>["$field"=>"*$search*"]],
+						["wildcard"=>["$id.value.sortable"=>"*$search*"]],
 						["wildcard"=>["$field_relationship_label"=>"*$search*"]] //pega nome do metadado é melhor!
 					]]];
 				}
