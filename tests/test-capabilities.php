@@ -349,7 +349,18 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $this->private_repo_metadatum->can_delete() );
 
 
-		$this->subscriber2->add_cap( 'tnc_rep_manage_metadata' );
+		$this->subscriber2->add_cap( 'tnc_rep_edit_metadata' );
+
+		$this->assertFalse( $this->public_metadatum->can_edit() );
+		$this->assertTrue( $this->public_repo_metadatum->can_edit() );
+		$this->assertFalse( $this->private_metadatum->can_edit() );
+		$this->assertTrue( $this->private_repo_metadatum->can_edit() );
+		$this->assertFalse( $this->public_metadatum->can_delete() );
+		$this->assertFalse( $this->public_repo_metadatum->can_delete() );
+		$this->assertFalse( $this->private_metadatum->can_delete() );
+		$this->assertFalse( $this->private_repo_metadatum->can_delete() );
+
+		$this->subscriber2->add_cap( 'tnc_rep_delete_metadata' );
 
 		$this->assertFalse( $this->public_metadatum->can_edit() );
 		$this->assertTrue( $this->public_repo_metadatum->can_edit() );
@@ -360,7 +371,18 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $this->private_metadatum->can_delete() );
 		$this->assertTrue( $this->private_repo_metadatum->can_delete() );
 
-		$this->subscriber2->add_cap( 'tnc_col_' . $this->public_collection->get_id() . '_manage_metadata' );
+		$this->subscriber2->add_cap( 'tnc_col_' . $this->public_collection->get_id() . '_edit_metadata' );
+
+		$this->assertTrue( $this->public_metadatum->can_edit() );
+		$this->assertTrue( $this->public_repo_metadatum->can_edit() );
+		$this->assertTrue( $this->private_metadatum->can_edit() );
+		$this->assertTrue( $this->private_repo_metadatum->can_edit() );
+		$this->assertFalse( $this->public_metadatum->can_delete() );
+		$this->assertTrue( $this->public_repo_metadatum->can_delete() );
+		$this->assertFalse( $this->private_metadatum->can_delete() );
+		$this->assertTrue( $this->private_repo_metadatum->can_delete() );
+
+		$this->subscriber2->add_cap( 'tnc_col_' . $this->public_collection->get_id() . '_delete_metadata' );
 
 		$this->assertTrue( $this->public_metadatum->can_edit() );
 		$this->assertTrue( $this->public_repo_metadatum->can_edit() );
@@ -409,7 +431,18 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $this->private_filter->can_delete() );
 		$this->assertFalse( $this->private_repo_filter->can_delete() );
 
-		$this->subscriber2->add_cap( 'tnc_rep_manage_filters' );
+		$this->subscriber2->add_cap( 'tnc_rep_edit_filters' );
+
+		$this->assertFalse( $this->public_filter->can_edit() );
+		$this->assertTrue( $this->public_repo_filter->can_edit() );
+		$this->assertFalse( $this->private_filter->can_edit() );
+		$this->assertTrue( $this->private_repo_filter->can_edit() );
+		$this->assertFalse( $this->public_filter->can_delete() );
+		$this->assertFalse( $this->public_repo_filter->can_delete() );
+		$this->assertFalse( $this->private_filter->can_delete() );
+		$this->assertFalse( $this->private_repo_filter->can_delete() );
+
+		$this->subscriber2->add_cap( 'tnc_rep_delete_filters' );
 
 		$this->assertFalse( $this->public_filter->can_edit() );
 		$this->assertTrue( $this->public_repo_filter->can_edit() );
@@ -420,7 +453,18 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $this->private_filter->can_delete() );
 		$this->assertTrue( $this->private_repo_filter->can_delete() );
 
-		$this->subscriber2->add_cap( 'tnc_col_' . $this->public_collection->get_id() . '_manage_filters' );
+		$this->subscriber2->add_cap( 'tnc_col_' . $this->public_collection->get_id() . '_edit_filters' );
+
+		$this->assertTrue( $this->public_filter->can_edit() );
+		$this->assertTrue( $this->public_repo_filter->can_edit() );
+		$this->assertTrue( $this->private_filter->can_edit() );
+		$this->assertTrue( $this->private_repo_filter->can_edit() );
+		$this->assertFalse( $this->public_filter->can_delete() );
+		$this->assertTrue( $this->public_repo_filter->can_delete() );
+		$this->assertFalse( $this->private_filter->can_delete() );
+		$this->assertTrue( $this->private_repo_filter->can_delete() );
+
+		$this->subscriber2->add_cap( 'tnc_col_' . $this->public_collection->get_id() . '_delete_filters' );
 
 		$this->assertTrue( $this->public_filter->can_edit() );
 		$this->assertTrue( $this->public_repo_filter->can_edit() );
@@ -556,8 +600,8 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $this->public_taxonomy->can_edit() );
 		$this->assertFalse( $this->private_taxonomy->can_edit() );
 
-		$this->assertTrue( $tax_public->can_delete() );
-		$this->assertTrue( $tax_private->can_delete() );
+		$this->assertFalse( $tax_public->can_delete() );
+		$this->assertFalse( $tax_private->can_delete() );
 		$this->assertFalse( $this->public_taxonomy->can_delete() );
 		$this->assertFalse( $this->private_taxonomy->can_delete() );
 
@@ -566,17 +610,17 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertTrue( $this->public_taxonomy->can_read() );
 		$this->assertFalse( $this->private_taxonomy->can_read() );
 
-		$this->subscriber2->add_cap( 'tnc_rep_manage_taxonomies' );
+		$this->subscriber2->add_cap( 'tnc_rep_edit_others_taxonomies' );
 
 		$this->assertTrue( $tax_public->can_edit() );
 		$this->assertTrue( $tax_private->can_edit() );
 		$this->assertTrue( $this->public_taxonomy->can_edit() );
 		$this->assertTrue( $this->private_taxonomy->can_edit() );
 
-		$this->assertTrue( $tax_public->can_delete() );
-		$this->assertTrue( $tax_private->can_delete() );
-		$this->assertTrue( $this->public_taxonomy->can_delete() );
-		$this->assertTrue( $this->private_taxonomy->can_delete() );
+		$this->assertFalse( $tax_public->can_delete() );
+		$this->assertFalse( $tax_private->can_delete() );
+		$this->assertFalse( $this->public_taxonomy->can_delete() );
+		$this->assertFalse( $this->private_taxonomy->can_delete() );
 
 		$this->assertTrue( $this->public_taxonomy->can_read() );
 		$this->assertFalse( $this->private_taxonomy->can_read() );
@@ -584,6 +628,20 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->subscriber2->add_cap( 'tnc_rep_read_private_taxonomies' );
 
 		$this->assertTrue( $this->private_taxonomy->can_read() );
+
+		$this->subscriber2->add_cap( 'tnc_rep_delete_taxonomies' );
+
+		$this->assertTrue( $tax_public->can_delete() );
+		$this->assertTrue( $tax_private->can_delete() );
+		$this->assertFalse( $this->public_taxonomy->can_delete() );
+		$this->assertFalse( $this->private_taxonomy->can_delete() );
+
+		$this->subscriber2->add_cap( 'tnc_rep_delete_others_taxonomies' );
+
+		$this->assertTrue( $tax_public->can_delete() );
+		$this->assertTrue( $tax_private->can_delete() );
+		$this->assertTrue( $this->public_taxonomy->can_delete() );
+		$this->assertTrue( $this->private_taxonomy->can_delete() );
 
 	}
 

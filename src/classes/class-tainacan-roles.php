@@ -4,8 +4,8 @@ namespace Tainacan;
 use Tainacan\Repositories\Repository;
 
 class Roles {
-	
-	
+
+
 	public static $dependencies = [
 		"tainacan-items" => [
 			'edit_posts'           => 'upload_files',
@@ -14,26 +14,26 @@ class Roles {
 			"edit_others_posts"    => 'upload_files'
 		]
 	];
-	
+
 	private static $instance = null;
-	
+
 	private $capabilities;
-	
+
 	public static function get_instance()
 	{
 		if(!isset(self::$instance))
 		{
 			self::$instance = new self();
 		}
-		
+
 		return self::$instance;
 	}
-	
+
 	/**
-	* 
+	*
 	*/
 	private function __construct() {
-		
+
 		$this->capabilities = [
 			'manage_tainacan' => [
 				'display_name' => __('Manage Tainacan', 'tainacan'),
@@ -51,17 +51,33 @@ class Roles {
 				'display_name' => __('Create and edit taxonomies', 'tainacan'),
 				'description' => __('Create new taxonomies and edit its terms', 'tainacan')
 			],
-			'tnc_rep_manage_taxonomies' => [
-				'display_name' => __('Manage Taxonomies', 'tainacan'),
-				'description' => __('Manage all taxonomies and terms, including taxonomies created by other users', 'tainacan')
+			'tnc_rep_edit_others_taxonomies' => [
+				'display_name' => __('Edit all Taxonomies', 'tainacan'),
+				'description' => __('Edit all taxonomies and terms, including taxonomies created by other users', 'tainacan')
 			],
-			'tnc_rep_manage_metadata' => [
+			'tnc_rep_delete_taxonomies' => [
+				'display_name' => __('Delete Taxonomies', 'tainacan'),
+				'description' => __('Delete taxonomies', 'tainacan')
+			],
+			'tnc_rep_delete_others_taxonomies' => [
+				'display_name' => __('Delete all Taxonomies', 'tainacan'),
+				'description' => __('Delete all taxonomies and terms, including taxonomies created by other users', 'tainacan')
+			],
+			'tnc_rep_edit_metadata' => [
 				'display_name' => __('Manage Repository Metadata', 'tainacan'),
-				'description' => __('Create/edit/delete metadata in repository level', 'tainacan')
+				'description' => __('Create/edit metadata in repository level', 'tainacan')
 			],
-			'tnc_rep_manage_filters' => [
+			'tnc_rep_edit_filters' => [
 				'display_name' => __('Manage Repository Filters', 'tainacan'),
-				'description' => __('Create/edit/delete filters in repository level', 'tainacan')
+				'description' => __('Create/edit filters in repository level', 'tainacan')
+			],
+			'tnc_rep_delete_metadata' => [
+				'display_name' => __('Delete Repository Metadata', 'tainacan'),
+				'description' => __('Delete metadata in repository level', 'tainacan')
+			],
+			'tnc_rep_delete_filters' => [
+				'display_name' => __('Delete Repository Filters', 'tainacan'),
+				'description' => __('Delete filters in repository level', 'tainacan')
 			],
 			'tnc_rep_read_private_collections' => [
 				'display_name' => __('View private collections', 'tainacan'),
@@ -83,7 +99,7 @@ class Roles {
 				'display_name' => __('View Logs', 'tainacan'),
 				'description' => __('Access to activities logs. Note that activity logs might contain information on private collections, items and metadata.', 'tainacan')
 			],
-			
+
 			/**
 			 * Collections capabilities
 			 * There is a set of this capabilities for each collection, where %d is collection ID
@@ -104,13 +120,21 @@ class Roles {
 					'upload_files'
 				]
 			],
-			'tnc_col_%d_manage_metadata' => [
+			'tnc_col_%d_edit_metadata' => [
 				'display_name' => __('Manage metadata', 'tainacan'),
-				'description' => __('Create/edit/delete metadata in this collection', 'tainacan')
+				'description' => __('Create/edit metadata in this collection', 'tainacan')
 			],
-			'tnc_col_%d_manage_filters' => [
+			'tnc_col_%d_edit_filters' => [
 				'display_name' => __('Manage filters', 'tainacan'),
-				'description' => __('Create/edit/delete filters in this collection', 'tainacan')
+				'description' => __('Create/edit filters in this collection', 'tainacan')
+			],
+			'tnc_col_%d_delete_metadata' => [
+				'display_name' => __('Delete metadata', 'tainacan'),
+				'description' => __('Delete metadata in this collection', 'tainacan')
+			],
+			'tnc_col_%d_delete_filters' => [
+				'display_name' => __('Delete filters', 'tainacan'),
+				'description' => __('Delete filters in this collection', 'tainacan')
 			],
 			'tnc_col_%d_read_private_metadata' => [
 				'display_name' => __('View private metadata', 'tainacan'),
@@ -152,52 +176,52 @@ class Roles {
 					'upload_files'
 				]
 			],
-			
+
 		];
-		
+
 		add_filter( 'user_has_cap', [$this, 'user_has_cap_filter'], 10, 4 );
 		add_filter( 'map_meta_cap', [$this, 'map_meta_cap'], 10, 4 );
-		
+
 	}
-	
+
 	public function get_all_caps() {
 		return $this->capabilities;
 	}
-	
+
 	public function get_all_caps_slugs() {
 		return array_keys($this->capabilities);
 	}
-	
+
 	public function user_has_cap_filter( $allcaps, $caps, $args, $user ) {
-		
+
 		$requested_cap = $args[0];
-		
+
 		foreach ( $caps as $cap ) {
-		
+
 			if ( array_key_exists($cap, $allcaps) && $allcaps[$cap] === true ) {
 				continue;
 			}
-			
+
 			if ( \strpos($cap, 'tnc_') === 0 ) {
-				
+
 				if ( $user->has_cap('manage_tainacan') ) {
-					
+
 					$allcaps = array_merge($allcaps, [ $cap => true ]);
-					
+
 				} elseif ( \strpos($cap, 'tnc_col_') === 0 ) {
-					
+
 					$col_id = preg_replace('/[a-z_]+(\d+)[a-z_]+?$/', '$1', $cap );
-					
+
 					if ( ! is_numeric($col_id) ) {
 						continue;
 					}
-					
+
 					// check for tnc_col_all_* capabilities
 					$all_collections_cap = preg_replace('/([a-z_]+)(\d+)([a-z_]+?)$/', '${1}all${3}', $cap );
-					
-					if ( 
-							$user->has_cap('manage_tainacan_collection_' . $col_id) || 
-							$user->has_cap('manage_tainacan_collection_all') || 
+
+					if (
+							$user->has_cap('manage_tainacan_collection_' . $col_id) ||
+							$user->has_cap('manage_tainacan_collection_all') ||
 							$user->has_cap($all_collections_cap) ) {
 						$allcaps = array_merge($allcaps, [ $cap => true ]);
 					} else {
@@ -209,17 +233,17 @@ class Roles {
 							}
 						}
 					}
-					
+
 				}
-			} 
+			}
 		}
-		
+
 		return $allcaps;
-		
-		
+
+
 	}
 
-	
+
 	protected function check_dependencies($role, $post_type, $cap, $add = true) {
 		if(
 			array_key_exists($post_type, self::$dependencies) &&
@@ -233,7 +257,7 @@ class Roles {
 			if($role instanceof \WP_User && $add) { //moderator
 				$append_caps = get_user_meta($role->ID, '.tainacan-dependecies-caps', true);
 				if(! is_array($append_caps)) $append_caps = [];
-				if( 
+				if(
 					(! array_key_exists(self::$dependencies[$post_type][$cap], $append_caps) && $added ) || // we never added and need to add
 					(
 						array_key_exists(self::$dependencies[$post_type][$cap], $append_caps) &&
@@ -255,14 +279,14 @@ class Roles {
 		}
 		return false;
 	}
-		
+
 	public function map_meta_cap( $caps, $cap, $user_id, $args ) {
 		$meta_caps = new \Tainacan\Entities\Metadatum();
 		$meta_caps = $meta_caps->get_capabilities();
-		
+
 		$filters_caps = new \Tainacan\Entities\Filter();
 		$filters_caps = $filters_caps->get_capabilities();
-		
+
 		$edit_meta = [
 			$meta_caps->edit_posts,
 			$meta_caps->edit_others_posts,
@@ -275,11 +299,11 @@ class Roles {
 			$meta_caps->edit_published_posts,
 			$meta_caps->create_posts,
 		];
-		
+
 		$read_private_meta = [
 			$meta_caps->read_private_posts
 		];
-		
+
 		$edit_filters = [
 			$filters_caps->edit_posts,
 			$filters_caps->edit_others_posts,
@@ -292,24 +316,25 @@ class Roles {
 			$filters_caps->edit_published_posts,
 			$filters_caps->create_posts,
 		];
-		
+
 		$read_private_filters = [
 			$filters_caps->read_private_posts
 		];
-		
+
 		if ( !is_array( $args ) || !array_key_exists( 0, $args ) ) {
 			return $caps;
 		}
-		
+
 		$object = $args[0];
-		
+
 		switch ($cap) {
 			case 'edit_post':
 			case 'delete_post':
-				
-				
+
+				$action = \str_replace('_post', '', $cap);
+
 				foreach ($caps as $i => $c) {
-					
+
 					// Handle edit metadata
 					if ( in_array($c, $edit_meta) ) {
 						if (is_numeric($object)) {
@@ -318,15 +343,15 @@ class Roles {
 						if ( $object instanceof \Tainacan\Entities\Metadatum ) {
 							if ( $object->get_collection_id() == 'default' ) {
 								unset($caps[$i]);
-								$caps[] = 'tnc_rep_manage_metadata';
+								$caps[] = 'tnc_rep_' . $action. '_metadata';
 							} elseif ( is_numeric($object->get_collection_id()) ) {
 								unset($caps[$i]);
-								$caps[] = 'tnc_col_' . $object->get_collection_id() . '_manage_metadata';
+								$caps[] = 'tnc_col_' . $object->get_collection_id() . '_' . $action. '_metadata';
 							}
 						}
 					}
-					
-					
+
+
 					// Handle edit filters
 					if ( in_array($c, $edit_filters) ) {
 						if (is_numeric($object)) {
@@ -335,23 +360,23 @@ class Roles {
 						if ( $object instanceof \Tainacan\Entities\Filter ) {
 							if ( $object->get_collection_id() == 'default' ) {
 								unset($caps[$i]);
-								$caps[] = 'tnc_rep_manage_filters';
+								$caps[] = 'tnc_rep_' . $action. '_filters';
 							} elseif ( is_numeric($object->get_collection_id()) ) {
 								unset($caps[$i]);
-								$caps[] = 'tnc_col_' . $object->get_collection_id() . '_manage_filters';
+								$caps[] = 'tnc_col_' . $object->get_collection_id() . '_' . $action. '_filters';
 							}
 						}
 					}
-					
+
 				}
-				
-				
+
+
 				break;
-			
-			case 'read_post': 
-			
+
+			case 'read_post':
+
 				foreach ($caps as $i => $c) {
-					
+
 					// Handle read private metadata
 					if ( in_array($c, $read_private_meta) ) {
 						if (is_numeric($object)) {
@@ -367,7 +392,7 @@ class Roles {
 							}
 						}
 					}
-					
+
 					// Handle read private filters
 					if ( in_array($c, $read_private_filters) ) {
 						if (is_numeric($object)) {
@@ -383,20 +408,20 @@ class Roles {
 							}
 						}
 					}
-					
+
 				}
-				
-				
+
+
 				break;
-			
+
 			default:
 				# code...
 				break;
 		}
-		
+
 		return $caps;
-		
+
 	}
-		
-		
+
+
 }

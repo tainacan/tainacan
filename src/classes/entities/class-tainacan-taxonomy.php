@@ -108,14 +108,14 @@ class Taxonomy extends Entity {
 
 			// primitive
 			'edit_posts' => "tnc_rep_edit_taxonomies",
-			'edit_others_posts' => "tnc_rep_manage_taxonomies",
+			'edit_others_posts' => "tnc_rep_edit_others_taxonomies",
 			'publish_posts' => "tnc_rep_edit_taxonomies",
 			'read_private_posts' => "tnc_rep_read_private_taxonomies",
 			'read' => "read",
-			'delete_posts' => "tnc_rep_edit_taxonomies",
-			'delete_private_posts' => "tnc_rep_edit_taxonomies",
-			'delete_published_posts' => "tnc_rep_edit_taxonomies",
-			'delete_others_posts' => "tnc_rep_manage_taxonomies",
+			'delete_posts' => "tnc_rep_delete_taxonomies",
+			'delete_private_posts' => "tnc_rep_delete_taxonomies",
+			'delete_published_posts' => "tnc_rep_delete_taxonomies",
+			'delete_others_posts' => "tnc_rep_delete_others_taxonomies",
 			'edit_private_posts' => "tnc_rep_edit_taxonomies",
 			'edit_published_posts' => "tnc_rep_edit_taxonomies",
 			'create_posts' => "tnc_rep_edit_taxonomies"
