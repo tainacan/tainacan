@@ -47,6 +47,10 @@ class Roles {
 				'display_name' => __('Create Collections', 'tainacan'),
 				'description' => __('Create new collections to the repository', 'tainacan')
 			],
+			'tnc_rep_delete_collections' => [
+				'display_name' => __('Delete Collections', 'tainacan'),
+				'description' => __('Delete their own collections from the repository', 'tainacan')
+			],
 			'tnc_rep_edit_taxonomies' => [
 				'display_name' => __('Create and edit taxonomies', 'tainacan'),
 				'description' => __('Create new taxonomies and edit its terms', 'tainacan')

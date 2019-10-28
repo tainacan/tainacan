@@ -645,4 +645,96 @@ class Capabilities extends TAINACAN_UnitTestCase {
 
 	}
 
+	/**
+	 * @group collections
+	 */
+	function test_collections_metacaps() {
+
+		wp_set_current_user($this->subscriber2->ID);
+
+		$this->subscriber2->add_cap( 'tnc_rep_edit_collections' );
+
+		$my_collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'My Col',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$this->assertFalse( $this->public_collection->can_edit() );
+		$this->assertTrue( $this->public_collection->can_read() );
+		$this->assertFalse( $this->public_collection->can_delete() );
+		$this->assertFalse( $this->private_collection->can_edit() );
+		$this->assertFalse( $this->private_collection->can_read() );
+		$this->assertFalse( $this->private_collection->can_delete() );
+		$this->assertTrue( $my_collection->can_edit() );
+		$this->assertTrue( $my_collection->can_read() );
+		$this->assertFalse( $my_collection->can_delete() );
+
+		$this->subscriber2->add_cap( 'tnc_rep_delete_collections' );
+
+		$this->assertFalse( $this->public_collection->can_edit() );
+		$this->assertTrue( $this->public_collection->can_read() );
+		$this->assertFalse( $this->public_collection->can_delete() );
+		$this->assertFalse( $this->private_collection->can_edit() );
+		$this->assertFalse( $this->private_collection->can_read() );
+		$this->assertFalse( $this->private_collection->can_delete() );
+		$this->assertTrue( $my_collection->can_edit() );
+		$this->assertTrue( $my_collection->can_read() );
+		$this->assertTrue( $my_collection->can_delete() );
+
+		$this->subscriber2->add_cap( 'tnc_rep_read_private_collections' );
+
+		$this->assertFalse( $this->public_collection->can_edit() );
+		$this->assertTrue( $this->public_collection->can_read() );
+		$this->assertFalse( $this->public_collection->can_delete() );
+		$this->assertFalse( $this->private_collection->can_edit() );
+		$this->assertTrue( $this->private_collection->can_read() );
+		$this->assertFalse( $this->private_collection->can_delete() );
+
+		$this->subscriber2->add_cap( 'manage_tainacan' );
+
+		$this->assertTrue( $this->public_collection->can_edit() );
+		$this->assertTrue( $this->public_collection->can_read() );
+		$this->assertTrue( $this->public_collection->can_delete() );
+		$this->assertTrue( $this->private_collection->can_edit() );
+		$this->assertTrue( $this->private_collection->can_read() );
+		$this->assertTrue( $this->private_collection->can_delete() );
+
+
+	}
+
+	/**
+	 * @group collections
+	 */
+	function test_fetch_collections() {
+		global $current_user;
+		wp_set_current_user($this->subscriber2->ID);
+
+		$this->subscriber2->add_cap( 'tnc_rep_edit_collections' );
+
+		$my_collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'My Col',
+				'status' => 'publish'
+			),
+			true
+		);
+
+
+		$cols = tainacan_collections()->fetch([], 'OBJECT');
+		$this->assertEquals(2, sizeof($cols));
+
+		$this->subscriber2->add_cap( 'tnc_rep_read_private_collections' );
+		$current_user = $this->subscriber2; // force update current user object with new capabilities
+
+		$cols = tainacan_collections()->fetch([], 'OBJECT');
+		$this->assertEquals(3, sizeof($cols));
+
+
+	}
+
 }

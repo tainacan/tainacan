@@ -151,7 +151,7 @@ class Collection extends Entity {
 	 * @return object Object with all the capabilities as member variables.
 	 */
 	function get_items_capabilities() {
-		
+
 		$id = $this->get_id();
 
 		return (object) [
@@ -159,7 +159,7 @@ class Collection extends Entity {
 			'edit_post' => "tnc_col_{$id}_edit_item",
 			'read_post' => "tnc_col_{$id}_read_item",
 			'delete_post' => "tnc_col_{$id}_delete_item",
-			
+
 			// primitive
 			'edit_posts' => "tnc_col_{$id}_edit_items",
 			'edit_others_posts' => "tnc_col_{$id}_edit_others_items",
@@ -181,24 +181,24 @@ class Collection extends Entity {
 		return (object) [
 			// meta
 			'edit_post' => "tnc_col_edit_item",
-			'read_post' => "tnc_col_edit_item",
-			'delete_post' => "tnc_col_edit_item",
-			
+			'read_post' => "tnc_col_read_item",
+			'delete_post' => "tnc_col_delete_item",
+
 			// primitive
 			'edit_posts' => "tnc_rep_edit_collections",
 			'edit_others_posts' => "manage_tainacan",
 			'publish_posts' => "tnc_rep_edit_collections",
 			'read_private_posts' => "tnc_rep_read_private_collections",
 			'read' => "read",
-			'delete_posts' => "tnc_rep_edit_collections",
-			'delete_private_posts' => "tnc_rep_edit_collections",
-			'delete_published_posts' => "tnc_rep_edit_collections",
+			'delete_posts' => "tnc_rep_delete_collections",
+			'delete_private_posts' => "tnc_rep_delete_collections",
+			'delete_published_posts' => "tnc_rep_delete_collections",
 			'delete_others_posts' => "manage_tainacan",
 			'edit_private_posts' => "tnc_rep_edit_collections",
 			'edit_published_posts' => "tnc_rep_edit_collections",
 			'create_posts' => "tnc_rep_edit_collections"
 		];
-		
+
 	}
 
 	/**
@@ -243,7 +243,7 @@ class Collection extends Entity {
 		$sizes = get_intermediate_image_sizes();
 
         array_unshift($sizes, 'full');
-        
+
         foreach ( $sizes as $size ) {
             $thumbs[$size] = wp_get_attachment_image_src( $this->get__thumbnail_id(), $size );
         }
@@ -405,7 +405,7 @@ class Collection extends Entity {
 	function get_metadata_order() {
 		return $this->get_mapped_property( 'metadata_order' );
 	}
-	
+
 	/**
 	 * Get enable cover page attribute
 	 *
@@ -414,7 +414,7 @@ class Collection extends Entity {
 	function get_enable_cover_page() {
 		return $this->get_mapped_property( 'enable_cover_page' );
 	}
-	
+
 	/**
 	 * Get Header Image ID attribute
 	 *
@@ -423,7 +423,7 @@ class Collection extends Entity {
 	function get_header_image_id() {
 		return $this->get_mapped_property( 'header_image_id' );
 	}
-	
+
 	/**
 	 * Return true if enabled cover page is set to yes
 	 *
@@ -432,7 +432,7 @@ class Collection extends Entity {
 	function is_cover_page_enabled() {
         return $this->get_enable_cover_page() === 'yes';
     }
-	
+
 	/**
 	 * Get enable cover page attribute
 	 *
@@ -489,7 +489,7 @@ class Collection extends Entity {
 
 	/**
 	 * Get the two core metadata of the collection (title and description)
-	 * 
+	 *
 	 * @return array[\Tainacan\Entities\Metadatum]
 	 */
 	function get_core_metadata() {
@@ -501,7 +501,7 @@ class Collection extends Entity {
 
 	/**
 	 * Get the Core Title Metadatum for this collection
-	 * 
+	 *
 	 * @return \Tainacan\Entities\Metadatum The Core Title Metadatum
 	 */
 	function get_core_title_metadatum() {
@@ -512,7 +512,7 @@ class Collection extends Entity {
 
 	/**
 	 * Get the Core Description Metadatum for this collection
-	 * 
+	 *
 	 * @return \Tainacan\Entities\Metadatum The Core Description Metadatum
 	 */
 	function get_core_description_metadatum() {
@@ -520,7 +520,7 @@ class Collection extends Entity {
 
 		return $repo->get_core_description_metadatum($this);
 	}
-	
+
 	/**
 	 * Checks if comments are allowed for the current Collection.
 	 * @return string "open"|"closed"
@@ -528,7 +528,7 @@ class Collection extends Entity {
 	public function get_comment_status() {
 	    return $this->get_mapped_property('comment_status');
 	}
-	
+
 	/**
 	 * Checks if comments are allowed for the current Collection Items.
 	 * @return bool
@@ -674,7 +674,7 @@ class Collection extends Entity {
 	function set_filters_order( $value ) {
 		$this->set_mapped_property( 'filters_order', $value );
 	}
-	
+
 	/**
 	 * Set enable cover page attribute
 	 *
@@ -685,7 +685,7 @@ class Collection extends Entity {
 	function set_enable_cover_page( $value ) {
 		$this->set_mapped_property( 'enable_cover_page', $value );
 	}
-	
+
 	/**
 	 * Set cover page ID
 	 *
@@ -696,7 +696,7 @@ class Collection extends Entity {
 	function set_cover_page_id( $value ) {
 		$this->set_mapped_property( 'cover_page_id', $value );
 	}
-	
+
 	/**
 	 * Set Header Image ID
 	 *
@@ -723,21 +723,21 @@ class Collection extends Entity {
                 throw new \Exception('moderators_ids must be a array of users ids');
 	        }
 	    }
-		// make sure you never have duplicated moderators 
+		// make sure you never have duplicated moderators
 		$value = array_unique($value);
-		
+
 		$this->set_mapped_property( 'moderators_ids', $value );
 	}
-	
+
 	/**
 	 * Sets if comments are allowed for the current Collection.
-	 * 
+	 *
 	 * @param $value string "open"|"closed"
 	 */
 	public function set_comment_status( $value ) {
 	    $this->set_mapped_property('comment_status', $value);
 	}
-	
+
 	/**
 	 * Sets if comments are allowed for the current Collection Items.
 	 *
