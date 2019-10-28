@@ -584,7 +584,7 @@ class Elastic_Press {
 				}
 
 				if($search != '') {
-					$formatted_args['query']['bool']['must'][] = ["wildcard"=>["$field.name.raw" => "*$search*"]];
+					$formatted_args['query']['bool']['must'][] = ["wildcard"=>["$field.name.sortable" => "*$search*"]];
 				}
 			} else {
 				$aggs[$id] = [
