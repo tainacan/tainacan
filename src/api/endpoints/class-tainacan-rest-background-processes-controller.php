@@ -74,16 +74,16 @@ class REST_Background_Processes_Controller extends REST_Controller {
 	        ),
         ));
         register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[0-9]+)', array(
-            
+
             array(
                 'methods'             => \WP_REST_Server::READABLE,
                 'callback'            => array($this, 'get_item'),
                 'permission_callback' => array($this, 'bg_processes_permissions_check'),
             ),
-            
+
         ));
         register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[0-9]+)', array(
-            
+
             array(
                 'methods'             => \WP_REST_Server::EDITABLE,
                 'callback'            => array($this, 'update_item'),
@@ -99,24 +99,24 @@ class REST_Background_Processes_Controller extends REST_Controller {
                     ]
                 ],
             ),
-            
+
         ));
 
         register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[0-9]+)', array(
-            
+
             array(
                 'methods'             => \WP_REST_Server::DELETABLE,
                 'callback'            => array($this, 'delete_item'),
                 'permission_callback' => array($this, 'bg_processes_permissions_check'),
-                
+
             ),
-            
+
         ));
 
 
     }
 
-	
+
 	/**
 	 *
 	 * @param \WP_REST_Request $request
@@ -155,7 +155,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
                 $user_q = $wpdb->prepare("AND user_id = %d", $request['user_id']);
             }
 
-            if ( isset($user_q['all_users']) && $user_q['all_users'] ) {
+            if ( isset($request['all_users']) && $request['all_users'] ) {
                 $user_q = "";
             }
         }
@@ -168,7 +168,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
                 $status_q = "AND done = 1";
             }
         }
-		
+
 		$recent_q = '';
 		if ( isset($request['recent']) && $request['recent'] !== false ) {
             $recent_q = "AND (processed_last >= NOW() - INTERVAL 10 MINUTE OR queued_on >= NOW() - INTERVAL 10 MINUTE)";
@@ -194,7 +194,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
 
 		$rest_response->header('X-WP-Total', (int) $total_items);
         $rest_response->header('X-WP-TotalPages', (int) $max_pages);
-        
+
         return $rest_response;
 
     }
@@ -328,9 +328,9 @@ class REST_Background_Processes_Controller extends REST_Controller {
 
     public function get_log_url($id, $action, $type = '') {
         $suffix = $type ? '-' . $type : '';
-		
+
         $filename = 'bg-' . $action . '-' . $id . $suffix . '.log';
-        
+
         $upload_url = wp_upload_dir();
 
         if (!file_exists( $upload_url['basedir'] . '/tainacan/' . $filename )) {
@@ -339,7 +339,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
 
 		$upload_url = trailingslashit( $upload_url['baseurl'] );
         $logs_url = $upload_url . 'tainacan/' . $filename;
-        
+
         return $logs_url;
 
     }
