@@ -11,6 +11,8 @@ class Private_Files {
 
 	private static $instance = null;
 
+	public $dir_separator;
+
     public static function get_instance() {
         if(!isset(self::$instance)) {
             self::$instance = new self();
@@ -20,6 +22,11 @@ class Private_Files {
     }
 
 	protected function __construct() {
+
+		// Once upon a time I thought I had to worry about Windows and use DIRECTORY_SEPARATOR
+		// but this only gave me frustration and bugs.
+		$this->dir_separator = '/';
+
 		add_filter('wp_handle_upload_prefilter', [$this, 'pre_upload']);
 		add_filter('wp_handle_sideload_prefilter', [$this, 'pre_upload']);
 		add_filter('wp_handle_upload', [$this, 'post_upload']);
@@ -160,8 +167,8 @@ class Private_Files {
 
 			$path['path'] = str_replace($path['subdir'], '', $path['path']); //remove default subdir (year/month)
 			$path['url'] = str_replace($path['subdir'], '/' . $tainacan_basepath . '/' . $col_id_url . '/' . $item_id_url, $path['url']);
-			$path['path'] .= DIRECTORY_SEPARATOR . $tainacan_basepath . DIRECTORY_SEPARATOR . $col_id . DIRECTORY_SEPARATOR . $item_id;
-			$path['subdir'] = DIRECTORY_SEPARATOR . $tainacan_basepath . DIRECTORY_SEPARATOR . $col_id . DIRECTORY_SEPARATOR . $item_id;
+			$path['path'] .= $this->dir_separator . $tainacan_basepath . $this->dir_separator . $col_id . $this->dir_separator . $item_id;
+			$path['subdir'] = $this->dir_separator . $tainacan_basepath . $this->dir_separator . $col_id . $this->dir_separator . $item_id;
 
 		}
 
@@ -193,31 +200,31 @@ class Private_Files {
 
 			$requested_uri = str_replace('/' . $this->get_private_folder_prefix(), '/', $requested_uri);
 
-			$file_path = \str_replace( '/', DIRECTORY_SEPARATOR, str_replace($base_upload_url, '', $requested_uri) );
+			$file_path = \str_replace( '/', $this->dir_separator, str_replace($base_upload_url, '', $requested_uri) );
 
 			$file = $upload_dir['basedir'] . $file_path;
 
 			$existing_file = false;
 
-			$file_dirs = explode(DIRECTORY_SEPARATOR, $file);
+			$file_dirs = explode($this->dir_separator, $file);
 			$file_dirs_size = sizeof($file_dirs);
 
 			$item_id = $file_dirs[$file_dirs_size-2];
 			$collection_id = $file_dirs[$file_dirs_size-3];
 
 			// private item
-			$prefixed_file = str_replace( DIRECTORY_SEPARATOR . $item_id . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR . $this->get_private_folder_prefix() . $item_id . DIRECTORY_SEPARATOR, $file);
+			$prefixed_file = str_replace( $this->dir_separator . $item_id . $this->dir_separator, $this->dir_separator . $this->get_private_folder_prefix() . $item_id . $this->dir_separator, $file);
 
 			if ( \file_exists( $prefixed_file ) ) {
 				$existing_file = $prefixed_file;
 			}
 			// private collection
-			$prefixed_collection = str_replace( DIRECTORY_SEPARATOR . $collection_id . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR . $this->get_private_folder_prefix() . $collection_id . DIRECTORY_SEPARATOR, $file);
+			$prefixed_collection = str_replace( $this->dir_separator . $collection_id . $this->dir_separator, $this->dir_separator . $this->get_private_folder_prefix() . $collection_id . $this->dir_separator, $file);
 			if ( !$existing_file && \file_exists( $prefixed_collection ) ) {
 				$existing_file = $prefixed_collection;
 			}
 			// private both
-			$prefixed_both = str_replace( DIRECTORY_SEPARATOR . $collection_id . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR . $this->get_private_folder_prefix() . $collection_id . DIRECTORY_SEPARATOR, $prefixed_file);
+			$prefixed_both = str_replace( $this->dir_separator . $collection_id . $this->dir_separator, $this->dir_separator . $this->get_private_folder_prefix() . $collection_id . $this->dir_separator, $prefixed_file);
 			if ( !$existing_file && \file_exists( $prefixed_both ) ) {
 				$existing_file = $prefixed_both;
 			}
@@ -255,7 +262,7 @@ class Private_Files {
 	 */
 	function image_get_intermediate_size($data, $post_id, $size) {
 
-		$data['path'] = str_replace(DIRECTORY_SEPARATOR . $this->get_private_folder_prefix(), DIRECTORY_SEPARATOR, $data['path']);
+		$data['path'] = str_replace($this->dir_separator . $this->get_private_folder_prefix(), $this->dir_separator, $data['path']);
 		$data['url'] = str_replace('/' . $this->get_private_folder_prefix(), '/', $data['url']);
 
 		return $data;
@@ -278,8 +285,8 @@ class Private_Files {
 	 */
 	function update_item_and_collection($obj) {
 
-		$folder = DIRECTORY_SEPARATOR;
-		$check_folder = DIRECTORY_SEPARATOR;
+		$folder = $this->dir_separator;
+		$check_folder = $this->dir_separator;
 		$check = false;
 
 		if ( $obj instanceof \Tainacan\Entities\Collection ) {
@@ -298,11 +305,11 @@ class Private_Files {
 			$collection = $obj->get_collection();
 			$col_status_object = get_post_status_object($collection->get_status());
 
-			$folder 	  .= $col_status_object->public ? $collection->get_id() : $this->get_private_folder_prefix() . $collection->get_id() . DIRECTORY_SEPARATOR;
-			$check_folder .= $col_status_object->public ? $collection->get_id() : $this->get_private_folder_prefix() . $collection->get_id() . DIRECTORY_SEPARATOR;
+			$folder 	  .= $col_status_object->public ? $collection->get_id() : $this->get_private_folder_prefix() . $collection->get_id() . $this->dir_separator;
+			$check_folder .= $col_status_object->public ? $collection->get_id() : $this->get_private_folder_prefix() . $collection->get_id() . $this->dir_separator;
 
-			$folder 	  .= DIRECTORY_SEPARATOR;
-			$check_folder .= DIRECTORY_SEPARATOR;
+			$folder 	  .= $this->dir_separator;
+			$check_folder .= $this->dir_separator;
 
 			$status_obj = get_post_status_object($obj->get_status());
 
@@ -317,8 +324,8 @@ class Private_Files {
 
 			$upload_dir = wp_get_upload_dir();
 			$base_dir = $upload_dir['basedir'];
-			$full_path = $base_dir . DIRECTORY_SEPARATOR . $this->get_items_uploads_folder() . $folder;
-			$full_path_check = $base_dir . DIRECTORY_SEPARATOR . $this->get_items_uploads_folder() . $check_folder;
+			$full_path = $base_dir . $this->dir_separator . $this->get_items_uploads_folder() . $folder;
+			$full_path_check = $base_dir . $this->dir_separator . $this->get_items_uploads_folder() . $check_folder;
 
 			if (\file_exists($full_path_check)) {
 				rename($full_path_check, $full_path);
@@ -346,7 +353,7 @@ class Private_Files {
 
 		$upload_dir = wp_get_upload_dir();
 		$base_dir = $upload_dir['basedir'];
-		$full_path = $base_dir . DIRECTORY_SEPARATOR . $this->get_items_uploads_folder() . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . $prefix;
+		$full_path = $base_dir . $this->dir_separator . $this->get_items_uploads_folder() . $this->dir_separator . '*' . $this->dir_separator . $prefix;
 
 		foreach ($ids as $id) {
 			$folder = $full_path . $id;
@@ -355,9 +362,9 @@ class Private_Files {
 			if (sizeof($found) == 1 && isset($found[0])) {
 
 				if ($status_obj->public) {
-					$target = str_replace(DIRECTORY_SEPARATOR . $this->get_private_folder_prefix() . $id, DIRECTORY_SEPARATOR . $id, $found[0]);
+					$target = str_replace($this->dir_separator . $this->get_private_folder_prefix() . $id, $this->dir_separator . $id, $found[0]);
 				} else {
-					$target = str_replace(DIRECTORY_SEPARATOR . $id, DIRECTORY_SEPARATOR . $this->get_private_folder_prefix() . $id, $found[0]);
+					$target = str_replace($this->dir_separator . $id, $this->dir_separator . $this->get_private_folder_prefix() . $id, $found[0]);
 				}
 
 				rename($found[0], $target);
