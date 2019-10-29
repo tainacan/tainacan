@@ -94,15 +94,6 @@ class Log extends Entity {
 	function get_date() {
 		return $this->get_mapped_property( 'date' );
 	}
-	
-	/**
-	 * Return the log slug
-	 *
-	 * @return mixed|null
-	 */
-	function get_slug() {
-		return $this->get_mapped_property( 'slug' );
-	}
 
 	/**
 	 * Return the log slug
@@ -112,7 +103,6 @@ class Log extends Entity {
 	function get_slug() {
 		return $this->get_mapped_property( 'slug' );
 	}
-
 
 	/**
 	 * Return the Log description
