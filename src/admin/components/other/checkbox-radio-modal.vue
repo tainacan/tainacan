@@ -137,7 +137,7 @@
                             </b-field>
                             <li v-if="finderColumn.children.length">
                                 <div
-                                        v-if="totalRemaining[key].remaining === true || (finderColumn.length < totalRemaining[key].remaining)"
+                                        v-if="shouldShowMoreButton(key)"
                                         @click="getMoreOptions(finderColumn, key)"
                                         class="tainacan-show-more">
                                     <span class="icon">
@@ -206,7 +206,7 @@
                 </b-tab-item>
             </b-tabs>
             <!--<pre>{{ hierarchicalPath }}</pre>-->
-            <!-- <pre>{{ totalRemaining }}</pre> -->
+            <!--<pre>{{ totalRemaining }}</pre>-->
             <!--<pre>{{ selected }}</pre>-->
             <!--<pre>{{ options }}</pre>-->
             <!--<pre>{{ searchResults }}</pre>-->
@@ -355,6 +355,9 @@
                 this.$refs.checkboxRadioModal.focus()
         },
         methods: {
+            shouldShowMoreButton(key) {
+                return this.totalRemaining[key].remaining === true || (this.finderColumns[key].children.length < this.totalRemaining[key].remaining);
+            },
             fetchSelectedLabels() {
 
                 let selected = this.selected instanceof Array ? this.selected : [this.selected];

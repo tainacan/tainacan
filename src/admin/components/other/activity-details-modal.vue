@@ -477,7 +477,7 @@
                                     v-for="(attributeValue, attributeName, index) in activity.new_value">
                                 <p class="is-capitalized has-text-blue5 has-text-weight-bold">
                                     {{ attributeName }}
-                                    <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
+                                    <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
                                 </p>
 
                                 <div class="content">

@@ -38,30 +38,28 @@
 
 <script>
     import qs from 'qs';
-    import { tainacan as axios, all } from '../../../js/axios/axios';
+    import { tainacan as axios } from '../../../js/axios/axios';
     import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
     
     export default {
         mixins: [ filterTypeMixin, dynamicFilterTypeMixin ],
-        created(){
-            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
-
-            if (this.isRepositoryLevel || this.collectionId == 'default'){
-                endpoint = '/metadata/' + this.metadatumId;
-            }
-
-            axios.get(endpoint)
-                .then( res => {
-                    let metadatum = res.data;
-                    this.taxonomyId = metadatum.metadata_type_options.taxonomy_id
-                    this.updateSelectedValues();
-                });
+        created() {
+            if (this.filter.metadatum && 
+                this.filter.metadatum.metadata_type_object && 
+                this.filter.metadatum.metadata_type_object.options &&
+                this.filter.metadatum.metadata_type_object.options.taxonomy &&
+                this.filter.metadatum.metadata_type_object.options.taxonomy_id) {
+                    this.taxonomyId = this.filter.metadatum.metadata_type_object.options.taxonomy_id;
+                    this.taxonomy = this.filter.metadatum.metadata_type_object.options.taxonomy;
+                }
         },
         watch: {
             'query.taxquery'() {
-                if (this.taxonomyId != '')
-                    this.updateSelectedValues();
+                this.updateSelectedValues();
             }
+        },
+        mounted() {
+            this.updateSelectedValues();
         },
         data(){
             return {
@@ -92,8 +90,6 @@
                 
                 return axios.get(endpoint).then( res => {
                     for (let term of res.data.values) {   
-                          
-                        this.taxonomy = term.taxonomy;
 
                         if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {
                             let indexToIgnore = valuesToIgnore.findIndex(value => value == term.value);
@@ -127,11 +123,9 @@
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;
 
-                this.taxonomy = 'tnc_tax_' + this.taxonomyId;
-
                 let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == this.taxonomy);
 
-                if ( index >= 0){
+                if (index >= 0) {
                     let metadata = this.query.taxquery[ index ];
                     this.selected = [];
 
@@ -160,20 +154,19 @@
                 });
             },
             getTerms(metadata) {
-                let promises = [];
-                for (let id of metadata.terms) {
-                    //getting a specific value from api, does not need be in facets api
-                    promises.push(
-                        axios.get('/taxonomy/' + this.taxonomyId + '/terms/' + id + '?order=asc' )
-                            .then( res => {
-                                this.selected.push({ label: res.data.name, value: res.data.id });
-                            })
-                            .catch(error => {
-                                this.$console.log(error);
-                            })
-                    );
-                }
-                return all(promises);
+
+                let params = { 
+                    'include': metadata.terms, 
+                    'order': 'asc'
+                };
+
+                return axios.get('/taxonomy/' + this.taxonomyId + '/terms/?' + qs.stringify(params) )
+                    .then( res => {
+                        this.selected = res.data.map(term => { return { label: term.name, value: term.id } });
+                    })
+                    .catch(error => {
+                        this.$console.log(error);
+                    })
             }
         }
     }

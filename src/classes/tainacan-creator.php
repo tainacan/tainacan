@@ -106,7 +106,7 @@ function tainacan_autoload($class_name){
 		}
 
 		$file = $dir . 'class-tainacan-'. strtolower(str_replace('_', '-' , $class_name)) . '.php';
-			
+
 		if(file_exists($file)) {
 			require_once($file);
 		}
@@ -132,7 +132,6 @@ $Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Taxonomy');
 $Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
 
 //register filter type
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Custom_Interval');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Numeric');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Date');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Selectbox');

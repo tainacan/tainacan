@@ -33,7 +33,9 @@
                     :active.sync="isPreviewModalActive"
                     :width="1024"
                     scroll="keep"
-                    trap-focus>
+                    trap-focus
+                    aria-modal
+                    aria-role="dialog">
                 <div 
                         autofocus
                         role="dialog"

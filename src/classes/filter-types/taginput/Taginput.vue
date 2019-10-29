@@ -54,13 +54,23 @@
             return {
                 results:'',
                 selected:[],
-                options: []
+                options: [],
+                relatedCollectionId: ''
             }
         },
         watch: {
             'query.metaquery'() {
                 this.updateSelectedValues();
             }
+        },
+        created() {
+            if (this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' && 
+                this.filter.metadatum && 
+                this.filter.metadatum.metadata_type_object && 
+                this.filter.metadatum.metadata_type_object.options &&
+                this.filter.metadatum.metadata_type_object.options.collection_id) {
+                    this.relatedCollectionId = this.filter.metadatum.metadata_type_object.options.collection_id;
+                }
         },
         mounted() {
             this.updateSelectedValues();
@@ -106,8 +116,12 @@
 
                     if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' ) {
                         let query = qs.stringify({ postin: metadata.value, fetch_only: 'title,thumbnail', fetch_only_meta: '' });
-            
-                        axios.get('/items?' + query)
+                        let endpoint = '/items/';
+
+                        if (this.relatedCollectionId != '')
+                            endpoint = '/collection/' + this.relatedCollectionId + endpoint; 
+
+                        axios.get(endpoint + '?' + query)
                             .then( res => {
                                 if (res.data.items) {
                                     this.selected = [];

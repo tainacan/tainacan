@@ -796,7 +796,9 @@
                 :active.sync="isFilterModalActive"
                 :width="736"
                 animation="slide-menu"
-                trap-focus>
+                trap-focus
+                aria-modal
+                aria-role="dialog">
             <div
                     autofocus="true"
                     tabindex="-1"

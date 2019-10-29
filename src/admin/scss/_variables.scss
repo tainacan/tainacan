@@ -111,8 +111,9 @@ $addColors: (
 );
 $colors: map-merge($colors, $addColors);
 
-// Small size
+// Bulma Variables
 $size-small: 0.85em; // 0.75em on Bulma.
+$dropdown-mobile-breakpoint: $tablet;
 
 // Tainacan Header and side menus
 $header-height: 52px;

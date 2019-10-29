@@ -60,7 +60,7 @@
                 options: [],
                 selected: [],
                 taxonomy: '',
-                taxonomy_id: Number
+                taxonomyId: ''
             }
         },
         watch: {
@@ -80,6 +80,16 @@
                 this.loadOptions();
             }
         },    
+        created() {
+            if (this.filter.metadatum && 
+                this.filter.metadatum.metadata_type_object && 
+                this.filter.metadatum.metadata_type_object.options &&
+                this.filter.metadatum.metadata_type_object.options.taxonomy &&
+                this.filter.metadatum.metadata_type_object.options.taxonomy_id) {
+                    this.taxonomyId = this.filter.metadatum.metadata_type_object.options.taxonomy_id;
+                    this.taxonomy = this.filter.metadatum.metadata_type_object.options.taxonomy;
+                }
+        },
         mounted(){
             this.loadOptions();
         }, 
@@ -239,7 +249,7 @@
                     props: {
                         parent: parent,
                         filter: this.filter,
-                        taxonomy_id: this.taxonomy_id,
+                        taxonomy_id: this.taxonomyId,
                         selected: this.selected,
                         metadatumId: this.metadatumId,
                         taxonomy: this.taxonomy,
@@ -257,11 +267,6 @@
                 });
             },
             prepareOptionsForTaxonomy(items) {
-
-                if (items[0] != undefined) {
-                    this.taxonomy = items[0].taxonomy;
-                    this.taxonomy_id = items[0].taxonomy_id;
-                }
 
                 this.options = [];
                 this.options = items.slice(); // copy array.

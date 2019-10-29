@@ -148,8 +148,8 @@ class Relationship extends Metadata_Type {
 					}
 					
 					
-				} catch (Exception $e) {
-					// item not found 
+				} catch (\Exception $e) {
+					// item not found
 				}
 				
 			}
@@ -164,7 +164,7 @@ class Relationship extends Metadata_Type {
 					$return .= $this->get_item_html($item);
 				}
 				
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				// item not found 
 			}
 			
