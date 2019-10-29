@@ -18,6 +18,7 @@
             </label>
 
             <div
+                    v-if="collections && collections.length"
                     class="block">
                 <div
                         v-for="(collection, key) in collections"
@@ -30,6 +31,13 @@
                         {{ collection.name }}
                     </b-checkbox>
                 </div>
+            </div>
+            <div 
+                    v-else
+                    class="block">
+                <p class="has-text-gray">
+                    {{ $i18n.get('info_no_collection_created') }}
+                </p>
             </div>
         </b-collapse>
     </b-field>

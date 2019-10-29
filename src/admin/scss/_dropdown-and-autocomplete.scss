@@ -68,7 +68,7 @@
         } 
     }
     &.is-mobile-modal {
-        @media screen and (max-width: 1088px) {
+        @media screen and (max-width: 768px) {
             .dropdown-content {
                 max-height: 100vh;
             }
@@ -278,7 +278,7 @@
         }
     }
 
-    @media screen and (min-width: 1024px) {
+    @media screen and (min-width: 768px) {
 
         .datepicker-header {
             margin-bottom: 0.5rem;

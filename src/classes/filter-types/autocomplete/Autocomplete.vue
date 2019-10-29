@@ -54,11 +54,11 @@
         },
         watch: {
             'query.metaquery'() {
-                this.selectedValues();
+                this.updateSelectedValues();
             },
         },
         mounted() {
-            this.selectedValues();
+            this.updateSelectedValues();
         },
         methods: {
             onSelect(option){
@@ -74,7 +74,7 @@
                     collection_id: this.collectionId,
                     value: this.selected
                 });
-                this.selectedValues();
+                this.updateSelectedValues();
             },
             search: _.debounce( function(query) {
 
@@ -111,7 +111,7 @@
                     });
                 }
             }, 500),
-            selectedValues(){
+            updateSelectedValues(){
 
                 if (!this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ))
                     return false;
@@ -121,9 +121,12 @@
                     let metadata = this.query.metaquery[ index ];
 
                     if (this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship') {
-                        
-                        axios.get('/items/' + metadata.value + '?fetch_only=title,thumbnail')
+
+                        let endpoint = '/items/' + metadata.value + '?fetch_only=title,thumbnail';
+
+                        axios.get(endpoint)
                             .then( res => {
+
                                 let item = res.data;
                                 this.label = item.title;
                                 this.selected = item.title;
@@ -136,11 +139,11 @@
                     } else {
                         this.label = metadata.value;
                         this.selected = metadata.value;
-
                         this.$emit( 'sendValuesToTags', { label: this.label, value: this.selected });
                     }
                 } else {
-                    return false;
+                    this.label = '';
+                    this.selected = '';
                 }
             }
         }

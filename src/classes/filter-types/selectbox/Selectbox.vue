@@ -32,28 +32,16 @@
         mixins: [filterTypeMixin, dynamicFilterTypeMixin],
         data(){
             return {
-                options: []
+                options: [],
+                selected: ''
             }
         },
         watch: {
-            selected(value) {
-                if (value)
-                    this.$emit('sendValuesToTags', { label: value, value: value });
+            'query.metaquery'() {
+                if (!this.isUsingElasticSearch)
+                    this.loadOptions();
             }
         },
-        computed: {
-            selected() {
-                if ( this.query && this.query.metaquery && Array.isArray( this.query.metaquery ) ) {
-
-                    let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
-                    if ( index >= 0){
-                        let metadata = this.query.metaquery[ index ];
-                        return metadata.value;
-                    }
-                }
-                return undefined;
-            }
-        }, 
         mounted(){           
             if (!this.isUsingElasticSearch)
                 this.loadOptions();
@@ -68,6 +56,7 @@
                 promise = this.getValuesPlainText( this.metadatumId, null, this.isRepositoryLevel );
                 promise.request
                     .then(() => {
+                        this.updateSelectedValues();
                     })
                     .catch( error => {
                         if (isCancel(error))
@@ -79,13 +68,33 @@
                 // Search Request Token for cancelling
                 this.getOptionsValuesCancel = promise.source;
             },
-            onSelect(value){
+            updateSelectedValues() {
+                if ( this.query && this.query.metaquery && Array.isArray( this.query.metaquery ) ) {
+
+                    let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
+                    if ( index >= 0) {
+                        let metadata = this.query.metaquery[ index ];
+                        if (this.selected != metadata.value) {
+                            this.selected = metadata.value;
+                        }
+                    } else {
+                        this.selected = '';
+                    }
+                } else {
+                    this.selected = '';
+                }
+
+                this.$emit('sendValuesToTags', { label: this.selected, value: this.selected })
+            },
+            onSelect(value) {
                 this.$emit('input', {
                     filter: 'selectbox',
                     metadatum_id: this.metadatumId,
                     collection_id: this.collectionId,
-                    value: ( value ) ? value : ''
+                    value: value
                 });
+
+                this.updateSelectedValues();
             }
         }
     }

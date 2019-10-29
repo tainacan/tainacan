@@ -228,4 +228,8 @@ abstract class Filter_Type {
     public function set_form_component($form_component){
     	$this->form_component = $form_component;
     }
+
+    public function get_filter_type() {
+        return str_replace( 'Tainacan\Filter_Types\\', '', get_class($this) );
+    }
 }

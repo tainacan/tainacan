@@ -59,7 +59,6 @@ class REST_Filter_Types_Controller extends REST_Controller {
 		$filter_type = new $name();
 
 		$filter_arr = $filter_type->_toArray();
-		$filter_arr['name'] = $item;
 
 		return $filter_arr;
 	}

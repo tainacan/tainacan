@@ -120,6 +120,14 @@ class Log extends Entity {
 		return $this->get_mapped_property( 'date' );
 	}
 
+	/**
+	 * Return the log slug
+	 *
+	 * @return mixed|null
+	 */
+	function get_slug() {
+		return $this->get_mapped_property( 'slug' );
+	}
 
 	/**
 	 * Return the Log description
@@ -150,7 +158,7 @@ class Log extends Entity {
 	public function get_old_value() {
 		return $this->get_mapped_property( 'old_value' );
 	}
-	
+
 	/**
 	 * Get new value of log entry object
 	 *
@@ -208,7 +216,7 @@ class Log extends Entity {
 	public function set_old_value( $value ) {
 		$this->set_mapped_property( 'old_value', $value );
 	}
-	
+
 	/**
 	 * Set new value of log entry
 	 *
@@ -226,19 +234,19 @@ class Log extends Entity {
 	public function get_log_diffs(){
 		return $this->get_mapped_property('log_diffs');
 	}
-	
+
 	public function get_object_type() {
-		$this->get_mapped_property('object_type');
+		return $this->get_mapped_property('object_type');
 	}
-	
+
 	public function set_object_type($value) {
 		$this->set_mapped_property('object_type', $value);
 	}
-	
+
 	public function get_object_id() {
-		$this->get_mapped_property('object_id');
+		return $this->get_mapped_property('object_id');
 	}
-	
+
 	public function set_object_id($value) {
 		$this->set_mapped_property('object_id', $value);
 	}
@@ -256,11 +264,11 @@ class Log extends Entity {
 	public function get_item_id(){
 		return $this->get_mapped_property('item_id');
 	}
-	
+
 	public function get_action() {
-		$this->get_mapped_property('action');
+		return $this->get_mapped_property('action');
 	}
-	
+
 	public function set_action($value) {
 		$this->set_mapped_property('action', $value);
 	}

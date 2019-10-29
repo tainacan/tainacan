@@ -14,7 +14,7 @@ export const set_advanced_query = ({commit}, advancedSearchQuery) => {
 
 // Meta Queries from filters
 export const add_metaquery = ( { commit }, filter ) => {
-    if (filter && (filter.value == undefined || filter.value == null || filter.value.length === 0 || filter.value == '')) {
+    if (filter && (filter.value === undefined || filter.value === null || filter.value.length === 0 || filter.value === '')) {
         commit('removeMetaQuery', filter  );
     } else {
         commit('addMetaQuery', filter  );
@@ -39,7 +39,7 @@ export const remove_fetch_only_meta = ( { commit }, metadatum ) => {
 
 // Tax Queries from filters
 export const add_taxquery = ( { commit }, filter  ) => {
-    if (filter && (filter.terms == undefined || filter.terms == null || filter.terms == '' || filter.terms.length == 0 )) {
+    if (filter && (filter.terms === undefined || filter.terms === null || filter.terms === '' || filter.terms.length === 0 )) {
         commit('removeTaxQuery', filter  );
     } else {
         commit('addTaxQuery', filter  );
@@ -146,12 +146,15 @@ export const setAdminViewMode = ({ commit }, adminViewMode ) => {
 
 // Remove filter tag
 export const addFilterTag = ( { commit }, filterTag  ) => {
-    commit('addFilterTag', filterTag  );
+    if (filterTag && (filterTag.value === undefined || filterTag.value === null || filterTag.value === '' || filterTag.value.length === 0 ))
+        commit('removeFilterTag', filterTag);
+    else
+        commit('addFilterTag', filterTag);
 };
 
 // Remove filter tag
 export const removeFilterTag = ( { commit }, filterTag  ) => {
-    commit('removeFilterTag', filterTag  );
+    commit('removeFilterTag', filterTag);
 };
 
 // Remove filter tag

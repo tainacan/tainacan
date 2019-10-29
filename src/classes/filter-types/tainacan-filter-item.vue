@@ -57,8 +57,7 @@
         data() {
             return {
                 isLoadingItems: Boolean,
-                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
-                reloadDueFiltering: Boolean
+                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
             }
         },
         mounted() {
@@ -67,12 +66,9 @@
                     this.isLoadingOptions = isLoadingItems;
                 });
             }
-            // We listen to event, but reload event if hasFiltered is negative, as 
-            // an empty query also demands filters reloading.
-            this.$eventBusSearch.$on('hasFiltered', this.reloadFilter);
         },
         methods: {
-            onInput(inputEvent){
+            onInput(inputEvent) {
                 this.$eventBusSearch.$emit('input', inputEvent);
             },
             onSendValuesToTags($event) {
@@ -83,16 +79,11 @@
                     taxonomy: $event.taxonomy,
                     metadatumId: this.filter.metadatum_id
                 });
-            },
-            reloadFilter() {
-                this.reloadDueFiltering = !this.reloadDueFiltering;
             }
         },    
         beforeDestroy() {
             if (this.isUsingElasticSearch)
                 this.$eventBusSearch.$off('isLoadingItems');
-        
-            this.$eventBusSearch.$off('hasFiltered', this.reloadFilter);
         }
     }
 </script>
@@ -212,7 +203,7 @@
         }
 
         .datepicker {
-            @media screen and (min-width: 1024px) {
+            @media screen and (min-width: 768px) {
 
                 .datepicker-header {
 
@@ -220,20 +211,19 @@
                         max-width: 165px !important;
                     }
                     .pagination .pagination-list .control {
-                        width: 74px !important;
+                        width: 77px !important; 
 
                         .select {
-                            min-width: 100% !important;     
+                            min-width: 100% !important;    
 
                             select {
                                 padding-left: 1px !important;
                                 font-size: 0.75rem !important;
                                 height: 24px !important;
                                 min-width: 100% !important;
-
-                                &:not(.is-loading)::after {
-                                    margin-top: -13px !important;
-                                }
+                            }
+                            &:not(.is-loading)::after {
+                                margin-top: -13px !important;
                             }
                         }
                     }

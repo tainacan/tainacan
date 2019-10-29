@@ -80,7 +80,8 @@ class Taxonomy extends Entity {
             'show_admin_column' => false,
             'rewrite'           => [
                 'slug' => $this->get_slug()
-            ],
+			],
+			'update_count_callback' => '_update_generic_term_count'
         );
 
         if (taxonomy_exists($this->get_db_identifier())){

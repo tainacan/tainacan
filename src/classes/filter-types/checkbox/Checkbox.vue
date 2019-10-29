@@ -70,7 +70,7 @@
                 this.loadOptions();
         },
         methods: {
-            loadOptions(skipSelected) {
+            loadOptions() {
                 let promise = null;
                 
                 // Cancels previous Request
@@ -82,27 +82,18 @@
                 else
                     promise = this.getValuesPlainText( this.metadatumId, null, this.isRepositoryLevel, [], 0, this.filter.max_options, false, '1' );
      
-                if (skipSelected != undefined && skipSelected == true) {
-                    promise.request
-                        .then(() => {
-                            if (this.options.length > this.filter.max_options)
-                                this.options.splice(this.filter.max_options);
-                        }).catch((error) => {
-                            this.$console.error(error);
-                        });
-                } else {
-                    promise.request
-                        .then(() => {
-                            this.selectedValues();
-                        })
-                        .catch( (error) => {
-                            if (isCancel(error)) {
-                                this.$console.log('Request canceled: ' + error.message);
-                                this.selectedValues();
-                            } else
-                                this.$console.error( error );
-                        });
-                }
+                promise.request
+                    .then(() => {
+                        this.updateSelectedValues();
+                    })
+                    .catch( (error) => {
+                        if (isCancel(error)) {
+                            this.$console.log('Request canceled: ' + error.message);
+                            this.updateSelectedValues();
+                        } else
+                            this.$console.error( error );
+                    });
+                
                 // Search Request Token for cancelling
                 this.getOptionsValuesCancel = promise.source;  
             },
@@ -115,7 +106,7 @@
                     value: this.selected
                 });
             },
-            selectedValues() {
+            updateSelectedValues() {
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 

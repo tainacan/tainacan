@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Numeric_List_Interval extends Filter_Type {
 
     function __construct(){
-        $this->set_name('Numeric Interval List');
+        $this->set_name( __('Numeric Interval List', 'tainacan') );
         $this->set_supported_types(['float']);
         $this->set_component('tainacan-filter-numeric-list-interval');
         $this->set_form_component('tainacan-filter-form-numeric-list-interval');
@@ -47,7 +47,11 @@ class Numeric_List_Interval extends Filter_Type {
         return [
             'intervals' => [
                 'title' => __('Predefined intervals','tainacan'),
-                'description' => __('Predefined intervals','tainacan')
+                'description' => __('A list of predefined intervals that the filter will offer on a select box.','tainacan')
+            ],
+            'showIntervalOnTag' => [
+                'title' => __('Interval on tags', 'tainacan'),
+                'description' => __('Whether the applyed interval values should appear on filter tags.')
             ]
         ];
     }

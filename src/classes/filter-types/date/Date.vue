@@ -78,6 +78,7 @@
                 :date-parser="(date) => dateParser(date)"
                 size="is-small"
                 icon="calendar-today"
+                :years-range="[-200, 50]"
                 :day-names="[
                     $i18n.get('datepicker_short_sunday'),
                     $i18n.get('datepicker_short_monday'),
@@ -121,7 +122,7 @@
             filterTypeMixin
         ],
         mounted() {
-            this.selectedValues();
+            this.updateSelectedValues();
         },
         data(){
             return {
@@ -131,7 +132,7 @@
         },
         watch: {
             'query.metaquery'() {
-                this.selectedValues();
+                this.updateSelectedValues();
             }
         },
         computed: {
@@ -151,7 +152,7 @@
             }
         },
         methods: {
-            selectedValues(){
+            updateSelectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 

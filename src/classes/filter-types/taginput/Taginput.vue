@@ -11,6 +11,7 @@
                 :remove-on-keys="[]"
                 field="label"
                 attached
+                @input="onSelect"
                 @typing="search"
                 :aria-close-label="$i18n.get('remove_value')"
                 :aria-labelledby="'filter-label-id-' + filter.id"
@@ -53,21 +54,26 @@
             return {
                 results:'',
                 selected:[],
-                options: []
+                options: [],
+                relatedCollectionId: ''
             }
         },
         watch: {
-            selected(newVal, oldVal) {
-                const isEqual = (newVal.length == oldVal.length) && newVal.every((element, index) => {
-                    return element === oldVal[index]; 
-                });
-
-                if (!isEqual)
-                    this.onSelect();
+            'query.metaquery'() {
+                this.updateSelectedValues();
             }
         },
+        created() {
+            if (this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' && 
+                this.filter.metadatum && 
+                this.filter.metadatum.metadata_type_object && 
+                this.filter.metadatum.metadata_type_object.options &&
+                this.filter.metadatum.metadata_type_object.options.collection_id) {
+                    this.relatedCollectionId = this.filter.metadatum.metadata_type_object.options.collection_id;
+                }
+        },
         mounted() {
-            this.selectedValues();
+            this.updateSelectedValues();
         },
         methods: {
             search: _.debounce( function(query) {
@@ -99,60 +105,67 @@
                 this.getOptionsValuesCancel = promise.source;
                 
             }, 500),
-            selectedValues(){
+            updateSelectedValues() {
 
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
                 let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
-                if ( index >= 0){
+                if (index >= 0) {
                     let metadata = this.query.metaquery[ index ];
 
                     if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' ) {
                         let query = qs.stringify({ postin: metadata.value, fetch_only: 'title,thumbnail', fetch_only_meta: '' });
+                        let endpoint = '/items/';
 
-                        axios.get('/items?' + query)
+                        if (this.relatedCollectionId != '')
+                            endpoint = '/collection/' + this.relatedCollectionId + endpoint; 
+
+                        axios.get(endpoint + '?' + query)
                             .then( res => {
                                 if (res.data.items) {
+                                    this.selected = [];
                                     for (let item of res.data.items) {
-                                        this.selected.push({ 
-                                            label: item.title, 
-                                            value: item.id, 
-                                            img: item.thumbnail && item.thumbnail.thumbnail && item.thumbnail.thumbnail[0] ? item.thumbnail.thumbnail[0] : null 
-                                        });
+                                        let existingItem = this.selected.findIndex((anItem) => item.id == anItem.id);
+                                        if (existingItem < 0) {
+                                            this.selected.push({ 
+                                                label: item.title, 
+                                                value: item.id, 
+                                                img: item.thumbnail && item.thumbnail.thumbnail && item.thumbnail.thumbnail[0] ? item.thumbnail.thumbnail[0] : null 
+                                            });
+                                        }
                                     }
+                                    this.$emit( 'sendValuesToTags', { 
+                                        label: this.selected.map((option) => option.label), 
+                                        value: this.selected.map((option) => option.value)
+                                    });
                                 }
                             })
                             .catch(error => {
                                 this.$console.log(error);
                             });
                     } else {
-                        for (let item of metadata.value) {
+                        this.selected = [];
+                        for (let item of metadata.value)
                             this.selected.push({ label: item, value: item, img: null });
-                        }
+                        
+                        this.$emit( 'sendValuesToTags', { 
+                            label: this.selected.map((option) => option.label), 
+                            value: this.selected.map((option) => option.value)
+                        });
                     }
                 } else {
-                    return false;
+                    this.selected = [];
                 }
             },
             onSelect() {
-                let values = [];
-                let labels = [];
-                if( this.selected.length > 0 ){
-                    for(let val of this.selected){
-                        values.push( val.value );
-                        labels.push( val.label );
-                    }
-                }
                 this.$emit('input', {
                     filter: 'taginput',
                     compare: 'IN',
                     metadatum_id: this.metadatumId,
                     collection_id: this.collectionId,
-                    value: values
+                    value: this.selected.map((option) => option.value)
                 });
-
-                this.$emit( 'sendValuesToTags', { label: labels, value: values });
             }
         }
     }

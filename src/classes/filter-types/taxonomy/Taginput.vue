@@ -15,6 +15,7 @@
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :class="{'has-selected': selected != undefined && selected != []}"
                 @typing="search"
+                @input="onSelect"
                 :placeholder="$i18n.get('info_type_to_add_terms')">
             <template slot-scope="props">
                 <div class="media">
@@ -42,25 +43,31 @@
     
     export default {
         mixins: [ filterTypeMixin, dynamicFilterTypeMixin ],
-        created(){
-            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
-
-            if (this.isRepositoryLevel || this.collectionId == 'default'){
-                endpoint = '/metadata/' + this.metadatumId;
+        created() {
+            if (this.filter.metadatum && 
+                this.filter.metadatum.metadata_type_object && 
+                this.filter.metadatum.metadata_type_object.options &&
+                this.filter.metadatum.metadata_type_object.options.taxonomy &&
+                this.filter.metadatum.metadata_type_object.options.taxonomy_id) {
+                    this.taxonomyId = this.filter.metadatum.metadata_type_object.options.taxonomy_id;
+                    this.taxonomy = this.filter.metadatum.metadata_type_object.options.taxonomy;
+                }
+        },
+        watch: {
+            'query.taxquery'() {
+                this.updateSelectedValues();
             }
-
-            axios.get(endpoint)
-                .then( res => {
-                    let metadatum = res.data;
-                    this.selectedValues( metadatum.metadata_type_options.taxonomy_id );
-                });
+        },
+        mounted() {
+            this.updateSelectedValues();
         },
         data(){
             return {
                 results:'',
                 selected:[],
                 options: [],
-                taxonomy: ''
+                taxonomy: '',
+                taxonomyId: ''
             }
         },
         methods: {
@@ -76,15 +83,13 @@
                 let endpoint = this.isRepositoryLevel ? '/facets/' + this.metadatumId : '/collection/'+ this.collectionId +'/facets/' + this.metadatumId;
 
                 endpoint += '?order=asc&' + qs.stringify(query_items);
+                
                 let valuesToIgnore = [];
-                for(let val of this.selected){
+                for(let val of this.selected)
                     valuesToIgnore.push( val.value );
-                }
-
+                
                 return axios.get(endpoint).then( res => {
                     for (let term of res.data.values) {   
-                          
-                        this.taxonomy = term.taxonomy;
 
                         if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {
                             let indexToIgnore = valuesToIgnore.findIndex(value => value == term.value);
@@ -114,52 +119,54 @@
                     this.$console.log(error);
                 });
             }, 500),
-            selectedValues( taxonomyId ){
+            updateSelectedValues(){
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;
 
-                this.taxonomy = 'tnc_tax_' + taxonomyId;
+                let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == this.taxonomy);
 
-                let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == this.taxonomy );
-                if ( index >= 0){
+                if (index >= 0) {
                     let metadata = this.query.taxquery[ index ];
+                    this.selected = [];
 
-                    for ( let id of metadata.terms ){
-                       this.getTerm( taxonomyId, id );
+                    if (metadata.terms && metadata.terms.length) {
+                        this.getTerms(metadata)
+                            .then(() => {
+                                this.$emit( 'sendValuesToTags', { 
+                                    label: this.selected.map((option) => option.label), 
+                                    value: this.selected.map((option) => option.value),
+                                    taxonomy: this.taxonomy
+                                });
+                            });
                     }
                 } else {
-                    return false;
+                    this.selected = [];
                 }
             },
             onSelect() {
-                let values = [];
-                let labels = [];
-                if( this.selected.length > 0 ){
-                    for(let val of this.selected){
-                        values.push( val.value );
-                        labels.push( val.label );
-                    }
-                }
                 this.$emit('input', {
                     filter: 'taginput',
                     compare: 'IN',
                     taxonomy: this.taxonomy,
                     metadatum_id: this.metadatumId,
                     collection_id: this.collectionId,
-                    terms: values
+                    terms: this.selected.map((option) => option.value)
                 });
-
-                this.$emit('sendValuesToTags', { label: labels, taxonomy: this.taxonomy, value: values });
             },
-            getTerm( taxonomy, id ){
-                //getting a specific value from api, does not need be in fecat api
-                return axios.get('/taxonomy/' + taxonomy + '/terms/' + id + '?order=asc' )
+            getTerms(metadata) {
+
+                let params = { 
+                    'include': metadata.terms, 
+                    'order': 'asc'
+                };
+
+                return axios.get('/taxonomy/' + this.taxonomyId + '/terms/?' + qs.stringify(params) )
                     .then( res => {
-                        this.selected.push({ label: res.data.name, value: res.data.id });
+                        this.selected = res.data.map(term => { return { label: term.name, value: term.id } });
                     })
                     .catch(error => {
                         this.$console.log(error);
-                    });
+                    })
             }
         }
     }

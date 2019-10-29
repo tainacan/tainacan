@@ -12,7 +12,9 @@
         <b-modal
                 :active.sync="isPreviewModalActive"
                 scroll="keep"
-                trap-focus>
+                trap-focus
+                aria-modal
+                aria-role="dialog">
             <!-- <div class="tainacan-modal-content">
                 <div class="tainacan-modal-title">
                     <h2>{{ $i18n.get('label_document') }}</h2>

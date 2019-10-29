@@ -41,14 +41,14 @@ class Admin {
 			array( &$this, 'admin_page' ),
 			plugin_dir_url( __FILE__ ) . 'images/tainacan_logo_symbol.svg'
 		);
-		
-		add_submenu_page( 
-			$this->menu_slug, 
-			__('System check', 'tainacan'), 
-			__('System check', 'tainacan'), 
-			'manage_options', 
-			'tainacan_systemcheck', 
-			array( &$this, 'systemcheck_page' ) 
+
+		add_submenu_page(
+			$this->menu_slug,
+			__('System check', 'tainacan'),
+			__('System check', 'tainacan'),
+			'manage_options',
+			'tainacan_systemcheck',
+			array( &$this, 'systemcheck_page' )
 		);
 
 		add_action( 'load-' . $page_suffix, array( &$this, 'load_admin_page' ) );
@@ -57,6 +57,7 @@ class Admin {
 	function load_admin_page() {
 		add_action( 'admin_enqueue_scripts', array( &$this, 'add_admin_css' ), 90 );
 		add_action( 'admin_enqueue_scripts', array( &$this, 'add_admin_js' ), 90 );
+		add_action( 'admin_enqueue_scripts', array(&$this, 'add_theme_files') );
 	}
 
 
@@ -74,18 +75,18 @@ class Admin {
 
 	function add_theme_files() {
 		global $TAINACAN_BASE_URL;
-		
+
 		// wp_enqueue_style( 'style', $TAINACAN_BASE_URL . '/assets/css/fonts/materialdesignicons.css' );
 		wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/css/fonts/tainacanicons.css', [], TAINACAN_VERSION );
 		wp_enqueue_style( 'roboto-fonts', 'https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i', [], TAINACAN_VERSION );
 		wp_enqueue_script('underscore');
 	}
-	
+
 	function add_admin_css() {
 		global $TAINACAN_BASE_URL;
-		
+
 		wp_enqueue_style( 'tainacan-admin-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-admin.css', [], TAINACAN_VERSION );
-		
+
 //		$undesired_wp_styles = [
 //			'admin-menu',
 //			'admin-bar',
@@ -119,14 +120,14 @@ class Admin {
 //
 //		wp_dequeue_style( $undesired_wp_styles );
 //		wp_deregister_style( $undesired_wp_styles );
-		
+
 	}
-	
+
 	function add_admin_js() {
 		global $TAINACAN_BASE_URL;
 
 		wp_enqueue_script( 'tainacan-user-admin', $TAINACAN_BASE_URL . '/assets/user_admin-components.js', ['underscore', 'media-editor', 'media-views', 'customize-controls'], TAINACAN_VERSION, true );
-		 
+
 		$settings = $this->get_admin_js_localization_params();
 
 		wp_localize_script( 'tainacan-user-admin', 'tainacan_plugin', $settings );
@@ -134,23 +135,23 @@ class Admin {
 		wp_enqueue_script('underscore');
 		wp_enqueue_script('jcrop');
 		wp_enqueue_script( 'customize-controls' );
-		
+
 		do_action('tainacan-enqueue-admin-scripts');
-		
+
 	}
-	
+
 	/**
 	 * Also used by DevInterface
 	 */
 	function get_admin_js_localization_params() {
 		global $TAINACAN_BASE_URL, $TAINACAN_API_MAX_ITEMS_PER_PAGE;
-		
+
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 		$Tainacan_Metadata      = \Tainacan\Repositories\Metadata::get_instance();
 		$Tainacan_Filters     = \Tainacan\Repositories\Filters::get_instance();
 		$Tainacan_Items       = \Tainacan\Repositories\Items::get_instance();
 		$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
-		
+
 		$tainacan_admin_i18n = require( 'tainacan-admin-i18n.php' );
 
 		$entities_labels = [
@@ -222,33 +223,33 @@ class Admin {
 		}
 
 		$filter_types = $Tainacan_Filters->fetch_filter_types();
-		
+
 		foreach ( $filter_types as $index => $filter_type){
 		    $class = new $filter_type;
             $settings['i18n']['helpers_label'][$class->get_component()] = $class->get_form_labels();
 		}
-		
+
 		$settings['form_hooks'] = Admin_Hooks::get_instance()->get_registered_hooks();
-		
+
 		$wp_post_types = get_post_types(['show_ui' => true], 'objects');
 		if (isset($wp_post_types['attachment'])) {
 			unset($wp_post_types['attachment']);
 		}
-		
+
 		$wp_post_types = array_map(function($i) {
 			return [
 				'slug' => $i->name,
 				'label' => $i->label
 			];
 		}, $wp_post_types);
-		
+
 		$settings['wp_post_types'] = $wp_post_types;
-		
+
 		// add an alternative to enable select all items in all pages while we temporarly disable bulk edit for all (see #199)
-		$settings['enable_select_all_items_pages'] = defined('TAINACAN_ENABLE_SELECT_ALL_ITEMS_PAGES') ? TAINACAN_ENABLE_SELECT_ALL_ITEMS_PAGES : false; 
-		
+		$settings['enable_select_all_items_pages'] = defined('TAINACAN_ENABLE_SELECT_ALL_ITEMS_PAGES') ? TAINACAN_ENABLE_SELECT_ALL_ITEMS_PAGES : false;
+
 		return $settings;
-		
+
 	}
 
 	function admin_body_class( $classes ) {
@@ -334,7 +335,7 @@ class Admin {
 
 		wp_die();
 	}
-	
+
 	public function systemcheck_page() {
 		require_once('system-check/class-tainacan-system-check.php');
 		$check = new System_Check();

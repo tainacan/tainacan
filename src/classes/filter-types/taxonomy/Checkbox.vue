@@ -60,7 +60,7 @@
                 options: [],
                 selected: [],
                 taxonomy: '',
-                taxonomy_id: Number
+                taxonomyId: ''
             }
         },
         watch: {
@@ -80,6 +80,16 @@
                 this.loadOptions();
             }
         },    
+        created() {
+            if (this.filter.metadatum && 
+                this.filter.metadatum.metadata_type_object && 
+                this.filter.metadatum.metadata_type_object.options &&
+                this.filter.metadatum.metadata_type_object.options.taxonomy &&
+                this.filter.metadatum.metadata_type_object.options.taxonomy_id) {
+                    this.taxonomyId = this.filter.metadatum.metadata_type_object.options.taxonomy_id;
+                    this.taxonomy = this.filter.metadatum.metadata_type_object.options.taxonomy;
+                }
+        },
         mounted(){
             this.loadOptions();
         }, 
@@ -87,7 +97,7 @@
             ...mapGetters('search', [
                 'getFacets'
             ]),
-            loadOptions(skipSelected) {
+            loadOptions() {
                 if (!this.isUsingElasticSearch) {
                     let promise = null;
                     const source = CancelToken.source();
@@ -123,7 +133,7 @@
                     });
                     promise.request
                         .then((res) => {
-                            this.prepareOptionsForTaxonomy(res.data.values ? res.data.values : res.data, skipSelected);
+                            this.prepareOptionsForTaxonomy(res.data.values ? res.data.values : res.data);
                             this.isLoadingOptions = false;
                         })
                         .catch( error => {
@@ -143,14 +153,14 @@
                     for (const facet in this.facetsFromItemSearch) {
                         if (facet == this.filter.id) {
                             if (Array.isArray(this.facetsFromItemSearch[facet]))
-                                this.prepareOptionsForTaxonomy(this.facetsFromItemSearch[facet], skipSelected);
+                                this.prepareOptionsForTaxonomy(this.facetsFromItemSearch[facet]);
                             else
-                                this.prepareOptionsForTaxonomy(Object.values(this.facetsFromItemSearch[facet]), skipSelected);
+                                this.prepareOptionsForTaxonomy(Object.values(this.facetsFromItemSearch[facet]));
                         }    
                     }
                 }
             },
-            selectedValues(){
+            updateSelectedValues(){
                 
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;
@@ -164,7 +174,6 @@
                     return false;
                 }
 
-                
                 let onlyLabels = [];
 
                 for (let selected of this.selected) {
@@ -240,7 +249,7 @@
                     props: {
                         parent: parent,
                         filter: this.filter,
-                        taxonomy_id: this.taxonomy_id,
+                        taxonomy_id: this.taxonomyId,
                         selected: this.selected,
                         metadatumId: this.metadatumId,
                         taxonomy: this.taxonomy,
@@ -257,12 +266,7 @@
                     trapFocus: true
                 });
             },
-            prepareOptionsForTaxonomy(items, skipSelected) {
-
-                if (items[0] != undefined) {
-                    this.taxonomy = items[0].taxonomy;
-                    this.taxonomy_id = items[0].taxonomy_id;
-                }
+            prepareOptionsForTaxonomy(items) {
 
                 this.options = [];
                 this.options = items.slice(); // copy array.
@@ -287,9 +291,7 @@
                         }
                     }
                 }
-                if (skipSelected == undefined || skipSelected == false) {
-                    this.selectedValues();
-                }
+                this.updateSelectedValues();
             },
             updatesIsLoading(isLoadingOptions) {
                 this.isLoadingOptions = isLoadingOptions;

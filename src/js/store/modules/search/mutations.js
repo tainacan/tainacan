@@ -22,7 +22,6 @@ export const addMetaQuery = ( state, filter ) => {
     state.postquery.metaquery = ( ! state.postquery.metaquery  || state.postquery.metaquery.length == undefined ) ? [] : state.postquery.metaquery;
 
     let index = state.postquery.metaquery.findIndex( item => item.key === filter.metadatum_id);
-    
     if ( index >= 0 ){
         Vue.set( state.postquery.metaquery, index, {
             key: filter.metadatum_id,
@@ -94,6 +93,7 @@ export const removeMetaQuery = ( state, filter ) => {
     state.postquery.metaquery = ( ! state.postquery.metaquery ) ? [] : state.postquery.metaquery;
 
     let index = state.postquery.metaquery.findIndex( item => item.key == filter.metadatum_id);
+
     if (index >= 0) {
         if (!filter.isMultiValue && Array.isArray(state.postquery.metaquery[index].value) && state.postquery.metaquery[index].value.length > 1) {
             let otherIndex = state.postquery.metaquery[index].value.findIndex(item => item == filter.value);
@@ -158,8 +158,9 @@ export const setOrderByName = ( state, orderByName ) => {
 };
 
 export const addFilterTag = ( state, filterTag ) => {
-    state.filter_tags = ( ! state.filter_tags) ? [] : state.filter_tags;
+    state.filter_tags = ( ! state.filter_tags) ? [] : state.filter_tags;    
     let index = state.filter_tags.findIndex( tag => tag.filterId == filterTag.filterId);
+
     if (index >= 0)
         Vue.set(state.filter_tags, index, filterTag);
     else

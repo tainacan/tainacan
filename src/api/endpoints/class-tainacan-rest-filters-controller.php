@@ -83,8 +83,8 @@ class REST_Filters_Controller extends REST_Controller {
 				'permission_callback' => array($this, 'delete_item_permissions_check'),
 				'args'                => array(
 	            	'permanently' => array(
-		                'description' => __('To delete permanently, you can pass \'permanently\' as true. By default this will only trash collection'),
-			            'default'     => 'false'
+		                'description' => __('To delete permanently, you can pass \'permanently\' as 1. By default this will only trash collection'),
+			            'default'     => '0'
 		            ),
 	            )
 			),
@@ -122,12 +122,10 @@ class REST_Filters_Controller extends REST_Controller {
 		if(empty($received_type)){
 			throw new \InvalidArgumentException('The type can\'t be empty');
 		} elseif(!strrchr($received_type, '_')){
-			$received_type = ucfirst(strtolower($received_type));
+			$type = ucfirst(strtolower($received_type));
 		} else {
-			$received_type = ucwords(strtolower($received_type), '_');
+			$type = ucwords(strtolower($received_type), '_\\');
 		}
-
-		$type = "Tainacan\Filter_Types\\$received_type";
 
 		$filter_type = new $type();
 
@@ -467,11 +465,10 @@ class REST_Filters_Controller extends REST_Controller {
 	public function get_endpoint_args_for_item_schema( $method = null ) {
 		$endpoint_args = [];
 		if($method === \WP_REST_Server::READABLE) {
-			$endpoint_args['context'] = array(
-				'type'    => 'string',
-				'default' => 'view',
-				'items'   => array( 'view, edit' )
-			);
+			$endpoint_args = array_merge(
+                $endpoint_args, 
+                parent::get_wp_query_params()
+            );
 		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
 			$map = $this->filter_repository->get_map();
 
@@ -496,16 +493,17 @@ class REST_Filters_Controller extends REST_Controller {
 	 * @return array|void
 	 */
 	public function get_wp_query_params() {
-		$query_params['context']['default'] = 'view';
-
-		$query_params = array_merge($query_params, parent::get_wp_query_params());
 
 		$query_params['name'] = array(
 			'description' => __('Limits the result set to filters with a specific name'),
 			'type'        => 'string',
 		);
 
-		$query_params = array_merge($query_params, parent::get_meta_queries_params());
+		$query_params = array_merge(
+			$query_params, 
+			parent::get_wp_query_params(),
+			parent::get_meta_queries_params()
+		);
 
 		return $query_params;
 	}

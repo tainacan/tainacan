@@ -79,7 +79,7 @@
             filterTypeMixin
         ],
         mounted() {
-            this.selectedValues();
+            this.updateSelectedValues();
         },
         data(){
             return {
@@ -101,8 +101,13 @@
                 }
             }
         },
+        watch: {
+            'query.metaquery'() {
+                this.updateSelectedValues();
+            }
+        },
         methods: {
-            selectedValues(){
+            updateSelectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
@@ -121,7 +126,7 @@
                         this.$emit('sendValuesToTags', { label: this.comparator + ' ' + this.value, value: this.value });
 
                 } else {
-                    return false;
+                    this.value = null;
                 }
 
             },
@@ -130,7 +135,7 @@
 
                 if ( this.value === null || this.value === '')
                     return;
-
+                    
                 this.$emit('input', {
                     filter: 'numeric',
                     compare: this.comparator,

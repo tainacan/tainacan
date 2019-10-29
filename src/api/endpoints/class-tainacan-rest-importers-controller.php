@@ -267,7 +267,7 @@ class REST_Importers_Controller extends REST_Controller {
         if ( method_exists($importer, 'get_source_special_fields') ) {
             $response['source_special_fields'] = $importer->get_source_special_fields();
         }
-
+        $Tainacan_Importer_Handler->save_importer_instance($importer);
         return new \WP_REST_Response( $response, 200 );
 
     }

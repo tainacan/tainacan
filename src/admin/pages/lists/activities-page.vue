@@ -43,6 +43,7 @@
                                 :date-parser="(date) => dateParser(date)"
                                 size="is-small"
                                 icon="calendar-today"
+                                :years-range="[-50, 3]"
                                 :day-names="[
                                     $i18n.get('datepicker_short_sunday'),
                                     $i18n.get('datepicker_short_monday'),
@@ -456,7 +457,7 @@
 <style lang="scss" scoped>
     @import '../../scss/_variables.scss';
 
-     .sub-header {
+    .sub-header {
         min-height: $subheader-height;
         height: $header-height;
         padding-left: 0;
@@ -509,7 +510,7 @@
                 color: $blue5;
                 height: 27px;
                 font-size: 18px !important;
-                height: 1.5rem !important;
+                height: 1.75rem !important;
             }
         }
 
