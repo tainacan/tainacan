@@ -9,7 +9,7 @@ abstract class Importer {
      * The ID for this importer session
      *
      * When creating a new importer session via API, an id is returned and used to access this
-     * importer instance in the SESSION array
+     * importer instance. This is temporarily stored in the database and discarded after the bg process is triggered
      * 
      * @var identifier
      */
@@ -137,9 +137,6 @@ abstract class Importer {
 	];
 
     public function __construct($attributess = array()) {
-        if (!session_id()) {
-            @session_start();
-        }
 
 		$this->id = uniqid();
 
@@ -148,8 +145,6 @@ abstract class Importer {
 			$this->add_transient('author', $author);
 		}
 
-        $_SESSION['tainacan_importer'][$this->get_id()] = $this;
-		
 		if (!empty($attributess)) {
 			foreach ($attributess as $attr => $value) {
 				$method = 'set_' . $attr;
@@ -159,7 +154,8 @@ abstract class Importer {
 			}
 		}
 		
-    }
+		
+	}
 	
 	public function _to_Array($short = false) {
 		$return = ['id' => $this->get_id()];

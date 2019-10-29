@@ -16,7 +16,8 @@
                         v-if="$userCaps.hasCapability('delete_tainacan-collections')"
                         :disabled="!isSelectingCollections"
                         id="bulk-actions-dropdown"
-                        aria-role="list">
+                        aria-role="list"
+                        trap-focus>
                     <button
                             class="button is-white"
                             slot="trigger">
@@ -54,7 +55,8 @@
 
                 <b-dropdown 
                         inline
-                        :style="{ top: cursorPosY + 'px', left: cursorPosX + 'px' }">
+                        :style="{ top: cursorPosY + 'px', left: cursorPosX + 'px' }"
+                        trap-focus>
                     <b-dropdown-item
                             @click="openCollection()" 
                             v-if="!isOnTrash">
@@ -387,8 +389,8 @@ export default {
                         //     })
                         });
                     }
-                
-                }
+                },
+                trapFocus: true
             });
             this.clearContextMenu();
         },
@@ -426,8 +428,9 @@ export default {
                             }
                         }
                         this.allCollectionsOnPageSelected = false;
-                    },
-                }
+                    }
+                },
+                trapFocus: true
             });
         },
         openCollection() {
@@ -473,48 +476,6 @@ export default {
             this.contextMenuCollection = null;
             this.contextMenuIndex = null;
         }
-    },
-    mounted() {
-        // COLUMN RESIZE
-        // This feature is not implemented as it would require whitespace 
-        // on table cells to be 'wrap' instead of 'no-wrap'. Once the table
-        // needs a scroll, the minimum size for the columns would be reached
-        // text would start to ellipsis, but the column is not resizible anymore.
-        // (function () {
-        //     var thElm;
-        //     var startOffset;
-
-        //     Array.prototype.forEach.call(
-        //     document.querySelectorAll("table th"),
-        //     function (th) {
-        //         th.style.position = 'relative';
-
-        //         var grip = document.createElement('div');
-        //         grip.innerHTML = "&nbsp;";
-        //         grip.style.top = 0;
-        //         grip.style.right = 0;
-        //         grip.style.bottom = 0;
-        //         grip.style.width = '5px';
-        //         grip.style.position = 'absolute';
-        //         grip.style.cursor = 'col-resize';
-        //         grip.addEventListener('mousedown', function (e) {
-        //             thElm = th;
-        //             startOffset = th.offsetWidth - e.pageX;
-        //         });
-
-        //         th.appendChild(grip);
-        //     });
-
-        //     document.addEventListener('mousemove', function (e) {
-        //     if (thElm) {
-        //         thElm.style.width = startOffset + e.pageX + 'px';
-        //     }
-        //     });
-
-        //     document.addEventListener('mouseup', function () {
-        //         thElm = undefined;
-        //     });
-        // })();  
     }
 }
 </script>

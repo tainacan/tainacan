@@ -192,10 +192,10 @@ export const fetchRepositoryCollectionFilters = ({ dispatch, commit } ) => {
                             axios.all(promises).then((results) => {
                                 for (let resp of results) {
                                     let repositoryFilters = resp.filter.filter((filter) => { 
-                                        return (filter.collection_id == 'default' || filter.collection_id == 'filter_in_repository')
+                                        return (filter.collection_id == 'default')
                                     });
                                     let collectionFilters = resp.filter.filter((filter) => {
-                                        return (filter.collection_id != 'default' && filter.collection_id != 'filter_in_repository')
+                                        return (filter.collection_id != 'default')
                                     });
                                     commit('setRepositoryCollectionFilters', { collectionName: resp.collectionId, repositoryCollectionFilters: collectionFilters });
                                     commit('setRepositoryCollectionFilters', { collectionName: undefined, repositoryCollectionFilters: repositoryFilters });
@@ -240,10 +240,10 @@ export const fetchTaxonomyFilters = ({ dispatch, commit }, taxonomyId ) => {
                         axios.tainacan.get(endpoint)
                             .then((resp) => {
                                 let repositoryFilters = resp.data.filter((filter) => { 
-                                    return (filter.collection_id == 'default' || filter.collection_id == 'filter_in_repository') && filter.metadatum.metadata_type_object.options.taxonomy_id != taxonomyId
+                                    return (filter.collection_id == 'default') && filter.metadatum.metadata_type_object.options.taxonomy_id != taxonomyId
                                 });
                                 let collectionFilters = resp.data.filter((filter) => {
-                                    return (filter.collection_id != 'default' && filter.collection_id != 'filter_in_repository') && filter.metadatum.metadata_type_object.options.taxonomy_id != taxonomyId
+                                    return (filter.collection_id != 'default') && filter.metadatum.metadata_type_object.options.taxonomy_id != taxonomyId
                                 });
                                 commit('setTaxonomyFiltersForCollection', { collectionName: collectionId, taxonomyFilters: collectionFilters });
                                 commit('setTaxonomyFiltersForCollection', { collectionName: undefined, taxonomyFilters: repositoryFilters });

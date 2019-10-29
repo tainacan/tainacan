@@ -604,9 +604,9 @@ class CSV extends Importer {
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
         $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 
-        $Tainacan_Items->disable_logs();
-        $Tainacan_Metadata->disable_logs();
-        $Tainacan_Item_Metadata->disable_logs();
+        // $Tainacan_Items->disable_logs();
+        // $Tainacan_Metadata->disable_logs();
+        // $Tainacan_Item_Metadata->disable_logs();
 		
 		$itemMetadataArray = [];
 		
@@ -622,6 +622,8 @@ class CSV extends Importer {
 			if ( $item->get_id() == $this->get_transient('item_id') ) {
 				$this->add_log('item will be updated ID:' . $item->get_id() );
 				$updating_item = true;
+				// When creating a new item, disable log for each metadata to speed things up
+				$Tainacan_Item_Metadata->disable_logs();
 			} else {
 				$this->add_log('item with ID ' . $item->get_id() . ' not found. Unable to update. Creating a new one.' );
 			}

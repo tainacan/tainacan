@@ -25,6 +25,12 @@ abstract class Filter_Type {
     private $default_options = [];
 
     /**
+     * The name of the filter type that will be rendered on labels
+     * @var string
+     */
+    private $name;
+
+    /**
      * The name of the web component used by this filter type
      * @var string
      */
@@ -54,6 +60,20 @@ abstract class Filter_Type {
      */
     public function form(){
 
+    }
+
+    /**
+     * @param string $name for the filter type
+     */
+    public function set_name($name){
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function get_name() {
+        return $this->name;
     }
 
     /**
@@ -103,6 +123,7 @@ abstract class Filter_Type {
         $attributes = [];
 
         $attributes['className']        = get_class($this);
+        $attributes['name']             = $this->get_name();
         $attributes['component']        = $this->get_component();
         $attributes['options']          = $this->get_options();
         $attributes['supported_types']  = $this->get_supported_types();
@@ -206,5 +227,9 @@ abstract class Filter_Type {
      */
     public function set_form_component($form_component){
     	$this->form_component = $form_component;
+    }
+
+    public function get_filter_type() {
+        return str_replace( 'Tainacan\Filter_Types\\', '', get_class($this) );
     }
 }

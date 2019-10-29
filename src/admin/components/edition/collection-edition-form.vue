@@ -204,7 +204,8 @@
                                     ref="enabledViewModesDropdown"
                                     :mobile-modal="true"
                                     :disabled="Object.keys(registeredViewModes).length < 0"
-                                    aria-role="list">
+                                    aria-role="list"
+                                    trap-focus>
                                 <button
                                         class="button is-white"
                                         slot="trigger"
@@ -297,7 +298,7 @@
                         <div class="status-radios">
                             <b-radio
                                     v-model="form.status"
-                                    v-for="(statusOption, index) of $statusHelper.getStatuses()"
+                                    v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
                                     :key="index"
                                     :native-value="statusOption.slug">
                                 <span class="icon has-text-gray">

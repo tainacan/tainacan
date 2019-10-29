@@ -6,7 +6,6 @@ export default {
             router: options.router,
             store: options.store,
             data: {
-                componentsTag: [],
                 errors : [],
                 query: {},
                 collectionId: undefined,
@@ -16,15 +15,12 @@ export default {
             },
             created() {
                 this.$on('input', data => {
-                    this.$store.dispatch('search/setPage', 1);
-
-                    if( data.taxonomy ){
-                        this.add_taxquery(data);
-                    } else {
-                        this.add_metaquery(data);
-                    }
                     
-                    this.updateURLQueries();
+                    this.$store.dispatch('search/setPage', 1);
+                    if (data.taxonomy)
+                        this.addTaxquery(data);
+                    else
+                        this.addMetaquery(data);
                 });
 
                 this.$on('sendValuesToTags', data => {
@@ -174,24 +170,42 @@ export default {
                     this.$store.dispatch('search/set_advanced_query', data);
                     this.updateURLQueries();
                 },
-                add_metaquery( data ){
+                addMetaquery( data ){
                     if ( data && data.collection_id ){
                         this.$store.dispatch('search/add_metaquery', data );
                     }
-                },
-                removeMetaQuery(query) {
-                    this.$store.dispatch('search/remove_metaquery', query );
                     this.updateURLQueries();
                 },
-                removeMetaFromFilterTag(filterTag) {
-                    this.$emit('removeFromFilterTag', filterTag);
-                    if (filterTag.singleValue == undefined)
-                        this.$store.dispatch('search/removeFilterTag', filterTag);
-                },
-                add_taxquery( data ){
+                addTaxquery( data ){
                     if ( data && data.collection_id ){
                         this.$store.dispatch('search/add_taxquery', data );
                     }
+                    this.updateURLQueries();
+                },
+                removeMetaFromFilterTag(filterTag) {
+
+                    if (filterTag.singleLabel != undefined || filterTag.label != undefined) {
+                        
+                        if (filterTag.taxonomy) {
+                            this.$store.dispatch('search/remove_taxquery', {
+                                filterId: filterTag.filterId,
+                                label: filterTag.singleLabel ? filterTag.singleLabel : filterTag.label,
+                                isMultiValue: filterTag.singleLabel ? false : true,
+                                taxonomy: filterTag.taxonomy,
+                                value: filterTag.value
+                            });
+                        } else {
+                            this.$store.dispatch('search/remove_metaquery', {
+                                filterId: filterTag.filterId,
+                                label: filterTag.singleLabel ? filterTag.singleLabel : filterTag.label,
+                                isMultiValue: filterTag.singleLabel ? false : true,
+                                metadatum_id: filterTag.metadatumId,
+                                value: filterTag.value
+                            });
+                        }
+                        this.$store.dispatch('search/removeFilterTag', filterTag);
+                    }
+                    this.updateURLQueries();
                 },
                 addFetchOnly( metadatum, ignorePrefs, metadatumIDs ){
                     
@@ -217,20 +231,6 @@ export default {
                     this.$store.dispatch('search/remove_fetch_only_meta', metadatum );
                     this.updateURLQueries();             
                 },
-                getErrors( filter_id ){
-                    let error = this.errors.find( errorItem => errorItem.metadatum_id === filter_id );
-                    return ( error ) ? error.errors : false;
-                },
-                // listener(){
-                //     const components = this.getAllComponents();
-                //     for (let eventElement of components){
-                //         eventElement.addEventListener('input', (event) => {
-                //             if( event.detail ) {
-                //                 this.add_metaquery( event.detail[0] );
-                //             }
-                //         });
-                //     }
-                // },
                 setPage(page) {
                     this.$store.dispatch('search/setPage', page);
                     this.updateURLQueries();
@@ -380,26 +380,7 @@ export default {
                     this.$store.dispatch('search/cleanMetaQueries');
                     this.$store.dispatch('search/cleanTaxQueries');
                     this.updateURLQueries();
-                },
-                 /* Dev interfaces methods */
-        
-                registerComponent( name ){
-                    if (this.componentsTag.indexOf(name) < 0) {
-                        this.componentsTag.push( name );
-                    }
-                },
-                getAllComponents(){
-                    const components = [];
-                    for( let component of this.componentsTag ){
-                        const eventElements = document.getElementsByTagName( component );
-                        if( eventElements ) {
-                            for (let eventElement of eventElements){
-                                components.push( eventElement );
-                            }
-                        }
-                    }
-                    return components;
-                },
+                }
             }
         });
     }

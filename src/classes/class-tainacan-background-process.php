@@ -12,18 +12,10 @@ namespace Tainacan;
 
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'WP_Async_Request', false ) ) {
-	include_once TAINACAN_CLASSES_DIR . '/lib/wp-async-request.php';
-}
-
-if ( ! class_exists( 'WP_Background_Process', false ) ) {
-	include_once TAINACAN_CLASSES_DIR . '/lib/wp-background-process.php';
-}
-
 /**
  * Tainacan_Background_Process class.
  */
-abstract class Background_Process extends \WP_Background_Process {
+abstract class Background_Process extends \Tainacan_WP_Background_Process {
 
 	/**
 	 * Table name where the queue is stored

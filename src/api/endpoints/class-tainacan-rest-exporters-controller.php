@@ -68,7 +68,7 @@ class REST_Exporters_Controller extends REST_Controller {
 					],
 					'options' => [
 						'type'        => 'array/object',
-						'description' => __( 'The importer options', 'tainacan' ),
+						'description' => __( 'The exporter options', 'tainacan' ),
 					]
 				],
 			),
@@ -121,6 +121,7 @@ class REST_Exporters_Controller extends REST_Controller {
 
 		if ($object = $Tainacan_Exporter_Handler->initialize_exporter($slug)) {
 			$response = $object->_to_Array();
+			$Tainacan_Exporter_Handler->save_exporter_instance($object);
 			return new \WP_REST_Response($response, 201);
 		} else {
 			return new \WP_REST_Response([
@@ -146,13 +147,14 @@ class REST_Exporters_Controller extends REST_Controller {
 			foreach ($body as $att => $value) {
 				$attributes[$att] = $value;
 			}
-
-			$importer = $_SESSION['tainacan_exporter'][$session_id];
-			if($importer) {
+			global $Tainacan_Exporter_Handler;
+			$exporter = $Tainacan_Exporter_Handler->get_exporter_instance_by_session_id($session_id);
+			
+			if($exporter) {
 				foreach ($body as $att => $value) {
 					if ($att == 'collection') {
 						if (is_array($value) && isset($value['id'])) {
-							$importer->add_collection($value);
+							$exporter->add_collection($value);
 							continue;
 						} else {
 							return new \WP_REST_Response([
@@ -162,17 +164,18 @@ class REST_Exporters_Controller extends REST_Controller {
 						}
 					}
 					$method = 'set_' . $att;
-					if (method_exists($importer, $method)) {
-						$importer->$method($value);
+					if (method_exists($exporter, $method)) {
+						$exporter->$method($value);
 					}
 				}
 
-				$response = $importer->_to_Array();
+				$response = $exporter->_to_Array();
+				$Tainacan_Exporter_Handler->save_exporter_instance($exporter);
 				return new \WP_REST_Response( $response, 200 );
 			}
 
 			return new \WP_REST_Response([
-				'error_message' => __('Importer Session not found', 'tainacan' ),
+				'error_message' => __('Exporter Session not found', 'tainacan' ),
 				'session_id' => $session_id
 			], 400);
 		}
@@ -192,7 +195,8 @@ class REST_Exporters_Controller extends REST_Controller {
 	 */
 	public function run($request) {
 		$session_id = $request['session_id'];
-		$exporter = $_SESSION['tainacan_exporter'][$session_id];
+		global $Tainacan_Exporter_Handler;
+		$exporter = $Tainacan_Exporter_Handler->get_exporter_instance_by_session_id($session_id);
 
 		if(!$exporter) {
 			return new \WP_REST_Response([
@@ -212,6 +216,7 @@ class REST_Exporters_Controller extends REST_Controller {
 		$response = [
 			'bg_process_id' => $process->ID
 		];
+		$Tainacan_Exporter_Handler->delete_exporter_instance($exporter);
 		return new \WP_REST_Response( $response, 200 );
 	}
 	

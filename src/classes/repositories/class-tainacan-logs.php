@@ -16,6 +16,9 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Logs extends Repository {
 	public $entities_type = '\Tainacan\Entities\Log';
 	private static $instance = null;
+	private $current_diff = null;
+	private $current_deleting_entity;
+	private $current_action;
 
 	public static function get_instance() {
 		if ( ! isset( self::$instance ) ) {
@@ -29,7 +32,17 @@ class Logs extends Repository {
 	protected function __construct() {
 		parent::__construct();
 
-		add_action( 'add_attachment', array( $this, 'prepare_attachment_log_before_insert' ), 10 );
+		add_action( 'tainacan-pre-insert', array( $this, 'pre_insert_entity' ) );
+		
+		add_action( 'tainacan-insert', array( $this, 'insert_entity' ) );
+		add_action( 'tainacan-deleted', array( $this, 'delete_entity' ), 10, 2 );
+		add_action( 'tainacan-pre-delete', array( $this, 'pre_delete_entity' ), 10, 2 );
+		
+		add_action( 'add_attachment', array( $this, 'insert_attachment' ) );
+		add_action( 'delete_attachment', array( $this, 'pre_delete_attachment' ) );
+		add_action( 'delete_post', array( $this, 'delete_attachment' ) );
+		
+		add_filter('tainacan-log-set-title', [$this, 'filter_log_title']);
 	}
 
 	protected function _get_map() {
@@ -42,25 +55,11 @@ class Logs extends Repository {
 				'on_error'    => __( 'The title should be a text value and not empty', 'tainacan' ),
 				'validation'  => ''
 			],
-			'log_date'       => [
+			'date'       => [
 				'map'         => 'post_date',
 				'title'       => __( 'Log date', 'tainacan' ),
 				'type'        => 'string',
 				'description' => __( 'The log date', 'tainacan' ),
-			],
-			'order'          => [
-				'map'         => 'menu_order',
-				'title'       => __( 'Menu order', 'tainacan' ),
-				'type'        => 'string',
-				'description' => __( 'Log order' ),
-				'validation'  => ''
-			],
-			'parent'         => [
-				'map'         => 'parent',
-				'title'       => __( 'Parent', 'tainacan' ),
-				'type'        => 'string',
-				'description' => __( 'Log order' ),
-				'validation'  => ''
 			],
 			'description'    => [
 				'map'         => 'post_content',
@@ -77,13 +76,6 @@ class Logs extends Repository {
 				'description' => __( 'The log slug' ),
 				'validation'  => ''
 			],
-			'items_per_page' => [
-				'map'         => 'meta',
-				'title'       => __( 'Items per page', 'tainacan' ),
-				'type'        => 'integer',
-				'description' => __( 'The quantity of items that should be loaded' ),
-				'validation'  => ''
-			],
 			'user_id'        => [
 				'map'         => 'post_author',
 				'title'       => __( 'User ID', 'tainacan' ),
@@ -91,21 +83,19 @@ class Logs extends Repository {
 				'description' => __( 'Unique identifier' ),
 				'validation'  => ''
 			],
-			'blog_id'        => [
+			'item_id'        => [
 				'map'         => 'meta',
-				'title'       => __( 'Blog ID', 'tainacan' ),
+				'title'       => __( 'Item ID', 'tainacan' ),
 				'type'        => 'integer',
-				'description' => __( 'Unique identifier' ),
-				'validation'  => ''
 			],
-			'value'          => [
-				'map'         => 'meta',
-				'title'       => __( 'Actual value', 'tainacan' ),
-				'type'        => 'string',
-				'description' => __( 'The actual log value' ),
-				'validation'  => ''
-			],
-			'log_diffs'      => [
+			// 'value'          => [
+			// 	'map'         => 'meta',
+			// 	'title'       => __( 'Actual value', 'tainacan' ),
+			// 	'type'        => 'string',
+			// 	'description' => __( 'The actual log value' ),
+			// 	'validation'  => ''
+			// ],
+			'log_diffs'      => [ // deprecated
 				'map'         => 'meta',
 				'title'       => __( 'Log differences', 'tainacan' ),
 				'description' => __( 'Differences between old and new versions of object', 'tainacan' )
@@ -115,10 +105,27 @@ class Logs extends Repository {
 				'title'       => __( 'Log collection relationship', 'tainacan' ),
 				'description' => __( 'The ID of the collection that this log is related to', 'tainacan' )
 			],
-			'item_id' => [
+			'object_id' => [
 				'map'         => 'meta',
 				'title'       => __( 'Log item relationship', 'tainacan' ),
-				'description' => __( 'The id of the item that this log is related to', 'tainacan' ),
+				'description' => __( 'The id of the object that this log is related to', 'tainacan' ),
+			],
+			'object_type' => [
+				'map'         => 'meta',
+				'title'       => __( 'Log item relationship', 'tainacan' ),
+				'description' => __( 'The type of the object that this log is related to', 'tainacan' ),
+			],
+			'old_value' => [
+				'map'         => 'meta',
+				'title'       => __( 'Old Value', 'tainacan' ),
+			],
+			'new_value' => [
+				'map'         => 'meta',
+				'title'       => __( 'New value', 'tainacan' ),
+			],
+			'action' => [
+				'map'         => 'meta',
+				'title'       => __( 'Action', 'tainacan' ),
 			]
 		] );
 	}
@@ -218,7 +225,11 @@ class Logs extends Repository {
 	public function update( $object, $new_values = null ) {
 		return $this->insert( $object );
 	}
-
+	
+	/**
+	 * Feth most recent log
+	 * @return Entities\Log The most recent Log entity
+	 */
 	public function fetch_last() {
 		$args = [
 			'post_type'      => Entities\Log::get_post_type(),
@@ -232,196 +243,535 @@ class Logs extends Repository {
 		return array_pop( $logs );
 	}
 
-
-	public function prepare_attachment_log_before_insert( $post_ID ) {
+	/**
+	 * Callback to generate log when attachments are added to any Tainacan entity
+	 */
+	public function insert_attachment( $post_ID ) {
 		$attachment = get_post( $post_ID );
 		$post       = $attachment->post_parent;
 
-		if ( $post ) {
-			// was added attachment on a tainacan object
+		if ( $post ) { // attached to a post
 
-			$tainacan_post = Repository::get_entity_by_post( $post );
+			$entity = Repository::get_entity_by_post( $post );
 
-			if ( $tainacan_post ) {
-				// was added a normal attachment
-
-				// get all attachments except the new
-				$old_attachments_objects = $tainacan_post->get_attachments( $post_ID );
-
-				// get all attachments
-				$new_attachments_objects = $tainacan_post->get_attachments();
+			if ( $entity ) { // attached to a tainacan entity
 				
-				$old_attachments = $this->prepare_attachments($old_attachments_objects);
-				$new_attachments = $this->prepare_attachments($new_attachments_objects);
-
-				$array_diff_with_index = array_map( 'unserialize',
-					array_diff_assoc( array_map( 'serialize', $new_attachments ), array_map( 'serialize', $old_attachments ) ) );
-
-				$diff['attachments'] = [
-					'new'             => $new_attachments,
-					'old'             => $old_attachments,
-					'diff_with_index' => $array_diff_with_index
+				$log = new Entities\Log();
+				
+				$collection_id = method_exists($entity, 'get_collection_id') ? $entity->get_collection_id() : 'default';
+				
+				if ( $entity instanceof Entities\Collection ) {
+					$collection_id = $entity->get_id();
+					$log->set_title( sprintf( __( 'New file was attached to Collection "%s"', 'tainacan'), $entity->get_name() ) );
+				}
+				if ( $entity instanceof Entities\Item ) {
+					$log->set_item_id($entity->get_id());
+					$log->set_title( sprintf( __( 'New file was attached to Item "%s"', 'tainacan'), $entity->get_title() ) );
+				}
+				
+				$object_type = get_class($entity);
+				$object_id = $entity->get_id();
+				
+				$diff = [];
+				
+				$log->set_collection_id($collection_id);
+				$log->set_object_type($object_type);
+				$log->set_object_id($object_id);
+				$log->set_action('new-attachment');
+				
+				$title = __( sprintf('') , 'tainacan');
+				
+				$prepared = [
+					'id'          => $attachment->ID,
+					'title'       => $attachment->post_title,
+					'description' => $attachment->post_content,
+					'mime_type'   => $attachment->post_mime_type,
 				];
-
-				$this->insert_log( $tainacan_post, $diff, true );
+				
+				$log->set_new_value($prepared);
+				
+				if ( $log->validate() ) {
+					$this->insert($log);
+				}
 
 			}
 		}
 
 	}
 	
-	private function prepare_attachments($attachments) {
-		$attachments_prepared = [];
-		if ( is_array($attachments) ) {
-			foreach ( $attachments as $attachment ) {
-				$prepared = [
-					'id'          => $attachment->ID,
-					'title'       => $attachment->post_title,
-					'description' => $attachment->post_content,
-					'mime_type'   => $attachment->post_mime_type,
-					'url'         => $attachment->guid,
-				];
+	/**
+	 * Callback to generate log when attachments attached to any Tainacan entity are deleted
+	 */
+	public function pre_delete_attachment($attachment_id) {
+		
+		$attachment_post = get_post($attachment_id);
+		
+		$entity_post = get_post($attachment_post->post_parent);
 
-				array_push( $attachments_prepared, $prepared );
+		if ( $entity_post ) {
+
+			$entity = Repository::get_entity_by_post( $entity_post );
+
+			if ( $entity ) {
+				
+				$collection_id = method_exists($entity, 'get_collection_id') ? $entity->get_collection_id() : 'default';
+				
+				$log = new Entities\Log();
+				
+				if ( $entity instanceof Entities\Collection ) {
+					$collection_id = $entity->get_id();
+					$log->set_title( sprintf(__( 'File attached to Collection "%s" was removed', 'tainacan'), $entity->get_name() ) );
+				}
+				if ( $entity instanceof Entities\Item ) {
+					$log->set_item_id($entity->get_id());
+					$log->set_title( sprintf( __( 'File attached to Item "%s" was removed' , 'tainacan'), $entity->get_title() ) );
+				}
+				
+				$object_type = get_class($entity);
+				$object_id = $entity->get_id();
+				
+				$preapred = [
+					'id'          => $attachment_id,
+					'title'       => $attachment_post->post_title,
+					'description' => $attachment_post->post_content,
+				];
+				
+				$log->set_collection_id($collection_id);
+				$log->set_object_type($object_type);
+				$log->set_object_id($object_id);
+				$log->set_old_value($preapred);
+				$log->set_action('delete-attachment');
+				
+				$this->current_attachment_delete_log = $log;
+				
+			}
+			
+		}
+	}
+	
+	/**
+	 * Callback to generate log when attachments attached to any Tainacan entity are deleted
+	 */
+	public function delete_attachment($attachment_id) {
+		if ( isset($this->current_attachment_delete_log) && $this->current_attachment_delete_log instanceof Entities\Log ) {
+			$log = $this->current_attachment_delete_log;
+			$att = $log->get_old_value();
+			if ( is_array($att) && isset($att['id']) && $att['id'] == $attachment_id && $log->validate() ) {
+				$this->insert($log);
 			}
 		}
-		return $attachments_prepared;
 	}
-
+	
 	/**
-	 * Insert a log when a new entity is inserted
+	 * Compare two repository entities and sets the current_diff property to be used in the insert hook
 	 *
-	 * @param Entity $value
-	 * @param array $diffs
-	 * @param bool $is_update
+	 * @param Entity $unsaved The new entity that is going to be saved
 	 *
-	 * @param bool $is_delete
-	 * @param bool $is_trash
-	 *
-	 * @return Entities\Log|bool new created log
+	 * @return void
 	 */
-	public function insert_log( $value, $diffs = [], $is_update = false, $is_delete = false, $is_trash = false ) {
-		$title       = null;
-		$description = null;
+	public function pre_insert_entity( Entities\Entity $unsaved ) {
 
-		if ( is_object( $value ) ) {
-			// do not log a log
-			if ( ( method_exists( $value, 'get_post_type' ) && $value->get_post_type() === 'tainacan-log' ) || $value->get_status() === 'auto-draft' ) {
-				return false;
+		if ( ! $unsaved->get_repository()->use_logs ) {
+			return;
+		}
+		
+		if ( $unsaved instanceof Entities\Item_Metadata_Entity ) {
+			return $this->prepare_item_metadata_diff($unsaved);
+		}
+		
+		// do not log a log
+		if ( ( method_exists( $unsaved, 'get_post_type' ) && $unsaved->get_post_type() === 'tainacan-log' ) || $unsaved->get_status() === 'auto-draft' ) {
+			return;
+		}
+		
+		$creating = true;
+		
+		$old = null;
+		
+		if ( is_numeric( $unsaved->get_id() ) ) {
+			if ( $unsaved instanceof Entities\Term ) {
+				$old = $unsaved->get_repository()->fetch( $unsaved->get_id(), $unsaved->get_taxonomy() );
+			} else {
+				$old = $unsaved->get_repository()->fetch( $unsaved->get_id() );
 			}
-
-			if ( $value instanceof Entities\Metadatum ) {
-				$type = $value->get_metadata_type();
-
-				if ( $type === 'Tainacan\Metadata_Types\Core_Title' || $type === 'Tainacan\Metadata_Types\Core_Description' ) {
-					return false;
+		}
+		
+		
+		if ( $old instanceof Entities\Entity ) {
+			
+			if ( $old->get_status() !== 'auto-draft' ) {
+				$creating = false;
+			}
+			
+		}
+		
+		$diff = [
+			'old' => [],
+			'new' => []
+		];
+		
+		$has_diff = false;
+		
+		if ( $creating ) {
+			$diff['new'] = $unsaved->_toArray();
+			$has_diff = true;
+		} else {
+			$map = $unsaved->get_repository()->get_map();
+			
+			foreach ( $map as $prop => $mapped ) {
+				if ( $old->get( $prop ) != $unsaved->get( $prop ) ) {
+					
+					$diff['old'][$prop] = $old->get( $prop );
+					$diff['new'][$prop] = $unsaved->get( $prop );
+					$has_diff = true;
+					
 				}
 			}
-
-			$type       = get_class( $value );
-			$class_name = explode( '\\', $type )[2];
-
-			$name = method_exists( $value, 'get_name' ) ? $value->get_name() :
-				( method_exists( $value, 'get_title' ) ? $value->get_title() : $value->get_metadatum()->get_name() );
-
-			if ( ! $name ) {
-				$name = $value->get_status();
-			}
-
-			if ( $is_update ) {
-				// entity was delete
-				$title         = $this->prepare_event_title( $value, $name, $class_name, 'updated' );
-
-				$description = $title;
-			} elseif ( $is_delete ) {
-				// entity was deleted
-				$title         = $this->prepare_event_title( $value, $name, $class_name, 'deleted' );
-
-				$description = $title;
-			} elseif ( ! empty( $diffs ) ) {
-				// entity was created
-				$title         = $this->prepare_event_title( $value, $name, $class_name, 'created' );
-
-				$description = $title;
-			} elseif ( $is_trash ) {
-				// entity was trashed
-				$title         = $this->prepare_event_title( $value, $name, $class_name, 'trashed' );
-
-				$description = $title;
-			}
-
-			$title       = apply_filters( 'tainacan-insert-log-message-title', $title, $type, $value );
-			$description = apply_filters( 'tainacan-insert-log-description', $description, $type, $value );
 		}
-
-		if ( !empty( $diffs ) || $is_delete || $is_trash) {
-			return Entities\Log::create( $title, $description, $value, $diffs );
-		}
+		
+		$diff = apply_filters( 'tainacan-entity-diff', $diff, $unsaved, $old );
+		
+		$this->current_diff = $has_diff ? $diff : false;
+		$this->current_action = $creating ? 'create' : 'update';
+		
 	}
-
-	/**
-	 * This will prepare the event title for objects
-	 *
-	 * @param $object
-	 * @param $name
-	 * @param $class_name
-	 *
-	 * @param $action_message
-	 *
-	 * @return string
-	 */
-	private function prepare_event_title( $object, $name, $class_name, $action_message ) {
-
-		// translators: 1=Object name, 2=Object type, 3=Action. e.g. The "Subject" taxonomy has been created
-		$title_format = __( '"%1$s" %2$s has been %3$s', 'tainacan' );
-
-		if ( $object instanceof Entities\Metadatum || $object instanceof Entities\Item || $object instanceof Entities\Filter ) {
-			$collection = $object->get_collection();
-
-			if ( $collection ) {
-				$parent = sprintf( __('(collection: %s)', 'tainacan'), $collection->get_name() );
-			} else {
-				$parent = __('(on repository level)', 'tainacan');
-			}
-
-			$title = sprintf( $title_format, $name, strtolower( $class_name ), $action_message );
-			$title .= ' ' . $parent . '.';
-		} elseif($object instanceof Entities\Item_Metadata_Entity) {
-			$title = sprintf(
-				$title_format,
-				$name,
-				__('item metadatum', 'tainacan'),
-				$action_message
-			               ) . ' ' . sprintf( __('(item: %s)', 'tainacan'), $object->get_item()->get_title() ) . '.';
-		} else {
-			$title = sprintf( $title_format, $name, strtolower( $class_name ), $action_message ) . '.';
+	
+	
+	private function prepare_item_metadata_diff( Entities\Entity $unsaved ) {
+		
+		$diff = [
+			'old' => [],
+			'new' => []
+		];
+		
+		$old = new Entities\Item_Metadata_Entity($unsaved->get_item(), $unsaved->get_metadatum());
+		
+		add_filter('tainacan-item-metadata-get-multivalue-separator', [$this, '__temporary_multivalue_separator']);
+		
+		if ( $old instanceof Entities\Item_Metadata_Entity ) {
+			$diff['old'] = \explode($this->__temporary_multivalue_separator(''), $old->get_value_as_string());
 		}
+		
+		$diff['new'] = \explode($this->__temporary_multivalue_separator(''), $unsaved->get_value_as_string());
+		
+		remove_filter('tainacan-item-metadata-get-multivalue-separator', [$this, '__temporary_multivalue_separator']);
+		
+		$diff = apply_filters( 'tainacan-entity-diff', $diff, $unsaved, $old );
+		
+		$this->current_diff = $diff;
+		$this->current_action = 'update-metadata-value';
+		
+	}
+	
+	public function __temporary_multivalue_separator($sep) {
+		return '--xx--';
+	}
+	
+	/**
+	 * Callback to generate log when Tainacan entities are edited
+	 */
+	public function insert_entity( Entities\Entity $entity ) {
 
+		if ( ! $entity->get_repository()->use_logs ) {
+			return;
+		}
+		
+		if ( $entity instanceof Entities\Item_Metadata_Entity ) {
+			return $this->insert_item_metadata($entity);
+		} 
+		
+		// do not log a log
+		if ( ( method_exists( $entity, 'get_post_type' ) && $entity->get_post_type() === 'tainacan-log' ) || $entity->get_status() === 'auto-draft' ) {
+			return false;
+		}
+		
+		$log = new Entities\Log();
+		$log->set_action($this->current_action);
+		
+		$collection_id = method_exists($entity, 'get_collection_id') ? $entity->get_collection_id() : 'default';
+		
+		$diff = $this->current_diff;
+		
+		if (false === $diff) {
+			return;
+		}
+		
+		if ( $entity instanceof Entities\Collection ) {
+			
+			$collection_id = $entity->get_id();
+			
+			if ($this->current_action == 'update') {
+				if (isset($diff['new']['metadata_order'])) {
+					$log->set_title( sprintf( __( 'Collection "%s" metadata order was updated', 'tainacan'), $entity->get_name() ) );
+					$log->set_action('update-metadata-order');
+				} elseif (isset($diff['new']['filters_order'])) {
+					$log->set_title( sprintf( __( 'Collection "%s" filters order was updated', 'tainacan'), $entity->get_name() ) );
+					$log->set_action('update-filters-order');
+				} else {
+					$log->set_title( sprintf( __( 'Collection "%s" was updated', 'tainacan'), $entity->get_name() ) );
+				}
+			} elseif ($this->current_action == 'create') {
+				$log->set_title( sprintf( __( 'Collection "%s" was created', 'tainacan'), $entity->get_name() ) );
+			}
+			
+		} elseif ( $entity instanceof Entities\Item ) {
+			
+			$log->set_item_id($entity->get_id());
+			
+			if ($this->current_action == 'update') {
+				if (isset($diff['new']['document'])) {
+					$log->set_title( sprintf( __( 'Item "%s" document was updated', 'tainacan'), $entity->get_title() ) );
+					$log->set_action('update-document');
+				} elseif (isset($diff['new']['_thumbnail_id'])) {
+					$log->set_title( sprintf( __( 'Item "%s" thumbnail was updated', 'tainacan'), $entity->get_title() ) );
+					$log->set_action('update-thumbnail');
+				} else {
+					$log->set_title( sprintf( __( 'Item "%s" was updated', 'tainacan'), $entity->get_title() ) );
+				}
+			} elseif ($this->current_action == 'create') {
+				$log->set_title( sprintf( __( 'Item "%1$s" was created with the ID %2$s', 'tainacan'), $entity->get_title(), $entity->get_id() ) );
+			}
+		} elseif ( $entity instanceof Entities\Filter ) {
+			
+			if ( 'default' == $collection_id ) {
+				if ($this->current_action == 'update') {
+					$log->set_title( sprintf( __( 'Filter "%1$s" was updated in repository level', 'tainacan'), $entity->get_name() ) );
+				} elseif ($this->current_action == 'create') {
+					$log->set_title( sprintf( __( 'Filter "%1$s" was added to the repository', 'tainacan'), $entity->get_name() ) );
+				}
+			} elseif ( is_numeric($collection_id) ) {
+				if ($this->current_action == 'update') {
+					$log->set_title( sprintf( __( 'Filter "%1$s" was updated in Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
+				} elseif ($this->current_action == 'create') {
+					$log->set_title( sprintf( __( 'Filter "%1$s" was added to Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
+				}
+			}
+			
+		} elseif ( $entity instanceof Entities\Metadatum ) {
+			
+			if ( 'default' == $collection_id ) {
+				if ($this->current_action == 'update') {
+					$log->set_title( sprintf( __( 'Metadatum "%s" was updated in repository level', 'tainacan'), $entity->get_name() ) );
+				} elseif ($this->current_action == 'create') {
+					$log->set_title( sprintf( __( 'Metadatum "%1$s" was added to the repository', 'tainacan'), $entity->get_name() ) );
+				}
+			} elseif ( is_numeric($collection_id) ) {
+				if ($this->current_action == 'update') {
+					$log->set_title( sprintf( __( 'Metadatum "%s" was updated in Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
+				} elseif ($this->current_action == 'create') {
+					$log->set_title( sprintf( __( 'Metadatum "%1$s" was added to Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
+				}
+			}
+			
+		} elseif ( $entity instanceof Entities\Taxonomy ) {
+			
+			if ($this->current_action == 'update') {
+				$log->set_title( sprintf( __( 'Taxonomy "%s" was updated', 'tainacan'), $entity->get_name() ) );
+			} elseif ($this->current_action == 'create') {
+				$log->set_title( sprintf( __( 'Taxonomy "%1$s" was created', 'tainacan'), $entity->get_name() ) );
+			}
+			
+		}  elseif ( $entity instanceof Entities\Term ) {
+			
+			$taxonomy = Taxonomies::get_instance()->fetch_by_db_identifier($entity->get_taxonomy());
+			$tax_name = '';
+			if ($taxonomy instanceof Entities\Taxonomy) {
+				$tax_name = $taxonomy->get_name();
+			}
+			
+			if ($this->current_action == 'update') {
+				$log->set_title( sprintf( __( 'Term "%1$s" was updated in "%2$s" taxonomy', 'tainacan'), $entity->get_name(), $tax_name ) );
+			} elseif ($this->current_action == 'create') {
+				$log->set_title( sprintf( __( 'Term "%1$s" was added to "%2$s" taxonomy', 'tainacan'), $entity->get_name(), $tax_name ) );
+			}
+			
+		}
+		
+		$object_type = get_class($entity);
+		$object_id = $entity->get_id();
+		
+		$log->set_collection_id($collection_id);
+		$log->set_object_type($object_type);
+		$log->set_object_id($object_id);
+		$log->set_old_value($diff['old']);
+		$log->set_new_value($diff['new']);
+		
+		
+		if ( $log->validate() ) {
+			$this->insert($log);
+		}
+				
+	}
+	
+	public function pre_delete_entity( Entities\Entity $entity, $permanent) {
+		
+		if ( ! $entity->get_repository()->use_logs ) {
+			return;
+		}
+		
+		// do not log a log
+		if ( ( method_exists( $entity, 'get_post_type' ) && $entity->get_post_type() === 'tainacan-log' ) || $entity->get_status() === 'auto-draft' ) {
+			return false;
+		}
+		
+		$this->current_deleting_entity = $entity->_toArray();
+		$this->current_action = $permanent ? 'delete' : 'trash';
+		
+	}
+	
+	public function delete_entity( Entities\Entity $entity, $permanent) {
+		
+		if ( ! $entity->get_repository()->use_logs ) {
+			return;
+		}
+		
+		// do not log a log
+		if ( ( method_exists( $entity, 'get_post_type' ) && $entity->get_post_type() === 'tainacan-log' ) || $entity->get_status() === 'auto-draft' ) {
+			return false;
+		}
+		
+		$log = new Entities\Log();
+		
+		$collection_id = method_exists($entity, 'get_collection_id') ? $entity->get_collection_id() : 'default';
+		
+		if ( $entity instanceof Entities\Collection ) {
+			
+			$collection_id = $entity->get_id();
+			
+			if ($this->current_action == 'delete') {
+				$log->set_title( sprintf( __( 'Collection "%s" was permanently deleted', 'tainacan'), $entity->get_name() ) );
+			} elseif ($this->current_action == 'trash') {
+				$log->set_title( sprintf( __( 'Collection "%s" was moved to trash', 'tainacan'), $entity->get_name() ) );
+			}
+			
+		} elseif ( $entity instanceof Entities\Item ) {
+			
+			$log->set_item_id($entity->get_id());
+			
+			if ($this->current_action == 'delete') {
+				$log->set_title( sprintf( __( 'Item "%1$s" (ID %2$s) was updated', 'tainacan'), $entity->get_title(), $entity->get_id() ) );
+			} elseif ($this->current_action == 'trash') {
+				$log->set_title( sprintf( __( 'Item "%1$s" (ID %2$s) was moved to trash', 'tainacan'), $entity->get_title(), $entity->get_id() ) );
+			}
+		} elseif ( $entity instanceof Entities\Filter ) {
+			
+			if ( 'default' == $collection_id ) {
+				if ($this->current_action == 'delete') {
+					$log->set_title( sprintf( __( 'Filter "%s" was permanently deleted from the repository', 'tainacan'), $entity->get_name() ) );
+				} elseif ($this->current_action == 'trash') {
+					$log->set_title( sprintf( __( 'Repository Filter "%1$s" was moved to trash', 'tainacan'), $entity->get_name() ) );
+				}
+			} elseif ( is_numeric($collection_id) ) {
+				if ($this->current_action == 'delete') {
+					$log->set_title( sprintf( __( 'Filter "%1$s" was permanently deleted from Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
+				} elseif ($this->current_action == 'trash') {
+					$log->set_title( sprintf( __( 'Filter "%1$s" was moved to trash in Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
+				}
+			}
+			
+		} elseif ( $entity instanceof Entities\Metadatum ) {
+			
+			if ( 'default' == $collection_id ) {
+				if ($this->current_action == 'delete') {
+					$log->set_title( sprintf( __( 'Metadatum "%s" was permanently deleted from the repository', 'tainacan'), $entity->get_name() ) );
+				} elseif ($this->current_action == 'trash') {
+					$log->set_title( sprintf( __( 'Repository Metadatum "%1$s" was moved to trash', 'tainacan'), $entity->get_name() ) );
+				}
+			} elseif ( is_numeric($collection_id) ) {
+				if ($this->current_action == 'delete') {
+					$log->set_title( sprintf( __( 'Metadatum "%1$s" was permanently deleted from Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
+				} elseif ($this->current_action == 'trash') {
+					$log->set_title( sprintf( __( 'Metadatum "%1$s" was moved to trash in Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
+				}
+			}
+			
+		} elseif ( $entity instanceof Entities\Taxonomy ) {
+			
+			if ($this->current_action == 'delete') {
+				$log->set_title( sprintf( __( 'Taxonomy "%s" was permanently deleted', 'tainacan'), $entity->get_name() ) );
+			} elseif ($this->current_action == 'trash') {
+				$log->set_title( sprintf( __( 'Taxonomy "%1$s" was moved to trash', 'tainacan'), $entity->get_name() ) );
+			}
+			
+		}  elseif ( $entity instanceof Entities\Term ) {
+			
+			$taxonomy = Taxonomies::get_instance()->fetch_by_db_identifier($entity->get_taxonomy());
+			$tax_name = '';
+			if ($taxonomy instanceof Entities\Taxonomy) {
+				$tax_name = $taxonomy->get_name();
+			}
+			
+			if ($this->current_action == 'delete') {
+				$log->set_title( sprintf( __( 'Term "%1$s" was permanently deleted from "%2$s" taxonomy', 'tainacan'), $entity->get_name(), $tax_name ) );
+			} elseif ($this->current_action == 'trash') {
+				$log->set_title( sprintf( __( 'Term "%1$s" was moved to trash in "%2$s" taxonomy', 'tainacan'), $entity->get_name(), $tax_name ) );
+			}
+			
+		}
+		
+		
+		$object_type = get_class($entity);
+		$object_id = $entity->get_id();
+		
+		$diff = $this->current_diff;
+		
+		$log->set_collection_id($collection_id);
+		$log->set_object_type($object_type);
+		$log->set_object_id($object_id);
+		$log->set_action($this->current_action);
+		
+		if ( $permanent ) {
+			$log->set_old_value( $this->current_deleting_entity );
+		} else {
+			$log->set_old_value( ['status' => $entity->get_status()] );
+			$log->set_new_value( ['status' => 'trash']  );
+		}
+		
+		
+		if ( $log->validate() ) {
+			$this->insert($log);
+		}
+		
+	}
+	
+	private function insert_item_metadata( Entities\Item_Metadata_Entity $entity ) {
+		
+		$log = new Entities\Log();
+		
+		$item_id = $entity->get_item()->get_id();
+		$collection_id = $entity->get_item()->get_collection_id();
+		$object_type = get_class($entity);
+		$object_id = $entity->get_metadatum()->get_id();
+		
+		$diff = $this->current_diff;
+		
+		$log->set_collection_id($collection_id);
+		$log->set_object_type($object_type);
+		$log->set_object_id($object_id);
+		$log->set_item_id($item_id);
+		$log->set_old_value($diff['old']);
+		$log->set_new_value($diff['new']);
+		$log->set_action($this->current_action);
+		
+		$meta_name = $entity->get_metadatum()->get_name();
+		$item_title = $entity->get_item()->get_title();
+		
+		$title = sprintf( __( 'Value for %1$s metadatum was updated in item "%2$s"', 'tainacan' ), $meta_name, $item_title );
+		
+		$log->set_title($title);
+		
+		if ( $log->validate() ) {
+			$this->insert($log);
+		}
+		
+	}
+	
+	public function filter_log_title($title) {
+		if (defined('TAINACAN_DOING_IMPORT') && true === TAINACAN_DOING_IMPORT) {
+			$_title = __('Importer', 'tainacan');
+			$title .= " ($_title)";
+		}
 		return $title;
 	}
 
-	/**
-	 *
-	 * @param Entities\Log $log
-	 *
-	 * @return Entities\Entity|boolean return insert/update valeu or false
-	 * @throws \Exception
-	 */
-	public function approve( $log ) {
-		$log = self::get_entity_by_post( $log );
-		if ( $log->get_status() == 'pending' ) {
-			/** @var Entity $value * */
-			$value = $log->get_value();
-
-			$value->set_status( 'publish' ); // TODO check if publish the entity on approve
-
-			$repository = self::get_repository( $value );
-
-			if ( $value->validate() ) {
-				return $repository->insert( $value );
-			}
-		}
-
-		return false;
-	}
 }

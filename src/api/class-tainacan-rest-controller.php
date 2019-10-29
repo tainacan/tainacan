@@ -66,7 +66,7 @@ class REST_Controller extends \WP_REST_Controller {
 			'name'         => 'title',
 			'title'        => 'title',
 			'id'           => 'p',
-			'authorid'     => 'author_id',
+			'authorid'     => 'author',
 			'authorname'   => 'author_name',
 			'search'       => 's',
 			'searchterm'   => 'search',
@@ -92,7 +92,8 @@ class REST_Controller extends \WP_REST_Controller {
 			'metatype'     => 'meta_type',
 			'hierarchical' => 'hierarchical',
 			'exclude'      => 'exclude',
-			'excludetree'  => 'exclude_tree'
+			'excludetree'  => 'exclude_tree',
+			'include'      => 'include'
 		];
 
 		$meta_query = [
@@ -164,6 +165,7 @@ class REST_Controller extends \WP_REST_Controller {
 				$terms = get_terms([
 					'taxonomy' => $tax_query['taxonomy'],
 					'fields' => 'ids',
+					'hide_empty' => isset($args['hide_empty']) ? $args['hide_empty'] : true,
 					'search' => $tax_query['terms']
 				]);
 				
@@ -178,6 +180,7 @@ class REST_Controller extends \WP_REST_Controller {
 				$terms = get_terms([
 					'taxonomy' => $tax_query['taxonomy'],
 					'fields' => 'ids',
+					'hide_empty' => isset($args['hide_empty']) ? $args['hide_empty'] : true,
 					'search' => $tax_query['terms']
 				]);
 				if ($terms) {
@@ -259,6 +262,23 @@ class REST_Controller extends \WP_REST_Controller {
 
 		return false;
 	}
+	
+	/**
+	 * Return the fetch_only param
+	 *
+	 * @param string $object_name
+	 *
+	 * @return array|void
+	 */
+	public function get_fetch_only_param(){
+		return [
+			'fetch_only' => array(
+				'type'        => 'string/array',
+				'description' => __( 'Fetch only specific attribute. The specifics attributes are the same in schema.', 'tainacan' ),
+				//TODO: explicar o fetch only meta.. cabe aqui?
+			)
+		];
+	}
 
 	/**
 	 * Return the common params
@@ -267,21 +287,32 @@ class REST_Controller extends \WP_REST_Controller {
 	 *
 	 * @return array|void
 	 */
-	public function get_collection_params($object_name = null){
+	public function get_wp_query_params(){
+
 		$query_params['id'] = array(
-			'description' => __("Limit result to $object_name with specific id."),
+			'description' => __("Limit result to objects with specific id.", 'tainacan'),
 			'type'        => 'integer',
 		);
 
+		$query_params['context'] = array(
+			'type'    	  => 'string',
+			'default' 	  => 'view',
+			'description' => 'The context in which the request is made.',
+			'enum'    	  => array(
+				'view',
+				'edit'
+			),
+		);
+
 		$query_params['search'] = array(
-			'description'        => __( 'Limit results to those matching a string.' ),
+			'description'        => __( 'Limit results to those matching a string.', 'tainacan' ),
 			'type'               => 'string',
 			'sanitize_callback'  => 'sanitize_text_field',
 			'validate_callback'  => 'rest_validate_request_arg',
 		);
 
 		$query_params['authorid'] = array(
-			'description' => __("Limit result set to $object_name assigned to specific authors by id."),
+			'description' => __("Limit result set to objects assigned to specific authors by id.", 'tainacan'),
 			'type'        => 'array',
 			'items'       => array(
 				'type'    => 'integer',
@@ -289,12 +320,12 @@ class REST_Controller extends \WP_REST_Controller {
 		);
 
 		$query_params['authorname'] = array(
-			'description' => __("Limit result set to $object_name assigned to specific authors by name"),
+			'description' => __("Limit result set to objects assigned to specific authors by name", 'tainacan'),
 			'type'        => 'string',
 		);
 
 		$query_params['status'] = array(
-			'description' => __("Limit result set to $object_name assigned one or more statuses."),
+			'description' => __("Limit result set to objects assigned one or more statuses.", 'tainacan'),
 			'type'        => 'array',
 			'items'       => array(
 				'enum'    => array_merge(array_keys(get_post_stati()), array('any')),
@@ -303,19 +334,19 @@ class REST_Controller extends \WP_REST_Controller {
 		);
 
 		$query_params['offset'] = array(
-			'description'        => __( "Offset the result set by a specific number of $object_name." ),
+			'description'        => __( "Offset the result set by a specific number of objects.", 'tainacan' ),
 			'type'               => 'integer',
 		);
 
 		$query_params['order'] = array(
-			'description'        => __( 'Order sort attribute ascending or descending.' ),
+			'description'        => __( 'Order sort attribute ascending or descending.', 'tainacan' ),
 			'type'               => 'string/array',
 			'default'            => 'desc',
-			'enum'               => array( 'asc', 'desc' ),
+			'enum'               => array( 'asc', 'desc', 'ASC', 'DESC' ),
 		);
 
 		$query_params['orderby'] = array(
-			'description'        => __( "Sort $object_name by object attribute." ),
+			'description'        => __( "Sort objects by object attribute.", 'tainacan' ),
 			'type'               => 'string/array',
 			'default'            => 'date',
 			'enum'               => array(
@@ -335,13 +366,13 @@ class REST_Controller extends \WP_REST_Controller {
 		);
 
 		$query_params['perpage'] = array(
-			'description'        => __( "Maximum number of $object_name to be returned in result set." ),
+			'description'        => __( "Maximum number of objects to be returned in result set.", 'tainacan' ),
 			'type'               => 'numeric',
 			'default'            => 10,
 		);
 
 		$query_params['paged'] = array(
-			'description' => __("Show the $object_name that would normally show up just on page X"),
+			'description' => __("The results page to be return.", 'tainacan'),
 			'type'        => 'integer',
 		);
 
@@ -369,8 +400,26 @@ class REST_Controller extends \WP_REST_Controller {
 			),
 			'metacompare'  => array(
 				'type'        => 'string',
-				'description' => __('Operator to test the meta_value. Possible values are =, !=, >, >=, <, <=, LIKE, NOT LIKE, IN, NOT IN, BETWEEN, NOT BETWEEN, NOT EXISTS, REGEXP, NOT REGEXP or RLIKE.'),
+				'description' => __('Operator to test the metavalue'),
 				'default'     => '=',
+				'enum'        => array(
+					'=',
+					'!=',
+					'>',
+					'>=',
+					'<',
+					'<=',
+					'LIKE',
+					'NOT LIKE',
+					'IN',
+					'NOT IN',
+					'BETWEEN',
+					'NOT BETWEEN',
+					'NOT EXISTS',
+					'REGEXP',
+					'NOT REGEXP',
+					'RLIKE'
+				)
 			),
 			'metaquery'    => array(
 				'description' => __('Limits result set to items that have specific custom metadata'),
@@ -388,8 +437,24 @@ class REST_Controller extends \WP_REST_Controller {
 						),
 						'compare'  => array(
 							'type'        => 'string',
-							'description' => __('Operator to test. Possible values are =, !=, >, >=, <, <=, LIKE, NOT LIKE, IN, NOT IN, BETWEEN, NOT BETWEEN, EXISTS and NOT EXISTS.'),
-							'default'     => '='
+							'description' => __('Operator to test.'),
+							'default'     => '=',
+							'enum'		  => array(
+								'=',
+								'!=',
+								'>',
+								'>=',
+								'<',
+								'<=',
+								'LIKE',
+								'NOT LIKE',
+								'IN',
+								'NOT IN',
+								'BETWEEN',
+								'NOT BETWEEN',
+								'EXISTS',
+								'NOT EXISTS'
+							)
 						),
 						'relation' => array(
 							'type'        => 'string',
@@ -439,8 +504,24 @@ class REST_Controller extends \WP_REST_Controller {
 						),
 						'compare'   => array(
 							'type'        => 'string',
-							'description' => __('Operator to test. Possible values are =, !=, >, >=, <, <=, LIKE, NOT LIKE, IN, NOT IN, BETWEEN, NOT BETWEEN, EXISTS and NOT EXISTS.'),
-							'default'     => '='
+							'description' => __('Operator to test.'),
+							'default'     => '=',
+							'enum'        => array(
+								'=',
+								'!=',
+								'>',
+								'>=',
+								'<',
+								'<=',
+								'LIKE',
+								'NOT LIKE',
+								'IN',
+								'NOT IN',
+								'BETWEEN',
+								'NOT BETWEEN',
+								'EXISTS',
+								'NOT EXISTS'
+							)
 						),
 						'dayofweek' => array('type' => 'array'),
 						'inclusive' => array(
@@ -470,7 +551,14 @@ class REST_Controller extends \WP_REST_Controller {
 						),
 						'metadatum'    => array(
 							'type'        => 'string',
-							'description' => __('Select taxonomy term by. Possible values are term_id, name, slug or term_taxonomy_id. Default value is term_id.')
+							'default'	  => 'term_id',
+							'description' => __('Select taxonomy term by'),
+							'enum'		  => array(
+								'term_id',
+								'name',
+								'slug',
+								'term_taxonomy_id'
+							)
 						),
 						'terms'    => array(
 							'type'        => 'int/string/array',
@@ -478,13 +566,24 @@ class REST_Controller extends \WP_REST_Controller {
 						),
 						'operator' => array(
 							'type'        => 'string',
-							'description' => __('Operator to test. Possible values are IN, NOT IN, AND, EXISTS and NOT EXISTS'),
-							'default'     => 'IN'
+							'description' => __('Operator to test.'),
+							'default'     => 'IN',
+							'enum'        => array(
+								'IN',
+								'NOT IN',
+								'AND',
+								'EXISTS',
+								'NOT EXISTS'
+							)
 						),
 						'relation' => array(
 							'type'        => 'string',
-							'description' => __('The logical relationship between each inner taxonomy array when there is more than one. Possible values are AND, OR. Do not use with a single inner taxonomy array.'),
-							'default'     => 'AND'
+							'description' => __('The logical relationship between each inner taxonomy array when there is more than one. Do not use with a single inner taxonomy array.'),
+							'default'     => 'AND',
+							'enum'		  => array(
+								'AND',
+								'OR'
+							)
 						),
 					),
 					'type'     => 'array'
@@ -492,6 +591,54 @@ class REST_Controller extends \WP_REST_Controller {
 			),
 		);
 	}
+	
+	function get_repository_schema( \Tainacan\Repositories\Repository $repository ) {
+		
+		$schema = [];
+		
+		$map = $repository->get_map();
+
+		foreach ($map as $mapped => $value){
+			$schema[$mapped] = [
+				'description' => $value['description'],
+				'type' => $value['type']
+			];
+		}
+		
+		return $schema;
+		
+	}
+	
+	
+	function get_permissions_schema() {
+		
+		return [
+			'current_user_can_edit' => [
+				'description' => esc_html__('Whether current user can edit this object', 'tainacan'),
+				'type' => 'boolean',
+				'context' => 'edit'
+			],
+			'current_user_can_delete' => [
+				'description' => esc_html__('Whether current user can delete this object', 'tainacan'),
+				'type' => 'boolean',
+				'context' => 'edit'
+			]
+		];
+		
+	}
+	
+	function get_base_properties_schema() {
+		return [
+			
+			'id' => [
+				'description'  => esc_html__( 'Unique identifier for the object.', 'tainacan' ),
+				'type'         => 'integer',
+				'context'      => array( 'view', 'edit' ),
+				'readonly'     => true
+			]
+		];
+	}
+	
 }
 
 ?>

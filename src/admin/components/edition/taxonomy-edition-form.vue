@@ -274,7 +274,8 @@
                         onConfirm: () => {
                             next();
                         }
-                    }
+                    },
+                    trapFocus: true
                 });  
             } else if (this.isEditingTerm) {
                 this.$buefy.modal.open({
@@ -287,7 +288,8 @@
                         onConfirm: () => {
                             next();
                         }
-                    }
+                    },
+                    trapFocus: true
                 });  
             } else {
                 next();

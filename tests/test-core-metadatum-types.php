@@ -100,6 +100,7 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
             'collection',
             array(
                 'name'   => 'test',
+                'status' => 'publish'
             ),
             true
         );

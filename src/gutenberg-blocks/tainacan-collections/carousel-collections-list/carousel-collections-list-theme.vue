@@ -121,7 +121,7 @@
             </div>
             <!-- Swiper buttons are hidden as they actually swipe from slide to slide -->
         </div>
-        <div v-else-if="isLoading && !autoPlay">
+        <div v-else-if="isLoading && !autoPlay && !loopSlides">
             <div :class="'tainacan-carousel has-arrows-' + arrowsPosition">
                 <swiper 
                         role="list"

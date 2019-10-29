@@ -18,6 +18,7 @@ registerBlockType('tainacan/terms-list', {
         </svg>,
     category: 'tainacan-blocks',
     keywords: [ __( 'Tainacan', 'tainacan' ), __( 'terms', 'tainacan' ), __( 'taxonomy', 'tainacan' ) ],
+    description: __('Expose terms from your Tainacan taxonomies', 'tainacan'),
     attributes: {
         selectedTermsObject: {
             type: 'array',
@@ -244,6 +245,7 @@ registerBlockType('tainacan/terms-list', {
                     <div>
                         { isModalOpen ? 
                             <TermsModal
+                                replaceTermId={ true }
                                 existingTaxonomyId={ taxonomyId } 
                                 selectedTermsObject={ selectedTermsObject } 
                                 onSelectTaxonomy={ (selectedTaxonomyId) => {

@@ -3,7 +3,8 @@
          <b-dropdown
                 :mobile-modal="true"
                 @input="onChangeComparator($event)"
-                aria-role="list">
+                aria-role="list"
+                trap-focus>
             <button
                     :aria-label="$i18n.get('label_comparator')"
                     class="button is-white"
@@ -60,66 +61,32 @@
         </b-dropdown>
 
         <b-numberinput
-                :aria-labelledby="labelId"
+                :aria-labelledby="'filter-label-id-' + filter.id"
                 size="is-small"
-                :step="Number(options.step)"
+                :step="Number(filterTypeOptions.step)"
                 @input="emit()"
                 v-model="value"/>
     </div>
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios/axios';
-    import { wpAjax } from "../../../admin/js/mixins";
+    import { wpAjax } from '../../../admin/js/mixins';
+    import { filterTypeMixin } from '../filter-types-mixin';
 
     export default {
-        mixins: [ wpAjax ],
-        created() {
-            this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : (typeof this.filter.metadatum.metadatum_id == 'object' ? this.filter.metadatum.metadatum_id.metadatum_id : this.filter.metadatum.metadatum_id);
-            this.options = this.filter.filter_type_options;
-
-            let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
-
-            if (this.isRepositoryLevel || this.collection == 'filter_in_repository')
-                in_route = '/metadata/'+ this.metadatum;
-        
-            axios.get(in_route)
-                .then( res => {
-                    let result = res.data;
-                    if ( result && result.metadata_type ){
-                        this.metadatum_object = result;
-                        this.selectedValues();
-                    }
-                })
-                .catch(error => {
-                    this.$console.log(error);
-                });
-            this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
-        },
+        mixins: [
+            wpAjax,
+            filterTypeMixin
+        ],
         mounted() {
-            this.selectedValues();
+            this.updateSelectedValues();
         },
         data(){
             return {
                 value: null,
-                clear: false,
-                options: [],
-                collection: '',
-                metadatum: '',
-                metadatum_object: {},
+                filterTypeOptions: [],
                 comparator: '=' // =, !=, >, >=, <, <=
             }
-        },
-        props: {
-            filter: {
-                type: Object // concentrate all attributes metadatum id and type
-            },
-            metadatum_id: [Number], // not required, but overrides the filter metadatum id if is set
-            collection_id: [Number], // not required, but overrides the filter metadatum id if is set
-            labelId: '',
-            query: Object,
-            isRepositoryLevel: Boolean,
         },
         computed: {
             comparatorSymbol() {
@@ -134,12 +101,17 @@
                 }
             }
         },
+        watch: {
+            'query.metaquery'() {
+                this.updateSelectedValues();
+            }
+        },
         methods: {
-            selectedValues(){
+            updateSelectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
-                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
+                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
                 
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
@@ -150,65 +122,36 @@
                     if ( metadata.compare)
                         this.comparator = metadata.compare;
 
-                    if (this.value != undefined) {
-                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                            filterId: this.filter.id,
-                            value: this.comparator + ' ' + this.value
-                        });
-                    }
+                    if (this.value != undefined)
+                        this.$emit('sendValuesToTags', { label: this.comparator + ' ' + this.value, value: this.value });
 
                 } else {
-                    return false;
+                    this.value = null;
                 }
 
-            },
-            cleanSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id)
-                    this.clearSearch();
-            },
-            clearSearch(){
-
-                this.clear = true;
-
-                this.$emit('input', {
-                    filter: 'numeric',
-                    compare: this.comparator,
-                    metadatum_id: this.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
-                    value: '',
-                    type: 'NUMERIC'
-                });
-
-                this.value = null;
             },
             // emit the operation for listeners
             emit() {
 
                 if ( this.value === null || this.value === '')
                     return;
-
+                    
                 this.$emit('input', {
                     filter: 'numeric',
                     compare: this.comparator,
-                    metadatum_id: this.metadatum,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
                     value: this.value,
                     type: 'NUMERIC'
                 });
 
-                this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                    filterId: this.filter.id,
-                    value: this.comparator + ' ' + this.value
-                });
+                this.$emit('sendValuesToTags', { label: this.comparator + ' ' + this.value, value: this.value });
                 
             },
             onChangeComparator(newComparator) {
                 this.comparator = newComparator;
                 this.emit();
             }
-        },
-        beforeDestroy() {
-            this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
         }
     }
 </script>

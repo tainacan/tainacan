@@ -31,7 +31,8 @@
                         v-if="items.length > 0 && items[0].current_user_can_edit"
                         :disabled="selectedItems.length <= 1"
                         id="bulk-actions-dropdown"
-                        aria-role="list">
+                        aria-role="list"
+                        trap-focus>
                     <button
                             class="button is-white"
                             slot="trigger">
@@ -85,7 +86,8 @@
 
                 <b-dropdown 
                         inline
-                        :style="{ top: cursorPosY + 'px', left: cursorPosX + 'px' }">
+                        :style="{ top: cursorPosY + 'px', left: cursorPosX + 'px' }"
+                        trap-focus>
                     <b-dropdown-item
                             @click="openItem()" 
                             v-if="!isOnTrash && !$route.query.iframemode">
@@ -1030,6 +1032,7 @@ export default {
                     collectionID: this.$route.params.collectionId,
                 },
                 width: 'calc(100% - 8.333333333%)',
+                trapFocus: true
             });
         },
         sequenceEditSelectedItems() {
@@ -1068,7 +1071,8 @@ export default {
                             this.$eventBusSearch.loadItems();
                         }
                     }
-                }
+                },
+                trapFocus: true
             });
 
             this.clearContextMenu();
@@ -1099,7 +1103,8 @@ export default {
                             });
                         });
                     }
-                }
+                },
+                trapFocus: true
             });
         },
         deleteOneItem(itemId) {
@@ -1121,7 +1126,8 @@ export default {
                             this.$eventBusSearch.loadItems();
                         });
                     }
-                }
+                },
+                trapFocus: true
             });
             this.clearContextMenu();
         },
@@ -1151,7 +1157,8 @@ export default {
                             });
                         });
                     }
-                }
+                },
+                trapFocus: true
             });
         },
         deleteSelectedItems() {
@@ -1189,7 +1196,8 @@ export default {
                             }
                         });
                     }
-                }
+                },
+                trapFocus: true
             });
         },
         openItem() {

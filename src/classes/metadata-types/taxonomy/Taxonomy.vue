@@ -12,7 +12,7 @@
                 :options="getOptions(0)"/>
         <a
                 class="add-new-term"
-                v-if="(this.getComponent == 'tainacan-taxonomy-checkbox' || this.getComponent == 'tainacan-taxonomy-radio') &&
+                v-if="(getComponent == 'tainacan-taxonomy-checkbox' || getComponent == 'tainacan-taxonomy-radio') &&
                  terms.length < totalTerms"
                 @click="openCheckboxModal()">
             {{ $i18n.get('label_view_all') }}
@@ -47,14 +47,12 @@
             this.taxonomy_id = metadata_type_options.taxonomy_id;
             this.taxonomy = metadata_type_options.taxonomy;
 
-            if( metadata_type_options && metadata_type_options.allow_new_terms && this.metadatum.item ){
+            if (metadata_type_options && metadata_type_options.allow_new_terms && this.metadatum.item) 
                 this.allowNew = metadata_type_options.allow_new_terms == 'yes';
-            }
 
-            // This condition is temporary
-            if(this.component != 'tainacan-taxonomy-tag-input' || this.forcedComponentType != 'tainacan-taxonomy-tag-input'){
+            // This condition is temporary, used by bulk edition modal
+            if (this.component != 'tainacan-taxonomy-tag-input' || this.forcedComponentType != 'tainacan-taxonomy-tag-input')
                 this.getTermsFromTaxonomy();
-            }
 
             this.getTermsId();
         },
@@ -80,7 +78,6 @@
         },
         watch: {
             valueComponent( val ){
-                this.valueComponent = val;
                 this.$emit('input', val);
                 this.$emit('blur');
             }
@@ -120,9 +117,9 @@
                         parent: 0,
                         taxonomy_id: this.taxonomy_id,
                         selected: !this.valueComponent ? [] : this.valueComponent,
-                        metadatum_id: this.metadatum.metadatum.id,
+                        metadatumId: this.metadatum.metadatum.id,
                         taxonomy: this.taxonomy,
-                        collection_id: this.collectionId,
+                        collectionId: this.collectionId,
                         isTaxonomy: true,
                         query: '',
                         metadatum: this.metadatum.metadatum,
@@ -134,6 +131,7 @@
                         }
                     },
                     width: 'calc(100% - 8.333333333%)',
+                    trapFocus: true
                 });
             },
             getTermsFromTaxonomy(){

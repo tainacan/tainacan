@@ -1,9 +1,28 @@
-import axios from '../../../axios/axios'
+import axios from '../../../axios/axios';
+import qs from 'qs';
 
+export const fetchActivities = ({ commit }, { page, activitiesPerPage, search, searchDates} ) => {
 
-export const fetchActivities = ({ commit }, { page, activitiesPerPage } ) => {
+    let endpoint = `/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit&orderby=id&order=desc`;
+
+    if (search != undefined && search != '')
+        endpoint += `&search=${search}`;
+    
+    if (searchDates && searchDates[0] != null && searchDates[1] != null) {
+        let dateQuery = {
+            datequery: [
+                {
+                    'after': searchDates[0],
+                    'before': searchDates[1],
+                    'inclusive': true
+                }
+            ]
+        };
+        endpoint += '&' + qs.stringify(dateQuery);
+    }
+
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(`/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit`)
+        axios.tainacan.get(endpoint)
             .then(res => {
                 let activities = res.data;
 
@@ -18,9 +37,28 @@ export const fetchActivities = ({ commit }, { page, activitiesPerPage } ) => {
     });
 };
 
-export const fetchCollectionActivities = ({ commit }, { page, activitiesPerPage, collectionId }) => {
+export const fetchCollectionActivities = ({ commit }, { page, activitiesPerPage, collectionId, search, searchDates }) => {
+
+    let endpoint = `/collection/${collectionId}/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit&orderby=id&order=desc`;
+
+    if (search != undefined && search != '')
+        endpoint += `&search=${search}`;
+
+    if (searchDates && searchDates[0] != null && searchDates[1] != null) {
+        let dateQuery = {
+            datequery: [
+                {
+                    'after': searchDates[0],
+                    'before': searchDates[1],
+                    'inclusive': true
+                }
+            ]
+        };
+        endpoint += '&' + qs.stringify(dateQuery);
+    }
+
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(`/collection/${collectionId}/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit`)
+        axios.tainacan.get(endpoint)
             .then(res => {
                 let activities = res.data;
 
@@ -35,9 +73,28 @@ export const fetchCollectionActivities = ({ commit }, { page, activitiesPerPage,
     });
 };
 
-export const fetchItemActivities = ({ commit }, { page, activitiesPerPage, itemId }) => {
+export const fetchItemActivities = ({ commit }, { page, activitiesPerPage, itemId, search, searchDates }) => {
+
+    let endpoint = `/item/${itemId}/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit&orderby=id&order=desc`;
+
+    if (search != undefined && search != '')
+        endpoint += `&search=${search}`;
+
+    if (searchDates && searchDates[0] != null && searchDates[1] != null) {
+        let dateQuery = {
+            datequery: [
+                {
+                    'after': searchDates[0],
+                    'before': searchDates[1],
+                    'inclusive': true
+                }
+            ]
+        };
+        endpoint += '&' + qs.stringify(dateQuery);
+    }
+
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(`/item/${itemId}/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit`)
+        axios.tainacan.get(endpoint)
             .then(res => {
                 let activities = res.data;
 
@@ -53,6 +110,7 @@ export const fetchItemActivities = ({ commit }, { page, activitiesPerPage, itemI
 };
 
 export const fetchActivity = ({ commit }, activityId) => {
+    commit('clearActivity');
     return new Promise((resolve, reject) => {
        axios.tainacan.get(`/logs/${activityId}?context=edit`)
            .then(res => {

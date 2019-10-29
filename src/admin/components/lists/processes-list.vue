@@ -15,7 +15,8 @@
                 <b-dropdown
                         position="is-bottom-left"
                         :disabled="!isSelecting"
-                        id="bulk-actions-dropdown">
+                        id="bulk-actions-dropdown"
+                        trap-focus>
                     <button
                             class="button is-white"
                             slot="trigger">
@@ -389,7 +390,8 @@
                                     // });
                                 });
                         }
-                    }
+                    },
+                    trapFocus: true
                 });
             },
             deleteSelected() {
@@ -427,7 +429,8 @@
                             }
                             this.allOnPageSelected = false;
                         }
-                    }
+                    },
+                    trapFocus: true
                 });
             },
             getDate(rawDate) {
@@ -451,7 +454,8 @@
                         onConfirm: () => {
                             this.updateProcess({ id: this.processes[index].ID, status: 'closed' });
                         },
-                    }
+                    },
+                    trapFocus: true
                 });
             }
         },

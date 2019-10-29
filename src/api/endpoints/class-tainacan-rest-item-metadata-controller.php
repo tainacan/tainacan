@@ -56,7 +56,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_collection_params(),
+					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE),
 				)
 			)
 		);
@@ -268,7 +268,12 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 	public function get_endpoint_args_for_item_schema( $method = null ) {
 		$endpoint_args = [];
 
-		if ($method === \WP_REST_Server::EDITABLE) {
+		if($method === \WP_REST_Server::READABLE) {
+			$endpoint_args = array_merge(
+				$endpoint_args,
+				$this->get_wp_query_params()
+            );
+		} elseif ($method === \WP_REST_Server::EDITABLE) {
 			$endpoint_args['values'] = [
 				'type'        => 'array/string/object/integer',
 				'items'       => [
@@ -289,8 +294,16 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 	 *
 	 * @return array
 	 */
-	public function get_collection_params($object_name = null) {
-		$query_params['context']['default'] = 'view';
+	public function get_wp_query_params() {
+		$query_params['context'] = array(
+			'type'    	  => 'string',
+			'default' 	  => 'view',
+			'description' => 'The context in which the request is made.',
+			'enum'    	  => array(
+				'view',
+				'edit'
+			),
+		);
 
 		return $query_params;
 	}

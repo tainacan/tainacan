@@ -85,10 +85,8 @@
 
 <script>
     import { tainacan as axios }  from '../../../js/axios/axios';
-    import BCheckbox from "../../../../node_modules/buefy/src/components/checkbox/Checkbox.vue";
 
     export default {
-        components: {BCheckbox},
         props: {
             value: [ String, Object, Array ],
             metadatum: [ String, Object ],

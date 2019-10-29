@@ -140,7 +140,7 @@
                     {{ $i18n.getWithVariables('label_view_all_%s_collections', [collectionsTotal]) }}
                 </span>
                 <span
-                        v-if="collectionsTotal != undefined && collectionsTotal == 1"
+                        v-if="collectionsTotal != undefined && collectionsTotal <= 1"
                         class="menu-text">
                     {{ $i18n.get('label_view_collections_list') }}
                 </span>

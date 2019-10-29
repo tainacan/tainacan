@@ -141,18 +141,18 @@ class Collections extends Repository {
 			],
 			'metadata_order'             => [
 				'map'         => 'meta',
-				'title'       => __( 'Ordination metadata', 'tainacan' ),
+				'title'       => __( 'Metadata order', 'tainacan' ),
 				'type'        => 'array/object/string',
 				'items'       => [ 'type' => 'array/string/integer/object' ],
-				'description' => __( 'Collection metadata ordination', 'tainacan' ),
+				'description' => __( 'The order of the metadata in the collection', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
 			'filters_order'              => [
 				'map'         => 'meta',
-				'title'       => __( 'Ordination filters', 'tainacan' ),
+				'title'       => __( 'Filters order', 'tainacan' ),
 				'type'        => 'array/object/string',
 				'items'       => [ 'type' => 'array/string/integer/object' ],
-				'description' => __( 'Collection filters ordination', 'tainacan' ),
+				'description' => __( 'The order of the filters in the collection', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
 			'enable_cover_page'          => [
@@ -167,7 +167,7 @@ class Collections extends Repository {
 			'cover_page_id'              => [
 				'map'         => 'meta',
 				'title'       => __( 'Cover Page ID', 'tainacan' ),
-				'type'        => 'string',
+				'type'        => 'integer/string',
 				'description' => __( 'If enabled, this custom page will be used as cover for this collection, instead of default items list.', 'tainacan' ),
 				'on_error'    => __( 'Invalid page', 'tainacan' ),
 				//'validation' => v::numeric(),
@@ -187,7 +187,7 @@ class Collections extends Repository {
 				'title'       => __( 'Moderators', 'tainacan' ),
 				'type'        => 'array/object/string',
 				'items'       => [ 'type' => 'array/string/integer/object' ],
-				'description' => __( 'To assign users as Moderators of this collection', 'tainacan' ),
+				'description' => __( 'Moderators of this collection', 'tainacan' ),
 				'validation'  => ''
 			],
 			'_thumbnail_id'              => [

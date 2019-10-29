@@ -115,7 +115,7 @@
                                 <span
                                         v-if="metadatum.required == 'yes'"
                                         class="required-metadatum-asterisk">*</span>
-                                <span class="metadata-type">({{ $i18n.get(metadatum.metadata_type_object.component) }})</span>
+                                <span class="metadata-type">({{ metadatum.metadata_type_object.metadata }})</span>
                                 <help-button 
                                         :title="metadatum.name"
                                         :message="metadatum.description"/>
@@ -308,7 +308,8 @@ export default {
                         onConfirm: () => {
                             this.$router.push(this.$routerHelper.getCollectionItemsPath(this.collectionId));
                         }
-                    }
+                    },
+                    trapFocus: true
                 });
                 
             } else if (status == 'trash') {
@@ -336,7 +337,8 @@ export default {
                                     this.isTrashingItems = false;
                                 });
                         }
-                    }
+                    },
+                    trapFocus: true
                 });            
             }
         },

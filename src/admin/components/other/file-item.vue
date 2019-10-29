@@ -32,8 +32,16 @@
             <b-modal
                     :active.sync="isPreviewModalActive"
                     :width="1024"
-                    scroll="keep">
-                <div class="tainacan-modal-content">
+                    scroll="keep"
+                    trap-focus
+                    aria-modal
+                    aria-role="dialog">
+                <div 
+                        autofocus
+                        role="dialog"
+                        tabindex="-1"
+                        aria-modal
+                        class="tainacan-modal-content">
                     <div class="tainacan-modal-title">
                         <h2 v-if="file.title != undefined">{{ file.title.rendered }}</h2>
                     </div>

@@ -91,7 +91,8 @@ export default {
                         title: this.$i18n.get('label_warning'),
                         message: this.$i18n.get('info_warning_terms_not_saved'),
                         onConfirm: () => { this.removeTerm(); },
-                    }
+                    },
+                    trapFocus: true
                 });  
             } else {
                 this.removeTerm();
@@ -110,8 +111,9 @@ export default {
                     onConfirm: () => { 
                         // If all checks passed, term can be deleted
                         this.$termsListBus.onDeleteBasicTermItem(this.term);
-                    },
-                }
+                    }                
+                },
+                trapFocus: true
             });  
         },
         eventOnEditTerm() {

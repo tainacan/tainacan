@@ -10,6 +10,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Date extends Filter_Type {
 
     function __construct(){
+        $this->set_name( __('Date', 'tainacan') );
         $this->set_supported_types(['date']);
         $this->set_component('tainacan-filter-date');
         // $this->set_form_component('tainacan-filter-form-date');

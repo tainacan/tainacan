@@ -49,7 +49,7 @@ class REST_Items_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_collection_params(),
+					'args'                => $this->get_wp_query_params(),
 				),
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
@@ -80,8 +80,8 @@ class REST_Items_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'delete_item_permissions_check'),
 					'args'                => array(
 						'permanently' => array(
-							'description' => __('To delete permanently, you can pass \'permanently\' as true. By default this will only trash collection', 'tainacan'),
-							'default'     => 'false'
+							'description' => __('To delete permanently, you can pass \'permanently\' as 1. By default this will only trash collection', 'tainacan'),
+							'default'     => '0'
 						),
 					)
 				),
@@ -94,7 +94,7 @@ class REST_Items_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_collection_params(),
+					'args'                => $this->get_wp_query_params(),
 				),
 			)
 		);
@@ -757,15 +757,18 @@ class REST_Items_Controller extends REST_Controller {
 		$endpoint_args = [];
 
 		if($method === \WP_REST_Server::READABLE) {
-			$endpoint_args['fetch_only'] = array(
-				'type'        => 'string/array',
-				'description' => __( 'Fetch only specific attribute. The specifics attributes are the same in schema.' ),
-			);
-
 			$endpoint_args['context'] = array(
-				'type'    => 'string',
-				'default' => 'view',
-				'items'   => array( 'view, edit' )
+				'type'    	  => 'string',
+				'default' 	  => 'view',
+				'description' => 'The context in which the request is made.',
+				'enum'    	  => array(
+					'view',
+					'edit'
+				),
+			);
+			$endpoint_args = array_merge(
+				$endpoint_args, 
+				parent::get_fetch_only_param()
 			);
 		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
 			$map = $this->items_repository->get_map();
@@ -790,17 +793,17 @@ class REST_Items_Controller extends REST_Controller {
 	 *
 	 * @return array|void
 	 */
-	public function get_collection_params($object_name = null) {
-		$query_params['context']['default'] = 'view';
-
-		array_merge($query_params, parent::get_collection_params('item'));
-
+	public function get_wp_query_params() {
 		$query_params['title'] = array(
 			'description' => __('Limits the result set to items with a specific title'),
 			'type'        => 'string',
 		);
 
-		$query_params = array_merge($query_params, parent::get_meta_queries_params());
+		$query_params = array_merge(
+			$query_params, 
+			parent::get_wp_query_params(),
+			parent::get_meta_queries_params()
+		);
 
 		return $query_params;
 	}

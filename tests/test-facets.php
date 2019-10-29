@@ -381,7 +381,7 @@ class Facets extends TAINACAN_UnitApiTestCase {
 				'metadata_type_options' => [
 					'allow_new_terms' => 'yes',
 					'collection_id' => $collection1->get_id(),
-					'search' => []
+					'search' => ''
 				]
 		    ),
 		    true

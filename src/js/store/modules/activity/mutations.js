@@ -9,3 +9,7 @@ export const setActivity = (state, activity) => {
 export const setActivityTitle = (state, eventTitle) => {
     state.eventTitle = eventTitle;
 };
+
+export const clearActivity = (state) => {
+  state.activity = {};
+};

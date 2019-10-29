@@ -93,7 +93,7 @@ class Metadata extends Repository {
 				'map'         => 'meta',
 				'title'       => __( 'Type', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'The metadata type', 'tainacan' ),
+				'description' => __( 'The metadata type class name, such as Tainacan\Metadata_Types\Core_Title', 'tainacan' ),
 				'on_error'    => __( 'Metadata type is empty', 'tainacan' ),
 				'validation'  => v::stringType()->notEmpty(),
 			],
@@ -1080,7 +1080,7 @@ class Metadata extends Repository {
 			}
 			
 			
-			$number = is_integer($args['number']) && $args['number'] >=1 ? $args['number'] : $total;
+			$number = ctype_digit($args['number']) && $args['number'] >=1 ? $args['number'] : $total;
 			if( $number < 1){
 				$pages = 1;
 			} else {
@@ -1141,7 +1141,7 @@ class Metadata extends Repository {
 			
 			$results = $wpdb->get_col($query);
 			$total = $wpdb->get_var($total_query);
-			$number = is_integer($args['number']) && $args['number'] >=1 ? $args['number'] : $total;
+			$number = ctype_digit($args['number']) && $args['number'] >=1 ? $args['number'] : $total;
 			if( $number < 1){
 				$pages = 1;
 			} else {

@@ -1,5 +1,12 @@
 <template>
-    <form action="">
+    <form 
+            action=""
+            autofocus
+            role="dialog"
+            class="tainacan-modal-content"
+            tabindex="-1"
+            aria-modal
+            ref="availableImportersModal">
         <div 
                 class="tainacan-modal-content" 
                 style="width: auto">
@@ -79,6 +86,9 @@ export default {
                 this.$console.log(error);
                 this.isLoading = false;
             });
+
+        if (this.$refs.availableImportersModal)
+            this.$refs.availableImportersModal.focus();
     }
 }
 </script>

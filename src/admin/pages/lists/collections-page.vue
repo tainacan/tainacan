@@ -11,7 +11,8 @@
             <div class="header-item">
                 <b-dropdown 
                         aria-role="list"
-                        id="collection-creation-options-dropdown">
+                        id="collection-creation-options-dropdown"
+                        trap-focus>
                     <button
                             class="button is-secondary"
                             slot="trigger">
@@ -62,7 +63,8 @@
                         :mobile-modal="true"
                         :disabled="collections.length <= 0 || isLoading"
                         @input="onChangeOrder(order == 'asc' ? 'desc' : 'asc')"
-                        aria-role="list">
+                        aria-role="list"
+                        trap-focus>
                     <button
                             :aria-label="$i18n.get('label_sorting_direction')"
                             class="button is-white"
@@ -120,6 +122,25 @@
                     </option>
                 </b-select>
             </b-field>
+
+            <!-- Textual Search -------------->
+            <b-field class="header-item">
+                <div class="control has-icons-right is-small is-clearfix">
+                    <input
+                            class="input is-small"
+                            :placeholder="$i18n.get('instruction_search')"
+                            type="search"
+                            :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('collections')"
+                            autocomplete="on"
+                            v-model="searchQuery"
+                            @keyup.enter="searchCollections()">
+                    <span
+                            @click="searchCollections()"
+                            class="icon is-right">
+                        <i class="tainacan-icon tainacan-icon-search" />
+                    </span>
+                </div>
+            </b-field>
         </div>
 
         <div class="above-subheader">
@@ -139,11 +160,11 @@
                         </a>
                     </li>
                     <li 
-                            v-for="(statusOption, index) of $statusHelper.getStatuses()"
+                            v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
                             :key="index"
                             @click="onChangeTab(statusOption.slug)"
                             :class="{ 'is-active': status == statusOption.slug}"
-                            :style="{ marginRight: statusOption.slug == 'private' ? 'auto' : '', marginLeft: statusOption.slug == 'draft' ? 'auto' : '' }"
+                            :style="{ marginRight: statusOption.slug == 'private' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"
                             v-tooltip="{
                                 content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('collections')]),
                                 autoHide: true,
@@ -195,7 +216,8 @@
                                 <b-dropdown 
                                         :disabled="isLoadingMetadatumMappers"
                                         id="collection-creation-options-dropdown"
-                                        aria-role="list">
+                                        aria-role="list"
+                                        trap-focus>
                                     <button
                                             class="button is-secondary"
                                             slot="trigger">
@@ -307,6 +329,7 @@ export default {
             status: '',
             order: 'desc',
             ordeBy: 'date',
+            searchQuery: '',
             sortingOptions: [
                 { label: this.$i18n.get('label_title'), value: 'title' },
                 { label: this.$i18n.get('label_creation_date'), value: 'date' },
@@ -402,7 +425,8 @@ export default {
                 status: this.status,
                 contextEdit: true, 
                 order: this.order,
-                orderby: this.orderBy
+                orderby: this.orderBy,
+                search: this.searchQuery
             })
             .then((res) => {
                 this.isLoading = false;
@@ -421,9 +445,14 @@ export default {
             this.$buefy.modal.open({
                 parent: this,
                 component: AvailableImportersModal,
-                hasModalCard: true
+                hasModalCard: true,
+                trapFocus: true
             });
-        }
+        },
+        searchCollections() {
+            this.page = 1;
+            this.loadCollections();
+        },
     },
     created() {
         this.collectionsPerPage = this.$userPrefs.get('collections_per_page');
@@ -469,18 +498,23 @@ export default {
     @import '../../scss/_variables.scss';
 
     .sub-header {
-        min-height: $subheader-height;
-        height: $header-height;
+        min-height: $header-height;
+        height: auto;
         padding-left: 0;
         padding-right: 0;
         border-bottom: 1px solid #ddd;
         display: inline-flex;
         justify-content: space-between;
         align-items: center;
+        flex-wrap: wrap;
         width: 100%;
 
         .header-item {
+            margin-bottom: 0 !important;
 
+            &:first-child {
+                margin-right: auto;
+            }
             &:not(:last-child) {
                 padding-right: 0.5em;
             }
@@ -493,9 +527,13 @@ export default {
                 cursor: default;
             }
 
-            .button {
-                display: flex;
-                align-items: center;
+            &:not(:first-child) {
+                .button {
+                    display: flex;
+                    align-items: center;
+                    border-radius: 0 !important;
+                    height: 1.95rem !important;
+                }
             }
             
             .field {
@@ -511,14 +549,23 @@ export default {
                 font-size: 1.3125rem !important;
                 max-width: 26px;
             }
+
+            .icon {
+                pointer-events: all;
+                cursor: pointer;
+                color: $blue5;
+                height: 27px;
+                font-size: 18px !important;
+                height: 1.75rem !important;
+            }
         }
 
         @media screen and (max-width: 769px) {
-            height: 60px;
+            height: 120px;
             margin-top: -0.5em;
             padding-top: 0.9em;
-        
-            .header-item {
+
+            .header-item:not(:last-child) {
                 padding-right: 0.2em;
             }
         }

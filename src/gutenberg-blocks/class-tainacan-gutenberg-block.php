@@ -17,6 +17,7 @@ function tainacan_blocks_add_gutenberg_blocks_actions() {
 	add_action('init', 'tainacan_blocks_register_tainacan_items_list');
 	add_action('init', 'tainacan_blocks_register_tainacan_dynamic_items_list');
 	add_action('init', 'tainacan_blocks_register_tainacan_carousel_items_list');
+	add_action('init', 'tainacan_blocks_register_tainacan_carousel_terms_list');
 	add_action('init', 'tainacan_blocks_register_tainacan_search_bar');
 	add_action('init', 'tainacan_blocks_register_tainacan_collections_list');
 	add_action('init', 'tainacan_blocks_register_tainacan_carousel_collections_list');
@@ -176,6 +177,36 @@ function tainacan_blocks_register_tainacan_carousel_items_list(){
 	}
 }
 
+function tainacan_blocks_register_tainacan_carousel_terms_list(){
+	global $TAINACAN_BASE_URL;
+
+	wp_enqueue_script(
+		'carousel-terms-list-theme',
+		$TAINACAN_BASE_URL . '/assets/gutenberg_carousel_terms_list_theme-components.js',
+		array('wp-components')
+	);
+
+	wp_register_script(
+		'carousel-terms-list',
+		$TAINACAN_BASE_URL . '/assets/gutenberg_carousel_terms_list-components.js',
+		array('wp-blocks', 'wp-element', 'wp-components', 'wp-editor')
+	);
+
+	wp_register_style(
+		'carousel-terms-list',
+		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-carousel-terms-list.css',
+		array('wp-edit-blocks')
+	);
+
+	if (function_exists('register_block_type')) {
+		register_block_type( 'tainacan/carousel-terms-list', array(
+			'editor_script' => 'carousel-terms-list',
+			'style'         => 'carousel-terms-list',
+			'script'		=> 'carousel-terms-list-theme'
+		) );
+	}
+}
+
 function tainacan_blocks_register_tainacan_search_bar(){
 	global $TAINACAN_BASE_URL;
 
@@ -281,6 +312,7 @@ function tainacan_blocks_add_plugin_settings() {
 	wp_localize_script( 'items-list', 'tainacan_plugin', $settings );
 	wp_localize_script( 'dynamic-items-list', 'tainacan_plugin', $settings );
 	wp_localize_script( 'carousel-items-list', 'tainacan_plugin', $settings );
+	wp_localize_script( 'carousel-terms-list', 'tainacan_plugin', $settings );
 	wp_localize_script( 'search-bar', 'tainacan_plugin', $settings );
 	wp_localize_script( 'collections-list', 'tainacan_plugin', $settings );
 	wp_localize_script( 'carousel-collections-list', 'tainacan_plugin', $settings );

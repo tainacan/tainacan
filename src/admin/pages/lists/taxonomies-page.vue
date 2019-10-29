@@ -25,7 +25,8 @@
                             :mobile-modal="true"
                             :disabled="taxonomies.length <= 0 || isLoading"
                             @input="onChangeOrder(order == 'asc' ? 'desc' : 'asc')"
-                            aria-role="list">
+                            aria-role="list"
+                            trap-focus>
                         <button
                                 :aria-label="$i18n.get('label_sorting_direction')"
                                 class="button is-white"
@@ -82,6 +83,25 @@
                             {{ option.label }}
                         </option>
                     </b-select>
+                </b-field>
+
+                <!-- Textual Search -------------->
+                <b-field class="header-item">
+                    <div class="control has-icons-right is-small is-clearfix">
+                        <input
+                                class="input is-small"
+                                :placeholder="$i18n.get('instruction_search')"
+                                type="search"
+                                :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('taxonomies')"
+                                autocomplete="on"
+                                v-model="searchQuery"
+                                @keyup.enter="searchTaxonomies()">
+                        <span
+                                @click="searchTaxonomies()"
+                                class="icon is-right">
+                            <i class="tainacan-icon tainacan-icon-search" />
+                        </span>
+                    </div>
                 </b-field>
             </div>
 
@@ -230,6 +250,7 @@
                 status: '',
                 order: 'asc',
                 ordeBy: 'date',
+                searchQuery: '',
                 sortingOptions: [
                     { label: this.$i18n.get('label_title'), value: 'title' },
                     { label: this.$i18n.get('label_creation_date'), value: 'date' },
@@ -304,7 +325,8 @@
                     taxonomiesPerPage: this.taxonomiesPerPage, 
                     status: this.status, 
                     order: this.order,
-                    orderby: this.orderBy
+                    orderby: this.orderBy,
+                    search: this.searchQuery
                 })
                     .then((res) => {
                         this.isLoading = false;
@@ -317,6 +339,10 @@
             getLastTaxonomyNumber() {
                 let last = (Number(this.taxonomiesPerPage * (this.page - 1)) + Number(this.taxonomiesPerPage));
                 return last > this.total ? this.total : last;
+            },
+            searchTaxonomies() {
+                this.page = 1;
+                this.load();
             }
         },
         computed: {
@@ -370,10 +396,15 @@
         display: inline-flex;
         justify-content: space-between;
         align-items: center;
+        flex-wrap: wrap;
         width: 100%;
 
         .header-item {
+            margin-bottom: 0 !important;
 
+            &:first-child {
+                margin-right: auto;
+            }
             &:not(:last-child) {
                 padding-right: 0.5em;
             }
@@ -386,9 +417,13 @@
                 cursor: default;
             }
 
-            .button {
-                display: flex;
-                align-items: center;
+            &:not(:first-child) {
+                .button {
+                    display: flex;
+                    align-items: center;
+                    border-radius: 0 !important;
+                    height: 1.95rem !important;
+                }
             }
             
             .field {
@@ -404,10 +439,19 @@
                 font-size: 1.3125rem !important;
                 max-width: 26px;
             }
+
+            .icon {
+                pointer-events: all;
+                cursor: pointer;
+                color: $blue5;
+                height: 27px;
+                font-size: 18px !important;
+                height: 1.75rem !important;
+            }
         }
 
         @media screen and (max-width: 769px) {
-            height: 60px;
+            height: 160px;
             margin-top: -0.5em;
             padding-top: 0.9em;
 

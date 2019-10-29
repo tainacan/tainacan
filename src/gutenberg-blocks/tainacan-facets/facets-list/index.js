@@ -25,6 +25,7 @@ registerBlockType('tainacan/facets-list', {
         </svg>,
     category: 'tainacan-blocks',
     keywords: [ __( 'facets', 'tainacan' ), __( 'search', 'tainacan' ), __( 'terms', 'tainacan' ) ],
+    description: __('List facets from a Tainacan Collection or Repository', 'tainacan'),
     attributes: {
         content: {
             type: 'array',

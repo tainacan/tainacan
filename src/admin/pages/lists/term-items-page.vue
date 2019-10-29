@@ -223,7 +223,8 @@
                     <b-dropdown 
                             :mobile-modal="true"
                             id="item-creation-options-dropdown"
-                            aria-role="list">
+                            aria-role="list"
+                            trap-focus>
                         <button
                                 class="button is-secondary"
                                 slot="trigger">
@@ -283,7 +284,8 @@
                             :mobile-modal="true"
                             :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry'"
                             class="show metadata-options-dropdown"
-                            aria-role="list">
+                            aria-role="list"
+                            trap-focus>
                         <button
                                 :aria-label="$i18n.get('label_displayed_metadata')"
                                 class="button is-white"
@@ -325,7 +327,8 @@
                         <b-dropdown
                                 :mobile-modal="true"
                                 @input="onChangeOrder()"
-                                aria-role="list">
+                                aria-role="list"
+                                trap-focus>
                             <button
                                     :aria-label="$i18n.get('label_sorting_direction')"
                                     class="button is-white"
@@ -372,7 +375,8 @@
                         <b-dropdown
                                 :mobile-modal="true"
                                 @input="onChangeOrderBy($event)"
-                                aria-role="list">
+                                aria-role="list"
+                                trap-focus>
                             <button
                                     :aria-label="$i18n.get('label_sorting')"
                                     class="button is-white"
@@ -408,7 +412,8 @@
                                 :mobile-modal="true"
                                 position="is-bottom-left"
                                 :aria-label="$i18n.get('label_view_mode')"
-                                aria-role="list">
+                                aria-role="list"
+                                trap-focus>
                             <button 
                                     class="button is-white" 
                                     :aria-label="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : $i18n.get('label_visualization')"
@@ -449,7 +454,8 @@
                                 :mobile-modal="true"
                                 position="is-bottom-left"
                                 :aria-label="$i18n.get('label_view_mode')"
-                                aria-role="list">
+                                aria-role="list"
+                                trap-focus>
                             <button
                                     class="button is-white"
                                     :aria-label="$i18n.get('label_view_mode')"
@@ -675,9 +681,7 @@
                     <div
                             v-if="(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)"
                             v-html="registeredViewModes[viewMode].skeleton_template"/>
-                            
-                    <!-- Admin view modes skeleton -->
-                    <!-- <skeleton-items-list v-if="!isOnTheme"/>          -->
+
                 </div>  
                 
                <!-- Alert if custom metada is being used for sorting -->
@@ -791,8 +795,16 @@
                 class="tainacan-form is-hidden-tablet"                
                 :active.sync="isFilterModalActive"
                 :width="736"
-                animation="slide-menu">
-            <div class="modal-inner-content">
+                animation="slide-menu"
+                trap-focus
+                aria-modal
+                aria-role="dialog">
+            <div
+                    autofocus="true"
+                    tabindex="-1"
+                    role="dialog"
+                    aria-modal
+                    class="modal-inner-content">
                 <h3 
                         id="filters-label-landmark-modal"
                         class="has-text-weight-semibold">
@@ -989,6 +1001,14 @@
             orderByName() {
                 if (this.isSortingByCustomMetadata)
                     this.hasAnOpenAlert = true;
+            },
+            isFilterModalActive() {
+                if (this.isFilterModalActive) {
+                    setTimeout(() => {
+                        if (this.$refs['filters-mobile-modal'])
+                            this.$refs['filters-mobile-modal'].focus();
+                    }, 800);
+                }
             }
         },
         methods: {
@@ -1047,7 +1067,8 @@
                     props: { 
                         targetCollection: this.collectionId,
                         hideWhenManualCollection: true
-                    }
+                    },
+                    trapFocus: true
                 });
             },
             openExposersModal() {
@@ -1058,15 +1079,16 @@
                     props: { 
                         collectionId: this.collectionId,
                         totalItems: this.totalItems
-                    }
-                })
+                    },
+                    trapFocus: true
+                });
             },
             updateSearch() {
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
             },  
             onChangeOrderBy(metadatum) {
                 this.$eventBusSearch.setOrderBy(metadatum);
-                this.showItemsHiddingDueSorting();
+                this.showItemsHiddingDueSortingDialog();
             },
             onChangeOrder() {
                 this.order == 'DESC' ? this.$eventBusSearch.setOrder('ASC') : this.$eventBusSearch.setOrder('DESC');
@@ -1419,7 +1441,8 @@
                             hideCancel: true,
                             showNeverShowAgainOption: offerCheckbox && tainacan_plugin.user_caps != undefined && tainacan_plugin.user_caps.length != undefined && tainacan_plugin.user_caps.length > 0,
                             messageKeyForUserPrefs: 'ItemsHiddenDueSorting'
-                        }
+                        },
+                        trapFocus: true
                     });
             },
             adjustSearchControlHeight: _.debounce( function() {
@@ -1535,7 +1558,7 @@
                 }
             }
 
-            this.showItemsHiddingDueSorting();
+            this.showItemsHiddingDueSortingDialog();
 
             // Watches window resize to adjust filter's top position and compression on mobile 
             this.adjustSearchControlHeight();
@@ -1895,7 +1918,7 @@
 
         .loading-container {
             position: relative;
-            min-height: 200px;
+            min-height: 50vh;
             height: auto;
         }
     }
@@ -1915,8 +1938,8 @@
     }
 
     .table-container {
-        padding-left: 4.166666667%;
-        padding-right: 4.166666667%;
+        padding-left: $page-side-padding;
+        padding-right: $page-side-padding;
         min-height: 50vh;
         //height: calc(100% - 82px);
     }

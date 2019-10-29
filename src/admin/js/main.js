@@ -23,18 +23,20 @@ import FormRelationship from '../../classes/metadata-types/relationship/FormRela
 import FormTaxonomy from '../../classes/metadata-types/taxonomy/FormTaxonomy.vue';
 import FormSelectbox from '../../classes/metadata-types/selectbox/FormSelectbox.vue';
 
-import FilterCustomInterval from '../../classes/filter-types/custom-interval/CustomInterval.vue';
 import FilterNumeric from '../../classes/filter-types/numeric/Numeric.vue';
 import FilterDate from '../../classes/filter-types/date/Date.vue';
 import FilterSelectbox from '../../classes/filter-types/selectbox/Selectbox.vue';
 import FilterAutocomplete from '../../classes/filter-types/autocomplete/Autocomplete.vue';
 import FilterCheckbox from '../../classes/filter-types/checkbox/Checkbox.vue';
 import FilterTaginput from '../../classes/filter-types/taginput/Taginput.vue';
+import FilterNumericInterval from '../../classes/filter-types/numeric-interval/NumericInterval.vue';
+import FilterDateInterval from '../../classes/filter-types/date-interval/DateInterval.vue';
 
 import FilterTaxonomyCheckbox from '../../classes/filter-types/taxonomy/Checkbox.vue';
 import FilterTaxonomyTaginput from '../../classes/filter-types/taxonomy/Taginput.vue';
 
 import FormNumeric from '../../classes/filter-types/numeric/FormNumeric.vue';
+import FormNumericInterval from '../../classes/filter-types/numeric-interval/FormNumericInterval.vue';
 // import FormDate from '../../classes/filter-types/date/FormDate.vue';
 
 import TainacanFormItem from '../../classes/metadata-types/tainacan-form-item.vue';
@@ -50,9 +52,13 @@ import eventBusSearch from '../../js/event-bus-search';
 import termsListBus from './terms-list-bus.js';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, UserCapabilitiesPlugin, StatusHelperPlugin } from './utilities';
 
+import FilterNumericListInterval from '../../classes/filter-types/numeric-list-interval/NumericListInterval.vue';
+import FormNumericListInterval from '../../classes/filter-types/numeric-list-interval/FormNumericListInterval.vue';
+
+
 // Configure and Register Plugins
 Vue.use(Buefy, {
-    defaultTooltipAnimated: true   
+    defaultTooltipAnimated: true
 });
 Vue.use(VTooltip);
 Vue.use(VueMasonry);
@@ -80,7 +86,6 @@ Vue.component('tainacan-form-item', TainacanFormItem);
 Vue.component('tainacan-filter-item', TainacanFiltersList);
 
 /* Filters */
-Vue.component('tainacan-filter-custom-interval', FilterCustomInterval);
 Vue.component('tainacan-filter-numeric', FilterNumeric);
 Vue.component('tainacan-filter-date', FilterDate);
 Vue.component('tainacan-filter-selectbox', FilterSelectbox);
@@ -89,8 +94,14 @@ Vue.component('tainacan-filter-checkbox', FilterCheckbox);
 Vue.component('tainacan-filter-taginput', FilterTaginput);
 Vue.component('tainacan-filter-taxonomy-checkbox', FilterTaxonomyCheckbox);
 Vue.component('tainacan-filter-taxonomy-taginput', FilterTaxonomyTaginput);
+Vue.component('tainacan-filter-numeric-interval', FilterNumericInterval);
+Vue.component('tainacan-filter-numeric-list-interval', FilterNumericListInterval);
+Vue.component('tainacan-filter-date-interval', FilterDateInterval);
+
 /* Filter Metadata Option forms */
 Vue.component('tainacan-filter-form-numeric', FormNumeric);
+Vue.component('tainacan-filter-form-numeric-interval', FormNumericInterval);
+Vue.component('tainacan-filter-form-numeric-list-interval', FormNumericListInterval);
 // Vue.component('tainacan-filter-form-date', FormDate);
 
 /* Others */
@@ -115,7 +126,7 @@ new Vue({
     render: h => h(AdminPage)
 });
 
-// Display Icons only once everything is loaded 
+// Display Icons only once everything is loaded
 function listen(evnt, elem, func) {
     if (elem.addEventListener)  // W3C DOM
         elem.addEventListener(evnt,func,false);

@@ -13,6 +13,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			array(
 				'name'        => 'Javascript Frameworks',
 				'description' => 'The best framework to javascript',
+				'status' => 'publish'
 			),
 			true
 		);
@@ -72,7 +73,6 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 
 		$this->assertEquals(200, $response->get_status());
 		$data = $response->get_data()['items'];
-
 		$items_titles = [$data[0]['title'], $data[1]['title']];
 
 		$this->assertContains($item1->get_title(), $items_titles);
@@ -155,7 +155,11 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 	}
 
 	public function test_update_item(){
-		$collection = $this->tainacan_entity_factory->create_entity('collection', '', true);
+		$collection = $this->tainacan_entity_factory->create_entity('collection', array(
+			'name'        => 'Agile',
+			'description' => 'Agile methods',
+			'status'      => 'publish'
+		), true);
 
 		$item = $this->tainacan_entity_factory->create_entity(
 			'item',
@@ -163,6 +167,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 				'title'       => 'SCRUM e PMBOK',
 				'description' => 'Unidos no Gerenciamento de Projetos',
 				'collection'  => $collection,
+				'status' => 'publish'
 			),
 			true
 		);
@@ -181,7 +186,6 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($request);
 
 		$data = $response->get_data();
-
 		$this->assertNotEquals($item->get_title(), $data['title']);
 		$this->assertEquals('SCRUM e XP', $data['title']);
 	}

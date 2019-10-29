@@ -16,7 +16,8 @@
                     :mobile-modal="true"
                     :disabled="localTerms.length <= 0 || isLoadingTerms || isEditingTerm"
                     @input="onChangeOrder(order == 'asc' ? 'desc' : 'asc')"
-                    aria-role="list">
+                    aria-role="list"
+                    trap-focus>
                 <button
                             :aria-label="$i18n.get('label_sorting_direction')"
                             class="button is-white"
@@ -64,15 +65,15 @@
                         type="search"
                         :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('terms')"
                         autocomplete="on"
-                        :value="searchQuery"
-                        @keyup.enter="searchQuery = $event.target.value;searchTerms(0)"
+                        v-model="searchQuery"
+                        @keyup.enter="searchTerms(0)"
                         :disabled="isEditingTerm">
-                    <span
-                            @click="searchTerms(0)"
-                            class="icon is-right"
-                            :class="{ 'has-text-gray3': isEditingTerm }">
-                        <i class="tainacan-icon tainacan-icon-search" />
-                    </span>
+                <span
+                        @click="searchTerms(0)"
+                        class="icon is-right"
+                        :class="{ 'has-text-gray3': isEditingTerm }">
+                    <i class="tainacan-icon tainacan-icon-search" />
+                </span>
             </div>
         </div>
     </div>

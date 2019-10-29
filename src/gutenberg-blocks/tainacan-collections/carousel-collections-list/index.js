@@ -25,6 +25,7 @@ registerBlockType('tainacan/carousel-collections-list', {
         </svg>,
     category: 'tainacan-blocks',
     keywords: [ __( 'collections', 'tainacan' ), __( 'carousel', 'tainacan' ), __( 'slider', 'tainacan' ) ],
+    description: __('List collections on a Carousel, using search or collection selection.', 'tainacan'),
     attributes: {
         content: {
             type: 'array',
@@ -456,7 +457,7 @@ registerBlockType('tainacan/carousel-collections-list', {
                                     width="24px">
                                 <path d="M18,17v2H12a5.65,5.65,0,0,0-.36-2ZM2,7v7.57a5.74,5.74,0,0,1,2-1.2V7ZM20,6H15L13,4H8A2,2,0,0,0,6,6v7a6,6,0,0,1,5.19,3H20a2,2,0,0,0,2-2V8A2,2,0,0,0,20,6ZM7,16.05v6.06l3.06-3.06ZM5,22.11V16.05L1.94,19.11Z"/>
                             </svg>
-                            {__('List collections on a Carousel, using search or collection selection.', 'tainacan')}
+                            {__('List collections on a Carousel, showing their thumbnails or a preview of items.', 'tainacan')}
                         </p>
                         <Button
                             isPrimary

@@ -1,5 +1,12 @@
 <template>
-    <div class="tainacan-modal-content this-tainacan-modal-content">
+    <div 
+            aria-labelledby="alert-dialog-title"
+            autofocus
+            role="alertdialog"
+            tabindex="-1"
+            aria-modal
+            class="tainacan-modal-content this-tainacan-modal-content"
+            ref="bulkEditionModal">
         <header class="tainacan-modal-title">
             <h2>{{ modalTitle }}
                 <small class="tainacan-total-objects-info">
@@ -17,7 +24,7 @@
 
                     <b-select
                             :loading="metadataIsLoading"
-                            :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
+                            :class="{'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': !!bulkEditionProcedures[criterion].metadatumID}"
                             :disabled="!!bulkEditionProcedures[criterion].metadatumID || metadataIsLoading"
                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                             :placeholder="$i18n.get('instruction_select_a_metadatum')"
@@ -40,7 +47,7 @@
                     </b-select>
 
                     <b-select
-                            :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
+                            :class="{'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': !!bulkEditionProcedures[criterion].action }"
                             v-if="bulkEditionProcedures[criterion] &&
                             bulkEditionProcedures[criterion].metadatumID"
                             :disabled="!!bulkEditionProcedures[criterion].action"
@@ -118,7 +125,7 @@
                             v-else-if="bulkEditionProcedures[criterion] &&
                              bulkEditionProcedures[criterion].metadatumID == 'status'">
                         <b-select
-                                :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
+                                :class="{'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': bulkEditionProcedures[criterion].isDone}"
                                 :disabled="bulkEditionProcedures[criterion].isDone"
                                 class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
                                 :placeholder="$i18n.get('instruction_select_a_status2')"
@@ -353,6 +360,10 @@
                 this.groupID = this.getGroupID();
             });
         },
+        mounted() {
+            if (this.$refs.bulkEditionModal)
+                this.$refs.bulkEditionModal.focus();
+        },
         computed: {
             metadata() {
                 return this.getMetadata();
@@ -370,10 +381,10 @@
                     add: this.$i18n.get('add_value'),
                     redefine: this.$i18n.get('set_new_value'),
                     remove: this.$i18n.get('remove_value'),
-                    replace: this.$i18n.get('replace_value'),
+                    replace: this.$i18n.get('replace_value')
                 },
                 editionActionsForNotMultiple: {
-                    redefine: this.$i18n.get('set_new_value'),
+                    redefine: this.$i18n.get('set_new_value')
                 },
                 bulkEditionProcedures: {
                     1: {
@@ -432,7 +443,7 @@
                 let index = this.editionCriteria.indexOf(criterion);
 
                 this.dones[index] = !withError;
-
+ 
                 this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', false);
             },
             executeBulkEditionProcedure(criterion){

@@ -384,8 +384,9 @@
                         itemId: this.itemId,
                         itemURL: this.item.url,
                         totalItems: 1,
-                    }
-                })
+                    },
+                    trapFocus: true
+                });
             }
         },
         created() {

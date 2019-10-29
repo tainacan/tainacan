@@ -43,7 +43,7 @@ class REST_Collections_Controller extends REST_Controller {
                 'methods'             => \WP_REST_Server::READABLE,
                 'callback'            => array($this, 'get_items'),
                 'permission_callback' => array($this, 'get_items_permissions_check'),
-	            'args'                => $this->get_collection_params(),
+	            'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE),
             ),
 	        array(
 		        'methods'             => \WP_REST_Server::CREATABLE,
@@ -51,13 +51,15 @@ class REST_Collections_Controller extends REST_Controller {
 		        'permission_callback' => array($this, 'create_item_permissions_check'),
 		        'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE),
 	        ),
+			'schema'                => [$this, 'get_schema'],
         ));
         register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<collection_id>[\d]+)', array(
             array(
                 'methods'             => \WP_REST_Server::READABLE,
                 'callback'            => array($this, 'get_item'),
                 'permission_callback' => array($this, 'get_item_permissions_check'),
-	            'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE),
+	            'args'                => $this->get_wp_query_params(),
+				
             ),
             array(
                 'methods'             => \WP_REST_Server::EDITABLE,
@@ -71,11 +73,12 @@ class REST_Collections_Controller extends REST_Controller {
                 'permission_callback' => array($this, 'delete_item_permissions_check'),
 	            'args'                => array(
 	            	'permanently' => array(
-		                'description' => __('To delete permanently, you can pass \'permanently\' as true. By default this will only trash collection'),
-			            'default'     => 'false'
+		                'description' => __('To delete permanently, you can pass \'permanently\' as 1. By default this will only trash collection'),
+						'default'     => '0',
 		            ),
 	            )
             ),
+			'schema'                => [$this, 'get_schema'],
         ));
     }
 
@@ -474,16 +477,19 @@ class REST_Collections_Controller extends REST_Controller {
 	public function get_endpoint_args_for_item_schema( $method = null ) {
 		$endpoint_args = [];
 		if($method === \WP_REST_Server::READABLE) {
-			$endpoint_args['fetch_only'] = array(
-				'type'        => 'string/array',
-				'description' => __( 'Fetch only specific attribute. The specifics attributes are the same in schema.' ),
-			);
+            
+            $endpoint_args['name'] = array(
+    	    	'description' => __('Limits the result set to collections with a specific name'),
+    		    'type'        => 'string',
+    	    );
+            
+            $endpoint_args = array_merge(
+                $endpoint_args, 
+                parent::get_wp_query_params(),
+                parent::get_fetch_only_param(),
+                parent::get_meta_queries_params()
+            );
 
-			$endpoint_args['context'] = array(
-				'type'    => 'string',
-				'default' => 'view',
-				'items'   => array( 'view, edit' )
-			);
 		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
 			$map = $this->collections_repository->get_map();
 
@@ -501,29 +507,30 @@ class REST_Collections_Controller extends REST_Controller {
 
 	    return $endpoint_args;
     }
-
-	/**
-	 *
-	 * Return the queries supported when getting a collection of objects
-	 *
-	 * @param null $object_name
-	 *
-	 * @return array
-	 */
-    public function get_collection_params($object_name = null) {
-    	$query_params['context']['default'] = 'view';
-
-	    $query_params = array_merge($query_params, parent::get_collection_params('collection'));
-
-	    $query_params['name'] = array(
-	    	'description' => __('Limits the result set to collections with a specific name'),
-		    'type'        => 'string',
-	    );
-
-	    $query_params = array_merge($query_params, parent::get_meta_queries_params());
-
-	    return $query_params;
-    }
+	
+	function get_schema() {
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => 'collection',
+			'type' => 'object'
+		];
+		
+		$main_schema = parent::get_repository_schema( $this->collections_repository );
+		$permissions_schema = parent::get_permissions_schema();
+		
+		// transformation done in $this->prepare_item_for_response()
+		$main_schema['moderators'] = $main_schema['moderators_ids'];
+		$main_schema['moderators']['contex'] = 'edit';
+		
+		$schema['properties'] = array_merge(
+			parent::get_base_properties_schema(),
+			$main_schema,
+			$permissions_schema
+		);
+		
+		return $schema;
+		
+	}
 }
 
 ?>

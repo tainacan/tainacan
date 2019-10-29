@@ -232,7 +232,8 @@
                     <b-dropdown 
                             :mobile-modal="true"
                             id="item-creation-options-dropdown"
-                            aria-role="list">
+                            aria-role="list"
+                            trap-focus>
                         <button
                                 class="button is-secondary"
                                 slot="trigger">
@@ -306,7 +307,8 @@
                             :mobile-modal="true"
                             :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry'"
                             class="show metadata-options-dropdown"
-                            aria-role="list">
+                            aria-role="list"
+                            trap-focus>
                         <button
                                 :aria-label="$i18n.get('label_displayed_metadata')"
                                 class="button is-white"
@@ -348,7 +350,8 @@
                         <b-dropdown
                                 :mobile-modal="true"
                                 @input="onChangeOrder()"
-                                aria-role="list">
+                                aria-role="list"
+                                trap-focus>
                             <button
                                     :aria-label="$i18n.get('label_sorting_direction')"
                                     class="button is-white"
@@ -395,7 +398,8 @@
                         <b-dropdown
                                 :mobile-modal="true"
                                 @input="onChangeOrderBy($event)"
-                                aria-role="list">
+                                aria-role="list"
+                                trap-focus>
                             <button
                                     :aria-label="$i18n.get('label_sorting')"
                                     class="button is-white"
@@ -431,7 +435,8 @@
                                 :mobile-modal="true"
                                 position="is-bottom-left"
                                 :aria-label="$i18n.get('label_view_mode')"
-                                aria-role="list">
+                                aria-role="list"
+                                trap-focus>
                             <button 
                                     :aria-label="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : $i18n.get('label_visualization')"
                                     class="button is-white" 
@@ -472,7 +477,8 @@
                                 :mobile-modal="true"
                                 position="is-bottom-left"
                                 :aria-label="$i18n.get('label_view_mode')"
-                                aria-role="list">
+                                aria-role="list"
+                                trap-focus>
                             <button
                                     :aria-label="$i18n.get('label_view_mode')"
                                     class="button is-white"
@@ -699,9 +705,6 @@
                     <div
                             v-if="(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)"
                             v-html="registeredViewModes[viewMode].skeleton_template"/>
-                            
-                    <!-- Admin view modes skeleton -->
-                    <!-- <skeleton-items-list v-if="!isOnTheme"/>          -->
                 </div>  
 
                <!-- Alert if custom metada is being used for sorting -->
@@ -788,13 +791,20 @@
                         </p>
 
                         <router-link
-                                v-if="!isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$route.query.iframemode"
+                                v-if="!isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$route.query.iframemode"
                                 id="button-create-item"
                                 tag="button"
                                 class="button is-secondary"
                                 :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
                             {{ $i18n.getFrom('items', 'add_new') }}
                         </router-link> 
+                        <button
+                                v-else-if="isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$route.query.iframemode"
+                                id="button-create-item"
+                                class="button is-secondary"
+                                @click="onOpenCollectionsModal">
+                            {{ $i18n.get('add_one_item') }}
+                        </button>
                     </div>
                 </section>
 
@@ -811,12 +821,20 @@
                 role="region"
                 aria-labelledby="filters-label-landmark-modal"
                 id="filters-mobile-modal"
-                ref="filters-mobile-modal"
                 class="tainacan-form is-hidden-tablet"                
                 :active.sync="isFilterModalActive"
                 :width="736"
-                animation="slide-menu">
-            <div class="modal-inner-content">
+                animation="slide-menu"
+                trap-focus
+                aria-modal
+                aria-role="dialog">
+            <div 
+                    ref="filters-mobile-modal"
+                    class="modal-inner-content"
+                    autofocus="true"
+                    tabindex="-1"
+                    aria-modal
+                    role="dialog">
                 <h3 
                         id="filters-label-landmark-modal"
                         class="has-text-weight-semibold">
@@ -881,7 +899,6 @@
     import FiltersTagsList from '../../components/search/filters-tags-list.vue';
     import FiltersItemsList from '../../components/search/filters-items-list.vue';
     import Pagination from '../../components/search/pagination.vue'
-    import SkeletonItemsList from '../../components/search/skeleton-items-list.vue'
     import AdvancedSearch from '../../components/advanced-search/advanced-search.vue';
     import AvailableImportersModal from '../../components/other/available-importers-modal.vue';
     import ExposersModal from '../../components/other/exposers-modal.vue';
@@ -1015,7 +1032,6 @@
             ItemsList,
             FiltersTagsList,
             FiltersItemsList,
-            SkeletonItemsList,
             Pagination,
             AdvancedSearch,
             ExposersModal
@@ -1035,6 +1051,14 @@
             orderByName() {
                 if (this.isSortingByCustomMetadata)
                     this.hasAnOpenAlert = true;
+            },
+            isFilterModalActive() {
+                if (this.isFilterModalActive) {
+                    setTimeout(() => {
+                        if (this.$refs['filters-mobile-modal'])
+                            this.$refs['filters-mobile-modal'].focus();
+                    }, 800);
+                }
             }
         },
         methods: {
@@ -1097,7 +1121,8 @@
                     props: { 
                         targetCollection: this.collectionId,
                         hideWhenManualCollection: true
-                    }
+                    },
+                    trapFocus: true
                 });
             },
             openExposersModal() {
@@ -1108,14 +1133,16 @@
                     props: { 
                         collectionId: this.collectionId,
                         totalItems: this.totalItems
-                    }
+                    },
+                    trapFocus: true
                 })
             },
             onOpenCollectionsModal() {
                 this.$buefy.modal.open({
                     parent: this,
                     component: CollectionsModal,
-                    hasModalCard: true
+                    hasModalCard: true,
+                    trapFocus: true
                 });
             },
             updateSearch() {
@@ -1489,7 +1516,8 @@
                             hideCancel: true,
                             showNeverShowAgainOption: offerCheckbox && tainacan_plugin.user_caps != undefined && tainacan_plugin.user_caps.length != undefined && tainacan_plugin.user_caps.length > 0,
                             messageKeyForUserPrefs: 'ItemsHiddenDueSorting'
-                        }
+                        },
+                        trapFocus: true
                     });
             },
             adjustSearchControlHeight: _.debounce( function() {
@@ -1974,7 +2002,7 @@
 
         .loading-container {
             position: relative;
-            min-height: 200px;
+            min-height: 50vh;
             height: auto;
         }
     }
@@ -2034,10 +2062,9 @@
     }
 
     .table-container {
-        padding-left: 4.166666667%;
-        padding-right: 4.166666667%;
+        padding-left: $page-side-padding;
+        padding-right: $page-side-padding;
         min-height: 50vh;
-        //height: calc(100% - 82px);
     }
 
     .pagination-area {

@@ -1,5 +1,11 @@
 <template>
-    <div class="tainacan-modal-content">
+    <div 
+            autofocus
+            role="dialog"
+            class="tainacan-modal-content"
+            tabindex="-1"
+            aria-modal
+            ref="checkboxRadioModal">
         <header class="tainacan-modal-title">
             <h2 v-if="isFilter">{{ $i18n.get('filter') }} <em>{{ filter.name }}</em></h2>
             <h2 v-else>{{ $i18n.get('metadatum') }} <em>{{ metadatum.name }}</em></h2>
@@ -131,7 +137,7 @@
                             </b-field>
                             <li v-if="finderColumn.children.length">
                                 <div
-                                        v-if="totalRemaining[key].remaining === true || (finderColumn.length < totalRemaining[key].remaining)"
+                                        v-if="shouldShowMoreButton(key)"
                                         @click="getMoreOptions(finderColumn, key)"
                                         class="tainacan-show-more">
                                     <span class="icon">
@@ -200,7 +206,7 @@
                 </b-tab-item>
             </b-tabs>
             <!--<pre>{{ hierarchicalPath }}</pre>-->
-            <!-- <pre>{{ totalRemaining }}</pre> -->
+            <!--<pre>{{ totalRemaining }}</pre>-->
             <!--<pre>{{ selected }}</pre>-->
             <!--<pre>{{ options }}</pre>-->
             <!--<pre>{{ searchResults }}</pre>-->
@@ -272,11 +278,11 @@
 <script>
     import qs from 'qs';
     import { tainacan as axios, isCancel } from '../../../js/axios/axios';
-    import { filter_type_mixin } from '../../../classes/filter-types/filter-types-mixin';
+    import {  dynamicFilterTypeMixin } from '../../../classes/filter-types/filter-types-mixin';
 
     export default {
         name: 'CheckboxFilterModal',
-        mixins: [ filter_type_mixin ],
+        mixins: [ dynamicFilterTypeMixin ],
         props: {
             isFilter: {
                 type: Boolean,
@@ -286,8 +292,8 @@
             parent: Number,
             taxonomy_id: Number,
             taxonomy: String,
-            collection_id: Number,
-            metadatum_id: Number,
+            collectionId: Number,
+            metadatumId: Number,
             metadatum: Object,
             selected: Array,
             isTaxonomy: {
@@ -295,7 +301,7 @@
                 default: false,
             },
             metadatum_type: String,
-            metadatum_object: Object,
+            query: Object,
             isRepositoryLevel: Boolean,
             isCheckbox: {
                 type: Boolean,
@@ -318,7 +324,6 @@
                 maxNumSearchResultsShow: 20,
                 maxNumOptionsCheckboxFinderColumns: 100,
                 checkboxListOffset: 0,
-                collection: this.collection_id,
                 isCheckboxListLoading: false,
                 isSearchingLoading: false,
                 noMorePage: 0,
@@ -345,7 +350,14 @@
                 this.getOptions(0);
             }
         },
+        mounted() {
+            if (this.$refs.checkboxRadioModal)
+                this.$refs.checkboxRadioModal.focus()
+        },
         methods: {
+            shouldShowMoreButton(key) {
+                return this.totalRemaining[key].remaining === true || (this.finderColumns[key].children.length < this.totalRemaining[key].remaining);
+            },
             fetchSelectedLabels() {
 
                 let selected = this.selected instanceof Array ? this.selected : [this.selected];
@@ -443,7 +455,7 @@
                 if ( this.metadatum_type === 'Tainacan\\Metadata_Types\\Relationship' )
                     promise = this.getValuesRelationship( this.optionName, this.isRepositoryLevel, [], offset, this.maxNumOptionsCheckboxList, true);
                 else
-                    promise = this.getValuesPlainText( this.metadatum_id, this.optionName, this.isRepositoryLevel, [], offset, this.maxNumOptionsCheckboxList, true);
+                    promise = this.getValuesPlainText( this.metadatumId, this.optionName, this.isRepositoryLevel, [], offset, this.maxNumOptionsCheckboxList, true);
                 
                 promise.request
                     .then((data) => {
@@ -486,10 +498,10 @@
                     if (!this.isFilter)
                         query += '&hideempty=0';
 
-                    let route = `/collection/${this.collection_id}/facets/${this.metadatum_id}${query}`;
+                    let route = `/collection/${this.collectionId}/facets/${this.metadatumId}${query}`;
 
-                    if(this.collection_id == 'default' || this.collection_id == 'filter_in_repository'){
-                        route = `/facets/${this.metadatum_id}${query}`
+                    if(this.collectionId == 'default'){
+                        route = `/facets/${this.metadatumId}${query}`
                     }
 
                     axios.get(route)
@@ -609,10 +621,10 @@
 
                 this.isColumnLoading = true;
 
-                let route = `/collection/${this.collection_id}/facets/${this.metadatum_id}${query}`;
+                let route = `/collection/${this.collectionId}/facets/${this.metadatumId}${query}`;
 
-                if(this.collection_id == 'default' || this.collection_id == 'filter_in_repository'){
-                    route = `/facets/${this.metadatum_id}${query}`
+                if (this.collectionId == 'default'){
+                    route = `/facets/${this.metadatumId}${query}`
                 }
                 
                 axios.get(route)
@@ -646,10 +658,10 @@
 
                     this.isColumnLoading = true;
 
-                    let route = `/collection/${this.collection_id}/facets/${this.metadatum_id}${query}`;
+                    let route = `/collection/${this.collectionId}/facets/${this.metadatumId}${query}`;
 
-                    if(this.collection_id == 'default' || this.collection_id == 'filter_in_repository'){
-                        route = `/facets/${this.metadatum_id}${query}`
+                    if (this.collectionId == 'default'){
+                        route = `/facets/${this.metadatumId}${query}`
                     }
 
                     axios.get(route)
@@ -674,21 +686,21 @@
             applyFilter() {
                 this.$parent.close();
 
-                if(this.isTaxonomy && this.isFilter){
+                if (this.isTaxonomy && this.isFilter) {
                     this.$eventBusSearch.$emit('input', {
                         filter: 'checkbox',
                         taxonomy: this.taxonomy,
                         compare: 'IN',
-                        metadatum_id: this.metadatum_id,
-                        collection_id: this.collection_id,
+                        metadatum_id: this.metadatumId ? this.metadatumId : this.filter.metatadum_id,
+                        collection_id: this.collectionId ? this.collectionId : this.filter.collection_id,
                         terms: this.selected
                     });         
                 } else if(this.isFilter) {
                     this.$eventBusSearch.$emit('input', {
                         filter: 'checkbox',
                         compare: 'IN',
-                        metadatum_id: this.metadatum_id,
-                        collection_id: this.collection_id ? this.collection_id : this.filter.collection_id,
+                        metadatum_id: this.metadatumId ? this.metadatumId : this.filter.metatadum_id,
+                        collection_id: this.collectionId ? this.collectionId : this.filter.collection_id,
                         value: this.selected,
                     });
                 } else {

@@ -36,25 +36,11 @@ class Item_Metadata extends Repository {
 			throw new \Exception( 'Entities must be validated before you can save them' );
 			// TODO: Throw Warning saying you must validate object before insert()
 		}
-
-		$is_update = true;
+		
+		do_action( 'tainacan-pre-insert', $item_metadata );
+		do_action( 'tainacan-pre-insert-Item_Metadata_Entity', $item_metadata );
 		
 		$new = $item_metadata->get_value();
-
-		$diffs = [];
-
-		if ($this->use_logs) {
-			$old = get_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), true );
-			if($old != $new) {
-				$diffs['value'] = [
-					'new'             => $new,
-					'old'             => $old,
-					'diff_with_index' => [],
-				];
-			} else {
-				$diffs['value'] = [];
-			}
-		}
 
 		$unique = ! $item_metadata->is_multiple();
 
@@ -106,13 +92,10 @@ class Item_Metadata extends Repository {
 				}
 			}
 			
-			if ($this->use_logs) {
-				$this->logs_repository->insert_log( $item_metadata, $diffs, $is_update );
-			}
-
-			do_action( 'tainacan-insert', $item_metadata, $diffs, $is_update );
-			do_action( 'tainacan-insert-Item_Metadata_Entity', $item_metadata );
 		}
+		
+		do_action( 'tainacan-insert', $item_metadata );
+		do_action( 'tainacan-insert-Item_Metadata_Entity', $item_metadata );
 
 		$new_entity = new Entities\Item_Metadata_Entity( $item_metadata->get_item(), $item_metadata->get_metadatum() );
 
@@ -164,11 +147,6 @@ class Item_Metadata extends Repository {
 			$taxonomy  = new Entities\Taxonomy( $metadata_type->get_option( 'taxonomy_id' ) );
 
 			if ( $taxonomy ) {
-				if ( $this->use_logs  ) {
-					$old = wp_get_object_terms(  $item_metadata->get_item()->get_id(), $taxonomy->get_db_identifier(), [
-						'fields' => 'names'
-					] );
-				}
 
 				// We can not simply use wp_set_object_terms() because it uses term_exists() which is not reliable 
 				// see https://core.trac.wordpress.org/ticket/45333 and https://core.trac.wordpress.org/ticket/47099
@@ -200,26 +178,6 @@ class Item_Metadata extends Repository {
 				
 				$success = wp_set_object_terms( $item_metadata->get_item()->get_id(), $insert, $taxonomy->get_db_identifier() );
 				
-				if ( $this->use_logs && ! $success instanceof \WP_Error ) {
-
-					$new = get_terms(array(
-						'taxonomy'   => $taxonomy->get_db_identifier(),
-						'hide_empty' => false,
-						'object_ids' => $item_metadata->get_item()->get_id(),
-						'fields'     => 'names',
-					));
-
-					$diffs[ 'value' ] = [
-						'new'             => $new,
-						'old'             => $old,
-						'diff_with_index' => []
-					];
-
-					if($this->use_logs){
-						$this->logs_repository->insert_log( $item_metadata, $diffs, true );
-						//do_action( 'tainacan-insert', $item_metadata, $diffs, true );
-					}
-				}
 			}
 		}
 	}

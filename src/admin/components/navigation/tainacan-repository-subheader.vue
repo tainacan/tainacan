@@ -130,7 +130,8 @@ export default {
                 props: {
                     sourceCollection: this.collectionId,
                     hideWhenManualCollection: true
-                }
+                },
+                trapFocus: true
             });
         }
     }

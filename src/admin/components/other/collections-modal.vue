@@ -1,5 +1,12 @@
 <template>
-    <form action="">
+    <form 
+            action=""
+            autofocus
+            role="dialog"
+            class="tainacan-modal-content"
+            tabindex="-1"
+            aria-modal
+            ref="collectionsModal">
         <div 
                 class="tainacan-modal-content" 
                 style="width: auto">
@@ -18,14 +25,20 @@
                             :key="index"
                             @click="onSelectCollection(collection)">
                         <h4>{{ collection.name }}</h4>
-                        <p>{{ collection.length > 200 ? (collection.description.substring(0,197) + '...') : collection.description }}</p>            
+                        <p>{{ collection.description.length > 200 ? (collection.description.substring(0,197) + '...') : collection.description }}</p>            
                     </div>
-
-                     <b-loading 
+                    <div 
+                            v-if="collections.length <= 0"
+                            class="block">
+                        <p class="has-text-gray">
+                            {{ $i18n.get('info_no_collection_created') }}
+                        </p>
+                    </div>
+                </div>
+                <b-loading 
                         :is-full-page="false"
                         :active.sync="isLoading" 
                         :can-cancel="false"/>
-                </div>
                 
                  <footer class="field is-grouped form-submit">
                     <div class="control">
@@ -74,6 +87,9 @@ export default {
                 this.$console.log(error);
                 this.isLoading = false;
             });
+
+        if (this.$refs.collectionsModal)
+            this.$refs.collectionsModal.focus();
     }
 }
 </script>

@@ -318,34 +318,6 @@ class Collections extends TAINACAN_UnitTestCase {
     	$this->assertTrue(has_action('init', array($Tainacan_Collections, 'register_post_type')) !== false, 'Collections Init is not registred!');
     }
     
-    /**
-     * @group diff
-     */
-    function test_diff() {
-    	$x = $this->tainacan_entity_factory->create_entity(
-    		'collection',
-    		array(
-    			'name'				=> 'testeDiff',
-    			'description'		=> 'adasdasdsa',
-    			'default_order' 	=> 'DESC',
-    			'moderators_ids'	=> [1,2,3]
-    		),
-    		true
-    	);
-    	
-    	$x->set_name('OtherValue');
-    	$x->set_description('testeDiff2');
-    	$x->set_moderators_ids([3,4,5]);
-    	
-    	$diff = $x->diff();
-    	$this->assertEquals(3, count($diff));
-    	$this->assertEquals($diff['name']['new'][0], 'OtherValue');
-    	$this->assertEquals($diff['name']['old'], 'testeDiff');
-    	$this->assertEquals($diff['description']['new'][0], 'testeDiff2');
-    	$this->assertEquals($diff['description']['old'], 'adasdasdsa');
-    	$this->assertEquals([1 => 4, 2 => 5, 0 => 3], $diff['moderators_ids']['diff_with_index']);
-    	
-    }
 	
 	function test_create_child_collection() {
 		

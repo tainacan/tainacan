@@ -18,6 +18,7 @@
             </label>
 
             <div
+                    v-if="collections && collections.length"
                     class="block">
                 <div
                         v-for="(collection, key) in collections"
@@ -26,10 +27,17 @@
                     <b-checkbox
                             v-model="collectionsIdsToFilter"
                             :native-value="collection.id"
-                            @input="apply_filter">
+                            @input="applyFilter">
                         {{ collection.name }}
                     </b-checkbox>
                 </div>
+            </div>
+            <div 
+                    v-else
+                    class="block">
+                <p class="has-text-gray">
+                    {{ $i18n.get('info_no_collection_created') }}
+                </p>
             </div>
         </b-collapse>
     </b-field>
@@ -60,7 +68,7 @@
                 Array.isArray(routeQueries.metaquery[0].value)){
                 this.collectionsIdsToFilter = routeQueries.metaquery[0].value;
 
-                this.apply_filter();
+                this.applyFilter();
             }
         },
         data(){
@@ -84,7 +92,7 @@
             ...mapGetters('collection', [
                 'getCollections',
             ]),
-            apply_filter(){
+            applyFilter(){
                 this.$eventBusSearch.$emit( 'input', {
                     filter: 'checkbox',
                     metadatum_id: 'collection_id',

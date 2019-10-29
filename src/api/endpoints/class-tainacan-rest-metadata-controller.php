@@ -45,23 +45,33 @@ class REST_Metadata_Controller extends REST_Controller {
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<metadatum_id>[\d]+)',
 			array(
 				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_item'),
+					'permission_callback' => array($this, 'get_item_permissions_check'),
+					'args'                => array(
+						'context' => array(
+							'type'    	  => 'string',
+							'default' 	  => 'view',
+							'description' => 'The context in which the request is made.',
+							'enum'    	  => array(
+								'view',
+								'edit'
+							)
+						),
+					),
+				),
+				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
 					'callback'            => array($this, 'update_item'),
 					'permission_callback' => array($this, 'update_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE)
 				),
-				// ENDPOINT X. THIS ENDPOINT DO THE SAME THING OF ENDPOINT Z. I hope in a brief future it function changes.
 				array(
 					'methods'             => \WP_REST_Server::DELETABLE,
 					'callback'            => array($this, 'delete_item'),
 					'permission_callback' => array($this, 'delete_item_permissions_check'),
 				),
-				array(
-					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => array($this, 'get_item'),
-					'permission_callback' => array($this, 'get_item_permissions_check'),
-					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE),
-				),
+				'schema'                  => [$this, 'get_schema']
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base,
@@ -70,7 +80,7 @@ class REST_Metadata_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_collection_params(),
+					'args'                => $this->get_wp_query_params(),
 				),
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
@@ -78,31 +88,43 @@ class REST_Metadata_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'create_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE),
 				),
+				'schema'                  => [$this, 'get_schema']
 			)
 		);
 		register_rest_route($this->namespace, '/' . $this->rest_base,
 			array(
 				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_items'),
+					'permission_callback' => array($this, 'get_items_permissions_check'),
+					'args'                => $this->get_wp_query_params(),
+				),
+				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'create_item'),
 					'permission_callback' => array($this, 'create_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE),
 				),
-				array(
-					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => array($this, 'get_items'),
-					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_collection_params(),
-				)
+				'schema'                  => [$this, 'get_schema'],
 			)
 		);
 		register_rest_route($this->namespace, '/'. $this->rest_base . '/(?P<metadatum_id>[\d]+)',
 			array(
-				// ENDPOINT Z.
 				array(
-					'methods'             => \WP_REST_Server::DELETABLE,
-					'callback'            => array($this, 'delete_item'),
-					'permission_callback' => array($this, 'delete_item_permissions_check')
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_item'),
+					'permission'          => array($this, 'get_item_permissions_check'),
+					'args'                => array(
+						'context' => array(
+							'type'    	  => 'string',
+							'default' 	  => 'view',
+							'description' => 'The context in which the request is made.',
+							'enum'    	  => array(
+								'view',
+								'edit'
+							)
+						),
+					),
 				),
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
@@ -111,11 +133,11 @@ class REST_Metadata_Controller extends REST_Controller {
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE)
 				),
 				array(
-					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => array($this, 'get_item'),
-					'permission'          => array($this, 'get_item_permissions_check'),
-					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE)
-				)
+					'methods'             => \WP_REST_Server::DELETABLE,
+					'callback'            => array($this, 'delete_item'),
+					'permission_callback' => array($this, 'delete_item_permissions_check')
+				),
+				'schema'                  => [$this, 'get_schema'],
 			)
 		);
 	}
@@ -536,10 +558,10 @@ class REST_Metadata_Controller extends REST_Controller {
 	 *
 	 * @return array|void
 	 */
-	public function get_collection_params( $object_name = null ) {
+	public function get_wp_query_params() {
 		$query_params['context']['default'] = 'view';
 
-		$query_params = array_merge($query_params, parent::get_collection_params('metadatum'));
+		$query_params = array_merge($query_params, parent::get_wp_query_params());
 
 		$query_params['name'] = array(
 			'description' => __('Limits the result set to metadata with a specific name'),
@@ -560,11 +582,10 @@ class REST_Metadata_Controller extends REST_Controller {
 	public function get_endpoint_args_for_item_schema( $method = null ) {
 		$endpoint_args = [];
 		if($method === \WP_REST_Server::READABLE) {
-			$endpoint_args['context'] = array(
-				'type'    => 'string',
-				'default' => 'view',
-				'items'   => array( 'view, edit' )
-			);
+			$endpoint_args = array_merge(
+                $endpoint_args, 
+                parent::get_wp_query_params()
+            );
 		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
 			$map = $this->metadatum_repository->get_map();
 
@@ -581,6 +602,32 @@ class REST_Metadata_Controller extends REST_Controller {
 		}
 
 		return $endpoint_args;
+	}
+
+	function get_schema() {
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => 'metadatum',
+			'type' => 'object'
+		];
+		
+		$main_schema = parent::get_repository_schema( $this->metadatum_repository );
+		$permissions_schema = parent::get_permissions_schema();
+		
+		// $item_metadata_scheme = parent::get_repository_schema( $this->item_metadata_repository );
+		// $item_scheme = parent::get_repository_schema( $this->item_repository );
+		// $collection_scheme = parent::get_repository_schema( $this->collection_repository );
+		
+		$schema['properties'] = array_merge(
+			parent::get_base_properties_schema(),
+			$main_schema,
+			$permissions_schema
+			// $item_metadata_scheme,
+			// $item_scheme,
+			// $collection_scheme
+		);
+		
+		return $schema;
 	}
 }
 
