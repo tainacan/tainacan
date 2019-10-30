@@ -28,13 +28,13 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		 * - private_repo_metadatum
 		 * - public_repo_filter
 		 * - private_repo_filter
-		 * - public_collection (5 items)
+		 * - public_collection (10 items, 5 public, 5 private)
 		 * --- (Core Title adn Description)
 		 * --- public_metadatum
 		 * --- private_metadatum
 		 * --- public_filter
 		 * --- private_filter
-		 * - private_collection (5 items)
+		 * - private_collection (10 items, 5 public, 5 private)
 		 * --- (Core Title adn Description)
 		 * --- meta_relationshipt (with public collection)
 		 */
@@ -239,6 +239,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		);
 
 		$this->private_repo_filter = $filter;
+		$this->items = [];
 
 
 		for ($i = 1; $i<=10; $i++) {
@@ -246,6 +247,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 			$title = 'testeItem ' . str_pad($i, 2, "0", STR_PAD_LEFT);
 
 			$col = $i <= 5 ? $collection1 : $collection2;
+			$col_slug = $i <= 5 ? 'public_col' : 'private_col';
 
 			$item = $this->tainacan_entity_factory->create_entity(
 				'item',
@@ -257,6 +259,8 @@ class Capabilities extends TAINACAN_UnitTestCase {
 				true
 			);
 
+			$this->items[$col_slug]['public'][] = $item;
+
 			$this->tainacan_item_metadata_factory->create_item_metadata($item, $metadatum_repo, 'Value ' . $i);
 			$this->tainacan_item_metadata_factory->create_item_metadata($item, $metadatum_repo2, 'Value ' . $i);
 
@@ -264,6 +268,17 @@ class Capabilities extends TAINACAN_UnitTestCase {
 				$this->tainacan_item_metadata_factory->create_item_metadata($item, $metadatum_text, $i % 2 == 0 ? 'even' : 'odd');
 				$this->tainacan_item_metadata_factory->create_item_metadata($item, $metadatum_text2, $i % 2 == 0 ? 'even' : 'odd');
 			}
+
+			$private_item = $this->tainacan_entity_factory->create_entity(
+				'item',
+				array(
+					'title'      => 'private' . $title,
+					'collection' => $col,
+					'status' => 'private'
+				),
+				true
+			);
+			$this->items[$col_slug]['private'][] = $private_item;
 
 		}
 
@@ -314,22 +329,6 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertTrue( user_can($this->subscriber2, 'tnc_col_36_read_private_filters') );
 
 	}
-
-	// function test_items_capabilities() {
-	//
-	// 	$collection = $this->tainacan_entity_factory->create_entity(
-	// 		'collection',
-	// 		array(
-	// 			'name'        => 'Javascript Frameworks',
-	// 			'description' => 'The best framework to javascript',
-	// 			'status' => 'publish'
-	// 		),
-	// 		true
-	// 	);
-	//
-	// 	$caps = $collection->get_items_capabilities();
-	//
-	// }
 
 	/**
 	 * @group metadata
@@ -733,6 +732,198 @@ class Capabilities extends TAINACAN_UnitTestCase {
 
 		$cols = tainacan_collections()->fetch([], 'OBJECT');
 		$this->assertEquals(3, sizeof($cols));
+
+
+	}
+
+	/**
+	 * @group items
+	 */
+	function test_items_metacaps() {
+		global $current_user;
+		wp_set_current_user($this->subscriber2->ID);
+
+		$col1prefix = 'tnc_col_' . $this->public_collection->get_id() . '_';
+		$col2prefix = 'tnc_col_' . $this->private_collection->get_id() . '_';
+
+		$public = $this->items['public_col']['public'][0];
+		$public_in_private = $this->items['private_col']['public'][0];
+
+		$private = $this->items['public_col']['private'][0];
+		$private_in_private = $this->items['private_col']['private'][0];
+
+		$this->assertTrue( $public->can_read() );
+		$this->assertFalse( $public_in_private->can_read() );
+		$this->assertFalse( $private->can_read() );
+		$this->assertFalse( $private_in_private->can_read() );
+
+		$this->subscriber2->add_cap( $col1prefix . 'read_private_items' );
+
+		$this->assertTrue( $public->can_read() );
+		$this->assertFalse( $public_in_private->can_read() );
+		$this->assertTrue( $private->can_read() );
+		$this->assertFalse( $private_in_private->can_read() );
+
+		$this->subscriber2->add_cap( $col2prefix . 'read_private_items' );
+
+		$this->assertTrue( $public->can_read() );
+		$this->assertFalse( $public_in_private->can_read() );
+		$this->assertTrue( $private->can_read() );
+		$this->assertFalse( $private_in_private->can_read(), 'user must also have read_private_collections to read items in private collections' );
+
+		$this->subscriber2->add_cap( 'tnc_rep_read_private_collections' );
+
+		$this->assertTrue( $public->can_read() );
+		$this->assertTrue( $public_in_private->can_read() );
+		$this->assertTrue( $private->can_read() );
+		$this->assertTrue( $private_in_private->can_read() );
+
+		$own_item = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'my item',
+				'collection' => $this->public_collection,
+				'status' => 'draft'
+			),
+			true
+		);
+
+		$this->assertFalse( $own_item->can_edit() );
+
+		$this->subscriber2->add_cap( $col1prefix . 'edit_items' );
+
+		$this->assertTrue( $own_item->can_edit() );
+		$this->assertFalse( $own_item->can_publish() );
+
+		$this->subscriber2->add_cap( $col1prefix . 'publish_items' );
+
+		$this->assertTrue( $own_item->can_publish() );
+
+		$this->assertFalse( $own_item->can_delete() );
+
+		$this->subscriber2->add_cap( $col1prefix . 'delete_items' );
+
+		$this->assertTrue( $own_item->can_delete() );
+
+		$own_item->set_status('publish');
+		$own_item->validate();
+
+		$own_item = \tainacan_items()->insert($own_item);
+
+		$this->assertFalse( $own_item->can_edit() );
+
+		$this->subscriber2->add_cap( $col1prefix . 'edit_published_items' );
+
+		$this->assertTrue( $own_item->can_edit() );
+
+		$this->assertFalse( $own_item->can_delete() );
+
+		$this->subscriber2->add_cap( $col1prefix . 'delete_published_items' );
+
+		$this->assertTrue( $own_item->can_delete() );
+
+
+
+	}
+
+	/**
+	 * @group items
+	 */
+	function test_items_edit_others() {
+		global $current_user;
+		wp_set_current_user($this->subscriber2->ID);
+
+		$col1prefix = 'tnc_col_' . $this->public_collection->get_id() . '_';
+
+		$other_draft = $this->items['public_col']['public'][0];
+		$other_draft->set_status('draft');
+		$other_draft->validate();
+		$other_draft = \tainacan_items()->insert($other_draft);
+
+		$other_published = $this->items['public_col']['public'][1];
+
+		$this->assertFalse( $other_draft->can_edit() );
+		$this->assertFalse( $other_published->can_edit() );
+
+		$this->subscriber2->add_cap( $col1prefix . 'edit_others_items' );
+
+		$this->assertTrue( $other_draft->can_edit() );
+		$this->assertFalse( $other_published->can_edit() );
+
+		$this->subscriber2->add_cap( $col1prefix . 'edit_published_items' );
+
+		$this->assertTrue( $other_draft->can_edit() );
+		$this->assertTrue( $other_published->can_edit() );
+	}
+
+	/**
+	 * @group items
+	 */
+	function test_fetch_items() {
+		global $current_user;
+		wp_set_current_user($this->subscriber2->ID);
+
+		$col1prefix = 'tnc_col_' . $this->public_collection->get_id() . '_';
+		$col2prefix = 'tnc_col_' . $this->private_collection->get_id() . '_';
+
+		$repo = tainacan_items()->fetch(['nopaging' => true], [], 'OBJECT');
+
+		$this->assertEquals(5, sizeof($repo));
+
+		$this->subscriber2->add_cap( $col1prefix . 'read_private_items' );
+		$current_user = $this->subscriber2; // force update current user object with new capabilities
+
+
+		$repo = tainacan_items()->fetch(['nopaging' => true], [], 'OBJECT');
+
+		$this->assertEquals(10, sizeof($repo));
+
+		$this->subscriber2->add_cap( 'tnc_rep_read_private_collections' );
+		//$this->subscriber2->add_cap( 'read_private_multiple_post_types' );
+		$current_user = $this->subscriber2; // force update current user object with new capabilities
+
+
+		$repo = tainacan_items()->fetch(['nopaging' => true], [], 'OBJECT');
+
+
+		$this->assertEquals(15, sizeof($repo));
+
+		$this->subscriber2->add_cap( $col2prefix . 'read_private_items' );
+		$current_user = $this->subscriber2; // force update current user object with new capabilities
+
+		$repo = tainacan_items()->fetch(['nopaging' => true], [], 'OBJECT');
+
+		$this->assertEquals(20, sizeof($repo));
+
+
+		$col1 = tainacan_items()->fetch(['nopaging' => true], $this->public_collection, 'OBJECT');
+
+
+
+
+
+	}
+
+	/**
+	 * @group items
+	 */
+	function test_fetch_collection_items() {
+		global $current_user;
+		wp_set_current_user($this->subscriber2->ID);
+
+		$col1prefix = 'tnc_col_' . $this->public_collection->get_id() . '_';
+		$col2prefix = 'tnc_col_' . $this->private_collection->get_id() . '_';
+
+		$col1 = tainacan_items()->fetch(['nopaging' => true], $this->public_collection, 'OBJECT');
+
+		$this->assertEquals(5, sizeof($col1));
+
+		$this->subscriber2->add_cap( $col1prefix . 'read_private_items' );
+		$current_user = $this->subscriber2; // force update current user object with new capabilities
+
+		$col1 = tainacan_items()->fetch(['nopaging' => true], $this->public_collection, 'OBJECT');
+
+		$this->assertEquals(10, sizeof($col1));
 
 
 	}

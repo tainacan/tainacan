@@ -180,6 +180,19 @@ class Roles {
 					'upload_files'
 				]
 			],
+			'tnc_col_%d_delete_items' => [
+				'display_name' => __('Delete items', 'tainacan'),
+				'description' => __('Delete items in this collection', 'tainacan'),
+			],
+			'tnc_col_%d_delete_others_items' => [
+				'display_name' => __('Delete others items', 'tainacan'),
+				'description' => __('Delete items created by other users in this collection', 'tainacan'),
+			],
+			'tnc_col_%d_delete_published_items' => [
+				'display_name' => __('Delete published items', 'tainacan'),
+				'description' => __('Delete items in this collection after they are published', 'tainacan'),
+			],
+
 
 		];
 
