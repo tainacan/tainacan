@@ -1,7 +1,6 @@
 <template>
     <b-input
             :disabled="disabled"
-            :class="{'has-content': value !== undefined && value !== ''}"
             :id="id"
             :value="value"
             @input="onInput($event)"/>

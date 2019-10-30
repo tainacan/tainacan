@@ -1,7 +1,6 @@
 <template>
     <b-input
             :disabled="disabled"
-            :class="{'has-content': inputValue !== undefined && inputValue !== ''}"
             :id="id"
             lang="en"
             type="number"

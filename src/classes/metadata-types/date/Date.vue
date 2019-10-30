@@ -1,8 +1,6 @@
 <template>
     <div>
-        <div
-                :class="{'has-content': dateValue !== undefined && dateValue !== ''}"
-                class="control is-inline">
+        <div class="control is-inline">
             <input
                     :disabled="disabled"
                     class="input"
@@ -24,7 +22,6 @@
 
                 <!--<div class="field">-->
                     <!--<b-datepicker-->
-                            <!--:class="{'has-content': dateValue !== undefined && dateValue !== ''}"-->
                             <!--:id="id"-->
                             <!--v-model="dateValue"-->
                             <!--:readonly="false"-->

@@ -25,8 +25,7 @@
                                 :title="$i18n.get('label_name')"
                                 :message="$i18n.get('info_help_term_name')"/>
                     </label>
-                    <b-input
-                            :class="{'has-content': name != undefined && name != ''}" 
+                    <b-input 
                             v-model="name"
                             @focus="clearErrors({ name: 'name', repeated: 'repeated' })"/>
                 </b-field>
