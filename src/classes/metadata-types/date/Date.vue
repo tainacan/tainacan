@@ -1,36 +1,34 @@
 <template>
     <div>
-        <div class="control is-inline">
-            <input
-                    :disabled="disabled"
-                    class="input"
-                    :class="{'is-danger': isInvalidDate && dateValue}"
-                    type="text"
-                    v-mask="dateMask"
-                    v-model="dateValue"
-                    @input="onInput"
-                    :placeholder="dateFormat.toLowerCase()">
-            <p
-                    v-if="isInvalidDate && dateValue"
-                    class="has-text-danger is-italic is-size-7">{{ $i18n.get('info_error_invalid_date') }}</p>
-            <!--<b-collapse-->
-                    <!--position="is-bottom-right">-->
-                <!--<span class="icon"-->
-                        <!--icon="calendar-today"-->
-                        <!--size="is-small"-->
-                        <!--slot="trigger" />-->
+        <b-input
+                :disabled="disabled"
+                class="input"
+                :class="{'is-danger': isInvalidDate && dateValue}"
+                type="text"
+                v-mask="dateMask"
+                v-model="dateValue"
+                @input.native="onInput"
+                :placeholder="dateFormat.toLowerCase()" />
+        <p
+                v-if="isInvalidDate && dateValue"
+                class="has-text-danger is-italic is-size-7">{{ $i18n.get('info_error_invalid_date') }}</p>
+        <!--<b-collapse-->
+                <!--position="is-bottom-right">-->
+            <!--<span class="icon"-->
+                    <!--icon="calendar-today"-->
+                    <!--size="is-small"-->
+                    <!--slot="trigger" />-->
 
-                <!--<div class="field">-->
-                    <!--<b-datepicker-->
-                            <!--:id="id"-->
-                            <!--v-model="dateValue"-->
-                            <!--:readonly="false"-->
-                            <!--inline-->
-                            <!--@input="onInput($event)"-->
-                            <!--:placeholder="datePlaceHolder"/>-->
-                <!--</div>-->
-            <!--</b-collapse>-->
-        </div>
+            <!--<div class="field">-->
+                <!--<b-datepicker-->
+                        <!--:id="id"-->
+                        <!--v-model="dateValue"-->
+                        <!--:readonly="false"-->
+                        <!--inline-->
+                        <!--@input="onInput($event)"-->
+                        <!--:placeholder="datePlaceHolder"/>-->
+            <!--</div>-->
+        <!--</b-collapse>-->
     </div>
 </template>
 
@@ -85,3 +83,10 @@
         }
     }
 </script>
+
+<style scoped lang="scss">
+.control {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+</style>

@@ -27,8 +27,12 @@
             <span
                     v-if="metadatum.metadatum.required == 'yes'"
                     class="required-metadatum-asterisk"
-                    :class="metadatumTypeMessage">*</span>
-            <span class="metadata-type">({{ metadatum.metadatum.metadata_type_object.name }})</span>
+                    :class="metadatumTypeMessage">
+                *
+            </span>
+            <span class="metadata-type">
+                ({{ metadatum.metadatum.metadata_type_object.name }})
+            </span>
             <help-button 
                     :title="metadatum.metadatum.name"
                     :message="metadatum.metadatum.description"/>
@@ -42,7 +46,7 @@
                         :is="metadatum.metadatum.metadata_type_object.component"
                         v-model="inputs[0]" 
                         :metadatum="metadatum"
-                        @input="emitIsChangingValue()"/>
+                        @input="changeValue()"/>
                 <div v-if="metadatum.metadatum.multiple == 'yes'">
                     <div 
                             v-if="index > 0" 
@@ -54,7 +58,7 @@
                                 :is="metadatum.metadatum.metadata_type_object.component"
                                 v-model="inputs[index]" 
                                 :metadatum="metadatum"
-                                @input="emitIsChangingValue()"/>
+                                @input="changeValue()"/>
                             <a 
                                     v-if="index > 0" 
                                     @click="removeInput(index)"
@@ -86,7 +90,7 @@
                         :is="metadatum.metadatum.metadata_type_object.component"
                         v-model="inputs"
                         :metadatum="metadatum"
-                        @input="emitIsChangingValue()"/>
+                        @input="changeValue()"/>
             </div>
         </transition>
     </b-field>
@@ -103,8 +107,7 @@
         },
         data(){
             return {
-                inputs: [],
-                metadatumTypeMessage: ''
+                inputs: []
             }
         },
         computed: {
@@ -113,27 +116,22 @@
                 let errors = eventBus.getErrors(this.metadatum.metadatum.id);
 
                 if (errors) {
-                    this.setMetadatumTypeMessage('is-danger');
                     for (let error of errors) { 
-                        for (let index of Object.keys(error)) {
-                            // this.$console.log(index);
+                        for (let index of Object.keys(error))
                             errorMessage += error[index] + '\n';
-                        }
                     }
-                } else {
-                    this.setMetadatumTypeMessage('');
                 }
 
                 return errorMessage;
+            },
+            metadatumTypeMessage() {
+                return this.getErrorMessage ? 'is-danger' : ''
             }
         },
         created(){
-            this.getValue();
+            this.createInputs();
         },
         methods: {
-            emitIsChangingValue() {
-                this.changeValue();
-            },
             changeValue: _.debounce(function() {
                 
                 if (this.metadatum.value != this.inputs) {
@@ -159,7 +157,8 @@
                         if (this.metadatum.value.id == this.inputs)
                             return;
                         
-                    } else if (this.metadatum.value instanceof Array) {                        
+                    } else if (this.metadatum.value instanceof Array) {  
+                  
                         let equal = [];
 
                         for (let meta of this.inputs) {
@@ -173,16 +172,20 @@
                             return;
                     } 
 
-                    eventBus.$emit('input', { item_id: this.metadatum.item.id, metadatum_id: this.metadatum.metadatum.id, values: this.inputs } );
+                    eventBus.$emit('input', {
+                        item_id: this.metadatum.item.id,
+                        metadatum_id: this.metadatum.metadatum.id,
+                        values: this.inputs 
+                    } );
                 }
             }, 1000),
-            getValue(){ 
+            createInputs(){ 
                 if (this.metadatum.value instanceof Array) {
                     this.inputs = this.metadatum.value.slice(0);
                     
                     if (this.inputs.length === 0)
                         this.inputs.push('');
-                    
+                
                 } else {
                     this.metadatum.value == null || this.metadatum.value == undefined ? this.inputs.push('') : this.inputs.push(this.metadatum.value);
                 }
@@ -195,12 +198,9 @@
                 this.inputs.splice(index, 1);
                 this.changeValue();
             },
-            isTextInputComponent(component){
-                let array = ['tainacan-relationship','tainacan-taxonomy'];
-                return !( array.indexOf( component ) >= 0 );
-            },
-            setMetadatumTypeMessage(message){
-                this.metadatumTypeMessage = message;
+            isTextInputComponent(component) {
+                const array = ['tainacan-relationship','tainacan-taxonomy'];
+                return !(array.indexOf(component) >= 0 );
             }
         }
     }
