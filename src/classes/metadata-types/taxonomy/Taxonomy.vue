@@ -79,7 +79,6 @@
         watch: {
             valueComponent( val ){
                 this.$emit('input', val);
-                this.$emit('blur');
             }
         },
         props: {
@@ -196,7 +195,6 @@
                 this.inputValue = $event;
                 this.valueComponent = $event;
                 this.$emit('input', this.inputValue);
-                this.$emit('blur');
             },
             reload( $event ) {
                 if ($event.taxonomyId == this.taxonomy_id && $event.metadatumId == this.metadatum.metadatum.id) {

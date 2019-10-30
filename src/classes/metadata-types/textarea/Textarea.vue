@@ -6,7 +6,6 @@
             size="is-small"
             type="textarea"
             :value="inputValue"
-            @blur="onBlur"
             @input="onInput($event)"/>
 </template>
 
@@ -31,9 +30,6 @@
             disabled: false
         },
         methods: {
-            onBlur() {
-                this.$emit('blur');
-            },
             onInput($event) {
                 this.inputValue = $event;
                 this.$emit('input', this.inputValue);

@@ -75,7 +75,6 @@
         },
         methods: {
             onChecked() {
-                this.$emit('blur');
                 this.onInput(this.checked);
             },
             onInput($event) {

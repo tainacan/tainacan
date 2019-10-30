@@ -117,7 +117,6 @@
                         results.push( term.value );
                 
                     this.$emit('input', results);
-                    this.$emit('blur');
                 }
             },
             emitRemove(){
@@ -128,7 +127,6 @@
                     results.push(term.value);
 
                 this.$emit('input', results);
-                this.$emit('blur');
             }
         }
     }

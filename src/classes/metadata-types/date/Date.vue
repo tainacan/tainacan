@@ -10,7 +10,6 @@
                     type="text"
                     v-mask="dateMask"
                     v-model="dateValue"
-                    @blur="onBlur"
                     @input="onInput"
                     :placeholder="dateFormat.toLowerCase()">
             <p
@@ -28,7 +27,6 @@
                             <!--:class="{'has-content': dateValue !== undefined && dateValue !== ''}"-->
                             <!--:id="id"-->
                             <!--v-model="dateValue"-->
-                            <!--@blur="onBlur"-->
                             <!--:readonly="false"-->
                             <!--inline-->
                             <!--@input="onInput($event)"-->
@@ -64,9 +62,6 @@
             disabled: false,
         },
         methods: {
-            onBlur() {
-                this.$emit('blur');
-            },
             onInput: _.debounce(function ($event) {
                 // Emty dates don't need to be validated, they remove the metadata
                 if ($event.target.value != '') {
@@ -89,7 +84,6 @@
                 } else  {
                    this.$emit('input', [null]); 
                 }
-                this.$emit('blur');
             }, 300)
         }
     }

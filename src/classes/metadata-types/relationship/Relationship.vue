@@ -84,7 +84,6 @@
             },
             onInput( $event ) {
                 this.$emit('input', $event);
-                this.$emit('blur');
             },
             search: _.debounce(function(query) {
                 if ( this.selected.length > 0  && this.metadatum.metadatum.multiple === 'no')

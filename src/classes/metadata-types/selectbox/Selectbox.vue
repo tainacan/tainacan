@@ -7,7 +7,6 @@
                 :placeholder="$i18n.get('label_selectbox_init')"
                 :value="value"
                 :class="{'is-empty': value == undefined || value == ''}"
-                @blur="$emit('blur')"
                 @input="onChecked($event)">
             <option
                     v-for="(option, index) in getOptions"

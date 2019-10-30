@@ -7,8 +7,6 @@
             type="number"
             :value="inputValue"
             step="0.01"
-            @blur="onBlur"
-            @change="onBlur"
             @input="onInput($event)"/>
 </template>
 
@@ -33,9 +31,6 @@
             disabled: false,
         },
         methods: {
-            onBlur() {
-                this.$emit('blur');
-            },
             onInput($event) {
                 this.inputValue = $event;
                 this.$emit('input', this.inputValue);
