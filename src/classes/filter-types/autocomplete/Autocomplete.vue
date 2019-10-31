@@ -20,7 +20,7 @@
                         <img
                                 :alt="$i18n.get('label_thumbnail')"
                                 width="24"
-                                :src="`${props.option.img}`">
+                                :src="props.option.img">
                     </div>
                     <div class="media-content">
                         <span class="ellipsed-text">{{ props.option.label }}</span>
@@ -149,14 +149,3 @@
         }
     }
 </script>
-<style scoped>
-    #profileImage {
-        width: 32px;
-        height: 32px;
-        font-size: 2.1875rem;
-        color: #fff;
-        text-align: center;
-        line-height: 9.375rem;
-        margin: 20px 0;
-    }
-</style>

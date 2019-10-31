@@ -155,7 +155,18 @@
                     @focus="clearErrors('parent');"
                     :disabled="!hasParent">
                 <template slot-scope="props">
-                    {{ props.option.name }}
+                    <div class="media">
+                        <div 
+                                v-if="props.option.header_image"
+                                class="media-left">
+                            <img 
+                                    width="28"
+                                    :src="props.option.header_image">
+                        </div>
+                        <div class="media-content">
+                            {{ props.option.name }}
+                        </div>
+                    </div>
                 </template>
                 <template slot="empty">{{ $i18n.get('info_no_parent_term_found') }}</template>
             </b-autocomplete>
