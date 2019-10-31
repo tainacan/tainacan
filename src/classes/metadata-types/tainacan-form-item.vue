@@ -169,7 +169,7 @@
                     if (equal.length == this.inputs.length && this.metadatum.value.length <= equal.length)
                         return;
                 } 
-
+                
                 eventBus.$emit('input', {
                     itemId: this.metadatum.item.id,
                     metadatumId: this.metadatum.metadatum.id,

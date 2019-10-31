@@ -61,7 +61,7 @@
                                 :message="$i18n.get('info_help_parent_term')"/>
                     </label>
                     <b-autocomplete
-                            id="tainacan-text-cover-page"
+                            id="tainacan-add-parent-field"
                             :placeholder="$i18n.get('instruction_parent_term')"
                             :data="parentTerms"
                             field="name"
