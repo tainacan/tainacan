@@ -133,51 +133,49 @@
         },
         methods: {
             changeValue: _.debounce(function() {
-                
-                if (this.metadatum.value != this.inputs) {
 
-                    if (this.inputs.length > 0 && this.inputs[0].value) {
-                        let terms = this.inputs.map(term => term.value)
-                        
-                        if (this.metadatum.value instanceof Array){
-                            let equal = [];
-
-                            for (let meta of terms) {
-                                let foundIndex = this.metadatum.value.findIndex(element => meta == element.id);
-                                if (foundIndex >= 0)
-                                    equal.push(this.metadatum.value[foundIndex]);
-                            }
-
-                            if (equal.length == terms.length && this.metadatum.value.length <= equal.length)
-                                return;
-
-                        }
-                    } else if (this.metadatum.value.constructor.name == 'Object') {
-
-                        if (this.metadatum.value.id == this.inputs)
-                            return;
-                        
-                    } else if (this.metadatum.value instanceof Array) {  
-                  
+                if (this.inputs.length > 0 && this.inputs[0].value) {
+                    let terms = this.inputs.map(term => term.value)
+                    
+                    if (this.metadatum.value instanceof Array){
                         let equal = [];
 
-                        for (let meta of this.inputs) {
+                        for (let meta of terms) {
                             let foundIndex = this.metadatum.value.findIndex(element => meta == element.id);
-
                             if (foundIndex >= 0)
                                 equal.push(this.metadatum.value[foundIndex]);
                         }
 
-                        if (equal.length == this.inputs.length && this.metadatum.value.length <= equal.length)
+                        if (equal.length == terms.length && this.metadatum.value.length <= equal.length)
                             return;
-                    } 
 
-                    eventBus.$emit('input', {
-                        item_id: this.metadatum.item.id,
-                        metadatum_id: this.metadatum.metadatum.id,
-                        values: this.inputs 
-                    } );
-                }
+                    }
+                } else if (this.metadatum.value.constructor.name == 'Object') {
+
+                    if (this.metadatum.value.id == this.inputs)
+                        return;
+                    
+                } else if (this.metadatum.value instanceof Array) {  
+                
+                    let equal = [];
+
+                    for (let meta of this.inputs) {
+                        let foundIndex = this.metadatum.value.findIndex(element => meta == element.id);
+
+                        if (foundIndex >= 0)
+                            equal.push(this.metadatum.value[foundIndex]);
+                    }
+
+                    if (equal.length == this.inputs.length && this.metadatum.value.length <= equal.length)
+                        return;
+                } 
+
+                eventBus.$emit('input', {
+                    itemId: this.metadatum.item.id,
+                    metadatumId: this.metadatum.metadatum.id,
+                    values: this.inputs 
+                } );
+                
             }, 1000),
             createInputs(){ 
                 if (this.metadatum.value instanceof Array) {
