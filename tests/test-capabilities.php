@@ -97,22 +97,19 @@ class Capabilities extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
+
+		$this->term_in_public = $term_1;
+
 		$term_2 = $this->tainacan_entity_factory->create_entity(
 			'term',
 			array(
-				'taxonomy' => $taxonomy->get_db_identifier(),
+				'taxonomy' => $taxonomy2->get_db_identifier(),
 				'name'     => 'Term for collection 2'
 			),
 			true
 		);
-		$term_all = $this->tainacan_entity_factory->create_entity(
-			'term',
-			array(
-				'taxonomy' => $taxonomy->get_db_identifier(),
-				'name'     => 'Term for all'
-			),
-			true
-		);
+
+		$this->term_in_private = $term_2;
 
 		$metadatum_text = $this->tainacan_entity_factory->create_entity(
 		    'metadatum',
@@ -641,6 +638,104 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertTrue( $tax_private->can_delete() );
 		$this->assertTrue( $this->public_taxonomy->can_delete() );
 		$this->assertTrue( $this->private_taxonomy->can_delete() );
+
+	}
+
+	/**
+	 * @group taxonomies
+	 */
+	function test_terms_caps() {
+
+		wp_set_current_user($this->subscriber2->ID);
+
+		$tax_public = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'         => 'Subscriber public Tax',
+				'description'  => 'tipos de musica2',
+				'allow_insert' => 'yes',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$tax_private = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'         => 'Subscriber private Tax',
+				'description'  => 'tipos de musica2',
+				'allow_insert' => 'yes',
+				'status' => 'private'
+			),
+			true
+		);
+
+		$term_1 = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $tax_public->get_db_identifier(),
+				'name'     => 'Term for collection 2'
+			),
+			true
+		);
+
+		$term_2 = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $tax_private->get_db_identifier(),
+				'name'     => 'Term for collection 2'
+			),
+			true
+		);
+
+
+		$this->assertFalse( $term_1->can_delete() );
+		$this->assertFalse( $term_2->can_delete() );
+		$this->assertFalse( $this->term_in_public->can_delete() );
+		$this->assertFalse( $this->term_in_private->can_delete() );
+
+		$this->assertFalse( $term_1->can_edit() );
+		$this->assertFalse( $term_2->can_edit() );
+		$this->assertFalse( $this->term_in_public->can_edit() );
+		$this->assertFalse( $this->term_in_private->can_edit() );
+
+		$this->assertTrue( $term_1->can_read() );
+		$this->assertTrue( $term_2->can_read() );
+		$this->assertTrue( $this->term_in_public->can_read() );
+		$this->assertFalse( $this->term_in_private->can_read() );
+
+		$this->subscriber2->add_cap( 'tnc_rep_edit_taxonomies' );
+
+		$this->assertTrue( $term_1->can_delete() );
+		$this->assertTrue( $term_2->can_delete() );
+		$this->assertFalse( $this->term_in_public->can_delete() );
+		$this->assertFalse( $this->term_in_private->can_delete() );
+
+		$this->assertTrue( $term_1->can_edit() );
+		$this->assertTrue( $term_2->can_edit() );
+		$this->assertFalse( $this->term_in_public->can_edit() );
+		$this->assertFalse( $this->term_in_private->can_edit() );
+
+
+		$this->subscriber2->add_cap( 'tnc_rep_edit_others_taxonomies' );
+
+		$this->assertTrue( $term_1->can_delete() );
+		$this->assertTrue( $term_2->can_delete() );
+		$this->assertTrue( $this->term_in_public->can_delete() );
+		$this->assertTrue( $this->term_in_private->can_delete() );
+
+		$this->assertTrue( $term_1->can_edit() );
+		$this->assertTrue( $term_2->can_edit() );
+		$this->assertTrue( $this->term_in_public->can_edit() );
+		$this->assertTrue( $this->term_in_private->can_edit() );
+
+
+		$this->subscriber2->add_cap( 'tnc_rep_read_private_taxonomies' );
+
+		$this->assertTrue( $term_1->can_read() );
+		$this->assertTrue( $term_2->can_read() );
+		$this->assertTrue( $this->term_in_public->can_read() );
+		$this->assertTrue( $this->term_in_private->can_read() );
 
 	}
 
