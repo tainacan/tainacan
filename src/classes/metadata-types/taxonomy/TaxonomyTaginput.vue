@@ -1,6 +1,7 @@
 <template>
     <div class="block">
         <b-taginput
+                :id="metadatumComponentId"
                 :disabled="disabled"
                 size="is-small"
                 icon="magnify"
@@ -43,9 +44,8 @@
           }
         },
         props: {
-            options: {
-                type: Array
-            },
+            metadatumComponentId: '',
+            options: Array,
             value: [ Number, String, Array ],
             allowNew: true,
             taxonomyId: Number,

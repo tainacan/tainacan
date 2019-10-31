@@ -26,7 +26,7 @@
         </b-field>
         <b-radio
                 :disabled="disabled"
-                :id="id"
+                :id="metadatumComponentId"
                 v-model="checked"
                 @input="onChecked()"
                 :native-value="''"
@@ -34,11 +34,11 @@
             {{ $i18n.get('clear_radio') }}
         </b-radio>
         <div
+                :id="metadatumComponentId"
                 v-for="(option, index) in options"
                 :key="index">
             <b-radio
                     :disabled="disabled"
-                    :id="id"
                     :style="{ paddingLeft: (option.level * 30) + 'px' }"
                     :key="index"
                     v-model="checked"
@@ -70,9 +70,8 @@
             }
         },
         props: {
-            options: {
-                type: Array
-            },
+            metadatumComponentId: '',
+            options: Array,
             value: [ Number, String, Array ],
             disabled: false,
             taxonomyId: Number

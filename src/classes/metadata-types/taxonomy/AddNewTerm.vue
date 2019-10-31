@@ -126,14 +126,11 @@
             }
         },
         props: {
-            id: String,
             item_id: [Number,String],
             metadatum: [Number,String],
             taxonomy_id: [Number,String],
             value:[ Array, Boolean, Number ],
-            options: {
-                type: Array
-            },
+            options: Array,
             componentType: ''
         },
         methods: {

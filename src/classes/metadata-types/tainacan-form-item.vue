@@ -42,7 +42,6 @@
                     v-show="isCollapsed || metadatumTypeMessage == 'is-danger'"
                     v-if="isTextInputComponent( metadatum.metadatum.metadata_type_object.component )">
                 <component 
-                        :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
                         :is="metadatum.metadatum.metadata_type_object.component"
                         v-model="inputs[0]" 
                         :metadatum="metadatum"
@@ -54,7 +53,6 @@
                             :key="index" 
                             class="multiple-inputs">
                         <component 
-                                :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
                                 :is="metadatum.metadatum.metadata_type_object.component"
                                 v-model="inputs[index]" 
                                 :metadatum="metadatum"
@@ -86,7 +84,6 @@
                     v-show="isCollapsed"
                     v-if="!isTextInputComponent( metadatum.metadatum.metadata_type_object.component )">
                 <component
-                        :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
                         :is="metadatum.metadatum.metadata_type_object.component"
                         v-model="inputs"
                         :metadatum="metadatum"

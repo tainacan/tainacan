@@ -3,7 +3,7 @@
         <b-taginput
                 expanded
                 :disabled="disabled"
-                :id="id"
+                :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
                 :value="selected"
                 @input="onInput"
                 :data="options"
@@ -78,7 +78,6 @@
         },
         props: {
             metadatum: Object,
-            id: '',
             maxtags: undefined,
             disabled: false,
             allowNew: true,

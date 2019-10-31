@@ -1,6 +1,7 @@
 <template>
     <div>
         <b-input
+                :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
                 :disabled="disabled"
                 class="input"
                 :class="{'is-danger': isInvalidDate && dateValue}"
@@ -21,7 +22,6 @@
 
             <!--<div class="field">-->
                 <!--<b-datepicker-->
-                        <!--:id="id"-->
                         <!--v-model="dateValue"-->
                         <!--:readonly="false"-->
                         <!--inline-->
@@ -49,10 +49,7 @@
             }
         },
         props: {
-            id: '',
-            metadatum: {
-                type: Object
-            },
+            metadatum: Object,
             value: [String, Number, Array],
             disabled: false,
         },

@@ -1,6 +1,7 @@
 <template>
     <div>
         <component
+                :metadatum-component-id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
                 :disabled="disabled"
                 :is="getComponent"
                 :maxtags="maxtags"
@@ -82,14 +83,9 @@
             }
         },
         props: {
-            metadatum: {
-                type: Object
-            },
-            componentAttribute: {
-                type: String
-            },
+            metadatum: Object,
+            componentAttribute: String,
             value: [ Number, String, Array, Object ],
-            id: '',
             disabled: false,
             forcedComponentType: '',
             maxtags: '',

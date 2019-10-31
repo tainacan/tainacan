@@ -25,21 +25,20 @@
                     class="control has-icons-right is-loading is-clearfix" />
         </b-field>
        
-        <div   
-                v-for="(option, index) in options"
-                :key="index">
-            <b-checkbox
-                    :disabled="disabled"
-                    :id="id"
-                    :style="{ paddingLeft: (option.level * 30) + 'px' }"
-                    :key="index"
-                    v-model="checked"
-                    @input="onChecked(option)"
-                    :native-value="option.id"
-                    border>
-                {{ option.name }}
-            </b-checkbox>
-            <br>
+        <div :id="metadatumComponentId">
+            <template v-for="(option, index) in options">
+                <b-checkbox
+                        :key="index"
+                        :disabled="disabled"
+                        :style="{ paddingLeft: (option.level * 30) + 'px' }"
+                        v-model="checked"
+                        @input="onChecked(option)"
+                        :native-value="option.id"
+                        border>
+                    {{ option.name }}
+                </b-checkbox>
+                <br :key="index">
+            </template>
         </div>
     </div>
 </template>
@@ -66,9 +65,8 @@
             }
         },
         props: {
-            options: {
-                type: Array
-            },
+            metadatumComponentId: '',
+            options: Array,
             value: [ Number, String, Array ],
             disabled: false,
             taxonomyId: Number

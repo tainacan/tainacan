@@ -1,7 +1,7 @@
 <template>
     <b-input
             :disabled="disabled"
-            :id="id"
+            :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
             size="is-small"
             type="textarea"
             :value="inputValue"
@@ -21,10 +21,7 @@
             }
         },
         props: {
-            id: '',
-            metadatum: {
-                type: Object
-            },
+            metadatum: Object,
             value: [String, Number, Array],
             disabled: false
         },
