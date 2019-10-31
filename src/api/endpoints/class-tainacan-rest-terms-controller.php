@@ -20,7 +20,7 @@ class REST_Terms_Controller extends REST_Controller {
 		parent::__construct();
 		add_action('init', array(&$this, 'init_objects'), 11);
 	}
-	
+
 	/**
 	 * Initialize objects after post_type register
 	 */
@@ -152,11 +152,11 @@ class REST_Terms_Controller extends REST_Controller {
 	public function delete_item( $request ) {
 		$term_id = $request['term_id'];
 		$taxonomy_id = $request['taxonomy_id'];
-		
+
 		$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
 
 		$term = $this->terms_repository->fetch($term_id, $taxonomy);
-		
+
 		if ( ! $term instanceof Entities\Term ) {
 			return new \WP_REST_Response([
 				'error_message' => __('A term with this ID was not found', 'tainacan' ),
@@ -176,10 +176,12 @@ class REST_Terms_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function delete_item_permissions_check( $request ) {
-        $taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
+		$term_id = $request['term_id'];
+		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
+		$term = $this->terms_repository->fetch($term_id, $taxonomy);
 
-        if ($taxonomy instanceof Entities\Taxonomy) {
-            return $taxonomy->can_edit();
+        if ($term instanceof Entities\Term) {
+            return $term->can_delete();
         }
 
         return false;
@@ -243,10 +245,12 @@ class REST_Terms_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function update_item_permissions_check( $request ) {
-        $taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
+		$term_id = $request['term_id'];
+		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
+		$term = $this->terms_repository->fetch($term_id, $taxonomy);
 
-        if ($taxonomy instanceof Entities\Taxonomy) {
-            return $taxonomy->can_edit();
+        if ($term instanceof Entities\Term) {
+            return $term->can_edit();
         }
 
         return false;
@@ -286,7 +290,7 @@ class REST_Terms_Controller extends REST_Controller {
 			 * Use this filter to add additional term_meta to the api response
 			 * Use the $request object to get the context of the request and other variables
 			 * For example, id context is edit, you may want to add your meta or not.
-			 * 
+			 *
 			 * Also take care to do any permissions verification before exposing the data
 			 */
 			$extra_metadata = apply_filters('tainacan-api-response-term-meta', [], $request);
@@ -294,7 +298,7 @@ class REST_Terms_Controller extends REST_Controller {
 			foreach ($extra_metadata as $extra_meta) {
 				$item_arr[$extra_meta] = get_term_meta($item_arr['id'], $extra_meta, true);
 			}
-			
+
 			return $item_arr;
 		}
 
@@ -334,14 +338,14 @@ class REST_Terms_Controller extends REST_Controller {
 
 			$per_page = (int) $prepared_args['number'];
 			$page     = ceil( ( ( (int) $prepared_args['offset'] ) / $per_page ) + 1 );
-		
+
 			$response->header( 'X-WP-Total', (int) $total_terms );
-		
+
 			$max_pages = ceil( $total_terms / $per_page );
-		
+
 			$response->header( 'X-WP-TotalPages', (int) $max_pages );
 		}
-		
+
 		return $response;
 	}
 
@@ -354,14 +358,11 @@ class REST_Terms_Controller extends REST_Controller {
 		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
 
 		if(($taxonomy instanceof Entities\Taxonomy)) {
-			if('edit' === $request['context'] && !is_user_logged_in()) {
-				return false;
-			}
-			if(!$taxonomy->can_read()) {
+			if('edit' === $request['context'] && !$taxonomy->can_edit()) {
 				return false;
 			}
 
-			return true;
+			return $taxonomy->can_read();
 		}
 
 		return false;
@@ -379,7 +380,7 @@ class REST_Terms_Controller extends REST_Controller {
 		$taxonomy = $this->taxonomy_repository->fetch($tax_id);
 
 		$term = $this->terms_repository->fetch($term_id, $taxonomy);
-		
+
 		if ( ! $term instanceof Entities\Term ) {
 			return new \WP_REST_Response([
 				'error_message' => __('A term with this ID was not found', 'tainacan' ),
@@ -397,20 +398,15 @@ class REST_Terms_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function get_item_permissions_check( $request ) {
+		$term_id = $request['term_id'];
 		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
+		$term = $this->terms_repository->fetch($term_id, $taxonomy);
 
-		if(($taxonomy instanceof Entities\Taxonomy)) {
-			if('edit' === $request['context'] && !is_user_logged_in()) {
-				return false;
-			}
-			if(!$taxonomy->can_read()) {
-				return false;
-			}
+        if ($term instanceof Entities\Term) {
+            return $term->can_read();
+        }
 
-			return true;
-		}
-
-		return false;
+        return false;
 	}
 
 	/**
@@ -422,7 +418,7 @@ class REST_Terms_Controller extends REST_Controller {
 		$endpoint_args = [];
 		if($method === \WP_REST_Server::READABLE) {
 			$endpoint_args = array_merge(
-                $endpoint_args, 
+                $endpoint_args,
                 parent::get_wp_query_params()
             );
 		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
@@ -472,19 +468,19 @@ class REST_Terms_Controller extends REST_Controller {
 			'title' => 'term',
 			'type' => 'object'
 		];
-		
+
 		$main_schema = parent::get_repository_schema( $this->terms_repository );
 		$permissions_schema = parent::get_permissions_schema();
-		
+
 		// $taxonomy_scheme = parent::get_repository_schema( $this->taxonomy_repository );
-		
+
 		$schema['properties'] = array_merge(
 			parent::get_base_properties_schema(),
 			$main_schema,
 			$permissions_schema
 			// $taxonomy_scheme
 		);
-		
+
 		return $schema;
 	}
 }

@@ -15,7 +15,7 @@ class REST_Roles_Controller extends REST_Controller {
 	public function __construct() {
 		$this->rest_base = 'roles';
 		parent::__construct();
-		
+
 		$this->core_roles = [
 			'administrator',
 			'editor',
@@ -23,7 +23,7 @@ class REST_Roles_Controller extends REST_Controller {
 			'contributor',
 			'subscriber'
 		];
-		
+
 	}
 
 	public function register_routes() {
@@ -86,7 +86,7 @@ class REST_Roles_Controller extends REST_Controller {
 	}
 
 
-	
+
 
 	/**
 	 * @param \WP_REST_Request $request
@@ -94,13 +94,13 @@ class REST_Roles_Controller extends REST_Controller {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function create_item( $request ) {
-		
+
 		//global $wpdb;
 		//$name = $wpdb->prepare( $request['name'], '' );
 		$name = esc_html( esc_sql( $request['name'] ) );
-		
+
 		$role_slug = sanitize_title($name);
-		
+
 		// avoid confusion ...
 		if ( in_array($role_slug, $this->core_roles) ) {
 			return new \WP_REST_Response([
@@ -108,10 +108,10 @@ class REST_Roles_Controller extends REST_Controller {
 				'error'         => $name
 			], 400);
 		}
-		
-		// ... even though it could work 
+
+		// ... even though it could work
 		$role_slug = 'tainacan-' . $role_slug;
-		
+
 		// check if role exists
 		$role = get_role($role_slug);
 		if ( $role ) {
@@ -120,9 +120,9 @@ class REST_Roles_Controller extends REST_Controller {
 				'error'         => $name
 			], 400);
 		}
-		
+
 		$new_role = add_role($role_slug, $name);
-		
+
 		if ($new_role instanceof \WP_Role) {
 			return new \WP_REST_Response($this->_prepare_item_for_response($role_slug, $name, $new_role->capabilities, $request), 201);
 		}
@@ -140,7 +140,7 @@ class REST_Roles_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function create_item_permissions_check( $request ) {
-		return current_user_can('edit_tainacan_users');
+		return current_user_can('tnc_rep_edit_users');
 	}
 
 	/**
@@ -149,9 +149,9 @@ class REST_Roles_Controller extends REST_Controller {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function delete_item( $request ) {
-		
+
 		$role_slug = $request['role'];
-		
+
 		// avoid confusion ...
 		if ( in_array($role_slug, $this->core_roles) ) {
 			return new \WP_REST_Response([
@@ -159,10 +159,10 @@ class REST_Roles_Controller extends REST_Controller {
 				'error'         => $name
 			], 400);
 		}
-		
-		// ... even though it could work 
+
+		// ... even though it could work
 		$role_slug = 0 === \strpos($role_slug, 'tainacan-') ? $role_slug : 'tainacan-' . $role_slug;
-		
+
 		// check if role exists
 		$role = get_role($role_slug);
 		if ( ! $role ) {
@@ -171,9 +171,9 @@ class REST_Roles_Controller extends REST_Controller {
 				'error'         => $role_slug
 			], 400);
 		}
-		
+
 		\remove_role($role_slug);
-		
+
 		return new \WP_REST_Response($role_slug, 200);
 	}
 
@@ -183,7 +183,7 @@ class REST_Roles_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function delete_item_permissions_check( $request ) {
-		return current_user_can('edit_tainacan_users');
+		return current_user_can('tnc_rep_edit_users');
 	}
 
 	/**
@@ -192,9 +192,9 @@ class REST_Roles_Controller extends REST_Controller {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function update_item( $request ) {
-		
+
 		$role_slug = $request['role'];
-		
+
 		// avoid confusion ...
 		if ( in_array($role_slug, $this->core_roles) ) {
 			return new \WP_REST_Response([
@@ -202,10 +202,10 @@ class REST_Roles_Controller extends REST_Controller {
 				'error'         => $name
 			], 400);
 		}
-		
-		// ... even though it could work 
+
+		// ... even though it could work
 		$role_slug = 0 === \strpos($role_slug, 'tainacan-') ? $role_slug : 'tainacan-' . $role_slug;
-		
+
 		// check if role exists
 		// get the role from roles array that contains the display_name
 		$roles = \wp_roles()->roles;
@@ -215,28 +215,28 @@ class REST_Roles_Controller extends REST_Controller {
 				'error'         => $role_slug
 			], 400);
 		}
-		
+
 		$role = $roles[$role_slug];
-		
+
 		if ( isset($request['name']) ) {
 			$name = esc_html( esc_sql( $request['name'] ) );
 			// the slug remains the same
 			\wp_roles()->roles[$role_slug]['name'] = $name;
 			update_option( \wp_roles()->role_key, \wp_roles()->roles );
 			\wp_roles()->role_names[$role_slug] = $name;
-			
+
 		}
-		
+
 		if ( isset($request['add_cap']) ) {
-			// validate that we only deal with tainacan capabilities 
+			// validate that we only deal with tainacan capabilities
 			\wp_roles()->add_cap($role_slug, $request['add_cap']);
 		}
-		
+
 		if ( isset($request['remove_cap']) ) {
-			// validate that we only deal with tainacan capabilities 
+			// validate that we only deal with tainacan capabilities
 			\wp_roles()->remove_cap($role_slug, $request['remove_cap']);
 		}
-		
+
 		return new \WP_REST_Response($this->_prepare_item_for_response($role_slug, \wp_roles()->roles[$role_slug]['name'], \wp_roles()->roles[$role_slug]['capabilities'], $request), 200);
 
 	}
@@ -247,7 +247,7 @@ class REST_Roles_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function update_item_permissions_check( $request ) {
-		return current_user_can('edit_tainacan_users');
+		return current_user_can('tnc_rep_edit_users');
 	}
 
 	/**
@@ -272,7 +272,7 @@ class REST_Roles_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function get_items( $request ) {
-		
+
 		$roles = get_editable_roles();
 
 		$response = [];
@@ -289,7 +289,7 @@ class REST_Roles_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
-		return current_user_can('edit_tainacan_users');
+		return current_user_can('tnc_rep_edit_users');
 	}
 
 	/**
@@ -298,9 +298,9 @@ class REST_Roles_Controller extends REST_Controller {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function get_item( $request ) {
-		
+
 		$role_slug = $request['role'];
-		
+
 		// check if role exists
 		// get the role from roles array that contains the display_name
 		$roles = \wp_roles()->roles;
@@ -310,7 +310,7 @@ class REST_Roles_Controller extends REST_Controller {
 				'error'         => $role_slug
 			], 400);
 		}
-		
+
 		return new \WP_REST_Response($this->_prepare_item_for_response($role_slug, $roles[$role_slug]['name'], $roles[$role_slug]['capabilities'], $request), 200);
 
 	}
@@ -321,7 +321,7 @@ class REST_Roles_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function get_item_permissions_check( $request ) {
-		return current_user_can('edit_tainacan_users');
+		return current_user_can('tnc_rep_edit_users');
 	}
 
 
@@ -331,9 +331,9 @@ class REST_Roles_Controller extends REST_Controller {
 			'title' => 'filter',
 			'type' => 'object'
 		];
-		
+
 		return $schema;
-		
+
 	}
 }
 ?>

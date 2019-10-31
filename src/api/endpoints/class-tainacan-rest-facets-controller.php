@@ -21,7 +21,7 @@ class REST_Facets_Controller extends REST_Controller {
 		parent::__construct();
         add_action('init', array(&$this, 'init_objects'), 11);
 	}
-	
+
 	/**
 	 * Initialize objects after post_type register
 	 */
@@ -37,7 +37,7 @@ class REST_Facets_Controller extends REST_Controller {
 				'permission_callback' => array($this, 'get_items_permissions_check')
 			)
 		));
-		
+
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<metadatum_id>[\d]+)', array(
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
@@ -53,40 +53,40 @@ class REST_Facets_Controller extends REST_Controller {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		
+
 		// Free php session early so simultaneous requests dont get queued
 		session_write_close();
-		
+
 		$metadatum_id = $request['metadatum_id'];
-		
+
 		if( !empty($metadatum_id) ) {
-			
+
 			$metadatum = $this->metadatum_repository->fetch($metadatum_id);
 			$metadatum_type = $metadatum->get_metadata_type();
 			$metadatum_type_object = $metadatum->get_metadata_type_object();
-			
+
 			$offset = null;
 			$number = null;
 			$_search = null;
 			$collection_id = ( isset($request['collection_id']) ) ? $request['collection_id'] : null;
 			$last_term = ( isset($request['last_term']) ) ? $request['last_term'] : '';
-			
+
 			$query_args = defined('TAINACAN_FACETS_DISABLE_FILTER_ITEMS') && true === TAINACAN_FACETS_DISABLE_FILTER_ITEMS ? [] : $request['current_query'];
 			$query_args = $this->prepare_filters($query_args);
-			
+
 			if ( isset($request['hideempty']) && $request['hideempty'] == 0 ) {
 				$query_args = false;
 			}
-			
+
 			if($request['offset'] >= 0 && $request['number'] >= 1){
 				$offset = $request['offset'];
 				$number = $request['number'];
 			}
-			
+
 			if($request['search']) {
 				$_search = $request['search'];
 			}
-			
+
 			$include = [];
 			if ( isset($request['getSelected']) && $request['getSelected'] == 1 ) {
 				if ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ) {
@@ -96,7 +96,7 @@ class REST_Facets_Controller extends REST_Controller {
 					if( isset($request['current_query']['taxquery']) ){
 						foreach( $request['current_query']['taxquery'] as $taxquery ){
 							if( $taxquery['taxonomy'] === $taxonomy_slug ){
-								$include = $taxquery['terms']; 
+								$include = $taxquery['terms'];
 							}
 						}
 					}
@@ -110,13 +110,13 @@ class REST_Facets_Controller extends REST_Controller {
 					}
 				}
 			}
-			
+
 			$parent_id = 0;
 			if ( isset($request['parent']) ) {
 				$parent_id = (int) $request['parent'];
 			}
-			
-			
+
+
 			$args = [
 				'collection_id' => $collection_id,
 				'search' => $_search,
@@ -128,14 +128,14 @@ class REST_Facets_Controller extends REST_Controller {
 				'count_items' => defined('TAINACAN_FACETS_DISABLE_COUNT_ITEMS') && true === TAINACAN_FACETS_DISABLE_COUNT_ITEMS ? false : true,
 				'last_term' => $last_term
 			];
-			
+
 			$all_values = $this->metadatum_repository->fetch_all_metadatum_values( $metadatum_id, $args );
-			
+
 			if (isset($request['context']) && $request['context'] == 'extended') {
-				
+
 				if ($metadatum_type_object->get_repository() instanceof \Tainacan\Repositories\Repository) {
 					$all_values['values'] = array_map(function($val) use($metadatum_type_object) {
-						
+
 						$second_arg = [];
 						if (isset($val['taxonomy'])) {
 							$second_arg = $val['taxonomy'];
@@ -147,23 +147,23 @@ class REST_Facets_Controller extends REST_Controller {
 						return $val;
 					}, $all_values['values']);
 				}
-				
+
 			}
-			
+
 			$response = [
 				'values' => $all_values['values'],
 				'last_term' => $all_values['last_term']
 			];
-			
+
 			$rest_response = new \WP_REST_Response($response, 200);
 
 			$rest_response->header('X-WP-Total', isset($all_values['total']) ? $all_values['total'] : 0 );
 			$rest_response->header('X-WP-TotalPages', isset($all_values['pages']) ? $all_values['pages'] : 0 );
-			
+
 			return $rest_response;
-			
+
 		}
-		
+
 	}
 
 	/**
@@ -172,7 +172,15 @@ class REST_Facets_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
-		return true;
+		$metadatum_id = $request['metadatum_id'];
+		$metadatum = $this->metadatum_repository->fetch($metadatum_id);
+
+		if ($metadatum instanceof Entities\Metadatum) {
+			return $metadatum->can_read();
+		}
+
+		return false;
+
 	}
 
 }
