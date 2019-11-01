@@ -2,34 +2,31 @@
     <b-input
             :disabled="disabled"
             :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
-            lang="en"
+            :value="value"
+            @input="onInput($event)"
             type="number"
-            :value="inputValue"
-            step="0.01"
-            @input="onInput($event)"/>
+            lang="en"
+            :step="getStep"/>
 </template>
 
 <script>
     export default {
-        created(){
-            if( this.value ){
-                this.inputValue = this.value
-            }
-        },
-        data() {
-            return {
-                inputValue: ''
-            }
-        },
         props: {
             metadatum: Object,
             value: [String, Number, Array],
             disabled: false,
         },
+        computed: {
+            getStep() {
+                if (this.metadatum && this.metadatum.metadatum.metadata_type_options && this.metadatum.metadatum.metadata_type_options.step)
+                    return this.metadatum.metadatum.metadata_type_options.step;
+                else
+                    return 0.01;
+            }
+        },
         methods: {
-            onInput($event) {
-                this.inputValue = $event;
-                this.$emit('input', this.inputValue);
+            onInput(value) {
+                this.$emit('input', value);
             }
         }
     }

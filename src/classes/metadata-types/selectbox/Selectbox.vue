@@ -5,14 +5,15 @@
             :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
             :placeholder="$i18n.get('label_selectbox_init')"
             :value="value"
-            :class="{'is-empty': value == undefined || value == ''}"
-            @input="onChecked($event)">
+            @input="onSelected($event)">
+        <option value="">{{ $i18n.get('label_selectbox_init') }}...</option>
         <option
                 v-for="(option, index) in getOptions"
                 :key="index"
                 :label="option"
-                :value="option"
-                border>{{ option }}</option>
+                :value="option">
+            {{ option }}
+        </option>
     </b-select>
 </template>
 
@@ -21,16 +22,12 @@
     export default {
         props: {
             metadatum: Object,
-            options: String,
             value: [String, Number, Array],
             disabled: false,
         },
         computed: {
             getOptions(){
-                if ( this.options && this.options !== '' ){
-                    return this.options.split("\n");
-                }
-                else if ( this.metadatum && this.metadatum.metadatum.metadata_type_options.options ) {
+                if (this.metadatum && this.metadatum.metadatum.metadata_type_options && this.metadatum.metadatum.metadata_type_options.options ) {
                     const metadata = this.metadatum.metadatum.metadata_type_options.options;
                     return ( metadata ) ? metadata.split("\n") : [];
                 }
@@ -38,7 +35,7 @@
             }
         },
         methods: {
-            onChecked(value) {
+            onSelected(value) {
                 this.$emit('input', value);
             },
         }
