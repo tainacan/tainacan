@@ -229,12 +229,25 @@ class REST_Roles_Controller extends REST_Controller {
 
 		if ( isset($request['add_cap']) ) {
 			// validate that we only deal with tainacan capabilities
+			if ( ! in_array( \tainacan_roles()->get_cap_generic_name($request['add_cap']) , \tainacan_roles()->get_all_caps_slugs() ) ) {
+				return new \WP_REST_Response([
+					'error_message' => __('Not allowed to edit non Tainacan capabilities.', 'tainacan'),
+					'error'         => $request['add_cap']
+				], 400);
+			}
+
 			\wp_roles()->add_cap($role_slug, $request['add_cap']);
 			\tainacan_roles()->add_dependencies($role_slug, $request['add_cap']);
 		}
 
 		if ( isset($request['remove_cap']) ) {
 			// validate that we only deal with tainacan capabilities
+			if ( ! in_array( \tainacan_roles()->get_cap_generic_name($request['remove_cap']) , \tainacan_roles()->get_all_caps_slugs() ) ) {
+				return new \WP_REST_Response([
+					'error_message' => __('Not allowed to edit non Tainacan capabilities.', 'tainacan'),
+					'error'         => $request['remove_cap']
+				], 400);
+			}
 			\wp_roles()->remove_cap($role_slug, $request['remove_cap']);
 		}
 

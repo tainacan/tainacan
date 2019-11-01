@@ -209,6 +209,21 @@ class Roles {
 		return array_keys($this->capabilities);
 	}
 
+	/**
+	 * Gets the capabilty generic name as present in
+	 * Tainacan\Roles::capabilities
+	 *
+	 * For example: tnc_col_12_edit or tnc_col_all_edit will return tnc_col_%d_edit
+	 *
+	 * @param string $cap
+	 * @return string Capability slug as in the keys of $this->capabilities
+	 */
+	public function get_cap_generic_name($cap) {
+		$cap = preg_replace('/^(.+_)[0-9]+(_.+)$/', '${1}%d${2}', $cap);
+		$cap = preg_replace('/^(.+_)all(_.+)$/', '${1}%d${2}', $cap);
+		return $cap;
+	}
+
 	public function user_has_cap_filter( $allcaps, $caps, $args, $user ) {
 
 		$requested_cap = $args[0];
@@ -263,8 +278,7 @@ class Roles {
 
 	public function add_dependencies($role, $cap) {
 		// convert cap name to the name declared in the roles of this class. tnc_col_12_edit or tnc_col_all_edit should become tnc_col_%d_edit
-		$cap = preg_replace('/^(.+_)[0-9]+(_.+)$/', '${1}%d${2}', $cap);
-		$cap = preg_replace('/^(.+_)all(_.+)$/', '${1}%d${2}', $cap);
+		$cap = $this->get_cap_generic_name($cap);
 
 		if ( isset( $this->capabilities[$cap] ) && isset( $this->capabilities[$cap]['dependencies'] ) ) {
 			$role = \get_role($role);

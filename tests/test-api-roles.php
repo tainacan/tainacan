@@ -88,7 +88,7 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		$request->set_query_params(
 			[
 				'name' => 'Changed name',
-				'add_cap' => 'fly'
+				'add_cap' => 'tnc_rep_edit_collections'
 			]
 		);
 
@@ -97,9 +97,21 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals( 200, $response->get_status() );
 
 		$role = \wp_roles()->roles['tainacan-new-role'];
-		$this->assertArrayHasKey('fly', $role['capabilities']);
-		$this->assertTrue($role['capabilities']['fly']);
+		$this->assertArrayHasKey('tnc_rep_edit_collections', $role['capabilities']);
+		$this->assertTrue($role['capabilities']['tnc_rep_edit_collections']);
 		$this->assertEquals('Changed name', $role['name']);
+
+		$request = new \WP_REST_Request('PATCH', $this->namespace . '/roles/new-role');
+
+		$request->set_query_params(
+			[
+				'add_cap' => 'manage_options'
+			]
+		);
+
+		$response = $this->server->dispatch($request);
+
+		$this->assertEquals( 400, $response->get_status() );
 
 	}
 
