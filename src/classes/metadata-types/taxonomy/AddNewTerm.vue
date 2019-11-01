@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="add-new-term">
         <span v-if="!showForm">
             <a
                     @click="toggleForm()"
@@ -30,20 +30,6 @@
                             @focus="clearErrors({ name: 'name', repeated: 'repeated' })"/>
                 </b-field>
 
-                <!-- <b-field :label="$i18n.get('label_parent_term')">
-                    <b-select
-                            v-model="parent">
-                        <option 
-                                :value="0" 
-                                selected> ---{{ $i18n.get('label_parent_term') }}--- </option>
-                        <option
-                                v-for="(option,index) in options"
-                                :key="index"
-                                :value="option.id"
-                                v-html="setSpaces( option.level ) + option.name"/>
-                    </b-select>
-                </b-field> -->
-                
                 <!-- Parent -------------- -->
                 <b-field
                         :addons="false"
@@ -121,16 +107,15 @@
                 parentTermName: '',
                 isAddingNewTerm: false,
                 isFetchingParentTerms: false,
-                metadatum_id: this.metadatum.metadatum.id,
+                metadatumId: this.metadatum.metadatum.id,
+                itemId: this.metadatum.item.id,
                 formErrors: {}
             }
         },
         props: {
-            item_id: [Number,String],
             metadatum: [Number,String],
-            taxonomy_id: [Number,String],
-            value:[ Array, Boolean, Number ],
-            options: Array,
+            taxonomyId: [Number,String],
+            value: [ Array, Boolean, Number ],
             componentType: ''
         },
         methods: {
@@ -149,20 +134,11 @@
                 this.formErrors = {};
                 this.showForm = !this.showForm;
             },
-            setSpaces( level ){
-                let result = '';
-                let space =  '&nbsp;&nbsp;'
-
-                for(let i = 0;i < level; i++)
-                    result += space;
-
-                return result;
-            },
             fecthParentTerms(search) {
                 this.isFetchingParentTerms = true;
                 
                 this.fetchPossibleParentTerms({
-                        taxonomyId: this.taxonomy_id, 
+                        taxonomyId: this.taxonomyId, 
                         termId: 'new', 
                         search: search })
                     .then((parentTerms) => {
@@ -183,16 +159,15 @@
                 this.parentTermName = selectedParentTerm.name;
             },
             clearErrors(attributes) {
-                if(attributes instanceof Object){
-                    for(let attribute in attributes){
+                if (attributes instanceof Object) {
+                    for(let attribute in attributes)
                         this.formErrors[attribute] = undefined;
-                    }
                 } else {
                     this.formErrors[attributes] = undefined;
                 }
             },
-            save(){
-                if( this.name.trim() === ''){
+            save() {
+                if ( this.name.trim() === '') {
                     this.$buefy.toast.open({
                         duration: 2000,
                         message: this.$i18n.get('info_name_is_required'),
@@ -202,32 +177,32 @@
                 } else {
                     this.isAddingNewTerm = true;
 
-                    axios.post(`/taxonomy/${this.taxonomy_id}/terms?hideempty=0&order=asc`, {
+                    axios.post(`/taxonomy/${this.taxonomyId}/terms?hideempty=0&order=asc`, {
                         name: this.name,
                         parent: this.parent
                     })
-                    .then( res => {
+                    .then(res => {
 
                         this.isAddingNewTerm = false;
 
-                        if( res.data && res.data.id || res.id ){
-                            let id = ( res.id ) ? res.id : res.data.id;
+                        if (res.data && res.data.id || res.id) {
+                            let id = res.id ? res.id : res.data.id;
                             let val = this.value;
 
-                            if( !Array.isArray( val ) && this.metadatum.metadatum.multiple === 'no' ){
-                                axios.patch(`/item/${this.item_id}/metadata/${this.metadatum_id}`, {
+                            if (!Array.isArray(val) && this.metadatum.metadatum.multiple === 'no') {
+                                axios.patch(`/item/${this.itemId}/metadata/${this.metadatumId}`, {
                                     values: id,
                                 }).then(() => {
-                                    this.$emit('newTerm', { values: id, taxonomyId: this.taxonomy_id, metadatumId: this.metadatum_id });
+                                    this.$emit('newTerm', { values: id, taxonomyId: this.taxonomyId, metadatumId: this.metadatumId });
                                     this.toggleForm();
                                 })
                             } else {
-                                val = ( val ) ? val : [];
+                                val = val ? val : [];
                                 val.push( this.componentType == ('tainacan-taxonomy-checkbox' || 'tainacan-taxonomy-radio') ? id : {'label': this.name, 'value': id} );
-                                axios.patch(`/item/${this.item_id}/metadata/${this.metadatum_id}`, {
+                                axios.patch(`/item/${this.itemId}/metadata/${this.metadatumId}`, {
                                     values: val,
                                 }).then(() => {
-                                    this.$emit('newTerm', { values: val, taxonomyId: this.taxonomy_id, metadatumId: this.metadatum_id });
+                                    this.$emit('newTerm', { values: val, taxonomyId: this.taxonomyId, metadatumId: this.metadatumId });
                                     this.toggleForm();
                                 })
                             }
@@ -252,5 +227,11 @@
         }
     }
 </script>
+
 <style scoped>
+    .add-new-term{
+        margin-top: 15px;
+        margin-bottom: 30px;
+        font-size: 0.75rem;
+    }
 </style>

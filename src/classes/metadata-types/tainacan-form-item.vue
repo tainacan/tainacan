@@ -131,7 +131,7 @@
         methods: {
             changeValue: _.debounce(function() {
 
-                if (this.inputs.length > 0 && this.inputs[0].value) {
+                if (this.inputs.length > 0 && this.inputs[0] && this.inputs[0].value) {
                     let terms = this.inputs.map(term => term.value)
                     
                     if (this.metadatum.value instanceof Array){
@@ -151,9 +151,8 @@
 
                     if (this.metadatum.value.id == this.inputs)
                         return;
-                    
                 } else if (this.metadatum.value instanceof Array) {  
-                
+
                     let equal = [];
 
                     for (let meta of this.inputs) {
@@ -166,7 +165,6 @@
                     if (equal.length == this.inputs.length && this.metadatum.value.length <= equal.length)
                         return;
                 } 
-                
                 eventBus.$emit('input', {
                     itemId: this.metadatum.item.id,
                     metadatumId: this.metadatum.metadatum.id,
@@ -176,8 +174,9 @@
             }, 900),
             createInputs(){ 
                 if (this.metadatum.value instanceof Array) {
+
                     this.inputs = this.metadatum.value.slice(0);
-                    
+
                     if (this.inputs.length === 0)
                         this.inputs.push('');
                 
