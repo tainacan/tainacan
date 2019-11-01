@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /**
  * Retrieve the singleton Collections Repository instance
@@ -64,3 +64,10 @@ function tainacan_terms() {
 	return \Tainacan\Repositories\Terms::get_instance();
 }
 
+/**
+ * Retrieve the singleton Tainacan Roles instance
+ * @return \Tainacan\Roles The Tainacan Roles class
+ */
+function tainacan_roles() {
+	return \Tainacan\Roles::get_instance();
+}

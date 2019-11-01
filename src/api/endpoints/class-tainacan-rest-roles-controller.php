@@ -230,6 +230,7 @@ class REST_Roles_Controller extends REST_Controller {
 		if ( isset($request['add_cap']) ) {
 			// validate that we only deal with tainacan capabilities
 			\wp_roles()->add_cap($role_slug, $request['add_cap']);
+			\tainacan_roles()->add_dependencies($role_slug, $request['add_cap']);
 		}
 
 		if ( isset($request['remove_cap']) ) {

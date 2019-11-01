@@ -261,40 +261,21 @@ class Roles {
 	}
 
 
-	protected function check_dependencies($role, $post_type, $cap, $add = true) {
-		if(
-			array_key_exists($post_type, self::$dependencies) &&
-			array_key_exists($cap, self::$dependencies[$post_type])
-		) {
-			$added = false;
-			if(! $role->has_cap(self::$dependencies[$post_type][$cap]) && $add) {
-				$role->add_cap(self::$dependencies[$post_type][$cap]);
-				$added = true;
+	public function add_dependencies($role, $cap) {
+		// convert cap name to the name declared in the roles of this class. tnc_col_12_edit or tnc_col_all_edit should become tnc_col_%d_edit
+		$cap = preg_replace('/^(.+_)[0-9]+(_.+)$/', '${1}%d${2}', $cap);
+		$cap = preg_replace('/^(.+_)all(_.+)$/', '${1}%d${2}', $cap);
+
+		if ( isset( $this->capabilities[$cap] ) && isset( $this->capabilities[$cap]['dependencies'] ) ) {
+			$role = \get_role($role);
+			if ( ! $role instanceof \WP_Role ) {
+				return;
 			}
-			if($role instanceof \WP_User && $add) { //moderator
-				$append_caps = get_user_meta($role->ID, '.tainacan-dependecies-caps', true);
-				if(! is_array($append_caps)) $append_caps = [];
-				if(
-					(! array_key_exists(self::$dependencies[$post_type][$cap], $append_caps) && $added ) || // we never added and need to add
-					(
-						array_key_exists(self::$dependencies[$post_type][$cap], $append_caps) &&
-						$append_caps[self::$dependencies[$post_type][$cap]] === false &&
-						$added
-						) // we added but before is not need to add
-					) {
-						$append_caps[self::$dependencies[$post_type][$cap]] = 0;
-					}
-					else { // we to not added this cap
-						$append_caps[self::$dependencies[$post_type][$cap]] = false;
-					}
-					if($append_caps[self::$dependencies[$post_type][$cap]] !== false) {
-						$append_caps[self::$dependencies[$post_type][$cap]]++; // add 1 to each collection he is a moderator
-						update_user_meta($role->ID, '.tainacan-dependecies-caps', $append_caps);
-					}
-				}
-				return self::$dependencies[$post_type][$cap];
+			foreach ( $this->capabilities[$cap]['dependencies'] as $dep ) {
+				$role->add_cap($dep);
+			}
 		}
-		return false;
+
 	}
 
 	public function map_meta_cap( $caps, $cap, $user_id, $args ) {
