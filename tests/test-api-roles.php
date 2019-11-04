@@ -14,7 +14,7 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 	public static function setUpBeforeClass() {
 		parent::setUpBeforeClass();
 		$role = get_role('administrator');
-		$role->add_cap('edit_tainacan_users');
+		$role->add_cap('tnc_rep_edit_users');
 		global $current_user;
 		$current_user->get_role_caps();
 	}
@@ -158,6 +158,53 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertTrue($role['capabilities']['tnc_col_12_edit_items']);
 		$this->assertArrayHasKey('upload_files', $role['capabilities']);
 		$this->assertTrue($role['capabilities']['upload_files']);
+	}
+
+	public function test_get_collection_roles() {
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name' => 'teste',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$editor = get_role('editor');
+		$contributor = get_role('contributor');
+		$author = get_role('author');
+
+		$editor->add_cap('manage_tainacan_collection_' . $collection->get_id());
+
+		$author->add_cap( 'tnc_col_' . $collection->get_id() . '_edit_items' );
+		$author->add_cap( 'tnc_col_' . $collection->get_id() . '_edit_metadata' );
+		$author->add_cap( 'tnc_col_' . $collection->get_id() . '_edit_filters' );
+
+		$contributor->add_cap( 'tnc_col_all_edit_items' );
+		$contributor->add_cap( 'tnc_col_all_edit_published_items' );
+
+
+		$request = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collection->get_id() . '/roles');
+
+		$response = $this->server->dispatch($request);
+		//var_dump($create);
+		$this->assertEquals( 200, $response->get_status() );
+
+		$caps = $response->get_data()['capabilities'];
+
+		$this->assertArrayHasKey('editor', $caps['manage_tainacan_collection_%d']['roles']);
+
+		$this->assertArrayHasKey('author', $caps['tnc_col_%d_edit_items']['roles']);
+		$this->assertArrayHasKey('author', $caps['tnc_col_%d_edit_metadata']['roles']);
+		$this->assertArrayHasKey('author', $caps['tnc_col_%d_edit_filters']['roles']);
+
+		$this->assertArrayHasKey('contributor', $caps['tnc_col_%d_edit_items']['roles']);
+		$this->assertArrayHasKey('contributor', $caps['tnc_col_%d_edit_published_items']['roles']);
+
+
+
+
 	}
 
 }

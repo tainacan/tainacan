@@ -83,6 +83,15 @@ class REST_Roles_Controller extends REST_Controller {
 			),
 			'schema'                  => [$this, 'get_schema']
 		));
+		register_rest_route(
+			$this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base,
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_collection_roles'),
+					'permission_callback' => array($this, 'get_collection_roles_permissions_check'),
+				)
+		));
 	}
 
 
@@ -337,6 +346,63 @@ class REST_Roles_Controller extends REST_Controller {
 	public function get_item_permissions_check( $request ) {
 		return current_user_can('tnc_rep_edit_users');
 	}
+
+	/**
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return bool|\WP_Error
+	 */
+	public function get_collection_roles_permissions_check( $request ) {
+		return current_user_can('tnc_rep_edit_users');
+	}
+
+	/**
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public function get_collection_roles( $request ) {
+
+		$collection_id = $request['collection_id'];
+
+		$roles = \wp_roles()->roles;
+
+		$caps = \tainacan_roles()->get_all_caps();
+		$col_caps = [];
+		foreach ($caps as $cap => $c) {
+			if ( \strpos($cap, 'tnc_col_') === 0 || \strpos($cap, 'manage_tainacan_collection_') === 0 ) {
+				$col_caps[$cap] = $c;
+			}
+		}
+
+		foreach ($col_caps as $cap => $c) {
+			$col_caps[$cap]['roles'] = [];
+			foreach ($roles as $slug => $role) {
+
+				// capabilities we are looking for
+				$caps_aliases = [
+					str_replace('%d', $collection_id, $cap),
+					str_replace('%d', 'all', $cap)
+				];
+				foreach ($caps_aliases as $alias) {
+					if ( array_key_exists($alias, $role['capabilities']) ) {
+						$col_caps[$cap]['roles'][$slug] = [
+							'slug' => $slug,
+							'name' => translate_user_role($role['name']),
+						];
+						break;
+					}
+
+				} // for each alias
+
+			} // for each role
+
+		} // for each cap
+
+		return new \WP_REST_Response(['capabilities' => $col_caps], 200);
+
+	}
+
 
 
 	function get_schema() {
