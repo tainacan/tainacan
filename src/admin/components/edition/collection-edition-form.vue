@@ -182,7 +182,7 @@
                         </span>
                         <br>
                         <a
-                                class="is-inline add-link"   
+                                class="add-link"   
                                 :class="{'disabled': form.enable_cover_page != 'yes'}"
                                 target="_blank"  
                                 :href="newPagePath">

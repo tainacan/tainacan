@@ -51,8 +51,7 @@
                             name="filter-item"
                             class="multiple-inputs">
                         <template 
-                                v-if="index > 0" 
-                                v-for="(input, index) in inputs">
+                                v-for="(input, index) in inputs.slice(1)">
                                 <component 
                                         :key="index"
                                         :is="metadatum.metadatum.metadata_type_object.component"
@@ -62,7 +61,7 @@
                                 <a 
                                         v-if="index > 0" 
                                         @click="removeInput(index)"
-                                        class="is-inline add-link"
+                                        class="add-link"
                                         :key="index">
                                     <b-icon
                                             icon="minus-circle"
@@ -129,13 +128,13 @@
                 return this.getErrorMessage ? 'is-danger' : ''
             }
         },
-        created(){
+        created() {
             this.createInputs();
         },
         methods: {
             changeValue: _.debounce(function() {
 
-                if (this.inputs.length > 0 && this.inputs[0] && this.inputs[0].value) {
+                if (this.inputs && this.inputs.length > 0 && this.inputs[0] && this.inputs[0].value) {
                     let terms = this.inputs.map(term => term.value)
                     
                     if (this.metadatum.value instanceof Array){
@@ -155,6 +154,7 @@
 
                     if (this.metadatum.value.id == this.inputs)
                         return;
+
                 } else if (this.metadatum.value instanceof Array) {  
 
                     let equal = [];
@@ -168,12 +168,13 @@
 
                     if (equal.length == this.inputs.length && this.metadatum.value.length <= equal.length)
                         return;
-                } 
+                }
+
                 eventBus.$emit('input', {
                     itemId: this.metadatum.item.id,
                     metadatumId: this.metadatum.metadatum.id,
-                    values: this.inputs 
-                } );
+                    values: this.inputs ? this.inputs : ''
+                });
             
             }, 900),
             createInputs(){

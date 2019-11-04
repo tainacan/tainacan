@@ -34,7 +34,7 @@
                     :disabled="disabled"
                     :id="metadatum.metadata_type_object.component + '-' + metadatum.slug"
                     v-model="checked"
-                    @input="onChecked()"
+                    @input="onChecked('')"
                     :native-value="''"
                     border>
                 {{ $i18n.get('clear_radio') }}
