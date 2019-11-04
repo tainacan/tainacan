@@ -132,8 +132,6 @@
                                             :metadatum="{ metadatum: metadatum }"
                                             :value="itemMetadata[index].value"
                                             @input="clearErrorMessage(metadatum.id); bulkEdit($event, metadatum)"/>
-                                            <!-- :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
-                                            :disabled="bulkEditionProcedures[criterion].isDone || bulkEditionProcedures[criterion].isExecuting" -->
                                 </div>
                             </transition>
                         </b-field>

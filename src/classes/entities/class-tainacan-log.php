@@ -104,7 +104,6 @@ class Log extends Entity {
 		return $this->get_mapped_property( 'slug' );
 	}
 
-
 	/**
 	 * Return the Log description
 	 *

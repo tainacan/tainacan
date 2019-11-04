@@ -1,41 +1,34 @@
 <template>
     <div>
-        <div
-                :class="{'has-content': dateValue !== undefined && dateValue !== ''}"
-                class="control is-inline">
-            <input
-                    :disabled="disabled"
-                    class="input"
-                    :class="{'is-danger': isInvalidDate && dateValue}"
-                    type="text"
-                    v-mask="dateMask"
-                    v-model="dateValue"
-                    @blur="onBlur"
-                    @input="onInput"
-                    :placeholder="dateFormat.toLowerCase()">
-            <p
-                    v-if="isInvalidDate && dateValue"
-                    class="has-text-danger is-italic is-size-7">{{ $i18n.get('info_error_invalid_date') }}</p>
-            <!--<b-collapse-->
-                    <!--position="is-bottom-right">-->
-                <!--<span class="icon"-->
-                        <!--icon="calendar-today"-->
-                        <!--size="is-small"-->
-                        <!--slot="trigger" />-->
+        <b-input
+                :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
+                :disabled="disabled"
+                class="input"
+                :class="{'is-danger': isInvalidDate && dateValue}"
+                type="text"
+                v-mask="dateMask"
+                v-model="dateValue"
+                @input.native="onInput"
+                :placeholder="dateFormat.toLowerCase()" />
+        <p
+                v-if="isInvalidDate && dateValue"
+                class="has-text-danger is-italic is-size-7">{{ $i18n.get('info_error_invalid_date') }}</p>
+        <!--<b-collapse-->
+                <!--position="is-bottom-right">-->
+            <!--<span class="icon"-->
+                    <!--icon="calendar-today"-->
+                    <!--size="is-small"-->
+                    <!--slot="trigger" />-->
 
-                <!--<div class="field">-->
-                    <!--<b-datepicker-->
-                            <!--:class="{'has-content': dateValue !== undefined && dateValue !== ''}"-->
-                            <!--:id="id"-->
-                            <!--v-model="dateValue"-->
-                            <!--@blur="onBlur"-->
-                            <!--:readonly="false"-->
-                            <!--inline-->
-                            <!--@input="onInput($event)"-->
-                            <!--:placeholder="datePlaceHolder"/>-->
-                <!--</div>-->
-            <!--</b-collapse>-->
-        </div>
+            <!--<div class="field">-->
+                <!--<b-datepicker-->
+                        <!--v-model="dateValue"-->
+                        <!--:readonly="false"-->
+                        <!--inline-->
+                        <!--@input="onInput($event)"-->
+                        <!--:placeholder="datePlaceHolder"/>-->
+            <!--</div>-->
+        <!--</b-collapse>-->
     </div>
 </template>
 
@@ -56,17 +49,11 @@
             }
         },
         props: {
-            id: '',
-            metadatum: {
-                type: Object
-            },
+            metadatum: Object,
             value: [String, Number, Array],
             disabled: false,
         },
         methods: {
-            onBlur() {
-                this.$emit('blur');
-            },
             onInput: _.debounce(function ($event) {
                 // Emty dates don't need to be validated, they remove the metadata
                 if ($event.target.value != '') {
@@ -89,8 +76,14 @@
                 } else  {
                    this.$emit('input', [null]); 
                 }
-                this.$emit('blur');
             }, 300)
         }
     }
 </script>
+
+<style scoped lang="scss">
+.control {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+</style>

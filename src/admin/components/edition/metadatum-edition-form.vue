@@ -150,7 +150,7 @@
             </b-field>
 
             <b-field :addons="false">
-                <label class="label is-inline-block">{{ $i18n.get('label_options') }}</label>
+                <label class="label is-inline-block">{{ $i18n.get('label_insert_options') }}</label>
                 <b-field
                         :type="formErrors['required'] != undefined ? 'is-danger' : ''"
                         :message="formErrors['required'] != undefined ? formErrors['required'] : ''">

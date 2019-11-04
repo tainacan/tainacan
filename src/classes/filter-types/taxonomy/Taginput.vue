@@ -157,7 +157,8 @@
 
                 let params = { 
                     'include': metadata.terms, 
-                    'order': 'asc'
+                    'order': 'asc',
+                    'fetchonly': 0
                 };
 
                 return axios.get('/taxonomy/' + this.taxonomyId + '/terms/?' + qs.stringify(params) )

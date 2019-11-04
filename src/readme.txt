@@ -8,11 +8,11 @@ Stable tag: 0.13
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Tainacan is a powerful and flexible repository platform for WordPress. Manage and publish your digital collections just as easily as you post to your blog, having all the tools of a professional repository platform.
+Tainacan is an open source, powerful and flexible repository platform for WordPress. Manage and publish your digital collections just as easily as you post to your blog, having all the tools of a professional repository platform.
 
 == Description ==
 
-Tainacan is a powerful and flexible repository platform for WordPress. Manage and publish your digital collections just as easily as you post to your blog, having all the tools of a professional repository platform.
+[Tainacan](https://tainacan.org/) is an open source, powerful and flexible repository platform for WordPress. Manage and publish your digital collections just as easily as you post to your blog, having all the tools of a professional repository platform.
 
 = Features =
 
@@ -75,6 +75,11 @@ Example: [tainacan-search collection-id=4]
 Upload the files to the plugins directory and activate it. You can also install and activate directly from the your admin panel.
 
 If you have Imagick installed in your server, Tainacan will be able to automatically generate a thumbnail from your PDF files. This is desired but not required.
+
+== Find out more ==
+
+* Visit our oficial website: [https://tainacan.org/](https://tainacan.org/)
+* Check our documentation Wiki: [https://wiki.tainacan.org/](https://wiki.tainacan.org/)
 
 == Screenshots ==
 

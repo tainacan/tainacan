@@ -1,44 +1,32 @@
 <template>
     <b-input
             :disabled="disabled"
-            :class="{'has-content': inputValue !== undefined && inputValue !== ''}"
-            :id="id"
-            lang="en"
+            :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
+            :value="value"
+            @input="onInput($event)"
             type="number"
-            :value="inputValue"
-            step="0.01"
-            @blur="onBlur"
-            @change="onBlur"
-            @input="onInput($event)"/>
+            lang="en"
+            :step="getStep"/>
 </template>
 
 <script>
     export default {
-        created(){
-            if( this.value ){
-                this.inputValue = this.value
-            }
-        },
-        data() {
-            return {
-                inputValue: ''
-            }
-        },
         props: {
-            id: '',
-            metadatum: {
-                type: Object
-            },
+            metadatum: Object,
             value: [String, Number, Array],
             disabled: false,
         },
+        computed: {
+            getStep() {
+                if (this.metadatum && this.metadatum.metadatum.metadata_type_options && this.metadatum.metadatum.metadata_type_options.step)
+                    return this.metadatum.metadatum.metadata_type_options.step;
+                else
+                    return 0.01;
+            }
+        },
         methods: {
-            onBlur() {
-                this.$emit('blur');
-            },
-            onInput($event) {
-                this.inputValue = $event;
-                this.$emit('input', this.inputValue);
+            onInput(value) {
+                this.$emit('input', value);
             }
         }
     }

@@ -1,6 +1,7 @@
 <template>
     <div class="block">
         <b-taginput
+                :id="metadatumComponentId"
                 :disabled="disabled"
                 size="is-small"
                 icon="magnify"
@@ -36,16 +37,14 @@
         },
         watch: {
           selected(){
-              if(this.allowSelectToCreate && this.selected[0]){
+              if (this.allowSelectToCreate && this.selected[0]) {
                   this.selected[0].label.includes(`(${this.$i18n.get('select_to_create')})`);
                   this.selected[0].label = this.selected[0].label.split('(')[0];
               }
           }
         },
         props: {
-            options: {
-                type: Array
-            },
+            metadatumComponentId: '',
             value: [ Number, String, Array ],
             allowNew: true,
             taxonomyId: Number,
@@ -54,7 +53,7 @@
             maxtags: '',
         },
         created(){
-            if(this.value && this.value.length > 0){
+            if (this.value && this.value.length > 0){
                 this.selected = this.value;
             }
         },
@@ -85,13 +84,11 @@
                 }).then((res) => {
                     this.termList = res.terms;
                     
-                    for(let term of this.termList){
+                    for (let term of this.termList)
                         this.labels.push({label: term.name, value: term.id});
-                    }
 
-                    if(this.termList.length <= 0 && this.allowSelectToCreate){
+                    if (this.termList.length <= 0 && this.allowSelectToCreate)
                         this.labels.push({label: `${value} (${this.$i18n.get('select_to_create')})`, value: value})
-                    }
 
                     this.isFetching = false;
                 }).catch((error) => {
@@ -102,9 +99,8 @@
             updateSelectedValues(){
                 let selected = [];
 
-                for( let term of this.value){
+                for( let term of this.value)
                     selected.push({label: term.label, value: term.value})
-                }
 
                 this.selected = selected;
             },
@@ -117,7 +113,6 @@
                         results.push( term.value );
                 
                     this.$emit('input', results);
-                    this.$emit('blur');
                 }
             },
             emitRemove(){
@@ -128,7 +123,6 @@
                     results.push(term.value);
 
                 this.$emit('input', results);
-                this.$emit('blur');
             }
         }
     }

@@ -98,6 +98,7 @@ a:hover {
 .add-link {
     display: inline;
     font-size: 0.75rem; 
+    margin: 3px 0 6px 0;
     &.disabled {
         pointer-events: none;
         cursor: default;
