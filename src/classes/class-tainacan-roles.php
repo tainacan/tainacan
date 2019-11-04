@@ -45,7 +45,10 @@ class Roles {
 			],
 			'tnc_rep_edit_collections' => [
 				'display_name' => __('Create Collections', 'tainacan'),
-				'description' => __('Create new collections to the repository', 'tainacan')
+				'description' => __('Create new collections to the repository and edit its details', 'tainacan'),
+				'dependencies' => [
+					'upload_files'
+				]
 			],
 			'tnc_rep_delete_collections' => [
 				'display_name' => __('Delete Collections', 'tainacan'),
@@ -116,13 +119,6 @@ class Roles {
 			'tnc_col_%d_bulk_edit' => [
 				'display_name' => __('Bulk edit items', 'tainacan'),
 				'description' => __('Access to the Bulk edit items feature.', 'tainacan')
-			],
-			'tnc_col_%d_edit' => [
-				'display_name' => __('Manage Collection settings', 'tainacan'),
-				'description' => __('Manage collection settings, such as name and description', 'tainacan'),
-				'dependencies' => [
-					'upload_files'
-				]
 			],
 			'tnc_col_%d_edit_metadata' => [
 				'display_name' => __('Manage metadata', 'tainacan'),
