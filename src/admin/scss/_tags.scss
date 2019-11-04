@@ -45,10 +45,10 @@
                 color: $gray5;
 
                 &:after {
-                    transform: translateX(-50%) translateY(-50%) rotate(45deg) scale(1.1);
+                    transform: translateX(-50%) translateY(-50%) rotate(45deg) scale(1.15);
                 }
                 &:before {
-                    transform: translateX(-50%) translateY(-50%) rotate(45deg) scale(1.1);
+                    transform: translateX(-50%) translateY(-50%) rotate(45deg) scale(1.15);
                 }
             }
         }

@@ -168,7 +168,7 @@
                 }
             },
             save() {
-                if ( this.name.trim() === '') {
+                if (this.name.trim() === '') {
                     this.$buefy.toast.open({
                         duration: 2000,
                         message: this.$i18n.get('info_name_is_required'),
@@ -185,7 +185,6 @@
                     .then(res => {
 
                         this.isAddingNewTerm = false;
-
                         if (res.data && res.data.id || res.id) {
                             let id = res.id ? res.id : res.data.id;
                             let val = this.value;
