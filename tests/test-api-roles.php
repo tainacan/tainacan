@@ -144,7 +144,7 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		$request->set_query_params(
 			[
 				'name' => 'Changed name',
-				'add_cap' => 'tnc_col_12_edit'
+				'add_cap' => 'tnc_col_12_edit_items'
 			]
 		);
 
@@ -154,8 +154,8 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 
 		$role = \wp_roles()->roles['tainacan-new-role'];
 
-		$this->assertArrayHasKey('tnc_col_12_edit', $role['capabilities']);
-		$this->assertTrue($role['capabilities']['tnc_col_12_edit']);
+		$this->assertArrayHasKey('tnc_col_12_edit_items', $role['capabilities']);
+		$this->assertTrue($role['capabilities']['tnc_col_12_edit_items']);
 		$this->assertArrayHasKey('upload_files', $role['capabilities']);
 		$this->assertTrue($role['capabilities']['upload_files']);
 	}
