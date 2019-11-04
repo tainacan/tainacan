@@ -3,7 +3,7 @@
         <p 
                 v-if="value instanceof Array ? value.length > 0 : (value != undefined && value != '')"
                 class="has-text-gray">
-            {{ $i18n.get('label_selected_terms') + ' :' }}
+            {{ $i18n.get('label_selected_term') + ':' }}
         </p>
         <b-field
                 v-if="value instanceof Array ? value.length > 0 : (value != undefined && value != '')"
@@ -24,42 +24,57 @@
                     v-if="isSelectedTermsLoading" 
                     class="control has-icons-right is-loading is-clearfix" />
         </b-field>
-        <b-radio
-                :disabled="disabled"
-                :id="metadatum.metadata_type_object.component + '-' + metadatum.slug"
-                v-model="checked"
-                @input="onChecked()"
-                :native-value="''"
-                border>
-            {{ $i18n.get('clear_radio') }}
-        </b-radio>
-        <div
-                :id="metadatum.metadata_type_object.component + '-' + metadatum.slug"
-                v-for="(option, index) in options"
-                :key="index">
+        <p 
+                style="margin-top: 10px;"
+                class="has-text-gray">
+            {{ (isShowingAllTerms ? $i18n.get('label_available_terms') : $i18n.get('label_some_available_terms')) + ':' }}
+        </p>
+        <div class="metadata-taxonomy-list">
             <b-radio
                     :disabled="disabled"
-                    :style="{ paddingLeft: (option.level * 30) + 'px' }"
-                    :key="index"
+                    :id="metadatum.metadata_type_object.component + '-' + metadatum.slug"
                     v-model="checked"
-                    @input="onChecked(option)"
-                    :native-value="option.id"
+                    @input="onChecked()"
+                    :native-value="''"
                     border>
-                {{ option.name }}
+                {{ $i18n.get('clear_radio') }}
             </b-radio>
-            <br>
+            <template
+                    :id="metadatum.metadata_type_object.component + '-' + metadatum.slug"
+                    v-for="(option, index) in options">
+                <b-radio
+                        :disabled="disabled"
+                        :style="{ marginLeft: 0, paddingLeft: (option.level * 30) + 'px' }"
+                        :key="index"
+                        v-model="checked"
+                        @input="onChecked(option)"
+                        :native-value="option.id"
+                        border>
+                    {{ option.name }}
+                </b-radio>
+                <br :key="index">
+            </template>
         </div>
-        <a
-                class="view-all"
-                v-if="terms.length < totalTerms"
-                @click="openCheckboxModal()">
-            {{ $i18n.get('label_view_all') }}
-        </a>
+        <div 
+                v-if="!isShowingAllTerms"
+                class="view-all">
+            <span>
+                {{
+                    $i18n.get('info_showing_terms') + 1 +
+                    $i18n.get('info_to') + options.length +
+                    $i18n.get('info_of') + totalTerms + '. '
+                }}
+            </span>
+            <a @click="openCheckboxModal()">
+                {{ $i18n.get('label_view_all') + ' ' + totalTerms + '.' }}
+            </a>
+        </div>
     </div>
 </template>
 
 <script>
     import { tainacan as axios } from '../../../js/axios/axios';
+    import qs from 'qs';
     import CheckboxRadioModal from '../../../admin/components/other/checkbox-radio-modal.vue'
 
     export default {
@@ -67,7 +82,6 @@
             this.getTermsFromTaxonomy();
             this.$parent.$on('update-taxonomy-inputs', ($event) => {
                 if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.metadatum.metadatum.id) {
-                    this.terms = [];
                     this.offset = 0;
                     this.getTermsFromTaxonomy();
                 }
@@ -80,7 +94,9 @@
                 isSelectedTermsLoading: false,
                 options: [],
                 terms: [],
-                totalTerms: 0,
+                termsNumber: 12,
+                offset: 0,
+                totalTerms: 0
             }
         },
         watch: {
@@ -89,10 +105,16 @@
                 this.fetchSelectedLabels();
             }
         },
+        computed: {
+            isShowingAllTerms() {
+                return this.terms.length >= this.totalTerms;
+            }
+        },
         props: {
             value: [ Number, String, Array ],
             disabled: false,
-            taxonomyId: Number
+            taxonomyId: Number,
+            metadatum: Object
         },
         methods: {
             onChecked() {
@@ -105,38 +127,34 @@
             fetchSelectedLabels() {
 
                 if (this.value != null && this.value != undefined) {
-
-                    this.isSelectedTermsLoading = true;
-                    let selected = this.value instanceof Array ? this.value : [this.value];
+ 
+                    const selected = this.value instanceof Array ? this.value : [this.value];
 
                     if (this.taxonomyId && selected.length > 0) {
-                        for (const term of selected) {
+                        this.isSelectedTermsLoading = true;
 
-                            if (!this.isSelectedTermsLoading)
-                                this.isSelectedTermsLoading = true;
-                            
-                            axios.get(`/taxonomy/${this.taxonomyId}/terms/${term}`)
-                                .then((res) => {
-                                    this.saveSelectedTagName(res.data.id, res.data.name);
-                                    this.isSelectedTermsLoading = false;
-                                })
-                                .catch((error) => {
-                                    this.$console.log(error);
-                                    this.isSelectedTermsLoading = false;
-                                });
-                        }
-                    } else {
-                        this.isSelectedTermsLoading = false;
+                        axios.get(`/taxonomy/${this.taxonomyId}/terms/?${qs.stringify({ hideempty: 0, include: selected })}`)
+                            .then((res) => {
+                                let terms = res.data;
+
+                                for (let term of terms) {
+                                    if (!this.selectedTagsName[term.id])
+                                        this.$set(this.selectedTagsName, term.id, term.name);
+                                }
+                                
+                                this.isSelectedTermsLoading = false;
+                            })
+                            .catch((error) => {
+                                this.$console.log(error);
+                                this.isSelectedTermsLoading = false;
+                            });
                     }
                 }
             },
-            saveSelectedTagName(value, label) {
-                if(!this.selectedTagsName[value]) {
-                    this.$set(this.selectedTagsName, `${value}`, label);
-                }
-            },
             getTermsFromTaxonomy() {
-                let endpoint = '/taxonomy/' + this.taxonomyId + '/terms?hideempty=0&order=asc&number=' + this.termsNumber + '&offset=' + this.offset; 
+                this.terms = [];
+                
+                const endpoint = '/taxonomy/' + this.taxonomyId + '/terms?hideempty=0&order=asc&number=' + this.termsNumber + '&offset=' + this.offset; 
 
                 axios.get(endpoint)
                     .then( res => {
@@ -201,10 +219,33 @@
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+    .selected-tags {
+        margin-top: 0.75rem;
+        font-size: 0.75rem;
+        position: relative;
+    }
+    .selected-tags .is-loading {
+        margin-left: 2rem;
+        margin-top: -0.4rem;
+    }
+    .selected-tags .is-loading::after {
+        border: 2px solid #555758 !important;
+        border-right-color: #dbdbdb !important;
+        border-top-color: #dbdbdb !important;
+    } 
+    .metadata-taxonomy-list {
+        column-count: 2;
+        margin: 10px;
+
+        label {
+            break-inside: avoid;
+            padding-right: 10px;
+        }
+    }
     .view-all {
-        margin-top: 15px;
-        margin-bottom: 30px;
+        color: #898d8f;
+        margin-bottom: 20px;
         font-size: 0.75rem;
     }
 </style>

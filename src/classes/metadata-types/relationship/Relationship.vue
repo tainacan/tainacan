@@ -5,11 +5,14 @@
                 :disabled="disabled"
                 :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
                 :value="selected"
+                size="is-small"
+                icon="magnify"
                 @input="onInput"
                 :data="options"
                 :maxtags="maxtags != undefined ? maxtags : (metadatum.metadatum.multiple == 'yes' || allowNew === true ? 100 : 1)"
                 autocomplete
                 attached
+                :placeholder="$i18n.get('instruction_type_existing_term')"
                 :loading="isLoading"
                 :aria-close-label="$i18n.get('remove_value')"
                 :class="{'has-selected': selected != undefined && selected != []}"

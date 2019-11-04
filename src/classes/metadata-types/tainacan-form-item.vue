@@ -46,37 +46,41 @@
                         v-model="inputs[0]" 
                         :metadatum="metadatum"
                         @input="changeValue()"/>
-                <div v-if="metadatum.metadatum.multiple == 'yes'">
-                    <div 
-                            v-if="index > 0" 
-                            v-for="(input, index) in inputs" 
-                            :key="index" 
+                <template v-if="metadatum.metadatum.multiple == 'yes'">
+                    <transition-group
+                            name="filter-item"
                             class="multiple-inputs">
-                        <component 
-                                :is="metadatum.metadatum.metadata_type_object.component"
-                                v-model="inputs[index]" 
-                                :metadatum="metadatum"
-                                @input="changeValue()"/>
-                            <a 
-                                    v-if="index > 0" 
-                                    @click="removeInput(index)"
-                                    class="is-inline add-link">
-                                <b-icon
-                                        icon="minus-circle"
-                                        size="is-small"
-                                        type="is-secondary"/>
-                                &nbsp;{{ $i18n.get('label_remove_value') }}</a>
-                    </div>
-
+                        <template 
+                                v-if="index > 0" 
+                                v-for="(input, index) in inputs">
+                                <component 
+                                        :key="index"
+                                        :is="metadatum.metadatum.metadata_type_object.component"
+                                        v-model="inputs[index]" 
+                                        :metadatum="metadatum"
+                                        @input="changeValue()"/>
+                                <a 
+                                        v-if="index > 0" 
+                                        @click="removeInput(index)"
+                                        class="is-inline add-link"
+                                        :key="index">
+                                    <b-icon
+                                            icon="minus-circle"
+                                            size="is-small"
+                                            type="is-secondary"/>
+                                    &nbsp;{{ $i18n.get('label_remove_value') }}
+                                </a>
+                        </template>
+                    </transition-group>
                     <a 
                             @click="addInput"
-                            class="is-inline add-link">
+                            class="is-block add-link">
                         <span class="icon is-small">
                             <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
                         </span>
                         &nbsp;{{ $i18n.get('label_add_value') }}
                     </a>
-                </div>
+                </template>
             </div>
         </transition>
         <transition name="filter-item">
@@ -170,19 +174,13 @@
                     metadatumId: this.metadatum.metadatum.id,
                     values: this.inputs 
                 } );
-                
+            
             }, 900),
-            createInputs(){ 
-                if (this.metadatum.value instanceof Array) {
-
+            createInputs(){
+                if (this.metadatum.value instanceof Array)
                     this.inputs = this.metadatum.value.slice(0);
-
-                    if (this.inputs.length === 0)
-                        this.inputs.push('');
-                
-                } else {
-                    this.metadatum.value == null || this.metadatum.value == undefined ? this.inputs.push('') : this.inputs.push(this.metadatum.value);
-                }
+                else
+                    this.metadatum.value == null || this.metadatum.value == undefined ? this.inputs = [] : this.inputs.push(this.metadatum.value);
             },
             addInput(){
                 this.inputs.push('');

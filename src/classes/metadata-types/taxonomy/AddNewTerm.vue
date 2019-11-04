@@ -10,10 +10,10 @@
                 &nbsp;{{ $i18n.get('label_new_term') }}
             </a>
         </span>
-        <transition name="appear">
+        <transition name="filter-item">
             <section
                     v-if="showForm"
-                    style="padding-left: 0px; margin-top: 12px; margin-bottom: -12px;">
+                    class="add-new-term-form">
                 <b-field 
                         :addons="false"
                         :type="((formErrors.name !== '' || formErrors.repeated !== '') && (formErrors.name !== undefined || formErrors.repeated !== undefined )) ? 'is-danger' : ''"
@@ -26,6 +26,7 @@
                                 :message="$i18n.get('info_help_term_name')"/>
                     </label>
                     <b-input 
+                            :placeholder="$i18n.get('label_term_without_name')"
                             v-model="name"
                             @focus="clearErrors({ name: 'name', repeated: 'repeated' })"/>
                 </b-field>
@@ -70,22 +71,22 @@
                         </p>
                     </transition>
                 </b-field>
-
-                <button
-                        :class="{ 'is-loading': isAddingNewTerm }"
-                        class="button is-outlined"
-                        @click="toggleForm()"
-                        type="button">
-                    {{ $i18n.get('cancel') }}
-                </button>
-
-                <button
-                        :class="{ 'is-loading': isAddingNewTerm }"
-                        class="button is-secondary"
-                        @click="save"
-                        type="button">
-                    {{ $i18n.get('save') }}
-                </button>
+                <div class="field is-grouped form-submit">
+                    <button
+                            :class="{ 'is-loading': isAddingNewTerm }"
+                            class="button is-outlined"
+                            @click="toggleForm()"
+                            type="button">
+                        {{ $i18n.get('cancel') }}
+                    </button>
+                    <button
+                            :class="{ 'is-loading': isAddingNewTerm }"
+                            class="button is-secondary"
+                            @click="save"
+                            type="button">
+                        {{ $i18n.get('label_create_and_select') }}
+                    </button>
+                </div>
             </section>
 
         </transition>
@@ -229,9 +230,15 @@
 </script>
 
 <style scoped>
-    .add-new-term{
+    .add-new-term {
         margin-top: 15px;
-        margin-bottom: 30px;
+        margin-bottom: 25px;
         font-size: 0.75rem;
+    }
+    .add-new-term-form {
+        padding: 14px 24px;
+        margin-top: 12px; 
+        margin-bottom: -12px;
+        border: 1px solid #cbcbcb;
     }
 </style>

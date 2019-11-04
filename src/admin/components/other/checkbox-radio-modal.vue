@@ -366,7 +366,7 @@
 
                     this.isSelectedTermsLoading = true;
 
-                    axios.get(`/taxonomy/${this.taxonomy_id}/terms/?${qs.stringify({ include: selected})}`)
+                    axios.get(`/taxonomy/${this.taxonomy_id}/terms/?${qs.stringify({ hideempty: 0, include: selected})}`)
                         .then((res) => {
                             for (const term of res.data)
                                 this.saveSelectedTagName(term.id, term.name);

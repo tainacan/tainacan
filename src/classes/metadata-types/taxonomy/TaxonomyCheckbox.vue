@@ -3,7 +3,7 @@
         <p 
                 v-if="value instanceof Array ? value.length > 0 : (value != undefined && value != '')"
                 class="has-text-gray">
-            {{ $i18n.get('label_selected_terms') + ' :' }}
+            {{ $i18n.get('label_selected_terms') + ':' }}
         </p>
         <b-field
                 v-if="value instanceof Array ? value.length > 0 : (value != undefined && value != '')"
@@ -24,8 +24,14 @@
                     v-if="isSelectedTermsLoading" 
                     class="control has-icons-right is-loading is-clearfix" />
         </b-field>
-       
-        <div :id="metadatum.metadata_type_object.component + '-' + metadatum.slug">
+        <p 
+                style="margin-top: 10px;"
+                class="has-text-gray">
+            {{ (isShowingAllTerms ? $i18n.get('label_available_terms') : $i18n.get('label_some_available_terms')) + ':' }}
+        </p>
+        <div 
+                class="metadata-taxonomy-list"
+                :id="metadatum.metadata_type_object.component + '-' + metadatum.slug">
             <template v-for="(option, index) in options">
                 <b-checkbox
                         :key="index"
@@ -40,12 +46,20 @@
                 <br :key="index">
             </template>
         </div>
-        <a
-                class="view-all"
-                v-if="terms.length < totalTerms"
-                @click="openCheckboxModal()">
-            {{ $i18n.get('label_view_all') }}
-        </a>
+        <div 
+                v-if="!isShowingAllTerms"
+                class="view-all">
+            <span>
+                {{
+                    $i18n.get('info_showing_terms') + 1 +
+                    $i18n.get('info_to') + options.length +
+                    $i18n.get('info_of') + totalTerms + '. '
+                }}
+            </span>
+            <a @click="openCheckboxModal()">
+                {{ $i18n.get('label_view_all') + ' ' + totalTerms + '.' }}
+            </a>
+        </div>
     </div>
 </template>
 
@@ -62,7 +76,6 @@
             this.getTermsFromTaxonomy();
             this.$parent.$on('update-taxonomy-inputs', ($event) => {
                 if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.metadatum.metadatum.id) {
-                    this.terms = [];
                     this.offset = 0;
                     this.getTermsFromTaxonomy();
                 }
@@ -84,6 +97,11 @@
             value(val){
                 this.checked = val;
                 this.fetchSelectedLabels();
+            }
+        },
+        computed: {
+            isShowingAllTerms() {
+                return this.terms.length >= this.totalTerms;
             }
         },
         props: {
@@ -109,7 +127,7 @@
                     if (this.taxonomyId) {
                         this.isSelectedTermsLoading = true;
 
-                        axios.get(`/taxonomy/${this.taxonomyId}/terms/?${qs.stringify({ include: selected })}`)
+                        axios.get(`/taxonomy/${this.taxonomyId}/terms/?${qs.stringify({ hideempty: 0, include: selected })}`)
                             .then((res) => {
                                 let terms = res.data;
 
@@ -128,7 +146,9 @@
                 }
             },
             getTermsFromTaxonomy() {
-                let endpoint = '/taxonomy/' + this.taxonomyId + '/terms?hideempty=0&order=asc&number=' + this.termsNumber + '&offset=' + this.offset; 
+                this.terms = [];
+
+                const endpoint = '/taxonomy/' + this.taxonomyId + '/terms?hideempty=0&order=asc&number=' + this.termsNumber + '&offset=' + this.offset; 
 
                 axios.get(endpoint)
                     .then( res => {
@@ -193,7 +213,7 @@
     }
 </script>
 
-<style>
+<style scoped lang="scss">
     .selected-tags {
         margin-top: 0.75rem;
         font-size: 0.75rem;
@@ -208,9 +228,18 @@
         border-right-color: #dbdbdb !important;
         border-top-color: #dbdbdb !important;
     } 
+    .metadata-taxonomy-list {
+        column-count: 2;
+        margin: 10px;
+
+        label {
+            break-inside: avoid;
+            padding-right: 10px;
+        }
+    }
     .view-all {
-        margin-top: 15px;
-        margin-bottom: 30px;
+        color: #898d8f;
+        margin-bottom: 20px;
         font-size: 0.75rem;
     }
 </style>
