@@ -194,12 +194,12 @@
                         parent: 0,
                         taxonomy_id: this.taxonomyId,
                         selected: !this.value ? [] : this.value,
-                        metadatumId: this.metadatum.metadatum.id,
+                        metadatumId: this.metadatum.id,
                         taxonomy: this.taxonomy,
                         collectionId: this.metadatum.collection_id,
                         isTaxonomy: true,
                         query: '',
-                        metadatum: this.metadatum.metadatum,
+                        metadatum: this.metadatum,
                         isCheckbox: false
                     },
                     events: {

@@ -135,16 +135,16 @@
     .tag {
         background: white;
         padding-right: 0;
-        padding-left: 0.5em;
+        padding-left: 0.6em;
 
         &.is-delete {
             color: $gray4;
             &::after {
-                height: 30% !important;
+                height: 47% !important;
                 width: 1px !important;
             } 
             &::before {
-                width: 30% !important;
+                width: 47% !important;
                 height: 1px !important;
             } 
             &:hover, &:focus {
