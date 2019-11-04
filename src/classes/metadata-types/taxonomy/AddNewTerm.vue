@@ -155,9 +155,10 @@
                 this.clearErrors('parent');
             },
             onSelectParentTerm(selectedParentTerm) {
-                this.parent = selectedParentTerm.id;
-                this.selectedParentTerm = selectedParentTerm;
-                this.parentTermName = selectedParentTerm.name;
+                if (selectedParentTerm) {
+                    this.parent = selectedParentTerm.id;
+                    this.parentTermName = selectedParentTerm.name;
+                }
             },
             clearErrors(attributes) {
                 if (attributes instanceof Object) {
@@ -184,7 +185,6 @@
                     })
                     .then(res => {
 
-                        this.isAddingNewTerm = false;
                         if (res.data && res.data.id || res.id) {
                             let id = res.id ? res.id : res.data.id;
                             let val = this.value;
@@ -193,6 +193,7 @@
                                 axios.patch(`/item/${this.itemId}/metadata/${this.metadatumId}`, {
                                     values: id,
                                 }).then(() => {
+                                    this.isAddingNewTerm = false;
                                     this.$emit('newTerm', { values: id, taxonomyId: this.taxonomyId, metadatumId: this.metadatumId });
                                     this.toggleForm();
                                 })
@@ -202,6 +203,7 @@
                                 axios.patch(`/item/${this.itemId}/metadata/${this.metadatumId}`, {
                                     values: val,
                                 }).then(() => {
+                                    this.isAddingNewTerm = false;
                                     this.$emit('newTerm', { values: val, taxonomyId: this.taxonomyId, metadatumId: this.metadatumId });
                                     this.toggleForm();
                                 })
@@ -235,7 +237,7 @@
         font-size: 0.75rem;
     }
     .add-new-term-form {
-        padding: 14px 24px;
+        padding: 14px 24px 12px 24px;
         margin-top: 12px; 
         margin-bottom: -12px;
         border: 1px solid #cbcbcb;
