@@ -177,8 +177,6 @@ $Tainacan_Elastic_press = \Tainacan\Elastic_Press::get_instance();
 require_once(__DIR__ . '/class-tainacan-background-process-heartbeat.php');
 $Tainacan_Importer_Heartbeat = new \Tainacan\Background_Importer_Heartbeat();
 
-$Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();
-
 $Tainacan_Roles = \Tainacan\Roles::get_instance();
 
 $TainacanPrivateFiles = \Tainacan\Private_Files::get_instance();

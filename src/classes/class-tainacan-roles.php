@@ -195,6 +195,89 @@ class Roles {
 		add_filter( 'user_has_cap', [$this, 'user_has_cap_filter'], 10, 4 );
 		add_filter( 'map_meta_cap', [$this, 'map_meta_cap'], 10, 4 );
 
+		add_filter( 'gettext_with_context', array(&$this, 'translate_user_roles'), 10, 4 );
+
+		// Dummy calls for translation.
+		_x('Tainacan Administrator', 'User role', 'tainacan');
+		_x('Tainacan Editor', 'User role', 'tainacan');
+		_x('Tainacan Author', 'User role', 'tainacan');
+
+	}
+
+	/**
+	 * Tainacan default roles
+	 *
+	 * @return array Tainacan roles
+	 */
+	public function get_tainacan_roles() {
+		$tainacan_roles = [
+			'administrator' => [
+				'slug' => 'tainacan-administrator',
+				'display_name' => 'Tainacan Administrator',
+				'caps' => [
+					'manage_tainacan' => true
+				]
+			],
+			'editor' => [
+				'slug' => 'tainacan-editor',
+				'display_name' => 'Tainacan Editor',
+				'caps' => [
+					'tnc_rep_edit_collections' => true,
+					'tnc_rep_delete_collections' => true,
+					'tnc_rep_edit_taxonomies' => true,
+					'tnc_rep_edit_others_taxonomies' => true,
+					'tnc_rep_delete_taxonomies' => true,
+					'tnc_rep_delete_others_taxonomies' => true,
+					'tnc_rep_edit_metadata' => true,
+					'tnc_rep_edit_filters' => true,
+					'tnc_rep_delete_metadata' => true,
+					'tnc_rep_delete_filters' => true,
+					'tnc_rep_read_private_collections' => true,
+					'tnc_rep_read_private_taxonomies' => true,
+					'tnc_rep_read_private_metadata' => true,
+					'tnc_rep_read_private_filters' => true,
+					'tnc_rep_read_logs' => true,
+					'manage_tainacan_collection_all' => true
+				]
+			],
+			'author' => [
+				'slug' => 'tainacan-author',
+				'display_name' => 'Tainacan Author',
+				'caps' => [
+					'tnc_rep_edit_collections' => true,
+					'tnc_rep_edit_taxonomies' => true,
+					'tnc_rep_read_private_collections' => true,
+					'tnc_rep_read_private_taxonomies' => true,
+					'tnc_rep_read_private_metadata' => true,
+					'tnc_rep_read_private_filters' => true,
+				]
+			],
+		];
+
+		return $tainacan_roles;
+	}
+
+	/**
+	 * Callback to gettext_with_context hook to translate custom ueser roles.
+	 *
+	 * Since user roles are stored in the database, we have to translate them on the fly
+	 * using translate_user_role() function.
+	 *
+	 * @see https://wordpress.stackexchange.com/questions/141551/how-to-auto-translate-custom-user-roles
+	 */
+	public function translate_user_roles( $translations, $text, $context, $domain ) {
+
+		$plugin_domain = 'tainacan';
+
+		$roles_names = array_map(function($role) {
+			return $role['display_name'];
+		}, $this->get_tainacan_roles());
+
+		if ( $context === 'User role' && in_array( $text, $roles_names ) && $domain !== $plugin_domain ) {
+			return translate_with_gettext_context( $text, $context, $plugin_domain );
+		}
+
+		return $translations;
 	}
 
 	public function get_all_caps() {
@@ -203,6 +286,21 @@ class Roles {
 
 	public function get_all_caps_slugs() {
 		return array_keys($this->capabilities);
+	}
+
+	public function init_default_roles() {
+
+		foreach ($this->get_tainacan_roles() as $role) {
+			$new_role = add_role(
+				$role['slug'],
+				$role['display_name'],
+				$role['caps']
+			);
+		}
+
+		$admin = get_role('administrator');
+		$admin->add_cap('manage_tainacan');
+
 	}
 
 	/**
@@ -256,7 +354,7 @@ class Roles {
 						// check if the user is the owner
 						$collection = tainacan_collections()->fetch( (int) $col_id );
 						if ( $collection instanceof \Tainacan\Entities\Collection ) {
-							if ( $collection->get_author_id() == $user->ID ) {
+							if ( (int) $collection->get_author_id() == (int) $user->ID ) {
 								$allcaps = array_merge($allcaps, [ $cap => true ]);
 							}
 						}

@@ -105,11 +105,6 @@ class Migrations {
 
 	}
 
-	static function init_capabilites() {
-		$Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();
-		$Tainacan_Capabilities->init();
-	}
-
 	static function tainacan_migrate_post_type_field_to_metadatum(){
 		global $wpdb;
 
@@ -417,6 +412,10 @@ class Migrations {
 
 		}
 
+	}
+
+	static function init_default_roles() {
+		\tainacan_roles()->init_default_roles();
 	}
 
 }

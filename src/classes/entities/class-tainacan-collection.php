@@ -180,9 +180,9 @@ class Collection extends Entity {
 
 		return (object) [
 			// meta
-			'edit_post' => "tnc_col_edit_item",
-			'read_post' => "tnc_col_read_item",
-			'delete_post' => "tnc_col_delete_item",
+			'edit_post' => "tnc_rep_edit_collection",
+			'read_post' => "tnc_rep_read_collection",
+			'delete_post' => "tnc_rep_delete_collection",
 
 			// primitive
 			'edit_posts' => "tnc_rep_edit_collections",

@@ -17,6 +17,7 @@ class Collections extends TAINACAN_UnitTestCase {
 	 * @group permissions
 	 */
 	function test_permissions () {
+		global $current_user;
 		$collection_test = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
@@ -30,7 +31,7 @@ class Collections extends TAINACAN_UnitTestCase {
 		wp_set_current_user($new_user);
 		$user_id = get_current_user_id();
 		$this->assertEquals($new_user, $user_id);
-		
+
 		$autor1 = $this->factory()->user->create(array( 'role' => 'author' ));
 		wp_set_current_user($autor1);
 		$autor1_id = get_current_user_id();
@@ -55,28 +56,31 @@ class Collections extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
+		$autor_2_user = get_userdata( $autor2 );
+		$autor_2_user->add_cap('tnc_rep_edit_collections');
+		$current_user = $autor_2_user;
 		$current_user_id = get_current_user_id();
 		$this->assertEquals($autor2, $current_user_id);
 		$this->assertFalse(current_user_can($collection_test->cap->edit_post, $collection_test->WP_Post->ID));
 		$this->assertTrue(current_user_can($collection_test2->cap->edit_post, $collection_test2->WP_Post->ID));
 		$this->assertFalse(user_can($autor2, $collection_test->cap->edit_post, $collection_test->WP_Post->ID));
-		
+
 
 	}
-	
+
 	function debug_meta($user = false)
 	{
 		if($user !== false) wp_set_current_user($user);
 		$data = get_userdata( get_current_user_id() );
-		
+
 		if ( is_object( $data) ) {
 			$current_user_caps = $data->allcaps;
-			
+
 			// print it to the screen
 			echo '<pre>' .print_r($data->ID, true).'\n'.print_r($data->display_name, true).'\n'. print_r( $current_user_caps, true ) . '</pre>';
 		}
 	}
-	
+
 	/**
 	 * A single example test.
 	 */
@@ -92,9 +96,9 @@ class Collections extends TAINACAN_UnitTestCase {
 		);
 
         $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
-        
+
         $this->assertEquals('Tainacan\Entities\Collection', get_class($x));
-        
+
         $test = $Tainacan_Collections->fetch($x->get_id());
 
         $this->assertEquals('teste', $test->get_name());
@@ -102,7 +106,7 @@ class Collections extends TAINACAN_UnitTestCase {
         $this->assertEquals('DESC', $test->get_default_order());
         $this->assertEquals('draft', $test->get_status());
     }
-    
+
     function test_unique_slugs() {
 		$x = $this->tainacan_entity_factory->create_entity(
 			'collection',
@@ -115,7 +119,7 @@ class Collections extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
-        
+
         $y = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
@@ -127,9 +131,9 @@ class Collections extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
-        
+
         $this->assertNotEquals($x->get_slug(), $y->get_slug());
-        
+
         // Create as draft and publish later
         $x = $this->tainacan_entity_factory->create_entity(
 			'collection',
@@ -141,7 +145,7 @@ class Collections extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
-        
+
         $y = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
@@ -152,9 +156,9 @@ class Collections extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
-        
+
         $this->assertEquals($x->get_slug(), $y->get_slug());
-        
+
         $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
         $x->set_status('publish');
         $x->validate();
@@ -162,11 +166,11 @@ class Collections extends TAINACAN_UnitTestCase {
         $y->set_status('private'); // or publish shoud behave the same
         $y->validate();
         $y = $Tainacan_Collections->insert($y);
-        
+
         $this->assertNotEquals($x->get_slug(), $y->get_slug());
-        
+
     }
-    
+
     function test_item() {
 	    $x = $this->tainacan_entity_factory->create_entity(
 		    'collection',
@@ -194,13 +198,13 @@ class Collections extends TAINACAN_UnitTestCase {
 
         $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
         $item = $Tainacan_Items->fetch( $i->get_id() );
-        
+
         $this->assertEquals($item->get_title(), 'item test');
         $this->assertEquals($item->get_description(), 'adasdasdsa');
         $this->assertEquals($item->get_collection_id(), $collection->get_id());
-        
+
     }
-    
+
     function test_validation() {
 	    $x = $this->tainacan_entity_factory->create_entity(
 		    'collection',
@@ -214,25 +218,25 @@ class Collections extends TAINACAN_UnitTestCase {
 
         $this->assertFalse($x->validate());
         $this->assertTrue(sizeof($x->get_errors()) > 0);
-        
+
         $x->set_default_order('ASDASD');
-        
+
         $this->assertFalse($x->validate());
         $this->assertTrue(sizeof($x->get_errors()) > 0);
-        
+
         $x->set_default_order('DESC');
         $this->assertTrue($x->validate());
         $this->assertTrue(empty($x->get_errors()));
     }
-    
+
     function test_hooks() {
     	$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
     	$this->assertTrue(has_action('init', array($Tainacan_Collections, 'register_post_type')) !== false, 'Collections Init is not registred!');
     }
-    
-	
+
+
 	function test_create_child_collection() {
-		
+
 		$x = $this->tainacan_entity_factory->create_entity(
     		'collection',
     		array(
@@ -242,7 +246,7 @@ class Collections extends TAINACAN_UnitTestCase {
     		),
     		true
     	);
-		
+
 		$col = $this->tainacan_entity_factory->create_entity(
     		'collection',
     		array(
@@ -253,17 +257,17 @@ class Collections extends TAINACAN_UnitTestCase {
     		),
     		true
     	);
-		
+
 		$Collections = \Tainacan\Repositories\Collections::get_instance();
-		
+
 		$col->set_parent($x->get_id());
 		$col->set_status('publish');
-		
+
 		$col->validate();
-		
+
 		$col = $Collections->insert($col);
-		
+
 		$this->assertEquals($x->get_id(), $col->get_parent());
-		
+
 	}
 }
