@@ -456,26 +456,6 @@ export const fetchPage = ({ commit }, pageId ) => {
     });
 };
 
-// Users for moderators configuration
-export const fetchUsers = ({ commit }, { search, exceptions }) => {
-
-    let endpoint = '/users?search=' + search;
-
-    if (exceptions.length > 0) 
-        endpoint += '&exclude=' + exceptions.toString();
-
-    return new Promise((resolve, reject) => {
-        axios.wp.get(endpoint)
-        .then(res => {
-            let users = res.data;
-            resolve( users );
-        })
-        .catch(error => {
-            reject( error );
-        });
-    });
-};
-
 // Fetch Collections for choosing Parent Collection
 export const fetchCollectionsForParent = ({ commit }) => {
     const source = axios.CancelToken.source();
