@@ -33,7 +33,6 @@ class Collection extends Entity {
         $cover_page_id,
         $header_image_id,
 	    $header_image,
-        $moderators_ids,
         $comment_status,
         $allow_comments;
 
@@ -452,15 +451,6 @@ class Collection extends Entity {
 	}
 
 	/**
-	 * Get collection moderators ids
-	 *
-	 * @return array
-	 */
-	function get_moderators_ids() {
-		return $this->get_mapped_property( 'moderators_ids' );
-	}
-
-	/**
 	 * Get collection DB identifier
 	 *
 	 * This identifier is used to register the collection post type and never changes, even if you change the name and the slug of the collection.
@@ -709,27 +699,6 @@ class Collection extends Entity {
 	}
 
 	/**
-	 * Set collection moderators ids
-	 *
-	 * @param [string] $value
-	 *
-	 * @return void
-	 */
-	function set_moderators_ids( $value ) {
-	    if(!is_array($value)) {
-	        if(empty($value)) {
-                $value = [];
-	        } else {
-                throw new \Exception('moderators_ids must be a array of users ids');
-	        }
-	    }
-		// make sure you never have duplicated moderators
-		$value = array_unique($value);
-
-		$this->set_mapped_property( 'moderators_ids', $value );
-	}
-
-	/**
 	 * Sets if comments are allowed for the current Collection.
 	 *
 	 * @param $value string "open"|"closed"
@@ -746,59 +715,6 @@ class Collection extends Entity {
 	public function set_allow_comments( $value ) {
 	    $this->set_mapped_property('allow_comments', $value );
 	}
-
-	// Moderators methods
-
-	/**
-	 * Add a moderator ID to the moderators_ids list
-	 *
-	 * @param int $user_id The user ID to be added
-	 *
-	 * @return boolean Wether the ID was added or not. (if it already existed in the list it returns false)
-	 */
-	function add_moderator_id( $user_id ) {
-		if ( is_integer( $user_id ) ) {
-			$current_moderators = $this->get_moderators_ids();
-			if ( ! in_array( $user_id, $current_moderators ) ) {
-				$current_moderators[] = $user_id;
-				$this->set_moderators_ids( $current_moderators );
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Remove a moderator ID to the moderators_ids list
-	 *
-	 * @param int $user_id The user ID to be removed
-	 *
-	 * @return boolean Wether the ID was added or not. (if it did not exist in the list it returns false)
-	 */
-	function remove_moderator_id( $user_id ) {
-		if ( is_integer( $user_id ) ) {
-			$current_moderators = $this->get_moderators_ids();
-			if ( ( $key = array_search( $user_id, $current_moderators ) ) !== false ) {
-				unset( $current_moderators[ $key ] );
-				$this->set_moderators_ids( $current_moderators );
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * TODO implement the following methods to handle moderators_ids
-	 *
-	 * set_moderators
-	 * get_moderators
-	 * (the same as moderators_ids but gets and sets WP_User objects)
-	 *
-	 */
 
 	/**
 	 * Validate Collection

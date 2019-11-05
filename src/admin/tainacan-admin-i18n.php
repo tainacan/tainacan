@@ -403,21 +403,21 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_previous_page'						 	 => __( 'Previous page', 'tainacan' ),
 	'label_page'								 	 => __( 'Page', 'tainacan' ),
 	'label_current_page'							 => __( 'Current page', 'tainacan' ),
-	'label_shrink_menu'								 => __( 'Shrink menu', 'tainacan' ),	
-	'label_document_uploaded'						 => __( 'Document uploaded', 'tainacan' ),	
-	'label_repository_filter'						 => __( 'Repository filter', 'tainacan' ),	
-	'label_repository_metadatum'					 => __( 'Repository metadatum', 'tainacan' ),	
-	'label_collection_filter'						 => __( 'Collection filter', 'tainacan' ),	
-	'label_collection_metadatum'					 => __( 'Collection metadatum', 'tainacan' ),	
+	'label_shrink_menu'								 => __( 'Shrink menu', 'tainacan' ),
+	'label_document_uploaded'						 => __( 'Document uploaded', 'tainacan' ),
+	'label_repository_filter'						 => __( 'Repository filter', 'tainacan' ),
+	'label_repository_metadatum'					 => __( 'Repository metadatum', 'tainacan' ),
+	'label_collection_filter'						 => __( 'Collection filter', 'tainacan' ),
+	'label_collection_metadatum'					 => __( 'Collection metadatum', 'tainacan' ),
 	'label_collection_capabilities'					 => __( 'Collection capabilities', 'tainacan' ),
-	'label_recover_from_trash'						 => __( 'Recover from trash', 'tainacan' ),	
-	'label_show_children_terms'						 => __( 'Show children terms', 'tainacan' ),	
-	'label_begin_slide_transition'					 => __( 'Begin slide transition', 'tainacan' ),	
-	'label_pause_slide_transition'					 => __( 'Pause slide transition', 'tainacan' ),	
-	'label_next_group_slides'					 	 => __( 'Next group of slides', 'tainacan' ),		
-	'label_previous_group_slides'					 => __( 'Previous group of slides', 'tainacan' ),	
-	'label_plugin_home_page'					 	 => __( 'Plugin home page', 'tainacan' ),	
-	'label_wordpress_admin_page'					 => __( 'WordPress Admin Page', 'tainacan' ),	
+	'label_recover_from_trash'						 => __( 'Recover from trash', 'tainacan' ),
+	'label_show_children_terms'						 => __( 'Show children terms', 'tainacan' ),
+	'label_begin_slide_transition'					 => __( 'Begin slide transition', 'tainacan' ),
+	'label_pause_slide_transition'					 => __( 'Pause slide transition', 'tainacan' ),
+	'label_next_group_slides'					 	 => __( 'Next group of slides', 'tainacan' ),
+	'label_previous_group_slides'					 => __( 'Previous group of slides', 'tainacan' ),
+	'label_plugin_home_page'					 	 => __( 'Plugin home page', 'tainacan' ),
+	'label_wordpress_admin_page'					 => __( 'WordPress Admin Page', 'tainacan' ),
 	'label_view_all_%s_collections'					 => __( 'View all %s collections', 'tainacan' ),
 	'label_view_collections_list'                    => __( 'View collections list', 'tainacan' ),
 	'label_comparator'								 => __( 'Comparator', 'tainacan' ),
@@ -440,7 +440,6 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_year'							 		 => __( 'Year', 'tainacan' ),
 	'label_related_to'							 	 => __( 'Related to', 'tainacan' ),
 	'label_associated_roles'					 	 => __( 'Associated roles', 'tainacan' ),
-	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),
@@ -489,7 +488,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_type_value_year' 				     => __( 'Type year value', 'tainacan' ),
 	'instruction_select_the_amount_of_copies'		 => __( 'Select the amount of copies of the item that you want to create', 'tainacan'),
 	'instruction_select_a_interval'		 			 => __( 'Select an interval', 'tainacan'),
-	
+
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every published item, including those visible only to editors.', 'tainacan' ),
@@ -515,22 +514,22 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_search_criteria'                           => __( 'Advanced Search Criteria', 'tainacan' ),
 	'info_name_is_required'                          => __( 'Name is required.', 'tainacan' ),
 	'info_no_collection_created'                     => __( 'No collection was created in this repository.', 'tainacan' ),
-	
+
 	'info_no_items_publish'			                 => __( 'No public items found.', 'tainacan' ),
 	'info_no_items_private'			                 => __( 'No private items found.', 'tainacan' ),
 	'info_no_items_draft'			                 => __( 'No draft items found.', 'tainacan' ),
 	'info_no_items_trash'			                 => __( 'No items found on trash.', 'tainacan' ),
-	
+
 	'info_no_collections_publish'			         => __( 'No public collections found.', 'tainacan' ),
 	'info_no_collections_private'			         => __( 'No private collections found.', 'tainacan' ),
 	'info_no_collections_draft'			             => __( 'No draft collections found.', 'tainacan' ),
 	'info_no_collections_trash'			             => __( 'No collections found on trash.', 'tainacan' ),
-	
+
 	'info_no_taxonomies_publish'			         => __( 'No public taxonomies found.', 'tainacan' ),
 	'info_no_taxonomies_private'			         => __( 'No private taxonomies found.', 'tainacan' ),
 	'info_no_taxonomies_draft'			             => __( 'No draft taxonomies found.', 'tainacan' ),
 	'info_no_taxonomies_trash'			             => __( 'No taxonomies found on trash.', 'tainacan' ),
-		
+
 	'info_no_taxonomy_created'                       => __( 'No taxonomy was created in this repository.', 'tainacan' ),
 	'info_no_terms_created_on_taxonomy'              => __( 'No term was created for this taxonomy.', 'tainacan' ),
 	'info_no_terms_found'				 			 => __( 'No term was found here', 'tainacan' ),
@@ -699,6 +698,6 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'datepicker_short_friday'			=> __( 'F', 'tainacan' ),
 	/* translators: This refers to the short label that will appear on datepickers for Saturday */
 	'datepicker_short_saturday'			=> __( 'Sa', 'tainacan' )
-	
+
 ] );
 ?>

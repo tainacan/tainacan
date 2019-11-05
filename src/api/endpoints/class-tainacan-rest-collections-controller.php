@@ -25,7 +25,7 @@ class REST_Collections_Controller extends REST_Controller {
 		parent::__construct();
         add_action('init', array(&$this, 'init_objects'), 11);
     }
-    
+
     /**
      * Initialize objects after post_type register
      */
@@ -59,7 +59,7 @@ class REST_Collections_Controller extends REST_Controller {
                 'callback'            => array($this, 'get_item'),
                 'permission_callback' => array($this, 'get_item_permissions_check'),
 	            'args'                => $this->get_wp_query_params(),
-				
+
             ),
             array(
                 'methods'             => \WP_REST_Server::EDITABLE,
@@ -165,29 +165,10 @@ class REST_Collections_Controller extends REST_Controller {
 		        $item_arr = $item->_toArray();
 
 		        if ( $request['context'] === 'edit' ) {
-		        	$moderators_ids = $item_arr['moderators_ids'];
-
-		        	$moderators = [];
-
-		        	foreach ($moderators_ids as $id){
-		        		$user_data = get_userdata($id);
-
-		        		if($user_data){
-		        			$user['name'] = $user_data->display_name;
-					        //$user['roles'] = $user_data->roles;
-					        $user['id'] = $user_data->ID;
-
-					        $moderators[] = $user;
-				        }
-			        }
-
-			        $item_arr['moderators'] = $moderators;
-
 			        $item_arr['current_user_can_edit'] = $item->can_edit();
 			        $item_arr['current_user_can_delete'] = $item->can_delete();
 		        }
 
-		        unset($item_arr['moderators_ids']);
 	        } else {
 		        $attributes_to_filter = $request['fetch_only'];
 
@@ -206,12 +187,12 @@ class REST_Collections_Controller extends REST_Controller {
 			        $item_arr['current_user_can_edit'] = $item->can_edit();
 			        $item_arr['current_user_can_delete'] = $item->can_delete();
 				}
-				
+
 				$item_arr['url'] = get_permalink( $item_arr['id'] );
 			}
 
 			$total_items = wp_count_posts( $item->get_db_identifier(), 'readable' );
-			
+
 			if (isset($total_items->publish) ||
 			 isset($total_items->private) ||
 			  isset($total_items->trash) ||
@@ -227,7 +208,7 @@ class REST_Collections_Controller extends REST_Controller {
 			 * Use this filter to add additional post_meta to the api response
 			 * Use the $request object to get the context of the request and other variables
 			 * For example, id context is edit, you may want to add your meta or not.
-			 * 
+			 *
 			 * Also take care to do any permissions verification before exposing the data
 			 */
 			$extra_metadata = apply_filters('tainacan-api-response-collection-meta', [], $request);
@@ -235,7 +216,7 @@ class REST_Collections_Controller extends REST_Controller {
 			foreach ($extra_metadata as $extra_meta) {
 				$item_arr[$extra_meta] = get_post_meta($item_arr['id'], $extra_meta, true);
 			}
-			
+
 			return $item_arr;
         }
 
@@ -273,7 +254,7 @@ class REST_Collections_Controller extends REST_Controller {
 			}
 
 			return $collection->can_read();
-		} 
+		}
 
 		return false;
 	}
@@ -295,7 +276,7 @@ class REST_Collections_Controller extends REST_Controller {
 				'collection'    => $body
 			], 400);
 		}
-		
+
 		$this->collection = new Collection();
 
 		try {
@@ -308,7 +289,7 @@ class REST_Collections_Controller extends REST_Controller {
 	        $collection = $this->collections_repository->insert( $prepared_post );
 
 	        $response = $this->prepare_item_for_response($collection, $request);
-			
+
 			do_action('tainacan-api-collection-created', $response, $request);
 
 	        return new \WP_REST_Response($response, 201);
@@ -475,14 +456,14 @@ class REST_Collections_Controller extends REST_Controller {
 	public function get_endpoint_args_for_item_schema( $method = null ) {
 		$endpoint_args = [];
 		if($method === \WP_REST_Server::READABLE) {
-            
+
             $endpoint_args['name'] = array(
     	    	'description' => __('Limits the result set to collections with a specific name'),
     		    'type'        => 'string',
     	    );
-            
+
             $endpoint_args = array_merge(
-                $endpoint_args, 
+                $endpoint_args,
                 parent::get_wp_query_params(),
                 parent::get_fetch_only_param(),
                 parent::get_meta_queries_params()
@@ -505,29 +486,25 @@ class REST_Collections_Controller extends REST_Controller {
 
 	    return $endpoint_args;
     }
-	
+
 	function get_schema() {
 		$schema = [
 			'$schema'  => 'http://json-schema.org/draft-04/schema#',
 			'title' => 'collection',
 			'type' => 'object'
 		];
-		
+
 		$main_schema = parent::get_repository_schema( $this->collections_repository );
 		$permissions_schema = parent::get_permissions_schema();
-		
-		// transformation done in $this->prepare_item_for_response()
-		$main_schema['moderators'] = $main_schema['moderators_ids'];
-		$main_schema['moderators']['contex'] = 'edit';
-		
+
 		$schema['properties'] = array_merge(
 			parent::get_base_properties_schema(),
 			$main_schema,
 			$permissions_schema
 		);
-		
+
 		return $schema;
-		
+
 	}
 }
 

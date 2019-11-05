@@ -174,15 +174,6 @@ class Collections extends Repository {
 				//'validation' => v::numeric(),
 				'default'     => ''
 			],
-			// deprecated
-			'moderators_ids'             => [
-				'map'         => 'meta_multi',
-				'title'       => __( 'Moderators', 'tainacan' ),
-				'type'        => 'array/object/string',
-				'items'       => [ 'type' => 'array/string/integer/object' ],
-				'description' => __( 'Moderators of this collection', 'tainacan' ),
-				'validation'  => ''
-			],
 			'_thumbnail_id'              => [
 				'map'         => 'meta',
 				'title'       => __( 'Thumbnail', 'tainacan' ),
@@ -293,7 +284,7 @@ class Collections extends Repository {
 	 * to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
 	 * You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
 	 * appropriate WP_Query argument
-	 * 
+	 *
 	 * If a number is passed to $args, it will return a \Tainacan\Entities\Collection object.  But if the post is not found or
 	 * does not match the entity post type, it will return an empty array
 	 *
@@ -366,15 +357,15 @@ class Collections extends Repository {
 
 		$Tainacan_Metadata->register_core_metadata( $collection );
 
-		if ( $this->old_collection instanceof Entities\Collection && 
+		if ( $this->old_collection instanceof Entities\Collection &&
 			$this->old_collection->get_parent() != $collection->get_parent() &&
 			$this->old_core_title instanceof Entities\Metadatum &&
-			$this->old_core_description instanceof Entities\Metadatum 
+			$this->old_core_description instanceof Entities\Metadatum
 		) {
 			$Tainacan_Metadata->maybe_update_core_metadata_meta_keys( $collection, $this->old_collection, $this->old_core_title, $this->old_core_description );
 		}
 	}
 
-	
+
 
 }
