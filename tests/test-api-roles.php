@@ -130,6 +130,21 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 
 	}
 
+	public function test_get_roles() {
+		$request = new \WP_REST_Request('GET', $this->namespace . '/roles');
+
+		$response = $this->server->dispatch($request);
+
+		$this->assertEquals( 200, $response->get_status() );
+
+		$data = $response->get_data();
+
+		foreach (\tainacan_roles()->get_tainacan_roles() as $role => $r) {
+			$this->assertArrayHasKey($role, $data);
+		}
+
+	}
+
 	public function test_add_dependencies() {
 		$request = new \WP_REST_Request('POST', $this->namespace . '/roles');
 
