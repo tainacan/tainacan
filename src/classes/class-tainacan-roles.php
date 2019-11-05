@@ -211,14 +211,14 @@ class Roles {
 	 */
 	public function get_tainacan_roles() {
 		$tainacan_roles = [
-			'administrator' => [
+			'tainacan-administrator' => [
 				'slug' => 'tainacan-administrator',
 				'display_name' => 'Tainacan Administrator',
 				'caps' => [
 					'manage_tainacan' => true
 				]
 			],
-			'editor' => [
+			'tainacan-editor' => [
 				'slug' => 'tainacan-editor',
 				'display_name' => 'Tainacan Editor',
 				'caps' => [
@@ -240,7 +240,7 @@ class Roles {
 					'manage_tainacan_collection_all' => true
 				]
 			],
-			'author' => [
+			'tainacan-author' => [
 				'slug' => 'tainacan-author',
 				'display_name' => 'Tainacan Author',
 				'caps' => [
@@ -300,6 +300,9 @@ class Roles {
 
 		$admin = get_role('administrator');
 		$admin->add_cap('manage_tainacan');
+
+		$editor = get_role('editor');
+		$editor->add_cap('manage_tainacan');
 
 	}
 
