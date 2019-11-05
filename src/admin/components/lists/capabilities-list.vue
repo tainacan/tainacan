@@ -158,7 +158,7 @@
 </template>
 
 <script>
-    // import CapabilityDetailsModal from '../other/capability-details-modal.vue';
+    import { mapActions } from 'vuex';
 
     export default {
         name: 'CapabilitiesList',
@@ -169,12 +169,22 @@
             editingCapability: ''
         },
         methods: {
+            ...mapActions('capability', [
+                'associateCapabilityWithRole',
+                'disassociateCapabilityWithRole'
+            ]),
             toggleEditForm(capabilityKey) {
                 if (this.editingCapability == capabilityKey)
                     this.editingCapability = ''    
                 else
                     this.editingCapability = capabilityKey;
             },
+            updateRole(role, capabilityKey) {
+                if (role)
+                    this.disassociateCapabilityWithRole({ capability: capabilityKey, role: role })
+                else 
+                    this.disassociateCapabilityWithRole({ capability: capabilityKey, role: role })
+            }
         }
     }
 </script>

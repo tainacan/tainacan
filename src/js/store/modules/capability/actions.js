@@ -1,13 +1,27 @@
 import axios from '../../../axios/axios'
 
 // CAPABILITIES
-export const updateCapability = ({ commit }, capability) => {
+export const associateCapabilityWithRole = ({ commit }, { capabilityKey, role }) => {
     return new Promise(( resolve, reject ) => {
-        axios.tainacan.patch(`/roles/${capability.capabilityId}`, capability)
+        axios.tainacan.patch('/roles/' + role + '?add_cap=' + capabilityKey)
             .then( res => {
-                let capability = res.data;
-                commit('setCapability', capability);
-                resolve( capability );
+                let role = res.data;
+                commit('associateCapabilityWithRole', {capabilityKey, role });
+                resolve(role);
+            })
+            .catch(error => {
+                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+            });
+    });
+};
+
+export const disassociateCapabilityWithRole = ({ commit }, { capabilityKey, role }) => {
+    return new Promise(( resolve, reject ) => {
+        axios.tainacan.patch('/roles/' + role + '?remove_cap=' + capabilityKey)
+            .then( res => {
+                let role = res.data;
+                commit('disassociateCapabilityWithRole', {capabilityKey, role });
+                resolve(role);
             })
             .catch(error => {
                 reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
