@@ -322,6 +322,14 @@ class Roles {
 
 		$requested_cap = $args[0];
 
+		// Administrators will always be able to edit users
+		if ( $requested_cap == 'tnc_rep_edit_users' ) {
+			if ( array_key_exists('edit_users', $allcaps) && $allcaps['edit_users'] === true ) {
+				$allcaps['tnc_rep_edit_users'] = true;
+				return $allcaps;
+			}
+		}
+
 		foreach ( $caps as $cap ) {
 
 			if ( array_key_exists($cap, $allcaps) && $allcaps[$cap] === true ) {

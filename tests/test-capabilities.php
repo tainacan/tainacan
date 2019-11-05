@@ -1023,4 +1023,24 @@ class Capabilities extends TAINACAN_UnitTestCase {
 
 	}
 
+	/**
+	 * @group users
+	 */
+	public function test_admin_can_edit_user() {
+		global $current_user;
+		wp_set_current_user(1);
+
+		$this->assertTrue(current_user_can('edit_users'));
+		$this->assertTrue(current_user_can('tnc_rep_edit_users'));
+
+		$admin = get_userdata(1);
+		$admin->add_cap('manage_tainacan', false);
+		$current_user = $admin;
+		wp_set_current_user(1);
+
+		$this->assertFalse(current_user_can('manage_tainacan'));
+		$this->assertTrue(current_user_can('edit_users'));
+		$this->assertTrue(current_user_can('tnc_rep_edit_users'));
+	}
+
 }
