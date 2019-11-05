@@ -37,74 +37,91 @@ class Roles {
 		$this->capabilities = [
 			'manage_tainacan' => [
 				'display_name' => __('Manage Tainacan', 'tainacan'),
-				'description' => __('Manage all Tainacan features and all Collections', 'tainacan')
+				'description' => __('Manage all Tainacan features and all Collections', 'tainacan'),
+				'scope' => 'repository'
 			],
 			'tnc_rep_edit_users' => [
 				'display_name' => __('Manage Users', 'tainacan'),
-				'description' => __('Manage users roles and permissions', 'tainacan')
+				'description' => __('Manage users roles and permissions', 'tainacan'),
+				'scope' => 'repository'
 			],
 			'tnc_rep_edit_collections' => [
 				'display_name' => __('Create Collections', 'tainacan'),
 				'description' => __('Create new collections to the repository and edit its details', 'tainacan'),
 				'dependencies' => [
 					'upload_files'
-				]
+				],
+				'scope' => 'repository'
 			],
 			'tnc_rep_delete_collections' => [
 				'display_name' => __('Delete Collections', 'tainacan'),
-				'description' => __('Delete their own collections from the repository', 'tainacan')
+				'description' => __('Delete their own collections from the repository', 'tainacan'),
+				'scope' => 'repository'
 			],
 			'tnc_rep_edit_taxonomies' => [
 				'display_name' => __('Create and edit taxonomies', 'tainacan'),
-				'description' => __('Create new taxonomies and edit its terms', 'tainacan')
+				'description' => __('Create new taxonomies and edit its terms', 'tainacan'),
+				'scope' => 'repository'
 			],
 			'tnc_rep_edit_others_taxonomies' => [
 				'display_name' => __('Edit all Taxonomies', 'tainacan'),
-				'description' => __('Edit all taxonomies and terms, including taxonomies created by other users', 'tainacan')
+				'description' => __('Edit all taxonomies and terms, including taxonomies created by other users', 'tainacan'),
+				'scope' => 'repository'
 			],
 			'tnc_rep_delete_taxonomies' => [
 				'display_name' => __('Delete Taxonomies', 'tainacan'),
-				'description' => __('Delete taxonomies', 'tainacan')
+				'description' => __('Delete taxonomies', 'tainacan'),
+				'scope' => 'repository'
 			],
 			'tnc_rep_delete_others_taxonomies' => [
 				'display_name' => __('Delete all Taxonomies', 'tainacan'),
-				'description' => __('Delete all taxonomies and terms, including taxonomies created by other users', 'tainacan')
+				'description' => __('Delete all taxonomies and terms, including taxonomies created by other users', 'tainacan'),
+				'scope' => 'repository'
 			],
 			'tnc_rep_edit_metadata' => [
 				'display_name' => __('Manage Repository Metadata', 'tainacan'),
-				'description' => __('Create/edit metadata in repository level', 'tainacan')
+				'description' => __('Create/edit metadata in repository level', 'tainacan'),
+				'scope' => 'repository'
 			],
 			'tnc_rep_edit_filters' => [
 				'display_name' => __('Manage Repository Filters', 'tainacan'),
-				'description' => __('Create/edit filters in repository level', 'tainacan')
+				'description' => __('Create/edit filters in repository level', 'tainacan'),
+				'scope' => 'repository'
 			],
 			'tnc_rep_delete_metadata' => [
 				'display_name' => __('Delete Repository Metadata', 'tainacan'),
-				'description' => __('Delete metadata in repository level', 'tainacan')
+				'description' => __('Delete metadata in repository level', 'tainacan'),
+				'scope' => 'repository'
 			],
 			'tnc_rep_delete_filters' => [
 				'display_name' => __('Delete Repository Filters', 'tainacan'),
-				'description' => __('Delete filters in repository level', 'tainacan')
+				'description' => __('Delete filters in repository level', 'tainacan'),
+				'scope' => 'repository'
 			],
 			'tnc_rep_read_private_collections' => [
 				'display_name' => __('View private collections', 'tainacan'),
-				'description' => __('Access to view and browse private collections', 'tainacan')
+				'description' => __('Access to view and browse private collections', 'tainacan'),
+				'scope' => 'repository'
 			],
 			'tnc_rep_read_private_taxonomies' => [
 				'display_name' => __('View private taxonomies', 'tainacan'),
-				'description' => __('Access to private taxonomies information', 'tainacan')
+				'description' => __('Access to private taxonomies information', 'tainacan'),
+				'scope' => 'repository'
 			],
 			'tnc_rep_read_private_metadata' => [
 				'display_name' => __('View private repository metadata', 'tainacan'),
-				'description' => __('Access to private metadata in repository level', 'tainacan')
+				'description' => __('Access to private metadata in repository level', 'tainacan'),
+				'scope' => 'repository'
 			],
 			'tnc_rep_read_private_filters' => [
 				'display_name' => __('View private repository filters', 'tainacan'),
-				'description' => __('Access to private filters in repository level', 'tainacan')
+				'description' => __('Access to private filters in repository level', 'tainacan'),
+				'scope' => 'repository'
 			],
 			'tnc_rep_read_logs' => [
 				'display_name' => __('View Logs', 'tainacan'),
-				'description' => __('Access to activities logs. Note that activity logs might contain information on private collections, items and metadata.', 'tainacan')
+				'description' => __('Access to activities logs. Note that activity logs might contain information on private collections, items and metadata.', 'tainacan'),
+				'scope' => 'repository'
 			],
 
 			/**
@@ -114,79 +131,100 @@ class Roles {
 			 */
 			'manage_tainacan_collection_%d' => [
 				'display_name' => __('Manage Collection', 'tainacan'),
-				'description' => __('Manage all collection settings, items, metadata, filters, etc.', 'tainacan')
+				'description' => __('Manage all collection settings, items, metadata, filters, etc.', 'tainacan'),
+				'scope' => 'collection'
+			],
+			'tnc_col_%d_edit_users' => [
+				'display_name' => __('Edit users permissions', 'tainacan'),
+				'description' => __('Configure which roles and users have permission to perform actions in this collection', 'tainacan'),
+				'scope' => 'collection'
 			],
 			'tnc_col_%d_bulk_edit' => [
 				'display_name' => __('Bulk edit items', 'tainacan'),
-				'description' => __('Access to the Bulk edit items feature.', 'tainacan')
+				'description' => __('Access to the Bulk edit items feature.', 'tainacan'),
+				'scope' => 'collection'
 			],
 			'tnc_col_%d_edit_metadata' => [
 				'display_name' => __('Manage metadata', 'tainacan'),
-				'description' => __('Create/edit metadata in this collection', 'tainacan')
+				'description' => __('Create/edit metadata in this collection', 'tainacan'),
+				'scope' => 'collection'
 			],
 			'tnc_col_%d_edit_filters' => [
 				'display_name' => __('Manage filters', 'tainacan'),
-				'description' => __('Create/edit filters in this collection', 'tainacan')
+				'description' => __('Create/edit filters in this collection', 'tainacan'),
+				'scope' => 'collection'
 			],
 			'tnc_col_%d_delete_metadata' => [
 				'display_name' => __('Delete metadata', 'tainacan'),
-				'description' => __('Delete metadata in this collection', 'tainacan')
+				'description' => __('Delete metadata in this collection', 'tainacan'),
+				'scope' => 'collection'
 			],
 			'tnc_col_%d_delete_filters' => [
 				'display_name' => __('Delete filters', 'tainacan'),
-				'description' => __('Delete filters in this collection', 'tainacan')
+				'description' => __('Delete filters in this collection', 'tainacan'),
+				'scope' => 'collection'
 			],
 			'tnc_col_%d_read_private_metadata' => [
 				'display_name' => __('View private metadata', 'tainacan'),
-				'description' => __('Access private metadata in this collection', 'tainacan')
+				'description' => __('Access private metadata in this collection', 'tainacan'),
+				'scope' => 'collection'
 			],
 			'tnc_col_%d_read_private_filters' => [
 				'display_name' => __('View private filters', 'tainacan'),
-				'description' => __('Access private filters in this collection', 'tainacan')
+				'description' => __('Access private filters in this collection', 'tainacan'),
+				'scope' => 'collection'
 			],
 			'tnc_col_%d_read_private_items' => [
 				'display_name' => __('View private items', 'tainacan'),
-				'description' => __('Access to view private items in this collection', 'tainacan')
+				'description' => __('Access to view private items in this collection', 'tainacan'),
+				'scope' => 'collection'
 			],
 			'tnc_col_%d_edit_items' => [
 				'display_name' => __('Edit items', 'tainacan'),
 				'description' => __('Create and edit items in this collection', 'tainacan'),
 				'dependencies' => [
 					'upload_files'
-				]
+				],
+				'scope' => 'collection'
 			],
 			'tnc_col_%d_publish_items' => [
 				'display_name' => __('Publish items', 'tainacan'),
 				'description' => __('Publish items in this collection', 'tainacan'),
 				'dependencies' => [
 					'upload_files'
-				]
+				],
+				'scope' => 'collection'
 			],
 			'tnc_col_%d_edit_others_items' => [
 				'display_name' => __('Edit others items', 'tainacan'),
 				'description' => __('Edit items created by other users in this collection', 'tainacan'),
 				'dependencies' => [
 					'upload_files'
-				]
+				],
+				'scope' => 'collection'
 			],
 			'tnc_col_%d_edit_published_items' => [
 				'display_name' => __('Edit published items', 'tainacan'),
 				'description' => __('Edit items in this collection after they are published', 'tainacan'),
 				'dependencies' => [
 					'upload_files'
-				]
+				],
+				'scope' => 'collection'
 			],
 			'tnc_col_%d_delete_items' => [
 				'display_name' => __('Delete items', 'tainacan'),
 				'description' => __('Delete items in this collection', 'tainacan'),
+				'scope' => 'collection'
 			],
 			'tnc_col_%d_delete_others_items' => [
 				'display_name' => __('Delete others items', 'tainacan'),
 				'description' => __('Delete items created by other users in this collection', 'tainacan'),
+				'scope' => 'collection'
 			],
 			'tnc_col_%d_delete_published_items' => [
 				'display_name' => __('Delete published items', 'tainacan'),
 				'description' => __('Delete items in this collection after they are published', 'tainacan'),
+				'scope' => 'collection'
 			],
 
 
@@ -284,8 +322,24 @@ class Roles {
 		return $this->capabilities;
 	}
 
+	public function get_collection_caps() {
+		return array_filter( $this->get_all_caps(), function($el) { return $el['scope'] == 'collection'; } );
+	}
+
+	public function get_repository_caps() {
+		return array_filter( $this->get_all_caps(), function($el) { return $el['scope'] == 'repository'; } );
+	}
+
 	public function get_all_caps_slugs() {
-		return array_keys($this->capabilities);
+		return array_keys($this->get_all_caps());
+	}
+
+	public function get_collection_caps_slugs() {
+		return array_keys($this->get_collection_caps());
+	}
+
+	public function get_repository_caps_slugs() {
+		return array_keys($this->get_repository_caps());
 	}
 
 	public function init_default_roles() {
@@ -316,8 +370,8 @@ class Roles {
 	 * @return string Capability slug as in the keys of $this->capabilities
 	 */
 	public function get_cap_generic_name($cap) {
-		$cap = preg_replace('/^(.+_)[0-9]+(_.+)$/', '${1}%d${2}', $cap);
-		$cap = preg_replace('/^(.+_)all(_.+)$/', '${1}%d${2}', $cap);
+		$cap = preg_replace('/^(.+_)[0-9]+(_.+)?$/', '${1}%d${2}', $cap);
+		$cap = preg_replace('/^(.+_)all(_.+)?$/', '${1}%d${2}', $cap);
 		return $cap;
 	}
 

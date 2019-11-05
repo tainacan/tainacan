@@ -58,23 +58,6 @@ class REST_Roles_Controller extends REST_Controller {
 				'methods'             => \WP_REST_Server::EDITABLE,
 				'callback'            => array($this, 'update_item'),
 				'permission_callback' => array($this, 'update_item_permissions_check'),
-				'args'                => array(
-					'name' => array(
-						'description' => __('New role name', 'tainacan'),
-						'type' => 'string',
-						'required' => false
-					),
-					'add_cap' => array(
-						'description' => __('Slug of the capability to be added to the role', 'tainacan'),
-						'type' => 'string',
-						'required' => false
-					),
-					'remove_cap' => array(
-						'description' => __('Slug of the capability to be removed from the role', 'tainacan'),
-						'type' => 'string',
-						'required' => false
-					),
-				)
 			),
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
@@ -84,12 +67,39 @@ class REST_Roles_Controller extends REST_Controller {
 			'schema'                  => [$this, 'get_schema']
 		));
 		register_rest_route(
-			$this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base,
+			$this->namespace, '/collection/(?P<collection_id>[\d]+)/capabilities',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => array($this, 'get_collection_roles'),
-					'permission_callback' => array($this, 'get_collection_roles_permissions_check'),
+					'callback'            => array($this, 'get_capabilities'),
+					'permission_callback' => array($this, 'get_capabilities_permissions_check'),
+				)
+		));
+		register_rest_route(
+			$this->namespace, '/capabilities',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_capabilities'),
+					'permission_callback' => array($this, 'get_capabilities_permissions_check'),
+					'args'                => array(
+						'filter' => array(
+							'description' => __('Filter', 'tainacan'),
+							'type' => 'enum',
+							'required' => false,
+							''
+						),
+						'add_cap' => array(
+							'description' => __('Slug of the capability to be added to the role', 'tainacan'),
+							'type' => 'string',
+							'required' => false
+						),
+						'remove_cap' => array(
+							'description' => __('Slug of the capability to be removed from the role', 'tainacan'),
+							'type' => 'string',
+							'required' => false
+						),
+					)
 				)
 		));
 	}
@@ -204,17 +214,6 @@ class REST_Roles_Controller extends REST_Controller {
 
 		$role_slug = $request['role'];
 
-		// avoid confusion ...
-		if ( in_array($role_slug, $this->core_roles) ) {
-			return new \WP_REST_Response([
-				'error_message' => __('This role name is protected.', 'tainacan'),
-				'error'         => $name
-			], 400);
-		}
-
-		// ... even though it could work
-		$role_slug = 0 === \strpos($role_slug, 'tainacan-') ? $role_slug : 'tainacan-' . $role_slug;
-
 		// check if role exists
 		// get the role from roles array that contains the display_name
 		$roles = \wp_roles()->roles;
@@ -228,6 +227,7 @@ class REST_Roles_Controller extends REST_Controller {
 		$role = $roles[$role_slug];
 
 		if ( isset($request['name']) ) {
+
 			$name = esc_html( esc_sql( $request['name'] ) );
 			// the slug remains the same
 			\wp_roles()->roles[$role_slug]['name'] = $name;
@@ -247,9 +247,7 @@ class REST_Roles_Controller extends REST_Controller {
 
 			\wp_roles()->add_cap($role_slug, $request['add_cap']);
 			\tainacan_roles()->add_dependencies($role_slug, $request['add_cap']);
-		}
-
-		if ( isset($request['remove_cap']) ) {
+		} elseif ( isset($request['remove_cap']) ) {
 			// validate that we only deal with tainacan capabilities
 			if ( ! in_array( \tainacan_roles()->get_cap_generic_name($request['remove_cap']) , \tainacan_roles()->get_all_caps_slugs() ) ) {
 				return new \WP_REST_Response([
@@ -270,7 +268,32 @@ class REST_Roles_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function update_item_permissions_check( $request ) {
-		return current_user_can('tnc_rep_edit_users');
+		if ( current_user_can('tnc_rep_edit_users') ) {
+			return true;
+		}
+
+		if ( !isset($request['name']) ) {
+
+			$return = true;
+			$cap = '';
+			if ( isset($request['add_cap']) ) {
+				$return = in_array( \tainacan_roles()->get_cap_generic_name($request['add_cap']), \tainacan_roles()->get_collection_caps_slugs());
+				$cap = $request['add_cap'];
+			} elseif ( isset($request['remove_cap']) ) {
+				$return = in_array( \tainacan_roles()->get_cap_generic_name($request['remove_cap']), \tainacan_roles()->get_collection_caps_slugs());
+				$cap = $request['remove_cap'];
+			}
+			if ($return) {
+				$collection_id = preg_replace('/[a-z_]/', '', $cap);
+				if ( is_numeric($collection_id) ) {
+					return current_user_can('tnc_col_' . $collection_id . '_edit_users');
+				}
+
+			}
+
+		}
+
+		return false;
 	}
 
 	/**
@@ -312,7 +335,7 @@ class REST_Roles_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
-		return current_user_can('tnc_rep_edit_users');
+		return current_user_can('read');
 	}
 
 	/**
@@ -352,8 +375,14 @@ class REST_Roles_Controller extends REST_Controller {
 	 *
 	 * @return bool|\WP_Error
 	 */
-	public function get_collection_roles_permissions_check( $request ) {
-		return current_user_can('tnc_rep_edit_users');
+	public function get_capabilities_permissions_check( $request ) {
+		if ( current_user_can('tnc_rep_edit_users') ) {
+			return true;
+		}
+		if ( isset($request['collection_id']) ) {
+			return current_user_can( 'tnc_col_' . $request['collection_id'] . '_edit_users' );
+		}
+		return false;
 	}
 
 	/**
@@ -361,45 +390,75 @@ class REST_Roles_Controller extends REST_Controller {
 	 *
 	 * @return \WP_Error|\WP_REST_Response
 	 */
-	public function get_collection_roles( $request ) {
+	public function get_capabilities( $request ) {
 
-		$collection_id = $request['collection_id'];
+		$collection_id = isset($request['collection_id']) ? $request['collection_id'] : false;
 
 		$roles = \wp_roles()->roles;
 
 		$caps = \tainacan_roles()->get_all_caps();
-		$col_caps = [];
-		foreach ($caps as $cap => $c) {
-			if ( \strpos($cap, 'tnc_col_') === 0 || \strpos($cap, 'manage_tainacan_collection_') === 0 ) {
-				$col_caps[$cap] = $c;
+
+		$caps_return = [];
+
+		if ($collection_id) {
+			$col_caps = [];
+			foreach ($caps as $cap => $c) {
+				if ( \strpos($cap, 'tnc_col_') === 0 || \strpos($cap, 'manage_tainacan_collection_') === 0 ) {
+					$col_caps[$cap] = $c;
+				}
 			}
+			$caps = $col_caps;
 		}
 
-		foreach ($col_caps as $cap => $c) {
-			$col_caps[$cap]['roles'] = [];
+		foreach ($caps as $cap => $c) {
+
+			$realcap = $cap;
+			if ($collection_id) {
+				$realcap = str_replace('%d', $collection_id, $cap);
+			}
+
+			$caps_return[$realcap] = $caps[$cap];
+			$caps_return[$realcap]['roles'] = [];
+			$caps_return[$realcap]['roles_inherited'] = [];
+
 			foreach ($roles as $slug => $role) {
 
-				// capabilities we are looking for
-				$caps_aliases = [
-					str_replace('%d', $collection_id, $cap),
-					str_replace('%d', 'all', $cap)
-				];
-				foreach ($caps_aliases as $alias) {
-					if ( array_key_exists($alias, $role['capabilities']) ) {
-						$col_caps[$cap]['roles'][$slug] = [
+				if ( array_key_exists($realcap, $role['capabilities']) ) {
+					$caps_return[$realcap]['roles'][$slug] = [
+						'slug' => $slug,
+						'name' => translate_user_role($role['name']),
+					];
+				}
+
+				// inherited roles
+				$supercaps = [];
+				if ( ( $cap == 'manage_tainacan_collection_%d' || \strpos($cap, 'tnc_col_') === 0 ) && $collection_id ) {
+					$supercaps = [
+						'manage_tainacan_collection_all',
+						'manage_tainacan_collection_' . $collection_id,
+						str_replace('%d', 'all', $cap)
+					];
+				}
+				$supercaps[] = 'manage_tainacan';
+				foreach ($supercaps as $supercap) {
+					if ( array_key_exists($supercap, $role['capabilities']) ) {
+
+						$caps_return[$realcap]['roles_inherited'][$slug] = [
 							'slug' => $slug,
 							'name' => translate_user_role($role['name']),
 						];
 						break;
 					}
 
-				} // for each alias
+				} // for each supercaps
+
+
 
 			} // for each role
 
 		} // for each cap
 
-		return new \WP_REST_Response(['capabilities' => $col_caps], 200);
+		return new \WP_REST_Response(['capabilities' => $caps_return], 200);
 
 	}
 
