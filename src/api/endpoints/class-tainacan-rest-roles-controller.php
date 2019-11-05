@@ -296,7 +296,7 @@ class REST_Roles_Controller extends REST_Controller {
 	 */
 	public function get_items( $request ) {
 
-		$roles = get_editable_roles();
+		$roles = \get_editable_roles();
 
 		$response = [];
 		foreach ( $roles as $slug => $role ) {

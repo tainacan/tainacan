@@ -37,6 +37,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'processes'                                      => __( 'Processes', 'tainacan' ),
 	'sequence'                                       => __( 'Sequence', 'tainacan' ),
 	'exporters'                                      => __( 'Exporters', 'tainacan' ),
+	'capabilities'                                   => __( 'Capabilities', 'tainacan' ),
 
 	// Actions
 	'close'                                          => __( 'Close', 'tainacan' ),
@@ -131,6 +132,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'title_processes_page'                           => __( 'Processes', 'tainacan' ),
 	'title_item_bulk_add'                            => __( 'Bulk Add Items', 'tainacan' ),
 	'title_exporter_page'                            => __( 'Exporter', 'tainacan'),
+	'title_collection_capabilities'					 => __( 'Related Capabilities', 'tainacan'),
 
 	// Labels (used mainly on Aria Labels and Inputs)
 	'label'                                          => __( 'Label', 'tainacan' ),
@@ -407,6 +409,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_repository_metadatum'					 => __( 'Repository metadatum', 'tainacan' ),	
 	'label_collection_filter'						 => __( 'Collection filter', 'tainacan' ),	
 	'label_collection_metadatum'					 => __( 'Collection metadatum', 'tainacan' ),	
+	'label_collection_capabilities'					 => __( 'Collection capabilities', 'tainacan' ),
 	'label_recover_from_trash'						 => __( 'Recover from trash', 'tainacan' ),	
 	'label_show_children_terms'						 => __( 'Show children terms', 'tainacan' ),	
 	'label_begin_slide_transition'					 => __( 'Begin slide transition', 'tainacan' ),	
@@ -436,6 +439,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_month'							 		 => __( 'Month', 'tainacan' ),
 	'label_year'							 		 => __( 'Year', 'tainacan' ),
 	'label_related_to'							 	 => __( 'Related to', 'tainacan' ),
+	'label_associated_roles'					 	 => __( 'Associated roles', 'tainacan' ),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -537,7 +541,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_no_item_found_filter'                      => __( 'No item was found here with these filters.', 'tainacan' ),
 	'info_no_item_found'                             => __( 'No item was found.', 'tainacan' ),
 	'info_item_not_saved'                            => __( 'Warning: Item not saved.', 'tainacan' ),
-	'info_no_moderator_on_collection'                => __( "This collection doesn't have any moderator yet.", 'tainacan' ),
+	'info_no_associated_role' 						 => __( 'No associated role.', 'tainacan' ),
 	'info_error_deleting_collection'                 => __( 'Error on deleting collection.', 'tainacan' ),
 	'info_error_deleting_taxonomy'                   => __( 'Error on deleting taxonomy', 'tainacan' ),
 	'info_error_first_value_greater'                 => __( 'First value should be lower than second value', 'tainacan' ),
@@ -567,6 +571,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_showing_taxonomies'                        => __( 'Showing taxonomies ', 'tainacan' ),
 	'info_showing_activities'                        => __( 'Showing activities ', 'tainacan' ),
 	'info_showing_processes'                         => __( 'Showing processes ', 'tainacan' ),
+	'info_showing_capabilities'                      => __( 'Showing capabilities ', 'tainacan' ),
 	'info_warning_remove_from_trash_first'           => __( 'Remove this item from trash first' ),
 	'info_to'                                        => __( ' to ', 'tainacan' ),
 	'info_of'                                        => __( ' of ', 'tainacan' ),

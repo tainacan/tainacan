@@ -215,6 +215,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getCollectionActivitiesPath(collectionId) {
             return '/collections/'+ collectionId + '/activities/';
         },
+        getCollectionCapabilitiesPath(collectionId) {
+            return '/collections/'+ collectionId + '/capabilities/';
+        },
         getItemsPath(query) {
             return '/items/?' + qs.stringify(query);
         },

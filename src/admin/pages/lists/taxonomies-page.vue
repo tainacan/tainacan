@@ -240,7 +240,7 @@
     //import moment from 'moment'
 
     export default {
-        name: 'Page',
+        name: 'TaxonomyPage',
         data(){
             return {
                 isLoading: false,

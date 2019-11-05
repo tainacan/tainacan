@@ -171,6 +171,29 @@
                         <!-- <span class="menu-text">{{ $i18n.get('activities') }}</span> -->
                     </router-link>                
                 </li>
+                <li 
+                        :class="activeRoute == 'CollectionCapabilitiesPage' ? 'is-active':''"
+                        class="level-item"
+                        v-tooltip="{
+                            delay: {
+                                show: 300,
+                                hide: 100,
+                            },
+                            content: $i18n.get('capabilities'),
+                            autoHide: false,
+                            placement: 'bottom-start',
+                            classes: ['header-tooltips']
+                        }">
+                    <router-link 
+                            tag="a" 
+                            :to="{ path: $routerHelper.getCollectionCapabilitiesPath(id) }"
+                            :aria-label="$i18n.get('label_collection_capabilities')">
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-user"/>
+                        </span>
+                        <!-- <span class="menu-text">{{ $i18n.get('activities') }}</span> -->
+                    </router-link>                
+                </li>
             
             </ul>
         </div>
