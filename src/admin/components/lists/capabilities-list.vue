@@ -116,25 +116,26 @@
                                         v-if="index == editingCapability"
                                         class="tainacan-form"
                                         colspan="4">
-                                    <b-field :addons="false">
-                                        <label class="label is-inline-block">
-                                            {{ $i18n.get('label_associated_roles') }}
-                                            <help-button
-                                                    :title="$i18n.get('label_associated_roles')"
-                                                    :message="$i18n.get('info_associated_roles')"/>
-                                        </label>
-                                        <template v-if="capability.roles.length">
-                                            <b-checkbox
-                                                    v-for="(role, roleIndex) of capability.roles"
-                                                    :key="roleIndex"
-                                                    size="is-small"
-                                                    @input="updateRole(role, index)"
-                                                    name="roles">
-                                                {{ role }}
-                                            </b-checkbox>
-                                        </template>
-                                        <p v-else>{{ $i18n.get('info_no_role_associated_capability') }}</p>
-                                    </b-field>
+                                    <template v-if="capability.roles">
+                                        <b-field :addons="false">
+                                            <label class="label is-inline-block">
+                                                {{ $i18n.get('label_associated_roles') }}
+                                                <help-button
+                                                        :title="$i18n.get('label_associated_roles')"
+                                                        :message="$i18n.get('info_associated_roles')"/>
+                                            </label>
+                                                <b-checkbox
+                                                        v-for="(role, roleIndex) of capability.roles"
+                                                        :key="roleIndex"
+                                                        size="is-small"
+                                                        :value="role.slug"
+                                                        @input="($event) => updateRole(role.slug, index, $event)"
+                                                        name="roles">
+                                                    {{ role.name }}
+                                                </b-checkbox>
+                                        </b-field>
+                                    </template>
+                                    <p v-else>{{ $i18n.get('info_no_role_associated_capability') }}</p>
                                 </td>
                             </transition>
                         </tr>
@@ -179,11 +180,11 @@
                 else
                     this.editingCapability = capabilityKey;
             },
-            updateRole(role, capabilityKey) {
-                if (role)
-                    this.disassociateCapabilityWithRole({ capability: capabilityKey, role: role })
+            updateRole(role, capabilityKey, value) {
+                if (value)
+                    this.associateCapabilityWithRole({ capabilityKey: capabilityKey, role: role })
                 else 
-                    this.disassociateCapabilityWithRole({ capability: capabilityKey, role: role })
+                    this.disassociateCapabilityWithRole({ capabilityKey: capabilityKey, role: role })
             }
         }
     }
