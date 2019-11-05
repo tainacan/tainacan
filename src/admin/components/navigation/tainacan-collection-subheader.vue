@@ -275,15 +275,15 @@ export default {
     @import "../../scss/_variables.scss";
 
     .header-tooltips .tooltip-inner {
-        color: white;
-        text-shadow: 1px 1px $turquoise4;
-        background-color: $turquoise3;
+        color: turquoise5;
+        text-shadow: none;
+        background-color: $turquoise2;
         font-size: 0.75rem;
         font-weight: 400;
         padding: 10px 14px;
     }
     .header-tooltips .tooltip-arrow {
-        border-color: $turquoise3;
+        border-color: $turquoise2;
     }
     
     // Tainacan Header

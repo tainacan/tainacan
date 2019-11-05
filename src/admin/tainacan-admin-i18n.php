@@ -571,6 +571,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_showing_activities'                        => __( 'Showing activities ', 'tainacan' ),
 	'info_showing_processes'                         => __( 'Showing processes ', 'tainacan' ),
 	'info_showing_capabilities'                      => __( 'Showing capabilities ', 'tainacan' ),
+	'info_no_role_associated_capability'             => __( 'No role associated to this capability', 'tainacan' ),
+	'info_associated_roles'							 => __( 'These are the roles that have this capability.', 'tainacan' ),
 	'info_warning_remove_from_trash_first'           => __( 'Remove this item from trash first' ),
 	'info_to'                                        => __( ' to ', 'tainacan' ),
 	'info_of'                                        => __( ' of ', 'tainacan' ),

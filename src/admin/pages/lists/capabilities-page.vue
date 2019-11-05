@@ -13,7 +13,7 @@
                         :is-loading="isLoading"
                         :capabilities="capabilities"/>
                 
-                <!-- Empty state image -->
+                <!-- Empty state -->
                 <div v-if="capabilities.length <= 0 && !isLoading">
                     <section class="section">
                         <div class="content has-text-grey has-text-centered">
@@ -53,7 +53,7 @@
         name: 'CapabilitiesPage',
         data() {
             return {
-                isLoading: false,
+                isLoading: false
             }
         },
         components: {
