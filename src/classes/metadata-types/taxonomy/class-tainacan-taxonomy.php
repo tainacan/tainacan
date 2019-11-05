@@ -184,6 +184,7 @@ class Taxonomy extends Metadata_Type {
 				// TODO term_exists is not fully reliable. Use $terms_repository->term_exists. see issue #159
 				if (!term_exists($term)) {
 					$valid = false;
+					$this->add_error(__('term not found.', 'tainacan'));
 					break;
 				}
 			}
