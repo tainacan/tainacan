@@ -283,6 +283,9 @@ class Terms extends Repository {
 	* @return bool|WP_Term return boolean indicating if term exists. If $return_term is true and term exists, return WP_Term object 
 	*/
 	public function term_exists($searched_term, $taxonomy, $parent = null, $return_term = false) {
+		if ($searched_term == "") {
+			return false;
+		}
 		
 		$Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
 
