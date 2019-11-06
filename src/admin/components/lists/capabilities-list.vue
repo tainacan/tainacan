@@ -66,7 +66,9 @@
                                         v-html="capability.description"/>
                             </td>
                             <!-- Associated Roles -->
-                            <complete-roles-list :complete-roles-list="getCompleteRolesList(capability.roles, capability.roles_inherited)">
+                            <complete-roles-list 
+                                    v-if="capability.roles"
+                                    :complete-roles-list="getCompleteRolesList(capability.roles, capability.roles_inherited)">
                                 <td
                                         slot-scope="props"
                                         class="table-creation column-small-width"
@@ -119,7 +121,7 @@
                                         v-if="index == editingCapability"
                                         class="tainacan-form"
                                         colspan="4">
-                                    <template v-if="existingRoles && existingRoles.length">
+                                    <template v-if="existingRoles && Object.values(existingRoles).length && capability.roles">
                                         <b-field :addons="false">
                                             <label class="label is-inline-block">
                                                 {{ $i18n.get('label_associated_roles') }}
@@ -127,25 +129,18 @@
                                                         :title="$i18n.get('label_associated_roles')"
                                                         :message="$i18n.get('info_associated_roles')"/>
                                             </label>
-                                            <b-checkbox
-                                                    v-for="(role, roleIndex) of existingRoles"
-                                                    :key="roleIndex"
-                                                    size="is-small"
-                                                    :value="capability.roles[role.slug] || capability.roles_inherited[role.slug] ? true : false"
-                                                    @input="($event) => updateRole(role.slug, index, $event)"
-                                                    name="roles"
-                                                    disabled="true">
-                                                {{ role.name }}
-                                            </b-checkbox>
-                                            <b-checkbox
-                                                    v-for="(role, roleIndex) of capability.roles"
-                                                    :key="roleIndex"
-                                                    size="is-small"
-                                                    :value="role.slug"
-                                                    @input="($event) => updateRole(role.slug, index, $event)"
-                                                    name="roles">
-                                                {{ role.name }}
-                                            </b-checkbox>
+                                            <div class="roles-list">
+                                                <b-checkbox
+                                                        v-for="(role, roleIndex) of existingRoles"
+                                                        :key="roleIndex"
+                                                        size="is-small"
+                                                        :value="capability.roles[role.slug] || capability.roles_inherited[role.slug] ? true : false"
+                                                        @input="($event) => updateRole(role.slug, index, $event)"
+                                                        name="roles"
+                                                        :disabled="capability.roles_inherited[role.slug]">
+                                                    {{ role.name }}
+                                                </b-checkbox>
+                                            </div>
                                         </b-field>
                                     </template>
                                     <p 
@@ -231,23 +226,39 @@
             }
         },
         created() {
-            this.fetchRoles().then(roles => this.roles = roles);
+            this.fetchRoles().then(roles => this.existingRoles = roles);
         }
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .table-container .table-wrapper table.tainacan-table tbody tr {
     cursor: default;
+    
+    &.capabilities-edit-form td{
+        min-height: 300px;
+        height: 300px;
+        padding: 16px 24px;
+        background-color: #f6f6f6;
+        vertical-align: top;
+
+        .roles-list {
+            margin-top: 12px;
+            column-count: 3;
+            break-inside: avoid;
+
+            label {
+                margin-left: 12px;
+            }
+
+            @media screen and (max-width: 768px) {
+                column-count: 1;
+            }
+        }
+    }
+    &.capabilities-edit-form:hover {
+        background-color: #f6f6f6 !important;
+    }
 }
-.table-container .table-wrapper table.tainacan-table tbody tr.capabilities-edit-form td {
-    min-height: 300px;
-    height: 300px;
-    padding: 16px 24px;
-    background-color: #f6f6f6;
-    vertical-align: top;
-}
-.table-container .table-wrapper table.tainacan-table tbody tr.capabilities-edit-form:hover {
-    background-color: #f6f6f6 !important;
-}
+
 </style>

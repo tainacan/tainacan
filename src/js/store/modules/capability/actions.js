@@ -10,7 +10,7 @@ export const addCapabilityToRole = ({ commit }, { capabilityKey, role }) => {
                 resolve(role);
             })
             .catch(error => {
-                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+                reject(error);
             });
     });
 };
@@ -24,7 +24,7 @@ export const removeCapabilityFromRole = ({ commit }, { capabilityKey, role }) =>
                 resolve(role);
             })
             .catch(error => {
-                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+                reject(error);
             });
     });
 };

@@ -319,6 +319,10 @@ class REST_Roles_Controller extends REST_Controller {
 	 */
 	public function get_items( $request ) {
 
+		if (!function_exists('get_editable_roles')) {
+			require_once(ABSPATH . '/wp-admin/includes/user.php');
+		}
+
 		$roles = \get_editable_roles();
 
 		$response = [];

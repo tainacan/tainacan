@@ -2,17 +2,17 @@ import Vue from 'vue';
 
 // Roles
 export const addCapabilityToRole = (state, {capabilityKey, role}) => {
-    const existingRoleIndex = state.capabilities[capabilityKey].roles.findIndex((aRole) => role == aRole)
-
-    if (existingRoleIndex < 0)
-        state.capabilities[capabilityKey].roles.push(role)
+    if (state.capabilities[capabilityKey].roles[role.slug] == undefined) {
+        let updateRoles = state.capabilities[capabilityKey].roles;
+        updateRoles[role.slug] = role;
+        Vue.set(state.capabilities[capabilityKey], 'roles', updateRoles)
+    }
 };
 
 export const removeCapabilityFromRole = (state, {capabilityKey, role}) => {
-    const existingRoleIndex = state.capabilities[capabilityKey].roles.findIndex((aRole) => role == aRole)
-
-    if (existingRoleIndex >= 0)
-        state.capabilities[capabilityKey].splice(existingRoleIndex, 1)
+    let updateRoles = state.capabilities[capabilityKey].roles;
+    delete updateRoles[role.slug];
+    Vue.set(state.capabilities[capabilityKey], 'roles', updateRoles)
 };
 
 export const setRoles = (state, roles) => {

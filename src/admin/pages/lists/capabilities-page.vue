@@ -79,7 +79,7 @@
             }
         },
         computed: {
-            capabilities(){
+            capabilities() {
                 return this.getCapabilities();
             }
         },
