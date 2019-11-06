@@ -56,7 +56,7 @@
                         <a
                                 role="button"
                                 @click="addInterval(index)"
-                                class="is-inline add-link"
+                                class="add-link"
                                 :title="$i18n.get('add_value')">
                             <span class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
@@ -70,7 +70,7 @@
                         <a
                                 role="button"
                                 @click="removeInterval(index)"
-                                class="is-inline add-link"
+                                class="add-link"
                                 :title="$i18n.get('remove_value')">
                             <span class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-repprovedcircle"/>

@@ -26,6 +26,7 @@
         border-radius: 0px;
         min-width: 6rem;
         border: none;
+        z-index: 99;
         
         .dropdown-content {
             padding: 0px;
@@ -50,18 +51,22 @@
                 .is-small { color: $gray4; }
                 &.is-active { background-color: $turquoise2; }
 
-                .media-left {
-                    margin-right: 0.5rem;
-                }
-                .media-content {
-                    display: flex;
-                    width: 80%;
+                .media {
+                    align-items: center;
+                
+                    .media-left {
+                        margin-right: 0.5rem;
+                    }
+                    .media-content {
+                        display: flex;
+                        width: 80%;
 
-                    .ellipsed-text {
-                        overflow-x: hidden;
-                        text-overflow: ellipsis;
-                        white-space: nowrap;
-                        margin-right: 3px;
+                        .ellipsed-text {
+                            overflow-x: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            margin-right: 3px;
+                        }
                     }
                 }
             }
@@ -130,16 +135,16 @@
     .tag {
         background: white;
         padding-right: 0;
-        padding-left: 0.5em;
+        padding-left: 0.6em;
 
         &.is-delete {
             color: $gray4;
             &::after {
-                height: 30% !important;
+                height: 47% !important;
                 width: 1px !important;
             } 
             &::before {
-                width: 30% !important;
+                width: 47% !important;
                 height: 1px !important;
             } 
             &:hover, &:focus {

@@ -27,8 +27,12 @@
             <span
                     v-if="metadatum.metadatum.required == 'yes'"
                     class="required-metadatum-asterisk"
-                    :class="metadatumTypeMessage">*</span>
-            <span class="metadata-type">({{ metadatum.metadatum.metadata_type_object.name }})</span>
+                    :class="metadatumTypeMessage">
+                *
+            </span>
+            <span class="metadata-type">
+                ({{ metadatum.metadatum.metadata_type_object.name }})
+            </span>
             <help-button 
                     :title="metadatum.metadatum.name"
                     :message="metadatum.metadatum.description"/>
@@ -38,43 +42,44 @@
                     v-show="isCollapsed || metadatumTypeMessage == 'is-danger'"
                     v-if="isTextInputComponent( metadatum.metadatum.metadata_type_object.component )">
                 <component 
-                        :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
                         :is="metadatum.metadatum.metadata_type_object.component"
                         v-model="inputs[0]" 
                         :metadatum="metadatum"
-                        @input="emitIsChangingValue()"/>
-                <div v-if="metadatum.metadatum.multiple == 'yes'">
-                    <div 
-                            v-if="index > 0" 
-                            v-for="(input, index) in inputs" 
-                            :key="index" 
+                        @input="changeValue()"/>
+                <template v-if="metadatum.metadatum.multiple == 'yes'">
+                    <transition-group
+                            name="filter-item"
                             class="multiple-inputs">
-                        <component 
-                                :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
-                                :is="metadatum.metadatum.metadata_type_object.component"
-                                v-model="inputs[index]" 
-                                :metadatum="metadatum"
-                                @input="emitIsChangingValue()"/>
-                            <a 
-                                    v-if="index > 0" 
-                                    @click="removeInput(index)"
-                                    class="is-inline add-link">
-                                <b-icon
-                                        icon="minus-circle"
-                                        size="is-small"
-                                        type="is-secondary"/>
-                                &nbsp;{{ $i18n.get('label_remove_value') }}</a>
-                    </div>
-
+                        <template 
+                                v-for="(input, index) in inputs.slice(1)">
+                                <component 
+                                        :key="index"
+                                        :is="metadatum.metadatum.metadata_type_object.component"
+                                        v-model="inputs[index]" 
+                                        :metadatum="metadatum"
+                                        @input="changeValue()"/>
+                                <a 
+                                        v-if="index > 0" 
+                                        @click="removeInput(index)"
+                                        class="add-link"
+                                        :key="index">
+                                    <b-icon
+                                            icon="minus-circle"
+                                            size="is-small"
+                                            type="is-secondary"/>
+                                    &nbsp;{{ $i18n.get('label_remove_value') }}
+                                </a>
+                        </template>
+                    </transition-group>
                     <a 
                             @click="addInput"
-                            class="is-inline add-link">
+                            class="is-block add-link">
                         <span class="icon is-small">
                             <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
                         </span>
                         &nbsp;{{ $i18n.get('label_add_value') }}
                     </a>
-                </div>
+                </template>
             </div>
         </transition>
         <transition name="filter-item">
@@ -82,11 +87,10 @@
                     v-show="isCollapsed"
                     v-if="!isTextInputComponent( metadatum.metadatum.metadata_type_object.component )">
                 <component
-                        :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
                         :is="metadatum.metadatum.metadata_type_object.component"
                         v-model="inputs"
                         :metadatum="metadatum"
-                        @input="emitIsChangingValue()"/>
+                        @input="changeValue()"/>
             </div>
         </transition>
     </b-field>
@@ -103,8 +107,7 @@
         },
         data(){
             return {
-                inputs: [],
-                metadatumTypeMessage: ''
+                inputs: []
             }
         },
         computed: {
@@ -113,79 +116,72 @@
                 let errors = eventBus.getErrors(this.metadatum.metadatum.id);
 
                 if (errors) {
-                    this.setMetadatumTypeMessage('is-danger');
                     for (let error of errors) { 
-                        for (let index of Object.keys(error)) {
-                            // this.$console.log(index);
+                        for (let index of Object.keys(error))
                             errorMessage += error[index] + '\n';
-                        }
                     }
-                } else {
-                    this.setMetadatumTypeMessage('');
                 }
 
                 return errorMessage;
+            },
+            metadatumTypeMessage() {
+                return this.getErrorMessage ? 'is-danger' : ''
             }
         },
-        created(){
-            this.getValue();
+        created() {
+            this.createInputs();
         },
         methods: {
-            emitIsChangingValue() {
-                this.changeValue();
-            },
             changeValue: _.debounce(function() {
-                
-                if (this.metadatum.value != this.inputs) {
 
-                    if (this.inputs.length > 0 && this.inputs[0].value) {
-                        let terms = this.inputs.map(term => term.value)
-                        
-                        if (this.metadatum.value instanceof Array){
-                            let equal = [];
-
-                            for (let meta of terms) {
-                                let foundIndex = this.metadatum.value.findIndex(element => meta == element.id);
-                                if (foundIndex >= 0)
-                                    equal.push(this.metadatum.value[foundIndex]);
-                            }
-
-                            if (equal.length == terms.length && this.metadatum.value.length <= equal.length)
-                                return;
-
-                        }
-                    } else if (this.metadatum.value.constructor.name == 'Object') {
-
-                        if (this.metadatum.value.id == this.inputs)
-                            return;
-                        
-                    } else if (this.metadatum.value instanceof Array) {                        
+                if (this.inputs && this.inputs.length > 0 && this.inputs[0] && this.inputs[0].value) {
+                    let terms = this.inputs.map(term => term.value)
+                    
+                    if (this.metadatum.value instanceof Array){
                         let equal = [];
 
-                        for (let meta of this.inputs) {
+                        for (let meta of terms) {
                             let foundIndex = this.metadatum.value.findIndex(element => meta == element.id);
-
                             if (foundIndex >= 0)
                                 equal.push(this.metadatum.value[foundIndex]);
                         }
 
-                        if (equal.length == this.inputs.length && this.metadatum.value.length <= equal.length)
+                        if (equal.length == terms.length && this.metadatum.value.length <= equal.length)
                             return;
-                    } 
 
-                    eventBus.$emit('input', { item_id: this.metadatum.item.id, metadatum_id: this.metadatum.metadatum.id, values: this.inputs } );
+                    }
+                } else if (this.metadatum.value.constructor.name == 'Object') {
+
+                    if (this.metadatum.value.id == this.inputs)
+                        return;
+
+                } else if (this.metadatum.value instanceof Array) {  
+
+                    let equal = [];
+
+                    for (let meta of this.inputs) {
+                        let foundIndex = this.metadatum.value.findIndex(element => meta == element.id);
+
+                        if (foundIndex >= 0)
+                            equal.push(this.metadatum.value[foundIndex]);
+                    }
+
+                    if (equal.length == this.inputs.length && this.metadatum.value.length <= equal.length)
+                        return;
                 }
-            }, 1000),
-            getValue(){ 
-                if (this.metadatum.value instanceof Array) {
+
+                eventBus.$emit('input', {
+                    itemId: this.metadatum.item.id,
+                    metadatumId: this.metadatum.metadatum.id,
+                    values: this.inputs ? this.inputs : ''
+                });
+            
+            }, 900),
+            createInputs(){
+                if (this.metadatum.value instanceof Array)
                     this.inputs = this.metadatum.value.slice(0);
-                    
-                    if (this.inputs.length === 0)
-                        this.inputs.push('');
-                    
-                } else {
-                    this.metadatum.value == null || this.metadatum.value == undefined ? this.inputs.push('') : this.inputs.push(this.metadatum.value);
-                }
+                else
+                    this.metadatum.value == null || this.metadatum.value == undefined ? this.inputs = [] : this.inputs.push(this.metadatum.value);
             },
             addInput(){
                 this.inputs.push('');
@@ -195,12 +191,9 @@
                 this.inputs.splice(index, 1);
                 this.changeValue();
             },
-            isTextInputComponent(component){
-                let array = ['tainacan-relationship','tainacan-taxonomy'];
-                return !( array.indexOf( component ) >= 0 );
-            },
-            setMetadatumTypeMessage(message){
-                this.metadatumTypeMessage = message;
+            isTextInputComponent(component) {
+                const array = ['tainacan-relationship','tainacan-taxonomy'];
+                return !(array.indexOf(component) >= 0 );
             }
         }
     }

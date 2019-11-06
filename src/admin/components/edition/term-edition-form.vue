@@ -31,7 +31,7 @@
                 <span class="required-term-asterisk">*</span>
                 <help-button
                         :title="$i18n.get('label_name')"
-                        :message="$i18n.get('info_help_term_name')"/>
+                        :message="$i18n.get('info_help_term_name')"/> 
             </label>
             <b-input
                     :placeholder="$i18n.get('label_term_without_name')"
@@ -144,7 +144,7 @@
                         :message="$i18n.get('info_help_parent_term')"/>
             </label>
             <b-autocomplete
-                    id="tainacan-text-cover-page"
+                    id="tainacan-add-parent-field"
                     :placeholder="$i18n.get('instruction_parent_term')"
                     :data="parentTerms"
                     field="name"
@@ -155,7 +155,18 @@
                     @focus="clearErrors('parent');"
                     :disabled="!hasParent">
                 <template slot-scope="props">
-                    {{ props.option.name }}
+                    <div class="media">
+                        <div 
+                                v-if="props.option.header_image"
+                                class="media-left">
+                            <img 
+                                    width="28"
+                                    :src="props.option.header_image">
+                        </div>
+                        <div class="media-content">
+                            {{ props.option.name }}
+                        </div>
+                    </div>
                 </template>
                 <template slot="empty">{{ $i18n.get('info_no_parent_term_found') }}</template>
             </b-autocomplete>
