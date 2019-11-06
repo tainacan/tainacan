@@ -575,6 +575,98 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		
 	}
 
+	public function test_update_taxonomy_metadata() {
+		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test_col',
+				'status' => 'publish'
+			),
+			true
+		);
+		
+		$tax = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_test',
+				'collections' => [$collection],
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $tax->get_db_identifier(),
+				'name'     => 'Rock',
+				'user'     => 56
+			),
+			true
+		);
+
+		$this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $tax->get_db_identifier(),
+				'name'     => 'Samba',
+				'user'     => 56
+			),
+			true
+		);
+		
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'   => 'tax',
+				'status' => 'publish',
+				'collection' => $collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax->get_id(),
+				]
+			),
+			true
+		);
+
+		$i1 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'item teste',
+				'description' => 'adasdasdsa',
+				'collection'  => $collection
+			),
+			true
+		);
+
+		$itemMeta1 = new \Tainacan\Entities\Item_Metadata_Entity($i1, $metadatum);
+		$itemMeta1->set_value('Rock');
+		$itemMeta1->validate();
+		$Tainacan_Item_Metadata->insert($itemMeta1);
+		
+		$request = new \WP_REST_Request(
+			'GET',
+			$this->namespace . '/item/' . $i1->get_id() . '/metadata/' . $metadatum->get_id()
+		);
+		$response = $this->server->dispatch($request);
+		$data = $response->get_data();
+
+		$this->assertEquals(false, empty($data['value']));
+
+		$request = new \WP_REST_Request(
+			'PATCH',
+			$this->namespace . '/item/' . $i1->get_id() . '/metadata/' . $metadatum->get_id()
+		);
+		$attributes = json_encode(['values' => '']);
+		$request->set_body($attributes);
+		$response = $this->server->dispatch($request);
+		$data = $response->get_data();
+
+		$this->assertEquals(true, empty($data['value']));
+	}
+
 }
 
 ?>
