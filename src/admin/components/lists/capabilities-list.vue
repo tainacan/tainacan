@@ -66,23 +66,26 @@
                                         v-html="capability.description"/>
                             </td>
                             <!-- Associated Roles -->
-                            <td
-                                    class="table-creation column-small-width"
-                                    :label="$i18n.get('label_associated_roles')"
-                                    :aria-label="$i18n.get('label_associated_roles') + ': ' + capability.roles.length">
-                                <p
-                                        v-tooltip="{
-                                            delay: {
-                                                show: 500,
-                                                hide: 300,
-                                            },
-                                            content: capability.roles.length,
-                                            autoHide: false,
-                                            classes: ['tooltip'],
-                                            placement: 'auto-start'
-                                        }"
-                                        v-html="capability.roles.length ? JSON.stringify(capability.roles) : '<span class=is-italic>' + $i18n.get('info_no_associated_role') + '</span>'"/>
-                            </td>
+                            <complete-roles-list :complete-roles-list="getCompleteRolesList(capability.roles, capability.roles_inherited)">
+                                <td
+                                        slot-scope="props"
+                                        class="table-creation column-small-width"
+                                        :label="$i18n.get('label_associated_roles')"
+                                        :aria-label="$i18n.get('label_associated_roles') + ': ' + props['complete-roles-list']">
+                                    <p
+                                            v-tooltip="{
+                                                delay: {
+                                                    show: 500,
+                                                    hide: 300,
+                                                },
+                                                content: props['complete-roles-list'],
+                                                autoHide: false,
+                                                classes: ['tooltip'],
+                                                placement: 'auto-start'
+                                            }"
+                                            v-html="props['complete-roles-list']"/>
+                                </td>
+                            </complete-roles-list>
                             <!-- Actions -->
                             <td  
                                     class="actions-cell column-default-width" 
@@ -116,7 +119,7 @@
                                         v-if="index == editingCapability"
                                         class="tainacan-form"
                                         colspan="4">
-                                    <template v-if="capability.roles">
+                                    <template v-if="existingRoles && existingRoles.length">
                                         <b-field :addons="false">
                                             <label class="label is-inline-block">
                                                 {{ $i18n.get('label_associated_roles') }}
@@ -124,18 +127,32 @@
                                                         :title="$i18n.get('label_associated_roles')"
                                                         :message="$i18n.get('info_associated_roles')"/>
                                             </label>
-                                                <b-checkbox
-                                                        v-for="(role, roleIndex) of capability.roles"
-                                                        :key="roleIndex"
-                                                        size="is-small"
-                                                        :value="role.slug"
-                                                        @input="($event) => updateRole(role.slug, index, $event)"
-                                                        name="roles">
-                                                    {{ role.name }}
-                                                </b-checkbox>
+                                            <b-checkbox
+                                                    v-for="(role, roleIndex) of existingRoles"
+                                                    :key="roleIndex"
+                                                    size="is-small"
+                                                    :value="capability.roles[role.slug] || capability.roles_inherited[role.slug] ? true : false"
+                                                    @input="($event) => updateRole(role.slug, index, $event)"
+                                                    name="roles"
+                                                    disabled="true">
+                                                {{ role.name }}
+                                            </b-checkbox>
+                                            <b-checkbox
+                                                    v-for="(role, roleIndex) of capability.roles"
+                                                    :key="roleIndex"
+                                                    size="is-small"
+                                                    :value="role.slug"
+                                                    @input="($event) => updateRole(role.slug, index, $event)"
+                                                    name="roles">
+                                                {{ role.name }}
+                                            </b-checkbox>
                                         </b-field>
                                     </template>
-                                    <p v-else>{{ $i18n.get('info_no_role_associated_capability') }}</p>
+                                    <p 
+                                            v-else
+                                            class="is-italic has-text-gray">
+                                        {{ $i18n.get('info_no_role_associated_capability') }}
+                                    </p>
                                 </td>
                             </transition>
                         </tr>
@@ -143,24 +160,18 @@
                 </tbody>
             </table>
         </div>
-
-        <!-- Empty state image -->
-        <div v-if="capabilities.length <= 0 && !isLoading">
-            <section class="section">
-                <div class="content has-text-grey has-text-centered">
-                    <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-user"/>
-                    </span>
-                    <p class="is-italic has-text-gray">{{ $i18n.get('info_no_capability_found') }}</p>
-                </div>
-            </section>
-        </div>
     </div>
 </template>
 
 <script>
     import { mapActions } from 'vuex';
 
+    // Auxiliary component for avoinding multiple calls to getCompleteRolesList
+    const CompleteRolesList = {
+        render() {
+            return this.$scopedSlots.default(this.$attrs)
+        }
+    }
     export default {
         name: 'CapabilitiesList',
         props: {
@@ -169,10 +180,19 @@
             capabilities: Array,
             editingCapability: ''
         },
+        components: {
+            CompleteRolesList
+        },
+        data() {
+            return {
+                existingRoles: []
+            }
+        },
         methods: {
             ...mapActions('capability', [
-                'associateCapabilityWithRole',
-                'disassociateCapabilityWithRole'
+                'fetchRoles',
+                'addCapabilityToRole',
+                'removeCapabilityFromRole'
             ]),
             toggleEditForm(capabilityKey) {
                 if (this.editingCapability == capabilityKey)
@@ -182,10 +202,36 @@
             },
             updateRole(role, capabilityKey, value) {
                 if (value)
-                    this.associateCapabilityWithRole({ capabilityKey: capabilityKey, role: role })
+                    this.addCapabilityToRole({ capabilityKey: capabilityKey, role: role })
                 else 
-                    this.disassociateCapabilityWithRole({ capabilityKey: capabilityKey, role: role })
+                    this.removeCapabilityFromRole({ capabilityKey: capabilityKey, role: role })
+            },
+            getCompleteRolesList(roles, rolesInherited) {
+                const rolesArray = roles && !Array.isArray(roles) ? Object.values(roles) : [];
+                const rolesInheritedArray = rolesInherited && !Array.isArray(rolesInherited) ? Object.values(rolesInherited) : [];
+
+                if (rolesArray.length || rolesInheritedArray.length) {
+                    const completeRoles = rolesArray.map(role => role.name).concat(rolesInheritedArray.map(roleInherited => roleInherited.name))
+                    let completeRolesString = '';
+                    for (let i = 0; i < completeRoles.length; i++) {
+                        completeRolesString += completeRoles[i];
+                        if (completeRoles.length > 2 && i < completeRoles.length - 1) {
+                            if (i < completeRoles.length - 2)
+                                completeRolesString += ', '
+                            else
+                                completeRolesString += ' ' + this.$i18n.get('label_and') + ' ';
+                        } else if (completeRoles.length == 2 && i == 0) {
+                            completeRolesString += ' ' + this.$i18n.get('label_and') + ' ';
+                        }
+                    }
+                    return completeRolesString
+                }
+                else    
+                    return '<span class=is-italic>' + this.$i18n.get('info_no_associated_role') + '</span>';
             }
+        },
+        created() {
+            this.fetchRoles().then(roles => this.roles = roles);
         }
     }
 </script>

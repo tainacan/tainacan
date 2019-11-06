@@ -5,7 +5,6 @@ import * as mutations from './mutations';
 const state = {
     capabilities: [],
     capability: {},
-    capabilityName: String,
     roles: []
 };
 
