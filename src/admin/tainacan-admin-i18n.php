@@ -454,6 +454,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_select_a_metadatum'                 => __( 'Select a metadatum', 'tainacan' ),
 	'instruction_cover_page'                         => __( 'Type to search a Page to choose.', 'tainacan' ),
 	'instruction_moderators'                         => __( 'Type to search a User to add.', 'tainacan' ),
+	'instruction_type_search_users_filter'           => __( 'Type to search users to filter...', 'tainacan' ),
 	'instruction_select_a_parent_collection'         => __( 'Select a parent collection.', 'tainacan' ),
 	'instruction_select_collection_thumbnail'        => __( 'Select a thumbnail image for collection', 'tainacan' ),
 	'instruction_select_item_thumbnail'              => __( 'Select a thumbnail image for item', 'tainacan' ),
