@@ -81,9 +81,9 @@ class Elastic_Press {
 
 		if ($item instanceof Entities\Item) {
 			$ids_meta = array_keys ($post_args['meta']);
-			\array_filter(function($n) {
+			\array_filter($ids_meta, function($n) {
 				if (is_numeric($n)) return intval($n);
-			}, $ids_meta);
+			});
 
 			$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 			$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
