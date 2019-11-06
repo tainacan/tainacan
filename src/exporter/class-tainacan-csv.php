@@ -44,9 +44,13 @@ class CSV extends Exporter {
 				continue;
 			}
 
-			if ($meta->get_metadatum()->get_metadata_type() == 'Tainacan\Metadata_Types\Relationship')
-				$line[] = $meta->get_value();
-			else
+			if ($meta->get_metadatum()->get_metadata_type() == 'Tainacan\Metadata_Types\Relationship') {
+				$rel = $meta->get_value();
+				if (is_array($rel))
+					$line[]	= implode( $this->get_option('multivalued_delimiter'), $rel );
+				else 
+					$line[] = $rel;
+			} else
 				$line[] = $meta->get_value_as_string();
 			
 		}

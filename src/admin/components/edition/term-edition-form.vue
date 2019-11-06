@@ -31,7 +31,7 @@
                 <span class="required-term-asterisk">*</span>
                 <help-button
                         :title="$i18n.get('label_name')"
-                        :message="$i18n.get('info_help_term_name')"/>
+                        :message="$i18n.get('info_help_term_name')"/> 
             </label>
             <b-input
                     :placeholder="$i18n.get('label_term_without_name')"
