@@ -16,7 +16,7 @@
                 <b-tag
                         attached
                         closable
-                        @close="value = ''">
+                        @close="clearInput()">
                     {{ selectedTagsName[value] }}
                 </b-tag>
             </div>
@@ -117,6 +117,10 @@
             metadatum: Object
         },
         methods: {
+            clearInput() {
+                this.value = '';
+                this.onInput('');
+            },
             onChecked() {
                 this.onInput(this.checked)
             },
