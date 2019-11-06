@@ -89,8 +89,9 @@
                                     :open-on-focus="openOnFocus"
                                     @typing="fetchUsersForFiltering"
                                     @select="filterActivitiesByUser"
+                                    :loading="isFetchingUsers"
                                     field="name"
-                                    icon="magnify">
+                                    icon="account">
                                 <template slot-scope="props">
                                     <div class="media">
                                         <div
@@ -445,7 +446,7 @@
                     moment(dateString[1], this.dateFormat).toDate()
                 ];
             },
-            fetchUsersForFiltering(search) {
+            fetchUsersForFiltering: _.debounce(function (search) {
                 this.isFetchingUsers = true;
 
                 this.fetchUsers({ search: search })
@@ -457,7 +458,7 @@
                         this.$console.error(error);
                         this.isFetchingPages = false;
                     });
-            }
+            }, 500)
         },
         computed: {
             activities(){
