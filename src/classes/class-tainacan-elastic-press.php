@@ -81,7 +81,7 @@ class Elastic_Press {
 
 		if ($item instanceof Entities\Item) {
 			$ids_meta = array_keys ($post_args['meta']);
-			\array_filter($ids_meta, function($n) {
+			$ids_meta = \array_filter($ids_meta, function($n) {
 				if (is_numeric($n)) return intval($n);
 			});
 
