@@ -1,11 +1,11 @@
 <template>
-    <div>
+    <section>
         <b-field :addons="false">
             <label class="label is-inline">
-                {{ $i18n.getHelperTitle('tainacan-filter-numeric', 'step') }}<span>&nbsp;*&nbsp;</span>
+                {{ $i18n.getHelperTitle('tainacan-numeric', 'step') }}<span>&nbsp;*&nbsp;</span>
                 <help-button
-                        :title="$i18n.getHelperTitle('tainacan-filter-numeric', 'step')"
-                        :message="$i18n.getHelperMessage('tainacan-filter-numeric', 'step')"/>
+                        :title="$i18n.getHelperTitle('tainacan-numeric', 'step')"
+                        :message="$i18n.getHelperMessage('tainacan-numeric', 'step')"/>
             </label>
             <div
                     v-if="!showEditStepOptions"
@@ -67,14 +67,13 @@
                 </button>
             </div>
         </b-field>
-    </div>
+    </section>
 </template>
 
 <script>
-
     export default {
         props: {
-            value: [String, Number, Array]
+            value: [ String, Object, Array ]
         },
         data() {
             return {
@@ -85,10 +84,16 @@
         methods: {
             onUpdateStep(value) {
                 this.$emit('input', { step: value });
-            },
+            }
         },
         created() {
-            this.step = this.value && this.value.step ? this.value.step : 1;
+            this.step = this.value && this.value.step ? this.value.step : 0.01;
         }
     }
 </script>
+
+<style scoped>
+    section{
+        margin-bottom: 10px;
+    }
+</style>

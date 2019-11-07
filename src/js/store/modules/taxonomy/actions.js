@@ -296,7 +296,7 @@ export const clearTerms = ({ commit }) => {
 // Used only on Term Edition form, for autocomplete searhc for parents
 export const fetchPossibleParentTerms = ({ commit }, { taxonomyId, termId, search } ) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.get('/taxonomy/' + taxonomyId + '/terms?searchterm=' + search + '&hierarchical=1&exclude_tree=' + termId + "&hideempty=0&offset=0&number=20")
+        axios.tainacan.get('/taxonomy/' + taxonomyId + '/terms?searchterm=' + search + '&hierarchical=1&exclude_tree=' + termId + "&hideempty=0&offset=0&number=20&order=asc")
         .then(res => {
             let parentTerms = res.data;
             resolve( parentTerms );

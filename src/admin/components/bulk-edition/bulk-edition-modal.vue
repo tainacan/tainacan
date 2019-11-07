@@ -97,8 +97,6 @@
                                 :maxtags="1"
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
                                 :disabled="bulkEditionProcedures[criterion].isDone"
-                                :id="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).metadata_type_object.component +
-                             '-' + getMetadataByID(bulkEditionProcedures[criterion].metadatumID).slug"
                                 :is="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).metadata_type_object.component"
                                 :metadatum="{metadatum: getMetadataByID(bulkEditionProcedures[criterion].metadatumID)}"
                                 class="tainacan-bulk-edition-field"
@@ -152,8 +150,6 @@
                                 :maxtags="1"
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
                                 :disabled="bulkEditionProcedures[criterion].isDone || bulkEditionProcedures[criterion].isExecuting"
-                                :id="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).metadata_type_object.component +
-                             '-' + getMetadataByID(bulkEditionProcedures[criterion].metadatumID).slug"
                                 :is="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).metadata_type_object.component"
                                 :metadatum="{metadatum: getMetadataByID(bulkEditionProcedures[criterion].metadatumID)}"
                                 class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
