@@ -439,7 +439,10 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_month'							 		 => __( 'Month', 'tainacan' ),
 	'label_year'							 		 => __( 'Year', 'tainacan' ),
 	'label_related_to'							 	 => __( 'Related to', 'tainacan' ),
+	'label_user_roles'							 	 => __( 'User roles', 'tainacan' ),
 	'label_associated_roles'					 	 => __( 'Associated roles', 'tainacan' ),
+	'label_inherited_roles'						 	 => __( 'Inherited roles', 'tainacan' ),
+
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),
@@ -573,7 +576,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_showing_capabilities'                      => __( 'Showing capabilities ', 'tainacan' ),
 	'info_no_capabilities_found'					 => __( 'No capabilities found.', 'tainacan' ), 
 	'info_no_role_associated_capability'             => __( 'No role associated to this capability', 'tainacan' ),
-	'info_associated_roles'							 => __( 'These are the roles that have this capability.', 'tainacan' ),
+	'info_associated_roles'							 => __( 'These are the roles that have this capability set. You may add or remove the capability to customize the role.', 'tainacan' ),
+	'info_inherited_roles'							 => __( 'These are the roles that have greater capabilities, which inherit this one. You can not edit this as it will not have precendece over the greater capability.', 'tainacan' ),
 	'info_warning_remove_from_trash_first'           => __( 'Remove this item from trash first' ),
 	'info_to'                                        => __( ' to ', 'tainacan' ),
 	'info_of'                                        => __( ' of ', 'tainacan' ),
