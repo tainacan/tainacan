@@ -3,45 +3,60 @@
         <tainacan-title 
                 :bread-crumb-items="[{ path: '', label: this.$i18n.get('capabilities') }]"/>
 
-        <div class="above-subheader">
+        <div class="sub-header">
+            <b-field 
+                    style="margin-left: auto; margin-right: 0;"
+                    class="header-item">
+                <div class="control has-icons-right  is-small is-clearfix">
+                    <b-autocomplete
+                            v-model="filteredRole"
+                            :data="filteredRoles"
+                            :placeholder="$i18n.get('instruction_type_search_roles_filter')"
+                            keep-first
+                            open-on-focus
+                            :loading="isFetchingRoles"
+                            field="name"
+                            icon="magnify" />
+                </div>
+            </b-field>
+        </div>
+        <div>
             <b-loading
                     :is-full-page="true" 
                     :active.sync="isLoading" 
                     :can-cancel="false"/>
-            <div>
-                <capabilities-list
-                        :is-loading="isLoading"
-                        :capabilities="capabilities"/>
-                
-                <!-- Empty state -->
-                <div v-if="capabilities.length <= 0 && !isLoading">
-                    <section class="section">
-                        <div class="content has-text-grey has-text-centered">
-                            <span class="icon is-medium">
-                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-user"/>
-                            </span>
-                            <p>
-                                {{ $i18n.get('info_no_capabilities_found') }}
-                            </p>
-                        </div>
-                    </section>
-                </div>
-                <!-- Footer -->
-                <div 
-                        class="pagination-area" 
-                        v-if="capabilities.length > 0">
-                    <div class="shown-items">
-                        {{
-                            $i18n.get('info_showing_capabilities') +
-                            (capabilitiesPerPage * (page - 1) + 1) +
-                            $i18n.get('info_to') +
-                            capabilities.length + 
-                            $i18n.get('info_of') + total + '.'
-                        }}
+            <capabilities-list
+                    :is-loading="isLoading"
+                    :capabilities="capabilities"/>
+            
+            <!-- Empty state -->
+            <div v-if="capabilities.length <= 0 && !isLoading">
+                <section class="section">
+                    <div class="content has-text-grey has-text-centered">
+                        <span class="icon is-medium">
+                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-user"/>
+                        </span>
+                        <p>
+                            {{ $i18n.get('info_no_capabilities_found') }}
+                        </p>
                     </div>
+                </section>
+            </div>
+            <!-- Footer -->
+            <div 
+                    class="pagination-area" 
+                    v-if="capabilities.length > 0">
+                <div class="shown-items">
+                    {{
+                        $i18n.get('info_showing_capabilities') +
+                        (capabilitiesPerPage * (page - 1) + 1) +
+                        $i18n.get('info_to') +
+                        capabilities.length + 
+                        $i18n.get('info_of') + total + '.'
+                    }}
                 </div>
             </div>
-        </div>    
+        </div>  
     </div>
 </template>
 
@@ -53,7 +68,52 @@
         name: 'CapabilitiesPage',
         data() {
             return {
-                isLoading: false
+                isLoading: false,
+                roles: [],
+                isFetchingRoles: false,
+                filteredRole: ''
+            }
+        },
+        computed: {
+            capabilities() {
+                const capabilities = this.getCapabilities()
+                if (capabilities) {
+                    if (this.filteredRole) {
+                        let filteredCapabilities = {};
+
+                        for (let [capabilitySlug, capability] of Object.entries(capabilities)) {
+                            const rolesArray = capability.roles && !Array.isArray(capability.roles) ? Object.values(capability.roles) : [];
+                            const rolesInheritedArray = capability.roles_inherited && !Array.isArray(capability.roles_inherited) ? Object.values(capability.roles_inherited) : [];
+                            const completeRoles = rolesArray.map(role => role.name).concat(rolesInheritedArray.map(roleInherited => roleInherited.name))
+
+                            if (completeRoles.toString().search(this.filteredRole) >= 0)
+                                filteredCapabilities[capabilitySlug] = capability;
+                        }
+                        return Object.keys(filteredCapabilities).length === 0 ? [] : filteredCapabilities;
+                    } else {
+                        return capabilities;
+                    }
+                }
+                else {
+                    return []
+                }
+            },
+            filteredRoles() {
+                if (this.roles && this.roles.length) {
+                    return this.roles
+                        .filter((option) => {
+                            if (option) {
+                                return option.name
+                                    .toString()
+                                    .toLowerCase()
+                                    .indexOf(this.filteredRole.toLowerCase()) >= 0
+                            } else {
+                                return false
+                            }
+                        });
+                } else {
+                    return []
+                }
             }
         },
         components: {
@@ -61,7 +121,8 @@
         },
         methods: {
             ...mapActions('capability', [
-                'fetchCapabilities'
+                'fetchCapabilities',
+                'fetchRoles'
             ]),
             ...mapGetters('capability', [
                 'getCapabilities'
@@ -76,15 +137,24 @@
                     .catch(() => {
                         this.isLoading = false;
                     });
-            }
-        },
-        computed: {
-            capabilities() {
-                return this.getCapabilities();
+            },
+            fetchRolesForFiltering() {
+                this.isFetchingRoles = true;
+
+                this.fetchRoles()
+                    .then((roles) => {
+                        this.roles = Object.values(roles);
+                        this.isFetchingRoles = false;
+                    })
+                    .catch((error) => {
+                        this.$console.error(error);
+                        this.isFetchingRoles = false;
+                    });
             }
         },
         mounted() {
             this.loadCapabilities();
+            this.fetchRolesForFiltering();
         }
     }
 </script>
