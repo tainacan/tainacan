@@ -95,8 +95,11 @@
   .wp-block-tainacan-modal .modal-checkbox-list,
   .wp-block-tainacan-modal .modal-radio-list .components-base-control__field {
     padding: 0;
+    flex-wrap: wrap;
+    display: flex;
     display: -ms-grid;
     display: grid;
+    -ms-grid-columns: 250px 250px;
     grid-template-columns: repeat(auto-fill, 250px);
     grid-gap: 0px;
     justify-content: space-evenly;
@@ -163,8 +166,11 @@
   .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid,
   .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid {
     padding: 0;
+    flex-wrap: wrap;
+    display: flex;
     display: -ms-grid;
     display: grid;
+    -ms-grid-columns: 220px 220px 220px 220px 220px;
     grid-template-columns: repeat(auto-fill, 220px);
     grid-gap: 0px;
     justify-content: space-evenly;
