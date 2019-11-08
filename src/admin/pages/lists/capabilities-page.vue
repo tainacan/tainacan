@@ -25,8 +25,9 @@
                     :is-full-page="true" 
                     :active.sync="isLoading" 
                     :can-cancel="false"/>
+
             <capabilities-list
-                    :is-loading="isLoading"
+                    :is-loading="isLoading || isFetchingRoles"
                     :capabilities="capabilities"/>
             
             <!-- Empty state -->

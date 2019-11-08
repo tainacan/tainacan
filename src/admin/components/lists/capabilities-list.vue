@@ -23,7 +23,7 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody v-if="!isLoading">
                     <template v-for="(capability, index) of capabilities">
                         <tr 
                                 :key="index"
@@ -114,7 +114,7 @@
                             </td>
                         </tr>
                         <tr 
-                                :key="index"
+                                :key="index + '-form'"
                                 class="capabilities-edit-form">
                             <transition name="form-capabilities">
                                 <td 
@@ -179,6 +179,7 @@
                                             {{ $i18n.get('info_no_role_associated_capability') }}
                                         </p>
                                     </div>
+                                    
                                 </td>
                             </transition>
                         </tr>
