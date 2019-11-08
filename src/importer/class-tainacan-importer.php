@@ -10,29 +10,29 @@ abstract class Importer {
      *
      * When creating a new importer session via API, an id is returned and used to access this
      * importer instance. This is temporarily stored in the database and discarded after the bg process is triggered
-     * 
+     *
      * @var identifier
      */
 	private $id;
-    
+
 	/**
 	 * The path to the temporary file created when user uploads a file
 	 * @var string
 	 */
 	protected $tmp_file;
-	
-    
+
+
 	/**
 	 * This array holds the structure that the default step 'process_collections' will handle.
 	 *
-	 * Its an array of the target collections, with their IDs, an identifier from the source, the total number of items to be imported, the mapping array 
+	 * Its an array of the target collections, with their IDs, an identifier from the source, the total number of items to be imported, the mapping array
 	 * from the source structure to the ID of the metadata metadata in tainacan
 	 *
-	 * The format of the map is an array where the keys are the metadata IDs of the destination collection and the 
+	 * The format of the map is an array where the keys are the metadata IDs of the destination collection and the
 	 * values are the identifier from the source. This could be an ID or a string or whatever the importer finds appropriate to handle
 	 *
 	 * The source_id can be anyhting you like, that helps you relate this collection to your source.
-	 * 
+	 *
 	 * Example of the structure of this propery for one collection:
 	 * 0 => [
 	 * 	'id' => 12,
@@ -46,38 +46,38 @@ abstract class Importer {
 	 *
 	 * use add_collection() and remove_collection() to interact with thiis array.
 	 *
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $collections = [];
-    
+
 	/**
 	 * Stores the options for the importer. Each importer might use this property to save
 	 * their own specific option
 	 * @var array
 	 */
 	private $options = [];
-	
+
 	/**
 	 * Stores the default options for the importer options
 	 * @var array
 	 */
 	protected $default_options = [];
-	
+
 	private $accepts = [
 		'file' => true,
 		'url'  => false,
 	];
-	
+
 	/**
 	 * Declares what are the steps the importer will run, in the right order.
 	 *
-	 * By default, there is only one step, and the callback is the process_collections method 
+	 * By default, there is only one step, and the callback is the process_collections method
 	 * that process items for the collections in the collections array.
 	 *
-	 * Child classes may declare as many steps as they want and can keep this default step to use 
+	 * Child classes may declare as many steps as they want and can keep this default step to use
 	 * this method for import the items. But it is optional.
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $steps = [
@@ -87,41 +87,41 @@ abstract class Importer {
 			'callback' => 'process_collections'
 		]
 	];
-	
+
 	/**
 	 * Transients is used to store temporary data to be used accross multiple requests
 	 *
 	 * Add and remove transient data using add_transient() and delete_transient() methods
 	 *
 	 * Transitens can be strings, numbers or arrays. Avoid storing objects.
-	 * 
+	 *
 	 * @var array
 	 */
 	private $transients = [];
 
 	private $current_step = 0;
-	
+
 	private $in_step_count = 0;
-	
+
 	private $current_collection = 0;
-	
+
 	private $current_collection_item = 0;
 
 	private $url = '';
-	
+
 	private $log = [];
-	
+
 	private $error_log = [];
-	
+
 	/**
 	 * Wether to abort importer execution.
 	 * @var bool
 	 */
 	private $abort = false;
-	
+
 	/**
-	 * List of attributes that are saved in DB and that are used to 
-	 * reconstruct the object 
+	 * List of attributes that are saved in DB and that are used to
+	 * reconstruct the object
 	 * @var array
 	 */
 	private $array_attributes = [
@@ -153,10 +153,10 @@ abstract class Importer {
 				}
 			}
 		}
-		
-		
+
+
 	}
-	
+
 	public function _to_Array($short = false) {
 		$return = ['id' => $this->get_id()];
 		foreach ($this->array_attributes as $attr) {
@@ -177,10 +177,10 @@ abstract class Importer {
 
 		return $return;
 	}
-	
+
 	/////////////////////
 	// Getters and setters
-	
+
     /**
      * @return string
      */
@@ -220,51 +220,51 @@ abstract class Importer {
 	public function get_current_step() {
 		return $this->current_step;
 	}
-	
+
 	public function set_current_step($value) {
 		$this->current_step = $value;
 	}
-	
+
 	public function get_in_step_count() {
 		return $this->in_step_count;
 	}
-	
+
 	public function set_in_step_count($value) {
 		$this->in_step_count = $value;
 	}
-	
+
 	public function get_current_collection() {
 		return $this->current_collection;
 	}
-	
+
 	public function set_current_collection($value) {
 		$this->current_collection = $value;
 	}
-	
+
 	public function get_current_collection_item() {
 		return $this->current_collection_item;
 	}
-	
+
 	public function set_current_collection_item($value) {
 		$this->current_collection_item = $value;
 	}
-	
+
 	public function get_tmp_file(){
         return $this->tmp_file;
     }
-	
+
 	public function set_tmp_file($filepath){
         $this->tmp_file = $filepath;
     }
-	
+
 	public function get_collections() {
 		return $this->collections;
 	}
-	
+
 	public function set_collections($value) {
 		$this->collections = $value;
 	}
-	
+
 	/**
      * Gets the options for this importer, including default values for options
      * that were not set yet.
@@ -273,55 +273,55 @@ abstract class Importer {
     public function get_options() {
         return array_merge($this->default_options, $this->options);
     }
-	
+
 	/**
 	 * Set the options array
-	 * @param array $options 
+	 * @param array $options
 	 */
 	public function set_options($options) {
 		$this->options = $options;
 	}
-	
+
 	/**
 	 * Set the default options values.
 	 *
 	 * Must be called from the __construct method of the child importer class to set default values.
-	 * 
-	 * @param array $options 
+	 *
+	 * @param array $options
 	 */
 	protected function set_default_options($options) {
 		$this->default_options = $options;
 	}
-	
-	
+
+
     public function set_steps($steps) {
         $this->steps = $steps;
     }
-	
+
 	public function get_steps() {
         return $this->steps;
     }
-	
-	
+
+
 	private function get_transients() {
 		return $this->transients;
 	}
-	
+
 	private function set_transients(array $data) {
 		$this->transients = $data;
 	}
-	
+
 	public function get_log() {
 		return $this->log;
 	}
-	
+
 	public function get_error_log() {
 		return $this->error_log;
 	}
-	
+
 	////////////////////////////////////
 	// Utilities
-	
+
 
     /**
      * @param $file File to be managed by importer
@@ -336,8 +336,8 @@ abstract class Importer {
             return false;
         }
     }
-	
-	
+
+
     /**
      * log the actions from importer
      *
@@ -350,14 +350,14 @@ abstract class Importer {
 	public function add_error_log($message ){
         $this->error_log[] = $message;
     }
-	
+
 	public function add_collection(array $collection) {
 		if (isset($collection['id'])) {
 			$this->remove_collection($collection['id']);
 			$this->collections[] = $collection;
 		}
 	}
-	
+
 	public function remove_collection($col_id) {
 		foreach ($this->get_collections() as $index => $col) {
 			if ($col['id'] == $col_id) {
@@ -378,7 +378,7 @@ abstract class Importer {
         //$file_array['name'] = $name;
         //$file_array['tmp_name'] = $path_file;
         //$file_array['size'] = filesize( $path_file );
-		
+
 		if ( !function_exists('media_handle_upload') ) {
 			require_once(ABSPATH . "wp-admin" . '/includes/image.php');
 			require_once(ABSPATH . "wp-admin" . '/includes/file.php');
@@ -403,12 +403,12 @@ abstract class Importer {
             return $this->add_file( $this->get_id().'.txt' );
         }
     }
-    
+
     /**
      * Gets one option from the options array.
      *
      * Checks if option exist or if it have a default value. Otherwise return an empty string
-     * 
+     *
      * @param  string $key the desired option
      * @return mixed the option value, the default value or an empty string
      */
@@ -416,12 +416,12 @@ abstract class Importer {
         $options = $this->get_options();
         return isset($options[$key]) ? $options[$key] : '';
     }
-	
+
 	/**
 	 * Adds a new method accepeted by the importer
 	 *
 	 * Current possible methods are file and url
-	 * 
+	 *
 	 * @param string $method file or url
 	 * @return bool true for success, false if method does not exist
 	 */
@@ -437,7 +437,7 @@ abstract class Importer {
 	 * Removes method accepeted by the importer
 	 *
 	 * Current possible methods are file and url
-	 * 
+	 *
 	 * @param string $method file or url
 	 * @return bool true for success, false if method does not exist
 	 */
@@ -448,16 +448,16 @@ abstract class Importer {
 		}
 		return false;
 	}
-	
+
 	public function add_transient($key, $data) {
 		$this->transients[$key] = $data;
 	}
-	
+
 	public function delete_transient($key) {
 		if (isset($this->transients[$key]))
 			unset($this->transients[$key]);
 	}
-	
+
 	public function get_transient($key) {
 		if (isset($this->transients[$key]))
 			return $this->transients[$key];
@@ -473,7 +473,7 @@ abstract class Importer {
 
         return false;
     }
-	
+
 	/**
 	 * Cancel Scheduled abortion at the end of run()
 	 * @return void
@@ -481,7 +481,7 @@ abstract class Importer {
 	protected function cancel_abort() {
 		$this->abort = false;
 	}
-	
+
 	/**
 	 * Schedule importer abortion at the end of run()
 	 * @return void
@@ -489,10 +489,10 @@ abstract class Importer {
 	protected function abort() {
 		$this->abort = true;
 	}
-	
+
 	/**
 	 * Return wether importer should abort execution or not
-	 * @return bool 
+	 * @return bool
 	 */
 	public function get_abort() {
 		return $this->abort;
@@ -501,11 +501,11 @@ abstract class Importer {
 	/**
 	 * Gets the current label to be displayed below the progress bar to give
 	 * feedback to the user.
-	 * 
+	 *
 	 * It automatically gets the attribute progress_label from the current step running.
-	 * 
+	 *
 	 * Importers may change this label whenever they want
-	 * 
+	 *
 	 * @return string
 	 */
 	public function get_progress_label() {
@@ -537,17 +537,17 @@ abstract class Importer {
 	/**
 	 * Gets the current value to build the progress bar and give feedback to the user
 	 * on the background process that is running the importer.
-	 * 
+	 *
 	 * It does so by comparing the "size" attribute with the $in_step_count class attribute
-	 * where size indicates the total size of iterations the step will take and $this->in_step_count 
+	 * where size indicates the total size of iterations the step will take and $this->in_step_count
 	 * is the current iteration.
-	 * 
+	 *
 	 * For the step with "process_items" as a callback, this method will look for the the $this->collections array
-	 * and sum the value of all "total_items" attributes of each collection. Then it will look for 
+	 * and sum the value of all "total_items" attributes of each collection. Then it will look for
 	 * $this->get_current_collection and $this->set_current_collection_item to calculate the progress.
-	 * 
+	 *
 	 * The value must be from 0 to 100
-	 * 
+	 *
 	 * If a negative value is passed, it is assumed that the progress is unknown
 	 */
 	public function get_progress_value() {
@@ -595,12 +595,12 @@ abstract class Importer {
 
 	/**
 	 * Sets the total attribute for the current step
-	 * 
+	 *
 	 * The "total" attribute of a step indicates the number of iterations this step will take to complete.
-	 * 
+	 *
 	 * The iteration is counted using $this->in_step_count attribute, and comparing the two values gives us
 	 * the current progress of the process.
-	 * 
+	 *
 	 */
 	protected function set_current_step_total($value) {
 		$this->set_step_total($this->get_current_step(), $value);
@@ -608,12 +608,12 @@ abstract class Importer {
 
 	/**
 	 * Sets the total attribute for a given step
-	 * 
+	 *
 	 * The "total" attribute of a step indicates the number of iterations this step will take to complete.
-	 * 
+	 *
 	 * The iteration is counted using $this->in_step_count attribute, and comparing the two values gives us
 	 * the current progress of the process.
-	 * 
+	 *
 	 */
 	protected function set_step_total($step, $value) {
 		$steps = $this->get_steps();
@@ -626,7 +626,7 @@ abstract class Importer {
 
 	///////////////////////////////
 	// Abstract methods
-	
+
 
     /**
      * get the metadata of file/url to allow mapping
@@ -637,7 +637,7 @@ abstract class Importer {
      * @return array $metadata_source the metadata from the source
      */
     public function get_source_metadata() {}
-		
+
     /**
      * get values for a single item
      *
@@ -649,13 +649,13 @@ abstract class Importer {
      */
     abstract public function process_item( $index, $collection_id );
 
-    
-	
+
+
 	/**
 	 * Method implemented by the child importer class to return the total number of items that will be imported
 	 *
 	 * Used to build the progress bar
-	 * 
+	 *
 	 * @return int
 	 */
 	public function get_source_number_of_items() {}
@@ -665,37 +665,37 @@ abstract class Importer {
 	 * Method implemented by child importer to return the HTML of the Options Form to be rendered in the Importer page
 	 */
 	public function options_form() {}
-	
+
 	/**
-	* Called when the process is finished. returns the final message to the user with a 
+	* Called when the process is finished. returns the final message to the user with a
 	* short description of what happened. May contain HTML code and links
 	*
-	* @return string 
+	* @return string
 	*/
 	public function get_output() {
 		return '';
 	}
-	
+
 	////////////////////////////////////////
 	// Core methods
-	
+
     /**
      * process an item from the collections queue
      *
      */
     public function process_collections() {
-        
+
 		$current_collection = $this->get_current_collection();
 		$collections = $this->get_collections();
 		$collection_definition = isset($collections[$current_collection]) ? $collections[$current_collection] : false;
 		$current_collection_item = $this->get_current_collection_item();
-		
+
 		$this->add_log('Processing item ' . $current_collection_item);
 		$processed_item = $this->process_item( $current_collection_item, $collection_definition );
 		if( $processed_item ) {
 
 			if( is_bool($processed_item) ){
-				return $this->next_item();	
+				return $this->next_item();
 			}
 
 			$this->add_log('Inserting item ' . $current_collection_item);
@@ -703,66 +703,66 @@ abstract class Importer {
 		} else {
 			$this->add_error_log('failed on item '. $current_collection_item );
 		}
-		
+
 		return $this->next_item();
     }
-	
+
 	protected function next_item() {
-		
+
 		$current_collection = $this->get_current_collection();
 		$current_collection_item = $this->get_current_collection_item();
 		$collections = $this->get_collections();
 		$collection = $collections[$current_collection];
-		
+
 		$current_collection_item ++;
 		$this->set_current_collection_item($current_collection_item);
 
 		if( $this->get_transient('change_total') ){
             $collection['total_items'] = $this->get_transient('change_total');
         }
-		
+
 		if ($current_collection_item >= $collection['total_items']) {
 			return $this->next_collection();
 		}
-		
+
 		return $current_collection_item;
-		
+
 	}
-	
+
 	protected function next_collection() {
-		
+
 		$current_collection = $this->get_current_collection();
 		$collections = $this->get_collections();
-		
+
 		$this->set_current_collection_item(0);
-		
+
 		$current_collection ++;
-		
+
 		if (isset($collections[$current_collection])) {
 			$this->set_current_collection($current_collection);
 			return $current_collection;
-		}	
-		
+		}
+
 		return false;
-		
-		
+
+
 	}
-	
+
 	protected function next_step() {
-		
+
 		$current_step = $this->get_current_step();
 		$steps = $this->get_steps();
-		
+
 		$current_step ++;
 		$this->set_current_step($current_step);
-		
+
 		if (isset($steps[$current_step])) {
 			return $current_step;
-		}	
-		
+		}
+
 		return false;
-		
-		
+
+
 	}
 
     /**
@@ -771,11 +771,11 @@ abstract class Importer {
      * @param array $processed_item Associative array with metadatum source's as index with
      *                              its value or values
      * @param integet $collection_index The index in the $this->collections array of the collection the item is beeing inserted into
-     * 
+     *
      * @return Tainacan\Entities\Item Item inserted
      */
     public function insert( $processed_item, $collection_index ) {
-		
+
 		remove_action( 'post_updated', 'wp_save_post_revision' );
 		$collections = $this->get_collections();
 		$collection_definition = isset($collections[$collection_index]) ? $collections[$collection_index] : false;
@@ -783,20 +783,20 @@ abstract class Importer {
 			$this->add_error_log('Collection misconfigured');
             return false;
 		}
-		
+
 		$collection = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_definition['id']);
-		
+
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
-		
+
 		$Tainacan_Items->disable_logs();
 		$Tainacan_Metadata->disable_logs();
 		$Tainacan_Item_Metadata->disable_logs();
 
         $item = new Entities\Item( ( $this->get_transient('item_id') ) ? $this->get_transient('item_id') : 0 );
 		$itemMetadataArray = [];
-		
+
         if( is_array( $processed_item ) ){
             foreach ( $processed_item as $metadatum_source => $values ){
                 $tainacan_metadatum_id = array_search( $metadatum_source, $collection_definition['mapping'] );
@@ -812,7 +812,7 @@ abstract class Importer {
 
             }
         }
-		
+
         if( !empty( $itemMetadataArray ) && $collection instanceof Entities\Collection ){
 			$item->set_collection( $collection );
 
@@ -823,7 +823,7 @@ abstract class Importer {
                 $this->add_error_log( $item->get_errors() );
                 return false;
             }
-			
+
             foreach ( $itemMetadataArray as $itemMetadata ) {
                 $itemMetadata->set_item( $insertedItem );  // *I told you
 
@@ -843,33 +843,33 @@ abstract class Importer {
                 //    $this->add_error_log( 'Item ' . $insertedItem->get_id() . ' has an error' );
                 //}
 			}
-			
+
 			$insertedItem->set_status('publish' );
-			
+
             if($insertedItem->validate()) {
 				$insertedItem = $Tainacan_Items->update( $insertedItem );
 
 				$this->after_inserted_item(  $insertedItem, $collection_index );
             } else {
-	            $this->add_error_log( 'Error publishing Item'  ); 
-	            $this->add_error_log( $insertedItem->get_errors() ); 
+	            $this->add_error_log( 'Error publishing Item'  );
+	            $this->add_error_log( $insertedItem->get_errors() );
 	            return false;
 			}
-			
+
             return $insertedItem;
-			
+
         } else {
             $this->add_error_log(  'Collection not set');
             return false;
         }
 
 	}
-	
+
 	/**
 	 * allow importers executes process after item is insertes
 	 * @param array $insertedItem Associative array with inserted item
      * @param integer $collection_index The index in the $this->collections array of the collection the item is beeing inserted into
-	 * 
+	 *
 	 */
 	public function after_inserted_item($insertedItem, $collection_index){}
 
@@ -881,13 +881,15 @@ abstract class Importer {
 		if ($this->is_finished()) {
 			return false;
 		}
-        
+
 		$steps = $this->get_steps();
 		$current_step = $this->get_current_step();
 		$method_name = $steps[$current_step]['callback'];
 
 		if (method_exists($this, $method_name)) {
 			$author = $this->get_transient('author');
+			$this->add_log('---------------------------');
+			$this->add_log('Starting processing new item');
 			$this->add_log('User in process: ' . $author);
 			wp_set_current_user($author);
 			$result = $this->$method_name();
@@ -903,10 +905,10 @@ abstract class Importer {
 			$this->set_in_step_count($result);
 			$return = $result;
 		}
-		
+
 		return $return;
-		
-		
+
+
     }
 
     /**
@@ -929,16 +931,16 @@ abstract class Importer {
 
         $name = $properties[0];
         $type = $properties[1];
-		
+
 		$supported_types = \Tainacan\Repositories\Metadata::get_instance()->fetch_metadata_types('NAME');
 		$supported_types = array_map('strtolower', $supported_types);
-		
+
 		if ( ! \in_array($type, $supported_types) ) {
 			// translators: Warning on import logs. Invalid metadata type passed, using text type as fallback. 1 is the invalid type; 2 the name of the metadata. Ex: Unknown Metadata type "Hexadecimal" for Color. Considering text type.
 			$this->add_log( sprintf(__('Unknown Metadata type "%1$s" for %2$s. Considering text type.', 'tainacan'), $type, $name) );
 			$type = 'text';
 		}
-		
+
         $newMetadatum = new Entities\Metadatum();
         $newMetadatum->set_name($name);
 

@@ -103,9 +103,12 @@ class CSV extends Importer {
      */
     public function process_item( $index, $collection_definition ) {
         $processedItem = [];
-        $headers = $this->raw_source_metadata();
+		$headers = $this->raw_source_metadata();
 
-        $this->add_log('Proccessing item index ' . $index . ' in collection ' . $collection_definition['id'] );
+		$item_line = (int) $index + 2;
+
+        $this->add_log( 'Processing item on line ' . $item_line );
+        $this->add_log( 'Target collection: ' . $collection_definition['id'] );
 
         if (($handle = fopen($this->tmp_file, "r")) !== false) {
             $file = $handle;
@@ -146,10 +149,8 @@ class CSV extends Importer {
             return false;
         }
 
-        $this->add_log('item index ' . $this->get_option('item_id_index')  );
         if( is_numeric($this->get_option('item_id_index')) ) {
             $this->handle_item_id( $values );
-            $this->add_log('Updating item' );
         }
         foreach ( $collection_definition['mapping'] as $metadatum_id => $header) {
             $column = null;
@@ -174,7 +175,7 @@ class CSV extends Importer {
         if( !empty( $this->get_option('item_status_index') ) ) $processedItem['special_item_status'] = '';
         if( !empty( $this->get_option('item_comment_status_index') ) ) $processedItem['special_comment_status'] = '';
 
-        $this->add_log('Success to proccess index: ' . $index  );
+        $this->add_log('Success processing index: ' . $index  );
         return $processedItem;
     }
 
