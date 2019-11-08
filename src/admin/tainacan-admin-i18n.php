@@ -132,7 +132,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'title_processes_page'                           => __( 'Processes', 'tainacan' ),
 	'title_item_bulk_add'                            => __( 'Bulk Add Items', 'tainacan' ),
 	'title_exporter_page'                            => __( 'Exporter', 'tainacan'),
-	'title_collection_capabilities'					 => __( 'Related Capabilities', 'tainacan'),
+	'title_collection_capabilities'					 => __( 'Capabilities Related to the Collection', 'tainacan'),
+	'title_repository_capabilities'					 => __( 'Capabilities Related to the Repository', 'tainacan'),
 
 	// Labels (used mainly on Aria Labels and Inputs)
 	'label'                                          => __( 'Label', 'tainacan' ),

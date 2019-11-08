@@ -127,6 +127,25 @@
                 <li>
                     <router-link
                             tag="a"
+                            :to="this.$routerHelper.getCapabilitiesPath()"
+                            :class="activeRoute == 'CapabilitiesPage' ? 'is-active':''">
+                        <span
+                                v-tooltip="{                                     
+                                    offset: 4,
+                                    content: isMenuCompressed ? $i18n.get('capabilities') : '',
+                                    autoHide: true,
+                                    classes: ['tooltip', 'repository-tooltip'],
+                                    placement: 'auto'
+                                }"
+                                class="icon">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-user"/>
+                        </span>
+                        <span class="menu-text">{{ $i18n.get('capabilities') }}</span>
+                    </router-link>
+                </li>
+                <li>
+                    <router-link
+                            tag="a"
                             to="/importers"
                             :class="(
                                 activeRoute == 'AvailableImportersPage' ||

@@ -1,5 +1,9 @@
 <template>
-    <div>
+    <div 
+            :class="{
+                'repository-level-page': isRepositoryLevel,
+                'page-container': isRepositoryLevel
+            }">
         <tainacan-title 
                 :bread-crumb-items="[{ path: '', label: this.$i18n.get('capabilities') }]"/>
 
@@ -69,6 +73,7 @@
         name: 'CapabilitiesPage',
         data() {
             return {
+                isRepositoryLevel: false,
                 isLoading: false,
                 roles: [],
                 isFetchingRoles: false,
@@ -156,6 +161,9 @@
         mounted() {
             this.loadCapabilities();
             this.fetchRolesForFiltering();
+        },
+        created() {
+            this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
         }
     }
 </script>

@@ -233,6 +233,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getActivitiesPath(query) {
             return '/activities/?' + qs.stringify(query);
         },
+        getCapabilitiesPath() {
+            return '/capabilities';
+        },
         getAvailableImportersPath() {
             return '/importers';
         },
