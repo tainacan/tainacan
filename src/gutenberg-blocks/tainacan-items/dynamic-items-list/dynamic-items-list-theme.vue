@@ -177,24 +177,17 @@
                         :key="index"
                         v-for="(item, index) of items"
                         class="item-list-item"
-                        :style="{ marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : ''}">      
+                        :style="{
+                            marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
+                            backgroundImage: layout == 'mosaic' ? `url(${getItemThumbnail(item, 'tainacan-medium-full')})` : 'none'
+                        }">      
                     <a 
                             :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
                             :href="item.url"
                             target="_blank"
                             :class="(!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '')">
                         <img
-                            :src=" 
-                                item.thumbnail && item.thumbnail['tainacan-medium'][0] && item.thumbnail['tainacan-medium'][0] 
-                                    ?
-                                item.thumbnail['tainacan-medium'][0] 
-                                    :
-                                (item.thumbnail && item.thumbnail['thumbnail'][0] && item.thumbnail['thumbnail'][0]
-                                    ?    
-                                item.thumbnail['thumbnail'][0] 
-                                    : 
-                                `${tainacanBaseUrl}/admin/images/placeholder_square.png`)
-                            "
+                            :src="getItemThumbnail(item, 'tainacan-medium')"
                             :alt="item.title ? item.title : $root.__('Thumbnail', 'tainacan')">
                         <span>{{ item.title ? item.title : '' }}</span>
                     </a>
@@ -348,6 +341,19 @@ export default {
                         this.isLoadingCollection = false;      
                     });
             }
+        },
+        getItemThumbnail(item, size) {
+            return ( 
+                item.thumbnail && item.thumbnail[size][0] && item.thumbnail[size][0] 
+                    ?
+                item.thumbnail[size][0] 
+                    :
+                (item.thumbnail && item.thumbnail['thumbnail'][0] && item.thumbnail['thumbnail'][0]
+                    ?    
+                item.thumbnail['thumbnail'][0] 
+                    : 
+                `${this.tainacanBaseUrl}/admin/images/placeholder_square.png`)
+            )
         }
     },
     created() {

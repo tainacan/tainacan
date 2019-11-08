@@ -153,24 +153,19 @@ registerBlockType('tainacan/dynamic-items-list', {
                 <li 
                     key={ item.id }
                     className="item-list-item"
-                    style={{ marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : ''}}>      
+                    style={
+                        { 
+                            marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
+                            backgroundImage: layout == 'mosaic' ? `url(${getItemThumbnail(item, 'tainacan-medium-full')})` : 'none'
+                        }
+                    }>      
                     <a 
                         id={ isNaN(item.id) ? item.id : 'item-id-' + item.id }
                         href={ item.url } 
                         target="_blank"
                         className={ (!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '') }>
                         <img
-                            src={ 
-                                item.thumbnail && item.thumbnail['tainacan-medium'][0] && item.thumbnail['tainacan-medium'][0] 
-                                    ?
-                                item.thumbnail['tainacan-medium'][0] 
-                                    :
-                                (item.thumbnail && item.thumbnail['thumbnail'][0] && item.thumbnail['thumbnail'][0]
-                                    ?    
-                                item.thumbnail['thumbnail'][0] 
-                                    : 
-                                `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
-                            }
+                            src={ getItemThumbnail(item, 'tainacan-medium') }
                             alt={ item.title ? item.title : __( 'Thumbnail', 'tainacan' ) }/>
                         <span>{ item.title ? item.title : '' }</span>
                     </a>
@@ -283,6 +278,20 @@ registerBlockType('tainacan/dynamic-items-list', {
             }
         }
 
+        function getItemThumbnail(item, size) {
+            return (
+                item.thumbnail && item.thumbnail[size][0] && item.thumbnail[size][0] 
+                ?
+                item.thumbnail[size][0] 
+                    :
+                (item.thumbnail && item.thumbnail['thumbnail'][0] && item.thumbnail['thumbnail'][0]
+                    ?    
+                item.thumbnail['thumbnail'][0] 
+                    : 
+                `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
+            )
+        }
+
         function openDynamicItemsModal() {
             isModalOpen = true;
             setAttributes( { 
@@ -293,7 +302,7 @@ registerBlockType('tainacan/dynamic-items-list', {
         function updateLayout(newLayout) {
             layout = newLayout;
 
-            if (layout == 'grid' && showImage == false)
+            if ((layout == 'grid' || layout == 'mosaic') && showImage == false)
                 showImage = true;
 
             if (layout == 'list' && showName == false)
@@ -334,6 +343,12 @@ registerBlockType('tainacan/dynamic-items-list', {
                 title: __( 'List View' ),
                 onClick: () => updateLayout('list'),
                 isActive: layout === 'list',
+            },
+            {
+                icon: 'layout',
+                title: __( 'Mosaic View' ),
+                onClick: () => updateLayout('mosaic'),
+                isActive: layout === 'mosaic',
             }
         ];
 
@@ -454,7 +469,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                                         }
                                     /> 
                                 : null }
-                                { layout == 'grid' ?
+                                { layout == 'grid' || layout == 'mosaic' ?
                                     <div>
                                         <ToggleControl
                                             label={__("Item's title", 'tainacan')}

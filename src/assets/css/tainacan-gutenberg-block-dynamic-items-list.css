@@ -350,6 +350,35 @@
       .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-list-without-margin li img {
         height: 185px !important;
         margin-bottom: 0px !important; }
+  .wp-block-tainacan-dynamic-items-list ul.items-list-edit li.item-list-item {
+    display: flex;
+    align-items: flex-start; }
+    .wp-block-tainacan-dynamic-items-list ul.items-list-edit li.item-list-item button {
+      position: absolute !important;
+      background-color: rgba(255, 255, 255, 0.75);
+      color: #454647;
+      padding: 2px;
+      margin-left: 5px;
+      min-width: 14px;
+      visibility: hidden;
+      position: relative;
+      opacity: 0;
+      right: -14px;
+      top: 0px;
+      justify-content: center;
+      z-index: 999; }
+    .wp-block-tainacan-dynamic-items-list ul.items-list-edit li.item-list-item:hover button {
+      visibility: visible;
+      background-color: white !important;
+      opacity: 1;
+      right: -8px;
+      top: -8px;
+      border: 1px solid #cbcbcb;
+      border-radius: 12px;
+      transition: opacity linear 0.15s, right linear 0.15s; }
+    .wp-block-tainacan-dynamic-items-list ul.items-list-edit li.item-list-item:hover button:hover {
+      background-color: white !important;
+      border: 1px solid #cbcbcb !important; }
   .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid,
   .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid {
     padding: 0;
@@ -385,35 +414,6 @@
       .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid li.item-list-item:hover a {
         color: #454647;
         text-decoration: none; }
-  .wp-block-tainacan-dynamic-items-list ul.items-list-edit li.item-list-item {
-    display: flex;
-    align-items: flex-start; }
-    .wp-block-tainacan-dynamic-items-list ul.items-list-edit li.item-list-item button {
-      position: absolute !important;
-      background-color: rgba(255, 255, 255, 0.75);
-      color: #454647;
-      padding: 2px;
-      margin-left: 5px;
-      min-width: 14px;
-      visibility: hidden;
-      position: relative;
-      opacity: 0;
-      right: -14px;
-      top: 0px;
-      justify-content: center;
-      z-index: 999; }
-    .wp-block-tainacan-dynamic-items-list ul.items-list-edit li.item-list-item:hover button {
-      visibility: visible;
-      background-color: white !important;
-      opacity: 1;
-      right: -8px;
-      top: -8px;
-      border: 1px solid #cbcbcb;
-      border-radius: 12px;
-      transition: opacity linear 0.15s, right linear 0.15s; }
-    .wp-block-tainacan-dynamic-items-list ul.items-list-edit li.item-list-item:hover button:hover {
-      background-color: white !important;
-      border: 1px solid #cbcbcb !important; }
   @media only screen and (max-width: 498px) {
     .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid,
     .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid {
@@ -481,5 +481,66 @@
         .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-list li.item-list-item {
           min-width: calc(100% - 24px);
           width: calc(100% - 24px); } }
+  .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic,
+  .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic {
+    padding: 0;
+    display: -ms-grid;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)) !important;
+    grid-template-rows: auto;
+    grid-auto-flow: dense;
+    grid-gap: 12px;
+    width: 100%;
+    list-style-type: none; }
+    .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic li.item-list-item,
+    .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic li.item-list-item {
+      justify-self: stretch;
+      background-size: cover;
+      min-width: 120px;
+      min-height: 120px; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic li.item-list-item a,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic li.item-list-item a {
+        color: #454647;
+        font-weight: bold;
+        line-height: normal; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic li.item-list-item img,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic li.item-list-item img {
+        display: none; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic li.item-list-item a span,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic li.item-list-item a span {
+        display: block;
+        background: white;
+        opacity: 0;
+        padding: 8px 12px;
+        transition: opacity 0.5s ease; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic li.item-list-item:hover a span,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic li.item-list-item:hover a span {
+        opacity: 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic li.item-list-item a.item-without-title span,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic li.item-list-item a.item-without-title span {
+        display: none; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic li.item-list-item:hover a,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic li.item-list-item:hover a {
+        color: #454647;
+        text-decoration: none; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic li.item-list-item:nth-of-type(3n+0),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic li.item-list-item:nth-of-type(3n+0) {
+        grid-row: span 2;
+        grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic li.item-list-item:nth-of-type(2n+0),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic li.item-list-item:nth-of-type(2n+0) {
+        grid-column: span 2;
+        grid-row: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic li.item-list-item:nth-of-type(4n+0),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic li.item-list-item:nth-of-type(4n+0) {
+        grid-column: span 2;
+        grid-row: span 2; }
+  @media only screen and (max-width: 498px) {
+    .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic,
+    .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic {
+      grid-template-columns: repeat(auto-fill, 100%); }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic li.item-list-item,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic li.item-list-item {
+        width: 100%; } }
 
 /*# sourceMappingURL=tainacan-gutenberg-block-dynamic-items-list.css.map */
