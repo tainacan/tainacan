@@ -21,18 +21,8 @@ export const fetchActivities = ({ commit }, { page, activitiesPerPage, search, s
         endpoint += '&' + qs.stringify(dateQuery);
     }
 
-    if (authorId != undefined && authorId != null) {
-        let metaQuery = {
-            metaquery: [
-                {
-                    value: authorId,
-                    key: 'user_id',
-                    compare: '='
-                }
-            ]
-        };
-        endpoint += '&' + qs.stringify(metaQuery);
-    }
+    if (authorId != undefined && authorId != null)
+        endpoint += '&authorid=' + authorId;
 
     return new Promise((resolve, reject) => {
         axios.tainacan.get(endpoint)
@@ -70,18 +60,8 @@ export const fetchCollectionActivities = ({ commit }, { page, activitiesPerPage,
         endpoint += '&' + qs.stringify(dateQuery);
     }
 
-    if (authorId != undefined && authorId != null) {
-        let metaQuery = {
-            metaquery: [
-                {
-                    value: authorId,
-                    key: 'user_id',
-                    compare: '='
-                }
-            ]
-        };
-        endpoint += '&' + qs.stringify(metaQuery);
-    }
+    if (authorId != undefined && authorId != null)
+        endpoint += '&authorid=' + authorId;
 
     return new Promise((resolve, reject) => {
         axios.tainacan.get(endpoint)
@@ -106,18 +86,8 @@ export const fetchItemActivities = ({ commit }, { page, activitiesPerPage, itemI
     if (search != undefined && search != '')
         endpoint += `&search=${search}`;
 
-    if (authorId != undefined && authorId != null) {
-        let metaQuery = {
-            metaquery: [
-                {
-                    value: authorId,
-                    key: 'user_id',
-                    compare: '='
-                }
-            ]
-        };
-        endpoint += '&' + qs.stringify(metaQuery);
-    }
+    if (authorId != undefined && authorId != null)
+        endpoint += '&authorid=' + authorId;
 
     if (searchDates && searchDates[0] != null && searchDates[1] != null) {
         let dateQuery = {
