@@ -20,6 +20,10 @@
             cursor: default;
         }
     }
+    &>.control.has-icons-left .icon {
+        height: 2.125rem;
+        width: 2.125rem;
+    }
     .dropdown-menu {
         padding: 0px;
         margin-top: 0;

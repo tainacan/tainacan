@@ -491,7 +491,7 @@ export default {
 
     .source-file-upload {
         width: 100%;
-        display: grid;
+        @include display-grid;
     }
 
     .selected-source-file {

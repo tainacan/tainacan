@@ -419,6 +419,11 @@ class Migrations {
 
 	}
 
+	static function update_repository_rename_document_index_meta_key() {
+		global $wpdb;
+		$wpdb->query( "UPDATE $wpdb->postmeta SET meta_key = 'document_content_index' WHERE meta_key = '_document_content_index'");
+	}
+
 }
 
 

@@ -85,9 +85,10 @@
                             <b-autocomplete
                                     :data="users"
                                     :placeholder="$i18n.get('instruction_type_search_users_filter')"
-                                    :keep-first="keepFirst"
-                                    :open-on-focus="openOnFocus"
-                                    @typing="fetchUsersForFiltering"
+                                    keep-first
+                                    open-on-focus
+                                    @input="fetchUsersForFiltering"
+                                    @focus.once="($event) => fetchUsersForFiltering($event.target.value)"
                                     @select="filterActivitiesByUser"
                                     :loading="isFetchingUsers"
                                     field="name"
@@ -447,6 +448,7 @@
                 ];
             },
             fetchUsersForFiltering: _.debounce(function (search) {
+
                 this.isFetchingUsers = true;
 
                 this.fetchUsers({ search: search })
@@ -543,7 +545,7 @@
             .button {
                 display: flex;
                 align-items: center;
-                border-radius: 0 !important;
+                border-radius: 0px !important;
                 height: 1.95rem !important;
             }
             

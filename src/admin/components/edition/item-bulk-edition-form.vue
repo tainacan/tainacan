@@ -400,7 +400,7 @@ export default {
         .source-file-upload {
             width: 100%;
             padding: 0.75rem $page-side-padding;
-            display: grid;
+            @include display-grid;
         }
         .document-list {
             display: inline-block;

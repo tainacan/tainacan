@@ -227,7 +227,6 @@ registerBlockType('tainacan/carousel-terms-list', {
                     } else {
                         let promises = [];
                         for (let term of response.data) {  
-                            console.log(term)
                             promises.push(
                                 tainacan.get('/items/?perpage=3&fetch_only=name,url,thumbnail&taxquery[0][taxonomy]=tnc_tax_' + taxonomyId + '&taxquery[0][terms][0]=' + term.id + '&taxquery[0][compare]=IN')
                                     .then(response => { return({ term: term, termItems: response.data.items }) })
