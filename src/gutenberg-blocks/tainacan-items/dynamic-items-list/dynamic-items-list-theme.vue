@@ -166,7 +166,7 @@
         </ul>
         <div v-else>
             <ul 
-                    v-if="items.length > 0"
+                    v-if="items.length > 0 && layout !== 'mosaic'"
                     :style="{
                         gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit', 
                         marginTop: showSearchBar || showCollectionHeader ? '1.35rem' : '0px'
@@ -177,10 +177,7 @@
                         :key="index"
                         v-for="(item, index) of items"
                         class="item-list-item"
-                        :style="{
-                            marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
-                            backgroundImage: layout == 'mosaic' ? `url(${getItemThumbnail(item, 'tainacan-medium-full')})` : 'none'
-                        }">      
+                        :style="{ marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '' }">    
                     <a 
                             :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
                             :href="item.url"
@@ -192,6 +189,44 @@
                         <span>{{ item.title ? item.title : '' }}</span>
                     </a>
                 </li>
+            </ul>
+            <ul 
+                    v-if="items.length > 0 && layout == 'mosaic'"
+                    :style="{
+                        marginTop: showSearchBar || showCollectionHeader ? '1.35rem' : '0px',    
+                        padding: (Number(gridMargin)/2) + 'px ' + (Number(gridMargin)/4) + 'px'
+                    }"
+                    class="items-list"
+                    :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
+                <div 
+                        :style="{ 
+                            width: 'calc((3 * ' + gridMargin + 'px) + 60vh))',
+                            height: 'calc((3 * ' + gridMargin + 'px) + 60vh))',
+                            marginLeft: gridMargin + 'px',
+                            gridGap: gridMargin + 'px',
+                        }"
+                        class="mosaic-container"
+                        :class="'mosaic-container--' + mosaicGroup.length"
+                        :key="mosaicIndex"
+                        v-for="(mosaicGroup, mosaicIndex) of mosaicPartition(items, 5)">
+                    <li
+                            
+                            :key="index"
+                            v-for="(item, index) of mosaicGroup"
+                            class="item-list-item"
+                            :style="{ backgroundImage: layout == 'mosaic' ? `url(${getItemThumbnail(item, 'tainacan-medium-full')})` : 'none' }">          
+                        <a 
+                                :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
+                                :href="item.url"
+                                target="_blank"
+                                :class="(!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '')">
+                            <img
+                                :src="getItemThumbnail(item, 'tainacan-medium')"
+                                :alt="item.title ? item.title : $root.__('Thumbnail', 'tainacan')">
+                            <span>{{ item.title ? item.title : '' }}</span>
+                        </a>
+                    </li>
+                </div>
             </ul>
             <div
                     v-else
@@ -354,6 +389,15 @@ export default {
                     : 
                 `${this.tainacanBaseUrl}/admin/images/placeholder_square.png`)
             )
+        },
+        mosaicPartition(items, size) {
+            const partition = _.groupBy(items, (item, i) => {
+                if (i % 2 == 0)
+                    return Math.floor(i/size)
+                else
+                    return Math.floor(i/(size + 1))
+            });
+            return _.values(partition);
         }
     },
     created() {

@@ -730,6 +730,8 @@ registerBlockType('tainacan/dynamic-items-list', {
                         <ul 
                             style={{ 
                                 gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' +  (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit', 
+                                gridGap: layout == 'mosaic' ? gridMargin + 'px': 'unset',
+                                clipPath: layout == 'mosaic' ? 'inset(0px 0px ' + gridMargin + 'px 0px)': 'unset',
                                 marginTop: showSearchBar || showCollectionHeader ? '1.5rem' : '0px'
                             }}
                             className={'items-list-edit items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')}>
