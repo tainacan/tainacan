@@ -192,47 +192,37 @@ class REST_Bulkedit_Controller extends REST_Controller {
     }
 
 
-    public function create_item($request) {
-        $body = json_decode($request->get_body(), true);
+	public function create_item($request) {
+		$body = json_decode($request->get_body(), true);
+		$args = [];
 
-        $args = [];
-
-        if (isset($body['items_ids']) && is_array($body['items_ids']) && !empty($body['items_ids'])) {
-            $args['items_ids'] = $body['items_ids'];
+		if (isset($body['items_ids']) && is_array($body['items_ids']) && !empty($body['items_ids'])) {
+			$args['items_ids'] = $body['items_ids'];
 			if (isset($body['options'])) {
 				$args['options'] = $body['options'];
 			}
-        } elseif ( isset($body['use_query']) && $body['use_query'] ) {
+		} elseif ( isset($body['use_query']) && $body['use_query'] ) {
+			unset($body['use_query']['paged']);
+			unset($body['use_query']['offset']);
+			unset($body['use_query']['perpage']);
+			$body['use_query']['nopaging'] = 1;
 
-            unset($body['use_query']['paged']);
-            unset($body['use_query']['offset']);
-            unset($body['use_query']['perpage']);
-            $body['use_query']['nopaging'] = 1;
-            
-            $query_args = $this->prepare_filters($body['use_query']);
-
-            $collection_id = $request['collection_id'];
-
-            $args = [
-                'query' => $query_args,
-                'collection_id' => $collection_id
-            ];
-
-        } else {
-            return new \WP_REST_Response([
+			$query_args = $this->prepare_filters($body['use_query']);
+			$collection_id = $request['collection_id'];
+			$args = [
+				'query' => $query_args,
+				'collection_id' => $collection_id
+			];
+		} else {
+			return new \WP_REST_Response([
 				'error_message' => __('You mus specify items_ids OR use_query', 'tainacan'),
 			], 400);
-        }
-
-        $bulk = new \Tainacan\Bulk_Edit($args);
-
+		}
+		$bulk = new \Tainacan\Bulk_Edit($args);
 		$response = $this->prepare_item_for_response($bulk, $request);
-
-        $rest_response = new \WP_REST_Response($response, 200);
-
-        return $rest_response;
-
-    }
+		$rest_response = new \WP_REST_Response($response, 200);
+		return $rest_response;
+	}
 
     public function add_value($request) {
         
