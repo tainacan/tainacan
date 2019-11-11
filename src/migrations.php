@@ -424,6 +424,11 @@ class Migrations {
 		$wpdb->query( "UPDATE $wpdb->postmeta SET meta_key = 'document_content_index' WHERE meta_key = '_document_content_index'");
 	}
 
+	static function refresh_rewrite_rules_attachment_pages() {
+		// needed after we added the /tainacan_attachments url
+		flush_rewrite_rules(false);
+	}
+
 }
 
 

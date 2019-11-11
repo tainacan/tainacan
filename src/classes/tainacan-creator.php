@@ -181,6 +181,9 @@ $Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();
 
 $TainacanPrivateFiles = \Tainacan\Private_Files::get_instance();
 
+$TainacanMedia = \Tainacan\Media::get_instance();
+
+
 if (class_exists('WP_CLI')) {
 	$Tainacan_Cli = \Tainacan\Cli::get_instance();
 }
