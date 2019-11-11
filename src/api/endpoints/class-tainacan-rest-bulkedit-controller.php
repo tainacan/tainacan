@@ -218,7 +218,12 @@ class REST_Bulkedit_Controller extends REST_Controller {
 				'error_message' => __('You mus specify items_ids OR use_query', 'tainacan'),
 			], 400);
 		}
+
 		$bulk = new \Tainacan\Bulk_Edit($args);
+
+		global $Tainacan_Generic_Process_Handler;
+		$Tainacan_Generic_Process_Handler->initialize_generic_process('bulk_edit');
+
 		$response = $this->prepare_item_for_response($bulk, $request);
 		$rest_response = new \WP_REST_Response($response, 200);
 		return $rest_response;

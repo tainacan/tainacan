@@ -71,6 +71,14 @@ class Generic_Process_Handler {
 		}
 		return false;
 	}
+
+	public function initialize_generic_process($slug, $id) {
+		$process = $this->get_generic_process($slug);
+		if ( is_array($process) && isset($process['class_name']) && class_exists($process['class_name']) ) {
+			return new $process['class_name']($id);
+		}
+		return false;
+	}
 }
 
 global $Tainacan_Generic_Process_Handler;
