@@ -191,18 +191,20 @@
                 </li>
             </ul>
             <ul 
-                    v-if="items.length > 0 && layout == 'mosaic'"
+                    v-if="items.length > 0 && layout === 'mosaic'"
                     :style="{
-                        marginTop: showSearchBar || showCollectionHeader ? '1.35rem' : '0px',    
-                        padding: (Number(gridMargin)/2) + 'px ' + (Number(gridMargin)/4) + 'px'
+                        marginTop: showSearchBar || showCollectionHeader ? '-' + (Number(gridMargin)/2) : '0px',    
+                        padding: '0 ' + (Number(gridMargin)/4) + 'px',
+                        minHeight: layout === 'mosaic' ? mosaicHeight + 'vh' : ''
                     }"
                     class="items-list"
                     :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
                 <div 
                         :style="{ 
-                            width: 'calc((3 * ' + gridMargin + 'px) + 60vh))',
-                            height: 'calc((3 * ' + gridMargin + 'px) + 60vh))',
-                            marginLeft: gridMargin + 'px',
+                            width: 'calc((100% / ' + mosaicPartition(items, 5).length + ') - ' + gridMargin + 'px)',
+                            height: 'calc(((2 * ' + gridMargin + 'px) + ' + mosaicHeight + 'vh))',
+                            gridTemplateColumns: 'repeat(3, calc((100% / 3) - (' + (2*Number(gridMargin)) + 'px/3)))',
+                            margin: gridMargin + 'px',
                             gridGap: gridMargin + 'px',
                         }"
                         class="mosaic-container"
@@ -268,6 +270,7 @@ export default {
         gridMargin: Number,
         searchURL: String,
         maxItemsNumber: Number,
+        mosaicHeight: Number,
         order: String,
         showSearchBar: Boolean,
         showCollectionHeader: Boolean,
@@ -406,7 +409,7 @@ export default {
   
         if (this.showCollectionHeader)
             this.fetchCollectionForHeader();
-
+       
         this.fetchItems();
     },
 }

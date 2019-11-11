@@ -115,6 +115,10 @@ registerBlockType('tainacan/dynamic-items-list', {
         collectionTextColor: {
             type: String,
             default: "#ffffff"
+        },
+        mosaicHeight: {
+            type: Number,
+            value: 40
         }
     },
     supports: {
@@ -142,7 +146,8 @@ registerBlockType('tainacan/dynamic-items-list', {
             showCollectionLabel,
             isLoadingCollection,
             collectionBackgroundColor,
-            collectionTextColor
+            collectionTextColor,
+            mosaicHeight
         } = attributes;
 
         // Obtains block's client id to render it on save function
@@ -171,6 +176,25 @@ registerBlockType('tainacan/dynamic-items-list', {
                     </a>
                 </li>
             );
+        }
+
+        function prepareMosaicItem(mosaicGroup, mosaicGroupsLength) {
+            
+            return (
+                <div 
+                    style={
+                        { 
+                            width: 'calc((100% / ' + mosaicGroupsLength + ') - ' + gridMargin + 'px)',
+                            height: 'calc(((2 * ' + gridMargin + 'px) + ' + mosaicHeight + 'vh))',
+                            gridTemplateColumns: 'repeat(3, calc((100% / 3) - (' + (2*Number(gridMargin)) + 'px/3)))',
+                            margin: gridMargin + 'px',
+                            gridGap: gridMargin + 'px',
+                        }
+                    }
+                    className={ 'mosaic-container mosaic-container--' + mosaicGroup.length }>
+                        { buildMosaic(mosaicGroup) }
+                    </div>
+            )
         }
 
         function setContent(){
@@ -231,9 +255,15 @@ registerBlockType('tainacan/dynamic-items-list', {
             
             tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
                 .then(response => {
-
-                    for (let item of response.data.items)
-                        items.push(prepareItem(item));
+                    
+                    if (layout !== 'mosaic') {
+                        for (let item of response.data.items)
+                            items.push(prepareItem(item));
+                    } else {
+                        const mosaicGroups = mosaicPartition(response.data.items, 5);
+                        for (let mosaicGroup of mosaicGroups)
+                            items.push(prepareMosaicItem(mosaicGroup, mosaicGroups.length));
+                    }
 
                     setAttributes({
                         content: <div></div>,
@@ -325,6 +355,23 @@ registerBlockType('tainacan/dynamic-items-list', {
                 setAttributes({ searchString: searchString });
                 setContent();
             }
+        }
+
+        function mosaicPartition(items, size) {
+            const partition = _.groupBy(items, (item, i) => {
+                if (i % 2 == 0)
+                    return Math.floor(i/size)
+                else
+                    return Math.floor(i/(size + 1))
+            });
+            return _.values(partition);
+        }
+
+        function buildMosaic(mosaicGroup) {
+            let mosaic = []
+            for (let item of mosaicGroup) 
+                mosaic.push(prepareItem(item))
+            return mosaic;
         }
 
         // Executed only on the first load of page
@@ -485,16 +532,31 @@ registerBlockType('tainacan/dynamic-items-list', {
                                         <div style={{ marginTop: '16px'}}>
                                             <RangeControl
                                                 label={__('Margin between items in pixels', 'tainacan')}
-                                                value={ gridMargin }
+                                                value={ gridMargin ? gridMargin : 0 }
                                                 onChange={ ( margin ) => {
                                                     gridMargin = margin;
-                                                    setAttributes( { gridMargin: margin } ) 
+                                                    setAttributes( { gridMargin: margin } );
                                                     setContent();
                                                 }}
                                                 min={ 0 }
                                                 max={ 48 }
                                             />
                                         </div>
+                                        { layout == 'mosaic' ?
+                                            <div style={{ marginTop: '16px'}}>
+                                                <RangeControl
+                                                    label={__('Mosaic container height', 'tainacan')}
+                                                    value={ mosaicHeight ? mosaicHeight : 40 }
+                                                    onChange={ ( height ) => {
+                                                        mosaicHeight = height;
+                                                        setAttributes( { mosaicHeight: height } );
+                                                        setContent();
+                                                    }}
+                                                    min={ 10 }
+                                                    max={ 100 }
+                                                />
+                                            </div>
+                                        : null}
                                     </div>
                                 : null }
                             </div>
@@ -728,11 +790,10 @@ registerBlockType('tainacan/dynamic-items-list', {
                     </div> :
                     <div>
                         <ul 
-                            style={{ 
-                                gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' +  (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit', 
-                                gridGap: layout == 'mosaic' ? gridMargin + 'px': 'unset',
-                                clipPath: layout == 'mosaic' ? 'inset(0px 0px ' + gridMargin + 'px 0px)': 'unset',
-                                marginTop: showSearchBar || showCollectionHeader ? '1.5rem' : '0px'
+                            style={{
+                                marginTop: showSearchBar || showCollectionHeader ? '-' + (Number(gridMargin)/2) : '0px',    
+                                padding: (Number(gridMargin)/4) + 'px',
+                                minHeight: layout === 'mosaic' ? mosaicHeight + 'vh' : ''
                             }}
                             className={'items-list-edit items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')}>
                             { items }
@@ -758,7 +819,8 @@ registerBlockType('tainacan/dynamic-items-list', {
             showCollectionHeader,
             showCollectionLabel,
             collectionBackgroundColor,
-            collectionTextColor
+            collectionTextColor,
+            mosaicHeight
         } = attributes;
         
         return <div 
@@ -771,6 +833,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                     show-collection-header={ '' + showCollectionHeader }
                     show-collection-label={ '' + showCollectionLabel }
                     layout={ layout }
+                    mosaic-height={ mosaicHeight }
                     collection-background-color={ collectionBackgroundColor }
                     collection-text-color={ collectionTextColor }
                     grid-margin={ gridMargin }
@@ -781,5 +844,140 @@ registerBlockType('tainacan/dynamic-items-list', {
                     id={ 'wp-block-tainacan-dynamic-items-list_' + blockId }>
                         { content }
                 </div>
+    },
+    deprecated: [
+    {
+        attributes: {
+            content: {
+                type: 'array',
+                source: 'children',
+                selector: 'div'
+            },
+            collectionId: {
+                type: String,
+                default: undefined
+            },
+            items: {
+                type: Array,
+                default: []
+            },
+            showImage: {
+                type: Boolean,
+                default: true
+            },
+            showName: {
+                type: Boolean,
+                default: true
+            },
+            layout: {
+                type: String,
+                default: 'grid'
+            },
+            isModalOpen: {
+                type: Boolean,
+                default: false
+            },
+            gridMargin: {
+                type: Number,
+                default: 0
+            },
+            searchURL: {
+                type: String,
+                default: undefined
+            },
+            itemsRequestSource: {
+                type: String,
+                default: undefined
+            },
+            maxItemsNumber: {
+                type: Number,
+                value: undefined
+            },
+            isLoading: {
+                type: Boolean,
+                value: false
+            },
+            isLoadingCollection: {
+                type: Boolean,
+                value: false
+            },
+            showSearchBar: {
+                type: Boolean,
+                value: false
+            },
+            showCollectionHeader: {
+                type: Boolean,
+                value: false
+            },
+            showCollectionLabel: {
+                type: Boolean,
+                value: false
+            },
+            collection: {
+                type: Object,
+                value: undefined
+            },
+            searchString: {
+                type: String,
+                default: undefined
+            },
+            order: {
+                type: String,
+                default: undefined
+            },
+            blockId: {
+                type: String,
+                default: undefined
+            },
+            collectionBackgroundColor: {
+                type: String,
+                default: "#454647"
+            },
+            collectionTextColor: {
+                type: String,
+                default: "#ffffff"
+            }
+        },
+        save({ attributes, className }){
+            const {
+                content, 
+                blockId,
+                collectionId,  
+                showImage,
+                showName,
+                layout,
+                gridMargin,
+                searchURL,
+                maxItemsNumber,
+                order,
+                showSearchBar,
+                showCollectionHeader,
+                showCollectionLabel,
+                collectionBackgroundColor,
+                collectionTextColor
+            } = attributes;
+            
+            return <div 
+                        search-url={ searchURL }
+                        className={ className }
+                        collection-id={ collectionId }  
+                        show-image={ '' + showImage }
+                        show-name={ '' + showName }
+                        show-search-bar={ '' + showSearchBar }
+                        show-collection-header={ '' + showCollectionHeader }
+                        show-collection-label={ '' + showCollectionLabel }
+                        layout={ layout }
+                        collection-background-color={ collectionBackgroundColor }
+                        collection-text-color={ collectionTextColor }
+                        grid-margin={ gridMargin }
+                        max-items-number={ maxItemsNumber }
+                        order={ order }
+                        tainacan-api-root={ tainacan_plugin.root }
+                        tainacan-base-url={ tainacan_plugin.base_url }
+                        id={ 'wp-block-tainacan-dynamic-items-list_' + blockId }>
+                            { content }
+                    </div>
+        }
     }
+    ]
 });
