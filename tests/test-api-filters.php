@@ -3,7 +3,7 @@
 namespace Tainacan\Tests;
 
 /**
- * @group api 
+ * @group api
  */
 class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 
@@ -25,6 +25,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'description'   => 'Is filtered',
 				'collection_id' => $collection->get_id(),
 				'metadata_type'    => 'Tainacan\Metadata_Types\Numeric',
+				'status'      => 'publish'
 			),
 			true,
 			true
@@ -32,7 +33,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 
 		$request_body = json_encode(
 			array(
-				'filter_type'   => 'custom_interval',
+				'filter_type'   => 'Tainacan\Filter_Types\Numeric_Interval',
 				'filter'        => [
 					'name'        => 'Filter name',
 					'description' => 'This is CUSTOM INTERVAL!',
@@ -48,7 +49,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 
 		$data = $response->get_data();
 		$this->assertTrue(is_array($data) && array_key_exists('filter_type', $data), sprintf('cannot create a custom interval, response: %s', print_r($data, true)));
-		$this->assertEquals('Tainacan\Filter_Types\Custom_Interval', $data['filter_type']);
+		$this->assertEquals('Tainacan\Filter_Types\Numeric_Interval', $data['filter_type']);
 		$this->assertEquals('Filter name', $data['name']);
 	}
 
@@ -69,6 +70,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'description' => 'Is filtered',
 				'collection_id' => $collection->get_id(),
 				'metadata_type'    => 'Tainacan\Metadata_Types\Numeric',
+				'status'      => 'publish'
 			),
 			true
 		);
@@ -80,7 +82,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'collection'  => $collection,
 				'description' => 'descricao',
 				'metadatum_id'    => $metadatum->get_id(),
-				'filter_type' => 'Tainacan\Filter_Types\Custom_Interval',
+				'filter_type' => 'Tainacan\Filter_Types\Numeric_Interval',
 			),
 			true
 		);
@@ -134,13 +136,12 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			array(
 				'name'        => 'Metadatum filtered',
 				'description' => 'Is filtered',
+				'status' => 'publish',
 				'collection_id' => $collection->get_id(),
 				'metadata_type'    => 'Tainacan\Metadata_Types\Numeric',
 			),
 			true
 		);
-
-		$filter_type = $this->tainacan_filter_factory->create_filter('custom_interval');
 
 		$filter = $this->tainacan_entity_factory->create_entity(
 			'filter',
@@ -149,7 +150,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'collection'  => $collection,
 				'description' => 'descricao',
 				'metadatum_id'    => $metadatum->get_id(),
-				'filter_type' => $filter_type,
+				'filter_type' => 'Tainacan\Filter_Types\Numeric_Interval',
 			),
 			true
 		);
@@ -187,6 +188,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			array(
 				'name'          => 'Metadatum filtered',
 				'description'   => 'Is filtered',
+				'status' => 'publish',
 				'collection_id' => $collection->get_id(),
 				'metadata_type'    => 'Tainacan\Metadata_Types\Numeric'
 			),
@@ -199,12 +201,11 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'          => 'Other filtered',
 				'description'   => 'Is filtered',
 				'collection_id' => $collection->get_id(),
-				'metadata_type'    => 'Tainacan\Metadata_Types\Numeric'
+				'metadata_type'    => 'Tainacan\Metadata_Types\Numeric',
+				'status'      => 'publish'
 			),
 			true
 		);
-
-		$filter_type = $this->tainacan_filter_factory->create_filter('custom_interval');
 
 		$filter = $this->tainacan_entity_factory->create_entity(
 			'filter',
@@ -213,7 +214,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'collection'  => $collection,
 				'description' => 'descricao',
 				'metadatum'       => $metadatum,
-				'filter_type' => $filter_type,
+				'filter_type' => 'Tainacan\Filter_Types\Numeric_Interval',
 				'status'      => 'publish'
 			),
 			true
@@ -226,7 +227,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'collection'  => $collection,
 				'description' => 'descricao',
 				'metadatum'       => $metadatum2,
-				'filter_type' => $filter_type,
+				'filter_type' => 'Tainacan\Filter_Types\Numeric_Interval',
 				'status'      => 'publish'
 			),
 			true
@@ -276,7 +277,8 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'          => 'Metadatum filtered',
 				'description'   => 'Is filtered',
 				'collection_id' => $collection->get_id(),
-				'metadata_type'    => 'Tainacan\Metadata_Types\Text'
+				'metadata_type'    => 'Tainacan\Metadata_Types\Text',
+				'status'      => 'publish'
 			),
 			true
 		);
@@ -287,13 +289,14 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'          => 'Metadatum filtered',
 				'description'   => 'Is filtered',
 				'collection_id' => 'default',
-				'metadata_type'    => 'Tainacan\Metadata_Types\Text'
+				'metadata_type'    => 'Tainacan\Metadata_Types\Text',
+				'status'      => 'publish'
 			),
 			true
 		);
 
 		$filter_attr = json_encode([
-			'filter_type' => 'autocomplete',
+			'filter_type' => '\Tainacan\Filter_Types\Autocomplete',
 			'filter'      => [
 				'name'        => '2x Filter',
 				'description' => 'Description of 2x Filter',
@@ -303,7 +306,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 		]);
 
 		$filter_attr2 = json_encode([
-			'filter_type' => 'autocomplete',
+			'filter_type' => '\Tainacan\Filter_Types\Autocomplete',
 			'filter'      => [
 				'name'        => '4x Filter',
 				'description' => 'Description of 4x Filter',
@@ -359,6 +362,238 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertCount(2, $data4);
 		//$this->assertEquals('4x Filter', $data4[0]['name']);
 	}
+
+	public function test_return_filter_type_options_in_get_item() {
+
+		$collection1 = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test_col',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$meta = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'   => 'number',
+				'status' => 'publish',
+				'collection' => $collection1,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Numeric',
+			),
+			true
+		);
+
+		$filter_numeric = $this->tainacan_entity_factory->create_entity(
+			'filter',
+			array(
+				'name'   => 'numeric',
+				'status' => 'publish',
+				'collection' => $collection1,
+				'metadatum' => $meta,
+				'filter_type'  => 'Tainacan\Filter_Types\Numeric_Interval',
+				'filter_type_options' => [
+					'step' => 3,
+				]
+			),
+			true
+		);
+
+		$request = new \WP_REST_Request(
+			'GET',
+			$this->namespace . '/filters/' . $filter_numeric->get_id()
+		);
+
+		$response = $this->server->dispatch($request);
+
+		$data = $response->get_data();
+
+		$this->assertEquals($filter_numeric->get_id(), $data['id']);
+		$this->assertEquals('numeric', $data['name']);
+		$this->assertEquals(3, $data['filter_type_options']['step']);
+
+	}
+
+	public function test_return_filter_type_options_in_get_items() {
+
+		$collection1 = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test_col',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$meta = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'   => 'number',
+				'status' => 'publish',
+				'collection' => $collection1,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Numeric',
+			),
+			true
+		);
+
+		$filter_numeric = $this->tainacan_entity_factory->create_entity(
+			'filter',
+			array(
+				'name'   => 'numeric',
+				'status' => 'publish',
+				'collection' => $collection1,
+				'metadatum' => $meta,
+				'filter_type'  => 'Tainacan\Filter_Types\Numeric_Interval',
+				'filter_type_options' => [
+					'step' => 3,
+				]
+			),
+			true
+		);
+
+		$request = new \WP_REST_Request(
+			'GET',
+			$this->namespace . '/collection/' . $collection1->get_id() . '/filters'
+		);
+
+		$response = $this->server->dispatch($request);
+
+		$data = $response->get_data();
+
+		//var_dump($data, $this->namespace . '/collection/' . $collection2->get_id() . '/metadata/');
+		foreach ($data as $d) {
+			if ($d['id'] == $filter_numeric->get_id()) {
+				$meta = $d;
+				break;
+			}
+		}
+
+		$this->assertEquals($filter_numeric->get_id(), $meta['id']);
+		$this->assertEquals('numeric', $meta['name']);
+		$this->assertEquals(3, $meta['filter_type_options']['step']);
+
+	}
+
+	public function test_return_filter_type_options_in_get_item_default_value() {
+
+		$collection1 = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test_col',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$meta = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'   => 'number',
+				'status' => 'publish',
+				'collection' => $collection1,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Numeric',
+			),
+			true
+		);
+
+		$filter_numeric = $this->tainacan_entity_factory->create_entity(
+			'filter',
+			array(
+				'name'   => 'numeric',
+				'status' => 'publish',
+				'collection' => $collection1,
+				'metadatum' => $meta,
+				'filter_type'  => 'Tainacan\Filter_Types\Numeric_Interval',
+				// 'filter_type_options' => [
+				// 	'step' => 3,
+				// ]
+			),
+			true
+		);
+
+		$request = new \WP_REST_Request(
+			'GET',
+			$this->namespace . '/filters/' . $filter_numeric->get_id()
+		);
+
+		$response = $this->server->dispatch($request);
+
+		$data = $response->get_data();
+
+		$this->assertEquals($filter_numeric->get_id(), $data['id']);
+		$this->assertEquals('numeric', $data['name']);
+		$this->assertEquals(1, $data['filter_type_object']['options']['step']);
+		$this->assertEquals(1, $data['filter_type_options']['step']);
+
+	}
+
+	public function test_return_metadata_type_options_inside_metadatum_property() {
+
+		$collection1 = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test_col',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$collection2 = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test_col',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$core1 = $collection1->get_core_title_metadatum();
+
+		$meta_relationship = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'   => 'relationship',
+				'status' => 'publish',
+				'collection' => $collection2,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Relationship',
+				'metadata_type_options' => [
+					'repeated' => 'yes',
+					'collection_id' => $collection1->get_id(),
+					'search' => $core1->get_id()
+				]
+			),
+			true
+		);
+
+		$filter = $this->tainacan_entity_factory->create_entity(
+			'filter',
+			array(
+				'name'   => 'test',
+				'status' => 'publish',
+				'collection' => $collection2,
+				'metadatum' => $meta_relationship,
+				'filter_type'  => 'Tainacan\Filter_Types\Autocomplete',
+			),
+			true
+		);
+
+		$request = new \WP_REST_Request(
+			'GET',
+			$this->namespace . '/filters/' . $filter->get_id()
+		);
+
+		$response = $this->server->dispatch($request);
+
+		$data = $response->get_data();
+		$this->assertEquals($filter->get_id(), $data['id']);
+		$this->assertEquals('test', $data['name']);
+		$this->assertEquals('yes', $data['metadatum']['metadata_type_object']['options']['repeated']);
+		$this->assertEquals($collection1->get_id(), $data['metadatum']['metadata_type_object']['options']['collection_id']);
+		$this->assertEquals($core1->get_id(), $data['metadatum']['metadata_type_object']['options']['search']);
+
+	}
+
 }
 
 ?>

@@ -450,9 +450,6 @@ class REST_Bulkedit_Controller extends REST_Controller {
 	 * @return array|void
 	 */
 	public function get_create_params($object_name = null) {
-		$query_params['context']['default'] = 'view';
-
-		array_merge($query_params, parent::get_wp_query_params());
 
 		$query_params['title'] = array(
 			'description' => __('Limits the result set to items with a specific title'),
@@ -472,7 +469,11 @@ class REST_Bulkedit_Controller extends REST_Controller {
             'description' => __( 'Whether to use the current query to select posts', 'tainacan' ),
         ];
 
-		$query_params = array_merge($query_params, parent::get_meta_queries_params());
+        $query_params = array_merge(
+            $query_params,
+            parent::get_wp_query_params(),
+            parent::get_meta_queries_params()
+        );
 
 		return $query_params;
 	}

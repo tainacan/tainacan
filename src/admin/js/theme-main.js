@@ -5,7 +5,6 @@ import VTooltip from 'v-tooltip';
 import VueMasonry from 'vue-masonry-css';
 
 // Custom elements
-import FilterCustomInterval from '../../classes/filter-types/custom-interval/CustomInterval.vue';
 import FilterNumeric from '../../classes/filter-types/numeric/Numeric.vue';
 import FilterDate from '../../classes/filter-types/date/Date.vue';
 import FilterSelectbox from '../../classes/filter-types/selectbox/Selectbox.vue';
@@ -34,7 +33,7 @@ import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, StatusH
 
 // Configure and Register Plugins
 Vue.use(Buefy, {
-    defaultTooltipAnimated: true   
+    defaultTooltipAnimated: true
 });
 Vue.use(VTooltip);
 Vue.use(VueMasonry);
@@ -44,11 +43,9 @@ Vue.use(RouterHelperPlugin);
 Vue.use(StatusHelperPlugin);
 Vue.use(ConsolePlugin, {visual: false});
 
-
 Vue.component('tainacan-filter-item', TaincanFiltersList);
 
 /* Filters */
-Vue.component('tainacan-filter-custom-interval', FilterCustomInterval);
 Vue.component('tainacan-filter-numeric', FilterNumeric);
 Vue.component('tainacan-filter-date', FilterDate);
 Vue.component('tainacan-filter-selectbox', FilterSelectbox);
@@ -79,7 +76,7 @@ import ThemeItemsList from '../theme-items-list.vue';
 export const ThemeItemsListing =  new Vue({
     el: '#tainacan-items-page',
     store,
-    router: routerTheme, 
+    router: routerTheme,
     data: {
         termId: '',
         taxonomy: '',
@@ -90,9 +87,9 @@ export const ThemeItemsListing =  new Vue({
     },
     render: h => h(ThemeItemsList),
     beforeMount () {
-        
+
         this.collectionId = this.$el.attributes['collection-id'] != undefined ? this.$el.attributes['collection-id'].value : undefined;
-        
+
         if (this.$el.attributes['default-view-mode'] != undefined)
             this.defaultViewMode = this.$el.attributes['default-view-mode'].value;
         else
@@ -107,10 +104,10 @@ export const ThemeItemsListing =  new Vue({
             this.taxonomy = this.$el.attributes['taxonomy'].value;
 
     }
-    
+
 });
 
-// Display Icons only once everything is loaded 
+// Display Icons only once everything is loaded
 function listen(evnt, elem, func) {
     if (elem.addEventListener)  // W3C DOM
         elem.addEventListener(evnt,func,false);

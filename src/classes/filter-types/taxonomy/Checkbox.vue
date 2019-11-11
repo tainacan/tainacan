@@ -1,17 +1,17 @@
 <template>
     <div 
-            :style="{ 'height': isLoading ? (Number(filter.max_options)*28) + 'px' : 'auto' }"
-            :class="{ 'skeleton': isLoading }"
+            :style="{ 'height': isLoadingOptions ? (Number(filter.max_options)*28) + 'px' : 'auto' }"
+            :class="{ 'skeleton': isLoadingOptions }"
             class="block">
         <!-- <span 
-                v-if="isLoading"
+                v-if="isLoadingOptions"
                 style="width: 100%"
                 class="icon has-text-centered loading-icon">
             <div class="control has-icons-right is-loading is-clearfix" />
         </span> -->
         <div
                 v-for="(option, index) in options.slice(0, filter.max_options)"
-                v-if="!isLoading"
+                v-if="!isLoadingOptions"
                 :key="index"
                 :value="index"
                 class="control">
@@ -38,7 +38,7 @@
             </button>
         </div>
         <p 
-                v-if="!isLoading && options.length != undefined && options.length <= 0"
+                v-if="!isLoadingOptions && options.length != undefined && options.length <= 0"
                 class="no-options-placeholder">
             {{ $i18n.get('info_no_options_avialable_filtering') }}
         </p>
@@ -50,59 +50,54 @@
     import { tainacan as axios, CancelToken, isCancel } from '../../../js/axios/axios';
     import { mapGetters } from 'vuex';
     import CheckboxRadioModal from '../../../admin/components/other/checkbox-radio-modal.vue';
-    import { filterTypeMixin } from '../filter-types-mixin';
+    import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
     
     export default {
-        mixins: [ filterTypeMixin ],
-        created(){
-            this.type = this.filter.metadatum.metadata_type;
-
-            this.loadOptions();
-
-            if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$on('isLoadingItems', this.updatesIsLoading);
-            
-        },    
-        mounted(){
-            // We listen to event, but reload event if hasFiltered is negative, as 
-            // an empty query also demands filters reloading.
-            this.$eventBusSearch.$on('hasFiltered', () => {
-                if (typeof this.loadOptions == "function")
-                    this.loadOptions(true);
-            });
-        },        
+        mixins: [ filterTypeMixin, dynamicFilterTypeMixin ],   
         data(){
             return {
-                isLoading: true,
+                isLoadingOptions: true,
                 options: [],
-                type: '',
                 selected: [],
                 taxonomy: '',
-                taxonomy_id: Number,
-                getOptionsValuesCancel: undefined,
-                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
+                taxonomyId: ''
             }
         },
         watch: {
-            selected: function(){
-                //this.selected = val;
-                this.onSelect();
+            selected(newVal, oldVal) {
+                const isEqual = (newVal.length == oldVal.length) && newVal.every((element, index) => {
+                    return element === oldVal[index]; 
+                });
+
+                if (!isEqual)
+                    this.onSelect();
             },
             facetsFromItemSearch() {
                 if (this.isUsingElasticSearch)
                     this.loadOptions();
+            },
+            'query.taxquery'() {
+                this.loadOptions();
             }
         },    
-        computed: {
-            facetsFromItemSearch() {
-                return this.getFacets();
-            }
+        created() {
+            if (this.filter.metadatum && 
+                this.filter.metadatum.metadata_type_object && 
+                this.filter.metadatum.metadata_type_object.options &&
+                this.filter.metadatum.metadata_type_object.options.taxonomy &&
+                this.filter.metadatum.metadata_type_object.options.taxonomy_id) {
+                    this.taxonomyId = this.filter.metadatum.metadata_type_object.options.taxonomy_id;
+                    this.taxonomy = this.filter.metadatum.metadata_type_object.options.taxonomy;
+                }
         },
+        mounted(){
+            this.loadOptions();
+        }, 
         methods: {
             ...mapGetters('search', [
                 'getFacets'
             ]),
-            loadOptions(skipSelected) {
+            loadOptions() {
                 if (!this.isUsingElasticSearch) {
                     let promise = null;
                     const source = CancelToken.source();
@@ -111,7 +106,7 @@
                     if (this.getOptionsValuesCancel != undefined)
                         this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                    this.isLoading = true;
+                    this.isLoadingOptions = true;
                     let query_items = { 'current_query': this.query };
 
                     let route = '';
@@ -138,15 +133,15 @@
                     });
                     promise.request
                         .then((res) => {
-                            this.prepareOptionsForTaxonomy(res.data.values ? res.data.values : res.data, skipSelected);
-                            this.isLoading = false;
+                            this.prepareOptionsForTaxonomy(res.data.values ? res.data.values : res.data);
+                            this.isLoadingOptions = false;
                         })
                         .catch( error => {
                             if (isCancel(error)) {
                                 this.$console.log('Request canceled: ' + error.message);
                             } else {
                                 this.$console.log('Error on facets request: ', error);
-                                this.isLoading = false;
+                                this.isLoadingOptions = false;
                             }
                         });
                     
@@ -158,19 +153,18 @@
                     for (const facet in this.facetsFromItemSearch) {
                         if (facet == this.filter.id) {
                             if (Array.isArray(this.facetsFromItemSearch[facet]))
-                                this.prepareOptionsForTaxonomy(this.facetsFromItemSearch[facet], skipSelected);
+                                this.prepareOptionsForTaxonomy(this.facetsFromItemSearch[facet]);
                             else
-                                this.prepareOptionsForTaxonomy(Object.values(this.facetsFromItemSearch[facet]), skipSelected);
+                                this.prepareOptionsForTaxonomy(Object.values(this.facetsFromItemSearch[facet]));
                         }    
                     }
-
                 }
             },
-            selectedValues(){
+            updateSelectedValues(){
                 
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;
-                
+                    
                 let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == this.taxonomy );
                 if ( index >= 0){
                     let metadata = this.query.taxquery[ index ];
@@ -179,17 +173,7 @@
                     this.selected = [];
                     return false;
                 }
-            },
-            onSelect(){
-                this.$emit('input', {
-                    filter: 'checkbox',
-                    taxonomy: this.taxonomy,
-                    compare: 'IN',
-                    metadatum_id: this.metadatumId,
-                    collection_id: this.collectionId,
-                    terms: this.selected
-                });
-                
+
                 let onlyLabels = [];
 
                 for (let selected of this.selected) {
@@ -246,7 +230,17 @@
                     }
                 }
 
-                this.$emit("sendValuesToTags", onlyLabels);
+                this.$emit('sendValuesToTags', { label: onlyLabels, taxonomy: this.taxonomy, value: this.selected });
+            },
+            onSelect(){
+                this.$emit('input', {
+                    filter: 'checkbox',
+                    taxonomy: this.taxonomy,
+                    compare: 'IN',
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
+                    terms: this.selected
+                });
             },
             openCheckboxModal(parent) {
                 this.$buefy.modal.open({
@@ -255,7 +249,7 @@
                     props: {
                         parent: parent,
                         filter: this.filter,
-                        taxonomy_id: this.taxonomy_id,
+                        taxonomy_id: this.taxonomyId,
                         selected: this.selected,
                         metadatumId: this.metadatumId,
                         taxonomy: this.taxonomy,
@@ -268,44 +262,11 @@
                             this.loadOptions();
                         } 
                     },
-                    width: 'calc(100% - 8.333333333%)',
+                    width: 'calc(100% - 16.6666%)',
                     trapFocus: true
                 });
             },
-            cleanSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id) {
-
-                    let selectedOption = this.options.find(option => option.label == filterTag.singleValue);
-
-                    if (selectedOption) {
-                    
-                        let selectedIndex = this.selected.findIndex(option => option == selectedOption.value);
-                        if (selectedIndex >= 0) {
-
-                            this.selected.splice(selectedIndex, 1); 
-
-                            this.$emit('input', {
-                                filter: 'checkbox',
-                                compare: 'IN',
-                                taxonomy: this.taxonomy,
-                                metadatum_id: this.metadatumId,
-                                collection_id: this.collectionId,
-                                terms: this.selected
-                            });
-
-                            this.$emit( 'sendValuesToTags', this.selected);
-
-                            this.selectedValues();
-                        }
-                    }
-                }
-            },
-            prepareOptionsForTaxonomy(items, skipSelected) {
-
-                if (items[0] != undefined) {
-                    this.taxonomy = items[0].taxonomy;
-                    this.taxonomy_id = items[0].taxonomy_id;
-                }
+            prepareOptionsForTaxonomy(items) {
 
                 this.options = [];
                 this.options = items.slice(); // copy array.
@@ -330,13 +291,10 @@
                         }
                     }
                 }
-
-                if (skipSelected == undefined || skipSelected == false) {
-                    this.selectedValues();
-                }
+                this.updateSelectedValues();
             },
-            updatesIsLoading(isLoading) {
-                this.isLoading = isLoading;
+            updatesIsLoading(isLoadingOptions) {
+                this.isLoadingOptions = isLoadingOptions;
             }
         },
         beforeDestroy() {
@@ -344,9 +302,6 @@
             // Cancels previous Request
             if (this.getOptionsValuesCancel != undefined)
                 this.getOptionsValuesCancel.cancel('Facet search Canceled.');
- 
-            if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$off('isLoadingItems', this.updatesIsLoading);
         }
     }
 </script>

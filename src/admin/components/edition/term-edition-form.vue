@@ -5,6 +5,15 @@
             @submit.prevent="saveEdition(editForm)">
         <div class="tainacan-page-title">
             <h2>{{ $i18n.get("title_term_edition") }}</h2>
+            <a
+                    v-if="editForm && editForm.url != undefined && editForm.url!= ''"
+                    target="_blank"
+                    :href="editForm.url">
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+                </span>
+                <span class="menu-text">{{ $i18n.get('label_view_on_theme') }}</span>
+            </a>
             <hr>
         </div>
     
@@ -22,7 +31,7 @@
                 <span class="required-term-asterisk">*</span>
                 <help-button
                         :title="$i18n.get('label_name')"
-                        :message="$i18n.get('info_help_term_name')"/>
+                        :message="$i18n.get('info_help_term_name')"/> 
             </label>
             <b-input
                     :placeholder="$i18n.get('label_term_without_name')"
@@ -135,7 +144,7 @@
                         :message="$i18n.get('info_help_parent_term')"/>
             </label>
             <b-autocomplete
-                    id="tainacan-text-cover-page"
+                    id="tainacan-add-parent-field"
                     :placeholder="$i18n.get('instruction_parent_term')"
                     :data="parentTerms"
                     field="name"
@@ -146,7 +155,18 @@
                     @focus="clearErrors('parent');"
                     :disabled="!hasParent">
                 <template slot-scope="props">
-                    {{ props.option.name }}
+                    <div class="media">
+                        <div 
+                                v-if="props.option.header_image"
+                                class="media-left">
+                            <img 
+                                    width="28"
+                                    :src="props.option.header_image">
+                        </div>
+                        <div class="media-content">
+                            {{ props.option.name }}
+                        </div>
+                    </div>
                 </template>
                 <template slot="empty">{{ $i18n.get('info_no_parent_term_found') }}</template>
             </b-autocomplete>
@@ -180,16 +200,6 @@
                         slot="trigger">
                     {{ $i18n.get('cancel') }}
                 </button>
-            </div>
-            <div class="control">
-                <a
-                        type="button"
-                        v-if="editForm.url != undefined && editForm.url!= ''"
-                        class="button is-secondary"
-                        target="_blank"
-                        :href="editForm.url">
-                    {{ $i18n.get('label_view_term') }}
-                </a>
             </div>
             <div class="control">
                 <button
@@ -443,16 +453,21 @@
         animation-duration: 0.5s;
 
         .tainacan-page-title {
-            margin-bottom: 35px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
 
             h2 {
                 font-size: 20px;
                 font-weight: 500;
                 color: $blue5;
                 display: inline-block;
+                margin-right: auto;
             }
-            hr{
+            hr {
                 margin: 3px 0px 4px 0px; 
+                width: 100%;
                 height: 1px;
                 background-color: $secondary;
             }

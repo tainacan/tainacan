@@ -444,25 +444,29 @@ class Item_Metadata_Entity extends Entity {
                 }
                 
                 if ($this->is_required() && !$one_filled) {
-                    $this->add_error('required', $metadatum->get_name() . ' is required');
+                    // translators: %s = metadatum name. ex: Title is required
+                    $this->add_error( 'required', sprintf( __('%s is required', 'tainacan'), $metadatum->get_name() ) );
                     return false;
                 }
                 
                 if (!$valid) {
-                    $this->add_error('invalid', $metadatum->get_name() . ' is invalid');
+                    // translators: %s = metadatum name. ex: Title is invalid
+                    $this->add_error( 'invalid', sprintf( __('%s is invalid', 'tainacan'), $metadatum->get_name() ) );
                     return false;
                 }
                 
                 $this->set_as_valid();
                 return true;   
             } else {
-                $this->add_error('invalid', $metadatum->get_name() . ' is invalid');
+                // translators: %s = metadatum name. ex: Title is invalid
+                $this->add_error( 'invalid', sprintf( __('%s is invalid', 'tainacan'), $metadatum->get_name() ) );
                 return false;
             }
         } else {
 
             if( is_array($value) ){
-				$this->add_error('not_multiple', $metadatum->get_name() . ' do not accept array as value');
+                // translators: %s = metadatum name. ex: Title accepts only one single value and not a list of values
+                $this->add_error( 'not_multiple', sprintf( __('%s accepts only one single value and not a list of values', 'tainacan'), $metadatum->get_name() ) );
                 return false;
             }
             
@@ -476,11 +480,12 @@ class Item_Metadata_Entity extends Entity {
                             'value' => $value
                         ],
                     ],
-					'post__not_in' => [$item->get_id()]
+                	'post__not_in' => [$item->get_id()]
                 ], $item->get_collection());
 
                 if ($test->have_posts()) {
-                    $this->add_error('key_exists', $metadatum->get_name() . ' is a collection key and there is another item with the same value');
+                    // translators: %s = metadatum name. ex: Register ID is a collection key and there is another item with the same value
+	                $this->add_error( 'key_exists', sprintf( __('%s is a collection key and there is another item with the same value', 'tainacan'), $metadatum->get_name() ) );
                     return false;
                 }
             }

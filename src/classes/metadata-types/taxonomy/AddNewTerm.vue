@@ -1,19 +1,19 @@
 <template>
-    <div>
+    <div class="add-new-term">
         <span v-if="!showForm">
             <a
                     @click="toggleForm()"
-                    class="is-inline add-link">
+                    class="add-link">
                 <span class="icon is-small">
                     <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
                 </span>
                 &nbsp;{{ $i18n.get('label_new_term') }}
             </a>
         </span>
-        <transition name="appear">
+        <transition name="filter-item">
             <section
                     v-if="showForm"
-                    style="padding-left: 0px; margin-top: 12px; margin-bottom: -12px;">
+                    class="add-new-term-form">
                 <b-field 
                         :addons="false"
                         :type="((formErrors.name !== '' || formErrors.repeated !== '') && (formErrors.name !== undefined || formErrors.repeated !== undefined )) ? 'is-danger' : ''"
@@ -25,26 +25,12 @@
                                 :title="$i18n.get('label_name')"
                                 :message="$i18n.get('info_help_term_name')"/>
                     </label>
-                    <b-input
-                            :class="{'has-content': name != undefined && name != ''}" 
+                    <b-input 
+                            :placeholder="$i18n.get('label_term_without_name')"
                             v-model="name"
                             @focus="clearErrors({ name: 'name', repeated: 'repeated' })"/>
                 </b-field>
 
-                <!-- <b-field :label="$i18n.get('label_parent_term')">
-                    <b-select
-                            v-model="parent">
-                        <option 
-                                :value="0" 
-                                selected> ---{{ $i18n.get('label_parent_term') }}--- </option>
-                        <option
-                                v-for="(option,index) in options"
-                                :key="index"
-                                :value="option.id"
-                                v-html="setSpaces( option.level ) + option.name"/>
-                    </b-select>
-                </b-field> -->
-                
                 <!-- Parent -------------- -->
                 <b-field
                         :addons="false"
@@ -62,7 +48,7 @@
                                 :message="$i18n.get('info_help_parent_term')"/>
                     </label>
                     <b-autocomplete
-                            id="tainacan-text-cover-page"
+                            id="tainacan-add-parent-field"
                             :placeholder="$i18n.get('instruction_parent_term')"
                             :data="parentTerms"
                             field="name"
@@ -85,22 +71,22 @@
                         </p>
                     </transition>
                 </b-field>
-
-                <button
-                        :class="{ 'is-loading': isAddingNewTerm }"
-                        class="button is-outlined"
-                        @click="toggleForm()"
-                        type="button">
-                    {{ $i18n.get('cancel') }}
-                </button>
-
-                <button
-                        :class="{ 'is-loading': isAddingNewTerm }"
-                        class="button is-secondary"
-                        @click="save"
-                        type="button">
-                    {{ $i18n.get('save') }}
-                </button>
+                <div class="field is-grouped form-submit">
+                    <button
+                            :class="{ 'is-loading': isAddingNewTerm }"
+                            class="button is-outlined"
+                            @click="toggleForm()"
+                            type="button">
+                        {{ $i18n.get('cancel') }}
+                    </button>
+                    <button
+                            :class="{ 'is-loading': isAddingNewTerm }"
+                            class="button is-secondary"
+                            @click="save"
+                            type="button">
+                        {{ $i18n.get('label_create_and_select') }}
+                    </button>
+                </div>
             </section>
 
         </transition>
@@ -122,19 +108,15 @@
                 parentTermName: '',
                 isAddingNewTerm: false,
                 isFetchingParentTerms: false,
-                metadatum_id: this.metadatum.metadatum.id,
+                metadatumId: this.metadatum.metadatum.id,
+                itemId: this.metadatum.item.id,
                 formErrors: {}
             }
         },
         props: {
-            id: String,
-            item_id: [Number,String],
             metadatum: [Number,String],
-            taxonomy_id: [Number,String],
-            value:[ Array, Boolean, Number ],
-            options: {
-                type: Array
-            },
+            taxonomyId: [Number,String],
+            value: [ Array, Boolean, Number ],
             componentType: ''
         },
         methods: {
@@ -153,20 +135,11 @@
                 this.formErrors = {};
                 this.showForm = !this.showForm;
             },
-            setSpaces( level ){
-                let result = '';
-                let space =  '&nbsp;&nbsp;'
-
-                for(let i = 0;i < level; i++)
-                    result += space;
-
-                return result;
-            },
             fecthParentTerms(search) {
                 this.isFetchingParentTerms = true;
                 
                 this.fetchPossibleParentTerms({
-                        taxonomyId: this.taxonomy_id, 
+                        taxonomyId: this.taxonomyId, 
                         termId: 'new', 
                         search: search })
                     .then((parentTerms) => {
@@ -182,21 +155,21 @@
                 this.clearErrors('parent');
             },
             onSelectParentTerm(selectedParentTerm) {
-                this.parent = selectedParentTerm.id;
-                this.selectedParentTerm = selectedParentTerm;
-                this.parentTermName = selectedParentTerm.name;
+                if (selectedParentTerm) {
+                    this.parent = selectedParentTerm.id;
+                    this.parentTermName = selectedParentTerm.name;
+                }
             },
             clearErrors(attributes) {
-                if(attributes instanceof Object){
-                    for(let attribute in attributes){
+                if (attributes instanceof Object) {
+                    for(let attribute in attributes)
                         this.formErrors[attribute] = undefined;
-                    }
                 } else {
                     this.formErrors[attributes] = undefined;
                 }
             },
-            save(){
-                if( this.name.trim() === ''){
+            save() {
+                if (this.name.trim() === '') {
                     this.$buefy.toast.open({
                         duration: 2000,
                         message: this.$i18n.get('info_name_is_required'),
@@ -206,32 +179,32 @@
                 } else {
                     this.isAddingNewTerm = true;
 
-                    axios.post(`/taxonomy/${this.taxonomy_id}/terms?hideempty=0&order=asc`, {
+                    axios.post(`/taxonomy/${this.taxonomyId}/terms?hideempty=0&order=asc`, {
                         name: this.name,
                         parent: this.parent
                     })
-                    .then( res => {
+                    .then(res => {
 
-                        this.isAddingNewTerm = false;
-
-                        if( res.data && res.data.id || res.id ){
-                            let id = ( res.id ) ? res.id : res.data.id;
+                        if (res.data && res.data.id || res.id) {
+                            let id = res.id ? res.id : res.data.id;
                             let val = this.value;
 
-                            if( !Array.isArray( val ) && this.metadatum.metadatum.multiple === 'no' ){
-                                axios.patch(`/item/${this.item_id}/metadata/${this.metadatum_id}`, {
+                            if (!Array.isArray(val) && this.metadatum.metadatum.multiple === 'no') {
+                                axios.patch(`/item/${this.itemId}/metadata/${this.metadatumId}`, {
                                     values: id,
                                 }).then(() => {
-                                    this.$emit('newTerm', { values: id, taxonomyId: this.taxonomy_id, metadatumId: this.metadatum_id });
+                                    this.isAddingNewTerm = false;
+                                    this.$emit('newTerm', { values: id, taxonomyId: this.taxonomyId, metadatumId: this.metadatumId });
                                     this.toggleForm();
                                 })
                             } else {
-                                val = ( val ) ? val : [];
+                                val = val ? val : [];
                                 val.push( this.componentType == ('tainacan-taxonomy-checkbox' || 'tainacan-taxonomy-radio') ? id : {'label': this.name, 'value': id} );
-                                axios.patch(`/item/${this.item_id}/metadata/${this.metadatum_id}`, {
+                                axios.patch(`/item/${this.itemId}/metadata/${this.metadatumId}`, {
                                     values: val,
                                 }).then(() => {
-                                    this.$emit('newTerm', { values: val, taxonomyId: this.taxonomy_id, metadatumId: this.metadatum_id });
+                                    this.isAddingNewTerm = false;
+                                    this.$emit('newTerm', { values: val, taxonomyId: this.taxonomyId, metadatumId: this.metadatumId });
                                     this.toggleForm();
                                 })
                             }
@@ -256,5 +229,17 @@
         }
     }
 </script>
+
 <style scoped>
+    .add-new-term {
+        margin-top: 15px;
+        margin-bottom: 25px;
+        font-size: 0.75rem;
+    }
+    .add-new-term-form {
+        padding: 14px 24px 12px 24px;
+        margin-top: 12px; 
+        margin-bottom: -12px;
+        border: 1px solid #cbcbcb;
+    }
 </style>

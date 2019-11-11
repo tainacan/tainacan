@@ -81,9 +81,9 @@ class Elastic_Press {
 
 		if ($item instanceof Entities\Item) {
 			$ids_meta = array_keys ($post_args['meta']);
-			\array_filter(function($n) {
+			$ids_meta = \array_filter($ids_meta, function($n) {
 				if (is_numeric($n)) return intval($n);
-			}, $ids_meta);
+			});
 
 			$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 			$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
@@ -584,7 +584,7 @@ class Elastic_Press {
 				}
 
 				if($search != '') {
-					$formatted_args['query']['bool']['must'][] = ["wildcard"=>["$field.name.raw" => "*$search*"]];
+					$formatted_args['query']['bool']['must'][] = ["wildcard"=>["$field.name.sortable" => "*$search*"]];
 				}
 			} else {
 				$aggs[$id] = [
@@ -613,7 +613,7 @@ class Elastic_Press {
 					$field_relationship_label = "$field_relationship_label[0].$field_relationship_label[1].relationship_label";
 					//$formatted_args['query']['bool']['must'][] = ["wildcard"=>["$field" => "*$search*"]];
 					$formatted_args['query']['bool']['must'][] = ["bool"=>["should"=>[
-						["wildcard"=>["$field"=>"*$search*"]],
+						["wildcard"=>["$id.value.sortable"=>"*$search*"]],
 						["wildcard"=>["$field_relationship_label"=>"*$search*"]] //pega nome do metadado é melhor!
 					]]];
 				}

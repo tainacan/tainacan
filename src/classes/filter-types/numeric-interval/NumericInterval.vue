@@ -3,7 +3,7 @@
         <b-numberinput
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 size="is-small"
-                @input="validate_values()"
+                @input="validadeValues()"
                 :step="filterTypeOptions.step"
                 v-model="valueInit"
                 />
@@ -11,7 +11,7 @@
         <b-numberinput
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 size="is-small"
-                @input="validate_values()"
+                @input="validadeValues()"
                 :step="filterTypeOptions.step"
                 v-model="valueEnd"/>
         
@@ -22,56 +22,53 @@
     import { filterTypeMixin } from '../filter-types-mixin';
     export default {
         mixins: [ filterTypeMixin ],
-        created() {
-            this.filterTypeOptions = this.filter.filter_type_options;
-        },
         data(){
             return {
-                valueInit: 0,
-                valueEnd: 10,
-                isValid: false,
-                filterTypeOptions: [],
-                withError: false
+                valueInit: null,
+                valueEnd: null
+            }
+        },
+        mounted() {
+            this.updateSelectedValues();
+        },
+        watch: {
+            'query.metaquery'() {
+                this.updateSelectedValues();
             }
         },
         methods: {
             // only validate if the first value is higher than first
-            validate_values: _.debounce( function (){
-                if ( parseFloat( this.valueInit ) > parseFloat( this.valueEnd )) {
-                    //this.valueEnd = parseFloat( this.valueInit ) + 1;
-                    //this.withError = true;
-                    
+            validadeValues: _.debounce( function () {
+                if (this.valueInit == null || this.valueEnd == null)
+                    return
+
+                if (this.valueInit.constructor == Number)
+                    this.valueInit = this.valueInit.valueOf();
+
+                if (this.valueEnd.constructor == Number)
+                    this.valueEnd = this.valueEnd.valueOf();
+                
+                this.valueInit = parseFloat(this.valueInit);
+                this.valueEnd = parseFloat(this.valueEnd);
+
+                if (isNaN(this.valueInit) || isNaN(this.valueEnd))
+                    return
+
+                if (this.valueInit > this.valueEnd) {                     
+                    this.showErrorMessage();
                     return;
                 }
-                //this.withError = false;
+
                 this.emit();
             }, 600),
             // message for error
-            error_message(){
+            showErrorMessage(){
                 this.$buefy.toast.open({
                     duration: 3000,
                     message: this.$i18n.get('info_error_first_value_greater'),
                     position: 'is-bottom',
                     type: 'is-danger'
                 })
-            },
-            
-            cleanSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id)
-                    this.clearSearch();
-            },
-            clearSearch(){
-
-                this.$emit('input', {
-                    filter: 'range',
-                    compare: 'BETWEEN',
-                    metadatum_id: this.metadatumId,
-                    collection_id: this.collectionId,
-                    value: ''
-                });
-                this.valueEnd = null;
-                this.valueInit = null;
-                
             },
             // emit the operation for listeners
             emit() {
@@ -80,7 +77,6 @@
 
                 this.$emit('input', {
                     type: type,
-                    //filter: 'range',
                     compare: 'BETWEEN',
                     metadatum_id: this.metadatumId,
                     collection_id: this.collectionId,
@@ -88,9 +84,9 @@
                 });
 
                 if (values[0] != undefined && values[1] != undefined)
-                    this.$emit('sendValuesToTags', values[0] + ' - ' + values[1]);
+                    this.$emit('sendValuesToTags', { label: values[0] + ' - ' + values[1], value: values });
             },
-            selectedValues(){
+            updateSelectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
@@ -98,20 +94,18 @@
                 if ( index >= 0 ){
                     let metaquery = this.query.metaquery[ index ];
                     if ( metaquery.value && metaquery.value.length > 1 ) {
-                        this.valueInit = metaquery.value[0];
-                        this.valueEnd = metaquery.value[1];
+                        this.valueInit = new Number(metaquery.value[0]);
+                        this.valueEnd = new Number(metaquery.value[1]);
                     }
 
                     if (metaquery.value[0] != undefined && metaquery.value[1] != undefined)
-                        this.$emit( 'sendValuesToTags', this.valueInit + ' - ' + this.valueEnd);
+                        this.$emit('sendValuesToTags', { label: this.valueInit + ' - ' + this.valueEnd, value: metaquery.value });
 
                 } else {
-                    return false;
+                    this.valueInit = null;
+                    this.valueEnd = null;
                 }
             },
-        },
-        mounted() {
-            this.selectedValues();
         }
     }
 </script>

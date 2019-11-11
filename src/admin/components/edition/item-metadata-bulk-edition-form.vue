@@ -115,7 +115,7 @@
                                 <span
                                         v-if="metadatum.required == 'yes'"
                                         class="required-metadatum-asterisk">*</span>
-                                <span class="metadata-type">({{ $i18n.get(metadatum.metadata_type_object.component) }})</span>
+                                <span class="metadata-type">({{ metadatum.metadata_type_object.metadata }})</span>
                                 <help-button 
                                         :title="metadatum.name"
                                         :message="metadatum.description"/>
@@ -132,8 +132,6 @@
                                             :metadatum="{ metadatum: metadatum }"
                                             :value="itemMetadata[index].value"
                                             @input="clearErrorMessage(metadatum.id); bulkEdit($event, metadatum)"/>
-                                            <!-- :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
-                                            :disabled="bulkEditionProcedures[criterion].isDone || bulkEditionProcedures[criterion].isExecuting" -->
                                 </div>
                             </transition>
                         </b-field>

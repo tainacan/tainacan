@@ -603,7 +603,7 @@ class Logs extends Repository {
 				
 	}
 	
-	public function pre_delete_entity( Entities\Entity $entity, bool $permanent) {
+	public function pre_delete_entity( Entities\Entity $entity, $permanent) {
 		
 		if ( ! $entity->get_repository()->use_logs ) {
 			return;
@@ -619,7 +619,7 @@ class Logs extends Repository {
 		
 	}
 	
-	public function delete_entity( Entities\Entity $entity, bool $permanent) {
+	public function delete_entity( Entities\Entity $entity, $permanent) {
 		
 		if ( ! $entity->get_repository()->use_logs ) {
 			return;

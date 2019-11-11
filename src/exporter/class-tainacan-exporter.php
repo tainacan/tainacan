@@ -6,9 +6,6 @@ use Tainacan\Entities;
 abstract class CommunImportExport {
 
 	public function __construct( ) {
-		if (!session_id()) {
-			@session_start();
-		}
 		$this->id = uniqid();
 		$author = get_current_user_id();
 		if($author) {
@@ -20,7 +17,7 @@ abstract class CommunImportExport {
 	 * The ID for this importer/exporter session
 	 *
 	 * When creating a new importer/exporter session via API, an id is returned and used to access this
-	 * importer/exporter instance in the SESSION array
+	 * importer/exporter instance. This is temporarly saved in the database and discarded after the bg process is triggered
 	 * 
 	 * @var identifier
 	 */
@@ -516,7 +513,7 @@ class Exporter extends CommunImportExport {
 			'send_email'
 		]);
 		parent::__construct();
-		$_SESSION['tainacan_exporter'][$this->get_id()] = $this;
+
 		if (!empty($attributess)) {
 			foreach ($attributess as $attr => $value) {
 				$method = 'set_' . $attr;

@@ -74,11 +74,7 @@
 
     export default {
         props: {
-            filter: {
-                type: Object
-            },
-            value: [String, Number, Array],
-            disabled: false,
+            value: [String, Number, Array]
         },
         data() {
             return {

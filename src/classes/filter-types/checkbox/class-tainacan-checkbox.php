@@ -9,7 +9,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Checkbox extends Filter_Type {
 
     function __construct(){
-        $this->set_name('Checkbox List');
+        $this->set_name( __('Checkbox List', 'tainacan') );
         $this->set_supported_types(['string','long_string','item']);
         $this->set_component('tainacan-filter-checkbox');
         $this->set_preview_template('

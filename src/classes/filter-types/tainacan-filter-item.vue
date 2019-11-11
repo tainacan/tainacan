@@ -31,13 +31,13 @@
                 </span>
                 <span class="collapse-label">{{ filter.name }}</span>
             </button>
-            <div
-                    :id="'filter-input-id-' + filter.id">
+            <div :id="'filter-input-id-' + filter.id">
                 <component
                         :is="filter.filter_type_object.component"
                         :filter="filter"
                         :query="query"
                         :is-repository-level="isRepositoryLevel"
+                        :is-loading-items.sync="isLoadingItems"
                         @input="onInput"
                         @sendValuesToTags="onSendValuesToTags"/>
             </div>
@@ -52,25 +52,38 @@
             filter: Object,
             query: Object,
             isRepositoryLevel: Boolean,
-            open: true,
+            open: true
         },
-        data(){
+        data() {
             return {
-                inputs: [],
+                isLoadingItems: Boolean,
+                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
+            }
+        },
+        mounted() {
+            if (this.isUsingElasticSearch) {
+                this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
+                    this.isLoadingOptions = isLoadingItems;
+                });
             }
         },
         methods: {
-            onInput(inputEvent){
-                this.$eventBusSearch.$emit(
-                    'input', ( inputEvent.metadatum_id ) ?  inputEvent :  inputEvent.detail[0] 
-                );
+            onInput(inputEvent) {
+                this.$eventBusSearch.$emit('input', inputEvent);
             },
-            onSendValuesToTags(values) {
-                this.$eventBusSearch.$emit('sendValuesToTags', {
+            onSendValuesToTags($event) {
+                this.$eventBusSearch.$emit('sendValuesToTags', { 
                     filterId: this.filter.id,
-                    value: values
+                    label: $event.label,
+                    value: $event.value,
+                    taxonomy: $event.taxonomy,
+                    metadatumId: this.filter.metadatum_id
                 });
             }
+        },    
+        beforeDestroy() {
+            if (this.isUsingElasticSearch)
+                this.$eventBusSearch.$off('isLoadingItems');
         }
     }
 </script>
@@ -190,7 +203,7 @@
         }
 
         .datepicker {
-            @media screen and (min-width: 1024px) {
+            @media screen and (min-width: 768px) {
 
                 .datepicker-header {
 
@@ -198,20 +211,19 @@
                         max-width: 165px !important;
                     }
                     .pagination .pagination-list .control {
-                        width: 74px !important;
+                        width: 77px !important; 
 
                         .select {
-                            min-width: 100% !important;     
+                            min-width: 100% !important;    
 
                             select {
                                 padding-left: 1px !important;
                                 font-size: 0.75rem !important;
                                 height: 24px !important;
                                 min-width: 100% !important;
-
-                                &:not(.is-loading)::after {
-                                    margin-top: -13px !important;
-                                }
+                            }
+                            &:not(.is-loading)::after {
+                                margin-top: -13px !important;
                             }
                         }
                     }

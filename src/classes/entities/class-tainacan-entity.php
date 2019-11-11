@@ -366,7 +366,7 @@ class Entity {
 
 	    $attributes = [];
 	    foreach($map as $prop => $content) {
-		    $attributes[$prop] = $this->get_mapped_property($prop);
+		    $attributes[$prop] = $this->get($prop);
 	    }
 		
 		$hook_prefix = self::get_post_type();

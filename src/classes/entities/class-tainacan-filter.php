@@ -152,7 +152,7 @@ class Filter extends Entity {
 		}
 
         $object_type = new $class_name();
-        $object_type->set_options(  $this->get_filter_type_options() );
+        $object_type->set_options(  $this->get_mapped_property('filter_type_options') );
         return $object_type;
     }
 
@@ -171,6 +171,10 @@ class Filter extends Entity {
      * @return array Configurations for the filter type object
      */
     function get_filter_type_options(){
+        $object = $this->get_filter_type_object();
+        if ($object) {
+            return $object->get_options(); // merge with dedault filter type options
+        }
         return $this->get_mapped_property('filter_type_options');
     }
 
@@ -274,6 +278,21 @@ class Filter extends Entity {
         $is_valid = parent::validate();
         if (false === $is_valid)
             return false;
+
+
+        $status = $this->get_status();
+        $status_obj = get_post_status_object($status);
+        
+        if ($status_obj->public) {
+            $metadatum = $this->get_metadatum();
+            if ($metadatum) {
+                $metadatum_status_obj = get_post_status_object($metadatum->get_status());
+                if ( ! $metadatum_status_obj->public ) {
+                    $this->add_error('status', __('Filter can not be public because the related metadatum is private', 'tainacan'));
+                    return false;
+                }
+            }
+        }
 
         $fto = $this->get_filter_type_object();
         if (is_object($fto)) {

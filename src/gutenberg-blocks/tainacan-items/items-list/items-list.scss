@@ -31,8 +31,8 @@
     ul.items-list.items-layout-grid,
     ul.items-list-edit.items-layout-grid {
         padding: 0;
-        display: -ms-grid;
-        display: grid;
+        @include display-grid;
+        -ms-grid-columns: 220px 220px 220px 220px 220px;
         grid-template-columns: repeat(auto-fill, 220px);
         grid-gap: 0px;
         justify-content: space-evenly;

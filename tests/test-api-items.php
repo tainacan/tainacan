@@ -13,6 +13,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			array(
 				'name'        => 'Javascript Frameworks',
 				'description' => 'The best framework to javascript',
+				'status' => 'publish'
 			),
 			true
 		);

@@ -59,6 +59,7 @@
                         }">
                     <swiper-slide 
                             role="listitem"
+                            ref="myItemSwiperSlide"
                             :key="index"
                             v-for="(item, index) of items"
                             class="item-list-item">      
@@ -121,7 +122,7 @@
             </div>
             <!-- Swiper buttons are hidden as they actually swipe from slide to slide -->
         </div>
-        <div v-else-if="isLoading && !autoPlay">
+        <div v-else-if="isLoading && !autoPlay && !loopSlides">
             <div :class="'tainacan-carousel has-arrows-' + arrowsPosition">
                 <swiper 
                         role="list"
@@ -133,7 +134,7 @@
                     <swiper-slide 
                             role="listitem"
                             :key="index"
-                            ref="myItemSwiper"
+                            ref="myItemSwiperSlideSkeleton"
                             v-for="(item, index) of 18"
                             class="item-list-item skeleton">      
                         <a>
@@ -219,7 +220,7 @@ export default {
                     1600: { slidesPerView: 6 },
                 },
                 autoplay: this.autoPlay ? { delay: this.autoPlaySpeed*1000 } : false,
-                loop: this.loopSlides
+                loop: this.loopSlides ? this.loopSlides : false
             },
             errorMessage: 'No items found.'
         }

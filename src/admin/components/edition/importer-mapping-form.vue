@@ -74,7 +74,7 @@
                                     {{ metadatum.name }}
                                 </span>
                                 <span class="label-details">  
-                                    ({{ $i18n.get(metadatum.metadata_type_object.component) }}) <em>{{ (metadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
+                                    ({{ metadatum.metadata_type_object.name }}) <em>{{ (metadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
                                 </span>
                             </option>
                         </b-select>
@@ -93,7 +93,9 @@
                     <b-modal 
                             @close="onMetadatumEditionCanceled()"
                             :active.sync="isNewMetadatumModalActive"
-                            trap-focus>
+                            trap-focus
+                            aria-modal
+                            aria-role="dialog">
                         <div 
                                 autofocus="true"
                                 tabindex="-1"

@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Numeric_Interval extends Filter_Type {
 
     function __construct(){
-        $this->set_name('Numeric Interval');
+        $this->set_name( __('Numeric Interval', 'tainacan') );
         $this->set_supported_types(['float']);
         $this->set_component('tainacan-filter-numeric-interval');
         $this->set_form_component('tainacan-filter-form-numeric-interval');

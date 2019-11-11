@@ -165,6 +165,7 @@ class REST_Importers_Controller extends REST_Controller {
 
         if ($object = $Tainacan_Importer_Handler->initialize_importer($slug)) {
             $response = $object->_to_Array();
+			$Tainacan_Importer_Handler->save_importer_instance($object);
             return new \WP_REST_Response($response, 201);
         } else {
             return new \WP_REST_Response([
@@ -192,9 +193,10 @@ class REST_Importers_Controller extends REST_Controller {
 	    	foreach ($body as $att => $value){
 	    		$attributes[$att] = $value;
 		    }
-
-		    $importer = $_SESSION['tainacan_importer'][$session_id];
-
+			
+			global $Tainacan_Importer_Handler;
+			$importer = $Tainacan_Importer_Handler->get_importer_instance_by_session_id($session_id);
+			
 	    	if($importer) {
                 
                 foreach ($body as $att => $value){
@@ -218,6 +220,7 @@ class REST_Importers_Controller extends REST_Controller {
                 }
 
                 $response = $importer->_to_Array();
+				$Tainacan_Importer_Handler->save_importer_instance($importer);
                 return new \WP_REST_Response( $response, 200 );
 
 		    }
@@ -237,7 +240,8 @@ class REST_Importers_Controller extends REST_Controller {
 
     public function source_info( $request ) {
         $session_id = $request['session_id'];
-        $importer = $_SESSION['tainacan_importer'][$session_id];
+		global $Tainacan_Importer_Handler;
+		$importer = $Tainacan_Importer_Handler->get_importer_instance_by_session_id($session_id);
 
         if(!$importer) {
             return new \WP_REST_Response([
@@ -263,7 +267,7 @@ class REST_Importers_Controller extends REST_Controller {
         if ( method_exists($importer, 'get_source_special_fields') ) {
             $response['source_special_fields'] = $importer->get_source_special_fields();
         }
-
+        $Tainacan_Importer_Handler->save_importer_instance($importer);
         return new \WP_REST_Response( $response, 200 );
 
     }
@@ -271,7 +275,8 @@ class REST_Importers_Controller extends REST_Controller {
     public function get_saved_mapping( $request ){
         $session_id = $request['session_id'];
         $collection_id = $request['collection_id'];
-        $importer = $_SESSION['tainacan_importer'][$session_id];
+		global $Tainacan_Importer_Handler;
+		$importer = $Tainacan_Importer_Handler->get_importer_instance_by_session_id($session_id);
         $response = false;
 
         if(!$importer) {
@@ -290,7 +295,8 @@ class REST_Importers_Controller extends REST_Controller {
 
     public function get_item( $request ) {
         $session_id = $request['session_id'];
-        $importer = $_SESSION['tainacan_importer'][$session_id];
+		global $Tainacan_Importer_Handler;
+		$importer = $Tainacan_Importer_Handler->get_importer_instance_by_session_id($session_id);
 
         if(!$importer) {
             return new \WP_REST_Response([
@@ -306,7 +312,8 @@ class REST_Importers_Controller extends REST_Controller {
 
     public function add_file( $request )  {
         $session_id = $request['session_id'];
-        $importer = $_SESSION['tainacan_importer'][$session_id];
+		global $Tainacan_Importer_Handler;
+		$importer = $Tainacan_Importer_Handler->get_importer_instance_by_session_id($session_id);
 
         if(!$importer) {
             return new \WP_REST_Response([
@@ -320,6 +327,7 @@ class REST_Importers_Controller extends REST_Controller {
 
         if ( isset($files['file']) && $importer->add_file($files['file']) ) {
             $response = $importer->_to_Array();
+			$Tainacan_Importer_Handler->save_importer_instance($importer);
             return new \WP_REST_Response( $response, 200 );
         } else {
             return new \WP_REST_Response([
@@ -335,7 +343,8 @@ class REST_Importers_Controller extends REST_Controller {
 
     public function run($request) {
         $session_id = $request['session_id'];
-        $importer = $_SESSION['tainacan_importer'][$session_id];
+		global $Tainacan_Importer_Handler;
+		$importer = $Tainacan_Importer_Handler->get_importer_instance_by_session_id($session_id);
 
         if(!$importer) {
             return new \WP_REST_Response([
@@ -358,6 +367,7 @@ class REST_Importers_Controller extends REST_Controller {
         $response = [
             'bg_process_id' => $process->ID
         ];
+		$Tainacan_Importer_Handler->delete_importer_instance($importer);
         return new \WP_REST_Response( $response, 200 );
 
     }

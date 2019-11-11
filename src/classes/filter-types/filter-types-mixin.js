@@ -5,34 +5,43 @@ import { mapGetters } from 'vuex';
 export const filterTypeMixin = {
     data () {
         return {
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
-            getOptionsValuesCancel: undefined,
-            isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
-            isLoadingOptions: false,
             collectionId: '',
-            metadatumId: ''
+            metadatumId: '',
+            metadatumType: '',
+            filterTypeOptions: [],
         }
     },
     props: {
         filter: Object,
         query: Object,
-        isRepositoryLevel: Boolean
+        isRepositoryLevel: Boolean,
+        isUsingElasticSearch: Boolean,
+        isLoadingItems: Boolean
     },
     created() {
         this.collectionId = this.filter.collection_id ? this.filter.collection_id : this.collectionId;
         this.metadatumId = this.filter.metadatum.metadatum_id ? this.filter.metadatum.metadatum_id : this.metadatumId;
-    },
-    mounted() {
-        this.$eventBusSearch.$on('removeFromFilterTag', this.cleanSearchFromTags);
+        this.filterTypeOptions = this.filter.filter_type_options ? this.filter.filter_type_options : this.filterTypeOptions;
+        this.metadatumType = this.filter.metadatum.metadata_type_object && this.filter.metadatum.metadata_type_object.className ? this.filter.metadatum.metadata_type_object.className : this.metadatumType;
+    }
+};
 
-        // We listen to event, but reload event if hasFiltered is negative, as 
-        // an empty query also demands filters reloading.
-        if (this.options != undefined)
-            this.$eventBusSearch.$on('hasFiltered', this.reloadOptionsDueToFiltering);
+export const dynamicFilterTypeMixin = {
+    data () {
+        return {
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
+            getOptionsValuesCancel: undefined,
+            isLoadingOptions: false,
+        }
     },
     computed: {
         facetsFromItemSearch() {
             return this.getFacets();
+        }
+    },
+    watch: {
+        isLoadingItems() {
+            this.isLoadingOptions = this.isLoadingItems;
         }
     },
     methods: {
@@ -44,7 +53,7 @@ export const filterTypeMixin = {
             if (isInCheckboxModal || search || !this.isUsingElasticSearch) {
 
                 const source = axios.CancelToken.source();
-
+ 
                 let currentQuery  = JSON.parse(JSON.stringify(this.query));
                 if (currentQuery.fetch_only != undefined) {
                     delete currentQuery.fetch_only;
@@ -267,13 +276,14 @@ export const filterTypeMixin = {
                             sResults.push({
                                 label: item.label,
                                 value: item.value,
+                                img: item.thumbnail && item.thumbnail['tainacan-small'] && item.thumbnail['tainacan-small'][0] ? item.thumbnail['tainacan-small'][0] : (item.img ? item.img : ''),
                                 total_items: item.total_items
                             });
                         } else if (indexToIgnore < 0) {
                             opts.push({
                                 label: item.label,
                                 value: item.value,
-                                img: (item.img ? item.img : this.thumbPlaceholderPath),
+                                img: item.thumbnail && item.thumbnail['tainacan-small'] && item.thumbnail['tainacan-small'][0] ? item.thumbnail['tainacan-small'][0] : (item.img ? item.img : ''),
                                 total_items: item.total_items
                             });
                         }
@@ -282,14 +292,14 @@ export const filterTypeMixin = {
                             sResults.push({
                                 label: item.label,
                                 value: item.value,
-                                img: (item.img ? item.img : this.thumbPlaceholderPath),
+                                img: item.thumbnail && item.thumbnail['tainacan-small'] && item.thumbnail['tainacan-small'][0] ? item.thumbnail['tainacan-small'][0] : (item.img ? item.img : ''),
                                 total_items: item.total_items
                             });
                         } else {
                             opts.push({
                                 label: item.label,
                                 value: item.value,
-                                img: (item.img ? item.img : this.thumbPlaceholderPath),
+                                img: item.thumbnail && item.thumbnail['tainacan-small'] && item.thumbnail['tainacan-small'][0] ? item.thumbnail['tainacan-small'][0] : (item.img ? item.img : ''),
                                 total_items: item.total_items
                             });
                         }
@@ -305,7 +315,7 @@ export const filterTypeMixin = {
                 this.noMorePage = 1;
             
 
-            if(this.options.length < this.maxNumOptionsCheckboxList)
+            if (this.options.length < this.maxNumOptionsCheckboxList)
                 this.noMorePage = 1;
             
             if (this.filter.max_options && this.options.length >= this.filter.max_options) {
@@ -318,17 +328,10 @@ export const filterTypeMixin = {
                 }
             }
         },
-        reloadOptionsDueToFiltering() {
-            if (typeof this.loadOptions == "function")
-                this.loadOptions(true);
-        }
     },
     beforeDestroy() {
         // Cancels previous Request
         if (this.getOptionsValuesCancel != undefined)
             this.getOptionsValuesCancel.cancel('Facet search Canceled.');
-    
-        this.$eventBusSearch.$off('removeFromFilterTag', this.cleanSearchFromTags);
-        this.$eventBusSearch.$off('hasFiltered', this.reloadOptionsDueToFiltering);
     },
 };

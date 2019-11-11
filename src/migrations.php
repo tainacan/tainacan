@@ -1,38 +1,38 @@
-<?php 
+<?php
 namespace Tainacan;
 
 
 
 class Migrations {
-	
-	
+
+
 	static function run_migrations() {
-		
+
 		$migrations = get_class_methods('Tainacan\Migrations');
-		
+
 		foreach ($migrations as $migration) {
 			$option_name = '_migration_' . $migration;
 			if ('run_migrations' == $migration || get_option($option_name)) {
 				continue;
 			}
-			
+
 			update_option($option_name, 1);
-			
+
 			call_user_func(array('Tainacan\Migrations', $migration));
-			
+
 		}
-		
+
 	}
-	
-	
+
+
 	// Migrations methods below
-	
+
 	static function tainacan_create_bd_process_db() {
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'tnc_bg_process';
 		$charset_collate = $wpdb->get_charset_collate();
 		$max_index_length = 191;
-		
+
 		$query = "CREATE TABLE IF NOT EXISTS $table_name (
 		  ID bigint(20) unsigned NOT NULL auto_increment,
 		  user_id bigint(20) unsigned NOT NULL default '0',
@@ -51,20 +51,20 @@ class Migrations {
 		  KEY user_id (user_id),
 		  KEY action (action($max_index_length))
 		) $charset_collate;\n";
-		
+
 		$wpdb->query($query);
 
 	}
-	
+
 	/**
 	 * We had some cases of tainacan upgrades from very old versions that missed some migrations...
 	 * This migration make sure the table strucure is updated since the very first version
 	 */
 	static function assure_bg_process_database() {
 		global $wpdb;
-		
+
 		$table_name = $wpdb->prefix . 'tnc_bg_process';
-		
+
 		$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$wpdb->prefix}tnc_bg_process' AND column_name = 'progress_label'"  );
 
 	    if(empty($column_exists)) {
@@ -83,8 +83,8 @@ class Migrations {
 	        ADD name text NOT NULL
 	        ");
 		}
-		
-		
+
+
 		$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$wpdb->prefix}tnc_bg_process' AND column_name = 'output'"  );
 
 	    if(empty($column_exists)) {
@@ -93,7 +93,7 @@ class Migrations {
 	        ADD output longtext
 	        ");
 		}
-		
+
 		$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$wpdb->prefix}tnc_bg_process' AND column_name = 'status'"  );
 
         if(empty($column_exists)) {
@@ -102,14 +102,14 @@ class Migrations {
 	        ADD status ENUM('waiting','running','paused','cancelled','errored','finished','finished-errors')
 	        ");
         }
-		
+
 	}
 
 	static function init_capabilites() {
 		$Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();
 		$Tainacan_Capabilities->init();
 	}
-	
+
 	static function tainacan_migrate_post_type_field_to_metadatum(){
 		global $wpdb;
 
@@ -117,7 +117,7 @@ class Migrations {
 	        ['post_type' => 'tainacan-metadatum'],
 	        ['post_type' => 'tainacan-field'],
 	        '%s', '%s');
-	      
+
 	    $wpdb->update($wpdb->postmeta,
 	        ['meta_key' => 'default_displayed_metadata'],
 	        ['meta_key' => 'default_displayed_fields'],
@@ -137,17 +137,17 @@ class Migrations {
 	        ['meta_key' => 'metadata_type'],
 	        ['meta_key' => 'field_type'],
 	        '%s', '%s');
-	    
+
 	    $wpdb->update($wpdb->postmeta,
 	        ['meta_key' => 'metadata_type_options'],
 	        ['meta_key' => 'field_type_options'],
 	        '%s', '%s');
-			
+
 		$wpdb->update($wpdb->postmeta,
 	        ['meta_key' => 'metadata_type'],
 	        ['meta_key' => 'metadatum_type'],
 	        '%s', '%s');
-	    
+
 	    $wpdb->update($wpdb->postmeta,
 	        ['meta_key' => 'metadata_type_options'],
 	        ['meta_key' => 'metadatum_type_options'],
@@ -204,8 +204,8 @@ class Migrations {
 	        ['meta_value' => 'Tainacan\Metadata_Types\Compound'],
 	        ['meta_value' => 'Tainacan\Field_Types\Compound'],
 	        '%s', '%s');
-			
-		
+
+
 		$wpdb->update($wpdb->postmeta,
 		    ['meta_value' => 'Tainacan\Metadata_Types\Core_Description'],
 		    ['meta_value' => 'Tainacan\Metadatum_Types\Core_Description'],
@@ -245,7 +245,7 @@ class Migrations {
 		    ['meta_value' => 'Tainacan\Metadata_Types\Relationship'],
 		    ['meta_value' => 'Tainacan\Metadatum_Types\Relationship'],
 	        '%s', '%s');
-	        
+
 	    $wpdb->update($wpdb->postmeta,
 		    ['meta_value' => 'Tainacan\Metadata_Types\Compound'],
 		    ['meta_value' => 'Tainacan\Metadatum_Types\Compound'],
@@ -255,7 +255,7 @@ class Migrations {
 		    ['meta_value' => 'Tainacan\Metadata_Types\Taxonomy'],
 		    ['meta_value' => 'Tainacan\Metadatum_Types\Category'],
 	        '%s', '%s');
-	        
+
 	    $wpdb->update($wpdb->postmeta,
 		    ['meta_value' => 'Tainacan\Metadata_Types\Taxonomy'],
 		    ['meta_value' => 'Tainacan\Metadata_Types\Category'],
@@ -289,20 +289,20 @@ class Migrations {
 		// update input type
 		$wpdb->query("UPDATE $wpdb->postmeta SET meta_value = REPLACE(meta_value, 'tainacan-taxonomy-selectbox', 'tainacan-taxonomy-radio')");
 	}
-	
+
 	static function update_core_metadata() {
 		global $wpdb;
         $collections = \Tainacan\Repositories\Collections::get_instance()->fetch([], 'OBJECT');
-        
+
         foreach ($collections as $collection) {
 
-            // get title 
+            // get title
             $title_meta = $collection->get_core_title_metadatum();
 
             // delete metadata if exists
             $wpdb->query( $wpdb->prepare("DELETE FROM $wpdb->postmeta WHERE meta_key = %s", $title_meta->get_id() ));
             // create metadata
-            $wpdb->query( $wpdb->prepare("INSERT INTO $wpdb->postmeta 
+            $wpdb->query( $wpdb->prepare("INSERT INTO $wpdb->postmeta
                 (post_id,meta_key,meta_value)
                 SELECT ID, %s, post_title FROM $wpdb->posts WHERE post_type = %s
                 ", $title_meta->get_id(), $collection->get_db_identifier() ));
@@ -314,7 +314,7 @@ class Migrations {
             $wpdb->query( $wpdb->prepare("DELETE FROM $wpdb->postmeta WHERE meta_key = %s", $description_meta->get_id() ));
 
             // create metadata
-            $wpdb->query( $wpdb->prepare("INSERT INTO $wpdb->postmeta 
+            $wpdb->query( $wpdb->prepare("INSERT INTO $wpdb->postmeta
                 (post_id,meta_key,meta_value)
                 SELECT ID, %s, post_content FROM $wpdb->posts WHERE post_type = %s
                 ", $description_meta->get_id(), $collection->get_db_identifier() ));
@@ -324,46 +324,46 @@ class Migrations {
 
 	static function refresh_rewrite_rules() {
 		// needed after we changed the Collections post type rewrite slug
-		
+
 		$option_name = '_migration_refresh_rewrite_rules_items';
 		if (!get_option($option_name)) {
 			return; // avoid running twice cause there is the same update right below this one
 		}
-		
+
 		flush_rewrite_rules(false);
 	}
-	
+
 	static function refresh_rewrite_rules_items() {
 		// needed after we added the /items rewrite rule
 		flush_rewrite_rules(false);
 	}
-	
+
 	static function update_filters_definition() {
 		global $wpdb;
-		
+
 		$wpdb->query("UPDATE $wpdb->postmeta SET meta_key = 'metadatum_id' WHERE
 			meta_key = 'metadatum' AND post_id IN (
 				SELECT ID FROM $wpdb->posts WHERE post_type = 'tainacan-filter'
 			)");
-		
+
 	}
-	
+
 	static function update_repository_filters_meta() {
 		global $wpdb;
-		
+
 		$wpdb->query( "UPDATE $wpdb->postmeta SET meta_value = 'default' WHERE
 			post_id IN (
 				SELECT ID FROM $wpdb->posts WHERE post_type = 'tainacan-filter'
-			) AND meta_key = 'collection_id' AND meta_value = 'filter_in_repository'" 
+			) AND meta_key = 'collection_id' AND meta_value = 'filter_in_repository'"
 		);
 
 	}
 
 	static function update_relationship_metadata_search_option() {
 		global $wpdb;
-		
+
 		$q = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = 'metadata_type' AND meta_value = 'Tainacan\\\\Metadata_Types\\\\Relationship'";
-		
+
 		$ids = $wpdb->get_col($q);
 
 		foreach ($ids as $id) {
@@ -373,9 +373,57 @@ class Migrations {
 				update_post_meta($id, 'metadata_type_options', $meta);
 			}
 		}
-		
+
 	}
-	
+
+	static function replace_custom_interval_filters() {
+		$tainacan_filters = \Tainacan\Repositories\Filters::get_instance();
+		$filters = $tainacan_filters->fetch([
+			'nopaging' => true,
+			'filter_type' => 'Tainacan\Filter_Types\Custom_Interval',
+			'post_status' => 'any'
+		], 'OBJECT');
+
+		foreach ($filters as $filter) {
+			$meta = $filter->get_metadatum();
+			#echo 'found filter:' . $filter->get_name(). "<br>";
+			if ($meta instanceof \Tainacan\Entities\Metadatum) {
+				$type = $meta->get_metadata_type();
+				#echo 'found meta:' . $meta->get_name(). "<br>";
+				#echo 'found meta:' . $meta->get_metadata_type(). "<br>";
+
+				$newtype = false;
+				if ( $type == 'Tainacan\Metadata_Types\Date' ) {
+					$newtype = 'Tainacan\Filter_Types\Date_Interval';
+				} elseif ( $type == 'Tainacan\Metadata_Types\Numeric' ) {
+					$newtype = 'Tainacan\Filter_Types\Numeric_Interval';
+				}
+
+				#echo 'New type:' . $newtype. "<br>";
+
+				if ($newtype) {
+					$filter->set_filter_type($newtype);
+					if ($filter->validate()) {
+						#echo "INSERT\n\n";
+						$tainacan_filters->insert($filter);
+					}
+
+				}
+
+			}
+
+
+
+
+		}
+
+	}
+
+	static function update_repository_rename_document_index_meta_key() {
+		global $wpdb;
+		$wpdb->query( "UPDATE $wpdb->postmeta SET meta_key = 'document_content_index' WHERE meta_key = '_document_content_index'");
+	}
+
 }
 
 
