@@ -821,7 +821,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                             isPrimary
                             type="submit"
                             onClick={ () => openDynamicItemsModal() }>
-                            {__('Select items', 'tainacan')}
+                            {__('Configure search', 'tainacan')}
                         </Button>   
                     </Placeholder>
                     ) : null
