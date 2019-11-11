@@ -238,6 +238,9 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertArrayHasKey('test', $caps['tnc_rep_edit_metadata']['roles']);
 		$this->assertArrayHasKey('editor', $caps['tnc_rep_edit_metadata']['roles_inherited']);
 
+		$this->assertArrayNotHasKey('editor', $caps['manage_tainacan']['roles_inherited']);
+		$this->assertArrayNotHasKey('administrator', $caps['manage_tainacan']['roles_inherited']);
+
 
 	}
 

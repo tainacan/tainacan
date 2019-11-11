@@ -432,6 +432,7 @@ class REST_Roles_Controller extends REST_Controller {
 						'slug' => $slug,
 						'name' => translate_user_role($role['name']),
 					];
+					continue;
 				}
 
 				// inherited roles
