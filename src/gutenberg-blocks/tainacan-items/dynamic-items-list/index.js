@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
+const { SelectControl, RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -119,6 +119,14 @@ registerBlockType('tainacan/dynamic-items-list', {
         mosaicHeight: {
             type: Number,
             value: 40
+        },
+        mosaicGridColumns: {
+            type: Number,
+            value: 3
+        },
+        mosaicGridRows: {
+            type: Number,
+            value: 3
         }
     },
     supports: {
@@ -129,6 +137,7 @@ registerBlockType('tainacan/dynamic-items-list', {
         let {
             items, 
             content, 
+            collection,
             collectionId,  
             showImage,
             showName,
@@ -147,7 +156,9 @@ registerBlockType('tainacan/dynamic-items-list', {
             isLoadingCollection,
             collectionBackgroundColor,
             collectionTextColor,
-            mosaicHeight
+            mosaicHeight,
+            mosaicGridColumns,
+            mosaicGridRows
         } = attributes;
 
         // Obtains block's client id to render it on save function
@@ -185,13 +196,13 @@ registerBlockType('tainacan/dynamic-items-list', {
                     style={
                         { 
                             width: 'calc((100% / ' + mosaicGroupsLength + ') - ' + gridMargin + 'px)',
-                            height: 'calc(((2 * ' + gridMargin + 'px) + ' + mosaicHeight + 'vh))',
-                            gridTemplateColumns: 'repeat(3, calc((100% / 3) - (' + (2*Number(gridMargin)) + 'px/3)))',
+                            height: 'calc(((' + (mosaicGridRows - 1) + ' * ' + gridMargin + 'px) + ' + mosaicHeight + 'vh))',
+                            gridTemplateColumns: 'repeat(' + mosaicGridColumns + ', calc((100% / ' + mosaicGridColumns + ') - (' + ((mosaicGridRows - 1)*Number(gridMargin)) + 'px/' + mosaicGridColumns + ')))',
                             margin: gridMargin + 'px',
                             gridGap: gridMargin + 'px',
                         }
                     }
-                    className={ 'mosaic-container mosaic-container--' + mosaicGroup.length }>
+                    className={ 'mosaic-container mosaic-container--' + mosaicGroup.length + '-' + mosaicGridRows + 'x' + mosaicGridColumns }>
                         { buildMosaic(mosaicGroup) }
                     </div>
             )
@@ -256,6 +267,11 @@ registerBlockType('tainacan/dynamic-items-list', {
             tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
                 .then(response => {
                     
+                    // Initializes some variables
+                    mosaicGridRows = mosaicGridRows ? mosaicGridRows : 3;
+                    mosaicGridColumns = mosaicGridColumns ? mosaicGridColumns : 3;
+                    mosaicHeight = mosaicHeight ? mosaicHeight : 40;
+
                     if (layout !== 'mosaic') {
                         for (let item of response.data.items)
                             items.push(prepareItem(item));
@@ -542,25 +558,52 @@ registerBlockType('tainacan/dynamic-items-list', {
                                                 max={ 48 }
                                             />
                                         </div>
-                                        { layout == 'mosaic' ?
-                                            <div style={{ marginTop: '16px'}}>
-                                                <RangeControl
-                                                    label={__('Mosaic container height', 'tainacan')}
-                                                    value={ mosaicHeight ? mosaicHeight : 40 }
-                                                    onChange={ ( height ) => {
-                                                        mosaicHeight = height;
-                                                        setAttributes( { mosaicHeight: height } );
-                                                        setContent();
-                                                    }}
-                                                    min={ 10 }
-                                                    max={ 100 }
-                                                />
-                                            </div>
-                                        : null}
                                     </div>
                                 : null }
                             </div>
                         </PanelBody>
+                        { layout == 'mosaic' ?
+                        <PanelBody
+                            title={__('Mosaic', 'tainacan')}
+                            initialOpen={ true }
+                            >
+                            <div>
+                                <RangeControl
+                                    label={__('Mosaic container height', 'tainacan')}
+                                    value={ mosaicHeight ? mosaicHeight : 40 }
+                                    onChange={ ( height ) => {
+                                        mosaicHeight = height;
+                                        setAttributes( { mosaicHeight: height } );
+                                        setContent();
+                                    }}
+                                    min={ 10 }
+                                    max={ 100 }
+                                />
+                            </div>
+                            <div>
+                                <SelectControl
+                                    label={__('Mosaic Grid', 'tainacan')}
+                                    value={ mosaicGridRows + 'x' + mosaicGridColumns }
+                                    options={ [
+                                        { label: '3 x 3', value: '3x3' },
+                                        { label: '3 x 4', value: '3x4' },
+                                        { label: '4 x 3', value: '4x3' },
+                                        { label: '4 x 5', value: '4x5' },
+                                        { label: '5 x 4', value: '5x4' },
+                                    ] }
+                                    onChange={ ( aGrid ) => { 
+                                        mosaicGridRows = aGrid.split('x')[0];
+                                        mosaicGridColumns = aGrid.split('x')[1];
+                    
+                                        setAttributes({
+                                            mosaicGridRows: mosaicGridRows,
+                                            mosaicGridColumns: mosaicGridColumns
+                                        }); 
+                                        setContent();
+                                    }}/>
+                            </div>
+                        </PanelBody>
+                        : null}
                     </InspectorControls>
                 </div>
 
