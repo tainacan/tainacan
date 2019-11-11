@@ -78,6 +78,7 @@
                 :date-parser="(date) => dateParser(date)"
                 size="is-small"
                 icon="calendar-today"
+                :years-range="[-200, 50]"
                 :day-names="[
                     $i18n.get('datepicker_short_sunday'),
                     $i18n.get('datepicker_short_monday'),
@@ -110,7 +111,6 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios/axios';
     import { wpAjax, dateInter } from "../../../admin/js/mixins";
     import { filterTypeMixin } from '../filter-types-mixin';
     import moment from 'moment';
@@ -121,36 +121,18 @@
             dateInter,
             filterTypeMixin
         ],
-        created() {
-            this.filterTypeOptions = this.filter.filter_type_options;
-
-            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
-
-            if (this.isRepositoryLevel || this.collectionId == 'default')
-                endpoint = '/metadata/'+ this.metadatumId;
-        
-            axios.get(endpoint)
-                .then( res => {
-                    let result = res.data;
-                    if ( result && result.metadata_type ){
-                        this.metadatum_object = result;
-                        this.selectedValues();
-                    }
-                })
-                .catch(error => {
-                    this.$console.log(error);
-                });
-        },
         mounted() {
-            this.selectedValues();
+            this.updateSelectedValues();
         },
         data(){
             return {
                 value: null,
-                clear: false,
-                filterTypeOptions: [],
-                metadatum_object: {},
                 comparator: '=', // =, !=, >, >=, <, <=
+            }
+        },
+        watch: {
+            'query.metaquery'() {
+                this.updateSelectedValues();
             }
         },
         computed: {
@@ -170,12 +152,12 @@
             }
         },
         methods: {
-            selectedValues(){
+            updateSelectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
                 let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
-                
+
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
                     
@@ -190,32 +172,15 @@
                         
                         this.value = new Date(textValue);
 
-                        this.$emit('sendValuesToTags', this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat));
+                        this.$emit('sendValuesToTags', { 
+                            label: this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat), 
+                            value: textValue
+                        });
                     }
 
                 } else {
-                    return false;
+                    this.value = null;
                 }
-
-            },
-            cleanSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id)
-                    this.clearSearch();
-            },
-            clearSearch(){
-
-                this.clear = true;
-
-                this.$emit('input', {
-                    filter: 'date',
-                    type: 'DATE',
-                    compare: this.comparator,
-                    metadatum_id: this.metadatumId,
-                    collection_id: this.collectionId,
-                    value: ''
-                });
-
-                this.value = null;
             },
             dateFormatter(dateObject) { 
                 return moment(dateObject, moment.ISO_8601).format(this.dateFormat);
@@ -252,7 +217,10 @@
                     collection_id: this.collectionId,
                     value: valueQuery
                 });
-                this.$emit('sendValuesToTags', this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat));
+                this.$emit('sendValuesToTags', { 
+                    label: this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat), 
+                    value: valueQuery
+                });
                 
             },
             onChangeComparator(newComparator) {

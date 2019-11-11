@@ -1,11 +1,12 @@
 <template>
     <div>
         <b-select
+                expanded
                 :placeholder="$i18n.get('instruction_select_a_interval')"
                 @input="changeInterval"
                 v-model="selectedInterval">
             <option value="">
-                {{ $i18n.get('label_clean') }}
+                {{ $i18n.get('label_selectbox_init') }}...
             </option>
             <option
                     v-for="(interval, index) in filterTypeOptions.intervals"
@@ -21,43 +22,39 @@
     import { filterTypeMixin } from '../filter-types-mixin';
     export default {
         mixins: [ filterTypeMixin ],
-        created() {
-            this.filterTypeOptions = this.filter.filter_type_options;
-        },
         data() {
             return {
                 valueInit: 0,
                 valueEnd: 10,
-                isValid: false,
-                filterTypeOptions: [],
                 selectedInterval: ''
             }
         },
+        mounted() {
+            this.updateSelectedValues();
+        },
+        watch: {
+            'query.metaquery'() {
+                this.updateSelectedValues();
+            }
+        },
         methods: {
-            cleanSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id)
-                    this.clearSearch();
-            },
             changeInterval() {
                 if (this.selectedInterval !== '') {
                     this.valueInit = this.filterTypeOptions.intervals[this.selectedInterval].from;
                     this.valueEnd = this.filterTypeOptions.intervals[this.selectedInterval].to;
                     this.emit();
                 } else {
-                    this.clearSearch();
+                    this.$emit('input', {
+                        type: 'DECIMAL',
+                        compare: 'BETWEEN',
+                        metadatum_id: this.metadatumId,
+                        collection_id: this.collectionId,
+                        value: [null, null]
+                    });
+                    this.valueEnd = null;
+                    this.valueInit = null;
+                    this.$emit('sendValuesToTags', { label: '', value: null });
                 }
-                
-            },
-            clearSearch(){
-                this.$emit('input', {
-                    filter: 'range',
-                    compare: 'BETWEEN',
-                    metadatum_id: this.metadatumId,
-                    collection_id: this.collectionId,
-                    value: ''
-                });
-                this.valueEnd = null;
-                this.valueInit = null;
             },
             // emit the operation for listeners
             emit() {
@@ -71,12 +68,12 @@
                     value: values
                 });
 
-                if (values[0] != undefined && values[1] != undefined) {
-                    let labelValue = this.filterTypeOptions.intervals[this.selectedInterval].label + (this.filterTypeOptions.showIntervalOnTag ? `(${values[0]}-${values[1]})` : '');
-                    this.$emit( 'sendValuesToTags', labelValue);
+                if (values[0] != undefined && values[1] != undefined && this.selectedInterval !== '') {
+                    let labelValue = this.filterTypeOptions.intervals[this.selectedInterval].label + (this.filterTypeOptions.showIntervalOnTag ? ` (${values[0]}-${values[1]})` : '');
+                    this.$emit('sendValuesToTags', { label: labelValue, value: values });
                 }
             },
-            selectedValues(){
+            updateSelectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
@@ -96,16 +93,18 @@
                     this.selectedInterval = this.filterTypeOptions.intervals.findIndex(
                         anInterval => anInterval.from == this.valueInit && anInterval.to == this.valueEnd
                     );
+                    this.selectedInterval = this.selectedInterval >= 0 ? this.selectedInterval : '';
 
-                    let labelValue = this.filterTypeOptions.intervals[this.selectedInterval].label + (this.filterTypeOptions.showIntervalOnTag ? `(${this.valueInit}-${this.valueEnd})` : '');
-                    this.$emit( 'sendValuesToTags', labelValue);
+                    if (this.selectedInterval !== '') {
+                        let labelValue = this.filterTypeOptions.intervals[this.selectedInterval].label + (this.filterTypeOptions.showIntervalOnTag ? ` (${this.valueInit}-${this.valueEnd})` : '');
+                        this.$emit('sendValuesToTags', { label: labelValue, value: [ this.valueInit, this.valueEnd ] });
+                    }
                 } else {
-                    return false;
+                    this.valueInit = null;
+                    this.valueEnd = null;
+                    this.selectedInterval = '';
                 }
             },
-        },
-        mounted() {
-            this.selectedValues();
         }
     }
 </script>

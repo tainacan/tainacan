@@ -25,66 +25,27 @@
 </template>
 
 <script>
-    import { tainacan as axios, isCancel } from '../../../js/axios/axios';
-    import { filterTypeMixin } from '../filter-types-mixin';
+    import { isCancel } from '../../../js/axios/axios';
+    import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
 
     export default {
-        created(){
-            const vm = this;
-
-            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
-
-            if (this.isRepositoryLevel || this.collectionId == 'default'){
-                endpoint = '/metadata/'+ this.metadatumId;
-            }
-
-            axios.get(endpoint)
-                .then( res => {
-                    let result = res.data;
-                    if( result && result.metadata_type ){
-                        vm.metadatum_object = result;
-                        vm.type = result.metadata_type;
-                        
-                        if (!this.isUsingElasticSearch)
-                            vm.loadOptions();
-                    }
-                })
-                .catch(error => {
-                    this.$console.error(error);
-                });
-
-            if (this.isUsingElasticSearch) {
-                this.$eventBusSearch.$on('isLoadingItems', isLoading => {
-                    this.isLoadingOptions = isLoading;
-                });
-            }
-        },
+        mixins: [filterTypeMixin, dynamicFilterTypeMixin],
         data(){
             return {
                 options: [],
-                type: ''
+                selected: ''
             }
         },
-        mixins: [filterTypeMixin],
         watch: {
-            selected(value) {
-                if (value)
-                    this.$emit('sendValuesToTags', value);
+            'query.metaquery'() {
+                if (!this.isUsingElasticSearch)
+                    this.loadOptions();
             }
         },
-        computed: {
-            selected() {
-                if ( this.query && this.query.metaquery && Array.isArray( this.query.metaquery ) ) {
-
-                    let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
-                    if ( index >= 0){
-                        let metadata = this.query.metaquery[ index ];
-                        return metadata.value;
-                    }
-                }
-                return undefined;
-            }
-        }, 
+        mounted(){           
+            if (!this.isUsingElasticSearch)
+                this.loadOptions();
+        },
         methods: {
             loadOptions(){
                 // Cancels previous Request
@@ -95,6 +56,7 @@
                 promise = this.getValuesPlainText( this.metadatumId, null, this.isRepositoryLevel );
                 promise.request
                     .then(() => {
+                        this.updateSelectedValues();
                     })
                     .catch( error => {
                         if (isCancel(error))
@@ -106,23 +68,34 @@
                 // Search Request Token for cancelling
                 this.getOptionsValuesCancel = promise.source;
             },
-            onSelect(value){
-                //this.selected = value;
+            updateSelectedValues() {
+                if ( this.query && this.query.metaquery && Array.isArray( this.query.metaquery ) ) {
+
+                    let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
+                    if ( index >= 0) {
+                        let metadata = this.query.metaquery[ index ];
+                        if (this.selected != metadata.value) {
+                            this.selected = metadata.value;
+                        }
+                    } else {
+                        this.selected = '';
+                    }
+                } else {
+                    this.selected = '';
+                }
+
+                this.$emit('sendValuesToTags', { label: this.selected, value: this.selected })
+            },
+            onSelect(value) {
                 this.$emit('input', {
                     filter: 'selectbox',
                     metadatum_id: this.metadatumId,
                     collection_id: this.collectionId,
-                    value: ( value ) ? value : ''
+                    value: value
                 });
-            },
-            cleanSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id)
-                    this.onSelect();
+
+                this.updateSelectedValues();
             }
-        },
-        beforeDestroy() {
-            if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$off('isLoadingItems');
         }
     }
 </script>

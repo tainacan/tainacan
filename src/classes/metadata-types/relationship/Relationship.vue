@@ -3,17 +3,41 @@
         <b-taginput
                 expanded
                 :disabled="disabled"
-                :id="id"
-                v-model="selected"
+                :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
+                :value="selected"
+                size="is-small"
+                icon="magnify"
+                @input="onInput"
                 :data="options"
                 :maxtags="maxtags != undefined ? maxtags : (metadatum.metadatum.multiple == 'yes' || allowNew === true ? 100 : 1)"
                 autocomplete
                 attached
-                :loading="loading"
+                :placeholder="$i18n.get('instruction_type_existing_term')"
+                :loading="isLoading"
                 :aria-close-label="$i18n.get('remove_value')"
                 :class="{'has-selected': selected != undefined && selected != []}"
                 field="label"
-                @typing="search"/>
+                @typing="(query) => { options = []; search(query); }">
+            <template slot-scope="props">
+                <div class="media">
+                    <div 
+                            v-if="props.option.img"
+                            class="media-left">
+                        <img 
+                                width="28"
+                                :src="props.option.img">
+                    </div>
+                    <div class="media-content">
+                        {{ props.option.label }}
+                    </div>
+                </div>
+            </template>
+            <template 
+                    v-if="!isLoading"
+                    slot="empty">
+                {{ $i18n.get('info_no_item_found') }}
+            </template>
+        </b-taginput>
     </div>
 </template>
 
@@ -22,16 +46,20 @@
     import qs from 'qs';
 
     export default {
-        created(){
-            let collectionId = ( this.metadatum && this.metadatum.metadatum.metadata_type_options.collection_id ) ? this.metadatum.metadatum.metadata_type_options.collection_id : this.collection_id;
-            if ( this.metadatum.value && (Array.isArray( this.metadatum.value ) ? this.metadatum.value.length > 0 : true )){
+        created() {
+            this.collectionId = ( this.metadatum && this.metadatum.metadatum.metadata_type_options && this.metadatum.metadatum.metadata_type_options.collection_id ) ? this.metadatum.metadatum.metadata_type_options.collection_id : '';
+            if (this.metadatum.value && (Array.isArray( this.metadatum.value ) ? this.metadatum.value.length > 0 : true )) {
                 let query = qs.stringify({ postin: ( Array.isArray( this.metadatum.value ) ) ? this.metadatum.value : [ this.metadatum.value ]  });
-                axios.get('/collection/'+collectionId+'/items?' + query + '&nopaging=1&fetch_only=title,thumbnail')
+                query += this.metadatum.metadatum.metadata_type_options.search ? '&fetch_only_meta=' + this.metadatum.metadatum.metadata_type_options.search : '';
+                axios.get('/collection/' + this.collectionId + '/items?' + query + '&nopaging=1&fetch_only=title,thumbnail')
                     .then( res => {
                         if (res.data.items) {
-                            for (let item of res.data.items) {
-                                this.selected.push({ label: item.title, value: item.id, img: item.thumbnail && item.thumbnail['tainacan-small'] && item.thumbnail['tainacan-small'][0] ? item.thumbnail['tainacan-small'][0] : '' });
-                            }
+                            for (let item of res.data.items)
+                                this.selected.push({
+                                    label: this.getItemLabel(item),
+                                    value: item.id,
+                                    img: item.thumbnail && item.thumbnail['tainacan-small'] && item.thumbnail['tainacan-small'][0] ? item.thumbnail['tainacan-small'][0] : ''
+                                });
                         }
                     })
                     .catch(error => {
@@ -39,41 +67,23 @@
                     });
             }
         },
-        data(){
+        data() {
             return {
                 results:'',
                 selected:[],
                 options: [],
-                loading: false,
-                collectionId: 0,
+                isLoading: false,
+                collectionId: '',
                 inputValue: null,
                 queryObject: {},
                 itemsFound: []
             }
         },
         props: {
-            metadatum: {
-                type: Object
-            },
-            collection_id: {
-                type: Number
-            },
-            id: '',
+            metadatum: Object,
             maxtags: undefined,
             disabled: false,
             allowNew: true,
-        },
-        watch: {
-            selected( value ){
-                this.selected = value;
-                let values = [];
-                if( this.selected.length > 0 ){
-                    for(let val of this.selected){
-                        values.push( val.value );
-                    }
-                }
-                this.onInput( values );
-            }
         },
         methods: {
             setResults(option){
@@ -81,44 +91,54 @@
                     return;
                 this.results = option.value;
             },
-            onInput( $event ) {
-                this.$emit('input', $event);
-                this.$emit('blur');
+            onInput(newSelected) {
+                this.selected = newSelected;
+                this.$emit('input', newSelected.map((item) => item.value));
             },
             search: _.debounce(function(query) {
                 if ( this.selected.length > 0  && this.metadatum.metadatum.multiple === 'no')
                     return '';
 
                 if (query !== '') {
-                    this.loading = true;
-                    this.options = [];
-                    
-                    let metaquery = this.mountQuery( query );
-                    let collectionId = ( this.metadatum && this.metadatum.metadatum.metadata_type_options.collection_id ) ? this.metadatum.metadatum.metadata_type_options.collection_id : this.collection_id;
-                    
-                    axios.get('/collection/'+collectionId+'/items?' + qs.stringify( metaquery ))
-                        .then( res => {
-                            this.loading = false;
-                            this.options = [];
-                            let result = res.data;
+                    this.isLoading = true;
 
-                            if (result.items) {
-                                for (let item of result.items) {
-                                    this.options.push({ label: item.title, value: item.id })
-                                }
+                    axios.get('/collection/' + this.collectionId + '/items?' + this.getQueryString(query))
+                        .then( res => {
+                            this.isLoading = false;
+                            this.options = [];
+
+                            if (res.data.items) {
+                                for (let item of res.data.items)
+                                    this.options.push({
+                                        label: this.getItemLabel(item),
+                                        value: item.id,
+                                        img: item.thumbnail && item.thumbnail['tainacan-small'] && item.thumbnail['tainacan-small'][0] ? item.thumbnail['tainacan-small'][0] : ''
+                                    })
                             }
                         })
                         .catch(error => {
                             this.$console.log(error);
                         });
-                } else {
-                    this.options = [];
                 }
+
             }, 500),
-            mountQuery( search ) {
+            getItemLabel(item) {
+                let label = '';
+                for (let m in item.metadata) {
+                    if (item.metadata[m].id == this.metadatum.metadatum.metadata_type_options.search)
+                        label = item.metadata[m].value_as_string;
+                }
+                if (label != '' && label != item.title && item.title != '')
+                    label += ' (' + item.title + ')';
+                else if (label == '')
+                    label = item.title;
+                
+                return label;
+            },
+            getQueryString( search ) {
                 let query = [];
 
-                if ( this.metadatum.metadatum.metadata_type_options &&
+                if (this.metadatum.metadatum.metadata_type_options &&
                     this.metadatum.metadatum.metadata_type_options.search)
                 {
                     query['metaquery'] = [];
@@ -133,8 +153,9 @@
                     query['search'] = search;
                 }
                 query['fetch_only'] = 'title,thumbnail';
+                query['fetch_only_meta'] = this.metadatum.metadatum.metadata_type_options.search;
 
-                return query;
+                return qs.stringify(query);
             }
         }
     }

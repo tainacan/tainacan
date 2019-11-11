@@ -31,5 +31,7 @@ sass -E 'UTF-8' --cache-location .tmp/sass-cache-10 src/gutenberg-blocks/tainaca
 
 sass -E 'UTF-8' --cache-location .tmp/sass-cache-11 src/gutenberg-blocks/tainacan-facets/facets-list/facets-list.scss:src/assets/css/tainacan-gutenberg-block-facets-list.css
 
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-12 src/gutenberg-blocks/tainacan-terms/carousel-terms-list/carousel-terms-list.scss:src/assets/css/tainacan-gutenberg-block-carousel-terms-list.css
+
 echo "Compilação do Sass Concluído!"
 exit 0

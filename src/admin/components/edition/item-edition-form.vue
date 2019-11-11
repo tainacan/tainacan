@@ -213,7 +213,9 @@
                                 :active.sync="isTextModalActive"
                                 :width="640"
                                 scroll="keep"
-                                trap-focus>
+                                trap-focus
+                                aria-modal
+                                aria-role="dialog">
                             <div class="tainacan-modal-content">
                                 <div class="tainacan-modal-title">
                                     <h2>{{ $i18n.get('instruction_write_text') }}</h2>
@@ -250,11 +252,11 @@
                                 :active.sync="isURLModalActive"
                                 :width="640"
                                 scroll="keep"
-                                trap-focus                
-                                autofocus
+                                trap-focus   
                                 role="dialog"
                                 tabindex="-1"
-                                aria-modal>
+                                aria-modal
+                                aria-role="dialog">
                             <div class="tainacan-modal-content">
                                 <div class="tainacan-modal-title">
                                     <h2>{{ $i18n.get('instruction_insert_url') }}</h2>

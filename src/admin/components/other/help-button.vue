@@ -54,7 +54,7 @@ export default {
         display: block;
         border-radius: 5px;
         min-width: 250px;
-        min-width: 250px;
+        max-width: 100%;
         transition: margin-bottom 0.2s ease, opacity 0.3s ease;
         position: absolute;
         bottom: calc(100% - 6px);
@@ -76,6 +76,7 @@ export default {
             padding: 0.8em 1.0em 1.0em 1.0em;
             font-size: 11px;
             font-weight: normal;
+            white-space: normal;
         }
 
         &:before {

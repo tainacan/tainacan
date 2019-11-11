@@ -38,9 +38,6 @@
             onUpdateType(type) {
                 this.$emit('input', { type: type });
             },
-        },
-        created() {
-            this.type = this.type && this.value.type ? this.value.type : 'day';
         }
     }
 </script>

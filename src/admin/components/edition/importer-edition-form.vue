@@ -48,7 +48,7 @@
                             </b-select>
                             <router-link
                                     tag="a" 
-                                    class="is-inline add-link"     
+                                    class="add-link"     
                                     :to="{ path: $routerHelper.getNewCollectionPath(), query: { fromImporter: true }}">
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-add"/>
@@ -491,7 +491,7 @@ export default {
 
     .source-file-upload {
         width: 100%;
-        display: grid;
+        @include display-grid;
     }
 
     .selected-source-file {

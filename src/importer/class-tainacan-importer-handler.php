@@ -187,6 +187,34 @@ class Importer_Handler {
 		return false;
 	}
 	
+	/**
+	 * Save importer instance to the database
+	 * @param  Tainacan\Importer\Importer $importer The Importer object
+	 * @return void
+	 */
+	public function save_importer_instance(\Tainacan\Importer\Importer $importer) {
+		update_option('tnc_transient_' . $importer->get_id(), $importer, false);
+	}
+	
+	/**
+	 * Retrieves an Importer instance from the database based on its session_id
+	 * @param  string $session_id The Importer ID
+	 * @return \Tainacan\Importer\Importer|false The Importer object, if found. False otherwise
+	 */
+	public function get_importer_instance_by_session_id($session_id) {
+		$importer = get_option('tnc_transient_' . $session_id);
+		return $importer;
+	}
+	
+	/**
+	 * Deletes this importer instance from the database
+	 * @param  Tainacan\Importer\Importer $importer The Importer object
+	 * @return bool True, if importer is successfully deleted. False on failure.
+	 */
+	public function delete_importer_instance(\Tainacan\Importer\Importer $importer) {
+		return delete_option('tnc_transient_' . $importer->get_id());
+	}
+	
 	
 }
 

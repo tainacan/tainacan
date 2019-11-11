@@ -43,7 +43,7 @@ class REST_Collections_Controller extends REST_Controller {
                 'methods'             => \WP_REST_Server::READABLE,
                 'callback'            => array($this, 'get_items'),
                 'permission_callback' => array($this, 'get_items_permissions_check'),
-	            'args'                => $this->get_wp_query_params(),
+	            'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE),
             ),
 	        array(
 		        'methods'             => \WP_REST_Server::CREATABLE,
@@ -58,7 +58,7 @@ class REST_Collections_Controller extends REST_Controller {
                 'methods'             => \WP_REST_Server::READABLE,
                 'callback'            => array($this, 'get_item'),
                 'permission_callback' => array($this, 'get_item_permissions_check'),
-	            'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE),
+	            'args'                => $this->get_wp_query_params(),
 				
             ),
             array(
@@ -73,8 +73,8 @@ class REST_Collections_Controller extends REST_Controller {
                 'permission_callback' => array($this, 'delete_item_permissions_check'),
 	            'args'                => array(
 	            	'permanently' => array(
-		                'description' => __('To delete permanently, you can pass \'permanently\' as true. By default this will only trash collection'),
-			            'default'     => 'false'
+		                'description' => __('To delete permanently, you can pass \'permanently\' as 1. By default this will only trash collection'),
+						'default'     => '0',
 		            ),
 	            )
             ),
@@ -477,12 +477,6 @@ class REST_Collections_Controller extends REST_Controller {
 	public function get_endpoint_args_for_item_schema( $method = null ) {
 		$endpoint_args = [];
 		if($method === \WP_REST_Server::READABLE) {
-            
-			$endpoint_args['context'] = array(
-				'type'    => 'string',
-				'default' => 'view',
-				'items'   => array( 'view, edit' )
-			);
             
             $endpoint_args['name'] = array(
     	    	'description' => __('Limits the result set to collections with a specific name'),

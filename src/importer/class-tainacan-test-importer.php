@@ -510,7 +510,7 @@ class Test_Importer extends Importer {
 				'options' => [
 				'collection_id' => $col2->get_id(),
 				'repeated' => 'yes',
-				'search' => [ $col2_core_title->get_id() ]
+				'search' => $col2_core_title->get_id()
 				]
 			], $col1 );
 

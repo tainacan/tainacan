@@ -237,7 +237,7 @@ class Media {
 			return;
 		}
 		
-		$content_index_meta = '_document_content_index';
+		$content_index_meta = 'document_content_index';
 
 		if ($file == null) {
 			$meta_id = update_post_meta( $item_id, $content_index_meta, null );
@@ -260,7 +260,7 @@ class Media {
 
 		try {
 			$parser = new \Smalot\PdfParser\Parser();
-			$content    = $parser->parseFile($file)->getText();
+			$content = $parser->parseFile($file)->getText();
 
 			$wp_charset = get_bloginfo('charset');
 			$content_charset = mb_detect_encoding($content);

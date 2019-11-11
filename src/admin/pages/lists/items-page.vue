@@ -705,9 +705,6 @@
                     <div
                             v-if="(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)"
                             v-html="registeredViewModes[viewMode].skeleton_template"/>
-                            
-                    <!-- Admin view modes skeleton -->
-                    <!-- <skeleton-items-list v-if="!isOnTheme"/>          -->
                 </div>  
 
                <!-- Alert if custom metada is being used for sorting -->
@@ -794,13 +791,20 @@
                         </p>
 
                         <router-link
-                                v-if="!isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$route.query.iframemode"
+                                v-if="!isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$route.query.iframemode"
                                 id="button-create-item"
                                 tag="button"
                                 class="button is-secondary"
                                 :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
                             {{ $i18n.getFrom('items', 'add_new') }}
                         </router-link> 
+                        <button
+                                v-else-if="isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$route.query.iframemode"
+                                id="button-create-item"
+                                class="button is-secondary"
+                                @click="onOpenCollectionsModal">
+                            {{ $i18n.get('add_one_item') }}
+                        </button>
                     </div>
                 </section>
 
@@ -821,7 +825,9 @@
                 :active.sync="isFilterModalActive"
                 :width="736"
                 animation="slide-menu"
-                trap-focus>
+                trap-focus
+                aria-modal
+                aria-role="dialog">
             <div 
                     ref="filters-mobile-modal"
                     class="modal-inner-content"
@@ -893,7 +899,6 @@
     import FiltersTagsList from '../../components/search/filters-tags-list.vue';
     import FiltersItemsList from '../../components/search/filters-items-list.vue';
     import Pagination from '../../components/search/pagination.vue'
-    import SkeletonItemsList from '../../components/search/skeleton-items-list.vue'
     import AdvancedSearch from '../../components/advanced-search/advanced-search.vue';
     import AvailableImportersModal from '../../components/other/available-importers-modal.vue';
     import ExposersModal from '../../components/other/exposers-modal.vue';
@@ -1027,7 +1032,6 @@
             ItemsList,
             FiltersTagsList,
             FiltersItemsList,
-            SkeletonItemsList,
             Pagination,
             AdvancedSearch,
             ExposersModal
@@ -1998,7 +2002,7 @@
 
         .loading-container {
             position: relative;
-            min-height: 200px;
+            min-height: 50vh;
             height: auto;
         }
     }
@@ -2058,10 +2062,9 @@
     }
 
     .table-container {
-        padding-left: 4.166666667%;
-        padding-right: 4.166666667%;
+        padding-left: $page-side-padding;
+        padding-right: $page-side-padding;
         min-height: 50vh;
-        //height: calc(100% - 82px);
     }
 
     .pagination-area {

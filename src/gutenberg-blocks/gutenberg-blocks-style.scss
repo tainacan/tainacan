@@ -41,6 +41,22 @@
     }
 }
 
+// Grid mixin for display: grid compatibility
+@mixin display-grid {
+    flex-wrap: wrap;
+    display: flex;
+    display: -ms-grid;
+    display: grid;
+}
+@mixin grid-child ($col-start, $col-end, $row-start, $row-end) {
+    -ms-grid-column: $col-start;
+    -ms-grid-column-span: $col-end - $col-start;
+    -ms-grid-row: $row-start;
+    -ms-grid-row-span: $row-end - $row-start;
+    grid-column: #{$col-start}/#{$col-end};
+    grid-row: #{$row-start}/#{$row-end};
+}
+  
 // Generic style for selection modals ---------------------------
 .wp-block-tainacan-modal {
     width: 50%;
@@ -125,8 +141,8 @@
     .modal-checkbox-list,
     .modal-radio-list .components-base-control__field {
         padding: 0;
-        display: -ms-grid;
-        display: grid;
+        @include display-grid;
+        -ms-grid-columns: 250px 250px;
         grid-template-columns: repeat(auto-fill, 250px);
         grid-gap: 0px;
         justify-content: space-evenly;

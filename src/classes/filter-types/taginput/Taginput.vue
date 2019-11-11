@@ -11,10 +11,11 @@
                 :remove-on-keys="[]"
                 field="label"
                 attached
+                @input="onSelect"
                 @typing="search"
                 :aria-close-label="$i18n.get('remove_value')"
                 :aria-labelledby="'filter-label-id-' + filter.id"
-                :placeholder="(type == 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_add_metadata')">
+                :placeholder="(metadatumType == 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_add_items') : $i18n.get('info_type_to_add_metadata')">
             <template slot-scope="props">
                 <div class="media">
                     <div
@@ -44,64 +45,35 @@
 
 <script>
     import { tainacan as axios, isCancel } from '../../../js/axios/axios';
-    import { filterTypeMixin } from '../filter-types-mixin';
+    import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
     import qs from 'qs';
 
     export default {
-        created(){
-            const vm = this;
-
-            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
-
-            if (this.isRepositoryLevel || this.collectionId == 'default'){
-                endpoint = '/metadata/'+ this.metadatumId + '?nopaging=1';
-            }
-
-            axios.get(endpoint)
-                .then( res => {
-                    let result = res.data;
-                    if( result && result.metadata_type ){
-                        vm.metadatum_object = result;
-                        vm.type = result.metadata_type;
-                        vm.selectedValues();
-                    }
-                })
-                .catch(error => {
-                    this.$console.log(error);
-                });
-        },
+        mixins: [filterTypeMixin, dynamicFilterTypeMixin],
         data(){
             return {
                 results:'',
                 selected:[],
                 options: [],
-                type: '',
-                metadatum_object: {}
+                relatedCollectionId: ''
             }
         },
-        mixins: [filterTypeMixin],
         watch: {
-            selected( value ){
-                this.selected = value;
-
-                let values = [];
-                let labels = [];
-                if( this.selected.length > 0 ){
-                    for(let val of this.selected){
-                        values.push( val.value );
-                        labels.push( val.label );
-                    }
-                }
-                this.$emit('input', {
-                    filter: 'taginput',
-                    compare: 'IN',
-                    metadatum_id: this.metadatumId,
-                    collection_id: this.collectionId,
-                    value: values
-                });
-
-                this.$emit( 'sendValuesToTags', labels);
+            'query.metaquery'() {
+                this.updateSelectedValues();
             }
+        },
+        created() {
+            if (this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' && 
+                this.filter.metadatum && 
+                this.filter.metadatum.metadata_type_object && 
+                this.filter.metadatum.metadata_type_object.options &&
+                this.filter.metadatum.metadata_type_object.options.collection_id) {
+                    this.relatedCollectionId = this.filter.metadatum.metadata_type_object.options.collection_id;
+                }
+        },
+        mounted() {
+            this.updateSelectedValues();
         },
         methods: {
             search: _.debounce( function(query) {
@@ -116,7 +88,7 @@
                 if (this.getOptionsValuesCancel != undefined)
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' )
+                if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' )
                     promise = this.getValuesRelationship( query, this.isRepositoryLevel, valuesToIgnore );
                 else
                     promise = this.getValuesPlainText( this.metadatumId, query, this.isRepositoryLevel, valuesToIgnore );
@@ -133,68 +105,67 @@
                 this.getOptionsValuesCancel = promise.source;
                 
             }, 500),
-            selectedValues(){
-                const instance = this;
+            updateSelectedValues() {
+
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
                 let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
-                if ( index >= 0){
+                if (index >= 0) {
                     let metadata = this.query.metaquery[ index ];
-                    let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
-                        this.metadatum_object.metadata_type_options.collection_id : this.collectionId;
 
+                    if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' ) {
+                        let query = qs.stringify({ postin: metadata.value, fetch_only: 'title,thumbnail', fetch_only_meta: '' });
+                        let endpoint = '/items/';
 
-                    if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
-                        let query = qs.stringify({ postin: metadata.value  });
+                        if (this.relatedCollectionId != '')
+                            endpoint = '/collection/' + this.relatedCollectionId + endpoint; 
 
-                        axios.get('/collection/' + collectionTarget + '/items?' + query)
+                        axios.get(endpoint + '?' + query)
                             .then( res => {
                                 if (res.data.items) {
-                                    for (let item of res.data) {
-                                        instance.selected.push({ label: item.title, value: item.id, img: item.thumbnail.thumbnail[0] });
+                                    this.selected = [];
+                                    for (let item of res.data.items) {
+                                        let existingItem = this.selected.findIndex((anItem) => item.id == anItem.id);
+                                        if (existingItem < 0) {
+                                            this.selected.push({ 
+                                                label: item.title, 
+                                                value: item.id, 
+                                                img: item.thumbnail && item.thumbnail.thumbnail && item.thumbnail.thumbnail[0] ? item.thumbnail.thumbnail[0] : null 
+                                            });
+                                        }
                                     }
+                                    this.$emit( 'sendValuesToTags', { 
+                                        label: this.selected.map((option) => option.label), 
+                                        value: this.selected.map((option) => option.value)
+                                    });
                                 }
                             })
                             .catch(error => {
                                 this.$console.log(error);
                             });
                     } else {
-                        for (let item of metadata.value) {
-                            instance.selected.push({ label: item, value: item, img: '' });
-                        }
+                        this.selected = [];
+                        for (let item of metadata.value)
+                            this.selected.push({ label: item, value: item, img: null });
+                        
+                        this.$emit( 'sendValuesToTags', { 
+                            label: this.selected.map((option) => option.label), 
+                            value: this.selected.map((option) => option.value)
+                        });
                     }
                 } else {
-                    return false;
+                    this.selected = [];
                 }
             },
-            cleanSearchFromTags(filterTag) {
-                               
-                if (filterTag.filterId == this.filter.id) {
-
-                    let selectedIndex = this.selected.findIndex(option => option.label == filterTag.singleValue);
-                    if (selectedIndex >= 0) {
-
-                        this.selected.splice(selectedIndex, 1);
-
-                        let values = [];
-                        let labels = [];  
-                        for(let val of this.selected){
-                            values.push( val.value );
-                            labels.push( val.label );
-                        }
-                        
-                        this.$emit('input', {
-                            filter: 'taginput',
-                            compare: 'IN',
-                            metadatum_id: this.metadatumId,
-                            collection_id: this.collectionId,
-                            value: values
-                        });
-
-                        this.$emit( 'sendValuesToTags',  labels);
-                    }
-                }
+            onSelect() {
+                this.$emit('input', {
+                    filter: 'taginput',
+                    compare: 'IN',
+                    metadatum_id: this.metadatumId,
+                    collection_id: this.collectionId,
+                    value: this.selected.map((option) => option.value)
+                });
             }
         }
     }

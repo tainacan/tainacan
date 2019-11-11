@@ -27,7 +27,11 @@ module.exports = {
         gutenberg_carousel_collections_list_theme: './src/gutenberg-blocks/tainacan-collections/carousel-collections-list/carousel-collections-list-theme.js',
         
         gutenberg_facets_list: './src/gutenberg-blocks/tainacan-facets/facets-list/index.js',
-        gutenberg_facets_list_theme: './src/gutenberg-blocks/tainacan-facets/facets-list/facets-list-theme.js'
+        gutenberg_facets_list_theme: './src/gutenberg-blocks/tainacan-facets/facets-list/facets-list-theme.js',
+                
+        gutenberg_carousel_terms_list: './src/gutenberg-blocks/tainacan-terms/carousel-terms-list/index.js',
+        gutenberg_carousel_terms_list_theme: './src/gutenberg-blocks/tainacan-terms/carousel-terms-list/carousel-terms-list-theme.js'
+
     },
     output: {
         path: path.resolve(__dirname, './src/assets/'),

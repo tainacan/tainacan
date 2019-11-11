@@ -2,17 +2,17 @@
 Contributors: andrebenedito, daltonmartins, fabianobn, jacsonp, leogermani, weryques, wetah, eduardohumberto, ravipassos, jessicafpx, marinagiolo, omarceloavila, vnmedeiros
 Tags: museums, libraries, archives, GLAM, collections, repository
 Requires at least: 4.8
-Tested up to: 5.2.3
+Tested up to: 5.2.4
 Requires PHP: 5.6
-Stable tag: 0.12
+Stable tag: 0.13.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Tainacan is a powerful and flexible repository platform for WordPress. Manage and publish your digital collections just as easily as you post to your blog, having all the tools of a professional repository platform.
+Tainacan is an open source, powerful and flexible repository platform for WordPress. Manage and publish your digital collections just as easily as you post to your blog, having all the tools of a professional repository platform.
 
 == Description ==
 
-Tainacan is a powerful and flexible repository platform for WordPress. Manage and publish your digital collections just as easily as you post to your blog, having all the tools of a professional repository platform.
+[Tainacan](https://tainacan.org/) is an open source, powerful and flexible repository platform for WordPress. Manage and publish your digital collections just as easily as you post to your blog, having all the tools of a professional repository platform.
 
 = Features =
 
@@ -34,15 +34,15 @@ After installation, you will see a new menu item in your admin panel called "Tai
 
 To get an overview of the main concepts of Tainacan, please visit [this page](https://tainacan.github.io/tainacan-wiki//#/general-concepts).
 
-= Create a collection = 
+= Create a collection =
 
 Click "New Collection" to create a new collection, use a mapping standard or import using one of our importers.
 
-= Configure your collection = 
+= Configure your collection =
 
 Navigate the top menu to set your collection up. Create the metadata that items in this collection will have, and choose, from these metadata, which ones are going to be used as a filter.
 
-= Add items = 
+= Add items =
 
 Back to the "Items" screen, click "Add new" to create a new item.
 
@@ -76,8 +76,13 @@ Upload the files to the plugins directory and activate it. You can also install 
 
 If you have Imagick installed in your server, Tainacan will be able to automatically generate a thumbnail from your PDF files. This is desired but not required.
 
+== Find out more ==
+
+* Visit our oficial website: [https://tainacan.org/](https://tainacan.org/)
+* Check our documentation Wiki: [https://wiki.tainacan.org/](https://wiki.tainacan.org/)
+
 == Screenshots ==
- 
+
 1. Manage your repository
 2. Set up your collection
 3. Choose the metadata and filters for your collection
@@ -91,4 +96,4 @@ If you have Imagick installed in your server, Tainacan will be able to automatic
 11. Expose your collection using Tainacan default theme
 12. Use Gutenberg blocks to display your collections in posts and pages
 13. Choose which items will be displayed in your block
-14. Items displayed using a Gutenberg block 
+14. Items displayed using a Gutenberg block

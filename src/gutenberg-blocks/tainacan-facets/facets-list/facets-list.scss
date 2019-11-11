@@ -219,8 +219,8 @@
     ul.facets-list.facets-layout-grid,
     ul.facets-list-edit.facets-layout-grid {
         padding: 0;
-        display: -ms-grid;
-        display: grid;
+        @include display-grid;
+        -ms-grid-columns: 220px 220px 220px 220px 220px;
         grid-template-columns: repeat(auto-fill, 220px);
         grid-gap: 0px;
         justify-content: space-evenly;
@@ -404,9 +404,8 @@
                 // overflow: hidden;
                 // text-overflow: ellipsis;
                 // white-space: nowrap;
-                display: flex;
-                align-items: center;
-                height: 54px;
+                display: inline;
+                min-height: 54px;
             }
 
             img {

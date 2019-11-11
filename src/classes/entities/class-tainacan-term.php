@@ -145,6 +145,16 @@ class Term extends Entity {
 		return wp_get_attachment_url( $this->get_header_image_id() );
 	}
 
+	/**
+	 * @return false|string
+	 */
+	function get_url(){
+		$url = get_term_link( $this->get_id() );
+		if (is_wp_error($url))
+			return "";
+		return $url;
+	}
+
     // Setters
 
 	/**

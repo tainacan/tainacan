@@ -9,7 +9,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class TaxonomyCheckbox extends Filter_Type {
 
     function __construct(){
-        $this->set_name('Taxonomy Checkbox List');
+        $this->set_name( __('Taxonomy Checkbox List', 'tainacan') );
         $this->set_supported_types(['term']);
         $this->set_component('tainacan-filter-taxonomy-checkbox');
         $this->set_preview_template('

@@ -45,7 +45,7 @@ export const updateTaxonomy = ({ commit }, taxonomy) => {
     });
 };
 
-export const fetch = ({ commit }, { page, taxonomiesPerPage, status, order, orderby } ) => {
+export const fetch = ({ commit }, { page, taxonomiesPerPage, status, order, orderby, search } ) => {
     return new Promise((resolve, reject) => {
         let endpoint = `/taxonomies?paged=${page}&perpage=${taxonomiesPerPage}&context=edit`;
 
@@ -54,6 +54,9 @@ export const fetch = ({ commit }, { page, taxonomiesPerPage, status, order, orde
         
         if (order != undefined && order != '' && orderby != undefined && orderby != '')
             endpoint = endpoint + '&order=' + order + '&orderby=' + orderby;
+        
+        if (search != undefined && search != '')
+            endpoint = endpoint + '&search=' + search;
 
         axios.tainacan.get(endpoint)
             .then(res => {
@@ -293,7 +296,7 @@ export const clearTerms = ({ commit }) => {
 // Used only on Term Edition form, for autocomplete searhc for parents
 export const fetchPossibleParentTerms = ({ commit }, { taxonomyId, termId, search } ) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.get('/taxonomy/' + taxonomyId + '/terms?searchterm=' + search + '&hierarchical=1&exclude_tree=' + termId + "&hideempty=0&offset=0&number=20")
+        axios.tainacan.get('/taxonomy/' + taxonomyId + '/terms?searchterm=' + search + '&hierarchical=1&exclude_tree=' + termId + "&hideempty=0&offset=0&number=20&order=asc")
         .then(res => {
             let parentTerms = res.data;
             resolve( parentTerms );

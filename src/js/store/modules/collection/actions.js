@@ -137,7 +137,7 @@ export const deleteItem = ({ commit }, { itemId, isPermanently }) => {
     });
 };
  
-export const fetchCollections = ({commit} , { page, collectionsPerPage, status, contextEdit, order, orderby }) => {
+export const fetchCollections = ({commit} , { page, collectionsPerPage, status, contextEdit, order, orderby, search }) => {
     
     return new Promise((resolve, reject) => {
         let endpoint = '/collections?paged='+page+'&perpage='+collectionsPerPage;
@@ -150,25 +150,28 @@ export const fetchCollections = ({commit} , { page, collectionsPerPage, status, 
                     
         if (order != undefined && order != '' && orderby != undefined && orderby != '')
             endpoint = endpoint + '&order=' + order + '&orderby=' + orderby;
+        
+        if (search != undefined && search != '')
+            endpoint = endpoint + '&search=' + search;
 
         axios.tainacan.get(endpoint)
-        .then(res => {
-            let collections = res.data;
-            commit('setCollections', collections);
+            .then(res => {
+                let collections = res.data;
+                commit('setCollections', collections);
 
-            commit('setRepositoryTotalCollections', {
-                draft: res.headers['x-tainacan-total-collections-draft'],
-                trash: res.headers['x-tainacan-total-collections-trash'],
-                publish: res.headers['x-tainacan-total-collections-publish'],
-                private: res.headers['x-tainacan-total-collections-private'],
+                commit('setRepositoryTotalCollections', {
+                    draft: res.headers['x-tainacan-total-collections-draft'],
+                    trash: res.headers['x-tainacan-total-collections-trash'],
+                    publish: res.headers['x-tainacan-total-collections-publish'],
+                    private: res.headers['x-tainacan-total-collections-private'],
+                });
+
+                resolve({'collections': collections, 'total': res.headers['x-wp-total'] });
+            }) 
+            .catch(error => {
+                console.log(error);
+                reject(error);
             });
-
-            resolve({'collections': collections, 'total': res.headers['x-wp-total'] });
-        }) 
-        .catch(error => {
-            console.log(error);
-            reject(error);
-        });
     });
 };
 

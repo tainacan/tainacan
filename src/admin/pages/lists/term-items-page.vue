@@ -681,9 +681,7 @@
                     <div
                             v-if="(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)"
                             v-html="registeredViewModes[viewMode].skeleton_template"/>
-                            
-                    <!-- Admin view modes skeleton -->
-                    <!-- <skeleton-items-list v-if="!isOnTheme"/>          -->
+
                 </div>  
                 
                <!-- Alert if custom metada is being used for sorting -->
@@ -798,7 +796,9 @@
                 :active.sync="isFilterModalActive"
                 :width="736"
                 animation="slide-menu"
-                trap-focus>
+                trap-focus
+                aria-modal
+                aria-role="dialog">
             <div
                     autofocus="true"
                     tabindex="-1"
@@ -1918,7 +1918,7 @@
 
         .loading-container {
             position: relative;
-            min-height: 200px;
+            min-height: 50vh;
             height: auto;
         }
     }
@@ -1938,8 +1938,8 @@
     }
 
     .table-container {
-        padding-left: 4.166666667%;
-        padding-right: 4.166666667%;
+        padding-left: $page-side-padding;
+        padding-right: $page-side-padding;
         min-height: 50vh;
         //height: calc(100% - 82px);
     }

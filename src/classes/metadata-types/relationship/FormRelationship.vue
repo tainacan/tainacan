@@ -40,17 +40,20 @@
                             :title="$i18n.getHelperTitle('tainacan-relationship', 'search')"
                             :message="$i18n.getHelperMessage('tainacan-relationship', 'search')"/>
                 </label>
-                    <div
-                        v-for="(option, index) in metadata"
-                        :key="index"
-                        class="field">
-                        <b-radio
-                                name="metadata_type_relationship[search]"
-                                v-model="modelSearch"
-                                :native-value="option.id">
+                    <b-select
+                            name="metadata_type_relationship[search]"
+                            v-model="modelSearch">
+                        
+                        <option
+                                v-for="(option, index) in metadata"
+                                :key="index"
+                                :value="option.id"
+                                class="field">
                             {{ option.name }}
-                        </b-radio>
-                    </div>
+                        </option>
+                        
+                    </b-select>
+                    
             </b-field>
 
         </transition>

@@ -70,8 +70,7 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios/axios';
-    import { wpAjax } from "../../../admin/js/mixins";
+    import { wpAjax } from '../../../admin/js/mixins';
     import { filterTypeMixin } from '../filter-types-mixin';
 
     export default {
@@ -79,34 +78,13 @@
             wpAjax,
             filterTypeMixin
         ],
-        created() {
-            this.filterTypeOptions = this.filter.filter_type_options;
-
-            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
-
-            if (this.isRepositoryLevel || this.collectionId == 'default')
-                endpoint = '/metadata/'+ this.metadatumId;
-        
-            axios.get(endpoint)
-                .then( res => {
-                    let result = res.data;
-                    if ( result && result.metadata_type ){
-                        this.metadatum_object = result;
-                        this.selectedValues();
-                    }
-                })
-                .catch(error => {
-                    this.$console.log(error);
-                });
-        },
         mounted() {
-            this.selectedValues();
+            this.updateSelectedValues();
         },
         data(){
             return {
                 value: null,
                 filterTypeOptions: [],
-                metadatum_object: {},
                 comparator: '=' // =, !=, >, >=, <, <=
             }
         },
@@ -123,8 +101,13 @@
                 }
             }
         },
+        watch: {
+            'query.metaquery'() {
+                this.updateSelectedValues();
+            }
+        },
         methods: {
-            selectedValues(){
+            updateSelectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
@@ -140,36 +123,19 @@
                         this.comparator = metadata.compare;
 
                     if (this.value != undefined)
-                        this.$emit('sendValuesToTags', this.comparator + ' ' + this.value);
+                        this.$emit('sendValuesToTags', { label: this.comparator + ' ' + this.value, value: this.value });
 
                 } else {
-                    return false;
+                    this.value = null;
                 }
 
-            },
-            cleanSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id)
-                    this.clearSearch();
-            },
-            clearSearch(){
-
-                this.$emit('input', {
-                    filter: 'numeric',
-                    compare: this.comparator,
-                    metadatum_id: this.metadatumId,
-                    collection_id: this.collectionId,
-                    value: '',
-                    type: 'NUMERIC'
-                });
-
-                this.value = null;
             },
             // emit the operation for listeners
             emit() {
 
                 if ( this.value === null || this.value === '')
                     return;
-
+                    
                 this.$emit('input', {
                     filter: 'numeric',
                     compare: this.comparator,
@@ -179,7 +145,7 @@
                     type: 'NUMERIC'
                 });
 
-                this.$emit('sendValuesToTags', this.comparator + ' ' + this.value);
+                this.$emit('sendValuesToTags', { label: this.comparator + ' ' + this.value, value: this.value });
                 
             },
             onChangeComparator(newComparator) {

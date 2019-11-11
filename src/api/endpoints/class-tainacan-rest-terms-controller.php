@@ -56,8 +56,9 @@ class REST_Terms_Controller extends REST_Controller {
 					'callback'            => array($this, 'delete_item'),
 					'permission_callback' => array($this, 'delete_item_permissions_check'),
 					'args'                => [
-						'info' => [
-							'description' => __('Delete term permanently.')
+						'permanently' => [
+							'description' => __('Delete term permanently.'),
+							'default'     => '1'
 						]
 					]
 				),
@@ -420,11 +421,10 @@ class REST_Terms_Controller extends REST_Controller {
 	public function get_endpoint_args_for_item_schema( $method = null ) {
 		$endpoint_args = [];
 		if($method === \WP_REST_Server::READABLE) {
-			$endpoint_args['context'] = array(
-				'type'    => 'string',
-				'default' => 'view',
-				'items'   => array( 'view, edit' )
-			);
+			$endpoint_args = array_merge(
+                $endpoint_args, 
+                parent::get_wp_query_params()
+            );
 		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
 			$map = $this->terms_repository->get_map();
 

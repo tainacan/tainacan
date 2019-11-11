@@ -10,8 +10,8 @@
                 :loading="isLoadingOptions"
                 @input="search"
                 field="label"
-                @select="option => setResults(option) "
-                :placeholder="(type == 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_search_metadata')">
+                @select="onSelect"
+                :placeholder="(metadatumType === 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_search_metadata')">
             <template slot-scope="props">
                 <div class="media">
                     <div
@@ -20,7 +20,7 @@
                         <img
                                 :alt="$i18n.get('label_thumbnail')"
                                 width="24"
-                                :src="`${props.option.img}`">
+                                :src="props.option.img">
                     </div>
                     <div class="media-content">
                         <span class="ellipsed-text">{{ props.option.label }}</span>
@@ -41,70 +41,51 @@
 
 <script>
     import { tainacan as axios, isCancel } from '../../../js/axios/axios'
-    import { filterTypeMixin } from '../filter-types-mixin';
-    // import qs from 'qs';
+    import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
 
     export default {
-        created(){
-            const vm = this;
-
-            let endpoint = '/collection/' + this.collectionId + '/metadata/' +  this.metadatumId;
-
-            if (this.isRepositoryLevel || this.collectionId == 'default'){
-                endpoint = '/metadata/'+ this.metadatumId;
-            }
-
-            axios.get(endpoint)
-                .then( res => {
-                    let result = res.data;
-                    if( result && result.metadata_type ){
-                        vm.metadatum_object = result;
-                        vm.type = result.metadata_type;
-                        vm.selectedValues();
-                    }
-                })
-                .catch(error => {
-                    this.$console.log(error);
-                });
-        },
+        mixins: [filterTypeMixin, dynamicFilterTypeMixin],
         data(){
             return {
-                results:'',
                 selected:'',
                 options: [],
-                type: '',
-                metadatum_object: {},
                 label: ''
             }
         },
-        mixins: [filterTypeMixin],
+        watch: {
+            'query.metaquery'() {
+                this.updateSelectedValues();
+            },
+        },
+        mounted() {
+            this.updateSelectedValues();
+        },
         methods: {
-            setResults(option){
+            onSelect(option){
+                
                 if(!option)
                     return;
-                this.results = option.value;
+                this.selected = option.value;
                 this.label = option.label;
-                this.onSelect()
-            },
-            onSelect(){
+
                 this.$emit('input', {
                     filter: 'autocomplete',
                     metadatum_id: this.metadatumId,
                     collection_id: this.collectionId,
-                    value: this.results
+                    value: this.selected
                 });
-                this.selectedValues();
+                this.updateSelectedValues();
             },
             search: _.debounce( function(query) {
+
                 if (query != '') {
                     let promise = null;
                     this.options = [];
-
                     // Cancels previous Request
                     if (this.getOptionsValuesCancel != undefined)
                         this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                    if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' )
+                    if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' )
                         promise = this.getValuesRelationship( query, this.isRepositoryLevel );
                     else
                         promise = this.getValuesPlainText( this.metadatumId, query, this.isRepositoryLevel );
@@ -120,73 +101,51 @@
                     this.getOptionsValuesCancel = promise.source;
                 
                 } else {
-                    this.clearSearch();
+                    this.label = '';
+                    this.selected = '';
+                    this.$emit('input', {
+                        filter: 'autocomplete',
+                        metadatum_id: this.metadatumId,
+                        collection_id: this.collectionId,
+                        value: this.selected
+                    });
                 }
             }, 500),
-            selectedValues(){
-                const instance = this;
-                if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
+            updateSelectedValues(){
+
+                if (!this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ))
                     return false;
 
-                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
-                if ( index >= 0){
+                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId);
+                if (index >= 0) {
                     let metadata = this.query.metaquery[ index ];
-                    // let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
-                        // this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
 
-                    if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
-                        // let query = qs.stringify({ postin: metadata.value  });
-                        
-                        axios.get('/items/' + metadata.value)
+                    if (this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship') {
+
+                        let endpoint = '/items/' + metadata.value + '?fetch_only=title,thumbnail';
+
+                        axios.get(endpoint)
                             .then( res => {
-      
+
                                 let item = res.data;
-                                instance.results = item.title;
-                                instance.label = item.title;
-                                instance.selected = item.title;
+                                this.label = item.title;
+                                this.selected = item.title;
          
-                                this.$emit( 'sendValuesToTags', instance.label);
+                                this.$emit( 'sendValuesToTags', { label: this.label, value: this.selected });
                             })
                             .catch(error => {
                                 this.$console.log(error);
                             });
                     } else {
-                        instance.results = metadata.value;
-                        instance.label = metadata.value;
-                        instance.selected = metadata.value;
-
-                        this.$emit( 'sendValuesToTags', metadata.value);
+                        this.label = metadata.value;
+                        this.selected = metadata.value;
+                        this.$emit( 'sendValuesToTags', { label: this.label, value: this.selected });
                     }
                 } else {
-                    return false;
+                    this.label = '';
+                    this.selected = '';
                 }
-            },
-            clearSearchFromTags(filterTag) {
-                if (filterTag.filterId == this.filter.id)
-                    this.clearSearch();
-            },
-            clearSearch(){
-                this.results = '';
-                this.label = '';
-                this.selected = '';
-                this.$emit('input', {
-                    filter: 'autocomplete',
-                    metadatum_id: this.metadatumId,
-                    collection_id: this.collectionId,
-                    value: ''
-                });
-            },
+            }
         }
     }
 </script>
-<style scoped>
-    #profileImage {
-        width: 32px;
-        height: 32px;
-        font-size: 2.1875rem;
-        color: #fff;
-        text-align: center;
-        line-height: 9.375rem;
-        margin: 20px 0;
-    }
-</style>
