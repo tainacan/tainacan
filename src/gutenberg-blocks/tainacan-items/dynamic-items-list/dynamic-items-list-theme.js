@@ -15,6 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
             searchURL: '',
             maxItemsNumber: 12,
             mosaicHeight: 40,
+            mosaicGridRows: 3,
+            mosaicGridColumns: 3,
             order: 'asc',
             showSearchBar: false,
             showCollectionHeader: false,
@@ -34,6 +36,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     layout: this.layout,
                     gridMargin: this.gridMargin,
                     mosaicHeight: this.mosaicHeight,
+                    mosaicGridRows: this.mosaicGridRows,
+                    mosaicGridColumns: this.mosaicGridColumns,
                     searchURL: this.searchURL,
                     maxItemsNumber: this.maxItemsNumber,
                     order: this.order,
@@ -57,6 +61,8 @@ document.addEventListener("DOMContentLoaded", () => {
             this.layout = this.$el.attributes['layout'] != undefined ? this.$el.attributes['layout'].value : undefined;
             this.gridMargin = this.$el.attributes['grid-margin'] != undefined ? Number(this.$el.attributes['grid-margin'].value) : undefined;
             this.mosaicHeight = this.$el.attributes['mosaic-height'] != undefined ? Number(this.$el.attributes['mosaic-height'].value) : undefined;
+            this.mosaicGridRows = this.$el.attributes['mosaic-grid-rows'] != undefined ? Number(this.$el.attributes['mosaic-grid-rows'].value) : undefined;
+            this.mosaicGridColumns = this.$el.attributes['mosaic-grid-columns'] != undefined ? Number(this.$el.attributes['mosaic-grid-columns'].value) : undefined;
             this.maxItemsNumber = this.$el.attributes['max-items-number'] != undefined ? this.$el.attributes['max-items-number'].value : undefined;
             this.order = this.$el.attributes['order'] != undefined ? this.$el.attributes['order'].value : undefined;
             this.showSearchBar = this.$el.attributes['show-search-bar'] != undefined ? this.$el.attributes['show-search-bar'].value == 'true' : false;

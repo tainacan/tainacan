@@ -202,13 +202,13 @@
                 <div 
                         :style="{ 
                             width: 'calc((100% / ' + mosaicPartition(items, 5).length + ') - ' + gridMargin + 'px)',
-                            height: 'calc(((2 * ' + gridMargin + 'px) + ' + mosaicHeight + 'vh))',
-                            gridTemplateColumns: 'repeat(3, calc((100% / 3) - (' + (2*Number(gridMargin)) + 'px/3)))',
+                            height: 'calc(((' + (mosaicGridRows - 1) + ' * ' + gridMargin + 'px) + ' + mosaicHeight + 'vh))',
+                            gridTemplateColumns: 'repeat(' + mosaicGridColumns + ', calc((100% / ' + mosaicGridColumns + ') - (' + ((mosaicGridColumns - 1)*Number(gridMargin)) + 'px/' + mosaicGridColumns + ')))',
                             margin: gridMargin + 'px',
                             gridGap: gridMargin + 'px',
                         }"
                         class="mosaic-container"
-                        :class="'mosaic-container--' + mosaicGroup.length"
+                        :class="'mosaic-container--' + mosaicGroup.length + '-' + mosaicGridRows + 'x' + mosaicGridColumns"
                         :key="mosaicIndex"
                         v-for="(mosaicGroup, mosaicIndex) of mosaicPartition(items, 5)">
                     <li
@@ -271,6 +271,8 @@ export default {
         searchURL: String,
         maxItemsNumber: Number,
         mosaicHeight: Number,
+        mosaicGridRows: Number,
+        mosaicGridColumns: Number,
         order: String,
         showSearchBar: Boolean,
         showCollectionHeader: Boolean,

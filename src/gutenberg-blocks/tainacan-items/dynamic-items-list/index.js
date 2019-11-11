@@ -197,7 +197,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                         { 
                             width: 'calc((100% / ' + mosaicGroupsLength + ') - ' + gridMargin + 'px)',
                             height: 'calc(((' + (mosaicGridRows - 1) + ' * ' + gridMargin + 'px) + ' + mosaicHeight + 'vh))',
-                            gridTemplateColumns: 'repeat(' + mosaicGridColumns + ', calc((100% / ' + mosaicGridColumns + ') - (' + ((mosaicGridRows - 1)*Number(gridMargin)) + 'px/' + mosaicGridColumns + ')))',
+                            gridTemplateColumns: 'repeat(' + mosaicGridColumns + ', calc((100% / ' + mosaicGridColumns + ') - (' + ((mosaicGridColumns - 1)*Number(gridMargin)) + 'px/' + mosaicGridColumns + ')))',
                             margin: gridMargin + 'px',
                             gridGap: gridMargin + 'px',
                         }
@@ -863,7 +863,9 @@ registerBlockType('tainacan/dynamic-items-list', {
             showCollectionLabel,
             collectionBackgroundColor,
             collectionTextColor,
-            mosaicHeight
+            mosaicHeight,
+            mosaicGridRows,
+            mosaicGridColumns
         } = attributes;
         
         return <div 
@@ -877,6 +879,8 @@ registerBlockType('tainacan/dynamic-items-list', {
                     show-collection-label={ '' + showCollectionLabel }
                     layout={ layout }
                     mosaic-height={ mosaicHeight }
+                    mosaic-grid-rows={ mosaicGridRows } 
+                    mosaic-grid-columns={ mosaicGridColumns } 
                     collection-background-color={ collectionBackgroundColor }
                     collection-text-color={ collectionTextColor }
                     grid-margin={ gridMargin }
