@@ -170,14 +170,14 @@
                     :style="{
                         marginTop: showSearchBar || showCollectionHeader ? '-' + (Number(gridMargin)/2) : '0px',    
                         padding: '0 ' + (Number(gridMargin)/4) + 'px',
-                        minHeight: layout === 'mosaic' ? mosaicHeight + 'vh' : ''
+                        minHeight: layout === 'mosaic' ? mosaicHeight + 'px' : ''
                     }"
                     class="items-list"
                     :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
                 <div 
                         :style="{ 
                             width: 'calc((100% / ' + mosaicPartition(items, 5).length + ') - ' + gridMargin + 'px)',
-                            height: 'calc(((' + (mosaicGridRows - 1) + ' * ' + gridMargin + 'px) + ' + mosaicHeight + 'vh))',
+                            height: 'calc(((' + (mosaicGridRows - 1) + ' * ' + gridMargin + 'px) + ' + mosaicHeight + 'px))',
                             margin: gridMargin + 'px'
                         }"
                         class="mosaic-container skeleton"
@@ -216,14 +216,14 @@
                     :style="{
                         marginTop: showSearchBar || showCollectionHeader ? '-' + (Number(gridMargin)/2) : '0px',    
                         padding: '0 ' + (Number(gridMargin)/4) + 'px',
-                        minHeight: layout === 'mosaic' ? mosaicHeight + 'vh' : ''
+                        minHeight: layout === 'mosaic' ? mosaicHeight + 'px' : ''
                     }"
                     class="items-list"
                     :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
                 <div 
                         :style="{ 
                             width: 'calc((100% / ' + mosaicPartition(items, 5).length + ') - ' + gridMargin + 'px)',
-                            height: 'calc(((' + (mosaicGridRows - 1) + ' * ' + gridMargin + 'px) + ' + mosaicHeight + 'vh))',
+                            height: 'calc(((' + (mosaicGridRows - 1) + ' * ' + gridMargin + 'px) + ' + mosaicHeight + 'px))',
                             gridTemplateColumns: 'repeat(' + mosaicGridColumns + ', calc((100% / ' + mosaicGridColumns + ') - (' + ((mosaicGridColumns - 1)*Number(gridMargin)) + 'px/' + mosaicGridColumns + ')))',
                             margin: gridMargin + 'px',
                             gridGap: gridMargin + 'px',

@@ -167,6 +167,8 @@
     justify-content: center;
     align-items: center;
     color: #555758; }
+  .wp-block-tainacan-dynamic-items-list:hover .components-resizable-box__handle {
+    display: block; }
 @-webkit-keyframes skeleton-animation {
   0% {
     opacity: 1.0; }
@@ -337,20 +339,26 @@
         width: 100%;
         border: 1px solid #cbcbcb;
         box-shadow: none; }
-  .wp-block-tainacan-dynamic-items-list ul.items-list.items-list-without-margin,
-  .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-list-without-margin {
+  .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-list.items-list-without-margin,
+  .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-list.items-list-without-margin,
+  .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid.items-list-without-margin,
+  .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid.items-list-without-margin {
     grid-template-columns: repeat(auto-fill, 185px);
     justify-content: center !important;
     grid-template-rows: auto !important;
     list-style: none; }
-    .wp-block-tainacan-dynamic-items-list ul.items-list.items-list-without-margin li,
-    .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-list-without-margin li {
+    .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-list.items-list-without-margin li,
+    .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-list.items-list-without-margin li,
+    .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid.items-list-without-margin li,
+    .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid.items-list-without-margin li {
       margin-top: 0 !important;
       margin-right: 0 !important;
       margin-left: 0 !important;
       height: 185px !important; }
-      .wp-block-tainacan-dynamic-items-list ul.items-list.items-list-without-margin li img,
-      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-list-without-margin li img {
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-list.items-list-without-margin li img,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-list.items-list-without-margin li img,
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid.items-list-without-margin li img,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid.items-list-without-margin li img {
         height: 185px !important;
         margin-bottom: 0px !important; }
   .wp-block-tainacan-dynamic-items-list ul.items-list-edit li.item-list-item {
@@ -492,7 +500,7 @@
     width: auto;
     display: flex;
     list-style: none;
-    min-height: 40vh; }
+    min-height: 280px; }
     .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container,
     .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container {
       padding: 0;
@@ -501,8 +509,8 @@
       display: flex;
       display: -ms-grid;
       display: grid;
-      -ms-grid-columns: 20vh 20vh 20vh;
-      grid-template-columns: repeat(3, 20vh);
+      -ms-grid-columns: 150px 150px 150px;
+      grid-template-columns: repeat(3, 150px);
       grid-auto-flow: dense;
       width: 100%;
       list-style-type: none; }
@@ -514,9 +522,9 @@
         flex-grow: 1;
         justify-self: stretch;
         position: relative;
+        min-width: 100%;
         background-size: cover;
-        background-position: center;
-        min-width: 100%; }
+        background-position: center; }
         .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container li.item-list-item a,
         .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container li.item-list-item a {
           width: 100%;

@@ -13,6 +13,11 @@
         color: #555758;
     }
 
+    // Resizer
+    &:hover .components-resizable-box__handle {
+        display: block;
+    }
+
     // Skeleton loading
     @-webkit-keyframes skeleton-animation {
         0%{opacity: 1.0}
@@ -215,9 +220,11 @@
         }
     }
 
-    // Style for all View Modes ----------------------------------------------------
-    ul.items-list.items-list-without-margin,
-    ul.items-list-edit.items-list-without-margin {
+    // Style for both grid and list View Modes ----------------------------------------------------
+    ul.items-list.items-layout-list.items-list-without-margin,
+    ul.items-list-edit.items-layout-list.items-list-without-margin,
+    ul.items-list.items-layout-grid.items-list-without-margin,
+    ul.items-list-edit.items-layout-grid.items-list-without-margin {
         grid-template-columns: repeat(auto-fill, 185px);
         justify-content: center !important;
         grid-template-rows: auto !important;
@@ -398,14 +405,14 @@
         width: auto;
         display: flex;
         list-style: none;
-        min-height: 40vh;
+        min-height: 280px;
 
         .mosaic-container {
             padding: 0;
             justify-content: stretch; // For flex fallback compatibility
             @include display-grid;
-            -ms-grid-columns: 20vh 20vh 20vh;
-            grid-template-columns: repeat(3, 20vh);
+            -ms-grid-columns: 150px 150px 150px;
+            grid-template-columns: repeat(3, 150px);
             grid-auto-flow: dense;
             width: 100%;
             list-style-type: none;
@@ -418,9 +425,9 @@
                 flex-grow: 1; // For flex fallback compatibility
                 justify-self: stretch;
                 position: relative;
+                min-width: 100%;
                 background-size: cover;
                 background-position: center;
-                min-width: 100%;
 
                 a { 
                     width: 100%;
@@ -445,9 +452,7 @@
                     word-break: break-word;
                     transition: opacity 0.5s ease;
                 }
-                &:hover a span {
-                    opacity: 1;
-                }
+                &:hover a span { opacity: 1 };
 
                 a.item-without-title span {
                     display: none;
