@@ -147,23 +147,44 @@
                 </span>
             </button> 
         </div>
-        <ul
-                v-if="isLoading"
-                :style="{
-                    gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit', 
-                    marginTop: showSearchBar || showCollectionHeader ? '1.34rem' : '0px'
-                }"
-                class="items-list"
-                :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
-                <li
-                        :key="item"
-                        v-for="item in Number(maxItemsNumber)"
-                        class="item-list-item skeleton"
+        <template v-if="isLoading">
+            <ul
+                    v-if="layout !== 'mosaic'"
+                    :style="{
+                        gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit', 
+                        marginTop: showSearchBar || showCollectionHeader ? '1.34rem' : '0px'
+                    }"
+                    class="items-list"
+                    :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
+                    <li
+                            :key="item"
+                            v-for="item in Number(maxItemsNumber)"
+                            class="item-list-item skeleton"
+                            :style="{ 
+                                marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
+                                height: layout == 'grid' ? '230px' : '54px'
+                            }" />      
+            </ul>
+            <ul
+                    v-if="layout === 'mosaic'"
+                    :style="{
+                        marginTop: showSearchBar || showCollectionHeader ? '-' + (Number(gridMargin)/2) : '0px',    
+                        padding: '0 ' + (Number(gridMargin)/4) + 'px',
+                        minHeight: layout === 'mosaic' ? mosaicHeight + 'vh' : ''
+                    }"
+                    class="items-list"
+                    :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
+                <div 
                         :style="{ 
-                            marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
-                            height: layout == 'grid' ? '230px' : '54px'
-                        }" />      
-        </ul>
+                            width: 'calc((100% / ' + mosaicPartition(items, 5).length + ') - ' + gridMargin + 'px)',
+                            height: 'calc(((' + (mosaicGridRows - 1) + ' * ' + gridMargin + 'px) + ' + mosaicHeight + 'vh))',
+                            margin: gridMargin + 'px'
+                        }"
+                        class="mosaic-container skeleton"
+                        :key="mosaicIndex"
+                        v-for="(mosaicGroup, mosaicIndex) of mosaicPartition(items, 5)" /> 
+            </ul>
+        </template>
         <div v-else>
             <ul 
                     v-if="items.length > 0 && layout !== 'mosaic'"
@@ -216,7 +237,7 @@
                             :key="index"
                             v-for="(item, index) of mosaicGroup"
                             class="item-list-item"
-                            :style="{ backgroundImage: layout == 'mosaic' ? `url(${getItemThumbnail(item, 'tainacan-medium-full')})` : 'none' }">          
+                            :style="{ backgroundImage: layout == 'mosaic' ? `url(${getItemThumbnail(item, 'medium_large')})` : 'none' }">          
                         <a 
                                 :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
                                 :href="item.url"
@@ -231,7 +252,7 @@
                 </div>
             </ul>
             <div
-                    v-else
+                    v-else-if="!isLoading && items.length <= 0"
                     class="spinner-container">
                 {{ $root.__(errorMessage, 'tainacan') }}
             </div>
@@ -388,9 +409,9 @@ export default {
                     ?
                 item.thumbnail[size][0] 
                     :
-                (item.thumbnail && item.thumbnail['thumbnail'][0] && item.thumbnail['thumbnail'][0]
+                (item.thumbnail && item.thumbnail['large'][0] && item.thumbnail['large'][0]
                     ?    
-                item.thumbnail['thumbnail'][0] 
+                item.thumbnail['large'][0] 
                     : 
                 `${this.tainacanBaseUrl}/admin/images/placeholder_square.png`)
             )

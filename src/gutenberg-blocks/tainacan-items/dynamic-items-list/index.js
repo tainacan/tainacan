@@ -172,7 +172,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                     style={
                         { 
                             marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
-                            backgroundImage: layout == 'mosaic' ? `url(${getItemThumbnail(item, 'tainacan-medium-full')})` : 'none'
+                            backgroundImage: layout == 'mosaic' ? `url(${getItemThumbnail(item, layout === 'mosaic' ? 'medium_large' : 'tainacan-medium')})` : 'none'
                         }
                     }>      
                     <a 
@@ -285,7 +285,10 @@ registerBlockType('tainacan/dynamic-items-list', {
                         content: <div></div>,
                         items: items,
                         isLoading: false,
-                        itemsRequestSource: itemsRequestSource
+                        itemsRequestSource: itemsRequestSource,
+                        mosaicHeight: mosaicHeight,
+                        mosaicGridRows: mosaicGridRows,
+                        mosaicGridColumns: mosaicGridColumns
                     });
                 });
         }
@@ -867,7 +870,7 @@ registerBlockType('tainacan/dynamic-items-list', {
             mosaicGridRows,
             mosaicGridColumns
         } = attributes;
-        
+
         return <div 
                     search-url={ searchURL }
                     className={ className }
