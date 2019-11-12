@@ -147,26 +147,47 @@
                 </span>
             </button> 
         </div>
-        <ul
-                v-if="isLoading"
-                :style="{
-                    gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit', 
-                    marginTop: showSearchBar || showCollectionHeader ? '1.34rem' : '0px'
-                }"
-                class="items-list"
-                :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
-                <li
-                        :key="item"
-                        v-for="item in Number(maxItemsNumber)"
-                        class="item-list-item skeleton"
+        <template v-if="isLoading">
+            <ul
+                    v-if="layout !== 'mosaic'"
+                    :style="{
+                        gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit', 
+                        marginTop: showSearchBar || showCollectionHeader ? '1.34rem' : '0px'
+                    }"
+                    class="items-list"
+                    :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
+                    <li
+                            :key="item"
+                            v-for="item in Number(maxItemsNumber)"
+                            class="item-list-item skeleton"
+                            :style="{ 
+                                marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
+                                height: layout == 'grid' ? '230px' : '54px'
+                            }" />      
+            </ul>
+            <ul
+                    v-if="layout === 'mosaic'"
+                    :style="{
+                        marginTop: showSearchBar || showCollectionHeader ? '-' + (Number(gridMargin)/2) : '0px',    
+                        padding: '0 ' + (Number(gridMargin)/4) + 'px',
+                        minHeight: layout === 'mosaic' ? mosaicHeight + 'vh' : ''
+                    }"
+                    class="items-list"
+                    :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
+                <div 
                         :style="{ 
-                            marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
-                            height: layout == 'grid' ? '230px' : '54px'
-                        }" />      
-        </ul>
+                            width: 'calc((100% / ' + mosaicPartition(items, 5).length + ') - ' + gridMargin + 'px)',
+                            height: 'calc(((' + (mosaicGridRows - 1) + ' * ' + gridMargin + 'px) + ' + mosaicHeight + 'vh))',
+                            margin: gridMargin + 'px'
+                        }"
+                        class="mosaic-container skeleton"
+                        :key="mosaicIndex"
+                        v-for="(mosaicGroup, mosaicIndex) of mosaicPartition(items, 5)" /> 
+            </ul>
+        </template>
         <div v-else>
             <ul 
-                    v-if="items.length > 0"
+                    v-if="items.length > 0 && layout !== 'mosaic'"
                     :style="{
                         gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit', 
                         marginTop: showSearchBar || showCollectionHeader ? '1.35rem' : '0px'
@@ -177,31 +198,61 @@
                         :key="index"
                         v-for="(item, index) of items"
                         class="item-list-item"
-                        :style="{ marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : ''}">      
+                        :style="{ marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '' }">    
                     <a 
                             :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
                             :href="item.url"
                             target="_blank"
                             :class="(!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '')">
                         <img
-                            :src=" 
-                                item.thumbnail && item.thumbnail['tainacan-medium'][0] && item.thumbnail['tainacan-medium'][0] 
-                                    ?
-                                item.thumbnail['tainacan-medium'][0] 
-                                    :
-                                (item.thumbnail && item.thumbnail['thumbnail'][0] && item.thumbnail['thumbnail'][0]
-                                    ?    
-                                item.thumbnail['thumbnail'][0] 
-                                    : 
-                                `${tainacanBaseUrl}/admin/images/placeholder_square.png`)
-                            "
+                            :src="getItemThumbnail(item, 'tainacan-medium')"
                             :alt="item.title ? item.title : $root.__('Thumbnail', 'tainacan')">
                         <span>{{ item.title ? item.title : '' }}</span>
                     </a>
                 </li>
             </ul>
+            <ul 
+                    v-if="items.length > 0 && layout === 'mosaic'"
+                    :style="{
+                        marginTop: showSearchBar || showCollectionHeader ? '-' + (Number(gridMargin)/2) : '0px',    
+                        padding: '0 ' + (Number(gridMargin)/4) + 'px',
+                        minHeight: layout === 'mosaic' ? mosaicHeight + 'vh' : ''
+                    }"
+                    class="items-list"
+                    :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
+                <div 
+                        :style="{ 
+                            width: 'calc((100% / ' + mosaicPartition(items, 5).length + ') - ' + gridMargin + 'px)',
+                            height: 'calc(((' + (mosaicGridRows - 1) + ' * ' + gridMargin + 'px) + ' + mosaicHeight + 'vh))',
+                            gridTemplateColumns: 'repeat(' + mosaicGridColumns + ', calc((100% / ' + mosaicGridColumns + ') - (' + ((mosaicGridColumns - 1)*Number(gridMargin)) + 'px/' + mosaicGridColumns + ')))',
+                            margin: gridMargin + 'px',
+                            gridGap: gridMargin + 'px',
+                        }"
+                        class="mosaic-container"
+                        :class="'mosaic-container--' + mosaicGroup.length + '-' + mosaicGridRows + 'x' + mosaicGridColumns"
+                        :key="mosaicIndex"
+                        v-for="(mosaicGroup, mosaicIndex) of mosaicPartition(items, 5)">
+                    <li
+                            
+                            :key="index"
+                            v-for="(item, index) of mosaicGroup"
+                            class="item-list-item"
+                            :style="{ backgroundImage: layout == 'mosaic' ? `url(${getItemThumbnail(item, 'medium_large')})` : 'none' }">          
+                        <a 
+                                :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
+                                :href="item.url"
+                                target="_blank"
+                                :class="(!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '')">
+                            <img
+                                :src="getItemThumbnail(item, 'tainacan-medium')"
+                                :alt="item.title ? item.title : $root.__('Thumbnail', 'tainacan')">
+                            <span>{{ item.title ? item.title : '' }}</span>
+                        </a>
+                    </li>
+                </div>
+            </ul>
             <div
-                    v-else
+                    v-else-if="!isLoading && items.length <= 0"
                     class="spinner-container">
                 {{ $root.__(errorMessage, 'tainacan') }}
             </div>
@@ -240,6 +291,9 @@ export default {
         gridMargin: Number,
         searchURL: String,
         maxItemsNumber: Number,
+        mosaicHeight: Number,
+        mosaicGridRows: Number,
+        mosaicGridColumns: Number,
         order: String,
         showSearchBar: Boolean,
         showCollectionHeader: Boolean,
@@ -348,6 +402,28 @@ export default {
                         this.isLoadingCollection = false;      
                     });
             }
+        },
+        getItemThumbnail(item, size) {
+            return ( 
+                item.thumbnail && item.thumbnail[size][0] && item.thumbnail[size][0] 
+                    ?
+                item.thumbnail[size][0] 
+                    :
+                (item.thumbnail && item.thumbnail['large'][0] && item.thumbnail['large'][0]
+                    ?    
+                item.thumbnail['large'][0] 
+                    : 
+                `${this.tainacanBaseUrl}/admin/images/placeholder_square.png`)
+            )
+        },
+        mosaicPartition(items, size) {
+            const partition = _.groupBy(items, (item, i) => {
+                if (i % 2 == 0)
+                    return Math.floor(i/size)
+                else
+                    return Math.floor(i/(size + 1))
+            });
+            return _.values(partition);
         }
     },
     created() {
@@ -356,7 +432,7 @@ export default {
   
         if (this.showCollectionHeader)
             this.fetchCollectionForHeader();
-
+       
         this.fetchItems();
     },
 }
