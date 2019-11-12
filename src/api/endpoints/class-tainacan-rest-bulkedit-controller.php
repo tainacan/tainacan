@@ -222,227 +222,187 @@ class REST_Bulkedit_Controller extends REST_Controller {
 		$bulk = new \Tainacan\Bulk_Edit($args);
 
 		global $Tainacan_Generic_Process_Handler;
-		$Tainacan_Generic_Process_Handler->initialize_generic_process('bulk_edit', $bulk->get_id());
+		$process = $Tainacan_Generic_Process_Handler->initialize_generic_process('bulk_edit', $bulk->get_id());
+		$Tainacan_Generic_Process_Handler->save_process_instance($process);
 
 		$response = $this->prepare_item_for_response($bulk, $request);
 		$rest_response = new \WP_REST_Response($response, 200);
 		return $rest_response;
 	}
 
-    public function add_value($request) {
-        
-        return $this->generic_action('add_value', $request);
+	public function add_value($request) {
+		return $this->generic_action('add_value', $request);
+	}
 
-    }
-    public function set_value($request) {
-        
-        return $this->generic_action('set_value', $request);
+	public function set_value($request) {
+		return $this->generic_action('set_value', $request);
+	}
 
-    }
-    public function remove_value($request) {
-        
-        return $this->generic_action('remove_value', $request);
+	public function remove_value($request) {
+		return $this->generic_action('remove_value', $request);
+	}
 
-    }
-    public function replace_value($request) {
-        
-        return $this->generic_action('replace_value', $request, ['old_value', 'new_value']);
+	public function replace_value($request) {
+		return $this->generic_action('replace_value', $request, ['old_value', 'new_value']);
+	}
 
-    }
-	
 	public function set_status($request) {
-        $body = json_decode($request->get_body(), true);
-		
-		if( !isset($body['value']) ){
+		$body = json_decode($request->get_body(), true);
+
+		if( !isset($body['value']) ) {
 			return new \WP_REST_Response([
 				'error_message' => __('Value must be provided', 'tainacan'),
 			], 400);
 		}
 		
 		$group_id = $request['group_id'];
+		$args = ['id' => $group_id];
+		$bulk = new \Tainacan\Bulk_Edit($args);
 
-        $args = ['id' => $group_id];
+		$action = $bulk->set_status($body['value']);
 
-        $bulk = new \Tainacan\Bulk_Edit($args);
+		if ( is_wp_error($action) ) {
+			return new \WP_REST_Response([
+				'error_message' => $action->get_error_message(),
+			], 400);
+		} else {
+			return new \WP_REST_Response($action, 200);
+		}
+	}
 
-        $action = $bulk->set_status($body['value']);
-
-        if ( is_wp_error($action) ) {
-            return new \WP_REST_Response([
-                'error_message' => $action->get_error_message(),
-            ], 400);
-        } else {
-            return new \WP_REST_Response($action, 200);
-        }
-
-    }
-	
 	public function get_item($request) {
 		$group_id = $request['group_id'];
 
-        $args = ['id' => $group_id];
-
-        $bulk = new \Tainacan\Bulk_Edit($args);
-		
+		$args = ['id' => $group_id];
+		$bulk = new \Tainacan\Bulk_Edit($args);
 		$return = $this->prepare_item_for_response($bulk, $request);
 		
 		if (0 === $return['items_count']) {
 			return new \WP_REST_Response([
-                'error_message' => __('Group not found', 'tainacan'),
-            ], 404);
+				'error_message' => __('Group not found', 'tainacan'),
+			], 404);
 		}
-		
 		return new \WP_REST_Response($return, 200);
 	}
-	
+
 	function prepare_item_for_response($bulk_object, $request) {
-		
 		$count = $bulk_object->count_posts();
-		
 		$options = $bulk_object->get_options();
-		
 		$return = [
 			'id' => $bulk_object->get_id(),
 			'items_count' => $count,
 			'options' => $options
 		];
-		
 		return $return;
-		
 	}
 
-    public function trash_items($request) {
-        $group_id = $request['group_id'];
+	public function trash_items($request) {
+		$group_id = $request['group_id'];
+		$args = ['id' => $group_id];
+		$bulk = new \Tainacan\Bulk_Edit($args);
+		$action = $bulk->trash_items();
 
-        $args = ['id' => $group_id];
+		if ( is_wp_error($action) ) {
+			return new \WP_REST_Response([
+				'error_message' => $action->get_error_message(),
+			], 400);
+		} else {
+			return new \WP_REST_Response($action, 200);
+		}
+	}
 
-        $bulk = new \Tainacan\Bulk_Edit($args);
+	public function untrash_items($request) {
+		$group_id = $request['group_id'];
+		$args = ['id' => $group_id];
+		$bulk = new \Tainacan\Bulk_Edit($args);
+		$action = $bulk->untrash_items();
 
-        $action = $bulk->trash_items();
+		if ( is_wp_error($action) ) {
+			return new \WP_REST_Response([
+				'error_message' => $action->get_error_message(),
+			], 400);
+		} else {
+			return new \WP_REST_Response($action, 200);
+		}
+	}
 
-        if ( is_wp_error($action) ) {
-            return new \WP_REST_Response([
-                'error_message' => $action->get_error_message(),
-            ], 400);
-        } else {
-            return new \WP_REST_Response($action, 200);
-        }
+	public function delete_items($request) {
+		$group_id = $request['group_id'];
+		$args = ['id' => $group_id];
+		$bulk = new \Tainacan\Bulk_Edit($args);
+		$action = $bulk->delete_items();
 
-    }
+		if ( is_wp_error($action) ) {
+			return new \WP_REST_Response([
+				'error_message' => $action->get_error_message(),
+			], 400);
+		} else {
+			return new \WP_REST_Response($action, 200);
+		}
+	}
 
-    public function untrash_items($request) {
-        $group_id = $request['group_id'];
+	private function generic_action($method, $request, $keys = ['value']) {
+		$body = json_decode($request->get_body(), true);
 
-        $args = ['id' => $group_id];
-
-        $bulk = new \Tainacan\Bulk_Edit($args);
-
-        $action = $bulk->untrash_items();
-
-        if ( is_wp_error($action) ) {
-            return new \WP_REST_Response([
-                'error_message' => $action->get_error_message(),
-            ], 400);
-        } else {
-            return new \WP_REST_Response($action, 200);
-        }
-
-    }
-
-    public function delete_items($request) {
-        $group_id = $request['group_id'];
-
-        $args = ['id' => $group_id];
-
-        $bulk = new \Tainacan\Bulk_Edit($args);
-
-        $action = $bulk->delete_items();
-
-        if ( is_wp_error($action) ) {
-            return new \WP_REST_Response([
-                'error_message' => $action->get_error_message(),
-            ], 400);
-        } else {
-            return new \WP_REST_Response($action, 200);
-        }
-
-    }
-
-
-    private function generic_action($method, $request, $keys = ['value']) {
-        $body = json_decode($request->get_body(), true);
-
-		if(empty($body)){
+		if (empty($body)) {
 			return new \WP_REST_Response([
 				'error_message' => __('Body can not be empty.', 'tainacan'),
 			], 400);
-        }
+		}
 
-        if(!isset($body['metadatum_id'])){
+		if (!isset($body['metadatum_id'])) {
 			return new \WP_REST_Response([
 				'error_message' => __('You must specify a Metadatum ID.', 'tainacan'),
 			], 400);
-        }
+		}
 
-        foreach ($keys as $key) {
-            if(!isset($body[$key])){
-                return new \WP_REST_Response([
-                    'error_message' => sprintf(__('%s must be provided', 'tainacan'), $key),
-                ], 400);
-            }
-        }
-        
-        $group_id = $request['group_id'];
+		foreach ($keys as $key) {
+			if (!isset($body[$key])) {
+				return new \WP_REST_Response([
+					'error_message' => sprintf(__('%s must be provided', 'tainacan'), $key),
+				], 400);
+			}
+		}
 
-        $args = ['id' => $group_id];
+		$group_id = $request['group_id'];
+		$args = ['id' => $group_id];
+		$bulk = new \Tainacan\Bulk_Edit($args);
 
-        $bulk = new \Tainacan\Bulk_Edit($args);
+		$metadatum = $this->metadatum_repository->fetch($body['metadatum_id']);
 
-        $metadatum = $this->metadatum_repository->fetch($body['metadatum_id']);
-
-        if ( $metadatum instanceof Entities\Metadatum ) {
-
-            $value = isset($body['new_value']) ? $body['new_value'] : $body['value'];
-            $old_value = isset($body['old_value']) ? $body['old_value'] : null;
-            
-            $action = $bulk->$method($metadatum, $value, $old_value);
-
-            if ( is_wp_error($action) ) {
-                return new \WP_REST_Response([
-                    'error_message' => $action->get_error_message(),
-                ], 400);
-            } else {
-                return new \WP_REST_Response($action, 200);
-            }
-
-
-        } else {
-            return new \WP_REST_Response([
+		if ( $metadatum instanceof Entities\Metadatum ) {
+			$value = isset($body['new_value']) ? $body['new_value'] : $body['value'];
+			$old_value = isset($body['old_value']) ? $body['old_value'] : null;
+			$action = $bulk->$method($metadatum, $value, $old_value);
+			if ( is_wp_error($action) ) {
+				return new \WP_REST_Response([
+					'error_message' => $action->get_error_message(),
+				], 400);
+			} else {
+				return new \WP_REST_Response($action, 200);
+			}
+		} else {
+			return new \WP_REST_Response([
 				'error_message' => __('Metadatum not found.', 'tainacan'),
 			], 400);
-        }
-    }
+		}
+	}
 
 	public function get_item_in_sequence($request) {
-        $group_id = $request['group_id'];
+		$group_id = $request['group_id'];
 		$index = $request['sequence_index'];
+		$args = ['id' => $group_id];
+		$bulk = new \Tainacan\Bulk_Edit($args);
+		$item_id = $bulk->get_item_id_by_index( (int) $index );
 
-        $args = ['id' => $group_id];
-
-        $bulk = new \Tainacan\Bulk_Edit($args);
-
-        $item_id = $bulk->get_item_id_by_index( (int) $index );
-
-        if ( !$item_id ) {
-            return new \WP_REST_Response([
-                'error_message' => __('Item not found.', 'tainacan'),
-            ], 404);
-        } else {
-            return new \WP_REST_Response($item_id, 200);
-        }
-
-    }
-
+		if ( !$item_id ) {
+			return new \WP_REST_Response([
+				'error_message' => __('Item not found.', 'tainacan'),
+			], 404);
+		} else {
+			return new \WP_REST_Response($item_id, 200);
+		}
+	}
 
 	/**
 	 * @param null $object_name
@@ -454,27 +414,24 @@ class REST_Bulkedit_Controller extends REST_Controller {
 		$query_params['title'] = array(
 			'description' => __('Limits the result set to items with a specific title'),
 			'type'        => 'string',
-        );
-        
-        $query_params['items_ids'] = [
-            'type'        => 'array',
-            'items'       => [
-                'type' => 'integer'
-            ],
-            'description' => __( 'Array of items IDs', 'tainacan' ),
-        ];
+		);
 
-        $query_params['use_query'] = [
-            'type'        => 'bool',
-            'description' => __( 'Whether to use the current query to select posts', 'tainacan' ),
-        ];
+		$query_params['items_ids'] = [
+			'type'        => 'array',
+			'items'       => ['type' => 'integer'],
+			'description' => __( 'Array of items IDs', 'tainacan' ),
+		];
 
-        $query_params = array_merge(
-            $query_params,
-            parent::get_wp_query_params(),
-            parent::get_meta_queries_params()
-        );
+		$query_params['use_query'] = [
+			'type'        => 'bool',
+			'description' => __( 'Whether to use the current query to select posts', 'tainacan' ),
+		];
 
+		$query_params = array_merge(
+			$query_params,
+			parent::get_wp_query_params(),
+			parent::get_meta_queries_params()
+		);
 		return $query_params;
 	}
 
