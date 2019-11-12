@@ -215,7 +215,7 @@ registerBlockType('tainacan/carousel-collections-list', {
 
             collections = [];
 
-            let endpoint = '/collections?'+ qs.stringify({ postin: selectedCollections }) + '&fetch_only=name,url,thumbnail';
+            let endpoint = '/collections?'+ qs.stringify({ postin: selectedCollections, perpage: selectedCollections.length }) + '&fetch_only=name,url,thumbnail';
             tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
                 .then(response => {
 
