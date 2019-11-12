@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
             searchURL: '',
             maxItemsNumber: 12,
             mosaicHeight: 40,
+            mosaicDensity: 5,
             mosaicGridRows: 3,
             mosaicGridColumns: 3,
             mosaicItemFocalPointX : 0.5,
@@ -37,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     showName: this.showName,
                     layout: this.layout,
                     gridMargin: this.gridMargin,
+                    mosaicDensity: this.mosaicDensity,
                     mosaicHeight: this.mosaicHeight,
                     mosaicGridRows: this.mosaicGridRows,
                     mosaicGridColumns: this.mosaicGridColumns,
@@ -64,6 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
             this.showName = this.$el.attributes['show-name'] != undefined ? this.$el.attributes['show-name'].value == 'true' : true;
             this.layout = this.$el.attributes['layout'] != undefined ? this.$el.attributes['layout'].value : undefined;
             this.gridMargin = this.$el.attributes['grid-margin'] != undefined ? Number(this.$el.attributes['grid-margin'].value) : undefined;
+            this.mosaicDensity = this.$el.attributes['mosaic-density'] != undefined ? Number(this.$el.attributes['mosaic-density'].value) : undefined;
             this.mosaicHeight = this.$el.attributes['mosaic-height'] != undefined ? Number(this.$el.attributes['mosaic-height'].value) : undefined;
             this.mosaicGridRows = this.$el.attributes['mosaic-grid-rows'] != undefined ? Number(this.$el.attributes['mosaic-grid-rows'].value) : undefined;
             this.mosaicGridColumns = this.$el.attributes['mosaic-grid-columns'] != undefined ? Number(this.$el.attributes['mosaic-grid-columns'].value) : undefined;

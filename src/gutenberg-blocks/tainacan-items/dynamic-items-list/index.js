@@ -138,6 +138,10 @@ registerBlockType('tainacan/dynamic-items-list', {
                 x: 0.5,
                 y: 0.5
             }
+        },
+        mosaicDensity: {
+            type: Number,
+            default: 5
         }
     },
     supports: {
@@ -171,7 +175,8 @@ registerBlockType('tainacan/dynamic-items-list', {
             mosaicGridColumns,
             mosaicGridRows,
             mosaicItemFocalPoint,
-            sampleBackgroundImage
+            sampleBackgroundImage,
+            mosaicDensity
         } = attributes;
 
         // Obtains block's client id to render it on save function
@@ -286,13 +291,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                     .then(response => {
                         
                         if (layout !== 'mosaic') {
-                            // Initializes some variables
-                            mosaicGridRows = mosaicGridRows ? mosaicGridRows : 3;
-                            mosaicGridColumns = mosaicGridColumns ? mosaicGridColumns : 3;
-                            mosaicHeight = mosaicHeight ? mosaicHeight : 280;
-                            mosaicItemFocalPoint = mosaicItemFocalPoint ? mosaicItemFocalPoint : { x: 0.5, y: 0.5 };
-                            sampleBackgroundImage = response.data.items && response.data.items[0] && response.data.items[0] ? getItemThumbnail(response.data.items[0], 'tainacan-medium') : ''; 
-
+                           
                             for (let item of response.data.items)
                                 items.push(prepareItem(item));
 
@@ -300,16 +299,19 @@ registerBlockType('tainacan/dynamic-items-list', {
                                 content: <div></div>,
                                 items: items,
                                 isLoading: false,
-                                itemsRequestSource: itemsRequestSource,
-                                mosaicHeight: mosaicHeight,
-                                mosaicGridRows: mosaicGridRows,
-                                mosaicGridColumns: mosaicGridColumns,
-                                mosaicItemFocalPoint: mosaicItemFocalPoint,
-                                sampleBackgroundImage: sampleBackgroundImage
+                                itemsRequestSource: itemsRequestSource
                             });
 
                         } else {
-                            const mosaicGroups = mosaicPartition(response.data.items, 5);
+                            // Initializes some variables
+                            mosaicDensity = mosaicDensity ? mosaicDensity : 5;
+                            mosaicGridRows = mosaicGridRows ? mosaicGridRows : 3;
+                            mosaicGridColumns = mosaicGridColumns ? mosaicGridColumns : 3;
+                            mosaicHeight = mosaicHeight ? mosaicHeight : 280;
+                            mosaicItemFocalPoint = mosaicItemFocalPoint ? mosaicItemFocalPoint : { x: 0.5, y: 0.5 };
+                            sampleBackgroundImage = response.data.items && response.data.items[0] && response.data.items[0] ? getItemThumbnail(response.data.items[0], 'tainacan-medium') : ''; 
+ 
+                            const mosaicGroups = mosaicPartition(response.data.items);
                             for (let mosaicGroup of mosaicGroups)
                                 items.push(prepareMosaicItem(mosaicGroup, mosaicGroups.length));
 
@@ -317,7 +319,13 @@ registerBlockType('tainacan/dynamic-items-list', {
                                 content: <div></div>,
                                 items: items,
                                 isLoading: false,
-                                itemsRequestSource: itemsRequestSource
+                                itemsRequestSource: itemsRequestSource,
+                                mosaicDensity: mosaicDensity,
+                                mosaicHeight: mosaicHeight,
+                                mosaicGridRows: mosaicGridRows,
+                                mosaicGridColumns: mosaicGridColumns,
+                                mosaicItemFocalPoint: mosaicItemFocalPoint,
+                                sampleBackgroundImage: sampleBackgroundImage
                             });
                         }
                     });
@@ -415,12 +423,12 @@ registerBlockType('tainacan/dynamic-items-list', {
             }
         }
 
-        function mosaicPartition(items, size) {
+        function mosaicPartition(items) {
             const partition = _.groupBy(items, (item, i) => {
                 if (i % 2 == 0)
-                    return Math.floor(i/size)
+                    return Math.floor(i/mosaicDensity)
                 else
-                    return Math.floor(i/(size + 1))
+                    return Math.floor(i/(mosaicDensity + 1))
             });
             return _.values(partition);
         }
@@ -623,10 +631,25 @@ registerBlockType('tainacan/dynamic-items-list', {
                                 />
                             </div>
                             <div>
+                                <RangeControl
+                                    label={__('Group Grid Density', 'tainacan')}
+                                    value={ mosaicDensity ? mosaicDensity : 5 }
+                                    onChange={ ( value ) => {
+                                        mosaicDensity = value;
+                                        setAttributes( { mosaicDensity: mosaicDensity } );
+                                        setContent();
+                                    }}
+                                    min={ 1 }
+                                    max={ 5 }
+                                />
+                            </div>
+                            <div>
                                 <SelectControl
                                     label={__('Group Grid Dimensions', 'tainacan')}
                                     value={ mosaicGridRows + 'x' + mosaicGridColumns }
                                     options={ [
+                                        { label: '2 x 3', value: '2x3' },
+                                        { label: '3 x 2', value: '3x2' },
                                         { label: '3 x 3', value: '3x3' },
                                         { label: '3 x 4', value: '3x4' },
                                         { label: '4 x 3', value: '4x3' },
@@ -959,7 +982,8 @@ registerBlockType('tainacan/dynamic-items-list', {
             mosaicHeight,
             mosaicGridRows,
             mosaicGridColumns,
-            mosaicItemFocalPoint
+            mosaicItemFocalPoint,
+            mosaicDensity
         } = attributes;
 
         return <div 
@@ -973,6 +997,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                     show-collection-label={ '' + showCollectionLabel }
                     layout={ layout }
                     mosaic-height={ mosaicHeight }
+                    mosaic-density={ mosaicDensity }
                     mosaic-grid-rows={ mosaicGridRows } 
                     mosaic-grid-columns={ mosaicGridColumns }
                     mosaic-item-focal-point-x={ mosaicItemFocalPoint.x } 

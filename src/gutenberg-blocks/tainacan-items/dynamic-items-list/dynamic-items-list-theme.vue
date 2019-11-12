@@ -176,13 +176,13 @@
                     :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
                 <div 
                         :style="{ 
-                            width: 'calc((100% / ' + mosaicPartition(items, 5).length + ') - ' + gridMargin + 'px)',
+                            width: 'calc((100% / ' + mosaicPartition(items).length + ') - ' + gridMargin + 'px)',
                             height: 'calc(((' + (mosaicGridRows - 1) + ' * ' + gridMargin + 'px) + ' + mosaicHeight + 'px))',
                             margin: gridMargin + 'px'
                         }"
                         class="mosaic-container skeleton"
                         :key="mosaicIndex"
-                        v-for="(mosaicGroup, mosaicIndex) of mosaicPartition(items, 5)" /> 
+                        v-for="(mosaicGroup, mosaicIndex) of mosaicPartition(items)" /> 
             </ul>
         </template>
         <div v-else>
@@ -222,7 +222,7 @@
                     :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
                 <div 
                         :style="{ 
-                            width: 'calc((100% / ' + mosaicPartition(items, 5).length + ') - ' + gridMargin + 'px)',
+                            width: 'calc((100% / ' + mosaicPartition(items).length + ') - ' + gridMargin + 'px)',
                             height: 'calc(((' + (mosaicGridRows - 1) + ' * ' + gridMargin + 'px) + ' + mosaicHeight + 'px))',
                             gridTemplateColumns: 'repeat(' + mosaicGridColumns + ', calc((100% / ' + mosaicGridColumns + ') - (' + ((mosaicGridColumns - 1)*Number(gridMargin)) + 'px/' + mosaicGridColumns + ')))',
                             margin: gridMargin + 'px',
@@ -231,7 +231,7 @@
                         class="mosaic-container"
                         :class="'mosaic-container--' + mosaicGroup.length + '-' + mosaicGridRows + 'x' + mosaicGridColumns"
                         :key="mosaicIndex"
-                        v-for="(mosaicGroup, mosaicIndex) of mosaicPartition(items, 5)">
+                        v-for="(mosaicGroup, mosaicIndex) of mosaicPartition(items)">
                     <li
                             
                             :key="index"
@@ -294,6 +294,7 @@ export default {
         gridMargin: Number,
         searchURL: String,
         maxItemsNumber: Number,
+        mosaicDensity: Number,
         mosaicHeight: Number,
         mosaicGridRows: Number,
         mosaicGridColumns: Number,
@@ -421,12 +422,12 @@ export default {
                 `${this.tainacanBaseUrl}/admin/images/placeholder_square.png`)
             )
         },
-        mosaicPartition(items, size) {
+        mosaicPartition(items) {
             const partition = _.groupBy(items, (item, i) => {
                 if (i % 2 == 0)
-                    return Math.floor(i/size)
+                    return Math.floor(i/this.mosaicDensity)
                 else
-                    return Math.floor(i/(size + 1))
+                    return Math.floor(i/(this.mosaicDensity + 1))
             });
             return _.values(partition);
         }

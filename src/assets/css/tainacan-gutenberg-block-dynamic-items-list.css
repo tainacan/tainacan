@@ -556,6 +556,48 @@
         .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container li.item-list-item:hover a {
           color: #454647;
           text-decoration: none; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--1-2x3 li.item-list-item,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--1-2x3 li.item-list-item {
+        grid-row: span 2;
+        grid-column: span 3; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--2-2x3 li.item-list-item,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--2-2x3 li.item-list-item {
+        grid-row: span 1;
+        grid-column: span 3; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--3-2x3 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--3-2x3 li.item-list-item:nth-of-type(1) {
+        grid-row: span 1;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-2x3 li.item-list-item:nth-of-type(1), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-2x3 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-2x3 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-2x3 li.item-list-item:nth-of-type(3) {
+        grid-row: span 1;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-2x3 li.item-list-item:nth-of-type(2),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-2x3 li.item-list-item:nth-of-type(2) {
+        grid-row: span 2;
+        grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--1-3x2 li.item-list-item,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--1-3x2 li.item-list-item {
+        grid-row: span 3;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--2-3x2 li.item-list-item,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--2-3x2 li.item-list-item {
+        grid-row: span 3;
+        grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--3-3x2 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--3-3x2 li.item-list-item:nth-of-type(1) {
+        grid-row: span 2;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-3x2 li.item-list-item:nth-of-type(1), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-3x2 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-3x2 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-3x2 li.item-list-item:nth-of-type(3) {
+        grid-row: span 2;
+        grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-3x2 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-3x2 li.item-list-item:nth-of-type(3) {
+        grid-row: span 1;
+        grid-column: span 2; }
       .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--1-3x3 li.item-list-item,
       .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--1-3x3 li.item-list-item {
         grid-row: span 3;
