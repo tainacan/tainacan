@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { SelectControl, RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
+const { FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -127,6 +127,17 @@ registerBlockType('tainacan/dynamic-items-list', {
         mosaicGridRows: {
             type: Number,
             value: 3
+        },
+        sampleBackgroundImage: {
+            type: String,
+            default: ''
+        },
+        mosaicItemFocalPoint: {
+            type: Object,
+            default: {
+                x: 0.5,
+                y: 0.5
+            }
         }
     },
     supports: {
@@ -158,7 +169,9 @@ registerBlockType('tainacan/dynamic-items-list', {
             collectionTextColor,
             mosaicHeight,
             mosaicGridColumns,
-            mosaicGridRows
+            mosaicGridRows,
+            mosaicItemFocalPoint,
+            sampleBackgroundImage
         } = attributes;
 
         // Obtains block's client id to render it on save function
@@ -172,7 +185,8 @@ registerBlockType('tainacan/dynamic-items-list', {
                     style={
                         { 
                             marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
-                            backgroundImage: layout == 'mosaic' ? `url(${getItemThumbnail(item, layout === 'mosaic' ? 'medium_large' : 'tainacan-medium')})` : 'none'
+                            backgroundImage: layout == 'mosaic' ? `url(${getItemThumbnail(item, 'medium_large')})` : 'none',
+                            backgroundPosition: layout == 'mosaic' ? `${ mosaicItemFocalPoint.x * 100 }% ${ mosaicItemFocalPoint.y * 100 }%` : 'none'
                         }
                     }>      
                     <a 
@@ -267,29 +281,41 @@ registerBlockType('tainacan/dynamic-items-list', {
             tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
                 .then(response => {
                     
-                    // Initializes some variables
-                    mosaicGridRows = mosaicGridRows ? mosaicGridRows : 3;
-                    mosaicGridColumns = mosaicGridColumns ? mosaicGridColumns : 3;
-                    mosaicHeight = mosaicHeight ? mosaicHeight : 40;
-
                     if (layout !== 'mosaic') {
+                        // Initializes some variables
+                        mosaicGridRows = mosaicGridRows ? mosaicGridRows : 3;
+                        mosaicGridColumns = mosaicGridColumns ? mosaicGridColumns : 3;
+                        mosaicHeight = mosaicHeight ? mosaicHeight : 40;
+                        mosaicItemFocalPoint = mosaicItemFocalPoint ? mosaicItemFocalPoint : { x: 0.5, y: 0.5 };
+                        sampleBackgroundImage = response.data.items && response.data.items[0] && response.data.items[0] ? getItemThumbnail(response.data.items[0], 'tainacan-medium') : ''; 
+
                         for (let item of response.data.items)
                             items.push(prepareItem(item));
+
+                        setAttributes({
+                            content: <div></div>,
+                            items: items,
+                            isLoading: false,
+                            itemsRequestSource: itemsRequestSource,
+                            mosaicHeight: mosaicHeight,
+                            mosaicGridRows: mosaicGridRows,
+                            mosaicGridColumns: mosaicGridColumns,
+                            mosaicItemFocalPoint: mosaicItemFocalPoint,
+                            sampleBackgroundImage: sampleBackgroundImage
+                        });
+
                     } else {
                         const mosaicGroups = mosaicPartition(response.data.items, 5);
                         for (let mosaicGroup of mosaicGroups)
                             items.push(prepareMosaicItem(mosaicGroup, mosaicGroups.length));
-                    }
 
-                    setAttributes({
-                        content: <div></div>,
-                        items: items,
-                        isLoading: false,
-                        itemsRequestSource: itemsRequestSource,
-                        mosaicHeight: mosaicHeight,
-                        mosaicGridRows: mosaicGridRows,
-                        mosaicGridColumns: mosaicGridColumns
-                    });
+                        setAttributes({
+                            content: <div></div>,
+                            items: items,
+                            isLoading: false,
+                            itemsRequestSource: itemsRequestSource
+                        });
+                    }
                 });
         }
 
@@ -372,6 +398,14 @@ registerBlockType('tainacan/dynamic-items-list', {
             if (searchString != value) {
                 searchString = value;
                 setAttributes({ searchString: searchString });
+                setContent();
+            }
+        }
+
+        function updateMosaicItemFocalPoint(focalPoint) {
+            if (Math.abs(focalPoint.x - mosaicItemFocalPoint.x) > 0.025 || Math.abs(focalPoint.y - mosaicItemFocalPoint.y) > 0.025) {
+                mosaicItemFocalPoint = focalPoint;
+                setAttributes({ mosaicItemFocalPoint: focalPoint });
                 setContent();
             }
         }
@@ -604,6 +638,18 @@ registerBlockType('tainacan/dynamic-items-list', {
                                         }); 
                                         setContent();
                                     }}/>
+                            </div>
+                            <div>
+                                <FocalPointPicker 
+                                    label={ __('Mosaic item focal point for background image', 'tainacan') }
+                                    url={ sampleBackgroundImage }
+                                    dimensions={ {
+                                        width: 400,
+                                        height: 400
+                                    } }
+                                    value={ mosaicItemFocalPoint }
+                                    onChange={ ( focalPoint ) =>_.debounce( updateMosaicItemFocalPoint(focalPoint), 700) } 
+                                />
                             </div>
                         </PanelBody>
                         : null}
@@ -868,7 +914,8 @@ registerBlockType('tainacan/dynamic-items-list', {
             collectionTextColor,
             mosaicHeight,
             mosaicGridRows,
-            mosaicGridColumns
+            mosaicGridColumns,
+            mosaicItemFocalPoint
         } = attributes;
 
         return <div 
@@ -883,7 +930,9 @@ registerBlockType('tainacan/dynamic-items-list', {
                     layout={ layout }
                     mosaic-height={ mosaicHeight }
                     mosaic-grid-rows={ mosaicGridRows } 
-                    mosaic-grid-columns={ mosaicGridColumns } 
+                    mosaic-grid-columns={ mosaicGridColumns }
+                    mosaic-item-focal-point-x={ mosaicItemFocalPoint.x } 
+                    mosaic-item-focal-point-y={ mosaicItemFocalPoint.y } 
                     collection-background-color={ collectionBackgroundColor }
                     collection-text-color={ collectionTextColor }
                     grid-margin={ gridMargin }

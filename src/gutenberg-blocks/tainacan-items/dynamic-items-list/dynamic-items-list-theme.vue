@@ -237,7 +237,10 @@
                             :key="index"
                             v-for="(item, index) of mosaicGroup"
                             class="item-list-item"
-                            :style="{ backgroundImage: layout == 'mosaic' ? `url(${getItemThumbnail(item, 'medium_large')})` : 'none' }">          
+                            :style="{
+                                backgroundImage: layout == 'mosaic' ? `url(${getItemThumbnail(item, 'medium_large')})` : 'none',
+                                backgroundPosition: layout == 'mosaic' ? `${ mosaicItemFocalPointX * 100 }% ${ mosaicItemFocalPointY * 100 }%` : 'none'
+                            }">          
                         <a 
                                 :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
                                 :href="item.url"
@@ -294,6 +297,8 @@ export default {
         mosaicHeight: Number,
         mosaicGridRows: Number,
         mosaicGridColumns: Number,
+        mosaicItemFocalPointX: Number,
+        mosaicItemFocalPointY: Number,
         order: String,
         showSearchBar: Boolean,
         showCollectionHeader: Boolean,
