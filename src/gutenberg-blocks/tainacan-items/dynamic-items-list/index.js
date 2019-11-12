@@ -922,7 +922,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                         ) : 
                             <ResizableBox
                                 size={ {
-                                    height: mosaicHeight ? mosaicHeight : 280,
+                                    height: mosaicHeight ? mosaicHeight + (3 * gridMargin) : 280 + (3 * gridMargin),
                                     width: '100%'
                                 } }
                                 minHeight="80"
