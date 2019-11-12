@@ -17,7 +17,7 @@ class Generic_Process_Handler {
 			'name' => 'Bulk edit',
 			'description' => __('Bulk edit', 'tainacan'),
 			'slug' => 'bulk_edit',
-			'class_name' => '\Tainacan\GenericBGProcess\BulkEdit'
+			'class_name' => '\Tainacan\GenericBackgroundProcess\Bulk_Edit_Process'
 		]);
 
 		do_action('tainacan-register-generic_process');
@@ -30,8 +30,7 @@ class Generic_Process_Handler {
 			return false;
 		}
 	
-		$this->registered_process['slug']] = $attrs;
-
+		$this->registered_process[$process['slug']] = $attrs;
 		return true;
 	}
 	
@@ -64,21 +63,45 @@ class Generic_Process_Handler {
 		return null;
 	}
 
-	public function initialize_generic_process($slug) {
+	public function initialize_generic_process($slug, $id = null) {
 		$process = $this->get_generic_process($slug);
 		if ( is_array($process) && isset($process['class_name']) && class_exists($process['class_name']) ) {
-			return new $process['class_name']();
+			if ($id == null)
+				return new $process['class_name']();
+			else
+				return new $process['class_name']($id);
 		}
 		return false;
 	}
 
-	public function initialize_generic_process($slug, $id) {
-		$process = $this->get_generic_process($slug);
-		if ( is_array($process) && isset($process['class_name']) && class_exists($process['class_name']) ) {
-			return new $process['class_name']($id);
-		}
-		return false;
+	/**
+	 * Save process instance to the database
+	 * @param  Tainacan\GenericBackgroundProcess\Generic_Process $process The process object
+	 * @return void
+	 */
+	public function save_process_instance(\Tainacan\GenericBackgroundProcess\Generic_Process $process) {
+		update_option('tnc_transient_' . $process->get_id(), $process, false);
 	}
+
+	/**
+	 * Retrieves an Process instance from the database based on its session_id
+	 * @param  string $session_id The Process ID
+	 * @return Tainacan\GenericBackgroundProcess\Generic_Process|false The Process object, if found. False otherwise
+	 */
+	public function get_process_instance_by_session_id($session_id) {
+		$process = get_option('tnc_transient_' . $session_id);
+		return $process;
+	}
+
+	/**
+	 * Deletes this process instance from the database
+	 * @param  Tainacan\GenericBackgroundProcess\Generic_Process $process The Process object
+	 * @return bool True, if process is successfully deleted. False on failure.
+	 */
+	public function delete_process_instance(\Tainacan\GenericBackgroundProcess\Generic_Process $process) {
+		return delete_option('tnc_transient_' . $process->get_id());
+	}
+
 }
 
 global $Tainacan_Generic_Process_Handler;

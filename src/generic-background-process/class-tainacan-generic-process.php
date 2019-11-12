@@ -3,7 +3,7 @@ namespace Tainacan\GenericBackgroundProcess;
 use Tainacan;
 use Tainacan\Entities;
 
-abstract class GenericProcess {
+abstract class Generic_Process {
 
 	public function __construct( ) {
 		$this->id = uniqid();

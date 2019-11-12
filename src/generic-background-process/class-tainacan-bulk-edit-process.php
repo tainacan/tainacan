@@ -3,7 +3,7 @@ namespace Tainacan\GenericBackgroundProcess;
 use Tainacan;
 use Tainacan\Entities;
 
-class BulkEditProcess extends GenericProcess {
+class Bulk_Edit_Process extends Generic_Process {
 
 	public function __construct($id) {
 		parent::__construct();
