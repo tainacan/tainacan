@@ -159,7 +159,7 @@
       color: #454647; }
 
 .wp-block-tainacan-dynamic-items-list {
-  margin: 2rem 0px; }
+  margin: 2rem auto; }
   .wp-block-tainacan-dynamic-items-list .spinner-container {
     min-height: 56px;
     padding: 1rem;
@@ -226,12 +226,13 @@
       .wp-block-tainacan-dynamic-items-list .dynamic-items-collection-header .collection-name h3 {
         color: white;
         text-decoration: none;
-        font-size: 1.3rem; }
+        font-size: 1.3em;
+        margin: 0; }
         .wp-block-tainacan-dynamic-items-list .dynamic-items-collection-header .collection-name h3:hover {
           text-decoration: none; }
       .wp-block-tainacan-dynamic-items-list .dynamic-items-collection-header .collection-name span.label {
         font-weight: normal;
-        font-size: 1rem; }
+        font-size: 1em; }
       .wp-block-tainacan-dynamic-items-list .dynamic-items-collection-header .collection-name.only-collection-name {
         justify-content: center;
         padding: 1rem; }
@@ -401,7 +402,8 @@
     grid-template-columns: repeat(auto-fill, 220px);
     grid-gap: 0px;
     justify-content: space-evenly;
-    list-style-type: none; }
+    list-style-type: none;
+    margin: 0; }
     .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid li.item-list-item,
     .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid li.item-list-item {
       position: relative;
@@ -444,7 +446,8 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    list-style-type: none; }
+    list-style-type: none;
+    margin: 0; }
     .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-list li.item-list-item,
     .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-list li.item-list-item {
       position: relative;
@@ -500,7 +503,8 @@
     width: auto;
     display: flex;
     list-style: none;
-    min-height: 280px; }
+    min-height: 280px;
+    margin: 0; }
     .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container,
     .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container {
       padding: 0;
@@ -524,7 +528,8 @@
         position: relative;
         min-width: 100%;
         background-size: cover;
-        background-position: center; }
+        background-position: center;
+        margin: 0; }
         .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container li.item-list-item a,
         .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container li.item-list-item a {
           width: 100%;

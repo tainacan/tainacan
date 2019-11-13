@@ -159,7 +159,7 @@
       color: #454647; }
 
 .wp-block-tainacan-facets-list {
-  margin: 2rem 0px; }
+  margin: 2rem auto; }
   .wp-block-tainacan-facets-list .spinner-container {
     min-height: 56px;
     padding: 1rem;
@@ -224,12 +224,13 @@
       .wp-block-tainacan-facets-list .facets-collection-header .collection-name h3 {
         color: white;
         text-decoration: none;
-        font-size: 1.3rem; }
+        font-size: 1.3em;
+        margin: 0; }
         .wp-block-tainacan-facets-list .facets-collection-header .collection-name h3:hover {
           text-decoration: none; }
       .wp-block-tainacan-facets-list .facets-collection-header .collection-name span.label {
         font-weight: normal;
-        font-size: 1rem; }
+        font-size: 1em; }
       .wp-block-tainacan-facets-list .facets-collection-header .collection-name.only-collection-name {
         justify-content: center;
         padding: 1rem; }

@@ -226,7 +226,7 @@
         background: #f2f2f2; }
 
 .wp-block-tainacan-carousel-collections-list {
-  margin: 2rem 0px; }
+  margin: 2rem auto; }
   .wp-block-tainacan-carousel-collections-list .spinner-container {
     min-height: 56px;
     padding: 1rem;
@@ -282,7 +282,7 @@
         text-decoration: none;
         padding: 8px 16px;
         display: block;
-        line-height: 1.2rem; }
+        line-height: 1.2em; }
       .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container a > img {
         width: 100%;
         height: auto; }
