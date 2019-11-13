@@ -46,31 +46,33 @@
                         v-model="inputs[0]" 
                         :metadatum="metadatum"
                         @input="changeValue()"/>
-                <template v-if="metadatum.metadatum.multiple == 'yes'">
+                <template v-if="metadatum.metadatum.multiple == 'yes' && inputs.length > 1">
                     <transition-group
                             name="filter-item"
                             class="multiple-inputs">
-                        <template 
-                                v-for="(input, index) in inputs.slice(1)">
-                                <component 
-                                        :key="index"
-                                        :is="metadatum.metadatum.metadata_type_object.component"
-                                        v-model="inputs[index]" 
-                                        :metadatum="metadatum"
-                                        @input="changeValue()"/>
-                                <a 
-                                        v-if="index > 0" 
-                                        @click="removeInput(index)"
-                                        class="add-link"
-                                        :key="index">
-                                    <b-icon
-                                            icon="minus-circle"
-                                            size="is-small"
-                                            type="is-secondary"/>
-                                    &nbsp;{{ $i18n.get('label_remove_value') }}
-                                </a>
+                        <template v-for="(input, index) of inputs">
+                            <component 
+                                    v-if="index > 0"
+                                    :key="index"
+                                    :is="metadatum.metadatum.metadata_type_object.component"
+                                    v-model="inputs[index]" 
+                                    :metadatum="metadatum"
+                                    @input="changeValue()"/>
+                            <a 
+                                    v-if="index > 0" 
+                                    @click="removeInput(index)"
+                                    class="add-link"
+                                    :key="index">
+                                <b-icon
+                                        icon="minus-circle"
+                                        size="is-small"
+                                        type="is-secondary"/>
+                                &nbsp;{{ $i18n.get('label_remove_value') }}
+                            </a>
                         </template>
                     </transition-group>
+                </template>
+                <template v-if="metadatum.metadatum.multiple == 'yes'">
                     <a 
                             @click="addInput"
                             class="is-block add-link">
@@ -169,7 +171,6 @@
                     if (equal.length == this.inputs.length && this.metadatum.value.length <= equal.length)
                         return;
                 }
-
                 eventBus.$emit('input', {
                     itemId: this.metadatum.item.id,
                     metadatumId: this.metadatum.metadatum.id,

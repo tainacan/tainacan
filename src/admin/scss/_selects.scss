@@ -17,14 +17,14 @@
         margin-bottom: 0px !important;
         color: $tainacan-input-color;
         option:checked, option:hover {
-            background-color: $gray2 !important;
+            background: $gray2 !important;
         }
         &:focus, &:active {
             box-shadow: none !important;
             text-decoration: none !important;
         }
         &[disabled=disabled] {
-            background-color: white !important;
+            background: $gray1 !important;
         }
     }
     &:not(.is-loading)::after {
