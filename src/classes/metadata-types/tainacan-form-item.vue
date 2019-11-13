@@ -177,7 +177,7 @@
                 });
             
             }, 900),
-            createInputs(){
+            createInputs() {
                 if (this.metadatum.value instanceof Array)
                     this.inputs = this.metadatum.value.slice(0);
                 else

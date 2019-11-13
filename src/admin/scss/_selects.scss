@@ -6,6 +6,7 @@
         height: 30px;
     }
     select {
+        background: transparent; // WordPress 5.3 adds arrows here
         border: none;
         border-radius: 1px !important;
         font-weight: normal;

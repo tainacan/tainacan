@@ -230,7 +230,7 @@
           text-decoration: none; }
       .wp-block-tainacan-facets-list .facets-collection-header .collection-name span.label {
         font-weight: normal;
-        font-size: 1em; }
+        font-size: 0.75em; }
       .wp-block-tainacan-facets-list .facets-collection-header .collection-name.only-collection-name {
         justify-content: center;
         padding: 1rem; }
