@@ -198,7 +198,7 @@
                 v-if="importerSourceInfo"
                 :active.sync="showTitlePromptModal"
                 :can-cancel="false"
-                :width="680"
+                :width="820"
                 scroll="keep"
                 trap-focus                
                 autofocus
@@ -248,7 +248,17 @@
                         <button 
                                 class="button is-outlined" 
                                 type="button"
-                                @click="selectedTitle = ''; showTitlePromptModal = false">
+                                @click="selectedTitle = ''; showTitlePromptModal = false;">
+                            {{ $i18n.get('cancel') }}
+                        </button>
+                    </div>
+                    <div 
+                            style="margin-left: auto"
+                            class="control">
+                        <button 
+                                class="button is-secondary" 
+                                type="button"
+                                @click="selectedTitle = ''; showTitlePromptModal = false; onRunImporter(true)">
                             {{ $i18n.get('skip') }}
                         </button>
                     </div>
@@ -388,10 +398,6 @@ export default {
                         this.collectionMetadata = JSON.parse(JSON.stringify(metadata));
                         this.isFetchingCollectionMetadata = false;
 
-                        let coreTitleIndex = this.collectionMetadata.findIndex((metadatum) => metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Core_Title');
-                        if (coreTitleIndex >= 0)
-                            this.showTitlePromptModal = true;
-
                         this.fetchMappingImporter({ collection: this.collectionId, sessionId: this.sessionId })
                             .then(res => {
                                 if (res)
@@ -431,7 +437,20 @@ export default {
             }
             return undefined;
         },
-        onRunImporter() {
+        onRunImporter(skipTitleCheck) {
+
+            if (skipTitleCheck !== true) {
+                let coreTitleIndex = this.collectionMetadata.findIndex((metadatum) => metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Core_Title');
+                if (coreTitleIndex >= 0 &&
+                    this.mappedCollection &&
+                    this.mappedCollection.mapping &&
+                    !this.mappedCollection.mapping[this.collectionMetadata[coreTitleIndex].id]
+                ) {
+                    this.showTitlePromptModal = true;
+                    return;     
+                }
+            }
+        
             this.isLoadingRun = true;
             this.updateImporterCollection({ sessionId: this.sessionId, collection: this.mappedCollection })
                 .then(updatedImporter => {    
@@ -540,6 +559,7 @@ export default {
                 this.onSelectCollectionMetadata(this.collectionMetadata[coreTitleIndex].id, this.importerSourceInfo.source_metadata[this.selectedTitle])
             
             this.showTitlePromptModal = false;
+            this.onRunImporter();
         }
     },
     created() {
@@ -637,6 +657,7 @@ export default {
 
     .source-metadatum {
         padding: 2px 0;
+        min-height: 35px;
         border-bottom: 1px solid $gray2;
         width: 100%;
         margin-bottom: 6px;
