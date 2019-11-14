@@ -38,7 +38,7 @@
 
 <script>
     import qs from 'qs';
-    import { tainacan as axios, all } from '../../../js/axios/axios';
+    import { tainacan as axios } from '../../../js/axios/axios';
     import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
     
     export default {
@@ -57,6 +57,9 @@
             'query.taxquery'() {
                 this.updateSelectedValues();
             }
+        },
+        mounted() {
+            this.updateSelectedValues();
         },
         data(){
             return {
@@ -122,7 +125,7 @@
 
                 let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == this.taxonomy);
 
-                if ( index >= 0){
+                if (index >= 0) {
                     let metadata = this.query.taxquery[ index ];
                     this.selected = [];
 
@@ -151,20 +154,20 @@
                 });
             },
             getTerms(metadata) {
-                let promises = [];
-                for (let id of metadata.terms) {
-                    //getting a specific value from api, does not need be in facets api
-                    promises.push(
-                        axios.get('/taxonomy/' + this.taxonomyId + '/terms/' + id + '?order=asc' )
-                            .then( res => {
-                                this.selected.push({ label: res.data.name, value: res.data.id });
-                            })
-                            .catch(error => {
-                                this.$console.log(error);
-                            })
-                    );
-                }
-                return all(promises);
+
+                let params = { 
+                    'include': metadata.terms, 
+                    'order': 'asc',
+                    'fetchonly': 0
+                };
+
+                return axios.get('/taxonomy/' + this.taxonomyId + '/terms/?' + qs.stringify(params) )
+                    .then( res => {
+                        this.selected = res.data.map(term => { return { label: term.name, value: term.id } });
+                    })
+                    .catch(error => {
+                        this.$console.log(error);
+                    })
             }
         }
     }

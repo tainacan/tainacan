@@ -98,19 +98,17 @@
                                             {{ metadatum.name }}
                                     </span>
                                     <span   
-                                            v-if="metadatum.id != undefined"
+                                            v-if="metadatum.id != undefined && metadatum.metadata_type_object"
                                             class="label-details">  
-                                        ({{ $i18n.get(metadatum.metadata_type_object.component) }}) 
+                                        ({{ metadatum.metadata_type_object.name }}) 
                                         <em v-if="metadatum.collection_id != collectionId">{{ $i18n.get('label_inherited') }}</em>
                                         <em 
-                                                v-if="metadatum.metadata_type_object && 
-                                                    metadatum.metadata_type_object.core && 
+                                                v-if="metadatum.metadata_type_object.core && 
                                                     metadatum.metadata_type_object.related_mapped_prop == 'title'">
                                                 {{ $i18n.get('label_core_title') }}
                                         </em>
                                         <em 
-                                                v-if="metadatum.metadata_type_object && 
-                                                    metadatum.metadata_type_object.core && 
+                                                v-if="metadatum.metadata_type_object.core && 
                                                     metadatum.metadata_type_object.related_mapped_prop == 'description'">
                                                 {{ $i18n.get('label_core_description') }}
                                         </em>
@@ -235,7 +233,7 @@
                 </div>
             </b-tab-item>
 
-            <!-- Exposer --------------- -->
+            <!-- Mapping --------------- -->
             <b-tab-item :label="$i18n.get('mapping')">
                 <div>
                     <section 
@@ -247,11 +245,10 @@
                                     <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
                                 </span>
                             </p>
-                            <p>{{ $i18n.get('info_there_is_no_metadatum') }}</p>  
-                            <p>{{ $i18n.get('info_create_metadata') }}</p>
+                            <p>{{ $i18n.get('info_there_is_no_metadatum') }}</p>
                         </div>
                     </section>
-                    <section>
+                    <section v-else>
                         <div class="field is-grouped form-submit">
                             <b-select
                                     id="mappers-options-dropdown"
@@ -373,7 +370,9 @@
                         <b-modal
                                 @close="onCancelNewMetadataMapperMetadata"
                                 :active.sync="isMapperMetadataCreating"
-                                trap-focus>
+                                trap-focus
+                                aria-modal
+                                aria-role="dialog">
                             <div 
                                     autofocus
                                     role="dialog"

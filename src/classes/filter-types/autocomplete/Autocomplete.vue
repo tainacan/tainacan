@@ -20,7 +20,7 @@
                         <img
                                 :alt="$i18n.get('label_thumbnail')"
                                 width="24"
-                                :src="`${props.option.img}`">
+                                :src="props.option.img">
                     </div>
                     <div class="media-content">
                         <span class="ellipsed-text">{{ props.option.label }}</span>
@@ -49,23 +49,13 @@
             return {
                 selected:'',
                 options: [],
-                label: '',
-                relatedCollectionId: ''
+                label: ''
             }
         },
         watch: {
             'query.metaquery'() {
                 this.updateSelectedValues();
             },
-        },
-        created() {
-            if (this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' && 
-                this.filter.metadatum && 
-                this.filter.metadatum.metadata_type_object && 
-                this.filter.metadatum.metadata_type_object.options &&
-                this.filter.metadatum.metadata_type_object.options.collection_id) {
-                    this.relatedCollectionId = this.filter.metadatum.metadata_type_object.options.collection_id;
-                }
         },
         mounted() {
             this.updateSelectedValues();
@@ -131,14 +121,12 @@
                     let metadata = this.query.metaquery[ index ];
 
                     if (this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship') {
-                        
-                        let endpoint = '/items/' + metadata.value + '?fetch_only=title,thumbnail';
 
-                        if (this.relatedCollectionId != '')
-                            endpoint = '/collection/' + this.relatedCollectionId + endpoint; 
+                        let endpoint = '/items/' + metadata.value + '?fetch_only=title,thumbnail';
 
                         axios.get(endpoint)
                             .then( res => {
+
                                 let item = res.data;
                                 this.label = item.title;
                                 this.selected = item.title;
@@ -151,24 +139,13 @@
                     } else {
                         this.label = metadata.value;
                         this.selected = metadata.value;
-
                         this.$emit( 'sendValuesToTags', { label: this.label, value: this.selected });
                     }
                 } else {
-                    return false;
+                    this.label = '';
+                    this.selected = '';
                 }
             }
         }
     }
 </script>
-<style scoped>
-    #profileImage {
-        width: 32px;
-        height: 32px;
-        font-size: 2.1875rem;
-        color: #fff;
-        text-align: center;
-        line-height: 9.375rem;
-        margin: 20px 0;
-    }
-</style>

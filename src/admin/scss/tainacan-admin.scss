@@ -96,8 +96,10 @@ a:hover {
     text-decoration: underline;
 }
 .add-link {
-    display: inline;
+    display: inline-flex;
+    align-items: center;
     font-size: 0.75rem; 
+    margin: 3px 0 6px 0;
     &.disabled {
         pointer-events: none;
         cursor: default;
@@ -106,6 +108,9 @@ a:hover {
         .icon {
             color: $gray2 !important;
         }
+    }
+    .tainacan-icon::before {
+        font-size: 0.875rem;
     }
 }
 

@@ -96,7 +96,7 @@
                             <span   
                                 v-if="filter.filter_type_object != undefined"
                                 class="label-details">  
-                                ({{ $i18n.get(filter.filter_type_object.component) }})  
+                                ({{ filter.filter_type_object.name }})  
                                     <span 
                                             class="not-saved" 
                                             v-if="(editForms[filter.id] != undefined && editForms[filter.id].saved != true) ||filter.status == 'auto-draft'"> 
@@ -235,7 +235,9 @@
                 ref="filterTypeModal"
                 :width="680"
                 :active.sync="isSelectingFilterType"
-                trap-focus>
+                trap-focus
+                aria-modal
+                aria-role="dialog">
             <div 
                     autofocus
                     role="dialog"
@@ -1171,6 +1173,10 @@ export default {
                     width: 100%;
                     font-size: 1rem;
                     margin-left: -16px;
+                }
+                
+                .field .collapse-handle {
+                    display: flex;
                 }
 
                 input, select, textarea, 

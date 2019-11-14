@@ -20,12 +20,17 @@
             cursor: default;
         }
     }
+    &>.control.has-icons-left .icon {
+        height: 2.125rem;
+        width: 2.125rem;
+    }
     .dropdown-menu {
         padding: 0px;
         margin-top: 0;
         border-radius: 0px;
         min-width: 6rem;
         border: none;
+        z-index: 99;
         
         .dropdown-content {
             padding: 0px;
@@ -50,25 +55,29 @@
                 .is-small { color: $gray4; }
                 &.is-active { background-color: $turquoise2; }
 
-                .media-left {
-                    margin-right: 0.5rem;
-                }
-                .media-content {
-                    display: flex;
-                    width: 80%;
+                .media {
+                    align-items: center;
+                
+                    .media-left {
+                        margin-right: 0.5rem;
+                    }
+                    .media-content {
+                        display: flex;
+                        width: 80%;
 
-                    .ellipsed-text {
-                        overflow-x: hidden;
-                        text-overflow: ellipsis;
-                        white-space: nowrap;
-                        margin-right: 3px;
+                        .ellipsed-text {
+                            overflow-x: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            margin-right: 3px;
+                        }
                     }
                 }
             }
         } 
     }
     &.is-mobile-modal {
-        @media screen and (max-width: 1088px) {
+        @media screen and (max-width: 768px) {
             .dropdown-content {
                 max-height: 100vh;
             }
@@ -130,16 +139,16 @@
     .tag {
         background: white;
         padding-right: 0;
-        padding-left: 0.5em;
+        padding-left: 0.6em;
 
         &.is-delete {
             color: $gray4;
             &::after {
-                height: 30% !important;
+                height: 47% !important;
                 width: 1px !important;
             } 
             &::before {
-                width: 30% !important;
+                width: 47% !important;
                 height: 1px !important;
             } 
             &:hover, &:focus {
@@ -278,7 +287,7 @@
         }
     }
 
-    @media screen and (min-width: 1024px) {
+    @media screen and (min-width: 768px) {
 
         .datepicker-header {
             margin-bottom: 0.5rem;

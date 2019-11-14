@@ -32,7 +32,8 @@
         mixins: [filterTypeMixin, dynamicFilterTypeMixin],
         data(){
             return {
-                options: []
+                options: [],
+                selected: ''
             }
         },
         watch: {
@@ -71,11 +72,10 @@
                 if ( this.query && this.query.metaquery && Array.isArray( this.query.metaquery ) ) {
 
                     let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
-                    if ( index >= 0){
+                    if ( index >= 0) {
                         let metadata = this.query.metaquery[ index ];
                         if (this.selected != metadata.value) {
                             this.selected = metadata.value;
-                            this.$emit('sendValuesToTags', { label: metadata.value, value: metadata.value })
                         }
                     } else {
                         this.selected = '';
@@ -83,6 +83,8 @@
                 } else {
                     this.selected = '';
                 }
+
+                this.$emit('sendValuesToTags', { label: this.selected, value: this.selected })
             },
             onSelect(value) {
                 this.$emit('input', {
@@ -91,7 +93,6 @@
                     collection_id: this.collectionId,
                     value: value
                 });
-                this.$emit('sendValuesToTags', { label: value, value: value })
 
                 this.updateSelectedValues();
             }

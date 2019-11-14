@@ -121,7 +121,7 @@
             </div>
             <!-- Swiper buttons are hidden as they actually swipe from slide to slide -->
         </div>
-        <div v-else-if="isLoading && !autoPlay">
+        <div v-else-if="isLoading && !autoPlay && !loopSlides">
             <div :class="'tainacan-carousel has-arrows-' + arrowsPosition">
                 <swiper 
                         role="list"
@@ -250,7 +250,7 @@ export default {
 
             this.collectionsRequestSource = axios.CancelToken.source();
 
-            let endpoint = '/collections?'+ qs.stringify({ postin: this.selectedCollections }) + '&fetch_only=name,url,thumbnail';
+            let endpoint = '/collections?'+ qs.stringify({ postin: this.selectedCollections, perpage: this.selectedCollections.length }) + '&fetch_only=name,url,thumbnail';
 
             this.tainacanAxios.get(endpoint, { cancelToken: this.collectionsRequestSource.token })
                 .then(response => {

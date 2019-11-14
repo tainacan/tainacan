@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Creates a new Vue Instance to manage each block isolatelly
         for (let blockId of blockIds) {
-            new Vue( Object.assign({ el: '#' + blockId }, jQuery.extend(true, {}, vueOptions)) );
+            new Vue( Object.assign({ el: '#' + blockId }, vueOptions) );
         }
     }
 });

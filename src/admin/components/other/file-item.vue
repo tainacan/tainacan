@@ -33,7 +33,9 @@
                     :active.sync="isPreviewModalActive"
                     :width="1024"
                     scroll="keep"
-                    trap-focus>
+                    trap-focus
+                    aria-modal
+                    aria-role="dialog">
                 <div 
                         autofocus
                         role="dialog"
@@ -85,13 +87,12 @@ export default {
         getIconForMimeType(mimeType) {
 
             let type = mimeType.split('/');
-            
             if (type[0] == 'application' && type[1] != undefined){
                 switch (type[1]) {
                     case 'pdf':
                         return 'pdf';
                     default:
-                        return '';
+                        return 'attachments';
                 }
             } else {
                 switch (type[0]) {
@@ -102,7 +103,7 @@ export default {
                     case 'text':
                         return 'text';
                     default:
-                        return '';
+                        return 'attachments';
                 }
             }
         }

@@ -78,6 +78,7 @@
                 :date-parser="(date) => dateParser(date)"
                 size="is-small"
                 icon="calendar-today"
+                :years-range="[-200, 50]"
                 :day-names="[
                     $i18n.get('datepicker_short_sunday'),
                     $i18n.get('datepicker_short_monday'),

@@ -200,7 +200,7 @@ registerBlockType('tainacan/carousel-items-list', {
             items = [];
 
             if (loadStrategy == 'selection') {
-                let endpoint = '/collection/' + collectionId + '/items?'+ qs.stringify({ postin: selectedItems }) + '&fetch_only=title,url,thumbnail';
+                let endpoint = '/collection/' + collectionId + '/items?'+ qs.stringify({ postin: selectedItems, perpage: selectedItems.length }) + '&fetch_only=title,url,thumbnail';
 
                 tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
                     .then(response => {

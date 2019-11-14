@@ -5,58 +5,78 @@ namespace Tainacan;
  * Class withe helpful methods to handle media in Tainacan
  */
 class Media {
-	
+
 	private static $instance = null;
 	private static $file_handle = null;
 	private static $file_name = null;
+	private $attachment_html_url_base = 'tainacan_attachment_html';
 
-		public static function get_instance() {
-				if(!isset(self::$instance)) {
-						self::$instance = new self();
-				}
+	public static function get_instance() {
+			if(!isset(self::$instance)) {
+					self::$instance = new self();
+			}
 
-				return self::$instance;
-		}
+			return self::$instance;
+	}
+
+	protected function __construct() {
+		add_action( 'init', [$this, 'add_attachment_page_rewrite_rule'] );
+		add_filter( 'query_vars', [$this, 'attachment_page_add_var'] );
+		add_action( 'template_redirect', [$this, 'attachment_page'] );
+	}
+
+	public function add_attachment_page_rewrite_rule() {
+		add_rewrite_rule(
+			'^' . $this->attachment_html_url_base . '/([0-9]+)/?',
+			'index.php?tainacan_attachment_page=$matches[1]',
+			'top'
+		);
+	}
+
+	public function attachment_page_add_var($vars) {
+		$vars[] = 'tainacan_attachment_page';
+		return $vars;
+	}
 
 	/**
 	 * Insert an attachment from an URL address.
 	 *
-	 * @param  String $url 
+	 * @param  String $url
 	 * @param  Int    $post_id (optional) the post this attachement should be attached to. empty for none
 	 * @return Int|false    Attachment ID. False on failure
 	 */
 	public function insert_attachment_from_url($url, $post_id = null) {
 		$filename = $this->save_remote_file($url);
-		
+
 		if( !file_exists($filename) ) {
 			return false;
 		}
-		
+
 		$file = fopen($filename,'r');
-		
+
 		if (false === $file) {
 			return false;
 		}
 
 		return $this->insert_attachment_from_blob($file, basename($url), $post_id);
-		
+
 	}
 
 	/**
 	 * Insert an attachment from a local file.
 	 *
-	 * @param  String $filename The path to the file 
+	 * @param  String $filename The path to the file
 	 * @param  Int    $post_id (optional) the post this attachement should be attached to. empty for none
 	 * @return Int|false    Attachment ID. False on failure
 	 */
 	public function insert_attachment_from_file($filename, $post_id = null) {
-		
+
 		if( !file_exists($filename) ) {
 			return false;
 		}
-		
+
 		return $this->insert_attachment_from_blob(fopen($filename,'r'), basename($filename), $post_id);
-		
+
 	}
 
 		/**
@@ -121,7 +141,7 @@ class Media {
 	public function insert_attachment_from_blob($blob, $filename, $post_id = null) {
 
 		do_action('tainacan-pre-insert-attachment', $blob, $filename, $post_id);
-		
+
 		$upload = wp_upload_bits( $filename, null, $blob );
 		if( !empty( $upload['error'] ) ) {
 			return false;
@@ -130,7 +150,7 @@ class Media {
 		if( @filesize($upload['file']) == 0 && is_resource($blob) ){
 			$file_wordpress_stream = fopen( $upload['file'], 'r+');
 			stream_copy_to_stream($blob, $file_wordpress_stream);
-			
+
 			if( file_exists(self::$file_name) ) unlink(self::$file_name);
 		}
 
@@ -139,12 +159,12 @@ class Media {
 		$file_type = wp_check_filetype( $file_name, null );
 		$attachment_title = sanitize_file_name( pathinfo( $file_name, PATHINFO_FILENAME ) );
 		$wp_upload_dir = wp_upload_dir();
-		
+
 		$guid = \str_replace($wp_upload_dir['basedir'], '', $file_path);
 		$guid = $wp_upload_dir['baseurl'] .  $guid;
 
 		$post_info = array(
-			'guid'				=> $guid, 
+			'guid'				=> $guid,
 			'post_mime_type'	=> $file_type['type'],
 			'post_title'		=> $attachment_title,
 			'post_content'		=> '',
@@ -162,12 +182,12 @@ class Media {
 
 		// Assign metadata to attachment
 		wp_update_attachment_metadata( $attach_id,  $attach_data );
-		
+
 		do_action('tainacan-post-insert-attachment', $attach_id,  $attach_data, $post_id);
-		
+
 		return $attach_id;
 	}
-	
+
 	/**
 	 * Add support to get mime type content even when mime_content_type function is not available
 	 * @param  string $filename The file name to check the mime type
@@ -183,10 +203,10 @@ class Media {
 			return $mime_type;
 		}
 	}
-	
+
 	/**
 	 * Extract an image from the first page of a pdf file
-	 * 
+	 *
 	 * @param  string $filepath The pdf filepath in the server
 	 * @return blob           bitstream of the image in jpg format
 	 */
@@ -195,11 +215,11 @@ class Media {
 		if ($blob) {
 			return $blob;
 		}
-		
+
 		if (!class_exists('\Imagick')) {
 			return null;
 		}
-		
+
 		if ( $this->get_mime_content_type($filepath) != 'application/pdf') {
 			return null;
 		}
@@ -207,10 +227,10 @@ class Media {
 		if ( !is_readable( realpath($filepath) ) ) {
 			return null;
 		}
-		
+
 		try {
 			register_shutdown_function(array($this, 'shutdown_function'));
-			$this->THROW_EXCPTION_ON_FATAL_ERROR = true; 
+			$this->THROW_EXCPTION_ON_FATAL_ERROR = true;
 			$imagick = new \Imagick();
 			$imagick->setResolution(72,72);
 			$imagick->readImage($filepath . '[0]');
@@ -227,23 +247,23 @@ class Media {
 
 	private $THROW_EXCPTION_ON_FATAL_ERROR = false;
 	public function shutdown_function() {
-		if( $this->THROW_EXCPTION_ON_FATAL_ERROR ) 
+		if( $this->THROW_EXCPTION_ON_FATAL_ERROR )
 			throw new \Exception("fatal error");
 	}
-	
+
 	public function index_pdf_content($file, $item_id) {
-		
+
 		if ( ! defined('TAINACAN_INDEX_PDF_CONTENT') || true !== TAINACAN_INDEX_PDF_CONTENT ) {
 			return;
 		}
-		
-		$content_index_meta = '_document_content_index';
+
+		$content_index_meta = 'document_content_index';
 
 		if ($file == null) {
 			$meta_id = update_post_meta( $item_id, $content_index_meta, null );
 			return true;
 		}
-		
+
 		if ( ! \file_exists($file) ) {
 			return false;
 		}
@@ -251,8 +271,8 @@ class Media {
 		if ( $this->get_mime_content_type($file) != 'application/pdf') {
 			return null;
 		}
-		
-		// Allow plugins to implement other approach to index pdf contents 
+
+		// Allow plugins to implement other approach to index pdf contents
 		$alternate = apply_filters('tainacan-index-pdf', null, $file, $item_id);
 		if ( ! \is_null($alternate) ) {
 			return $alternate;
@@ -260,7 +280,7 @@ class Media {
 
 		try {
 			$parser = new \Smalot\PdfParser\Parser();
-			$content    = $parser->parseFile($file)->getText();
+			$content = $parser->parseFile($file)->getText();
 
 			$wp_charset = get_bloginfo('charset');
 			$content_charset = mb_detect_encoding($content);
@@ -272,5 +292,71 @@ class Media {
 			return false;
 		}
 	}
-		
+
+	public function get_attachment_html_url($attachment_id) {
+		return site_url( $this->attachment_html_url_base . '/' . (int) $attachment_id );
+	}
+
+	public function attachment_page() {
+		$att_id = get_query_var('tainacan_attachment_page');
+
+		if ( ! $att_id ) {
+			return; // continue normal execution
+		}
+
+		$attachment = get_post($att_id);
+
+		if ( $attachment instanceof \WP_Post && $attachment->post_type == 'attachment' ) {
+			$parent = $attachment->post_parent;
+
+			$item = \Tainacan\Repositories\Items::get_instance()->fetch( (int) $parent );
+
+			if ( $item instanceof \Tainacan\Entities\Item ) {
+
+				if ( ! $item->can_read() ) {
+
+					http_response_code(401);
+					die;
+
+				}
+
+			} else {
+				http_response_code(404);
+				die;
+			}
+
+		} else {
+			http_response_code(404);
+			die;
+		}
+
+		$output = '';
+
+		if ( wp_attachment_is_image($att_id) ) {
+
+			$img = wp_get_attachment_url($attachment->ID, 'large');
+			$output .= "<img style='max-width: 100%;' src='" . $img . "' />";
+
+		} else {
+
+			global $wp_embed;
+
+			$url = wp_get_attachment_url($att_id);
+
+			$embed = $wp_embed->autoembed($url);
+
+			if ( $embed == $url ) {
+				$output .= sprintf("<a href='%s' target='blank'>%s</a>", $url, $url);
+			} else {
+				$output .= $embed;
+			}
+
+		}
+
+		echo $output;
+
+		exit();
+
+	}
+
 }

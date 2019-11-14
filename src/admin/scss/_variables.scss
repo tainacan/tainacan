@@ -111,8 +111,9 @@ $addColors: (
 );
 $colors: map-merge($colors, $addColors);
 
-// Small size
+// Bulma Variables
 $size-small: 0.85em; // 0.75em on Bulma.
+$dropdown-mobile-breakpoint: $tablet;
 
 // Tainacan Header and side menus
 $header-height: 52px;
@@ -120,7 +121,7 @@ $subheader-height: 42px;
 $side-menu-width: 160px;
 $filter-menu-width: 16.666666667%;
 $filter-menu-width-theme: 20.833333333%;
-$page-height: calc(100% - 94px);
+$page-height: calc(100vh - 94px);
 
 // Overall Pages padding:
 $page-side-padding: 4.166666667%;//82px;
@@ -149,10 +150,18 @@ $table-foot-cell-border-width: 1px 0 0 !important;
 $table-cell-padding: 1.0em 0.75em;
 
 // Roboto font
-$family-sans-serif: 'Roboto', sans-serif;
+$family-sans-serif: 'Roboto', 'Source Sans', 'Helvetica', sans-serif;
  
 // Bulma's modal (needs to be greather than tainacan-admin-app)
 $modal-z: 9999999;
+
+// Grid mixin for display: grid compatibility
+@mixin display-grid {
+    flex-wrap: wrap;
+    display: flex;
+    display: -ms-grid;
+    display: grid;
+}
 
 // A copy of bootstrap's screen reader only class to be used for accessibility.
 .sr-only {

@@ -6,12 +6,9 @@
     margin-right: 0.375rem;
     max-width: 100%;
     overflow: hidden;
+    transition: all 0.2s ease;
     animation-name: appear;
-    animation-duration: 0.2s;
-
-    &:hover, &:hover .tag {
-        background-color: $gray2;
-    }
+    animation-duration: 0.3s;
 
     .tag {
         background-color: white;
@@ -22,6 +19,8 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        animation-name: appear;
+        animation-duration: 0.3s;
 
         &.is-delete, 
         &.is-delete:hover, 
@@ -29,12 +28,28 @@
         &.is-delete:active {
             border-radius: 50px !important;
             border-radius: 50px !important;
+            margin-right: 0px !important;
             color: $gray4;
-            background-color: transparent;
+            background-color: white;
+            transition: border-width 0.15s linear, background-color 0.15s linear;
 
-            &:hover {
-                background-color: transparent;
-                color: $gray4;
+            &:after,
+            &:before {
+                transition: transform 0.15s linear;
+            }
+
+            &:hover,
+            &:focus {
+                border: solid 1px $gray3 !important;
+                background-color: $gray2;
+                color: $gray5;
+
+                &:after {
+                    transform: translateX(-50%) translateY(-50%) rotate(45deg) scale(1.15);
+                }
+                &:before {
+                    transform: translateX(-50%) translateY(-50%) rotate(45deg) scale(1.15);
+                }
             }
         }
     }

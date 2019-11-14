@@ -1,7 +1,7 @@
 import axios from '../../../axios/axios';
 import qs from 'qs';
 
-export const fetchActivities = ({ commit }, { page, activitiesPerPage, search, searchDates} ) => {
+export const fetchActivities = ({ commit }, { page, activitiesPerPage, search, searchDates, authorId} ) => {
 
     let endpoint = `/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit&orderby=id&order=desc`;
 
@@ -21,6 +21,9 @@ export const fetchActivities = ({ commit }, { page, activitiesPerPage, search, s
         endpoint += '&' + qs.stringify(dateQuery);
     }
 
+    if (authorId != undefined && authorId != null)
+        endpoint += '&authorid=' + authorId;
+
     return new Promise((resolve, reject) => {
         axios.tainacan.get(endpoint)
             .then(res => {
@@ -37,7 +40,7 @@ export const fetchActivities = ({ commit }, { page, activitiesPerPage, search, s
     });
 };
 
-export const fetchCollectionActivities = ({ commit }, { page, activitiesPerPage, collectionId, search, searchDates }) => {
+export const fetchCollectionActivities = ({ commit }, { page, activitiesPerPage, collectionId, search, searchDates, authorId }) => {
 
     let endpoint = `/collection/${collectionId}/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit&orderby=id&order=desc`;
 
@@ -57,6 +60,9 @@ export const fetchCollectionActivities = ({ commit }, { page, activitiesPerPage,
         endpoint += '&' + qs.stringify(dateQuery);
     }
 
+    if (authorId != undefined && authorId != null)
+        endpoint += '&authorid=' + authorId;
+
     return new Promise((resolve, reject) => {
         axios.tainacan.get(endpoint)
             .then(res => {
@@ -73,12 +79,15 @@ export const fetchCollectionActivities = ({ commit }, { page, activitiesPerPage,
     });
 };
 
-export const fetchItemActivities = ({ commit }, { page, activitiesPerPage, itemId, search, searchDates }) => {
+export const fetchItemActivities = ({ commit }, { page, activitiesPerPage, itemId, search, searchDates, authorId }) => {
 
     let endpoint = `/item/${itemId}/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit&orderby=id&order=desc`;
 
     if (search != undefined && search != '')
         endpoint += `&search=${search}`;
+
+    if (authorId != undefined && authorId != null)
+        endpoint += '&authorid=' + authorId;
 
     if (searchDates && searchDates[0] != null && searchDates[1] != null) {
         let dateQuery = {
@@ -154,4 +163,17 @@ export const approve = ({commit}, activityId) => {
 
 export const notApprove = ({commit}, activityId) => {
 
+};
+
+// Users for filtering
+export const fetchUsers = ({ commit }, { search }) => {
+    return new Promise((resolve, reject) => {
+        axios.wp.get('/users?search=' + search)
+        .then(res => {
+            resolve(res.data);
+        })
+        .catch(error => {
+            reject(error);
+        });
+    });
 };

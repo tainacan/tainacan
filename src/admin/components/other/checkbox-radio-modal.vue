@@ -363,35 +363,35 @@
                 let selected = this.selected instanceof Array ? this.selected : [this.selected];
 
                 if (this.taxonomy_id && selected.length) {
-                    for (const term of selected) {
 
-                        this.isSelectedTermsLoading = true;
+                    this.isSelectedTermsLoading = true;
 
-                        axios.get(`/taxonomy/${this.taxonomy_id}/terms/${term}`)
-                            .then((res) => {
-                                this.saveSelectedTagName(res.data.id, res.data.name);
-                                this.isSelectedTermsLoading = false;
-                            })
-                            .catch((error) => {
-                                this.$console.log(error);
-                                this.isSelectedTermsLoading = false;
-                            });
-                    }
+                    axios.get(`/taxonomy/${this.taxonomy_id}/terms/?${qs.stringify({ hideempty: 0, include: selected})}`)
+                        .then((res) => {
+                            for (const term of res.data)
+                                this.saveSelectedTagName(term.id, term.name);
+
+                            this.isSelectedTermsLoading = false;
+                        })
+                        .catch((error) => {
+                            this.$console.log(error);
+                            this.isSelectedTermsLoading = false;
+                        });
+                    
                 } else if (this.metadatum_type === 'Tainacan\\Metadata_Types\\Relationship' && selected.length) {
                     this.isSelectedTermsLoading = true;
 
-                    for (const item of selected) {
+                    axios.get(`/items/?${qs.stringify({ fetch_only: 'title', postin: selected})}`)
+                        .then((res) => {
+                            for (const item of res.data)
+                                this.saveSelectedTagName(item.id, item.title);
 
-                        axios.get('/items/' + item + '?fetch_only=title')
-                            .then((res) => {
-                                this.saveSelectedTagName(res.data.id, res.data.title);
-                                this.isSelectedTermsLoading = false;
-                            })
-                            .catch((error) => {
-                                this.$console.log(error);
-                                this.isSelectedTermsLoading = false;
-                            });
-                    }
+                            this.isSelectedTermsLoading = false;
+                        })
+                        .catch((error) => {
+                            this.$console.log(error);
+                            this.isSelectedTermsLoading = false;
+                        });
                 }
             },
             saveSelectedTagName(value, label){
