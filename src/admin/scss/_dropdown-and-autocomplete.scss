@@ -20,6 +20,10 @@
             cursor: default;
         }
     }
+    &>.control.has-icons-left .icon {
+        height: 2.125rem;
+        width: 2.125rem;
+    }
     .dropdown-menu {
         padding: 0px;
         margin-top: 0;
@@ -135,16 +139,16 @@
     .tag {
         background: white;
         padding-right: 0;
-        padding-left: 0.5em;
+        padding-left: 0.6em;
 
         &.is-delete {
             color: $gray4;
             &::after {
-                height: 30% !important;
+                height: 47% !important;
                 width: 1px !important;
             } 
             &::before {
-                width: 30% !important;
+                width: 47% !important;
                 height: 1px !important;
             } 
             &:hover, &:focus {
@@ -199,6 +203,21 @@
             height: 30px;
         }
     }
+
+    // Not working yet, as we don't have this icon.
+    // .dropdown-trigger {
+    //     span.icon>i.mdi-calendar-today::before{
+    //         display: inline-block;
+    //         font: normal normal normal 20px/1 "TainacanIcons";
+    //         font-size: inherit;
+    //         text-rendering: auto;
+    //         vertical-align: middle;
+    //         line-height: inherit;
+    //         -webkit-font-smoothing: antialiased;
+    //         -moz-osx-font-smoothing: grayscale;
+    //         content: 'calendar';
+    //     }
+    // }
 
     .dropdown-menu {
         background: transparent;

@@ -54,7 +54,7 @@
                                     :value="`${metadatum.id}-${metadatum.metadata_type_options.taxonomy}-${metadatum.metadata_type_object.primitive_type}`"
                                     :key="metadatum.id"
                             >{{ metadatum.name }}</option>
-                            <option value="_document_content_index-undefined-string">Documento</option>
+                            <option value="document_content_index-undefined-string">Documento</option>
                         </b-select>
                     </b-field>
 

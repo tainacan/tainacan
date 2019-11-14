@@ -182,7 +182,7 @@
                         </span>
                         <br>
                         <a
-                                class="is-inline add-link"   
+                                class="add-link"   
                                 :class="{'disabled': form.enable_cover_page != 'yes'}"
                                 target="_blank"  
                                 :href="newPagePath">
@@ -232,7 +232,7 @@
                             </b-dropdown>
                         </div>
                     </div>
-
+                    
                     <!-- Default View Mode -------------------------------- --> 
                     <b-field
                             v-if="form.enabled_view_modes.length > 0"
@@ -250,7 +250,7 @@
                                 @focus="clearErrors('default_view_mode')">
                             <option
                                     v-for="(viewMode, index) of form.enabled_view_modes"
-                                    v-if="registeredViewModes[viewMode] != undefined"
+                                    v-if="registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen != true"
                                     :key="index"
                                     :value="viewMode">{{ registeredViewModes[viewMode].label }}
                             </option>

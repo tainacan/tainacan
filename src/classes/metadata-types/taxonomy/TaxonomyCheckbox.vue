@@ -75,7 +75,7 @@
 
             this.getTermsFromTaxonomy();
             this.$parent.$on('update-taxonomy-inputs', ($event) => {
-                if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.metadatum.metadatum.id) {
+                if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.metadatum.id) {
                     this.offset = 0;
                     this.getTermsFromTaxonomy();
                 }
