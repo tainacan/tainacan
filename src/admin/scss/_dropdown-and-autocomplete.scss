@@ -204,6 +204,21 @@
         }
     }
 
+    // Not working yet, as we don't have this icon.
+    // .dropdown-trigger {
+    //     span.icon>i.mdi-calendar-today::before{
+    //         display: inline-block;
+    //         font: normal normal normal 20px/1 "TainacanIcons";
+    //         font-size: inherit;
+    //         text-rendering: auto;
+    //         vertical-align: middle;
+    //         line-height: inherit;
+    //         -webkit-font-smoothing: antialiased;
+    //         -moz-osx-font-smoothing: grayscale;
+    //         content: 'calendar';
+    //     }
+    // }
+
     .dropdown-menu {
         background: transparent;
         border: none;
