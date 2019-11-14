@@ -2,11 +2,12 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, PanelBody } = wp.components;
+const { BaseControl, RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
 import MetadataModal from './metadata-modal.js';
+import ParentTermModal from './parent-term-modal.js';
 import tainacan from '../../api-client/axios.js';
 import axios from 'axios';
 import qs from 'qs';
@@ -116,6 +117,14 @@ registerBlockType('tainacan/facets-list', {
             type: String,
             default: undefined
         },
+        parentTerm: {
+            type: Number,
+            default: null
+        },
+        isParentTermModalOpen: {
+            type: Boolean,
+            default: false
+        }
     },
     supports: {
         align: ['full', 'wide'],
@@ -141,7 +150,9 @@ registerBlockType('tainacan/facets-list', {
             facetsRequestSource,
             maxFacetsNumber,
             searchString,
-            isLoading
+            isLoading,
+            parentTerm,
+            isParentTermModalOpen
         } = attributes;
 
         // Obtains block's client id to render it on save function
@@ -231,6 +242,14 @@ registerBlockType('tainacan/facets-list', {
                 setAttributes({ searchString: undefined });
             }
 
+            // Set up parentTerm for taxonomies
+            if (parentTerm && parentTerm.id !== undefined && parentTerm.id !== null && parentTerm.id !== '' && metadatumType == 'Taxonomy')
+                queryObject.parent = parentTerm.id;
+            else {
+                delete queryObject.parent;
+                setAttributes({ parentTerm: null });
+            }
+
             // Parameter fo tech entity object with image and url
             queryObject['context'] = 'extended';
             
@@ -282,6 +301,13 @@ registerBlockType('tainacan/facets-list', {
             isModalOpen = true;
             setAttributes( { 
                 isModalOpen: isModalOpen
+            } );
+        }
+        
+        function openParentTermModal() {
+            isParentTermModalOpen = true;
+            setAttributes( { 
+                isParentTermModalOpen: isParentTermModalOpen
             } );
         }
 
@@ -391,6 +417,25 @@ registerBlockType('tainacan/facets-list', {
                                     max={ 96 }
                                 />
                             </div>
+                            { metadatumType == 'Taxonomy' ?
+                                <div>
+                                    <BaseControl
+                                        id="parent-term-selection"
+                                        label={ (parentTerm && (parentTerm.id === '0' || parentTerm.id === 0)) ? __('Showing only:', 'tainacan') : __('Showing children of:', 'tainacan') }
+                                        help="Narrow terms to direct children of a this parent term."
+                                    >
+                                        <span style={{ fontWeight: 'bold' }}>&nbsp;{ parentTerm && parentTerm.name ? parentTerm.name : __('Any term.', 'tainacan') }</span>
+                                        <br />
+                                        <Button
+                                            style={{ margin: '6px auto 16px auto', display: 'block' }}
+                                            id="parent-term-selection"
+                                            isPrimary
+                                            onClick={ () => openParentTermModal() }>
+                                            {__('Select parent term', 'tainacan')}
+                                        </Button> 
+                                    </BaseControl>
+                                </div> 
+                            : null}
                             <hr></hr>
                             <div>
                                 { layout == 'list' && (metadatumType == 'Taxonomy' || metadatumType == 'Relationship') ? 
@@ -502,6 +547,23 @@ registerBlockType('tainacan/facets-list', {
                                     setContent();
                                 }}
                                 onCancelSelection={ () => setAttributes({ isModalOpen: false }) }/> 
+                            : null
+                        }
+
+                        { isParentTermModalOpen ? 
+                            <ParentTermModal
+                                existingFacetId={ parentTerm && parentTerm.id ? parentTerm.id : null } 
+                                collectionId={ collectionId } 
+                                metadatumId={ metadatumId } 
+                                onSelectFacet={ (selectedFacet) => {
+                                    parentTerm = selectedFacet.id !== null && selectedFacet.id !== '' && selectedFacet.id !== undefined ? selectedFacet : null
+                                    setAttributes({ 
+                                        parentTerm: parentTerm,
+                                        isParentTermModalOpen: false
+                                    });
+                                    setContent();
+                                }}
+                                onCancelSelection={ () => setAttributes({ isParentTermModalOpen: false }) }/> 
                             : null
                         }
                         
@@ -670,5 +732,139 @@ registerBlockType('tainacan/facets-list', {
                     id={ 'wp-block-tainacan-facets-list_' + blockId }>
                         { content }
                 </div>
-    }
+    },
+    deprecated: [
+        {
+            attributes: {
+                content: {
+                    type: 'array',
+                    source: 'children',
+                    selector: 'div'
+                },
+                collectionId: {
+                    type: String,
+                    default: undefined
+                },
+                collectionSlug: {
+                    type: String,
+                    default: undefined
+                },
+                facets: {
+                    type: Array,
+                    default: []
+                },
+                facetsObject: {
+                    type: Array,
+                    default: []
+                },
+                showImage: {
+                    type: Boolean,
+                    default: true
+                },
+                showItemsCount: {
+                    type: Boolean,
+                    default: true
+                },
+                showLoadMore: {
+                    type: Boolean,
+                    default: false
+                },
+                showSearchBar: {
+                    type: Boolean,
+                    value: false
+                },
+                layout: {
+                    type: String,
+                    default: 'grid'
+                },
+                cloudRate: {
+                    type: Number,
+                    default: 1
+                },
+                isModalOpen: {
+                    type: Boolean,
+                    default: false
+                },
+                gridMargin: {
+                    type: Number,
+                    default: 0
+                },
+                metadatumId: {
+                    type: String,
+                    default: undefined
+                },
+                metadatumType: {
+                    type: String,
+                    default: undefined
+                },
+                facetsRequestSource: {
+                    type: String,
+                    default: undefined
+                },
+                maxFacetsNumber: {
+                    type: Number,
+                    value: undefined
+                },
+                isLoading: {
+                    type: Boolean,
+                    value: false
+                },
+                isLoadingCollection: {
+                    type: Boolean,
+                    value: false
+                },
+                collection: {
+                    type: Object,
+                    value: undefined
+                },
+                searchString: {
+                    type: String,
+                    default: undefined
+                },
+                blockId: {
+                    type: String,
+                    default: undefined
+                },
+            },
+            save({ attributes, className }){
+                const {
+                    content, 
+                    blockId,
+                    collectionId,  
+                    collectionSlug,  
+                    showImage,
+                    showItemsCount,
+                    showLoadMore,
+                    layout,
+                    cloudRate,
+                    gridMargin,
+                    metadatumId,
+                    metadatumType,
+                    maxFacetsNumber,
+                    showSearchBar,
+                } = attributes;
+                
+                return <div 
+                            className={ className }
+                            metadatum-id={ metadatumId }
+                            metadatum-type={ metadatumType }
+                            collection-id={ collectionId }  
+                            collection-slug={ collectionSlug }  
+                            show-image={ '' + showImage }
+                            show-items-count={ '' + showItemsCount }
+                            show-search-bar={ '' + showSearchBar }
+                            show-load-more={ '' + showLoadMore }
+                            layout={ layout }
+                            cloud-rate={ cloudRate }
+                            grid-margin={ gridMargin }
+                            max-facets-number={ maxFacetsNumber }
+                            tainacan-api-root={ tainacan_plugin.root }
+                            tainacan-base-url={ tainacan_plugin.base_url }
+                            tainacan-site-url={ tainacan_plugin.site_url }
+                            id={ 'wp-block-tainacan-facets-list_' + blockId }>
+                                { content }
+                        </div>
+            }
+        }
+    ]
 });
