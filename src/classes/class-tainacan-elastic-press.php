@@ -284,8 +284,8 @@ class Elastic_Press {
 						$new_sort["post_name.raw"] = $value;
 					} elseif ($key == 'post_type') {
 						$new_sort["post_type.raw"] = $value;
-					} elseif( !in_array("long", $parts) && in_array("meta", $parts) ) {
-						$new_sort["$key.sortable"] = $value;
+					// } elseif( !in_array("long", $parts) && in_array("meta", $parts) ) {
+					// 	$new_sort["$key.sortable"] = $value;
 					} else {
 						$new_sort[$key] = $value;
 					}
