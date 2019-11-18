@@ -156,6 +156,14 @@ export default {
     $gray4: #555758;
     $gray5: #454647; 
 
+    // Grid mixin for display: grid compatibility
+    @mixin display-grid {
+        flex-wrap: wrap;
+        display: flex;
+        display: -ms-grid;
+        display: grid;
+    }
+
     @import "../../src/admin/scss/_view-mode-cards.scss";
 
     .tainacan-cards-container .tainacan-card .metadata-title {

@@ -46,32 +46,33 @@
                         v-model="inputs[0]" 
                         :metadatum="metadatum"
                         @input="changeValue()"/>
-                <template v-if="metadatum.metadatum.multiple == 'yes'">
+                <template v-if="metadatum.metadatum.multiple == 'yes' && inputs.length > 1">
                     <transition-group
                             name="filter-item"
                             class="multiple-inputs">
-                        <template 
-                                v-if="index > 0" 
-                                v-for="(input, index) in inputs">
-                                <component 
-                                        :key="index"
-                                        :is="metadatum.metadatum.metadata_type_object.component"
-                                        v-model="inputs[index]" 
-                                        :metadatum="metadatum"
-                                        @input="changeValue()"/>
-                                <a 
-                                        v-if="index > 0" 
-                                        @click="removeInput(index)"
-                                        class="is-inline add-link"
-                                        :key="index">
-                                    <b-icon
-                                            icon="minus-circle"
-                                            size="is-small"
-                                            type="is-secondary"/>
-                                    &nbsp;{{ $i18n.get('label_remove_value') }}
-                                </a>
+                        <template v-for="(input, index) of inputs">
+                            <component 
+                                    v-if="index > 0"
+                                    :key="index"
+                                    :is="metadatum.metadatum.metadata_type_object.component"
+                                    v-model="inputs[index]" 
+                                    :metadatum="metadatum"
+                                    @input="changeValue()"/>
+                            <a 
+                                    v-if="index > 0" 
+                                    @click="removeInput(index)"
+                                    class="add-link"
+                                    :key="index">
+                                <b-icon
+                                        icon="minus-circle"
+                                        size="is-small"
+                                        type="is-secondary"/>
+                                &nbsp;{{ $i18n.get('label_remove_value') }}
+                            </a>
                         </template>
                     </transition-group>
+                </template>
+                <template v-if="metadatum.metadatum.multiple == 'yes'">
                     <a 
                             @click="addInput"
                             class="is-block add-link">
@@ -129,13 +130,13 @@
                 return this.getErrorMessage ? 'is-danger' : ''
             }
         },
-        created(){
+        created() {
             this.createInputs();
         },
         methods: {
             changeValue: _.debounce(function() {
 
-                if (this.inputs.length > 0 && this.inputs[0] && this.inputs[0].value) {
+                if (this.inputs && this.inputs.length > 0 && this.inputs[0] && this.inputs[0].value) {
                     let terms = this.inputs.map(term => term.value)
                     
                     if (this.metadatum.value instanceof Array){
@@ -155,6 +156,7 @@
 
                     if (this.metadatum.value.id == this.inputs)
                         return;
+
                 } else if (this.metadatum.value instanceof Array) {  
 
                     let equal = [];
@@ -168,15 +170,15 @@
 
                     if (equal.length == this.inputs.length && this.metadatum.value.length <= equal.length)
                         return;
-                } 
+                }
                 eventBus.$emit('input', {
                     itemId: this.metadatum.item.id,
                     metadatumId: this.metadatum.metadatum.id,
-                    values: this.inputs 
-                } );
+                    values: this.inputs ? this.inputs : ''
+                });
             
             }, 900),
-            createInputs(){
+            createInputs() {
                 if (this.metadatum.value instanceof Array)
                     this.inputs = this.metadatum.value.slice(0);
                 else

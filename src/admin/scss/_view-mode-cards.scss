@@ -1,8 +1,8 @@
 .tainacan-cards-container {
     min-height: 50vh;
     padding: 0;
-    display: -ms-grid;
-    display: grid;
+    @include display-grid;
+    -ms-grid-columns: 455px 455px;
     grid-template-columns: repeat(auto-fill, 455px);
     grid-gap: 0px;
     justify-content: space-evenly;
@@ -11,6 +11,7 @@
 
     @media screen and (max-width: 480px) {    
         width: 91.666666667%;  
+        -ms-grid-columns: 100%;
         grid-template-columns: repeat(auto-fill, 100%);
     }
 

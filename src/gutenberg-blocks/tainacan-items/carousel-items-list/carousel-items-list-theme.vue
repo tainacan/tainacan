@@ -261,7 +261,7 @@ export default {
             this.itemsRequestSource = axios.CancelToken.source();
 
             if (this.loadStrategy == 'selection') {
-                let endpoint = '/collection/' + this.collectionId + '/items?' + qs.stringify({ postin: this.selectedItems }) + '&fetch_only=title,url,thumbnail';
+                let endpoint = '/collection/' + this.collectionId + '/items?' + qs.stringify({ postin: this.selectedItems, perpage: this.selectedItems.length }) + '&fetch_only=title,url,thumbnail';
                 
                 this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
                     .then(response => {

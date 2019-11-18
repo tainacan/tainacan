@@ -1,8 +1,7 @@
 .tainacan-grid-container {
     min-height: 50vh;
     padding: 0;
-    display: -ms-grid;
-    display: grid;
+    @include display-grid;
     grid-template-columns: repeat(auto-fill, 285px);
     grid-gap: 0px;
     justify-content: space-evenly;

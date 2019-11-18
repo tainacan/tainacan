@@ -16,7 +16,7 @@
                 <b-tag
                         attached
                         closable
-                        @close="value = ''">
+                        @close="clearInput()">
                     {{ selectedTagsName[value] }}
                 </b-tag>
             </div>
@@ -34,7 +34,7 @@
                     :disabled="disabled"
                     :id="metadatum.metadata_type_object.component + '-' + metadatum.slug"
                     v-model="checked"
-                    @input="onChecked()"
+                    @input="onChecked('')"
                     :native-value="''"
                     border>
                 {{ $i18n.get('clear_radio') }}
@@ -81,7 +81,7 @@
         created() {
             this.getTermsFromTaxonomy();
             this.$parent.$on('update-taxonomy-inputs', ($event) => {
-                if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.metadatum.metadatum.id) {
+                if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.metadatum.id) {
                     this.offset = 0;
                     this.getTermsFromTaxonomy();
                 }
@@ -117,6 +117,10 @@
             metadatum: Object
         },
         methods: {
+            clearInput() {
+                this.value = '';
+                this.onInput('');
+            },
             onChecked() {
                 this.onInput(this.checked)
             },
@@ -194,12 +198,12 @@
                         parent: 0,
                         taxonomy_id: this.taxonomyId,
                         selected: !this.value ? [] : this.value,
-                        metadatumId: this.metadatum.metadatum.id,
+                        metadatumId: this.metadatum.id,
                         taxonomy: this.taxonomy,
                         collectionId: this.metadatum.collection_id,
                         isTaxonomy: true,
                         query: '',
-                        metadatum: this.metadatum.metadatum,
+                        metadatum: this.metadatum,
                         isCheckbox: false
                     },
                     events: {

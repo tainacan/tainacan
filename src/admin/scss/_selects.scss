@@ -6,24 +6,26 @@
         height: 30px;
     }
     select {
+        background: transparent; // WordPress 5.3 adds arrows here
         border: none;
         border-radius: 1px !important;
         font-weight: normal;
         font-size: 0.875rem !important;
+        min-height: 30px !important;
         height: 30px !important;
         padding: 2px 25px 2px 15px!important;
         margin-top: 0px !important;
         margin-bottom: 0px !important;
         color: $tainacan-input-color;
         option:checked, option:hover {
-            background-color: $gray2 !important;
+            background: $gray2 !important;
         }
         &:focus, &:active {
             box-shadow: none !important;
             text-decoration: none !important;
         }
         &[disabled=disabled] {
-            background-color: white !important;
+            background: $gray1 !important;
         }
     }
     &:not(.is-loading)::after {

@@ -84,7 +84,7 @@ class CSV extends Importer {
     }
 
     /**
-     * 
+     *
      * returns all header including special
      */
     public function raw_source_metadata() {
@@ -103,9 +103,12 @@ class CSV extends Importer {
      */
     public function process_item( $index, $collection_definition ) {
         $processedItem = [];
-        $headers = $this->raw_source_metadata();
+		$headers = $this->raw_source_metadata();
 
-        $this->add_log('Proccessing item index ' . $index . ' in collection ' . $collection_definition['id'] );
+		$item_line = (int) $index + 2;
+
+        $this->add_log( 'Processing item on line ' . $item_line );
+        $this->add_log( 'Target collection: ' . $collection_definition['id'] );
 
         if (($handle = fopen($this->tmp_file, "r")) !== false) {
             $file = $handle;
@@ -146,10 +149,8 @@ class CSV extends Importer {
             return false;
         }
 
-        $this->add_log('item index ' . $this->get_option('item_id_index')  );
         if( is_numeric($this->get_option('item_id_index')) ) {
             $this->handle_item_id( $values );
-            $this->add_log('Updating item' );
         }
         foreach ( $collection_definition['mapping'] as $metadatum_id => $header) {
             $column = null;
@@ -165,7 +166,7 @@ class CSV extends Importer {
             $valueToInsert = $this->handle_encoding( $values[ $column ] );
 
             $metadatum = new \Tainacan\Entities\Metadatum($metadatum_id);
-            $processedItem[ $header ] = ( $metadatum->is_multiple() ) ? 
+            $processedItem[ $header ] = ( $metadatum->is_multiple() ) ?
                 explode( $this->get_option('multivalued_delimiter'), $valueToInsert) : $valueToInsert;
         }
 
@@ -174,7 +175,7 @@ class CSV extends Importer {
         if( !empty( $this->get_option('item_status_index') ) ) $processedItem['special_item_status'] = '';
         if( !empty( $this->get_option('item_comment_status_index') ) ) $processedItem['special_comment_status'] = '';
 
-        $this->add_log('Success to proccess index: ' . $index  );
+        $this->add_log('Success processing index: ' . $index  );
         return $processedItem;
     }
 
@@ -188,7 +189,7 @@ class CSV extends Importer {
         $column_item_comment_status = $this->get_option('item_comment_status_index');
 
         if( !empty($column_document) || !empty( $column_attachment ) || !empty( $column_item_status ) ){
-            
+
             if (($handle = fopen($this->tmp_file, "r")) !== false) {
                 $file = $handle;
             } else {
@@ -238,7 +239,7 @@ class CSV extends Importer {
         return false;
     }
 
-    
+
     public function options_form() {
 		ob_start();
 	   ?>
@@ -257,13 +258,13 @@ class CSV extends Importer {
 						<div class="help-tooltip-body">
 							<p><?php _e('The character used to separate each column in your CSV (e.g. , or ;)', 'tainacan'); ?></p>
 						</div>
-					</div> 
+					</div>
 			</span>
 			<div class="control is-clearfix">
 				<input class="input" type="text" name="delimiter" value="<?php echo esc_attr($this->get_option('delimiter')); ?>">
 			</div>
 		</div>
-		
+
 		<div class="field">
 			<label class="label"><?php _e('Multivalued metadata delimiter', 'tainacan'); ?></label>
 			<span class="help-wrapper">
@@ -279,13 +280,13 @@ class CSV extends Importer {
 						<div class="help-tooltip-body">
 							<p><?php _e('The character used to separate each value inside a cell with multiple values (e.g. ||). Note that the target metadatum must accept multiple values.', 'tainacan'); ?></p>
 						</div>
-					</div> 
+					</div>
 			</span>
 			<div class="control is-clearfix">
 				<input class="input" type="text" name="multivalued_delimiter" value="<?php echo $this->get_option('multivalued_delimiter'); ?>">
 			</div>
 		</div>
-		
+
 		<div class="field">
 			<label class="label"><?php _e('Enclosure', 'tainacan'); ?></label>
 			<span class="help-wrapper">
@@ -301,13 +302,13 @@ class CSV extends Importer {
 						<div class="help-tooltip-body">
 							<p><?php _e('The character that wraps the content of each cell in your CSV. (e.g. ")', 'tainacan'); ?></p>
 						</div>
-					</div> 
+					</div>
 			</span>
 			<div class="control is-clearfix">
 				<input class="input" type="text" name="enclosure" value="<?php echo $this->get_option('enclosure'); ?>">
 			</div>
 		</div>
-		
+
 		<div class="field">
 			<label class="label"><?php _e('File Encoding', 'tainacan'); ?></label>
 			<span class="help-wrapper">
@@ -323,7 +324,7 @@ class CSV extends Importer {
 						<div class="help-tooltip-body">
 							<p><?php _e('The encoding of the CSV file.', 'tainacan'); ?></p>
 						</div>
-					</div> 
+					</div>
 			</span>
 			<div class="control is-clearfix">
 				<div class="select">
@@ -350,7 +351,7 @@ class CSV extends Importer {
 						<div class="help-tooltip-body">
 							<p><?php _e('Choose the action when a repeated item is found', 'tainacan'); ?></p>
 						</div>
-					</div> 
+					</div>
 			</span>
 			<div class="control is-clearfix">
 				<div class="select">
@@ -361,7 +362,7 @@ class CSV extends Importer {
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="field">
 			<label class="label"><?php _e('Importing attachments', 'tainacan'); ?></label>
 			<p>
@@ -386,16 +387,16 @@ class CSV extends Importer {
 						<div class="help-tooltip-body">
 							<p><?php _e("When using CSV special field to add documents or attachments that you've uploaded to the server, inform the full path to the folder here (e.g. /home/user/files/)", 'tainacan'); ?></p>
 						</div>
-					</div> 
+					</div>
 			</span>
 			<div class="control is-clearfix">
 				<input class="input" type="text" name="server_path" value="<?php echo $this->get_option('server_path'); ?>">
 			</div>
 		</div>
-	   
-	   <?php 
-	   
-	   
+
+	   <?php
+
+
 	   return ob_get_clean();
 
     }
@@ -433,7 +434,7 @@ class CSV extends Importer {
             $correct_value = trim(substr($column_value, 5));
             $item_inserted->set_document( $correct_value );
             $item_inserted->set_document_type( 'text' );
-            
+
             if( $item_inserted->validate() ) {
                 $item_inserted = $this->items_repo->update($item_inserted);
             }
@@ -523,7 +524,7 @@ class CSV extends Importer {
     private function handle_enclosure( &$file ) {
 
         $line = trim(fgets($file));
-        $start = substr($line, 0, strlen($this->get_option('enclosure'))); 
+        $start = substr($line, 0, strlen($this->get_option('enclosure')));
 
         if( $this->get_option('enclosure') === $start ) {
             $cut_start = strlen($this->get_option('enclosure'));
@@ -586,7 +587,7 @@ class CSV extends Importer {
      * @param array $processed_item Associative array with metadatum source's as index with
      *                              its value or values
      * @param integet $collection_index The index in the $this->collections array of the collection the item is beeing inserted into
-     * 
+     *
      * @return Tainacan\Entities\Item Item inserted
      */
     public function insert( $processed_item, $collection_index ) {
@@ -607,31 +608,32 @@ class CSV extends Importer {
         // $Tainacan_Items->disable_logs();
         // $Tainacan_Metadata->disable_logs();
         // $Tainacan_Item_Metadata->disable_logs();
-		
+
 		$itemMetadataArray = [];
-		
+
 		$updating_item = false;
-		
+
 		if ( is_numeric($this->get_transient('item_id')) ) {
 			$item = $Tainacan_Items->fetch( (int) $this->get_transient('item_id') );
 		} else {
 			$item = new Entities\Item();
 		}
-		
+
 		if( is_numeric($this->get_transient('item_id')) ) {
-			if ( $item->get_id() == $this->get_transient('item_id') ) {
+			if ( $item instanceof Entities\Item && $item->get_id() == $this->get_transient('item_id') ) {
 				$this->add_log('item will be updated ID:' . $item->get_id() );
 				$updating_item = true;
 				// When creating a new item, disable log for each metadata to speed things up
 				$Tainacan_Item_Metadata->disable_logs();
 			} else {
-				$this->add_log('item with ID ' . $item->get_id() . ' not found. Unable to update. Creating a new one.' );
+				$this->add_log('item with ID ' . $this->get_transient('item_id') . ' not found. Unable to update. Creating a new one.' );
+				$item = new Entities\Item();
 			}
-			
+
 		}
 
-        if( $this->get_transient('item_id') && $item && is_numeric($item->get_id()) && $item->get_id() > 0 && $this->get_transient('item_action') == 'ignore' ){
-            $this->add_log('Repeated Item');
+        if( $this->get_transient('item_id') && $item instanceof Entities\Item && is_numeric($item->get_id()) && $item->get_id() > 0 && $this->get_transient('item_action') == 'ignore' ){
+            $this->add_log('Ignoring repeated Item');
             return $item;
         }
 
@@ -711,7 +713,7 @@ class CSV extends Importer {
 			if ( ! $updating_item ) {
 				$insertedItem->set_status('publish' );
 			}
-			
+
             if($insertedItem->validate()) {
                 $insertedItem = $Tainacan_Items->update( $insertedItem );
                 $this->after_inserted_item(  $insertedItem, $collection_index );
@@ -743,7 +745,7 @@ class CSV extends Importer {
     /**
      * @param $metadatum the metadata
      * @param $values the categories names
-     * 
+     *
      * @return array empty with no category or array with IDs
      */
     private function insert_hierarchy( $metadatum, $values ){
@@ -751,16 +753,16 @@ class CSV extends Importer {
 		if (empty($values)) {
 			return false;
 		}
-		
+
 		$Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
         $taxonomy = new Entities\Taxonomy( $metadatum->get_metadata_type_options()['taxonomy_id']);
-		
+
         if ( strpos($values, '>>') === false ) {
             return $values;
         }
-        
+
         $exploded_values = explode(">>",$values);
-		
+
 		if (empty($exploded_values)) {
 			return false;
 		}
@@ -790,7 +792,7 @@ class CSV extends Importer {
                         $this->add_error_log( implode(',', $term->get_errors()) );
                         return false;
                     }
-                    
+
                 }
             }
             return $parent !== 0 ? (int)$parent : false;
