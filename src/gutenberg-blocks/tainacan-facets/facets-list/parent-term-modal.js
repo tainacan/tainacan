@@ -12,12 +12,13 @@ export default class ParentTermModal extends React.Component {
         // Initialize state
         this.state = {
             metadatumId: '',
-            facetsPerPage: 24,
+            facetsPerPage: 3,
             facetId: undefined,
             isLoadingFacets: false, 
             modalFacets: [],
             totalModalFacets: 0, 
-            facetPage: 1,
+            offset: 0,
+            lastTerm: undefined,
             temporaryFacetId: '',
             searchFacetName: '',
             facetOrderBy: 'date-desc',
@@ -37,7 +38,8 @@ export default class ParentTermModal extends React.Component {
             metadatumId: this.props.metadatumId, 
             temporaryFacetId: this.props.existingFacetId,
             facetId: this.props.existingFacetId,
-            facetPage: 1 
+            offset: 0,
+            lastTerm: undefined 
         });
         this.fetchModalFacets();
     }
@@ -46,10 +48,10 @@ export default class ParentTermModal extends React.Component {
     fetchModalFacets() {
 
         let someModalFacets = this.state.modalFacets;
-        if (this.state.facetPage <= 1)
+        if (this.state.offset == 0)
             someModalFacets = [];
 
-        let endpoint = '/facets/' + this.props.metadatumId + '?number=' + this.state.facetsPerPage + '&paged=' + this.state.facetPage;
+        let endpoint = '/facets/' + this.props.metadatumId + '?number=' + this.state.facetsPerPage + '&offset=' + this.state.offset;
 
         if (this.state.collectionId)
             endpoint = '/collection/' + this.props.collectionId + endpoint;
@@ -63,9 +65,11 @@ export default class ParentTermModal extends React.Component {
         else if (this.state.facetOrderBy == 'title-desc')
             endpoint += '&orderby=title&order=desc';
 
+        if (this.state.lastTerm != undefined)
+            endpoint += 'last_term=' + this.state.lastTerm
+
         this.setState({ 
             isLoadingFacets: true,
-            facetPage: this.state.facetPage + 1, 
             modalFacets: someModalFacets
         });
 
@@ -84,7 +88,9 @@ export default class ParentTermModal extends React.Component {
                 this.setState({ 
                     isLoadingFacets: false, 
                     modalFacets: otherModalFacets,
-                    totalModalFacets: response.headers['x-wp-total']
+                    totalModalFacets: response.headers['x-wp-total'],
+                    offset: this.state.offset + response.data.values.length, 
+                    lastTerm: response.data.last_term
                 });
             
                 return otherModalFacets;
@@ -203,10 +209,12 @@ export default class ParentTermModal extends React.Component {
                                 ] }
                                 onChange={ ( aFacetOrderBy ) => { 
                                     this.state.facetOrderBy = aFacetOrderBy;
-                                    this.state.facetPage = 1;
+                                    this.state.offset = 0;
+                                    this.state.lastTerm = undefined
                                     this.setState({ 
                                         facetOrderBy: this.state.facetOrderBy,
-                                        facetPage: this.state.facetPage 
+                                        offset: this.state.offset,
+                                        lastTerm: this.state.lastTerm
                                     });
                                     if (this.state.searchFacetName && this.state.searchFacetName != '') {
                                         this.fetchFacets(this.state.searchFacetName);
@@ -249,16 +257,16 @@ export default class ParentTermModal extends React.Component {
                         <div>
                             <div className="modal-radio-list">
                                 
-                                <p class="modal-radio-area-label">{__('Any parent term', 'tainacan')}</p>
+                                <p class="modal-radio-area-label">{__('Non specific term', 'tainacan')}</p>
                                 <RadioControl
                                     className={'repository-radio-option'}
                                     selected={ this.state.temporaryFacetId }
                                     options={ [
-                                        { label: __('Fetch terms children of any term', 'tainacan'), value: null }, 
+                                        { label: __('Fetch terms children of any term', 'tainacan'), value: '' }, 
                                         { label: __('Fetch terms with no parent (root terms)', 'tainacan'), value: '0' }
                                     ] }
                                     onChange={ ( aFacetId ) => {
-                                        this.setState({ temporaryFacetId: aFacetId });
+                                        this.setState({ temporaryFacetId: aFacetId});
                                     } } />
                                 <hr/>
                                 <p class="modal-radio-area-label">{__('Terms', 'tainacan')}</p>
@@ -300,7 +308,7 @@ export default class ParentTermModal extends React.Component {
                     </Button>
                     <Button
                         isPrimary
-                        disabled={ this.state.temporaryFacetId == undefined || this.state.temporaryFacetId == null || this.state.temporaryFacetId == '' && (this.state.searchFacetName != '' ? this.state.facets.find((facet) => facet.id == this.state.temporaryFacetId) : this.state.modalFacets.find((facet) => facet.id == this.state.temporaryFacetId)) != undefined}
+                        disabled={ (this.state.searchFacetName != '' ? this.state.facets.find((facet) => facet.id == this.state.temporaryFacetId) : this.state.modalFacets.find((facet) => facet.id == this.state.temporaryFacetId)) != undefined}
                         onClick={ () => { this.selectFacet(this.state.temporaryFacetId) } }>
                         {__('Select term', 'tainacan')}
                     </Button>
