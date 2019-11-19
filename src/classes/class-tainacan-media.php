@@ -142,7 +142,7 @@ class Media {
 
 		do_action('tainacan-pre-insert-attachment', $blob, $filename, $post_id);
 
-		$upload = wp_upload_bits( $filename, null, $blob );
+		$upload = wp_upload_bits( $filename, null, '' );
 		if( !empty( $upload['error'] ) ) {
 			return false;
 		}
