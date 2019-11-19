@@ -51,7 +51,19 @@ class Admin {
 			array( &$this, 'systemcheck_page' )
 		);
 
+		// We must get correct edit roles cap latter
+		$roles_cap = $dummyEntity->get_capabilities()->edit_posts;
+		$roles_page_suffix = add_submenu_page(
+			$this->menu_slug,
+			__('Roles', 'tainacan'),
+			__('Roles', 'tainacan'),
+			$roles_cap,
+			'tainacan_roles',
+			array( &$this, 'roles_page' )
+		);
+
 		add_action( 'load-' . $page_suffix, array( &$this, 'load_admin_page' ) );
+		add_action( 'load-' . $roles_page_suffix, array( &$this, 'load_roles_page' ) );
 	}
 
 	function load_admin_page() {
@@ -60,6 +72,10 @@ class Admin {
 		add_action( 'admin_enqueue_scripts', array(&$this, 'add_theme_files') );
 	}
 
+	function load_roles_page() {
+		add_action( 'roles_enqueue_scripts', array( &$this, 'add_roles_css' ), 90 );
+		add_action( 'roles_enqueue_scripts', array( &$this, 'add_roles_js' ), 90 );
+	}
 
 	function login_styles_reset( $style ) {
 		if ( strpos( $style, 'wp-admin-css' ) !== false ) {
@@ -82,6 +98,27 @@ class Admin {
 		wp_enqueue_script('underscore');
 	}
 
+	function add_roles_css() {
+		global $TAINACAN_BASE_URL;
+
+		wp_enqueue_style( 'tainacan-roles-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-roles.css', [], TAINACAN_VERSION );
+	}
+
+	function add_roles_js() {
+
+		global $TAINACAN_BASE_URL;
+
+		wp_enqueue_script( 'tainacan-roles', $TAINACAN_BASE_URL . '/assets/roles-components.js', [], TAINACAN_VERSION, true );
+	
+		do_action('tainacan-enqueue-roles-scripts');
+	}
+
+	function roles_page() {
+		global $TAINACAN_BASE_URL;
+		// TODO move it to a separate file and start the Vue project
+		echo "<div id='tainacan-roles-app'></div>";
+	}
+	
 	function add_admin_css() {
 		global $TAINACAN_BASE_URL;
 
@@ -341,6 +378,5 @@ class Admin {
 		$check = new System_Check();
 		$check->admin_page();
 	}
-
 }
 
