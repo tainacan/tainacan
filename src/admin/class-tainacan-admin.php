@@ -73,8 +73,8 @@ class Admin {
 	}
 
 	function load_roles_page() {
-		add_action( 'roles_enqueue_scripts', array( &$this, 'add_roles_css' ), 90 );
-		add_action( 'roles_enqueue_scripts', array( &$this, 'add_roles_js' ), 90 );
+		add_action( 'admin_enqueue_scripts', array( &$this, 'add_roles_css' ), 90 );
+		add_action( 'admin_enqueue_scripts', array( &$this, 'add_roles_js' ), 90 );
 	}
 
 	function login_styles_reset( $style ) {
@@ -108,8 +108,13 @@ class Admin {
 
 		global $TAINACAN_BASE_URL;
 
-		wp_enqueue_script( 'tainacan-roles', $TAINACAN_BASE_URL . '/assets/roles-components.js', [], TAINACAN_VERSION, true );
-	
+		wp_enqueue_script( 'tainacan-roles', $TAINACAN_BASE_URL . '/assets/roles-components.js', ['underscore', 'wp-i18n'], TAINACAN_VERSION, true );
+		
+		$settings = $this->get_admin_js_localization_params();
+		wp_localize_script( 'tainacan-roles', 'tainacan_plugin', $settings );
+		wp_enqueue_script('underscore');
+		wp_enqueue_script('wp-i18n');
+
 		do_action('tainacan-enqueue-roles-scripts');
 	}
 
