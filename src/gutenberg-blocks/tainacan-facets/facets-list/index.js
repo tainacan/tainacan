@@ -422,7 +422,7 @@ registerBlockType('tainacan/facets-list', {
                                     <BaseControl
                                         id="parent-term-selection"
                                         label={ (parentTerm && (parentTerm.id === '0' || parentTerm.id === 0)) ? __('Showing only:', 'tainacan') : __('Showing children of:', 'tainacan') }
-                                        help="Narrow terms to direct children of a this parent term."
+                                        help="Narrow terms to children of a parent term."
                                     >
                                         <span style={{ fontWeight: 'bold' }}>&nbsp;{ parentTerm && parentTerm.name ? parentTerm.name : __('Any term.', 'tainacan') }</span>
                                         <br />
@@ -542,7 +542,8 @@ registerBlockType('tainacan/facets-list', {
                                     setAttributes({
                                         metadatumId: metadatumId,
                                         metadatumType: metadatumType,
-                                        isModalOpen: false
+                                        isModalOpen: false,
+                                        parentTerm: null
                                     });
                                     setContent();
                                 }}
@@ -585,7 +586,7 @@ registerBlockType('tainacan/facets-list', {
                                     isPrimary
                                     type="submit"
                                     onClick={ () => openMetadataModal() }>
-                                    {__('Configure search', 'tainacan')}
+                                    {__('Select facets', 'tainacan')}
                                 </Button>    
                             </div>
                             ): null
@@ -642,12 +643,32 @@ registerBlockType('tainacan/facets-list', {
                             </svg>
                             {__('List facets from a Tainacan Collection or Repository', 'tainacan')}
                         </p>
-                        <Button
-                            isPrimary
-                            type="submit"
-                            onClick={ () => openMetadataModal() }>
-                            {__('Select facets', 'tainacan')}
-                        </Button>   
+                        {
+                            parentTerm && parentTerm.id && metadatumType == 'Taxonomy'? 
+                                <div style={{ display: 'flex' }}>
+                                    <Button
+                                        isPrimary
+                                        type="submit"
+                                        onClick={ () => openParentTermModal() }>
+                                        {__('Change parent term', 'tainacan')}
+                                    </Button>
+                                    <p style={{ margin: '0 12px' }}>{__('or', 'tainacan')}</p>
+                                    <Button
+                                        isPrimary
+                                        type="submit"
+                                        onClick={ () => openMetadataModal() }>
+                                        {__('Change facets source', 'tainacan')}
+                                    </Button>
+                                </div>
+                            : 
+                            <Button
+                                isPrimary
+                                type="submit"
+                                onClick={ () => openMetadataModal() }>
+                                {__('Select facets', 'tainacan')}
+                            </Button>
+                        }
+                           
                     </Placeholder>
                     ) : null
                 }
@@ -699,7 +720,8 @@ registerBlockType('tainacan/facets-list', {
             content, 
             blockId,
             collectionId,  
-            collectionSlug,  
+            collectionSlug,
+            parentTerm,  
             showImage,
             showItemsCount,
             showLoadMore,
@@ -711,13 +733,13 @@ registerBlockType('tainacan/facets-list', {
             maxFacetsNumber,
             showSearchBar,
         } = attributes;
-        
         return <div 
                     className={ className }
                     metadatum-id={ metadatumId }
                     metadatum-type={ metadatumType }
                     collection-id={ collectionId }  
-                    collection-slug={ collectionSlug }  
+                    collection-slug={ collectionSlug }
+                    parent-term-id={ parentTerm ? parentTerm.id : null }  
                     show-image={ '' + showImage }
                     show-items-count={ '' + showItemsCount }
                     show-search-bar={ '' + showSearchBar }

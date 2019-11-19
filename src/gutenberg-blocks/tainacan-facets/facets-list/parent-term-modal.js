@@ -21,7 +21,6 @@ export default class ParentTermModal extends React.Component {
             lastTerm: undefined,
             temporaryFacetId: '',
             searchFacetName: '',
-            facetOrderBy: 'date-desc',
             facets: [],
             facetsRequestSource: undefined
         };
@@ -55,15 +54,6 @@ export default class ParentTermModal extends React.Component {
 
         if (this.state.collectionId)
             endpoint = '/collection/' + this.props.collectionId + endpoint;
-
-        if (this.state.facetOrderBy == 'date')
-            endpoint += '&orderby=date&order=asc';
-        else if (this.state.facetOrderBy == 'date-desc')
-            endpoint += '&orderby=date&order=desc';
-        else if (this.state.facetOrderBy == 'title')
-            endpoint += '&orderby=title&order=asc';
-        else if (this.state.facetOrderBy == 'title-desc')
-            endpoint += '&orderby=title&order=desc';
 
         if (this.state.lastTerm != undefined)
             endpoint += 'last_term=' + this.state.lastTerm
@@ -143,15 +133,6 @@ export default class ParentTermModal extends React.Component {
         if (name != undefined && name != '')
             endpoint += '&search=' + name;
 
-        if (this.state.facetOrderBy == 'date')
-            endpoint += '&orderby=date&order=asc';
-        else if (this.state.facetOrderBy == 'date-desc')
-            endpoint += '&orderby=date&order=desc';
-        else if (this.state.facetOrderBy == 'title')
-            endpoint += '&orderby=title&order=asc';
-        else if (this.state.facetOrderBy == 'title-desc')
-            endpoint += '&orderby=title&order=desc';
-
         tainacan.get(endpoint, { cancelToken: aFacetRequestSource.token })
             .then(response => {
                 let someFacets = response.data.values.map((facet) => ({ name: facet.label, id: facet.value + '' }));
@@ -198,30 +179,6 @@ export default class ParentTermModal extends React.Component {
                                     });
                                     _.debounce(this.fetchFacets(value), 300);
                                 }}/>
-                        <SelectControl
-                                label={__('Order by', 'tainacan')}
-                                value={ this.state.facetOrderBy }
-                                options={ [
-                                    { label: __('Latest', 'tainacan'), value: 'date-desc' },
-                                    { label: __('Oldest', 'tainacan'), value: 'date' },
-                                    { label: __('Name (A-Z)', 'tainacan'), value: 'title' },
-                                    { label: __('Name (Z-A)', 'tainacan'), value: 'title-desc' }
-                                ] }
-                                onChange={ ( aFacetOrderBy ) => { 
-                                    this.state.facetOrderBy = aFacetOrderBy;
-                                    this.state.offset = 0;
-                                    this.state.lastTerm = undefined
-                                    this.setState({ 
-                                        facetOrderBy: this.state.facetOrderBy,
-                                        offset: this.state.offset,
-                                        lastTerm: this.state.lastTerm
-                                    });
-                                    if (this.state.searchFacetName && this.state.searchFacetName != '') {
-                                        this.fetchFacets(this.state.searchFacetName);
-                                    } else {
-                                        this.fetchModalFacets();
-                                    }
-                                }}/>
                     </div>
                     {(
                     this.state.searchFacetName != '' ? (
@@ -262,8 +219,8 @@ export default class ParentTermModal extends React.Component {
                                     className={'repository-radio-option'}
                                     selected={ this.state.temporaryFacetId }
                                     options={ [
-                                        { label: __('Fetch terms children of any term', 'tainacan'), value: '' }, 
-                                        { label: __('Fetch terms with no parent (root terms)', 'tainacan'), value: '0' }
+                                        { label: __('Terms children of any term', 'tainacan'), value: '' }, 
+                                        { label: __('Terms with no parent (root terms)', 'tainacan'), value: '0' }
                                     ] }
                                     onChange={ ( aFacetId ) => {
                                         this.setState({ temporaryFacetId: aFacetId});
@@ -308,7 +265,6 @@ export default class ParentTermModal extends React.Component {
                     </Button>
                     <Button
                         isPrimary
-                        disabled={ (this.state.searchFacetName != '' ? this.state.facets.find((facet) => facet.id == this.state.temporaryFacetId) : this.state.modalFacets.find((facet) => facet.id == this.state.temporaryFacetId)) != undefined}
                         onClick={ () => { this.selectFacet(this.state.temporaryFacetId) } }>
                         {__('Select term', 'tainacan')}
                     </Button>

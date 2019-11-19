@@ -10,7 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
             metadatumId: '',
             metadatumType: '', 
             collectionId: '',
-            collectionSlug: '',  
+            collectionSlug: '',
+            parentTermId: null,  
             showImage: true,
             showItemsCount: true,
             showSearchBar: false,
@@ -30,7 +31,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     metadatumId: this.metadatumId,
                     metadatumType: this.metadatumType, 
                     collectionId: this.collectionId,
-                    collectionSlug: this.collectionSlug,  
+                    collectionSlug: this.collectionSlug,
+                    parentTermId: this.parentTermId,  
                     showImage: this.showImage,
                     showItemsCount: this.showItemsCount,
                     showSearchBar: this.showSearchBar,
@@ -51,6 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
             this.metadatumType = this.$el.attributes['metadatum-type'] != undefined ? this.$el.attributes['metadatum-type'].value : undefined;
             this.collectionId = this.$el.attributes['collection-id'] != undefined ? this.$el.attributes['collection-id'].value : undefined;
             this.collectionSlug = this.$el.attributes['collection-slug'] != undefined ? this.$el.attributes['collection-slug'].value : undefined;
+            this.parentTermId = this.$el.attributes['parent-term-id'] != undefined ? this.$el.attributes['parent-term-id'].value : undefined;
             this.showImage = this.$el.attributes['show-image'] != undefined ? this.$el.attributes['show-image'].value == 'true' : true;
             this.showItemsCount = this.$el.attributes['show-items-count'] != undefined ? this.$el.attributes['show-items-count'].value == 'true' : true;
             this.showSearchBar = this.$el.attributes['show-search-bar'] != undefined ? this.$el.attributes['show-search-bar'].value == 'true' : false;
