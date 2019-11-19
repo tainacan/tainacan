@@ -16,13 +16,13 @@ I18NPlugin.install = function (Vue, options = {}) {
             return __(key, 'tainacan');
         },
         getWithContext(key, keyContext) {
-            return __(key, keyContext, 'tainacan');
+            return _x(key, keyContext, 'tainacan');
         },
         getWithNumber(keySingle, keyPlural, number) {
-            return __(keySingle, keyPlural, number, 'tainacan');
+            return _n(keySingle, keyPlural, number, 'tainacan');
         },
         getWithNumberAndContext(keySingle, keyPlural, number, keyContext) {
-            return __(keySingle, keyPlural, number, keyContext, 'tainacan');
+            return _nx(keySingle, keyPlural, number, keyContext, 'tainacan');
         },
     }
 
